@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5824371604",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/235#issuecomment-5824371604",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/235",
+  "id": 5824371604,
+  "node_id": "IC_kwDOT2Ndhs8AAAABWyjblA",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-25T00:07:24Z",
+  "updated_at": "2026-09-25T00:07:24Z",
+  "body": "**CLOSED \u2014 S98 micro-gap batch (text)**\n\n**Fix**: ellipsize IMPLEMENTED (TextUtils.TruncateAt law)\n\nREAL GAP: ellipsize did not exist anywhere in the runtime. Implemented: android:ellipsize AXML attr (start/middle/end/marquee ordinals) \u2192 ViewNode \u2192 fonts::layout_text (single source of truth with the measure pass) truncates the over-wide last line with U+2026 for END/START/MIDDLE; maxLines==1 singleLine NO-WRAP law added (a word-wrap silently dropped every word past the overflow). Fence: battery stage 's98 text laws' T3-T7+T14 (END keeps head / START keeps tail / MIDDLE keeps both / NONE preserved / cap drops segment / empty box).\n\n- Commits: 4ac6c542 (text) / 62ef579f+3ac93d34 (layout)\n- Battery: canonical battery ALL PASS at the closing HEAD; new named stages 's98 text laws (expect 21)' and 's98 scroll/transform laws (expect 13)' green\n- Registry: docs/MICRO_GAP_REGISTRY.json statuses updated to CLOSED with before/after + evidence",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5824371604/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

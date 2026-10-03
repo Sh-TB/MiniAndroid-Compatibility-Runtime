@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846297862",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/349#issuecomment-5846297862",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/349",
+  "id": 5846297862,
+  "node_id": "IC_kwDOT2Ndhs8AAAABXHdtBg",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-26T12:32:35Z",
+  "updated_at": "2026-09-26T12:32:35Z",
+  "body": "## CLOSED \u2014 root executed to L5, fresh evidence at HEAD `176710b1` (S104 FIX-005 / S106 re-verification)\n\n**Ticket symptom:** `[SYNTH-EXC] f141-null-recv`: NPE \u2014 `getSavedStateProvider` invoked on null receiver (R8-horizontal-class-merged `Lkotlin/text/MatcherMatchResult;`) inside `ComponentActivity.<init>` pc=224 \u2192 APP BOUNDARY unwind. 12 total errors at S102.\n\n**Root cause (raw-DEX ground truth, `scripts/s104_*`):** the APK's `Lkotlin/text/MatcherMatchResult;` is an R8 horizontal-class-merging **super-class** (`$r8$classId:B` field, packed-switch ctor dispatch). The engine's switch-key extraction only handled INT32/INT64 registers; the key lived in a **BYTE-typed** register which collapsed to 0 \u2192 wrong constructor branch (classId=5 should dispatch to the savedstate-controller branch) \u2192 controller field `input` never set \u2192 NPE. This was THE shared root behind the S103 \"R8 merged-lambda wrong branch\" observation.\n\n**Fix (commit `4feaaeda`, FIX-005 SWITCH-KEY-WIDENING):** switch key extraction now flows through the existing shared `dalvik_int_value` widening \u2014 one line, one law (byte/short/char/int/long all widen through the same path), no special-casing. Post-fix probe: `key=5 \u2192 dest=11`, `key=4 \u2192 dest=5` (both branches correct); the `[NULLFIELD] input-UNSET` line is gone.\n\n**Fresh runtime evidence (S106 re-verification, 3/3 runs, HEAD `176710b1`, APK re-fetched from F-Droid `com.vayunmathur.games.solitaire` vc 20260804, SHA `e87536851b7e9edc\u2026`):**\n```\nStatus: PARTIAL SUCCESS, Errors: 0  (was 12; the SYNTH-EXC null-recv row: 0 occurrences x3)\ngetSavedStateProvider now EXECUTES (REC-MISS optional-instrumentation rows only, no exception)\ncompose chain: ComponentActivity.<init> full saved-state wiring passes; AndroidComposeView <clinit> OK;\n               chain reaches Recomposer.composeInitial$runtime (next frontier, tracked separately)\n```\nrc=1 reflects the recorded visual-blank frontier (runtime progress = YES, visual progress = NOT YET PROVEN \u2014 honest per \u00a731); zero uncaught errors.\n\n**Regression:** canonical battery 105/105 ALL PASS; sgtpuzzles (the other `$r8$classId` APK) unchanged 0 errors.\n\nLogs: `evidence/s106_fresh/solitaire_run{1,2,3}/`; measured rows in `docs/REAL_APK_IMPACT.md`.",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846297862/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

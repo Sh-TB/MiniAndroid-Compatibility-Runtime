@@ -1,0 +1,269 @@
+{
+  "frame_count_requested": 3,
+  "frame_delay_ms": 300,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "b6dde6074bf47264b6cf8ab53a9c259eb47dfe88fd549c2ce5cc7f7c47abf4cc",
+      "sha256": "98d54442ceaa7aa4c7eb0ba55ef9b3e72461cf34e89e6009f534b25151cd2e74",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Select Table",
+          "view_id": 120
+        },
+        {
+          "class": "Landroid/widget/CheckBox;",
+          "text": "Unlimited Balls",
+          "view_id": 123
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Start Game",
+          "view_id": 124
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Resume Game",
+          "view_id": 125
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "End Game",
+          "view_id": 126
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "High scores",
+          "view_id": 127
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Help",
+          "view_id": 128
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Preferences",
+          "view_id": 129
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Quit",
+          "view_id": 130
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "High scores",
+          "view_id": 132
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "No scores for this table",
+          "view_id": 134
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "OK",
+          "view_id": 135
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Select Table",
+          "view_id": 137
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_001.png",
+      "index": 1,
+      "looper_virtual_ms": 420,
+      "png_sha256": "b6dde6074bf47264b6cf8ab53a9c259eb47dfe88fd549c2ce5cc7f7c47abf4cc",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "98d54442ceaa7aa4c7eb0ba55ef9b3e72461cf34e89e6009f534b25151cd2e74",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Select Table",
+          "view_id": 120
+        },
+        {
+          "class": "Landroid/widget/CheckBox;",
+          "text": "Unlimited Balls",
+          "view_id": 123
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Start Game",
+          "view_id": 124
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Resume Game",
+          "view_id": 125
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "End Game",
+          "view_id": 126
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "High scores",
+          "view_id": 127
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Help",
+          "view_id": 128
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Preferences",
+          "view_id": 129
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Quit",
+          "view_id": 130
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "High scores",
+          "view_id": 132
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "No scores for this table",
+          "view_id": 134
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "OK",
+          "view_id": 135
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Select Table",
+          "view_id": 137
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_002.png",
+      "index": 2,
+      "looper_virtual_ms": 720,
+      "png_sha256": "b6dde6074bf47264b6cf8ab53a9c259eb47dfe88fd549c2ce5cc7f7c47abf4cc",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "98d54442ceaa7aa4c7eb0ba55ef9b3e72461cf34e89e6009f534b25151cd2e74",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Select Table",
+          "view_id": 120
+        },
+        {
+          "class": "Landroid/widget/CheckBox;",
+          "text": "Unlimited Balls",
+          "view_id": 123
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Start Game",
+          "view_id": 124
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Resume Game",
+          "view_id": 125
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "End Game",
+          "view_id": 126
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "High scores",
+          "view_id": 127
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Help",
+          "view_id": 128
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Preferences",
+          "view_id": 129
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "Quit",
+          "view_id": 130
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "High scores",
+          "view_id": 132
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "No scores for this table",
+          "view_id": 134
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "OK",
+          "view_id": 135
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Select Table",
+          "view_id": 137
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "after_frame_index": 1,
+      "down_record": {
+        "action": "ACTION_DOWN",
+        "consumed": true,
+        "root_id": 95,
+        "state_changes": [],
+        "target_class": "Lcom/dozingcatsoftware/bouncy/GLFieldView;",
+        "target_view_id": 115,
+        "touch_dispatched": true,
+        "touch_listener_consumed": true,
+        "touch_target_chain": [
+          115,
+          110,
+          95
+        ],
+        "virtual_ms": 300,
+        "x": 540,
+        "y": 300
+      },
+      "event": "tap (scheduled F-117)",
+      "frame": 1,
+      "target_view_id": 115,
+      "x": 540,
+      "y": 300
+    }
+  ],
+  "runnables_fired_total": 0,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}
