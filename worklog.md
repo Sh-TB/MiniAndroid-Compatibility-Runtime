@@ -6456,3 +6456,56 @@ Work Log:
 Stage Summary:
 - 3 generic engine laws landed; Suntimes first-divergence advanced three
   layers deeper; anchors byte-stable. Issue #371 remains OPEN.
+
+---
+Task ID: 371-CLOSEOUT-GL-FANOUT
+Agent: Super Z (main agent)
+Task: #371 FINAL CLOSEOUT — libGDX GL frontier, new-app fan-out, media provenance.
+
+Work Log:
+- Screening (8 candidates, source APK hidden, installed-identity launch,
+  binary 34c457cb): tripeaks VERIFIED_REAL_APP_CONTENT(4 ops), gmdice
+  VERIFIED(6), klondike VERIFIED(8), fishrings VERIFIED(44),
+  sudoku_secuso REAL_APP_CONTENT verdict (dark-theme pixels marginal),
+  stopwatch BLOCKED(NO_ROOT), tictactoedeluxe BLOCKED(background-only),
+  ballbreak BLOCKED(background-only).
+- A/B BASE (b2b8c18bb92dab6a) vs PATCH: tripeaks/gmdice VERIFIED at BOTH —
+  the previous wave's "deferred-UI incl. TriPeaks" label is SUPERSEDED by
+  direct evidence at the recorded BASE binary (no new causal fix needed;
+  no false causal claim made). This wave's causal proof lives in Suntimes
+  (3 laws) + S-2 (NATX 0→10).
+- Stopwatch v1.5 first divergence: manifest has NO <activity> element
+  (aapt2 xmltree: application → service TileService + StopwatchService +
+  provider + receiver only) — a QuickSettings-tile app with NO launchable
+  activity; NO_ROOT is the honest structural result, not a white-screen.
+- libGDX GL frontier root-caused + partially closed: AndroidGraphics.
+  checkGL20 → EGLContext.getEGL/eglGetDisplay/eglInitialize/eglChooseConfig/
+  eglTerminate all REC-MISS null → GdxRuntimeException killed
+  createGLSurfaceView. IMPLEMENTED the EGL JSR-239 facade law (getEGL
+  singleton, display/context/surface/config tokens, initialize/chooseConfig
+  int[] writes, success contracts). checkGL20 now PASSES; the chain then
+  reaches SharedLibraryLoader.load → System.load(libgdx.so) → S-2 REAL
+  dlopen → wrong-ELF-class refusal (libgdx.so ships arm64-v8a+armeabi-v7a
+  ONLY — no x86_64). tictactoedeluxe = BLOCKED-BY-IDENTITY (ARM binary
+  translation is the sole remaining dependency), precisely named — not a
+  vague "libGDX issue". Deeper GL chain gap recorded: PGL GLSL is
+  recorded-not-executed (header honesty note).
+- PHASE D FAN-OUT FINAL (binary 6a6ef5b2a69f1f9d, 3 cold runs each,
+  source hidden, installed identity): tripeaks REAL_APP_CONTENT ×3
+  BYTE-IDENTICAL (e2a290ab…), gmdice REAL_APP_CONTENT ×3 BYTE-IDENTICAL
+  (f3b483fe…), sudoku_secuso REAL_APP_CONTENT ×3 BYTE-IDENTICAL,
+  stopwatch NO_ROOT ×3 (structural), fishrings (random pick seed 20261004)
+  REAL_APP_CONTENT ×3 BYTE-IDENTICAL (a341e3ad… — matches the recorded
+  wave sha).
+- §8 media provenance (flappycow, MINIANDROID_GFX_PROVENANCE): 12 bitmap
+  events, all DECODED=true/DRAW_CALLED=true/REPLAYED=true; drawn bitmap
+  dimensions EXACTLY match the APK's own drawable art (720x1280=splash,
+  320x160=play_button, 56x112=speaker, 250x250=about, 218x340=socket,
+  300x176=signinout) — the visible images are the installed APK's own
+  bytes, no substitution.
+
+Stage Summary:
+- Fan-out: 2 new games (tripeaks, gmdice) + random pick VERIFIED ×3
+  byte-identical; sudoku app REAL_APP_CONTENT ×3; stopwatch honestly
+  structurally blocked. GL frontier: EGL facade closed, ARM-translation
+  boundary proven precise.

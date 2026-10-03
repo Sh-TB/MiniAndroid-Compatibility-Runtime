@@ -31535,6 +31535,118 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // #371 CLOSEOUT (libGDX GL backend frontier): EGL JSR-239 facade.
+    // First divergence (tictactoedeluxe, com.badlogic.gdx):
+    //   AndroidGraphics.checkGL20 → EGLContext.getEGL / eglGetDisplay /
+    //   eglInitialize / eglChooseConfig / eglTerminate all REC-MISS null →
+    //   GdxRuntimeException("LibGDX requires OpenGL ES 2.0") killed
+    //   createGLSurfaceView → DEFAULT_BACKGROUND_ONLY white frame.
+    // AOSP/OpenJDK JSR-239 law: EGLContext.getEGL() returns the thread's
+    // EGL implementation singleton; eglGetDisplay materializes a display
+    // token; eglInitialize writes [major, minor] and answers true;
+    // eglChooseConfig fills the config array + count and answers true
+    // (the runtime's software GL backend — PortableGL — provides an ES2
+    // surface); eglTerminate/eglMakeCurrent/eglSwapBuffers answer the
+    // success contract. Tokens are opaque heap objects, exactly like real
+    // EGL handles from managed code's point of view.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name.find("khronos/egl/") != std::string::npos) {
+        const bool is_egl_ctx = class_name == "Ljavax/microedition/khronos/egl/EGLContext;";
+        const bool is_egl10 = class_name == "Ljavax/microedition/khronos/egl/EGL10;";
+        auto write_array_int = [&](uint32_t oid, int32_t idx, int32_t v) {
+            if (oid == 0) return;
+            heap_.set_object_field(oid, "array[" + std::to_string(idx) + "]",
+                                   DalvikValue::make_int(v));
+        };
+        auto write_array_ref = [&](uint32_t oid, int32_t idx, uint32_t ref) {
+            if (oid == 0) return;
+            heap_.set_object_field(oid, "array[" + std::to_string(idx) + "]",
+                                   DalvikValue::make_object(ref, "Ljavax/microedition/khronos/egl/EGLConfig;"));
+        };
+        auto egl_singleton = [&](const char* cls) -> uint32_t {
+            static std::map<std::string, uint32_t> cache;
+            auto it = cache.find(cls);
+            if (it != cache.end() && heap_.has_object(it->second))
+                return it->second;
+            uint32_t oid = heap_.allocate(cls, pc_, 0);
+            cache[cls] = oid;
+            return oid;
+        };
+        if (is_egl_ctx && method == "getEGL") {
+            // JSR-239: the singleton EGL implementation handle
+            uint32_t egl = egl_singleton("Ljavax/microedition/khronos/egl/EGL10;");
+            result = DalvikValue::make_object(egl, "Ljavax/microedition/khronos/egl/EGL10;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (is_egl10 && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            if (method == "eglGetDisplay") {
+                uint32_t disp = egl_singleton("Ljavax/microedition/khronos/egl/EGLDisplay;");
+                result = DalvikValue::make_object(disp, "Ljavax/microedition/khronos/egl/EGLDisplay;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "eglInitialize") {
+                // (display, int[] major, int[] minor) — EGL 1.4 surface
+                if (args.size() > 2 && args[2].type == DalvikType::OBJECT_REF)
+                    write_array_int(args[2].object_id, 0, 1);
+                if (args.size() > 3 && args[3].type == DalvikType::OBJECT_REF)
+                    write_array_int(args[3].object_id, 0, 4);
+                result = DalvikValue::make_bool(true);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "eglChooseConfig") {
+                // (display, attribs[], configs[], size, num[]) — the software
+                // backend offers exactly one RGBA8888/ES2 config
+                if (args.size() > 5 && args[5].type == DalvikType::OBJECT_REF)
+                    write_array_int(args[5].object_id, 0, 1);
+                if (args.size() > 3 && args[3].type == DalvikType::OBJECT_REF &&
+                    args[3].object_id != 0) {
+                    auto lf = heap_.get_object_field(args[3].object_id,
+                                                     "__array_length__");
+                    int32_t cap = (lf.has_value() && lf->type == DalvikType::INT32)
+                                      ? lf->int_val : 0;
+                    if (cap > 0) {
+                        uint32_t cfg = egl_singleton("Ljavax/microedition/khronos/egl/EGLConfig;");
+                        write_array_ref(args[3].object_id, 0, cfg);
+                    }
+                }
+                result = DalvikValue::make_bool(true);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "eglCreateContext") {
+                uint32_t cx = egl_singleton("Ljavax/microedition/khronos/egl/EGLContext;");
+                result = DalvikValue::make_object(cx, "Ljavax/microedition/khronos/egl/EGLContext;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "eglCreateWindowSurface" ||
+                method == "eglCreatePbufferSurface") {
+                uint32_t surf = egl_singleton("Ljavax/microedition/khronos/egl/EGLSurface;");
+                result = DalvikValue::make_object(surf, "Ljavax/microedition/khronos/egl/EGLSurface;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "eglMakeCurrent" || method == "eglSwapBuffers" ||
+                method == "eglTerminate" || method == "eglDestroySurface" ||
+                method == "eglDestroyContext" || method == "eglReleaseThread" ||
+                method == "eglWaitGL" || method == "eglWaitNative" ||
+                method == "eglQuerySurface") {
+                result = DalvikValue::make_bool(true);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "eglGetError") {
+                result = DalvikValue::make_int(0x3000);  // EGL_SUCCESS
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
     // S83 LOCALE-ACCESSOR FAMILY: getDefault* / getLanguage / getCountry /
     // getDisplayName on a materialized Locale answer the tag components
     // (AOSP Locale.java). Covers the R8-inlined chains that immediately
