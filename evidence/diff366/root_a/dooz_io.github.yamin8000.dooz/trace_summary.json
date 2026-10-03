@@ -1,7 +1,7 @@
 {
   "activity": "io.github.yamin8000.dooz.ui.MainActivity",
   "apk_package": "io.github.yamin8000.dooz",
-  "duration_ms": 4340,
+  "duration_ms": 4179,
   "events_retained": 42,
   "events_total": 42,
   "first_divergence": null,
@@ -12,7 +12,7 @@
     "method": "",
     "seq": 42,
     "stage": null,
-    "state": "Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 249139 IMPLEMENTED, 242 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]"
+    "state": "Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 249143 IMPLEMENTED, 242 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]"
   },
   "frame_analysis": {
     "app_draw_ops": 0,
@@ -71,12 +71,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ldu;.q invoke_pc=0x40 depth=34",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 11,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -85,12 +85,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ldu;.h invoke_pc=0x14 depth=33",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 12,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -99,12 +99,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ltw0;.f invoke_pc=0x47 depth=33",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 13,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -113,12 +113,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lcn1;.c invoke_pc=0x5f depth=32",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 14,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -127,12 +127,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Liu;.i invoke_pc=0x11a depth=31",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 15,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -141,12 +141,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lt3;.i invoke_pc=0x61 depth=30",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 16,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -155,12 +155,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Ltw0;.f invoke_pc=0x47 depth=30",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 17,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -169,12 +169,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lt3;.r invoke_pc=0x80 depth=29",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 18,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -183,12 +183,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lg;.h invoke_pc=0x14c depth=12",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 19,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -197,12 +197,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lat;.a invoke_pc=0x93 depth=10",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 20,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -211,12 +211,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Llo;.B invoke_pc=0x46 depth=9",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 21,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -225,12 +225,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lnt;.a invoke_pc=0x10 depth=8",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 22,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -239,12 +239,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lql1;.j invoke_pc=0x35 depth=7",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 23,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -253,12 +253,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Le;.q invoke_pc=0x1c4 depth=6",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 24,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -267,12 +267,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/IllegalStateException; escaped the app boundary at Lio/github/yamin8000/dooz/ui/MainActivity;.onCreate invoke_pc=0xc1 depth=1 [APP-BOUNDARY]",
       "package": "io.github.yamin8000.dooz",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 25,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1791002452657
+      "ts_ms": 1791008282889
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -308,12 +308,12 @@
       },
       "package": "io.github.yamin8000.dooz",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 26,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1791002453622
+      "ts_ms": 1791008283823
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -321,12 +321,12 @@
       "event": "RENDER_START",
       "package": "io.github.yamin8000.dooz",
       "result": "PENDING",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 27,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002455971
+      "ts_ms": 1791008286075
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -334,12 +334,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "io.github.yamin8000.dooz",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 28,
       "sev": "CONFIRMED",
       "state": "root_id=971",
       "thread": "main",
-      "ts_ms": 1791002455971
+      "ts_ms": 1791008286075
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -349,12 +349,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 29,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1791002455971
+      "ts_ms": 1791008286075
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -363,12 +363,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 30,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1791002456297
+      "ts_ms": 1791008286391
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -377,12 +377,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 31,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002456297
+      "ts_ms": 1791008286391
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -395,12 +395,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 32,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002456373
+      "ts_ms": 1791008286465
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -422,12 +422,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 33,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002456380
+      "ts_ms": 1791008286472
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -473,12 +473,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 34,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002456381
+      "ts_ms": 1791008286472
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -487,12 +487,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 35,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002456433
+      "ts_ms": 1791008286523
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -501,12 +501,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 36,
       "sev": "CONFIRMED",
       "state": "root_id=971",
       "thread": "main",
-      "ts_ms": 1791002456433
+      "ts_ms": 1791008286524
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -515,12 +515,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 37,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1791002456496
+      "ts_ms": 1791008286583
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -529,12 +529,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 38,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002456496
+      "ts_ms": 1791008286583
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -547,12 +547,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 39,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002456576
+      "ts_ms": 1791008286656
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -574,12 +574,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 40,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002456583
+      "ts_ms": 1791008286663
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -625,12 +625,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 41,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002456583
+      "ts_ms": 1791008286663
     },
     {
       "activity": "io.github.yamin8000.dooz.ui.MainActivity",
@@ -642,12 +642,12 @@
       "package": "io.github.yamin8000.dooz",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1791002452306-1",
+      "run_id": "1791008282547-1",
       "seq": 42,
       "sev": "FAILURE",
-      "state": "Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 249139 IMPLEMENTED, 242 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
+      "state": "Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 249143 IMPLEMENTED, 242 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
       "thread": "main",
-      "ts_ms": 1791002456645
+      "ts_ms": 1791008286726
     }
   ],
   "last_exception": {
@@ -660,18 +660,18 @@
     "package": "io.github.yamin8000.dooz",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1791002452306-1",
+    "run_id": "1791008282547-1",
     "seq": 42,
     "sev": "FAILURE",
-    "state": "Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 249139 IMPLEMENTED, 242 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
+    "state": "Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 249143 IMPLEMENTED, 242 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
     "thread": "main",
-    "ts_ms": 1791002456645
+    "ts_ms": 1791008286726
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1791002452306-1",
+  "run_id": "1791008282547-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261003-044052-8397",
+  "session_id": "EXP-001-20261003-061802-7586",
   "severity_census": {
     "CONFIRMED": 13,
     "FAILURE": 18,
