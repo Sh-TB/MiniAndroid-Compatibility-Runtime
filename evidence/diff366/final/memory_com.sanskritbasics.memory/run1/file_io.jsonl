@@ -1,0 +1,3 @@
+{"seq":0,"op":"MKDIR","path":"/home/z/my-project/run/diff366/stores/store_memory/data/data/com.sanskritbasics.memory/cache","result":"SUCCESS","subsystem":"Context.getCacheDir","caller":"Lcom/sanskritbasics/memory/MainActivity;.onCreate","package":"com.sanskritbasics.memory"}
+{"seq":1,"op":"EXISTS","path":"","result":"FAILURE","subsystem":"File.exists","caller":"Lcom/sanskritbasics/memory/MainActivity;.onCreate","package":"com.sanskritbasics.memory"}
+{"summary":{"total_ops":2,"failures":1,"events_emitted":2,"events_dropped":0,"package":"com.sanskritbasics.memory","EXISTS":1,"MKDIR":1}}
