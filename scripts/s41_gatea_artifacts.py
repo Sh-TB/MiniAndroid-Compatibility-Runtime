@@ -129,7 +129,7 @@ def api_matrix():
         ("getObbDir", "TESTED", "probe DIR-12 (new singular law)"),
         ("openFileInput", "TESTED", "probe IO-01 + IO-10 (FNFE honest)"),
         ("openFileOutput", "TESTED", "probe IO-01/02 (MODE_APPEND bit law 0x8000 fixed)"),
-        ("fileList", "PARTIAL", "probe IO-08 — file visible, contains() mismatch on engine String arrays (gap G-6)"),
+        ("fileList", "TESTED", "probe IO-08 contains=true — G-6 CLOSED: CollectionShadow.contains element-equality law (identity-only + empty private state fixed); probe assert strengthened"),
         ("deleteFile", "TESTED", "probe IO-09 true-then-false"),
         ("databaseList", "TESTED", "probe DB-02 (sidecar filter)"),
         ("openOrCreateDatabase", "TESTED", "probe DB-01 (new law, one open path)"),
@@ -146,7 +146,7 @@ def api_matrix():
         ("delete", "TESTED", "probe FILE-11"),
         ("renameTo", "TESTED", "probe FILE-08"),
         ("getAbsolutePath/getCanonicalPath", "TESTED", "probe FILE-09 (logical verbatim)"),
-        ("getParent/getName/isAbsolute", "PARTIAL", "probe FILE-10 name/isAbsolute PASS; parent capture from File(File,String) relative form (gap G-7)"),
+        ("getParent/getName/isAbsolute", "TESTED", "probe FILE-10 parent=<dir> (assert non-null) — G-7 CLOSED: F-057 duality route no longer starves non-view receivers (view-node scope law); probe assert strengthened"),
     ]:
         row("java.io.File", api, "OpenJDK/AOSP kernel semantics", "generic law", st, evi)
     for api, st, evi in [
@@ -160,12 +160,12 @@ def api_matrix():
     for api, st, evi in [
         ("AssetManager.openFd (stored)", "TESTED", "probe FD-01 (offset + declaredLength 75)"),
         ("AssetFileDescriptor.getDeclaredLength", "TESTED", "probe FD-01 (new field law)"),
-        ("AssetFileDescriptor.createInputStream", "PARTIAL", "probe FD-02 bytes length OK, equality vs direct open mismatch (gap G-5)"),
+        ("AssetFileDescriptor.createInputStream", "TESTED", "probe FD-02 equal-to-direct=true (assert) — G-5 CLOSED: root cause was the MISSING Arrays.equals([B[B)Z law, NOT AFD byte serving (hex-proven identical sources); suspicion compressed-vs-stored disproven"),
         ("AssetFileDescriptor.getFileDescriptor", "TESTED", "probe FD-03"),
         ("AssetFileDescriptor openFd (compressed)", "HONEST-FAIL", "AOSP FNFE for compressed — probe FD-06"),
         ("ParcelFileDescriptor.open/dup/close/getFd", "TESTED", "probe FD-04/05 (real host fds)"),
         ("openRawResourceFd", "HONEST-FAIL", "AOSP FNFE for compressed raw — probe FD-07 INFO"),
-        ("AssetManager.list / open", "PARTIAL", "probe ASSET-01..05: open bytes PASS, list contains() gap G-6"),
+        ("AssetManager.list / open", "TESTED", "probe ASSET-01..05 open bytes + list equality (G-6 contains law closed)"),
         ("openRawResource", "TESTED", "probe RES-03 (26/26 bytes via apk-entry law)"),
     ]:
         row("FD/Assets", api, "AOSP AssetManager2/AFD/PFD", "generic law", st, evi)
@@ -189,7 +189,7 @@ def capability_gate_jsonl():
         ("2 context/sandbox", "TESTED", "probe DIR-01..12 + isolation ISO-01; 6 new/completed laws"),
         ("3 file API", "TESTED", "probe FILE-01..11; lastModified documented determinism law (0)"),
         ("4 streams", "TESTED", "probe IO-01..10; MODE_APPEND bit law fixed; EOF/available/skip real"),
-        ("5 FD/PFD/AFD", "TESTED", "probe FD-01..07 real host fds; declaredLength law fixed; AFD bytes gap G-5 recorded"),
+        ("5 FD/PFD/AFD", "TESTED", "probe FD-01..07 real host fds; declaredLength law fixed; gap G-5 CLOSED (Arrays.equals law; hex-proven byte-identical sources)"),
         ("6 APK assets", "TESTED", "probe ASSET-01..05; openFd/list/open real bytes; provenance classes"),
         ("7 resources", "TESTED", "probe RES-01..04; getIdentifier R-4 fixed; NotFoundException R-3 fixed; ARSC inventory CLI"),
         ("8 image/font/media inventory", "IMPLEMENTED", "pkginspect media section (class/size/method/expected decoder)"),
