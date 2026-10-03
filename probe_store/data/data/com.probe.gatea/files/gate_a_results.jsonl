@@ -53,7 +53,7 @@ GATEA|IO-06|PASS|available=17
 GATEA|IO-07|PASS|write(int)=77 read=77 match=true
 GATEA|IO-08|PASS|fileList has stream_io.bin=true
 GATEA|IO-09|PASS|delete true-then-false=true/false
-GATEA|FD-01|PASS|offset=91865 declaredLen=75 offOk=true lenOk=true
+GATEA|FD-01|PASS|offset=92113 declaredLen=75 offOk=true lenOk=true
 GATEA|FD-02|PASS|afd-stream-bytes=75 equal-to-direct=true
 GATEA|FD-03|PASS|fd=Ljava/io/FileDescriptor;@204
 GATEA|FD-04|PASS|fd=6 dup=7 fdOk=true
@@ -77,7 +77,7 @@ GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@257
 GATEA|PREF-03|PASS|fresh-instance k_int=-42 contains=true
 GATEA|PREF-06|PASS|restart_counter=1
 GATEA|PREF-04|PASS|removed=true afterClear=0
-GATEA|DB-01|PASS|rows=1 last=row-1791047196922921462 isOpen=true
+GATEA|DB-01|PASS|rows=1 last=row-1791063736684802975 isOpen=true
 GATEA|DB-02|PASS|databaseList=[gatea.db] has-gatea=true
 GATEA|DB-03|PASS|helper-db=true name=helper.db
 GATEA|CFG-01|PASS|locale default wins (-zh-rCN/-land unreachable)
@@ -86,12 +86,12 @@ GATEA|CFG-03|PASS|no-match falls back to default config
 GATEA|CFG-04|PASS|density best-match picked xhdpi 32px variant
 GATEA|CFG-05|PASS|font resource id=0x7f020000 TTF-magic=true
 GATEA|NAT-01|PASS|UnsatisfiedLink honest: Ljava/lang/UnsatisfiedLinkError;@280
-GATEA|NAT-02|PASS|nativeLibraryDir=/data/app/com.probe.gatea/lib/arm64-v8a
-GATEA|NAT-03|FAIL|nativeLibraryDir=/data/app/com.probe.gatea/lib/arm64-v8a
-GATEA|NAT-04|FAIL|real load failed: Ljava/lang/UnsatisfiedLinkError;@284
-GATEA|NAT-05|PASS|ULE not-found shape: dlopen failed: library "gatea_nosuch_lib" not found in the installed APK (no lib/arm64-v8a/libgatea_
+GATEA|NAT-02|PASS|nativeLibraryDir=/data/app/com.probe.gatea/lib/x86_64
+GATEA|NAT-03|PASS|nativeLibraryDir=/data/app/com.probe.gatea/lib/x86_64 (extraction-backed, host-executable ABI)
+GATEA|NAT-04|PASS|loadLibrary(probe) real-load success (dlopen + JNI_OnLoad)
+GATEA|NAT-05|PASS|ULE not-found shape: dlopen failed: library "gatea_nosuch_lib" not found in the installed APK
 GATEA|ISO-01|PASS|cross-package exists()=false isolated=true
 GATEA|ISO-02|PASS|traversal exists()=false
 GATEA|ISO-03|PASS|host /etc/passwd exists()=false
-GATEA|ISO-04|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@296
-GATEA|IO-10|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@299
+GATEA|ISO-04|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@294
+GATEA|IO-10|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@297
