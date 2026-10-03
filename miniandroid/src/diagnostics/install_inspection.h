@@ -32,6 +32,8 @@ struct InspectRequest {
     std::string apk_path;         // direct-APK mode (no package store)
     std::string what = "all";     // comma-separated section filter / "all"
     std::string jsonl_out;        // optional full-fidelity JSONL dump path
+    std::string file_io_path;     // optional runtime file-IO trace (JSONL)
+    std::string api_trace_path;   // optional runtime API trace (JSON)
     bool verbose = false;
 };
 

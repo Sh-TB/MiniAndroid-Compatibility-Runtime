@@ -87,6 +87,18 @@ std::filesystem::path context_dir(const std::string& sub) {
     return package_data_dir() / sub;
 }
 
+// G-8 FIX (#371): device-protected storage context. AOSP
+// ContextImpl.createDeviceProtectedStorageContext: the returned context's
+// dir family resolves under /data/user_de/0/<pkg> (separate DE fence).
+std::filesystem::path device_protected_dir(const std::string& sub) {
+    if (g_context_package.empty())
+        return sub.empty() ? fs::path(g_app_data_root)
+                           : fs::path(g_app_data_root) / sub;
+    fs::path base = fs::path(g_app_data_root) / "data" / "user_de" / "0" /
+                    g_context_package;
+    return sub.empty() ? base : base / sub;
+}
+
 std::filesystem::path external_app_dir(const std::string& kind) {
     if (g_context_package.empty()) {
         // Legacy flat shape (pre-F-NEW-234 tool paths).
@@ -194,10 +206,15 @@ PathResolution resolve_android_path(const std::string& logical) {
         }
         if (logical.rfind("/data/user/", 0) == 0 ||
             logical.rfind("/data/user_de/", 0) == 0) {
-            // /data/user/<id>/<pkg>/rest  (user_de: device-protected)
-            std::string rest = logical.substr(logical.rfind("/data/user", 0) == 0
-                                                  ? strlen("/data/user/")
-                                                  : strlen("/data/user_de/"));
+            // /data/user/<id>/<pkg>/rest  — user_de: DEVICE-PROTECTED storage
+            // (#371 G-8 fix: the user_de spelling must strip its OWN prefix —
+            // "/data/user_de/..." also startswith "/data/user", so the old
+            // ternary stripped 11 chars, read the pkg as "0", and DENIED every
+            // user_de path. user_de must be tested FIRST.)
+            std::string rest =
+                logical.rfind("/data/user_de/", 0) == 0
+                    ? logical.substr(strlen("/data/user_de/"))
+                    : logical.substr(strlen("/data/user/"));
             size_t uslash = rest.find('/');
             if (uslash == std::string::npos) return r;  // just an id → DENIED
             std::string user_id = rest.substr(0, uslash);
@@ -206,13 +223,24 @@ PathResolution resolve_android_path(const std::string& logical) {
             std::string pkg = (pslash == std::string::npos) ? after : after.substr(0, pslash);
             std::string tail = (pslash == std::string::npos) ? "" : after.substr(pslash + 1);
             if (!pkg.empty() && pkg.find('.') != std::string::npos) {
-                // User-0 alias law: user 0 (both credential/device-protected
-                // spellings) maps to the SAME /data/data backing (AOSP: one
-                // inode, two path spellings). Other users map to a sibling
-                // namespace (user/<id>) — deterministic and isolated.
+                // User-0 credential-protected alias law: /data/user/0/<pkg>
+                // IS /data/data/<pkg> in AOSP (same inode, two spellings).
+                // G-8 FIX (#371): /data/user_de/0/<pkg> is DISTINCT storage
+                // in AOSP (device-protected vs credential-protected fence:
+                // frameworks/base StorageManager.isCeStorageUnlocked law) —
+                // it maps to its OWN backing <root>/data/user_de/0/<pkg> so
+                // DE files never bleed into the CE tree.
                 r.category = PathCategory::SANDBOX_DATA;
-                fs::path base = fs::path(g_app_data_root) / "data" / "data" / pkg;
-                if (user_id != "0") base = fs::path(g_app_data_root) / "data" / "users" / user_id / pkg;
+                fs::path base;
+                if (logical.rfind("/data/user_de/", 0) == 0) {
+                    base = fs::path(g_app_data_root) / "data" / "user_de" /
+                           user_id / pkg;
+                } else if (user_id == "0") {
+                    base = fs::path(g_app_data_root) / "data" / "data" / pkg;
+                } else {
+                    base = fs::path(g_app_data_root) / "data" / "users" /
+                           user_id / pkg;
+                }
                 r.host_path = tail.empty() ? base : base / tail;
                 r.allowed = true;
                 return r;
@@ -279,6 +307,9 @@ std::string logical_android_path(const fs::path& host_path) {
     std::string out;
     // Sandbox: <root>/data/data/<pkg>/…  → /data/data/<pkg>/…
     out = map_prefix(fs::path(root) / "data" / "data", "/data/data");
+    if (!out.empty()) return out;
+    // G-8 FIX (#371): device-protected fence.
+    out = map_prefix(fs::path(root) / "data" / "user_de", "/data/user_de");
     if (!out.empty()) return out;
     // Installed code: <root>/data/app/<pkg>/… → /data/app/<pkg>/…
     out = map_prefix(fs::path(root) / "data" / "app", "/data/app");

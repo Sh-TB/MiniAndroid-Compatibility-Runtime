@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">Gate A Probe</string>
     <string name="gate_tag">GATE-A-INSPECTION</string>
+    <string name="probe_locale">en-default-value</string>
+    <string name="probe_night">night-off-value</string>
+    <string name="probe_fallback">fallback-default-value</string>
 </resources>

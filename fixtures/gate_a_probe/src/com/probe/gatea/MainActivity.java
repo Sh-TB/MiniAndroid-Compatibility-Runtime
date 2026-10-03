@@ -1,7 +1,13 @@
 package com.probe.gatea;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -14,7 +20,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.widget.TextView;
 import java.io.File;
@@ -130,6 +138,218 @@ public class MainActivity extends Activity {
                     + GateProvider.attachInfoContextNonNull + " auth="
                     + GateProvider.attachAuthority);
         } catch (Throwable t) { fail("PROV-01", t); }
+
+        // ══ PROVIDER DISPATCH CHAIN (#371 PHASE B1 — G-1/G-3 closure) ══
+        // Full AOSP call chain: provider installed → client ContentResolver
+        // → content:// authority dispatch → provider → Cursor/Uri/int →
+        // caller state change. Negative legs assert the AOSP failure
+        // contracts (no silent null, no silent success).
+        try {
+            File served = new File(getFilesDir(), "provider_served.bin");
+            FileOutputStream pf = new FileOutputStream(served);
+            pf.write("PROVIDER-BYTES-77".getBytes("UTF-8"));
+            pf.close();
+            ok("PROV-PREP", "served-file len=" + served.length());
+        } catch (Throwable t) { fail("PROV-PREP", t); }
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put("name", "alpha");
+            cv.put("value", "41");
+            Uri u = getContentResolver().insert(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes"), cv);
+            if (u != null && u.getLastPathSegment() != null
+                    && GateProvider.insertCalls == 1
+                    && "alpha".equals(GateProvider.lastInsertName))
+                ok("PROV-02", "insert→uri=" + u
+                        + " providerCalls=1 name=alpha");
+            else fail("PROV-02", "uri=" + u + " calls="
+                    + GateProvider.insertCalls + " name="
+                    + GateProvider.lastInsertName);
+        } catch (Throwable t) { fail("PROV-02", t); }
+        try {
+            Cursor c = getContentResolver().query(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes"),
+                null, null, null, null);
+            boolean good = false;
+            String v = "";
+            if (c != null) {
+                int ni = c.getColumnIndex("name");
+                int vi = c.getColumnIndex("value");
+                good = c.getCount() == 1 && c.moveToFirst() && ni == 1 && vi == 2;
+                if (good) v = c.getString(ni) + ":" + c.getString(vi);
+                c.close();
+            }
+            if (good && "alpha:41".equals(v))
+                ok("PROV-03", "cursor rows=1 cols=3 name:value=" + v);
+            else fail("PROV-03", "good=" + good + " v=" + v);
+        } catch (Throwable t) { fail("PROV-03", t); }
+        try {
+            ContentValues uv = new ContentValues();
+            uv.put("value", 99);
+            int n = getContentResolver().update(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes/1"),
+                uv, null, null);
+            if (n == 1 && GateProvider.updateCalls == 1
+                    && GateProvider.lastUpdateValue == 99)
+                ok("PROV-04", "update rows=1 providerValue=99");
+            else fail("PROV-04", "rows=" + n + " calls="
+                    + GateProvider.updateCalls + " val="
+                    + GateProvider.lastUpdateValue);
+        } catch (Throwable t) { fail("PROV-04", t); }
+        try {
+            int n = getContentResolver().delete(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes/1"),
+                null, null);
+            Cursor c = getContentResolver().query(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes"),
+                null, null, null, null);
+            int after = c != null ? c.getCount() : -1;
+            if (c != null) c.close();
+            if (n == 1 && after == 0 && GateProvider.deleteCalls == 1)
+                ok("PROV-05", "delete rows=1 tableAfter=0 (state change)");
+            else fail("PROV-05", "rows=" + n + " after=" + after
+                    + " calls=" + GateProvider.deleteCalls);
+        } catch (Throwable t) { fail("PROV-05", t); }
+        try {
+            // Re-insert so later restart-persistence runs see data again.
+            ContentValues cv = new ContentValues();
+            cv.put("name", "beta");
+            cv.put("value", "7");
+            getContentResolver().insert(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes"), cv);
+        } catch (Throwable t) { fail("PROV-RESEED", t); }
+        try {
+            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(
+                Uri.parse("content://com.probe.gatea.gateprovider/files/served.bin"),
+                "r");
+            FileInputStream fin = new FileInputStream(pfd.getFileDescriptor());
+            java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+            byte[] buf = new byte[256];
+            int n;
+            while ((n = fin.read(buf)) > 0) bos.write(buf, 0, n);
+            fin.close();
+            pfd.close();
+            String via = bos.toString("UTF-8");
+            FileInputStream direct = new FileInputStream(
+                new File(getFilesDir(), "provider_served.bin"));
+            java.io.ByteArrayOutputStream b2 = new java.io.ByteArrayOutputStream();
+            while ((n = direct.read(buf)) > 0) b2.write(buf, 0, n);
+            direct.close();
+            String via2 = b2.toString("UTF-8");
+            if (GateProvider.openFileCalls >= 1 && "PROVIDER-BYTES-77".equals(via)
+                    && via.equals(via2))
+                ok("PROV-06", "openFileDescriptor bytes==direct ("
+                        + via.length() + "B)");
+            else fail("PROV-06", "pfdBytes=" + via + " direct=" + via2
+                    + " calls=" + GateProvider.openFileCalls);
+        } catch (Throwable t) { fail("PROV-06", t); }
+        try {
+            String t = getContentResolver().getType(
+                Uri.parse("content://com.probe.gatea.gateprovider/notes"));
+            long id = android.content.ContentUris.parseId(Uri.parse(
+                "content://com.probe.gatea.gateprovider/notes/41"));
+            if ("vnd.probe.note".equals(t) && id == 41)
+                ok("PROV-07", "getType=" + t + " parseId=41");
+            else fail("PROV-07", "type=" + t + " id=" + id);
+        } catch (Throwable t) { fail("PROV-07", t); }
+        neg("PROV-08", "IllegalArgument", new Thunk() {
+            public Object run() {
+                return getContentResolver().insert(
+                    Uri.parse("content://no.such.authority/x"),
+                    new ContentValues());
+            }
+        });
+        try {
+            Object c = getContentResolver().query(
+                Uri.parse("content://no.such.authority/x"),
+                null, null, null, null);
+            if (c == null)
+                ok("PROV-09", "query unknown authority → documented null");
+            else fail("PROV-09", "non-null: " + c);
+        } catch (Throwable t) { fail("PROV-09", t); }
+
+        // ══ SERVICES (#371 PHASE B5 — UPP-006 probe-justified) ══════════
+        try {
+            Intent si = new Intent(this, GateService.class);
+            ComponentName cn1 = startService(si);
+            ComponentName cn2 = startService(si);
+            if (cn1 != null && cn2 != null && GateService.creates == 1
+                    && GateService.startCommands == 2 && GateService.lastStartId >= 2)
+                ok("SVC-01", "startx2 → onCreate=1 onStartCommand=2 startId="
+                        + GateService.lastStartId);
+            else fail("SVC-01", "creates=" + GateService.creates + " starts="
+                    + GateService.startCommands + " cn1=" + cn1);
+        } catch (Throwable t) { fail("SVC-01", t); }
+        ProbeConn conn = new ProbeConn();
+        try {
+            boolean bound = bindService(new Intent(this, GateService.class),
+                                        conn, Context.BIND_AUTO_CREATE);
+            if (bound && ProbeConn.calls == 1 && ProbeConn.binder != null)
+                ok("SVC-02", "bindService → onServiceConnected binder="
+                        + (ProbeConn.binder != null ? "live" : "null"));
+            else fail("SVC-02", "bound=" + bound + " calls=" + ProbeConn.calls);
+        } catch (Throwable t) { fail("SVC-02", t); }
+        try {
+            unbindService(conn);
+            if (GateService.destroys == 0)
+                ok("SVC-03", "unbind → service STAYS (started-by-startService)");
+            else fail("SVC-03", "destroys=" + GateService.destroys);
+        } catch (Throwable t) { fail("SVC-03", String.valueOf(t)); }
+        try {
+            boolean stopped = stopService(new Intent(this, GateService.class));
+            if (stopped && GateService.destroys == 1)
+                ok("SVC-04", "stopService → onDestroy (destroys=1)");
+            else fail("SVC-04", "stopped=" + stopped + " destroys="
+                    + GateService.destroys);
+        } catch (Throwable t) { fail("SVC-04", t); }
+
+        // ══ BROADCASTS (#371 PHASE B5) ══════════════════════════════════
+        try {
+            sendBroadcast(new Intent("com.probe.gatea.PING"));
+            if (GateReceiver.manifestDeliveries == 1
+                    && "com.probe.gatea.PING".equals(GateReceiver.lastManifestAction)
+                    && "bound".equals(GateReceiver.lastReceiverContext))
+                ok("BCAST-01", "manifest receiver delivered onReceive ctx=bound");
+            else fail("BCAST-01", "deliveries=" + GateReceiver.manifestDeliveries
+                    + " ctx=" + GateReceiver.lastReceiverContext);
+        } catch (Throwable t) { fail("BCAST-01", t); }
+        try {
+            ProbeDyn dyn = new ProbeDyn();
+            registerReceiver(dyn, new IntentFilter("com.probe.gatea.DYN"));
+            sendBroadcast(new Intent("com.probe.gatea.DYN"));
+            if (ProbeDyn.deliveries == 1)
+                ok("BCAST-02", "dynamic receiver delivered (1)");
+            else fail("BCAST-02", "deliveries=" + ProbeDyn.deliveries);
+            unregisterReceiver(dyn);
+            sendBroadcast(new Intent("com.probe.gatea.DYN"));
+            if (ProbeDyn.deliveries == 1)
+                ok("BCAST-03", "unregister → no further delivery");
+            else fail("BCAST-03", "deliveries=" + ProbeDyn.deliveries);
+        } catch (Throwable t) { fail("BCAST-02", t); }
+        neg("BCAST-04", "IllegalArgument", new Thunk() {
+            public Object run() {
+                sendBroadcast(new Intent());
+                return "sent";
+            }
+        });
+
+        // ══ DEVICE-PROTECTED STORAGE (#371 G-8 closure) ═════════════════
+        try {
+            Context de = createDeviceProtectedStorageContext();
+            File deFiles = de.getFilesDir();
+            boolean spell = deFiles != null && deFiles.getAbsolutePath()
+                    .contains("/data/user_de/0/" + PKG);
+            File deF = new File(deFiles, "de_probe.bin");
+            FileOutputStream df = new FileOutputStream(deF);
+            df.write("DE-FENCE".getBytes("UTF-8"));
+            df.close();
+            boolean separate = !new File(getFilesDir(), "de_probe.bin").exists();
+            if (spell && deF.exists() && deF.length() == 8 && separate)
+                ok("DE-01", "de-files=" + deFiles.getAbsolutePath()
+                        + " written=8B isolated-from-CE=true");
+            else fail("DE-01", "spell=" + spell + " write=" + deF.exists()
+                    + " isolated=" + separate);
+        } catch (Throwable t) { fail("DE-01", t); }
 
         // ══ CONTEXT DIR FAMILY (§2) ════════════════════════════════════
         try {
@@ -575,6 +795,61 @@ public class MainActivity extends Activity {
                     + h.getDatabaseName());
         } catch (Throwable t) { fail("DB-03", t); }
 
+        // ══ CONFIG/DENSITY/FONT SELECTION (#371 PHASE B3 — UPP-004) ════
+        // Frozen device profile law: en-US, portrait, NIGHT_NO, 420dpi.
+        // The AOSP ResTable_config best-match law must select the DEFAULT
+        // value over unreachable qualifiers (-night/-land/-zh-rCN), the
+        // CLOSEST density bucket, and fall back to default when nothing
+        // matches. Font resources resolve through the same ARSC.
+        try {
+            Resources res = getResources();
+            int localeId = res.getIdentifier("probe_locale", "string", PKG);
+            String locale = res.getString(localeId);
+            if ("en-default-value".equals(locale))
+                ok("CFG-01", "locale default wins (-zh-rCN/-land unreachable)");
+            else fail("CFG-01", "locale=" + locale);
+        } catch (Throwable t) { fail("CFG-01", t); }
+        try {
+            Resources res = getResources();
+            int nightId = res.getIdentifier("probe_night", "string", PKG);
+            String night = res.getString(nightId);
+            if ("night-off-value".equals(night))
+                ok("CFG-02", "default wins (-night unreachable at NIGHT_NO)");
+            else fail("CFG-02", "night=" + night);
+        } catch (Throwable t) { fail("CFG-02", t); }
+        try {
+            Resources res = getResources();
+            int fbId = res.getIdentifier("probe_fallback", "string", PKG);
+            String fb = res.getString(fbId);
+            if ("fallback-default-value".equals(fb))
+                ok("CFG-03", "no-match falls back to default config");
+            else fail("CFG-03", "fallback=" + fb);
+        } catch (Throwable t) { fail("CFG-03", t); }
+        try {
+            Resources res = getResources();
+            int drawId = res.getIdentifier("probe_cfg", "drawable", PKG);
+            Bitmap bmp = BitmapFactory.decodeResource(res, drawId);
+            // 420dpi: xhdpi(320) distance 100 < mdpi(160) distance 260 —
+            // the AOSP density best-match law MUST pick the xhdpi variant.
+            if (bmp != null && bmp.getWidth() == 32)
+                ok("CFG-04", "density best-match picked xhdpi 32px variant");
+            else fail("CFG-04", "bmp=" + (bmp == null ? "null" : bmp.getWidth() + "px"));
+        } catch (Throwable t) { fail("CFG-04", t); }
+        try {
+            Resources res = getResources();
+            int fontId = res.getIdentifier("probe_font", "font", PKG);
+            InputStream fin = res.openRawResource(fontId);
+            byte[] head = new byte[4];
+            int got = fin.read(head);
+            fin.close();
+            boolean ttf = got == 4 && head[0] == 0 && head[1] == 1
+                    && head[2] == 0 && head[3] == 0;
+            if (fontId != 0 && ttf)
+                ok("CFG-05", "font resource id=0x"
+                        + Integer.toHexString(fontId) + " TTF-magic=true");
+            else fail("CFG-05", "fontId=" + fontId + " head=" + got);
+        } catch (Throwable t) { fail("CFG-05", t); }
+
         // ══ NATIVE (§11 — inventory contract; full exec is GATE B) ═════
         neg("NAT-01", "UnsatisfiedLink", new Thunk() {
             public Object run() {
@@ -586,6 +861,38 @@ public class MainActivity extends Activity {
             String nld = getApplicationInfo().nativeLibraryDir;
             ok("NAT-02", "nativeLibraryDir=" + nld);
         } catch (Throwable t) { fail("NAT-02", t); }
+
+        // #371 PHASE B2 (G-4/G-2): extraction-backed native identity.
+        try {
+            String nld = getApplicationInfo().nativeLibraryDir;
+            if (nld != null && nld.endsWith("/data/app/" + PKG + "/lib/arm64-v8a"))
+                ok("NAT-03", "nativeLibraryDir=" + nld + " (extraction-backed)");
+            else fail("NAT-03", "nativeLibraryDir=" + nld);
+        } catch (Throwable t) { fail("NAT-03", t); }
+        try {
+            try {
+                System.loadLibrary("probe");
+                fail("NAT-04", "no exception (fake load success)");
+            } catch (UnsatisfiedLinkError ule) {
+                String m = ule.getMessage() != null ? ule.getMessage()
+                                                    : String.valueOf(ule);
+                if (m.contains("extracted at"))
+                    ok("NAT-04", "ULE precise: " + m.substring(0, Math.min(120, m.length())));
+                else fail("NAT-04", "ULE without extraction detail: " + m);
+            }
+        } catch (Throwable t) { fail("NAT-04", t); }
+        try {
+            try {
+                System.loadLibrary("gatea_nosuch_lib");
+                fail("NAT-05", "no exception (fake load success)");
+            } catch (UnsatisfiedLinkError ule) {
+                String m = ule.getMessage() != null ? ule.getMessage()
+                                                    : String.valueOf(ule);
+                if (m.contains("not found"))
+                    ok("NAT-05", "ULE not-found shape: " + m.substring(0, Math.min(100, m.length())));
+                else fail("NAT-05", "wrong detail: " + m);
+            }
+        } catch (Throwable t) { fail("NAT-05", t); }
 
         // ══ ISOLATION + NEGATIVE PATHS (§19) ════════════════════════════
         try {
@@ -613,6 +920,25 @@ public class MainActivity extends Activity {
                 return openFileInput("definitely_missing_file.bin");
             }
         });
+    }
+
+    /** #371 B5: named static connection (inner classes are DEX-resolvable). */
+    static class ProbeConn implements ServiceConnection {
+        static int calls = 0;
+        static Object binder = null;
+        @Override public void onServiceConnected(ComponentName n, IBinder b) {
+            calls++;
+            binder = b;
+        }
+        @Override public void onServiceDisconnected(ComponentName n) { }
+    }
+
+    /** #371 B5: dynamic receiver probe. */
+    static class ProbeDyn extends BroadcastReceiver {
+        static int deliveries = 0;
+        @Override public void onReceive(Context c, Intent i) {
+            deliveries++;
+        }
     }
 
     /** GATE A helper DB (onCreate records a marker the harness can grep). */

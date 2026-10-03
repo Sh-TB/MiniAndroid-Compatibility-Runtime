@@ -181,11 +181,19 @@ if base_apk:
         for p in sorted(assets_dir.rglob("*")):
             if p.is_file():
                 entries.append((p.relative_to(src_dir).as_posix(), p.read_bytes(), True))
+    # lib/ native trees (#371 PHASE B2): packaged STORED like AAPT2's
+    # nativeLib NO_COMPRESS shape so install-time ABI extraction exercises
+    # the real entry bytes.
+    libs_dir = src_dir / "lib"
+    if libs_dir.is_dir():
+        for p in sorted(libs_dir.rglob("*")):
+            if p.is_file():
+                entries.append((p.relative_to(src_dir).as_posix(), p.read_bytes(), True))
 else:
     entries.append(("AndroidManifest.xml",
                     (src_dir / "AndroidManifest.xml").read_bytes()))
     entries.append(("classes.dex", (Path(work) / "dex" / "classes.dex").read_bytes()))
-    for sub in ("res", "assets"):
+    for sub in ("res", "assets", "lib"):
         d = src_dir / sub
         if d.is_dir():
             for p in sorted(d.rglob("*")):

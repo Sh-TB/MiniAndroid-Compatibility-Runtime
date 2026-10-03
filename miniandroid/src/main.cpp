@@ -581,6 +581,80 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
         std::cerr << "[ERROR] package.json write failed\n";
         return 1;
     }
+    // ── #371 PHASE B2 (G-4 closure): ABI-scoped native library extraction.
+    // AOSP PMS law (PackageManagerService.installNativeLibraries): install
+    // extracts ONE ABI's lib/ tree into the codePath's lib dir
+    // (nativeLibraryDir); the ABI is the device's preferred ABI present in
+    // the APK (Build.SUPPORTED_ABIS order: arm64-v8a > armeabi-v7a >
+    // x86_64 > x86 for this device profile). Extracted bytes are REAL
+    // (entry-extracted + SHA-verified); the manifest lives in
+    // native_libs.json beside package.json so pkginspect/pkgrecord can
+    // serve the identity without re-parsing the APK.
+    std::string primary_abi;
+    std::vector<std::pair<std::string, unsigned long long>> extracted;
+    {
+        static const char* kAbiOrder[] = {"arm64-v8a", "armeabi-v7a",
+                                          "x86_64", "x86"};
+        std::vector<std::string> libs = info.native_libraries;
+        if (libs.empty()) {
+            for (const auto& e : info.all_entries)
+                if (e.rfind("lib/", 0) == 0 && e.size() > 3 &&
+                    e.compare(e.size() - 3, 3, ".so") == 0)
+                    libs.push_back(e);
+        }
+        for (const char* abi : kAbiOrder) {
+            std::string prefix = std::string("lib/") + abi + "/";
+            std::vector<std::string> sel;
+            for (const auto& l : libs)
+                if (l.rfind(prefix, 0) == 0) sel.push_back(l);
+            if (sel.empty()) continue;
+            primary_abi = abi;
+            auto lib_dir = pkgstore::package_dir(data_root, rec.package) /
+                           "lib" / abi;
+            std::error_code lex;
+            std::filesystem::create_directories(lib_dir, lex);
+            bool extract_ok = true;
+            for (const auto& entry : sel) {
+                std::vector<uint8_t> bytes =
+                    parser.extract_entry(apk_path, entry);
+                if (bytes.empty()) { extract_ok = false; continue; }
+                auto slash = entry.rfind('/');
+                std::string fname = slash == std::string::npos
+                                        ? entry
+                                        : entry.substr(slash + 1);
+                auto dstp = lib_dir / fname;
+                FILE* of = fopen(dstp.string().c_str(), "wb");
+                if (!of) { extract_ok = false; continue; }
+                size_t wn = fwrite(bytes.data(), 1, bytes.size(), of);
+                fclose(of);
+                if (wn != bytes.size()) { extract_ok = false; continue; }
+                extracted.emplace_back(entry, (unsigned long long)bytes.size());
+            }
+            if (!extract_ok)
+                std::cerr << "[WARN] native lib extraction incomplete for "
+                          << abi << "\n";
+            break;  // AOSP: ONE ABI per install
+        }
+        // Machine-readable extraction manifest (native_libs.json).
+        auto nl_path = pkgstore::package_dir(data_root, rec.package) /
+                       "native_libs.json";
+        std::ofstream nl(nl_path.string());
+        if (nl) {
+            nl << "{\n  \"primaryAbi\": \""
+               << pkgstore::json_escape(primary_abi) << "\",\n";
+            nl << "  \"nativeLibraryDir\": \"/data/app/"
+               << pkgstore::json_escape(rec.package) << "/lib/"
+               << pkgstore::json_escape(primary_abi) << "\",\n";
+            nl << "  \"extracted\": [\n";
+            for (size_t i = 0; i < extracted.size(); ++i) {
+                nl << "    {\"entry\": \""
+                   << pkgstore::json_escape(extracted[i].first)
+                   << "\", \"size\": " << extracted[i].second << "}"
+                   << (i + 1 < extracted.size() ? "," : "") << "\n";
+            }
+            nl << "  ],\n  \"count\": " << extracted.size() << "\n}\n";
+        }
+    }
     std::cout << "\n=== Install Result ===\n\n";
     std::cout << "{\n";
     std::cout << "  \"install\": \"SUCCESS\",\n";
@@ -594,6 +668,9 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
     std::cout << "  \"apkSha256\": \"" << sha << "\",\n";
     std::cout << "  \"apkSize\": " << size << ",\n";
     std::cout << "  \"installedAt\": \"" << ts << "\"\n";
+    std::cout << ", \"nativePrimaryAbi\": \""
+              << pkgstore::json_escape(primary_abi) << "\"\n";
+    std::cout << ", \"nativeLibsExtracted\": " << extracted.size() << "\n";
     std::cout << "}\n";
     std::cout << "\n[+] Installed. Post-install identity = package name + data-root only.\n";
     return 0;
@@ -946,6 +1023,8 @@ int main(int argc, char* argv[]) {
     // GATE A (issue #370): pkginspect options.
     std::string inspect_what = "all";
     std::string inspect_jsonl;
+    std::string inspect_file_io;   // #371 PHASE C: runtime file-IO trace
+    std::string inspect_api_trace; // #371 PHASE C: runtime API trace
 
     // F-107b2 (R-NEW-381, S61): per-instruction tracing is OFF by default
     // (trace_cap=0). The gprof profile showed the always-on InstructionTrace
@@ -1154,6 +1233,14 @@ int main(int argc, char* argv[]) {
         } else if (arg == "--jsonl" && i + 1 < argc) {
             // GATE A: full-fidelity machine-readable JSONL output path.
             inspect_jsonl = argv[++i];
+        } else if (arg == "--file-io" && i + 1 < argc) {
+            // #371 PHASE C: bind a runtime file-IO trace (MINIANDROID_FILE_IO
+            // JSONL) so pkginspect serves the RUNTIME + DIAGNOSTICS sections.
+            inspect_file_io = argv[++i];
+        } else if (arg == "--api-trace" && i + 1 < argc) {
+            // #371 PHASE C: bind a run api_trace.json for the API census +
+            // first-divergence diagnostics.
+            inspect_api_trace = argv[++i];
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;
@@ -1240,6 +1327,8 @@ int main(int argc, char* argv[]) {
         req.apk_path = apk_path;
         req.what = inspect_what;
         req.jsonl_out = inspect_jsonl;
+        req.file_io_path = inspect_file_io;
+        req.api_trace_path = inspect_api_trace;
         req.verbose = verbose;
         return miniandroid::gatea::cmd_pkg_inspect(req);
     } else if (command == "analyze") {
