@@ -1,6 +1,7 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: #371 FINAL COMPLETION wave 58f2dde2 (binary b2b8c18bb92dab6a)
+HEAD at state update: #371 FINAL CLOSEOUT wave bd9e9fbd (binary 267bf47d5d901054) ← b3213f06 (Suntimes wave 2: framework-enum accessor + meta-data/FileProvider laws) ← 300f38a7 (GL/provenance/fanout) ← 731bb538 (Suntimes wave 1) ← b9f2c0d2 (S-2 native) ← 58f2dde2 (FINAL COMPLETION, binary b2b8c18bb92dab6a)
+Date: 2026-10-03 (#371 FINAL CLOSEOUT — Suntimes/time4j + touch-claim + full regression)
 ← 51f7e5f9 (MASTER-CONT-371 verification) ← 9c35863b (GATE A) ← F-NEW-234 e9ce717b
 Date: 2026-10-03 (INSTALLED-APP FILESYSTEM + MEDIA campaign)
 
@@ -270,3 +271,26 @@ Canonical numbers updated by this wave:
   (native S-2 execution, content:// Cursor, split APK, config/density,
   Compose ROOT-D, broadcasts/services), GATE-A G-1/G-3/G-4/G-8, corpus
   re-runs awaiting APK re-acquisition (hotdeath/bobball/pinyinfdroid).
+
+## Wave — #371 FINAL CLOSEOUT (2026-10-03, HEAD bd9e9fbd, binary 267bf47d5d901054)
+
+Suntimes/time4j frontier closed at the runtime level; 7 generic laws; full regression green.
+
+| Item | Status | Evidence |
+|------|--------|----------|
+| §2 S-2 native execution | VERIFIED | NATX 10/10 ×3 byte-identical (ab01a3a1c239486a); gate A NAT-03/04 green with rebuilt extraction-backed libs; A/B NATX 0→10 (prior wave) |
+| §3 Suntimes/time4j | VERIFIED at runtime level | BASE 6a6ef5b2a69f1f9d 3 process deaths vs PATCH 267bf47d5d901054 0 (isolated A/B arms, same APK/store/capture); time4j <clinit> chains all complete; WelcomeActivity REAL_APP_CONTENT ×3 byte-identical a49f90d65a8fc5c8 (owned=61452 ops=4) |
+| §4 libGDX GL | PARTIAL (precisely named) | EGL JSR-239 facade law closed checkGL20; tictactoedeluxe BLOCKED-BY-IDENTITY — arm-only libgdx.so (no x86_64) = ARM translation boundary (UPP-001) |
+| §5 deferred UI | VERIFIED for reachable targets | TriPeaks SUPERSEDED by direct ×3 evidence; suntimes welcome real content; ViewPager page-fragment materialization named as next generic primitive |
+| §6 classification | DONE (classifier untouched) | VERIFIED ×3: flappycow 13cf47464d9787f4, notes_secuso eb5ebd559cad1028 (recorded shas exact); REAL_APP_CONTENT ×3: tripeaks/gmdice/sudoku/fishrings/suntimes; structural NO_ROOT: stopwatch (no <activity>); BLOCKED-BY-IDENTITY: tictactoedeluxe |
+| §7 install/filesystem/persistence | VERIFIED | persistence 32/32 (prior wave, Telegram+calc+chess+notes); loading probe restart/WAL/file ALL PASS; reinstall 8/8; uninstall ALL PASS |
+| §8 media provenance | VERIFIED | flappycow 12 bitmap events, dimensions match APK art exactly (prior wave); shas reproduced this wave |
+| §9 new-app fan-out | VERIFIED | ≥2 new games (tripeaks, gmdice) + ≥2 new apps (sudoku, stopwatch) + random pick (fishrings, seed 20261004) — all ×3 |
+| §10 A/B causality | VERIFIED | S-2: NATX 0→10; Suntimes: process deaths 3→0, tap target pager→button; evidence dirs isolated per binary, no overwrites |
+| §11 regression | ALL GREEN at 267bf47d5d901054 | anchors 5/5×3, goldens 4/4, loading probe, gate A 95/0/2 (both stores), negatives 17/17, reinstall 8/8, uninstall, battery 124/124, multiapp 5/5, NATX 10/10×3, fan-out ×3 |
+| Environment repair | DONE | container-reset bootstrap: toolchain relayout, EXT-01/02 SHA-exact, corpus re-fetch (blockblast 64589a3a7e5c0f73 matches), native libs rebuilt, monospace law env, battery link lines + Makefile resource_trace thunk |
+
+Next frontier (recorded): ViewPager page-fragment materialization (generic
+FragmentPagerAdapter container primitive; pager children empty, mCurItem
+IGET-MISS, setCurrentItem cycle-stub). ARM binary translation remains the
+sole tictactoedeluxe/GL dependency. Safir/BLACK remain BLOCKED-BY-IDENTITY.
