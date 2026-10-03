@@ -1,7 +1,7 @@
 {
   "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
   "apk_package": "fr.arnaudguyon.spacevertex",
-  "duration_ms": 804,
+  "duration_ms": 801,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -70,52 +70,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 6521,
+        "pid": 12125,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/run/diff366/stores/store_spacevertex/data/app/fr.arnaudguyon.spacevertex/base.apk",
       "thread": "main",
-      "ts_ms": 1791002447865
+      "ts_ms": 1791008277998
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=fr.arnaudguyon.spacevertex",
       "thread": "main",
-      "ts_ms": 1791002447870
+      "ts_ms": 1791008278002
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=fr.arnaudguyon.spacevertex.home.HomeActivity",
       "thread": "main",
-      "ts_ms": 1791002447870
+      "ts_ms": 1791008278002
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=1052 methods=8759",
       "thread": "main",
-      "ts_ms": 1791002447895
+      "ts_ms": 1791008278028
     },
     {
       "component": "boot",
@@ -125,24 +125,24 @@
       },
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002447915
+      "ts_ms": 1791008278048
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=1052",
       "thread": "main",
-      "ts_ms": 1791002447915
+      "ts_ms": 1791008278048
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -150,12 +150,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "fr.arnaudguyon.spacevertex.home.HomeActivity",
       "thread": "main",
-      "ts_ms": 1791002447917
+      "ts_ms": 1791008278050
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -163,12 +163,12 @@
       "event": "APPLICATION_CREATE",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "PENDING",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1791002447917
+      "ts_ms": 1791008278050
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -204,12 +204,12 @@
       },
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1791002448280
+      "ts_ms": 1791008278411
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -217,12 +217,12 @@
       "event": "RENDER_START",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "PENDING",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 10,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002448294
+      "ts_ms": 1791008278425
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -230,12 +230,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "fr.arnaudguyon.spacevertex",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 11,
       "sev": "CONFIRMED",
       "state": "root_id=392",
       "thread": "main",
-      "ts_ms": 1791002448294
+      "ts_ms": 1791008278425
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -245,12 +245,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 12,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1791002448294
+      "ts_ms": 1791008278425
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -259,12 +259,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 13,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=1 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1791002448357
+      "ts_ms": 1791008278489
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -273,12 +273,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002448358
+      "ts_ms": 1791008278490
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -291,12 +291,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002448431
+      "ts_ms": 1791008278563
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -318,12 +318,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 16,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002448438
+      "ts_ms": 1791008278570
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -369,12 +369,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 17,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002448438
+      "ts_ms": 1791008278570
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -383,12 +383,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002448490
+      "ts_ms": 1791008278622
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -397,12 +397,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=392",
       "thread": "main",
-      "ts_ms": 1791002448490
+      "ts_ms": 1791008278622
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -411,12 +411,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 20,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=1 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1791002448531
+      "ts_ms": 1791008278663
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -425,12 +425,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002448532
+      "ts_ms": 1791008278663
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -443,12 +443,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002448607
+      "ts_ms": 1791008278737
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -470,12 +470,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 23,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002448613
+      "ts_ms": 1791008278743
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -521,12 +521,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 24,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1791002448614
+      "ts_ms": 1791008278743
     },
     {
       "activity": "fr.arnaudguyon.spacevertex.home.HomeActivity",
@@ -538,12 +538,12 @@
       "package": "fr.arnaudguyon.spacevertex",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1791002447865-1",
+      "run_id": "1791008277998-1",
       "seq": 25,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-NEW-200 stub-census: 5336 IMPLEMENTED, 732 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
       "thread": "main",
-      "ts_ms": 1791002448669
+      "ts_ms": 1791008278799
     }
   ],
   "last_exception": {
@@ -556,18 +556,18 @@
     "package": "fr.arnaudguyon.spacevertex",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1791002447865-1",
+    "run_id": "1791008277998-1",
     "seq": 25,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-NEW-200 stub-census: 5336 IMPLEMENTED, 732 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
     "thread": "main",
-    "ts_ms": 1791002448669
+    "ts_ms": 1791008278799
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1791002447865-1",
+  "run_id": "1791008277998-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261003-044047-8168",
+  "session_id": "EXP-001-20261003-061757-7132",
   "severity_census": {
     "CONFIRMED": 15,
     "FAILURE": 1,
