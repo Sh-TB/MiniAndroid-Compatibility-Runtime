@@ -1595,6 +1595,18 @@ public:
         if (class_name.find("Activity;") != std::string::npos) {
             return false;
         }
+        // CONT-366 ROOT-C: ContentProvider subclasses are NEVER views —
+        // the AOSP provider family carries its own context law
+        // (attachInfo(context, provider) sets mContext before onCreate;
+        // getContext() serves it). The user-class "might be a View"
+        // claim below intercepted provider getContext during the
+        // provider-install window (no activity context exists yet) and
+        // converted it into a FALSE NULL — the suntimes CalculatorProvider
+        // "encountered null context" ISE. Same shape as the Activity
+        // exclusion above: one class-shape gate, no per-app names.
+        if (class_name.find("Provider;") != std::string::npos) {
+            return false;
+        }
         // ROOT-053: the WebView availability probe result type (API 26+)
         // is answered by the View family (the runtime ships a WebView).
         if (class_name == "Landroid/webkit/WebViewPackageInfo;") {

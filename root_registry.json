@@ -4362,11 +4362,21 @@
    "fanout": "memory: WHITE -> REAL_APP_CONTENT (frame verdict real, 2 app draw ops, new sha 67845303a9460d86); next divergence recorded = java.net.URI.toString on null at MainActivity.onCreate pc=364 (WebView/zip-asset extraction path — new frontier, not yet fixed). AndroidX controls fossifyclock (EventBus root) + blockblast (Compose root) byte-identical (unrelated roots, no regression); goldens 5/5 x3 + probe 23/23 + uninstall 16/16 ALL PASS.",
    "first_evidence": "evidence/diff366/root_a/memory_com.sanskritbasics.memory/",
    "date": "2026-10-03"
+  },
+  {
+   "id": "R-NEW-462",
+   "title": "DIFFERENTIAL-366 ROOT-C: ContentProvider getContext receiver-identity gate + Fragment-recreation verification",
+   "status": "IMPLEMENTED+TESTED",
+   "law": "AOSP ContentProvider.getContext() serves mContext (set by attachInfo before onCreate) — never null on an installed provider. Receiver-identity laws: (a) ViewShadow must not claim getContext for receivers that are not Views (no ViewNode -> not_handled, also fixes unguarded n-> fallback UB); (b) ViewShadow handles_class excludes Provider; name-shape (same gate shape as the EXP-075 Activity; exclusion); (c) bridge_to_api skips the shadow claim for ContentProvider-family receivers using the DEX hierarchy (CalculatorProvider1 extends CalculatorProvider extends ContentProvider is invisible to name shapes).",
+   "fix": "3-part receiver-identity gate (android_shadows.{h,cpp} + dalvik_engine.cpp bridge_to_api provider_ctx366 skip)",
+   "fanout": "suntimes v135: both CalculatorProvider+CalculatorProvider1 receive app context (obj#12), 'encountered null context in onCreate!' GONE; next divergence = ActivityResultLauncherCompat null in SuntimesLaunchActivity.showWelcome (activity-result infrastructure family — recorded, not yet fixed). stardroid v1751: identity OK; next divergence = WorkManagerInitializer not initialized (consequence of honest empty provider metaData — recorded). spacevertex Fragment tree builds fully (R-NEW-459). Gates: goldens 5/5 x3 + probe 23/23 + uninstall 16/16 ALL PASS.",
+   "first_evidence": "evidence/diff366/root_c/",
+   "date": "2026-10-03"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 534,
- "count": 534,
+ "total": 535,
+ "count": 535,
  "meta": {
   "last_update": "S132 reuse-proof wave"
  },
