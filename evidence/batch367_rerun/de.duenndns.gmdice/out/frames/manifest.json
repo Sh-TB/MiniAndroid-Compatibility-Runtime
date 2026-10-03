@@ -1,0 +1,173 @@
+{
+  "frame_count_requested": 3,
+  "frame_delay_ms": 300,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "f3b483fe7b7cf51bea257283c0ec3209d954c2b31e21fc582d87aab35e051dd5",
+      "sha256": "b34e6750c788e5214f1ca2256ad4b82014e2faf2a611ce278d9027483b3060ba",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Roll it!",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 43
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 44
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 45
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 46
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 47
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_001.png",
+      "index": 1,
+      "looper_virtual_ms": 370,
+      "png_sha256": "f3b483fe7b7cf51bea257283c0ec3209d954c2b31e21fc582d87aab35e051dd5",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "b34e6750c788e5214f1ca2256ad4b82014e2faf2a611ce278d9027483b3060ba",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Roll it!",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 43
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 44
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 45
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 46
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 47
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_002.png",
+      "index": 2,
+      "looper_virtual_ms": 670,
+      "png_sha256": "f3b483fe7b7cf51bea257283c0ec3209d954c2b31e21fc582d87aab35e051dd5",
+      "render_ok": true,
+      "runnables_fired": 0,
+      "sha256": "b34e6750c788e5214f1ca2256ad4b82014e2faf2a611ce278d9027483b3060ba",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Push buttons to roll!\n\nLong-press buttons to configure dice.",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "Roll it!",
+          "view_id": 41
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "3D20",
+          "view_id": 43
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d20",
+          "view_id": 44
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6",
+          "view_id": 45
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "1d6+4",
+          "view_id": 46
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "...",
+          "view_id": 47
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "after_frame_index": 1,
+      "down_record": {
+        "action": "ACTION_DOWN",
+        "consumed": false,
+        "law": "no touch target — dispatchTouchEvent returns false, no listener dispatch",
+        "root_id": 38,
+        "state_changes": [],
+        "target_view_id": 0,
+        "touch_target_chain": [],
+        "virtual_ms": 300,
+        "x": 540,
+        "y": 960
+      },
+      "event": "tap (scheduled F-117)",
+      "frame": 1,
+      "target_view_id": 0,
+      "x": 540,
+      "y": 960
+    }
+  ],
+  "runnables_fired_total": 0,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}

@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5828344367",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/345#issuecomment-5828344367",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/345",
+  "id": 5828344367,
+  "node_id": "IC_kwDOT2Ndhs8AAAABW2V6Lw",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-25T07:04:21Z",
+  "updated_at": "2026-09-25T07:04:21Z",
+  "body": "## S100: dooz rc=-11 ROOT-CAUSED + FIXED \u2014 no-signal law achieved\n\n**Root cause (disassembly-precise):** `LayoutInflater::measure_raw` built\n`child_sizes(n->children.size())` **before** dispatching the node's real-DEX\nonMeasure hook (F-096/R-NEW-347 law). The hook legally materializes\nView-backed children onto the node (compose attach wave); the walk loops then\nread the **live** children size, and `child_sizes[0]` wrote through the **NULL\ndata pointer** of the 0-constructed vector \u2192 `pair<int,int>::operator=` at\n**fault_addr=0x0** (si_code=1, SIGSEGV).\n\n**How it was found:** new permanent crash forensics (async-signal-safe\nhandler + PIE load-base + native frame offsets + 64-slot last-semantic-op\nring). Evidence chain: `Lt4;.getRoot \u00d72 \u2192 MEASURE Lt4.onMeasure \u2192 SEGV`,\naddr2line \u2192 `layout_inflater.cpp` pair-assign \u2192 `objdump` \u2192\n`child_sizes[i] = measure(n->children[i], \u2026)` with null data pointer.\n\n**Fix (AOSP law):** measure pass iterates a **snapshot** of the child list\ntaken after the hook; growth during a pass is measured on the next traversal\n(ViewRootImpl requestLayout scheduling). 35 walk sites rewired.\n\n**Additional null laws (same NPE family, landed this wave):**\n- Activity.getHandler \u2192 main Handler singleton (AOSP attach())\n- Handler.getLooper \u2192 main Looper singleton (libcore)\n- Handler.postAtFrontOfQueue \u2192 accepted(true)\n- Pattern.matcher input widened to heap String objects (value/sb_value law)\n\n**Result:** dooz `rc=-11 \u2192 rc=1` graceful; **41/41 frames rendered; framebuffer\n2,073,600 non-white px (UI fully painted)**. No signal death anywhere.\nRemaining compose-navigation NPE chain (Lox0.a/Leo.V getClass-on-null,\nLt4.L getWidth-on-null, Field.get null) \u2192 new frontier ticket #347.\n\nBattery: ALL PASS (103 stages, EXT-absent count law) on the clean -O2 rebuild.\nCommits: crash forensics + child-snapshot law (this wave).",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5828344367/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

@@ -1,0 +1,16 @@
+{
+ "title": "com.miniandroid.tictactoedeluxe",
+ "apk": "/home/z/my-project/upload/s83_games/build_ttt/tictactoe_deluxe_v1.0_vc1.apk",
+ "apk_sha16": "d04d92eab8dbbb11",
+ "rc": 0,
+ "status": "SUCCESS \u2705",
+ "wall_s": 1.5,
+ "screenshot_sha16": "af6094295ecb50e3",
+ "pixels": {
+  "unique_colors": 2022,
+  "dominant_ratio": 0.4605,
+  "nonbg_ratio": 0.5395
+ },
+ "frame_delta_tap": true,
+ "runtime_head": "9c3dc4d1"
+}

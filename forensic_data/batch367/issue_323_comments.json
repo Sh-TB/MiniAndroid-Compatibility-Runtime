@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5827107256",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/323#issuecomment-5827107256",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/323",
+  "id": 5827107256,
+  "node_id": "IC_kwDOT2Ndhs8AAAABW1KZuA",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-25T05:06:00Z",
+  "updated_at": "2026-09-25T05:06:00Z",
+  "body": "## S99 CLOSE \u2014 ValueAnimator shadow landed\n\n**Fixed by:** the S99 AnimatorShadow law (commit at wave close; battery 105/105 ALL PASS).\n\n**Root cause:** the engine had NO android.animation animator handling \u2014 the\nstatic factories `ValueAnimator.ofInt/ofFloat/ofArgb/ofObject/ofPropertyValuesHolder`\nfell through to the engine default (NULL object). The app's very next instance\ninvoke hit the F-141 null-receiver law:\n`\"ValueAnimator.setRepeatCount on a null object reference\"` -> APP BOUNDARY\nunwind -> onCreate dead.\n\n**The law (AOSP ValueAnimator.java):**\n- factories return a NON-NULL animator (heap object Landroid/animation/ValueAnimator;)\n- `setDuration(long)` is FLUENT (returns the animator itself)\n- `start()/cancel()/end()` lifecycle with isRunning/isStarted state\n- setStartDelay/setRepeatCount/setRepeatMode/setInterpolator/addUpdateListener/\n  addListener/setEvaluator/setIntValues/setFloatValues mutators\n- getAnimatedValue = null before start (AOSP pre-start contract)\n\n**Reproduction before:** com.serwylo.babydots \u2014\n`[ANIM] ValueAnimator.ofFloat -> animator obj=560` now succeeds where the\nprevious build died at setRepeatCount.\n\n**Fan-out:** every corpus app using property-animation entry points\n(material FABs, card flips, progress animators).\n\nBattery: 105/105 ALL PASS (shadow invariant count law 27->28 with the new shadow).\n",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5827107256/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

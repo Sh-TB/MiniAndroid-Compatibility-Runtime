@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846297672",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/352#issuecomment-5846297672",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/352",
+  "id": 5846297672,
+  "node_id": "IC_kwDOT2Ndhs8AAAABXHdsSA",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-09-26T12:32:33Z",
+  "updated_at": "2026-09-26T12:32:33Z",
+  "body": "## CLOSED \u2014 root executed to L5, fresh evidence at HEAD `176710b1` (S105 ROOT-010 / S106 re-verification)\n\n**Ticket symptom:** `F084 interpreter halt` \u2014 infinite loop at PC=0x8d in `CoroutineScheduler$Worker.tryPark` (visited 50001x) because `LockSupport.park` had no blocking semantics (answered void, worker spun park\u2192scan\u2192park).\n\n**Root cause (deeper than the ticket's proposal \u2014 evidence-first):** the park bridge destroyed the *enclosing drain depth* before its quiescence check read it. The engine already had PARK-DRAIN machinery (R-NEW-345), but `LockSupport.park`'s synchronous queue drain restored `park_drain_last_depth_` to 0 before the check, so a parked worker never suspended \u2014 the depth save/restore discipline (same as `run_thread_start_body`) was missing.\n\n**Fix (commit `871e209c`, S105 ROOT-010 WORKER-PARK-DEPTH):**\n1. Save/restore the enclosing drain depth across the park drain \u2014 one shared semantic, no class-name special casing (coroutines, ArrayBlockingQueue.take, FutureTask.get all share it).\n2. Parked body re-registered due at `now + 1ms` \u2014 exactly one park/rescan per scheduler boundary (0-wake re-pops \u2264 8-slice cap; measured `resumed=8, parks=9`).\n\n**Upstream law enforced:** kotlinx-coroutines `CoroutineScheduler.Worker` \u2014 empty queue \u21d2 PARKING \u21d2 `LockSupport.parkNanos`; parked worker consumes no CPU, resumes on unpark/task arrival. Serialized-engine counterpart: park in a drained body with zero work = deterministic suspension + one bounded rescan per boundary.\n\n**Fresh runtime evidence (S106 re-verification, 3/3 runs, HEAD `176710b1`):**\n```\nio.github.yamin8000.dooz_23:            Status PARTIAL SUCCESS, Errors: 6, F084 rows: 0\nio.github.yamin8000.dooz_23_toplevel:   Status PARTIAL SUCCESS, Errors: 6, F084 rows: 0\nexception-set hash (3x): d5c33116c62eff1d (deterministic semantic invariant)\nscreenshot SHA (3x):     59fdbfcd60b86a23... (identical to S105 record)\ninstruction burn in spin: 2.2M+ -> ~0.1M (22x less work to same end state)\n```\nThe remaining 6 rows are the EXC-UNWIND bookkeeping of ONE handled `kotlinx.coroutines.CancellationException` (caught by typed handler at `Llo;.B`) \u2014 not uncaught failures.\n\n**Probe:** `fixtures/s105_park_probe/` + `scripts/s105_park_probe_check.sh` \u2014 post-fix 8/8 PASS \u00d73 (active \u2192 idle-park \u2192 one-rescan-per-boundary \u2192 wake \u2192 task-exactly-once \u2192 terminate); pre-fix binary rc=1 + HALT-LOOP + frozen screen (probe *detects* the spin, not just the error delta).\n\n**Fan-out:** 4/42 corpus APKs carry LockSupport; 2 affected titles fixed (dooz \u00d72 variants); stopwatch/bouncy controls byte-identical before/after (park not on their active paths \u2014 presence \u2260 fan-out, no inflation).\n\n**Regression:** canonical battery 105/105 ALL PASS (rc=0) at the fix tree.\nLogs: `evidence/s106_fresh/` (committed); report `docs/S105_REPORT.md` \u00a71\u20138.",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5846297672/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

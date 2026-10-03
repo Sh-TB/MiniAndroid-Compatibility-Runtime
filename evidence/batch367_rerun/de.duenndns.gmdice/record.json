@@ -1,0 +1,16 @@
+{
+ "title": "de.duenndns.gmdice",
+ "apk": "/home/z/my-project/upload/canonical_apks/de.duenndns.gmdice_8.apk",
+ "apk_sha16": "1621eda11b5dbc0c",
+ "rc": 0,
+ "status": "SUCCESS \u2705",
+ "wall_s": 1.2,
+ "screenshot_sha16": "f3b483fe7b7cf51b",
+ "pixels": {
+  "unique_colors": 892,
+  "dominant_ratio": 0.9165,
+  "nonbg_ratio": 0.0835
+ },
+ "frame_delta_tap": false,
+ "runtime_head": "9c3dc4d1"
+}
