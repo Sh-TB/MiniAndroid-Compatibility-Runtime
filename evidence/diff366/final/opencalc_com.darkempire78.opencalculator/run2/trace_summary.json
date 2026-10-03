@@ -1,0 +1,641 @@
+{
+  "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+  "apk_package": "com.darkempire78.opencalculator",
+  "duration_ms": 1159,
+  "events_retained": 26,
+  "events_total": 26,
+  "first_divergence": null,
+  "first_failure_event": {
+    "cls": "",
+    "event": "RUN_END",
+    "exception": "",
+    "method": "",
+    "seq": 26,
+    "stage": null,
+    "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 7716 IMPLEMENTED, 924 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]"
+  },
+  "frame_analysis": {
+    "app_draw_ops": 36,
+    "app_owned_pixels": 732555,
+    "app_owned_pixels_inside_content_bounds": 732555,
+    "auth_root_valid": true,
+    "budget_exhausted": false,
+    "content_bounds": {
+      "b": 1920,
+      "l": 0,
+      "r": 1080,
+      "t": 0,
+      "valid": true
+    },
+    "deferred_earliest_ready_ms": 0,
+    "deferred_queue_size": 0,
+    "deferred_ui_pending": false,
+    "depth_max": 7,
+    "diag_owned_pixels": 0,
+    "diag_regions": 3,
+    "dialog_content_rendered": false,
+    "dominant_color": [
+      "#303030"
+    ],
+    "dominant_pct": 64.67230902777777,
+    "draw_walk_ran": true,
+    "height": 1920,
+    "inflation_failed": false,
+    "layout_ran": true,
+    "layout_source": "inflater",
+    "measure_ran": true,
+    "no_root": false,
+    "nodes_skipped_depth": 0,
+    "nodes_visited": 48,
+    "non_default_pixels": 732555,
+    "render_exception": false,
+    "screenshot_sha256": "e364b001ee7abd668d0ab798431eb4a34032f16fb5b4d6233e2ef3e0a1629ec5",
+    "size": "1080x1920",
+    "synthetic_suppressed": false,
+    "unique_colors": 297,
+    "unreachable_children": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+    "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+    "width": 1080,
+    "window_background_px": 1341045,
+    "window_chrome_pixels": 0
+  },
+  "instrument": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER",
+  "last_events": [
+    {
+      "component": "boot",
+      "event": "RUN_START",
+      "extra": {
+        "boot_trace": true,
+        "buffer_cap": 512,
+        "pid": 2047,
+        "trace_ui": false
+      },
+      "result": "PENDING",
+      "run_id": "1790992922370-1",
+      "seq": 1,
+      "sev": "PENDING",
+      "state": "apk=/home/z/my-project/run/diff366/stores/store_opencalc/data/app/com.darkempire78.opencalculator/base.apk",
+      "thread": "main",
+      "ts_ms": 1790992922370
+    },
+    {
+      "component": "boot",
+      "event": "APK_LOADED",
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 2,
+      "sev": "CONFIRMED",
+      "state": "pkg=com.darkempire78.opencalculator",
+      "thread": "main",
+      "ts_ms": 1790992922373
+    },
+    {
+      "component": "boot",
+      "event": "MANIFEST_PARSED",
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 3,
+      "sev": "CONFIRMED",
+      "state": "activity=com.darkempire78.opencalculator.activities.MainActivity",
+      "thread": "main",
+      "ts_ms": 1790992922373
+    },
+    {
+      "component": "boot",
+      "event": "DEX_PARSED",
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 4,
+      "sev": "CONFIRMED",
+      "state": "classes=1495 methods=12715",
+      "thread": "main",
+      "ts_ms": 1790992922411
+    },
+    {
+      "component": "boot",
+      "event": "RUNTIME_READY",
+      "extra": {
+        "background_color": 4294967295
+      },
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 5,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992922431
+    },
+    {
+      "component": "boot",
+      "event": "CLASSES_LOADED",
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 6,
+      "sev": "CONFIRMED",
+      "state": "classes=1495",
+      "thread": "main",
+      "ts_ms": 1790992922431
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "activity",
+      "event": "ACTIVITY_RESOLVED",
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 7,
+      "sev": "CONFIRMED",
+      "state": "com.darkempire78.opencalculator.activities.MainActivity",
+      "thread": "main",
+      "ts_ms": 1790992922434
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "activity",
+      "event": "APPLICATION_CREATE",
+      "package": "com.darkempire78.opencalculator",
+      "result": "PENDING",
+      "run_id": "1790992922370-1",
+      "seq": 8,
+      "sev": "PENDING",
+      "state": "dex interpreter",
+      "thread": "main",
+      "ts_ms": 1790992922434
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] LH1/g; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
+      "package": "com.darkempire78.opencalculator",
+      "result": "FAIL",
+      "run_id": "1790992922370-1",
+      "seq": 9,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1790992922825
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "activity",
+      "event": "LIFECYCLE_STATE",
+      "extra": {
+        "activity": "Lcom/darkempire78/opencalculator/activities/MainActivity;",
+        "apk": "/home/z/my-project/run/diff366/stores/store_opencalc/data/app/com.darkempire78.opencalculator/base.apk",
+        "final_state": "RESUMED",
+        "transitions": [
+          {
+            "from": "PROCESS_CREATED",
+            "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+            "success": true,
+            "to": "ACTIVITY_CREATED",
+            "virtual_ms": 0
+          },
+          {
+            "from": "ACTIVITY_CREATED",
+            "reason": "Activity.onStart() dispatched via DEX engine",
+            "success": true,
+            "to": "STARTED",
+            "virtual_ms": 0
+          },
+          {
+            "from": "STARTED",
+            "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+            "success": true,
+            "to": "RESUMED",
+            "virtual_ms": 0
+          }
+        ]
+      },
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 10,
+      "sev": "CONFIRMED",
+      "state": "RESUMED",
+      "thread": "main",
+      "ts_ms": 1790992922873
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "render",
+      "event": "RENDER_START",
+      "package": "com.darkempire78.opencalculator",
+      "result": "PENDING",
+      "run_id": "1790992922370-1",
+      "seq": 11,
+      "sev": "PENDING",
+      "state": "measure/layout/draw pass",
+      "thread": "main",
+      "ts_ms": 1790992922908
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "viewtree",
+      "event": "VIEWTREE_CREATED",
+      "package": "com.darkempire78.opencalculator",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 12,
+      "sev": "CONFIRMED",
+      "state": "root_id=935",
+      "thread": "main",
+      "ts_ms": 1790992922908
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "render",
+      "event": "TRACE_MARK",
+      "package": "com.darkempire78.opencalculator",
+      "provenance": "stage_render_frame default walk",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 13,
+      "sev": "RENDERER",
+      "state": "CLASSIC_CANVAS",
+      "thread": "main",
+      "ts_ms": 1790992922908
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "render",
+      "event": "RENDER_OK",
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 14,
+      "sev": "CONFIRMED",
+      "state": "nonwhite=2073600 total=2073600 app_ops=38 diag_regions=0",
+      "thread": "main",
+      "ts_ms": 1790992923072
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "FRAME_SUBMIT",
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 15,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992923073
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "FRAME_CAPTURE",
+      "extra": {
+        "bytes": 8294400,
+        "path": "/home/z/my-project/evidence/diff366/final/opencalc_com.darkempire78.opencalculator/run2/screenshot.png"
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 16,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992923148
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "FRAME_ANALYSIS",
+      "extra": {
+        "dominant_color": [
+          "#303030"
+        ],
+        "dominant_pct": 49.25004822530864,
+        "height": 1920,
+        "non_default_pixels": 1052351,
+        "screenshot_sha256": "a976d2f9fb675cb38b797b26a30c827ddfe187b22095c24180afdec758aab5b2",
+        "size": "1080x1920",
+        "unique_colors": 379,
+        "verdict": "REAL_APP_CONTENT",
+        "width": 1080
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 17,
+      "sev": "INFO",
+      "state": "REAL_APP_CONTENT",
+      "thread": "main",
+      "ts_ms": 1790992923174
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "TRACE_MARK",
+      "extra": {
+        "app_draw_ops": 38,
+        "app_owned_pixels": 1052351,
+        "app_owned_pixels_inside_content_bounds": 1052351,
+        "auth_root_valid": true,
+        "budget_exhausted": false,
+        "content_bounds": {
+          "b": 1920,
+          "l": 0,
+          "r": 1080,
+          "t": 0,
+          "valid": true
+        },
+        "deferred_earliest_ready_ms": 0,
+        "deferred_queue_size": 0,
+        "deferred_ui_pending": false,
+        "depth_max": 7,
+        "diag_owned_pixels": 0,
+        "diag_regions": 0,
+        "dialog_content_rendered": false,
+        "draw_walk_ran": true,
+        "inflation_failed": false,
+        "layout_ran": true,
+        "layout_source": "inflater",
+        "measure_ran": true,
+        "no_root": false,
+        "nodes_skipped_depth": 0,
+        "nodes_visited": 48,
+        "render_exception": false,
+        "synthetic_suppressed": false,
+        "unreachable_children": 0,
+        "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+        "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+        "window_background_px": 1021249,
+        "window_chrome_pixels": 0
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "CENSUS",
+      "run_id": "1790992922370-1",
+      "seq": 18,
+      "sev": "INFO",
+      "state": "REAL_APP_CONTENT",
+      "thread": "main",
+      "ts_ms": 1790992923174
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "render",
+      "event": "RENDER_START",
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "PENDING",
+      "run_id": "1790992922370-1",
+      "seq": 19,
+      "sev": "PENDING",
+      "state": "measure/layout/draw pass",
+      "thread": "main",
+      "ts_ms": 1790992923226
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "viewtree",
+      "event": "VIEWTREE_CREATED",
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 20,
+      "sev": "CONFIRMED",
+      "state": "root_id=935",
+      "thread": "main",
+      "ts_ms": 1790992923226
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "render",
+      "event": "RENDER_OK",
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 21,
+      "sev": "CONFIRMED",
+      "state": "nonwhite=2073600 total=2073600 app_ops=36 diag_regions=3",
+      "thread": "main",
+      "ts_ms": 1790992923371
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "FRAME_SUBMIT",
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 22,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992923372
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "FRAME_CAPTURE",
+      "extra": {
+        "bytes": 8294400,
+        "path": "/home/z/my-project/evidence/diff366/final/opencalc_com.darkempire78.opencalculator/run2/screenshot.png"
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 23,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1790992923446
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "FRAME_ANALYSIS",
+      "extra": {
+        "dominant_color": [
+          "#303030"
+        ],
+        "dominant_pct": 64.67230902777777,
+        "height": 1920,
+        "non_default_pixels": 732555,
+        "screenshot_sha256": "e364b001ee7abd668d0ab798431eb4a34032f16fb5b4d6233e2ef3e0a1629ec5",
+        "size": "1080x1920",
+        "unique_colors": 297,
+        "verdict": "REAL_APP_CONTENT",
+        "width": 1080
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1790992922370-1",
+      "seq": 24,
+      "sev": "INFO",
+      "state": "REAL_APP_CONTENT",
+      "thread": "main",
+      "ts_ms": 1790992923470
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "capture",
+      "event": "TRACE_MARK",
+      "extra": {
+        "app_draw_ops": 36,
+        "app_owned_pixels": 732555,
+        "app_owned_pixels_inside_content_bounds": 732555,
+        "auth_root_valid": true,
+        "budget_exhausted": false,
+        "content_bounds": {
+          "b": 1920,
+          "l": 0,
+          "r": 1080,
+          "t": 0,
+          "valid": true
+        },
+        "deferred_earliest_ready_ms": 0,
+        "deferred_queue_size": 0,
+        "deferred_ui_pending": false,
+        "depth_max": 7,
+        "diag_owned_pixels": 0,
+        "diag_regions": 3,
+        "dialog_content_rendered": false,
+        "draw_walk_ran": true,
+        "inflation_failed": false,
+        "layout_ran": true,
+        "layout_source": "inflater",
+        "measure_ran": true,
+        "no_root": false,
+        "nodes_skipped_depth": 0,
+        "nodes_visited": 48,
+        "render_exception": false,
+        "synthetic_suppressed": false,
+        "unreachable_children": 0,
+        "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+        "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+        "window_background_px": 1341045,
+        "window_chrome_pixels": 0
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "CENSUS",
+      "run_id": "1790992922370-1",
+      "seq": 25,
+      "sev": "INFO",
+      "state": "REAL_APP_CONTENT",
+      "thread": "main",
+      "ts_ms": 1790992923470
+    },
+    {
+      "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+      "component": "boot",
+      "event": "RUN_END",
+      "extra": {
+        "status": 1
+      },
+      "package": "com.darkempire78.opencalculator",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "FAIL",
+      "run_id": "1790992922370-1",
+      "seq": 26,
+      "sev": "FAILURE",
+      "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 7716 IMPLEMENTED, 924 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+      "thread": "main",
+      "ts_ms": 1790992923529
+    }
+  ],
+  "last_exception": {
+    "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+    "component": "boot",
+    "event": "RUN_END",
+    "extra": {
+      "status": 1
+    },
+    "package": "com.darkempire78.opencalculator",
+    "renderer_family": "CLASSIC_CANVAS",
+    "result": "FAIL",
+    "run_id": "1790992922370-1",
+    "seq": 26,
+    "sev": "FAILURE",
+    "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 7716 IMPLEMENTED, 924 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+    "thread": "main",
+    "ts_ms": 1790992923529
+  },
+  "lifecycle": "RESUMED",
+  "renderer_family": "CLASSIC_CANVAS",
+  "run_id": "1790992922370-1",
+  "schema": "miniandroid.boot_trace/1.0",
+  "session_id": "EXP-001-20261003-020202-4574",
+  "severity_census": {
+    "CONFIRMED": 15,
+    "FAILURE": 2,
+    "INFO": 4,
+    "PENDING": 4,
+    "RENDERER": 1
+  },
+  "stages": [
+    {
+      "detail": "apk=/home/z/my-project/run/diff366/stores/store_opencalc/data/app/com.darkempire78.opencalculator/base.apk",
+      "stage": "BOOT",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "activity=com.darkempire78.opencalculator.activities.MainActivity",
+      "stage": "APK",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "classes=1495 methods=12715",
+      "stage": "DEX",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "classes=1495",
+      "stage": "CLASS-INIT",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "RESUMED",
+      "stage": "LIFECYCLE",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "root_id=935",
+      "stage": "VIEWTREE",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "",
+      "stage": "MEASURE",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "",
+      "stage": "LAYOUT",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "nonwhite=2073600 total=2073600 app_ops=36 diag_regions=3",
+      "stage": "DRAW",
+      "state": "CONFIRMED"
+    },
+    {
+      "detail": "1080x1920",
+      "stage": "FRAME",
+      "state": "CONFIRMED"
+    }
+  ]
+}

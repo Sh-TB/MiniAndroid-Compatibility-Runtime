@@ -1,0 +1,110 @@
+{
+ "t202_org.fossify.clock": {
+  "ticket": 202,
+  "package": "org.fossify.clock",
+  "family": "F1-empty-viewtree",
+  "file": "org.fossify.clock_10.apk",
+  "bytes": 9110265,
+  "version_code": 10,
+  "version_name": null
+ },
+ "t122_com.sidhant.triplematch": {
+  "ticket": 122,
+  "package": "com.sidhant.triplematch",
+  "family": "F1-empty-viewtree",
+  "file": "com.sidhant.triplematch_13.apk",
+  "bytes": 7912115,
+  "version_code": 13,
+  "version_name": null
+ },
+ "t148_com.forrestguice.suntimeswidget": {
+  "ticket": 148,
+  "package": "com.forrestguice.suntimeswidget",
+  "family": "F1-empty-viewtree",
+  "file": "com.forrestguice.suntimeswidget_135.apk",
+  "bytes": 11757905,
+  "version_code": 135,
+  "version_name": null
+ },
+ "t64_com.galaxyrio.sudokusolver": {
+  "ticket": 64,
+  "package": "com.galaxyrio.sudokusolver",
+  "family": "F2-empty-viewtree-rc1",
+  "file": "com.galaxyrio.sudokusolver_8.apk",
+  "bytes": 4541038,
+  "version_code": 8,
+  "version_name": null
+ },
+ "t88_com.fairytrick.fairymahjong": {
+  "ticket": 88,
+  "package": "com.fairytrick.fairymahjong",
+  "family": "F2-empty-viewtree-rc1",
+  "file": "com.fairytrick.fairymahjong_5.apk",
+  "bytes": 73009950,
+  "version_code": 5,
+  "version_name": null
+ },
+ "t109_com.game.asteroids_revenge": {
+  "ticket": 109,
+  "package": "com.game.asteroids_revenge",
+  "family": "F3-libgdx-jni",
+  "file": "com.game.asteroids_revenge_100242.apk",
+  "bytes": 74313300,
+  "version_code": 100242,
+  "version_name": null
+ },
+ "t75_com.yepgoryo.EggReturnsHome": {
+  "ticket": 75,
+  "package": "com.yepgoryo.EggReturnsHome",
+  "family": "F3-libgdx-jni",
+  "file": "com.yepgoryo.EggReturnsHome_1.apk",
+  "bytes": 86888555,
+  "version_code": 1,
+  "version_name": null
+ },
+ "t86_com.sidhant.blockblast": {
+  "ticket": 86,
+  "package": "com.sidhant.blockblast",
+  "family": "F4-lifecycleregistry",
+  "file": "com.sidhant.blockblast_43.apk",
+  "bytes": 8190735,
+  "version_code": 43,
+  "version_name": null
+ },
+ "t96_fr.arnaudguyon.spacevertex": {
+  "ticket": 96,
+  "package": "fr.arnaudguyon.spacevertex",
+  "family": "F5-fragmentmanager",
+  "file": "fr.arnaudguyon.spacevertex_29.apk",
+  "bytes": 6908139,
+  "version_code": 29,
+  "version_name": null
+ },
+ "t67_com.sanskritbasics.memory": {
+  "ticket": 67,
+  "package": "com.sanskritbasics.memory",
+  "family": "F6-multidex",
+  "file": "com.sanskritbasics.memory_34.apk",
+  "bytes": 2787649,
+  "version_code": 34,
+  "version_name": null
+ },
+ "t218_com.fpf.smartscan": {
+  "ticket": 218,
+  "package": "com.fpf.smartscan",
+  "family": "F7-viewtree-owner",
+  "file": "com.fpf.smartscan_25.apk",
+  "bytes": 195146943,
+  "version_code": 25,
+  "version_name": null
+ },
+ "t222_com.google.android.stardroid": {
+  "ticket": 222,
+  "package": "com.google.android.stardroid",
+  "family": "F-other",
+  "file": "com.google.android.stardroid_1751.apk",
+  "bytes": 22496474,
+  "version_code": 1751,
+  "version_name": null
+ }
+}

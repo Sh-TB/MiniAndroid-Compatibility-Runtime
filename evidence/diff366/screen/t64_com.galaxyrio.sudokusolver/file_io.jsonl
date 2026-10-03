@@ -1,0 +1,3 @@
+{"seq":0,"op":"LIST","path":"/home/z/my-project/run/diff366/stores/store_t64/data/data/com.galaxyrio.sudokusolver/crash_history","result":"FAILURE","subsystem":"File.listFiles","caller":"Lkj0;.e","package":"com.galaxyrio.sudokusolver"}
+{"seq":1,"op":"LIST","path":"/home/z/my-project/run/diff366/stores/store_t64/data/data/com.galaxyrio.sudokusolver/crash_history","result":"FAILURE","subsystem":"File.listFiles","caller":"Lkj0;.c","package":"com.galaxyrio.sudokusolver"}
+{"summary":{"total_ops":2,"failures":2,"events_emitted":2,"events_dropped":0,"package":"com.galaxyrio.sudokusolver","LIST":2}}

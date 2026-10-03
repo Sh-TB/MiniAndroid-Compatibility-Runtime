@@ -5983,3 +5983,63 @@ Stage Summary:
 - The forensic ledger is the ONE canonical record of what is proven vs claimed.
 - Current-HEAD gates all green after the uninstall + canonical-sync fixes.
 - Completion ledgers posted to issue #365 (33 rows) and issue #364 (33 rows).
+
+---
+Task ID: DIFFERENTIAL-366
+Agent: Super Z (main)
+Task: DIFFERENTIAL EXECUTION (issue #366) — answer with runtime evidence why 4 apps
+work while 5 installed apps stay white; find the FIRST DIVERGENCE per app; classify
+root categories; diagnose-only (no fix).
+
+Work Log:
+- LAWS READ: YES — CONSTITUTION_V2 (§0-§17/§27-§35/§44-§46), .agent/* (7 files),
+  CAMPAIGN_STATE, worklog tail, CODER_REQUEST_PROTOCOL, WHITE_SCREEN_LOADING_ROOTS,
+  WORKING_APP_LOADING_EXPLANATIONS, WORKING_VS_FAILING_LOADING_MATRIX. New law
+  discovered+recorded: a byte-stable golden is NOT a pixel-truth golden.
+- BUILT runtime at HEAD 204aed6b (binary sha16 4b2db3540575b1c4); golden re-verified
+  byte-identical in installed-identity mode: opencalc/unote/microtimer/chess/dooz.
+- FETCHED 12 white candidates from the S115 NEAR_BLANK population (F-Droid, manifest
+  tmp/diff366_apks/manifest.json); SCREENED 12/12 on CURRENT HEAD in installed-identity
+  mode: 12/12 still BLANK (evidence/diff366/screen/).
+- SELECTED 5 WHITE spanning distinct families: fossifyclock (#202 startup/appcompat),
+  blockblast (#86 Compose), asteroids (#109 Godot natives), spacevertex (#96 Fragment),
+  memory (#67 androidx core view). Excluded classes honored (no corrupt-fetch/PARTIAL/
+  splash-only in quota).
+- REGRESSION FOUND (request §2): chess golden b5a7a35d5fe0564b is byte-stable but the
+  frame is 100% WHITE (app_draw_ops=0, DEFAULT_BACKGROUND_ONLY; start.onCreate NPE +
+  RecyclerView never binds). Historical goldens were determinism gates, not pixel gates.
+  Replaced by bouncy (REAL_APP_CONTENT, 314 colors, 11 draw ops, openFd real fds,
+  libGDX native-load failure absorbed in app frames). dooz control same class (COMPOSE).
+- CANONICAL PIPELINE (scripts/diff366_final.py): per app install -> SHA(source)==SHA(
+  installed base.apk) -> pkgaudit live re-hash -> source APK MOVED to
+  run/diff366/hidden_sources -> run --package (INSTALLED-PACKAGE MODE) with
+  --dump-view-tree --trace + MINIANDROID_FILE_IO. 11/11 sha_match=True.
+- 3-RUN: 4 working + 5 white ALL byte-identical x3 (opencalc e364b001ee7abd66, unote
+  4f1a9e4e8f64fae8, bouncy b6dde6074bf47264, chess b5a7a35d5fe0564b; whites
+  31ddd4d5b8e6d18e x3 / 9d8c64b1f9f908b4 x3 / 0666775d14475766 x3). No
+  NONDETERMINISTIC divergences.
+- FIRST DIVERGENCES (log-line proven): fossifyclock = WINDOW_ROOT not authoritative at
+  frame time (deferred_ui_pending=1; App.onCreate EventBus death + inflate
+  null-XmlPullParser NPE; setContentView root=2192 linked but never authoritative);
+  blockblast = ComposeView NOT in class index (1-node tree); asteroids = Arrays.toString
+  shadow null -> kotlin Intrinsics NPE -> GodotActivity.onCreate death pc=0x3a
+  (NATIVE/JNI frontier); spacevertex = Class.forName(...).newInstance() null NPE then
+  androidx Fragment ISE ("must be public static"); memory = null-receiver getClass NPE in
+  androidx WindowInsets s0$k.<clinit> during ActionBarOverlayLayout.<init> (content
+  WebView inflated but 0 draw ops). ALL Case A (installation fine); loading layer
+  innocent in all nine.
+- NO FIX applied (diagnose-first). Five generic fix candidates ranked with AOSP law
+  + fan-out predictions in DIFFERENTIAL_WORKING_VS_WHITE §12.
+- ARTIFACTS: docs/DIFFERENTIAL_WORKING_VS_WHITE.md + .jsonl (11x27),
+  DIFFERENTIAL_FIRST_DIVERGENCES.jsonl, DIFFERENTIAL_EVIDENCE_INDEX.jsonl,
+  run/diff366/stage_matrices.json (27-stage x 11), evidence/diff366/{screen,final}/
+  (distilled 296->34MB: ppm raw frames dropped, PNG/trace/logs kept), 4 persisted
+  scripts (diff366_fetch/screen/final/report.py).
+
+Stage Summary:
+- The differential answer: working apps cross ViewTree->measure->layout->draw with
+  >=7 app draw ops; whites are arrested before ANY app-owned draw op survives, at five
+  DISTINCT generic roots (VIEWTREE/ATTACH, COMPOSE, NATIVE/JNI, FRAGMENT,
+  ANDROIDX-LIFECYCLE) — never installation, never resource/asset/file loading.
+- chess reclassified REGRESSION (determinism-golden, white frame); bouncy promoted to
+  the working quota; evidence E4 with 3-run reproducibility on all 9.

@@ -163,3 +163,22 @@ E3=87 E4=50 E5=13).
 M1 registry backfill (ROOT-062..067, S102-*); M2 commit journey doc; M3 fresh
 s117_tg_run.sh at HEAD; then the §21 continuation queue (S-2, S-4, S-11,
 SELECTION_FROZEN).
+
+## Wave — DIFFERENTIAL-366 (2026-10-03, HEAD 204aed6b)
+
+- Issue #366 answered diagnose-only: 4 WORKING (opencalc/unote/microtimer/bouncy) vs
+  5 WHITE (fossifyclock/blockblast/asteroids/spacevertex/memory), all on CURRENT HEAD,
+  installed-identity pipeline (source hidden), 3-run byte-identical x9.
+- FIRST DIVERGENCES: 5 distinct generic roots — VIEWTREE/ATTACH (fossifyclock
+  WINDOW_ROOT non-authoritative), COMPOSE (blockblast ComposeView not in class index),
+  NATIVE/JNI (asteroids GodotActivity death; Arrays.toString null trigger),
+  FRAGMENT (spacevertex recreation ISE), ANDROIDX-LIFECYCLE (memory WindowInsets
+  s0$k clinit NPE). Loading layer innocent in all nine.
+- REGRESSION reclassification: chess + dooz goldens are determinism gates with white
+  frames (0 app draw ops) — pixel-truth lens (F-NEW-233) now mandatory for "working".
+- Deliverables: docs/DIFFERENTIAL_WORKING_VS_WHITE.{md,jsonl},
+  DIFFERENTIAL_FIRST_DIVERGENCES.jsonl, DIFFERENTIAL_EVIDENCE_INDEX.jsonl,
+  run/diff366/stage_matrices.json, evidence/diff366/, scripts/diff366_{fetch,screen,final,report}.py.
+- Next leverage (no fix applied this wave): java.util/java.lang shadow null-contracts,
+  androidx WindowInsets compat static-init, Fragment recreation law, ComposeView
+  materialization, Godot native surface.
