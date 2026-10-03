@@ -1,0 +1,49 @@
+[
+  {
+    "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5967125011",
+    "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/369#issuecomment-5967125011",
+    "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/369",
+    "id": 5967125011,
+    "node_id": "IC_kwDOT2Ndhs8AAAABY6saEw",
+    "user": {
+      "login": "Sh-TB",
+      "id": 298011935,
+      "node_id": "U_kgDOEcNNHw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Sh-TB",
+      "html_url": "https://github.com/Sh-TB",
+      "followers_url": "https://api.github.com/users/Sh-TB/followers",
+      "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+      "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+      "repos_url": "https://api.github.com/users/Sh-TB/repos",
+      "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "created_at": "2026-10-03T08:20:30Z",
+    "updated_at": "2026-10-03T08:20:30Z",
+    "body": "## COMPLETION LEDGER — CLOSED BATCH 3/3 (all 8 issues audited)\n\n**STATUS:** DONE — every issue in the frozen batch membership individually classified with the 18 required fields. Audit head `428bc0bc` (runtime under test = battery-repair commit `9c3dc4d1`).\n\n**RESULT:** verified current = 7, historical-only verification = 1.\n\n**Method:** issue body + comments + linked evidence re-read; claim reconstructed independently; APK identity checked; historical commit vs current HEAD distinguished; current-HEAD evidence produced this campaign; pixel-truth law applied (BYTE-STABLE != PIXEL-TRUTH, F-NEW-233 — chess/dooz are DETERMINISM anchors only, never visual success); closed state ignored as evidence; no package-specific hacks.\n\n**Classification policy:** `verified current` requires evidence at the CURRENT binary (this campaign's gates / 121-stage battery / fresh re-run wave) or a law fenced by that battery; synthetic micro-gap laws are verified current ONLY at law level with test-only scope retained (M5 rule). Older-HEAD-only evidence = `historical-only verification`.\n\n**Current-HEAD regression evidence (this campaign):**\n\n- USER-GOLDEN-PIXEL-GATE 4/4 REAL_APP_CONTENT (2048 / Snake Deluxe / MiniCraft / HelloWorld L6)\n- DETERMINISM 5/5 anchors x3 byte-identical (zero drift post runtime fix)\n- CANONICAL TEST BATTERY **121/121 ALL PASS** (run/batch367_battery_v2.log)\n- LOADING PROBE 23/23; UNINSTALL PROOF 16/16\n- Fresh re-run wave at HEAD: gmdice, snakeneon (delta TRUE), bouncy, tictactoedeluxe (delta TRUE), androidgamesnake (delta TRUE) — evidence/batch367_rerun/\n\n**Honest disclosures (fixed, not masked):** the battery was FAILING at audit start — root-caused to (1) a REAL runtime bug: ASSETS-WITHOUT-ARSC (all assets invisible in arsc-less APKs; F-024 family 7 RED bands) — fixed generically with the direct-APK fallback law (AOSP AssetManager: assets are ARSC-independent), commit 9c3dc4d1; (2) stale g11 harness (pre-AttributeSet hook signature; pre-DEX-existence prefix law) — updated to evolved laws 37/37; (3) stale stage gates (F-012 legacy flat store path; pre-F-NEW-233 rc gates) — re-baselined with pixel goldens kept MANDATORY; EXT fixture re-fetched SHA-verified 009b4671...cc41.\n\n**FALSE CLOSURES: 0** (FR-166 stale ledger row corrected; S102-A/D registry coverage gaps recorded, not masked).\n\n### Per-issue ledger (STATUS — RESULT — EVIDENCE)\n\n| # | Classification | RESULT | EVIDENCE |\n|---|----------------|--------|----------|\n| #317 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-209; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #318 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-210; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #319 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-146; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #321 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-149; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #323 | HISTORICAL-ONLY VERIFICATION | recorded at close; not re-fenced at current HEAD | docs/MICRO_GAP_REGISTRY.json#MG-223; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #331 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-231; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #332 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-232; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n| #333 | VERIFIED CURRENT | law checkpoint binary/stage re-executed at current HEAD 9c3dc4d1: s106 canvas/input/audio laws (expect 21) PASS 21/21 (part of run_test_battery.sh @ 9c3dc4d1: BATTERY GATE ALL PASS (121/121 stages; logs run/batch367_batt | docs/MICRO_GAP_REGISTRY.json#MG-233; scripts/test/run_test_battery.sh; run/batch367_battery_v2.log |\n\n### Canonical artifacts (committed)\n\n- `docs/CLOSED_BATCH_3_AUDIT.md` + `.jsonl` (18 required fields per issue)\n- `docs/CLOSED_BATCH_3_CLAIMS_VS_EVIDENCE.md` (claim vs closure vs current vs residual gap)\n- `docs/CLOSED_BATCH_3_FALSE_CLOSURES.md`\n- `docs/CLOSED_BATCH_3_REGRESSION_STATUS.jsonl`\n- `docs/CLOSED_BATCH_3_EVIDENCE_INDEX.jsonl`\n\nCompletion gate: all 8 issues classified individually — met. High-value visual/game claims: user goldens 4/4 pixel-truth at HEAD; determinism 5/5 x3; fresh re-run wave attached.",
+    "author_association": "OWNER",
+    "pin": null,
+    "reactions": {
+      "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/5967125011/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "performed_via_github_app": null,
+    "minimized": null
+  }
+]
