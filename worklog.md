@@ -6091,3 +6091,25 @@ Work Log:
 
 Stage Summary:
 - 3 more generic laws (R-NEW-461/462 family) + 1 white app advanced (memory -> REAL_APP_CONTENT). Root registry 534. Temp diagnostics removed; bounded law markers kept.
+
+---
+Task ID: CONT-FINAL
+Agent: Super Z (main)
+Task: MASTER CONTINUATION — complete all open work from #364 → #365 → #366 (T5-M3..M6, T6-T15)
+
+Work Log:
+- M3: six #361 scripts materialized byte-exact (all syntax-verified, exec bits); s117_tg_run.sh forkgram executed ×2 at current HEAD — face bbb6cd10a834963d byte-identical ×2 (matches recorded golden); official BLOCKED-APK-ABSENT (honest).
+- M4: G18 official inventory impossible without APK (recorded); G19/G20 evidence = committed load-audit matrices (referenced).
+- M6: corpus reconciled from ledger verified_status — 79 executed-with-evidence / 119 NOT_TESTED closed / 4 BLOCKED-DOWNLOAD; orphans recomputed 123; record in FORENSIC_MISSING_EVIDENCE.jsonl.
+- T6: UPP-001..007 dispositions (2 PENDING_RESEARCH, 4 AVAILABLE_NOT_USED, 1 ADAPTED) with source/license/law/tests/maintenance/why.
+- T7: FINAL_COMPATIBILITY_CAMPAIGN.md repaired — 14 evidence rows, 0 UNRESOLVED.
+- T8: state files synced — .agent/state.md HISTORICAL banner + live pointer; CAMPAIGN_STATE continuation wave (single live source); 536→535 count fix in §16.
+- T9: README CURRENT CAPABILITY STATE section (working-vs-white, corpus, Telegram, Compose/WebView/native, installed-APK, upstream, roadmap, vocabulary).
+- T10: hygiene finding verified STALE (targets externalized by d6237036, ledgered; 35.65MiB pack residual documented; history rewrite NOT justified) — REPO_HYGIENE_FORENSICS §12.
+- T11: Safir/Black BLOCKED-BY-IDENTITY verified unchanged.
+- T12: docs/REPRO_SCRIPTS_CROSSCHECK.md (6/6 names recovered, 0/6 existed → materialized).
+- T13 FINAL REGRESSION at abb57444: determinism 5/5 ×3 + user goldens 4/4 REAL_APP_CONTENT + probe 23/23 + uninstall 16/16 + 8-app fan-out zero drift — ALL PASS.
+- T15: completion ledgers POSTED — #366 comment 5966306539, #365 comment 5966306634, #364 comment 5966306728.
+
+Stage Summary:
+- All continuation items executed or honestly blocked with evidence; three Issues updated in-place (same-Issue protocol); next frontier = S-2 native, Compose machinery, ActivityResult, provider meta-data, official-Telegram APK.

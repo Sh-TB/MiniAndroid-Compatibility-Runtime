@@ -1,7 +1,7 @@
 {
   "activity": "com.sanskritbasics.memory.MainActivity",
   "apk_package": "com.sanskritbasics.memory",
-  "duration_ms": 932,
+  "duration_ms": 927,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -69,52 +69,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 6539,
+        "pid": 12143,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/run/diff366/stores/store_memory/data/app/com.sanskritbasics.memory/base.apk",
       "thread": "main",
-      "ts_ms": 1791002456795
+      "ts_ms": 1791008286887
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=com.sanskritbasics.memory",
       "thread": "main",
-      "ts_ms": 1791002456798
+      "ts_ms": 1791008286891
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=com.sanskritbasics.memory.MainActivity",
       "thread": "main",
-      "ts_ms": 1791002456798
+      "ts_ms": 1791008286891
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=2143 methods=18155",
       "thread": "main",
-      "ts_ms": 1791002456854
+      "ts_ms": 1791008286945
     },
     {
       "component": "boot",
@@ -124,24 +124,24 @@
       },
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002456874
+      "ts_ms": 1791008286965
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=2143",
       "thread": "main",
-      "ts_ms": 1791002456874
+      "ts_ms": 1791008286965
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -149,12 +149,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "com.sanskritbasics.memory.MainActivity",
       "thread": "main",
-      "ts_ms": 1791002456880
+      "ts_ms": 1791008286971
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -162,12 +162,12 @@
       "event": "APPLICATION_CREATE",
       "package": "com.sanskritbasics.memory",
       "result": "PENDING",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1791002456880
+      "ts_ms": 1791008286971
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -203,12 +203,12 @@
       },
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1791002457317
+      "ts_ms": 1791008287405
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -216,12 +216,12 @@
       "event": "RENDER_START",
       "package": "com.sanskritbasics.memory",
       "result": "PENDING",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 10,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002457342
+      "ts_ms": 1791008287430
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -229,12 +229,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "com.sanskritbasics.memory",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 11,
       "sev": "CONFIRMED",
       "state": "root_id=641",
       "thread": "main",
-      "ts_ms": 1791002457342
+      "ts_ms": 1791008287430
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -244,12 +244,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 12,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1791002457342
+      "ts_ms": 1791008287430
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -258,12 +258,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 13,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=2 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1791002457399
+      "ts_ms": 1791008287487
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -272,12 +272,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002457400
+      "ts_ms": 1791008287487
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -290,12 +290,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002457474
+      "ts_ms": 1791008287560
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -317,12 +317,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 16,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002457484
+      "ts_ms": 1791008287570
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -367,12 +367,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 17,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002457484
+      "ts_ms": 1791008287570
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -381,12 +381,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1791002457536
+      "ts_ms": 1791008287622
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -395,12 +395,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=641",
       "thread": "main",
-      "ts_ms": 1791002457536
+      "ts_ms": 1791008287622
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -409,12 +409,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 20,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=2 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1791002457583
+      "ts_ms": 1791008287670
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -423,12 +423,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002457584
+      "ts_ms": 1791008287671
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -441,12 +441,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1791002457657
+      "ts_ms": 1791008287744
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -468,12 +468,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 23,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002457666
+      "ts_ms": 1791008287753
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -518,12 +518,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 24,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1791002457666
+      "ts_ms": 1791008287753
     },
     {
       "activity": "com.sanskritbasics.memory.MainActivity",
@@ -535,12 +535,12 @@
       "package": "com.sanskritbasics.memory",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1791002456795-1",
+      "run_id": "1791008286887-1",
       "seq": 25,
       "sev": "FAILURE",
       "state": "Execution completed successfully [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 6106 IMPLEMENTED, 231 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1791002457727
+      "ts_ms": 1791008287814
     }
   ],
   "last_exception": {
@@ -553,18 +553,18 @@
     "package": "com.sanskritbasics.memory",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1791002456795-1",
+    "run_id": "1791008286887-1",
     "seq": 25,
     "sev": "FAILURE",
     "state": "Execution completed successfully [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 6106 IMPLEMENTED, 231 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
     "thread": "main",
-    "ts_ms": 1791002457727
+    "ts_ms": 1791008287814
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1791002456795-1",
+  "run_id": "1791008286887-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261003-044056-6960",
+  "session_id": "EXP-001-20261003-061806-5257",
   "severity_census": {
     "CONFIRMED": 15,
     "FAILURE": 1,
