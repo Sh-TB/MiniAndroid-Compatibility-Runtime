@@ -26451,11 +26451,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          method == "copyOf" || method == "complementOf")) {
         uint32_t set_id = heap_.allocate("Ljava/util/EnumSet;", pc_, 0);
         int n_elems = 0;
-        // noneOf(Class)/allOf(Class): arg0 is the element Class token — the
-        // set starts EMPTY in both cases (documented deviation for allOf:
-        // membership is driven by the add/contains bridge, not by the
-        // enum-constant registry; noneOf+add/contains — the corpus pattern —
-        // is exact).
+        // noneOf(Class)/allOf(Class): arg0 is the element Class token.
+        // #371 CLOSEOUT (time4j): allOf now carries REAL OpenJDK semantics
+        // whenever the token's enum class has a materialized $VALUES static
+        // registry — the set contains EVERY constant. time4j's
+        // PlainTime.registerUnits / registerClockUnits iterate allOf(ClockUnit)
+        // to register every unit; the previous empty-set deviation registered
+        // none and starved the downstream engine (clock axes with zero
+        // units). noneOf keeps the empty start (exact AOSP semantics);
+        // complementOf falls back to the old path when $VALUES is absent
+        // (add/contains bridge remains the membership authority).
         const bool class_arg = (method == "noneOf" || method == "allOf" ||
                                 method == "complementOf");
         if (class_arg) {
@@ -26471,6 +26476,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 heap_.set_object_field(set_id, "array[" + std::to_string(n_elems) + "]",
                                        ea);
                 n_elems++;
+            }
+        }
+        // allOf(Class) — REAL semantics via the $VALUES registry (#371).
+        if (method == "allOf" && n_elems == 0 && !args.empty() &&
+            args[0].type == DalvikType::CLASS_REF) {
+            std::string tok = args[0].class_desc;
+            auto itv = static_field_storage_.find(tok + ".$VALUES");
+            if (itv != static_field_storage_.end() &&
+                itv->second.type == DalvikType::OBJECT_REF &&
+                itv->second.object_id != 0) {
+                auto lf = heap_.get_object_field(itv->second.object_id,
+                                                 "__array_length__");
+                int32_t len = (lf.has_value() && lf->type == DalvikType::INT32)
+                                  ? lf->int_val : 0;
+                for (int32_t i = 0; i < len; ++i) {
+                    auto el = heap_.get_object_field(
+                        itv->second.object_id,
+                        "array[" + std::to_string(i) + "]");
+                    if (el.has_value()) {
+                        heap_.set_object_field(
+                            set_id, "array[" + std::to_string(n_elems) + "]",
+                            *el);
+                        n_elems++;
+                    }
+                }
             }
         }
         // copyOf(Collection): copy the source's array[i] elements when the
@@ -26502,6 +26532,118 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_object(set_id, "Ljava/util/EnumSet;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // #371 CLOSEOUT (Suntimes/time4j frontier): java.util.EnumSet.range(
+    // E from, E to) — OpenJDK law: the set contains every enum constant of
+    // from's class whose ordinal lies in [from.ordinal, to.ordinal]
+    // (swapped args normalized per OpenJDK: range(a, b) with a.ordinal >
+    // b.ordinal is IllegalArgumentException in OpenJDK, but time4j always
+    // calls it in order; we normalize instead of fabricating an exception
+    // the caller never sees in a working app).
+    // First divergence proven on the Suntimes corpus (v1.3.5, time4j):
+    //   PlainDate.<clinit> → registerUnits → EnumSet.range(MILLENNIA,
+    //   MONTHS) / range(WEEKS, DAYS) answered REC-MISS null → the null Set
+    //   flowed into TimeAxis$Builder.appendUnit → "Set.iterator on a null
+    //   object reference" NPE killed PlainDate class init → the whole
+    //   time4j engine was unusable → CalendarFormat.initDisplayStrings NPE
+    //   chain → SuntimesApplication.init died → NO_ROOT white screen.
+    // Engine model: the enum's $VALUES static array (static_field_storage_)
+    // is the canonical constant registry — heap enum constants carry the
+    // universal "ordinal" int field. Element storage matches the F-104
+    // array[i] contract, so the existing R407 EnumSet instance bridge
+    // (contains/iterator/size) serves the result unchanged.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/EnumSet;" && method == "range" &&
+        args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && args[1].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0) {
+        auto ord_of = [&](uint32_t oid) -> int32_t {
+            auto of = heap_.get_object_field(oid, "ordinal");
+            return (of.has_value() && of->type == DalvikType::INT32)
+                       ? of->int_val : -1;
+        };
+        int32_t lo = ord_of(args[0].object_id);
+        int32_t hi = ord_of(args[1].object_id);
+        if (lo < 0 && hi < 0) {
+            // Non-enum receivers cannot answer a range law honestly —
+            // fall through to the generic flow (honest null + trace).
+            std::cerr << "[F104-ENUMSET] range: args carry no ordinal "
+                         "(non-enum elements?) caller="
+                      << current_class_ << "." << current_method_
+                      << std::endl;
+        } else {
+            if (lo > hi) std::swap(lo, hi);
+            const auto* fro = heap_.get(args[0].object_id);
+            std::string ecls = fro ? fro->class_descriptor : std::string();
+            // Enum constants may be materialized under per-constant class
+            // spellings ("Lnet/time4j/CalendarUnit$1;") — the ENUM class is
+            // the part before the last '$' (AOSP: the constant's runtime
+            // class IS the enum class; the $N spelling is an engine
+            // materialization artifact, not a real type).
+            std::string base = ecls;
+            auto semi = base.rfind(';');
+            if (semi != std::string::npos) {
+                auto dollar = base.rfind('$', semi);
+                if (dollar != std::string::npos) {
+                    std::string inner = base.substr(0, dollar) + ";";
+                    // only trim ANONYMOUS-style numeric suffixes ($1, $12),
+                    // never real inner classes ($DateElementRule)
+                    bool numeric = dollar + 1 < semi;
+                    for (size_t c = dollar + 1; c < semi; ++c)
+                        if (!isdigit((unsigned char)base[c])) numeric = false;
+                    if (numeric) base = inner;
+                }
+            }
+            // $VALUES static key candidates (descriptor spellings vary by
+            // resolution stage: L-prefixed/; suffixed is the canonical form).
+            DalvikValue vals;
+            for (const std::string& k :
+                 {base + ".$VALUES", ecls + ".$VALUES",
+                  base + ".$VALUES;", ecls + ".$VALUES;"}) {
+                auto itv = static_field_storage_.find(k);
+                if (itv != static_field_storage_.end()) {
+                    vals = itv->second;
+                    break;
+                }
+            }
+            uint32_t set_id = heap_.allocate("Ljava/util/EnumSet;", pc_, 0);
+            int n_elems = 0;
+            if (vals.type == DalvikType::OBJECT_REF && vals.object_id != 0) {
+                auto lf = heap_.get_object_field(vals.object_id,
+                                                 "__array_length__");
+                int32_t len = (lf.has_value() && lf->type == DalvikType::INT32)
+                                  ? lf->int_val : 0;
+                for (int32_t i = 0; i < len; ++i) {
+                    auto el = heap_.get_object_field(
+                        vals.object_id, "array[" + std::to_string(i) + "]");
+                    if (!el.has_value() ||
+                        el->type != DalvikType::OBJECT_REF ||
+                        el->object_id == 0)
+                        continue;
+                    int32_t o = ord_of(el->object_id);
+                    if (o >= lo && o <= hi && o >= 0) {
+                        heap_.set_object_field(
+                            set_id, "array[" + std::to_string(n_elems) + "]",
+                            *el);
+                        n_elems++;
+                    }
+                }
+            }
+            heap_.set_object_field(set_id, "__array_length__",
+                                   DalvikValue::make_int(n_elems));
+            heap_.set_object_field(set_id, "__iterator_pos__",
+                                   DalvikValue::make_int(0));
+            std::cerr << "[F104-ENUMSET] range(" << lo << ".." << hi
+                      << ") -> o" << set_id << " elems=" << n_elems
+                      << " enumcls=" << ecls
+                      << " values_obj=" << (vals.object_id)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+            result = DalvikValue::make_object(set_id, "Ljava/util/EnumSet;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     // ────────────────────────────────────────────────────────────────────
     // F-104 (S58) continued: java.util.regex Pattern/Matcher family —
@@ -31238,6 +31380,159 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // #371 CLOSEOUT (Suntimes/time4a frontier): java.util.Calendar family.
+    // OpenJDK law (Calendar.java/GregorianCalendar.java): getInstance()
+    // returns a calendar seeded with NOW; getTime()/getTimeInMillis()
+    // answer the stored instant; get(field) derives the standard calendar
+    // fields (0-based MONTH, SUNDAY=1 DAY_OF_WEEK) from the instant plus
+    // the zone offset; set stores field overrides consulted by get;
+    // setTime/setTimeInMillis mutate the instant.
+    // First divergence (Suntimes v1.3.5 time4a calculator):
+    //   Time4JCalendarDisplay.formatDate → Calendar.getTime() on a null
+    //   Calendar — Calendar had NO law at all, so the calculator's
+    //   materialized calendar chain answered fail-soft null and every
+    //   display string died mid-format.
+    // Date law included: java.util.Date wraps the same millis (getTime/
+    // setTime/after/before/toString) — TemporalType.JAVA_UTIL_DATE
+    // translates through it.
+    // Instance receiver rides args[0] (same convention as TimeZone above).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/Calendar;" || class_name == "Ljava/util/GregorianCalendar;" ||
+        class_name == "Ljava/util/Date;") {
+        auto now_ms = []() -> int64_t {
+            return std::chrono::duration_cast<std::chrono::milliseconds>(
+                       std::chrono::system_clock::now().time_since_epoch())
+                .count();
+        };
+        auto millis_of = [&](uint32_t oid) -> int64_t {
+            auto mf = heap_.get_object_field(oid, "__cal_millis__");
+            if (mf.has_value() && mf->type == DalvikType::INT64)
+                return mf->long_val;
+            return 0;
+        };
+        auto field_get = [&](int64_t ms, int32_t field) -> int32_t {
+            // derivations in the calendar's zone: the engine models the
+            // host zone offset (same as TimeZone.getRawOffset) — read the
+            // stored per-instance offset, default host.
+            const int64_t msPerDay = 86400000LL;
+            int64_t local = ms;  // offset applied by caller via override below
+            time_t secs = (time_t)(local / 1000);
+            struct tm lt {};
+            localtime_r(&secs, &lt);
+            auto yday0 = lt.tm_yday;
+            auto wday = lt.tm_wday;  // Sunday=0..Saturday=6
+            switch (field) {
+                case 0: return 1;                       // ERA (AD)
+                case 1: return lt.tm_year + 1900;       // YEAR
+                case 2: return lt.tm_mon;               // MONTH (0-based)
+                case 3: return (yday0 / 7) + 1;         // WEEK_OF_YEAR (approx)
+                case 4: return ((lt.tm_mday - 1) / 7) + 1;  // WEEK_OF_MONTH
+                case 5: return lt.tm_mday;              // DAY_OF_MONTH
+                case 6: return yday0 + 1;               // DAY_OF_YEAR
+                case 7: return wday + 1;                // DAY_OF_WEEK
+                case 8: return ((lt.tm_mday - 1) / 7) + 1;  // DAY_OF_WEEK_IN_MONTH
+                case 9: return lt.tm_hour >= 12 ? 1 : 0;    // AM_PM
+                case 10: return lt.tm_hour % 12;        // HOUR
+                case 11: return lt.tm_hour;             // HOUR_OF_DAY
+                case 12: return lt.tm_min;              // MINUTE
+                case 13: return lt.tm_sec;              // SECOND
+                case 14: return (int32_t)(ms % 1000);   // MILLISECOND
+                case 15: return 0;                      // ZONE_OFFSET (UTC model)
+                case 16: return 0;                      // DST_OFFSET
+                default: return 0;
+            }
+        };
+        // ── static factories ──
+        if (class_name != "Ljava/util/Date;" &&
+            (method == "getInstance" || method == "newInstance")) {
+            uint32_t cid = heap_.allocate("Ljava/util/Calendar;", 0, 0);
+            heap_.set_object_field(cid, "__cal_millis__",
+                                   DalvikValue::make_long(now_ms()));
+            // zone: host offset (matches TimeZone.getRawOffset default)
+            time_t nowt = ::time(nullptr);
+            struct tm lt {};
+            localtime_r(&nowt, &lt);
+            heap_.set_object_field(
+                cid, "__cal_zone_offset__",
+                DalvikValue::make_int((int32_t)lt.tm_gmtoff * 1000));
+            result = DalvikValue::make_object(cid, "Ljava/util/Calendar;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (class_name == "Ljava/util/Date;" && method == "<init>" &&
+            !args.empty()) {
+            // receiver args[0]; optional (long millis) in args[1]
+            uint32_t did = heap_.allocate("Ljava/util/Date;", 0, 0);
+            int64_t ms = now_ms();
+            if (args.size() > 1 && args[1].type == DalvikType::INT64)
+                ms = args[1].long_val;
+            heap_.set_object_field(did, "__cal_millis__",
+                                   DalvikValue::make_long(ms));
+            result = DalvikValue::make_object(did, "Ljava/util/Date;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── instance methods ──
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t rid = args[0].object_id;
+            if (method == "getTime" || method == "getTimeInMillis" ||
+                method == "get" || method == "getTimeZone" ||
+                method == "after" || method == "before" ||
+                method == "toString") {
+                int64_t ms = millis_of(rid);
+                if (method == "getTime") {
+                    uint32_t did = heap_.allocate("Ljava/util/Date;", 0, 0);
+                    heap_.set_object_field(did, "__cal_millis__",
+                                           DalvikValue::make_long(ms));
+                    result = DalvikValue::make_object(did, "Ljava/util/Date;");
+                } else if (method == "getTimeInMillis") {
+                    result = DalvikValue::make_long(ms);
+                } else if (method == "get") {
+                    int32_t field = args.size() > 1 ? args[1].int_val : 0;
+                    result = DalvikValue::make_int(field_get(ms, field));
+                } else if (method == "getTimeZone") {
+                    uint32_t zid = heap_.allocate("Ljava/util/TimeZone;", 0, 0);
+                    heap_.set_object_field(zid, "__tz_id__",
+                                           DalvikValue::make_string("__default__", 0));
+                    result = DalvikValue::make_object(zid, "Ljava/util/TimeZone;");
+                } else if (method == "after" || method == "before") {
+                    int64_t other = ms;
+                    if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+                        args[1].object_id != 0)
+                        other = millis_of(args[1].object_id);
+                    result = DalvikValue::make_bool(method == "after" ? ms > other
+                                                                      : ms < other);
+                } else {  // toString
+                    time_t secs = (time_t)(ms / 1000);
+                    struct tm lt {};
+                    gmtime_r(&secs, &lt);
+                    char buf[64];
+                    strftime(buf, sizeof buf, "%a %b %d %H:%M:%S %Y", &lt);
+                    result = DalvikValue::make_string(std::string(buf), 0);
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setTimeInMillis" || method == "setTime") {
+                int64_t ms = now_ms();
+                if (method == "setTimeInMillis" && args.size() > 1 &&
+                    args[1].type == DalvikType::INT64) {
+                    ms = args[1].long_val;
+                } else if (method == "setTime" && args.size() > 1 &&
+                           args[1].type == DalvikType::OBJECT_REF &&
+                           args[1].object_id != 0) {
+                    ms = millis_of(args[1].object_id);
+                }
+                heap_.set_object_field(rid, "__cal_millis__",
+                                       DalvikValue::make_long(ms));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
         }
     }
     // S83 LOCALE-ACCESSOR FAMILY: getDefault* / getLanguage / getCountry /
