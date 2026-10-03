@@ -408,7 +408,7 @@ as AOSP-cited semantic laws.
 
 The generic-fix campaign (§12 order) executed with the fan-out law (§14). Every fix is
 generic (no package conditionals); every wave re-proved the regression battery (goldens
-5/5 ×3 byte-identical, loading probe 23/23, uninstall 16/16). Root registry: 530→536.
+5/5 ×3 byte-identical, loading probe 23/23, uninstall 16/16). Root registry: 530→535.
 
 ### ROOT-A — java.util/java.lang null contracts (R-NEW-458/459/460) — FIXED
 

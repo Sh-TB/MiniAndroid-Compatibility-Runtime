@@ -1,3 +1,6 @@
+<!-- STATE FILE STATUS (continuation §8): HISTORICAL — EXP-090 era snapshot.
+     DO NOT update this file per-wave. The SINGLE LIVE STATE SOURCE is
+     CAMPAIGN_STATE.md (repo root). Current HEAD and canonical numbers live there. -->
 # MiniAndroid Agent State — EXP-090 Campaign
 
 ## Current Commit
