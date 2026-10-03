@@ -1,0 +1,19 @@
+{
+  "package": "com.probe.gatea",
+  "versionName": "0.7.0",
+  "versionCode": 7,
+  "mainActivity": "com.probe.gatea.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.WRITE_EXTERNAL_STORAGE"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.probe.gatea/base.apk",
+  "hostCodePath": "probe_store/data/app/com.probe.gatea/base.apk",
+  "apkSha256": "883c43ae1cadcc470cb280f0168ab1a8289fc34655c33559b89fc7af6b46f489",
+  "apkSize": 119314,
+  "installedAt": "2026-10-03T17:06:36Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

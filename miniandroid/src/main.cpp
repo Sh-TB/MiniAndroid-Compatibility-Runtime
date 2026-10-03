@@ -585,16 +585,21 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
     // AOSP PMS law (PackageManagerService.installNativeLibraries): install
     // extracts ONE ABI's lib/ tree into the codePath's lib dir
     // (nativeLibraryDir); the ABI is the device's preferred ABI present in
-    // the APK (Build.SUPPORTED_ABIS order: arm64-v8a > armeabi-v7a >
-    // x86_64 > x86 for this device profile). Extracted bytes are REAL
-    // (entry-extracted + SHA-verified); the manifest lives in
-    // native_libs.json beside package.json so pkginspect/pkgrecord can
+    // the APK (Build.SUPPORTED_ABIS order). #371 CLOSEOUT (S-2): this
+    // device profile's SUPPORTED_ABIS = [x86_64 (host-EXECUTABLE),
+    // x86, arm64-v8a, armeabi-v7a (extraction-only — the runtime has no
+    // binary translation, so arm libs are extracted for provenance but a
+    // load attempt reports the REAL dlopen refusal)]. Preferring the
+    // host-executable ABI is what makes native execution REAL for
+    // multi-ABI APKs, matching real x86_64 Android devices. Extracted
+    // bytes are REAL (entry-extracted + SHA-verified); the manifest lives
+    // in native_libs.json beside package.json so pkginspect/pkgrecord can
     // serve the identity without re-parsing the APK.
     std::string primary_abi;
     std::vector<std::pair<std::string, unsigned long long>> extracted;
     {
-        static const char* kAbiOrder[] = {"arm64-v8a", "armeabi-v7a",
-                                          "x86_64", "x86"};
+        static const char* kAbiOrder[] = {"x86_64", "x86", "arm64-v8a",
+                                          "armeabi-v7a"};
         std::vector<std::string> libs = info.native_libraries;
         if (libs.empty()) {
             for (const auto& e : info.all_entries)
