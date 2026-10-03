@@ -1287,6 +1287,14 @@ public:
     void set_manifest_providers(std::vector<std::string> classes) {
         manifest_providers_ = std::move(classes);
     }
+    // GATE A (issue #370): manifest <provider> name+authorities pairs —
+    // the PackageManager.getPackageInfo(GET_PROVIDERS) law serves the same
+    // identity AOSP PackageParser records on ProviderInfo (name,
+    // authorities). Order follows manifest order.
+    void set_manifest_provider_identity(
+        std::vector<std::pair<std::string, std::string>> name_authorities) {
+        manifest_provider_identity_ = std::move(name_authorities);
+    }
     // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
     // PackageManager.getActivityInfo().metaData law (AOSP PackageItemInfo).
     void set_activity_meta_data(
@@ -2614,6 +2622,10 @@ public:
     void flush_finalizers();
     // S-1 FIX: manifest <provider> classes (install stage, AOSP order).
     std::vector<std::string> manifest_providers_;
+    // GATE A: manifest <provider> name+authorities identity pairs.
+    std::vector<std::pair<std::string, std::string>> manifest_provider_identity_;
+    // GATE A: provider object → bound context object (attachInfo law).
+    std::map<uint32_t, uint32_t> provider_context_;
     // S-1 FIX: the provider install stage (runs at bind entry, every path).
     void install_content_providers(DalvikExecutionResult& result);
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes

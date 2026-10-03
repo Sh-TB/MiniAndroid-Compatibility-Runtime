@@ -260,4 +260,36 @@ PathResolution resolve_android_path(const std::string& logical) {
     return r;
 }
 
+// ── GATE A (issue #370): reverse mapping — host backing → logical ───────
+// Same category table as resolve_android_path, walked backwards. Only
+// store-internal host paths map; anything else returns "" (the caller
+// then keeps the host spelling rather than inventing an Android path).
+std::string logical_android_path(const fs::path& host_path) {
+    std::error_code ec;
+    std::string h = fs::absolute(host_path, ec).string();
+    if (ec) h = host_path.string();
+    const std::string& root = g_app_data_root;
+    auto map_prefix = [&](const std::string& host_prefix,
+                          const char* logical_prefix) -> std::string {
+        if (h == host_prefix) return logical_prefix;
+        if (h.rfind(host_prefix + "/", 0) == 0)
+            return std::string(logical_prefix) + h.substr(host_prefix.size());
+        return "";
+    };
+    std::string out;
+    // Sandbox: <root>/data/data/<pkg>/…  → /data/data/<pkg>/…
+    out = map_prefix(fs::path(root) / "data" / "data", "/data/data");
+    if (!out.empty()) return out;
+    // Installed code: <root>/data/app/<pkg>/… → /data/app/<pkg>/…
+    out = map_prefix(fs::path(root) / "data" / "app", "/data/app");
+    if (!out.empty()) return out;
+    // External volume: <root>/storage/emulated/0… → /storage/emulated/0…
+    out = map_prefix(fs::path(root) / "storage" / "emulated", "/storage/emulated");
+    if (!out.empty()) return out;
+    // System image fonts.
+    out = map_prefix(fs::path(root) / "system" / "fonts", "/system/fonts");
+    if (!out.empty()) return out;
+    return "";
+}
+
 } // namespace Storage

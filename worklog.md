@@ -6134,3 +6134,78 @@ Stage Summary:
 - All three batch Issues audited to their completion gates; Issues remain OPEN (per same-Issue protocol, no completion declaration).
 - Runtime improved generically: ASSETS-WITHOUT-ARSC law (assets no longer require resources.arsc) — validated by battery 121/121 + zero drift on all anchors.
 - Honest frontier recorded: Compose no-draw cases (ROOT-D), raumballer/tictactoe-classic NPE chains (F-NEW-168 faces), current-HEAD re-runs pending APK re-acquisition for hotdeath/bobball/pinyinfdroid, restart-after-game-over gap for androidgamesnake.
+
+---
+Task ID: GATE-A-370
+Agent: Super Z (main)
+Task: Issue #370 — INSTALL-ENVIRONMENT CAPABILITY GATE (GATE A): complete
+post-install inspection surface (identity/sandbox/files/resources/assets/
+dex/libs/db/prefs/manifest/providers → inspection → provenance → evidence),
+independent of rendering.
+
+Work Log:
+- LAWS READ: CONSTITUTION_V2, CODER_REQUEST_PROTOCOL, data_root.h ONE path
+  law, F-NEW-231/234 + LOADING-CAMPAIGN R-NEW-457 prior work (re-verified,
+  not assumed). CURRENT HEAD 24326b44; rebuilt binary sha16 768085b1207ad55d.
+- NEW AGENT CLI `pkginspect` (diagnostics/install_inspection.cpp, 13
+  sections: identity/manifest/entries/dex/resources/assets/libs/media/data/
+  external/dbs/prefs/provenance; --what filter; --jsonl full stream;
+  DIRECT-APK mode; self-contained ZIP central-dir + ELF reader (class/
+  machine/SONAME/JNI dynsym); ARSC inventory() accessor).
+- MANIFEST READER extended additively: <service>/<receiver> components +
+  intent-filter actions (GATE A §12).
+- SYNTHETIC PROBE fixtures/gate_a_probe (aapt2-linked, provider+service+
+  receiver, per-op try/catch, machine-readable results via openFileOutput —
+  physical write proof + view-tree channel). FIRST RUN FOUND 11 GENERIC
+  DIVERGENCES; all fixed generically, probe re-run GREEN: 69 PASS / 0 FAIL /
+  2 INFO (documented laws).
+- ENGINE FIXES (all generic, AOSP-law sourced): (1) logical_android_path
+  reverse law — Context dir family returns Android-LOGICAL paths, host
+  store spellings no longer app-visible (getFilesDir et al); (2)
+  getDataDir/getCodeCacheDir/getNoBackupFilesDir/getFileStreamPath/
+  databaseList/getObbDir singular laws (were REC-MISS null); (3)
+  getPackageInfo(GET_PROVIDERS) providers array + provider attachInfo(
+  Context,ProviderInfo) stage before onCreate + per-provider context law;
+  (4) getIdentifier resolves ANY type via ARSC find_id (was id-only, R-4);
+  (5) getString unknown id → Resources$NotFoundException (R-3 fake-"" removed);
+  (6) openRawResource serves real entry bytes via apk-entry law + NotFound
+  on miss (was unreadable stream/silent null); (7) System.loadLibrary/load
+  honest contract: request→ABI→installed entry→UnsatisfiedLinkError (was
+  silent void fake success); (8) MODE_APPEND bit law 0x8000 (was 0x0800 —
+  appends truncated prior bytes); (9) AFD declaredLength field+law;
+  (10) PFD.open arg-convention-proof File resolution; (11) ProviderInfo
+  authority field (AOSP singular) seeded both spellings.
+- §18 MULTI-APP PROOF 5/5 (scripts/s41_gatea_multiapp.py): simple
+  (gate_a_probe) / storage-heavy (chess: db+prefs+4 .so, 1912 classes) /
+  game (bouncy: 4 libs 25 assets) / resource-heavy (memory: 5175 entries) /
+  RENDER-FAIL (blockblast Compose white: 633 classes, 109 resources, 3 libs
+  — inspection completes identically). Each: install → SHA equality →
+  SOURCE HIDDEN → pkginspect pre/post → 3-run with file-io traces.
+- §19 NEGATIVE TESTS 17/17 (s41_gatea_negative.py): nonexistent package
+  (pkgaudit/uninstall/pkginspect), truncated+manifest-less+garbage APKs,
+  traversal/host-absolute/cross-package (probe ISO ops), missing
+  asset/file/resource → FNFE/NotFoundException, missing lib → ULE, invalid
+  DB header honest false, missing prefs honest empty.
+- §20 REINSTALL MATRIX 8/8 (s41_gatea_reinstall.py): install → write
+  (counter=1) → restart (=2) → inspect → uninstall (all trees gone) →
+  NOT_INSTALLED honesty → reinstall clean → fresh state (=1).
+- §16 UNIVERSAL TRACE: INSTALL_ENVIRONMENT_PROVENANCE_SCHEMA.jsonl —
+  20-stage canonical chain with typed results (SUCCESS/FAILURE/MISSING/
+  DENIED/UNSUPPORTED), plus MINIANDROID_FILE_IO per-op trace.
+- §22 ARTIFACTS: all 9 (CAPABILITY_GATE.md/.jsonl, API_MATRIX.jsonl 60
+  rows, PROVENANCE_SCHEMA.jsonl, NEGATIVE_TESTS.jsonl, MULTI_APP_PROOF.jsonl,
+  REINSTALL_MATRIX.jsonl, GAPS.md (8 gaps severity-ranked), AGENT_GUIDE.md).
+- §23 REGRESSION at HEAD 24326b44 / binary 768085b1207ad55d: user pixel
+  goldens 4/4 REAL_APP_CONTENT (2048 535c / snakedeluxe 1203c / minicraft
+  2416c / helloworld canonical); determinism 5/5 x3 byte-identical;
+  loading probe 23/23; uninstall 16/16; 121-stage battery re-run
+  (run/gatea_battery_v3.log).
+
+Stage Summary:
+- GATE A executed end-to-end with machine-readable evidence; inspection
+  layer proven INDEPENDENT of rendering on a render-FAIL app.
+- 11 probe-discovered divergences root-caused + fixed generically BEFORE
+  any completion claim (FAN-OUT: probe → law → fix → re-run → regression).
+- Capability 57/60 rows TESTED (~95%); 3 open gaps (G-3 content:// query,
+  G-5 AFD byte-equality, G-6 array String equality) recorded with next
+  actions; completion ledger with 34 rows posted to issue #370.
