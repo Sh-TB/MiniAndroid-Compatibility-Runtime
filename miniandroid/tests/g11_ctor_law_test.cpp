@@ -66,8 +66,15 @@ static void test_descriptor_gate() {
           "framework android.widget rejected");
     check(!gate("Ljava/lang/Object;"), "java.* rejected");
     check(!gate("Lkotlin/jvm/internal/Intrinsics;"), "kotlin.* rejected");
-    check(!gate("Lcom/google/android/material/button/MaterialButton;"),
-          "com.google.android.* rejected");
+    // EVOLVED LAW (ADDITIONAL-AUDIT P1-3): com.google.android.* is NOT
+    // blanket-rejected — AOSP authority for constructor execution is
+    // "does the class exist in the APK DEX", not the package prefix.
+    // Bundled Material components (MaterialButton, TextInputEditText, …)
+    // live under com.google.android.* AND inside the APK dex; their real
+    // <init> must run (the ctor hook's DEX class-index check remains the
+    // real authority for classes genuinely absent from the dex).
+    check(gate("Lcom/google/android/material/button/MaterialButton;"),
+          "com.google.android.* passes the prefix gate (DEX-existence law; hook is the real authority)");
     check(!gate("Lj$/util/Optional;"), "desugared j$ rejected");
     check(!gate(""), "empty descriptor rejected");
     check(!gate("L"), "one-char descriptor rejected");
@@ -90,7 +97,8 @@ static void test_factory_law() {
     {
         int calls = 0;
         rt.set_custom_view_ctor_hook(
-            [&](uint32_t, const std::string&) -> bool {
+            [&](uint32_t, const std::string&,
+                const std::vector<resources::AxmlAttribute>&) -> bool {
                 calls++;
                 return true;
             });
@@ -99,7 +107,7 @@ static void test_factory_law() {
         resources::LayoutInflater& inf = rt.inflater();
         auto& hook = inf.custom_view_ctor_hook();
         check(static_cast<bool>(hook), "lazy-created inflater carries the pre-installed hook");
-        if (hook) hook(1, "Ltest/View;");
+        if (hook) hook(1, "Ltest/View;", {});
         check(calls == 1, "pre-installed hook is invocable (calls=1)");
     }
     // B2: a hook installed AFTER the inflater exists must propagate
@@ -107,14 +115,15 @@ static void test_factory_law() {
     {
         int calls2 = 0;
         rt.set_custom_view_ctor_hook(
-            [&](uint32_t, const std::string&) -> bool {
+            [&](uint32_t, const std::string&,
+                const std::vector<resources::AxmlAttribute>&) -> bool {
                 calls2++;
                 return true;
             });
         resources::LayoutInflater& inf = rt.inflater();
         auto& hook = inf.custom_view_ctor_hook();
         check(static_cast<bool>(hook), "post-installed hook propagates to existing inflater");
-        if (hook) hook(2, "Ltest/View;");
+        if (hook) hook(2, "Ltest/View;", {});
         check(calls2 == 1, "replacement hook receives the call (calls2=1)");
     }
     rt.set_custom_view_ctor_hook(nullptr);  // leave runtime clean for other tests

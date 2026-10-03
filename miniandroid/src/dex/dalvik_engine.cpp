@@ -4039,6 +4039,42 @@ std::string xml_unescape_pass3(const std::string& in) {
 }
 }  // namespace
 
+// ASSETS-WITHOUT-ARSC LAW — shared asset entry/byte resolution.
+// AOSP AssetManager (AssetManager2 + ApkAssets) opens asset paths from the
+// APK ZIP directly; resources.arsc is a RESOURCE-table concern and its
+// absence must not make assets/ unreachable. ResourceRuntime::ensure_loaded
+// legitimately fails for arsc-less APKs ("no resources.arsc"), so every
+// asset lookup goes through these helpers: the runtime's cached parser when
+// available, a direct APK parse otherwise (generic — no package
+// conditionals).
+std::vector<std::string> DalvikExecutionEngine::asset_entry_names(
+    const std::string& prefix) {
+    std::vector<std::string> out;
+    if (apk_path_.empty()) return out;
+    if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+        for (const auto& ze :
+             resources::ResourceRuntime::instance().apk().list_entries_cached(prefix)) {
+            out.push_back(ze.name);
+        }
+        return out;
+    }
+    miniandroid::apk::ApkParser fallback;
+    for (const auto& ze : fallback.list_entries(apk_path_)) {
+        out.push_back(ze.name);
+    }
+    return out;
+}
+
+std::vector<uint8_t> DalvikExecutionEngine::asset_entry_bytes(
+    const std::string& entry) {
+    if (apk_path_.empty()) return {};
+    if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+        return resources::ResourceRuntime::instance().apk().extract_entry_cached(entry);
+    }
+    miniandroid::apk::ApkParser fallback;
+    return fallback.extract_entry(apk_path_, entry);
+}
+
 // Pass-3 (K-34): resolve an open asset stream chain to path + position.
 // Same wrapper hops the readLine block always used (BufferedReader.in →
 // InputStreamReader.source → InputStream), factored out so InputStream
@@ -4126,16 +4162,12 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
         // lookup wrongly hit "assets/META-INF/…" and answered empty.
         if (path.rfind("apk-entry:", 0) == 0) {
             const std::string entry = path.substr(strlen("apk-entry:"));
-            if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-                auto bytes = resources::ResourceRuntime::instance()
-                                 .apk()
-                                 .extract_entry_cached(entry);
-                content.assign(bytes.begin(), bytes.end());
-                if (content.empty()) {
-                    std::cerr << "[S102-APK-ENTRY] MISS " << entry
-                              << " (honest empty — no fabrication)"
-                              << std::endl;
-                }
+            auto bytes = asset_entry_bytes(entry);
+            content.assign(bytes.begin(), bytes.end());
+            if (content.empty()) {
+                std::cerr << "[S102-APK-ENTRY] MISS " << entry
+                          << " (honest empty — no fabrication)"
+                          << std::endl;
             }
         } else if (path.rfind("apkfd:", 0) == 0) {
             // LOADING-CAMPAIGN (R-2 FIX): AssetFileDescriptor-backed stream —
@@ -4149,12 +4181,8 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
                                                   : spec.find(':', c1 + 1);
             if (c1 != std::string::npos && c2 != std::string::npos) {
                 std::string entry = spec.substr(c2 + 1);
-                if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-                    auto bytes = resources::ResourceRuntime::instance()
-                                     .apk()
-                                     .extract_entry_cached(entry);
-                    content.assign(bytes.begin(), bytes.end());
-                }
+                auto bytes = asset_entry_bytes(entry);
+                content.assign(bytes.begin(), bytes.end());
             }
         } else {
             // LOADING-CAMPAIGN (R-5 FIX): asset bytes are extracted from the
@@ -4162,10 +4190,8 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
             // popen("unzip -p …") host-tool dependency (uncapped, injection-
             // prone, unprovenanced) is REMOVED. One byte source law: the
             // APK entry table.
-            if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-                auto bytes = resources::ResourceRuntime::instance()
-                                 .apk()
-                                 .extract_entry_cached("assets/" + path);
+            {
+                auto bytes = asset_entry_bytes("assets/" + path);
                 content.assign(bytes.begin(), bytes.end());
             }
         }
@@ -5819,12 +5845,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // first read is EOF (the old fake-success poisoned downstream
         // state: apps silently continued on empty configs).
         bool asset_found = false;
-        if (!apk_path_.empty() &&
-            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-            for (const auto& ze :
-                 resources::ResourceRuntime::instance().apk().list_entries_cached("assets/")) {
-                if (ze.name == "assets/" + asset_path) { asset_found = true; break; }
-            }
+        for (const auto& name : asset_entry_names("assets/")) {
+            if (name == "assets/" + asset_path) { asset_found = true; break; }
         }
         miniandroid::diagnostics::FileIoTrace::instance().record(
             "OPEN", "assets/" + asset_path + " @ apk=" + apk_path_, asset_found,
@@ -40698,12 +40720,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // contract as the try_recursive_invoke site — one contract, both
         // dispatch layers (the audit's duplicate-open-site finding).
         bool asset_found = false;
-        if (!apk_path_.empty() &&
-            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-            for (const auto& ze :
-                 resources::ResourceRuntime::instance().apk().list_entries_cached("assets/")) {
-                if (ze.name == "assets/" + asset_name) { asset_found = true; break; }
-            }
+        for (const auto& name : asset_entry_names("assets/")) {
+            if (name == "assets/" + asset_name) { asset_found = true; break; }
         }
         miniandroid::diagnostics::FileIoTrace::instance().record(
             "OPEN", "assets/" + asset_name + " @ apk=" + apk_path_, asset_found,
@@ -40749,13 +40767,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::string prefix = dir.empty() ? "assets/" : "assets/" + dir + "/";
         std::vector<std::string> children;
         bool dir_present = false;
-        if (!apk_path_.empty() &&
-            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-            const auto entries =
-                resources::ResourceRuntime::instance().apk().list_entries_cached(prefix);
+        {
+            // ASSETS-WITHOUT-ARSC LAW: listing is arsc-independent.
+            const auto entry_names = asset_entry_names(prefix);
             std::set<std::string> uniq;
-            for (const auto& ze : entries) {
-                const std::string rel = ze.name.substr(prefix.size());
+            for (const auto& name : entry_names) {
+                const std::string rel = name.substr(prefix.size());
                 if (rel.empty()) continue;
                 dir_present = true;  // an entry under the prefix exists
                 size_t slash = rel.find('/');
@@ -40809,13 +40826,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                             ? args[0].string_val
                                             : "");
         const auto* hit = static_cast<const apk::ZipEntry*>(nullptr);
+        // ASSETS-WITHOUT-ARSC LAW: openFd needs the FULL entry (stored flag,
+        // offset, length for the AFD) — arsc-independent resolution inline:
+        // the runtime's cached parser when loadable, a direct APK parse
+        // otherwise (generic; no package conditionals).
         std::vector<apk::ZipEntry> entries;
-        if (!apk_path_.empty() &&
-            resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
-            entries = resources::ResourceRuntime::instance().apk().list_entries_cached("assets/");
-            for (const auto& ze : entries) {
-                if (ze.name == "assets/" + asset_name) { hit = &ze; break; }
-            }
+        if (resources::ResourceRuntime::instance().ensure_loaded(apk_path_)) {
+            entries =
+                resources::ResourceRuntime::instance().apk().list_entries_cached("assets/");
+        } else if (!apk_path_.empty()) {
+            miniandroid::apk::ApkParser fallback;
+            entries = fallback.list_entries(apk_path_);
+        }
+        for (const auto& ze : entries) {
+            if (ze.name == "assets/" + asset_name) { hit = &ze; break; }
         }
         miniandroid::diagnostics::FileIoTrace::instance().record(
             "OPEN", "assets/" + asset_name + " (fd) @ apk=" + apk_path_,

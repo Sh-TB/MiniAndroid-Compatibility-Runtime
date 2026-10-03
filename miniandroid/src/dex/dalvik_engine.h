@@ -2051,6 +2051,14 @@ public:
     bool resolve_asset_stream(uint32_t start_id, std::string& path, size_t*& pos);
     // Pass-3 (K-34): full asset bytes, extracted once per path and cached.
     const std::string& cached_asset_bytes(const std::string& path);
+    // ASSETS-WITHOUT-ARSC LAW: AOSP AssetManager resolves asset paths from
+    // the APK ZIP independently of resources.arsc. ensure_loaded() fails
+    // for arsc-less APKs; asset lookups must not inherit that failure.
+    // These helpers answer entry-name listing / raw bytes with a direct-APK
+    // fallback (generic, no package conditionals). Names carry their full
+    // ZIP path (e.g. "assets/foo.bin").
+    std::vector<std::string> asset_entry_names(const std::string& prefix);
+    std::vector<uint8_t> asset_entry_bytes(const std::string& entry);
     // Pass-3 (K-35): advance an XmlPullParser state by one event — REAL event
     // progression (START_DOCUMENT → tags/text → END_DOCUMENT) with termination.
     void xml_pull_advance(XmlPullState& st);
