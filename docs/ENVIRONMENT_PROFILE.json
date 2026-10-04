@@ -29,27 +29,26 @@
  "ENV-004_ram_storage": {
   "ram": "host-bound (no ActivityManager memory pressure simulation)",
   "storage": "host-bound data-root tree; internal/external/DE/user_de fences proven",
-  "source": "#370 \u00a7B storage probes; DE-01"
+  "source": "#370 §B storage probes; DE-01"
  },
  "ENV-005_cpu_abi": {
   "host_arch": "x86_64",
   "advertised_abis": [
-   "arm64-v8a",
-   "armeabi-v7a",
-   "armeabi"
+   "x86_64"
   ],
   "executable_abis": [
    "x86_64"
   ],
   "native_bridge": false,
   "abi_selection_law": "install prefers lib/x86_64 when present (host-executable); ARM-only APKs extract their ARM tree and honestly cannot execute it",
-  "s2_native_execution": "dlopen/JNI_OnLoad/dlsym/SystemV-thunk; NATX-01..10 10/10 x3 (fib=610)"
+  "s2_native_execution": "dlopen/JNI_OnLoad/dlsym/SystemV-thunk; NATX-01..10 10/10 x3 (fib=610)",
+  "advertised_abis_note": "#375 §5 FA-01 fix (commit post-07cdde2f): Build.SUPPORTED_ABIS previously advertised [arm64-v8a, armeabi-v7a, armeabi] — an arm64 device persona with NO translation. Honest seed = [x86_64] (the host-executable ABI). ARM-only APKs still extract their lib tree (install ABI law, main.cpp kAbiOrder) and honest dlopen refusal on load."
  },
  "ENV-006_graphics": {
   "backend": "PortableGL (software rasterizer)",
   "gles_max_version": 2,
   "vulkan": false,
-  "egl_facade": "JSR-239 EGL/GLES facade (checkGL20 PASS \u2014 tictactoedeluxe evidence)",
+  "egl_facade": "JSR-239 EGL/GLES facade (checkGL20 PASS — tictactoedeluxe evidence)",
   "framebuffer": "1080x1920 RGBA software framebuffer"
  },
  "ENV-007_media": {

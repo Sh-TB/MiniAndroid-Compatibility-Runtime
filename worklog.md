@@ -6657,3 +6657,17 @@ Stage Summary:
 - #374 98-section contract audited for the first time (was zero-comment); reconciliation matrix + contract ledger committed as machine-readable docs.
 - Four generic platform-contract laws landed (collections/instanceof/iteration) — all rooted from the ordered F-NEW-235 frontier, all probe-verified, all regression-clean at 3 clean runs.
 - F-NEW-235 honestly PARTIAL-FIX: 3 of its 4 validator faces closed, the remaining null-row copy-chain face precisely named with stack evidence.
+
+---
+Task ID: cont375-BASE-COMPLETE-2
+Agent: Super Z (main agent)
+Task: #375 §5 CAPABILITY-HONESTY — FALSE_ADVERTISED_MATRIX + the FA-01/FA-02 ABI advertisement fix.
+
+Work Log:
+- §5 audit executed against every advertised surface: Build ABIs, hardware features, permissions, services, storage paths, native execution, graphics. Matrix: docs/FALSE_ADVERTISED_MATRIX.{md,jsonl} (10 rows: 2 FALSE_ADVERTISED-FIXED, 6 HONEST, 1 ABSENT-BY-PROFILE, 1 DOCUMENTED-LIMITATION).
+- FA-01/FA-02 FINDING: Build.SUPPORTED_ABIS advertised [arm64-v8a, armeabi-v7a, armeabi] (an arm64 device persona) while the host profile executes x86_64 only — a §5 violation ("must not advertise non-executable ARM unless translation exists"). FIXED: honest seed [x86_64], SUPPORTED_64=[x86_64], SUPPORTED_32=[], CPU_ABI=x86_64, CPU_ABI2="" (AOSP API 21+ convention). ENV-005 advertised_abis updated to match with a note.
+- Behavioral impact: NONE for the green corpus — anchors 5/5×3 byte-identical + goldens 4/4 immediately after the fix; arm-only APK flows unchanged (install ABI law extracts arm trees; honest dlopen refusal shapes intact); F-NEW-190 face preserved (WhatsApp's ABI utility needs a non-empty list — still satisfied).
+- Gates after the fix: negatives 17/17, reinstall 8/8, gate A 95/0/2, loading probe ALL PASS, skill 13/13, battery 124 ALL PASS, uninstall ALL PASS, multiapp 5/5.
+
+Stage Summary:
+- The platform's capability advertisement is now machine-audited (FA matrix committed) and the one found false claim (ARM ABI advertisement) is fixed with zero regression. ENVIRONMENT_PROFILE and Build statics agree with the executable truth.
