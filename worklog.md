@@ -6689,3 +6689,17 @@ Work Log:
 
 Stage Summary:
 - The negative suite now covers all §11 rows including URI-grant/unknown-authority and PendingIntent identity; two silent-wrong behaviors eliminated (unknown-authority null; fabricated PendingIntent). Zero drift.
+
+---
+Task ID: cont375-BASE-COMPLETE-4
+Agent: Super Z (main agent)
+Task: F-NEW-237 next() typed-array element fix — the butterfly null-row face closed; next face named.
+
+Work Log:
+- Root-caused the butterfly layer-list null-row NPE: my F-NEW-237 array-backed next() fallback read ONLY OBJECT-typed array slots; Arrays.asList products hold STRING-typed slots (DalvikValue::make_string) — every string row iterated as null → String.length-on-null in the board width validation (Ln;.<init> pc=108). FIXED: typed reads (get_object_array_string_element first, then ref-element) in CollectionShadow next().
+- fairymahjong verdict at binary bfd80dd3bcdf9255: dedup gate GONE, overlap gate GONE, "List is empty" GONE, butterfly width-validation NPE GONE — the board registry now builds through asList (heap_len=10/10/10/3 verified) and the game advances INTO the next face.
+- Next face named (registry): Lo;.b pc=52 getClass-on-<unset> — `move-object v7, v5` where v5 = move-result-object of an invoke-interface lookup on an engine-array-backed container that returned UNINITIALIZED (fell through every handler). Candidate register-model face: move-result-object propagating UNSET instead of a typed null.
+- F-NEW-237 typed fix regression: probe 14/14 ×3 (ea31dc0dc539df73); anchors 5/5×3 byte-identical; battery 124; gate A 97/0/2 (with N-18/N-19); negatives 19/19; goldens 4/4; reinstall 8/8; multiapp 5/5; loading/uninstall ALL PASS; skill 13/13; NATX 10/10×3 byte-identical (4d7761f744a7d5b7). Zero drift.
+
+Stage Summary:
+- The typed-array read law closes the third F-NEW-235 sub-face; the game now runs its own board registry deeper than any prior wave. The remaining face is named with trace evidence for the next session.

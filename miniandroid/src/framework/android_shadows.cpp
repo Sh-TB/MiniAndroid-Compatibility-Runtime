@@ -1150,27 +1150,44 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
         // F-NEW-237 array-backed parent fallback (see hasNext): serve the
         // element from the parent's array[i] store when the shadow state
-        // is empty but the heap fields are present.
+        // is empty but the heap fields are present. The F-235 wave note:
+        // the store is TYPED — Arrays.asList products hold STRING-typed
+        // slots (DalvikValue::make_string), reference lists hold
+        // OBJECT-typed slots; a ref-only read answered null for every
+        // string row (the butterfly layer-list NPE face: String.length on
+        // a null element inside a non-empty row list).
         {
             int32_t alen = 0;
             if (state->elements.empty() && heap_ &&
                 heap_->get_object_array_length(parent_id, alen) && alen >= 0 &&
                 pos < alen) {
-                uint32_t relem = 0;
-                if (heap_->get_object_array_ref_element(parent_id,
-                                                        static_cast<size_t>(pos),
-                                                        relem) &&
-                    relem != 0) {
+                std::string selem;
+                if (heap_->get_object_array_string_element(
+                        parent_id, static_cast<size_t>(pos), selem)) {
                     if (is_box)
                         heap_->set_object_int_field(obj_id, "__iterator_pos__",
                                                     pos + 1);
                     else
                         state->iterator_position = pos + 1;
-                    std::string relem_cls;
-                    if (heap_->get_object_class(relem, relem_cls))
-                        return CallResult::handled_object(relem, relem_cls);
-                    return CallResult::handled_object(relem,
-                                                      "Ljava/lang/Object;");
+                    return CallResult::handled_string(selem);
+                }
+                uint32_t relem = 0;
+                if (heap_->get_object_array_ref_element(parent_id,
+                                                        static_cast<size_t>(pos),
+                                                        relem)) {
+                    if (is_box)
+                        heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                    pos + 1);
+                    else
+                        state->iterator_position = pos + 1;
+                    if (relem != 0) {
+                        std::string relem_cls;
+                        if (heap_->get_object_class(relem, relem_cls))
+                            return CallResult::handled_object(relem, relem_cls);
+                        return CallResult::handled_object(relem,
+                                                          "Ljava/lang/Object;");
+                    }
+                    return CallResult::handled_null();
                 }
             }
         }
