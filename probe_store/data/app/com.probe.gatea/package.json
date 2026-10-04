@@ -12,8 +12,8 @@
   "origin": "sideload",
   "codePath": "/data/app/com.probe.gatea/base.apk",
   "hostCodePath": "probe_store/data/app/com.probe.gatea/base.apk",
-  "apkSha256": "1b9b32bf9243cde8db6eacabba63d7575d2ae7aa1ccdc8e8162bd819c6839be7",
-  "apkSize": 130232,
-  "installedAt": "2026-10-03T21:42:16Z",
+  "apkSha256": "c75308ad41e2a03c8575e0fe78719ffa41474623ad564010f315747c6970c6b7",
+  "apkSize": 119274,
+  "installedAt": "2026-10-04T05:07:07Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

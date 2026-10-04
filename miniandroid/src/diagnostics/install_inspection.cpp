@@ -886,6 +886,257 @@ static void emit_media(std::ostream& os, JsonlSink& jl,
 
 
 // ─────────────────────────────────────────────────────────────────────────
+// #373 ENV/APK prerequisite layer — "what does this APK REQUIRE vs what does
+// the MiniAndroid environment PROVIDE" (issue #373 §2/§12; feeding §D of the
+// 371/372 contract). AOSP laws:
+//   • uses-sdk minSdkVersion/targetSdkVersion → platform compatibility gate
+//     (a platform older than minSdk refuses install; younger than the
+//     declared target runs with compatibility behaviors) — SDK docs +
+//     frameworks/base PM.
+//   • uses-feature android.hardware.* / android.software.* with
+//     android:required (default TRUE per AOSP Manifest docs) →
+//     PackageManager.FEATURE_* availability contract.
+//   • android.hardware.opengles.versions → required GLES major version.
+//   • lib/<abi>/**.so + ELF e_machine → advertised-ABI vs executable-ABI
+//     truth (redroid case: advertising an ABI without a translator lets
+//     ARM-only APKs install and then crash at first dlopen). MiniAndroid's
+//     honest model: ONLY x86_64 native code executes (S-2 law, native
+//     thunk layer); other ABIs are extraction-only fixtures.
+//   • android.software.webview feature or Landroid/webkit/ DEX references
+//     → WebView provider requirement.
+// A prerequisite row is NEVER a verdict of "app unsupported" — it is a
+// machine-readable mismatch report feeding the first-divergence classifier.
+// ─────────────────────────────────────────────────────────────────────────
+static const char* miniandroid_environment_json() {
+    // One source of truth for the environment face the comparisons use.
+    // Values track the seeded device identity (dalvik_engine.cpp
+    // seed_framework_device_statics) + the S-2 native execution law.
+    return
+        "\"environment\": {"
+        "\"name\": \"MiniAndroid\","
+        "\"apiLevel\": 34,"
+        "\"apiVersionName\": \"14\","
+        "\"cpuArch\": \"x86_64\","
+        "\"advertisedAbis\": [\"arm64-v8a\", \"armeabi-v7a\", \"armeabi\"],"
+        "\"executableAbis\": [\"x86_64\"],"
+        "\"nativeBridge\": false,"
+        "\"gles\": {\"backend\": \"PortableGL (software)\", \"maxVersion\": 2, \"vulkan\": false},"
+        "\"webview\": true,"
+        "\"sqlite\": true,"
+        "\"mediaDecoders\": [\"png\", \"jpeg\", \"gif\", \"webp\", \"mp3\", \"wav\"],"
+        "\"hardwareFeatures\": {"
+        "\"touchscreen\": \"PRESENT\","
+        "\"camera\": \"ABSENT\","
+        "\"location.gps\": \"ABSENT\","
+        "\"telephony\": \"ABSENT\","
+        "\"bluetooth\": \"ABSENT\","
+        "\"nfc\": \"ABSENT\","
+        "\"microphone\": \"ABSENT\","
+        "\"sensor.compass\": \"ABSENT\","
+        "\"sensor.accelerometer\": \"EMULATED-DEFAULT\","
+        "\"wifi\": \"EMULATED-DEFAULT\"}"
+        "}";
+}
+
+static void emit_prerequisites(std::ostream& os, JsonlSink& jl,
+                               const std::vector<uint8_t>& manifest_bytes,
+                               const std::vector<ZipEntryMeta>& entries,
+                               apk::ApkParser& parser, const std::string& apk) {
+    apk::ManifestReader mr;
+    auto mi = mr.parse(manifest_bytes);
+
+    // ── collect ABI set + per-ABI .so machine truth ──
+    std::map<std::string, std::vector<std::string>> abi_libs; // abi -> entries
+    std::map<std::string, std::string> abi_machine;           // abi -> first ELF machine
+    for (const auto& e : entries) {
+        if (e.name.rfind("lib/", 0) != 0) continue;
+        std::string rest = e.name.substr(4);
+        auto slash = rest.find('/');
+        if (slash == std::string::npos) continue;
+        std::string abi = rest.substr(0, slash);
+        if (rest.size() <= slash + 1 ||
+            rest.substr(rest.size() - 3) != ".so")
+            continue;
+        abi_libs[abi].push_back(e.name);
+        if (!abi_machine.count(abi)) {
+            auto bytes = parser.extract_entry(apk, e.name);
+            if (!bytes.empty()) {
+                ElfInfo elf = parse_elf(bytes);
+                if (elf.valid) abi_machine[abi] = elf.machine;
+            }
+        }
+    }
+
+    // ── WebView requirement: feature declaration or DEX/webkit reference ──
+    bool webview_feature = false;      // webkit types referenced anywhere in DEX
+    bool webview_feature_declared = false;  // explicit android.software.webview feature
+    int gles_required = 0;
+    bool vulkan_required = false;
+    for (const auto& f : mi.uses_features) {
+        if (f == "android.software.webview") webview_feature_declared = true;
+        if (f.rfind("android.hardware.opengles.versions", 0) == 0)
+            gles_required = 2;  // feature declares GLES2 as a floor
+        if (f.rfind("android.hardware.vulkan", 0) == 0)
+            vulkan_required = true;
+    }
+    if (!webview_feature) {
+        // DEX-level detection (AOSP: apps can require WebView implicitly by
+        // linking android.webkit types without declaring the feature).
+        std::vector<std::string> dex_names;
+        for (const auto& e : entries)
+            if (classify_entry(e.name) == "DEX") dex_names.push_back(e.name);
+        for (const auto& dn : dex_names) {
+            auto bytes = parser.extract_entry(apk, dn);
+            if (bytes.empty()) continue;
+            static const char kWebkit[] = "Landroid/webkit/";
+            if (std::search(bytes.begin(), bytes.end(), kWebkit,
+                            kWebkit + strlen(kWebkit)) != bytes.end()) {
+                webview_feature = true;
+                break;
+            }
+        }
+    }
+
+    // ── dangerous permission classification (AOSP protection-level
+    //    dangerous groups, generic — not package-specific) ──
+    static const std::set<std::string> dangerous_prefixes = {
+        "android.permission.READ_CALENDAR", "android.permission.WRITE_CALENDAR",
+        "android.permission.CAMERA",
+        "android.permission.READ_CONTACTS", "android.permission.WRITE_CONTACTS",
+        "android.permission.GET_ACCOUNTS",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_PHONE_STATE", "android.permission.READ_PHONE_NUMBERS",
+        "android.permission.CALL_PHONE", "android.permission.ADD_VOICEMAIL",
+        "android.permission.USE_SIP", "android.permission.PROCESS_OUTGOING_CALLS",
+        "android.permission.BODY_SENSORS",
+        "android.permission.SEND_SMS", "android.permission.RECEIVE_SMS",
+        "android.permission.READ_SMS", "android.permission.RECEIVE_WAP_PUSH",
+        "android.permission.RECEIVE_MMS",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+    };
+
+    // ── environment comparison rows ──
+    // (schema from #373 §12; every mismatch classified, never "unsupported")
+    std::vector<std::string> mismatches;
+    std::vector<std::string> missing;
+    std::string abi_verdict = "NO_NATIVE_CODE";
+
+    if (!abi_libs.empty()) {
+        if (abi_libs.count("x86_64")) {
+            abi_verdict = "EXECUTABLE_NATIVE";
+        } else {
+            abi_verdict = "ABI_MISMATCH_TRANSLATION_REQUIRED";
+            std::string machines;
+            for (const auto& [abi, m] : abi_machine)
+                machines += abi + "(" + (m.empty() ? "elf?" : m) + ") ";
+            mismatches.push_back(
+                "APK ships native libs for [" + [&] {
+                    std::string a;
+                    for (const auto& [abi, _] : abi_libs)
+                        a += (a.empty() ? "" : ", ") + abi;
+                    return a;
+                }() + "] but executable ABI is x86_64 (no native bridge) " +
+                machines + "— install succeeds, first dlopen will fail (S-2 boundary)");
+            missing.push_back("native_translation");
+        }
+    }
+
+    int min_sdk = 0;
+    try { if (!mi.min_sdk_version.empty()) min_sdk = std::stoi(mi.min_sdk_version); } catch (...) {}
+    if (min_sdk > 34) {
+        mismatches.push_back("minSdkVersion=" + mi.min_sdk_version +
+                             " > environment API 34 — platform compatibility gate");
+        missing.push_back("api_level_" + mi.min_sdk_version);
+    }
+    if (gles_required > 2) {
+        mismatches.push_back("requires GLES " + std::to_string(gles_required) +
+                             "+; environment provides GLES2 software facade");
+        missing.push_back("gles" + std::to_string(gles_required));
+    }
+    if (vulkan_required) {
+        mismatches.push_back("declares android.hardware.vulkan.* feature but "
+                             "environment graphics backend is GLES2 software "
+                             "(no Vulkan) — a Vulkan-native renderer will not "
+                             "initialize");
+        missing.push_back("vulkan");
+    }
+    if (webview_feature) {
+        // environment webview=true — availability satisfied; engine depth
+        // (full JS/DOM parity) is a separate honest capability note.
+    }
+
+    os << "    \"prerequisites\": {\n";
+    os << "      " << miniandroid_environment_json() << ",\n";
+    os << "      \"apk\": {\n";
+    os << json_esc_pair("minSdk", mi.min_sdk_version, true);
+    os << json_esc_pair("targetSdk", mi.target_sdk_version, true);
+    os << "      \"usesFeatures\": [";
+    for (size_t i = 0; i < mi.uses_features.size(); i++)
+        os << (i ? ", " : "") << "\"" << jesc(mi.uses_features[i]) << "\"";
+    os << "],\n";
+    os << "      \"webviewFeatureDeclared\": "
+       << (webview_feature_declared ? "true" : "false") << ",\n";
+    os << "      \"webkitTypesReferenced\": "
+       << (webview_feature ? "true" : "false") << ",\n";
+    os << "      \"dangerousPermissions\": [";
+    bool fd = true;
+    for (const auto& p : mi.permissions) {
+        if (!dangerous_prefixes.count(p)) continue;
+        os << (fd ? "" : ", ") << "\"" << jesc(p) << "\"";
+        fd = false;
+    }
+    os << "],\n";
+    os << "      \"abiLibs\": {";
+    bool fa = true;
+    for (const auto& [abi, libs] : abi_libs) {
+        os << (fa ? "" : ", ") << "\"" << jesc(abi) << "\": " << libs.size();
+        fa = false;
+    }
+    os << "},\n";
+    os << "      \"abiElfMachines\": {";
+    bool fm = true;
+    for (const auto& [abi, m] : abi_machine) {
+        os << (fm ? "" : ", ") << "\"" << jesc(abi) << "\": \"" << jesc(m) << "\"";
+        fm = false;
+    }
+    os << "},\n";
+    os << json_esc_pair("webviewRequired", std::string(webview_feature ? "true" : "false"), true);
+    os << "      \"nativeAbiVerdict\": \"" << jesc(abi_verdict) << "\",\n";
+    os << "      \"environmentMismatches\": [";
+    for (size_t i = 0; i < mismatches.size(); i++)
+        os << (i ? ", " : "") << "\"" << jesc(mismatches[i]) << "\"";
+    os << "],\n";
+    os << "      \"missingCapabilities\": [";
+    for (size_t i = 0; i < missing.size(); i++)
+        os << (i ? ", " : "") << "\"" << jesc(missing[i]) << "\"";
+    os << "],\n";
+    std::string probe =
+        abi_verdict == "ABI_MISMATCH_TRANSLATION_REQUIRED"
+            ? "arm-native: expect first divergence at dlopen/System.loadLibrary "
+              "(UnsatisfiedLinkError) — CPU-translation boundary, not a runtime bug"
+            : "run --package <pkg> + diagnostics section for first divergence";
+    os << "      \"recommendedNextProbe\": \"" << jesc(probe) << "\"\n";
+    os << "      }";  // closes "apk"
+    os << "    }";    // closes "prerequisites"
+    // JSONL rows (machine-readable per-contract)
+    jl.line("prerequisites",
+            std::string("{\"minSdk\":") + (mi.min_sdk_version.empty() ? "null" : mi.min_sdk_version) +
+            ",\"targetSdk\":" + (mi.target_sdk_version.empty() ? "null" : mi.target_sdk_version) +
+            ",\"nativeAbiVerdict\":\"" + jesc(abi_verdict) + "\",\"webview\":" +
+            (webview_feature ? "true" : "false") + ",\"mismatches\":" +
+            std::to_string(mismatches.size()) + "}");
+    for (const auto& [abi, libs] : abi_libs)
+        jl.line("prereq_abi", "{\"abi\":\"" + jesc(abi) + "\",\"libs\":" +
+                                  std::to_string(libs.size()) + "}");
+    for (const auto& m : mismatches)
+        jl.line("prereq_mismatch", "{\"detail\":\"" + jesc(m) + "\"}");
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
 // data / external / dbs / prefs sections (physical backing inventory)
 // ─────────────────────────────────────────────────────────────────────────
 struct FileRow {
@@ -1355,7 +1606,7 @@ int cmd_pkg_inspect(const InspectRequest& req) {
     std::set<std::string> want;
     if (req.what == "all") {
         for (const char* s : {"identity", "manifest", "entries", "dex", "resources",
-                              "assets", "libs", "media", "data", "external", "dbs",
+                              "assets", "libs", "media", "prerequisites", "data", "external", "dbs",
                               "prefs", "provenance", "runtime", "diagnostics"})
             want.insert(s);
     } else {
@@ -1458,6 +1709,12 @@ int cmd_pkg_inspect(const InspectRequest& req) {
         comma();
         std::cout << "\n";
         emit_media(std::cout, jl, entries);
+    }
+    if (want.count("prerequisites")) {
+        auto manifest_bytes = parser.extract_entry(apk_path, "AndroidManifest.xml");
+        comma();
+        std::cout << "\n";
+        emit_prerequisites(std::cout, jl, manifest_bytes, entries, parser, apk_path);
     }
     if (mode == "INSTALLED_STORE") {
         if (want.count("data")) {

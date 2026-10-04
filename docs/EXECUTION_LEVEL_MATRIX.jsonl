@@ -1,0 +1,29 @@
+{"title": "com.darkempire78.opencalculator", "family": "app-calc", "level": "L6", "evidence": "e364b001ee7abd66 x3"}
+{"title": "jwtc.android.chess", "family": "game-board", "level": "L6", "evidence": "b5a7a35d5fe0564b x3 (determinism anchor \u2014 NOT a pixel golden)"}
+{"title": "io.github.yamin8000.dooz", "family": "game-board", "level": "L6", "evidence": "d602648e8e401895 x3 (determinism anchor)"}
+{"title": "dubrowgn.microtimer", "family": "app-tool", "level": "L6", "evidence": "da73010a37dd0189 x3"}
+{"title": "app.varlorg.unote", "family": "app-notes", "level": "L6", "evidence": "4f1a9e4e8f64fae8 x3"}
+{"title": "com.aurorasoftworks.signal2048 (golden)", "family": "game-arcade", "level": "L6", "evidence": "REAL_APP_CONTENT 4/4 gate (535c wave)"}
+{"title": "Snake Deluxe (golden)", "family": "game-arcade", "level": "L6", "evidence": "REAL_APP_CONTENT gate (1203c wave)"}
+{"title": "MiniCraft (golden)", "family": "game-sandbox", "level": "L6", "evidence": "REAL_APP_CONTENT gate (2416c wave)"}
+{"title": "helloworld fixture", "family": "app-entry", "level": "L6", "evidence": "canonical sha 83720c1028f832d0 (L6)"}
+{"title": "org.secuso.privacyfriendlynotes", "family": "app-notes", "level": "L6", "evidence": "eb5ebd559cad1028 x3 (fan-out)"}
+{"title": "flappycow", "family": "game-arcade", "level": "L6", "evidence": "13cf47464d9787f4 x3 (fan-out + bitmap provenance 12 events)"}
+{"title": "de.duenndns.gmdice", "family": "game-dice", "level": "L6", "evidence": "fan-out x3 REAL_APP_CONTENT"}
+{"title": "in.uk.co.codewell.fishrings (fishrings)", "family": "game-arcade", "level": "L6", "evidence": "a341e3ad9092f640 REAL_APP_CONTENT 44 draw ops"}
+{"title": "tripeaks", "family": "game-cards", "level": "L6", "evidence": "fan-out x3 REAL_APP_CONTENT"}
+{"title": "com.forrestguice.suntimeswidget", "family": "app-tool", "level": "L6", "evidence": "a49f90d65a8fc5c8 x3 REAL_APP_CONTENT (371 FINAL)"}
+{"title": "com.sanskritbasics.memory", "family": "app-game", "level": "L3", "evidence": "REAL_APP_CONTENT post WindowInsets fix (sha 67845303a9460d86)"}
+{"title": "bouncy", "family": "game-physics", "level": "L3", "evidence": "b6dde6074bf47264 x3 installed-state (determinism-anchored; render gate PASS class)"}
+{"title": "com.athena.aslrt.whatsapp", "family": "app-client", "level": "L4", "evidence": "known-face golden x3 (31ddd4d5b8e6d18e) \u2014 REJECTED as pixel golden (white face)"}
+{"title": "forkgram", "family": "app-client", "level": "L4", "evidence": "known face \u2014 golden re-bank PENDING (recorded)"}
+{"title": "secuso sudoku", "family": "game-board", "level": "L4", "evidence": "button-text gap REGISTERED (wave-2)"}
+{"title": "fr.arnaudguyon.spacevertex", "family": "game-arcade", "level": "L2", "evidence": "RESUMED; Fragment ISE family"}
+{"title": "org.fossify.clock", "family": "app-tool", "level": "L2", "evidence": "RESUMED; WINDOW_ROOT/deferred-UI family"}
+{"title": "com.yepgoryo.EggReturnsHome", "family": "game-engine", "level": "L2", "evidence": "RESUMED; arm64-native + fragment container empty (this wave, env proof)"}
+{"title": "com.sidhant.triplematch", "family": "game-board", "level": "L2", "evidence": "F1-empty-viewtree family"}
+{"title": "com.sidhant.blockblast", "family": "game-compose", "level": "L1", "evidence": "installed-identity + full inspection (multiapp 5/5 render-FAIL leg)"}
+{"title": "stopwatch", "family": "app-tool", "level": "L1", "evidence": "NO launcher activity (structural, honest non-launch)"}
+{"title": "Safir", "family": "unknown", "level": "L0", "evidence": "BLOCKED-BY-IDENTITY (zero records; APK needed)"}
+{"title": "Black", "family": "unknown", "level": "L0", "evidence": "BLOCKED-BY-IDENTITY (zero records; APK needed)"}
+{"title": "official Telegram full auth", "family": "app-client", "level": "L0", "evidence": "BLOCKED-APK-ABSENT (network/auth external boundary)"}

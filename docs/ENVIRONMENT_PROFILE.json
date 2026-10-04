@@ -1,0 +1,80 @@
+{
+ "schema": "MINIANDROID_ENVIRONMENT_PROFILE/1.0",
+ "generated_at": "2026-10-04T05:28:28Z",
+ "source_head": "59c57519ea376690c4fbe6a688d3a7160d4e3a17",
+ "binary_sha16": "4c01757e8f11c8a0",
+ "ENV-001_api_level": {
+  "sdk_int": 34,
+  "version_name": "14",
+  "codename": "REL",
+  "source": "dalvik_engine.cpp seed_framework_device_statics (Build.VERSION.SDK_INT=34)",
+  "evidence": "EXT-01 HelloWorldSelfAware AndroidInfo branch (pre-O avoided); battery F-stages"
+ },
+ "ENV-002_device_profile": {
+  "manufacturer": "MiniAndroid",
+  "model": "MiniAndroid",
+  "device": "miniandroid",
+  "product": "miniandroid",
+  "hardware": "miniandroid",
+  "fingerprint": "MiniAndroid/miniandroid/miniandroid:14/MINI.20260905/0:userdebug/test-keys",
+  "android_id": "6f1c3a9d2e5b4780 (deterministic, Rule 12)"
+ },
+ "ENV-003_screen": {
+  "default_density": "420dpi (xhdpi)",
+  "default_size": "1080x1920",
+  "orientation": "portrait",
+  "refresh_rate": "fixed virtual clock",
+  "source": "CFG probe + density-matrix oracle (11/11) + frame bounds 1080x1920"
+ },
+ "ENV-004_ram_storage": {
+  "ram": "host-bound (no ActivityManager memory pressure simulation)",
+  "storage": "host-bound data-root tree; internal/external/DE/user_de fences proven",
+  "source": "#370 \u00a7B storage probes; DE-01"
+ },
+ "ENV-005_cpu_abi": {
+  "host_arch": "x86_64",
+  "advertised_abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "armeabi"
+  ],
+  "executable_abis": [
+   "x86_64"
+  ],
+  "native_bridge": false,
+  "abi_selection_law": "install prefers lib/x86_64 when present (host-executable); ARM-only APKs extract their ARM tree and honestly cannot execute it",
+  "s2_native_execution": "dlopen/JNI_OnLoad/dlsym/SystemV-thunk; NATX-01..10 10/10 x3 (fib=610)"
+ },
+ "ENV-006_graphics": {
+  "backend": "PortableGL (software rasterizer)",
+  "gles_max_version": 2,
+  "vulkan": false,
+  "egl_facade": "JSR-239 EGL/GLES facade (checkGL20 PASS \u2014 tictactoedeluxe evidence)",
+  "framebuffer": "1080x1920 RGBA software framebuffer"
+ },
+ "ENV-007_media": {
+  "decoders": [
+   "png",
+   "jpeg",
+   "gif (replay law)",
+   "webp",
+   "mp3 (mpg123)",
+   "wav/sndfile"
+  ],
+  "audio_engine": true,
+  "codec_service": "not emulated (no MediaCodec API surface)"
+ },
+ "ENV-008_hardware": {
+  "touchscreen": "PRESENT (real input pipeline: TouchDispatcher AOSP claim law)",
+  "camera": "ABSENT",
+  "gps": "ABSENT",
+  "telephony": "ABSENT",
+  "bluetooth": "ABSENT",
+  "nfc": "ABSENT",
+  "microphone": "ABSENT",
+  "accelerometer": "EMULATED-DEFAULT",
+  "wifi": "EMULATED-DEFAULT"
+ },
+ "ENV-009_machine_readable": "docs/ENVIRONMENT_PROFILE.json (this file) + pkginspect prerequisites section",
+ "ENV-010_profile_sha16": "56e6347116942bfc"
+}

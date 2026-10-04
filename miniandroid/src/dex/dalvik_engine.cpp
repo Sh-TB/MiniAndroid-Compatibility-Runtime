@@ -7560,6 +7560,46 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     }
                 }
             }
+            // ────────────────────────────────────────────────────────────
+            // S137 (R-NEW-427) instance identity refinement: append up to 2
+            // CLASS_REF argument identities after the object/primitive ones.
+            //
+            // OBSERVATION (org.fossify.clock, this wave):
+            // androidx lifecycle Lifecycling.resolveObserverCallbackType
+            // (R8-renamed Landroidx/lifecycle/d;.a(Class,[Method[])b)
+            // recursively walks the class hierarchy: superclass arm at
+            // pc=0x2e + interface arm at pc=0x68 — SAME receiver (the d
+            // singleton), distinguishing payload = the Class argument
+            // (Ls5/a; vs Lorg/fossify/clock/App; vs ...). The engine holds
+            // Class values as CLASS_REF, NOT OBJECT_REF, so F-098's
+            // object-payload law never appended them: every hierarchy
+            // recursion on one receiver collided on the receiver-only key,
+            // the re-entrant call was stubbed to null, and the outer frame
+            // read b.b (HashMap) through a manufactured null →
+            // HashMap.entrySet() → Set.iterator() on a null receiver →
+            // f141-null-recv NPE → uncaught → APP BOUNDARY → white frame
+            // (MainActivity never reached layout; F-NEW-233 verdict
+            // DEFAULT_BACKGROUND_ONLY).
+            //
+            // LAW: a CLASS payload identifies the dispatched computation
+            // exactly like an object payload (AOSP: Lifecycling walks
+            // classes/interfaces — bounded by the class hierarchy, always
+            // terminating). Class-payload key-part syntax "@<descriptor>"
+            // cannot collide with "#<id>"/"=<value>". Keys become strictly
+            // more specific, so the guard only fires LESS often; genuine
+            // same-class re-entry still collides; MAX_RECURSION_DEPTH
+            // remains the backstop.
+            // ────────────────────────────────────────────────────────────
+            {
+                int clz = 0;
+                for (size_t i = 1; i < args.size() && clz < 2; ++i) {
+                    if (args[i].type == DalvikType::CLASS_REF &&
+                        !args[i].class_desc.empty()) {
+                        m3_active_key += "@" + args[i].class_desc;
+                        ++clz;
+                    }
+                }
+            }
         }
     } else if (current_invoke_is_static_) {
         // F-076: statics have no receiver — key on leading object-arg
@@ -7616,6 +7656,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     break;
                 default:
                     break;
+            }
+        }
+        // S137 (R-NEW-427) static-identity refinement: CLASS_REF payloads
+        // appended after the object identities (mirror of the instance-arm
+        // law above — static hierarchy walkers like
+        // Lifecycling.getObserverConstructorType distinguish re-entrant
+        // dispatch by the Class argument). Key part "@<descriptor>".
+        {
+            int clz = 0;
+            for (size_t i = 0; i < args.size() && clz < 2; ++i) {
+                if (args[i].type == DalvikType::CLASS_REF &&
+                    !args[i].class_desc.empty()) {
+                    m3_active_key += "@" + args[i].class_desc;
+                    ++clz;
+                }
             }
         }
     }
@@ -24049,6 +24104,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     if (class_name == "Ljava/lang/reflect/Method;" &&
+        method == "getModifiers") {
+        // ────────────────────────────────────────────────────────────────
+        // S137 (R-NEW-428): Method.getModifiers (OpenJDK law: returns the
+        // java-language modifiers for the executable — PUBLIC=0x1, PRIVATE,
+        // PROTECTED, STATIC=0x8, FINAL, SYNCHRONIZED, NATIVE=0x100,
+        // ABSTRACT=0x400 — exactly the DEX access_flags bits for the
+        // shared modifier subset). DEX spec §4.6 access_flags use the same
+        // JVM modifier bit positions for these, so the parsed flags pass
+        // through verbatim. A record without stored flags answers
+        // PUBLIC|NON-STATIC-frame callers with the conservative 0x1
+        // (public instance) — real Android minted records are public
+        // framework methods, and EventBus/getModifierObjects scan
+        // consumers only branch on public/static/abstract bits.
+        // Root-gap evidence (org.fossify.clock, this wave): EventBus
+        // LO5/d;.i pc=392 threw EventBusException after
+        // getDeclaredMethods→getModifiers REC-MISS — the null answer read
+        // as modifier 0 → "method must be public" invariant failed.
+        // ────────────────────────────────────────────────────────────────
+        int32_t mods = 0x1;  // PUBLIC fallback for framework-minted records
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto mv = heap_.get_object_field(args[0].object_id,
+                                             "__reflect_mod");
+            if (mv.has_value() && mv->type == DalvikType::INT32)
+                mods = mv->int_val;
+        }
+        result = DalvikValue::make_int(mods);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
         method == "getReturnType") {
         // F-NEW-219 (OpenJDK Method.getReturnType): answers the declared
         // return type Class — NEVER null. __reflect_ret carries the DEX
@@ -39937,6 +40023,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     heap_.set_object_field(
                         mid, "method_idx",
                         DalvikValue::make_int((int32_t)md.method_idx));
+                    // S137 (R-NEW-428): minted Method records carry the DEX
+                    // access flags + return descriptor so Method.getModifiers
+                    // / getReturnType answer from real parsed data (OpenJDK:
+                    // getModifiers returns the java-language modifiers; the
+                    // EventBus subscriber scan (
+                    // LO5/d;.i getDeclaredMethods→getModifiers) treats
+                    // modifier-less records as non-public and throws
+                    // EventBusException).
+                    heap_.set_object_field(
+                        mid, "__reflect_mod",
+                        DalvikValue::make_int((int32_t)md.access_flags));
+                    if (!md.return_type.empty())
+                        heap_.set_object_field(
+                            mid, "__reflect_ret",
+                            DalvikValue::make_string(md.return_type, 0));
                     mids.push_back(mid);
                 };
                 for (const auto& md : cd.direct_methods) add190(md);

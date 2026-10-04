@@ -33,6 +33,9 @@ CANDIDATES = [
     ('stopwatch',  'app',  None, 'upload/canonical_apks/com.github.muellerma.stopwatch_6.apk'),
     ('notes_secuso', 'app', None, 'upload/notes_secuso_105.apk'),
     ('sudoku_secuso', 'app', None, 'upload/sudoku_secuso_101.apk'),
+    # #371/372 continuation wave (NEW targets, independent families):
+    ('fossifyclock', 'app', None, 'tmp/diff366_apks/org.fossify.clock_10.apk'),
+    ('fairymahjong', 'game', None, 'tmp/diff366_apks/com.fairytrick.fairymahjong_5.apk'),
 ]
 
 
