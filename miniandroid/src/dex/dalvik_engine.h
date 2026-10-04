@@ -1804,8 +1804,23 @@ public:
     // EXP-051: Attach a shadow registry. The engine does NOT own the
     // registry — it's owned by ApplicationRuntime so the runtime can
     // also drain the HandlerShadow queue and read IntentShadow state.
-    void set_shadow_registry(framework::ShadowRegistry* reg) { shadow_registry_ = reg; }
+    void set_shadow_registry(framework::ShadowRegistry* reg) {
+        shadow_registry_ = reg;
+        // F-NEW-236d: give the collection shadow an app-equality resolver.
+        // OpenJDK Set/ArrayList laws classify elements by the element's
+        // own equals(Object); the shadow cannot see DEX code, so the
+        // engine — the only component that can execute it — installs the
+        // resolver at registry-attach time (both registry owners call
+        // set_shadow_registry, so the hook is always installed).
+        install_collection_equality_law();
+    }
     framework::ShadowRegistry* get_shadow_registry() const { return shadow_registry_; }
+
+    // F-NEW-236d: install the app-equals resolver into CollectionShadow.
+    void install_collection_equality_law();
+    // F-NEW-236d resolver body: run the app's own equals(Object) law for
+    // two heap objects (identity when no app override is reachable).
+    bool app_object_equals(uint32_t a, uint32_t b);
 
     // VISUAL-CAMPAIGN (EXT-01 gate G25): seed the virtual device identity.
     // AOSP law: Build.VERSION.SDK_INT / Build.VERSION.RELEASE / Build.* and

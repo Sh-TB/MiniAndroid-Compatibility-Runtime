@@ -27,6 +27,9 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include <map>
 
 namespace miniandroid {
 namespace framework {
@@ -169,6 +172,202 @@ inline std::string framework_superclass_of(const std::string& class_desc) {
     const auto& t = framework_direct_superclass();
     auto it = t.find(normalize_class_desc(class_desc));
     return it == t.end() ? std::string() : it->second;
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-236 (fairymahjong F-235 probe face): JDK FRAMEWORK INTERFACE
+// HIERARCHY — libcore/AOSP source law. The extends table above carries
+// only `extends` edges, so `is_subclass_of` walks ArrayList →
+// AbstractList → AbstractCollection → Object and NEVER reaches
+// Ljava/util/Collection;: `instanceof Collection/List/Set/Map/Iterable`
+// answered FALSE for every framework collection. Live face (fairymahjong
+// 88a4cbbe…): Kotlin's compiled toSet() (Ls;.D) branch-tests
+// `instance-of Collection` on the 50-tile list → FALSE → the Iterable
+// arm built a LinkedHashSet whose Set.size() diverged → the method
+// returned kotlin.collections.EmptySet (Lj0;.a) for a 50-element list →
+// the BoardShape dedup gate `toSet().size() != tiles.size()` threw the
+// game's own IAE "Duplicate tile position" at APP BOUNDARY.
+//
+// Two libcore tables (source truth, java.util Collections/AbstractX):
+//   (a) framework_class_interfaces: DIRECT interfaces each framework
+//       class declares (implements clause only — inherited interfaces
+//       arrive through the superclass walk + super-interface closure);
+//   (b) framework_iface_supers: interface-extends edges of the JDK core
+//       interfaces (List/Set/Queue → Collection → Iterable etc.).
+// Markers (Cloneable/Serializable/RandomAccess/Comparable/Runnable) have
+// no supers; they are membership-only.
+// ────────────────────────────────────────────────────────────────────────
+inline const std::map<std::string, std::vector<std::string>>&
+framework_class_interfaces() {
+    static const std::map<std::string, std::vector<std::string>> kTable = {
+        // java.util list family (OpenJDK ArrayList/Abstract*.java)
+        {"Ljava/util/ArrayList;",
+         {"Ljava/util/List;", "Ljava/util/RandomAccess;",
+          "Ljava/lang/Cloneable;", "Ljava/io/Serializable;"}},
+        {"Ljava/util/AbstractList;", {"Ljava/util/List;"}},
+        {"Ljava/util/AbstractCollection;", {"Ljava/util/Collection;"}},
+        {"Ljava/util/LinkedList;",
+         {"Ljava/util/List;", "Ljava/util/Deque;",
+          "Ljava/lang/Cloneable;", "Ljava/io/Serializable;"}},
+        {"Ljava/util/AbstractSequentialList;", {"Ljava/util/List;"}},
+        {"Ljava/util/Vector;",
+         {"Ljava/util/List;", "Ljava/util/RandomAccess;",
+          "Ljava/lang/Cloneable;", "Ljava/io/Serializable;"}},
+        {"Ljava/util/Stack;", {}},  // Vector's interfaces cover the family
+        {"Ljava/util/Arrays$ArrayList;",
+         {"Ljava/util/List;", "Ljava/util/RandomAccess;",
+          "Ljava/io/Serializable;"}},
+        // java.util map family
+        {"Ljava/util/HashMap;",
+         {"Ljava/util/Map;", "Ljava/lang/Cloneable;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/AbstractMap;", {"Ljava/util/Map;"}},
+        {"Ljava/util/LinkedHashMap;", {}},  // HashMap carries Map
+        {"Ljava/util/Hashtable;",
+         {"Ljava/util/Map;", "Ljava/io/Serializable;"}},
+        {"Ljava/util/TreeMap;",
+         {"Ljava/util/NavigableMap;", "Ljava/lang/Cloneable;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/concurrent/ConcurrentHashMap;",
+         {"Ljava/util/concurrent/ConcurrentMap;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/IdentityHashMap;",
+         {"Ljava/util/Map;", "Ljava/lang/Cloneable;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/EnumMap;", {"Ljava/util/Map;", "Ljava/io/Serializable;",
+                                 "Ljava/lang/Cloneable;"}},
+        {"Ljava/util/WeakHashMap;", {"Ljava/util/Map;"}},
+        // java.util set family
+        {"Ljava/util/HashSet;",
+         {"Ljava/util/Set;", "Ljava/lang/Cloneable;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/AbstractSet;", {"Ljava/util/Set;"}},
+        {"Ljava/util/LinkedHashSet;", {}},  // HashSet carries Set
+        {"Ljava/util/TreeSet;",
+         {"Ljava/util/NavigableSet;", "Ljava/lang/Cloneable;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/concurrent/CopyOnWriteArraySet;",
+         {"Ljava/util/Set;", "Ljava/io/Serializable;"}},
+        // queue/deque family
+        {"Ljava/util/AbstractQueue;", {"Ljava/util/Queue;"}},
+        {"Ljava/util/PriorityQueue;",
+         {"Ljava/io/Serializable;"}},
+        {"Ljava/util/ArrayDeque;",
+         {"Ljava/util/Deque;", "Ljava/lang/Cloneable;",
+          "Ljava/io/Serializable;"}},
+        {"Ljava/util/concurrent/ConcurrentLinkedQueue;",
+         {"Ljava/util/Queue;", "Ljava/io/Serializable;"}},
+        // other core classes whose interfaces real apps branch on
+        {"Ljava/lang/String;",
+         {"Ljava/lang/CharSequence;", "Ljava/io/Serializable;",
+          "Ljava/lang/Comparable;"}},
+        {"Ljava/lang/StringBuilder;", {"Ljava/lang/CharSequence;"}},
+        {"Ljava/lang/Integer;", {"Ljava/lang/Comparable;",
+                                 "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Long;", {"Ljava/lang/Comparable;",
+                              "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Boolean;", {"Ljava/lang/Comparable;",
+                                 "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Byte;", {"Ljava/lang/Comparable;",
+                              "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Short;", {"Ljava/lang/Comparable;",
+                               "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Character;", {"Ljava/lang/Comparable;",
+                                   "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Float;", {"Ljava/lang/Comparable;",
+                               "Ljava/io/Serializable;"}},
+        {"Ljava/lang/Double;", {"Ljava/lang/Comparable;",
+                                "Ljava/io/Serializable;"}},
+        {"Ljava/util/Date;", {"Ljava/lang/Comparable;",
+                              "Ljava/io/Serializable;",
+                              "Ljava/lang/Cloneable;"}},
+        // android core (executor/looper surfaces apps branch on)
+        {"Ljava/util/concurrent/ThreadPoolExecutor;",
+         {"Ljava/util/concurrent/Executor;",
+          "Ljava/util/concurrent/ExecutorService;"}},
+        {"Ljava/util/concurrent/Executors$DelegatedExecutorService;",
+         {"Ljava/util/concurrent/Executor;",
+          "Ljava/util/concurrent/ExecutorService;"}},
+    };
+    return kTable;
+}
+
+// Interface-extends edges (OpenJDK headers).
+inline const std::map<std::string, std::vector<std::string>>&
+framework_iface_supers() {
+    static const std::map<std::string, std::vector<std::string>> kTable = {
+        {"Ljava/util/Collection;", {"Ljava/lang/Iterable;"}},
+        {"Ljava/util/List;", {"Ljava/util/Collection;"}},
+        {"Ljava/util/Set;", {"Ljava/util/Collection;"}},
+        {"Ljava/util/SortedSet;", {"Ljava/util/Set;"}},
+        {"Ljava/util/NavigableSet;", {"Ljava/util/SortedSet;"}},
+        {"Ljava/util/Queue;", {"Ljava/util/Collection;"}},
+        {"Ljava/util/Deque;", {"Ljava/util/Queue;"}},
+        {"Ljava/util/SortedMap;", {"Ljava/util/Map;"}},
+        {"Ljava/util/NavigableMap;", {"Ljava/util/SortedMap;"}},
+        {"Ljava/util/concurrent/ConcurrentMap;", {"Ljava/util/Map;"}},
+        {"Ljava/util/concurrent/ExecutorService;",
+         {"Ljava/util/concurrent/Executor;"}},
+        {"Ljava/util/ListIterator;", {"Ljava/util/Iterator;"}},
+        {"Ljava/lang/Appendable;", {}},
+        // markers: membership-only, no supers
+        {"Ljava/lang/Iterable;", {}},
+        {"Ljava/util/Iterator;", {}},
+        {"Ljava/util/Map;", {}},
+        {"Ljava/util/Map$Entry;", {}},
+        {"Ljava/util/RandomAccess;", {}},
+        {"Ljava/lang/CharSequence;", {}},
+        {"Ljava/lang/Cloneable;", {}},
+        {"Ljava/io/Serializable;", {}},
+        {"Ljava/lang/Comparable;", {}},
+        {"Ljava/lang/Runnable;", {}},
+        {"Ljava/util/Comparator;", {}},
+    };
+    return kTable;
+}
+
+// Transitive interface closure of `cls` through BOTH tables + the
+// framework extends table (a superclass's implemented interfaces belong
+// to the subclass). BFS, cycle-safe, bounded.
+inline void framework_interface_closure(const std::string& class_desc,
+                                        std::unordered_set<std::string>& out) {
+    const auto& direct = framework_class_interfaces();
+    const auto& supers = framework_iface_supers();
+    std::vector<std::string> queue;
+    std::string cur = normalize_class_desc(class_desc);
+    // the class's own extends chain contributes its ancestors' interfaces
+    for (int hops = 0; hops < 16 && !cur.empty() &&
+                       cur != "Ljava/lang/Object;"; ++hops) {
+        auto dit = direct.find(cur);
+        if (dit != direct.end())
+            for (const auto& i : dit->second)
+                if (out.insert(normalize_class_desc(i)).second)
+                    queue.push_back(normalize_class_desc(i));
+        cur = framework_superclass_of(cur);
+    }
+    // super-interface closure (interface-extends edges)
+    for (size_t qi = 0; qi < queue.size() && qi < 64; ++qi) {
+        auto sit = supers.find(queue[qi]);
+        if (sit != supers.end())
+            for (const auto& s : sit->second)
+                if (out.insert(normalize_class_desc(s)).second)
+                    queue.push_back(normalize_class_desc(s));
+    }
+}
+
+// Law: `class_desc` IS-A `iface_desc` through the framework interface
+// hierarchy (covers the class itself being an interface, e.g.
+// List is-a Collection).
+inline bool framework_implements(const std::string& class_desc,
+                                 const std::string& iface_desc) {
+    std::string want = normalize_class_desc(iface_desc);
+    if (want.empty()) return false;
+    std::string cur = normalize_class_desc(class_desc);
+    if (cur == want) return true;
+    if (cur == "Ljava/lang/Object;" || cur.empty()) return false;
+    std::unordered_set<std::string> closure;
+    framework_interface_closure(cur, closure);
+    return closure.count(want) != 0;
 }
 
 // Walks the FRAMEWORK table (multi-hop, cycle-safe): true when class_desc

@@ -468,8 +468,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     // is attached" ISE → MainActivity.onCreate died → Compose never
     // composed. Capacity/int-form constructors remain no-ops.
     if (m == "<init>") {
-        bool is_map = (ctx.class_name.find("Map") != std::string::npos ||
-                       ctx.class_name.find("Set") != std::string::npos);
+        // ── F-NEW-236b (fairymahjong F-235 probe face): SET vs MAP family
+        // law. OpenJDK HashSet/LinkedHashSet/TreeSet are NOT maps — the old
+        // find("Set") clause stamped every set's CollectionState is_map=true,
+        // so add() appended to elements while size()/isEmpty() read
+        // map_entries (always 0): a LinkedHashSet grew nowhere (probe
+        // F235-P07: 3 adds → size 0; game face: toSet() 50 adds → size 0 →
+        // Kotlin's EmptySet arm → the BoardShape dedup gate threw the game's
+        // own IAE "Duplicate tile position"). Law: only Map classes are
+        // is_map; the whole Set family stays element-backed.
+        bool is_map =
+            ctx.class_name.find("Map") != std::string::npos;
         auto* st = get_or_create(obj_id, is_map);
         if (!ctx.args.empty() &&
             ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
@@ -586,6 +595,62 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             // add(item) — R-NEW-464 closeout: STRING args keep their value
             // (kind 2) instead of collapsing to object id 0.
             const auto& a0 = ctx.args[0];
+            // ── F-NEW-236c: SET-FAMILY ADD DEDUP LAW (OpenJDK
+            // HashSet.add → map.put(e, PRESENT) == null test). For every
+            // Set class the element is inserted ONLY when no equal element
+            // is already present, and the return value carries the real
+            // insert outcome. Equality scope: object-id identity, string
+            // content, and — via the F-NEW-236d engine-installed resolver —
+            // the element's own app-defined equals(Object).
+            const bool set_family =
+                ctx.class_name.find("Set") != std::string::npos;
+            if (set_family) {
+                // alias to the engine-installed resolver (readable name)
+                auto& AppEqualsFnSlot = CollectionShadow::app_equals_slot;
+                uint32_t incoming = ctx.arg_as_object(0, 0);
+                std::string incoming_str;
+                bool has_str = false;
+                if (a0.kind == CallContext::Arg::Kind::STRING ||
+                    (a0.kind == CallContext::Arg::Kind::OBJECT &&
+                     a0.object_id == 0 && !a0.string_val.empty())) {
+                    incoming_str = ctx.arg_as_string(0);
+                    has_str = true;
+                } else if (incoming != 0 && heap_) {
+                    // string-heap elements compare by content
+                    heap_->get_object_string_field(
+                        incoming, "__string_value__", incoming_str);
+                }
+                bool present = false;
+                const auto& app_eq = AppEqualsFnSlot();
+                for (size_t ei = 0; ei < state->elements.size(); ++ei) {
+                    uint32_t e = state->elements[ei];
+                    std::string es;
+                    bool e_is_str =
+                        ei < state->elem_kinds.size() &&
+                        state->elem_kinds[ei] == 2;
+                    if (e_is_str) {
+                        es = ei < state->elem_strings.size()
+                                 ? state->elem_strings[ei]
+                                 : std::string();
+                        if (has_str && es == incoming_str) { present = true; break; }
+                        continue;
+                    }
+                    if (has_str) {
+                        // element may itself be a string-heap object
+                        if (e != 0 && heap_ &&
+                            heap_->get_object_string_field(
+                                e, "__string_value__", es) &&
+                            es == incoming_str) { present = true; break; }
+                        continue;
+                    }
+                    if (incoming != 0 && e == incoming) { present = true; break; }
+                    // F-NEW-236d: distinct heap objects — the app's own
+                    // equals(Object) law decides (engine-installed).
+                    if (incoming != 0 && e != 0 && app_eq &&
+                        app_eq(e, incoming)) { present = true; break; }
+                }
+                if (present) return CallResult::handled_bool(false);
+            }
             if (a0.kind == CallContext::Arg::Kind::STRING ||
                 (a0.kind == CallContext::Arg::Kind::OBJECT &&
                  a0.object_id == 0 && !a0.string_val.empty())) {
@@ -652,6 +717,31 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
         // List: get(index) → element (R-NEW-464: kind-2 string fidelity)
         int32_t idx = ctx.arg_as_int(0, -1);
+        // ── F-NEW-237b: engine-array-backed fallback — serve the element
+        // from the heap "array[i]" store (Arrays.asList / F-101 products)
+        // when the shadow state is empty (see the size() law).
+        if (!state->is_map && state->elements.empty() && heap_ && idx >= 0) {
+            int32_t alen = 0;
+            if (heap_->get_object_array_length(obj_id, alen) && alen >= 0 &&
+                idx < alen) {
+                uint32_t relem = 0;
+                std::string rcls, rstr;
+                bool r_is_str = false;
+                if (heap_->get_object_ref_field(obj_id,
+                                                "array[" + std::to_string(idx) + "]",
+                                                relem, rcls, rstr, r_is_str)) {
+                    if (r_is_str) return CallResult::handled_string(rstr);
+                    if (relem != 0) {
+                        std::string ecls;
+                        if (heap_->get_object_class(relem, ecls))
+                            return CallResult::handled_object(relem, ecls);
+                        return CallResult::handled_object(relem,
+                                                          "Ljava/lang/Object;");
+                    }
+                    return CallResult::handled_null();
+                }
+            }
+        }
         if (idx >= 0 && (size_t)idx < state->elements.size()) {
             if (idx < (int32_t)state->elem_kinds.size() &&
                 state->elem_kinds[idx] == 2)
@@ -672,6 +762,19 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_int(static_cast<int32_t>(
                 state->map_entries.size() + state->map_string_entries.size()));
         }
+        // ── F-NEW-237b (fairymahjong butterfly face): ENGINE-ARRAY-BACKED
+        // list fallback. Lists produced by engine laws that store elements
+        // as heap "array[i]" fields (Arrays.asList products — F-036 — and
+        // the F-101 copy write-back) carry an EMPTY CollectionState: the
+        // pre-fix size() answered 0 on a 10-row list and Kotlin first()
+        // threw NoSuchElementException("List is empty.") on a valid board.
+        // OpenJDK law: the list's OWN authoritative store decides — heap
+        // __array_length__ when the shadow state is empty.
+        if (state->elements.empty() && heap_) {
+            int32_t alen = 0;
+            if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
+                return CallResult::handled_int(alen);
+        }
         return CallResult::handled_int(static_cast<int32_t>(state->elements.size()));
     }
 
@@ -681,6 +784,12 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             // EXP-071 Phase 7: Check both object and string entries.
             return CallResult::handled_bool(
                 state->map_entries.empty() && state->map_string_entries.empty());
+        }
+        // F-NEW-237b: engine-array-backed fallback (see size).
+        if (state->elements.empty() && heap_) {
+            int32_t alen = 0;
+            if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
+                return CallResult::handled_bool(alen == 0);
         }
         return CallResult::handled_bool(state->elements.empty());
     }
@@ -894,9 +1003,19 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
         }
         auto* state = get_or_create(obj_id);
-        for (uint32_t e : state->elements) {
+        // F-NEW-236d: distinct heap object ids must consult the element's
+        // own app-defined equals(Object) law (OpenJDK contains contract),
+        // not bare identity. Resolver identity: engine-installed; absent
+        // (no engine attach) → G-6's original identity scope.
+        const auto& app_eq = CollectionShadow::app_equals_slot();
+        for (size_t ei = 0; ei < state->elements.size(); ++ei) {
+            uint32_t e = state->elements[ei];
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
                 item.object_id != 0 && e == item.object_id)
+                return CallResult::handled_bool(true);
+            if (item.kind == CallContext::Arg::Kind::OBJECT &&
+                item.object_id != 0 && e != 0 && e != item.object_id &&
+                app_eq && app_eq(e, item.object_id))
                 return CallResult::handled_bool(true);
             if (item.kind == CallContext::Arg::Kind::STRING && heap_ &&
                 e != 0) {
@@ -913,25 +1032,113 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "iterator") {
         auto* state = get_or_create(obj_id);
+        {
+            static thread_local uint64_t f237_i = 0;
+            static thread_local const bool f237_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
+            if (f237_diag && f237_i++ < 40)
+                std::cerr << "[F237-ITER] obj=" << obj_id
+                          << " class=" << ctx.class_name
+                          << std::endl;
+        }
         state->iterator_position = 0;
-        // Return the same object as the iterator (simplified).
+        // ── F-NEW-237 (fairymahjong F-235 face): REAL PER-ITERATOR
+        // CURSOR LAW (OpenJDK ArrayList.Itr / AbstractList.Itr: every
+        // iterator() call returns a FRESH iterator with its OWN cursor).
+        // The old self-as-iterator law returned the RECEIVER object, so
+        // every iteration of one collection shared ONE iterator_position:
+        // interleaved iteration — the universal Kotlin pair/combination
+        // pattern `for (tile in tiles) for (other in tiles.take(i))` —
+        // made the inner take() copy-loop and the outer for-each consume
+        // each other's cursor → duplicated candidates → the game's own
+        // overlap validator threw IAE "Tiles overlap within one layer"
+        // on a valid board (after the F-NEW-236 a/b/c fixes).
+        // The box carries __iterator_parent__ (source identity) + its
+        // own __iterator_pos__; hasNext/next read THIS box. Self-iterator
+        // remains only as the no-heap legacy fallback.
+        if (heap_) {
+            uint32_t it_id = heap_->allocate("Ljava/util/Iterator;");
+            heap_->set_object_ref_field(it_id, "__iterator_parent__",
+                                        obj_id, ctx.class_name, "", false);
+            heap_->set_object_int_field(it_id, "__iterator_pos__", 0);
+            {
+                static thread_local uint64_t f237_n = 0;
+                static thread_local const bool f237_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
+                if (f237_diag && f237_n++ < 60)
+                    std::cerr << "[F237-NEW] box=" << it_id
+                              << " parent=" << obj_id
+                              << " caller=" << ctx.class_name
+                              << std::endl;
+            }
+            return CallResult::handled_object(it_id, "Ljava/util/Iterator;");
+        }
         return CallResult::handled_object(obj_id, ctx.class_name);
     }
 
     if (m == "hasNext") {
-        auto* state = get_or_create(obj_id);
-        if (state->is_view) {
-            return CallResult::handled_bool(state->iterator_position <
-                                            state->view_elements.size());
+        // F-NEW-237: the receiver is either (a) a fresh iterator box
+        // carrying __iterator_parent__ — cursor lives on the box, elements
+        // live on the parent state — or (b) a legacy self-as-iterator
+        // collection (no-heap fallback + engine-side Itr products).
+        uint32_t parent_id = obj_id;
+        bool is_box = false;
+        uint32_t box_parent = 0;
+        if (heap_ &&
+            heap_->get_object_ref_field(obj_id, "__iterator_parent__",
+                                        box_parent) &&
+            box_parent != 0) {
+            parent_id = box_parent;
+            is_box = true;
         }
-        return CallResult::handled_bool(state->iterator_position < state->elements.size());
+        auto* state = get_or_create(parent_id);
+        int32_t pos = 0;
+        if (is_box) {
+            heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
+        } else {
+            pos = static_cast<int32_t>(state->iterator_position);
+        }
+        // F-NEW-237 array-backed parent fallback: the parent may be an
+        // ENGINE-modeled array list (array[i] + __array_length__ fields,
+        // F-101 copy products) with an EMPTY shadow state. Read the heap
+        // length instead of answering false.
+        if (!state->is_view && state->elements.empty() && heap_) {
+            int32_t alen = 0;
+            if (heap_->get_object_array_length(parent_id, alen) && alen >= 0)
+                return CallResult::handled_bool(pos < alen);
+        }
+        if (state->is_view) {
+            return CallResult::handled_bool(pos <
+                                            static_cast<int32_t>(state->view_elements.size()));
+        }
+        return CallResult::handled_bool(pos <
+                                        static_cast<int32_t>(state->elements.size()));
     }
 
     if (m == "next") {
-        auto* state = get_or_create(obj_id);
+        uint32_t parent_id = obj_id;
+        bool is_box = false;
+        uint32_t box_parent = 0;
+        if (heap_ &&
+            heap_->get_object_ref_field(obj_id, "__iterator_parent__",
+                                        box_parent) &&
+            box_parent != 0) {
+            parent_id = box_parent;
+            is_box = true;
+        }
+        auto* state = get_or_create(parent_id);
+        int32_t pos = 0;
+        if (is_box) {
+            heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
+        } else {
+            pos = static_cast<int32_t>(state->iterator_position);
+        }
         if (state->is_view) {
-            if (state->iterator_position < state->view_elements.size()) {
-                const auto& el = state->view_elements[state->iterator_position++];
+            if (pos < static_cast<int32_t>(state->view_elements.size())) {
+                const auto& el = state->view_elements[pos];
+                if (is_box)
+                    heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                pos + 1);
+                else
+                    state->iterator_position++;
                 if (el.kind == 2) return CallResult::handled_string(el.string_val);
                 if (el.kind == 3) return CallResult::handled_int(el.int_val);
                 if (el.kind == 1 && el.object_id != 0)
@@ -941,19 +1148,49 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
             return CallResult::handled_null();
         }
-        if (state->iterator_position < state->elements.size()) {
-            uint32_t elem = state->elements[state->iterator_position];
+        // F-NEW-237 array-backed parent fallback (see hasNext): serve the
+        // element from the parent's array[i] store when the shadow state
+        // is empty but the heap fields are present.
+        {
+            int32_t alen = 0;
+            if (state->elements.empty() && heap_ &&
+                heap_->get_object_array_length(parent_id, alen) && alen >= 0 &&
+                pos < alen) {
+                uint32_t relem = 0;
+                if (heap_->get_object_array_ref_element(parent_id,
+                                                        static_cast<size_t>(pos),
+                                                        relem) &&
+                    relem != 0) {
+                    if (is_box)
+                        heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                    pos + 1);
+                    else
+                        state->iterator_position = pos + 1;
+                    std::string relem_cls;
+                    if (heap_->get_object_class(relem, relem_cls))
+                        return CallResult::handled_object(relem, relem_cls);
+                    return CallResult::handled_object(relem,
+                                                      "Ljava/lang/Object;");
+                }
+            }
+        }
+        if (pos < static_cast<int32_t>(state->elements.size())) {
+            uint32_t elem = state->elements[pos];
+            if (is_box) {
+                heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                            pos + 1);
+            } else {
+                state->iterator_position = pos + 1;
+            }
             // R-NEW-464 closeout: kind-2 string elements serve their value.
-            if (state->iterator_position < state->elem_kinds.size() &&
-                state->elem_kinds[state->iterator_position] == 2) {
+            if (pos < static_cast<int32_t>(state->elem_kinds.size()) &&
+                state->elem_kinds[pos] == 2) {
                 std::string sv =
-                    state->iterator_position < state->elem_strings.size()
-                        ? state->elem_strings[state->iterator_position]
+                    pos < static_cast<int32_t>(state->elem_strings.size())
+                        ? state->elem_strings[pos]
                         : std::string();
-                state->iterator_position++;
                 return CallResult::handled_string(sv);
             }
-            state->iterator_position++;
             if (elem != 0) {
                 // [R342-COWSET] return the element's REAL runtime class —
                 // "Ljava/lang/Object;" breaks invoke-interface/vtable

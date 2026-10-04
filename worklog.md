@@ -6633,3 +6633,27 @@ Work Log:
 Stage Summary:
 - F-NEW-084 CLOSED with a three-layer law + probe 3/3×3 + measured-bounded real-game init; two genuinely new generic surfaces landed (frame-level forward-progress, AtomicFile); the game now runs its own logic deep enough to expose F-NEW-235.
 - Zero drift on every recorded anchor/golden sha at the new binary e2b948d4b11dc45e.
+
+---
+Task ID: cont375-BASE-COMPLETE-1
+Agent: Super Z (main agent)
+Task: #375 FINAL BASE-COMPLETION PASS — reconciliation + baseline reproduction + #374 98-section audit + F-NEW-235 root-cause wave (container reset had wiped the session).
+
+Work Log:
+- Reconciled HEAD f8d4088b (CONT-2 ledger commit) + issues #371-#376 (ghapi.sh; #374 had ZERO comments — the 98-section contract had never been audited). Reconciliation matrix generated: docs/BASE_COMPLETION_RECONCILIATION.{md,jsonl} (652 rows) + docs/FOUNDATION_CONTRACT_98.{md,jsonl} (98 sections: 63 TESTED / 24 PARTIAL / 4 NOT_APPLICABLE / 2 PENDING / 1 BLOCKED-EXTERNAL / 4 IMPLEMENTED).
+- Container-reset repairs: native probe libs rebuilt (x86_64 gcc = recorded d5ec1f57fef3d271; arm64 zig rebuilt 01885dbf — zig non-deterministic, documented), gate_a_probe.apk rebuilt WITH the lib/x86_64 fixture packaged (new sha 356740d91ea6ff34; the stale root APK was missing the lib — Gate A NAT-03/04 failed until repack; content verified by probe 95/0/2).
+- Baseline reproduced at binary e2b948d4b11dc45e (byte-identical rebuild): anchors 5/5x3, gate A 95/0/2, negatives 17/17, reinstall 8/8, multiapp 5/5, NATX 10/10x3 (4d7761f7), battery 124, goldens 4/4, uninstall, loading probe, skill 13/13 — ALL GREEN.
+- F-NEW-235 root-caused to FOUR generic law breaks, all fixed source-first (libcore/OpenJDK law), probe f235_set_probe (fixtures/f235_set_probe, 14 rows) built + run:
+  1. F-NEW-236a INTERFACE CLOSURE: is_subclass_of walked extends-only — instanceof Collection/List/Set/Map on framework collections answered FALSE → Kotlin compiled toSet() (Ls;.D) took the wrong branch and returned kotlin EmptySet (Lj0;.a) for a 50-tile list → the BoardShape dedup gate threw the game's own IAE "Duplicate tile position". Added framework_class_interfaces + framework_iface_supers tables wired into interface_closure_contains.
+  2. F-NEW-236b SET/MAP FAMILY: <init> marked every *Set; class is_map=true → add() grew elements while size() read map_entries (0) — LinkedHashSet grew nowhere. Fixed: only Map classes are is_map.
+  3. F-NEW-236c/d SET-ADD DEDUP + APP EQUALS: HashSet.add now returns honest false for equal elements; equality resolved via an ENGINE-INSTALLED app-equals resolver (set_shadow_registry → install_collection_equality_law → try_recursive_invoke of the app's own equals(Object)) — shadow cannot see DEX code, the engine executes it.
+  4. F-NEW-237 PER-ITERATOR CURSOR: the self-as-iterator law shared ONE iterator_position per collection — nested iteration (for-each + take(i), Kotlin pair pattern) consumed each other's cursors → duplicated candidates → the overlap gate threw IAE "Tiles overlap within one layer". Fixed in CollectionShadow (fresh iterator boxes with __iterator_parent__ + own cursor) AND the engine array-backed list family (Arrays.asList/F-101 products); size/isEmpty/get gained the engine-array-backed heap fallback (F-NEW-237b) — Arrays.asList(3-elem array) answered size=0/get=null pre-fix (probe P11).
+- Game evidence: fairymahjong 88a4cbbe — dedup gate IAE GONE, overlap gate IAE GONE, EmptySet first() GONE; the board registry (Lo;.<clinit> hardcoded butterfly/garden layers) now builds through asList (heap_len=10/10/10/3 verified). REMAINING NAMED FACE: Ln;.<init> pc=108 String.length-on-null — a null row element inside the butterfly layer-list copy chain (registered as the next sub-root of F-NEW-235).
+- Probe determinism: f235_set_probe 14/14 x3 byte-identical (ea31dc0dc539df73) at the new binary 87ae747b4a7bcd6d.
+- FULL REGRESSION at 87ae747b4a7bcd6d: anchors 5/5x3 BYTE-IDENTICAL to recorded shas; gate A 95/0/2; negatives 17/17; reinstall 8/8; multiapp 5/5; NATX 10/10x3 (4d7761f7 byte-identical); battery 124 ALL PASS; goldens 4/4 REAL_APP_CONTENT; uninstall ALL PASS; loading probe ALL PASS; skill selftest 13/13. Classifier untouched. Zero drift.
+- Registry: 542 roots — F-NEW-235 OBSERVED→PARTIAL-FIX (remaining face named), F-NEW-236 + F-NEW-237 ROOT-CAUSED-FIXED registered.
+
+Stage Summary:
+- #374 98-section contract audited for the first time (was zero-comment); reconciliation matrix + contract ledger committed as machine-readable docs.
+- Four generic platform-contract laws landed (collections/instanceof/iteration) — all rooted from the ordered F-NEW-235 frontier, all probe-verified, all regression-clean at 3 clean runs.
+- F-NEW-235 honestly PARTIAL-FIX: 3 of its 4 validator faces closed, the remaining null-row copy-chain face precisely named with stack evidence.

@@ -2441,6 +2441,19 @@ public:
 
     CallResult dispatch(const CallContext& ctx) override;
 
+    // ── F-NEW-236d: APP-DEFINED EQUALITY RESOLVER ───────────────────────
+    // OpenJDK HashSet.add/contains and ArrayList.contains classify by the
+    // element's own equals(Object). The shadow cannot execute DEX code;
+    // the ENGINE installs this resolver (set_shadow_registry →
+    // install_collection_equality_law) and answers two heap ids under the
+    // app's law (identity when no app override exists). Slot pattern
+    // avoids an ODR-visible static member.
+    using AppEqualsFn = std::function<bool(uint32_t, uint32_t)>;
+    static AppEqualsFn& app_equals_slot() {
+        static AppEqualsFn fn;
+        return fn;
+    }
+
     std::vector<std::string> implemented_methods() const override {
         return {"add", "get", "size", "isEmpty", "clear", "remove",
                 "contains", "iterator", "hasNext", "next", "toArray",

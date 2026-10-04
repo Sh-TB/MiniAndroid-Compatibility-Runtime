@@ -4423,9 +4423,36 @@
   {
    "id": "F-NEW-235",
    "title": "fairymahjong board-build divergence: game's OWN layout generator/validator throws IllegalArgumentException 'Duplicate tile position' at Lg0;.a (throw helper) called from Lm;.<init> (BoardShape parser: 696-insn ctor, java.util.regex Matcher.matches + token parse of the layout spec string) inside Lo;.<clinit> via Lm2;.b via Lq1;.run (DataStore practice-board.json ABSENT -> default board generated). Either (a) our regex/string-split token laws misparse one coordinate pair, or (b) the dedup structure (Set over tile positions) diverges via equals/hashCode — Lm;.equals compares String id + List equals, Lm;.hashCode = a.hashCode()^31-ish + b.hashCode() (String/List hash laws to verify against the exact parsed values). NEXT ACTION: MINIANDROID_METHOD_TRACE on Lm;.<init> to dump the parsed position stream and find the first colliding pair; AOSP-faithful fix must be a generic regex/List/Set law, never a package conditional. Evidence: run/cont375/fairy_v4_run2 (binary e2b948d4b11dc45e): [THROWABLE-MSG] IAE 'Duplicate tile position' caller=Lg0;.a pc=2 depth=5; [EXC-PROPAGATE] uncaught at MainActivity.onCreate invoke_pc=56 APP BOUNDARY.",
-   "status": "OBSERVED",
+   "status": "PARTIAL-FIX",
    "priority": "P1",
-   "layer": "framework/regex-collections-or-dedup"
+   "layer": "framework/regex-collections-or-dedup",
+   "progress_note": "2026-10-04 BASE-COMPLETION PASS: three generic law families landed and probe-verified (f235_set_probe 14/14 x3, results sha ea31dc0dc539df73): F-NEW-236a JDK framework interface hierarchy (is_subclass_of interface closure — instanceof Collection/List/Set/Map on framework collections was FALSE); F-NEW-236b/c Set-family coherence (is_map misclassification fixed; HashSet.add equality law incl. engine-installed app-equals resolver F-NEW-236d); F-NEW-237 per-iterator cursor law (fresh iterator boxes in CollectionShadow AND the engine array-backed list family; size/isEmpty/get heap-array fallback 237b) — the shared-cursor self-iterator corrupted every nested iteration. Game face: dedup gate IAE 'Duplicate tile position' GONE; overlap gate IAE 'Tiles overlap within one layer' GONE; EmptySet-first() NoSuchElementException GONE. REMAINING NAMED FACE: Ln;.<init> pc=108 String.length-on-null — a null row element inside the butterfly-v4 layer-list copy chain (filled-array -> Lt;.p listOf -> asList product) — next sub-root, same family."
+  },
+  {
+   "id": "F-NEW-236",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "framework/java-util-hierarchy",
+   "title": "JDK FRAMEWORK INTERFACE HIERARCHY + SET-FAMILY COHERENCE (fairymahjong face)",
+   "evidence": "AOSP/libcore java.util sources; probe fixtures/f235_set_probe (14/14 x3); fairymahjong 88a4cbbe A/B: pre-fix dedup gate threw IAE 'Duplicate tile position' (toSet() returned kotlin EmptySet for a 50-tile list because instanceof Collection was FALSE and Set.size() read the empty map-store); post-fix all three board validators pass. Zero anchor drift (5/5 x3 byte-identical) at binary 87ae747b4a7bcd6d.",
+   "laws": [
+    "236a interface-closure in is_subclass_of (framework_class_interfaces + framework_iface_supers)",
+    "236b Set classes are NOT maps (is_map misclassification fixed)",
+    "236c Set.add equality dedup with honest false return",
+    "236d engine-installed app-equals resolver (shadow cannot see DEX; engine executes the app's own equals)"
+   ]
+  },
+  {
+   "id": "F-NEW-237",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "framework/java-util-iteration",
+   "title": "PER-ITERATOR CURSOR LAW (OpenJDK Itr) — shadow + engine array-backed lists",
+   "evidence": "OpenJDK ArrayList.Itr: every iterator() returns a FRESH iterator with its OWN cursor. The self-as-iterator law shared ONE cursor per collection; nested iteration (for-each + take(i), the universal pair pattern) corrupted positions -> duplicated candidates -> the game's overlap validator threw on a valid board. Fixed in CollectionShadow (fresh boxes + parent resolution) AND the engine array-backed list law; size/isEmpty/get gained the heap-array fallback (237b). Probe 14/14 x3; zero anchor drift at 87ae747b4a7bcd6d.",
+   "laws": [
+    "237 iterator() mints a per-iterator cursor box (__iterator_parent__ + own __iterator_pos__)",
+    "237b size/isEmpty/get honor the engine-array-backed store (heap array[i] + __array_length__)"
+   ]
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",

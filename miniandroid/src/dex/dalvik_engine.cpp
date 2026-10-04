@@ -983,6 +983,17 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
     // an app-bundled (androidx) type present in dex_report_.
     // ────────────────────────────────────────────────────────────────────
     auto interface_closure_contains = [&](const std::string& cls) -> bool {
+        // ── F-NEW-236 (fairymahjong F-235 probe face): JDK FRAMEWORK
+        // INTERFACE HIERARCHY. The DEX closure below can only see classes
+        // parsed from the APK; every java.*/core collection class is a
+        // framework type, so `instance-of Collection/List/Set/Map/Iterable`
+        // on them answered FALSE and Kotlin's compiled toSet() (fairymahjong
+        // Ls;.D) took the wrong branch → returned EmptySet for a 50-element
+        // list → the game's dedup gate threw its own IAE. Law: the libcore
+        // implements/interface-extends hierarchy (framework_class_interfaces
+        // + framework_iface_supers) participates in EVERY classification,
+        // app or framework, before and alongside the DEX closure.
+        if (framework::framework_implements(cls, want)) return true;
         if (!dex_report_ || want.empty()) return false;
         std::vector<std::string> ifq;
         std::unordered_set<std::string> ifv;
@@ -4466,6 +4477,57 @@ bool DalvikExecutionEngine::xml_parser_for_resid(uint32_t resid,
 // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
 // Search the DEX for a method matching declaring_class + method_name.
 // If found with bytecode, recursively execute it.
+
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-236d (fairymahjong F-235 probe face): APP-DEFINED EQUALITY LAW.
+// OpenJDK HashSet.add/contains and ArrayList.contains classify elements
+// by the ELEMENT'S OWN equals(Object). CollectionShadow stores element
+// object ids and cannot see DEX bytecode, so its pre-F-236d equality was
+// identity + string content only. The engine installs a resolver at
+// set_shadow_registry time and answers with the app's own law:
+//   1. identity (same heap id) → true — Object.equals contract;
+//   2. the receiver class (or a reachable app ancestor) declaring
+//      equals(Ljava/lang/Object;)Z with real bytecode → the app's own
+//      code runs via try_recursive_invoke (receiver identity preserved;
+//      try_recursive_invoke_on_super covers inherited overrides);
+//   3. no reachable override → identity (framework Object law).
+// Reentrancy: this runs nested exactly like any invoke-virtual dispatch
+// (the same execute_method_internal save/restore applies); recursion is
+// bounded by the engine's existing depth machinery.
+// ────────────────────────────────────────────────────────────────────────
+void DalvikExecutionEngine::install_collection_equality_law() {
+    if (!shadow_registry_) return;
+    auto* cs = shadow_registry_->find_as<framework::CollectionShadow>();
+    if (!cs) return;
+    cs->app_equals_slot() = [this](uint32_t a, uint32_t b) -> bool {
+        return this->app_object_equals(a, b);
+    };
+}
+
+bool DalvikExecutionEngine::app_object_equals(uint32_t a, uint32_t b) {
+    if (a == b) return true;   // Object.equals identity contract
+    if (a == 0 || b == 0) return false;
+    if (!heap_.has_object(a) || !heap_.has_object(b)) return false;
+    const auto* oa = heap_.get(a);
+    if (!oa) return false;
+    std::string cls = framework::normalize_class_desc(oa->class_descriptor);
+    if (cls.empty() || cls == "Ljava/lang/Object;") return false;
+    DalvikExecutionResult sub;
+    DalvikValue ret;
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(a, cls));
+    args.push_back(DalvikValue::make_object(b, "Ljava/lang/Object;"));
+    if (try_recursive_invoke(cls, "equals", args, ret, sub,
+                             "(Ljava/lang/Object;)Z")) {
+        return ret.type == DalvikType::BOOLEAN ? ret.int_val != 0 : false;
+    }
+    if (try_recursive_invoke_on_super(cls, "equals", args, ret, sub,
+                                      "(Ljava/lang/Object;)Z")) {
+        return ret.type == DalvikType::BOOLEAN ? ret.int_val != 0 : false;
+    }
+    // No app-declared equals anywhere in the chain → identity law.
+    return false;
+}
 
 // AOSP ActivityThread.performLaunchActivity fidelity: run the activity's
 // DECLARED no-arg <init>()V right after heap allocation. Instance-field
@@ -29658,6 +29720,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // (NEW_ARRAY stores the size there too).
             n = args[0].int_val > 0 ? args[0].int_val : 0;
         }
+        {
+            static thread_local uint64_t f235_al = 0;
+            static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
+            if (f235_diag && f235_al++ < 40)
+                std::cerr << "[F235-ASLIST] src=" << src_id
+                          << " heap_len="
+                          << (lenf.has_value() ? lenf->int_val : -1)
+                          << " int_val=" << args[0].int_val
+                          << " n=" << n
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
         uint32_t list_id = heap_.allocate("Ljava/util/Arrays$ArrayList;", pc_, 0);
         heap_.set_object_field(list_id, "__array_length__",
                                DalvikValue::make_int(n));
@@ -34194,6 +34268,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         heap_.set_object_field(f101_arr, "__array_length__",
                                DalvikValue::make_int(f101_copied));
+        {
+            static thread_local uint64_t f235_cp = 0;
+            static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
+            if (f235_diag && f235_cp++ < 40)
+                std::cerr << "[F235-COPY] arr=" << f101_arr
+                          << " src=" << f101_src
+                          << " (" << f101_scls << ")"
+                          << " copied=" << f101_copied
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
         // F-101 write-back into the REGISTRY-side store. In registry mode
         // (shadow_registry_ != nullptr) the engine-side heap fields are
         // INVISIBLE to the framework collection shadow: ArrayList.isEmpty/
@@ -34243,41 +34328,76 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_void();
             return true;
         }
+        // ── F-NEW-237 (fairymahjong F-235 face): PER-ITERATOR CURSOR for
+        // the engine array-backed list family. The old self-as-iterator
+        // law rode ONE __iterator_pos__ on the LIST object — nested
+        // iteration (Kotlin `for (t in list) for (o in list.take(i))`)
+        // made the inner copy loop and the outer for-each consume each
+        // other's cursor → duplicated candidates → the game's overlap
+        // validator threw on a valid board. iterator() now mints a fresh
+        // box (__iterator_parent__ + own __iterator_pos__); hasNext/next
+        // accept BOTH the box and the legacy self shape.
         if (method == "iterator") {
             uint32_t this_id = args.empty() ? 0 : args[0].object_id;
             heap_.set_object_field(this_id, "__iterator_pos__",
                                    DalvikValue::make_int(0));
             status = ApiCallTrace::Status::IMPLEMENTED;
-            // Self-as-iterator (house pattern, cf. CollectionShadow): the
-            // runtime type stays the list, so the hasNext/next dispatch
-            // below answers the following invokes.
-            result = DalvikValue::make_object(this_id, "Ljava/util/Iterator;");
+            uint32_t box = heap_.allocate("Ljava/util/Iterator;", pc_, 0);
+            heap_.set_object_field(box, "__iterator_parent__",
+                                   DalvikValue::make_object(
+                                       this_id, class_name));
+            heap_.set_object_field(box, "__iterator_pos__",
+                                   DalvikValue::make_int(0));
+            result = DalvikValue::make_object(box, "Ljava/util/Iterator;");
             return true;
         }
+        // Box resolution shared by hasNext/next: the receiver is either a
+        // fresh box (cursor + __iterator_parent__) or the legacy self.
+        uint32_t f237_self = args.empty() ? 0 : args[0].object_id;
+        uint32_t f237_list = f237_self;
+        int32_t f237_pos = 0;
+        bool f237_is_box = false;
+        if (method == "hasNext" || method == "next") {
+            auto pf237 = heap_.get_object_field(f237_self,
+                                                "__iterator_parent__");
+            if (pf237.has_value() && pf237->type == DalvikType::OBJECT_REF &&
+                pf237->object_id != 0) {
+                f237_list = pf237->object_id;
+                f237_is_box = true;
+                auto bp = heap_.get_object_field(f237_self,
+                                                 "__iterator_pos__");
+                if (bp.has_value() && bp->type == DalvikType::INT32)
+                    f237_pos = bp->int_val;
+            } else {
+                auto pf = heap_.get_object_field(f237_self,
+                                                 "__iterator_pos__");
+                if (pf.has_value() && pf->type == DalvikType::INT32)
+                    f237_pos = pf->int_val;
+            }
+        }
         if (method == "hasNext") {
-            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
-            int32_t pos = 0, sz = 0;
-            auto pf = heap_.get_object_field(this_id, "__iterator_pos__");
-            if (pf.has_value() && pf->type == DalvikType::INT32) pos = pf->int_val;
-            auto lf = heap_.get_object_field(this_id, "__array_length__");
+            int32_t sz = 0;
+            auto lf = heap_.get_object_field(f237_list, "__array_length__");
             if (lf.has_value() && lf->type == DalvikType::INT32) sz = lf->int_val;
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_bool(pos < sz);
+            result = DalvikValue::make_bool(f237_pos < sz);
             return true;
         }
         if (method == "next") {
-            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
-            int32_t pos = 0, sz = 0;
-            auto pf = heap_.get_object_field(this_id, "__iterator_pos__");
-            if (pf.has_value() && pf->type == DalvikType::INT32) pos = pf->int_val;
-            auto lf = heap_.get_object_field(this_id, "__array_length__");
+            int32_t sz = 0;
+            auto lf = heap_.get_object_field(f237_list, "__array_length__");
             if (lf.has_value() && lf->type == DalvikType::INT32) sz = lf->int_val;
             status = ApiCallTrace::Status::IMPLEMENTED;
-            if (pos < sz) {
+            if (f237_pos < sz) {
                 auto elem = heap_.get_object_field(
-                    this_id, "array[" + std::to_string(pos) + "]");
-                heap_.set_object_field(this_id, "__iterator_pos__",
-                                       DalvikValue::make_int(pos + 1));
+                    f237_list, "array[" + std::to_string(f237_pos) + "]");
+                if (f237_is_box) {
+                    heap_.set_object_field(f237_self, "__iterator_pos__",
+                                           DalvikValue::make_int(f237_pos + 1));
+                } else {
+                    heap_.set_object_field(f237_self, "__iterator_pos__",
+                                           DalvikValue::make_int(f237_pos + 1));
+                }
                 if (elem.has_value()) {
                     result = *elem;
                     return true;
@@ -45615,6 +45735,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             start = pos + delim.length();
         }
         parts.push_back(str.substr(start));
+        {
+            static thread_local uint64_t f235_sp = 0;
+            static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
+            if (f235_diag && f235_sp++ < 40)
+                std::cerr << "[F235-SPLIT] in=\"" << str.substr(0, 80)
+                          << "\" delim=\"" << delim << "\" parts="
+                          << parts.size()
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
         // Allocate a heap array.
         uint32_t arr_id = heap_.allocate("Larray;", 0, 0);
         // EXP-071 Phase 6: Use the SAME field naming convention as the

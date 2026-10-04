@@ -1,0 +1,652 @@
+{"kind": "registry-root", "id": "R-NEW-001", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-002", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-003", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-004", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-005", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-006", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-007", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-008", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-009", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-010", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-011", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-012", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-013", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-014", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-015", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-016", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-017", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-018", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-019", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-020", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-021", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-022", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-023", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-024", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-025", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-026", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-027", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-028", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-029", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-030", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-031", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-032", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-033", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-034", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-035", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-036", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-037", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-038", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-039", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-040", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-041", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-042", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-043", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-044", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-045", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-046", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-047", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-048", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-049", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-050", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-051", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-052", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-053", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-054", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-055", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-056", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-057", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-058", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-059", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-060", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-061", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-062", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-063", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-064", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-065", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-066", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-067", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-068", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-069", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-070", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-071", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-072", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-073", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-074", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-075", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-076", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-077", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-078", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-079", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-080", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-081", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-082", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-083", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-084", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-085", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-086", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-087", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-088", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-089", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-090", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-091", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-092", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-093", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-094", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-095", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-096", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-097", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-098", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-099", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-100", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-101", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-102", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-103", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-104", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-105", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-106", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-107", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-108", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-109", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-110", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-111", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-112", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-113", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-114", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-115", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-116", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-117", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-118", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-119", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-120", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-121", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-122", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-123", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-124", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-125", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-126", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-127", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-128", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-129", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-130", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-131", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-132", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-133", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-134", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-135", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-136", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-137", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-138", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-139", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-140", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-141", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-142", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-143", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-144", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-145", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-146", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-147", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-148", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-149", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-150", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-151", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-152", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-153", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-154", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-155", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-156", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-157", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-158", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-159", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-160", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-161", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-162", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-163", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-164", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-165", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-166", "status_raw": "RESEARCHED-NOT-IMPLEMENTED", "state": "PENDING", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-167", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-168", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-169", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-170", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-171", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-172", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-173", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-174", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-175", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-176", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-177", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-178", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-179", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-180", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-181", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-182", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-183", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-184", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-185", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-186", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-187", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-188", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-189", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-190", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-191", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-192", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-193", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-194", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-195", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-196", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-197", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-198", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-199", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-200", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-201", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-202", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-203", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-204", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-205", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-206", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-207", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-208", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-209", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-210", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-211", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-212", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-213", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-214", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-215", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-216", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-217", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-218", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-219", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-220", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-221", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-222", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-223", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-224", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-225", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-226", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-227", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-228", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-229", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-230", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-231", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-232", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-233", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-234", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-235", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-236", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-237", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-238", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-239", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-240", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-241", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-242", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-243", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-244", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-245", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-246", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-247", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-248", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-249", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-250", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-251", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-252", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-253", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-254", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-255", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-256", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-257", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-258", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-259", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-260", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-261", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-262", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-263", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-264", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-265", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-266", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-267", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-268", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-269", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-270", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-271", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-272", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-273", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-274", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-275", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-276", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-277", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-278", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-279", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-280", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-281", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-282", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-283", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-284", "status_raw": "UNPROVEN", "state": "UNKNOWN", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-285", "status_raw": "PARTIAL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-286", "status_raw": "NOT-APPLICABLE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-287", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-288", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-289", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-290", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-291", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-292", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-293", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-294", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-295", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-296", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-297", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-298", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-299", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-300", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-301", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-302", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-303", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-316", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-317", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-318", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-319", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-320", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-322", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-323", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-324", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-325", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-326", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-327", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-328", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-329", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-330", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-331", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-332", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-333", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-334", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-335", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-336", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-337", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-338", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-339", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-340", "status_raw": "PARTIAL-FIX", "state": "PARTIAL", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-341", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "getApplicationContext served a plain Context singleton — Hilt Application resolution ISE killed dooz23 first composition"}
+{"kind": "registry-root", "id": "R-NEW-342", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "CopyOnWriteArraySet REC-MISS dropped the Hilt members-injector from the androidx lifecycle registry; iterator next() returned Ljava/lang/Object; (runtime class lost)"}
+{"kind": "registry-root", "id": "R-NEW-343", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "java.lang.Class.cast(Object) unimplemented — Hilt component-holder unwrap Lpm;.B null-poisoned the whole DI chain"}
+{"kind": "registry-root", "id": "R-NEW-344", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "dooz23 ScatterMap full-table probe spin: second grow computed newCapacity=15 instead of nextCapacity(15)=31 — ROOT-CAUSED as missing java.lang.Long bridge (F-086), fixed + regression-tested at S57"}
+{"kind": "registry-root", "id": "R-NEW-345", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "runBlocking/BlockingCoroutine joinBlocking livelock — kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two coroutine frames; dooz theme-load never completed"}
+{"kind": "registry-root", "id": "R-NEW-347", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name family missing — content composition started but root stayed 0x"}
+{"kind": "registry-root", "id": "R-NEW-348", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": "dooz23: compose 1.11.4 composition-capabilities gate — Lpz0;.c1() aborts via U0(Z)Lwt0;==null before ever invoking the app content lambda"}
+{"kind": "registry-root", "id": "R-NEW-349", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree — windowRecomposer checkPrecondition(isAttachedToWindow) threw ISE before any compo"}
+{"kind": "registry-root", "id": "R-NEW-350", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "protobuf-javalite MessageInfo chain dead: 3-arg Class.forName(String,Z,ClassLoader) silently void + Class.asSubclass unimplemented -> defaultInstanceMap never populated -> UOE 'No factory is available for message type' /"}
+{"kind": "registry-root", "id": "R-NEW-351", "status_raw": "SUPERSEDED-BY-EVIDENCE", "state": "SUPERSEDED", "title": "dooz23 FIRST real protobuf schema build dies: MessageSchema table builder Llt0;.w aput-oob 'length=1; index=1' — the int[] field table sized from the parsed MessageInfo is 1 short for the writer loop"}
+{"kind": "registry-root", "id": "R-NEW-352", "status_raw": "PROVEN-FIXED", "state": "VERIFIED", "title": "microtimer Room initDb retry loop under interpreter-level forName resolution — 50k re-visits of the SAME forName invoke starve the run budget (the reason R-NEW-350 is env-gated MINIANDROID_R350_LAW=1)"}
+{"kind": "registry-root", "id": "R-NEW-353", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "String.charAt bridge law drops its result — bridge result-out contract"}
+{"kind": "registry-root", "id": "R-NEW-354", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "Framework-class registry law — Class.forName must answer engine framework surface"}
+{"kind": "registry-root", "id": "R-NEW-355", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "INVOKE PC-ADVANCE CONTRACT — interpreter-level forName law exits never advanced pc_"}
+{"kind": "registry-root", "id": "R-NEW-356", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "Button-family clickable-default law (platform style android:clickable=true)"}
+{"kind": "registry-root", "id": "R-NEW-357", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "Resources.getIdentifier law (dynamic id resolution) + receiver-shift fix"}
+{"kind": "registry-root", "id": "R-NEW-358", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "java.lang.reflect.Array.newInstance law (1-D + n-D dimensions)"}
+{"kind": "registry-root", "id": "R-NEW-359", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "View.post/postDelayed/removeCallbacks + Activity.runOnUiThread silently swallowed their Runnables (handled_void, no enqueue) — the deferred compose-request chain never reached the main MessageQueue"}
+{"kind": "registry-root", "id": "R-NEW-360", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "ArrayList(Collection) copy-ctor law blind to R8-renamed wrapper collections (Arrays$ArrayList Lzc; has no get(I); kotlin ArrayDeque Lad; is circular) — copies came out EMPTY → NoSuchElementException('List is empty.') in "}
+{"kind": "registry-root", "id": "R-NEW-361", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "R-NEW-335 REFINED (dooz v18+v23 converge on one face): compose SlotTable/ScatterMap probe arithmetic yields NEGATIVE corrupt indices (v23: aput-oob length=15 index=-733270216 in Lbw0;.a after HALT-LOOP in Lbw0;.d 2.4M in"}
+{"kind": "registry-root", "id": "R-NEW-367", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "SharedPreferences shadow hard-coded the EXP-era data dir 'org.telegram.messenger/shared_prefs' for EVERY app — any non-Telegram APK's getSharedPreferences loaded from / stored into the wrong package directory"}
+{"kind": "registry-root", "id": "R-NEW-368", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "uNote main-menu buttons unreachable for input — REFUTED at S56: the 16-probe grid (y 300..1780) never covered the bottom 44px button band (y=1876..1920); a tap at the real coordinates hits, consumes, and launches NoteEdi"}
+{"kind": "registry-root", "id": "R-NEW-375", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "ChessClock renders a 2-color near-black blank frame - real clock face invisible (S53 downgrade RENDER_ONLY)"}
+{"kind": "registry-root", "id": "R-NEW-376", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Dooz ctor-climb: Compose init constructor-invocation chains exceeding the 2048-frame budget (v18 Lj/j0; x7 + Lt0/t;/LE0/c; x2; v23 Lgz1; x3 + Lbp1; x1) — impossible-in-valid-DEX self-delegating face"}
+{"kind": "registry-root", "id": "R-NEW-377", "status_raw": "VERIFIED-FIXED", "state": "VERIFIED", "title": "billthefarmer Notes v139 renders RENDER_ONLY: FAB click swapped NOTHING — ViewSwitcher.setDisplayedChild (the read<->edit face state machine) was a REC-MISS silent no-op (no ViewAnimator family law in ViewShadow). S53-er"}
+{"kind": "registry-root", "id": "F-084", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "HALT-RETURN containment law: a callee frame that exits via the loop-detector/instruction-budget halt has NO defined return value — the engine must not deliver the stale last_invoke_return_ to the caller's move-result"}
+{"kind": "registry-root", "id": "F-086", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "java.lang.Long 64-bit comparison bridge family (compare/compareUnsigned, OpenJDK Long.java law) — closes the STUBBED-typed-zero class for wide-arg static invokes"}
+{"kind": "registry-root", "id": "R-NEW-378", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Dooz post-F-102 cascade: compose rememberSaveable ACCEPTABLE_CLASSES IAE \"Can't put value with type null into saved state\" (Ljb1;.f via Lje;.<init> pc=73..104) + Class-keyed map IAE \"Key must be a class\" (Lwl0;.containsK"}
+{"kind": "registry-root", "id": "R-NEW-379", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Dooz next frontier (post F-102/F-103): compose init dies at ViewTreeLifecycleOwner — ISE \"ViewTreeLifecycleOwner not found from Lho;@1074\" (Log0;.c) uncaught at MainActivity.onCreate invoke_pc=317; the owner-tag walk fin"}
+{"kind": "registry-root", "id": "F-102", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "F-102 (S58): 3rc invoke-*/range descriptor dispatch law — pass the call site proto to try_recursive_invoke on both attempts (F-023 exact-descriptor selection); fixes the ctor-climb self-recursion (R-NEW-376)"}
+{"kind": "registry-root", "id": "F-103", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "F-103 (S58): java.lang.Class type-question laws (isInstance/isAssignableFrom over the real hierarchy), HEAP-BACKED Class tokens (const-class allocates a Ljava/lang/Class; object with __referent_desc; kills the token/heap"}
+{"kind": "registry-root", "id": "F-104", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "F-104 (S58): io/state law family — FileInputStream/FileReader sandbox ctor law + \"file:\" stream keys in cached_asset_bytes (4 MiB bound); Uri.fromFile/getPath/getScheme/getLastPathSegment; ContentResolver.openInputStream"}
+{"kind": "registry-root", "id": "R-NEW-380", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Dooz next frontier (post F-105): ViewModelProvider create chain falls to the throwing factory fallback — RuntimeException \"Cannot create an instance of \" (class-name portion EMPTY) caller=Leo;.n pc=53 depth=81; chain Lyd"}
+{"kind": "registry-root", "id": "R-NEW-381", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": "Dooz v23 first-frame content — S61 face: the Compose draw path is now WIRED (F-108 R8-rename law: identity via dispatchDraw-override contract instead of the wiped androidx package prefix) and the dispatch reaches the com"}
+{"kind": "registry-root", "id": "F-110", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "Per-invoke/per-exit constant-cost lever (registered S62, measured)"}
+{"kind": "registry-root", "id": "F-111", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "LayoutInflater <view class=...> no-namespace class attribute law"}
+{"kind": "registry-root", "id": "F-112", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Manifest <application> android:name buildClassName law (leading-dot join)"}
+{"kind": "registry-root", "id": "F-113", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "java.security.SecureRandom IS-A Random bridge law (R-NEW-382) — framework-subclass virtual dispatch must resolve ancestor laws"}
+{"kind": "registry-root", "id": "R-NEW-382", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "gmdice dice roll typed-zero face (SecureRandom.nextInt → 0)"}
+{"kind": "registry-root", "id": "R-NEW-383", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "pmk activateSettings NFE face (prefs null-default coercion + PreferenceManager defaults contract)"}
+{"kind": "registry-root", "id": "R-NEW-384", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "FreeKlondike splash-trap face (java.util.Timer REC-MISS + manifest meta-data typed-zero + tap scheduling)"}
+{"kind": "registry-root", "id": "F-118", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "Activity-constructor law (R-NEW-385) — every activity-construction path must run the declared no-arg <init>()V before onCreate (Instrumentation.newActivity / performLaunchActivity contract)"}
+{"kind": "registry-root", "id": "R-NEW-385", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "TriPeaks dead card taps (field-initialized listener = typed-zero)"}
+{"kind": "registry-root", "id": "F-119", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "X.TYPE primitive-class + primitive-array descriptor law (R-NEW-386) — Integer.TYPE & friends answer canonical Class objects; Array.newInstance builds [I-style descriptors for primitives"}
+{"kind": "registry-root", "id": "R-NEW-386", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "FishRings board NPE (Integer.TYPE typed-zero → null matrix)"}
+{"kind": "registry-root", "id": "R-NEW-388", "status_raw": "ROOT-CAUSED-REMEASURED-GENERIC-OK", "state": "VERIFIED", "title": "TriPeaks geometry — generic RL anchor laws PROVEN on f14 (current binary); game screen blocked at SplashActivity (app-specific path)"}
+{"kind": "registry-root", "id": "A7", "status_raw": "FIXED-S75", "state": "VERIFIED", "title": "Manifest label/icon — identity consumer law missing (label raw in parse, zero runtime consumers, icon unparsed)"}
+{"kind": "registry-root", "id": "F-136", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "ARSC-first string resolution (Context/Resources.getString/getText law)"}
+{"kind": "registry-root", "id": "R-NEW-389", "status_raw": "ROOT-CAUSED-SEMANTIC", "state": "VERIFIED", "title": "bouncy 81-px top-band divergence — ROOT-CAUSED: F-136 collateral (splash hint now renders), NOT nondeterminism"}
+{"kind": "registry-root", "id": "F-121", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "click-probe must drain pending intent/finish before re-render"}
+{"kind": "registry-root", "id": "F-122", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Color.rgb/argb/parseColor static factories were REC-MISS→0→invisible"}
+{"kind": "registry-root", "id": "F-123", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "drawRoundRect AOSP arg order (l,t,r,b,rx,ry,PAINT) + real radius"}
+{"kind": "registry-root", "id": "F-124", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "XML visibility enum space {0,1,2}→View {0,4,8}"}
+{"kind": "registry-root", "id": "A2", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "getDimensionPixelSize args[1]-not-this + ARSC-first + complexToDimensionPixelSize (100dp→263px exact)"}
+{"kind": "registry-root", "id": "A4", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "INVISIBLE own-content gate (children render per dispatchDraw)"}
+{"kind": "registry-root", "id": "C3", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "horizontal-LL cross-axis TOP(0x30) was centered"}
+{"kind": "registry-root", "id": "F-135", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "OpenJDK NaN/infinite/compare family (Double/Float isNaN, isInfinite, compare) — 694 static sites × 7 APKs, bouncy 480× STUB→IMPL"}
+{"kind": "registry-root", "id": "F-137", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "ANCESTRY-DISPATCH root law — substring guards miss app subclasses (Application/Activity/Service receivers fell to type-default stub)"}
+{"kind": "registry-root", "id": "F-138", "status_raw": "REGISTERED", "state": "PENDING", "title": "ScoreView hint HUD geometry — bitmap-font text drawn at (0,0) (legacy text path, text_size=0)"}
+{"kind": "registry-root", "id": "F-141", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "ART null-receiver invoke NPE law + null-propagation hardening (dooz PersistentHashMap trie corruption)"}
+{"kind": "registry-root", "id": "F-142", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Layout-inflated ImageView src/drawable → Bitmap resolution + paint (fishrings 44-view game tree paints nothing)"}
+{"kind": "registry-root", "id": "F-143", "status_raw": "OPEN", "state": "PENDING", "title": "Service launch/lifecycle family: Service.onCreate/onStartCommand/startForegroundService (stopwatch = service-only manifest, no activity)"}
+{"kind": "registry-root", "id": "F-144", "status_raw": "OPEN", "state": "PENDING", "title": "GL/EGL surface family for libGDX apps (EGLContext.getEGL → checkGL20 → GdxRuntimeException)"}
+{"kind": "registry-root", "id": "F-145", "status_raw": "OPEN", "state": "PENDING", "title": "Final screenshot capture surface does not follow the top-of-stack window (multi-activity apps capture the splash/first window)"}
+{"kind": "registry-root", "id": "F-146", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "dooz: ur.e(J) invoked on null receiver at g8.a pc=569 (coroutine state machine; null producer upstream of the call)"}
+{"kind": "registry-root", "id": "F-147", "status_raw": "OPEN", "state": "PENDING", "title": "dooz: ViewGroup.getChildAt(I) on null receiver at MainActivity.onCreate pc=228 (v10 null — likely a findViewById/content-view resolution gap)"}
+{"kind": "registry-root", "id": "F-148", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "ConstraintLayout anchor family unimplemented — every child measured 0-wide/stacked at x=0 (layout_constraint* attrs unparsed; no solver semantics)"}
+{"kind": "registry-root", "id": "F-149", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Resources.getDisplayMetrics unimplemented (silent null) + DisplayMetrics singleton density=1.0 (mdpi) diverging from the 2.625 device-density authority + TypedValue.applyDimension DEX bridge missing -> app dp2px computed"}
+{"kind": "registry-root", "id": "F-150", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Thread game-loop family dead: (a) ThreadShadow no-op family swallowed Thread.sleep shadowing the real sleep law; (b) javac emits the SUBCLASS descriptor for unqualified Thread.sleep/start (invoke-static GameMainThread;->"}
+{"kind": "registry-root", "id": "F-120", "status_raw": "VERIFIED-CORRECT", "state": "VERIFIED", "title": "Button default gravity law (TextView/Button gravity per AOSP)"}
+{"kind": "registry-root", "id": "R-NEW-390", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-391", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-392", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-393", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "R-NEW-394", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "F-152", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "dooz: Llt0;.w pc=808 objectFieldOffset on null receiver (protobuf UnsafeUtil THE_UNSAFE init chain)"}
+{"kind": "registry-root", "id": "F-153", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": ""}
+{"kind": "registry-root", "id": "F-154", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "dooz: Lh3;.h pc=36 Set.iterator() on null Set (DataStore first-launch parse; Collections.EMPTY_SET SGET-MISS)"}
+{"kind": "registry-root", "id": "R-NEW-395", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "java.security.AccessController.doPrivileged law: dispatch the action's run() and return its result (libcore AccessController.java)"}
+{"kind": "registry-root", "id": "R-NEW-396", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "Class.getDeclaredFields on synthetic (non-DEX) classes answers the known declared-field subset (Lsun/misc/Unsafe; -> theUnsafe)"}
+{"kind": "registry-root", "id": "R-NEW-397", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "java.util.Collections EMPTY_SET/EMPTY_LIST/EMPTY_MAP static-final singletons + Empty-family read contract (OpenJDK Collections.java)"}
+{"kind": "registry-root", "id": "R-NEW-398", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "Platform-text-pipeline routing for non-ASCII strings + CJK fallback face (AOSP fonts.xml fallback chain)"}
+{"kind": "registry-root", "id": "F-155", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "fishrings: MediaPlayer.create REC-MISS stub returned null player → GameActivity.sound() NPE aborted ring-rotation onClick (input → state chain dead; the S10 interaction was invisible at HEAD)"}
+{"kind": "registry-root", "id": "R-NEW-399", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "AOSP ViewGroup child-dispatch law: touch targets are bounds-checked per CHILD; ancestor bounds never gate the descent (hit-test walk) + MINIANDROID_HITPROBE"}
+{"kind": "registry-root", "id": "R-NEW-400", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "AOSP MediaPlayer object law: create() → non-null PREPARED player; start/pause/stop/release/reset per the state-machine table"}
+{"kind": "registry-root", "id": "R-NEW-401", "status_raw": "USED_BY_EXECUTION", "state": "TESTED", "title": "Context.getExternalCacheDir → File bridge: external storage emulated as AVAILABLE (mirrors getExternalFilesDir P1.7)"}
+{"kind": "registry-root", "id": "VF-NEW-001", "status_raw": "ROOT_CAUSED-FIXED", "state": "VERIFIED", "title": "VF-DIALOG-ITEMS: AlertDialog$Builder.setItems(CharSequence[],listener) drops the item array — dialog paints title/message with items=0"}
+{"kind": "registry-root", "id": "VF-NEW-002", "status_raw": "ROOT_CAUSED-FIXED", "state": "VERIFIED", "title": "VF-PLACEHOLDER-GARBLE: C013-CUSTOMVIEW placeholder painted the raw class descriptor (e.g. Lorg.billthefarmer.markdown.MarkdownView) over full-screen regions — user-visible garbled text"}
+{"kind": "registry-root", "id": "F-NEW-156", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "Fresh-corpus onCreate APP BOUNDARY unwind family: first-run NPE inside app onCreate (before/at setContentView) unwinds process → blank two-color screen. Faces: de.tobiasbielefeld.solitaire GameSelector.onCreate invoke#3,"}
+{"kind": "registry-root", "id": "R-NEW-402", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "S81 visual audit instrument: status ladder EXECUTED ≠ VISUALLY COMPATIBLE (L0 LOADED_ONLY … L5 VISUALLY_VERIFIED) + metric suite (UNIQUE_COLORS/COLOR_ENTROPY/DOMINANT ratios/region classes) + APK-raster-vs-screen image-p"}
+{"kind": "registry-root", "id": "F-NEW-157", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivity.onCreate — libGDX AndroidBackend GL surface creation chain unimplemented | S134 UPDATE: boxcars (libGDX-cla"}
+{"kind": "registry-root", "id": "R-NEW-403", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "java.util.WeakHashMap unroutable in real-dalvik (CollectionShadow::handles_class gap): keySet() answered null -> Set.iterator NPE killed io.github.yamin8000.dooz (Glide RequestManager lifecycle registry Lg/b;.d) at onCre"}
+{"kind": "registry-root", "id": "R-NEW-404", "status_raw": "FIXED-VERIFIED", "state": "VERIFIED", "title": "S83-B2 GRAPHICS FOUNDATION CLOSURE: layer-list XML law (parse bottom->top + inset paint), GradientDrawable RING(3)/LINE(2) kinds + dash strokes rendered, code-level LayerDrawable/GradientDrawable capture (GradientState s"}
+{"kind": "registry-root", "id": "R-NEW-423", "status_raw": "ROOT-CAUSED-CLOSED", "state": "VERIFIED", "title": "framework-res ARSC parser entry-value corruption for non-attr/style types (color/drawable/plain entries decode cross-contaminated values)"}
+{"kind": "registry-root", "id": "R-NEW-424", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "INPUT TouchTarget + onInterceptTouchEvent law (CAP-INPUT-102/100): hit-test walked children in DRAW order (AOSP walks REVERSE — topmost sibling must win overlaps), no TouchTarget chain was captured (MOVE/UP could not dis"}
+{"kind": "registry-root", "id": "R-NEW-425", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "INPUT VelocityTracker law gap (CAP-INPUT-108): the runtime had no velocity tracker — android.view.VelocityTracker.obtain/addMovement/computeCurrentVelocity/getXVelocity did not exist, and the dispatcher never delivered M"}
+{"kind": "registry-root", "id": "R-NEW-426", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "INPUT TouchDelegate law gap + MOVE-delivery law gap (CAP-INPUT-110): android.view.TouchDelegate did not exist (no ctor capture, no setTouchDelegate, no View.onTouchEvent consult — View.java L17060-17064), and the dispatc"}
+{"kind": "registry-root", "id": "R-NEW-427", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "Scroller/OverScroller 1:1 port (startScroll/fling spline physics/viscousFluid/DECELERATION_RATE/settle-at-final)"}
+{"kind": "registry-root", "id": "R-NEW-428", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "View.scrollTo/scrollBy fire onScrollChanged hook (AOSP View law)"}
+{"kind": "registry-root", "id": "R-NEW-429", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "GestureDetector state machine 1:1 (onDown/onShowPress/onSingleTapUp/onLongPress/onScroll/onFling/onSingleTapConfirmed + double-tap; timeouts 100/500/300/40ms; LSQ2 velocity)"}
+{"kind": "registry-root", "id": "R-NEW-430", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "computeScroll dispatch per frame in the draw walk (AOSP ViewGroup draw law)"}
+{"kind": "registry-root", "id": "R-NEW-431", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "View.setChecked/toggle/isChecked + onCheckedChanged hook"}
+{"kind": "registry-root", "id": "R-NEW-432", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "FocusFinder one-focus law: setFocusable/requestFocus/clearFocus/isFocused + set_focused_view"}
+{"kind": "registry-root", "id": "R-NEW-433", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "View listener family storage (OnScrollChangeListener/OnCheckedChangeListener/OnItemClickListener/OnItemLongClickListener/OnItemSelectedListener/OnKeyListener)"}
+{"kind": "registry-root", "id": "R-NEW-434", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "KeyEvent dispatch: onKey listener -> onKeyDown/onKeyUp arms (AOSP View.java L6952+)"}
+{"kind": "registry-root", "id": "R-NEW-435", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "ViewPropertyAnimator record + settle-on-start"}
+{"kind": "registry-root", "id": "R-NEW-436", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "Scroll-clip walk law: scrolling-ancestor fully-outside skip + RenderTask clip fields"}
+{"kind": "registry-root", "id": "R-NEW-437", "status_raw": "ROOT-CAUSED-CLOSED", "state": "VERIFIED", "title": "[HONESTY-CORRECTED S132] opencalculator pad collapsed (34 buttons/8 rows bounds=0, blank screen) — TableLayout/TableRow/weight + ConstraintLayout MATCH_CONSTRAINT family; NOT GridLayout (the APK has no GridLayout — S131 "}
+{"kind": "registry-root", "id": "R-NEW-438", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "DEX onMeasure override emulation defeats the native container laws (incomplete-emulation law missing) — library containers collapse to 0x0 or skip child measure"}
+{"kind": "registry-root", "id": "R-NEW-439", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "ConstraintLayout PARENT_ID sentinel: modern AGP compiles app:layout_constraint*_to*Of=\"parent\" as typed INT 0 without a raw string — the raw==\"parent\"-only capture dropped every parent anchor"}
+{"kind": "registry-root", "id": "R-NEW-440", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Two competing measure laws: the engine's DEX measure bridge sized container subtrees with the primitive spec law (no anchors/weights/TableLayout rows) instead of the canonical inflater law; render/input roots also diverg"}
+{"kind": "registry-root", "id": "R-NEW-441", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "SlidingUpPanelLayout runtime-state family: View.getLeft/getTop/getRight/getBottom had NO bridge (umano dimChildToDimen cover test read degenerate bounds); F096 dispatched real-DEX onLayout with a degenerate 0x0 rect; lay"}
+{"kind": "registry-root", "id": "R-NEW-442", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "SVG-asset law missing (Telegram SvgHelper family loads plain-text .svg assets; no text-XML reader existed) — adapter law over the existing path/fill substrate"}
+{"kind": "registry-root", "id": "R-NEW-443", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "WEB-001 network document law missing: WebView.loadUrl(http/https) kept the honest-placeholder law (no top-level fetch) — the FIRST divergence of every live-site load"}
+{"kind": "registry-root", "id": "R-NEW-444", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "ES-MODULE script law missing: <script type=module> executed with classic goals → SyntaxError: unsupported keyword: export — the FIRST DIVERGENCE of the live z.ai load (the 3.2MB Vue/Svelte SPA bundle died at parse; app n"}
+{"kind": "registry-root", "id": "R-NEW-445", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "fetch() relative-URL resolution missing (WHATWG Fetch base-URL law): fetch('/api/config') threw 'bad url' instead of hitting the document origin"}
+{"kind": "registry-root", "id": "R-NEW-446", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "fetch(url, init) headers/method ignored (WHATWG Fetch §4.1 init law): Authorization/Content-Type dropped — every authenticated-SPA request degraded"}
+{"kind": "registry-root", "id": "R-NEW-447", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "HTTP cookie store missing (RFC 6265 §5.3/§5.4): Set-Cookie never stored, Cookie never echoed — the z.ai session flow (token cookie from /api/v1/auths/ gating /api/models) returned 403"}
+{"kind": "registry-root", "id": "R-NEW-448", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Unhandled promise rejections were INVISIBLE (no host rejection tracker) — a whole SPA boot chain died silently (white screen with zero error surface)"}
+{"kind": "registry-root", "id": "R-NEW-449", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Web-API stub family missing: PerformanceObserver/IntersectionObserver/MutationObserver/ResizeObserver/matchMedia/requestIdleCallback — z.ai's first inline telemetry script died at 'PerformanceObserver is not defined' BEF"}
+{"kind": "registry-root", "id": "R-NEW-450", "status_raw": "VERIFIED_3RUN", "state": "VERIFIED", "title": "ATOMIC INLINE-BOX law missing (CSS 2.1 §9.2.2): display:inline-block elements text-merged into the parent (never laid out lo=0, never painted) — T02 color chips and T14's 2000-node grid rendered NOTHING (the dominant gen"}
+{"kind": "registry-root", "id": "R-NEW-451", "status_raw": "VERIFIED", "state": "VERIFIED", "title": "<img> replaced-element law missing: DOM <img> had no fetch, no box, no paint (only JS new Image()/CSS background existed) — T05 fixture image invisible; klondike banner.html family affected"}
+{"kind": "registry-root", "id": "R-NEW-452", "status_raw": "VERIFIED", "state": "VERIFIED", "title": "Inline SVG BASIC-SHAPES law missing (SVG2 §10.3/§10.4): paint_svg_content painted only <path>/<use> — <circle>/<rect>/<ellipse> rendered nothing (T06 fixture; the S132 Telegram subset measured circle/rect usage)"}
+{"kind": "registry-root", "id": "R-NEW-453", "status_raw": "VERIFIED", "state": "VERIFIED", "title": "Canvas attribute intrinsic-size law missing (WHATWG HTML §4.12.4): parsed <canvas width= height=> kept a 1x1 bitmap AND a 0x0 box — every parse-time fillRect landed on a degenerate surface (T09: draw_calls=2, ZERO pixels"}
+{"kind": "registry-root", "id": "R-NEW-454", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "Browser DOM/URL surface family missing for module-class pages: URLSearchParams (30+ z.ai bundle sites), document.getElementsByTagName (z.ai GTM bootstrap), document.location alias (jQuery support checks)"}
+{"kind": "registry-root", "id": "R-NEW-455", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "Browser resource-forensics instrumentation missing (S133 §4/§5/§31): no per-resource table, no stage traces, no diagnostic artifact dump"}
+{"kind": "registry-root", "id": "R-NEW-456", "status_raw": "BLOCKED", "state": "BLOCKED", "title": "LIVE z.ai residual: the Svelte-5 runtime inside the minified app bundle rejects the boot ('TypeError: value is not iterable', twice, unhandled) at bundle line 7 (~48K chars) — the SPA mounts nothing and the page stays th"}
+{"kind": "registry-root", "id": "F-NEW-160", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "DEX INSTANCE FIELD IDENTITY LAW: heap instance fields were keyed by BARE NAME only — two same-named fields of two different classes aliased ONE storage slot. Faces: (1) solitaire_71 e.m (AppCompat delegate field, support"}
+{"kind": "registry-root", "id": "F-NEW-161", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": "chessclock_29: NPE \"Uri.toString on null receiver\" at ChessClock.setUpGame pc=321 → APP-BOUNDARY unwind. getIntPref chain works (prefs shadow OK); the null Uri producer (RingtoneManager.getDefaultUri family or Uri.parse("}
+{"kind": "registry-root", "id": "F-NEW-162", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "C013-CUSTOMVIEW inline placeholder contaminates visible frames and can stand in for unimplemented renderer families: (a) headingcalc_1 — pink \"custom view (not rendered)\" boxes overpaint REAL heading text (Heading custom"}
+{"kind": "registry-root", "id": "F-NEW-163", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER — dual-path observability (machine trace.jsonl + semantic overlay trace_overlay.png) built on ONE backbone (TraceEngine runtime_event + sinks); overlay composes a COPY after the auth"}
+{"kind": "registry-root", "id": "F-NEW-164", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "EXP-092 bitmap font shipped 5 corrupt glyphs (glyph_dot_bitmap=16x0xFF solid block, glyph_minus 3 full rows, glyph_E/I/z corrupted) — every '.' on the BitmapFont path drew a solid 8x16 block. ROOT CAUSE: generator tight-"}
+{"kind": "registry-root", "id": "F-NEW-165", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Window.setContentView (R005-DECOR path) satisfied only the findViewById-delegation law and never advanced the CONTENT ANCHOR: apps whose AppCompat delegate calls getWindow().setContentView(subDecor) (AOSP: Activity.setCo"}
+{"kind": "registry-root", "id": "F-NEW-166", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "WhatsApp_next_face (F-NEW-156 family): onCreate dies BEFORE any setContentView — NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F pc=19 (obfuscated helper); a stubbed invoke returned null where AOSP guarantees non-nul"}
+{"kind": "registry-root", "id": "F-NEW-168", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": "WhatsApp next faces (F-NEW-156 chain continues): (a) androidx FragmentManager host law — 'FragmentManager has not been attached to a host' ISE at LX/0JZ;.A0G + 'No activity' at LX/0JZ;.A0c: the app's wrapper-context Frag"}
+{"kind": "registry-root", "id": "F-NEW-170", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "F-NEW-170"}
+{"kind": "registry-root", "id": "F-NEW-171", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "F-NEW-171"}
+{"kind": "registry-root", "id": "F-NEW-172", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "F-NEW-172"}
+{"kind": "registry-root", "id": "F-NEW-173", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "F-NEW-173"}
+{"kind": "registry-root", "id": "F-NEW-174", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "False-SUCCESS family: no-root success + synthetic fallback + color-stats verdict (item 21 P0-2/P0-3/P0-6)"}
+{"kind": "registry-root", "id": "F-NEW-175", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Diagnostic placeholders out of the authoritative frame (item 21 P0-5/P1-9)"}
+{"kind": "registry-root", "id": "F-NEW-176", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Render-root heuristics removed: setParams/SmsView/PhoneView (item 21 P0-1)"}
+{"kind": "registry-root", "id": "F-NEW-177", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "HOST_SHORTCUT lifecycle fallback removed from REAL_DALVIK (item 21 P0-4)"}
+{"kind": "registry-root", "id": "F-NEW-178", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Silent ViewTree truncation -> budgets with explicit exhaustion (item 21 P0-7)"}
+{"kind": "registry-root", "id": "F-NEW-179", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "Per-frame canonical pump for Compose/WebView/Choreographer (item 21 P0-8)"}
+{"kind": "registry-root", "id": "F-NEW-180", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Geometry truth batch: +30px offset, translation order, scroll-clip inheritance, 40px onDraw gate, drew_real honesty, PNG capture law (items 21 P1-1/3/4/5/6/8)"}
+{"kind": "registry-root", "id": "F-NEW-181", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "WAVE C: RegularImmutableMap.get() probe livelock attributed to the F-NEW-173 placeholder-materialization family"}
+{"kind": "registry-root", "id": "F-NEW-182", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "XML inflation must not measure before window attach (audit P0-1)"}
+{"kind": "registry-root", "id": "F-NEW-183", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "android.R.id.content must be ONE stable object per window (audit P0-2)"}
+{"kind": "registry-root", "id": "F-NEW-184", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "View-returning bridges answer the REAL runtime class (audit P0-3 + P0-4)"}
+{"kind": "registry-root", "id": "F-NEW-185", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "setVisibility raises requestLayout; image setters enter the real pipeline; explicit black wins (audit P1-1 + P1-2 + P1-10)"}
+{"kind": "registry-root", "id": "F-NEW-186", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Material constructor gate = DEX existence; fully-qualified XML class = slashed DEX descriptor (audit P1-3 + P1-4)"}
+{"kind": "registry-root", "id": "F-NEW-187", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Every authoritative render return value checked; frame authenticity recorded (audit P1-5/P1-6 close-out)"}
+{"kind": "registry-root", "id": "F-NEW-188", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "WebView.evaluateJavascript routes into the REAL QuickJS engine; ValueCallback fires (audit P1-11)"}
+{"kind": "registry-root", "id": "F-NEW-189", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "Gate data-root freshness law discovered and documented (simplestopwatch SharedPreferences persistence)"}
+{"kind": "registry-root", "id": "F-NEW-169", "status_raw": "OBSERVED-FAIL", "state": "PARTIAL", "title": "WhatsApp DI provider-null lattice (NEW frontier, wave 6): AppContext slot providers (00t.get → 1QL.A01 packed-switch arms over ~900 slots) null-check dependency invokes with LX/00i;.A0F \"INVOKE_RETURN must not be null\"; "}
+{"kind": "registry-root", "id": "F-NEW-167", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "BlockingQueue law: heap-field FIFO (put/offer/add → take/poll/peek) + empty blocking take = R-NEW-345 park-yield at the drain boundary. WhatsApp Log.<clinit> completes; F084 halt-loop / VirtualMachineError escape elimina"}
+{"kind": "registry-root", "id": "F-NEW-190", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "PHASE 4 device identity: Build.SUPPORTED_ABIS absent (ISE \"No supported ABIs found on this device\" x3, LX/0Cz) + ApplicationInfo install-time identity absent (sourceDir null -> SoLoader LX/0Dl.A01 NPE \"String.equals on n"}
+{"kind": "registry-root", "id": "F-NEW-191", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "PHASE 4 attach ordering: the engine never ran the app-level attachBaseContext override during activity launch (AOSP performLaunchActivity: <init> -> attach -> onCreate). WhatsApp LX/0IH override = the DI members-injector"}
+{"kind": "registry-root", "id": "F-NEW-192", "status_raw": "REGISTERED", "state": "PENDING", "title": "PHASE 10 draw/z-order audit residue: AOSP View.draw order (drawBackground -> onDraw -> dispatchDraw -> decorations) is enforced in the frame walk (21-P0-6 census law; forward child pop; S86 visibility gates; item-21 plac"}
+{"kind": "registry-root", "id": "F-NEW-193", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "SECONDARY CAMPAIGN V1/V2/V7 false-success family: the verdict chain could not (a) separate pixels INSIDE the authoritative content bounds from window chrome outside them, (b) distinguish a FAILED setContentView(res) infl"}
+{"kind": "registry-root", "id": "F-NEW-194", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "V4 generic-tag silent degradation: ANY unknown short XML tag silently inflated as a generic Landroid/view/View; leaf — real class identity lost (a platform/custom ViewGroup became a content-less leaf; container measure/l"}
+{"kind": "registry-root", "id": "F-NEW-195", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "V6 silent context-fallback conversion: View.getContext() with a MISSING constructor-captured Context silently answered the activity context — an identity conversion that can surface much later as white UI (View->Context-"}
+{"kind": "registry-root", "id": "F-NEW-196", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "V5 provenance states were IMPLICIT: the three pixel-source classes (resource-resolved, APK-path, raw pixels) existed in the pipeline but carried no canonical name in the provenance record — a bitmap dropped for lacking a"}
+{"kind": "registry-root", "id": "F-NEW-197", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + draw-walk but stop at first_missing_stage=APP_DRAW_OPS with a"}
+{"kind": "registry-root", "id": "F-NEW-198", "status_raw": "PENDING", "state": "PENDING", "title": "DEEP-AUDIT P0-1: ApplicationRuntime legacy rendering path — prove by call graph + runtime trace that no real APK execution can reach render_pipeline_->render, 'Hello MiniAndroid'/'main'/'activity_main' layout fallbacks, "}
+{"kind": "registry-root", "id": "F-NEW-199", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEEP-AUDIT P0-2: ArchTaskExecutorShadow::dispatch treats executeOnDiskIO(Runnable) as effectively no-op — background work disappears, so an AndroidX app that computes on a background executor and posts the result to main"}
+{"kind": "registry-root", "id": "F-NEW-200", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEEP-AUDIT P0-3: forbid STUBBED+return-true+SUCCESS transitions — required state vocabulary EXECUTED / EXECUTED_WITH_STUB / NOT_EXECUTED / FAILED / BLOCKED; a STUBBED operation may allow diagnostic continuation but must "}
+{"kind": "registry-root", "id": "F-NEW-201", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEEP-AUDIT P0-4 (extended proofs beyond F-NEW-183): the one canonical content parent per live window must survive repeated findViewById(android.R.id.content), getContentView, setContentView, findViewById, ComposeView.set"}
+{"kind": "registry-root", "id": "F-NEW-202", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEEP-AUDIT P1-5: HandlerShadow::settle advances virtual time by an extremely large amount — prove normal screenshot capture cannot execute delayed navigation/splash-removal/animations/state mutations early; separate FRAM"}
+{"kind": "registry-root", "id": "F-NEW-203", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEEP-AUDIT P1-6: ArchTaskExecutorShadow::isMainThread / ThreadShadow::currentThread / LooperShadow convert identity UNKNOWN into FALSE -> background dispatch -> executor gap -> UI callback never runs. Introduce explicit "}
+{"kind": "registry-root", "id": "F-NEW-204", "status_raw": "PENDING", "state": "PENDING", "title": "DEEP-AUDIT P1-7: audit unconditional std::cerr/std::cout in HandlerShadow/ActivityShadow/ViewShadow/rendering + dispatch hot paths; replace unbounded per-call logs with ERROR/FIRST-DIVERGENCE/BOUNDED/SUMMARY classes; log"}
+{"kind": "registry-root", "id": "F-NEW-205", "status_raw": "PENDING", "state": "PENDING", "title": "DEEP-AUDIT P1-8: view_tree_lifecycle_owner installation must be window-canonical — owner lookup from Compose/AndroidX lifecycle/ViewTree owners must reach the same object through Window->DecorView->Content->View tree; if"}
+{"kind": "registry-root", "id": "F-NEW-206", "status_raw": "PENDING", "state": "PENDING", "title": "DEEP-AUDIT P1-9: cross-check the traversal order against AOSP ViewRootImpl — attach -> measure -> layout -> pre-draw/state checks -> draw -> capture; requestLayout DURING layout must schedule a second layout pass (AOSP s"}
+{"kind": "registry-root", "id": "F-NEW-207", "status_raw": "PENDING", "state": "PENDING", "title": "DEEP-AUDIT P1-10: final visual gate — never accept status bar/navigation bar/placeholder pixels/diagnostic overlay/synthetic text/framework chrome as REAL_APP_CONTENT; require VIEWTREE_REACHED + MEASURE_REACHED + LAYOUT_"}
+{"kind": "registry-root", "id": "F-NEW-208", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SP-1+SFC-1/2: build the success corpus + per-title success signature — every title with real L4 evidence (VERIFIED / TESTED L4=true / PARTIAL L4=true / hello_smoke / hello_widgets / successful games) recorde"}
+{"kind": "registry-root", "id": "F-NEW-209", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SP-2/3/12 + SFC-3/4/5: prove the common successful chain (APK->manifest->Application->Activity->Window->Decor/content root->attachment->setContentView->ViewTree->measure->layout->draw traversal->app-owned dr"}
+{"kind": "registry-root", "id": "F-NEW-210", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SP-4/5/6/7/8: authority-accounting audits — renderer-family selection must use only runtime semantics (no package/app names, class-name guesses, newest object id, last setParams receiver, diagnostic placehol"}
+{"kind": "registry-root", "id": "F-NEW-211", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SP-9/10: investigate the successful apps' upstream source (TicTacToe Classic, Simple Stopwatch, billthefarmer Notes, Dodge, one Compose/failed counterpart) — map each source operation (XML hierarchy / progra"}
+{"kind": "registry-root", "id": "F-NEW-212", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SP-11 + SFC-9: high-fan-out missing-laws search — once the successful path is known, inspect failed titles that should use the same path; prioritize generic laws affecting many apps (activity/window/content "}
+{"kind": "registry-root", "id": "F-NEW-213", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SP-13 + SFC-6/7: SUCCESS-PATH REPORT (A working titles examined; B exact renderer family of each; C common successful stages; D first stage where white titles diverge; E common capabilities missing from fail"}
+{"kind": "registry-root", "id": "F-NEW-214", "status_raw": "PENDING", "state": "PENDING", "title": "SUCCESS-PATH SFC-8: logs-as-data law — distill run logs into bounded records (first_divergence, execution_family, API census, ViewTree census, render census, resource census, exception census, REC-MISS census, frame metr"}
+{"kind": "registry-root", "id": "F-NEW-215", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEEP-AUDIT (new campaign §6) CLASS-INIT HONESTY LAW: failed <clinit> left the class silently INITIALIZED — ensure_class_initialized marked initialized BEFORE <clinit> ran, ignored try_recursive_invoke's false, and return"}
+{"kind": "registry-root", "id": "F-NEW-216", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "ENUM-CONSTANT NAME LAW (kOrdinals): the table carried a FICTIONAL member TimeUnit.NANOS (that name belongs to java.time.temporal.ChronoUnit); OpenJDK TimeUnit.java has NANOSECONDS. Every sget of TimeUnit.NANOSECONDS answ"}
+{"kind": "registry-root", "id": "F-NEW-217", "status_raw": "PENDING", "state": "PENDING", "title": "kotlinx-coroutines virtual-concurrency frontier: MutexImpl.unlock F084 spin (50,001 visits, bytecode_size=66) with owner$volatile=NO_OWNER + _availablePermits$volatile=0 + head$volatile=obj#366; sibling face SemaphoreAnd"}
+{"kind": "registry-root", "id": "F-NEW-218", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "CLASS-TOKEN BACKING VALIDATION LAW: execute_instance_of's F-105c arm dereferenced CLASS_REF.ref_id as a heap id — but getClass answers tokens with ref_id = instruction_sequence_ (an execution counter, NOT a heap id) and "}
+{"kind": "registry-root", "id": "F-NEW-219", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "REFLECTION METHOD-FAMILY LAW: Class.getMethod/getDeclaredMethod minted a Method record for ANY name (F-029 mint-for-any-name) — the §17 silent-wrong. Gson 2.10.1's records probe Class.getMethod(\"isRecord\") (a JDK-16 API "}
+{"kind": "registry-root", "id": "F-NEW-220", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "CONTENT-PARENT REUSE LAW (F-NEW-197-B first leg): the F165-CONTENT anchor materialized a PARALLEL android.R.id.content node ABOVE the appcompat screen root instead of reusing the subDecor's own ContentFrameLayout — the a"}
+{"kind": "registry-root", "id": "F-NEW-221", "status_raw": "OBSERVED", "state": "PARTIAL", "title": "R8-MERGED CLASS CONSTRUCTOR/DISPATCH MISMATCH: LA/h; is a horizontal class merge (field `a` mode int + packed-switch ctor paths: SparseIntArray pair / s/h+ArrayDeque / filled-new-array variants) but the z(TypeToken) disp"}
+{"kind": "registry-root", "id": "F-NEW-222", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "COLLECTIONS EMPTY-FACTORY LAW: Collections.emptyMap()/emptySet() had NO handler — the bridge fallback answered UNSET, `move-result-object v1` stored an unset register, and the R8 horizontal-merge synthetic ctor <init>(Lj"}
+{"kind": "registry-root", "id": "F-NEW-223", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "VIRTUAL EXTERNAL-STORAGE VOLUME + HONEST FILE CREATION LAW: android.os.Environment had NO handler (getExternalStorageDirectory/State/PublicDirectory/isExternalStorageEmulated/Removable/getRootDirectory/getDataDirectory a"}
+{"kind": "registry-root", "id": "F-NEW-224", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "ONE CANONICAL DESCRIPTOR NORMALIZATION LAW: the four spellings (Landroidx/foo/Bar; / androidx.foo.Bar / androidx/foo/Bar / Landroidx.foo.Bar;) resolved differently — the shared normalizer only handled the L-dotted form, "}
+{"kind": "registry-root", "id": "F-NEW-225", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "GENERIC-TYPE + FRAMEWORK-REFLECTION FAMILY (4 sub-laws): (225a) Field.getGenericType() unbridged → null → Gson TypeToken.get(null) IAE; (225b) framework classes have no DEX body so getDeclaredConstructor(ArrayList,[]) th"}
+{"kind": "registry-root", "id": "F-NEW-226", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "VIEW PAINT IDENTITY LAW: TextView.getPaint() unbridged → NULL → TextPaint.measureText NPE at ssw MyChrono.setFractionView pc=23 (face became reachable after F-NEW-225d removed the token-identity-masked relaunch loop — th"}
+{"kind": "registry-root", "id": "F-NEW-227", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "PAINT.MEASURETEXT LAW: Paint/TextPaint.measureText had NO handler for any overload — every text-metrics probe answered the generic fallback."}
+{"kind": "registry-root", "id": "F-NEW-228", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "WEIGHTED-ROW HEIGHT DISTRIBUTION LAW (opencalc §I provenance answer): every calculator button row INFLATED with real text (nodes 715-759), but LAYOUT distributed row heights wrongly — AC/( )/%/÷/7/8/9/× rows size=(259x0)"}
+{"kind": "registry-root", "id": "F-NEW-229", "status_raw": "OBSERVED", "state": "PARTIAL", "title": "CL MATCH_PARENT SPEC LAW: a ConstraintLayout child with width/height=MATCH_PARENT and NO anchors on that axis falls back to child_spec → AT_MOST(available), so content-less subtrees shrink-wrap instead of filling the par"}
+{"kind": "registry-root", "id": "F-NEW-230", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "GOLDEN PROVENANCE/CONFIG GAP: four banked golden SHAs are not reproducible at HEAD with default configs — ssw f48ae6d467d1e746 (omegacentauri.mobi.simplestopwatch_26: HEAD+baseline produce 0297e27f4e217286 = 99.4% black,"}
+{"kind": "registry-root", "id": "F-NEW-231", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "INSTALLED_APK_ACCESS GAP: MiniAndroid had NO installation mechanism. The only execution input was a raw sideload APK path; ApplicationInfo.sourceDir = whatever path was passed; there was no package store, no installed-pa"}
+{"kind": "registry-root", "id": "F-NEW-232", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "LAUNCH-FRAME DEFERRED-UI OBSERVABILITY: a plain run freezes at the launch frame (F-NEW-197/F-115b law — an idle Looper cannot observe its own future), so apps whose UI appears only after a deferred Timer/postDelayed/pend"}
+{"kind": "registry-root", "id": "F-NEW-233", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "FRAME-TRUTH CENSUS WAS TRACE-GATED (false-SUCCESS family): the entire 21-P0 census + verdict + status-downgrade block ran only when boot trace was enabled. A PLAIN run (no --trace) reported SUCCESS for a 100%-white frame"}
+{"kind": "registry-root", "id": "F-NEW-234", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "PER-PACKAGE CONTEXT-ROOT LAW GAP: MiniAndroid had THREE incompatible app-storage layouts and none was the AOSP package sandbox. The F-NEW-231 install created <data-root>/data/data/<pkg>/{files,cache,shared_prefs,database"}
+{"kind": "registry-root", "id": "R-NEW-457", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "LOADING-CAMPAIGN root family: P0 byte-loading contract (ST-1/ST-2/R-1/R-2/R-5/R-7/R-10/ST-4/ST-5/ST-6/ST-7/S-1 launch/S-5/S-7/ST-11)"}
+{"kind": "registry-root", "id": "R-NEW-458", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "DIFFERENTIAL-366 ROOT-A1: java.util.Arrays.toString null-contract law"}
+{"kind": "registry-root", "id": "R-NEW-459", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "DIFFERENTIAL-366 ROOT-A2: java.lang.Class reflection metadata + newInstance laws"}
+{"kind": "registry-root", "id": "R-NEW-460", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "DIFFERENTIAL-366 ROOT-A3: ContentProvider.getContext() null-contract law"}
+{"kind": "registry-root", "id": "R-NEW-461", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "DIFFERENTIAL-366 ROOT-B: android.view.WindowInsets.CONSUMED static (API 30+) — appcompat decor static-init null contract"}
+{"kind": "registry-root", "id": "R-NEW-462", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "DIFFERENTIAL-366 ROOT-C: ContentProvider getContext receiver-identity gate + Fragment-recreation verification"}
+{"kind": "registry-root", "id": "R-NEW-463", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "S137 M3-19 re-entrancy key refinement: CLASS_REF payloads — androidx Lifecycling resolveObserverCallbackType (R8 d.a(Class,[Method[])) hierarchy walk collided on receiver-only key, stubbed to null, Set.iterator NPE kille"}
+{"kind": "registry-root", "id": "R-NEW-464", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "S137+R464 Method-record reflection law (CLOSED): minted Method records carry DEX access_flags (__reflect_mod) + return_type + declaring-class identity; Method-record CALL route answers getDeclaredMethods/getModifiers/get"}
+{"kind": "registry-root", "id": "R-NEW-465", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "#373 environment/prerequisite layer: pkginspect --what prerequisites (APK-001..020 schema) — minSdk/targetSdk/uses-features/dangerous-permissions/abi-libs+ELF-machines/webview/nativeAbiVerdict/environmentMismatches/missi"}
+{"kind": "registry-root", "id": "F-NEW-084", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Interpreter loop-visit guard misclassification closeout (cont375 CONT-2): (1) FORWARD-PROGRESS LAW v3 in dalvik_engine.cpp — visit counting restored on EVERY pc (a compiler may erase a provably-dead condition and emit a "}
+{"kind": "registry-root", "id": "F-NEW-235", "status_raw": "OBSERVED", "state": "PARTIAL", "title": "fairymahjong board-build divergence: game's OWN layout generator/validator throws IllegalArgumentException 'Duplicate tile position' at Lg0;.a (throw helper) called from Lm;.<init> (BoardShape parser: 696-insn ctor, java"}
+{"kind": "frontier", "id": "F-NEW-235", "status_raw": "CURRENT FRONTIER — ordered by #375 §6", "state": "CURRENT", "title": "fairymahjong board-build IAE 'Duplicate tile position' — game's own regex/token parse or Set-dedup divergence"}
+{"kind": "frontier", "id": "F-NEW-229", "status_raw": "OPEN generic layout law", "state": "OPEN", "title": "CL MATCH_PARENT spec law (opencalc full button width, no anchors on axis)"}
+{"kind": "frontier", "id": "F-NEW-221", "status_raw": "OPEN", "state": "OPEN", "title": "R8-merged class constructor/dispatch mismatch (Compose sudokusolver family)"}
+{"kind": "frontier", "id": "F-NEW-217", "status_raw": "PENDING", "state": "PENDING", "title": "kotlinx-coroutines MutexImpl.unlock spin (F084-family virtual concurrency)"}
+{"kind": "frontier", "id": "F-147", "status_raw": "PENDING (anchor-fenced)", "state": "PENDING", "title": "dooz ViewGroup.getChildAt null — dooz is a byte-stability anchor; fix requires documented re-baseline"}
+{"kind": "frontier", "id": "F-144", "status_raw": "PARTIAL — facade closed, GLSL recorded-not-executed", "state": "PARTIAL", "title": "GL/EGL surface family for libGDX (real GL pipeline beyond JSR-239 facade)"}
+{"kind": "frontier", "id": "F-145", "status_raw": "PENDING", "state": "PENDING", "title": "screenshot capture surface does not follow top-of-stack window"}
+{"kind": "frontier", "id": "F-143", "status_raw": "TESTED core legs (SVC-01..04); completeness re-audit", "state": "TESTED", "title": "Service launch/lifecycle family completeness"}
+{"kind": "frontier", "id": "F-138", "status_raw": "PENDING", "state": "PENDING", "title": "ScoreView hint HUD geometry (legacy text path)"}
+{"kind": "frontier", "id": "F-NEW-161", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "chessclock getIntent chain Uri.toString null"}
+{"kind": "frontier", "id": "F-NEW-168", "status_raw": "PARTIAL (app-boundary)", "state": "PARTIAL", "title": "WhatsApp FragmentManager host law"}
+{"kind": "frontier", "id": "F-NEW-169", "status_raw": "PARTIAL (app-boundary)", "state": "PARTIAL", "title": "WhatsApp DI provider-null lattice"}
+{"kind": "frontier", "id": "F-NEW-192", "status_raw": "PENDING audit", "state": "PENDING", "title": "draw/z-order audit residue"}
+{"kind": "frontier", "id": "R-NEW-456", "status_raw": "BLOCKED-EXTERNAL", "state": "BLOCKED-EXTERNAL", "title": "LIVE z.ai residual Svelte-5 boot rejection inside minified bundle"}
+{"kind": "contract-374", "id": "374-§1", "status_raw": "TESTED", "state": "PENDING", "title": "PLATFORM / DEVICE CONTRACT"}
+{"kind": "contract-374", "id": "374-§2", "status_raw": "TESTED", "state": "PENDING", "title": "CPU / ABI / NATIVE FOUNDATION"}
+{"kind": "contract-374", "id": "374-§3", "status_raw": "TESTED", "state": "PENDING", "title": "PACKAGE MANAGER / INSTALLATION"}
+{"kind": "contract-374", "id": "374-§4", "status_raw": "TESTED", "state": "PENDING", "title": "APK STRUCTURAL PREFLIGHT"}
+{"kind": "contract-374", "id": "374-§5", "status_raw": "TESTED", "state": "PENDING", "title": "PERMISSION FOUNDATION"}
+{"kind": "contract-374", "id": "374-§6", "status_raw": "TESTED", "state": "PENDING", "title": "PACKAGE / USER / UID / SECURITY IDENTITY"}
+{"kind": "contract-374", "id": "374-§7", "status_raw": "TESTED", "state": "PENDING", "title": "FILESYSTEM / STORAGE"}
+{"kind": "contract-374", "id": "374-§8", "status_raw": "TESTED", "state": "PENDING", "title": "CONTEXT / CONTEXTIMPL"}
+{"kind": "contract-374", "id": "374-§9", "status_raw": "TESTED", "state": "PENDING", "title": "SYSTEM SERVICES"}
+{"kind": "contract-374", "id": "374-§10", "status_raw": "PARTIAL", "state": "PENDING", "title": "BINDER / IPC"}
+{"kind": "contract-374", "id": "374-§11", "status_raw": "TESTED", "state": "PENDING", "title": "ACTIVITY / SERVICE / RECEIVER / PROVIDER / PROCESS"}
+{"kind": "contract-374", "id": "374-§12", "status_raw": "TESTED", "state": "PENDING", "title": "INTENT / RESOLUTION"}
+{"kind": "contract-374", "id": "374-§13", "status_raw": "TESTED", "state": "PENDING", "title": "RESOURCES / CONFIGURATION"}
+{"kind": "contract-374", "id": "374-§14", "status_raw": "TESTED", "state": "PENDING", "title": "MAIN THREAD / SCHEDULING"}
+{"kind": "contract-374", "id": "374-§15", "status_raw": "TESTED", "state": "PENDING", "title": "WINDOW / VIEW / INPUT FOUNDATION"}
+{"kind": "contract-374", "id": "374-§16", "status_raw": "TESTED", "state": "PENDING", "title": "GRAPHICS / SURFACE / PRESENTATION"}
+{"kind": "contract-374", "id": "374-§17", "status_raw": "TESTED", "state": "PENDING", "title": "INPUT / DEVICE FEATURES"}
+{"kind": "contract-374", "id": "374-§18", "status_raw": "PARTIAL", "state": "PENDING", "title": "NETWORK"}
+{"kind": "contract-374", "id": "374-§19", "status_raw": "PARTIAL", "state": "PENDING", "title": "MEDIA / AUDIO"}
+{"kind": "contract-374", "id": "374-§20", "status_raw": "TESTED", "state": "PENDING", "title": "HARDWARE / SENSOR CAPABILITIES"}
+{"kind": "contract-374", "id": "374-§21", "status_raw": "TESTED", "state": "PENDING", "title": "SYSTEM PROPERTIES / BUILD CONTRACT"}
+{"kind": "contract-374", "id": "374-§22", "status_raw": "TESTED", "state": "PENDING", "title": "UNIFIED APK PRE-FLIGHT"}
+{"kind": "contract-374", "id": "374-§23", "status_raw": "TESTED", "state": "PENDING", "title": "PRE-FLIGHT MUST PRECEDE LAUNCH"}
+{"kind": "contract-374", "id": "374-§24", "status_raw": "TESTED", "state": "PENDING", "title": "WHITE / BLACK / PARTIAL RECLASSIFICATION"}
+{"kind": "contract-374", "id": "374-§25", "status_raw": "TESTED", "state": "PENDING", "title": "ROOT REGISTRY CROSS-MATCH"}
+{"kind": "contract-374", "id": "374-§26", "status_raw": "TESTED", "state": "PENDING", "title": "NEGATIVE SECURITY TESTS"}
+{"kind": "contract-374", "id": "374-§27", "status_raw": "TESTED", "state": "PENDING", "title": "REAL APK VALIDATION"}
+{"kind": "contract-374", "id": "374-§28", "status_raw": "TESTED", "state": "PENDING", "title": "EVIDENCE"}
+{"kind": "contract-374", "id": "374-§29", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "REQUIRED FINAL OUTPUT"}
+{"kind": "contract-374", "id": "374-§30", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "DEFINITION OF DONE"}
+{"kind": "contract-374", "id": "374-§31", "status_raw": "TESTED", "state": "PENDING", "title": "ANDROID RUNTIME / DEX EXECUTION CONTRACT"}
+{"kind": "contract-374", "id": "374-§32", "status_raw": "TESTED", "state": "PENDING", "title": "JAVA/LIBCORE API FOUNDATION"}
+{"kind": "contract-374", "id": "374-§33", "status_raw": "TESTED", "state": "PENDING", "title": "JNI / NATIVE BRIDGE CONTRACT"}
+{"kind": "contract-374", "id": "374-§34", "status_raw": "TESTED", "state": "PENDING", "title": "PROCESS / ZYGOTE / APPLICATION STARTUP CONTRACT"}
+{"kind": "contract-374", "id": "374-§35", "status_raw": "TESTED", "state": "PENDING", "title": "THREADING / MEMORY / PROCESS RESOURCE CONTRACT"}
+{"kind": "contract-374", "id": "374-§36", "status_raw": "TESTED", "state": "PENDING", "title": "KERNEL / POSIX / LOW-LEVEL CONTRACT"}
+{"kind": "contract-374", "id": "374-§37", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "HAL / HARDWARE ABSTRACTION BOUNDARY"}
+{"kind": "contract-374", "id": "374-§38", "status_raw": "TESTED", "state": "PENDING", "title": "BOOT / SYSTEM-SERVICE INITIALIZATION"}
+{"kind": "contract-374", "id": "374-§39", "status_raw": "TESTED", "state": "PENDING", "title": "CLOCK / TIME / ALARM CONTRACT"}
+{"kind": "contract-374", "id": "374-§40", "status_raw": "PARTIAL", "state": "PENDING", "title": "POWER / BATTERY / DOZE-LIKE STATE"}
+{"kind": "contract-374", "id": "374-§41", "status_raw": "TESTED", "state": "PENDING", "title": "NOTIFICATION / BROADCAST / ALARM / JOB CONTRACT"}
+{"kind": "contract-374", "id": "374-§42", "status_raw": "TESTED", "state": "PENDING", "title": "URI / CONTENT / FILE PROVIDER SECURITY CONTRACT"}
+{"kind": "contract-374", "id": "374-§43", "status_raw": "TESTED", "state": "PENDING", "title": "DATABASE / SQLITE CONTRACT"}
+{"kind": "contract-374", "id": "374-§44", "status_raw": "TESTED", "state": "PENDING", "title": "STORAGE / BACKUP / RESTORE / CLEAR-DATA SEMANTICS"}
+{"kind": "contract-374", "id": "374-§45", "status_raw": "TESTED", "state": "PENDING", "title": "SIGNING / CERTIFICATE / PACKAGE TRUST"}
+{"kind": "contract-374", "id": "374-§46", "status_raw": "PARTIAL", "state": "PENDING", "title": "PACKAGE UPDATE / SPLIT / INSTALLER CONTRACT"}
+{"kind": "contract-374", "id": "374-§47", "status_raw": "TESTED", "state": "PENDING", "title": "APP VISIBILITY / QUERIES / CROSS-APP DISCOVERY"}
+{"kind": "contract-374", "id": "374-§48", "status_raw": "TESTED", "state": "PENDING", "title": "COMPONENT SECURITY / PENDING INTENT"}
+{"kind": "contract-374", "id": "374-§49", "status_raw": "PARTIAL", "state": "PENDING", "title": "APP DATA / CACHE / CODE LOADING TRUST BOUNDARY"}
+{"kind": "contract-374", "id": "374-§50", "status_raw": "TESTED", "state": "PENDING", "title": "GRAPHICS RESOURCE / FONT / TEXT STACK"}
+{"kind": "contract-374", "id": "374-§51", "status_raw": "PARTIAL", "state": "PENDING", "title": "ACCESSIBILITY / SEMANTIC UI CONTRACT"}
+{"kind": "contract-374", "id": "374-§52", "status_raw": "TESTED", "state": "PENDING", "title": "CONFIGURATION CHANGE / DEVICE STATE CONTRACT"}
+{"kind": "contract-374", "id": "374-§53", "status_raw": "TESTED", "state": "PENDING", "title": "APP STOP / FORCE-STOP / BACKGROUND CONTRACT"}
+{"kind": "contract-374", "id": "374-§54", "status_raw": "TESTED", "state": "PENDING", "title": "EXCEPTION / ERROR / LOGGING CONTRACT"}
+{"kind": "contract-374", "id": "374-§55", "status_raw": "TESTED", "state": "PENDING", "title": "OBSERVABILITY / FIRST-DIVERGENCE INFRASTRUCTURE"}
+{"kind": "contract-374", "id": "374-§56", "status_raw": "TESTED", "state": "PENDING", "title": "FOUNDATION SELF-TEST SUITE"}
+{"kind": "contract-374", "id": "374-§57", "status_raw": "TESTED", "state": "PENDING", "title": "FOUNDATION COVERAGE MATRIX"}
+{"kind": "contract-374", "id": "374-§58", "status_raw": "TESTED", "state": "PENDING", "title": "UNKNOWN-APK GATE"}
+{"kind": "contract-374", "id": "374-§59", "status_raw": "TESTED", "state": "PENDING", "title": "BASE COMPLETION AUDIT"}
+{"kind": "contract-374", "id": "374-§60", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "FINAL COMPLETION RULE"}
+{"kind": "contract-374", "id": "374-§61", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "PLATFORM BOOT / PARTITION / MODULE CONTRACT"}
+{"kind": "contract-374", "id": "374-§62", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "APEX / MAINLINE / BOOTCLASSPATH / SYSTEM MODULE CONTRACT"}
+{"kind": "contract-374", "id": "374-§63", "status_raw": "TESTED", "state": "PENDING", "title": "LINKER / ELF / NDK / C LIBRARY CONTRACT"}
+{"kind": "contract-374", "id": "374-§64", "status_raw": "PARTIAL", "state": "PENDING", "title": "COMPATIBILITY-CHANGE / TARGET-SDK CONTRACT"}
+{"kind": "contract-374", "id": "374-§65", "status_raw": "TESTED", "state": "PENDING", "title": "API-LEVEL / SDK SURFACE MATRIX"}
+{"kind": "contract-374", "id": "374-§66", "status_raw": "PARTIAL", "state": "PENDING", "title": "HIDDEN API / REFLECTION / LINKAGE CONTRACT"}
+{"kind": "contract-374", "id": "374-§67", "status_raw": "PARTIAL", "state": "PENDING", "title": "SYSTEM SERVER / SERVICE DEPENDENCY GRAPH"}
+{"kind": "contract-374", "id": "374-§68", "status_raw": "TESTED", "state": "PENDING", "title": "INSTALld / VOLD / STORAGE-DAEMON CONTRACT"}
+{"kind": "contract-374", "id": "374-§69", "status_raw": "PARTIAL", "state": "PENDING", "title": "SCOPED STORAGE / SAF / MEDIASTORE CONTRACT"}
+{"kind": "contract-374", "id": "374-§70", "status_raw": "PARTIAL", "state": "PENDING", "title": "CRYPTO / TLS / CONSCRYPT / KEYSTORE CONTRACT"}
+{"kind": "contract-374", "id": "374-§71", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "SELINUX / MAC / CAPABILITY CONTRACT"}
+{"kind": "contract-374", "id": "374-§72", "status_raw": "TESTED", "state": "PENDING", "title": "SIGNATURE / TRUST / IDENTITY CHAIN"}
+{"kind": "contract-374", "id": "374-§73", "status_raw": "PARTIAL", "state": "PENDING", "title": "USERS / PROFILES / USER LIFECYCLE"}
+{"kind": "contract-374", "id": "374-§74", "status_raw": "PARTIAL", "state": "PENDING", "title": "APP STANDBY / ROLES / APP-OPS / USAGE STATE"}
+{"kind": "contract-374", "id": "374-§75", "status_raw": "PARTIAL", "state": "PENDING", "title": "NOTIFICATION / UI POLICY CONTRACT"}
+{"kind": "contract-374", "id": "374-§76", "status_raw": "PARTIAL", "state": "PENDING", "title": "WINDOWING / DISPLAY / IME / SYSTEM-UI CONTRACT"}
+{"kind": "contract-374", "id": "374-§77", "status_raw": "TESTED", "state": "PENDING", "title": "RENDERTHREAD / SKIA / TEXT / COMPOSITOR CONTRACT"}
+{"kind": "contract-374", "id": "374-§78", "status_raw": "TESTED", "state": "PENDING", "title": "INPUTFLINGER / EVENT ROUTING CONTRACT"}
+{"kind": "contract-374", "id": "374-§79", "status_raw": "PARTIAL", "state": "PENDING", "title": "AUDIO / CAMERA / SENSOR / LOCATION PIPELINE CONTRACT"}
+{"kind": "contract-374", "id": "374-§80", "status_raw": "PARTIAL", "state": "PENDING", "title": "CONNECTIVITY / NETD / VPN / DNS CONTRACT"}
+{"kind": "contract-374", "id": "374-§81", "status_raw": "PARTIAL", "state": "PENDING", "title": "MEDIA / CODEC / DRM CONTRACT"}
+{"kind": "contract-374", "id": "374-§82", "status_raw": "BLOCKED_EXTERNAL_NO_CAMERA", "state": "PENDING", "title": "CAMERA2 / IMAGE / SENSOR CONTRACT"}
+{"kind": "contract-374", "id": "374-§83", "status_raw": "PENDING", "state": "PENDING", "title": "ACCESSIBILITY / AUTOFILL / TEXT-SERVICE / IME CONTRACT"}
+{"kind": "contract-374", "id": "374-§84", "status_raw": "PARTIAL", "state": "PENDING", "title": "CLIPBOARD / DRAG-DROP / SHARE / CHOOSER CONTRACT"}
+{"kind": "contract-374", "id": "374-§85", "status_raw": "TESTED", "state": "PENDING", "title": "SETTINGS / SYSTEM-CONFIGURATION CONTRACT"}
+{"kind": "contract-374", "id": "374-§86", "status_raw": "PARTIAL", "state": "PENDING", "title": "BACKUP / RESTORE / ACCOUNT / CREDENTIAL STATE"}
+{"kind": "contract-374", "id": "374-§87", "status_raw": "PARTIAL", "state": "PENDING", "title": "JOB / WORK / ALARM / FOREGROUND EXECUTION POLICY"}
+{"kind": "contract-374", "id": "374-§88", "status_raw": "PARTIAL", "state": "PENDING", "title": "WIDGET / SHORTCUT / LAUNCHER / LIVE SURFACE CONTRACT"}
+{"kind": "contract-374", "id": "374-§89", "status_raw": "TESTED", "state": "PENDING", "title": "ERROR / CRASH / ANR / WATCHDOG CONTRACT"}
+{"kind": "contract-374", "id": "374-§90", "status_raw": "PENDING", "state": "PENDING", "title": "STRICTMODE / DEBUG / PROFILING OBSERVABILITY"}
+{"kind": "contract-374", "id": "374-§91", "status_raw": "TESTED", "state": "PENDING", "title": "TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS"}
+{"kind": "contract-374", "id": "374-§92", "status_raw": "TESTED", "state": "PENDING", "title": "CORPUS-DERIVED FOUNDATION DISCOVERY"}
+{"kind": "contract-374", "id": "374-§93", "status_raw": "TESTED", "state": "PENDING", "title": "API / SYMBOL / BEHAVIOR COVERAGE, NOT FILE COVERAGE"}
+{"kind": "contract-374", "id": "374-§94", "status_raw": "PARTIAL", "state": "PENDING", "title": "REFERENCE-ORACLE DIFFERENTIAL TESTING"}
+{"kind": "contract-374", "id": "374-§95", "status_raw": "TESTED", "state": "PENDING", "title": "SUPPORTED-PLATFORM PROFILE"}
+{"kind": "contract-374", "id": "374-§96", "status_raw": "TESTED", "state": "PENDING", "title": "FOUNDATION COMPLETENESS SCORE"}
+{"kind": "contract-374", "id": "374-§97", "status_raw": "TESTED", "state": "PENDING", "title": "FINAL NOTHING-LEFT-HIDDEN REVIEW"}
+{"kind": "contract-374", "id": "374-§98", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "FINAL GATE — BASE IS REALLY COMPLETE"}
