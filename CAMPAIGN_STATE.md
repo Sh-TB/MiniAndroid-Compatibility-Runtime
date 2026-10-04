@@ -1,6 +1,6 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: #371 FINAL CLOSEOUT wave bd9e9fbd (binary 267bf47d5d901054) ← b3213f06 (Suntimes wave 2: framework-enum accessor + meta-data/FileProvider laws) ← 300f38a7 (GL/provenance/fanout) ← 731bb538 (Suntimes wave 1) ← b9f2c0d2 (S-2 native) ← 58f2dde2 (FINAL COMPLETION, binary b2b8c18bb92dab6a)
+HEAD at state update: #371/#372/#373 CONT wave 58b5c14e (binary 4c01757e8f11c8a0) ← #371 FINAL CLOSEOUT wave bd9e9fbd (binary 267bf47d5d901054 reproduced byte-identically at wave start)
 Date: 2026-10-03 (#371 FINAL CLOSEOUT — Suntimes/time4j + touch-claim + full regression)
 ← 51f7e5f9 (MASTER-CONT-371 verification) ← 9c35863b (GATE A) ← F-NEW-234 e9ce717b
 Date: 2026-10-03 (INSTALLED-APP FILESYSTEM + MEDIA campaign)
@@ -294,3 +294,30 @@ Next frontier (recorded): ViewPager page-fragment materialization (generic
 FragmentPagerAdapter container primitive; pager children empty, mCurItem
 IGET-MISS, setCurrentItem cycle-stub). ARM binary translation remains the
 sole tictactoedeluxe/GL dependency. Safir/BLACK remain BLOCKED-BY-IDENTITY.
+
+## 371/372/373 CONT WAVE (2026-10-04) — environment layer + skill product surface
+
+- #373: pkginspect `prerequisites` section (APK-001..020 schema) +
+  docs/ENVIRONMENT_PROFILE.json (ENV-001..010, profile sha16
+  56e6347116942bfc) + 30-APK matrix + redroid-class live proof (EggReturnsHome
+  arm64-only install-OK/fail-at-launch) + WS-001/002 audit (5 runtime vs
+  2 env vs 1 dup) → R-NEW-465 IMPLEMENTED+TESTED.
+- S137 laws: R-NEW-463 M3-19 CLASS_REF payload key refinement (fossifyclock
+  A/B-fixed: App.onCreate death → MainActivity RESUMED); R-NEW-464
+  Method.getModifiers (landed, PARTIAL: EventBus chain boundary named).
+- #372: docs/DEEP_ROOT_CROSSMATCH.jsonl — 10 candidates A–F (4E/4B/1D/1C),
+  zero duplicate roots.
+- Agent Skill v2: skill_manifest.json (10 machine-readable ops) +
+  skill_selftest.py 13/13 PASS — external-agent answer YES.
+- Execution matrix: docs/EXECUTION_LEVEL_MATRIX.jsonl (L6=15, L3=2, L4=3,
+  L2=4, L1=2, L0=3).
+- NEW app fossifyclock + NEW game fairymahjong (F-NEW-084 halt, honest) +
+  sudokusolver (Compose frontier) — installed-identity runs, first
+  divergences recorded.
+- Suntimes APK DRIFT A/B-proven (current F-Droid 135 bytes fail time4j at
+  BOTH binaries → no regression; recorded a49f90d65a8fc5c8 evidence stands;
+  ViewPager re-attempt needs SHA-pinned refetch).
+- Final regression at 4c01757e8f11c8a0 ALL GREEN: anchors 5/5x3,
+  goldens 4/4, battery 122/122 fresh, gate A 95/0/2 x2, negatives 17/17,
+  reinstall 8/8, uninstall, NATX 10/10x3, skill selftest 13/13. Classifier
+  untouched. Registry 538 roots. Issue ledgers posted to #371/#372/#373.
