@@ -6568,3 +6568,28 @@ Stage Summary:
   remaining gap named precisely (ViewPager page-fragment materialization).
 - 7 generic laws landed; zero drift on every recorded anchor/golden sha.
 - Issue #371 final closeout ledger posted; work continues in #371 only.
+
+---
+Task ID: 371-372-373-CONT-1
+Agent: Super Z (main agent)
+Task: Start next campaign from CURRENT HEAD — read/reconcile #371/#372/#373, continue unresolved #364–#370 work; priorities: agent skill usability, 50-title execution truth, #372 cross-match, #373 environment matrix + white/black prerequisite audit, TouchDispatcher commit check, ViewPager, new app+game, final regression.
+
+Work Log:
+- Reconciled #371 (7 bodies/comments), #372 (30k-char closeout contract), #373 (environment matrix + WS-002 priority comment) from GitHub HTML (gh CLI absent; scripts/ghapi.sh token path works).
+- TouchDispatcher: ALREADY COMMITTED at d0eec40e (verified via git log + tree) — blocker closed without repeating work.
+- Clean build at HEAD 59c57519 reproduced recorded BASE binary 267bf47d5d901054 byte-identically; container-reset repair (toolchain relayout, fixture APK rebuilds SHA-verified, EXT-01/02 re-fetched SHA-exact, native probe libs x86_64 d5ec1f57fef3d271 = recorded, blockblast 64589a3a7e5c0f73 = recorded).
+- Full baseline green at BASE: anchors 5/5x3, goldens 4/4, loading probe, gate A 95/0/2 (needed run/gatea/probe_store path for negatives harvest), negatives 17/17, reinstall 8/8, uninstall, battery ALL PASS, density matrix 11/11 (resource_trace rebuilt), NATX 10/10x3 (lib/ packaging into fixture APKs), multiapp 5/5 (hidden_sources restaged from re-fetched APKs).
+- #373: implemented pkginspect `prerequisites` section (APK-001..020 schema + environment comparison + nativeAbiVerdict + missingCapabilities + recommendedNextProbe); docs/ENVIRONMENT_PROFILE.json (ENV-001..010, SHA-stamped); ENV_PREREQUISITE_MATRIX.jsonl over 30 APKs (16 NO_NATIVE / 10 EXECUTABLE / 2 ABI_MISMATCH); redroid-class live proof (EggReturnsHome arm64-only: install OK → DEFAULT_BACKGROUND_ONLY, dual-cause with Fragment frontier); docs/WS_PREREQUISITE_AUDIT.md (5 runtime roots vs 2 env-caused vs 1 dup); docs/EXECUTION_LEVEL_MATRIX.jsonl (L0–L6: 15 L6).
+- #372: docs/DEEP_ROOT_CROSSMATCH.jsonl — 10 candidates A–F classified vs 538-root registry (4 E, 4 B, 1 D→R-NEW-465, 1 C watch); no duplicate roots.
+- NEW targets: fossifyclock (app) → root-caused R-NEW-463 (S137 M3-19 CLASS_REF payload law; A/B BASE kills App.onCreate → PATCH advances to MainActivity RESUMED) + R-NEW-464 (Method.getModifiers law landed, EventBus chain PARTIAL); fairymahjong (game) → F-NEW-084 interpreter halt on game-init loop (honest boundary); sudokusolver → Compose Navigation frontier (F-NEW-221 family).
+- Agent Skill: docs/execution-skill/skill_manifest.json (10 machine-readable ops) + SKILL.md v2 + scripts/skill_selftest.py — 13/13 PASS (intake→prereq→install→run→observe→classify→determinism→provenance→uninstall→negatives→portability).
+- Suntimes APK DRIFT discovered and A/B-proven: current F-Droid 135 file (bd0fbe51f684895d) fails time4j identically at BASE and PATCH binaries — no regression; recorded REAL_APP_CONTENT evidence stands for recorded bytes; ViewPager re-attempt blocked until SHA-pinned refetch.
+- Registered R-NEW-463/464/465 in root_registry.json (now 538 roots).
+- Final regression at PATCH 4c01757e8f11c8a0: anchors 5/5x3 byte-identical, goldens 4/4, loading probe, battery 122/122 fresh RC=0, gate A 95/0/2 x2 stores, negatives 17/17, reinstall 8/8, uninstall, NATX 10/10x3 byte-identical, skill selftest 13/13. Classifier untouched.
+
+Stage Summary:
+- #373 environment/prerequisite layer is a real product surface (machine-readable, live-proven); white/black cases now split env-vs-runtime by evidence.
+- Two genuinely new roots discovered and registered from the new-app wave (one fixed, one honestly PARTIAL); new game blocked by the recorded freeze law (honest).
+- Agent Skill is externally usable with a passing self-test (13/13).
+- All gates green at the final wave binary 4c01757e8f11c8a0; zero drift on every recorded anchor/golden sha.
+- Ledger: docs/CLOSEOUT_WAVE_371_372_373.md; issue comments to #371/#372/#373 next.

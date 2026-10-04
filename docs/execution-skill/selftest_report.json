@@ -1,0 +1,80 @@
+[
+ {
+  "op": "M0",
+  "name": "manifest loads + schema",
+  "pass": true,
+  "detail": "10 operations"
+ },
+ {
+  "op": "OP-1",
+  "name": "apk_intake",
+  "pass": true,
+  "detail": "rc=0 package in identity"
+ },
+ {
+  "op": "OP-2",
+  "name": "prerequisites machine-readable schema",
+  "pass": true,
+  "detail": "minSdk=24 verdict=EXECUTABLE_NATIVE mismatches=0"
+ },
+ {
+  "op": "N-1",
+  "name": "malformed APK \u2192 loud failure",
+  "pass": true,
+  "detail": "rc=1"
+ },
+ {
+  "op": "OP-3",
+  "name": "install + installed identity = source identity",
+  "pass": true,
+  "detail": "installed sha16=c75308ad41e2a03c"
+ },
+ {
+  "op": "OP-4",
+  "name": "run by installed identity",
+  "pass": true,
+  "detail": "rc=1 trace=yes"
+ },
+ {
+  "op": "OP-5",
+  "name": "observe (frame verdict + pixel census)",
+  "pass": true,
+  "detail": "verdict=VIEWTREE_NO_APP_PIXELS owned=395464 ops=0"
+ },
+ {
+  "op": "OP-6",
+  "name": "first-divergence/evidence surface",
+  "pass": true,
+  "detail": "report.md=yes"
+ },
+ {
+  "op": "OP-7",
+  "name": "classify_white_black (3-way cause, deterministic)",
+  "pass": true,
+  "detail": "prereqs_clean=True verdict=VIEWTREE_NO_APP_PIXELS \u2192 ordinary runtime root (follow first_missing_stage)"
+ },
+ {
+  "op": "OP-8",
+  "name": "3-run determinism law (run1==run2)",
+  "pass": true,
+  "detail": "sha16=de208ada26062ee2"
+ },
+ {
+  "op": "OP-9",
+  "name": "evidence_bundle (provenance)",
+  "pass": true,
+  "detail": "rc=0"
+ },
+ {
+  "op": "OP-10",
+  "name": "uninstall + NOT_INSTALLED negative contract",
+  "pass": true,
+  "detail": "first rc=0, second rc=2"
+ },
+ {
+  "op": "PORT-1",
+  "name": "manifest self-contained (all surfaces documented)",
+  "pass": true,
+  "detail": "10 operations all name their surface"
+ }
+]
