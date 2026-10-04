@@ -92,6 +92,12 @@ struct ExecutionConfig {
     // the end-of-run evidence pipeline (screenshot/trace/report) still runs.
     uint64_t max_wall_seconds = 0;
 
+    // F-NEW-084 closeout (cont375): session instruction budget (RESOURCE
+    // knob — NOT the semantic loop-visit guard, which stays at the 50k
+    // stale-branch law). Default mirrors the dalvik engine default; a run
+    // may raise it for legitimately long computations (measured-bounded).
+    uint64_t max_instructions = 100000000;
+
     // F-107b2 (S61): per-instruction trace caps. Mirrors the dalvik Config
     // fields; mapped in stage_execute_application_real_dalvik. trace_cap=0
     // (default) disables the per-instruction trace machinery (forensic

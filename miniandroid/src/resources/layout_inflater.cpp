@@ -1929,6 +1929,15 @@ void LayoutInflater::apply_layer_list_background(framework::ViewShadow::ViewNode
             L.right = parse_dim_attr(a, stats);
         if (const auto* a = item.attr("bottom", "android"))
             L.bottom = parse_dim_attr(a, stats);
+        // R-NEW-464 closeout: android:id on the <item> — AOSP
+        // LayerDrawable.inflate assigns it to the child drawable
+        // (mChildren[i].mDrawable.setId(id)); LayerDrawable
+        // .findDrawableByLayerId matches this id. Reference values carry
+        // the target id in ResValue.ref_id.
+        if (const auto* a = item.attr("id", "android")) {
+            if (a->value.is_reference() && a->value.ref_id != 0)
+                L.layer_id = a->value.ref_id;
+        }
 
         // inline child drawable (shape law)
         for (const auto& ch : item.children) {

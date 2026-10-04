@@ -484,6 +484,11 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             } else {
                 auto* src = get_or_create(ctx.args[0].object_id, false);
                 st->elements = src->elements;
+                // R-NEW-464 closeout: the copy carries the string-element
+                // parallel stores too (OpenJDK ArrayList(Collection) copies
+                // c.toArray() verbatim — string identity included).
+                st->elem_kinds = src->elem_kinds;
+                st->elem_strings = src->elem_strings;
                 st->view_elements = src->view_elements;
                 // ── R-NEW-360 (S45 GAME PLAYABILITY GATE): ARRAY-BACKED
                 // SOURCE COPY LAW ────────────────────────────────────────
@@ -571,19 +576,38 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             uint32_t item = ctx.arg_as_object(1, 0);
             if (idx >= 0 && (size_t)idx <= state->elements.size()) {
                 state->elements.insert(state->elements.begin() + idx, item);
+                state->elem_kinds.insert(state->elem_kinds.begin() + idx,
+                                         item != 0 ? 1 : 2);
+                state->elem_strings.insert(
+                    state->elem_strings.begin() + idx,
+                    item != 0 ? std::string() : ctx.arg_as_string(1));
             }
         } else if (ctx.args.size() >= 1) {
-            // add(item)
-            uint32_t item = ctx.arg_as_object(0, 0);
-            // [R342-COWSET] Set semantics: CopyOnWriteArraySet.add is a
-            // no-op returning false when the element is already present
-            // (AOSP: backed by CopyOnWriteArrayList.addIfAbsent).
-            if (ctx.class_name.find("CopyOnWriteArraySet") != std::string::npos) {
-                for (uint32_t e : state->elements) {
-                    if (e == item) return CallResult::handled_bool(false);
+            // add(item) — R-NEW-464 closeout: STRING args keep their value
+            // (kind 2) instead of collapsing to object id 0.
+            const auto& a0 = ctx.args[0];
+            if (a0.kind == CallContext::Arg::Kind::STRING ||
+                (a0.kind == CallContext::Arg::Kind::OBJECT &&
+                 a0.object_id == 0 && !a0.string_val.empty())) {
+                state->elements.push_back(0);
+                state->elem_kinds.push_back(2);
+                state->elem_strings.push_back(ctx.arg_as_string(0));
+            } else {
+                uint32_t item = ctx.arg_as_object(0, 0);
+                // [R342-COWSET] Set semantics: CopyOnWriteArraySet.add is a
+                // no-op returning false when the element is already present
+                // (AOSP: backed by CopyOnWriteArrayList.addIfAbsent).
+                if (ctx.class_name.find("CopyOnWriteArraySet") !=
+                    std::string::npos) {
+                    for (uint32_t e : state->elements) {
+                        if (e == item) return CallResult::handled_bool(false);
+                    }
                 }
+                state->elements.push_back(item);
+                state->elem_kinds.push_back(item != 0 ? 1 : 2);
+                state->elem_strings.push_back(
+                    item != 0 ? std::string() : ctx.arg_as_string(0));
             }
-            state->elements.push_back(item);
         }
         return CallResult::handled_bool(true);
     }
@@ -626,9 +650,12 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
             return CallResult::handled_null();
         }
-        // List: get(index) → element
+        // List: get(index) → element (R-NEW-464: kind-2 string fidelity)
         int32_t idx = ctx.arg_as_int(0, -1);
         if (idx >= 0 && (size_t)idx < state->elements.size()) {
+            if (idx < (int32_t)state->elem_kinds.size() &&
+                state->elem_kinds[idx] == 2)
+                return CallResult::handled_string(state->elem_strings[idx]);
             uint32_t elem = state->elements[idx];
             if (elem != 0) {
                 return CallResult::handled_object(elem, "Ljava/lang/Object;");
@@ -915,7 +942,18 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_null();
         }
         if (state->iterator_position < state->elements.size()) {
-            uint32_t elem = state->elements[state->iterator_position++];
+            uint32_t elem = state->elements[state->iterator_position];
+            // R-NEW-464 closeout: kind-2 string elements serve their value.
+            if (state->iterator_position < state->elem_kinds.size() &&
+                state->elem_kinds[state->iterator_position] == 2) {
+                std::string sv =
+                    state->iterator_position < state->elem_strings.size()
+                        ? state->elem_strings[state->iterator_position]
+                        : std::string();
+                state->iterator_position++;
+                return CallResult::handled_string(sv);
+            }
+            state->iterator_position++;
             if (elem != 0) {
                 // [R342-COWSET] return the element's REAL runtime class —
                 // "Ljava/lang/Object;" breaks invoke-interface/vtable

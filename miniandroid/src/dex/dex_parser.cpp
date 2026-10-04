@@ -675,7 +675,9 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         //   u4 annotated_method_size; u4 annotated_params_size;
         //   field_annotation fields[fields_size];          ← 8 bytes each
         //   method_annotation methods[annotated_method_size];  ← THEN this
-        // method_annotation { u4 method_idx_diff; u4 annotations_off; }
+        // method_annotation { u4 method_idx; u4 annotations_off; }
+        // (R-NEW-464 closeout: method_idx is an ABSOLUTE method_ids index
+        // per the DEX spec — it was misread as diff-encoded here.)
         // The annotation set at annotations_off decodes exactly like the
         // class set above (annotation_set_item → annotation_item list,
         // RUNTIME visibility only, same element-decode subset).
@@ -701,16 +703,33 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
             if (ann_method_size > 0 && ann_method_size < 0x1000u &&
                 methods_base + (uint64_t)ann_method_size * 8u <=
                     current_size_) {
-                uint32_t method_ann_idx = 0;  // diff-encoded
+                // R-NEW-464 closeout — DEX spec (source.android.com
+                // dex-format, annotations_directory_item / method_annotation):
+                //   method_idx  u4  "index into the method_ids list for the
+                //               identity of the method being annotated"
+                // It is an ABSOLUTE method_ids index — NOT diff-encoded.
+                // (Only class_data encoded_field/encoded_method use
+                // *_idx_diff uleb semantics — those joins at the class_data
+                // reader keep their += diff law.) The old running-sum read
+                // every absolute index as a diff: any class with >1
+                // annotated method produced mismatched joins and LOST all
+                // its runtime-visible method annotations — EventBus's
+                // @Subscribe scan (5 annotated onMessageEvent overloads in
+                // org.fossify.clock App) resolved nothing and the scan died
+                // on the "no public methods with the @Subscribe annotation"
+                // EventBusException. Single-annotation classes joined
+                // correctly by coincidence (first diff == absolute), which
+                // is why the Lifecycling chain partially worked.
+                uint32_t method_ann_idx = 0;
                 for (uint32_t k = 0; k < ann_method_size; ++k) {
-                    uint32_t diff = 0, set_off = 0;
-                    std::memcpy(&diff,
+                    uint32_t method_idx_dir = 0, set_off = 0;
+                    std::memcpy(&method_idx_dir,
                                 data + methods_base + (size_t)k * 8,
-                                sizeof(diff));
+                                sizeof(method_idx_dir));
                     std::memcpy(&set_off,
                                 data + methods_base + (size_t)k * 8 + 4,
                                 sizeof(set_off));
-                    method_ann_idx += diff;
+                    method_ann_idx = method_idx_dir;
                     if (set_off == 0 || set_off + 4 > current_size_)
                         continue;
                     // ── decode annotation_set_item at set_off ──
@@ -801,6 +820,26 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
                                         decoded = std::to_string(sv);
                                     } else if (value_type == 0x03) {
                                         decoded = std::to_string(idx);
+                                    } else if (value_type == 0x1B) {
+                                        // R-NEW-464 closeout: ENUM element
+                                        // value — the uleb is a field_ids
+                                        // index naming the constant; store
+                                        // "enum:<class>.<name>" so the
+                                        // annotation-proxy accessor law can
+                                        // resolve the constant identity.
+                                        // (AOSP law: encoded_value VALUE_ENUM
+                                        // carries a field_ids index.)
+                                        if (idx < report.header.field_ids_size) {
+                                            const DexFieldId& fid =
+                                                fields_[idx];
+                                            decoded =
+                                                "enum:" +
+                                                get_type(fid.class_idx) +
+                                                "." +
+                                                get_string(fid.name_idx);
+                                        } else {
+                                            decode_ok = false;
+                                        }
                                     } else {
                                         decoded = std::to_string(idx);
                                     }

@@ -911,6 +911,19 @@ public:
         return objects_;
     }
 
+    // R-NEW-464 closeout: object identity accessor — the annotation-proxy
+    // accessor law needs the receiver's RUNTIME class descriptor to verify
+    // the receiver is an annotation proxy (interface body, no DEX code)
+    // before claiming the accessor route. Answers the object's
+    // class_descriptor ("Lcom/probe/r464/EventAnn;") or false when the id
+    // is not a live heap object.
+    bool get_object_class(uint32_t object_id, std::string& out_class) const {
+        auto it = objects_.find(object_id);
+        if (it == objects_.end()) return false;
+        out_class = it->second.class_descriptor;
+        return true;
+    }
+
 private:
     std::map<uint32_t, HeapObject> objects_;
     uint32_t next_id_;
@@ -2485,6 +2498,19 @@ public:
     std::string last_error_;
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
     std::map<uint32_t, uint32_t> pc_visit_count_;
+    // F-NEW-084 closeout: per-frame forward-progress signature of the last
+    // conditional-branch visit (branch-operand values). Reset alongside
+    // pc_visit_count_ at frame entry. A back-edge whose operands CHANGED
+    // between visits is making observable progress; only a STALLED branch
+    // (identical operands across the whole visit window) is an infinite loop.
+    std::map<uint32_t, uint64_t> pc_branch_sig_;
+    // Frame-level law v2 (cont375): epoch bumped whenever ANY branch's
+    // decision inputs change within this frame; pc_epoch_checkpoint_ stores
+    // the epoch at the branch's last visit-threshold checkpoint. A branch
+    // over the visit threshold halts only if the epoch is unchanged across
+    // the checkpoint boundary (NO decision input in the frame moved).
+    uint64_t frame_progress_epoch_ = 0;
+    uint64_t pc_epoch_checkpoint_ = 0;
     
     // EXP-050 Phase 2: Store the return value from the last invoke-* instruction.
     // move-result and move-result-object read from this. Previously, these
