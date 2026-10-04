@@ -15,7 +15,7 @@
   "op": "OP-2",
   "name": "prerequisites machine-readable schema",
   "pass": true,
-  "detail": "minSdk=24 verdict=NO_NATIVE_CODE mismatches=0"
+  "detail": "minSdk=24 verdict=EXECUTABLE_NATIVE mismatches=0"
  },
  {
   "op": "N-1",
@@ -27,7 +27,7 @@
   "op": "OP-3",
   "name": "install + installed identity = source identity",
   "pass": true,
-  "detail": "installed sha16=b53b9599e3f40411"
+  "detail": "installed sha16=356740d91ea6ff34"
  },
  {
   "op": "OP-4",
@@ -39,7 +39,7 @@
   "op": "OP-5",
   "name": "observe (frame verdict + pixel census)",
   "pass": true,
-  "detail": "verdict=VIEWTREE_NO_APP_PIXELS owned=395464 ops=0"
+  "detail": "verdict=VIEWTREE_NO_APP_PIXELS owned=395548 ops=0"
  },
  {
   "op": "OP-6",
@@ -57,7 +57,7 @@
   "op": "OP-8",
   "name": "3-run determinism law (run1==run2)",
   "pass": true,
-  "detail": "sha16=de208ada26062ee2"
+  "detail": "sha16=173b6cd32f77a303"
  },
  {
   "op": "OP-9",
