@@ -3,7 +3,7 @@
 (ALL dex files scanned) to locate the exact NPE instruction."""
 import sys, zipfile, struct, io
 
-APK = '/home/z/my-project/tmp/closeout_apks/com.forrestguice.suntimeswidget_135.apk'
+APK = '/tmp/f084_probe.apk'
 WANT_CLASS = sys.argv[1] if len(sys.argv) > 1 else 'Lnet/time4j/PlainDate;'
 WANT_METHOD = sys.argv[2] if len(sys.argv) > 2 else 'registerUnits'
 

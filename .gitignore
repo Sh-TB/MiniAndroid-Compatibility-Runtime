@@ -214,3 +214,6 @@ evidence/**/*_bundle*.js
 *.aab
 tmp/wa169/
 tmp/gate_dr/
+
+# toolchain repair dir (large binaries — rebuilt via scripts/build/bootstrap_toolchain.sh)
+tools/toolchain/

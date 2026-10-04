@@ -6593,3 +6593,43 @@ Stage Summary:
 - Agent Skill is externally usable with a passing self-test (13/13).
 - All gates green at the final wave binary 4c01757e8f11c8a0; zero drift on every recorded anchor/golden sha.
 - Ledger: docs/CLOSEOUT_WAVE_371_372_373.md; issue comments to #371/#372/#373 next.
+
+---
+Task ID: cont375-CONT-1
+Agent: Super Z (main agent)
+Task: #375 CONT-1 — container-reset repair + R-NEW-464 closeout (session of 2026-10-04 morning; worklog entry back-filled: this session was cut off after the commit, before the log entry).
+
+Work Log:
+- Container-reset repair: toolchain relayout (ecj/d8/aapt2/android-34 symlinks from tools/toolchain), EXT-01/02 re-fetched SHA-exact, fixture APKs rebuilt SHA-verified, native probe libs rebuilt (x86_64 gcc d5ec1f57fef3d271 + arm64 zig df30d6ec1aba3884), monospace font law env restored (DroidSansMono.ttf db19a1fd…c862), battery tooling coreutils tail -n1 fix + link -Wl,--no-keep-memory + JVM heap caps (3GB container).
+- R-NEW-464 closeout: dex_parser VALUE_ENUM decode finished (fields_[] bounds-checked; was get_field_class/name stubs), DalvikHeap.get_object_class identity accessor, annotation-proxy accessor is_abstract field fix; R464 probe APK 12/12 PASS ×3; fossifyclock 0 REC-MISS (was 11) RESUMED screenshot sha 31ddd4d5b8e6d18e ×3 = recorded.
+- Registry R-NEW-464 -> ROOT-CAUSED-FIXED (class C).
+- Baseline gates at binary 583b3a2a6f3d30c8: NATX 10/10 ×3 byte-identical; anchors 5/5×3 byte-identical (recorded shas); gate A 95/0/2; negatives 17/17; reinstall 8/8; uninstall ALL PASS; multiapp 5/5; skill selftest 13/13.
+- F-NEW-084 investigation opened: fixtures/f084_loop_probe + scripts/cont375_f084_{disasm,ladder}.py + first forward-progress sketch (pc_branch_sig_) — CUT OFF mid-flight (container reset auto-committed as 77d928ab…).
+
+Stage Summary:
+- R-NEW-464 closed; all baseline gates green at 583b3a2a6f3d30c8; F-NEW-084 law work half-landed when the session was cut.
+
+---
+Task ID: cont375-CONT-2
+Agent: Super Z (main agent)
+Task: #375 CONT-2 — resume from the cut-off: reconcile unpushed state, complete F-NEW-084 (law + probe + real game), reproduce the full baseline at the new binary, register the next frontier.
+
+Work Log:
+- Reconciled: 4 unpushed commits found (9f070289/0a9e0b1a/b64b9c91/f31b9b64; origin/main at f648842b); registry already had R-NEW-464 ROOT-CAUSED-FIXED; apk_cache + run/gatea + fonts + toolchain wiped by the second container reset — all restored SHA-exact via cont375_refetch_wave_apks.sh (fossifyclock 43cf9f0e…, fairymahjong 88a4cbbe…, sudokusolver d114d479…, blockblast 64589a3a…, memory 830798a6…), bootstrap_toolchain.sh (font db19a1fd…), EXT fixture doc (APK 009b4671…, ref PNG 121d479c…).
+- F-NEW-084 LAW v1→v2→v3 evolution, each step evidence-driven:
+  * v1 (branch-signature reset per branch) — false-positived at fairymahjong Lw4;.<init> pc=0x99 if-lt v14,v7 (16<0): the branch is loop-INVARIANT while the real exit (if-ge v1,v3 at 0x91) advances. Disasm proof: scripts/cont375_f084_full_ladder.py (fixed dalvik size table: op = LOW byte; invoke-range 0x74-0x78 = 3 units).
+  * v2 (frame-level epoch: branch-operand change anywhere in the frame bumps frame_progress_epoch_; threshold crossing halts only if the epoch is unchanged across the checkpoint) — blind to branch-free spins: ECJ compiled the probe's `while (k==5){k=5;}` to nop/goto-1 self-loop (0x49/0x4a), zero conditional branches.
+  * v3 FINAL: visit counting restored on EVERY pc + frame-level epoch decision (a frame with any live decision never halts; a frame with zero decision movement halts exactly as before).
+- CAUGHT-HALT RESUME law: at the EXC-PROPAGATE handler-found arm the callee-originated engine halt must clear halted_/halted_on_return_ (pending_exception_ + move-exception armed); otherwise the caller's fetch loop `while(!halted_ …)` exits and the app catch body never runs. Live probe evidence.
+- Session RESOURCE knob: `--max-instructions` (ExecutionConfig.max_instructions, default 100M unchanged, propagated in execution_engine.cpp) — distinct from the semantic loop law; rationale recorded in-code (fairymahjong init measured-bounded ~177.4M instructions).
+- WALL-STOP evidence parity: wall-clock graceful stops now carry [WALL-STOP]/[WALL-REGS]/[WALL-HISTO] dumps (same evidence as [HALT-LOOP]).
+- f084_loop_probe rebuilt (a7ebf47e…): P1 60k-progressing completes / P2 nested 40×1250 completes / N1 stalled-spin callee halted via catchable java.lang.VirtualMachineError — 3/3 PASS ×3 runs byte-identical.
+- fairymahjong (88a4cbbe…, identity launch): interpreter halt GONE; Lw4;.<init> tile-atlas init completes measured-bounded at ~177.4M instructions (deterministic [PROGRESS] evidence; RSS 344MB real decode); game advances into its OWN async board pipeline (ThreadPoolExecutor → Lq1;.run DataStore practice-board.json ABSENT → default board generated).
+- NEW generic law — android.util.AtomicFile (AOSP AtomicFile.java: ctor NPE-null-base, getBaseFile never-null with object identity, startRead/openRead with .bak crash-recovery, startWrite/.new, finishWrite rename-over-base, failWrite, delete; streams registered in the SAME open_assets_/open_writers_ maps as the FileInputStream/FileOutputStream laws): engine-stub AtomicFile.getBaseFile()==null caused Lq1;.run pc=34 NPE (File.exists on null) — fairymahjong practice-board chain now walks through ctor/getBaseFile/bak File creation.
+- NEXT frontier registered as F-NEW-235: the game's own layout build throws IAE "Duplicate tile position" (Lg0;.a ← Lm;.<init> BoardShape parser ← Lo;.<clinit> ← Lm2;.b ← Lq1;.run) — regex/token parse or Set-dedup divergence; OBSERVED with full stack evidence.
+- Full baseline reproduced at NEW binary e2b948d4b11dc45e: battery ALL PASS (114 stages; s106 text2 14/14 after font restore; density-matrix 11/11 after resource_trace relink 2d364c50…; EXT-01 9/9 + EXT-02 after fixture refetch); anchors 5/5×3 BYTE-IDENTICAL to recorded shas (opencalc e364b001…, chess b5a7a35d…, dooz d602648e…, microtimer da73010a…, unote 4f1a9e4e…); gate A 95/0/2 fresh; negatives 17/17 fresh; reinstall 8/8 + reinstall-identity ALL PASS (src==inst==pkgaudit shas); multiapp 5/5; NATX 10/10 ×3 byte-identical (libprobe.so rebuilt d5ec1f57…, probe APK e50d3b40…, results sha 4d7761f7… ×3); skill selftest 13/13 (APK path repaired); classifier untouched.
+- Registry: 540 roots — F-NEW-084 ROOT-CAUSED-FIXED (interpreter-forward-progress), F-NEW-235 OBSERVED (regex-collections-or-dedup).
+
+Stage Summary:
+- F-NEW-084 CLOSED with a three-layer law + probe 3/3×3 + measured-bounded real-game init; two genuinely new generic surfaces landed (frame-level forward-progress, AtomicFile); the game now runs its own logic deep enough to expose F-NEW-235.
+- Zero drift on every recorded anchor/golden sha at the new binary e2b948d4b11dc45e.

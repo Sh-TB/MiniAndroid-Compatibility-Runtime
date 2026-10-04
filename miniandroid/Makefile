@@ -207,5 +207,5 @@ $(MEGABATCH_OBJECT): $(JSON_DIR)/include/nlohmann/json.hpp
 
 # GOLDEN-03 §12: reusable resource trace facility (resource -> chain -> value)
 resource_trace:
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $(BUILDDIR)/resource_trace tools/resource_trace.cpp $(CORE_OBJECTS) $(THUNK_OBJECT) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
+	$(CXX) $(CXXFLAGS) -Wl,--no-keep-memory $(INCLUDES) $(JSON_INCLUDE) -o $(BUILDDIR)/resource_trace tools/resource_trace.cpp $(CORE_OBJECTS) $(THUNK_OBJECT) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
 

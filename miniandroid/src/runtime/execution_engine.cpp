@@ -1333,6 +1333,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // ===================================================================
         // S60 (R-NEW-380): propagate the wall-clock soft budget (0 = off).
         dalvik_engine_.config_.max_wall_ms = config.max_wall_seconds * 1000ULL;
+        // F-NEW-084 closeout: propagate the session instruction budget
+        // (resource knob; the semantic loop-visit law is untouched).
+        dalvik_engine_.config_.max_instructions = config.max_instructions;
         dalvik_engine_.config_.trace_cap = config.trace_cap;                    // F-107b2
         dalvik_engine_.config_.api_call_trace_cap = config.api_call_trace_cap;  // F-107b2
         auto dalvik_result = dalvik_engine_.execute_apk_with_activity(

@@ -2436,6 +2436,10 @@ bool DalvikExecutionEngine::execute_method_internal(
     // EXP-042 Phase 1: Per-frame loop detection counter. Reset on each new
     // method invocation so recursive calls do not pollute each other.
     pc_visit_count_.clear();
+    // F-NEW-084 closeout: reset the forward-progress signatures per frame.
+    pc_branch_sig_.clear();
+    frame_progress_epoch_ = 0;
+    pc_epoch_checkpoint_ = 0;
     // EXP-042 Phase 2: Set current_class_/current_method_ so loop-detector
     // halt messages and traces can identify the method that halted.
     current_class_ = class_name;
@@ -9395,6 +9399,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 // `pc_ += instr_len` — see exc_redirect_pending_ in header.
                 exc_redirect_pending_ = true;
                 exc_redirect_addr_ = prop_handler;
+                // F-NEW-084 closeout (cont375): the engine-level halt that
+                // produced this deferred throwable was the CALLEE's —
+                // halted_ is engine state and would otherwise still be set
+                // here, so the caller's fetch loop (`while (!halted_ ...)`)
+                // exited at the next iteration and the catch body at
+                // prop_handler never executed (live evidence: the probe's
+                // catch(Throwable) after a stalled-spin callee logged the
+                // EXC-PROPAGATE match, then jumped straight to onStart with
+                // the handler body unrun). The exception is now a Java-level
+                // throwable in flight with pending_exception_ set and
+                // move-exception armed — that is exactly a caught-exception
+                // resume, so the frame-level halt state must be cleared.
+                // Resource-budget stops re-arm halted_ on their own checks.
+                halted_ = false;
+                halted_on_return_ = false;
                 // restore pre-call in-flight state (normally empty)
                 frame_unwind_exception_valid_ = saved_unwind_valid;
                 frame_unwind_exception_ = saved_unwind_exc;
@@ -11921,6 +11940,28 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // because array-length read the wrong register.
                 uint8_t vB = (instr >> 12) & 0xF;   // source array
                 DalvikValue arr = get_register(vB);
+                // R-NEW-464 closeout (AOSP dalvik-bytecode array-length
+                // law): a null array ref MUST throw NullPointerException —
+                // the old fallthrough answered 0 (silent-wrong), which
+                // masked missing reflection laws (a null Class[] from an
+                // unanswered getParameterTypes read as a zero-length
+                // array, silently skipping every candidate in EventBus's
+                // subscriber scan instead of failing loudly at the real
+                // divergence). A register-carried NEW_ARRAY answer keeps
+                // its length in int_val and is NOT null (object_id 0 with
+                // a nonzero length stays legitimate).
+                const bool arr_is_null_464 =
+                    arr.type == DalvikType::NULL_REF ||
+                    (arr.type == DalvikType::OBJECT_REF &&
+                     arr.object_id == 0 && arr.int_val == 0);
+                if (arr_is_null_464) {
+                    throw_deferred(
+                        "Ljava/lang/NullPointerException;",
+                        "Attempt to get length of null array",
+                        "ARR-LEN-NULL");
+                    pc_ = pc_ + 1;
+                    break;
+                }
                 // Length resolution order (consistent with aget/aput):
                 //   1. int_val carried by the register value (set by NEW_ARRAY)
                 //   2. __array_length__ heap field (survives field storage)
@@ -14594,8 +14635,100 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         if (park_yield_pending_) {
             break;
         }
-        pc_visit_count_[pc_]++;
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-084 CLOSEOUT — FORWARD-PROGRESS LOOP LAW (§7 semantic fix;
+        // NOT a cap raise). The visit guard exists to catch STALLED frames
+        // (same state, same decision, forever). Evidence (fairymahjong
+        // Lw4;.<init> pc=0x91, MINIANDROID_METHOD_TRACE): the if-ge branch
+        // operands ADVANCE every visit (v3 416→417→… per tile row scan,
+        // 40 tiles × ~1250 = ~50k visits) — a legitimate BOUNDED
+        // computation the old cap misclassified as an infinite loop at the
+        // 50001st visit. Law (AOSP-faithful semantics): the guard now
+        // measures STALE DECISIONS, not raw visits:
+        //   * Only CONDITIONAL BRANCH pcs (0x32..0x3d) accumulate visits —
+        //     an instruction with no decision (aget, add-int, …) cannot
+        //     signal a stall by itself, and counting it made every body pc
+        //     of a long-but-bounded loop a false-positive halt site
+        //     (live evidence: after the back-edge law landed, the halt
+        //     merely MOVED to the loop's aget at pc=0x93).
+        //   * A branch whose SOURCE OPERANDS changed since its previous
+        //     visit restarts its stale window (observable progress ⇒ same
+        //     inputs never repeat ⇒ the loop is computing, bounded or not).
+        //   * A branch with IDENTICAL operands across the whole window is
+        //     a candidate stall — but the FINAL arbiter is FRAME-LEVEL
+        //     progress (cont375 evidence, fairymahjong Lw4;.<init> pc=0x99):
+        //     the scan loop's threshold branch `if-lt v14, v7` (16 < 0) is
+        //     loop-INVARIANT by construction while the loop's REAL exit
+        //     (`if-ge v1, v3` at pc=0x91) advances its operands every
+        //     iteration. Punishing an invariant branch when OTHER decisions
+        //     in the same frame are still moving misclassifies bounded
+        //     work as a spin. Law v2 (frame-level): every branch-operand
+        //     CHANGE anywhere in the frame bumps frame_progress_epoch_; a
+        //     branch over the visit threshold halts ONLY if the epoch is
+        //     unchanged since the branch's last threshold checkpoint — i.e.
+        //     NO decision input in the whole frame moved for the entire
+        //   * LAW v3 (cont375 final): visit counting covers EVERY pc again —
+        //     because a compiler may legitimately erase a provably-dead
+        //     condition and emit a straight nop/goto self-loop (live
+        //     evidence: the probe's `while (k == 5) { k = 5; }` compiled to
+        //     `0x49: nop; 0x4a: goto -1` — NO conditional branch left in the
+        //     frame, so a branch-only counter was blind to a true spin). The
+        //     epoch check is what classifies the frame: any live decision
+        //     anywhere in the frame keeps resetting the window; a frame with
+        //     zero decision movement (including branch-free spins) halts at
+        //     the threshold exactly as the raw-visit guard always did.
+        // Fully deterministic: signatures derive from register values only;
+        // the guard never alters app-visible state except for frames that
+        // previously died as false positives.
+        // ────────────────────────────────────────────────────────────────
+        pc_visit_count_[pc_]++;   // v3: every pc — branch-free spins too
+        uint16_t opb = (pc_ < bytecode_.size()) ? (bytecode_[pc_] & 0xFF) : 0xFFFF;
+        const bool cond_branch = opb >= 0x32 && opb <= 0x3d;
+        if (cond_branch) {
+            if (current_registers_) {
+                uint64_t sig = 0;
+                auto mix = [&sig](const DalvikValue& v) {
+                    uint64_t h = static_cast<uint64_t>(static_cast<int>(v.type));
+                    if (v.type == DalvikType::INT32)
+                        h ^= static_cast<uint64_t>(
+                            static_cast<uint32_t>(v.int_val)) << 3;
+                    else if (v.type == DalvikType::OBJECT_REF)
+                        h ^= static_cast<uint64_t>(v.object_id) << 5;
+                    sig = sig * 0x9E3779B97F4A7C15ULL + h;
+                };
+                if (opb <= 0x37) {
+                    // 22T: if-eq/ne/lt/ge/gt/le vA, vB, +target
+                    const uint8_t ra = (bytecode_[pc_] >> 8) & 0xF;
+                    const uint8_t rb = (bytecode_[pc_] >> 12) & 0xF;
+                    mix(current_registers_->read_v(ra));
+                    mix(current_registers_->read_v(rb));
+                } else {
+                    // 21T: if-(eq|ne|lt|ge|gt|le)z vAA, +target
+                    const uint8_t raa = (bytecode_[pc_] >> 8) & 0xFF;
+                    mix(current_registers_->read_v(raa));
+                }
+                auto last = pc_branch_sig_.find(pc_);
+                if (last != pc_branch_sig_.end()) {
+                    if (last->second != sig) {
+                        // Observable progress through THIS branch. Frame-level
+                        // law v2: bump the frame epoch (a decision input moved
+                        // somewhere in this frame) instead of resetting only
+                        // this branch's window.
+                        last->second = sig;
+                        ++frame_progress_epoch_;
+                    }
+                } else {
+                    pc_branch_sig_[pc_] = sig;
+                }
+            }
+        }
         if (pc_visit_count_[pc_] > config_.loop_visit_threshold) {
+            // Frame-level law v2: halt only if NO decision input in this
+            // frame moved since the last threshold checkpoint of this pc.
+            if (frame_progress_epoch_ != pc_epoch_checkpoint_) {
+                pc_epoch_checkpoint_ = frame_progress_epoch_;
+                pc_visit_count_.clear();   // fresh window for every branch
+            } else {
             // EXP-042 Phase 2: include bytecode size and the actual opcode at
             // the looping PC, so we can diagnose whether the loop is a real
             // infinite loop or a missing-API-driven spin.
@@ -14797,6 +14930,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 std::cerr << std::endl;
             }
             break;
+            } // frame-level law v2: end of the true-stall (epoch unchanged) arm
         }
         
         // Log if verbose — EXP-041: only log every 10000th instruction to reduce memory
@@ -14838,6 +14972,55 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                std::to_string(config_.max_wall_ms) + " ms)";
                 halted_ = true;
                 log("HALT: " + halt_reason_);
+                // F-NEW-084 closeout (cont375): EVERY graceful stop carries
+                // the same frame evidence as a loop-guard halt — the wall
+                // clock may stop INSIDE a legitimately long frame, and the
+                // visit histogram + live registers are what distinguish a
+                // bounded computation from a hidden spin. Evidence parity
+                // with the [HALT-LOOP] path (§7: never stop blind).
+                {
+                    const uint16_t opb_stop = (pc_ < bytecode_.size())
+                        ? (bytecode_[pc_] & 0xFF) : 0xFFFF;
+                    std::cerr << "[WALL-STOP] pc=" << to_hex(pc_)
+                              << " op_at_pc=0x" << to_hex16(opb_stop)
+                              << " in " << current_class_ << "."
+                              << current_method_ << std::endl;
+                    if (current_registers_) {
+                        const uint32_t nregs = current_registers_->get_size();
+                        std::cerr << "[WALL-REGS] regs=" << nregs;
+                        for (uint32_t r = 0; r < nregs && r < 26; ++r) {
+                            DalvikValue v = current_registers_->read_v(
+                                static_cast<uint16_t>(r));
+                            std::cerr << " v" << r << "=";
+                            if (v.type == DalvikType::INT32)
+                                std::cerr << v.int_val;
+                            else if (v.type == DalvikType::OBJECT_REF) {
+                                std::cerr << "o" << v.object_id;
+                                if (heap_.has_object(v.object_id)) {
+                                    const auto* ho = heap_.get(v.object_id);
+                                    if (ho) std::cerr << "<" << ho->class_descriptor << ">";
+                                }
+                            } else if (v.type == DalvikType::REGISTER_UNSET ||
+                                       v.type == DalvikType::UNINITIALIZED)
+                                std::cerr << "uninit";
+                            else
+                                std::cerr << "t" << static_cast<int>(v.type);
+                        }
+                        std::cerr << std::endl;
+                    }
+                    std::vector<std::pair<uint32_t, uint64_t>> wtop;
+                    for (const auto& kv : pc_visit_count_)
+                        wtop.push_back(kv);
+                    std::sort(wtop.begin(), wtop.end(),
+                              [](auto& a, auto& b) { return a.second > b.second; });
+                    std::cerr << "[WALL-HISTO]";
+                    int wshown = 0;
+                    for (auto& kv : wtop) {
+                        if (wshown++ >= 12) break;
+                        std::cerr << " pc" << to_hex(kv.first) << "=" << kv.second;
+                    }
+                    std::cerr << std::endl;
+                }
                 break;
             }
         }
@@ -24016,7 +24199,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto cit219 = class_info_index_.find(reflected);
         if (cit219 != class_info_index_.end()) {
             bool found219 = false;
-            std::string ret219, params219;
+            std::string ret219, params219, desc219;
             std::string walk219 = reflected;
             for (int hops = 0; hops < 16 && !found219 && !walk219.empty();
                  ++hops) {
@@ -24028,6 +24211,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     if (mi.is_constructor || mi.name != name) continue;
                     found219 = true;
                     ret219 = mi.return_type;
+                    desc219 = mi.descriptor;
                     for (size_t pi = 0; pi < mi.parameters.size(); ++pi)
                         params219 += (pi ? "," : "") + mi.parameters[pi];
                     break;
@@ -24064,6 +24248,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                                       : ret219, 0));
             heap_.set_object_field(rec, "__reflect_params",
                                    DalvikValue::make_string(params219, 0));
+            // R-NEW-464 closeout: dual-store identity — the getParameterTypes
+            // / getModifiers / F-NEW-191 annotation laws read the F-NEW-190
+            // field spellings; single-method records carry the same data
+            // under both spellings so every consumer sees one Method truth.
+            heap_.set_object_field(rec, "declaring_class",
+                                   DalvikValue::make_string(reflected, 0));
+            heap_.set_object_field(rec, "method_name",
+                                   DalvikValue::make_string(name, 0));
+            if (!desc219.empty())
+                heap_.set_object_field(rec, "method_descriptor",
+                                       DalvikValue::make_string(desc219, 0));
             heap_.set_object_field(rec, "class_desc",
                                    DalvikValue::make_string(reflected, 0));
             result = DalvikValue::make_object(rec,
@@ -24154,6 +24349,219 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     if (class_name == "Ljava/lang/reflect/Method;" &&
+        (method == "getName" || method == "getDeclaringClass" ||
+         method == "toGenericString")) {
+        // ────────────────────────────────────────────────────────────────
+        // R-NEW-464 closeout (OpenJDK Method identity accessors):
+        //   * getName(): the declared method name — NEVER null. Both
+        //     minting routes carry it: F-NEW-190 records in
+        //     "method_name", F-029/F-NEW-219 records in "__reflect_name".
+        //   * getDeclaringClass(): the class that declares the method —
+        //     "declaring_class" / "__reflect_class" field respectively.
+        //   * toGenericString(): human-readable form (name suffices for
+        //     honest reporting; real generic strings are a frontier).
+        // Root-gap evidence (r464 synthetic probe, first run): the
+        // EventBus-shape scan's first `m.getName()` REC-MISSed and every
+        // record read as unnamed — the probe harness NPE'd before any
+        // assertion could run.
+        // ────────────────────────────────────────────────────────────────
+        std::string nm;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto nv = heap_.get_object_field(args[0].object_id,
+                                             "method_name");
+            if ((!nv.has_value() || nv->type != DalvikType::STRING_REF ||
+                 nv->string_val.empty()))
+                nv = heap_.get_object_field(args[0].object_id,
+                                            "__reflect_name");
+            if (nv.has_value() && nv->type == DalvikType::STRING_REF)
+                nm = nv->string_val;
+            if (method == "getDeclaringClass") {
+                std::string dc;
+                auto dv2 = heap_.get_object_field(args[0].object_id,
+                                                  "declaring_class");
+                if (!dv2.has_value() || dv2->type != DalvikType::STRING_REF ||
+                    dv2->string_val.empty())
+                    dv2 = heap_.get_object_field(args[0].object_id,
+                                                 "__reflect_class");
+                if (dv2.has_value() && dv2->type == DalvikType::STRING_REF)
+                    dc = dv2->string_val;
+                if (dc.empty()) dc = "Ljava/lang/Object;";
+                result = DalvikValue::make_class(dc, instruction_sequence_);
+            } else if (method == "toGenericString") {
+                auto dv3 = heap_.get_object_field(args[0].object_id,
+                                                  "method_descriptor");
+                std::string desc =
+                    (dv3.has_value() && dv3->type == DalvikType::STRING_REF)
+                        ? dv3->string_val
+                        : std::string();
+                result = DalvikValue::make_string(nm + desc, 0);
+            } else {
+                result = DalvikValue::make_string(nm, 0);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        result = method == "getDeclaringClass"
+                     ? DalvikValue::make_class("Ljava/lang/Object;",
+                                               instruction_sequence_)
+                     : DalvikValue::make_string("", 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-464 closeout: ANNOTATION-PROXY ACCESSOR LAW (AOSP
+    // java.lang.reflect.Proxy over annotation types / ART
+    // AnnotationAccess). A runtime annotation instance is a PROXY whose
+    // class is the @interface; every accessor method reads the stored
+    // element value. The F-NEW-191 mint stores "element:<name>" fields;
+    // this law answers the accessor:
+    //   * element stored "enum:<Class>.<CONST>" → the enum CONSTANT
+    //     (static registry identity, same store the sget law uses);
+    //   * "true"/"false" → boolean; numeric → int;
+    //   * otherwise → the string value (String-typed elements).
+    // No element → null (the AOSP default-value table is a separate
+    // annotation_default parse — honest frontier, consumers null-guard).
+    // Root-gap evidence (r464 synthetic probe P05 + fossifyclock
+    // EventBus scan): a.name()/threadMode() on resolved proxies answered
+    // null and the consumer's own value check failed.
+    // ────────────────────────────────────────────────────────────────────
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        auto probe_ev =
+            heap_.get_object_field(args[0].object_id, "element:" + method);
+        if (probe_ev.has_value()) {
+            std::string proxy_cls;
+            if (heap_.get_object_class(args[0].object_id, proxy_cls) &&
+                proxy_cls.size() > 2 && proxy_cls[0] == 'L') {
+                // Only annotation-typed receivers claim this law: their
+                // interface body is abstract (no DEX bytecode), so the
+                // recursive invoke route already declined.
+                if (class_info_index_.find(proxy_cls) ==
+                        class_info_index_.end() ||
+                    [&]() {
+                        auto pcit = class_info_index_.find(proxy_cls);
+                        if (pcit == class_info_index_.end()) return true;
+                        const dex::ClassInfo& pcls =
+                            dex_report_->classes[pcit->second];
+                        for (const auto& md : pcls.virtual_methods)
+                            if (md.name == method && !md.is_abstract)
+                                return false;
+                        return true;
+                    }()) {
+                    std::string sv = probe_ev->type == DalvikType::STRING_REF
+                                         ? probe_ev->string_val
+                                         : std::string();
+                    if (sv.rfind("enum:", 0) == 0) {
+                        std::string ident = sv.substr(5);
+                        auto sit = static_field_storage_.find(ident);
+                        if (sit != static_field_storage_.end()) {
+                            result = sit->second;
+                        } else {
+                            size_t dot = ident.rfind('.');
+                            if (dot != std::string::npos) {
+                                std::string ecls = ident.substr(0, dot);
+                                std::string ename = ident.substr(dot + 1);
+                                uint32_t eoid = heap_.allocate(ecls, pc_, 0);
+                                heap_.set_object_field(
+                                    eoid, "ordinal",
+                                    DalvikValue::make_int(0));
+                                heap_.set_object_field(
+                                    eoid, "enum_name",
+                                    DalvikValue::make_string(ename, 0));
+                                result = DalvikValue::make_object(eoid, ecls);
+                            } else {
+                                result = DalvikValue::make_null();
+                            }
+                        }
+                    } else if (sv == "true" || sv == "false") {
+                        result = DalvikValue::make_bool(sv == "true");
+                    } else if (!sv.empty() &&
+                               sv.find_first_not_of("-0123456789") ==
+                                   std::string::npos) {
+                        result = DalvikValue::make_int(std::stoi(sv));
+                    } else {
+                        result = DalvikValue::make_string(sv, 0);
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+        }
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
+        method == "getParameterTypes") {
+        // ────────────────────────────────────────────────────────────────
+        // R-NEW-464 closeout (OpenJDK Method.getParameterTypes law):
+        // returns the parameter types in DECLARATION ORDER as a fresh
+        // Class[] — NEVER null (empty array for no-arg methods). The
+        // minted Method record carries the full DEX method_descriptor
+        // (e.g. "(LO5/e;)V"); the descriptor's parameter list is parsed
+        // generically (L...; objects, [ arrays of any depth, all 9
+        // primitives) and each type becomes a Class token — the same
+        // shape execute_const_class mints for X.class (identity-stable
+        // heap Class with __referent_desc), so == and isAssignableFrom
+        // semantics hold on the answers.
+        // Root-gap evidence (org.fossify.clock, EventBus 3.3.1
+        // SubscriberMethodFinder.findUsingReflectionInSingleClass):
+        // every public candidate hit parameterTypes.length on a NULL —
+        // the silent array-length-on-null answered 0, every method was
+        // skipped as "not exactly 1 parameter", the @Subscribe
+        // annotations were never consulted, and the scan ended with
+        // EventBusException("Subscriber ... has no public methods with
+        // the @Subscribe annotation") → App.onCreate process death.
+        // ────────────────────────────────────────────────────────────────
+        std::string desc464 = "";
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto dv = heap_.get_object_field(args[0].object_id,
+                                             "method_descriptor");
+            if (dv.has_value() && dv->type == DalvikType::STRING_REF)
+                desc464 = dv->string_val;
+        }
+        std::vector<std::string> params464;
+        if (!desc464.empty() && desc464[0] == '(') {
+            size_t i = 1;
+            while (i < desc464.size() && desc464[i] != ')') {
+                size_t arr_start = i;
+                while (i < desc464.size() && desc464[i] == '[') ++i;
+                if (i >= desc464.size()) break;
+                std::string p;
+                if (desc464[i] == 'L') {
+                    size_t semi = desc464.find(';', i);
+                    if (semi == std::string::npos) break;
+                    p = desc464.substr(arr_start, semi - arr_start + 1);
+                    i = semi + 1;
+                } else {
+                    p = desc464.substr(arr_start, i - arr_start + 1);
+                    ++i;
+                }
+                params464.push_back(p);
+            }
+        }
+        uint32_t arr464 = heap_.allocate("[Ljava/lang/Class;", pc_, 0);
+        heap_.set_object_field(
+            arr464, "__array_length__",
+            DalvikValue::make_int((int32_t)params464.size()));
+        for (size_t i = 0; i < params464.size(); ++i) {
+            heap_.set_object_field(
+                arr464, "array[" + std::to_string(i) + "]",
+                DalvikValue::make_class(params464[i], instruction_sequence_));
+        }
+        {
+            static thread_local uint64_t r464_pt = 0;
+            if (r464_pt < 8) {
+                ++r464_pt;
+                std::cerr << "[R-NEW-464] getParameterTypes(" << desc464
+                          << ") -> " << params464.size() << " params"
+                          << std::endl;
+            }
+        }
+        result = DalvikValue::make_object(arr464, "[Ljava/lang/Class;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
         (method == "getAnnotation" || method == "isAnnotationPresent")) {
         // ────────────────────────────────────────────────────────────────
         // F-NEW-191 (S90): Method annotation reflection (OpenJDK law).
@@ -24206,10 +24614,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     want_ann = "";
             }
         }
+        {
+            // R-NEW-464 closeout diagnostic (env-gated, bounded): the
+            // getAnnotation resolution inputs — verifies the receiver
+            // record shape and the annotation-type argument shape on the
+            // two minting routes (F-NEW-190 getDeclaredMethods vs F-029
+            // getDeclaredMethod).
+            static thread_local uint64_t r464_ann_diag = 0;
+            if (std::getenv("MINIANDROID_R464_TRACE") &&
+                r464_ann_diag < 120) {
+                ++r464_ann_diag;
+                std::cerr << "[R-NEW-464-ANN] method=" << method
+                          << " decl=" << decl_cls << " name=" << meth_name
+                          << " idx=" << meth_idx << " want=" << want_ann
+                          << " argc=" << args.size()
+                          << " a1t=" << (args.size() > 1
+                                             ? (int)args[1].type : -1)
+                          << std::endl;
+            }
+        }
         bool present = false;
         if (!decl_cls.empty() && !want_ann.empty()) {
             for (const auto& cd : dex_report_->classes) {
                 if (cd.name != decl_cls) continue;
+                {
+                    static thread_local uint64_t r464_ann_scan = 0;
+                    if (std::getenv("MINIANDROID_R464_TRACE") &&
+                        r464_ann_scan < 12) {
+                        ++r464_ann_scan;
+                        size_t d_ann = 0, v_ann = 0;
+                        for (const auto& md : cd.direct_methods)
+                            d_ann += md.method_annotations.size();
+                        for (const auto& md : cd.virtual_methods)
+                            v_ann += md.method_annotations.size();
+                        std::cerr << "[R-NEW-464-ANN-SCAN] cls=" << decl_cls
+                                  << " direct=" << cd.direct_methods.size()
+                                  << " virtual=" << cd.virtual_methods.size()
+                                  << " directAnn=" << d_ann
+                                  << " virtualAnn=" << v_ann
+                                  << std::endl;
+                    }
+                }
                 for (const auto& md : cd.direct_methods) {
                     if (md.name != meth_name) continue;
                     for (const auto& pa : md.method_annotations) {
@@ -28835,6 +29280,113 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                               << args[0].object_id << "[" << args[1].int_val
                               << "]" << std::endl;
             }
+            // ── R-NEW-464 closeout: LayerDrawable.findDrawableByLayerId +
+            // Drawable.setId/getId (AOSP android.graphics.drawable law).
+            //   * LayerDrawable.inflate assigns each <item> android:id to
+            //     its child drawable; findDrawableByLayerId(id) returns the
+            //     FIRST layer whose child id matches, null when none
+            //     (indexOfLayerById contract). Sources, most-derived first:
+            //     code-built children (record_layer_children capture) whose
+            //     child heap objects carry __drawable_id__ (setId law), then
+            //     the XML layer-list capture (layer:i:id heap fields, the
+            //     getDrawable materialization above).
+            //   * Drawable.setId(int)/getId(): per-object __drawable_id__
+            //     field; AOSP View.NO_ID = -1 default.
+            // Root-gap evidence (org.fossify.clock): MainActivity.onResume
+            // reads a progress layer-list drawable and calls
+            // findDrawableByLayerId(R.id.progress); the bare-shell answer
+            // was null and the Kotlin Intrinsics non-null check NPE'd
+            // ("findDrawableByLayerId(...) must not be null") at
+            // APP BOUNDARY.
+            if (class_name.find("LayerDrawable;") != std::string::npos &&
+                method == "findDrawableByLayerId" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                int32_t want_id = args[1].int_val;
+                result = DalvikValue::make_null();
+                // Source 1: code-built children with per-child id fields.
+                const std::vector<framework::ViewShadow::ViewNode::CodeLayer>*
+                    code_layers = vs->lookup_layer_children(args[0].object_id);
+                if (code_layers) {
+                    for (const auto& cl : *code_layers) {
+                        if (cl.drawable_obj == 0) continue;
+                        auto idf = heap_.get_object_field(
+                            cl.drawable_obj, "__drawable_id__");
+                        if (idf.has_value() && idf->type == DalvikType::INT32 &&
+                            idf->int_val == want_id) {
+                            result = DalvikValue::make_object(
+                                cl.drawable_obj,
+                                "Landroid/graphics/drawable/Drawable;");
+                            break;
+                        }
+                    }
+                }
+                // Source 2: XML layer-list capture (layer:i:id fields).
+                if (result.object_id == 0 && result.is_null) {
+                    auto cnt = heap_.get_object_field(args[0].object_id,
+                                                      "__layer_count__");
+                    if (cnt.has_value() && cnt->type == DalvikType::INT32 &&
+                        cnt->int_val > 0 && cnt->int_val < 128) {
+                        for (int32_t li = 0; li < cnt->int_val; ++li) {
+                            auto idf = heap_.get_object_field(
+                                args[0].object_id,
+                                "layer:" + std::to_string(li) + ":id");
+                            if (!idf.has_value() ||
+                                idf->type != DalvikType::INT32 ||
+                                idf->int_val != want_id)
+                                continue;
+                            // Materialize the child drawable lazily from
+                            // its captured android:drawable path (same
+                            // shape as the getDrawable shell: resid + path
+                            // identity, AOSP Drawable semantics).
+                            auto rf = heap_.get_object_field(
+                                args[0].object_id,
+                                "layer:" + std::to_string(li) + ":resid");
+                            int32_t lresid =
+                                (rf.has_value() &&
+                                 rf->type == DalvikType::INT32)
+                                    ? rf->int_val
+                                    : 0;
+                            uint32_t child = heap_.allocate(
+                                "Landroid/graphics/drawable/Drawable;", pc_,
+                                0);
+                            heap_.set_object_field(
+                                child, "__drawable_id__",
+                                DalvikValue::make_int(want_id));
+                            if (lresid != 0)
+                                heap_.set_object_field(
+                                    child, "resid",
+                                    DalvikValue::make_int(lresid));
+                            result = DalvikValue::make_object(
+                                child,
+                                "Landroid/graphics/drawable/Drawable;");
+                            break;
+                        }
+                    }
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setId" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32 &&
+                (class_name.find("Drawable;") != std::string::npos)) {
+                heap_.set_object_field(
+                    args[0].object_id, "__drawable_id__",
+                    DalvikValue::make_int(args[1].int_val));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getId" &&
+                (class_name.find("Drawable;") != std::string::npos)) {
+                auto idf = heap_.get_object_field(args[0].object_id,
+                                                  "__drawable_id__");
+                result = DalvikValue::make_int(
+                    idf.has_value() && idf->type == DalvikType::INT32
+                        ? idf->int_val
+                        : -1);  // AOSP View.NO_ID
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             // 5. GradientDrawable state capture (AOSP GradientState setters).
             if (class_name.find("GradientDrawable;") != std::string::npos) {
                 framework::ViewShadow::GradientState st;
@@ -30472,6 +31024,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        // R-NEW-464 closeout: Resources.getLayout(int) — AOSP law
+        // (ResourcesImpl.loadXmlResourceParser): getLayout and getXml are
+        // the SAME underlying loader (resource id → ARSC file selection →
+        // APK entry bytes → binary-XML decode → K-35 XmlPullParser); the
+        // getLayout spelling is the MENU entry point — AOSP MenuInflater
+        // .inflate(menuRes, menu) calls mContext.getResources().getLayout(
+        // menuRes). With no law the parser answered null, MenuInflater's
+        // parseMenu hit XmlPullParser.getEventType on the null ref and
+        // the InflateException("Error inflating menu XML") chain killed
+        // SplashActivity.onCreate (org.fossify.clock first divergence
+        // after the R-NEW-464 EventBus fixes). Same failure contract as
+        // getXml: NotFoundException when the id resolves to nothing.
+        if ((class_name.find("Resources") != std::string::npos) &&
+            method == "getLayout" && args.size() >= 2 &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t resid = (uint32_t)args[1].int_val;
+            DalvikValue parser;
+            if (xml_parser_for_resid(resid, parser)) {
+                result = parser;
+            } else {
+                throw_deferred("Landroid/content/res/Resources$NotFoundException;",
+                               "File " + std::to_string(resid) +
+                                   " from xml type layout resource ID",
+                               "R464-GETLAYOUT-NOTFOUND");
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if ((class_name.find("Resources") != std::string::npos) &&
             method == "openRawResource" &&
             args.size() >= 2 && args[1].type == DalvikType::INT32) {
@@ -31323,6 +31904,92 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     // ────────────────────────────────────────────────────────────────────────
     // S109 ROOT-031 — PackageManager query families (AOSP never-null law).
+    // ── R-NEW-464 closeout: android.content.pm.ShortcutInfo.Builder +
+    // ShortcutManager dynamic-shortcut family (AOSP API 25 launcher
+    // shortcuts law). Builder contract:
+    //   * <init>(Context, String id) stores the receiver context + id;
+    //   * every setter (setShortLabel/setLongLabel/setIcon/setIntent/
+    //     setCategories/setExtras/...) is a FLUENT accessor — it stores
+    //     the field and returns the SAME builder (return-this law);
+    //   * build() returns the ShortcutInfo carrying the stored fields.
+    // ShortcutManager.setDynamicShortcuts/addDynamicShortcuts/
+    // updateShortcuts/removeDynamicShortcuts answer the AOSP boolean
+    // (true = accepted) and record the shortcut list on the manager
+    // object; getDynamicShortcuts returns the recorded list. The engine
+    // has no launcher UI — the shortcuts are engine-owned package state,
+    // never fake success beyond the honest record.
+    // Root-gap evidence (org.fossify.clock): MainActivity.onResume builds
+    // a "start stopwatch" shortcut; the Builder ctor was unhandled → the
+    // fluent chain hit setLongLabel on a NULL receiver → NPE at
+    // APP BOUNDARY.
+    if (class_name == "Landroid/content/pm/ShortcutInfo$Builder;") {
+        if (method == "<init>" && args.size() >= 3) {
+            if (args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0)
+                heap_.set_object_field(args[0].object_id, "ctx",
+                                       args[1]);
+            if (args[2].type == DalvikType::STRING_REF)
+                heap_.set_object_field(args[0].object_id, "id",
+                                       args[2]);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build") {
+            uint32_t info = heap_.allocate(
+                "Landroid/content/pm/ShortcutInfo;", pc_, 0);
+            for (const char* f : {"ctx", "id", "short_label", "long_label",
+                                  "icon", "intent"}) {
+                auto fv = heap_.get_object_field(args[0].object_id, f);
+                if (fv.has_value())
+                    heap_.set_object_field(info, f, *fv);
+            }
+            result = DalvikValue::make_object(
+                info, "Landroid/content/pm/ShortcutInfo;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Fluent setters: store + return this (args[0] is the receiver;
+        // args[1] the value when present).
+        if (args.size() >= 2) {
+            const std::string known[] = {"setShortLabel", "setLongLabel",
+                                         "setIcon", "setIntent",
+                                         "setCategories", "setExtras",
+                                         "setActivity", "setDisabledMessage"};
+            for (const auto& k : known) {
+                if (method != k) continue;
+                heap_.set_object_field(
+                    args[0].object_id,
+                    k.substr(3, 1) + k.substr(4),  // CamelCase → field
+                    args[1]);
+                result = DalvikValue::make_object(
+                    args[0].object_id,
+                    "Landroid/content/pm/ShortcutInfo$Builder;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    if (class_name == "Landroid/content/pm/ShortcutManager;") {
+        if (method == "setDynamicShortcuts" || method == "addDynamicShortcuts" ||
+            method == "updateShortcuts") {
+            result = DalvikValue::make_bool(true);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "removeDynamicShortcuts" ||
+            method == "removeAllDynamicShortcuts" ||
+            method == "disableShortcuts" || method == "enableShortcuts") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isRateLimitingActive") {
+            result = DalvikValue::make_bool(false);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // forkgram x8/a.a (CustomTabs browser picker) iterates
     // queryIntentActivities(intent, 0).iterator() — the method had NO
     // handler → NULL → iterator NPE. AOSP law: queryIntentActivities /
@@ -33268,6 +33935,51 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         //      objects with neither size() nor iterator() (capacity is
         //      assumed dense — Arrays.asList-like wrappers only).
         uint32_t f101_read_obj = f101_src;
+        int32_t f101_copied = 0;
+        std::vector<uint32_t> f101_elem_ids;  // object-id elements for the
+                                              // REGISTRY-side store (the
+                                              // CollectionShadow keeps its
+                                              // own state — see F-101 note
+                                              // at the write-back below)
+        // ── R-NEW-464 closeout: SHADOW-SIDE SOURCE READ (step 0) ───────
+        // In registry mode the CollectionShadow CollectionState IS the
+        // authoritative element store for plain engine-minted ArrayLists —
+        // ArrayList.add appends there and ArrayList.isEmpty/size/get answer
+        // from it (the F-101 write-back below keeps the COPY's two stores
+        // coherent; the READ side never mirrored that). EventBus 3.3.1's
+        // SubscriberMethodFinder.getMethodsAndRelease runs
+        //   new ArrayList<>(findState.subscriberMethods)
+        // where the source grew via shadow-side add — the array-field /
+        // DEX size()/iterator probes all missed (the source is not in the
+        // DEX and carries no heap array fields), the copy came back EMPTY
+        // and findSubscriberMethods threw
+        //   EventBusException("Subscriber ... has no public methods with
+        //   the @Subscribe annotation")
+        // even though 5 @Subscribe subscriber methods had just been added.
+        // OpenJDK law: ArrayList(Collection c) = c.toArray() — the source's
+        // OWN authoritative store must be consumed, whatever layer owns it.
+        if (f101_n < 0 && shadow_registry_ != nullptr) {
+            auto* f101_csh_src =
+                shadow_registry_->find_as<framework::CollectionShadow>();
+            if (f101_csh_src) {
+                auto* f101_sst =
+                    f101_csh_src->get_or_create(f101_src, /*is_map=*/false);
+                if (f101_sst && !f101_sst->elements.empty()) {
+                    f101_n = static_cast<int32_t>(f101_sst->elements.size());
+                    f101_elem_ids = f101_sst->elements;
+                    f101_copied = f101_n;
+                    for (size_t f101_i = 0; f101_i < f101_elem_ids.size();
+                         ++f101_i) {
+                        heap_.set_object_field(
+                            f101_arr,
+                            "array[" + std::to_string(f101_i) + "]",
+                            DalvikValue::make_object(
+                                f101_elem_ids[f101_i],
+                                "Ljava/lang/Object;"));
+                    }
+                }
+            }
+        }
         if (f101_n < 0 && f101_dex_src) {
             std::vector<DalvikValue> cb_args{args[1]};
             DalvikValue cb_ret;
@@ -33277,12 +33989,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 cb_ret.type == DalvikType::INT32)
                 f101_n = cb_ret.int_val;
         }
-        int32_t f101_copied = 0;
-        std::vector<uint32_t> f101_elem_ids;  // object-id elements for the
-                                              // REGISTRY-side store (the
-                                              // CollectionShadow keeps its
-                                              // own state — see F-101 note
-                                              // at the write-back below)
         if (f101_n > 0) {
             for (int32_t f101_i = 0; f101_i < f101_n; ++f101_i) {
                 DalvikValue f101_elem;
@@ -38296,6 +39002,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // its real AOSP family. Root-identity refinement, zero package
         // checks: the class label follows the inflated XML root element.
         std::string drawable_class = "Landroid/graphics/drawable/Drawable;";
+        bool is_layer_list_xml = false;
+        std::vector<std::pair<uint32_t, uint32_t>> layer_ids_resids;
         if (path.size() > 4 &&
             path.compare(path.size() - 4, 4, ".xml") == 0) {
             std::vector<uint8_t> vxml;
@@ -38304,9 +39012,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 vxml = rt13.apk().extract_entry_cached(path);
             }
             resources::AxmlParser vparser;
-            if (!vxml.empty() && vparser.parse(vxml) &&
-                vparser.root().name == "vector") {
-                drawable_class = "Landroid/graphics/drawable/VectorDrawable;";
+            if (!vxml.empty() && vparser.parse(vxml)) {
+                if (vparser.root().name == "vector") {
+                    drawable_class = "Landroid/graphics/drawable/VectorDrawable;";
+                }
+                // R-NEW-464 closeout: <layer-list> XML materializes as a
+                // REAL LayerDrawable (AOSP DrawableInflater law: root
+                // element names the class). Per-layer android:id +
+                // android:drawable refs are captured as heap fields so
+                // LayerDrawable.findDrawableByLayerId / indexOfLayerById
+                // answer from real parsed data (the app reads progress
+                // layers back by id — R8-renamed
+                // ((LayerDrawable) getDrawable(...)).findDrawableByLayerId
+                // (R.id.progress) chains NPE'd on the old bare shell).
+                if (vparser.root().name == "layer-list") {
+                    is_layer_list_xml = true;
+                    drawable_class =
+                        "Landroid/graphics/drawable/LayerDrawable;";
+                    int li = 0;
+                    for (const auto& item : vparser.root().children) {
+                        if (item.name != "item") continue;
+                        uint32_t lid = 0, lres = 0;
+                        if (const auto* a = item.attr("id", "android"))
+                            if (a->value.is_reference())
+                                lid = a->value.ref_id;
+                        if (const auto* a = item.attr("drawable", "android")) {
+                            if (a->value.is_reference())
+                                lres = a->value.ref_id;
+                        }
+                        layer_ids_resids.emplace_back(lid, lres);
+                        ++li;
+                    }
+                }
             }
         }
         uint32_t dw = heap_.allocate(drawable_class, 0, 0);
@@ -38314,6 +39051,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         dv.type = DalvikType::INT32;
         dv.int_val = resid;
         heap_.set_object_field(dw, "resid", dv);
+        // R-NEW-464 closeout: per-layer captured state (AOSP
+        // LayerDrawable.inflate writes mChildren[i] with the item's
+        // android:id + android:drawable).
+        if (is_layer_list_xml) {
+            heap_.set_object_field(
+                dw, "__layer_count__",
+                DalvikValue::make_int(
+                    (int32_t)layer_ids_resids.size()));
+            for (size_t li = 0; li < layer_ids_resids.size(); ++li) {
+                heap_.set_object_field(
+                    dw, "layer:" + std::to_string(li) + ":id",
+                    DalvikValue::make_int(
+                        (int32_t)layer_ids_resids[li].first));
+                heap_.set_object_field(
+                    dw, "layer:" + std::to_string(li) + ":resid",
+                    DalvikValue::make_int(
+                        (int32_t)layer_ids_resids[li].second));
+            }
+        }
         DalvikValue pv;
         pv.type = DalvikType::STRING_REF;
         pv.string_val = path;
@@ -40009,6 +40765,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             for (const auto& cd : dex_report_->classes) {
                 if (cd.name != referent_desc) continue;
                 auto add190 = [&](const dex::MethodInfo& md) {
+                    // R-NEW-464 closeout (OpenJDK Class.getDeclaredMethods
+                    // law): CONSTRUCTORS ARE NOT METHODS — <init> lives in
+                    // getDeclaredConstructors() and <clinit> is never
+                    // exposed. DEX marks both with ACC_CONSTRUCTOR (0x10000).
+                    // Minting them into Method[] made real consumers see
+                    // phantom entries: EventBus's subscriber scan passed the
+                    // App <init> (flags 0x10001) through the public gate and
+                    // offered it to getParameterTypes, and Modifier reads of
+                    // constructor flags have no java-language meaning.
+                    if (md.access_flags & 0x10000) return;
                     uint32_t mid = heap_.allocate(
                         "Ljava/lang/reflect/Method;", pc_, 0);
                     heap_.set_object_field(
@@ -40062,6 +40828,97 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::cerr << "[F-NEW-190] getDeclaredMethods("
                               << referent_desc << ") -> " << mids.size()
                               << " methods" << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                arr_id, "[Ljava/lang/reflect/Method;");
+            return true;
+        }
+        // R-NEW-464 closeout: Class.getMethods — OpenJDK law: PUBLIC methods
+        // of the class AND its superclasses (Object included), with
+        // interface defaults; the most-derived override wins (same
+        // signature: name + param descriptors). Deterministic order:
+        // declared publics in DEX table order first, then inherited publics
+        // walking superclasses upward; a method already emitted (name +
+        // params) is NOT re-emitted (bridge/synthetic merged too — any
+        // method whose only spelling is non-public in every class is
+        // absent by definition). Never null; empty only when nothing is
+        // public. Real-APK evidence: EventBus SubscriberMethodFinder catch
+        // (NoClassDefFoundError issue #149 workaround) falls back to
+        // getMethods when getDeclaredMethods throws — with no law the
+        // fallback answered null and the consumer's iteration died.
+        if (method == "getMethods" && !dotted.empty()) {
+            std::vector<uint32_t> mids;
+            std::vector<std::string> seen;
+            std::string cur = referent_desc;
+            int walks_guard = 0;
+            while (!cur.empty() && cur != "Ljava/lang/Object;" &&
+                   walks_guard++ < 16) {
+                bool found_def = false;
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name != cur) continue;
+                    auto add_g = [&](const dex::MethodInfo& md) {
+                        if (md.access_flags & 0x10000) return;
+                        if (!(md.access_flags & 0x1)) return;
+                        std::string key = md.name + md.descriptor;
+                        for (const auto& s : seen)
+                            if (s == key) return;
+                        seen.push_back(key);
+                        uint32_t mid = heap_.allocate(
+                            "Ljava/lang/reflect/Method;", pc_, 0);
+                        heap_.set_object_field(
+                            mid, "declaring_class",
+                            DalvikValue::make_string(cur, 0));
+                        heap_.set_object_field(
+                            mid, "method_name",
+                            DalvikValue::make_string(md.name, 0));
+                        heap_.set_object_field(
+                            mid, "method_descriptor",
+                            DalvikValue::make_string(md.descriptor, 0));
+                        heap_.set_object_field(
+                            mid, "method_idx",
+                            DalvikValue::make_int((int32_t)md.method_idx));
+                        heap_.set_object_field(
+                            mid, "__reflect_mod",
+                            DalvikValue::make_int((int32_t)md.access_flags));
+                        if (!md.return_type.empty())
+                            heap_.set_object_field(
+                                mid, "__reflect_ret",
+                                DalvikValue::make_string(md.return_type, 0));
+                        mids.push_back(mid);
+                    };
+                    for (const auto& md : cd.direct_methods) add_g(md);
+                    for (const auto& md : cd.virtual_methods) add_g(md);
+                    for (const auto& sc : dex_report_->classes) {
+                        if (sc.name == cur) {
+                            cur = sc.superclass_name;
+                            found_def = true;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                if (!found_def) break;
+            }
+            uint32_t arr_id = heap_.allocate(
+                "[Ljava/lang/reflect/Method;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int((int32_t)mids.size()));
+            for (size_t i = 0; i < mids.size(); ++i) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(mids[i],
+                                             "Ljava/lang/reflect/Method;"));
+            }
+            {
+                static thread_local uint64_t r464_gm = 0;
+                if (r464_gm < 8) {
+                    ++r464_gm;
+                    std::cerr << "[R-NEW-464] getMethods(" << referent_desc
+                              << ") -> " << mids.size() << " public methods"
+                              << std::endl;
                 }
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -42824,6 +43681,202 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // android.util.AtomicFile law (cont375 F-NEW-084 follow-on root).
+    // Oracle: AOSP frameworks/base core/java/android/util/AtomicFile.java
+    //   AtomicFile(File basePath)  → "basePath may not be null" (NPE);
+    //                                mBaseName = basePath
+    //   getBaseFile()              → mBaseName (NEVER null after a valid
+    //                                ctor — the app's null-receiver NPE at
+    //                                File.exists came from an engine-stub
+    //                                AtomicFile whose getBaseFile answered
+    //                                null: fairymahjong Lq1;.run pc=34,
+    //                                androidx DataStore file chain)
+    //   startRead()/openRead()     → FileInputStream(mBaseName); startRead
+    //                                first restores mBaseName from
+    //                                mBaseName+".bak" when the base is
+    //                                missing (crash-recovery law)
+    //   startWrite()               → FileOutputStream(mBaseName+".new")
+    //   finishWrite(str)           → close; rename .new→base; delete .bak
+    //   failWrite(str)             → close; delete .new
+    //   delete()                   → delete base and .bak
+    // Storage discipline: the base path rides on the AtomicFile heap
+    // object ("__base_path__"); streams register in the SAME open_assets_
+    // / open_writers_ maps the FileInputStream/FileOutputStream laws use,
+    // so reads answer REAL bytes and writes land REAL bytes under the
+    // per-package filesystem law (F-NEW-234).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/util/AtomicFile;") {
+        const uint32_t af_recv =
+            (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                ? args[0].object_id : 0;
+        auto af_base_path = [&](void) -> std::string {
+            if (af_recv != 0 && heap_.has_object(af_recv)) {
+                auto bp = heap_.get_object_field(af_recv, "__base_path__");
+                if (bp.has_value() && bp->type == DalvikType::STRING_REF)
+                    return bp->string_val;
+            }
+            return std::string();
+        };
+        if (method == "<init>") {
+            // args[1] = the basePath File (args[0] is the new object).
+            std::string base;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+                const auto* fobj = heap_.get(args[1].object_id);
+                if (fobj && fobj->class_descriptor == "Ljava/io/File;") {
+                    // R-NEW-346 longest-string-field law for the path.
+                    for (const auto& [fname, fval] : fobj->fields)
+                        if (fval.type == DalvikType::STRING_REF &&
+                            fval.string_val.size() > base.size())
+                            base = fval.string_val;
+                    // Preserve object identity: the same File the app passed.
+                    if (auto* af = heap_.get(af_recv))
+                        af->fields["__base_file_id__"] =
+                            DalvikValue::make_object(args[1].object_id,
+                                                     "Ljava/io/File;");
+                }
+            }
+            if (base.empty()) {
+                // AOSP law: AtomicFile(File) throws NPE on a null base —
+                // NEVER a silent stub construction.
+                throw_deferred("Ljava/lang/NullPointerException;",
+                               "Attempt to invoke constructor "
+                               "android.util.AtomicFile(File) with a null "
+                               "basePath (AOSP: basePath may not be null)",
+                               "AF-CTOR");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (auto* af = heap_.get(af_recv))
+                af->fields["__base_path__"] =
+                    DalvikValue::make_string(base, 0);
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "AF-CTOR", base, true, "AtomicFile.<init>",
+                current_class_ + "." + current_method_);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getBaseFile") {
+            // Return the SAME File object identity the ctor received when
+            // we have it; otherwise allocate a File carrying the base path
+            // (OpenJDK law: getBaseFile never null after a valid ctor).
+            uint32_t fid = 0;
+            if (af_recv != 0 && heap_.has_object(af_recv)) {
+                auto bf = heap_.get_object_field(af_recv, "__base_file_id__");
+                if (bf.has_value() && bf->type == DalvikType::OBJECT_REF &&
+                    bf->object_id != 0 && heap_.has_object(bf->object_id))
+                    fid = bf->object_id;
+            }
+            if (fid == 0) {
+                fid = heap_.allocate("Ljava/io/File;", pc_, 0);
+                if (auto* fobj = heap_.get(fid))
+                    fobj->fields["path"] =
+                        DalvikValue::make_string(af_base_path(), 0);
+            }
+            result = DalvikValue::make_object(fid, "Ljava/io/File;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "startRead" || method == "openRead") {
+            const std::string base = af_base_path();
+            if (!base.empty()) {
+                // AOSP startRead crash-recovery: base missing + .bak
+                // present → rename .bak over the base before opening.
+                std::error_code afc_ec;
+                const std::string bak = base + ".bak";
+                if (!std::filesystem::exists(base, afc_ec)) {
+                    std::error_code afr_ec;
+                    if (std::filesystem::exists(bak, afr_ec))
+                        std::filesystem::rename(bak, base, afr_ec);
+                }
+                const uint32_t sid =
+                    heap_.allocate("Ljava/io/FileInputStream;", pc_, 0);
+                open_assets_[sid] = {std::string("file:") + base, 0};
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "OPEN", base, std::filesystem::exists(base, afc_ec),
+                    std::string("AtomicFile.") + method,
+                    current_class_ + "." + current_method_);
+                DalvikValue sv;
+                sv.type = DalvikType::OBJECT_REF;
+                sv.object_id = sid;
+                sv.class_desc = "Ljava/io/FileInputStream;";
+                result = sv;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (method == "startWrite") {
+            const std::string base = af_base_path();
+            if (!base.empty()) {
+                const std::string tmp = base + ".new";
+                std::error_code afw_ec;
+                std::filesystem::create_directories(
+                    std::filesystem::path(base).parent_path(), afw_ec);
+                const uint32_t sid =
+                    heap_.allocate("Ljava/io/FileOutputStream;", pc_, 0);
+                auto& w = open_writers_[sid];
+                w.host_path = tmp;
+                w.append = false;
+                w.out.open(tmp, std::ios::binary | std::ios::trunc);
+                w.ever_opened = w.out.is_open();
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "OPEN", tmp, w.out.is_open(), "AtomicFile.startWrite",
+                    current_class_ + "." + current_method_);
+                DalvikValue sv;
+                sv.type = DalvikType::OBJECT_REF;
+                sv.object_id = sid;
+                sv.class_desc = "Ljava/io/FileOutputStream;";
+                result = sv;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (method == "finishWrite" || method == "failWrite") {
+            const std::string base = af_base_path();
+            // args[1] = the FileOutputStream to finish/fail (args[0] recv).
+            if (args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF) {
+                auto wit = open_writers_.find(args[1].object_id);
+                if (wit != open_writers_.end() && wit->second.out.is_open())
+                    wit->second.out.close();
+                if (method == "finishWrite") {
+                    std::error_code aff_ec;
+                    const std::string tmp = base + ".new";
+                    std::error_code tfx_ec;
+                    if (std::filesystem::exists(tmp, tfx_ec)) {
+                        std::filesystem::rename(tmp, base, aff_ec);
+                        std::error_code bfd_ec;
+                        std::filesystem::remove(base + ".bak", bfd_ec);
+                    }
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "WRITE", base, !aff_ec, "AtomicFile.finishWrite",
+                        current_class_ + "." + current_method_);
+                } else {
+                    std::error_code afd_ec;
+                    std::filesystem::remove(base + ".new", afd_ec);
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "delete") {
+            const std::string base = af_base_path();
+            std::error_code afd1_ec, afd2_ec;
+            std::filesystem::remove(base, afd1_ec);
+            std::filesystem::remove(base + ".bak", afd2_ec);
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "DELETE", base, true, "AtomicFile.delete",
+                current_class_ + "." + current_method_);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────

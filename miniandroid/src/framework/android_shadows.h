@@ -1495,6 +1495,10 @@ public:
             float shape_ir_ratio = -1.0f, shape_tk_ratio = -1.0f;
             // bitmap / nested xml / vector path (kinds 3/4/5)
             std::string path;
+            // R-NEW-464 closeout: android:id on the <item> (AOSP
+            // LayerDrawable.inflate → mChildren[i].mDrawable.setId(id) —
+            // findDrawableByLayerId matches this id; 0 = not set).
+            uint32_t layer_id = 0;
         };
         std::vector<BgLayer> bg_layers;         // XML layer-list items (document order)
         bool bg_layers_valid = false;
@@ -2333,6 +2337,17 @@ class CollectionShadow : public Shadow {
 public:
     struct CollectionState {
         std::vector<uint32_t> elements;  // object_ids of elements
+        // ── R-NEW-464 closeout: STRING-ELEMENT FIDELITY LAW ─────────────
+        // ArrayList<String>/List<String> carries real strings — the old
+        // add() law pushed arg_as_object(0)=0 for STRING args, so every
+        // iterated element read back null (r464 synthetic probe: an
+        // EventBus-shape scan accumulated 11 rows and StringBuilder.append
+        // printed 11 × "null"). Parallel stores keep `elements` (and every
+        // existing consumer) size-coherent: kind 1 = object id, kind 2 =
+        // string (OpenJDK ArrayList<Object> heterogeneous container law —
+        // iteration order = insertion order for both).
+        std::vector<uint8_t> elem_kinds;      // 1 = object, 2 = string
+        std::vector<std::string> elem_strings;
         std::map<std::string, uint32_t> map_entries;  // key → value object_id
         // EXP-071 Phase 7: Store string values for HashMap.put(key, String).
         // The original map_entries only stores object_ids, but many HashMap
