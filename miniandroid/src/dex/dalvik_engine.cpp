@@ -25903,8 +25903,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (method == "query" ||
                     method == "acquireContentProviderClient" ||
                     method == "acquireUnstableContentProviderClient") {
-                    // Documented null-provider contract — the trace row above
-                    // keeps it observable (no silent null).
+                    // ── N-18 (issue #375 §11): AOSP ContentResolver law —
+                    // ActivityThread.acquireProvider throws
+                    // IllegalArgumentException("Unknown authority " + auth)
+                    // for an authority no package installed; ContentResolver.
+                    // query surfaces it (CrudHelper path). The old
+                    // "documented null-provider contract" was a
+                    // silent-wrong: callers gating on a null cursor took
+                    // absent-provider branches instead of the AOSP
+                    // failure path (probe row PROV-NEG).
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "Unknown authority: " + uauth,
+                                   "PROVIDER-DISPATCH");
                     result = DalvikValue::make_null();
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     return true;

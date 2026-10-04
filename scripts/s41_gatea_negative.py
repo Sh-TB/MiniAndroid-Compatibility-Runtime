@@ -167,6 +167,23 @@ def main():
         f"probe ID-04={v}",
         "PASS" if v == "PASS" else "FAIL", res)
 
+    # ── N-18 unknown authority: ContentResolver honest IAE ────────────
+    v = probe_lines.get("PROV-NEG", "MISSING")
+    rec("N-18", "unknown-authority", "query content://com.probe.nosuch.authority/x",
+        "AOSP ActivityThread.acquireProvider: IllegalArgumentException "
+        "(Unknown authority) — never a fabricated cursor",
+        f"probe PROV-NEG={v}",
+        "PASS" if v == "PASS" else "FAIL", res)
+
+    # ── N-19 PendingIntent FLAG_NO_CREATE: no fabricated senders ──────
+    v = probe_lines.get("PI-NEG", "MISSING")
+    rec("N-19", "pendingintent-identity",
+        "PendingIntent.getActivity(FLAG_NO_CREATE) for an unregistered intent",
+        "AOSP PendingIntent.java: NO_CREATE returns null when no matching "
+        "record exists — never a fabricated sender",
+        f"probe PI-NEG={v}",
+        "PASS" if v == "PASS" else "FAIL", res)
+
     with open(f"{NEG}/negative_tests.json", "w") as f:
         json.dump(rows, f, indent=1)
     fails = [r for r in rows if r["verdict"] != "PASS"]
