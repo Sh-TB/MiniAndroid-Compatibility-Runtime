@@ -22150,15 +22150,28 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
             av.class_desc = "[Ljava/lang/String;";
             seed(key, av);
         };
-        seed_array("Landroid/os/Build;.SUPPORTED_ABIS",
-                   {"arm64-v8a", "armeabi-v7a", "armeabi"});
-        seed_array("Landroid/os/Build;.SUPPORTED_64_BIT_ABIS", {"arm64-v8a"});
-        seed_array("Landroid/os/Build;.SUPPORTED_32_BIT_ABIS",
-                   {"armeabi-v7a", "armeabi"});
+        // ── #375 §5 CAPABILITY-HONESTY LAW (FALSE_ADVERTISED_MATRIX
+        // FA-01): SUPPORTED_ABIS must not advertise non-executable ABIs
+        // unless binary translation exists (AOSP ro.product.cpu.abilist is
+        // the device's EXECUTABLE abi list — the app-install ABI matcher
+        // and every app-side ABI gate read it as such). The previous seed
+        // ([arm64-v8a, armeabi-v7a, armeabi] — an arm64 device persona)
+        // advertised ARM native execution that the x86_64 host profile
+        // does not have. HONEST seed = the host-executable ABI only
+        // (executable_abis=[x86_64] in ENVIRONMENT_PROFILE ENV-005);
+        // CPU_ABI2 = "" (AOSP: deprecated, commonly empty on API 21+).
+        // App-visible behavior for arm-only APKs is UNCHANGED: the install
+        // ABI law still extracts their ARM lib tree for provenance and a
+        // load attempt reports the real dlopen refusal (NAT-05 shape).
+        // Non-empty list keeps the F-NEW-190 face green (WhatsApp's ABI
+        // utility only requires a non-empty list).
+        seed_array("Landroid/os/Build;.SUPPORTED_ABIS", {"x86_64"});
+        seed_array("Landroid/os/Build;.SUPPORTED_64_BIT_ABIS", {"x86_64"});
+        seed_array("Landroid/os/Build;.SUPPORTED_32_BIT_ABIS", {});
         seed("Landroid/os/Build;.CPU_ABI",
-             DalvikValue::make_string("arm64-v8a", 0));
+             DalvikValue::make_string("x86_64", 0));
         seed("Landroid/os/Build;.CPU_ABI2",
-             DalvikValue::make_string("armeabi-v7a", 0));
+             DalvikValue::make_string("", 0));
     }
     // AOSP: Settings.Secure.ANDROID_ID == the column name "android_id".
     seed("Landroid/provider/Settings$Secure;.ANDROID_ID", DalvikValue::make_string("android_id", 0));
