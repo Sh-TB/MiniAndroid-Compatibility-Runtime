@@ -133,3 +133,58 @@ reStartGame → Thread.start → tick → snake position changes → Canvas redr
 - `docs/knowledge/laws/*.json` — canonical knowledge (only VERIFIED is law)
 - `docs/compatibility/CAPABILITY_MATRIX.md` — regenerated from records
 - Validator gate before any commit: `python3 tools/validate_compatibility_graph.py`
+
+---
+
+# v2 (2026-10-04) — machine-readable product surface (issue #371 §D)
+
+The workflow above is the LAW. This section is the OPERATIONAL SURFACE an
+external agent (e.g. Hermes) drives without reading MiniAndroid source.
+
+## Machine-readable manifest
+
+`skill_manifest.json` (same directory) defines 10 operations — apk_intake,
+prerequisites, full_inspection, install, run, observe, first_divergence,
+classify_white_black, evidence_bundle, uninstall — each with its exact CLI,
+return schema, and error contract. It also pins the deterministic status
+vocabulary (DONE/IMPLEMENTED/TESTED/OBSERVED/PARTIAL/BLOCKED/PENDING/
+SUPERSEDED), the frame-verdict vocabulary (REAL_APP_CONTENT /
+DEFAULT_BACKGROUND_ONLY / NO_ROOT / PARTIAL_MARGINAL / WHITE_BLANK), and the
+L0–L6 execution-level definitions.
+
+## Self-test (adherence + portability proof)
+
+```
+python3 scripts/skill_selftest.py
+```
+
+Drives every manifest operation against the live runtime using ONLY the
+documented CLIs (no MiniAndroid source imports): intake → prerequisites →
+negative/malformed contract → install identity → run by installed identity →
+frame-truth observe → 3-way white/black cause classification → run-pair
+determinism → provenance bundle → uninstall + NOT_INSTALLED honesty →
+manifest self-containment. Exit 0 = the skill is usable as documented.
+Latest result: 13/13 PASS (see `docs/execution-skill/selftest_report.json`).
+
+## Environment pre-flight (issue #373)
+
+Before any run, `pkginspect --apk <path> --what prerequisites` returns the
+APK requirement model (minSdk/targetSdk/features/permissions/ABIs + ELF
+machines/webview) against the environment profile
+(`docs/ENVIRONMENT_PROFILE.json`, ENV-001..010). The `nativeAbiVerdict`
+field discriminates the redroid-class failure (advertised-but-not-executable
+ABI) from ordinary runtime roots — an ARM-only APK INSTALLS and then stops
+at first native use; that is an environment/translation boundary, never a
+rendering bug. Full matrix: `docs/ENV_PREREQUISITE_MATRIX.jsonl`.
+
+## White/black/partial classification (WS-002)
+
+1. prerequisites clean? → if NOT: environment-prerequisite mismatch (quote
+   `environmentMismatches`; recommended next probe included).
+2. prerequisites clean + `frame_analysis.verdict != REAL_APP_CONTENT` →
+   ordinary runtime root; follow `first_missing_stage` then the run log's
+   first `EXC-PROPAGATE`/`SYNTH-EXC` chain.
+3. `verdict == REAL_APP_CONTENT` → real content; proceed to input/state
+   evidence for L4+.
+Never relabel a verdict without new runtime evidence; the classifier is
+frozen (21-P0-6).

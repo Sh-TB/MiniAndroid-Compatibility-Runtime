@@ -4,7 +4,7 @@
 
 - **APK:** `/home/z/my-project/upload/canonical_apks/dooz_23_toplevel.apk`
 - **Package:** `io.github.yamin8000.dooz`
-- **Status:** **SUCCESS** ✅
+- **Status:** **FAILURE** ❌
 
 ## Metrics
 
@@ -15,14 +15,14 @@
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
 | Errors | 17 |
-| Warnings | 0 |
+| Warnings | 1 |
 
 ## API Trace Summary
 
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 3089 |
+| `ExecutionEngine` | 3090 |
 | `TraceEngine` | 3 |
 | `Unknown` | 17 |
 
@@ -32,7 +32,7 @@
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 3053 |
 | `Unknown.Unknown` | 17 |
-| `ExecutionEngine.stage_capture_output` | 6 |
+| `ExecutionEngine.stage_capture_output` | 7 |
 | `ExecutionEngine.trace_files` | 5 |
 | `ExecutionEngine.stage_render_frame` | 4 |
 | `DalvikEngine.execute_apk` | 3 |
@@ -175,5 +175,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261002-013323-4390`
-- **Generated:** 2026-10-02 01:33:27 UTC
+- **Session ID:** `EXP-001-20261004-035646-2645`
+- **Generated:** 2026-10-04 03:56:48 UTC
