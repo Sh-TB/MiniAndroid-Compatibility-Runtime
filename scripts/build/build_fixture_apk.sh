@@ -95,7 +95,7 @@ if [ "${#JAVA_FILES[@]}" -eq 0 ]; then
   echo "build_fixture_apk: no .java sources under $SRC_DIR/src" >&2
   exit 2
 fi
-if ! java -jar "$ECJ_JAR" \
+if ! java -Xmx900m -XX:MaxMetaspaceSize=256m -jar "$ECJ_JAR" \
     -source 8 -target 8 -proc:none \
     -cp "$STUBS_JAR" \
     "${RJAVA_ARGS[@]}" \
@@ -128,7 +128,7 @@ with zipfile.ZipFile(jar_path, "w", zipfile.ZIP_DEFLATED) as z:
 print(f"      jar entries: {len(files)}")
 PY
 # Assert the dex exists afterwards.
-if ! java -cp "$D8_JAR" com.android.tools.r8.D8 \
+if ! java -Xmx1100m -XX:MaxMetaspaceSize=256m -cp "$D8_JAR" com.android.tools.r8.D8 \
     --release \
     --lib "$STUBS_JAR" \
     --output "$WORK/dex" \

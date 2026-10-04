@@ -130,7 +130,7 @@ if cached "semantic pass3 bridge (expect 66)"; then
     skip "link semantic_pass3_bridge_test"; skip "semantic pass3 bridge (expect 66)"
 else
 for t in semantic_long_cmp_conv_test semantic_switch_parse_neg_test semantic_pass3_bridge_test; do
-    g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o "build/$t" \
+    g++ -std=c++17 -w -g -O2 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o "build/$t" \
         "tests/$t.cpp" build/apk/*.o build/dex/*.o build/runtime/*.o \
         build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
         build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -145,14 +145,14 @@ gate "semantic long/cmp/conv (expect 32)" $?
 gate "semantic switch parse-neg (expect 25)" $?
 ./build/semantic_pass3_bridge_test > /tmp/battery_p3b.out 2>&1
 gate "semantic pass3 bridge (expect 66)" $?
-tail -1 /tmp/battery_lcc.out /tmp/battery_swpn.out /tmp/battery_p3b.out 2>/dev/null | grep RESULT
+tail -n 1 /tmp/battery_lcc.out /tmp/battery_swpn.out /tmp/battery_p3b.out 2>/dev/null | grep RESULT
 fi
 
 # MUTF-8 battery
 if cached "mutf8 string-pool battery (expect 14)"; then
     skip "link mutf8_test"; skip "mutf8 string-pool battery (expect 14)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/mutf8_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/mutf8_test \
     tests/mutf8_string_pool_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -161,7 +161,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/mutf
 gate "link mutf8_test" $?
 ./build/mutf8_test > /tmp/battery_mutf8.out 2>&1
 gate "mutf8 string-pool battery (expect 14)" $?
-tail -1 /tmp/battery_mutf8.out
+tail -n 1 /tmp/battery_mutf8.out
 fi
 
 # S98 text-domain micro-gap fence (MG-051/073/080-085): links the REAL
@@ -174,7 +174,7 @@ fi
 if cached "s98 text laws (expect 21)"; then
     skip "link s98_text_law_test"; skip "s98 text laws (expect 21)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_text_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s98_text_law_test \
     tests/s98_text_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -183,7 +183,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_
 gate "link s98_text_law_test" $?
 ./build/s98_text_law_test > /tmp/battery_s98text.out 2>&1
 gate "s98 text laws (expect 21)" $?
-tail -1 /tmp/battery_s98text.out
+tail -n 1 /tmp/battery_s98text.out
 fi
 
 # S98 layout/geometry micro-gap fence (MG-123 scroll offsets +
@@ -194,7 +194,7 @@ fi
 if cached "s98 scroll/transform laws (expect 13)"; then
     skip "link s98_scroll_transform_law_test"; skip "s98 scroll/transform laws (expect 13)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_scroll_transform_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s98_scroll_transform_law_test \
     tests/s98_scroll_transform_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -203,7 +203,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_
 gate "link s98_scroll_transform_law_test" $?
 ./build/s98_scroll_transform_law_test > /tmp/battery_s98scroll.out 2>&1
 gate "s98 scroll/transform laws (expect 13)" $?
-tail -1 /tmp/battery_s98scroll.out
+tail -n 1 /tmp/battery_s98scroll.out
 fi
 
 # S98 storage-domain micro-gap fence (MG-171..183 SharedPreferences
@@ -214,7 +214,7 @@ fi
 if cached "s98 prefs laws (expect 15)"; then
     skip "link s98_prefs_law_test"; skip "s98 prefs laws (expect 15)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_prefs_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s98_prefs_law_test \
     tests/s98_prefs_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -223,7 +223,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/s98_
 gate "link s98_prefs_law_test" $?
 ./build/s98_prefs_law_test > /tmp/battery_s98prefs.out 2>&1
 gate "s98 prefs laws (expect 15)" $?
-tail -1 /tmp/battery_s98prefs.out
+tail -n 1 /tmp/battery_s98prefs.out
 fi
 
 # ── S106 micro-gap fence wave: GIF disposal + drawable/state-list/vector +
@@ -236,37 +236,37 @@ S106_LIBS='-lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -
 if cached "s106 gif laws (expect 17)"; then
     skip "link s106_gif_law_test"; skip "s106 gif laws (expect 17)"
 else
-g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_gif_law_test \
+g++ -std=c++17 -w -g -O2 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s106_gif_law_test \
     tests/s106_gif_law_test.cpp $S106_OBJS $S106_LIBS \
     > /tmp/battery_s106gif.log 2>&1
 gate "link s106_gif_law_test" $?
 ./build/s106_gif_law_test > /tmp/battery_s106gif.out 2>&1
 gate "s106 gif laws (expect 17)" $?
-tail -1 /tmp/battery_s106gif.out
+tail -n 1 /tmp/battery_s106gif.out
 fi
 
 if cached "s106 text2 laws (expect 14)"; then
     skip "link s106_text2_law_test"; skip "s106 text2 laws (expect 14)"
 else
-g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_text2_law_test \
+g++ -std=c++17 -w -g -O2 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s106_text2_law_test \
     tests/s106_text2_law_test.cpp $S106_OBJS $S106_LIBS \
     > /tmp/battery_s106text2.log 2>&1
 gate "link s106_text2_law_test" $?
 ./build/s106_text2_law_test > /tmp/battery_s106text2.out 2>&1
 gate "s106 text2 laws (expect 14)" $?
-tail -1 /tmp/battery_s106text2.out
+tail -n 1 /tmp/battery_s106text2.out
 fi
 
 if cached "s106 canvas/input/audio laws (expect 21)"; then
     skip "link s106_cia_law_test"; skip "s106 canvas/input/audio laws (expect 21)"
 else
-g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_cia_law_test \
+g++ -std=c++17 -w -g -O2 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s106_cia_law_test \
     tests/s106_cia_law_test.cpp $S106_OBJS $S106_LIBS \
     > /tmp/battery_s106cia.log 2>&1
 gate "link s106_cia_law_test" $?
 ./build/s106_cia_law_test > /tmp/battery_s106cia.out 2>&1
 gate "s106 canvas/input/audio laws (expect 21)" $?
-tail -1 /tmp/battery_s106cia.out
+tail -n 1 /tmp/battery_s106cia.out
 fi
 
 # S106 drawables: aapt2-built fixture APK (vector/selector/layer-list/
@@ -283,14 +283,14 @@ elif [ -d "$S106_DRW_SRC" ]; then
         "$S106_DRW_SRC" /tmp/battery_s106drw/s106_drawables.apk \
         > /tmp/battery_s106drw/build.log 2>&1
     gate "s106 drawables fixture build (aapt2)" $?
-g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_drawables_law_test \
+g++ -std=c++17 -w -g -O2 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s106_drawables_law_test \
     tests/s106_drawables_law_test.cpp $S106_OBJS $S106_LIBS \
     > /tmp/battery_s106drw.log 2>&1
 gate "link s106_drawables_law_test" $?
 ./build/s106_drawables_law_test /tmp/battery_s106drw/s106_drawables.apk \
     > /tmp/battery_s106drw.out 2>&1
 gate "s106 drawables laws (expect 39)" $?
-tail -1 /tmp/battery_s106drw.out
+tail -n 1 /tmp/battery_s106drw.out
 else
     gate "s106 drawables fixture build (aapt2)" 1
     echo "  (fixture missing: $S106_DRW_SRC)"
@@ -300,7 +300,7 @@ fi
 if cached "s106 layout/net laws (expect 11)"; then
     skip "link s106_layout_net_law_test"; skip "s106 layout/net laws (expect 11)"
 else
-g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o build/s106_layout_net_law_test \
+g++ -std=c++17 -w -g -O2 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/s106_layout_net_law_test \
     tests/s106_layout_net_law_test.cpp $S106_OBJS $S106_LIBS \
     > /tmp/battery_s106net.log 2>&1
 gate "link s106_layout_net_law_test" $?
@@ -312,14 +312,14 @@ sleep 1
 RC=$?
 pkill -f "http.server 18099" 2>/dev/null
 gate "s106 layout/net laws (expect 11)" $RC
-tail -1 /tmp/battery_s106net.out
+tail -n 1 /tmp/battery_s106net.out
 fi
 
 # P1 resource-configuration regression (generic default/v16/v21 law)
 if cached "resource-config selection law (expect 48)"; then
     skip "link resource_config_selection_test"; skip "resource-config selection law (expect 48)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_config_selection_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/resource_config_selection_test \
     tests/resource_config_selection_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -328,14 +328,14 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
 gate "link resource_config_selection_test" $?
 ./build/resource_config_selection_test > /tmp/battery_rescfg.out 2>&1
 gate "resource-config selection law (expect 48)" $?
-tail -1 /tmp/battery_rescfg.out
+tail -n 1 /tmp/battery_rescfg.out
 fi
 
 # GOLDEN-03 §3/§4/§6/§7/§8/§9: canonical id/resolution/TypedValue law
 if cached "resource core law (expect 42)"; then
     skip "link resource_core_law_test"; skip "resource core law (expect 42)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_core_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/resource_core_law_test \
     tests/resource_core_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -344,14 +344,14 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
 gate "link resource_core_law_test" $?
 ./build/resource_core_law_test > /tmp/battery_reslaw.out 2>&1
 gate "resource core law (expect 42)" $?
-tail -1 /tmp/battery_reslaw.out
+tail -n 1 /tmp/battery_reslaw.out
 fi
 
 # GOLDEN-03 §14: hostile resource-table safety (named deterministic failures)
 if cached "resource hostile safety (expect 18)"; then
     skip "link resource_hostile_test"; skip "resource hostile safety (expect 18)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_hostile_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/resource_hostile_test \
     tests/resource_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -360,7 +360,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
 gate "link resource_hostile_test" $?
 timeout 120 ./build/resource_hostile_test > /tmp/battery_hostile.out 2>&1
 gate "resource hostile safety (expect 18)" $?
-tail -1 /tmp/battery_hostile.out
+tail -n 1 /tmp/battery_hostile.out
 fi
 
 # G04/G05 §8/§9: MeasureSpec + LinearLayout weight law battery
@@ -376,7 +376,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/linear_layout_law_test \
 gate "link linear_layout_law_test" $?
 ./build/linear_layout_law_test > /tmp/battery_lllaw.out 2>&1
 gate "LinearLayout/MeasureSpec law (expect 24)" $?
-tail -1 /tmp/battery_lllaw.out
+tail -n 1 /tmp/battery_lllaw.out
 fi
 
 # G10: measurement/layout law battery (orientation default, superclass-chain
@@ -393,7 +393,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/g10_layout_law_test \
 gate "link g10_layout_law_test" $?
 ./build/g10_layout_law_test > /tmp/battery_g10law.out 2>&1
 gate "G10 measurement/layout law (expect 23)" $?
-tail -1 /tmp/battery_g10law.out
+tail -n 1 /tmp/battery_g10law.out
 fi
 
 # G11: real-DEX constructor + custom-hierarchy law battery (descriptor gate,
@@ -411,7 +411,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/g11_ctor_law_test \
 gate "link g11_ctor_law_test" $?
 ./build/g11_ctor_law_test > /tmp/battery_g11law.out 2>&1
 gate "G11 ctor/Factory/addView law (expect 37)" $?
-tail -1 /tmp/battery_g11law.out
+tail -n 1 /tmp/battery_g11law.out
 fi
 
 # F-082 (S55): ViewAnimator displayed-child law battery (clamp law,
@@ -430,7 +430,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/view_animator_law_test \
 gate "link view_animator_law_test" $?
 ./build/view_animator_law_test > /tmp/battery_f082law.out 2>&1
 gate "F-082 ViewAnimator law (expect 15)" $?
-tail -1 /tmp/battery_f082law.out
+tail -n 1 /tmp/battery_f082law.out
 fi
 
 # G04/G05 §16: hostile drawable/image/layout safety battery
@@ -446,7 +446,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Itests -o build/g04_hostile_test \
 gate "link g04_hostile_test" $?
 timeout 60 ./build/g04_hostile_test > /tmp/battery_g04h.out 2>&1
 gate "G04 hostile safety (expect 24)" $?
-tail -1 /tmp/battery_g04h.out
+tail -n 1 /tmp/battery_g04h.out
 fi
 
 # G06 §4/§5: canonical input pipeline law battery (touch dispatcher +
@@ -454,7 +454,7 @@ fi
 if cached "G06 input pipeline law (expect 45)"; then
     skip "link input_pipeline_law_test"; skip "G06 input pipeline law (expect 45)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/input_pipeline_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/input_pipeline_law_test \
     tests/input_pipeline_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -463,7 +463,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/inpu
 gate "link input_pipeline_law_test" $?
 timeout 120 ./build/input_pipeline_law_test > /tmp/battery_g06law.out 2>&1
 gate "G06 input pipeline law (expect 45)" $?
-tail -1 /tmp/battery_g06law.out
+tail -n 1 /tmp/battery_g06law.out
 fi
 
 # S129 (R-NEW-425): CAP-INPUT-108 VelocityTracker law battery — AOSP LSQ2
@@ -472,7 +472,7 @@ fi
 if cached "S129 velocity tracker law (expect 17)"; then
     skip "link velocity_tracker_law_test"; skip "S129 velocity tracker law (expect 17)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/velocity_tracker_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/velocity_tracker_law_test \
     tests/velocity_tracker_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -481,7 +481,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/velo
 gate "link velocity_tracker_law_test" $?
 timeout 120 ./build/velocity_tracker_law_test > /tmp/battery_s129vt.out 2>&1
 gate "S129 velocity tracker law (expect 17)" $?
-tail -1 /tmp/battery_s129vt.out
+tail -n 1 /tmp/battery_s129vt.out
 fi
 
 # S129 (R-NEW-426): CAP-INPUT-110 TouchDelegate law battery — View.java
@@ -490,7 +490,7 @@ fi
 if cached "S129 touch delegate law (expect 23)"; then
     skip "link touch_delegate_law_test"; skip "S129 touch delegate law (expect 23)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/touch_delegate_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/touch_delegate_law_test \
     tests/touch_delegate_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -499,7 +499,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/touc
 gate "link touch_delegate_law_test" $?
 timeout 120 ./build/touch_delegate_law_test > /tmp/battery_s129td.out 2>&1
 gate "S129 touch delegate law (expect 23)" $?
-tail -1 /tmp/battery_s129td.out
+tail -n 1 /tmp/battery_s129td.out
 fi
 
 # S129 real-DEX input-law fixture (CAP-INPUT-108 + CAP-INPUT-110): aapt2+ECJ+D8
@@ -560,7 +560,7 @@ fi
 if cached "G07 lifecycle law (expect 25)"; then
     skip "link lifecycle_law_test"; skip "G07 lifecycle law (expect 25)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/lifecycle_law_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/lifecycle_law_test \
     tests/lifecycle_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -569,14 +569,14 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/life
 gate "link lifecycle_law_test" $?
 timeout 120 ./build/lifecycle_law_test > /tmp/battery_g07law.out 2>&1
 gate "G07 lifecycle law (expect 25)" $?
-tail -1 /tmp/battery_g07law.out
+tail -n 1 /tmp/battery_g07law.out
 fi
 
 # G06-G08 §18: hostile input/lifecycle/queue-safety battery
 if cached "G06-G08 hostile safety (expect 16)"; then
     skip "link g06g08_hostile_test"; skip "G06-G08 hostile safety (expect 16)"
 else
-g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/g06g08_hostile_test \
+g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include -o build/g06g08_hostile_test \
     tests/g06g08_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
     build/diagnostics/*.o build/resources/*.o build/renderer/*.o build/gles/*.o \
     build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o build/webview/*.o build/quickjs/*.o build/jni/*.o \
@@ -585,7 +585,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/g06g
 gate "link g06g08_hostile_test" $?
 timeout 120 ./build/g06g08_hostile_test > /tmp/battery_h18.out 2>&1
 gate "G06-G08 hostile safety (expect 16)" $?
-tail -1 /tmp/battery_h18.out
+tail -n 1 /tmp/battery_h18.out
 fi
 
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
@@ -597,7 +597,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
 gate "link encoded_value_law_test" $?
 ./build/encoded_value_law_test > /tmp/battery_ev.out 2>&1
 gate "encoded_value AOSP law (expect 18)" $?
-tail -1 /tmp/battery_ev.out
+tail -n 1 /tmp/battery_ev.out
 fi
 
 # MASTER-2 §6: shadow registry architectural invariant (one canonical
@@ -616,7 +616,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
 gate "link shadow_registry_invariant_test" $?
 ./build/shadow_registry_invariant_test > /tmp/battery_sri.out 2>&1
 gate "§6 shadow registry invariant (expect 21)" $?
-tail -1 /tmp/battery_sri.out
+tail -n 1 /tmp/battery_sri.out
 fi
 
 # goldens
@@ -852,7 +852,7 @@ elif [ -d "$M3_FIX_SRC" ]; then
     gate "M3 fixture build (aapt2+ECJ+D8)" $?
     (cd "$MA" && unzip -o -q /tmp/battery_m3sw/m3_style_weight.apk \
         resources.arsc -d /tmp/battery_m3sw) \
-        && g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include \
+        && g++ -std=c++17 -w -g -O1 -Wl,--no-keep-memory -Isrc -Ithird_party/nlohmann_json/include \
             -o build/m3_arsc_style_law_test tests/m3_arsc_style_law_test.cpp \
             build/apk/*.o build/dex/*.o build/runtime/*.o build/diagnostics/*.o \
             build/resources/*.o build/renderer/*.o build/gles/*.o build/fonts/*.o \
@@ -1175,7 +1175,7 @@ elif [ -d "$F020_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f020_pixel_golden.py" /tmp/battery_f020/out/screenshot.ppm \
         > /tmp/battery_f020/pixel.log 2>&1 || rc=1
     gate "F-020 snapshot-law pixel golden (5 bands)" $rc
-    tail -1 /tmp/battery_f020/pixel.log
+    tail -n 1 /tmp/battery_f020/pixel.log
 else
     gate "F-020 snapshot-law fixture build (ECJ+D8)" 1
     gate "F-020 snapshot-law pixel golden (5 bands)" 1
@@ -1208,7 +1208,7 @@ elif [ -d "$F024_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f024_pixel_golden.py" /tmp/battery_f024/out/screenshot.ppm \
         > /tmp/battery_f024/pixel.log 2>&1 || rc=1
     gate "F-024 EOF-law pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f024/pixel.log
+    tail -n 1 /tmp/battery_f024/pixel.log
 else
     gate "F-024 EOF-law fixture build (ECJ+D8)" 1
     gate "F-024 EOF-law pixel golden (7 bands)" 1
@@ -1243,7 +1243,7 @@ elif [ -d "$F026_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f020_executor_pixel_golden.py" /tmp/battery_f026/out/screenshot.ppm \
         > /tmp/battery_f026/pixel.log 2>&1 || rc=1
     gate "F-025 executor pixel golden (4 bands)" $rc
-    tail -1 /tmp/battery_f026/pixel.log
+    tail -n 1 /tmp/battery_f026/pixel.log
 else
     gate "F-025 executor fixture build (ECJ+D8)" 1
     gate "F-025 executor pixel golden (4 bands)" 1
@@ -1278,7 +1278,7 @@ elif [ -d "$F026_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f026_pixel_golden.py" /tmp/battery_f026sql/out/screenshot.ppm \
         > /tmp/battery_f026sql/pixel.log 2>&1 || rc=1
     gate "F-026+F-027 Room/SQLite pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f026sql/pixel.log
+    tail -n 1 /tmp/battery_f026sql/pixel.log
 else
     gate "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)" 1
     gate "F-026+F-027 Room/SQLite pixel golden (7 bands)" 1
@@ -1312,7 +1312,7 @@ elif [ -d "$F028_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f028_pixel_golden.py" /tmp/battery_f028/out/screenshot.ppm \
         > /tmp/battery_f028/pixel.log 2>&1 || rc=1
     gate "F-028 float-law pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f028/pixel.log
+    tail -n 1 /tmp/battery_f028/pixel.log
 else
     gate "F-028 float-law fixture build (ECJ+D8)" 1
     gate "F-028 float-law pixel golden (7 bands)" 1
@@ -1348,7 +1348,7 @@ elif [ -d "$F030_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f030_pixel_golden.py" /tmp/battery_f030/out/screenshot.ppm \
         > /tmp/battery_f030/pixel.log 2>&1 || rc=1
     gate "F-030 zero-law pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f030/pixel.log
+    tail -n 1 /tmp/battery_f030/pixel.log
 else
     gate "F-030 zero-law fixture build (ECJ+D8)" 1
     gate "F-030 zero-law pixel golden (7 bands)" 1
@@ -1382,7 +1382,7 @@ elif [ -d "$F040_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f040_pixel_golden.py" /tmp/battery_f040/out/screenshot.ppm \
         > /tmp/battery_f040/pixel.log 2>&1 || rc=1
     gate "F-040 arrays-fill pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f040/pixel.log
+    tail -n 1 /tmp/battery_f040/pixel.log
 else
     gate "F-040 arrays-fill fixture build (ECJ+D8)" 1
     gate "F-040 arrays-fill pixel golden (7 bands)" 1
@@ -1416,7 +1416,7 @@ elif [ -d "$F044_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f044_pixel_golden.py" /tmp/battery_f044/out/screenshot.ppm \
         > /tmp/battery_f044/pixel.log 2>&1 || rc=1
     gate "F-044 return-descriptor pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f044/pixel.log
+    tail -n 1 /tmp/battery_f044/pixel.log
 else
     gate "F-044 return-descriptor fixture build (ECJ+D8)" 1
     gate "F-044 return-descriptor fixture run (rc=0 SUCCESS)" 1
@@ -1451,7 +1451,7 @@ elif [ -d "$F050_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f050_pixel_golden.py" /tmp/battery_f050/out/screenshot.ppm \
         > /tmp/battery_f050/pixel.log 2>&1 || rc=1
     gate "F-050 frame-pump pixel golden (7 bands)" $rc
-    tail -1 /tmp/battery_f050/pixel.log
+    tail -n 1 /tmp/battery_f050/pixel.log
 else
     gate "F-050 frame-pump fixture build (ECJ+D8)" 1
     gate "F-050 frame-pump fixture run (rc=0 SUCCESS)" 1
@@ -1500,7 +1500,7 @@ elif [ -d "$F074_FIX_SRC" ]; then
     python3 "$REPOSCRIPTS/verify/f074_pixel_golden.py" /tmp/battery_f074/out/screenshot.ppm \
         > /tmp/battery_f074/pixel.log 2>&1 || rc=1
     gate "F-074 super-run pixel golden (6 bands)" $rc
-    tail -1 /tmp/battery_f074/pixel.log
+    tail -n 1 /tmp/battery_f074/pixel.log
 else
     gate "F-074 super-run fixture build (ECJ+D8)" 1
     gate "F-074 super-run fixture run (rc=0 SUCCESS)" 1

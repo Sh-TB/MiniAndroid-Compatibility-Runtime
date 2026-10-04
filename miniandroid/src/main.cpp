@@ -1101,6 +1101,22 @@ int main(int argc, char* argv[]) {
             config.max_wall_seconds = static_cast<uint64_t>(std::stoul(argv[++i]));
             std::cout << "[*] MAX-SECONDS enabled (" << config.max_wall_seconds
                       << " s wall-clock soft budget)\n";
+        } else if (arg == "--max-instructions" && i + 1 < argc) {
+            // F-NEW-084 closeout (cont375): session INSTRUCTION BUDGET knob.
+            // This is a RESOURCE budget (like --max-seconds), NOT the
+            // semantic loop-visit guard — the 50k stale-branch forward-
+            // progress law is untouched. Rationale: fairymahjong's
+            // Lw4;.<init> tile-atlas scan is a legitimately bounded
+            // computation that needs >100M interpreter instructions
+            // (progress proven: branch operands advance, full-body PC
+            // cycling 145..178/257, RSS grows with real decode; recorded
+            // [PROGRESS] evidence). The default 100M budget must remain
+            // for ordinary runs; long-running games opt in explicitly.
+            config.max_instructions = static_cast<uint64_t>(
+                std::stoull(argv[++i]));
+            std::cout << "[*] MAX-INSTRUCTIONS enabled ("
+                      << config.max_instructions
+                      << " instruction budget; loop-visit law unchanged)\n";
         } else if (arg == "--click-count" && i + 1 < argc) {
             // DEMO-CLICK-SEQUENCE: dispatch N sequential clicks (round-robin
             // over all clickable views), re-rendering and saving a PNG frame
