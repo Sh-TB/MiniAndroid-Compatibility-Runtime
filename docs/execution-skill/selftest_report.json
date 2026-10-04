@@ -27,7 +27,7 @@
   "op": "OP-3",
   "name": "install + installed identity = source identity",
   "pass": true,
-  "detail": "installed sha16=356740d91ea6ff34"
+  "detail": "installed sha16=05d8bcd387e3028d"
  },
  {
   "op": "OP-4",
@@ -39,7 +39,7 @@
   "op": "OP-5",
   "name": "observe (frame verdict + pixel census)",
   "pass": true,
-  "detail": "verdict=VIEWTREE_NO_APP_PIXELS owned=395548 ops=0"
+  "detail": "verdict=VIEWTREE_NO_APP_PIXELS owned=398270 ops=0"
  },
  {
   "op": "OP-6",
@@ -57,7 +57,7 @@
   "op": "OP-8",
   "name": "3-run determinism law (run1==run2)",
   "pass": true,
-  "detail": "sha16=173b6cd32f77a303"
+  "detail": "sha16=09f2f10abc62400e"
  },
  {
   "op": "OP-9",

@@ -1,6 +1,7 @@
 package com.probe.gatea;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -166,6 +167,34 @@ public class MainActivity extends Activity {
                     + GateProvider.insertCalls + " name="
                     + GateProvider.lastInsertName);
         } catch (Throwable t) { fail("PROV-02", t); }
+        // ── N-18 (issue #375 §11): UNKNOWN AUTHORITY honest denial ──
+        // OpenJDK/AOSP ContentResolver.getContentProvider: an authority no
+        // package installed throws IllegalArgumentException("Unknown auth
+        // ...") — never a fabricated cursor, never a silent null.
+        try {
+            Cursor c = getContentResolver().query(
+                Uri.parse("content://com.probe.nosuch.authority/x"),
+                null, null, null, null);
+            if (c == null)
+                fail("PROV-NEG", "query returned null (silent-wrong)");
+            else { c.close(); fail("PROV-NEG", "query returned a cursor"); }
+        } catch (IllegalArgumentException iae) {
+            ok("PROV-NEG", "unknown authority → IAE: "
+               + String.valueOf(iae.getMessage()).substring(0,
+                 Math.min(60, String.valueOf(iae.getMessage()).length())));
+        } catch (Throwable t) { fail("PROV-NEG", t); }
+        // ── N-19 (issue #375 §11): PENDINGINTENT FLAG_NO_CREATE honesty ──
+        // AOSP PendingIntentRecord resolution: FLAG_NO_CREATE returns NULL
+        // when no matching PendingIntent was ever registered — never a
+        // fabricated record.
+        try {
+            Intent ghost = new Intent("com.probe.gatea.NEVER_SENT");
+            PendingIntent pi = PendingIntent.getActivity(
+                this, 4242, ghost, PendingIntent.FLAG_NO_CREATE);
+            if (pi == null)
+                ok("PI-NEG", "FLAG_NO_CREATE for unregistered intent → null");
+            else fail("PI-NEG", "fabricated PendingIntent " + pi);
+        } catch (Throwable t) { fail("PI-NEG", t); }
         try {
             Cursor c = getContentResolver().query(
                 Uri.parse("content://com.probe.gatea.gateprovider/notes"),
@@ -264,8 +293,13 @@ public class MainActivity extends Activity {
                 Uri.parse("content://no.such.authority/x"),
                 null, null, null, null);
             if (c == null)
-                ok("PROV-09", "query unknown authority → documented null");
+                fail("PROV-09", "query unknown authority → null (silent-wrong)");
             else fail("PROV-09", "non-null: " + c);
+        } catch (IllegalArgumentException iae) {
+            // N-18 law update (#375 §11): AOSP ContentResolver throws
+            // IAE "Unknown authority" — the old "documented null" was a
+            // silent-wrong and is now the failure contract.
+            ok("PROV-09", "query unknown authority → IAE (AOSP law)");
         } catch (Throwable t) { fail("PROV-09", t); }
 
         // ══ SERVICES (#371 PHASE B5 — UPP-006 probe-justified) ══════════

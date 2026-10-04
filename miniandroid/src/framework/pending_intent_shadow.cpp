@@ -18,6 +18,21 @@ CallResult PendingIntentShadow::record_for(Record rec) {
         return CallResult::handled_object(it->second.object_id,
                                           "Landroid/app/PendingIntent;");
     }
+    // ── N-19 (issue #375 §11): FLAG_NO_CREATE HONESTY LAW (AOSP
+    // PendingIntent.java: "Flag indicating that if the described
+    // PendingIntent does not already exist, then simply return null
+    // instead of creating it."). The old law fabricated a record for
+    // every get*() call — FLAG_NO_CREATE semantics were ignored and
+    // apps gating on a null return (alarm-cancel guards, polling
+    // existence checks) took wrong branches. AOSP: no record + NO_CREATE
+    // → null. Never a fabricated sender.
+    static const int32_t kFlagNoCreate = 0x20000000;
+    if (rec.flags & kFlagNoCreate) {
+        std::cerr << "[PENDING-INTENT] NO_CREATE for unregistered "
+                  << rec.kind << " rc=" << rec.request_code
+                  << " -> null (AOSP law)" << std::endl;
+        return CallResult::handled_null();
+    }
     uint32_t obj = heap_->allocate("Landroid/app/PendingIntent;");
     rec.object_id = obj;
     // Mirror the record fields onto the object (identity evidence).

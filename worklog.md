@@ -6671,3 +6671,21 @@ Work Log:
 
 Stage Summary:
 - The platform's capability advertisement is now machine-audited (FA matrix committed) and the one found false claim (ARM ABI advertisement) is fixed with zero regression. ENVIRONMENT_PROFILE and Build statics agree with the executable truth.
+
+---
+Task ID: cont375-BASE-COMPLETE-3
+Agent: Super Z (main agent)
+Task: #375 §11 SECURITY NEGATIVES extension to 19 — two new silent-wrong behaviors found and fixed.
+
+Work Log:
+- Extended the §11 negative suite to the 19-item contract: N-18 (unknown-authority URI denial) + N-19 (PendingIntent FLAG_NO_CREATE identity) with two new probe rows (PROV-NEG, PI-NEG) in gate_a_probe.
+- BOTH new probes exposed real silent-wrong behavior on first run:
+  1. N-18: ContentResolver.query on an uninstalled authority returned a NULL cursor ("documented null-provider contract") instead of the AOSP IllegalArgumentException("Unknown authority: ...") — callers gating on null took absent-provider branches instead of the AOSP failure path. FIXED: the engine now throws the deferred IAE (dalvik_engine.cpp PROVIDER-DISPATCH).
+  2. N-19: PendingIntent.getActivity(FLAG_NO_CREATE) FABRICATED a sender for an unregistered intent. AOSP PendingIntent.java: NO_CREATE returns null when no matching record exists. FIXED: record_for returns handled_null when the NO_CREATE bit is set and no record exists (pending_intent_shadow.cpp).
+- PROV-09 (the probe's own unknown-authority row) was updated to the AOSP IAE contract — it had asserted the old wrong "documented null" behavior.
+- gate_a_probe.apk rebuilt with rows (sha 05d8bcd387e3028d); Gate A probe now 97 PASS / 0 FAIL / 2 INFO (was 95/0/2 — +2 negative rows).
+- NEGATIVE TESTS: 19/19 PASS.
+- Full regression at the same binary 8df3fb7e03460372: anchors 5/5x3 BYTE-IDENTICAL, battery 124 ALL PASS, goldens 4/4, reinstall 8/8, multiapp 5/5, loading probe ALL PASS, uninstall ALL PASS, skill 13/13, NATX 10/10x3 byte-identical (4d7761f744a7d5b7).
+
+Stage Summary:
+- The negative suite now covers all §11 rows including URI-grant/unknown-authority and PendingIntent identity; two silent-wrong behaviors eliminated (unknown-authority null; fabricated PendingIntent). Zero drift.

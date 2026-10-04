@@ -5,13 +5,15 @@ GATEA|ID-04|PASS|versionName=0.7.0 providers=1 auth=com.probe.gatea.gateprovider
 GATEA|PROV-01|PASS|provider-ran=1 attachCtx=1 auth=com.probe.gatea.gateprovider
 GATEA|PROV-PREP|PASS|served-file len=17
 GATEA|PROV-02|PASS|insert→uri=Landroid/net/Uri;@38 providerCalls=1 name=alpha
+GATEA|PROV-NEG|PASS|unknown authority → IAE: Unknown authority: com.probe.nosuch.authority
+GATEA|PI-NEG|PASS|FLAG_NO_CREATE for unregistered intent → null
 GATEA|PROV-03|PASS|cursor rows=1 cols=3 name:value=alpha:41
 GATEA|PROV-04|PASS|update rows=1 providerValue=99
 GATEA|PROV-05|PASS|delete rows=1 tableAfter=0 (state change)
 GATEA|PROV-06|PASS|openFileDescriptor bytes==direct (17B)
 GATEA|PROV-07|PASS|getType=vnd.probe.note parseId=41
-GATEA|PROV-08|PASS|IllegalArgument honest: Ljava/lang/IllegalArgumentException;@85
-GATEA|PROV-09|PASS|query unknown authority → documented null
+GATEA|PROV-08|PASS|IllegalArgument honest: Ljava/lang/IllegalArgumentException;@90
+GATEA|PROV-09|PASS|query unknown authority → IAE (AOSP law)
 GATEA|SVC-01|PASS|startx2 → onCreate=1 onStartCommand=2 startId=2
 GATEA|SVC-02|PASS|bindService → onServiceConnected binder=live
 GATEA|SVC-03|PASS|unbind → service STAYS (started-by-startService)
@@ -19,7 +21,7 @@ GATEA|SVC-04|PASS|stopService → onDestroy (destroys=1)
 GATEA|BCAST-01|PASS|manifest receiver delivered onReceive ctx=bound
 GATEA|BCAST-02|PASS|dynamic receiver delivered (1)
 GATEA|BCAST-03|PASS|unregister → no further delivery
-GATEA|BCAST-04|PASS|IllegalArgument honest: Ljava/lang/IllegalArgumentException;@109
+GATEA|BCAST-04|PASS|IllegalArgument honest: Ljava/lang/IllegalArgumentException;@115
 GATEA|DE-01|PASS|de-files=/data/user_de/0/com.probe.gatea/files written=8B isolated-from-CE=true
 GATEA|DIR-01|PASS|/data/data/com.probe.gatea/files exists=true
 GATEA|DIR-02|PASS|/data/data/com.probe.gatea/cache
@@ -53,31 +55,31 @@ GATEA|IO-06|PASS|available=17
 GATEA|IO-07|PASS|write(int)=77 read=77 match=true
 GATEA|IO-08|PASS|fileList has stream_io.bin=true
 GATEA|IO-09|PASS|delete true-then-false=true/false
-GATEA|FD-01|PASS|offset=92113 declaredLen=75 offOk=true lenOk=true
+GATEA|FD-01|PASS|offset=92841 declaredLen=75 offOk=true lenOk=true
 GATEA|FD-02|PASS|afd-stream-bytes=75 equal-to-direct=true
-GATEA|FD-03|PASS|fd=Ljava/io/FileDescriptor;@206
+GATEA|FD-03|PASS|fd=Ljava/io/FileDescriptor;@212
 GATEA|FD-04|PASS|fd=6 dup=7 fdOk=true
 GATEA|FD-05|PASS|closed; fd after close=-1
 GATEA|FD-06|PASS|text-asset openFd declaredLen=25 (AOSP: works only when STORED)
-GATEA|FD-07|INFO|raw openRawResourceFd -> Ljava/io/FileNotFoundException;@218 (AOSP: FNFE for compressed raw entries)
+GATEA|FD-07|INFO|raw openRawResourceFd -> Ljava/io/FileNotFoundException;@224 (AOSP: FNFE for compressed raw entries)
 GATEA|ASSET-01|PASS|list-root=[gate_stored.png, gate_text.txt, nested] nameLens=15,13,6,
 GATEA|ASSET-02|PASS|list(nested)=[sub.txt]
-GATEA|ASSET-03|PASS|Ljava/lang/String;@224
-GATEA|ASSET-04|PASS|Ljava/lang/String;@229
-GATEA|ASSET-05|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@235
+GATEA|ASSET-03|PASS|Ljava/lang/String;@230
+GATEA|ASSET-04|PASS|Ljava/lang/String;@235
+GATEA|ASSET-05|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@241
 GATEA|RES-01|PASS|app_name id=0x7f040000
 GATEA|RES-02|PASS|Gate A Probe tag-roundtrip=true
-GATEA|RES-03|PASS|Ljava/lang/String;@243
-GATEA|RES-04|PASS|NotFound honest: Landroid/content/res/Resources$NotFoundException;@245
+GATEA|RES-03|PASS|Ljava/lang/String;@249
+GATEA|RES-04|PASS|NotFound honest: Landroid/content/res/Resources$NotFoundException;@251
 GATEA|IMG-01|PASS|resource-bmp=8x8
 GATEA|IMG-02|PASS|file-bmp=8x8
 GATEA|IMG-03|PASS|bytes-bmp=8x8
 GATEA|PREF-01|PASS|commit=true
-GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@259
+GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@265
 GATEA|PREF-03|PASS|fresh-instance k_int=-42 contains=true
 GATEA|PREF-06|PASS|restart_counter=1
 GATEA|PREF-04|PASS|removed=true afterClear=0
-GATEA|DB-01|PASS|rows=1 last=row-1791140957500233388 isOpen=true
+GATEA|DB-01|PASS|rows=1 last=row-1791141819263535555 isOpen=true
 GATEA|DB-02|PASS|databaseList=[gatea.db] has-gatea=true
 GATEA|DB-03|PASS|helper-db=true name=helper.db
 GATEA|CFG-01|PASS|locale default wins (-zh-rCN/-land unreachable)
@@ -85,7 +87,7 @@ GATEA|CFG-02|PASS|default wins (-night unreachable at NIGHT_NO)
 GATEA|CFG-03|PASS|no-match falls back to default config
 GATEA|CFG-04|PASS|density best-match picked xhdpi 32px variant
 GATEA|CFG-05|PASS|font resource id=0x7f020000 TTF-magic=true
-GATEA|NAT-01|PASS|UnsatisfiedLink honest: Ljava/lang/UnsatisfiedLinkError;@282
+GATEA|NAT-01|PASS|UnsatisfiedLink honest: Ljava/lang/UnsatisfiedLinkError;@288
 GATEA|NAT-02|PASS|nativeLibraryDir=/data/app/com.probe.gatea/lib/x86_64
 GATEA|NAT-03|PASS|nativeLibraryDir=/data/app/com.probe.gatea/lib/x86_64 (extraction-backed, host-executable ABI)
 GATEA|NAT-04|PASS|loadLibrary(probe) real-load success (dlopen + JNI_OnLoad)
@@ -93,5 +95,5 @@ GATEA|NAT-05|PASS|ULE not-found shape: dlopen failed: library "gatea_nosuch_lib"
 GATEA|ISO-01|PASS|cross-package exists()=false isolated=true
 GATEA|ISO-02|PASS|traversal exists()=false
 GATEA|ISO-03|PASS|host /etc/passwd exists()=false
-GATEA|ISO-04|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@296
-GATEA|IO-10|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@299
+GATEA|ISO-04|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@302
+GATEA|IO-10|PASS|FileNotFound honest: Ljava/io/FileNotFoundException;@305
