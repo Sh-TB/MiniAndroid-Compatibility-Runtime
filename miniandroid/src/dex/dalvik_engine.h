@@ -813,6 +813,32 @@ public:
     
     // EXP-042 Phase 1: cap the allocation log ring buffer.
     void set_allocation_log_cap(size_t cap) { allocation_log_cap_ = cap; }
+
+    // ── F-NEW-251 (CONT-7 §13A) — SHARED FIELD-IDENTITY RESOLVER ──────────
+    // LAW: every heap instance-field access that bypasses the interpreter
+    // (shadow hooks: Atomic*FieldUpdater family, future consumers) MUST land
+    // in the SAME storage slot the interpreter's iput/iget use — the S134
+    // F-NEW-160 qualified key "<declarer>-><name>" for DEX-declared fields.
+    // The engine installs a resolver; the heap applies it centrally so every
+    // consumer is fixed at once (no per-shadow key logic to drift).
+    // Resolver contract: (receiver runtime class, bare field name) → storage
+    // key; returns "" = keep the bare key (engine-synthetic fields:
+    // "ordinal", "array[i]", "__array_length__", framework-owned objects,
+    // or any name that is not a DEX-declared instance field).
+    using FieldKeyResolver = std::function<std::string(
+        const std::string& class_desc, const std::string& bare_name)>;
+    void set_field_key_resolver(FieldKeyResolver resolver) {
+        field_key_resolver_ = std::move(resolver);
+    }
+    // Bare-name guard shared by get/set: synthetic/engine shapes never
+    // participate in qualified resolution.
+    static bool is_resolvable_bare_name(const std::string& name) {
+        if (name.empty()) return false;
+        if (name.find("->") != std::string::npos) return false;  // qualified
+        if (name.rfind("__", 0) == 0) return false;              // engine meta
+        if (name.find("array[") != std::string::npos) return false; // arrays
+        return true;
+    }
     
     uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
         HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
@@ -890,6 +916,19 @@ public:
         
         DalvikValue val = it->second.get_field(field_name);
         if (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) {
+            // F-NEW-251: a bare-name miss on a DEX-declared field falls back
+            // to the interpreter's qualified slot — one logical field, one
+            // storage identity, regardless of which layer reads it.
+            if (field_key_resolver_ && is_resolvable_bare_name(field_name)) {
+                const std::string qualified =
+                    field_key_resolver_(it->second.class_descriptor, field_name);
+                if (!qualified.empty() && qualified != field_name) {
+                    val = it->second.get_field(qualified);
+                    if (val.type != DalvikType::UNINITIALIZED &&
+                        val.type != DalvikType::REGISTER_UNSET)
+                        return val;
+                }
+            }
             return std::nullopt;
         }
         return val;
@@ -900,7 +939,18 @@ public:
         if (it == objects_.end()) {
             return false;
         }
-        it->second.set_field(field_name, value);
+        // F-NEW-251: a bare-name write to a DEX-declared field MUST land in
+        // the interpreter's qualified slot (the Atomic*FieldUpdater family
+        // previously forked a parallel bare slot and the semaphore/mutex
+        // accounting split-brained — dooz Lek1 evidence).
+        std::string key = field_name;
+        if (field_key_resolver_ && is_resolvable_bare_name(field_name)) {
+            const std::string qualified =
+                field_key_resolver_(it->second.class_descriptor, field_name);
+            if (!qualified.empty() && qualified != field_name)
+                key = qualified;
+        }
+        it->second.set_field(key, value);
         return true;
     }
 
@@ -930,6 +980,7 @@ private:
     uint64_t alloc_sequence_;
     json allocation_log_;
     size_t allocation_log_cap_;  // EXP-042 Phase 1: 0 = unbounded.
+    FieldKeyResolver field_key_resolver_;  // F-NEW-251 shared field identity
 };
 
 // ============================================================================

@@ -1,0 +1,121 @@
+[
+ {
+  "app": "2048 (golden)",
+  "status": "PATH-NOT-FOUND"
+ },
+ {
+  "app": "dooz (anchor)",
+  "path": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+  "sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+  "native_libs": 8,
+  "abi_tree": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "elf_machine": [
+   "183(ELF64)",
+   "3(ELF32)",
+   "40(ELF32)"
+  ],
+  "law001_class": "MIXED",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "microtimer (anchor)",
+  "path": "upload/canonical_apks/dubrowgn.microtimer_8.apk",
+  "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+  "native_libs": 0,
+  "abi_tree": [],
+  "elf_machine": [],
+  "law001_class": "PURE_DEX",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "unote (anchor)",
+  "path": "upload/canonical_apks/app.varlorg.unote_30.apk",
+  "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+  "native_libs": 0,
+  "abi_tree": [],
+  "elf_machine": [],
+  "law001_class": "PURE_DEX",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "opencalc (anchor)",
+  "path": "upload/opencalculator_53.apk",
+  "sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+  "native_libs": 0,
+  "abi_tree": [],
+  "elf_machine": [],
+  "law001_class": "PURE_DEX",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "chess jwtc (anchor)",
+  "path": "upload/chess_jwtc_298.apk",
+  "sha256": "3245b9ec35f6c1df771c418ac91ec792b5e056fb37e1d391e607b614f1a283b4",
+  "native_libs": 4,
+  "abi_tree": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "elf_machine": [
+   "183(ELF64)",
+   "3(ELF32)",
+   "40(ELF32)",
+   "62(ELF64)"
+  ],
+  "law001_class": "MIXED",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "FairyMahjong",
+  "status": "PATH-NOT-FOUND"
+ },
+ {
+  "app": "Fossify Clock",
+  "status": "PATH-NOT-FOUND"
+ },
+ {
+  "app": "HelloWorld (golden)",
+  "status": "PATH-NOT-FOUND"
+ },
+ {
+  "app": "MiniCraft (golden)",
+  "path": "upload/s86_games/build_minicraft/minicraft_v1.0_vc1.apk",
+  "sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
+  "native_libs": 0,
+  "abi_tree": [],
+  "elf_machine": [],
+  "law001_class": "PURE_DEX",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "Snake Deluxe (golden)",
+  "path": "upload/s72_w4_apks/snake_v1.0_vc1.apk",
+  "sha256": "54cf48a947f9b69061cfa792e1a6759e4093f709377786ec9c427b9495a954cd",
+  "native_libs": 0,
+  "abi_tree": [],
+  "elf_machine": [],
+  "law001_class": "PURE_DEX",
+  "law001_verdict": "IN_SCOPE"
+ },
+ {
+  "app": "raumballer",
+  "status": "PATH-NOT-FOUND"
+ },
+ {
+  "app": "sudokusolver",
+  "path": "upload/sudoku_secuso_101.apk",
+  "sha256": "1aff917f4ac9952bd956f2b19589787b015decc23b4c13268d19f1437c68b5b3",
+  "native_libs": 0,
+  "abi_tree": [],
+  "elf_machine": [],
+  "law001_class": "PURE_DEX",
+  "law001_verdict": "IN_SCOPE"
+ }
+]
