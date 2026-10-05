@@ -2,127 +2,9 @@
  {
   "fixture": "f01_color",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f01_color/screenshot.png",
-  "asserts": [
-   {
-    "label": "band1 red",
-    "at": [
-     540,
-     240
-    ],
-    "expected": [
-     255,
-     0,
-     0
-    ],
-    "actual": [
-     255,
-     0,
-     0
-    ],
-    "ok": true
-   },
-   {
-    "label": "band2 green",
-    "at": [
-     540,
-     720
-    ],
-    "expected": [
-     0,
-     255,
-     0
-    ],
-    "actual": [
-     0,
-     255,
-     0
-    ],
-    "ok": true
-   },
-   {
-    "label": "band3 blue",
-    "at": [
-     540,
-     1200
-    ],
-    "expected": [
-     0,
-     0,
-     255
-    ],
-    "actual": [
-     0,
-     0,
-     255
-    ],
-    "ok": true
-   },
-   {
-    "label": "band4 black",
-    "at": [
-     540,
-     1680
-    ],
-    "expected": [
-     0,
-     0,
-     0
-    ],
-    "actual": [
-     0,
-     0,
-     0
-    ],
-    "ok": true
-   },
-   {
-    "label": "band1 edge-left",
-    "at": [
-     5,
-     478
-    ],
-    "expected": [
-     255,
-     0,
-     0
-    ],
-    "actual": [
-     255,
-     0,
-     0
-    ],
-    "ok": true
-   },
-   {
-    "label": "band2 edge-left (boundary@480)",
-    "at": [
-     5,
-     482
-    ],
-    "expected": [
-     0,
-     255,
-     0
-    ],
-    "actual": [
-     0,
-     255,
-     0
-    ],
-    "ok": true
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "60967ee86d1f9f888c354a148cf73773ec251dfe29f4d67160dbbbca22955c8f",
-  "nonwhite": 2073600,
-  "bbox": [
-   0,
-   0,
-   1079,
-   1919
-  ]
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f03_alpha",
@@ -216,51 +98,16 @@
  {
   "fixture": "f04_text",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f04_text/screenshot.png",
-  "asserts": [
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "nonwhite in (0, 0, 600, 300) = 14248 (min 200)"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "texts=['Hello 12345'] expected~'Hello 12345'"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "e4c44e669fb553c77322944ef5234678ca37e05e5e56b80f48aed6d1c145450c",
-  "nonwhite": 14929,
-  "bbox": [
-   10,
-   18,
-   618,
-   98
-  ]
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f05_persian",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f05_persian/screenshot.png",
-  "asserts": [
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "nonwhite in (0, 0, 900, 500) = 24218 (min 100)"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "5155e7ed5e078ccd25a2a393d2fddb8aae1426233a1c58ee1e2e0dc69df73deb",
-  "nonwhite": 24218,
-  "bbox": [
-   0,
-   18,
-   734,
-   246
-  ]
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f11_linear",
@@ -527,111 +374,9 @@
  {
   "fixture": "f14_relative",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f14_relative/screenshot.png",
-  "asserts": [
-   {
-    "label": "anchor top-right red",
-    "at": [
-     930,
-     150
-    ],
-    "expected": [
-     255,
-     0,
-     0
-    ],
-    "actual": [
-     255,
-     0,
-     0
-    ],
-    "ok": true
-   },
-   {
-    "label": "below+alignParentLeft green",
-    "at": [
-     150,
-     450
-    ],
-    "expected": [
-     0,
-     255,
-     0
-    ],
-    "actual": [
-     0,
-     255,
-     0
-    ],
-    "ok": true
-   },
-   {
-    "label": "toRightOf blue",
-    "at": [
-     450,
-     450
-    ],
-    "expected": [
-     0,
-     0,
-     255
-    ],
-    "actual": [
-     0,
-     0,
-     255
-    ],
-    "ok": true
-   },
-   {
-    "label": "centerInParent cyan",
-    "at": [
-     540,
-     960
-    ],
-    "expected": [
-     0,
-     255,
-     255
-    ],
-    "actual": [
-     0,
-     255,
-     255
-    ],
-    "ok": true
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "View at (780,0,300,300)"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "View at (0,300,300,300)"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "View at (300,300,200,200)"
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "View at (340,760,400,400)"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "95115e108144e91e728a6c2f3471f2984e88ae8279cc55504f4f13ee7911c877",
-  "nonwhite": 380000,
-  "bbox": [
-   0,
-   0,
-   1079,
-   1159
-  ]
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f31_resources",
@@ -681,82 +426,16 @@
  {
   "fixture": "f21_button",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f21_button/screenshot.png",
-  "asserts": [
-   {
-    "label": "bg white top-left",
-    "at": [
-     100,
-     100
-    ],
-    "expected": [
-     255,
-     255,
-     255
-    ],
-    "actual": [
-     255,
-     255,
-     255
-    ],
-    "ok": true
-   },
-   {
-    "label": "default Button fill at center (Material default)",
-    "at": [
-     540,
-     960
-    ],
-    "expected": [
-     111,
-     168,
-     220
-    ],
-    "actual": [
-     111,
-     168,
-     220
-    ],
-    "ok": true
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "changed_px=1584 state_changed=True"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "393f7bcbdf2c95126b08f34131f2939846549868879d9b12f601192d00da1a18",
-  "nonwhite": 74860,
-  "bbox": [
-   312,
-   818,
-   764,
-   1076
-  ]
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f27_nav",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f27_nav/screenshot.png",
-  "asserts": [
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "changed_px=2073273 state_changed=True"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "7980817663207a0b7024ae293523de9464038c074ee0def157900362213d7bb4",
-  "nonwhite": 2073600,
-  "bbox": [
-   0,
-   0,
-   1079,
-   1919
-  ]
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f38_identity",
@@ -805,55 +484,9 @@
  {
   "fixture": "f06_invisible",
   "screenshot": "/home/z/my-project/docs/evidence/foundation/fixtures/f06_invisible/screenshot.png",
-  "asserts": [
-   {
-    "label": "INVISIBLE view must not draw (A4+F-124)",
-    "at": [
-     10,
-     10
-    ],
-    "expected": [
-     255,
-     255,
-     255
-    ],
-    "actual": [
-     255,
-     255,
-     255
-    ],
-    "ok": true
-   },
-   {
-    "label": "INVISIBLE view area stays white",
-    "at": [
-     540,
-     960
-    ],
-    "expected": [
-     255,
-     255,
-     255
-    ],
-    "actual": [
-     255,
-     255,
-     255
-    ],
-    "ok": true
-   },
-   {
-    "label": "_c",
-    "ok": true,
-    "detail": "View at (0,0,1080,800)"
-   }
-  ],
-  "status": "PASS",
-  "width": 1080,
-  "height": 1920,
-  "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
-  "nonwhite": 0,
-  "bbox": null
+  "asserts": [],
+  "status": "NO_VISUAL_PROOF",
+  "error": "screenshot.png missing"
  },
  {
   "fixture": "f18_lltop",
@@ -1548,21 +1181,21 @@
    },
    {
     "label": "_c",
-    "ok": true,
-    "detail": "engine.log contains: [A7] application label resolved through ARSC: \"F54 LabelProo"
+    "ok": false,
+    "detail": "engine.log missing"
    },
    {
     "label": "_c",
-    "ok": true,
-    "detail": "engine.log contains: [A7b] icon @0x"
+    "ok": false,
+    "detail": "engine.log missing"
    },
    {
     "label": "_c",
-    "ok": true,
-    "detail": "engine.log contains: DECODED"
+    "ok": false,
+    "detail": "engine.log missing"
    }
   ],
-  "status": "PASS",
+  "status": "FAIL",
   "width": 1080,
   "height": 1920,
   "screenshot_sha256": "9f0bb2bef165c2988c6cc2bfbf92347cef00cdfc12a191935cbacdc69e1a463d",
