@@ -1,0 +1,141 @@
+{
+ "schema": "MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.1",
+ "apk_path": "/home/z/my-project/native_probe_apk_fixture.apk",
+ "apk_sha256_16": "ec1c48836afad84d",
+ "verdict": "RUNTIME_ROOT",
+ "prerequisites": {
+  "package": "com.probe.nativelib",
+  "min_sdk": 24,
+  "target_sdk": 34,
+  "permissions": [],
+  "features": [],
+  "abis": [
+   "x86"
+  ],
+  "activities": 2,
+  "services": 0,
+  "receivers": 0,
+  "providers": 0,
+  "gles_version": null,
+  "parse": "OK",
+  "dex_entries": [
+   "classes.dex"
+  ],
+  "lib_abis": [
+   "x86_64"
+  ],
+  "has_resources_arsc": true,
+  "env": {
+   "schema": "MINIANDROID_ENVIRONMENT_PROFILE/1.0",
+   "generated_at": "2026-10-04T05:28:28Z",
+   "source_head": "59c57519ea376690c4fbe6a688d3a7160d4e3a17",
+   "binary_sha16": "4c01757e8f11c8a0",
+   "ENV-001_api_level": {
+    "sdk_int": 34,
+    "version_name": "14",
+    "codename": "REL",
+    "source": "dalvik_engine.cpp seed_framework_device_statics (Build.VERSION.SDK_INT=34)",
+    "evidence": "EXT-01 HelloWorldSelfAware AndroidInfo branch (pre-O avoided); battery F-stages"
+   },
+   "ENV-002_device_profile": {
+    "manufacturer": "MiniAndroid",
+    "model": "MiniAndroid",
+    "device": "miniandroid",
+    "product": "miniandroid",
+    "hardware": "miniandroid",
+    "fingerprint": "MiniAndroid/miniandroid/miniandroid:14/MINI.20260905/0:userdebug/test-keys",
+    "android_id": "6f1c3a9d2e5b4780 (deterministic, Rule 12)"
+   },
+   "ENV-003_screen": {
+    "default_density": "420dpi (xhdpi)",
+    "default_size": "1080x1920",
+    "orientation": "portrait",
+    "refresh_rate": "fixed virtual clock",
+    "source": "CFG probe + density-matrix oracle (11/11) + frame bounds 1080x1920"
+   },
+   "ENV-004_ram_storage": {
+    "ram": "host-bound (no ActivityManager memory pressure simulation)",
+    "storage": "host-bound data-root tree; internal/external/DE/user_de fences proven",
+    "source": "#370 \u00a7B storage probes; DE-01"
+   },
+   "ENV-005_cpu_abi": {
+    "host_arch": "x86_64",
+    "advertised_abis": [
+     "x86_64"
+    ],
+    "executable_abis": [
+     "x86_64"
+    ],
+    "native_bridge": false,
+    "abi_selection_law": "install prefers lib/x86_64 when present (host-executable); mixed APKs (x86_64 + ARM) stay in scope with the host-executable ABI selected; ARM-only APKs never reach install/launch under LAW-001 (ABI_OUT_OF_SCOPE SKIP recorded first)",
+    "s2_native_execution": "dlopen/JNI_OnLoad/dlsym/SystemV-thunk; NATX-01..10 10/10 x3 (fib=610)",
+    "advertised_abis_note": "#375 \u00a75 FA-01 fix (commit post-07cdde2f): Build.SUPPORTED_ABIS previously advertised [arm64-v8a, armeabi-v7a, armeabi] \u2014 an arm64 device persona with NO translation. Honest seed = [x86_64] (the host-executable ABI). ARM-only APKs still extract their lib tree (install ABI law, main.cpp kAbiOrder) and honest dlopen refusal on load.",
+    "scope_law": "LAW-001 FIRST TEST LAW (2026-10-06, owner directive): every loaded APK must be host-executable \u2014 pure-DEX (no native libs, ABI-neutral) or shipping x86/x86_64 native trees. An APK whose lib/ trees contain no x86/x86_64 ABI (ARM32/ARM64/other only) is OUT OF CURRENT SCOPE: the gate records ABI_OUT_OF_SCOPE (SKIP) BEFORE install/launch and it is NEVER counted as a runtime failure. ARM is deferred, not deleted; ABI translation may become a separate future phase. Law text: CONSTITUTION_V2.md LAW-001; gate: scripts/unknown_apk_preflight.py (16-verdict contract 1.1)."
+   },
+   "ENV-006_graphics": {
+    "backend": "PortableGL (software rasterizer)",
+    "gles_max_version": 2,
+    "vulkan": false,
+    "egl_facade": "JSR-239 EGL/GLES facade (checkGL20 PASS \u2014 tictactoedeluxe evidence)",
+    "framebuffer": "1080x1920 RGBA software framebuffer"
+   },
+   "ENV-007_media": {
+    "decoders": [
+     "png",
+     "jpeg",
+     "gif (replay law)",
+     "webp",
+     "mp3 (mpg123)",
+     "wav/sndfile"
+    ],
+    "audio_engine": true,
+    "codec_service": "not emulated (no MediaCodec API surface)"
+   },
+   "ENV-008_hardware": {
+    "touchscreen": "PRESENT (real input pipeline: TouchDispatcher AOSP claim law)",
+    "camera": "ABSENT",
+    "gps": "ABSENT",
+    "telephony": "ABSENT",
+    "bluetooth": "ABSENT",
+    "nfc": "ABSENT",
+    "microphone": "ABSENT",
+    "accelerometer": "EMULATED-DEFAULT",
+    "wifi": "EMULATED-DEFAULT"
+   },
+   "ENV-009_machine_readable": "docs/ENVIRONMENT_PROFILE.json (this file) + pkginspect prerequisites section",
+   "ENV-010_profile_sha16": "56e6347116942bfc"
+  }
+ },
+ "environment_matches": {
+  "host_executable_abis": [
+   "x86_64"
+  ],
+  "apk_abis": [
+   "x86_64"
+  ],
+  "host_api": 34,
+  "apk_min_sdk": 24,
+  "apk_target_sdk": 34
+ },
+ "install": "OK",
+ "launch": "BUDGET_STOPPED",
+ "first_divergence": {
+  "kind": "uncaught_exception",
+  "method": "Lcom/probe/nativelib/MainActivity;.runProbe",
+  "pc": 618,
+  "detail": "[SYNTH-EXC] S2-NATIVE (deferred): Ljava/lang/UnsatisfiedLinkError; (No implementation found for Lcom/probe/nativelib/MainActivity$NativeMissing;.callMissingSymbol()V (tried Java_com_probe_nativelib_MainActivity$NativeMissing_callMissingSymbol, RegisterNatives)) method=Lcom/probe/nativelib/MainActivi"
+ },
+ "blocker": null,
+ "is_environment_prerequisite": false,
+ "evidence": {
+  "run_output": "/tmp/pf_o2rzxp37/out"
+ },
+ "launch_detail": "[*] MAX-SECONDS enabled (60 s wall-clock soft budget)\n[*] INSTALLED-PACKAGE MODE: com.probe.nativelib\n[*] codePath: /tmp/pf_o2rzxp37/data/app/com.probe.nativelib/base.apk\n[*] Running APK: /tmp/pf_o2rzxp37/data/app/com.probe.nativelib/base.apk\n[*] Output directory: /tmp/pf_o2rzxp37/out\n[DATA-ROOT] app data root = /tmp/pf_o2rzxp37\n[DATA-ROOT] context package = com.probe.nativelib (data dir /tmp/pf_o2rzxp37/data/data/com.probe.nativelib)\n\n=== Execution Result ===\n\nStatus: PARTIAL SUCCESS \u26a0\ufe0f\n\nMessage: Partial execution completed [F-NEW-200 stub-census: 209 IMPLEMENTED, 2 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=VIEWTREE_NO_APP_PIXELS, first_missing_stage=APP_DRAW_OPS \u2014 SUCCESS requires authoritative app content]\n\n--- Metrics ---\nAPI Calls: 0\nFrames Rendered: 2\nExecution Time: 0ms\nErrors: 0\nWarnings: 1\n\nScreenshot: /tmp/pf_o2rzxp37/out/screenshot.png\nReport: /tmp/pf_o2rzxp37/out/report.md\n[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3\n[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0\n[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0\n[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20\n[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20\n[S123-ACTION-REG] activities=1 action_targets=1\nFONT_SOURCE apk=/tmp/pf_o2rzxp37/data/app/com.probe.nativelib/base.apk font_files=0 registered=0 first=<none>\n[EXP068] Built class\u2192superclass map: 51 entries (3 from APK + 48 framework) \u2014 LinearLayout present: YES\n[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.nativelib.MainActivity'\n[U007-RES] ResourceRuntime loaded: /tmp/pf_o2rzxp37/data/app/com.probe.nativelib/base.apk named_ids=1 types=1\n[ARSC-VALUES] apk=/tmp/pf_o2rzxp37/data/app/com.probe.nativelib/base.apk strings=1 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)\n[A7] application label resolved through ARSC: \"S2NativeProbe\" (resid @0x7f010000)\n[EXP093-APP] No custom Application class declared in manifest\n[BMF-RESOLVER] registering resolver EARLY (entries=4)\n[S1-PROVIDER] manifest providers transferred: 0\n[R341-APP] default Application bound: obj#11\n[R341-APP] bound application obj#11 (Landroid/app/Application;)\n[TRY-ENTRY] Lcom/probe/nativelib/MainActivity;.<init> dex_report=YES\n[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES\n[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/nativelib/MainActivity;.<init>\n[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;\n[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/nativelib/MainActivity;\n[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>\n[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;\n[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=12)\n[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES\n[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/nativelib/MainActivity;.<init>\n[MEM] method_exit: Lcom/probe/nativelib/MainActivity;.<init> insns=5 RSS=18.9375 MB\n[TRY-ENTRY] Lcom/probe/nativelib/MainActivity;.attachBaseContext dex_report=YES\n[U0113-ACTIVITY] activity heap object #12 (Lcom/probe/nativelib/MainActivity;) recorded for handler dispatch\n[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES\n[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/nativelib/MainActivity;.onCreate\n[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;\n[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/nativelib/MainActivity;\n[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;\n[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES\n[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/nativelib/MainActivity;.onCreate\n[TRY-ENTRY] Lcom/probe/nativelib/MainActivity;.runProbe dex_report=",
+ "launch_stage": "runtime",
+ "frames": 2,
+ "callbacks": 0,
+ "elapsed_s": 0.7,
+ "verdict_class": "FINDING",
+ "in_current_test_scope": true,
+ "counts_as_failure": false
+}

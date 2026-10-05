@@ -9,6 +9,34 @@
 
 ---
 
+## ⚖️ LAW-001 — FIRST TEST LAW: ABI SCOPE (x86 / x86_64 ONLY)
+
+> **Every app or game loaded by this runtime must be executable on the host
+> CPU: pure-DEX (no native libs — ABI-neutral) or shipping x86 / x86_64
+> native libraries. An APK whose native trees contain NO x86/x86_64 ABI
+> (ARM32 / ARM64 / other) is OUT OF SCOPE: it is recorded as
+> `ABI_OUT_OF_SCOPE` (SKIP) — never counted as "MiniAndroid could not run
+> the game".**
+
+| Path | Eligibility | Verdict |
+|---|---|---|
+| **MAIN TEST PATH** | x86 / x86_64 native libs, or pure-DEX (no libs) | full pipeline: DEX → Framework → Lifecycle → UI → Rendering → Input → State → Filesystem → DB → … |
+| **OUT OF CURRENT SCOPE** | ARM32 / ARM64 / other ABI only (no x86/x86_64 tree) | `ABI_OUT_OF_SCOPE` — SKIP bucket, separate from failures |
+
+* ARM is **deferred, not deleted**: removed from the failure criteria only;
+  ABI translation may become a separate project/phase once the core runtime
+  matures (instruction translation, syscall/ABI compat, JNI bridging,
+  alignment — a separate large layer deliberately not mixed into this one).
+* The check runs **first**, before install/launch, from the real
+  `lib/<abi>/` tree (gate: `scripts/unknown_apk_preflight.py`, verdict
+  contract 1.1; profile: `docs/ENVIRONMENT_PROFILE.json` ENV-005; full law
+  text: [CONSTITUTION_V2.md → LAW-001](CONSTITUTION_V2.md)).
+* Honest statistics: ARM-only titles land in their own
+  `ABI_OUT_OF_SCOPE` bucket — never inflating failures, never silently
+  dropped. Mixed APKs (x86_64 + ARM) stay in scope.
+
+---
+
 ## MISSION
 
 Execute **real Android APKs** on a from-scratch runtime and prove compatibility

@@ -181,20 +181,26 @@ rendering bug. Full matrix: `docs/ENV_PREREQUISITE_MATRIX.jsonl`.
 
 `python3 scripts/unknown_apk_preflight.py <apk> [--json OUT] [--max-seconds S]`
 is the WIRED gate: one driver, one machine-readable contract
-(`MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.0`), one verdict implementation shared
+(`MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.1`), one verdict implementation shared
 by the CLI and this skill. It determines package identity + APK SHA,
 min/target SDK, permissions, features, native ABI trees, component counts,
 DEX/resources structure, environment matches against ENVIRONMENT_PROFILE,
 install + launch outcome, the first observed divergence (method + pc), and
 classifies EXACTLY one verdict:
 
-`PREFLIGHT_PASS | ENVIRONMENT_BLOCKED | INSTALL_BLOCKED | SECURITY_BLOCKED |
-IDENTITY_BLOCKED | SERVICE_BLOCKED | EXECUTION_BLOCKED | RESOURCE_BLOCKED |
-GRAPHICS_BLOCKED | MEDIA_BLOCKED | NETWORK_BLOCKED | INPUT_BLOCKED |
-CAPTURE_ONLY | RUNTIME_ROOT | UNKNOWN`
+`ABI_OUT_OF_SCOPE | PREFLIGHT_PASS | ENVIRONMENT_BLOCKED | INSTALL_BLOCKED |
+SECURITY_BLOCKED | IDENTITY_BLOCKED | SERVICE_BLOCKED | EXECUTION_BLOCKED |
+RESOURCE_BLOCKED | GRAPHICS_BLOCKED | MEDIA_BLOCKED | NETWORK_BLOCKED |
+INPUT_BLOCKED | CAPTURE_ONLY | RUNTIME_ROOT | UNKNOWN`
 
-Laws: (1) a malformed/unparseable APK is UNKNOWN — never fabricated into a
-richer verdict; (2) an ABI mismatch is a hard blocker only when the launch
+Laws: (0) **LAW-001 FIRST TEST LAW** — the ABI scope check runs FIRST,
+before install/launch, from the real `lib/<abi>/` tree: an APK with native
+trees and no x86/x86_64 ABI is `ABI_OUT_OF_SCOPE` (SKIP bucket, carried
+with `verdict_class=SKIP` + `counts_as_failure=false`; ARM-only titles are
+out of current scope, never counted as runtime failures — CONSTITUTION_V2
+LAW-001); (1) a malformed/unparseable APK is UNKNOWN — never fabricated into a
+richer verdict; (2) an ABI mismatch beyond LAW-001 (declared-but-unexecuted
+paths) is a hard blocker only when the launch
 actually failed on a native path — a Java-only app that reached its budget
 is CAPTURE_ONLY/RUNTIME_ROOT with the mismatch recorded, not upgraded
 (FA-01/FA-02 honesty works both directions); (3) a recorded divergence with
