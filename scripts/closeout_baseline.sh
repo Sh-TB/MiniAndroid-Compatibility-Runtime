@@ -46,9 +46,14 @@ rm -rf "$BASE/probe_store"; mkdir -p "$BASE/probe_store"
     -o "$OUT/gatea_run1" >/dev/null 2>&1
 awk -F'|' '{print $3}' "$BASE/probe_store/data/data/com.probe.gatea/files/gate_a_results.jsonl" | sort | uniq -c
 
-# 5. negatives
+# 5. negatives (CONT-5 fix: populate run/gatea/probe_store first —
+#    s41_gatea_negative.py harvests N-08/N-12/N-18/N-19 rows from the
+#    probe results file, so the probe MUST have run into that store)
 echo "== [5/8] negatives =="
 mkdir -p run/gatea; cp gate_a_probe.apk run/gatea/gate_a_probe.apk
+"$B" install run/gatea/gate_a_probe.apk --data-root run/gatea/probe_store >/dev/null 2>&1
+"$B" run --package com.probe.gatea --data-root run/gatea/probe_store \
+    -o run/gatea/negative/gatea_run0 >/dev/null 2>&1
 python3 scripts/s41_gatea_negative.py 2>&1 | tail -3
 
 # 6. reinstall matrix
