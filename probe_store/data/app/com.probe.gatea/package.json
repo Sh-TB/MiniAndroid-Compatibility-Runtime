@@ -14,6 +14,6 @@
   "hostCodePath": "/home/z/my-project/probe_store/data/app/com.probe.gatea/base.apk",
   "apkSha256": "d872ff166d4f2d8cd35e6bffc2b9b9b5828ea40b055b9c5a84c76ea1d83fe71c",
   "apkSize": 109207,
-  "installedAt": "2026-10-05T16:34:14Z",
+  "installedAt": "2026-10-05T20:03:41Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }
