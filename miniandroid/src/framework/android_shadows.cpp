@@ -1581,6 +1581,40 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         if (ctx.args.size() >= 2) {
             int32_t idx = ctx.arg_as_int(0, -1);
+            // ── F-NEW-239: set() RETURNS THE PREVIOUS ELEMENT ───────────
+            // OpenJDK ArrayList.set(int, E): capture oldValue, overwrite,
+            // return oldValue. CONT-4 root cause (fairymahjong "Even face
+            // counts always permit a completion" ISE — classified RUNTIME
+            // ROOT, not app bug): Kotlin shuffled(rng) implements the
+            // Fisher-Yates swap as `list[i] = list.set(j, list[i])` — the
+            // return of set IS the temporary. The pre-fix handled_void
+            // return left move-result-object UNSET → the engine converted
+            // the void to a null/empty-string element on the NEXT set() →
+            // every swap poisoned a slot with "" → toSet(take(shuffled))
+            // became a set of empty strings → the solver's face-count
+            // initialization undercounted (sum 46 vs 68 tiles) → the
+            // game's own parity guard fired. Generic: every swap-via-set
+            // idiom (Collections.shuffle, Kotlin shuffled, sort internals)
+            // reads the return. Kind-faithful old-value serve below.
+            const bool f239_valid_idx =
+                idx >= 0 && idx < static_cast<int32_t>(state->elements.size());
+            uint32_t old_item = 0;
+            uint8_t old_kind = 0;
+            int32_t old_ival = 0;
+            std::string old_sval;
+            if (f239_valid_idx) {
+                old_item = state->elements[idx];
+                old_kind = idx < static_cast<int32_t>(state->elem_kinds.size())
+                               ? state->elem_kinds[idx]
+                               : 1;
+                old_ival = idx < static_cast<int32_t>(state->elem_ints.size())
+                               ? state->elem_ints[idx]
+                               : 0;
+                old_sval =
+                    idx < static_cast<int32_t>(state->elem_strings.size())
+                        ? state->elem_strings[idx]
+                        : std::string();
+            }
             // F-NEW-238: kind-aware replace across all four parallel stores.
             const auto& a1 = ctx.args[1];
             bool a1_is_int =
@@ -1640,6 +1674,20 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 if (idx < (int32_t)state->elem_ints.size())
                     state->elem_ints[idx] = ival;
             }
+            // F-NEW-239: serve the PREVIOUS element (kind-faithful).
+            // Out-of-range set() (no previous element, no store mutation):
+            // AOSP throws IndexOutOfBoundsException; the shadow channel has
+            // no exception kind — null with the divergence documented in the
+            // F-165 precedent, and the dropped-write diag above stays loud.
+            if (!f239_valid_idx) return CallResult::handled_null();
+            if (old_kind == 3) return CallResult::handled_int(old_ival);
+            if (old_kind == 2) return CallResult::handled_string(old_sval);
+            if (old_item != 0) {
+                std::string old_cls = "Ljava/lang/Object;";
+                if (heap_) heap_->get_object_class(old_item, old_cls);
+                return CallResult::handled_object(old_item, old_cls);
+            }
+            return CallResult::handled_null();
         }
         return CallResult::handled_void();
     }

@@ -16,7 +16,7 @@
     "requirement": "This APK ran because MiniAndroid executed its bytecode, NOT because the framework pretended it ran."
   },
   "metrics": {
-    "execution_time_ms": 4231.69051,
+    "execution_time_ms": 4386.1195,
     "main_class": "Lio/github/yamin8000/dooz/ui/MainActivity;",
     "main_method": "onCreate",
     "total_api_calls": 953,
@@ -29,7 +29,7 @@
     "PC never advanced - possible infinite loop or stall",
     "Registers never changed - instructions may be NOPs"
   ],
-  "timestamp": "2026-10-05T01:03:38Z",
+  "timestamp": "2026-10-05T14:58:21Z",
   "title": "Real Dalvik Bytecode Execution Proof",
   "trace_files_generated": [
     "opcode_trace.json",
