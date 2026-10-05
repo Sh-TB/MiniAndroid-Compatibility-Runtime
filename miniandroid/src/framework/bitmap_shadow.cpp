@@ -107,9 +107,112 @@ uint32_t BitmapShadow::decode_and_register(const std::vector<uint8_t>& bytes,
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────────────
 // Nearest-neighbour resample (createScaledBitmap; bilinear registered as
 // pending until a consumer demands it — the runtime answers honestly).
+// Defined below; forward-declared for the F-NEW-240 helper.
+// ──────────────────────────────────────────────────────────────────────────
+static void resample_nearest(const StoredBitmap& src, int dw, int dh,
+                             std::vector<uint8_t>& out);
+
+// F-NEW-240 — AOSP BitmapFactory.Options law (fairymahjong CONT-4 face).
+// Kotlin's canonical "decode bounds first" idiom:
+//   val opts = BitmapFactory.Options(); opts.inJustDecodeBounds = true
+//   BitmapFactory.decodeStream(open(path), null, opts)
+//   if (opts.outWidth <= 0 || opts.outHeight <= 0) error("Invalid …")
+// AOSP BitmapFactory.java: inJustDecodeBounds=true parses ONLY the image
+// header — decodeStream/decodeFile/decodeResource/decodeByteArray fill
+// opts.outWidth/outHeight/outMimeType and return NULL without allocating
+// a bitmap. The pre-fix engine ran the FULL decode and never wrote the
+// out* fields → outWidth stayed 0 → every bounds-checked loader threw
+// its own "Invalid" error on perfectly valid artwork (the game's own
+// IllegalStateException "Invalid fairy artwork: tiles/07-portrait.png").
+// Also honored here: inSampleSize (AOSP: out dims = (dim + s-1) / s,
+// nearest subsample) and out* is filled in the FULL-decode mode too.
 // ─────────────────────────────────────────────────────────────────────────
+static std::string f240_mime_of(const std::vector<uint8_t>& b) {
+    if (b.size() >= 4 && b[0] == 0x89 && b[1] == 'P' && b[2] == 'N' &&
+        b[3] == 'G')
+        return "image/png";
+    if (b.size() >= 3 && b[0] == 0xFF && b[1] == 0xD8 && b[2] == 0xFF)
+        return "image/jpeg";
+    if (b.size() >= 6 && (!memcmp(b.data(), "GIF87a", 6) ||
+                          !memcmp(b.data(), "GIF89a", 6)))
+        return "image/gif";
+    if (b.size() >= 12 && !memcmp(b.data(), "RIFF", 4) &&
+        !memcmp(b.data() + 8, "WEBP", 4))
+        return "image/webp";
+    if (b.size() >= 2 && b[0] == 'B' && b[1] == 'M') return "image/bmp";
+    return "";
+}
+
+// Decode once, serve the AOSP Options contract, and (optionally) register.
+// Returns the bitmap object id (0 = null result: failed decode OR the
+// bounds-only pass, which never allocates per AOSP).
+static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+                                         const std::string& desc,
+                                         HeapAllocator* heap, uint32_t opts_id) {
+    if (!heap) return 0;
+    renderer::DecodedImage decoded;
+    if (!renderer::decode_image_bytes(bytes, &decoded,
+                                      resources::device_config().density) ||
+        decoded.width <= 0 || decoded.height <= 0 || decoded.rgba.empty()) {
+        std::cerr << "[BITMAP-FACTORY] decode FAILED (" << desc << "): "
+                  << decoded.error << std::endl;
+        // AOSP still records best-effort out* (0) on failure — nothing to
+        // write here; the caller answers null.
+        return 0;
+    }
+    if (opts_id != 0) {
+        heap->set_object_int_field(opts_id, "outWidth", decoded.width);
+        heap->set_object_int_field(opts_id, "outHeight", decoded.height);
+        const std::string mime = f240_mime_of(bytes);
+        if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
+    }
+    // Bounds-only pass: header consumed, NO bitmap allocation (AOSP law —
+    // decodeStream with inJustDecodeBounds answers null).
+    if (opts_id != 0) {
+        int32_t bounds_only = 0;
+        heap->get_object_int_field(opts_id, "inJustDecodeBounds", bounds_only);
+        if (bounds_only) {
+            std::cerr << "[BITMAP-FACTORY] bounds-only " << desc << " -> "
+                      << decoded.width << "x" << decoded.height
+                      << " (null per AOSP inJustDecodeBounds)" << std::endl;
+            return 0;
+        }
+    }
+    // Full decode — honor inSampleSize (AOSP: (dim + s - 1) / s).
+    int32_t sample = 1;
+    if (opts_id != 0) heap->get_object_int_field(opts_id, "inSampleSize", sample);
+    if (sample < 1) sample = 1;
+    if (sample > 1) {
+        const int dw = (decoded.width + sample - 1) / sample;
+        const int dh = (decoded.height + sample - 1) / sample;
+        StoredBitmap full;
+        full.width = decoded.width;
+        full.height = decoded.height;
+        full.rgba = std::move(decoded.rgba);
+        full.has_pixels = true;
+        full.source_desc = desc;
+        std::vector<uint8_t> out;
+        resample_nearest(full, dw, dh, out);
+        const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
+        BitmapStore::instance().store(obj, dw, dh, std::move(out),
+                                      desc + "#sample" + std::to_string(sample));
+        std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj="
+                  << obj << " (" << dw << "x" << dh << ", inSampleSize="
+                  << sample << ")" << std::endl;
+        return obj;
+    }
+    const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
+    BitmapStore::instance().store(obj, decoded.width, decoded.height,
+                                  std::move(decoded.rgba), desc);
+    std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj=" << obj
+              << " (" << decoded.width << "x" << decoded.height << ")"
+              << std::endl;
+    return obj;
+}
+
 static void resample_nearest(const StoredBitmap& src, int dw, int dh,
                              std::vector<uint8_t>& out) {
     out.assign((size_t)dw * dh * 4, 0);
@@ -141,7 +244,9 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             uint16_t density = 0;
             if (drawable_bytes_resolver() &&
                 drawable_bytes_resolver()(resid, bytes, path, density)) {
-                const uint32_t bmp = decode_and_register(bytes, path, heap_);
+                // F-NEW-240: decodeResource(res, id[, opts]) — opts at slot 2.
+                const uint32_t bmp = f240_decode_with_options(
+                    bytes, path, heap_, ctx.arg_as_object(2, 0));
                 if (bmp == 0) return CallResult::handled_null();
                 return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
             }
@@ -173,7 +278,9 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
                           << arr << ") -> null" << std::endl;
                 return CallResult::handled_null();
             }
-            const uint32_t bmp = decode_and_register(bytes, "decodeByteArray", heap_);
+            // F-NEW-240: decodeByteArray(data, off, len[, opts]) — opts slot 3.
+            const uint32_t bmp = f240_decode_with_options(
+                bytes, "decodeByteArray", heap_, ctx.arg_as_object(3, 0));
             if (bmp == 0) return CallResult::handled_null();
             return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
         }
@@ -205,7 +312,9 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             while ((n = fread(buf, 1, sizeof buf, f)) > 0)
                 bytes.insert(bytes.end(), buf, buf + n);
             fclose(f);
-            const uint32_t bmp = decode_and_register(bytes, path, heap_);
+            // F-NEW-240: decodeFile(path[, opts]) — opts slot 1.
+            const uint32_t bmp = f240_decode_with_options(
+                bytes, path, heap_, ctx.arg_as_object(1, 0));
             if (bmp == 0) return CallResult::handled_null();
             return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
         }
@@ -233,7 +342,12 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
                           << std::endl;
                 return CallResult::handled_null();
             }
-            const uint32_t bmp = decode_and_register(bytes, "decodeStream:" + source_desc, heap_);
+            // F-NEW-240: decodeStream(stream, rect[, opts]) — opts slot 2.
+            // The bounds-only pass fills outWidth/outHeight/outMimeType and
+            // answers null WITHOUT allocating (AOSP inJustDecodeBounds law).
+            const uint32_t bmp = f240_decode_with_options(
+                bytes, "decodeStream:" + source_desc, heap_,
+                ctx.arg_as_object(2, 0));
             if (bmp == 0) return CallResult::handled_null();
             return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
         }

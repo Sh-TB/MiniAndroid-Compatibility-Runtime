@@ -2358,6 +2358,278 @@ void DalvikExecutionEngine::dump_frame_locals_diag(const char* tag) {
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// CONT-4 PHASE 1 — Lm2;.b solver ISE classification diagnostic.
+// READ-ONLY (M3 law): pure get_register / heap / shadow-store reads.
+//
+// The frontier: fairymahjong throws IllegalStateException("Even face
+// counts always permit a completion") from its own backtracking solver
+// (Lm2;.b, guard pc=0x57f `if-lez v2 -> 0x5bb`). The engine cannot know a
+// priori whether this is (a) an app bug — the game's parity claim is
+// mathematically false for its own greedy strategy — or (b) a runtime
+// root — our collection/array laws corrupted the solver's INPUT (face
+// list) or STATE (counts/visited arrays) so the guard sees data the real
+// ART would never produce. CONT-3 flagged residual [F-NEW-238-SET]
+// POISON rows as the prime suspect.
+//
+// Decisive observation set (dumped at 4 pcs inside Lm2;.b):
+//   * pc=0x51b / 0x525 / 0x531 — solver-section entry: every register,
+//     full element dumps of register-held arrays ([I/[Z/[Ljava/lang/Object;
+//     /Larray;) and the FULL CollectionShadow store of any register-held
+//     ArrayList, with an INDEPENDENT per-face parity count (the game's own
+//     invariant, recomputed from the store: kind-3 ints directly, kind-1
+//     boxes via the Integer "value" field, kind-2 strings called out — a
+//     string face in a numeric solver would itself be corruption).
+//   * pc=0x57f — the guard visit: v2 plus the same array/collection dumps;
+//     the FATAL visit (v2 <= 0) always dumps (it throws immediately after,
+//     so this happens at most once per run); healthy visits budgeted.
+//
+// Bounded: fixed pc set + thread-local per-pc visit budgets (total < 12
+// dumps per run). No semantics change: dump-only, and the lazy shadow
+// state creation (get_or_create on an unseen id) yields the identical
+// empty CollectionState the first real shadow op would create anyway.
+// ─────────────────────────────────────────────────────────────────────────
+void DalvikExecutionEngine::dump_cont4_solver_diag(uint32_t at_pc) {
+    static thread_local const bool diag_on =
+        std::getenv("MINIANDROID_CONT4_SOLVER_DIAG") != nullptr;
+    if (!diag_on) return;
+
+    // Solver chain targets: the Lm2;.b pcs plus the Kotlin-stdlib bridge
+    // entries feeding its face-count Set (Lt;.r filter → Ls;.y limit →
+    // Ls;.D toSet). Bridge dumps fire ONLY when Lm2;.b is on the call
+    // chain (shared stdlib methods are called app-wide; unfiltered dumps
+    // would both flood and catch the wrong invocation).
+    const bool is_solver = (current_class_ == "Lm2;" && current_method_ == "b");
+    const bool is_bridge =
+        (current_class_ == "Ls;" &&
+         (current_method_ == "D" || current_method_ == "y")) ||
+        (current_class_ == "Lt;" && current_method_ == "r");
+    if (is_bridge) {
+        if (at_pc != 0x0 && at_pc != 0xFFFFFFFFu) return;
+        bool in_chain = false;
+        auto chain = call_stack_.snapshot_top_first();
+        for (size_t fi = 0; fi < chain.size() && fi < 8; ++fi) {
+            if (chain[fi].first == "Lm2;") { in_chain = true; break; }
+        }
+        if (!in_chain) return;
+    } else if (!is_solver) {
+        return;
+    } else {
+        if (!(at_pc == 0x0 || at_pc == 0x476 || at_pc == 0x47a ||
+              at_pc == 0x480 || at_pc == 0x484 || at_pc == 0x4a1 ||
+              at_pc == 0x51b || at_pc == 0x525 ||
+              at_pc == 0x531 || at_pc == 0x57f)) return;
+    }
+
+    // Guard-operand short-circuit: only dump 0x57f when v2 <= 0 (the fatal
+    // visit) or within the first two healthy visits (trajectory context).
+    if (at_pc == 0x57f && current_registers_) {
+        // 0x57f is `if-lez v2` — operand register v2 (8-bit form, low nibble
+        // of the high byte is vAA; here v2 by disassembly).
+        DalvikValue gv = get_register(2);
+        int32_t gv_i = (gv.type == DalvikType::INT32) ? gv.int_val : 0;
+        static thread_local uint32_t guard_healthy = 0;
+        if (gv_i > 0 && guard_healthy >= 2) return;
+        if (gv_i > 0) ++guard_healthy;
+    }
+
+    // Per-pc visit budgets (entry pcs dump only their first visits).
+    static thread_local std::map<uint32_t, uint32_t> c4_visits;
+    uint32_t& c4n = c4_visits[at_pc];
+    const uint32_t c4_budget = (at_pc == 0x57f) ? 4u
+                             : (is_bridge)      ? 8u
+                             : (at_pc == 0x0)   ? 1u
+                                                : 3u;
+    if (c4n >= c4_budget) return;
+    ++c4n;
+
+    const char* c4_tag = is_bridge ? "BRIDGE" : "SOLVER";
+
+    // Provenance helper: heap objects carry creator_pc (the allocating
+    // pc) — one line answers "who minted this list/array".
+    auto creator = [&](uint32_t id) -> std::string {
+        const auto* ho = heap_.get(id);
+        if (!ho) return "?";
+        return "created@pc=0x" + [&] { std::ostringstream s; s << std::hex
+            << ho->creator_pc << std::dec; return s.str(); }() +
+            " frame#" + std::to_string(ho->creator_frame_id);
+    };
+
+    auto fmtv = [this](const DalvikValue& v) -> std::string {
+        switch (v.type) {
+            case DalvikType::INT32:  return "i" + std::to_string(v.int_val);
+            case DalvikType::INT64:  return "j" + std::to_string(v.long_val);
+            case DalvikType::BOOLEAN:return "z" + std::to_string(v.bool_val?1:0);
+            case DalvikType::FLOAT32:return "f" + std::to_string(v.float_val);
+            case DalvikType::FLOAT64:return "d" + std::to_string(v.double_val);
+            case DalvikType::NULL_REF: return "null";
+            case DalvikType::UNINITIALIZED: return "<unset>";
+            case DalvikType::STRING_REF:
+                if (v.is_null) return "str-null";
+                return "str \"" + v.string_val.substr(0, 32) + "\"";
+            case DalvikType::OBJECT_REF: {
+                if (v.is_null || v.object_id == 0) return "o-null";
+                std::string cls = v.class_desc;
+                const auto* ho = heap_.get(v.object_id);
+                if (ho && !ho->class_descriptor.empty())
+                    cls = ho->class_descriptor;
+                return "o#" + std::to_string(v.object_id) + " " + cls;
+            }
+            default: return "(t=" + std::to_string(static_cast<int>(v.type)) + ")";
+        }
+    };
+
+    // Array element dump: heap arrays store length at __array_length__ and
+    // elements at "array[i]" (kind-faithful DalvikValues).
+    auto dump_array = [&](uint32_t arr_id) {
+        const auto* ho = heap_.get(arr_id);
+        if (!ho) return;
+        auto lenf = ho->get_field("__array_length__");
+        if (lenf.type != DalvikType::INT32) return;
+        int32_t alen = lenf.int_val;
+        std::cerr << "    array o#" << arr_id << " [" << ho->class_descriptor
+                  << "] len=" << alen << " " << creator(arr_id) << " elems:";
+        if (alen <= 0) { std::cerr << " (empty)" << std::endl; return; }
+        int32_t show = alen < 160 ? alen : 160;
+        for (int32_t e = 0; e < show; ++e) {
+            auto ev = ho->get_field("array[" + std::to_string(e) + "]");
+            std::cerr << " [" << e << "]" << fmtv(ev);
+        }
+        if (alen > show) std::cerr << " ...(" << (alen - show) << " more)";
+        std::cerr << std::endl;
+    };
+
+    // Collection dump + independent parity count over the shadow store.
+    auto dump_collection = [&](uint32_t obj_id) {
+        framework::CollectionShadow* csh =
+            shadow_registry_
+                ? shadow_registry_->find_as<framework::CollectionShadow>()
+                : nullptr;
+        if (!csh) return;
+        auto* st = csh->get_or_create(obj_id, false);
+        if (!st) return;
+        size_t n = st->elements.size();
+        std::cerr << "    collection o#" << obj_id << " size=" << n
+                  << " is_map=" << st->is_map << " " << creator(obj_id)
+                  << " elems:";
+        std::vector<int32_t> odd_faces;
+        int32_t str_faces = 0, unset_faces = 0;
+        // CONT-4: empty shadow store → the F-NEW-237b engine-array-backed
+        // fallback serves get() from the object's own array[i] fields.
+        // Dump the RAW backing slots (ref/string/int) — mixed kinds here
+        // are the corruption signature (string slots where ints belong).
+        if (n == 0 && heap_.has_object(obj_id)) {
+            auto blenf = heap_.get_object_field(obj_id, "__array_length__");
+            int32_t blen = (blenf && blenf->type == DalvikType::INT32)
+                               ? blenf->int_val : 24;
+            if (blen > 0) {
+                std::cerr << " [backing len=" << blen << ":";
+                int32_t bs = blen < 24 ? blen : 24;
+                for (int32_t bi = 0; bi < bs; ++bi) {
+                    std::string fn = "array[" + std::to_string(bi) + "]";
+                    auto ev = heap_.get_object_field(obj_id, fn);
+                    if (!ev) { std::cerr << " " << bi << ":<unset>"; continue; }
+                    if (ev->type == DalvikType::STRING_REF)
+                        std::cerr << " " << bi << ":str\"" << ev->string_val.substr(0,16) << "\"";
+                    else if (ev->type == DalvikType::INT32)
+                        std::cerr << " " << bi << ":i" << ev->int_val;
+                    else if (ev->type == DalvikType::OBJECT_REF)
+                        std::cerr << " " << bi << ":o#" << ev->object_id;
+                    else
+                        std::cerr << " " << bi << ":(t" << static_cast<int>(ev->type) << ")";
+                }
+                std::cerr << " ]" << std::endl;
+            }
+        }
+        size_t show = n < 200 ? n : 200;
+        std::map<int32_t, int32_t> face_counts;
+        for (size_t i = 0; i < show; ++i) {
+            uint8_t k = i < st->elem_kinds.size() ? st->elem_kinds[i] : 0;
+            int32_t face = INT32_MIN;
+            if (k == 3) {
+                face = i < st->elem_ints.size() ? st->elem_ints[i] : INT32_MIN;
+            } else if (k == 1) {
+                uint32_t eid = st->elements[i];
+                if (eid != 0 && heap_.has_object(eid)) {
+                    auto bv = heap_.get_object_field(eid, "value");
+                    if (bv && bv->type == DalvikType::INT32) face = bv->int_val;
+                    else if (i < 8) {
+                        std::string ecls;
+                        const auto* eho = heap_.get(eid);
+                        if (eho) ecls = eho->class_descriptor;
+                        std::cerr << " [" << i << "]obj#" << eid << " " << ecls;
+                    }
+                } else {
+                    if (i < 8) std::cerr << " [" << i << "]null-obj";
+                }
+            } else if (k == 2) {
+                ++str_faces;  // string face in a numeric solver = corruption
+                if (i < 24)
+                    std::cerr << " [" << i << "]str\""
+                              << (i < st->elem_strings.size()
+                                      ? st->elem_strings[i].substr(0, 16)
+                                      : "?")
+                              << "\"";
+            } else {
+                ++unset_faces;
+            }
+            if (face != INT32_MIN) {
+                if (i < 96) std::cerr << " " << face;
+                auto fc = face_counts.find(face);
+                if (fc == face_counts.end()) face_counts.emplace(face, 1);
+                else ++fc->second;
+            }
+        }
+        std::cerr << (n > show ? " ...(truncated)" : "") << std::endl;
+        for (const auto& [face, cnt] : face_counts)
+            if (cnt % 2 != 0) odd_faces.push_back(face);
+        std::cerr << "    [CONT4-PARITY] distinct_faces="
+                  << face_counts.size() << " odd_count_faces="
+                  << odd_faces.size();
+        for (size_t i = 0; i < odd_faces.size() && i < 12; ++i)
+            std::cerr << " face" << odd_faces[i] << "x"
+                      << face_counts[odd_faces[i]];
+        std::cerr << " str_faces=" << str_faces
+                  << " unset_faces=" << unset_faces << std::endl;
+    };
+
+    std::cerr << "[CONT4-" << c4_tag << "] " << current_class_ << "."
+              << current_method_ << " pc=0x" << std::hex << at_pc
+              << std::dec << " (visit " << c4n << ")"
+              << " depth=" << call_stack_.depth() << " regs:";
+    if (!current_registers_) { std::cerr << " none" << std::endl; return; }
+    const uint32_t nregs = current_registers_->get_size();
+    for (uint32_t r = 0; r < nregs && r < 31; ++r) {
+        DalvikValue rv = get_register(static_cast<uint8_t>(r));
+        if (rv.type == DalvikType::UNINITIALIZED) continue;
+        std::cerr << " v" << r << "=" << fmtv(rv);
+    }
+    std::cerr << std::endl;
+    // Deep dumps for every array/collection register (read-only).
+    for (uint32_t r = 0; r < nregs && r < 31; ++r) {
+        DalvikValue rv = get_register(static_cast<uint8_t>(r));
+        if (rv.type != DalvikType::OBJECT_REF || rv.is_null ||
+            rv.object_id == 0 || !heap_.has_object(rv.object_id))
+            continue;
+        const auto* ho = heap_.get(rv.object_id);
+        if (!ho) continue;
+        std::string cls = ho->class_descriptor;
+        if (cls.size() > 1 && cls[0] == '[') dump_array(rv.object_id);
+        else if (cls == "Larray;") dump_array(rv.object_id);
+        else if (cls == "Ljava/util/ArrayList;" ||
+                 cls == "Ljava/util/LinkedHashSet;" ||
+                 cls == "Ljava/util/HashSet;" ||
+                 cls == "Ljava/util/LinkedList;")
+            dump_collection(rv.object_id);
+        // Param-window provenance: at method entry, name every object
+        // register's allocation site (the caller's minting pc).
+        if (at_pc == 0x0)
+            std::cerr << "    v" << r << " " << cls << " o#"
+                      << rv.object_id << " " << creator(rv.object_id)
+                      << std::endl;
+    }
+}
+
 bool DalvikExecutionEngine::execute_method_internal(
     const std::string& class_name,
     const std::string& method_name,
@@ -6079,6 +6351,79 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return_val = DalvikValue::make_null();
         recursion_depth_--;
         return true;
+    }
+
+    // ── F-NEW-241: java.io.Reader.read(char[]) — REAL CHARACTER READS ───
+    // OpenJDK Reader.java: read(char[]) returns the char count filled,
+    // -1 at EOF; read(char[], off, len) likewise. The K-34 law below
+    // matches only "*InputStream*" declaring classes, so
+    // BufferedReader.read(char[]) fell to the type-aware stub default
+    // (0) — and every `while ((n = read(cbuf)) >= 0) writer.write(...)`
+    // copy loop spun forever (fairymahjong Ln5;.b artwork-config read:
+    // F084 forward-progress halt at pc=0x108, deterministic x3). The
+    // wrapper chain (BufferedReader.in → InputStreamReader.source →
+    // InputStream) is the SAME resolve_asset_stream hop readLine uses.
+    if ((declaring_class.find("BufferedReader") != std::string::npos ||
+         declaring_class.find("InputStreamReader") != std::string::npos) &&
+        method_name == "read" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        uint32_t recv_id = args[0].object_id;
+        std::string asset_path;
+        size_t* pos_ptr = nullptr;
+        resolve_asset_stream(recv_id, asset_path, pos_ptr);
+        if (!asset_path.empty() && pos_ptr != nullptr) {
+            const std::string& content = cached_asset_bytes(asset_path);
+            size_t p = *pos_ptr;
+            if (p == static_cast<size_t>(-1) || p >= content.size()) {
+                return_val = DalvikValue::make_int(-1);
+                recursion_depth_--;
+                return true;
+            }
+            // args: [recv, cbuf] or [recv, cbuf, off, len]
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                uint32_t cbuf_id = args[1].object_id;
+                int64_t clen = 0;
+                auto cf = heap_.get_object_field(cbuf_id, "__array_length__");
+                if (cf.has_value() && cf->type == DalvikType::INT32)
+                    clen = cf->int_val;
+                if (clen == 0) {
+                    auto cf2 = heap_.get_object_field(cbuf_id,
+                                                      "__new_array_length__");
+                    if (cf2.has_value() && cf2->type == DalvikType::INT32)
+                        clen = cf2->int_val;
+                }
+                int32_t off = (args.size() >= 4 &&
+                               args[2].type == DalvikType::INT32)
+                                  ? args[2].int_val : 0;
+                int64_t len = (args.size() >= 4 &&
+                               args[3].type == DalvikType::INT32)
+                                  ? args[3].int_val : clen;
+                size_t remaining = content.size() - p;
+                int32_t count = static_cast<int32_t>(
+                    std::min<size_t>(len > 0 ? len : 0, remaining));
+                for (int32_t k = 0; k < count; ++k) {
+                    heap_.set_object_field(
+                        cbuf_id, "array[" + std::to_string(off + k) + "]",
+                        DalvikValue::make_char(content[p + k]));
+                }
+                *pos_ptr = p + (count > 0 ? (size_t)count : 0);
+                return_val = DalvikValue::make_int(count > 0 ? count : -1);
+                recursion_depth_--;
+                return true;
+            }
+            // read() single-char form on the same wrappers.
+            if (args.size() == 1) {
+                if (p >= content.size()) {
+                    return_val = DalvikValue::make_int(-1);
+                } else {
+                    return_val = DalvikValue::make_int(
+                        static_cast<unsigned char>(content[p]));
+                    *pos_ptr = p + 1;
+                }
+                recursion_depth_--;
+                return true;
+            }
+        }
     }
 
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): InputStream.read()
@@ -11685,7 +12030,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                               << " word=0x" << std::hex << mt_word << std::dec;
                     if (current_registers_) {
                         uint32_t n = current_registers_->get_size();
-                        if (n > 20) n = 20;
+                        if (n > 32) n = 32;  // CONT-4: solver temps live in v20..v30
                         for (uint32_t r = 0; r < n; r++) {
                             DalvikValue rv = current_registers_->read_v(
                                 static_cast<uint8_t>(r));
@@ -11712,9 +12057,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             }
         }
 
-        
+
+        // ── CONT-4 PHASE 1 (bounded, env-gated, READ-ONLY): Lm2;.b solver
+        // classification — face-list parity + solver-array state observed
+        // at the fatal parity guard (pc=0x57f). M3 law: diagnostics never
+        // change semantics; gated by MINIANDROID_CONT4_SOLVER_DIAG.
+        dump_cont4_solver_diag(pc_);
+
         auto start = Clock::now();
-        
+
         // Fetch opcode
         // EXP-037 Phase B (BLOCKER-012 FIX):
         // Dalvik bytecode packs the opcode in the LOW BYTE of each 16-bit
@@ -22686,6 +23037,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // ── CONT-4 PHASE 1 (bounded, env-gated): poison-source forensics —
+    // every ArrayList.set(int, REF) whose REF argument is the EMPTY
+    // STRING. The board-builder stores computed face ints through set();
+    // an upstream bridge returning "" for an int-context call poisons
+    // the row store (fairymahjong solver face-count undercount → its own
+    // "Even face counts" ISE). Print the ENGINE call chain — the nearest
+    // app frame locates the "" consumer, its producer is the invoked
+    // bridge just above it.
+    static thread_local const bool c4_poison_diag =
+        std::getenv("MINIANDROID_CONT4_SOLVER_DIAG") != nullptr;
+    if (c4_poison_diag && class_name == "Ljava/util/ArrayList;" &&
+        (method == "set" || method == "add")) {
+        // Engine-level args: [0]=receiver, [1]=index-or-item, [2]=item(set).
+        // Watch EMPTY-STRING items — the board-row poison signature.
+        const DalvikValue* c4_item = nullptr;
+        if (method == "add" && args.size() >= 2)
+            c4_item = &args[1];
+        else if (method == "set" && args.size() >= 3)
+            c4_item = &args[2];
+        if (c4_item && c4_item->type == DalvikType::STRING_REF &&
+            !c4_item->is_null && c4_item->string_val.empty()) {
+            static thread_local uint64_t c4_poison_n = 0;
+            if (c4_poison_n < 12) {
+                ++c4_poison_n;
+                std::cerr << "[CONT4-SET-EMPTY] obj#" << args[0].object_id
+                          << " " << method << " chain:";
+                auto chain = call_stack_.snapshot_frames_top_first();
+                for (size_t fi = 0; fi < chain.size() && fi < 6; ++fi)
+                    std::cerr << " " << chain[fi].cls << "." << chain[fi].method
+                              << "@pc" << chain[fi].caller_pc;
+                std::cerr << std::endl;
+            }
+        }
+    }
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().bridge, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};
     // ────────────────────────────────────────────────────────────────────────
@@ -28179,6 +28564,113 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   * length() — number of accumulated chars
     // The buffer is stored on the receiver heap object under "sb_value".
     // ────────────────────────────────────────────────────────────────────────
+    // ── F-NEW-242: java.io.StringWriter — REAL BUFFER ACCUMULATION ─────
+    // OpenJDK StringWriter.java: write(int)/write(char[],off,len)/
+    // write(String)/write(String,off,len) append to the internal buffer;
+    // toString() returns the accumulated chars ("" when empty — NEVER
+    // null); getBuffer() exposes it as a StringBuffer. Pre-fix every
+    // StringWriter method fell to the generic stub: write() stored
+    // nothing and toString() answered null → the canonical
+    // `JSONObject(new StringWriter().apply { read(cbuf).forEach {
+    // write(...) } }.toString())` asset-parse chain NPE'd at the R8
+    // toString null-check (fairymahjong Ln5;.b pc=278, deterministic).
+    // Storage: "sb_value" — the SAME heap convention StringBuilder uses,
+    // so String.valueOf(Object) on the writer's output already resolves.
+    if (class_name == "Ljava/io/StringWriter;") {
+        uint32_t sw_id = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id : 0;
+        auto sw_read = [&](std::string& out) -> bool {
+            if (sw_id == 0 || !heap_.has_object(sw_id)) return false;
+            auto fv = heap_.get_object_field(sw_id, "sb_value");
+            out = (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                      ? fv->string_val : "";
+            return true;
+        };
+        auto sw_write = [&](const std::string& text) -> void {
+            if (sw_id == 0) return;
+            std::string cur;
+            sw_read(cur);
+            heap_.set_object_field(sw_id, "sb_value",
+                                   DalvikValue::make_string(cur + text, 0));
+        };
+        if (method == "write" && args.size() >= 2) {
+            const DalvikValue& a1 = args[1];
+            if (a1.type == DalvikType::STRING_REF) {
+                // write(String) / write(String, off, len)
+                std::string text = a1.is_null ? "null" : a1.string_val;
+                if (args.size() >= 4 && args[2].type == DalvikType::INT32 &&
+                    args[3].type == DalvikType::INT32) {
+                    int32_t off = args[2].int_val, len = args[3].int_val;
+                    if (off < 0) off = 0;
+                    if (len < 0 || off + len > (int32_t)text.size())
+                        len = (int32_t)text.size() - off;
+                    text = text.substr(off, len);
+                }
+                sw_write(text);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (a1.type == DalvikType::OBJECT_REF && a1.object_id != 0) {
+                // write(char[]) / write(char[], off, len) — [C heap array.
+                int64_t clen = 0;
+                auto cf = heap_.get_object_field(a1.object_id,
+                                                 "__array_length__");
+                if (cf.has_value() && cf->type == DalvikType::INT32)
+                    clen = cf->int_val;
+                int32_t off = 0, len = (int32_t)clen;
+                if (args.size() >= 4 && args[2].type == DalvikType::INT32 &&
+                    args[3].type == DalvikType::INT32) {
+                    off = args[2].int_val;
+                    len = args[3].int_val;
+                }
+                std::string text;
+                for (int32_t k = 0; k < len && off + k < (int32_t)clen; ++k) {
+                    auto ev = heap_.get_object_field(
+                        a1.object_id, "array[" + std::to_string(off + k) + "]");
+                    if (ev.has_value())
+                        text.push_back(static_cast<char>(
+                            ev->type == DalvikType::CHAR ? ev->char_val
+                                                         : ev->int_val));
+                }
+                sw_write(text);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (a1.type == DalvikType::CHAR || a1.type == DalvikType::INT32) {
+                // write(int c) — one char.
+                sw_write(std::string(1, static_cast<char>(a1.int_val)));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        if (method == "toString") {
+            std::string cur;
+            sw_read(cur);
+            result = DalvikValue::make_string(cur, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getBuffer") {
+            uint32_t buf_id = heap_.allocate("Ljava/lang/StringBuffer;", pc_, 0);
+            std::string cur;
+            sw_read(cur);
+            heap_.set_object_field(buf_id, "sb_value",
+                                   DalvikValue::make_string(cur, 0));
+            result = DalvikValue::make_object(buf_id,
+                                                  "Ljava/lang/StringBuffer;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "flush" || method == "close") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
     if (class_name == "Ljava/lang/StringBuilder;" ||
         class_name == "Ljava/lang/StringBuffer;") {
         uint32_t sb_id = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)

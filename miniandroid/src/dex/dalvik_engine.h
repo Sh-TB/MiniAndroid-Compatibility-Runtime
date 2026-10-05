@@ -2305,6 +2305,20 @@ public:
     // failure sites (HALT-LOOP spin, aput/aget oob). Gated by
     // MINIANDROID_LOOP_LOCALS_DIAG; thread-local budget so logs stay bounded.
     void dump_frame_locals_diag(const char* tag);
+
+    // ── CONT-4 PHASE 1 diagnostic (env-gated, read-only, M3-law safe) ────
+    // fairymahjong Lm2;.b solver ISE classification: "Even face counts
+    // always permit a completion" (guard pc=0x57f if-lez v2 → 0x5bb).
+    // The dump answers ONE question — app bug or runtime root — by
+    // observing, at solver entry and at the fatal guard visit:
+    //   1. the face ArrayList's shadow store (kind-faithful full contents)
+    //      → independent per-face parity count (the game's own invariant);
+    //   2. every register-held [I/[Z array's full element state (kind-
+    //      faithful) → which faces remain unpaired at the stuck pass;
+    //   3. the guard operand v2 and the scan bounds v7/v9.
+    // Read-only: pure get_register + heap/shadow reads; never mutates
+    // state. Bounded: dumps at a fixed pc set only; per-pc visit budgets.
+    void dump_cont4_solver_diag(uint32_t at_pc);
     
     // API bridge
     // UC-CM-001 (F012): method_idx_hint lets the catch-all STUBBED path

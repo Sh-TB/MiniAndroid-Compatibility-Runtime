@@ -161,8 +161,14 @@ def main():
           ok1 and ok2, f"first rc={r.returncode}, second rc={r2.returncode}")
 
     # ── external-agent portability: manifest alone names every surface ──
+    # CONT-4: the surface spellings accepted are (a) the engine binary,
+    # (b) a `read` of a run artifact, (c) an explicit repo-tool invocation
+    # (`python3 scripts/<tool>.py …`) — the unknown_apk_preflight gate is
+    # a wired standalone surface (CONT-3) whose CLI fully names itself.
     portability = all(
-        "miniandroid/build/miniandroid" in op["cli"] or "read" in op["cli"]
+        "miniandroid/build/miniandroid" in op["cli"]
+        or "read" in op["cli"]
+        or op["cli"].strip().startswith("python3 scripts/")
         for op in manifest["operations"])
     check("PORT-1", "manifest self-contained (all surfaces documented)",
           portability,

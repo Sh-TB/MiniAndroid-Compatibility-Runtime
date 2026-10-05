@@ -1,0 +1,124 @@
+class Lq1; access=0x1011 super=Ljava/lang/Object; class_data_off=0x2634c
+static=0 inst=3 direct=1 virtual=1
+method Lq1;.run access=0x0011 ret=V params=[] code_off=0xcf8c
+registers=10 ins=1 outs=5 insns=224 units
+  pc=0x0000: iget-byte Lq1;.a:B
+  pc=0x0002: const/4 v1=1
+  pc=0x0003: const/4 v2=0
+  pc=0x0004: iget-object Lq1;.c:Ljava/lang/Object;
+  pc=0x0006: iget-object Lq1;.b:Ljava/lang/Object;
+  pc=0x0008: packed-switch table@pc=0x91f0008
+  pc=0x000b: check-cast type=Lt3;
+  pc=0x000d: check-cast type=Lp3;
+  pc=0x000f: invoke-virtual Lt3;.b:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x0012: return-void
+  pc=0x0013: check-cast type=Ly1;
+  pc=0x0015: check-cast type=Lt3;
+  pc=0x0017: iget-object Ly1;.d:Lj5;
+  pc=0x0019: iget-object Ly1;.a:Landroid/util/AtomicFile;
+  pc=0x001b: const/4 v5=0
+  pc=0x001c: if-nez v0 -> pc=0x00aa
+  pc=0x001e: invoke-virtual Landroid/util/AtomicFile;.getBaseFile:Ljava/io/File;()
+  pc=0x0021: move-result-object v6
+  pc=0x0022: invoke-virtual Ljava/io/File;.exists:Z()
+  pc=0x0025: move-result v6
+  pc=0x0026: if-nez v6 -> pc=0x0051
+  pc=0x0028: new-instance type=Ljava/io/File;
+  pc=0x002a: invoke-virtual Landroid/util/AtomicFile;.getBaseFile:Ljava/io/File;()
+  pc=0x002d: move-result-object v7
+  pc=0x002e: invoke-virtual Ljava/io/File;.getPath:Ljava/lang/String;()
+  pc=0x0031: move-result-object v7
+  pc=0x0032: new-instance type=Ljava/lang/StringBuilder;
+  pc=0x0034: invoke-direct Ljava/lang/StringBuilder;.<init>:V()
+  pc=0x0037: invoke-virtual Ljava/lang/StringBuilder;.append:Ljava/lang/StringBuilder;(Ljava/lang/String;)
+  pc=0x003a: const-string ".bak"
+  pc=0x003c: invoke-virtual Ljava/lang/StringBuilder;.append:Ljava/lang/StringBuilder;(Ljava/lang/String;)
+  pc=0x003f: invoke-virtual Ljava/lang/StringBuilder;.toString:Ljava/lang/String;()
+  pc=0x0042: move-result-object v7
+  pc=0x0043: invoke-direct Ljava/io/File;.<init>:V(Ljava/lang/String;)
+  pc=0x0046: invoke-virtual Ljava/io/File;.exists:Z()
+  pc=0x0049: move-result v6
+  pc=0x004a: if-eqz v6 -> pc=0x004d
+  pc=0x004c: goto -> pc=0x0051
+  pc=0x004d: move v1, v5
+  pc=0x004e: move v4, v1
+  pc=0x004f: move v6, v4
+  pc=0x0050: goto -> pc=0x0084
+  pc=0x0051: invoke-virtual Landroid/util/AtomicFile;.openRead:Ljava/io/FileInputStream;()
+  pc=0x0054: move-result-object v0
+  pc=0x0055: new-instance type=Ljava/lang/String;
+  pc=0x0057: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x005a: invoke-static Lr5;.j:[B(Ljava/io/FileInputStream;)
+  pc=0x005d: move-result-object v6
+  pc=0x005e: sget-object Lp;.a:Ljava/nio/charset/Charset;
+  pc=0x0060: invoke-direct Ljava/lang/String;.<init>:V([B,Ljava/nio/charset/Charset;)
+  pc=0x0063: invoke-static Lr5;.f:Lz;(Ljava/lang/String;)
+  pc=0x0066: move-result-object v4
+  pc=0x0067: invoke-interface Ljava/io/Closeable;.close:V()
+  pc=0x006a: iget-boolean Lz;.b:Z
+  pc=0x006c: iget-boolean Lz;.c:Z
+  pc=0x006e: iget-object Lz;.a:Lj5;
+  pc=0x0070: move-object v4, v1
+  pc=0x0071: move v1, v0
+  pc=0x0072: move-object v0, v4
+  pc=0x0073: move v4, v5
+  pc=0x0074: goto -> pc=0x0084
+  pc=0x0075: move v6, v5
+  pc=0x0076: goto -> pc=0x0081
+  pc=0x0077: move v0, v5
+  pc=0x0078: move v6, v0
+  pc=0x0079: goto -> pc=0x0081
+  pc=0x007a: move-exception v4
+  pc=0x007b: throw -> pc=0x007f
+  pc=0x007c: move-exception v6
+  pc=0x007d: invoke-static Lr5;.d:V(Ljava/io/Closeable;,Ljava/lang/Throwable;)
+  pc=0x0080: throw -> pc=0x0086
+  pc=0x0081: move v4, v1
+  pc=0x0082: move v1, v0
+  pc=0x0083: move-object v0, v2
+  pc=0x0084: if-nez v0 -> pc=0x009e
+  pc=0x0086: new-instance type=Lj5;
+  pc=0x0088: const/16 v6=15
+  pc=0x008a: invoke-static Lm2;.b:Lq3;(Lj;,Lo1;,I)
+  pc=0x008d: move-result-object v2
+  pc=0x008e: invoke-virtual Lq3;.f:Lu1;()
+  pc=0x0091: move-result-object v2
+  pc=0x0092: const/16 v6=14
+  pc=0x0094: invoke-direct Lj5;.<init>:V(Lu1;,Z,I)
+  pc=0x0097: invoke-virtual Ly1;.a:Z(Lj5;)
+  pc=0x009a: move-result v2
+  pc=0x009b: iput-boolean Ly1;.e:Z
+  pc=0x009d: goto -> pc=0x00a6
+  pc=0x009e: if-eqz v6 -> pc=0x00a6
+  pc=0x00a0: invoke-virtual Ly1;.a:Z(Lj5;)
+  pc=0x00a3: move-result v2
+  pc=0x00a4: iput-boolean Ly1;.e:Z
+  pc=0x00a6: iput-object Ly1;.d:Lj5;
+  pc=0x00a8: move v5, v4
+  pc=0x00a9: goto -> pc=0x00ab
+  pc=0x00aa: move v1, v5
+  pc=0x00ab: new-instance type=Lp3;
+  pc=0x00ad: iget-boolean Ly1;.e:Z
+  pc=0x00af: invoke-direct Lp3;.<init>:V(Lj5;,Z,Z,Z) v2
+  pc=0x00b2: iget-object Ly1;.c:Landroid/os/Handler;
+  pc=0x00b4: new-instance type=Lq1;
+  pc=0x00b6: const/4 v1=2
+  pc=0x00b7: invoke-direct Lq1;.<init>:V(Ljava/lang/Object;,Ljava/lang/Object;,B)
+  pc=0x00ba: invoke-virtual Landroid/os/Handler;.post:Z(Ljava/lang/Runnable;)
+  pc=0x00bd: return-void
+  pc=0x00be: check-cast type=Lr1;
+  pc=0x00c0: check-cast type=Landroid/view/View;
+  pc=0x00c2: iput-object Lr1;.b:Ljava/lang/Object;
+  pc=0x00c4: iput-object Lr1;.c:Ljava/lang/Object;
+  pc=0x00c6: invoke-virtual Lr1;.a:Z(Landroid/view/View;)
+  pc=0x00c9: move-result v9
+  pc=0x00ca: if-eqz v9 -> pc=0x00d7
+  pc=0x00cc: sget Landroid/os/Build$VERSION;.SDK_INT:I
+  pc=0x00ce: const/16 v0=30
+  pc=0x00d0: if-lt v9,v0 -> pc=0x00d4
+  pc=0x00d2: const/16 v1=16
+  pc=0x00d4: invoke-virtual Landroid/view/View;.performHapticFeedback:Z(I)
+  pc=0x00d7: return-void
+  pc=0x00d8: packed-switch-payload size=2 first_key=0
+  pc=0x00de: move-result-wide v0
+  pc=0x00df: nop

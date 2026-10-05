@@ -1,0 +1,1106 @@
+class Lm2; access=0x0011 super=Ljava/lang/Object; class_data_off=0x25def
+static=6 inst=1 direct=4 virtual=1
+method Lm2;.b access=0x0009 ret=Lq3; params=['Lj;', 'Lo1;', 'I'] code_off=0xf650
+registers=31 ins=3 outs=7 insns=2109 units
+  pc=0x0000: invoke-static Ljava/lang/System;.nanoTime:J()
+  pc=0x0003: move-result-wide v0
+  pc=0x0004: binop/lit8 v2, v30, 4
+  pc=0x0006: if-eqz v2 -> pc=0x000b
+  pc=0x0008: sget-object Lj;.c:Lj;
+  pc=0x000a: goto -> pc=0x000d
+  pc=0x000b: move-object/from16 v2, v28
+  pc=0x000d: binop/lit8 v3, v30, 8
+  pc=0x000f: if-eqz v3 -> pc=0x0014
+  pc=0x0011: sget-object Lo1;.c:Lo1;
+  pc=0x0013: goto -> pc=0x0016
+  pc=0x0014: move-object/from16 v3, v29
+  pc=0x0016: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x0019: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x001c: new-instance type=Lq3;
+  pc=0x001e: invoke-static Lr5;.a:Ls5;(J)
+  pc=0x0021: move-result-object v0
+  pc=0x0022: invoke-virtual Ljava/lang/Enum;.ordinal:I()
+  pc=0x0025: move-result v1
+  pc=0x0026: const/4 v2=1
+  pc=0x0027: if-eqz v1 -> pc=0x0034
+  pc=0x0029: if-ne v1,v2 -> pc=0x002e
+  pc=0x002b: sget-object Lo;.c:Ljava/util/ArrayList;
+  pc=0x002d: goto -> pc=0x0036
+  pc=0x002e: new-instance type=Lx4;
+  pc=0x0030: invoke-direct Ljava/lang/RuntimeException;.<init>:V()
+  pc=0x0033: throw -> pc=0x0033
+  pc=0x0034: sget-object Lo;.b:Ljava/util/ArrayList;
+  pc=0x0036: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x0039: invoke-interface Ljava/util/Collection;.isEmpty:Z()
+  pc=0x003c: move-result v5
+  pc=0x003d: if-nez v5 -> pc=0x0835
+  pc=0x003f: invoke-interface Ljava/util/Collection;.size:I()
+  pc=0x0042: move-result v5
+  pc=0x0043: const/4 v6=0
+  pc=0x0044: invoke-virtual Le5;.c:I(I,I)
+  pc=0x0047: move-result v5
+  pc=0x0048: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x004b: move-result-object v1
+  pc=0x004c: check-cast type=Lm;
+  pc=0x004e: iget-object Lm;.b:Ljava/util/List;
+  pc=0x0050: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0053: move-result v7
+  pc=0x0054: const/4 v8=2
+  pc=0x0055: binop/2addr v7, v8
+  pc=0x0056: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0059: move-result v9
+  pc=0x005a: const/16 v10=10
+  pc=0x005c: const/16 v11=64
+  pc=0x005e: if-ge v9,v11 -> pc=0x0067
+  pc=0x0060: const/16 v9=15
+  pc=0x0062: invoke-virtual Le5;.c:I(I,I)
+  pc=0x0065: move-result v9
+  pc=0x0066: goto -> pc=0x006f
+  pc=0x0067: const/16 v9=12
+  pc=0x0069: const/16 v12=17
+  pc=0x006b: invoke-virtual Le5;.c:I(I,I)
+  pc=0x006e: move-result v9
+  pc=0x006f: iget-byte Lo1;.a:B
+  pc=0x0071: binop/2addr v9, v12
+  pc=0x0072: invoke-static Li3;.d:I(I,I,I)
+  pc=0x0075: move-result v7
+  pc=0x0076: sget-object Lo5;.a:Ljava/util/List;
+  pc=0x0078: const/4 v12=6
+  pc=0x0079: invoke-static Ls;.u:Ljava/util/List;(Ljava/lang/Iterable;,I)
+  pc=0x007c: move-result-object v9
+  pc=0x007d: new-instance type=Ljava/util/LinkedHashMap;
+  pc=0x007f: invoke-direct Ljava/util/LinkedHashMap;.<init>:V()
+  pc=0x0082: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x0085: move-result-object v9
+  pc=0x0086: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x0089: move-result v13
+  pc=0x008a: if-eqz v13 -> pc=0x00a9
+  pc=0x008c: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x008f: move-result-object v13
+  pc=0x0090: move-object v14, v13
+  pc=0x0091: check-cast type=Lp5;
+  pc=0x0093: iget-object Lp5;.d:Ljava/lang/Integer;
+  pc=0x0095: invoke-virtual Ljava/util/LinkedHashMap;.get:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x0098: move-result-object v15
+  pc=0x0099: if-nez v15 -> pc=0x00a3
+  pc=0x009b: new-instance type=Ljava/util/ArrayList;
+  pc=0x009d: invoke-direct Ljava/util/ArrayList;.<init>:V()
+  pc=0x00a0: invoke-interface Ljava/util/Map;.put:Ljava/lang/Object;(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x00a3: check-cast type=Ljava/util/List;
+  pc=0x00a5: invoke-interface Ljava/util/List;.add:Z(Ljava/lang/Object;)
+  pc=0x00a8: goto -> pc=0x0086
+  pc=0x00a9: invoke-virtual Ljava/util/LinkedHashMap;.values:Ljava/util/Collection;()
+  pc=0x00ac: move-result-object v9
+  pc=0x00ad: new-instance type=Ljava/util/ArrayList;
+  pc=0x00af: invoke-static Lu;.t:I(Ljava/lang/Iterable;)
+  pc=0x00b2: move-result v13
+  pc=0x00b3: invoke-direct Ljava/util/ArrayList;.<init>:V(I)
+  pc=0x00b6: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x00b9: move-result-object v9
+  pc=0x00ba: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x00bd: move-result v13
+  pc=0x00be: if-eqz v13 -> pc=0x00ce
+  pc=0x00c0: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x00c3: move-result-object v13
+  pc=0x00c4: check-cast type=Ljava/util/List;
+  pc=0x00c6: invoke-static Lt;.r:Ljava/util/List;(Ljava/lang/Iterable;,Ls5;)
+  pc=0x00c9: move-result-object v13
+  pc=0x00ca: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x00cd: goto -> pc=0x00ba
+  pc=0x00ce: invoke-static Lt;.r:Ljava/util/List;(Ljava/lang/Iterable;,Ls5;)
+  pc=0x00d1: move-result-object v9
+  pc=0x00d2: new-instance type=Lo3;
+  pc=0x00d4: invoke-direct Lo3;.<init>:V(I)
+  pc=0x00d7: invoke-static Ls;.v:Ljava/lang/Object;(Ljava/util/List;)
+  pc=0x00da: move-result-object v10
+  pc=0x00db: check-cast type=Ljava/util/List;
+  pc=0x00dd: invoke-interface Ljava/util/List;.size:I()
+  pc=0x00e0: move-result v10
+  pc=0x00e1: move v13, v6
+  pc=0x00e2: if-ge v13,v10 -> pc=0x0113
+  pc=0x00e4: move-object v14, v9
+  pc=0x00e5: check-cast type=Ljava/util/ArrayList;
+  pc=0x00e7: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x00ea: move-result v15
+  pc=0x00eb: move v11, v6
+  pc=0x00ec: if-ge v11,v15 -> pc=0x010c
+  pc=0x00ee: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x00f1: move-result-object v16
+  pc=0x00f2: binop/lit8 v11, v11, 1
+  pc=0x00f4: move/from16 v29, v8
+  pc=0x00f6: move-object/from16 v8, v16
+  pc=0x00f8: check-cast type=Ljava/util/List;
+  pc=0x00fa: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x00fd: move-result-object v8
+  pc=0x00fe: check-cast type=Lp5;
+  pc=0x0100: iget-byte Lp5;.a:B
+  pc=0x0102: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0105: move-result-object v8
+  pc=0x0106: invoke-virtual Lo3;.add:Z(Ljava/lang/Object;)
+  pc=0x0109: move/from16 v8, v29
+  pc=0x010b: goto -> pc=0x00ec
+  pc=0x010c: move/from16 v29, v8
+  pc=0x010e: binop/lit8 v13, v13, 1
+  pc=0x0110: const/16 v11=64
+  pc=0x0112: goto -> pc=0x00e2
+  pc=0x0113: move/from16 v29, v8
+  pc=0x0115: invoke-static Li3;.b:Lo3;(Lo3;)
+  pc=0x0118: move-result-object v8
+  pc=0x0119: invoke-static Ls;.y:Ljava/util/List;(Ljava/lang/Iterable;,I)
+  pc=0x011c: move-result-object v8
+  pc=0x011d: invoke-virtual Ls5;.b:I()
+  pc=0x0120: move-result v9
+  pc=0x0121: unop
+  pc=0x0122: const/16 v11=32
+  pc=0x0124: binop/2addr v9, v11
+  pc=0x0125: invoke-virtual Ls5;.b:I()
+  pc=0x0128: move-result v0
+  pc=0x0129: unop
+  pc=0x012a: binop/2addr v9, v11
+  pc=0x012b: sget-object Lo1;.d:Lo1;
+  pc=0x012d: if-ne v3,v0 -> pc=0x0131
+  pc=0x012f: move v0, v2
+  pc=0x0130: goto -> pc=0x0132
+  pc=0x0131: move v0, v6
+  pc=0x0132: invoke-static Lr5;.a:Ls5;(J)
+  pc=0x0135: move-result-object v3
+  pc=0x0136: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0139: move-result v9
+  pc=0x013a: binop/lit8 v9, v9, 2
+  pc=0x013c: if-gt v2,v7 -> pc=0x082d
+  pc=0x013e: if-gt v7,v9 -> pc=0x082d
+  pc=0x0140: invoke-virtual Lm;.a:Li;()
+  pc=0x0143: move-result-object v11
+  pc=0x0144: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x0147: iget-object Li;.a:Ljava/util/List;
+  pc=0x0149: invoke-interface Ljava/util/List;.size:I()
+  pc=0x014c: move-result v13
+  pc=0x014d: new-array type=[I
+  pc=0x014f: move v15, v6
+  pc=0x0150: if-ge v15,v13 -> pc=0x015e
+  pc=0x0152: const/16 v30=0
+  pc=0x0154: iget-object Li;.b:[[I
+  pc=0x0156: aget-object v10, v0, v10
+  pc=0x0158: array-length v10, v10
+  pc=0x0159: aput v10, v0, v14
+  pc=0x015b: binop/lit8 v15, v15, 1
+  pc=0x015d: goto -> pc=0x0150
+  pc=0x015e: const/16 v30=0
+  pc=0x0160: new-array type=[I
+  pc=0x0162: move v15, v6
+  pc=0x0163: if-ge v15,v13 -> pc=0x0173
+  pc=0x0165: move/from16 v21, v2
+  pc=0x0167: iget-object Li;.c:[[I
+  pc=0x0169: aget-object v2, v0, v2
+  pc=0x016b: array-length v2, v2
+  pc=0x016c: aput v2, v0, v10
+  pc=0x016e: binop/lit8 v15, v15, 1
+  pc=0x0170: move/from16 v2, v21
+  pc=0x0172: goto -> pc=0x0163
+  pc=0x0173: move/from16 v21, v2
+  pc=0x0175: new-array type=[I
+  pc=0x0177: move v15, v6
+  pc=0x0178: if-ge v15,v13 -> pc=0x0185
+  pc=0x017a: iget-object Li;.d:[[I
+  pc=0x017c: aget-object v6, v0, v6
+  pc=0x017e: array-length v6, v6
+  pc=0x017f: aput v6, v0, v2
+  pc=0x0181: binop/lit8 v15, v15, 1
+  pc=0x0183: const/4 v6=0
+  pc=0x0184: goto -> pc=0x0178
+  pc=0x0185: move-object/from16 v16, v14
+  pc=0x0187: new-array type=[Z
+  pc=0x0189: const/4 v6=0
+  pc=0x018a: if-ge v6,v13 -> pc=0x0191
+  pc=0x018c: aput-boolean v5, v1, v14
+  pc=0x018e: binop/lit8 v6, v6, 1
+  pc=0x0190: goto -> pc=0x018a
+  pc=0x0191: new-array type=[Z
+  pc=0x0193: new-instance type=Ljava/util/ArrayList;
+  pc=0x0195: invoke-direct Ljava/util/ArrayList;.<init>:V(I)
+  pc=0x0198: move/from16 v23, v0
+  pc=0x019a: new-instance type=Ljava/util/ArrayList;
+  pc=0x019c: invoke-direct Ljava/util/ArrayList;.<init>:V(I)
+  pc=0x019f: invoke-static Lt;.o:Lh3;(Ljava/util/Collection;)
+  pc=0x01a2: move-result-object v12
+  pc=0x01a3: invoke-virtual Lh3;.iterator:Ljava/util/Iterator;()
+  pc=0x01a6: move-result-object v12
+  pc=0x01a7: move-object/from16 v18, v2
+  pc=0x01a9: move-object v2, v12
+  pc=0x01aa: check-cast type=Lg3;
+  pc=0x01ac: move-object/from16 v19, v6
+  pc=0x01ae: iget-boolean Lg3;.b:Z
+  pc=0x01b0: if-eqz v6 -> pc=0x01be
+  pc=0x01b2: invoke-virtual Lg3;.nextInt:I()
+  pc=0x01b5: move-result v20
+  pc=0x01b6: move-object/from16 v17, v10
+  pc=0x01b8: invoke-static/range Li;.b:V([Z,[Z,[I,[I,[I,Ljava/util/ArrayList;,I) v7..v13
+  pc=0x01bb: move-object/from16 v6, v19
+  pc=0x01bd: goto -> pc=0x01a9
+  pc=0x01be: move-object/from16 v17, v10
+  pc=0x01c0: const/4 v6=0
+  pc=0x01c1: move-object/from16 v2, v19
+  pc=0x01c3: if-ge v6,v13 -> pc=0x0262
+  pc=0x01c5: invoke-virtual Ljava/util/ArrayList;.isEmpty:Z()
+  pc=0x01c8: move-result v10
+  pc=0x01c9: if-nez v10 -> pc=0x025a
+  pc=0x01cb: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x01ce: move-result v10
+  pc=0x01cf: const/4 v12=0
+  pc=0x01d0: invoke-virtual Le5;.c:I(I,I)
+  pc=0x01d3: move-result v10
+  pc=0x01d4: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x01d7: move-result-object v12
+  pc=0x01d8: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x01db: check-cast type=Ljava/lang/Number;
+  pc=0x01dd: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x01e0: move-result v12
+  pc=0x01e1: invoke-virtual Ljava/util/ArrayList;.isEmpty:Z()
+  pc=0x01e4: move-result v19
+  pc=0x01e5: if-nez v19 -> pc=0x0252
+  pc=0x01e7: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x01ea: move-result v19
+  pc=0x01eb: move/from16 v24, v6
+  pc=0x01ed: binop/lit8 v6, v19, 255
+  pc=0x01ef: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x01f2: move-result-object v6
+  pc=0x01f3: invoke-virtual Ljava/util/ArrayList;.set:Ljava/lang/Object;(I,Ljava/lang/Object;)
+  pc=0x01f6: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x01f9: move-result v6
+  pc=0x01fa: binop/lit8 v6, v6, 255
+  pc=0x01fc: invoke-virtual Ljava/util/ArrayList;.remove:Ljava/lang/Object;(I)
+  pc=0x01ff: const/16 v22=0
+  pc=0x0201: aput-boolean v6, v1, v14
+  pc=0x0203: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0206: move-result-object v6
+  pc=0x0207: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x020a: iget-object Li;.e:[[I
+  pc=0x020c: aget-object v6, v0, v6
+  pc=0x020e: array-length v10, v6
+  pc=0x020f: move-object/from16 v19, v2
+  pc=0x0211: const/4 v2=0
+  pc=0x0212: if-ge v2,v10 -> pc=0x0222
+  pc=0x0214: aget v4, v1, v6
+  pc=0x0216: aget v9, v1, v16
+  pc=0x0218: binop/lit8 v25, v25, 255
+  pc=0x021a: aput v9, v1, v16
+  pc=0x021c: invoke-static/range Li;.b:V([Z,[Z,[I,[I,[I,Ljava/util/ArrayList;,I) v7..v13
+  pc=0x021f: binop/lit8 v2, v2, 1
+  pc=0x0221: goto -> pc=0x0212
+  pc=0x0222: iget-object Li;.f:[[I
+  pc=0x0224: aget-object v2, v0, v2
+  pc=0x0226: array-length v6, v2
+  pc=0x0227: const/4 v10=0
+  pc=0x0228: if-ge v10,v6 -> pc=0x0238
+  pc=0x022a: aget v4, v1, v2
+  pc=0x022c: aget v9, v1, v17
+  pc=0x022e: binop/lit8 v25, v25, 255
+  pc=0x0230: aput v9, v1, v17
+  pc=0x0232: invoke-static/range Li;.b:V([Z,[Z,[I,[I,[I,Ljava/util/ArrayList;,I) v7..v13
+  pc=0x0235: binop/lit8 v10, v10, 1
+  pc=0x0237: goto -> pc=0x0228
+  pc=0x0238: iget-object Li;.g:[[I
+  pc=0x023a: aget-object v2, v0, v2
+  pc=0x023c: array-length v6, v2
+  pc=0x023d: const/4 v10=0
+  pc=0x023e: if-ge v10,v6 -> pc=0x024e
+  pc=0x0240: aget v4, v1, v2
+  pc=0x0242: aget v12, v0, v18
+  pc=0x0244: binop/lit8 v12, v12, 255
+  pc=0x0246: aput v12, v0, v18
+  pc=0x0248: invoke-static/range Li;.b:V([Z,[Z,[I,[I,[I,Ljava/util/ArrayList;,I) v7..v13
+  pc=0x024b: binop/lit8 v10, v10, 1
+  pc=0x024d: goto -> pc=0x023e
+  pc=0x024e: binop/lit8 v6, v24, 1
+  pc=0x0250: goto/16 -> pc=0x01c1
+  pc=0x0252: new-instance type=Ljava/util/NoSuchElementException;
+  pc=0x0254: const-string "List is empty."
+  pc=0x0256: invoke-direct Ljava/util/NoSuchElementException;.<init>:V(Ljava/lang/String;)
+  pc=0x0259: throw -> pc=0x0259
+  pc=0x025a: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x025c: const-string "Shape has no geometrically legal removal"
+  pc=0x025e: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x0261: throw -> pc=0x0261
+  pc=0x0262: const/4 v2=3
+  pc=0x0263: if-eqz v23 -> pc=0x0463
+  pc=0x0265: if-lt v7,v2 -> pc=0x0463
+  pc=0x0267: invoke-static Lt;.o:Lh3;(Ljava/util/Collection;)
+  pc=0x026a: move-result-object v10
+  pc=0x026b: new-instance type=Ljava/util/ArrayList;
+  pc=0x026d: invoke-direct Ljava/util/ArrayList;.<init>:V()
+  pc=0x0270: invoke-virtual Lh3;.iterator:Ljava/util/Iterator;()
+  pc=0x0273: move-result-object v10
+  pc=0x0274: move-object v12, v10
+  pc=0x0275: check-cast type=Lg3;
+  pc=0x0277: iget-boolean Lg3;.b:Z
+  pc=0x0279: if-eqz v13 -> pc=0x02fe
+  pc=0x027b: invoke-virtual Lg3;.nextInt:I()
+  pc=0x027e: move-result v12
+  pc=0x027f: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x0282: move-result-object v13
+  pc=0x0283: check-cast type=Lq5;
+  pc=0x0285: invoke-interface Ljava/util/List;.iterator:Ljava/util/Iterator;()
+  pc=0x0288: move-result-object v14
+  pc=0x0289: const/4 v15=0
+  pc=0x028a: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x028d: move-result v16
+  pc=0x028e: if-eqz v16 -> pc=0x02d8
+  pc=0x0290: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x0293: move-result-object v16
+  pc=0x0294: move/from16 v17, v2
+  pc=0x0296: move-object/from16 v2, v16
+  pc=0x0298: check-cast type=Lq5;
+  pc=0x029a: iget Lq5;.c:I
+  pc=0x029c: move/from16 v18, v9
+  pc=0x029e: iget Lq5;.c:I
+  pc=0x02a0: binop/lit8 v9, v9, 255
+  pc=0x02a2: if-ne v6,v9 -> pc=0x02cd
+  pc=0x02a4: iget Lq5;.a:I
+  pc=0x02a6: move-object/from16 v19, v10
+  pc=0x02a8: unop
+  pc=0x02a9: iget Lq5;.a:I
+  pc=0x02ab: move-wide/from16 v23, v9
+  pc=0x02ad: unop
+  pc=0x02ae: binop v9, v0, v23
+  pc=0x02b0: invoke-static Ljava/lang/Math;.abs:J(J)
+  pc=0x02b3: move-result-wide v9
+  pc=0x02b4: const-wide/16 v23=2
+  pc=0x02b6: cmp-long
+  pc=0x02b8: if-gez v6 -> pc=0x02cf
+  pc=0x02ba: iget Lq5;.b:I
+  pc=0x02bc: unop
+  pc=0x02bd: iget Lq5;.b:I
+  pc=0x02bf: move-wide/from16 v25, v9
+  pc=0x02c1: unop
+  pc=0x02c2: binop v9, v0, v25
+  pc=0x02c4: invoke-static Ljava/lang/Math;.abs:J(J)
+  pc=0x02c7: move-result-wide v9
+  pc=0x02c8: cmp-long
+  pc=0x02ca: if-gez v2 -> pc=0x02cf
+  pc=0x02cc: goto -> pc=0x02df
+  pc=0x02cd: move-object/from16 v19, v10
+  pc=0x02cf: binop/lit8 v15, v15, 1
+  pc=0x02d1: move/from16 v2, v17
+  pc=0x02d3: move/from16 v9, v18
+  pc=0x02d5: move-object/from16 v10, v19
+  pc=0x02d7: goto -> pc=0x028a
+  pc=0x02d8: move/from16 v17, v2
+  pc=0x02da: move/from16 v18, v9
+  pc=0x02dc: move-object/from16 v19, v10
+  pc=0x02de: const/4 v15=-1
+  pc=0x02df: if-ltz v15 -> pc=0x02ef
+  pc=0x02e1: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x02e4: move-result-object v2
+  pc=0x02e5: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x02e8: move-result-object v6
+  pc=0x02e9: new-instance type=La5;
+  pc=0x02eb: invoke-direct La5;.<init>:V(Ljava/lang/Object;,Ljava/lang/Integer;)
+  pc=0x02ee: goto -> pc=0x02f1
+  pc=0x02ef: move-object/from16 v9, v30
+  pc=0x02f1: if-eqz v9 -> pc=0x02f6
+  pc=0x02f3: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x02f6: move/from16 v2, v17
+  pc=0x02f8: move/from16 v9, v18
+  pc=0x02fa: move-object/from16 v10, v19
+  pc=0x02fc: goto/16 -> pc=0x0274
+  pc=0x02fe: move/from16 v17, v2
+  pc=0x0300: move/from16 v18, v9
+  pc=0x0302: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0305: move-result v2
+  pc=0x0306: new-array type=[Z
+  pc=0x0308: const/4 v9=0
+  pc=0x0309: if-ge v9,v2 -> pc=0x0310
+  pc=0x030b: aput-boolean v5, v1, v6
+  pc=0x030d: binop/lit8 v9, v9, 1
+  pc=0x030f: goto -> pc=0x0309
+  pc=0x0310: new-instance type=Ljava/util/ArrayList;
+  pc=0x0312: invoke-direct Ljava/util/ArrayList;.<init>:V()
+  pc=0x0315: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x0318: move-result v9
+  pc=0x0319: const/4 v10=0
+  pc=0x031a: if-ge v10,v9 -> pc=0x033b
+  pc=0x031c: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x031f: move-result-object v12
+  pc=0x0320: binop/lit8 v10, v10, 1
+  pc=0x0322: move-object v13, v12
+  pc=0x0323: check-cast type=La5;
+  pc=0x0325: invoke-virtual Lm;.a:Li;()
+  pc=0x0328: move-result-object v14
+  pc=0x0329: iget-object La5;.a:Ljava/lang/Object;
+  pc=0x032b: check-cast type=Ljava/lang/Number;
+  pc=0x032d: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0330: move-result v13
+  pc=0x0331: invoke-virtual Li;.a:Z(I,[Z)
+  pc=0x0334: move-result v13
+  pc=0x0335: if-eqz v13 -> pc=0x031a
+  pc=0x0337: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x033a: goto -> pc=0x031a
+  pc=0x033b: invoke-static Lt;.r:Ljava/util/List;(Ljava/lang/Iterable;,Ls5;)
+  pc=0x033e: move-result-object v2
+  pc=0x033f: check-cast type=Ljava/util/ArrayList;
+  pc=0x0341: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x0344: move-result v9
+  pc=0x0345: const/4 v10=0
+  pc=0x0346: if-ge v10,v9 -> pc=0x03ee
+  pc=0x0348: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x034b: move-result-object v12
+  pc=0x034c: binop/lit8 v10, v10, 1
+  pc=0x034e: check-cast type=La5;
+  pc=0x0350: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x0353: move-result v13
+  pc=0x0354: const/4 v14=0
+  pc=0x0355: if-ge v14,v13 -> pc=0x0346
+  pc=0x0357: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x035a: move-result-object v15
+  pc=0x035b: binop/lit8 v14, v14, 1
+  pc=0x035d: check-cast type=La5;
+  pc=0x035f: move-object/from16 v19, v2
+  pc=0x0361: iget-object La5;.a:Ljava/lang/Object;
+  pc=0x0363: move-object/from16 v20, v2
+  pc=0x0365: iget-object La5;.b:Ljava/lang/Integer;
+  pc=0x0367: check-cast type=Ljava/lang/Number;
+  pc=0x0369: move-object/from16 v23, v2
+  pc=0x036b: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x036e: move-result v2
+  pc=0x036f: move/from16 v24, v9
+  pc=0x0371: iget-object La5;.a:Ljava/lang/Object;
+  pc=0x0373: move-object/from16 v25, v9
+  pc=0x0375: iget-object La5;.b:Ljava/lang/Integer;
+  pc=0x0377: check-cast type=Ljava/lang/Number;
+  pc=0x0379: move-object/from16 v26, v9
+  pc=0x037b: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x037e: move-result v9
+  pc=0x037f: if-eq v2,v9 -> pc=0x03e8
+  pc=0x0381: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x0384: move-result v2
+  pc=0x0385: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x0388: move-result v9
+  pc=0x0389: if-eq v2,v9 -> pc=0x03e8
+  pc=0x038b: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x038e: move-result v2
+  pc=0x038f: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x0392: move-result-object v2
+  pc=0x0393: check-cast type=Lq5;
+  pc=0x0395: iget Lq5;.c:I
+  pc=0x0397: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x039a: move-result v9
+  pc=0x039b: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x039e: move-result-object v9
+  pc=0x039f: check-cast type=Lq5;
+  pc=0x03a1: iget Lq5;.c:I
+  pc=0x03a3: if-eq v2,v9 -> pc=0x03a6
+  pc=0x03a5: goto -> pc=0x03e8
+  pc=0x03a6: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x03a9: move-result v2
+  pc=0x03aa: const/16 v22=0
+  pc=0x03ac: aput-boolean v6, v1, v6
+  pc=0x03ae: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x03b1: move-result v2
+  pc=0x03b2: aput-boolean v6, v1, v6
+  pc=0x03b4: invoke-virtual Lm;.a:Li;()
+  pc=0x03b7: move-result-object v2
+  pc=0x03b8: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x03bb: move-result v9
+  pc=0x03bc: invoke-virtual Li;.a:Z(I,[Z)
+  pc=0x03bf: move-result v2
+  pc=0x03c0: if-eqz v2 -> pc=0x03d3
+  pc=0x03c2: invoke-virtual Lm;.a:Li;()
+  pc=0x03c5: move-result-object v2
+  pc=0x03c6: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x03c9: move-result v9
+  pc=0x03ca: invoke-virtual Li;.a:Z(I,[Z)
+  pc=0x03cd: move-result v2
+  pc=0x03ce: if-eqz v2 -> pc=0x03d3
+  pc=0x03d0: move/from16 v2, v21
+  pc=0x03d2: goto -> pc=0x03d4
+  pc=0x03d3: const/4 v2=0
+  pc=0x03d4: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x03d7: move-result v9
+  pc=0x03d8: aput-boolean v5, v1, v6
+  pc=0x03da: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x03dd: move-result v9
+  pc=0x03de: aput-boolean v5, v1, v6
+  pc=0x03e0: if-eqz v2 -> pc=0x03e8
+  pc=0x03e2: invoke-static Lr5;.b:[I(Ljava/util/List;,La5;,La5;)
+  pc=0x03e5: move-result-object v2
+  pc=0x03e6: goto/16 -> pc=0x0469
+  pc=0x03e8: move-object/from16 v2, v19
+  pc=0x03ea: move/from16 v9, v24
+  pc=0x03ec: goto/16 -> pc=0x0355
+  pc=0x03ee: move/from16 v2, v17
+  pc=0x03f0: if-lez v2 -> pc=0x0467
+  pc=0x03f2: new-instance type=Ljava/util/ArrayList;
+  pc=0x03f4: invoke-direct Ljava/util/ArrayList;.<init>:V()
+  pc=0x03f7: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x03fa: move-result v9
+  pc=0x03fb: const/4 v10=0
+  pc=0x03fc: if-ge v10,v9 -> pc=0x041d
+  pc=0x03fe: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x0401: move-result-object v12
+  pc=0x0402: binop/lit8 v10, v10, 1
+  pc=0x0404: move-object v13, v12
+  pc=0x0405: check-cast type=La5;
+  pc=0x0407: iget-object La5;.a:Ljava/lang/Object;
+  pc=0x0409: check-cast type=Ljava/lang/Number;
+  pc=0x040b: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x040e: move-result v13
+  pc=0x040f: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x0412: move-result-object v13
+  pc=0x0413: check-cast type=Lq5;
+  pc=0x0415: iget Lq5;.c:I
+  pc=0x0417: if-ne v13,v2 -> pc=0x03fc
+  pc=0x0419: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x041c: goto -> pc=0x03fc
+  pc=0x041d: invoke-static Lt;.r:Ljava/util/List;(Ljava/lang/Iterable;,Ls5;)
+  pc=0x0420: move-result-object v6
+  pc=0x0421: check-cast type=Ljava/util/ArrayList;
+  pc=0x0423: invoke-virtual Ljava/util/ArrayList;.isEmpty:Z()
+  pc=0x0426: move-result v9
+  pc=0x0427: if-eqz v9 -> pc=0x042c
+  pc=0x0429: move-object/from16 v9, v30
+  pc=0x042b: goto -> pc=0x0431
+  pc=0x042c: const/4 v12=0
+  pc=0x042d: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x0430: move-result-object v9
+  pc=0x0431: check-cast type=La5;
+  pc=0x0433: if-nez v9 -> pc=0x0436
+  pc=0x0435: goto -> pc=0x045b
+  pc=0x0436: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x0439: move-result v10
+  pc=0x043a: const/4 v12=0
+  pc=0x043b: if-ge v12,v10 -> pc=0x0455
+  pc=0x043d: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x0440: move-result-object v13
+  pc=0x0441: binop/lit8 v12, v12, 1
+  pc=0x0443: move-object v14, v13
+  pc=0x0444: check-cast type=La5;
+  pc=0x0446: iget-object La5;.b:Ljava/lang/Integer;
+  pc=0x0448: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x044b: move-result v14
+  pc=0x044c: iget-object La5;.b:Ljava/lang/Integer;
+  pc=0x044e: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0451: move-result v15
+  pc=0x0452: if-eq v14,v15 -> pc=0x043b
+  pc=0x0454: goto -> pc=0x0457
+  pc=0x0455: move-object/from16 v13, v30
+  pc=0x0457: check-cast type=La5;
+  pc=0x0459: if-nez v13 -> pc=0x045e
+  pc=0x045b: binop/lit8 v2, v2, 255
+  pc=0x045d: goto -> pc=0x03f0
+  pc=0x045e: invoke-static Lr5;.b:[I(Ljava/util/List;,La5;,La5;)
+  pc=0x0461: move-result-object v2
+  pc=0x0462: goto -> pc=0x0469
+  pc=0x0463: move/from16 v17, v2
+  pc=0x0465: move/from16 v18, v9
+  pc=0x0467: move-object/from16 v2, v30
+  pc=0x0469: if-nez v2 -> pc=0x046d
+  pc=0x046b: const/4 v6=0
+  pc=0x046c: goto -> pc=0x046f
+  pc=0x046d: move/from16 v6, v29
+  pc=0x046f: binop v9, v0, v7
+  pc=0x0471: binop v10, v0, v18
+  pc=0x0473: invoke-static Li3;.n:Lh3;(I,I)
+  pc=0x0476: move-result-object v11
+  pc=0x0477: invoke-static Lt;.r:Ljava/util/List;(Ljava/lang/Iterable;,Ls5;)
+  pc=0x047a: move-result-object v11
+  pc=0x047b: binop v12, v0, v10
+  pc=0x047d: invoke-static Ls;.y:Ljava/util/List;(Ljava/lang/Iterable;,I)
+  pc=0x0480: move-result-object v11
+  pc=0x0481: invoke-static Ls;.D:Ljava/util/Set;(Ljava/lang/Iterable;)
+  pc=0x0484: move-result-object v11
+  pc=0x0485: new-array type=[I
+  pc=0x0487: const/4 v13=0
+  pc=0x0488: if-ge v13,v7 -> pc=0x04a1
+  pc=0x048a: if-ge v13,v6 -> pc=0x048f
+  pc=0x048c: move/from16 v14, v29
+  pc=0x048e: goto -> pc=0x049c
+  pc=0x048f: binop v14, v0, v10
+  pc=0x0491: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0494: move-result-object v15
+  pc=0x0495: invoke-interface Ljava/util/Set;.contains:Z(Ljava/lang/Object;)
+  pc=0x0498: move-result v15
+  pc=0x0499: binop/2addr v15, v14
+  pc=0x049a: binop/lit8 v14, v15, 2
+  pc=0x049c: aput v14, v0, v12
+  pc=0x049e: binop/lit8 v13, v13, 1
+  pc=0x04a0: goto -> pc=0x0488
+  pc=0x04a1: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x04a4: move-result v9
+  pc=0x04a5: new-array type=[I
+  pc=0x04a7: const/4 v11=0
+  pc=0x04a8: if-ge v11,v9 -> pc=0x04af
+  pc=0x04aa: aput v1, v1, v10
+  pc=0x04ac: binop/lit8 v11, v11, 1
+  pc=0x04ae: goto -> pc=0x04a8
+  pc=0x04af: if-nez v2 -> pc=0x04b3
+  pc=0x04b1: const/4 v11=-1
+  pc=0x04b2: goto -> pc=0x051b
+  pc=0x04b3: move/from16 v9, v29
+  pc=0x04b5: new-array type=[Z
+  pc=0x04b7: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x04ba: move-result v9
+  pc=0x04bb: const/4 v13=0
+  pc=0x04bc: const/4 v14=0
+  pc=0x04bd: const/4 v15=0
+  pc=0x04be: if-ge v15,v9 -> pc=0x04f0
+  pc=0x04c0: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x04c3: move-result-object v18
+  pc=0x04c4: binop/lit8 v15, v15, 1
+  pc=0x04c6: binop/lit8 v19, v13, 1
+  pc=0x04c8: if-ltz v13 -> pc=0x04ec
+  pc=0x04ca: check-cast type=Ljava/lang/Number;
+  pc=0x04cc: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x04cf: move-result v18
+  pc=0x04d0: aget v2, v1, v2
+  pc=0x04d2: if-ltz v18 -> pc=0x04e3
+  pc=0x04d4: aget-boolean v4, v1, v11
+  pc=0x04d6: binop/lit8 v23, v20, 1
+  pc=0x04d8: aput-boolean v7, v1, v11
+  pc=0x04da: if-nez v20 -> pc=0x04df
+  pc=0x04dc: move/from16 v18, v21
+  pc=0x04de: goto -> pc=0x04e1
+  pc=0x04df: const/16 v18=-1
+  pc=0x04e1: binop v14, v0, v14
+  pc=0x04e3: aget v2, v1, v10
+  pc=0x04e5: binop v2, v1, v18
+  pc=0x04e7: aput v2, v1, v10
+  pc=0x04e9: move/from16 v13, v19
+  pc=0x04eb: goto -> pc=0x04be
+  pc=0x04ec: invoke-static Lt;.s:V()
+  pc=0x04ef: throw -> pc=0x050d
+  pc=0x04f0: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x04f3: move-result v9
+  pc=0x04f4: const/4 v11=2
+  pc=0x04f5: binop/2addr v9, v11
+  pc=0x04f6: const/4 v11=-1
+  pc=0x04f7: if-ge v11,v9 -> pc=0x051b
+  pc=0x04f9: binop/lit8 v13, v9, 1
+  pc=0x04fb: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x04fe: move-result-object v14
+  pc=0x04ff: check-cast type=Ljava/lang/Number;
+  pc=0x0501: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0504: move-result v14
+  pc=0x0505: aget v14, v0, v2
+  pc=0x0507: if-gez v14 -> pc=0x050c
+  pc=0x0509: move/from16 v14, v21
+  pc=0x050b: goto -> pc=0x050d
+  pc=0x050c: const/4 v14=0
+  pc=0x050d: aget v15, v0, v10
+  pc=0x050f: aget v13, v0, v10
+  pc=0x0511: binop/2addr v13, v14
+  pc=0x0512: invoke-static Ljava/lang/Math;.min:I(I,I)
+  pc=0x0515: move-result v13
+  pc=0x0516: aput v13, v0, v10
+  pc=0x0518: binop/lit8 v9, v9, 255
+  pc=0x051a: goto -> pc=0x04f7
+  pc=0x051b: new-array type=[Z
+  pc=0x051d: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0520: move-result v5
+  pc=0x0521: new-array type=[I
+  pc=0x0523: new-array type=[I
+  pc=0x0525: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x0528: move-result v15
+  pc=0x0529: move-object/from16 v20, v2
+  pc=0x052b: const/4 v2=0
+  pc=0x052c: const/4 v11=0
+  pc=0x052d: const/16 v16=0
+  pc=0x052f: const/16 v19=0
+  pc=0x0531: if-ge v2,v15 -> pc=0x05c7
+  pc=0x0533: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x0536: move-result-object v23
+  pc=0x0537: binop/lit8 v2, v2, 1
+  pc=0x0539: binop/lit8 v24, v19, 1
+  pc=0x053b: if-ltz v19 -> pc=0x05c3
+  pc=0x053d: check-cast type=Ljava/lang/Number;
+  pc=0x053f: invoke-virtual/range Ljava/lang/Number;.intValue:I() v1..v1
+  pc=0x0542: move-result v23
+  pc=0x0543: if-eqz v20 -> pc=0x0548
+  pc=0x0545: aget v9, v1, v20
+  pc=0x0547: goto -> pc=0x054a
+  pc=0x0548: const/16 v25=-1
+  pc=0x054a: if-ltz v25 -> pc=0x0557
+  pc=0x054c: move/from16 v26, v25
+  pc=0x054e: move/from16 v25, v2
+  pc=0x0550: move/from16 v2, v26
+  pc=0x0552: move/from16 v27, v7
+  pc=0x0554: move-object/from16 v26, v9
+  pc=0x0556: goto -> pc=0x0588
+  pc=0x0557: move/from16 v25, v2
+  pc=0x0559: move-object/from16 v26, v9
+  pc=0x055b: const/4 v2=0
+  pc=0x055c: move v9, v6
+  pc=0x055d: if-ge v9,v7 -> pc=0x057d
+  pc=0x055f: aget v11, v1, v12
+  pc=0x0561: if-lez v27 -> pc=0x0576
+  pc=0x0563: aget-boolean v11, v1, v26
+  pc=0x0565: if-nez v27 -> pc=0x056e
+  pc=0x0567: move/from16 v27, v7
+  pc=0x0569: aget v7, v0, v10
+  pc=0x056b: if-ge v11,v7 -> pc=0x0578
+  pc=0x056d: goto -> pc=0x0570
+  pc=0x056e: move/from16 v27, v7
+  pc=0x0570: binop/lit8 v7, v2, 1
+  pc=0x0572: aput v9, v0, v14
+  pc=0x0574: move v2, v7
+  pc=0x0575: goto -> pc=0x0578
+  pc=0x0576: move/from16 v27, v7
+  pc=0x0578: binop/lit8 v9, v9, 1
+  pc=0x057a: move/from16 v7, v27
+  pc=0x057c: goto -> pc=0x055d
+  pc=0x057d: move/from16 v27, v7
+  pc=0x057f: if-lez v2 -> pc=0x05bb
+  pc=0x0581: const/4 v7=0
+  pc=0x0582: invoke-virtual Le5;.c:I(I,I)
+  pc=0x0585: move-result v2
+  pc=0x0586: aget v2, v0, v14
+  pc=0x0588: aput v2, v0, v13
+  pc=0x058a: aget v7, v0, v12
+  pc=0x058c: binop/lit8 v7, v7, 255
+  pc=0x058e: aput v7, v0, v12
+  pc=0x0590: aget-boolean v7, v0, v26
+  pc=0x0592: binop/lit8 v9, v7, 1
+  pc=0x0594: aput-boolean v9, v0, v26
+  pc=0x0596: if-nez v7 -> pc=0x059b
+  pc=0x0598: move/from16 v7, v21
+  pc=0x059a: goto -> pc=0x059c
+  pc=0x059b: const/4 v7=-1
+  pc=0x059c: binop v9, v0, v16
+  pc=0x059e: if-lt v2,v6 -> pc=0x05a1
+  pc=0x05a0: binop/2addr v11, v7
+  pc=0x05a1: move/from16 v2, v17
+  pc=0x05a3: if-gt v9,v2 -> pc=0x05b3
+  pc=0x05a5: move/from16 v17, v2
+  pc=0x05a7: move/from16 v16, v9
+  pc=0x05a9: move/from16 v19, v24
+  pc=0x05ab: move/from16 v2, v25
+  pc=0x05ad: move-object/from16 v9, v26
+  pc=0x05af: move/from16 v7, v27
+  pc=0x05b1: goto/16 -> pc=0x0531
+  pc=0x05b3: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x05b5: const-string "Winning route exceeds its hand limit"
+  pc=0x05b7: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x05ba: throw -> pc=0x05ba
+  pc=0x05bb: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x05bd: const-string "Even face counts always permit a completion"
+  pc=0x05bf: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x05c2: throw -> pc=0x05c2
+  pc=0x05c3: invoke-static Lt;.s:V()
+  pc=0x05c6: throw -> pc=0x05e4
+  pc=0x05c7: if-nez v16 -> pc=0x0825
+  pc=0x05c9: new-instance type=Li2;
+  pc=0x05cb: sget-object Lh0;.a:Lh0;
+  pc=0x05cd: if-eqz v5 -> pc=0x05fa
+  pc=0x05cf: move/from16 v6, v21
+  pc=0x05d1: if-eq v5,v6 -> pc=0x05ea
+  pc=0x05d3: new-instance type=Ljava/util/ArrayList;
+  pc=0x05d5: invoke-direct Ljava/util/ArrayList;.<init>:V(I)
+  pc=0x05d8: const/4 v12=0
+  pc=0x05d9: if-ge v12,v5 -> pc=0x05e7
+  pc=0x05db: aget v7, v0, v13
+  pc=0x05dd: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x05e0: move-result-object v7
+  pc=0x05e1: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x05e4: binop/lit8 v12, v12, 1
+  pc=0x05e6: goto -> pc=0x05d9
+  pc=0x05e7: const/16 v22=0
+  pc=0x05e9: goto -> pc=0x05fd
+  pc=0x05ea: const/16 v22=0
+  pc=0x05ec: aget v5, v0, v13
+  pc=0x05ee: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x05f1: move-result-object v5
+  pc=0x05f2: invoke-static Ljava/util/Collections;.singletonList:Ljava/util/List;(Ljava/lang/Object;)
+  pc=0x05f5: move-result-object v6
+  pc=0x05f6: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x05f9: goto -> pc=0x05fd
+  pc=0x05fa: const/16 v22=0
+  pc=0x05fc: move-object v6, v3
+  pc=0x05fd: invoke-direct Li2;.<init>:V(Lm;,Ljava/util/List;,Ljava/util/List;)
+  pc=0x0600: if-nez v20 -> pc=0x060a
+  pc=0x0602: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0605: move-result v5
+  pc=0x0606: const/16 v7=64
+  pc=0x0608: if-ge v5,v7 -> pc=0x060e
+  pc=0x060a: move-object/from16 v28, v2
+  pc=0x060c: goto/16 -> pc=0x07e7
+  pc=0x060e: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0611: move-result v5
+  pc=0x0612: new-array type=[Z
+  pc=0x0614: move/from16 v12, v22
+  pc=0x0616: if-ge v12,v5 -> pc=0x061f
+  pc=0x0618: const/16 v21=1
+  pc=0x061a: aput-boolean v5, v1, v7
+  pc=0x061c: binop/lit8 v12, v12, 1
+  pc=0x061e: goto -> pc=0x0616
+  pc=0x061f: invoke-interface Ljava/util/List;.size:I()
+  pc=0x0622: move-result v5
+  pc=0x0623: new-array type=[Z
+  pc=0x0625: move/from16 v12, v22
+  pc=0x0627: if-ge v12,v5 -> pc=0x0636
+  pc=0x0629: invoke-virtual Lm;.a:Li;()
+  pc=0x062c: move-result-object v10
+  pc=0x062d: invoke-virtual Li;.a:Z(I,[Z)
+  pc=0x0630: move-result v10
+  pc=0x0631: aput-boolean v10, v0, v9
+  pc=0x0633: binop/lit8 v12, v12, 1
+  pc=0x0635: goto -> pc=0x0627
+  pc=0x0636: new-instance type=Ljava/util/LinkedHashMap;
+  pc=0x0638: invoke-direct Ljava/util/LinkedHashMap;.<init>:V()
+  pc=0x063b: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x063e: move-result-object v7
+  pc=0x063f: move/from16 v12, v22
+  pc=0x0641: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x0644: move-result v10
+  pc=0x0645: if-eqz v10 -> pc=0x0682
+  pc=0x0647: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x064a: move-result-object v10
+  pc=0x064b: binop/lit8 v11, v12, 1
+  pc=0x064d: if-ltz v12 -> pc=0x067e
+  pc=0x064f: check-cast type=Ljava/lang/Number;
+  pc=0x0651: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0654: move-result v10
+  pc=0x0655: aget-boolean v12, v0, v9
+  pc=0x0657: if-eqz v12 -> pc=0x067c
+  pc=0x0659: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x065c: move-result-object v12
+  pc=0x065d: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0660: move-result-object v10
+  pc=0x0661: invoke-virtual Ljava/util/LinkedHashMap;.get:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x0664: move-result-object v10
+  pc=0x0665: check-cast type=Ljava/lang/Integer;
+  pc=0x0667: if-eqz v10 -> pc=0x0670
+  pc=0x0669: invoke-virtual Ljava/lang/Integer;.intValue:I()
+  pc=0x066c: move-result v10
+  pc=0x066d: const/16 v21=1
+  pc=0x066f: goto -> pc=0x0673
+  pc=0x0670: move/from16 v10, v22
+  pc=0x0672: goto -> pc=0x066d
+  pc=0x0673: binop/lit8 v10, v10, 1
+  pc=0x0675: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0678: move-result-object v10
+  pc=0x0679: invoke-interface Ljava/util/Map;.put:Ljava/lang/Object;(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x067c: move v12, v11
+  pc=0x067d: goto -> pc=0x0641
+  pc=0x067e: invoke-static Lt;.s:V()
+  pc=0x0681: throw -> pc=0x069f
+  pc=0x0682: invoke-virtual Ljava/util/LinkedHashMap;.values:Ljava/util/Collection;()
+  pc=0x0685: move-result-object v7
+  pc=0x0686: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x0689: move-result-object v7
+  pc=0x068a: move/from16 v12, v22
+  pc=0x068c: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x068f: move-result v10
+  pc=0x0690: if-eqz v10 -> pc=0x06a0
+  pc=0x0692: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x0695: move-result-object v10
+  pc=0x0696: check-cast type=Ljava/lang/Number;
+  pc=0x0698: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x069b: move-result v10
+  pc=0x069c: const/4 v11=2
+  pc=0x069d: binop/2addr v10, v11
+  pc=0x069e: binop/2addr v12, v10
+  pc=0x069f: goto -> pc=0x068c
+  pc=0x06a0: const/4 v10=3
+  pc=0x06a1: if-ge v12,v10 -> pc=0x06a5
+  pc=0x06a3: goto/16 -> pc=0x060a
+  pc=0x06a5: new-instance type=Ljava/util/LinkedHashMap;
+  pc=0x06a7: invoke-direct Ljava/util/LinkedHashMap;.<init>:V()
+  pc=0x06aa: new-instance type=Ljava/util/ArrayList;
+  pc=0x06ac: invoke-direct Ljava/util/ArrayList;.<init>:V()
+  pc=0x06af: const/16 v11=16
+  pc=0x06b1: invoke-static Ls;.y:Ljava/util/List;(Ljava/lang/Iterable;,I)
+  pc=0x06b4: move-result-object v11
+  pc=0x06b5: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x06b8: move-result-object v11
+  pc=0x06b9: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x06bc: move-result v12
+  pc=0x06bd: if-eqz v12 -> pc=0x06f8
+  pc=0x06bf: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x06c2: move-result-object v12
+  pc=0x06c3: check-cast type=Ljava/lang/Number;
+  pc=0x06c5: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x06c8: move-result v12
+  pc=0x06c9: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x06cc: move-result-object v13
+  pc=0x06cd: check-cast type=Ljava/lang/Number;
+  pc=0x06cf: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x06d2: move-result v13
+  pc=0x06d3: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x06d6: move-result-object v14
+  pc=0x06d7: invoke-interface Ljava/util/Map;.remove:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x06da: move-result-object v14
+  pc=0x06db: check-cast type=Ljava/lang/Integer;
+  pc=0x06dd: if-nez v14 -> pc=0x06eb
+  pc=0x06df: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x06e2: move-result-object v13
+  pc=0x06e3: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x06e6: move-result-object v12
+  pc=0x06e7: invoke-interface Ljava/util/Map;.put:Ljava/lang/Object;(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x06ea: goto -> pc=0x06b9
+  pc=0x06eb: new-instance type=Ly4;
+  pc=0x06ed: invoke-virtual Ljava/lang/Integer;.intValue:I()
+  pc=0x06f0: move-result v14
+  pc=0x06f1: invoke-direct Ly4;.<init>:V(I,I,I)
+  pc=0x06f4: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x06f7: goto -> pc=0x06b9
+  pc=0x06f8: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x06fb: move-result v11
+  pc=0x06fc: move/from16 v12, v22
+  pc=0x06fe: if-ge v12,v11 -> pc=0x060a
+  pc=0x0700: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x0703: move-result-object v13
+  pc=0x0704: check-cast type=Ly4;
+  pc=0x0706: iget Ly4;.a:I
+  pc=0x0708: iget Ly4;.c:I
+  pc=0x070a: iget Ly4;.b:I
+  pc=0x070c: move-object/from16 v28, v2
+  pc=0x070e: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0711: move-result-object v2
+  pc=0x0712: invoke-interface Ljava/util/Map;.containsKey:Z(Ljava/lang/Object;)
+  pc=0x0715: move-result v2
+  pc=0x0716: if-nez v2 -> pc=0x07d8
+  pc=0x0718: binop/lit8 v2, v12, 1
+  pc=0x071a: move/from16 v30, v2
+  pc=0x071c: invoke-virtual Ljava/util/ArrayList;.size:I()
+  pc=0x071f: move-result v2
+  pc=0x0720: move-object/from16 v16, v9
+  pc=0x0722: move/from16 v9, v30
+  pc=0x0724: if-ge v9,v2 -> pc=0x07cf
+  pc=0x0726: invoke-virtual Ljava/util/ArrayList;.get:Ljava/lang/Object;(I)
+  pc=0x0729: move-result-object v17
+  pc=0x072a: move/from16 v30, v2
+  pc=0x072c: move-object/from16 v2, v17
+  pc=0x072e: check-cast type=Ly4;
+  pc=0x0730: move/from16 v17, v9
+  pc=0x0732: iget Ly4;.a:I
+  pc=0x0734: move-object/from16 v18, v10
+  pc=0x0736: iget Ly4;.c:I
+  pc=0x0738: iget Ly4;.b:I
+  pc=0x073a: if-eq v9,v14 -> pc=0x0748
+  pc=0x073c: move/from16 v19, v9
+  pc=0x073e: invoke-static/range Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I) v1..v1
+  pc=0x0741: move-result-object v9
+  pc=0x0742: invoke-interface Ljava/util/Map;.containsKey:Z(Ljava/lang/Object;)
+  pc=0x0745: move-result v9
+  pc=0x0746: if-eqz v9 -> pc=0x0750
+  pc=0x0748: move-object/from16 v20, v7
+  pc=0x074a: const/16 v21=1
+  pc=0x074c: const/16 v24=2
+  pc=0x074e: goto/16 -> pc=0x07c5
+  pc=0x0750: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0753: move-result-object v9
+  pc=0x0754: invoke-virtual Ljava/util/LinkedHashMap;.get:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x0757: move-result-object v9
+  pc=0x0758: check-cast type=Ljava/lang/Integer;
+  pc=0x075a: if-eqz v9 -> pc=0x0763
+  pc=0x075c: invoke-virtual Ljava/lang/Integer;.intValue:I()
+  pc=0x075f: move-result v9
+  pc=0x0760: move-object/from16 v20, v7
+  pc=0x0762: goto -> pc=0x0766
+  pc=0x0763: move/from16 v9, v22
+  pc=0x0765: goto -> pc=0x0760
+  pc=0x0766: invoke-static/range Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I) v1..v1
+  pc=0x0769: move-result-object v7
+  pc=0x076a: invoke-virtual Ljava/util/LinkedHashMap;.get:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x076d: move-result-object v7
+  pc=0x076e: check-cast type=Ljava/lang/Integer;
+  pc=0x0770: if-eqz v7 -> pc=0x0777
+  pc=0x0772: invoke-virtual Ljava/lang/Integer;.intValue:I()
+  pc=0x0775: move-result v7
+  pc=0x0776: goto -> pc=0x0779
+  pc=0x0777: move/from16 v7, v22
+  pc=0x0779: aget-boolean v7, v1, v16
+  pc=0x077b: aget-boolean v8, v1, v16
+  pc=0x077d: binop v7, v1, v23
+  pc=0x077f: aget-boolean v8, v1, v16
+  pc=0x0781: aget-boolean v9, v1, v16
+  pc=0x0783: binop v8, v1, v24
+  pc=0x0785: binop v7, v1, v23
+  pc=0x0787: binop/lit8 v24, v9, 2
+  pc=0x0789: binop/lit8 v25, v7, 2
+  pc=0x078b: binop v9, v1, v25
+  pc=0x078d: binop v9, v0, v9
+  pc=0x078f: const/16 v24=2
+  pc=0x0791: binop/lit8 v9, v9, 2
+  pc=0x0793: binop v7, v0, v7
+  pc=0x0795: binop/lit8 v7, v7, 2
+  pc=0x0797: binop/2addr v7, v9
+  pc=0x0798: const/16 v21=1
+  pc=0x079a: binop/lit8 v9, v25, 255
+  pc=0x079c: if-ne v7,v9 -> pc=0x07c5
+  pc=0x079e: new-instance type=Ljava/util/ArrayList;
+  pc=0x07a0: invoke-direct Ljava/util/ArrayList;.<init>:V(Ljava/util/Collection;)
+  pc=0x07a3: invoke-static/range Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I) v1..v1
+  pc=0x07a6: move-result-object v6
+  pc=0x07a7: invoke-virtual Ljava/util/ArrayList;.set:Ljava/lang/Object;(I,Ljava/lang/Object;)
+  pc=0x07aa: invoke-static/range Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I) v1..v1
+  pc=0x07ad: move-result-object v6
+  pc=0x07ae: invoke-virtual Ljava/util/ArrayList;.set:Ljava/lang/Object;(I,Ljava/lang/Object;)
+  pc=0x07b1: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x07b4: move-result-object v6
+  pc=0x07b5: invoke-virtual Ljava/util/ArrayList;.set:Ljava/lang/Object;(I,Ljava/lang/Object;)
+  pc=0x07b8: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x07bb: move-result-object v2
+  pc=0x07bc: invoke-virtual Ljava/util/ArrayList;.set:Ljava/lang/Object;(I,Ljava/lang/Object;)
+  pc=0x07bf: new-instance type=Li2;
+  pc=0x07c1: invoke-direct Li2;.<init>:V(Lm;,Ljava/util/List;,Ljava/util/List;)
+  pc=0x07c4: goto -> pc=0x07e9
+  pc=0x07c5: binop/lit8 v9, v17, 1
+  pc=0x07c7: move/from16 v2, v30
+  pc=0x07c9: move-object/from16 v10, v18
+  pc=0x07cb: move-object/from16 v7, v20
+  pc=0x07cd: goto/16 -> pc=0x0724
+  pc=0x07cf: move-object/from16 v20, v7
+  pc=0x07d1: move-object/from16 v18, v10
+  pc=0x07d3: const/16 v21=1
+  pc=0x07d5: const/16 v24=2
+  pc=0x07d7: goto -> pc=0x07db
+  pc=0x07d8: move-object/from16 v16, v9
+  pc=0x07da: goto -> pc=0x07cf
+  pc=0x07db: binop/lit8 v12, v12, 1
+  pc=0x07dd: move-object/from16 v2, v28
+  pc=0x07df: move-object/from16 v9, v16
+  pc=0x07e1: move-object/from16 v10, v18
+  pc=0x07e3: move-object/from16 v7, v20
+  pc=0x07e5: goto/16 -> pc=0x06fe
+  pc=0x07e7: move-object/from16 v2, v28
+  pc=0x07e9: new-instance type=Ljava/util/ArrayList;
+  pc=0x07eb: iget-object Li2;.b:Ljava/util/List;
+  pc=0x07ed: invoke-static Lu;.t:I(Ljava/lang/Iterable;)
+  pc=0x07f0: move-result v5
+  pc=0x07f1: invoke-direct Ljava/util/ArrayList;.<init>:V(I)
+  pc=0x07f4: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x07f7: move-result-object v1
+  pc=0x07f8: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x07fb: move-result v5
+  pc=0x07fc: if-eqz v5 -> pc=0x081a
+  pc=0x07fe: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x0801: move-result-object v5
+  pc=0x0802: check-cast type=Ljava/lang/Number;
+  pc=0x0804: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0807: move-result v5
+  pc=0x0808: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x080b: move-result-object v5
+  pc=0x080c: check-cast type=Ljava/lang/Number;
+  pc=0x080e: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0811: move-result v5
+  pc=0x0812: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0815: move-result-object v5
+  pc=0x0816: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x0819: goto -> pc=0x07f8
+  pc=0x081a: new-instance type=Lu1;
+  pc=0x081c: iget-object Li2;.a:Lm;
+  pc=0x081e: invoke-direct Lu1;.<init>:V(Lm;,Ljava/util/List;,Ljava/util/List;)
+  pc=0x0821: invoke-direct Lq3;.<init>:V(Lu1;)
+  pc=0x0824: return-object v4
+  pc=0x0825: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x0827: const-string "Check failed."
+  pc=0x0829: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x082c: throw -> pc=0x082c
+  pc=0x082d: const/16 v30=0
+  pc=0x082f: const-string "Each active face needs at least one pair"
+  pc=0x0831: invoke-static Lg0;.a:V(Ljava/lang/String;)
+  pc=0x0834: return-object v30
+  pc=0x0835: new-instance type=Ljava/util/NoSuchElementException;
+  pc=0x0837: const-string "Collection is empty."
+  pc=0x0839: invoke-direct Ljava/util/NoSuchElementException;.<init>:V(Ljava/lang/String;)
+  pc=0x083c: throw -> pc=0x083c
