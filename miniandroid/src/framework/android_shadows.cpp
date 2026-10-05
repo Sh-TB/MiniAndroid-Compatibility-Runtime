@@ -582,19 +582,53 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (ctx.args.size() >= 2) {
             // add(index, item)
             int32_t idx = ctx.arg_as_int(0);
+            // F-NEW-238: kind-aware insert keeps all four parallel stores
+            // index-aligned (elements/kinds/strings/ints).
+            const auto& a1 = ctx.args[1];
+            bool a1_is_int =
+                a1.kind == CallContext::Arg::Kind::INT ||
+                a1.kind == CallContext::Arg::Kind::BOOL ||
+                a1.kind == CallContext::Arg::Kind::LONG;
             uint32_t item = ctx.arg_as_object(1, 0);
+            uint8_t kind = 2;
+            int32_t ival = 0;
+            std::string sval;
+            if (a1_is_int) {
+                kind = 3;
+                ival = a1.kind == CallContext::Arg::Kind::INT
+                           ? a1.int_val
+                           : (a1.kind == CallContext::Arg::Kind::BOOL
+                                  ? (a1.bool_val ? 1 : 0)
+                                  : static_cast<int32_t>(a1.long_val));
+            } else if (item != 0) {
+                kind = 1;
+            } else {
+                sval = ctx.arg_as_string(1);
+            }
             if (idx >= 0 && (size_t)idx <= state->elements.size()) {
                 state->elements.insert(state->elements.begin() + idx, item);
                 state->elem_kinds.insert(state->elem_kinds.begin() + idx,
-                                         item != 0 ? 1 : 2);
+                                         kind);
                 state->elem_strings.insert(
-                    state->elem_strings.begin() + idx,
-                    item != 0 ? std::string() : ctx.arg_as_string(1));
+                    state->elem_strings.begin() + idx, sval);
+                state->elem_ints.insert(state->elem_ints.begin() + idx, ival);
             }
         } else if (ctx.args.size() >= 1) {
             // add(item) — R-NEW-464 closeout: STRING args keep their value
             // (kind 2) instead of collapsing to object id 0.
             const auto& a0 = ctx.args[0];
+            // ── F-NEW-238: INT-ELEMENT FIDELITY (kind 3) — INT/BOOL/LONG
+            // args keep their numeric value; arg_as_object(0)=0 poisoned
+            // every Integer element to a kind-2 EMPTY string pre-fix.
+            const bool a0_is_int =
+                a0.kind == CallContext::Arg::Kind::INT ||
+                a0.kind == CallContext::Arg::Kind::BOOL ||
+                a0.kind == CallContext::Arg::Kind::LONG;
+            auto a0_int_value = [&]() -> int32_t {
+                if (a0.kind == CallContext::Arg::Kind::INT) return a0.int_val;
+                if (a0.kind == CallContext::Arg::Kind::BOOL) return a0.bool_val ? 1 : 0;
+                return static_cast<int32_t>(a0.long_val);
+            };
             // ── F-NEW-236c: SET-FAMILY ADD DEDUP LAW (OpenJDK
             // HashSet.add → map.put(e, PRESENT) == null test). For every
             // Set class the element is inserted ONLY when no equal element
@@ -628,6 +662,18 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     bool e_is_str =
                         ei < state->elem_kinds.size() &&
                         state->elem_kinds[ei] == 2;
+                    // F-NEW-238: kind-3 int elements compare by value.
+                    bool e_is_int =
+                        ei < state->elem_kinds.size() &&
+                        state->elem_kinds[ei] == 3;
+                    if (e_is_int) {
+                        if (a0_is_int) {
+                            int32_t ev = ei < state->elem_ints.size()
+                                             ? state->elem_ints[ei] : 0;
+                            if (ev == a0_int_value()) { present = true; break; }
+                        }
+                        continue;
+                    }
                     if (e_is_str) {
                         es = ei < state->elem_strings.size()
                                  ? state->elem_strings[ei]
@@ -657,6 +703,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 state->elements.push_back(0);
                 state->elem_kinds.push_back(2);
                 state->elem_strings.push_back(ctx.arg_as_string(0));
+                state->elem_ints.push_back(0);
+            } else if (a0_is_int) {
+                // F-NEW-238: kind-3 slot — the value survives in elem_ints.
+                state->elements.push_back(0);
+                state->elem_kinds.push_back(3);
+                state->elem_strings.push_back(std::string());
+                state->elem_ints.push_back(a0_int_value());
             } else {
                 uint32_t item = ctx.arg_as_object(0, 0);
                 // [R342-COWSET] Set semantics: CopyOnWriteArraySet.add is a
@@ -672,6 +725,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 state->elem_kinds.push_back(item != 0 ? 1 : 2);
                 state->elem_strings.push_back(
                     item != 0 ? std::string() : ctx.arg_as_string(0));
+                state->elem_ints.push_back(0);
             }
         }
         return CallResult::handled_bool(true);
@@ -740,9 +794,22 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     }
                     return CallResult::handled_null();
                 }
+                // F-NEW-238: INT-typed array slots — the ref-field read
+                // misses on them; the int read keeps typed rows honest.
+                int32_t ielem = 0;
+                if (heap_->get_object_int_field(
+                        obj_id, "array[" + std::to_string(idx) + "]", ielem))
+                    return CallResult::handled_int(ielem);
             }
         }
         if (idx >= 0 && (size_t)idx < state->elements.size()) {
+            if (idx < (int32_t)state->elem_kinds.size() &&
+                state->elem_kinds[idx] == 3) {
+                // F-NEW-238: kind-3 int element — the value survives.
+                int32_t iv = idx < (int32_t)state->elem_ints.size()
+                                 ? state->elem_ints[idx] : 0;
+                return CallResult::handled_int(iv);
+            }
             if (idx < (int32_t)state->elem_kinds.size() &&
                 state->elem_kinds[idx] == 2)
                 return CallResult::handled_string(state->elem_strings[idx]);
@@ -750,7 +817,40 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (elem != 0) {
                 return CallResult::handled_object(elem, "Ljava/lang/Object;");
             }
+            // ── F-NEW-238 DIAG (bounded): a zero object-id slot inside a
+            // NON-empty shadow store is a real null ELEMENT (poisoned or
+            // never-written) — surface it with the store shape.
+            {
+                static thread_local uint64_t f238_get_null = 0;
+                if (f238_get_null < 24) {
+                    ++f238_get_null;
+                    int32_t f238_alen = -1;
+                    if (heap_) heap_->get_object_array_length(obj_id, f238_alen);
+                    std::cerr << "[F-NEW-238-GET] NULL slot obj=" << obj_id
+                              << " idx=" << idx
+                              << " shadow_n=" << state->elements.size()
+                              << " heap_len=" << f238_alen
+                              << " caller=" << ctx.class_name << "."
+                              << ctx.method << std::endl;
+                }
+            }
             return CallResult::handled_null();
+        }
+        // ── F-NEW-238 DIAG (bounded): out-of-range list get against a
+        // NON-empty store (size/get disagreement candidate).
+        if (idx >= 0 && !state->elements.empty()) {
+            static thread_local uint64_t f238_get_oob = 0;
+            if (f238_get_oob < 24) {
+                ++f238_get_oob;
+                int32_t f238_alen = -1;
+                if (heap_) heap_->get_object_array_length(obj_id, f238_alen);
+                std::cerr << "[F-NEW-238-GET] OOB obj=" << obj_id
+                          << " idx=" << idx
+                          << " shadow_n=" << state->elements.size()
+                          << " heap_len=" << f238_alen
+                          << " caller=" << ctx.class_name << "."
+                          << ctx.method << std::endl;
+            }
         }
         return CallResult::handled_null();
     }
@@ -1171,6 +1271,20 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                         state->iterator_position = pos + 1;
                     return CallResult::handled_string(selem);
                 }
+                // F-NEW-238: INT-typed array slots (Integer elements) — the
+                // ref/string reads miss on them; the int field read keeps
+                // the iterator honest for typed rows.
+                int32_t ielem = 0;
+                if (heap_->get_object_int_field(
+                        parent_id,
+                        "array[" + std::to_string(pos) + "]", ielem)) {
+                    if (is_box)
+                        heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                    pos + 1);
+                    else
+                        state->iterator_position = pos + 1;
+                    return CallResult::handled_int(ielem);
+                }
                 uint32_t relem = 0;
                 if (heap_->get_object_array_ref_element(parent_id,
                                                         static_cast<size_t>(pos),
@@ -1207,6 +1321,15 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                         ? state->elem_strings[pos]
                         : std::string();
                 return CallResult::handled_string(sv);
+            }
+            // F-NEW-238: kind-3 int elements serve their value.
+            if (pos < static_cast<int32_t>(state->elem_kinds.size()) &&
+                state->elem_kinds[pos] == 3) {
+                int32_t iv =
+                    pos < static_cast<int32_t>(state->elem_ints.size())
+                        ? state->elem_ints[pos]
+                        : 0;
+                return CallResult::handled_int(iv);
             }
             if (elem != 0) {
                 // [R342-COWSET] return the element's REAL runtime class —
@@ -1458,9 +1581,64 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         if (ctx.args.size() >= 2) {
             int32_t idx = ctx.arg_as_int(0, -1);
+            // F-NEW-238: kind-aware replace across all four parallel stores.
+            const auto& a1 = ctx.args[1];
+            bool a1_is_int =
+                a1.kind == CallContext::Arg::Kind::INT ||
+                a1.kind == CallContext::Arg::Kind::BOOL ||
+                a1.kind == CallContext::Arg::Kind::LONG;
             uint32_t item = ctx.arg_as_object(1, 0);
+            uint8_t kind = 2;
+            int32_t ival = 0;
+            std::string sval;
+            if (a1_is_int) {
+                kind = 3;
+                ival = a1.kind == CallContext::Arg::Kind::INT
+                           ? a1.int_val
+                           : (a1.kind == CallContext::Arg::Kind::BOOL
+                                  ? (a1.bool_val ? 1 : 0)
+                                  : static_cast<int32_t>(a1.long_val));
+            } else if (item != 0) {
+                kind = 1;
+            } else {
+                sval = ctx.arg_as_string(1);
+            }
+            // ── F-NEW-238 DIAG (bounded): silent-write audit. The F-101
+            // dual-store law keeps heap array[i] and shadow elements
+            // coherent; any set() that is DROPPED (idx outside the shadow
+            // store) or POISONS a slot (item==0 for a non-null arg) is the
+            // null-generator candidate for downstream get() reads.
+            {
+                static thread_local uint64_t f238_set_diag = 0;
+                bool f238_dropped =
+                    idx < 0 || (size_t)idx >= state->elements.size();
+                bool f238_poison = (item == 0 && kind != 3) &&
+                    ctx.args[1].kind != CallContext::Arg::Kind::NULL_REF &&
+                    ctx.args[1].kind != CallContext::Arg::Kind::INT;
+                if ((f238_dropped || f238_poison) && f238_set_diag < 24) {
+                    ++f238_set_diag;
+                    int32_t f238_alen = -1;
+                    if (heap_) heap_->get_object_array_length(obj_id, f238_alen);
+                    std::cerr << "[F-NEW-238-SET] obj=" << obj_id
+                              << " idx=" << idx
+                              << " shadow_n=" << state->elements.size()
+                              << " heap_len=" << f238_alen
+                              << " item=" << item
+                              << " arg_kind="
+                              << (int)ctx.args[1].kind
+                              << (f238_dropped ? " DROPPED" : " POISON")
+                              << " caller=" << ctx.class_name << "."
+                              << ctx.method << std::endl;
+                }
+            }
             if (idx >= 0 && (size_t)idx < state->elements.size()) {
                 state->elements[idx] = item;
+                if (idx < (int32_t)state->elem_kinds.size())
+                    state->elem_kinds[idx] = kind;
+                if (idx < (int32_t)state->elem_strings.size())
+                    state->elem_strings[idx] = sval;
+                if (idx < (int32_t)state->elem_ints.size())
+                    state->elem_ints[idx] = ival;
             }
         }
         return CallResult::handled_void();
