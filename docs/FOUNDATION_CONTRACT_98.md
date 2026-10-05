@@ -17,7 +17,7 @@ Every section classified with status + evidence pointer. No placeholder counted 
 | 2 | CPU / ABI / NATIVE FOUNDATION | TESTED | install ABI law main.cpp (SUPPORTED_ABIS x86_64-first); NATX 10/10x3 results sha 4d7761f7; arm-only APK refusal A/B (EggReturnsHome install-OK/launch-fail); ABI_MISMATCH_VERDICT in pkginspect prerequisites |  |
 | 3 | PACKAGE MANAGER / INSTALLATION | TESTED | install creates package state (package.json/native_libs.json/data dirs); reinstall-identity src==inst==pkgaudit shas; pkginspect 15 sections; uninstall 16/16; splits = PARTIAL (S-11) |  |
 | 4 | APK STRUCTURAL PREFLIGHT | TESTED | pkginspect prerequisites APK-001..020 (sdk/components/abis/DT_NEEDED/features implied requirements REQUIRED/OPTIONAL/CONDITIONAL/IMPLIED); 30-APK matrix docs/ENV_PREREQUISITE_MATRIX.jsonl |  |
-| 5 | PERMISSION FOUNDATION | TESTED | permission state machine normal/dangerous/signature/special + denial contracts; negatives 17/17 incl. N-perm rows; no universal grant |  |
+| 5 | PERMISSION FOUNDATION | TESTED | permission state machine normal/dangerous/signature/special + denial contracts; negatives 19/19 incl. N-perm rows; no universal grant |  |
 | 6 | PACKAGE / USER / UID / SECURITY IDENTITY | TESTED | per-package isolation proofs (uninstall probe store-empty; cross-package DENIED rows N-xx); shared-UID model absent by profile (documented) |  |
 | 7 | FILESYSTEM / STORAGE | TESTED | path law categories SANDBOX_DATA/INSTALLED_APK/VIRTUAL_EXTERNAL/DEVICE_NODE/DENIED; CE/DE (user_de prefix-strip fix, DE-01); persistence 32/32; INSTALL_TREE_PROOF.jsonl |  |
 | 8 | CONTEXT / CONTEXTIMPL | TESTED | Context dir family laws (getDataDir/getCodeCacheDir/...); createPackageContext/deviceProtectedStorageContext laws; provider-getContext receiver-identity gate R-NEW-462 |  |
@@ -38,7 +38,7 @@ Every section classified with status + evidence pointer. No placeholder counted 
 | 23 | PRE-FLIGHT MUST PRECEDE LAUNCH | TESTED | Agent Skill op-1 intake runs prerequisites before install/run (skill_manifest.json op order; selftest 13/13) |  |
 | 24 | WHITE / BLACK / PARTIAL RECLASSIFICATION | TESTED | docs/WS_PREREQUISITE_AUDIT.md (5 runtime vs 2 env-caused vs 1 dup); DIFFERENTIAL_WORKING_VS_WHITE classification; env-vs-runtime split by evidence |  |
 | 25 | ROOT REGISTRY CROSS-MATCH | TESTED | docs/DEEP_ROOT_CROSSMATCH.jsonl 10 candidates A-F zero duplicates; registry 540 roots with crossmatch discipline |  |
-| 26 | NEGATIVE SECURITY TESTS | TESTED | negatives 17/17 (N-01..N-17); this wave extends to 19 (URI-grant, PendingIntent identity) |  |
+| 26 | NEGATIVE SECURITY TESTS | TESTED | negatives 19/19 (N-01..N-19: incl. N-18 unknown-authority IAE, N-19 PendingIntent FLAG_NO_CREATE null law) |  |
 | 27 | REAL APK VALIDATION | TESTED | goldens 4/4 + anchors 5/5x3 + fan-out VERIFIED x3 + corpus 79 executed-with-evidence; new app/game each wave |  |
 | 28 | EVIDENCE | TESTED | STATUS-RESULT-EVIDENCE ledgers; run/ artifact dirs; docs/evidence/canonical; registry evidence fields; worklog append-only |  |
 | 29 | REQUIRED FINAL OUTPUT | IMPLEMENTED | ledger generators (this wave: FOUNDATION_CONTRACT_98, FALSE_ADVERTISED_MATRIX, BASE_COMPLETION_RECONCILIATION) |  |
@@ -103,7 +103,7 @@ Every section classified with status + evidence pointer. No placeholder counted 
 | 88 | WIDGET / SHORTCUT / LAUNCHER / LIVE SURFACE CONTRACT | PARTIAL | ShortcutInfo.Builder law; app-widget host absent (no launcher surface in profile) |  |
 | 89 | ERROR / CRASH / ANR / WATCHDOG CONTRACT | TESTED | crash.log contract + process-death counting + APP-BOUNDARY unwind classification; watchdog absent (single-threaded run contract) |  |
 | 90 | STRICTMODE / DEBUG / PROFILING OBSERVABILITY | PENDING | StrictMode/Traces APIs absent |  |
-| 91 | TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS | TESTED | negatives 17/17 (this wave 19); gate A positive/negative pairs; probe fixtures per law |  |
+| 91 | TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS | TESTED | negatives 19/19; gate A positive/negative pairs; probe fixtures per law |  |
 | 92 | CORPUS-DERIVED FOUNDATION DISCOVERY | TESTED | corpus 79 executed-with-evidence; random-seed picks (fishrings seed 20261004); this wave new random picks |  |
 | 93 | API / SYMBOL / BEHAVIOR COVERAGE, NOT FILE COVERAGE | TESTED | API matrix asserts behavior (return values, exceptions), not file existence; NATX value-proofs cross-boundary |  |
 | 94 | REFERENCE-ORACLE DIFFERENTIAL TESTING | PARTIAL | A/B causal proofs per fix (S-2 0->10, time4j 3->0 deaths, fossifyclock REC-MISS 11->0); continuous oracle differential not built | oracle harness continuous mode — PENDING |

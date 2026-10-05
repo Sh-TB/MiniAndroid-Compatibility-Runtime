@@ -2,7 +2,7 @@
 {"num": 2, "title": "CPU / ABI / NATIVE FOUNDATION", "status": "TESTED", "evidence": "install ABI law main.cpp (SUPPORTED_ABIS x86_64-first); NATX 10/10x3 results sha 4d7761f7; arm-only APK refusal A/B (EggReturnsHome install-OK/launch-fail); ABI_MISMATCH_VERDICT in pkginspect prerequisites"}
 {"num": 3, "title": "PACKAGE MANAGER / INSTALLATION", "status": "TESTED", "evidence": "install creates package state (package.json/native_libs.json/data dirs); reinstall-identity src==inst==pkgaudit shas; pkginspect 15 sections; uninstall 16/16; splits = PARTIAL (S-11)"}
 {"num": 4, "title": "APK STRUCTURAL PREFLIGHT", "status": "TESTED", "evidence": "pkginspect prerequisites APK-001..020 (sdk/components/abis/DT_NEEDED/features implied requirements REQUIRED/OPTIONAL/CONDITIONAL/IMPLIED); 30-APK matrix docs/ENV_PREREQUISITE_MATRIX.jsonl"}
-{"num": 5, "title": "PERMISSION FOUNDATION", "status": "TESTED", "evidence": "permission state machine normal/dangerous/signature/special + denial contracts; negatives 17/17 incl. N-perm rows; no universal grant"}
+{"num": 5, "title": "PERMISSION FOUNDATION", "status": "TESTED", "evidence": "permission state machine normal/dangerous/signature/special + denial contracts; negatives 19/19 incl. N-perm rows; no universal grant"}
 {"num": 6, "title": "PACKAGE / USER / UID / SECURITY IDENTITY", "status": "TESTED", "evidence": "per-package isolation proofs (uninstall probe store-empty; cross-package DENIED rows N-xx); shared-UID model absent by profile (documented)"}
 {"num": 7, "title": "FILESYSTEM / STORAGE", "status": "TESTED", "evidence": "path law categories SANDBOX_DATA/INSTALLED_APK/VIRTUAL_EXTERNAL/DEVICE_NODE/DENIED; CE/DE (user_de prefix-strip fix, DE-01); persistence 32/32; INSTALL_TREE_PROOF.jsonl"}
 {"num": 8, "title": "CONTEXT / CONTEXTIMPL", "status": "TESTED", "evidence": "Context dir family laws (getDataDir/getCodeCacheDir/...); createPackageContext/deviceProtectedStorageContext laws; provider-getContext receiver-identity gate R-NEW-462"}
@@ -23,7 +23,7 @@
 {"num": 23, "title": "PRE-FLIGHT MUST PRECEDE LAUNCH", "status": "TESTED", "evidence": "Agent Skill op-1 intake runs prerequisites before install/run (skill_manifest.json op order; selftest 13/13)"}
 {"num": 24, "title": "WHITE / BLACK / PARTIAL RECLASSIFICATION", "status": "TESTED", "evidence": "docs/WS_PREREQUISITE_AUDIT.md (5 runtime vs 2 env-caused vs 1 dup); DIFFERENTIAL_WORKING_VS_WHITE classification; env-vs-runtime split by evidence"}
 {"num": 25, "title": "ROOT REGISTRY CROSS-MATCH", "status": "TESTED", "evidence": "docs/DEEP_ROOT_CROSSMATCH.jsonl 10 candidates A-F zero duplicates; registry 540 roots with crossmatch discipline"}
-{"num": 26, "title": "NEGATIVE SECURITY TESTS", "status": "TESTED", "evidence": "negatives 17/17 (N-01..N-17); this wave extends to 19 (URI-grant, PendingIntent identity)"}
+{"num": 26, "title": "NEGATIVE SECURITY TESTS", "status": "TESTED", "evidence": "negatives 19/19 (N-01..N-17); this wave extends to 19 (URI-grant, PendingIntent identity)"}
 {"num": 27, "title": "REAL APK VALIDATION", "status": "TESTED", "evidence": "goldens 4/4 + anchors 5/5x3 + fan-out VERIFIED x3 + corpus 79 executed-with-evidence; new app/game each wave"}
 {"num": 28, "title": "EVIDENCE", "status": "TESTED", "evidence": "STATUS-RESULT-EVIDENCE ledgers; run/ artifact dirs; docs/evidence/canonical; registry evidence fields; worklog append-only"}
 {"num": 29, "title": "REQUIRED FINAL OUTPUT", "status": "IMPLEMENTED", "evidence": "ledger generators (this wave: FOUNDATION_CONTRACT_98, FALSE_ADVERTISED_MATRIX, BASE_COMPLETION_RECONCILIATION)"}
@@ -88,7 +88,7 @@
 {"num": 88, "title": "WIDGET / SHORTCUT / LAUNCHER / LIVE SURFACE CONTRACT", "status": "PARTIAL", "evidence": "ShortcutInfo.Builder law; app-widget host absent (no launcher surface in profile)"}
 {"num": 89, "title": "ERROR / CRASH / ANR / WATCHDOG CONTRACT", "status": "TESTED", "evidence": "crash.log contract + process-death counting + APP-BOUNDARY unwind classification; watchdog absent (single-threaded run contract)"}
 {"num": 90, "title": "STRICTMODE / DEBUG / PROFILING OBSERVABILITY", "status": "PENDING", "evidence": "StrictMode/Traces APIs absent"}
-{"num": 91, "title": "TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS", "status": "TESTED", "evidence": "negatives 17/17 (this wave 19); gate A positive/negative pairs; probe fixtures per law"}
+{"num": 91, "title": "TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS", "status": "TESTED", "evidence": "negatives 19/19 (this wave 19); gate A positive/negative pairs; probe fixtures per law"}
 {"num": 92, "title": "CORPUS-DERIVED FOUNDATION DISCOVERY", "status": "TESTED", "evidence": "corpus 79 executed-with-evidence; random-seed picks (fishrings seed 20261004); this wave new random picks"}
 {"num": 93, "title": "API / SYMBOL / BEHAVIOR COVERAGE, NOT FILE COVERAGE", "status": "TESTED", "evidence": "API matrix asserts behavior (return values, exceptions), not file existence; NATX value-proofs cross-boundary"}
 {"num": 94, "title": "REFERENCE-ORACLE DIFFERENTIAL TESTING", "status": "PARTIAL", "evidence": "A/B causal proofs per fix (S-2 0->10, time4j 3->0 deaths, fossifyclock REC-MISS 11->0); continuous oracle differential not built", "gap": "oracle harness continuous mode — PENDING"}

@@ -2346,8 +2346,19 @@ public:
         // existing consumer) size-coherent: kind 1 = object id, kind 2 =
         // string (OpenJDK ArrayList<Object> heterogeneous container law —
         // iteration order = insertion order for both).
-        std::vector<uint8_t> elem_kinds;      // 1 = object, 2 = string
+        //
+        // ── F-NEW-238: INT-ELEMENT FIDELITY LAW (kind 3) ────────────────
+        // The same fidelity contract for INT-valued elements: fairymahjong's
+        // board rows carry Integer/Comparable elements whose DalvikValue is
+        // INT32 — arg_as_object(0)=0 pushed kind-2 EMPTY strings and the
+        // rows read back null at every Integer slot (Lm2;.b pc=221/250:
+        // first()/get(i) returned null on non-empty lists → NPE). kind 3 =
+        // int, value in elem_ints (mirrors the ViewElem kind-3 precedent);
+        // elements[i] stays 0 for non-object slots and every parallel
+        // vector is index-aligned by construction.
+        std::vector<uint8_t> elem_kinds;      // 1 = object, 2 = string, 3 = int
         std::vector<std::string> elem_strings;
+        std::vector<int32_t> elem_ints;       // F-NEW-238: kind-3 values
         std::map<std::string, uint32_t> map_entries;  // key → value object_id
         // EXP-071 Phase 7: Store string values for HashMap.put(key, String).
         // The original map_entries only stores object_ids, but many HashMap
