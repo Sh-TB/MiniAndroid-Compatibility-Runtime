@@ -6874,3 +6874,68 @@ Stage Summary:
   with zero drift on the entire existing matrix. Future ARM-only titles
   land in the SKIP bucket — honest statistics, no fake failures, ARM
   deferred to a future ABI-translation phase, never deleted.
+
+---
+Task ID: cont375-CONT-7
+Agent: Super Z (main agent)
+Task: CONT-7 — current-head reconciliation + Unsafe/Semaphore root fix. Directive
+sections 1-24; LAW-001 as first test; agent skill self-test; source->law->
+fix->synthetic->real-APK->3-run->regression chain on the confirmed generic root.
+
+Work Log:
+- PHASE 0: HEAD e172fd7b == origin/main verified; .agent/state.md +
+  master_campaign_state.md confirmed HISTORICAL (CAMPAIGN_STATE.md is the
+  live source; no contract disagreement to reconcile). Skill self-test
+  13/13 PASS at HEAD. LAW-001 verified wired as gate law 0 (16-verdict
+  contract 1.1 from the LAW-001 wave).
+- SECTION 8 (Unsafe dispatch): dooz reproduced locally at HEAD; the
+  externally reported "getObjectVolatile REC-MISS -> null -> ISE depth 36"
+  chain DOES NOT reproduce — the R-NEW-337 handler answers with REAL state
+  ([R337-UNSAFE] get obj=253 off=16 key="Ltp1;->_state$volatile" -> REF
+  o171; cas on o372/o883). Absent-DEX -> bridge -> shadow dispatch law =
+  already implemented. VERIFIED_CURRENT, no duplicate fix.
+- Live root isolation (bounded, env-gated diagnostics added to the engine):
+  MINIANDROID_R337_TRACE (Unsafe get/put/CAS tuples), MINIANDROID_C7_IF_TRACE
+  (22t branch decisions), MINIANDROID_ATOMIC_DIAG (updater ops). Chain:
+  Lek1(SemaphoreImpl) ISE at pc=268 depth 37; Unsafe.getIntVolatile answers
+  0 CORRECTLY; the 22t branch executes faithfully; the STATE diverged.
+  ROOT: split-brain heap field storage — AtomicShadow FieldUpdater family
+  addressed fields by BARE name while interpreter/Unsafe use the S134
+  qualified key; lock moved the qualified slot 1->0, release's
+  getAndIncrement read the STALE bare slot (pre=1).
+- FIX (F-NEW-251, generic, one point): DalvikHeap FieldKeyResolver installed
+  by the engine — bare-name heap field access from ANY layer resolves
+  through the DEX instance-field tables to the interpreter's qualified
+  slot; engine-synthetic ("__*", "array[i]"), framework-owned and
+  non-DEX-declared names keep bare keys. Applied centrally in
+  get_object_field/set_object_field so every current/future bare-name
+  consumer is fixed at once.
+- A/B (section 12): BASE ISE x17 errors=17 -> PATCH ISE=0 errors=6. dooz
+  3-run byte-identical d602648e8e401895 == the recorded dooz anchor SHA
+  (zero visual drift). Verdict stays DEFAULT_BACKGROUND_ONLY (honest).
+- Section 13 discipline: remaining face registered as F-NEW-252 CLASSIFIED
+  (Compose Snapshot "Only add dependencies during a tracking" IAE,
+  Lng0;.a pc=2 -> Lel0;.Y pc=26 -> Lt4;.dispatchDraw pc=148) — separate
+  root, not fixed this wave, no blind implementation. Dispatchers.Main
+  frontier unchanged (unreached at HEAD).
+- REGRESSION (section 23) at binary 382e595771901c00: anchors 5/5x3
+  byte-identical (opencalc e364b001 / chess b5a7a35d / dooz d602648e /
+  microtimer da73010a / unote 4f1a9e4e); goldens 4/4; gate A 97/0/2;
+  negatives 19/19; reinstall 8/8; uninstall ALL PASS; skill 13/13.
+- Section 5 golden ABI census from ACTUAL APK bytes (ELF e_machine):
+  dooz MIXED(183/3/40) IN-SCOPE, chess MIXED(183/3/40/62) IN-SCOPE,
+  minicraft/snakedeluxe/sudokusolver/microtimer/unote/opencalc PURE_DEX
+  IN-SCOPE; zero ARM-only flips. evidence/cont7/golden_abi_census.json.
+- Registry: F-NEW-251 ROOT-CAUSED-FIXED + F-NEW-252 CLASSIFIED ->
+  558 roots. Evidence ledger: evidence/cont7/CONT7_EXECUTION_LEDGER.md.
+
+Stage Summary:
+- The dooz Semaphore ISE family is dead via a GENERIC heap-central field
+  identity law (F-NEW-251) — one storage slot per logical field across
+  interpreter/Unsafe/shadow layers; the directive's section-8 premise was
+  verified VERIFIED_CURRENT (already fixed) rather than re-fixed; the next
+  dooz frontier is named (F-NEW-252) with first divergence; full battery
+  green with zero anchor drift. Honest gaps: 12-new-APK acquisition
+  (section 6), second-APK F-NEW-251 fan-out A/B, R8 identity matrix,
+  full 25-item achievement reconciliation — all recorded in the ledger
+  as PENDING for the next wave.

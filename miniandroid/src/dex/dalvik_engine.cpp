@@ -495,6 +495,55 @@ DalvikExecutionEngine::DalvikExecutionEngine()
         });
     }
     log("DalvikExecutionEngine initialized");
+
+    // ── F-NEW-251 (CONT-7 §13A): SHARED FIELD-IDENTITY RESOLVER ───────────
+    // LAW: one logical instance field owns ONE storage slot across every
+    // execution layer. The interpreter (iput/iget) and the Unsafe R337 path
+    // address DEX-declared fields by the S134 F-NEW-160 qualified key
+    // "<declarer>-><name>"; shadow-layer hooks (Atomic*FieldUpdater family
+    // via the HeapAdapter, and any future bare-name consumer) address them
+    // by bare name. Before this resolver the two shapes forked PARALLEL
+    // slots for the same field — the dooz SemaphoreImpl._availablePermits
+    // split-brain (bare slot stayed stale at 1 while the qualified slot
+    // moved 1->0 under lock) desynchronized the kotlinx release() guard
+    // and fired IllegalStateException "The number of released permits
+    // cannot be greater than 1" on the FIRST unlock (Lek1;.b pc=268).
+    // The heap applies the resolver centrally: bare-name writes land in the
+    // qualified slot when the field is a DEX-declared instance field of the
+    // receiver's class chain; bare-name reads fall back to it. Engine-
+    // synthetic fields ("ordinal", "array[i]", "__*") and framework-owned
+    // objects keep bare keys (S134 law: framework classes own their fields).
+    heap_.set_field_key_resolver(
+        [this](const std::string& cls, const std::string& name)
+            -> std::string {
+            if (!DalvikHeap::is_resolvable_bare_name(name)) return "";
+            if (cls.empty() || cls[0] != 'L') return "";  // arrays/atoms
+            if (!is_dex_defined_class(cls)) return "";    // framework-owned
+            std::string decl = resolved_field_declarer(cls, name);
+            if (decl.empty()) return "";
+            // A declarer equal to the receiver class still proves nothing
+            // unless the walk actually FOUND the field in a DEX body —
+            // resolved_field_declarer returns the input class as-is when
+            // nothing matched; distinguish by re-checking the chain.
+            bool found = false;
+            std::string walk = cls;
+            for (int hop = 0; hop < 32 && !walk.empty(); ++hop) {
+                if (!is_dex_defined_class(walk)) break;
+                auto cit = class_info_index_.find(walk);
+                if (cit != class_info_index_.end() && dex_report_ != nullptr) {
+                    for (const auto& f :
+                         dex_report_->classes[cit->second].instance_fields) {
+                        if (f.name == name) { found = true; break; }
+                    }
+                }
+                if (found) break;
+                auto sit = class_to_superclass_.find(walk);
+                walk = (sit != class_to_superclass_.end()) ? sit->second
+                                                           : std::string();
+            }
+            if (!found) return "";  // not a DEX-declared field: keep bare
+            return walk + "->" + name;  // `walk` = the DEX declarer
+        });
 }
 
 DalvikExecutionEngine::~DalvikExecutionEngine() {
@@ -21297,6 +21346,10 @@ bool do_22t_branch(uint32_t pc, int16_t offset, bool taken,
 
 #define IMPLEMENT_IF_22T(name, op, op_name) \
 bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace) { \
+    /* CONT-7 §12 branch-decision diagnostics (shared across all six 22t) */ \
+    static thread_local const bool r337_c7_trace = \
+        std::getenv("MINIANDROID_C7_IF_TRACE") != nullptr; \
+    static thread_local uint64_t r337_c7_if_n = 0; \
     if (pc + 1 >= bytecode_.size()) return false; \
     uint16_t instr = bytecode_[pc]; \
     If22tRegs r = decode_22t(instr, bytecode_[pc + 1]); \
@@ -21455,6 +21508,20 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
         std::cerr << ") → taken=" << (taken ? "YES" : "NO") \
                   << " target_pc=" << (pc + r.offset) \
                   << " next_pc=" << (taken ? (pc + r.offset) : (pc + 2)) \
+                  << std::endl; \
+    } \
+    /* CONT-7 §12 A/B (env-gated, bounded): every 22t branch decision with */ \
+    /* exact operand values — the dooz Lek1.b Semaphore ISE fires on a */ \
+    /* path that the static bytecode says is unreachable with p=0, so the */ \
+    /* branch evaluation itself must be observed at runtime. */ \
+    if (r337_c7_trace && r337_c7_if_n < 64) { \
+        ++r337_c7_if_n; \
+        std::cerr << "[C7-IF] " << op_name << " pc=" << pc \
+                  << " v" << (int)r.vA << "(k" << (int)a.type << "=" << a_val \
+                  << ") vs v" << (int)r.vB << "(k" << (int)b.type << "=" \
+                  << b_val << ") taken=" << (taken ? "YES" : "NO") \
+                  << " target=" << (pc + r.offset) \
+                  << " caller=" << current_class_ << "." << current_method_ \
                   << std::endl; \
     } \
     do_22t_branch(pc, r.offset, taken, op_name, r.vA, r.vB, a, b, trace); \
@@ -43706,6 +43773,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return "";
             return v->string_val;
         };
+        // CONT-7 §12 A/B BASE diagnostics (env-gated, bounded): the
+        // volatile-state chain (dooz Lek1/Semaphore ISE) demands the exact
+        // (obj, offset, resolved-field-key, returned-value) tuple per Unsafe
+        // access. Without it a silent null answer is indistinguishable from
+        // a routing miss. MINIANDROID_R337_TRACE=1 enables; cap 48/family.
+        static thread_local const bool r337_trace =
+            std::getenv("MINIANDROID_R337_TRACE") != nullptr;
+        static thread_local uint64_t r337_get_n = 0, r337_put_n = 0,
+                                     r337_cas_n = 0, r337_int_n = 0;
+        auto r337_log = [&](uint64_t& n, const char* op, uint32_t obj,
+                            int64_t off, const std::string& fname,
+                            const char* extra) {
+            if (!r337_trace || n >= 48) return;
+            ++n;
+            std::cerr << "[R337-UNSAFE] " << op << " obj=" << obj
+                      << " off=" << off << " key=\"" << fname << "\""
+                      << extra << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        };
 
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-395 (S78, F-152 root cause): java.security.AccessController
@@ -44271,9 +44357,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     result = v.has_value() ? v.value()
                                            : DalvikValue::make_null();
+                    if (r337_trace && r337_get_n < 48) {
+                        ++r337_get_n;
+                        std::cerr << "[R337-UNSAFE] get obj=" << obj
+                                  << " off=" << offset337(2)
+                                  << " key=\"" << fname << "\""
+                                  << (v.has_value()
+                                          ? (v->type == DalvikType::OBJECT_REF
+                                                 ? " -> REF o"
+                                                    + std::to_string(
+                                                        v->object_id)
+                                          : " -> KIND" +
+                                                    std::to_string(
+                                                        (int)v->type))
+                                          : " -> MISSING(field absent)")
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
                 } else {
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     result = DalvikValue::make_null();
+                    r337_log(r337_get_n, "get-UNRESOLVED", obj,
+                             offset337(2), fname,
+                             " -> null (obj==0 or key empty)");
                 }
                 return true;
             }
@@ -44281,8 +44387,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 method == "putOrderedObject") {
                 uint32_t obj = target337(1);
                 std::string fname = field_name_for337(offset337(2));
-                if (obj != 0 && !fname.empty() && args.size() > 3)
+                if (obj != 0 && !fname.empty() && args.size() > 3) {
                     heap_.set_object_field(obj, fname, args[3]);
+                    if (r337_trace && r337_put_n < 48) {
+                        ++r337_put_n;
+                        std::cerr << "[R337-UNSAFE] put obj=" << obj
+                                  << " off=" << offset337(2)
+                                  << " key=\"" << fname << "\""
+                                  << (args[3].type == DalvikType::OBJECT_REF
+                                          ? " <- REF o" + std::to_string(
+                                                args[3].object_id)
+                                          : " <- KIND" + std::to_string(
+                                                (int)args[3].type))
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                } else {
+                    r337_log(r337_put_n, "put-UNRESOLVED", obj,
+                             offset337(2), fname, " (dropped)");
+                }
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_void();
                 return true;
@@ -44309,6 +44432,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     return true;
                 }
                 auto cur = heap_.get_object_field(obj, fname);
+                if (r337_trace && r337_cas_n < 48) {
+                    ++r337_cas_n;
+                    std::cerr << "[R337-UNSAFE] cas obj=" << obj
+                              << " off=" << offset337(2)
+                              << " key=\"" << fname << "\""
+                              << (cur.has_value()
+                                      ? (cur->type == DalvikType::OBJECT_REF
+                                             ? " cur=REF o" + std::to_string(
+                                                   cur->object_id)
+                                             : " cur=KIND" +
+                                                       std::to_string(
+                                                           (int)cur->type))
+                                      : " cur=MISSING")
+                              << " exp="
+                              << (args.size() > 3 &&
+                                          args[3].type == DalvikType::OBJECT_REF
+                                      ? ("o" + std::to_string(
+                                             args[3].object_id))
+                                      : "n")
+                              << " upd="
+                              << (args.size() > 4 &&
+                                          args[4].type == DalvikType::OBJECT_REF
+                                      ? ("o" + std::to_string(
+                                             args[4].object_id))
+                                      : "n")
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
                 uint32_t cur_id =
                     cur.has_value() &&
                             cur->type == DalvikType::OBJECT_REF
@@ -44345,6 +44496,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     else if (v->type == DalvikType::BOOLEAN) iv = v->bool_val ? 1 : 0;
                     else if (v->type == DalvikType::INT64) iv = (int32_t)v->long_val;
                 }
+                if (r337_trace && r337_int_n < 48) {
+                    ++r337_int_n;
+                    std::cerr << "[R337-UNSAFE] getInt obj=" << obj
+                              << " off=" << offset337(2)
+                              << " key=\"" << fname << "\""
+                              << (v.has_value() ? " -> " + std::to_string(iv)
+                                                : " -> MISSING(default 0)")
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_int(iv);
                 return true;
@@ -44353,10 +44514,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 method == "putOrderedInt") {
                 uint32_t obj = target337(1);
                 std::string fname = field_name_for337(offset337(2));
-                if (obj != 0 && !fname.empty() && args.size() > 3)
+                if (obj != 0 && !fname.empty() && args.size() > 3) {
                     heap_.set_object_field(obj, fname,
                                            DalvikValue::make_int(
                                                (int32_t)args[3].int_val));
+                    if (r337_trace && r337_int_n < 48) {
+                        ++r337_int_n;
+                        std::cerr << "[R337-UNSAFE] putInt obj=" << obj
+                                  << " off=" << offset337(2)
+                                  << " key=\"" << fname << "\""
+                                  << " <- " << (int32_t)args[3].int_val
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                }
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_void();
                 return true;
@@ -44386,6 +44557,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         cur_i = cur->bool_val ? 1 : 0;
                 }
                 int32_t exp_i = args.size() > 3 ? (int32_t)args[3].int_val : 0;
+                if (r337_trace && r337_int_n < 48) {
+                    ++r337_int_n;
+                    std::cerr << "[R337-UNSAFE] casInt obj=" << obj
+                              << " off=" << offset337(2)
+                              << " key=\"" << fname << "\""
+                              << " cur=" << cur_i << " exp=" << exp_i
+                              << " upd="
+                              << (args.size() > 4
+                                      ? (int32_t)args[4].int_val : 0)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
                 if (cur_i == exp_i && args.size() > 4) {
                     heap_.set_object_field(
                         obj, fname,
@@ -44496,6 +44679,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         old_v = cur->bool_val ? 1 : 0;
                 }
                 int32_t delta = args.size() > 3 ? (int32_t)args[3].int_val : 0;
+                if (r337_trace && r337_int_n < 48) {
+                    ++r337_int_n;
+                    std::cerr << "[R337-UNSAFE] getAndAddInt obj=" << obj
+                              << " off=" << offset337(2)
+                              << " key=\"" << fname << "\""
+                              << " old=" << old_v << " delta=" << delta
+                              << (cur.has_value()
+                                      ? "" : " MISSING(default 0)")
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
                 if (obj != 0 && !fname.empty())
                     heap_.set_object_field(
                         obj, fname,
