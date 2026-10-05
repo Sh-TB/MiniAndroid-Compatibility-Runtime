@@ -1,0 +1,51 @@
+{
+ "schema": "MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.1",
+ "apk_path": "/home/z/my-project/run/law001/arm_only_scope_probe.apk",
+ "apk_sha256_16": "4ce8b0dbf8a87697",
+ "verdict": "ABI_OUT_OF_SCOPE",
+ "prerequisites": {
+  "package": "com.probe.armonly",
+  "min_sdk": 24,
+  "target_sdk": 34,
+  "permissions": [],
+  "features": [],
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a"
+  ],
+  "activities": 2,
+  "services": 0,
+  "receivers": 0,
+  "providers": 0,
+  "gles_version": null,
+  "parse": "OK",
+  "dex_entries": [
+   "classes.dex"
+  ],
+  "lib_abis": [
+   "arm64-v8a",
+   "armeabi-v7a"
+  ],
+  "has_resources_arsc": true
+ },
+ "environment_matches": {
+  "host_executable_abis": [
+   "x86_64"
+  ],
+  "apk_abis": [
+   "arm64-v8a",
+   "armeabi-v7a"
+  ],
+  "abi_scope": "OUT_OF_SCOPE (LAW-001)"
+ },
+ "install": null,
+ "launch": null,
+ "first_divergence": null,
+ "blocker": "LAW-001 FIRST TEST LAW: native ABIs ['arm64-v8a', 'armeabi-v7a'] contain no host-executable ABI (x86/x86_64 only; ENV-005, no translation layer) \u2014 out of current test scope, SKIP not failure",
+ "is_environment_prerequisite": true,
+ "evidence": {},
+ "elapsed_s": 0.0,
+ "verdict_class": "SKIP",
+ "in_current_test_scope": false,
+ "counts_as_failure": false
+}
