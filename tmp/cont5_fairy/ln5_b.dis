@@ -1,0 +1,351 @@
+class Ln5; access=0x0401 super=Ljava/lang/Object; class_data_off=0x26068
+static=2 inst=0 direct=3 virtual=0
+method Ln5;.b access=0x0009 ret=V params=['Landroid/widget/ImageView;', 'I'] code_off=0x1a940
+registers=21 ins=2 outs=5 insns=675 units
+  pc=0x0000: move-object/from16 v0, v19
+  pc=0x0002: move/from16 v1, v20
+  pc=0x0004: invoke-static Lo5;.a:Lp5;(I)
+  pc=0x0007: move-result-object v2
+  pc=0x0008: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x000b: move-result-object v3
+  pc=0x000c: invoke-virtual Landroid/view/View;.setTag:V(Ljava/lang/Object;)
+  pc=0x000f: iget-object Lp5;.c:Ljava/lang/String;
+  pc=0x0011: if-nez v3 -> pc=0x003c
+  pc=0x0013: sget-object Landroid/widget/ImageView$ScaleType;.FIT_CENTER:Landroid/widget/ImageView$ScaleType;
+  pc=0x0015: invoke-virtual Landroid/widget/ImageView;.setScaleType:V(Landroid/widget/ImageView$ScaleType;)
+  pc=0x0018: sget-object Ln5;.a:Ljava/util/List;
+  pc=0x001a: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x001d: move-result-object v2
+  pc=0x001e: check-cast type=Ljava/lang/Number;
+  pc=0x0020: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0023: move-result v2
+  pc=0x0024: invoke-virtual Landroid/widget/ImageView;.setImageResource:V(I)
+  pc=0x0027: sget-object Ln5;.b:Ljava/util/List;
+  pc=0x0029: invoke-interface Ljava/util/List;.get:Ljava/lang/Object;(I)
+  pc=0x002c: move-result-object v2
+  pc=0x002d: check-cast type=Ljava/lang/Number;
+  pc=0x002f: invoke-virtual Ljava/lang/Number;.intValue:I()
+  pc=0x0032: move-result v2
+  pc=0x0033: invoke-static Landroid/content/res/ColorStateList;.valueOf:Landroid/content/res/ColorStateList;(I)
+  pc=0x0036: move-result-object v2
+  pc=0x0037: invoke-virtual Landroid/widget/ImageView;.setImageTintList:V(Landroid/content/res/ColorStateList;)
+  pc=0x003a: goto/16 -> pc=0x0224
+  pc=0x003c: const/4 v3=0
+  pc=0x003d: invoke-virtual Landroid/widget/ImageView;.setImageTintList:V(Landroid/content/res/ColorStateList;)
+  pc=0x0040: sget-object Landroid/widget/ImageView$ScaleType;.FIT_XY:Landroid/widget/ImageView$ScaleType;
+  pc=0x0042: invoke-virtual Landroid/widget/ImageView;.setScaleType:V(Landroid/widget/ImageView$ScaleType;)
+  pc=0x0045: new-instance type=Ln0;
+  pc=0x0047: sget-object Lm0;.a:Lm0;
+  pc=0x0049: invoke-virtual Landroid/view/View;.getContext:Landroid/content/Context;()
+  pc=0x004c: move-result-object v6
+  pc=0x004d: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x0050: const-string "Invalid fairy artwork: "
+  pc=0x0052: monitor-enter
+  pc=0x0053: sget-object Lm0;.b:Ll0;
+  pc=0x0055: iget-byte Lp5;.a:B
+  pc=0x0057: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x005a: move-result-object v9
+  pc=0x005b: invoke-virtual Landroid/util/LruCache;.get:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x005e: move-result-object v9
+  pc=0x005f: check-cast type=Lo0;
+  pc=0x0061: if-eqz v9 -> pc=0x0066
+  pc=0x0063: monitor-exit
+  pc=0x0064: goto/16 -> pc=0x021e
+  pc=0x0066: sget-object Lm0;.c:Ljava/util/LinkedHashMap;
+  pc=0x0068: iget-byte Lp5;.a:B
+  pc=0x006a: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x006d: move-result-object v10
+  pc=0x006e: invoke-virtual Ljava/util/LinkedHashMap;.get:Ljava/lang/Object;(Ljava/lang/Object;)
+  pc=0x0071: move-result-object v9
+  pc=0x0072: check-cast type=Ljava/lang/ref/WeakReference;
+  pc=0x0074: if-eqz v9 -> pc=0x008d
+  pc=0x0076: invoke-virtual Ljava/lang/ref/Reference;.get:Ljava/lang/Object;()
+  pc=0x0079: move-result-object v9
+  pc=0x007a: check-cast type=Lo0;
+  pc=0x007c: if-eqz v9 -> pc=0x008d
+  pc=0x007e: iget-byte Lp5;.a:B
+  pc=0x0080: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0083: move-result-object v2
+  pc=0x0084: invoke-virtual Landroid/util/LruCache;.put:Ljava/lang/Object;(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x0087: monitor-exit
+  pc=0x0088: goto/16 -> pc=0x021e
+  pc=0x008a: move-exception v0
+  pc=0x008b: goto/16 -> pc=0x02a1
+  pc=0x008d: invoke-virtual Landroid/content/Context;.getApplicationContext:Landroid/content/Context;()
+  pc=0x0090: move-result-object v6
+  pc=0x0091: invoke-virtual Landroid/content/Context;.getAssets:Landroid/content/res/AssetManager;()
+  pc=0x0094: move-result-object v6
+  pc=0x0095: iget-object Lp5;.c:Ljava/lang/String;
+  pc=0x0097: if-eqz v8 -> pc=0x0299
+  pc=0x0099: new-instance type=Landroid/graphics/BitmapFactory$Options;
+  pc=0x009b: invoke-direct Landroid/graphics/BitmapFactory$Options;.<init>:V()
+  pc=0x009e: const/4 v10=1
+  pc=0x009f: iput-boolean Landroid/graphics/BitmapFactory$Options;.inJustDecodeBounds:Z
+  pc=0x00a1: invoke-virtual Landroid/content/res/AssetManager;.open:Ljava/io/InputStream;(Ljava/lang/String;)
+  pc=0x00a4: move-result-object v11
+  pc=0x00a5: invoke-static Landroid/graphics/BitmapFactory;.decodeStream:Landroid/graphics/Bitmap;(Ljava/io/InputStream;,Landroid/graphics/Rect;,Landroid/graphics/BitmapFactory$Options;)
+  pc=0x00a8: invoke-static Lr5;.d:V(Ljava/io/Closeable;,Ljava/lang/Throwable;)
+  pc=0x00ab: iget Landroid/graphics/BitmapFactory$Options;.outWidth:I
+  pc=0x00ad: if-lez v11 -> pc=0x0283
+  pc=0x00af: iget Landroid/graphics/BitmapFactory$Options;.outHeight:I
+  pc=0x00b1: if-lez v11 -> pc=0x0283
+  pc=0x00b3: move v7, v10
+  pc=0x00b4: iget Landroid/graphics/BitmapFactory$Options;.outWidth:I
+  pc=0x00b6: iget Landroid/graphics/BitmapFactory$Options;.outHeight:I
+  pc=0x00b8: invoke-static Ljava/lang/Math;.max:I(I,I)
+  pc=0x00bb: move-result v11
+  pc=0x00bc: binop/lit8 v12, v7, 2
+  pc=0x00be: binop/2addr v11, v12
+  pc=0x00bf: const/16 v13=256
+  pc=0x00c1: if-lt v11,v13 -> pc=0x00c5
+  pc=0x00c3: move v7, v12
+  pc=0x00c4: goto -> pc=0x00b4
+  pc=0x00c5: invoke-virtual Landroid/content/res/AssetManager;.open:Ljava/io/InputStream;(Ljava/lang/String;)
+  pc=0x00c8: move-result-object v9
+  pc=0x00c9: new-instance type=Landroid/graphics/BitmapFactory$Options;
+  pc=0x00cb: invoke-direct Landroid/graphics/BitmapFactory$Options;.<init>:V()
+  pc=0x00ce: const/4 v12=0
+  pc=0x00cf: iput-boolean Landroid/graphics/BitmapFactory$Options;.inScaled:Z
+  pc=0x00d1: iput Landroid/graphics/BitmapFactory$Options;.inSampleSize:I
+  pc=0x00d3: sget-object Landroid/graphics/Bitmap$Config;.ARGB_8888:Landroid/graphics/Bitmap$Config;
+  pc=0x00d5: iput-object Landroid/graphics/BitmapFactory$Options;.inPreferredConfig:Landroid/graphics/Bitmap$Config;
+  pc=0x00d7: invoke-static Landroid/graphics/BitmapFactory;.decodeStream:Landroid/graphics/Bitmap;(Ljava/io/InputStream;,Landroid/graphics/Rect;,Landroid/graphics/BitmapFactory$Options;)
+  pc=0x00da: move-result-object v7
+  pc=0x00db: invoke-static Lr5;.d:V(Ljava/io/Closeable;,Ljava/lang/Throwable;)
+  pc=0x00de: if-eqz v7 -> pc=0x0260
+  pc=0x00e0: sget-object Lm0;.d:Lorg/json/JSONObject;
+  pc=0x00e2: if-nez v9 -> pc=0x012b
+  pc=0x00e4: const-string "tiles/framing.json"
+  pc=0x00e6: invoke-virtual Landroid/content/res/AssetManager;.open:Ljava/io/InputStream;(Ljava/lang/String;)
+  pc=0x00e9: move-result-object v6
+  pc=0x00ea: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x00ed: sget-object Lp;.a:Ljava/nio/charset/Charset;
+  pc=0x00ef: new-instance type=Ljava/io/InputStreamReader;
+  pc=0x00f1: invoke-direct Ljava/io/InputStreamReader;.<init>:V(Ljava/io/InputStream;,Ljava/nio/charset/Charset;)
+  pc=0x00f4: const/16 v6=8192
+  pc=0x00f6: new-instance type=Ljava/io/BufferedReader;
+  pc=0x00f8: invoke-direct Ljava/io/BufferedReader;.<init>:V(Ljava/io/Reader;,I)
+  pc=0x00fb: new-instance type=Lorg/json/JSONObject;
+  pc=0x00fd: new-instance type=Ljava/io/StringWriter;
+  pc=0x00ff: invoke-direct Ljava/io/StringWriter;.<init>:V()
+  pc=0x0102: new-array type=[C
+  pc=0x0104: invoke-virtual Ljava/io/Reader;.read:I([C)
+  pc=0x0107: move-result v14
+  pc=0x0108: if-ltz v14 -> pc=0x0112
+  pc=0x010a: invoke-virtual Ljava/io/Writer;.write:V([C,I,I)
+  pc=0x010d: invoke-virtual Ljava/io/Reader;.read:I([C)
+  pc=0x0110: move-result v14
+  pc=0x0111: goto -> pc=0x0108
+  pc=0x0112: invoke-virtual Ljava/io/StringWriter;.toString:Ljava/lang/String;()
+  pc=0x0115: move-result-object v6
+  pc=0x0116: invoke-virtual Ljava/lang/Object;.getClass:Ljava/lang/Class;()
+  pc=0x0119: invoke-direct Lorg/json/JSONObject;.<init>:V(Ljava/lang/String;)
+  pc=0x011c: invoke-interface Ljava/io/Closeable;.close:V()
+  pc=0x011f: sput-object Lm0;.d:Lorg/json/JSONObject;
+  pc=0x0121: move-object v9, v11
+  pc=0x0122: goto -> pc=0x012b
+  pc=0x0123: move-exception v0
+  pc=0x0124: move-object v1, v0
+  pc=0x0125: throw -> pc=0x0126
+  pc=0x0126: move-exception v0
+  pc=0x0127: invoke-static Lr5;.d:V(Ljava/io/Closeable;,Ljava/lang/Throwable;)
+  pc=0x012a: throw -> pc=0x012a
+  pc=0x012b: invoke-virtual Ljava/lang/String;.length:I()
+  pc=0x012e: move-result v6
+  pc=0x012f: binop/2addr v6, v10
+  pc=0x0130: const/16 v11=47
+  pc=0x0132: invoke-virtual Ljava/lang/String;.lastIndexOf:I(I,I)
+  pc=0x0135: move-result v6
+  pc=0x0136: const/4 v11=-1
+  pc=0x0137: if-ne v6,v11 -> pc=0x013b
+  pc=0x0139: move-object v6, v8
+  pc=0x013a: goto -> pc=0x0144
+  pc=0x013b: binop/2addr v6, v10
+  pc=0x013c: invoke-virtual Ljava/lang/String;.length:I()
+  pc=0x013f: move-result v11
+  pc=0x0140: invoke-virtual Ljava/lang/String;.substring:Ljava/lang/String;(I,I)
+  pc=0x0143: move-result-object v6
+  pc=0x0144: const-string "frames"
+  pc=0x0146: invoke-virtual Lorg/json/JSONObject;.getJSONObject:Lorg/json/JSONObject;(Ljava/lang/String;)
+  pc=0x0149: move-result-object v11
+  pc=0x014a: invoke-virtual Lorg/json/JSONObject;.optJSONArray:Lorg/json/JSONArray;(Ljava/lang/String;)
+  pc=0x014d: move-result-object v11
+  pc=0x014e: const-string "backgrounds"
+  pc=0x0150: invoke-virtual Lorg/json/JSONObject;.optJSONObject:Lorg/json/JSONObject;(Ljava/lang/String;)
+  pc=0x0153: move-result-object v9
+  pc=0x0154: if-eqz v9 -> pc=0x015a
+  pc=0x0156: invoke-virtual Lorg/json/JSONObject;.optJSONArray:Lorg/json/JSONArray;(Ljava/lang/String;)
+  pc=0x0159: move-result-object v3
+  pc=0x015a: const/4 v6=2
+  pc=0x015b: if-nez v3 -> pc=0x0162
+  pc=0x015d: invoke-virtual Landroid/graphics/Bitmap;.getPixel:I(I,I)
+  pc=0x0160: move-result v3
+  pc=0x0161: goto -> pc=0x0172
+  pc=0x0162: invoke-virtual Lorg/json/JSONArray;.getInt:I(I)
+  pc=0x0165: move-result v9
+  pc=0x0166: invoke-virtual Lorg/json/JSONArray;.getInt:I(I)
+  pc=0x0169: move-result v13
+  pc=0x016a: invoke-virtual Lorg/json/JSONArray;.getInt:I(I)
+  pc=0x016d: move-result v3
+  pc=0x016e: invoke-static Landroid/graphics/Color;.rgb:I(I,I,I)
+  pc=0x0171: move-result v3
+  pc=0x0172: if-nez v11 -> pc=0x0184
+  pc=0x0174: new-instance type=Landroid/graphics/Rect;
+  pc=0x0176: invoke-virtual Landroid/graphics/Bitmap;.getWidth:I()
+  pc=0x0179: move-result v9
+  pc=0x017a: invoke-virtual Landroid/graphics/Bitmap;.getHeight:I()
+  pc=0x017d: move-result v10
+  pc=0x017e: invoke-direct Landroid/graphics/Rect;.<init>:V(I,I,I,I) v6, v12, v12, v9, v10
+  pc=0x0181: move-object/from16 v16, v7
+  pc=0x0183: goto -> pc=0x01f5
+  pc=0x0184: new-instance type=Landroid/graphics/Rect;
+  pc=0x0186: invoke-virtual Lorg/json/JSONArray;.getDouble:D(I)
+  pc=0x0189: move-result-wide v13
+  pc=0x018a: invoke-virtual Landroid/graphics/Bitmap;.getWidth:I()
+  pc=0x018d: move-result v15
+  pc=0x018e: move-object/from16 v16, v7
+  pc=0x0190: unop
+  pc=0x0191: binop/2addr v13, v6
+  pc=0x0192: invoke-static Ljava/lang/Math;.floor:D(D)
+  pc=0x0195: move-result-wide v6
+  pc=0x0196: unop
+  pc=0x0197: invoke-virtual/range Landroid/graphics/Bitmap;.getWidth:I() v1..v1
+  pc=0x019a: move-result v7
+  pc=0x019b: binop/2addr v7, v10
+  pc=0x019c: invoke-static Li3;.d:I(I,I,I)
+  pc=0x019f: move-result v6
+  pc=0x01a0: invoke-virtual Lorg/json/JSONArray;.getDouble:D(I)
+  pc=0x01a3: move-result-wide v13
+  pc=0x01a4: invoke-virtual/range Landroid/graphics/Bitmap;.getHeight:I() v1..v1
+  pc=0x01a7: move-result v7
+  pc=0x01a8: move v15, v10
+  pc=0x01a9: move-object/from16 v17, v11
+  pc=0x01ab: unop
+  pc=0x01ac: binop/2addr v13, v10
+  pc=0x01ad: invoke-static Ljava/lang/Math;.floor:D(D)
+  pc=0x01b0: move-result-wide v10
+  pc=0x01b1: unop
+  pc=0x01b2: invoke-virtual/range Landroid/graphics/Bitmap;.getHeight:I() v1..v1
+  pc=0x01b5: move-result v10
+  pc=0x01b6: binop/2addr v10, v15
+  pc=0x01b7: invoke-static Li3;.d:I(I,I,I)
+  pc=0x01ba: move-result v7
+  pc=0x01bb: move-object/from16 v10, v17
+  pc=0x01bd: const/4 v11=2
+  pc=0x01be: invoke-virtual Lorg/json/JSONArray;.getDouble:D(I)
+  pc=0x01c1: move-result-wide v11
+  pc=0x01c2: invoke-virtual/range Landroid/graphics/Bitmap;.getWidth:I() v1..v1
+  pc=0x01c5: move-result v13
+  pc=0x01c6: unop
+  pc=0x01c7: binop/2addr v11, v13
+  pc=0x01c8: invoke-static Ljava/lang/Math;.ceil:D(D)
+  pc=0x01cb: move-result-wide v11
+  pc=0x01cc: unop
+  pc=0x01cd: invoke-virtual/range Landroid/graphics/Bitmap;.getWidth:I() v1..v1
+  pc=0x01d0: move-result v12
+  pc=0x01d1: invoke-static Li3;.d:I(I,I,I)
+  pc=0x01d4: move-result v11
+  pc=0x01d5: const/4 v12=3
+  pc=0x01d6: invoke-virtual Lorg/json/JSONArray;.getDouble:D(I)
+  pc=0x01d9: move-result-wide v12
+  pc=0x01da: invoke-virtual/range Landroid/graphics/Bitmap;.getHeight:I() v1..v1
+  pc=0x01dd: move-result v10
+  pc=0x01de: move-wide/from16 v17, v12
+  pc=0x01e0: unop
+  pc=0x01e1: binop v12, v0, v12
+  pc=0x01e3: invoke-static Ljava/lang/Math;.ceil:D(D)
+  pc=0x01e6: move-result-wide v12
+  pc=0x01e7: unop
+  pc=0x01e8: invoke-virtual/range Landroid/graphics/Bitmap;.getHeight:I() v1..v1
+  pc=0x01eb: move-result v12
+  pc=0x01ec: const/4 v15=1
+  pc=0x01ed: invoke-static Li3;.d:I(I,I,I)
+  pc=0x01f0: move-result v10
+  pc=0x01f1: invoke-direct Landroid/graphics/Rect;.<init>:V(I,I,I,I) v9, v6, v7, v11, v10
+  pc=0x01f4: move-object v6, v9
+  pc=0x01f5: invoke-virtual Landroid/graphics/Rect;.isEmpty:Z()
+  pc=0x01f8: move-result v7
+  pc=0x01f9: if-nez v7 -> pc=0x0245
+  pc=0x01fb: new-instance type=Lo0;
+  pc=0x01fd: move-object/from16 v7, v16
+  pc=0x01ff: invoke-direct Lo0;.<init>:V(Landroid/graphics/Bitmap;,Landroid/graphics/Rect;,I)
+  pc=0x0202: sget-object Lm0;.c:Ljava/util/LinkedHashMap;
+  pc=0x0204: iget-byte Lp5;.a:B
+  pc=0x0206: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0209: move-result-object v6
+  pc=0x020a: new-instance type=Ljava/lang/ref/WeakReference;
+  pc=0x020c: invoke-direct Ljava/lang/ref/WeakReference;.<init>:V(Ljava/lang/Object;)
+  pc=0x020f: invoke-interface Ljava/util/Map;.put:Ljava/lang/Object;(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x0212: sget-object Lm0;.b:Ll0;
+  pc=0x0214: iget-byte Lp5;.a:B
+  pc=0x0216: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0219: move-result-object v2
+  pc=0x021a: invoke-virtual Landroid/util/LruCache;.put:Ljava/lang/Object;(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x021d: monitor-exit
+  pc=0x021e: invoke-direct Ln0;.<init>:V(Lo0;)
+  pc=0x0221: invoke-virtual Landroid/widget/ImageView;.setImageDrawable:V(Landroid/graphics/drawable/Drawable;)
+  pc=0x0224: invoke-virtual Landroid/view/View;.getWidth:I()
+  pc=0x0227: move-result v2
+  pc=0x0228: if-lez v2 -> pc=0x023c
+  pc=0x022a: invoke-virtual Landroid/view/View;.getHeight:I()
+  pc=0x022d: move-result v2
+  pc=0x022e: if-lez v2 -> pc=0x023c
+  pc=0x0230: invoke-virtual Landroid/view/View;.getWidth:I()
+  pc=0x0233: move-result v1
+  pc=0x0234: invoke-virtual Landroid/view/View;.getHeight:I()
+  pc=0x0237: move-result v2
+  pc=0x0238: invoke-static Ln5;.a:V(Landroid/view/View;,I,I)
+  pc=0x023b: return-void
+  pc=0x023c: new-instance type=Lm5;
+  pc=0x023e: invoke-direct Lm5;.<init>:V(Landroid/widget/ImageView;,I)
+  pc=0x0241: invoke-virtual Landroid/view/View;.post:Z(Ljava/lang/Runnable;)
+  pc=0x0244: return-void
+  pc=0x0245: new-instance type=Ljava/lang/StringBuilder;
+  pc=0x0247: invoke-direct Ljava/lang/StringBuilder;.<init>:V()
+  pc=0x024a: const-string "Invalid fairy content frame: "
+  pc=0x024c: invoke-virtual Ljava/lang/StringBuilder;.append:Ljava/lang/StringBuilder;(Ljava/lang/String;)
+  pc=0x024f: invoke-virtual Ljava/lang/StringBuilder;.append:Ljava/lang/StringBuilder;(Ljava/lang/String;)
+  pc=0x0252: invoke-virtual Ljava/lang/StringBuilder;.toString:Ljava/lang/String;()
+  pc=0x0255: move-result-object v0
+  pc=0x0256: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x0258: invoke-virtual Ljava/lang/Object;.toString:Ljava/lang/String;()
+  pc=0x025b: move-result-object v0
+  pc=0x025c: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x025f: throw -> pc=0x0260
+  pc=0x0260: new-instance type=Ljava/lang/StringBuilder;
+  pc=0x0262: invoke-direct Ljava/lang/StringBuilder;.<init>:V()
+  pc=0x0265: const-string "Could not decode fairy artwork: "
+  pc=0x0267: invoke-virtual Ljava/lang/StringBuilder;.append:Ljava/lang/StringBuilder;(Ljava/lang/String;)
+  pc=0x026a: invoke-virtual Ljava/lang/StringBuilder;.append:Ljava/lang/StringBuilder;(Ljava/lang/String;)
+  pc=0x026d: invoke-virtual Ljava/lang/StringBuilder;.toString:Ljava/lang/String;()
+  pc=0x0270: move-result-object v0
+  pc=0x0271: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x0273: invoke-virtual Ljava/lang/Object;.toString:Ljava/lang/String;()
+  pc=0x0276: move-result-object v0
+  pc=0x0277: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x027a: throw -> pc=0x027b
+  pc=0x027b: move-exception v0
+  pc=0x027c: move-object v1, v0
+  pc=0x027d: throw -> pc=0x027e
+  pc=0x027e: move-exception v0
+  pc=0x027f: invoke-static Lr5;.d:V(Ljava/io/Closeable;,Ljava/lang/Throwable;)
+  pc=0x0282: throw -> pc=0x0282
+  pc=0x0283: invoke-virtual Ljava/lang/String;.concat:Ljava/lang/String;(Ljava/lang/String;)
+  pc=0x0286: move-result-object v0
+  pc=0x0287: new-instance type=Ljava/lang/IllegalStateException;
+  pc=0x0289: invoke-virtual Ljava/lang/Object;.toString:Ljava/lang/String;()
+  pc=0x028c: move-result-object v0
+  pc=0x028d: invoke-direct Ljava/lang/IllegalStateException;.<init>:V(Ljava/lang/String;)
+  pc=0x0290: throw -> pc=0x0291
+  pc=0x0291: move-exception v0
+  pc=0x0292: move-object v1, v0
+  pc=0x0293: throw -> pc=0x0294
+  pc=0x0294: move-exception v0
+  pc=0x0295: invoke-static Lr5;.d:V(Ljava/io/Closeable;,Ljava/lang/Throwable;)
+  pc=0x0298: throw -> pc=0x0298
+  pc=0x0299: const-string "Required value was null."
+  pc=0x029b: new-instance type=Ljava/lang/IllegalArgumentException;
+  pc=0x029d: invoke-direct Ljava/lang/IllegalArgumentException;.<init>:V(Ljava/lang/String;)
+  pc=0x02a0: throw -> pc=0x02a1
+  pc=0x02a1: monitor-exit
+  pc=0x02a2: throw -> pc=0x02a2

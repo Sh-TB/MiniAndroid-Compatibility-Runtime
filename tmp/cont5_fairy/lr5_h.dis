@@ -1,0 +1,43 @@
+class Lr5; access=0x0401 super=Ljava/lang/Object; class_data_off=0x2648e
+static=0 inst=0 direct=15 virtual=0
+method Lr5;.h access=0x0019 ret=Lc3; params=['Landroid/content/Context;', 'I', 'Z'] code_off=0x1c100
+registers=6 ins=3 outs=3 insns=83 units
+  pc=0x0000: new-instance type=Lc3;
+  pc=0x0002: invoke-direct Landroid/widget/ImageView;.<init>:V(Landroid/content/Context;)
+  pc=0x0005: const/4 v1=2
+  pc=0x0006: invoke-virtual Landroid/view/View;.setImportantForAccessibility:V(I)
+  pc=0x0009: sget-object Ln5;.a:Ljava/util/List;
+  pc=0x000b: new-instance type=Ln2;
+  pc=0x000d: invoke-direct Ln2;.<init>:V(Landroid/content/Context;)
+  pc=0x0010: invoke-virtual Landroid/view/View;.setBackground:V(Landroid/graphics/drawable/Drawable;)
+  pc=0x0013: invoke-static Ln5;.b:V(Landroid/widget/ImageView;,I)
+  pc=0x0016: if-eqz v5 -> pc=0x0052
+  pc=0x0018: new-instance type=Landroid/graphics/drawable/GradientDrawable;
+  pc=0x001a: invoke-direct Landroid/graphics/drawable/GradientDrawable;.<init>:V()
+  pc=0x001d: const/4 v4=0
+  pc=0x001e: invoke-virtual Landroid/graphics/drawable/GradientDrawable;.setColor:V(I)
+  pc=0x0021: invoke-virtual Landroid/view/View;.getResources:Landroid/content/res/Resources;()
+  pc=0x0024: move-result-object v4
+  pc=0x0025: invoke-virtual Landroid/content/res/Resources;.getDisplayMetrics:Landroid/util/DisplayMetrics;()
+  pc=0x0028: move-result-object v4
+  pc=0x0029: iget Landroid/util/DisplayMetrics;.density:F
+  pc=0x002b: const/high16
+  pc=0x002d: binop/2addr v5, v4
+  pc=0x002e: invoke-virtual Landroid/graphics/drawable/GradientDrawable;.setCornerRadius:V(F)
+  pc=0x0031: invoke-virtual Landroid/view/View;.getResources:Landroid/content/res/Resources;()
+  pc=0x0034: move-result-object v4
+  pc=0x0035: invoke-virtual Landroid/content/res/Resources;.getDisplayMetrics:Landroid/util/DisplayMetrics;()
+  pc=0x0038: move-result-object v4
+  pc=0x0039: iget Landroid/util/DisplayMetrics;.density:F
+  pc=0x003b: const/high16
+  pc=0x003d: binop/2addr v5, v4
+  pc=0x003e: invoke-static Lr5;.l:I(F)
+  pc=0x0041: move-result v4
+  pc=0x0042: const/16 v5=139
+  pc=0x0044: const/16 v1=98
+  pc=0x0046: const/16 v2=58
+  pc=0x0048: invoke-static Landroid/graphics/Color;.rgb:I(I,I,I)
+  pc=0x004b: move-result v5
+  pc=0x004c: invoke-virtual Landroid/graphics/drawable/GradientDrawable;.setStroke:V(I,I)
+  pc=0x004f: invoke-virtual Landroid/view/View;.setForeground:V(Landroid/graphics/drawable/Drawable;)
+  pc=0x0052: return-object v0

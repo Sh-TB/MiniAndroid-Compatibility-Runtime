@@ -1,5 +1,5 @@
 GATEA|ID-01|PASS|com.probe.gatea
-GATEA|ID-02|PASS|probe_store/data/app/com.probe.gatea/base.apk
+GATEA|ID-02|PASS|/home/z/my-project/probe_store/data/app/com.probe.gatea/base.apk
 GATEA|ID-03|PASS|/data/data/com.probe.gatea
 GATEA|ID-04|PASS|versionName=0.7.0 providers=1 auth=com.probe.gatea.gateprovider
 GATEA|PROV-01|PASS|provider-ran=1 attachCtx=1 auth=com.probe.gatea.gateprovider
@@ -77,10 +77,10 @@ GATEA|IMG-03|PASS|bytes-bmp=8x8
 GATEA|PREF-01|PASS|commit=true
 GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@265
 GATEA|PREF-03|PASS|fresh-instance k_int=-42 contains=true
-GATEA|PREF-06|PASS|restart_counter=2
+GATEA|PREF-06|PASS|restart_counter=1
 GATEA|PREF-04|PASS|removed=true afterClear=0
-GATEA|DB-01|PASS|rows=2 last=row-1791161783857541549 isOpen=true
-GATEA|DB-02|PASS|databaseList=[gatea.db, helper.db] has-gatea=true
+GATEA|DB-01|PASS|rows=1 last=row-1791218054589208616 isOpen=true
+GATEA|DB-02|PASS|databaseList=[gatea.db] has-gatea=true
 GATEA|DB-03|PASS|helper-db=true name=helper.db
 GATEA|CFG-01|PASS|locale default wins (-zh-rCN/-land unreachable)
 GATEA|CFG-02|PASS|default wins (-night unreachable at NIGHT_NO)

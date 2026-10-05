@@ -1,0 +1,14 @@
+class Lr5; access=0x0401 super=Ljava/lang/Object; class_data_off=0x2648e
+static=0 inst=0 direct=15 virtual=0
+method Lr5;.l access=0x0009 ret=I params=['F'] code_off=0x1c2cc
+registers=2 ins=1 outs=1 insns=18 units
+  pc=0x0000: invoke-static Ljava/lang/Float;.isNaN:Z(F)
+  pc=0x0003: move-result v0
+  pc=0x0004: if-nez v0 -> pc=0x000b
+  pc=0x0006: invoke-static Ljava/lang/Math;.round:I(F)
+  pc=0x0009: move-result v1
+  pc=0x000a: return v1
+  pc=0x000b: const-string "Cannot round NaN value."
+  pc=0x000d: invoke-static Lg0;.a:V(Ljava/lang/String;)
+  pc=0x0010: const/4 v1=0
+  pc=0x0011: return v1

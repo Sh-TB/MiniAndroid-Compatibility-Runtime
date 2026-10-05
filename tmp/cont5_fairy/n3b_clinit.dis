@@ -1,0 +1,59 @@
+class Ln3/b; access=0x0011 super=Ljava/lang/Object; class_data_off=0x1f4a7f
+static=0 inst=1 direct=2 virtual=4
+method Ln3/b;.<clinit> access=0x10008 ret=V params=[] code_off=0x13710c
+registers=24 ins=0 outs=23 insns=110 units
+  pc=0x0000: const-class type=Lm3/n;
+  pc=0x0002: const-class type=Lm3/o;
+  pc=0x0004: const-class type=Lm3/a;
+  pc=0x0006: const-class type=Lm3/l;
+  pc=0x0008: const-class type=Lt3/o;
+  pc=0x000a: const-class type=Lm3/p;
+  pc=0x000c: const-class type=Lm3/q;
+  pc=0x000e: const-class type=Lm3/r;
+  pc=0x0010: const-class type=Lm3/s;
+  pc=0x0012: const-class type=Lm3/t;
+  pc=0x0014: const-class type=Lm3/u;
+  pc=0x0016: const-class type=Lm3/v;
+  pc=0x0018: const-class type=Lm3/b;
+  pc=0x001a: const-class type=Lm3/c;
+  pc=0x001c: const-class type=Lm3/d;
+  pc=0x001e: const-class type=Lm3/e;
+  pc=0x0020: const-class type=Lm3/f;
+  pc=0x0022: const-class type=Lm3/g;
+  pc=0x0024: const-class type=Lm3/h;
+  pc=0x0026: const-class type=Lm3/i;
+  pc=0x0028: const-class type=Lm3/j;
+  pc=0x002a: const-class type=Lm3/k;
+  pc=0x002c: const-class type=Lm3/m;
+  pc=0x002e: filled-new-array/range type=[Ljava/lang/Class;
+  pc=0x0031: move-result-object v0
+  pc=0x0032: invoke-static Lf3/k;.P:Ljava/util/List;([Ljava/lang/Object;)
+  pc=0x0035: move-result-object v0
+  pc=0x0036: new-instance type=Ljava/util/ArrayList;
+  pc=0x0038: invoke-static Lf3/l;.Q:I(Ljava/lang/Iterable;)
+  pc=0x003b: move-result v2
+  pc=0x003c: invoke-direct Ljava/util/ArrayList;.<init>:V(I)
+  pc=0x003f: invoke-interface Ljava/lang/Iterable;.iterator:Ljava/util/Iterator;()
+  pc=0x0042: move-result-object v0
+  pc=0x0043: const/4 v2=0
+  pc=0x0044: invoke-interface Ljava/util/Iterator;.hasNext:Z()
+  pc=0x0047: move-result v3
+  pc=0x0048: if-eqz v3 -> pc=0x006a
+  pc=0x004a: invoke-interface Ljava/util/Iterator;.next:Ljava/lang/Object;()
+  pc=0x004d: move-result-object v3
+  pc=0x004e: binop/lit8 v4, v2, 1
+  pc=0x0050: if-ltz v2 -> pc=0x0062
+  pc=0x0052: check-cast type=Ljava/lang/Class;
+  pc=0x0054: invoke-static Ljava/lang/Integer;.valueOf:Ljava/lang/Integer;(I)
+  pc=0x0057: move-result-object v2
+  pc=0x0058: new-instance type=Le3/a;
+  pc=0x005a: invoke-direct Le3/a;.<init>:V(Ljava/lang/Object;,Ljava/lang/Object;)
+  pc=0x005d: invoke-virtual Ljava/util/ArrayList;.add:Z(Ljava/lang/Object;)
+  pc=0x0060: move v2, v4
+  pc=0x0061: goto -> pc=0x0044
+  pc=0x0062: new-instance type=Ljava/lang/ArithmeticException;
+  pc=0x0064: const-string "Index overflow has happened."
+  pc=0x0066: invoke-direct Ljava/lang/ArithmeticException;.<init>:V(Ljava/lang/String;)
+  pc=0x0069: throw -> pc=0x0069
+  pc=0x006a: invoke-static Lf3/s;.P:Ljava/util/Map;(Ljava/util/ArrayList;)
+  pc=0x006d: return-void
