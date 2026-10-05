@@ -188,6 +188,35 @@ if stale_refs:
 else:
     print("PASS V7: no stale HEAD references in profile/registry summaries")
 
+
+# V8 (CONT-5): legacy top-level counts + open_frontiers coherence
+lf_bad = []
+for k in ("total", "count", "total_roots"):
+    if reg.get(k) != len(roots):
+        lf_bad.append(f"{k}={reg.get(k)} != {len(roots)}")
+if lf_bad:
+    fail("V8", "legacy top-level counts stale: " + "; ".join(lf_bad))
+else:
+    print("PASS V8: legacy top-level counts == len(roots) == %d" % len(roots))
+
+# V9 (CONT-5): open_frontiers must only list non-closed roots
+CLOSED_STATUSES = {
+    "ROOT-CAUSED-FIXED", "VERIFIED-FIXED", "ROOT_CAUSED-FIXED",
+    "CLOSED-CLASSIFIED", "ROOT-CAUSED-CLOSED", "PROVEN-FIXED",
+    "FIXED-VERIFIED", "VERIFIED_3RUN", "NOT-APPLICABLE",
+    "SUPERSEDED-BY-EVIDENCE",
+}
+by_id = {r.get("id"): r for r in roots}
+of_bad = []
+for fid in reg.get("summary", {}).get("open_frontiers", []):
+    st = (by_id.get(fid) or {}).get("status")
+    if st in CLOSED_STATUSES:
+        of_bad.append(f"{fid} listed open but status={st}")
+if of_bad:
+    fail("V9", "open_frontiers staleness: " + "; ".join(of_bad))
+else:
+    print("PASS V9: open_frontiers contains no closed roots")
+
 if failures:
     print("\nVALIDATOR: %d FAILURE(S)" % len(failures))
     sys.exit(1)

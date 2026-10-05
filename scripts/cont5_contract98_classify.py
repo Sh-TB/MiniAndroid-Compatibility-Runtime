@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+"""cont5_contract98_classify.py — PHASE 7 (CONT-5).
+
+Classifies every FOUNDATION_CONTRACT_98 PARTIAL/PENDING/BLOCKED row into
+the CONT-5 A-F taxonomy and emits docs/CONT5_CONTRACT98_AF_CLASSIFICATION.{md,jsonl}.
+
+Taxonomy (CONT-5 contract):
+  A = genuinely unresolved runtime capability
+  B = source/documentation limitation
+  C = environment/profile limitation (declared boundary)
+  D = not exercised by current corpus
+  E = superseded
+  F = ready for implementation
+
+Every row also carries: source basis, the governing law, runtime
+reachability TODAY, test target, and a P0-P3 priority for the ones that
+are A/F. NO blind implementation claim is made.
+"""
+import json
+
+ROWS = [
+    # (num, title, current_status, cls, priority, law/rationale,
+    #  reachability_today, test_target)
+    (10, "BINDER / IPC", "PARTIAL", "C", "P3",
+     "single-runtime profile: in-process service/provider dispatch is real "
+     "(Gate A PROV rows); cross-process Binder driver is a DECLARED profile "
+     "boundary, not a silently missing API",
+     "service/provider dispatch returns real in-process semantics; there is "
+     "no second process to Binder-link to (ENVIRONMENT_PROFILE)",
+     "a two-process app (AIDL) — out of corpus"),
+    (18, "NETWORK", "PARTIAL", "D", "P2",
+     "S100 NET-001: real TLS via OpenSSL lineage; HTTP(S) GET/parse proven; "
+     "the PARTIAL residue is socket-policy breadth, not a broken law",
+     "HTTPS GET to f-droid/github proven in-wave (corpus fetches run "
+     "through the same host stack)",
+     "SOCKETS/DatagramSocket family fan-out probe"),
+    (19, "MEDIA / AUDIO", "PARTIAL", "A", "P2",
+     "real decode laws (mpg123/sndfile/WebP/JPEG/PNG/GIF) proven by bitmap "
+     "provenance; missing piece is the MediaCodec SURFACE API (clustered "
+     "with #81 under one root: 'codec surface contract absent')",
+     "AudioTrack/sound sink plays decoded PCM; MediaCodec calls hit honest "
+     "absence",
+     "MediaCodec createDecoder-by-type surface API"),
+    (40, "POWER / BATTERY / DOZE-LIKE STATE", "PARTIAL", "C", "P3",
+     "battery/charging Build/property rows are honest-static (ENV profile); "
+     "doze semantics are a device-state machine the host profile does not "
+     "model",
+     "battery rows report static values; no app in corpus gates on doze",
+     "doze whitelist gate probe (needs a corpus app using it)"),
+    (46, "PACKAGE UPDATE / SPLIT / INSTALLER CONTRACT", "PARTIAL", "F", "P1",
+     "install/update/uninstall REAL (reinstall matrix 8/8); split APK "
+     "(.apks base+config) loading = S-11 with recorded plan UPP-004 — "
+     "READY: the installer already extracts ABI trees; .apks is a zip of "
+     "APKs (parse -> pick base+config per ABI -> merge resource tables)",
+     "install of .apks今天 refuses honestly (unknown container); no "
+     "split-APK in corpus",
+     "install a real .apks bundle; prove resources.arsc merge"),
+    (49, "APP DATA / CACHE / CODE LOADING TRUST BOUNDARY", "PARTIAL", "C",
+     "P2",
+     "sandbox code-load trust enforced (installed-APK path laws; N-07 "
+     "namespace family); DexClassLoader from app-writable paths ABSENT BY "
+     "PROFILE (no dynamic code execution = trust boundary, declared)",
+     "dynamic Code calls refuse honestly; trust boundary enforced",
+     "dynamic DexClassLoader probe — requires DECIDING to lift the "
+     "profile boundary first"),
+    (51, "ACCESSIBILITY / SEMANTIC UI CONTRACT", "PARTIAL", "C", "P3",
+     "ViewTree contentDescription semantics recorded (dump-view-tree); "
+     "accessibility SERVICE registry absent by profile",
+     "a11y node properties visible in ViewTree dumps",
+     "corpus app with a11y service + AccessibilityNodeInfo probe"),
+    (64, "COMPATIBILITY-CHANGE / TARGET-SDK CONTRACT", "PARTIAL", "F", "P2",
+     "target-SDK parsed + behavior gates where implemented (permissions "
+     "model); compat-change IDs not individually enforced — READY as a "
+     "table-driven gate (change-id -> behavior gate mapping)",
+     "target-SDK drives existing permission/behavior gates; unknown "
+     "change-IDs ignored",
+     "compat-change table + per-ID enforcement probe"),
+    (66, "HIDDEN API / REFLECTION / LINKAGE CONTRACT", "PARTIAL", "C", "P3",
+     "reflection laws real (R-NEW-464 Method.getModifiers probe 12/12; "
+     "getDeclaredMethods; annotation proxy); hidden-API meta-enforcement "
+     "not applicable: the profile IS the public API surface by "
+     "construction",
+     "reflection probes 12/12; greylist enforcement has no greylist to "
+     "enforce",
+     "N/A unless a greylist artifact is adopted"),
+    (67, "SYSTEM SERVER / SERVICE DEPENDENCY GRAPH", "PARTIAL", "C", "P3",
+     "service inventory + start ordering implemented for USED services "
+     "(service cache); full system_server graph is a platform-internal the "
+     "profile does not run",
+     "getService for inventory services returns live shadows; unknown "
+     "services refuse honestly",
+     "corpus app touching an uninventoried system service"),
+    (69, "SCOPED STORAGE / SAF / MEDIASTORE CONTRACT", "PARTIAL", "F", "P1",
+     "app-specific external dirs + virtual external law implemented; SAF "
+     "document provider + MediaStore provider ABSENT — READY: both are "
+     "ContentProvider-shaped and the provider dispatch path exists "
+     "(GateProvider rows); highest fan-out for storage-heavy apps",
+     "SAF intent + MediaStore.query hit honest provider-absence paths",
+     "openDocumentTree/media-store query probe after provider laws land"),
+    (70, "CRYPTO / TLS / CONSCRYPT / KEYSTORE CONTRACT", "PARTIAL", "F", "P1",
+     "TLS real (OpenSSL); MessageDigest/Cipher real via OpenSSL; Android "
+     "Keystore ABSENT — READY: KeyStore 'AndroidKeyStore' provider over "
+     "the existing crypto primitives (key entry + chain)",
+     "AndroidKeyStore.getInstance() refuses honestly today",
+     "AndroidKeyStore store/load + sign probe"),
+    (73, "USERS / PROFILES / USER LIFECYCLE", "PARTIAL", "C", "P3",
+     "user 0 + user_de (DE) storage implemented with prefix law; "
+     "multi-user/profile lifecycle is a system feature the single-user "
+     "profile does not model",
+     "user 0 + DE paths proven (loading probe, storage proof)",
+     "multi-user probe (needs profile decision)"),
+    (74, "APP STANDBY / ROLES / APP-OPS / USAGE STATE", "PARTIAL", "D", "P3",
+     "AppOps modeled in the permission machine; standby buckets absent "
+     "AND unexercised — no corpus app gates on bucket state",
+     "AppOps checks route through the permission machine",
+     "standby-bucket probe when a corpus app needs it"),
+    (75, "NOTIFICATION / UI POLICY CONTRACT", "PARTIAL", "F", "P2",
+     "notification object/laws core exist; channels/UI policy surface "
+     "minimal — READY as a channel-registry extension of the existing "
+     "notification shadow",
+     "Notification.Builder works; channel-gated apps see permissive "
+     "defaults",
+     "channel registry + importance gating probe"),
+    (76, "WINDOWING / DISPLAY / IME / SYSTEM-UI CONTRACT", "PARTIAL", "A",
+     "P1",
+     "single-window profile documented; IME ABSENT (honest); status bar "
+     "chrome excluded from app pixels (21-P0-6) — IME is the genuine "
+     "runtime gap with the widest app fan-out (every text field)",
+     "IME shows nothing; text fields work only for direct key input "
+     "(key-event shadow)",
+     "IME compose region + InputConnection probe"),
+    (79, "AUDIO / CAMERA / SENSOR / LOCATION PIPELINE CONTRACT", "PARTIAL",
+     "C", "P3",
+     "audio pipeline real (decode + sink); camera/sensor/location "
+     "honest-absent per ENV-008 hardware profile (FA law: absent hardware "
+     "must refuse, not fake)",
+     "hasSystemFeature(camera)=false etc. — honest advertisement proven",
+     "virtual sensor pipeline if corpus demands"),
+    (80, "CONNECTIVITY / NETD / VPN / DNS CONTRACT", "PARTIAL", "C", "P3",
+     "TLS/HTTP real; DNS via host resolver; netd/VPN are platform daemons "
+     "the profile does not run",
+     "connectivity checks resolve through real host stack",
+     "VPN probe out of profile"),
+    (81, "MEDIA / CODEC / DRM CONTRACT", "PARTIAL", "A", "P1",
+     "codec-lib decode real for MP3/WAV/PNG/JPEG/WebP/GIF; MediaCodec "
+     "surface API absent; DRM absent — cluster root with #19: 'codec "
+     "surface contract absent' (one architectural root, two contract "
+     "children)",
+     "MediaCodec API calls refuse; decode happens via codec libs directly",
+     "MediaCodec decode-to-buffer law over existing codec libs"),
+    (83, "ACCESSIBILITY / AUTOFILL / TEXT-SERVICE / IME CONTRACT",
+     "PENDING", "A", "P1",
+     "a11y node semantics minimal; autofill/IME services ABSENT — same "
+     "architectural root as #76 (input/compose surface); PENDING because "
+     "no probe row has ever been built for it (never exercised, genuinely "
+     "absent)",
+     "no autofill/IME service rows exist anywhere in the gates",
+     "IME/autofill service contract probe"),
+    (84, "CLIPBOARD / DRAG-DROP / SHARE / CHOOSER CONTRACT", "PARTIAL",
+     "F", "P2",
+     "ClipboardManager real (clipboard shadow); share/chooser intent "
+     "routing minimal; drag-drop absent — READY for chooser/intent "
+     "fan-out over the existing intent machinery",
+     "clipboard get/set proven; share intents resolve to no-handler "
+     "honesty",
+     "chooser intent dispatch probe"),
+    (86, "BACKUP / RESTORE / ACCOUNT / CREDENTIAL STATE", "PARTIAL", "C",
+     "P3",
+     "clear-data/uninstall semantics real (uninstall proof); backup "
+     "transport + AccountManager absent (no host account stack)",
+     "uninstall/clear-data byte-proven; backup calls refuse",
+     "backup transport probe out of profile"),
+    (87, "JOB / WORK / ALARM / FOREGROUND EXECUTION POLICY", "PARTIAL", "F",
+     "P2",
+     "WorkManagerInitializer provider chain runs (memory app evidence); "
+     "AlarmManager/JobScheduler registered-stub; foreground-service policy "
+     "minimal — READY: persist job records in the store and fire on "
+     "relaunch (the loading probe already proves restart persistence)",
+     "job/alarm records exist in-memory for the session only",
+     "JobScheduler persist + fire-on-relaunch probe"),
+    (88, "WIDGET / SHORTCUT / LAUNCHER / LIVE SURFACE CONTRACT", "PARTIAL",
+     "C", "P3",
+     "ShortcutInfo.Builder law exists; app-widget host absent — no "
+     "launcher surface exists in the profile to host widgets",
+     "shortcuts build; widget hosting has no surface",
+     "widget host probe out of profile"),
+    (90, "STRICTMODE / DEBUG / PROFILING OBSERVABILITY", "PENDING", "B", "P3",
+     "StrictMode/Traces APIs absent — documentation/observability "
+     "limitation, not a runtime-compat break (no corpus app behavior "
+     "depends on StrictMode)",
+     "StrictMode.setPolicy hits honest absence",
+     "StrictMode policy shadow (cheap, low fan-out)"),
+    (94, "REFERENCE-ORACLE DIFFERENTIAL TESTING", "PARTIAL", "F", "P2",
+     "A/B causal proofs per fix are REAL and recorded (S-2 0->10, time4j "
+     "3->0 deaths, fossifyclock REC-MISS 11->0); the CONTINUOUS oracle "
+     "harness (auto-diff every run vs golden) is not built — READY as "
+     "tooling: the anchors/goldens gates already pin byte-identical SHAs",
+     "per-fix A/B proofs exist; no continuous oracle run in gates",
+     "wire the golden-SHA diff into the nightly gate"),
+]
+
+MD = ["# CONT-5 PHASE 7 — FOUNDATION_CONTRACT_98 A-F classification",
+      "",
+      "Generated by `scripts/cont5_contract98_classify.py`. Taxonomy:",
+      "**A** genuinely unresolved runtime capability · **B** source/doc "
+      "limitation · **C** environment/profile limitation (declared "
+      "boundary) · **D** not exercised by current corpus · **E** "
+      "superseded · **F** ready for implementation.",
+      "",
+      "Counts: " + json.dumps({c: sum(1 for r in ROWS if r[3] == c)
+                                for c in "ABCDEF"}),
+      "",
+      "| § | contract | status | class | priority | governing law / "
+      "rationale | runtime reachability today | test target |",
+      "|---|---|---|---|---|---|---|---|"]
+for num, title, st, cls, prio, law, reach, test in ROWS:
+    MD.append(f"| {num} | {title} | {st} | {cls} | {prio} | {law} | "
+              f"{reach} | {test} |")
+
+MD += ["",
+       "## Priority ranking of A/F rows (high fan-out first)",
+       "",
+       "- **P1**: §69 SAF/MediaStore (F) · §70 AndroidKeyStore (F) · "
+       "§81/§19 MediaCodec surface cluster (A) · §46 split-APK .apks "
+       "(F, plan UPP-004) · §76/§83 IME cluster (A/PENDING)",
+       "- **P2**: §64 compat-change table (F) · §75 notification channels "
+       "(F) · §84 chooser routing (F) · §87 job persist+fire (F) · "
+       "§94 continuous oracle (F) · §18 socket-policy breadth (D) · "
+       "§49 dynamic Dex (C, needs profile decision)",
+       "- **P3**: all remaining C rows (Binder, doze, a11y services, "
+       "hidden-API, system_server, multi-user, standby, netd/VPN, backup, "
+       "widget host) + §90 StrictMode (B) + §74 standby (D)",
+       "",
+       "Cluster law (root-count discipline): §19+§81 share ONE "
+       "architectural root (codec surface contract absent) with two "
+       "contract children; §76+§83 share ONE root (IME/input compose "
+       "surface absent). No root inflation.",
+       "",
+       "NO blind implementation performed this wave: every row above is "
+       "classified with its runtime-reachability evidence; the F rows are "
+       "implementation-READY with named test targets but are NOT claimed "
+       "as implemented."]
+
+with open("/home/z/my-project/docs/CONT5_CONTRACT98_AF_CLASSIFICATION.md",
+          "w") as f:
+    f.write("\n".join(MD) + "\n")
+with open("/home/z/my-project/docs/CONT5_CONTRACT98_AF_CLASSIFICATION.jsonl",
+          "w") as f:
+    for num, title, st, cls, prio, law, reach, test in ROWS:
+        f.write(json.dumps({
+            "num": num, "title": title, "status": st, "class": cls,
+            "priority": prio, "law": law, "reachability": reach,
+            "test_target": test}) + "\n")
+print("wrote docs/CONT5_CONTRACT98_AF_CLASSIFICATION.{md,jsonl}",
+      len(ROWS), "rows")

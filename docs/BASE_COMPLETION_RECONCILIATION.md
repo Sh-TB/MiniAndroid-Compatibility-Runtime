@@ -1,10 +1,10 @@
 # BASE-COMPLETION RECONCILIATION MATRIX (#375 FINAL PASS)
 
-Inputs: root_registry.json (548 roots), live frontiers, #374 contract audit.
+Inputs: root_registry.json (552 roots), live frontiers, #374 contract audit.
 
 ## State totals (all kinds)
 
-- VERIFIED: 200
+- VERIFIED: 208
 - PARTIAL: 148
 - TESTED: 94
 - UNKNOWN: 72
@@ -20,7 +20,7 @@ Inputs: root_registry.json (548 roots), live frontiers, #374 contract audit.
 ## Per kind
 
 ### registry-root
-- VERIFIED: 200
+- VERIFIED: 208
 - PARTIAL: 120
 - UNKNOWN: 72
 - SUPERSEDED: 51

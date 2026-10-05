@@ -1286,6 +1286,14 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     return CallResult::handled_int(ielem);
                 }
                 uint32_t relem = 0;
+                if (std::getenv("MINIANDROID_F244_DIAG") != nullptr) {
+                    static thread_local uint64_t f244_nx = 0;
+                    if (parent_id > 400 && f244_nx++ < 200)
+                        std::cerr << "[F244-NEXT] parent=" << parent_id
+                                  << " pos=" << pos
+                                  << " str=" << (heap_->get_object_array_string_element(parent_id, static_cast<size_t>(pos), selem) ? 1 : 0)
+                                  << std::endl;
+                }
                 if (heap_->get_object_array_ref_element(parent_id,
                                                         static_cast<size_t>(pos),
                                                         relem)) {
