@@ -34312,15 +34312,82 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // kept coherent here (the 21196 engine-side block is skipped in
         // registry mode; in non-registry mode the heap fields are the
         // authoritative store — two parallel modes, one law).
-        if (shadow_registry_ != nullptr && !f101_elem_ids.empty()) {
+        //
+        // ── F-NEW-238: KIND-FAITHFUL WRITE-BACK ─────────────────────────
+        // The old write-back stored ONLY f101_elem_ids (object elements —
+        // strings/ints were skipped by the push guard), so the shadow
+        // store was INDEX-SKEWED against the heap array[i] fields for any
+        // heterogeneous copy: every String/Integer element shifted, and
+        // the shadow answered null at the tail slots (fairymahjong
+        // Lm2;.b: board rows with Integer cells read null at idx 0/1 →
+        // first()/get(i) NPE). The rebuilt store reads back each copied
+        // slot's DalvikValue kind and fills ALL FOUR parallel vectors
+        // (elements/kinds/strings/ints) index-aligned — the R-NEW-464
+        // string law and the F-NEW-238 int law hold for copies too.
+        if (shadow_registry_ != nullptr && f101_copied > 0) {
             auto* f101_csh =
                 shadow_registry_->find_as<framework::CollectionShadow>();
             if (f101_csh) {
                 auto* f101_st = f101_csh->get_or_create(f101_arr,
                                                         /*is_map=*/false);
                 if (f101_st) {
-                    f101_st->elements = f101_elem_ids;
+                    f101_st->elements.clear();
+                    f101_st->elem_kinds.clear();
+                    f101_st->elem_strings.clear();
+                    f101_st->elem_ints.clear();
                     f101_st->is_map = false;
+                    for (int32_t f101_i = 0; f101_i < f101_copied;
+                         ++f101_i) {
+                        auto f101_ev = heap_.get_object_field(
+                            f101_arr,
+                            "array[" + std::to_string(f101_i) + "]");
+                        if (!f101_ev.has_value()) {
+                            f101_st->elements.push_back(0);
+                            f101_st->elem_kinds.push_back(0);
+                            f101_st->elem_strings.push_back(std::string());
+                            f101_st->elem_ints.push_back(0);
+                            continue;
+                        }
+                        const DalvikValue& f101_v = *f101_ev;
+                        switch (f101_v.type) {
+                            case DalvikType::OBJECT_REF:
+                                f101_st->elements.push_back(
+                                    f101_v.object_id);
+                                f101_st->elem_kinds.push_back(1);
+                                f101_st->elem_strings.push_back(
+                                    std::string());
+                                f101_st->elem_ints.push_back(0);
+                                break;
+                            case DalvikType::STRING_REF:
+                                f101_st->elements.push_back(0);
+                                f101_st->elem_kinds.push_back(2);
+                                f101_st->elem_strings.push_back(
+                                    f101_v.string_val);
+                                f101_st->elem_ints.push_back(0);
+                                break;
+                            case DalvikType::INT32:
+                            case DalvikType::BYTE:
+                            case DalvikType::SHORT:
+                            case DalvikType::CHAR:
+                            case DalvikType::BOOLEAN:
+                                f101_st->elements.push_back(0);
+                                f101_st->elem_kinds.push_back(3);
+                                f101_st->elem_strings.push_back(
+                                    std::string());
+                                f101_st->elem_ints.push_back(
+                                    f101_v.type == DalvikType::BOOLEAN
+                                        ? (f101_v.int_val ? 1 : 0)
+                                        : f101_v.int_val);
+                                break;
+                            default:
+                                f101_st->elements.push_back(0);
+                                f101_st->elem_kinds.push_back(0);
+                                f101_st->elem_strings.push_back(
+                                    std::string());
+                                f101_st->elem_ints.push_back(0);
+                                break;
+                        }
+                    }
                 }
             }
         }
@@ -44830,6 +44897,346 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // (fall through when the call is TreeSet-adjacent but belongs to
     //  another collection family — e.g. AbstractCollection.add with an
     //  ArrayList receiver)
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-238: java.util.AbstractCollection.toArray / toArray(T[]) law.
+    // UPSTREAM LAW (OpenJDK AbstractCollection.java):
+    //   public Object[] toArray() {
+    //       int size = size(); Object[] r = new Object[size];
+    //       Iterator<E> it = iterator();
+    //       for (int i = 0; i < size; i++) { r[i] = it.next(); }
+    //       return it.hasNext() ? finishToArray(r, it) : r;
+    //   }
+    //   public <T> T[] toArray(T[] a) {
+    //       int size = size();
+    //       T[] r = a.length >= size ? a
+    //             : (T[])Array.newInstance(a.getClass().getComponentType(), size);
+    //       Iterator<E> it = iterator();
+    //       for (int i = 0; i < size; i++) { r[i] = (T)it.next(); }
+    //       if (r.length > size) r[size] = null;   // (a reused: null-terminate)
+    //       return it.hasNext() ? finishToArray(r, it) : r;
+    //   }
+    // The resolved implementation for ANY java.util collection subclass is
+    // AbstractCollection.toArray — ART method resolution walks the receiver's
+    // superclass chain out of app code into the host framework, and the host
+    // class answers using the receiver's OWN size()/iterator() overrides.
+    //
+    // ROOT CAUSE (fairymahjong F-NEW-235 remaining face, Lo;.b pc=52):
+    // the board layer parser iterates row objects that are app-side Set
+    // subclasses (R8-merged: Lk5; extends Lf; extends java.util.AbstractSet).
+    // The Kotlin generic-copy idiom compiled to
+    //   new-array v7, v2, [Ljava/lang/Comparable;      (new Comparable[0])
+    //   invoke-interface {v5, v7}, Collection.toArray([Object;)[Object;
+    //   move-result-object v5; move-object v7, v5; check-cast [Comparable;
+    //   invoke-virtual {v7}, Object.getClass   ← R8 discard-result NULL CHECK
+    // Neither the runtime-class walk (Lk5; has no DEX toArray) nor the
+    // declared-interface walk (java.util.Collection is a HOST interface —
+    // F-091b correctly refuses signature-guessing on it) produced the call,
+    // and no bridge handler existed: return_val stayed VOID, move-result-
+    // object propagated UNSET, and the (correct!) getClass null-check fired
+    // NPE "getClass on a null object reference" at pc=52 — the correct
+    // consequence of a WRONG toArray result. On ART the call can never
+    // return null (AbstractCollection.toArray returns `a` itself when the
+    // receiver is empty and fits).
+    //
+    // GENERICITY: keyed on the RECEIVER'S runtime collection ancestry (any
+    // class whose chain reaches java.util.AbstractCollection — covers R8-
+    // merged app Sets/Lists/Queues AND host ArrayList/HashSet/TreeSet/
+    // ArrayDeque/EnumSet receivers reaching this bridge) — never on a
+    // package name or APK identity. Element source cascade, most
+    // authoritative first (F-101 discipline):
+    //   1. CollectionShadow store (engine-minted shadow collections);
+    //   2. the receiver's OWN DEX size()/iterator() (+ superclass climb) —
+    //      the app's code executes, no framework-side fabrication;
+    //   3. heap array-fields store (__array_length__ + array[i]).
+    // If none resolves, the law RETURNS FALSE — the call stays honestly
+    // unhandled (visible via F-NEW-200 census + IFACE-FAIL trace) instead of
+    // fabricating an empty array (a silent-wrong result).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "toArray" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        const auto* f238_recv = heap_.get(args[0].object_id);
+        std::string f238_rcls =
+            f238_recv ? f238_recv->class_descriptor : args[0].class_desc;
+        if (f238_recv && !f238_rcls.empty() &&
+            is_subclass_of(f238_rcls, "Ljava/util/AbstractCollection;")) {
+            bool f238_has_arg = args.size() >= 2;
+            uint32_t f238_arg_id =
+                f238_has_arg && args[1].type == DalvikType::OBJECT_REF
+                    ? args[1].object_id
+                    : 0;
+            const auto* f238_arg =
+                f238_arg_id != 0 ? heap_.get(f238_arg_id) : nullptr;
+            // Component type of the destination array (1-arg form): the
+            // ARGUMENT'S component type (Array.newInstance(component, size)
+            // law). Descriptors are "[LX;" — strip the leading '['.
+            std::string f238_component = "Ljava/lang/Object;";
+            if (f238_has_arg) {
+                std::string arg_desc =
+                    (f238_arg && !f238_arg->class_descriptor.empty())
+                        ? f238_arg->class_descriptor
+                        : args[1].class_desc;
+                if (arg_desc.size() > 1 && arg_desc[0] == '[') {
+                    f238_component = arg_desc.substr(1);
+                } else if (f238_arg) {
+                    auto et = f238_arg->fields.find("__element_type__");
+                    if (et != f238_arg->fields.end() &&
+                        et->second.type == DalvikType::STRING_REF &&
+                        et->second.string_val.size() > 1 &&
+                        et->second.string_val[0] == '[') {
+                        f238_component = et->second.string_val.substr(1);
+                    }
+                }
+            }
+            // ── element source cascade ──────────────────────────────────
+            int32_t f238_n = -1;
+            std::vector<DalvikValue> f238_elems;
+            // 1. CollectionShadow store (engine-minted collections only).
+            if (shadow_registry_ != nullptr) {
+                auto* f238_csh =
+                    shadow_registry_->find_as<framework::CollectionShadow>();
+                if (f238_csh) {
+                    auto* f238_st = f238_csh->get_or_create(
+                        args[0].object_id, /*is_map=*/false);
+                    if (f238_st && !f238_st->elements.empty()) {
+                        f238_n =
+                            static_cast<int32_t>(f238_st->elements.size());
+                        for (uint32_t f238_oid : f238_st->elements)
+                            f238_elems.push_back(DalvikValue::make_object(
+                                f238_oid, "Ljava/lang/Object;"));
+                    }
+                }
+            }
+            // 2. The receiver's OWN DEX size()/iterator() (superclass climb
+            //    — the same readers the F-101 copy law uses).
+            if (f238_n < 0) {
+                std::vector<DalvikValue> cb_args{args[0]};
+                DalvikValue cb_ret;
+                DalvikExecutionResult cb_res;
+                bool got_size =
+                    try_recursive_invoke(f238_rcls, "size", cb_args, cb_ret,
+                                         cb_res, "()I") ||
+                    try_recursive_invoke_on_super(
+                        f238_rcls, "size", cb_args, cb_ret, cb_res, "()I");
+                if (got_size && cb_ret.type == DalvikType::INT32) {
+                    f238_n = cb_ret.int_val;
+                    if (f238_n < 0) f238_n = 0;
+                    if (f238_n == 0) {
+                        f238_elems.clear();
+                    } else {
+                        DalvikValue f238_it;
+                        DalvikExecutionResult f238_itres;
+                        std::vector<DalvikValue> it_args{args[0]};
+                        if ((try_recursive_invoke(f238_rcls, "iterator",
+                                                  it_args, f238_it,
+                                                  f238_itres,
+                                                  "()Ljava/util/Iterator;") ||
+                             try_recursive_invoke_on_super(
+                                 f238_rcls, "iterator", it_args, f238_it,
+                                 f238_itres, "()Ljava/util/Iterator;")) &&
+                            f238_it.type == DalvikType::OBJECT_REF &&
+                            f238_it.object_id != 0) {
+                            std::string f238_itcls = f238_it.class_desc;
+                            if (f238_itcls.empty()) {
+                                const auto* itobj =
+                                    heap_.get(f238_it.object_id);
+                                if (itobj)
+                                    f238_itcls = itobj->class_descriptor;
+                            }
+                            bool f238_dex_it =
+                                !f238_itcls.empty() && f238_itcls[0] == 'L' &&
+                                class_info_index_.find(f238_itcls) !=
+                                    class_info_index_.end();
+                            // OpenJDK loop shape: exactly size() reads, each
+                            // gated on it.hasNext() — the honest
+                            // fewer-elements-than-reported shrink path
+                            // (Arrays.copyOf(r, i)) is modeled by stopping
+                            // at the copied count and TRIMMING below.
+                            for (int32_t f238_i = 0; f238_i < f238_n;
+                                 ++f238_i) {
+                                bool f238_more = false;
+                                DalvikValue f238_elem;
+                                if (f238_dex_it) {
+                                    DalvikValue hn;
+                                    DalvikExecutionResult hnres;
+                                    std::vector<DalvikValue> hn_args{
+                                        f238_it};
+                                    if (try_recursive_invoke(
+                                            f238_itcls, "hasNext", hn_args,
+                                            hn, hnres, "()Z") &&
+                                        hn.type == DalvikType::BOOLEAN)
+                                        f238_more = hn.int_val != 0;
+                                } else {
+                                    auto pos = heap_.get_object_field(
+                                        f238_it.object_id, "pos");
+                                    auto len = heap_.get_object_field(
+                                        f238_it.object_id,
+                                        "__array_length__");
+                                    if (pos.has_value() &&
+                                        pos->type == DalvikType::INT32 &&
+                                        len.has_value() &&
+                                        len->type == DalvikType::INT32)
+                                        f238_more = pos->int_val <
+                                                    len->int_val;
+                                }
+                                if (!f238_more) break;  // shrink path
+                                if (f238_dex_it) {
+                                    DalvikValue nx;
+                                    DalvikExecutionResult nxres;
+                                    std::vector<DalvikValue> nx_args{
+                                        f238_it};
+                                    if (try_recursive_invoke(
+                                            f238_itcls, "next", nx_args, nx,
+                                            nxres,
+                                            "()Ljava/lang/Object;"))
+                                        f238_elem = nx;
+                                } else {
+                                    auto pos = heap_.get_object_field(
+                                        f238_it.object_id, "pos");
+                                    auto len = heap_.get_object_field(
+                                        f238_it.object_id,
+                                        "__array_length__");
+                                    if (pos.has_value() &&
+                                        pos->type == DalvikType::INT32 &&
+                                        len.has_value() &&
+                                        len->type == DalvikType::INT32 &&
+                                        pos->int_val < len->int_val) {
+                                        auto ev = heap_.get_object_field(
+                                            f238_it.object_id,
+                                            "array[" +
+                                                std::to_string(pos->int_val) +
+                                                "]");
+                                        if (ev.has_value()) {
+                                            f238_elem = *ev;
+                                            heap_.set_object_field(
+                                                f238_it.object_id, "pos",
+                                                DalvikValue::make_int(
+                                                    pos->int_val + 1));
+                                        }
+                                    }
+                                }
+                                f238_elems.push_back(f238_elem);
+                            }
+                        } else {
+                            // size() answered but iterator() did not — the
+                            // OpenJDK loop cannot run; do NOT fabricate.
+                            f238_n = -1;
+                        }
+                    }
+                }
+            }
+            // 3. Heap array-fields store.
+            if (f238_n < 0) {
+                auto lenf = f238_recv->fields.find("__array_length__");
+                if (lenf != f238_recv->fields.end() &&
+                    lenf->second.type == DalvikType::INT32) {
+                    f238_n = lenf->second.int_val;
+                    if (f238_n < 0) f238_n = 0;
+                    for (int32_t i = 0; i < f238_n; ++i) {
+                        auto ev = f238_recv->fields.find(
+                            "array[" + std::to_string(i) + "]");
+                        f238_elems.push_back(
+                            ev != f238_recv->fields.end()
+                                ? ev->second
+                                : DalvikValue::make_null());
+                    }
+                }
+            }
+            if (f238_n < 0) {
+                // No authoritative element source — stay honestly unhandled.
+                // (F-NEW-200 census keeps the STUBBED trace; IFACE-FAIL diag
+                // remains visible for the next root-cause pass.)
+                static thread_local uint64_t f238_miss_n = 0;
+                if (f238_miss_n++ < 16)
+                    fprintf(stderr,
+                            "[F-NEW-238] toArray on %s obj#%u: no authoritative "
+                            "element source (shadow/DEX size+iterator/array "
+                            "fields all missed) — leaving unhandled\n",
+                            f238_rcls.c_str(), args[0].object_id);
+            } else {
+                // ── result construction (OpenJDK shape) ───────────────────
+                // a.length >= size ? a : new array(component, size)
+                int32_t f238_arg_len = -1;
+                if (f238_has_arg) {
+                    if (f238_arg) {
+                        auto al = f238_arg->fields.find("__array_length__");
+                        f238_arg_len =
+                            (al != f238_arg->fields.end() &&
+                             al->second.type == DalvikType::INT32)
+                                ? al->second.int_val
+                                : 0;
+                    } else {
+                        f238_arg_len = 0;  // non-object 1st arg: treat as len 0
+                    }
+                }
+                int32_t f238_copied = static_cast<int32_t>(f238_elems.size());
+                DalvikValue f238_ret;
+                if (f238_has_arg && f238_arg_len == 0 && f238_copied == 0) {
+                    // OpenJDK: r = a (a.length >= size), loop no-op,
+                    // it.hasNext() false → return a — SAME OBJECT identity.
+                    f238_ret = args[1];
+                } else if (f238_has_arg && f238_arg_len >= f238_copied &&
+                           f238_arg != nullptr) {
+                    // Reuse the caller's array: copy elements in, null-
+                    // terminate past size when a.length > size.
+                    for (int32_t i = 0; i < f238_copied; ++i) {
+                        heap_.set_object_field(
+                            f238_arg_id, "array[" + std::to_string(i) + "]",
+                            f238_elems[static_cast<size_t>(i)]);
+                    }
+                    if (f238_arg_len > f238_copied) {
+                        heap_.set_object_field(
+                            f238_arg_id,
+                            "array[" + std::to_string(f238_copied) + "]",
+                            DalvikValue::make_null());
+                    }
+                    f238_ret = args[1];
+                } else {
+                    // Fresh array of the component type, length = copied
+                    // (the honest shrink of Arrays.copyOf(r, i) when the
+                    // iterator delivered fewer than size() promised).
+                    std::string f238_desc = "[" + f238_component;
+                    uint32_t f238_oid = heap_.allocate(f238_desc, 0, 0);
+                    heap_.set_object_field(
+                        f238_oid, "__array_length__",
+                        DalvikValue::make_int(f238_copied));
+                    heap_.set_object_field(
+                        f238_oid, "__new_array_length__",
+                        DalvikValue::make_int(f238_copied));
+                    heap_.set_object_field(
+                        f238_oid, "__element_type__",
+                        DalvikValue::make_string(f238_component, 0));
+                    for (int32_t i = 0; i < f238_copied; ++i) {
+                        heap_.set_object_field(
+                            f238_oid, "array[" + std::to_string(i) + "]",
+                            f238_elems[static_cast<size_t>(i)]);
+                    }
+                    f238_ret.type = DalvikType::OBJECT_REF;
+                    f238_ret.object_id = f238_oid;
+                    f238_ret.class_desc = f238_desc;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = f238_ret;
+                // pc_/trace/last_invoke_return_ are owned by the CALLER of
+                // bridge_to_api (execute_invoke_interface/invoke_virtual set
+                // pc_ = pc+3 and last_invoke_return_ = return_val after the
+                // bridge returns). Evidence marker below (bounded).
+                {
+                    static thread_local uint64_t f238_hit_n = 0;
+                    if (f238_hit_n++ < 16)
+                        fprintf(stderr,
+                                "[F-NEW-238] %s.toArray(%s) obj#%u -> %d "
+                                "element(s) via %s\n",
+                                f238_rcls.c_str(), f238_component.c_str(),
+                                args[0].object_id, f238_copied,
+                                f238_ret.type == DalvikType::OBJECT_REF
+                                    ? "array obj"
+                                    : "arg array (identity)");
+                }
+                return true;
+            }
+        }
+    }
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-071 Phase 6: ArrayList — basic operations (post-shadow fallbacks).

@@ -537,7 +537,11 @@
 {"kind": "registry-root", "id": "R-NEW-464", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "S137+R464 Method-record reflection law (CLOSED): minted Method records carry DEX access_flags (__reflect_mod) + return_type + declaring-class identity; Method-record CALL route answers getDeclaredMethods/getModifiers/get"}
 {"kind": "registry-root", "id": "R-NEW-465", "status_raw": "IMPLEMENTED+TESTED", "state": "TESTED", "title": "#373 environment/prerequisite layer: pkginspect --what prerequisites (APK-001..020 schema) — minSdk/targetSdk/uses-features/dangerous-permissions/abi-libs+ELF-machines/webview/nativeAbiVerdict/environmentMismatches/missi"}
 {"kind": "registry-root", "id": "F-NEW-084", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "Interpreter loop-visit guard misclassification closeout (cont375 CONT-2): (1) FORWARD-PROGRESS LAW v3 in dalvik_engine.cpp — visit counting restored on EVERY pc (a compiler may erase a provably-dead condition and emit a "}
-{"kind": "registry-root", "id": "F-NEW-235", "status_raw": "OBSERVED", "state": "PARTIAL", "title": "fairymahjong board-build divergence: game's OWN layout generator/validator throws IllegalArgumentException 'Duplicate tile position' at Lg0;.a (throw helper) called from Lm;.<init> (BoardShape parser: 696-insn ctor, java"}
+{"kind": "registry-root", "id": "F-NEW-235", "status_raw": "PARTIAL-FIX", "state": "PARTIAL", "title": "fairymahjong board-build divergence: game's OWN layout generator/validator throws IllegalArgumentException 'Duplicate tile position' at Lg0;.a (throw helper) called from Lm;.<init> (BoardShape parser: 696-insn ctor, java"}
+{"kind": "registry-root", "id": "F-NEW-236", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "JDK FRAMEWORK INTERFACE HIERARCHY + SET-FAMILY COHERENCE (fairymahjong face)"}
+{"kind": "registry-root", "id": "F-NEW-237", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "PER-ITERATOR CURSOR LAW (OpenJDK Itr) — shadow + engine array-backed lists"}
+{"kind": "registry-root", "id": "F-NEW-238", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "java.util.AbstractCollection.toArray / toArray(T[]) had NO engine implementation: invoke-interface Collection.toArray on an app-side Set subclass (R8-merged Lk5; extends Lf; extends java.util.AbstractSet) fell through ru"}
+{"kind": "registry-root", "id": "F-NEW-238b", "status_raw": "ROOT-CAUSED-FIXED", "state": "VERIFIED", "title": "CollectionShadow INT-ELEMENT FIDELITY (extends R-NEW-464 from strings to ints): add()/add(i,e)/set(i,e) collapsed INT/BOOL/LONG args via arg_as_object(0)=0 into kind-2 EMPTY-string slots, so every Integer element read ba"}
 {"kind": "frontier", "id": "F-NEW-235", "status_raw": "CURRENT FRONTIER — ordered by #375 §6", "state": "CURRENT", "title": "fairymahjong board-build IAE 'Duplicate tile position' — game's own regex/token parse or Set-dedup divergence"}
 {"kind": "frontier", "id": "F-NEW-229", "status_raw": "OPEN generic layout law", "state": "OPEN", "title": "CL MATCH_PARENT spec law (opencalc full button width, no anchors on axis)"}
 {"kind": "frontier", "id": "F-NEW-221", "status_raw": "OPEN", "state": "OPEN", "title": "R8-merged class constructor/dispatch mismatch (Compose sudokusolver family)"}
@@ -552,101 +556,101 @@
 {"kind": "frontier", "id": "F-NEW-169", "status_raw": "PARTIAL (app-boundary)", "state": "PARTIAL", "title": "WhatsApp DI provider-null lattice"}
 {"kind": "frontier", "id": "F-NEW-192", "status_raw": "PENDING audit", "state": "PENDING", "title": "draw/z-order audit residue"}
 {"kind": "frontier", "id": "R-NEW-456", "status_raw": "BLOCKED-EXTERNAL", "state": "BLOCKED-EXTERNAL", "title": "LIVE z.ai residual Svelte-5 boot rejection inside minified bundle"}
-{"kind": "contract-374", "id": "374-§1", "status_raw": "TESTED", "state": "PENDING", "title": "PLATFORM / DEVICE CONTRACT"}
-{"kind": "contract-374", "id": "374-§2", "status_raw": "TESTED", "state": "PENDING", "title": "CPU / ABI / NATIVE FOUNDATION"}
-{"kind": "contract-374", "id": "374-§3", "status_raw": "TESTED", "state": "PENDING", "title": "PACKAGE MANAGER / INSTALLATION"}
-{"kind": "contract-374", "id": "374-§4", "status_raw": "TESTED", "state": "PENDING", "title": "APK STRUCTURAL PREFLIGHT"}
-{"kind": "contract-374", "id": "374-§5", "status_raw": "TESTED", "state": "PENDING", "title": "PERMISSION FOUNDATION"}
-{"kind": "contract-374", "id": "374-§6", "status_raw": "TESTED", "state": "PENDING", "title": "PACKAGE / USER / UID / SECURITY IDENTITY"}
-{"kind": "contract-374", "id": "374-§7", "status_raw": "TESTED", "state": "PENDING", "title": "FILESYSTEM / STORAGE"}
-{"kind": "contract-374", "id": "374-§8", "status_raw": "TESTED", "state": "PENDING", "title": "CONTEXT / CONTEXTIMPL"}
-{"kind": "contract-374", "id": "374-§9", "status_raw": "TESTED", "state": "PENDING", "title": "SYSTEM SERVICES"}
-{"kind": "contract-374", "id": "374-§10", "status_raw": "PARTIAL", "state": "PENDING", "title": "BINDER / IPC"}
-{"kind": "contract-374", "id": "374-§11", "status_raw": "TESTED", "state": "PENDING", "title": "ACTIVITY / SERVICE / RECEIVER / PROVIDER / PROCESS"}
-{"kind": "contract-374", "id": "374-§12", "status_raw": "TESTED", "state": "PENDING", "title": "INTENT / RESOLUTION"}
-{"kind": "contract-374", "id": "374-§13", "status_raw": "TESTED", "state": "PENDING", "title": "RESOURCES / CONFIGURATION"}
-{"kind": "contract-374", "id": "374-§14", "status_raw": "TESTED", "state": "PENDING", "title": "MAIN THREAD / SCHEDULING"}
-{"kind": "contract-374", "id": "374-§15", "status_raw": "TESTED", "state": "PENDING", "title": "WINDOW / VIEW / INPUT FOUNDATION"}
-{"kind": "contract-374", "id": "374-§16", "status_raw": "TESTED", "state": "PENDING", "title": "GRAPHICS / SURFACE / PRESENTATION"}
-{"kind": "contract-374", "id": "374-§17", "status_raw": "TESTED", "state": "PENDING", "title": "INPUT / DEVICE FEATURES"}
-{"kind": "contract-374", "id": "374-§18", "status_raw": "PARTIAL", "state": "PENDING", "title": "NETWORK"}
-{"kind": "contract-374", "id": "374-§19", "status_raw": "PARTIAL", "state": "PENDING", "title": "MEDIA / AUDIO"}
-{"kind": "contract-374", "id": "374-§20", "status_raw": "TESTED", "state": "PENDING", "title": "HARDWARE / SENSOR CAPABILITIES"}
-{"kind": "contract-374", "id": "374-§21", "status_raw": "TESTED", "state": "PENDING", "title": "SYSTEM PROPERTIES / BUILD CONTRACT"}
-{"kind": "contract-374", "id": "374-§22", "status_raw": "TESTED", "state": "PENDING", "title": "UNIFIED APK PRE-FLIGHT"}
-{"kind": "contract-374", "id": "374-§23", "status_raw": "TESTED", "state": "PENDING", "title": "PRE-FLIGHT MUST PRECEDE LAUNCH"}
-{"kind": "contract-374", "id": "374-§24", "status_raw": "TESTED", "state": "PENDING", "title": "WHITE / BLACK / PARTIAL RECLASSIFICATION"}
-{"kind": "contract-374", "id": "374-§25", "status_raw": "TESTED", "state": "PENDING", "title": "ROOT REGISTRY CROSS-MATCH"}
-{"kind": "contract-374", "id": "374-§26", "status_raw": "TESTED", "state": "PENDING", "title": "NEGATIVE SECURITY TESTS"}
-{"kind": "contract-374", "id": "374-§27", "status_raw": "TESTED", "state": "PENDING", "title": "REAL APK VALIDATION"}
-{"kind": "contract-374", "id": "374-§28", "status_raw": "TESTED", "state": "PENDING", "title": "EVIDENCE"}
-{"kind": "contract-374", "id": "374-§29", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "REQUIRED FINAL OUTPUT"}
-{"kind": "contract-374", "id": "374-§30", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "DEFINITION OF DONE"}
-{"kind": "contract-374", "id": "374-§31", "status_raw": "TESTED", "state": "PENDING", "title": "ANDROID RUNTIME / DEX EXECUTION CONTRACT"}
-{"kind": "contract-374", "id": "374-§32", "status_raw": "TESTED", "state": "PENDING", "title": "JAVA/LIBCORE API FOUNDATION"}
-{"kind": "contract-374", "id": "374-§33", "status_raw": "TESTED", "state": "PENDING", "title": "JNI / NATIVE BRIDGE CONTRACT"}
-{"kind": "contract-374", "id": "374-§34", "status_raw": "TESTED", "state": "PENDING", "title": "PROCESS / ZYGOTE / APPLICATION STARTUP CONTRACT"}
-{"kind": "contract-374", "id": "374-§35", "status_raw": "TESTED", "state": "PENDING", "title": "THREADING / MEMORY / PROCESS RESOURCE CONTRACT"}
-{"kind": "contract-374", "id": "374-§36", "status_raw": "TESTED", "state": "PENDING", "title": "KERNEL / POSIX / LOW-LEVEL CONTRACT"}
-{"kind": "contract-374", "id": "374-§37", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "HAL / HARDWARE ABSTRACTION BOUNDARY"}
-{"kind": "contract-374", "id": "374-§38", "status_raw": "TESTED", "state": "PENDING", "title": "BOOT / SYSTEM-SERVICE INITIALIZATION"}
-{"kind": "contract-374", "id": "374-§39", "status_raw": "TESTED", "state": "PENDING", "title": "CLOCK / TIME / ALARM CONTRACT"}
-{"kind": "contract-374", "id": "374-§40", "status_raw": "PARTIAL", "state": "PENDING", "title": "POWER / BATTERY / DOZE-LIKE STATE"}
-{"kind": "contract-374", "id": "374-§41", "status_raw": "TESTED", "state": "PENDING", "title": "NOTIFICATION / BROADCAST / ALARM / JOB CONTRACT"}
-{"kind": "contract-374", "id": "374-§42", "status_raw": "TESTED", "state": "PENDING", "title": "URI / CONTENT / FILE PROVIDER SECURITY CONTRACT"}
-{"kind": "contract-374", "id": "374-§43", "status_raw": "TESTED", "state": "PENDING", "title": "DATABASE / SQLITE CONTRACT"}
-{"kind": "contract-374", "id": "374-§44", "status_raw": "TESTED", "state": "PENDING", "title": "STORAGE / BACKUP / RESTORE / CLEAR-DATA SEMANTICS"}
-{"kind": "contract-374", "id": "374-§45", "status_raw": "TESTED", "state": "PENDING", "title": "SIGNING / CERTIFICATE / PACKAGE TRUST"}
-{"kind": "contract-374", "id": "374-§46", "status_raw": "PARTIAL", "state": "PENDING", "title": "PACKAGE UPDATE / SPLIT / INSTALLER CONTRACT"}
-{"kind": "contract-374", "id": "374-§47", "status_raw": "TESTED", "state": "PENDING", "title": "APP VISIBILITY / QUERIES / CROSS-APP DISCOVERY"}
-{"kind": "contract-374", "id": "374-§48", "status_raw": "TESTED", "state": "PENDING", "title": "COMPONENT SECURITY / PENDING INTENT"}
-{"kind": "contract-374", "id": "374-§49", "status_raw": "PARTIAL", "state": "PENDING", "title": "APP DATA / CACHE / CODE LOADING TRUST BOUNDARY"}
-{"kind": "contract-374", "id": "374-§50", "status_raw": "TESTED", "state": "PENDING", "title": "GRAPHICS RESOURCE / FONT / TEXT STACK"}
-{"kind": "contract-374", "id": "374-§51", "status_raw": "PARTIAL", "state": "PENDING", "title": "ACCESSIBILITY / SEMANTIC UI CONTRACT"}
-{"kind": "contract-374", "id": "374-§52", "status_raw": "TESTED", "state": "PENDING", "title": "CONFIGURATION CHANGE / DEVICE STATE CONTRACT"}
-{"kind": "contract-374", "id": "374-§53", "status_raw": "TESTED", "state": "PENDING", "title": "APP STOP / FORCE-STOP / BACKGROUND CONTRACT"}
-{"kind": "contract-374", "id": "374-§54", "status_raw": "TESTED", "state": "PENDING", "title": "EXCEPTION / ERROR / LOGGING CONTRACT"}
-{"kind": "contract-374", "id": "374-§55", "status_raw": "TESTED", "state": "PENDING", "title": "OBSERVABILITY / FIRST-DIVERGENCE INFRASTRUCTURE"}
-{"kind": "contract-374", "id": "374-§56", "status_raw": "TESTED", "state": "PENDING", "title": "FOUNDATION SELF-TEST SUITE"}
-{"kind": "contract-374", "id": "374-§57", "status_raw": "TESTED", "state": "PENDING", "title": "FOUNDATION COVERAGE MATRIX"}
-{"kind": "contract-374", "id": "374-§58", "status_raw": "TESTED", "state": "PENDING", "title": "UNKNOWN-APK GATE"}
-{"kind": "contract-374", "id": "374-§59", "status_raw": "TESTED", "state": "PENDING", "title": "BASE COMPLETION AUDIT"}
-{"kind": "contract-374", "id": "374-§60", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "FINAL COMPLETION RULE"}
-{"kind": "contract-374", "id": "374-§61", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "PLATFORM BOOT / PARTITION / MODULE CONTRACT"}
-{"kind": "contract-374", "id": "374-§62", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "APEX / MAINLINE / BOOTCLASSPATH / SYSTEM MODULE CONTRACT"}
-{"kind": "contract-374", "id": "374-§63", "status_raw": "TESTED", "state": "PENDING", "title": "LINKER / ELF / NDK / C LIBRARY CONTRACT"}
-{"kind": "contract-374", "id": "374-§64", "status_raw": "PARTIAL", "state": "PENDING", "title": "COMPATIBILITY-CHANGE / TARGET-SDK CONTRACT"}
-{"kind": "contract-374", "id": "374-§65", "status_raw": "TESTED", "state": "PENDING", "title": "API-LEVEL / SDK SURFACE MATRIX"}
-{"kind": "contract-374", "id": "374-§66", "status_raw": "PARTIAL", "state": "PENDING", "title": "HIDDEN API / REFLECTION / LINKAGE CONTRACT"}
-{"kind": "contract-374", "id": "374-§67", "status_raw": "PARTIAL", "state": "PENDING", "title": "SYSTEM SERVER / SERVICE DEPENDENCY GRAPH"}
-{"kind": "contract-374", "id": "374-§68", "status_raw": "TESTED", "state": "PENDING", "title": "INSTALld / VOLD / STORAGE-DAEMON CONTRACT"}
-{"kind": "contract-374", "id": "374-§69", "status_raw": "PARTIAL", "state": "PENDING", "title": "SCOPED STORAGE / SAF / MEDIASTORE CONTRACT"}
-{"kind": "contract-374", "id": "374-§70", "status_raw": "PARTIAL", "state": "PENDING", "title": "CRYPTO / TLS / CONSCRYPT / KEYSTORE CONTRACT"}
-{"kind": "contract-374", "id": "374-§71", "status_raw": "NOT_APPLICABLE", "state": "PENDING", "title": "SELINUX / MAC / CAPABILITY CONTRACT"}
-{"kind": "contract-374", "id": "374-§72", "status_raw": "TESTED", "state": "PENDING", "title": "SIGNATURE / TRUST / IDENTITY CHAIN"}
-{"kind": "contract-374", "id": "374-§73", "status_raw": "PARTIAL", "state": "PENDING", "title": "USERS / PROFILES / USER LIFECYCLE"}
-{"kind": "contract-374", "id": "374-§74", "status_raw": "PARTIAL", "state": "PENDING", "title": "APP STANDBY / ROLES / APP-OPS / USAGE STATE"}
-{"kind": "contract-374", "id": "374-§75", "status_raw": "PARTIAL", "state": "PENDING", "title": "NOTIFICATION / UI POLICY CONTRACT"}
-{"kind": "contract-374", "id": "374-§76", "status_raw": "PARTIAL", "state": "PENDING", "title": "WINDOWING / DISPLAY / IME / SYSTEM-UI CONTRACT"}
-{"kind": "contract-374", "id": "374-§77", "status_raw": "TESTED", "state": "PENDING", "title": "RENDERTHREAD / SKIA / TEXT / COMPOSITOR CONTRACT"}
-{"kind": "contract-374", "id": "374-§78", "status_raw": "TESTED", "state": "PENDING", "title": "INPUTFLINGER / EVENT ROUTING CONTRACT"}
-{"kind": "contract-374", "id": "374-§79", "status_raw": "PARTIAL", "state": "PENDING", "title": "AUDIO / CAMERA / SENSOR / LOCATION PIPELINE CONTRACT"}
-{"kind": "contract-374", "id": "374-§80", "status_raw": "PARTIAL", "state": "PENDING", "title": "CONNECTIVITY / NETD / VPN / DNS CONTRACT"}
-{"kind": "contract-374", "id": "374-§81", "status_raw": "PARTIAL", "state": "PENDING", "title": "MEDIA / CODEC / DRM CONTRACT"}
-{"kind": "contract-374", "id": "374-§82", "status_raw": "BLOCKED_EXTERNAL_NO_CAMERA", "state": "PENDING", "title": "CAMERA2 / IMAGE / SENSOR CONTRACT"}
+{"kind": "contract-374", "id": "374-§1", "status_raw": "TESTED", "state": "TESTED", "title": "PLATFORM / DEVICE CONTRACT"}
+{"kind": "contract-374", "id": "374-§2", "status_raw": "TESTED", "state": "TESTED", "title": "CPU / ABI / NATIVE FOUNDATION"}
+{"kind": "contract-374", "id": "374-§3", "status_raw": "TESTED", "state": "TESTED", "title": "PACKAGE MANAGER / INSTALLATION"}
+{"kind": "contract-374", "id": "374-§4", "status_raw": "TESTED", "state": "TESTED", "title": "APK STRUCTURAL PREFLIGHT"}
+{"kind": "contract-374", "id": "374-§5", "status_raw": "TESTED", "state": "TESTED", "title": "PERMISSION FOUNDATION"}
+{"kind": "contract-374", "id": "374-§6", "status_raw": "TESTED", "state": "TESTED", "title": "PACKAGE / USER / UID / SECURITY IDENTITY"}
+{"kind": "contract-374", "id": "374-§7", "status_raw": "TESTED", "state": "TESTED", "title": "FILESYSTEM / STORAGE"}
+{"kind": "contract-374", "id": "374-§8", "status_raw": "TESTED", "state": "TESTED", "title": "CONTEXT / CONTEXTIMPL"}
+{"kind": "contract-374", "id": "374-§9", "status_raw": "TESTED", "state": "TESTED", "title": "SYSTEM SERVICES"}
+{"kind": "contract-374", "id": "374-§10", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "BINDER / IPC"}
+{"kind": "contract-374", "id": "374-§11", "status_raw": "TESTED", "state": "TESTED", "title": "ACTIVITY / SERVICE / RECEIVER / PROVIDER / PROCESS"}
+{"kind": "contract-374", "id": "374-§12", "status_raw": "TESTED", "state": "TESTED", "title": "INTENT / RESOLUTION"}
+{"kind": "contract-374", "id": "374-§13", "status_raw": "TESTED", "state": "TESTED", "title": "RESOURCES / CONFIGURATION"}
+{"kind": "contract-374", "id": "374-§14", "status_raw": "TESTED", "state": "TESTED", "title": "MAIN THREAD / SCHEDULING"}
+{"kind": "contract-374", "id": "374-§15", "status_raw": "TESTED", "state": "TESTED", "title": "WINDOW / VIEW / INPUT FOUNDATION"}
+{"kind": "contract-374", "id": "374-§16", "status_raw": "TESTED", "state": "TESTED", "title": "GRAPHICS / SURFACE / PRESENTATION"}
+{"kind": "contract-374", "id": "374-§17", "status_raw": "TESTED", "state": "TESTED", "title": "INPUT / DEVICE FEATURES"}
+{"kind": "contract-374", "id": "374-§18", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "NETWORK"}
+{"kind": "contract-374", "id": "374-§19", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "MEDIA / AUDIO"}
+{"kind": "contract-374", "id": "374-§20", "status_raw": "TESTED", "state": "TESTED", "title": "HARDWARE / SENSOR CAPABILITIES"}
+{"kind": "contract-374", "id": "374-§21", "status_raw": "TESTED", "state": "TESTED", "title": "SYSTEM PROPERTIES / BUILD CONTRACT"}
+{"kind": "contract-374", "id": "374-§22", "status_raw": "TESTED", "state": "TESTED", "title": "UNIFIED APK PRE-FLIGHT"}
+{"kind": "contract-374", "id": "374-§23", "status_raw": "TESTED", "state": "TESTED", "title": "PRE-FLIGHT MUST PRECEDE LAUNCH"}
+{"kind": "contract-374", "id": "374-§24", "status_raw": "TESTED", "state": "TESTED", "title": "WHITE / BLACK / PARTIAL RECLASSIFICATION"}
+{"kind": "contract-374", "id": "374-§25", "status_raw": "TESTED", "state": "TESTED", "title": "ROOT REGISTRY CROSS-MATCH"}
+{"kind": "contract-374", "id": "374-§26", "status_raw": "TESTED", "state": "TESTED", "title": "NEGATIVE SECURITY TESTS"}
+{"kind": "contract-374", "id": "374-§27", "status_raw": "TESTED", "state": "TESTED", "title": "REAL APK VALIDATION"}
+{"kind": "contract-374", "id": "374-§28", "status_raw": "TESTED", "state": "TESTED", "title": "EVIDENCE"}
+{"kind": "contract-374", "id": "374-§29", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "REQUIRED FINAL OUTPUT"}
+{"kind": "contract-374", "id": "374-§30", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "DEFINITION OF DONE"}
+{"kind": "contract-374", "id": "374-§31", "status_raw": "TESTED", "state": "TESTED", "title": "ANDROID RUNTIME / DEX EXECUTION CONTRACT"}
+{"kind": "contract-374", "id": "374-§32", "status_raw": "TESTED", "state": "TESTED", "title": "JAVA/LIBCORE API FOUNDATION"}
+{"kind": "contract-374", "id": "374-§33", "status_raw": "TESTED", "state": "TESTED", "title": "JNI / NATIVE BRIDGE CONTRACT"}
+{"kind": "contract-374", "id": "374-§34", "status_raw": "TESTED", "state": "TESTED", "title": "PROCESS / ZYGOTE / APPLICATION STARTUP CONTRACT"}
+{"kind": "contract-374", "id": "374-§35", "status_raw": "TESTED", "state": "TESTED", "title": "THREADING / MEMORY / PROCESS RESOURCE CONTRACT"}
+{"kind": "contract-374", "id": "374-§36", "status_raw": "TESTED", "state": "TESTED", "title": "KERNEL / POSIX / LOW-LEVEL CONTRACT"}
+{"kind": "contract-374", "id": "374-§37", "status_raw": "NOT_APPLICABLE", "state": "NOT_APPLICABLE", "title": "HAL / HARDWARE ABSTRACTION BOUNDARY"}
+{"kind": "contract-374", "id": "374-§38", "status_raw": "TESTED", "state": "TESTED", "title": "BOOT / SYSTEM-SERVICE INITIALIZATION"}
+{"kind": "contract-374", "id": "374-§39", "status_raw": "TESTED", "state": "TESTED", "title": "CLOCK / TIME / ALARM CONTRACT"}
+{"kind": "contract-374", "id": "374-§40", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "POWER / BATTERY / DOZE-LIKE STATE"}
+{"kind": "contract-374", "id": "374-§41", "status_raw": "TESTED", "state": "TESTED", "title": "NOTIFICATION / BROADCAST / ALARM / JOB CONTRACT"}
+{"kind": "contract-374", "id": "374-§42", "status_raw": "TESTED", "state": "TESTED", "title": "URI / CONTENT / FILE PROVIDER SECURITY CONTRACT"}
+{"kind": "contract-374", "id": "374-§43", "status_raw": "TESTED", "state": "TESTED", "title": "DATABASE / SQLITE CONTRACT"}
+{"kind": "contract-374", "id": "374-§44", "status_raw": "TESTED", "state": "TESTED", "title": "STORAGE / BACKUP / RESTORE / CLEAR-DATA SEMANTICS"}
+{"kind": "contract-374", "id": "374-§45", "status_raw": "TESTED", "state": "TESTED", "title": "SIGNING / CERTIFICATE / PACKAGE TRUST"}
+{"kind": "contract-374", "id": "374-§46", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "PACKAGE UPDATE / SPLIT / INSTALLER CONTRACT"}
+{"kind": "contract-374", "id": "374-§47", "status_raw": "TESTED", "state": "TESTED", "title": "APP VISIBILITY / QUERIES / CROSS-APP DISCOVERY"}
+{"kind": "contract-374", "id": "374-§48", "status_raw": "TESTED", "state": "TESTED", "title": "COMPONENT SECURITY / PENDING INTENT"}
+{"kind": "contract-374", "id": "374-§49", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "APP DATA / CACHE / CODE LOADING TRUST BOUNDARY"}
+{"kind": "contract-374", "id": "374-§50", "status_raw": "TESTED", "state": "TESTED", "title": "GRAPHICS RESOURCE / FONT / TEXT STACK"}
+{"kind": "contract-374", "id": "374-§51", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "ACCESSIBILITY / SEMANTIC UI CONTRACT"}
+{"kind": "contract-374", "id": "374-§52", "status_raw": "TESTED", "state": "TESTED", "title": "CONFIGURATION CHANGE / DEVICE STATE CONTRACT"}
+{"kind": "contract-374", "id": "374-§53", "status_raw": "TESTED", "state": "TESTED", "title": "APP STOP / FORCE-STOP / BACKGROUND CONTRACT"}
+{"kind": "contract-374", "id": "374-§54", "status_raw": "TESTED", "state": "TESTED", "title": "EXCEPTION / ERROR / LOGGING CONTRACT"}
+{"kind": "contract-374", "id": "374-§55", "status_raw": "TESTED", "state": "TESTED", "title": "OBSERVABILITY / FIRST-DIVERGENCE INFRASTRUCTURE"}
+{"kind": "contract-374", "id": "374-§56", "status_raw": "TESTED", "state": "TESTED", "title": "FOUNDATION SELF-TEST SUITE"}
+{"kind": "contract-374", "id": "374-§57", "status_raw": "TESTED", "state": "TESTED", "title": "FOUNDATION COVERAGE MATRIX"}
+{"kind": "contract-374", "id": "374-§58", "status_raw": "TESTED", "state": "TESTED", "title": "UNKNOWN-APK GATE"}
+{"kind": "contract-374", "id": "374-§59", "status_raw": "TESTED", "state": "TESTED", "title": "BASE COMPLETION AUDIT"}
+{"kind": "contract-374", "id": "374-§60", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "FINAL COMPLETION RULE"}
+{"kind": "contract-374", "id": "374-§61", "status_raw": "NOT_APPLICABLE", "state": "NOT_APPLICABLE", "title": "PLATFORM BOOT / PARTITION / MODULE CONTRACT"}
+{"kind": "contract-374", "id": "374-§62", "status_raw": "NOT_APPLICABLE", "state": "NOT_APPLICABLE", "title": "APEX / MAINLINE / BOOTCLASSPATH / SYSTEM MODULE CONTRACT"}
+{"kind": "contract-374", "id": "374-§63", "status_raw": "TESTED", "state": "TESTED", "title": "LINKER / ELF / NDK / C LIBRARY CONTRACT"}
+{"kind": "contract-374", "id": "374-§64", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "COMPATIBILITY-CHANGE / TARGET-SDK CONTRACT"}
+{"kind": "contract-374", "id": "374-§65", "status_raw": "TESTED", "state": "TESTED", "title": "API-LEVEL / SDK SURFACE MATRIX"}
+{"kind": "contract-374", "id": "374-§66", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "HIDDEN API / REFLECTION / LINKAGE CONTRACT"}
+{"kind": "contract-374", "id": "374-§67", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "SYSTEM SERVER / SERVICE DEPENDENCY GRAPH"}
+{"kind": "contract-374", "id": "374-§68", "status_raw": "TESTED", "state": "TESTED", "title": "INSTALld / VOLD / STORAGE-DAEMON CONTRACT"}
+{"kind": "contract-374", "id": "374-§69", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "SCOPED STORAGE / SAF / MEDIASTORE CONTRACT"}
+{"kind": "contract-374", "id": "374-§70", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "CRYPTO / TLS / CONSCRYPT / KEYSTORE CONTRACT"}
+{"kind": "contract-374", "id": "374-§71", "status_raw": "NOT_APPLICABLE", "state": "NOT_APPLICABLE", "title": "SELINUX / MAC / CAPABILITY CONTRACT"}
+{"kind": "contract-374", "id": "374-§72", "status_raw": "TESTED", "state": "TESTED", "title": "SIGNATURE / TRUST / IDENTITY CHAIN"}
+{"kind": "contract-374", "id": "374-§73", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "USERS / PROFILES / USER LIFECYCLE"}
+{"kind": "contract-374", "id": "374-§74", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "APP STANDBY / ROLES / APP-OPS / USAGE STATE"}
+{"kind": "contract-374", "id": "374-§75", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "NOTIFICATION / UI POLICY CONTRACT"}
+{"kind": "contract-374", "id": "374-§76", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "WINDOWING / DISPLAY / IME / SYSTEM-UI CONTRACT"}
+{"kind": "contract-374", "id": "374-§77", "status_raw": "TESTED", "state": "TESTED", "title": "RENDERTHREAD / SKIA / TEXT / COMPOSITOR CONTRACT"}
+{"kind": "contract-374", "id": "374-§78", "status_raw": "TESTED", "state": "TESTED", "title": "INPUTFLINGER / EVENT ROUTING CONTRACT"}
+{"kind": "contract-374", "id": "374-§79", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "AUDIO / CAMERA / SENSOR / LOCATION PIPELINE CONTRACT"}
+{"kind": "contract-374", "id": "374-§80", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "CONNECTIVITY / NETD / VPN / DNS CONTRACT"}
+{"kind": "contract-374", "id": "374-§81", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "MEDIA / CODEC / DRM CONTRACT"}
+{"kind": "contract-374", "id": "374-§82", "status_raw": "BLOCKED_EXTERNAL_NO_CAMERA", "state": "BLOCKED", "title": "CAMERA2 / IMAGE / SENSOR CONTRACT"}
 {"kind": "contract-374", "id": "374-§83", "status_raw": "PENDING", "state": "PENDING", "title": "ACCESSIBILITY / AUTOFILL / TEXT-SERVICE / IME CONTRACT"}
-{"kind": "contract-374", "id": "374-§84", "status_raw": "PARTIAL", "state": "PENDING", "title": "CLIPBOARD / DRAG-DROP / SHARE / CHOOSER CONTRACT"}
-{"kind": "contract-374", "id": "374-§85", "status_raw": "TESTED", "state": "PENDING", "title": "SETTINGS / SYSTEM-CONFIGURATION CONTRACT"}
-{"kind": "contract-374", "id": "374-§86", "status_raw": "PARTIAL", "state": "PENDING", "title": "BACKUP / RESTORE / ACCOUNT / CREDENTIAL STATE"}
-{"kind": "contract-374", "id": "374-§87", "status_raw": "PARTIAL", "state": "PENDING", "title": "JOB / WORK / ALARM / FOREGROUND EXECUTION POLICY"}
-{"kind": "contract-374", "id": "374-§88", "status_raw": "PARTIAL", "state": "PENDING", "title": "WIDGET / SHORTCUT / LAUNCHER / LIVE SURFACE CONTRACT"}
-{"kind": "contract-374", "id": "374-§89", "status_raw": "TESTED", "state": "PENDING", "title": "ERROR / CRASH / ANR / WATCHDOG CONTRACT"}
+{"kind": "contract-374", "id": "374-§84", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "CLIPBOARD / DRAG-DROP / SHARE / CHOOSER CONTRACT"}
+{"kind": "contract-374", "id": "374-§85", "status_raw": "TESTED", "state": "TESTED", "title": "SETTINGS / SYSTEM-CONFIGURATION CONTRACT"}
+{"kind": "contract-374", "id": "374-§86", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "BACKUP / RESTORE / ACCOUNT / CREDENTIAL STATE"}
+{"kind": "contract-374", "id": "374-§87", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "JOB / WORK / ALARM / FOREGROUND EXECUTION POLICY"}
+{"kind": "contract-374", "id": "374-§88", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "WIDGET / SHORTCUT / LAUNCHER / LIVE SURFACE CONTRACT"}
+{"kind": "contract-374", "id": "374-§89", "status_raw": "TESTED", "state": "TESTED", "title": "ERROR / CRASH / ANR / WATCHDOG CONTRACT"}
 {"kind": "contract-374", "id": "374-§90", "status_raw": "PENDING", "state": "PENDING", "title": "STRICTMODE / DEBUG / PROFILING OBSERVABILITY"}
-{"kind": "contract-374", "id": "374-§91", "status_raw": "TESTED", "state": "PENDING", "title": "TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS"}
-{"kind": "contract-374", "id": "374-§92", "status_raw": "TESTED", "state": "PENDING", "title": "CORPUS-DERIVED FOUNDATION DISCOVERY"}
-{"kind": "contract-374", "id": "374-§93", "status_raw": "TESTED", "state": "PENDING", "title": "API / SYMBOL / BEHAVIOR COVERAGE, NOT FILE COVERAGE"}
-{"kind": "contract-374", "id": "374-§94", "status_raw": "PARTIAL", "state": "PENDING", "title": "REFERENCE-ORACLE DIFFERENTIAL TESTING"}
-{"kind": "contract-374", "id": "374-§95", "status_raw": "TESTED", "state": "PENDING", "title": "SUPPORTED-PLATFORM PROFILE"}
-{"kind": "contract-374", "id": "374-§96", "status_raw": "TESTED", "state": "PENDING", "title": "FOUNDATION COMPLETENESS SCORE"}
-{"kind": "contract-374", "id": "374-§97", "status_raw": "TESTED", "state": "PENDING", "title": "FINAL NOTHING-LEFT-HIDDEN REVIEW"}
-{"kind": "contract-374", "id": "374-§98", "status_raw": "IMPLEMENTED", "state": "PENDING", "title": "FINAL GATE — BASE IS REALLY COMPLETE"}
+{"kind": "contract-374", "id": "374-§91", "status_raw": "TESTED", "state": "TESTED", "title": "TESTING CONTRACT — CTS-LIKE NEGATIVE/POSITIVE PAIRS"}
+{"kind": "contract-374", "id": "374-§92", "status_raw": "TESTED", "state": "TESTED", "title": "CORPUS-DERIVED FOUNDATION DISCOVERY"}
+{"kind": "contract-374", "id": "374-§93", "status_raw": "TESTED", "state": "TESTED", "title": "API / SYMBOL / BEHAVIOR COVERAGE, NOT FILE COVERAGE"}
+{"kind": "contract-374", "id": "374-§94", "status_raw": "PARTIAL", "state": "PARTIAL", "title": "REFERENCE-ORACLE DIFFERENTIAL TESTING"}
+{"kind": "contract-374", "id": "374-§95", "status_raw": "TESTED", "state": "TESTED", "title": "SUPPORTED-PLATFORM PROFILE"}
+{"kind": "contract-374", "id": "374-§96", "status_raw": "TESTED", "state": "TESTED", "title": "FOUNDATION COMPLETENESS SCORE"}
+{"kind": "contract-374", "id": "374-§97", "status_raw": "TESTED", "state": "TESTED", "title": "FINAL NOTHING-LEFT-HIDDEN REVIEW"}
+{"kind": "contract-374", "id": "374-§98", "status_raw": "IMPLEMENTED", "state": "IMPLEMENTED", "title": "FINAL GATE — BASE IS REALLY COMPLETE"}

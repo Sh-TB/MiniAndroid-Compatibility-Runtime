@@ -1,97 +1,130 @@
 {
-  "manifest_version": "1.0.0",
-  "skill_id": "miniandroid-android-execution",
-  "name": "Android Execution Skill (MiniAndroid)",
-  "version": "2.0.0",
-  "generated_at": "2026-10-04",
-  "source_head": "see docs/CAPABILITY_GATE_IDENTITY.json for the exact HEAD/binary pair this manifest was validated at",
-  "runtime": {
-    "binary": "miniandroid/build/miniandroid",
-    "build_command": "make -C miniandroid -j$(nproc)",
-    "data_root": "per-run directory passed as --data-root (never shared across unrelated runs)"
+ "manifest_version": "1.0.0",
+ "skill_id": "miniandroid-android-execution",
+ "name": "Android Execution Skill (MiniAndroid)",
+ "version": "2.0.0",
+ "generated_at": "2026-10-04",
+ "source_head": "see docs/CAPABILITY_GATE_IDENTITY.json for the exact HEAD/binary pair this manifest was validated at",
+ "runtime": {
+  "binary": "miniandroid/build/miniandroid",
+  "build_command": "make -C miniandroid -j$(nproc)",
+  "data_root": "per-run directory passed as --data-root (never shared across unrelated runs)"
+ },
+ "operations": [
+  {
+   "op": "apk_intake",
+   "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what identity",
+   "returns": "package, versionName, mainActivityFull, APK SHA-256",
+   "errors": "exit!=0 + stderr '[ERROR] APK parse failed: <reason>' for malformed APKs (loud, never silent)"
   },
-  "operations": [
-    {
-      "op": "apk_intake",
-      "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what identity",
-      "returns": "package, versionName, mainActivityFull, APK SHA-256",
-      "errors": "exit!=0 + stderr '[ERROR] APK parse failed: <reason>' for malformed APKs (loud, never silent)"
-    },
-    {
-      "op": "prerequisites",
-      "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what prerequisites",
-      "returns": "minSdk, targetSdk, usesFeatures, dangerousPermissions, abiLibs, abiElfMachines, webviewFeatureDeclared, webkitTypesReferenced, nativeAbiVerdict (NO_NATIVE_CODE|EXECUTABLE_NATIVE|ABI_MISMATCH_TRANSLATION_REQUIRED), environmentMismatches[], missingCapabilities[], recommendedNextProbe",
-      "errors": "APK parse failure passes through loudly; missing manifest still yields environment block"
-    },
-    {
-      "op": "full_inspection",
-      "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what all --jsonl <out.jsonl>",
-      "returns": "16 sections incl. dex/resources/assets/libs/media/prerequisites/runtime/diagnostics",
-      "errors": "section-level warnings on stderr; JSONL rows machine-readable"
-    },
-    {
-      "op": "install",
-      "cli": "miniandroid/build/miniandroid install <apk> --data-root <store>",
-      "returns": "JSON identity: package + installed base.apk path; installed SHA == source SHA",
-      "errors": "INSTALL_PARSE_FAILED for malformed APKs (exit!=0); ARM-only APKs INSTALL OK (honest — see prerequisites.nativeAbiVerdict)"
-    },
-    {
-      "op": "run",
-      "cli": "miniandroid/build/miniandroid run --package <pkg> --data-root <store> -o <outdir> [--tap x,y@frame] [--frames N]",
-      "returns": "report.md + screenshot.png + trace_summary.json (frame_analysis.verdict/app_owned_pixels/app_draw_ops/first_missing_stage) + lifecycle_trace.json + api trace",
-      "errors": "exit!=0 on process-death (crash.log carries the chain); PARTIAL SUCCESS verdicts are honest non-SUCCESS"
-    },
-    {
-      "op": "observe",
-      "cli": "read <outdir>/trace_summary.json → .frame_analysis; screenshot metrics in report.md",
-      "returns": "F-NEW-233 frame truth verdict (REAL_APP_CONTENT|DEFAULT_BACKGROUND_ONLY|NO_ROOT|...) + pixel class + owned pixels + draw ops",
-      "errors": "absent trace_summary.json = the run did not execute — treat as error, never success"
-    },
-    {
-      "op": "first_divergence",
-      "cli": "read <outdir>/run.log (grep 'EXC-PROPAGATE|SYNTH-EXC|REC-MISS') or the diagnostics section of pkginspect on the installed store",
-      "returns": "first semantic divergence with caller chain — the searchlight entry point",
-      "errors": "none — always produces text evidence"
-    },
-    {
-      "op": "classify_white_black",
-      "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what prerequisites  →  read .apk.nativeAbiVerdict + .apk.environmentMismatches; then run and read .frame_analysis.verdict",
-      "returns": "three-way cause: (a) environment-prerequisite mismatch (nativeAbiVerdict=ABI_MISMATCH_TRANSLATION_REQUIRED or non-empty environmentMismatches) (b) ordinary runtime root (prereqs clean + frame verdict non-real: follow first_missing_stage) (c) real content (verdict=REAL_APP_CONTENT)",
-      "errors": "never guess from a screenshot alone — the verdict is computed from pixel ownership + draw ops"
-    },
-    {
-      "op": "evidence_bundle",
-      "cli": "miniandroid/build/miniandroid pkginspect --package <pkg> --data-root <store> --what provenance,dbs,prefs",
-      "returns": "file-IO provenance (physical backing SHA-256 for every runtime write), SQLite header validity, prefs inventory",
-      "errors": "loud failures for missing packages"
-    },
-    {
-      "op": "uninstall",
-      "cli": "miniandroid/build/miniandroid uninstall --package <pkg> --data-root <store>",
-      "returns": "JSON {\"uninstall\": \"SUCCESS\"}; exit 2 + NOT_INSTALLED for unknown packages",
-      "errors": "exit-code contract documented in N-02"
-    }
-  ],
-  "status_vocabulary": ["DONE", "IMPLEMENTED", "TESTED", "OBSERVED", "PARTIAL", "BLOCKED", "PENDING", "SUPERSEDED"],
-  "frame_verdict_vocabulary": ["REAL_APP_CONTENT", "DEFAULT_BACKGROUND_ONLY", "NO_ROOT", "PARTIAL_MARGINAL", "WHITE_BLANK"],
-  "execution_levels": {
-    "L0": "not tested",
-    "L1": "installed (identity + inspection only)",
-    "L2": "launched / lifecycle RESUMED (frame may be background-only)",
-    "L3": "meaningful real pixels (REAL_APP_CONTENT verdict)",
-    "L4": "input → state transition (real input path only)",
-    "L5": "multi-state interaction",
-    "L6": "repeatable verified execution (3-run byte-identical evidence)"
+  {
+   "op": "prerequisites",
+   "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what prerequisites",
+   "returns": "minSdk, targetSdk, usesFeatures, dangerousPermissions, abiLibs, abiElfMachines, webviewFeatureDeclared, webkitTypesReferenced, nativeAbiVerdict (NO_NATIVE_CODE|EXECUTABLE_NATIVE|ABI_MISMATCH_TRANSLATION_REQUIRED), environmentMismatches[], missingCapabilities[], recommendedNextProbe",
+   "errors": "APK parse failure passes through loudly; missing manifest still yields environment block"
   },
-  "non_negotiables": [
-    "No app-specific hacks; fixes are engine/framework laws only",
-    "Process survival is NOT success; REAL_APP_CONTENT is computed, not claimed",
-    "A screenshot alone is not proof; provenance chain required",
-    "Status upgrades require runtime evidence; BLOCKED is an honest answer",
-    "English-only for all recorded evidence"
-  ],
-  "self_test": {
-    "command": "python3 scripts/skill_selftest.py",
-    "covers": ["apk_intake", "prerequisites", "install", "run", "observe", "classify_white_black", "uninstall", "negative/error contract", "determinism"]
+  {
+   "op": "full_inspection",
+   "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what all --jsonl <out.jsonl>",
+   "returns": "16 sections incl. dex/resources/assets/libs/media/prerequisites/runtime/diagnostics",
+   "errors": "section-level warnings on stderr; JSONL rows machine-readable"
+  },
+  {
+   "op": "install",
+   "cli": "miniandroid/build/miniandroid install <apk> --data-root <store>",
+   "returns": "JSON identity: package + installed base.apk path; installed SHA == source SHA",
+   "errors": "INSTALL_PARSE_FAILED for malformed APKs (exit!=0); ARM-only APKs INSTALL OK (honest \u2014 see prerequisites.nativeAbiVerdict)"
+  },
+  {
+   "op": "run",
+   "cli": "miniandroid/build/miniandroid run --package <pkg> --data-root <store> -o <outdir> [--tap x,y@frame] [--frames N]",
+   "returns": "report.md + screenshot.png + trace_summary.json (frame_analysis.verdict/app_owned_pixels/app_draw_ops/first_missing_stage) + lifecycle_trace.json + api trace",
+   "errors": "exit!=0 on process-death (crash.log carries the chain); PARTIAL SUCCESS verdicts are honest non-SUCCESS"
+  },
+  {
+   "op": "observe",
+   "cli": "read <outdir>/trace_summary.json \u2192 .frame_analysis; screenshot metrics in report.md",
+   "returns": "F-NEW-233 frame truth verdict (REAL_APP_CONTENT|DEFAULT_BACKGROUND_ONLY|NO_ROOT|...) + pixel class + owned pixels + draw ops",
+   "errors": "absent trace_summary.json = the run did not execute \u2014 treat as error, never success"
+  },
+  {
+   "op": "first_divergence",
+   "cli": "read <outdir>/run.log (grep 'EXC-PROPAGATE|SYNTH-EXC|REC-MISS') or the diagnostics section of pkginspect on the installed store",
+   "returns": "first semantic divergence with caller chain \u2014 the searchlight entry point",
+   "errors": "none \u2014 always produces text evidence"
+  },
+  {
+   "op": "classify_white_black",
+   "cli": "miniandroid/build/miniandroid pkginspect --apk <path> --what prerequisites  \u2192  read .apk.nativeAbiVerdict + .apk.environmentMismatches; then run and read .frame_analysis.verdict",
+   "returns": "three-way cause: (a) environment-prerequisite mismatch (nativeAbiVerdict=ABI_MISMATCH_TRANSLATION_REQUIRED or non-empty environmentMismatches) (b) ordinary runtime root (prereqs clean + frame verdict non-real: follow first_missing_stage) (c) real content (verdict=REAL_APP_CONTENT)",
+   "errors": "never guess from a screenshot alone \u2014 the verdict is computed from pixel ownership + draw ops"
+  },
+  {
+   "op": "evidence_bundle",
+   "cli": "miniandroid/build/miniandroid pkginspect --package <pkg> --data-root <store> --what provenance,dbs,prefs",
+   "returns": "file-IO provenance (physical backing SHA-256 for every runtime write), SQLite header validity, prefs inventory",
+   "errors": "loud failures for missing packages"
+  },
+  {
+   "op": "uninstall",
+   "cli": "miniandroid/build/miniandroid uninstall --package <pkg> --data-root <store>",
+   "returns": "JSON {\"uninstall\": \"SUCCESS\"}; exit 2 + NOT_INSTALLED for unknown packages",
+   "errors": "exit-code contract documented in N-02"
+  },
+  {
+   "op": "unknown_apk_preflight",
+   "cli": "python3 scripts/unknown_apk_preflight.py <apk> [--json OUT.json] [--max-seconds S]",
+   "returns": "MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.0 contract: apk identity+SHA, min/target SDK, permissions, features, native ABIs, components, environment matches (ENVIRONMENT_PROFILE.json), install/launch outcome, first divergence, verdict in {PREFLIGHT_PASS, ENVIRONMENT_BLOCKED, INSTALL_BLOCKED, SECURITY_BLOCKED, IDENTITY_BLOCKED, SERVICE_BLOCKED, EXECUTION_BLOCKED, RESOURCE_BLOCKED, GRAPHICS_BLOCKED, MEDIA_BLOCKED, NETWORK_BLOCKED, INPUT_BLOCKED, CAPTURE_ONLY, RUNTIME_ROOT, UNKNOWN}, is_environment_prerequisite",
+   "errors": "exit 2 when the input file is absent; verdict UNKNOWN for malformed/unparseable input (honest, never fabricated)",
+   "law": "#375 Phase 2 + #373 APK-001..020: NO APK may be labelled a runtime bug before this preflight exists; the skill MUST consume the same machine-readable contract as the CLI (single verdict implementation).",
+   "added_by": "CONT-3 Phase 2 (2026-10-05)"
   }
+ ],
+ "status_vocabulary": [
+  "DONE",
+  "IMPLEMENTED",
+  "TESTED",
+  "OBSERVED",
+  "PARTIAL",
+  "BLOCKED",
+  "PENDING",
+  "SUPERSEDED"
+ ],
+ "frame_verdict_vocabulary": [
+  "REAL_APP_CONTENT",
+  "DEFAULT_BACKGROUND_ONLY",
+  "NO_ROOT",
+  "PARTIAL_MARGINAL",
+  "WHITE_BLANK"
+ ],
+ "execution_levels": {
+  "L0": "not tested",
+  "L1": "installed (identity + inspection only)",
+  "L2": "launched / lifecycle RESUMED (frame may be background-only)",
+  "L3": "meaningful real pixels (REAL_APP_CONTENT verdict)",
+  "L4": "input \u2192 state transition (real input path only)",
+  "L5": "multi-state interaction",
+  "L6": "repeatable verified execution (3-run byte-identical evidence)"
+ },
+ "non_negotiables": [
+  "No app-specific hacks; fixes are engine/framework laws only",
+  "Process survival is NOT success; REAL_APP_CONTENT is computed, not claimed",
+  "A screenshot alone is not proof; provenance chain required",
+  "Status upgrades require runtime evidence; BLOCKED is an honest answer",
+  "English-only for all recorded evidence"
+ ],
+ "self_test": {
+  "command": "python3 scripts/skill_selftest.py",
+  "covers": [
+   "apk_intake",
+   "prerequisites",
+   "install",
+   "run",
+   "observe",
+   "classify_white_black",
+   "uninstall",
+   "negative/error contract",
+   "determinism"
+  ]
+ }
 }

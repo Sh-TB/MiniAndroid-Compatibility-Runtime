@@ -177,6 +177,35 @@ ABI) from ordinary runtime roots — an ARM-only APK INSTALLS and then stops
 at first native use; that is an environment/translation boundary, never a
 rendering bug. Full matrix: `docs/ENV_PREREQUISITE_MATRIX.jsonl`.
 
+### Unknown-APK preflight gate (CONT-3 Phase 2 — operational)
+
+`python3 scripts/unknown_apk_preflight.py <apk> [--json OUT] [--max-seconds S]`
+is the WIRED gate: one driver, one machine-readable contract
+(`MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.0`), one verdict implementation shared
+by the CLI and this skill. It determines package identity + APK SHA,
+min/target SDK, permissions, features, native ABI trees, component counts,
+DEX/resources structure, environment matches against ENVIRONMENT_PROFILE,
+install + launch outcome, the first observed divergence (method + pc), and
+classifies EXACTLY one verdict:
+
+`PREFLIGHT_PASS | ENVIRONMENT_BLOCKED | INSTALL_BLOCKED | SECURITY_BLOCKED |
+IDENTITY_BLOCKED | SERVICE_BLOCKED | EXECUTION_BLOCKED | RESOURCE_BLOCKED |
+GRAPHICS_BLOCKED | MEDIA_BLOCKED | NETWORK_BLOCKED | INPUT_BLOCKED |
+CAPTURE_ONLY | RUNTIME_ROOT | UNKNOWN`
+
+Laws: (1) a malformed/unparseable APK is UNKNOWN — never fabricated into a
+richer verdict; (2) an ABI mismatch is a hard blocker only when the launch
+actually failed on a native path — a Java-only app that reached its budget
+is CAPTURE_ONLY/RUNTIME_ROOT with the mismatch recorded, not upgraded
+(FA-01/FA-02 honesty works both directions); (3) a recorded divergence with
+a caller chain is RUNTIME_ROOT (a genuine runtime root), never flattened
+into an environment label; (4) `is_environment_prerequisite` distinguishes
+proven environment prerequisites from runtime work. Verdict-class unit
+coverage lives in `scripts/unknown_apk_preflight.py` (classify) — SERVICE/
+MEDIA/NETWORK/INPUT branches are wired through launch_stage mapping and
+fire when the CLI emits those markers; they have not yet been exercised by
+real CLI outputs (honest gap, not a claim).
+
 ## White/black/partial classification (WS-002)
 
 1. prerequisites clean? → if NOT: environment-prerequisite mismatch (quote

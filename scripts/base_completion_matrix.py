@@ -35,6 +35,23 @@ STATE_MAP = {
     "BLOCKED": "BLOCKED",
 }
 
+# #374 contract status vocabulary -> reconciliation states (CONT-3 Phase 3
+# fix: the old generator read s.get("state") which the contract JSONL does
+# not carry, defaulting EVERY audited row to PENDING — TESTED silently
+# became PENDING in the reconciliation totals).
+CONTRACT_STATE_MAP = {
+    "TESTED": "TESTED",
+    "PARTIAL": "PARTIAL",
+    "IMPLEMENTED": "IMPLEMENTED",
+    "IMPLEMENTED_UNVERIFIED": "IMPLEMENTED",
+    "NOT_APPLICABLE": "NOT_APPLICABLE",
+    "PENDING": "PENDING",
+    "BLOCKED": "BLOCKED",
+    "BLOCKED-EXTERNAL": "BLOCKED",
+    "VERIFIED": "VERIFIED",
+    "VERIFIED_CURRENT": "VERIFIED",
+}
+
 def field(r, *names):
     for n in names:
         v = r.get(n)
@@ -88,9 +105,11 @@ else:
     sec374 = []
 
 for s in sec374:
+    raw = (s.get("status") or "PENDING").strip()
     rows.append({"kind": "contract-374", "id": f"374-§{s['num']}",
-                 "status_raw": s.get("status", "PENDING"),
-                 "state": s.get("state", "PENDING"),
+                 "status_raw": raw,
+                 "state": CONTRACT_STATE_MAP.get(raw,
+                     CONTRACT_STATE_MAP.get(raw.split("_")[0], "UNKNOWN")),
                  "title": s.get("title", "")[:200]})
 
 # Totals by state, per kind
