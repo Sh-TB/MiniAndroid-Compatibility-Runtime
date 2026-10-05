@@ -70,6 +70,82 @@ It must approach real Android behavior.
 
 ---
 
+# LAW-001 — FIRST TEST LAW: ABI SCOPE (x86 / x86_64 ONLY)
+
+Adopted 2026-10-06 by project owner directive. This is the FIRST law of
+every test run; it outranks convenience and it is checked BEFORE any other
+classification.
+
+## The law, exactly
+
+> Every app or game that is loaded and executed by this runtime must be
+> executable on the host CPU: it is either **pure-DEX** (no native
+> libraries — ABI-neutral, in scope) or it ships **x86 / x86_64 native
+> libraries**. An APK whose native trees contain **no x86/x86_64 ABI**
+> (ARM32 / ARM64 / other) is **OUT OF SCOPE**: it is recorded with the
+> verdict `ABI_OUT_OF_SCOPE` (SKIP) — **never** counted as
+> "MiniAndroid could not run the game".
+
+## Why (owner's rationale, binding)
+
+Emulating / translating ARM inside a runtime that is itself built on
+x86/x86_64 — especially for native libraries — would open a separate,
+very large engineering layer:
+
+* instruction-set translation,
+* syscall / ABI compatibility,
+* native library loading,
+* JNI native ↔ Java interaction,
+* architecture and alignment differences,
+* large slowdowns on translated paths.
+
+None of that is the current mission. The current mission is to make the
+core Compatibility Runtime as generic and complete as possible for
+**x86/x86_64 APKs**.
+
+## The two paths
+
+```text
+MAIN TEST PATH (in scope):
+  x86 / x86_64 or pure-DEX APK
+    → DEX → Framework → Lifecycle → UI → Rendering → Input
+    → State → Filesystem → DB → ...
+
+OUT OF CURRENT SCOPE (SKIP, not a failure):
+  ARM32 / ARM64 / other ABI only → ABI_OUT_OF_SCOPE
+```
+
+## Sub-laws
+
+* **LAW-001a — Check order.** The ABI scope check runs FIRST, before
+  install/launch, from the APK's real `lib/<abi>/` tree. It is test law
+  number one; no other verdict may preempt it.
+* **LAW-001b — Honest statistics.** An ARM-only APK appears in every
+  ledger/matrix under `ABI_OUT_OF_SCOPE`, in its own bucket, separate
+  from failures. It must never inflate failure counts, and it must never
+  be silently dropped either.
+* **LAW-001c — ARM is deferred, not deleted.** This law removes ARM from
+  the project's FAILURE criteria only. When the core runtime reaches
+  maturity, ABI translation may become a separate project/phase; nothing
+  in this law claims ARM "cannot work".
+* **LAW-001d — Pure-DEX is always in scope.** An APK with no native
+  libraries has no ABI requirement; it executes through the DEX
+  interpreter on any host and stays on the main test path.
+* **LAW-001e — Mixed APKs are in scope.** An APK shipping x86/x86_64
+  plus ARM trees is in scope; the host-executable ABI is selected at
+  install time (existing install ABI law, ENV-005).
+* **LAW-001f — Scope SKIP ≠ environment failure escape hatch.**
+  `ABI_OUT_OF_SCOPE` applies only when the ABI tree evidence is real
+  (`lib/<abi>/` entries). An x86 APK that fails on a native path is still
+  a runtime root; the scope law must not be abused to relabel genuine
+  runtime failures.
+
+Gate implementation: `ABI_OUT_OF_SCOPE` verdict in
+`scripts/unknown_apk_preflight.py` (16-verdict contract, schema 1.1);
+profile binding: `docs/ENVIRONMENT_PROFILE.json` ENV-005.
+
+---
+
 # 1. CORE PRINCIPLE
 
 Mother law:

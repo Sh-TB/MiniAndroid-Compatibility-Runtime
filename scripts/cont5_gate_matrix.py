@@ -25,12 +25,23 @@ PF = f"{BASE}/scripts/unknown_apk_preflight.py"
 NEG = f"{BASE}/run/cont5/gate_matrix/negatives"
 
 ALL_VERDICTS = [
+    "ABI_OUT_OF_SCOPE",  # LAW-001 FIRST TEST LAW (16-verdict contract, 1.1)
     "PREFLIGHT_PASS", "ENVIRONMENT_BLOCKED", "INSTALL_BLOCKED",
     "SECURITY_BLOCKED", "IDENTITY_BLOCKED", "SERVICE_BLOCKED",
     "EXECUTION_BLOCKED", "RESOURCE_BLOCKED", "GRAPHICS_BLOCKED",
     "MEDIA_BLOCKED", "NETWORK_BLOCKED", "INPUT_BLOCKED", "CAPTURE_ONLY",
     "RUNTIME_ROOT", "UNKNOWN",
 ]
+
+# LAW-001b honest statistics: SKIP bucket is reported SEPARATELY from
+# could-not-run (BLOCKED) counts.
+VERDICT_CLASS = {
+    "ABI_OUT_OF_SCOPE": "SKIP",
+    "PREFLIGHT_PASS": "PASS",
+    "RUNTIME_ROOT": "FINDING",
+    "CAPTURE_ONLY": "FINDING",
+    "UNKNOWN": "FINDING",
+}
 
 
 def corpus():
@@ -112,6 +123,8 @@ def main():
             "path": apk,
             "sha16": c.get("apk_sha256_16"),
             "verdict": c.get("verdict"),
+            "verdict_class": c.get("verdict_class") or VERDICT_CLASS.get(
+                c.get("verdict"), "BLOCKED"),
             "blocker": (c.get("blocker") or "")[:220],
             "launch": c.get("launch"),
             "install": c.get("install"),
@@ -130,6 +143,15 @@ def main():
     print("\n== LIVE COVERAGE ==")
     for v in ALL_VERDICTS:
         print(f"{v:>20}: {len(cov.get(v, []))}")
+    # LAW-001b: honest statistics — SKIP never inflates could-not-run.
+    stat = {"PASS": 0, "SKIP": 0, "FINDING": 0, "BLOCKED": 0}
+    for r in rows:
+        stat[r["verdict_class"]] = stat.get(r["verdict_class"], 0) + 1
+    with open(f"{OUT}/statistics.json", "w") as f:
+        json.dump(stat, f, indent=1)
+    print("\n== LAW-001b HONEST STATISTICS ==")
+    print("PASS={PASS}  SKIP(out-of-scope)={SKIP}  "
+          "FINDING={FINDING}  BLOCKED(could-not-run)={BLOCKED}".format(**stat))
 
 
 if __name__ == "__main__":

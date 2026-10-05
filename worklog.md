@@ -6807,3 +6807,70 @@ Work Log:
 
 Stage Summary:
 - The P0 Compose-draw frontier advanced through TWO real engine roots in one wave (split-store TreeSet pop + Class-token identity churn) with zero drift on every recorded SHA; sudokusolver is now deterministic x3 and two death-chains deeper than CONT-5. The base is materially more ready: any Compose app whose first blockers were the DepthSortedSet ISE or navigator registration now proceeds. Remaining Compose face named honestly (F-NEW-250 serialization chain) for the next wave.
+
+---
+Task ID: cont375-LAW-001
+Agent: Super Z (main agent)
+Task: LAW-001 — FIRST TEST LAW: ABI SCOPE (x86/x86_64 ONLY). Owner directive
+(Persian): ARM/other-CPU execution is out of work priority; every loaded
+app/game must be x86/x86_64-capable (or pure-DEX); make it test law #1,
+write it exactly on the main page, record ARM-only APKs as ABI-out-of-scope
+SKIP — never as runtime failures. ARM deferred, not deleted.
+
+Work Log:
+- Constitution: LAW-001 inserted into CONSTITUTION_V2.md after MISSION
+  (before CORE PRINCIPLE) with the exact owner rationale (instruction
+  translation / syscall-ABI / native loading / JNI bridging / alignment /
+  slowdown = a separate large layer) and 6 sub-laws: 001a check order
+  (FIRST, before install/launch, from real lib/<abi>/ entries), 001b
+  honest statistics (own SKIP bucket, never inflating could-not-run,
+  never silently dropped), 001c deferred-not-deleted, 001d pure-DEX always
+  in scope, 001e mixed APKs in scope, 001f no abuse as failure escape
+  hatch (real ABI evidence required).
+- README main page: LAW-001 banner + two-path scope table (MAIN TEST PATH
+  vs OUT OF CURRENT SCOPE) with pointers to constitution/gate/profile.
+- Gate: scripts/unknown_apk_preflight.py bumped to 16-verdict contract
+  1.1 — new ABI_OUT_OF_SCOPE verdict; EARLY scope gate in main() right
+  after the ZIP lib/ census (install/launch NEVER attempted for
+  out-of-scope APKs); classify() keeps the same scope rule as first
+  matcher (preempts install/env failures); every emission now carries
+  verdict_class (PASS|SKIP|FINDING|BLOCKED) + in_current_test_scope +
+  counts_as_failure. Old ABI-only ENVIRONMENT_BLOCKED branch retired into
+  the LAW-001 rule; SDK/hardware/GLES prereqs unchanged.
+- Sync: cont5_gate_matrix.py (verdict list + per-row verdict_class +
+  statistics.json buckets), ENVIRONMENT_PROFILE.json ENV-005 scope_law +
+  abi_selection_law update, execution-skill SKILL.md verdict contract 1.1
+  with LAW-001 as gate law (0).
+- Fixture: fixtures/arm_only_scope_probe/ (manifest + res + MainActivity +
+  make_arm_stubs.py deterministic 64-byte non-ELF stub payloads for
+  armeabi-v7a/arm64-v8a) built with the committed aapt2/ECJ/D8 harness ->
+  run/law001/arm_only_scope_probe.apk SHA256 4ce8b0dbf8a87697... (5
+  entries, aapt2-linked, lib trees armeabi-v7a + arm64-v8a only).
+- LIVE PROOF (real gate on the ARM-only APK): verdict ABI_OUT_OF_SCOPE,
+  verdict_class SKIP, counts_as_failure=false, install=null launch=null
+  (never attempted — LAW-001a), elapsed 0.0s; environment_matches carries
+  abi_scope OUT_OF_SCOPE (LAW-001).
+- Control (law works both directions): native_probe_apk_fixture.apk
+  (lib/x86_64) stays IN scope — install OK, launch reached, verdict
+  RUNTIME_ROOT from the fixture's own deliberate NativeMissing
+  negative-control arm (pre-existing fixture behavior, not drift).
+- Unit sweep 8/8: arm-only/arm32-only -> SKIP; mixed/x86/pure-DEX -> in
+  scope; arm-only+install-fail -> SKIP preempts; parse-failed -> UNKNOWN
+  (no evidence relabel); minSdk prereq path intact.
+- Full matrix rerun (cont5_gate_matrix.py, 62 rows): 53/53 rows present in
+  the previous committed matrix carry IDENTICAL verdicts (3 remaining are
+  label renames of the negatives with same verdicts; 9 rows are newly
+  added corpus titles). Post-LAW-001 statistics: PASS=3 SKIP=0 FINDING=56
+  BLOCKED=3 — SKIP=0 is honest: corpus census shows 0 ARM-only APKs
+  (58 pure-DEX + 11 x86/x86_64 of 69 scanned).
+- Evidence committed: evidence/law001_abi_scope/{LAW001_LIVE_PROOF.md,
+  arm_only_probe_gate_verdict.json, x86_64_control_gate_verdict.json,
+  matrix_statistics_after_law001.json, matrix_coverage_after_law001.json}.
+
+Stage Summary:
+- LAW-001 is now the FIRST test law end-to-end: constitution + main-page
+  README + wired gate (16-verdict contract 1.1, pre-install scope check) +
+  profile binding + skill doc + live-proven on a real ARM-only fixture
+  with zero drift on the entire existing matrix. Future ARM-only titles
+  land in the SKIP bucket — honest statistics, no fake failures, ARM
+  deferred to a future ABI-translation phase, never deleted.

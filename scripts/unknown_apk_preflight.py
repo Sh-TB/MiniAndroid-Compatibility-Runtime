@@ -10,7 +10,11 @@ capability matches/mismatches (docs/ENVIRONMENT_PROFILE.json), install and
 launch outcome, the first observed runtime divergence, and whether the case
 is an environment prerequisite or a genuine runtime root.
 
-VERDICT CLASSES (exactly the #375 contract):
+VERDICT CLASSES (the #375 contract + LAW-001):
+  ABI_OUT_OF_SCOPE      LAW-001 FIRST TEST LAW: APK's native lib trees contain
+                        no x86/x86_64 ABI (ARM32/ARM64/other only) — OUT OF
+                        CURRENT SCOPE, SKIP bucket, checked BEFORE install/
+                        launch, NEVER counted as a runtime failure
   PREFLIGHT_PASS        every prerequisite matched; launch + frame + no divergence
   ENVIRONMENT_BLOCKED   ABI / SDK / hardware-feature prerequisite the host
                         profile cannot satisfy (proven, honest)
@@ -28,6 +32,10 @@ VERDICT CLASSES (exactly the #375 contract):
   RUNTIME_ROOT          first divergence is a genuine runtime root (app throw
                         with caller chain), prerequisites all matched
   UNKNOWN               malformed/unparseable input — nothing provable
+
+Every emission also carries `verdict_class` (PASS | SKIP | FINDING | BLOCKED)
+plus `in_current_test_scope` / `counts_as_failure` so statistics can keep the
+ABI skip bucket separate from failures (LAW-001b honest statistics).
 
 Machine-readable contract (shared with docs/execution-skill): JSON with the
 fields the SKILL.md operations table consumes. The skill runs THE SAME
@@ -53,6 +61,7 @@ BIN = os.path.join(BASE, "miniandroid", "build", "miniandroid")
 ENV_PROFILE = os.path.join(BASE, "docs", "ENVIRONMENT_PROFILE.json")
 
 ALL_VERDICTS = [
+    "ABI_OUT_OF_SCOPE",  # LAW-001 FIRST TEST LAW (16-verdict contract, 1.1)
     "PREFLIGHT_PASS", "ENVIRONMENT_BLOCKED", "INSTALL_BLOCKED",
     "SECURITY_BLOCKED", "IDENTITY_BLOCKED", "SERVICE_BLOCKED",
     "EXECUTION_BLOCKED", "RESOURCE_BLOCKED", "GRAPHICS_BLOCKED",
@@ -60,8 +69,25 @@ ALL_VERDICTS = [
     "RUNTIME_ROOT", "UNKNOWN",
 ]
 
-# ENV-005 honesty: the profile advertises exactly the host-executable ABI.
+# LAW-001b honest-statistics buckets: every verdict maps to exactly one
+# statistics class; only BLOCKED inflates the could-not-run count.
+VERDICT_CLASS = {
+    "ABI_OUT_OF_SCOPE": "SKIP",     # out of current ABI scope — never a failure
+    "PREFLIGHT_PASS": "PASS",
+    "RUNTIME_ROOT": "FINDING",       # genuine runtime root = work item, not env noise
+    "CAPTURE_ONLY": "FINDING",
+    "UNKNOWN": "FINDING",            # malformed input — nothing provable either way
+}
+# verdicts not in VERDICT_CLASS are BLOCKED (install/identity/security/service/
+# execution/resource/graphics/media/network/input/environment).
+
+# ENV-005 + LAW-001: the host executes x86_64 native code only; pure-DEX APKs
+# (no lib/ tree) are ABI-neutral and always in scope.
 EXECUTABLE_ABIS = ["x86_64"]
+# LAW-001 scope set: an APK whose native trees intersect this set (or that has
+# no native trees at all) is IN SCOPE.
+IN_SCOPE_NATIVE_ABIS = {"x86", "x86_64"}
+
 # Graphics ceiling from ENV-006 (software PortableGL backend).
 SUPPORTED_GLES = 2  # GLES 2.0-class backend; GLES3+ requests degrade honestly
 
@@ -126,10 +152,23 @@ def parse_manifest(apk_path, text):
 
 def classify(findings):
     """Deterministic verdict mapping — first match wins in blocker order.
-    Returns (verdict, blocker_detail)."""
+    Returns (verdict, blocker_detail).
+
+    LAW-001a: the ABI scope check is the FIRST test law — it preempts every
+    other classification whenever the evidence (real lib/ tree entries, or
+    declared ABIs when the tree is absent) proves the APK has no x86/x86_64
+    native ABI. LAW-001f: it needs real ABI evidence; with zero ABI evidence
+    (pure-DEX) the APK is in scope and classification proceeds normally."""
     blocker = findings.get("blocker")
     if findings["parse"] == "FAILED":
         return "UNKNOWN", blocker
+    # ── LAW-001 FIRST TEST LAW: ABI scope (preempts all other verdicts) ──
+    abi_evidence = findings.get("lib_abis") or findings.get("abis") or []
+    if abi_evidence and not (set(abi_evidence) & IN_SCOPE_NATIVE_ABIS):
+        return "ABI_OUT_OF_SCOPE", (
+            "LAW-001: native ABIs %s contain no host-executable ABI "
+            "(x86/x86_64 only; ENV-005, no translation layer) — out of "
+            "current test scope, recorded as SKIP not failure" % abi_evidence)
     if findings["install"] == "FAILED":
         # install refuses on identity/integrity — separate the honest cases
         if findings.get("install_reason") == "identity":
@@ -137,22 +176,10 @@ def classify(findings):
         if findings.get("install_reason") == "security":
             return "SECURITY_BLOCKED", blocker
         return "INSTALL_BLOCKED", blocker
-    # Environment prerequisites (proven against ENVIRONMENT_PROFILE.json)
-    # ABI honesty: an ABI mismatch is a HARD blocker only when the launch
-    # actually failed on a native path — a Java-only app that ran to its
-    # wall-clock budget is NOT ABI-blocked (the mismatch is recorded in
-    # environment_matches, not upgraded to a false blocker — FA-01/FA-02
-    # honesty law works both directions).
-    native_path_failed = findings.get("launch") == "FAILED" and any(
-        k in (findings.get("launch_detail") or "")
-        for k in ("dlopen", "native", "UnsatisfiedLink"))
-    if findings["abis"] and not (set(findings["abis"]) & set(EXECUTABLE_ABIS)) \
-            and (findings["launch"] == "FAILED" or native_path_failed):
-        blocker = (
-            "native ABIs %s not host-executable; honest ABI advertisement "
-            "is %s (ENV-005, no translation layer)" %
-            (findings["abis"], EXECUTABLE_ABIS))
-        return "ENVIRONMENT_BLOCKED", blocker
+    # Environment prerequisites (proven against ENVIRONMENT_PROFILE.json).
+    # NOTE: the ABI check itself moved to the LAW-001 scope rule above (it is
+    # the FIRST test law and preempts everything); what remains here are the
+    # SDK / hardware-feature / graphics prerequisites.
     env = findings.get("env") or {}
     sdk_int = env.get("ENV-001_api_level", {}).get("sdk_int", 34)
     if findings["min_sdk"] is not None and findings["min_sdk"] > sdk_int:
@@ -215,7 +242,7 @@ def main():
 
     apk = os.path.abspath(args.apk)
     contract = {
-        "schema": "MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.0",
+        "schema": "MINIANDROID_UNKNOWN_APK_PREFLIGHT/1.1",  # 1.1: +ABI_OUT_OF_SCOPE (LAW-001)
         "apk_path": apk,
         "apk_sha256_16": None,
         "verdict": None,
@@ -267,6 +294,27 @@ def main():
     except zipfile.BadZipFile:
         contract["verdict"] = "UNKNOWN"
         contract["blocker"] = "bad zip"
+        _emit(contract, args.json)
+        return 0
+
+    # ── LAW-001 FIRST TEST LAW: ABI scope gate (BEFORE install/launch) ───
+    # The check order law: an APK with native trees and no x86/x86_64 ABI is
+    # out of current scope — it never reaches install/launch, and it is
+    # recorded as SKIP, never as a runtime failure.
+    scope_abis = contract["prerequisites"]["lib_abis"] or manifest["abis"]
+    if scope_abis and not (set(scope_abis) & IN_SCOPE_NATIVE_ABIS):
+        contract["environment_matches"] = {
+            "host_executable_abis": EXECUTABLE_ABIS,
+            "apk_abis": scope_abis,
+            "abi_scope": "OUT_OF_SCOPE (LAW-001)",
+        }
+        contract["verdict"] = "ABI_OUT_OF_SCOPE"
+        contract["blocker"] = (
+            "LAW-001 FIRST TEST LAW: native ABIs %s contain no "
+            "host-executable ABI (x86/x86_64 only; ENV-005, no translation "
+            "layer) — out of current test scope, SKIP not failure" % scope_abis)
+        contract["is_environment_prerequisite"] = True
+        contract["elapsed_s"] = round(time.time() - t0, 1)
         _emit(contract, args.json)
         return 0
 
@@ -376,6 +424,13 @@ def main():
 
 def _emit(contract, json_path):
     assert contract["verdict"] in ALL_VERDICTS, contract["verdict"]
+    # LAW-001b honest-statistics fields: the SKIP bucket (ABI out of scope)
+    # is separate from failures; PASS is a pass; RUNTIME_ROOT/CAPTURE_ONLY/
+    # UNKNOWN are findings; every hard *_BLOCKED is a could-not-run.
+    v = contract["verdict"]
+    contract["verdict_class"] = VERDICT_CLASS.get(v, "BLOCKED")
+    contract["in_current_test_scope"] = v != "ABI_OUT_OF_SCOPE"
+    contract["counts_as_failure"] = VERDICT_CLASS.get(v, "BLOCKED") == "BLOCKED"
     print(json.dumps(contract, indent=1))
     if json_path:
         os.makedirs(os.path.dirname(os.path.abspath(json_path)),
