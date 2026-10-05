@@ -238,6 +238,31 @@ static std::string map_key_value_law(const CallContext& ctx, size_t i,
     if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0 && heap) {
         std::string cls;
         if (heap->get_object_class(a.object_id, cls)) {
+            // ── F-NEW-248: STRING-KEY CONTENT LAW (OpenJDK String.equals) ──
+            // A java.util.Map key is classified by the key OBJECT'S equals()
+            // — for String keys that is CONTENT equality, never identity.
+            // Runtime proof (sudokusolver, CONT-6): NavigatorProvider is a
+            // real-DEX LinkedHashMap wrapper (Lwq1;: field a = LinkedHashMap,
+            // addNavigator = Map.put(name, navigator), getNavigator =
+            // Map.get(name)). addNavigator derives the name from the
+            // @Navigator.Name annotation via reflection — a String HEAP
+            // OBJECT — while the nav-DSL getNavigator("composable") passes a
+            // const-string. Identity-keying stored the annotation String
+            // under "obj:<id>" and the const-string get answered null →
+            // ISE "Could not find Navigator with name "composable"" → the
+            // NavGraphBuilder died before any destination existed → 0 Compose
+            // draw ops. Law: a String-object key unwraps to its
+            // __string_value__ CONTENT (same normalization the boxed-Number
+            // law below already applies); both put-side and get-side then
+            // agree regardless of which String materialization the call
+            // site used. Unreadable (unmaterialized) receivers fall back to
+            // identity keying — no fabricated content.
+            if (cls == "Ljava/lang/String;") {
+                std::string sv;
+                if (heap->get_object_string_field(a.object_id,
+                                                  "__string_value__", sv))
+                    return sv;
+            }
             static const char* kBoxes[] = {
                 "Ljava/lang/Integer;", "Ljava/lang/Long;", "Ljava/lang/Short;",
                 "Ljava/lang/Byte;", "Ljava/lang/Character;",
@@ -301,7 +326,24 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     st ? (st->elements.size() + st->view_elements.size()) : 0;
                 std::cerr << "[S24-COLL] " << ctx.class_name << "." << m
                           << " obj=" << obj_id << " entries=" << n_entries
-                          << " elems=" << n_elems << std::endl;
+                          << " elems=" << n_elems;
+                // CONT-6 navigator-diag: the resolved map key (the
+                // map_key_value_law derivation) for put/get — shows whether
+                // a String-object key and a const-string key normalize to
+                // the same entry (NavigatorProvider put/get coherence).
+                if ((m == "put" || m == "get") && ctx.args.size() >= 2) {
+                    std::cerr << " key=\"" << map_key_value_law(ctx, 1, heap_)
+                              << "\"";
+                    const auto& ka = ctx.args[1];
+                    if (ka.kind == CallContext::Arg::Kind::OBJECT)
+                        std::cerr << " key_arg{oid=" << ka.object_id
+                                  << " cls=" << ka.object_class
+                                  << " svlen=" << ka.string_val.size() << "}";
+                    else if (ka.kind == CallContext::Arg::Kind::STRING)
+                        std::cerr << " key_arg{STRING len="
+                                  << ka.string_val.size() << "}";
+                }
+                std::cerr << std::endl;
             }
         }
     }

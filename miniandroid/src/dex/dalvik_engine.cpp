@@ -18318,6 +18318,37 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
 // OPCODE IMPLEMENTATIONS — Invokes
 // ============================================================================
 
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-249 (CONT-6): STABLE CLASS-TOKEN IDENTITY LAW (Object.getClass).
+// ART ClassLinker mints ONE java.lang.Class instance per runtime class —
+// identity is observable (==, HashSet<Class>, synchronized(Class), and
+// androidx's NavigatorProvider name cache keyed by Class). The engine's
+// const-class opcode already honors this via the F-069 class_token_ids_
+// map; getClass stamped ref_id = instruction_sequence_, producing a
+// DIFFERENT token per call site for the same class. This helper returns
+// the stable per-descriptor token: first call allocates the backing heap
+// object ("Ljava/lang/Class;" with __referent_desc) exactly like
+// const-class, later calls reuse it. Type stays CLASS_REF with
+// class_desc = the REFERRED descriptor (existing consumer contract).
+// ────────────────────────────────────────────────────────────────────────
+DalvikValue DalvikExecutionEngine::make_stable_class_token(
+    const std::string& type_desc) {
+    if (type_desc.empty())
+        return DalvikValue::make_class("Ljava/lang/Class;",
+                                       instruction_sequence_);
+    uint32_t token = 0;
+    auto tok_it = class_token_ids_.find(type_desc);
+    if (tok_it != class_token_ids_.end()) {
+        token = tok_it->second;
+    } else {
+        token = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+        heap_.set_object_field(token, "__referent_desc",
+                               DalvikValue::make_string(type_desc, 0));
+        class_token_ids_.emplace(type_desc, token);
+    }
+    return DalvikValue::make_class(type_desc, token);
+}
+
 bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace& trace,
                                                   DalvikExecutionResult& result) {
     // Format: 35c [op] {vC..}, method@BBBB
@@ -23924,9 +23955,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name.find("LinkedHashMap") != std::string::npos) &&
         (method == "put" || method == "get")) {
         static thread_local uint64_t f089_map = 0;
-        if (f089_map < 40 &&
-            (current_class_.find("navigation/") != std::string::npos ||
-             current_class_.find("yamin8000") != std::string::npos)) {
+        // CONT-6: navigator-diag widened (bounded 40) — the R8-merged
+        // callers (Lwq1;=NavigatorProvider, Lhl1;.Q=name resolver) carry no
+        // "navigation/" substring, so the old caller filter never fired for
+        // sudokusolver. This logs the RAW engine-arg vector (pre-shadow)
+        // so a put-key/put-value swap can be attributed to the dispatch
+        // layer vs the shadow store.
+        if (f089_map < 40) {
             ++f089_map;
             std::cerr << "[F089-MAP] " << class_name << "." << method
                       << " caller=" << current_class_ << "." << current_method_
@@ -42905,9 +42940,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                               << " oid=" << args[0].object_id
                               << " cls=" << args[0].class_desc
                               << " caller=" << current_class_ << "."
-                              << current_method_
-                             
-                              << std::endl;
+                              << current_method_;
+                    {
+                        auto f087_ait = class_annotations_.find(referent_desc);
+                        if (f087_ait != class_annotations_.end())
+                            for (const auto& f087_a : f087_ait->second) {
+                                std::cerr << " ann{" << f087_a.first << ":";
+                                for (const auto& f087_ev : f087_a.second)
+                                    std::cerr << f087_ev.first << "="
+                                              << f087_ev.second << ",";
+                                std::cerr << "}";
+                            }
+                    }
+                    std::cerr << std::endl;
                 }
             }
             auto ait = class_annotations_.find(referent_desc);
@@ -44627,10 +44672,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // fired the F-141 null-receiver NPE law mid-composition.
         if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_class(
+            result = make_stable_class_token(
                 args[0].class_desc.empty() ? "Ljava/lang/String;"
-                                           : args[0].class_desc,
-                instruction_sequence_);
+                                           : args[0].class_desc);
             return true;
         }
         if (!args.empty() && args[0].type == DalvikType::CLASS_REF) {
@@ -44644,8 +44688,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // class IS java.lang.Class — every CLASS_REF receiver
             // answers the Ljava/lang/Class; token, never null.
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_class("Ljava/lang/Class;",
-                                             instruction_sequence_);
+            result = make_stable_class_token("Ljava/lang/Class;");
             return true;
         }
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
@@ -44653,8 +44696,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (const auto* obj = heap_.get(args[0].object_id);
                 obj && !obj->class_descriptor.empty()) {
                 status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_class(obj->class_descriptor,
-                                                 instruction_sequence_);
+                result = make_stable_class_token(obj->class_descriptor);
                 return true;
             }
         }
@@ -44663,8 +44705,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // Heap unknown (framework-allocated / stub receiver) — fall back
             // to the register-carried descriptor.
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_class(args[0].class_desc,
-                                             instruction_sequence_);
+            result = make_stable_class_token(args[0].class_desc);
             {
                 static thread_local uint64_t f088_ok = 0;
                 if (f088_ok < 8) {
@@ -46383,6 +46424,74 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return std::to_string(v.int_val);
         };
 
+        auto f247_cs_count = [&](uint32_t recv_id) -> int32_t {
+            if (shadow_registry_ == nullptr || recv_id == 0) return 0;
+            auto* csh =
+                shadow_registry_->find_as<framework::CollectionShadow>();
+            if (!csh) return 0;
+            auto* st = csh->get_or_create(recv_id, /*is_map=*/false);
+            return st ? static_cast<int32_t>(st->elements.size()) : 0;
+        };
+        auto f247_cs_elem = [&](uint32_t recv_id, size_t idx,
+                                DalvikValue& out) -> bool {
+            if (shadow_registry_ == nullptr || recv_id == 0) return false;
+            auto* csh =
+                shadow_registry_->find_as<framework::CollectionShadow>();
+            if (!csh) return false;
+            auto* st = csh->get_or_create(recv_id, /*is_map=*/false);
+            if (!st) return false;
+            size_t n = st->elements.size();
+            if (idx >= n) return false;
+            uint8_t kind =
+                idx < st->elem_kinds.size() ? st->elem_kinds[idx] : 1;
+            if (kind == 2) {
+                if (idx >= st->elem_strings.size()) return false;
+                out = DalvikValue::make_string(st->elem_strings[idx], 0);
+            } else if (kind == 3) {
+                if (idx >= st->elem_ints.size()) return false;
+                out = DalvikValue::make_int(st->elem_ints[idx]);
+            } else {
+                if (st->elements[idx] == 0) return false;
+                const auto* eo = heap_.get(st->elements[idx]);
+                out = DalvikValue::make_object(
+                    st->elements[idx],
+                    eo ? eo->class_descriptor : "Ljava/lang/Object;");
+            }
+            return true;
+        };
+        auto f247_cs_remove = [&](uint32_t recv_id, size_t idx) -> bool {
+            if (shadow_registry_ == nullptr || recv_id == 0) return false;
+            auto* csh =
+                shadow_registry_->find_as<framework::CollectionShadow>();
+            if (!csh) return false;
+            auto* st = csh->get_or_create(recv_id, /*is_map=*/false);
+            if (!st || idx >= st->elements.size()) return false;
+            st->elements.erase(st->elements.begin() +
+                               static_cast<long>(idx));
+            if (idx < st->elem_kinds.size())
+                st->elem_kinds.erase(st->elem_kinds.begin() +
+                                     static_cast<long>(idx));
+            if (idx < st->elem_strings.size())
+                st->elem_strings.erase(st->elem_strings.begin() +
+                                       static_cast<long>(idx));
+            if (idx < st->elem_ints.size())
+                st->elem_ints.erase(st->elem_ints.begin() +
+                                    static_cast<long>(idx));
+            return true;
+        };
+        auto f247_ts_count = [&](uint32_t recv_id) -> int32_t {
+            auto v = heap_.get_object_field(recv_id, "ts_size");
+            return v.has_value() ? v->int_val : 0;
+        };
+        auto f247_ts_elem = [&](uint32_t recv_id, int32_t idx,
+                                DalvikValue& out) -> bool {
+            if (idx < 0) return false;
+            auto v = heap_.get_object_field(
+                recv_id, "ts_e_" + std::to_string(idx));
+            if (!v.has_value()) return false;
+            out = *v;
+            return true;
+        };
         if (method == "<init>") {
             // TreeSet() / TreeSet(comparator) — start empty.
             if (!args.empty() && args[0].object_id != 0) {
@@ -46428,8 +46537,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto* obj = heap_.get(this_id);
             std::string k = ts_elem_key(args[1]);
             if (!obj || obj->fields.count("ts_in_" + k) == 0) {
+                // F-NEW-247 read-through removal: when the ts_* store has no
+                // membership, the element (if any) lives in the ambient
+                // CollectionShadow store — remove the FIRST equal element
+                // (OpenJDK TreeSet.remove removes one occurrence) and answer
+                // its presence truthfully.
+                bool removed = false;
+                int32_t cn = f247_cs_count(this_id);
+                if (cn > 0 && args[1].type == DalvikType::OBJECT_REF) {
+                    for (int32_t ci = 0; ci < cn && !removed; ++ci) {
+                        DalvikValue cv;
+                        if (f247_cs_elem(this_id, ci, cv) &&
+                            cv.type == DalvikType::OBJECT_REF &&
+                            cv.object_id == args[1].object_id) {
+                            f247_cs_remove(this_id, ci);
+                            removed = true;
+                        }
+                    }
+                }
                 status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_bool(false);
+                result = DalvikValue::make_bool(removed);
                 return true;
             }
             int32_t idx = obj->fields["ts_in_" + k].int_val;
@@ -46457,14 +46584,132 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // isNotEmpty(); real Java would throw NoSuchElementException, and
         // returning null surfaces the same caller bug without inventing a
         // new exception type).
+        // ── F-NEW-247: TreeSet pop-family SINGLE-STORE read-through ────
+        // UPSTREAM LAW (OpenJDK TreeSet.java): first()/last() return the
+        // set's min/max element; pollFirst()/pollLast() remove-and-return
+        // it; on an EMPTY set first()/last() throw NoSuchElementException
+        // while pollFirst/pollLast return null. Compose 1.6.7's
+        // MeasureAndLayoutDelegate pops pending-measure nodes via
+        // first()+remove() (DepthSortedSet wraps a TreeSet) — the pop loop
+        // is gated on isNotEmpty(), so first() MUST answer from the same
+        // store the mutators wrote.
+        //
+        // ROOT CAUSE (com.galaxyrio.sudokusolver_8, CONT-6): TreeSet-family
+        // receivers were served by TWO disjoint stores — add/remove/
+        // isEmpty/size claimed by the ambient CollectionShadow (C013-HIER
+        // superclass walk Lnq2; → java/util/TreeSet;), while first() fell
+        // through to THIS gate and read the F-097 ts_* heap fields (never
+        // populated for that receiver: ts_size=0 fields=0 at the gate).
+        // isNotEmpty()==true + first()==null → DepthSortedSet.remove(null)
+        // → the APK's real check(node.isAttached) ran on a NULL receiver →
+        // the misleading ISE "DepthSortedSet.remove called on an unattached
+        // node" → AndroidComposeView.dispatchDraw died at the app boundary
+        // → APP_DRAW_OPS=0 (DEFAULT_BACKGROUND_ONLY) on Compose apps that
+        // queue measure/layout into this delegate family. Same
+        // misleading-ISE shape as dooz R-NEW-330/F-097: the node was never
+        // unattached — the ARGUMENT was null.
+        //
+        // GENERICITY: keyed on the receiver's runtime TreeSet ancestry —
+        // never on a package name. Read-through cascade (F-101
+        // discipline): ts_* store first (F-097-native), then the ambient
+        // CollectionShadow store for the SAME receiver id. Ordering stays
+        // the documented F-097 deterministic insertion-order approximation
+        // (the shadow cannot invoke the app's DEX comparator).
         if (method == "first") {
             uint32_t this_id = args.empty() ? 0 : args[0].object_id;
-            auto v = heap_.get_object_field(this_id, "ts_e_0");
-            status = ApiCallTrace::Status::IMPLEMENTED;
-            if (v.has_value())
-                result = *v;
-            else
+            DalvikValue v;
+            if (f247_ts_elem(this_id, 0, v)) {
+                result = v;  // F-097-native store authoritative when used
+            } else if (f247_cs_elem(this_id, 0, v)) {
+                result = v;  // F-NEW-247 read-through: ambient store
+            } else {
                 result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // TreeSet.last() → max element (insertion-order approximation:
+        // element at index size-1). Empty set → null (same honesty law as
+        // first()).
+        if (method == "last") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            DalvikValue v;
+            int32_t tn = f247_ts_count(this_id);
+            if (tn > 0 && f247_ts_elem(this_id, tn - 1, v)) {
+                result = v;
+            } else {
+                int32_t cn = f247_cs_count(this_id);
+                if (cn > 0 && f247_cs_elem(this_id, cn - 1, v))
+                    result = v;
+                else
+                    result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // TreeSet.pollFirst()/pollLast() → remove-and-return; null when
+        // empty (OpenJDK law — the POLL family answers null, unlike
+        // first()/last() which throw). Removes from whichever store holds
+        // the element (ts_* first, then the ambient CollectionShadow
+        // store), keeping both coherent.
+        if (method == "pollFirst" || method == "pollLast") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            bool from_back = (method == "pollLast");
+            DalvikValue v;
+            bool got = false;
+            int32_t tn = f247_ts_count(this_id);
+            int32_t ti = from_back ? tn - 1 : 0;
+            if (tn > 0 && f247_ts_elem(this_id, ti, v)) {
+                // Mirror the F-097 remove() store surgery for index ti.
+                auto* obj = heap_.get(this_id);
+                if (obj) {
+                    std::string k;
+                    DalvikValue elem;
+                    if (f247_ts_elem(this_id, ti, elem)) {
+                        if (elem.type == DalvikType::OBJECT_REF)
+                            k = "obj_" + std::to_string(elem.object_id);
+                        else if (elem.type == DalvikType::STRING_REF)
+                            k = elem.string_val;
+                        else
+                            k = std::to_string(elem.int_val);
+                    }
+                    int32_t last = tn - 1;
+                    if (ti != last && k.size() > 0) {
+                        DalvikValue mv;
+                        if (f247_ts_elem(this_id, last, mv)) {
+                            heap_.set_object_field(
+                                this_id, "ts_e_" + std::to_string(ti), mv);
+                            std::string mk;
+                            if (mv.type == DalvikType::OBJECT_REF)
+                                mk = "obj_" + std::to_string(mv.object_id);
+                            else if (mv.type == DalvikType::STRING_REF)
+                                mk = mv.string_val;
+                            else
+                                mk = std::to_string(mv.int_val);
+                            heap_.set_object_field(
+                                this_id, "ts_in_" + mk,
+                                DalvikValue::make_int(ti));
+                        }
+                    }
+                    obj->fields.erase("ts_e_" + std::to_string(last));
+                    if (k.size() > 0) obj->fields.erase("ts_in_" + k);
+                    heap_.set_object_field(this_id, "ts_size",
+                                           DalvikValue::make_int(last));
+                }
+                got = true;
+            } else {
+                int32_t cn = f247_cs_count(this_id);
+                if (cn > 0) {
+                    size_t ci =
+                        from_back ? static_cast<size_t>(cn - 1) : 0;
+                    if (f247_cs_elem(this_id, ci, v)) {
+                        f247_cs_remove(this_id, ci);
+                        got = true;
+                    }
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = got ? v : DalvikValue::make_null();
             return true;
         }
         // TreeSet.contains(o) → boolean.
@@ -46473,27 +46718,51 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto* obj = heap_.get(this_id);
             bool present =
                 obj && obj->fields.count("ts_in_" + ts_elem_key(args[1])) > 0;
+            // F-NEW-247 read-through: the ambient CollectionShadow store
+            // (the one the C013-HIER walk's add() actually wrote for this
+            // receiver) is consulted when the ts_* store has no membership.
+            if (!present) {
+                int32_t cn = f247_cs_count(this_id);
+                if (cn > 0) {
+                    DalvikValue cv;
+                    if (args[1].type == DalvikType::OBJECT_REF) {
+                        for (int32_t ci = 0; ci < cn && !present; ++ci) {
+                            if (f247_cs_elem(this_id, ci, cv) &&
+                                cv.type == DalvikType::OBJECT_REF &&
+                                cv.object_id == args[1].object_id)
+                                present = true;
+                        }
+                    }
+                }
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_bool(present);
             return true;
         }
-        // TreeSet.size() → int.
+        // TreeSet.size() → int (F-NEW-247: ts_* first, then the ambient
+        // CollectionShadow store — same coherence law as first()).
         if (method == "size") {
             uint32_t this_id = args.empty() ? 0 : args[0].object_id;
             auto v = heap_.get_object_field(this_id, "ts_size");
+            int32_t n = v.has_value() ? v->int_val : 0;
+            if (n == 0) n = f247_cs_count(this_id);
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_int(v.has_value() ? v->int_val : 0);
+            result = DalvikValue::make_int(n);
             return true;
         }
-        // TreeSet.isEmpty() → boolean.
+        // TreeSet.isEmpty() → boolean (F-NEW-247: coherent with size()).
         if (method == "isEmpty") {
             uint32_t this_id = args.empty() ? 0 : args[0].object_id;
             auto v = heap_.get_object_field(this_id, "ts_size");
+            int32_t n = v.has_value() ? v->int_val : 0;
+            if (n == 0) n = f247_cs_count(this_id);
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_bool(!v.has_value() || v->int_val == 0);
+            result = DalvikValue::make_bool(n == 0);
             return true;
         }
-        // TreeSet.clear() → void.
+        // TreeSet.clear() → void (F-NEW-247: BOTH stores — the ts_* heap
+        // fields AND the ambient CollectionShadow store — so a cleared set
+        // stays empty no matter which store the adds landed in).
         if (method == "clear") {
             uint32_t this_id = args.empty() ? 0 : args[0].object_id;
             auto* obj = heap_.get(this_id);
@@ -46502,6 +46771,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 for (const auto& f : obj->fields)
                     if (f.first.rfind("ts_", 0) == 0) drop.push_back(f.first);
                 for (const auto& name : drop) obj->fields.erase(name);
+            }
+            if (shadow_registry_ != nullptr && this_id != 0) {
+                if (auto* csh = shadow_registry_->find_as<
+                        framework::CollectionShadow>()) {
+                    auto* st = csh->get_or_create(this_id, /*is_map=*/false);
+                    if (st) {
+                        st->elements.clear();
+                        st->elem_kinds.clear();
+                        st->elem_strings.clear();
+                        st->elem_ints.clear();
+                        st->iterator_position = 0;
+                    }
+                }
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_void();

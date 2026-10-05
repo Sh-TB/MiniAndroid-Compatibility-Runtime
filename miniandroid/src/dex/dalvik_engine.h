@@ -2356,6 +2356,23 @@ public:
     void run_thread_start_body(uint32_t thread_oid, uint32_t target_oid);
     // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
     DalvikValue get_or_create_singleton(const std::string& class_desc);
+
+    // F-NEW-249 (CONT-6): STABLE CLASS-TOKEN IDENTITY LAW for
+    // Object.getClass. ART returns the SAME java.lang.Class instance for a
+    // given runtime class every time; the engine models Class values as
+    // CLASS_REF whose ref_id is the STABLE per-descriptor token id
+    // (class_token_ids_ — the F-069 const-class map). The old getClass
+    // stamped ref_id = instruction_sequence_, so every getClass produced a
+    // DIFFERENT token for the same class — identity-sensitive consumers
+    // (the androidx NavigatorProvider annotation-name cache keyed by Class,
+    // HashSet<Class>, Class == comparisons) missed every lookup.
+    // Evidence: sudokusolver NavigatorProvider.addNavigator derived the
+    // navigator name via nameForNavigator(cls.getClass()); the per-call
+    // token churn defeated the Lwq1;->b static cache and every
+    // annotation-cache lookup missed → all navigators registered under one
+    // name → getNavigator("composable") ISE → Compose NavHost died →
+    // APP_DRAW_OPS=0.
+    DalvikValue make_stable_class_token(const std::string& type_desc);
     // S88 F-NEW-179: keyed-by-path directory File law — getFilesDir/
     // getCacheDir/getExternalFilesDir/getExternalCacheDir answer STABLE,
     // DISTINCT, PATHED java.io.File objects (AOSP ContextImpl contract;
