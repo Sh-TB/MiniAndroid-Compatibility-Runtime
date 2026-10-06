@@ -75,17 +75,33 @@ static DalvikValue call_result_to_dalvik(const framework::CallResult& r);
 // accesses when <substr> is "1"/"all" (hard-capped at 2000 lines so a
 // full-corpus run can never flood the log). Disabled by default: the check
 // is a single thread_local pointer compare — cheap when off.
-static bool field_trace_active(const char* field_name, const char* where) {
+static bool field_trace_active(const char* field_name, const char* where,
+                               const char* class_desc = nullptr) {
     static thread_local const char* filter = std::getenv("MINIANDROID_FIELD_TRACE");
     if (!filter) return false;
     std::string f(filter);
     if (f != "1" && f != "all") {
-        // R8 renames fields to single letters — match the FIELD NAME or the
-        // CALLING METHOD signature so forensics can target e.g. "MainActivity;.e".
-        std::string fn = field_name ? field_name : "";
-        std::string w = where ? where : "";
-        if (fn.find(f) == std::string::npos && w.find(f) == std::string::npos)
-            return false;
+        // CONT-9 W5: qualified "Lcls;.field" form — matches the field's
+        // DECLARING class descriptor prefix AND the exact field name.
+        // Generic diagnostic targeting (no engine-side R8 knowledge).
+        // Qualified form "Lcls;.field": the class part ends at the FIRST
+        // ";." boundary (R8 descriptors end with ';').
+        size_t dot = f.find(";.");
+        if (dot != std::string::npos && class_desc) {
+            std::string cls = f.substr(0, dot + 1);
+            std::string fld = f.substr(dot + 2);
+            std::string cd = class_desc;
+            std::string fn = field_name ? field_name : "";
+            if (cd.rfind(cls, 0) != 0 || fn != fld) return false;
+        } else {
+            // R8 renames fields to single letters — match the FIELD NAME or
+            // the CALLING METHOD signature so forensics can target e.g.
+            // "MainActivity;.e".
+            std::string fn = field_name ? field_name : "";
+            std::string w = where ? where : "";
+            if (fn.find(f) == std::string::npos && w.find(f) == std::string::npos)
+                return false;
+        }
     }
     static thread_local uint32_t budget = 2000;
     return budget-- > 0;
@@ -3713,6 +3729,77 @@ bool DalvikExecutionEngine::execute_method_internal(
                   << (args.empty() ? "" : args[0].class_desc)
                   << std::endl;
         lifewin_count++;
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-9 W5 (F-NEW-256 first-divergence instrumentation, Phase 2 of the
+    // directive): generic env-gated CALLER-FRAME trace for a caller-supplied
+    // class-prefix list. MINIANDROID_CL_TRACE="Lnb0;,Lwo;,Lv02;,Ly11;"
+    // (comma-separated class prefixes; the mechanism is app-agnostic — the
+    // prefixes come from the RUN CONFIG, never hardcoded engine rules).
+    // For each method entry whose declaring class starts with any prefix,
+    // log stage/class.method, recursion depth, leading arg identities, and
+    // the TOP-4 caller frames. Read-only; bounded at 4000 lines.
+    // Answers: WHO drives the change-list apply while the content composable
+    // is still executing (the F-NEW-256 mid-content-pass apply divergence).
+    {
+        static thread_local const bool cl_on =
+            std::getenv("MINIANDROID_CL_TRACE") != nullptr;
+        if (cl_on) {
+            static thread_local const std::string cl_spec =
+                std::getenv("MINIANDROID_CL_TRACE");
+            static thread_local uint64_t cl_lines = 0;
+            if (cl_lines < 8000) {
+                size_t start = 0;
+                while (start <= cl_spec.size()) {
+                    size_t comma = cl_spec.find(',', start);
+                    std::string pfx = cl_spec.substr(
+                        start, comma == std::string::npos
+                                   ? std::string::npos
+                                   : comma - start);
+                    // Token form "Lcls;.meth": match the class prefix AND
+                    // the exact method name (R8-aware diagnostic targeting).
+                    bool hit = false;
+                    size_t semi_dot = pfx.find(";.");
+                    if (semi_dot != std::string::npos) {
+                        std::string cpfx = pfx.substr(0, semi_dot + 1);
+                        std::string meth = pfx.substr(semi_dot + 2);
+                        hit = (class_name.rfind(cpfx, 0) == 0 &&
+                               method_name == meth);
+                    } else {
+                        hit = (!pfx.empty() &&
+                               class_name.rfind(pfx, 0) == 0);
+                    }
+                    if (hit) {
+                        ++cl_lines;
+                        std::cerr << "[CL-TRACE] d=" << recursion_depth_
+                                  << " " << class_name << "." << method_name;
+                        for (size_t ai = 0;
+                             ai < args.size() && ai < 3; ++ai) {
+                            const auto& a = args[ai];
+                            if (a.type == DalvikType::OBJECT_REF)
+                                std::cerr << " a" << ai << "=o"
+                                          << a.object_id << a.class_desc;
+                            else if (a.type == DalvikType::INT32 ||
+                                     a.type == DalvikType::BOOLEAN)
+                                std::cerr << " a" << ai << "=i" << a.int_val;
+                            else if (a.type == DalvikType::INT64)
+                                std::cerr << " a" << ai << "=l" << a.long_val;
+                        }
+                        auto cl_frames = call_stack_.snapshot_top_first();
+                        std::cerr << " CALLERS";
+                        for (size_t fi = 0;
+                             fi < cl_frames.size() && fi < 4; ++fi)
+                            std::cerr << " <" << cl_frames[fi].first << "."
+                                      << cl_frames[fi].second << ">";
+                        std::cerr << std::endl;
+                        break;
+                    }
+                    if (comma == std::string::npos) break;
+                    start = comma + 1;
+                }
+            }
+        }
     }
 
     // EXP-038 (BLOCKER-033): Set current_dex_index_ for per-DEX method resolution.
@@ -16813,7 +16900,8 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     {
         DalvikValue tgt = get_register(obj_reg);
         if (field_trace_active(field_res.field_name.c_str(),
-                               (current_class_ + "." + current_method_).c_str())) {
+                               (current_class_ + "." + current_method_).c_str(),
+                               field_res.class_descriptor.c_str())) {
             std::cerr << "[FIELD-TRACE] get " << current_class_ << "." << current_method_
                       << " " << field_res.class_descriptor << "." << field_res.field_name
                       << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
@@ -17046,7 +17134,8 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
         // Look up object field from heap
         if (heap_.has_object(obj_ref.object_id)) {
             if (field_trace_active(field_res.field_name.c_str(),
-                                   (current_class_ + "." + current_method_).c_str())) {
+                                   (current_class_ + "." + current_method_).c_str(),
+                                   field_res.class_descriptor.c_str())) {
                 DalvikValue tgt = get_register(obj_reg);
                 std::cerr << "[FIELD-TRACE] get-obj " << current_class_ << "."
                           << current_method_ << " "
@@ -17428,7 +17517,8 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
         // NOTE: render via dalvik_value_to_string — printing .long_val on an
         // INT32 union read shows stale upper bytes as false corruption.
         if (field_trace_active(field_res.field_name.c_str(),
-                               (current_class_ + "." + current_method_).c_str())) {
+                               (current_class_ + "." + current_method_).c_str(),
+                               field_res.class_descriptor.c_str())) {
             std::cerr << "[FIELD-TRACE] put " << current_class_ << "."
                       << current_method_ << " "
                       << field_res.class_descriptor << "."
@@ -17604,7 +17694,8 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
             }
         }
         if (field_trace_active(field_res.field_name.c_str(),
-                               (current_class_ + "." + current_method_).c_str())) {
+                               (current_class_ + "." + current_method_).c_str(),
+                               field_res.class_descriptor.c_str())) {
             std::cerr << "[FIELD-TRACE] put-obj " << current_class_ << "."
                       << current_method_ << " "
                       << field_res.class_descriptor << "." << field_res.field_name
