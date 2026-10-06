@@ -1,0 +1,55 @@
+{
+ "artifact": "fnew256_w4_ladder.json — CONT-8 W4 §1 synthetic rendering ladder: Probes A/B (native) vs F (Dooz/Compose). Probe C/D/E (minimal Compose Box/Text/Image) NOT independently buildable this wave: no kotlinc/Compose-compiler in the toolchain (recorded honestly; Dooz itself is the Compose consumer and its decomposition is given by the W4 trace).",
+ "head": "50b63bc7",
+ "binary_sha16": "c0fa65ccc7f284e7",
+ "probe_apk": {
+  "source": "fixtures/w4_ladder_probe (src/com/probe/w4ladder/MainActivity.java)",
+  "build": "real toolchain: aapt2 link, ECJ 1.8, D8 release",
+  "sha256_20": "93d9224a9b9265accd88",
+  "run_status": "SUCCESS",
+  "screenshot_sha16": "b525b4b67fdb86f4"
+ },
+ "probe_A_native_view": {
+  "tree_created": "YES",
+  "attached": "YES",
+  "measured": "YES (1080x1920)",
+  "laid_out": "YES",
+  "draw_entered": "YES (onDraw dispatched x2, [C013-ONDRAW] dispatched=YES)",
+  "canvas_save": "YES (app calls save/restore; engine records)",
+  "canvas_translate": "YES",
+  "drawRect": "YES — framebuffer pixel (100,120)=(204,34,34) == paint 0xFFCC2222 EXACT",
+  "drawCircle": "YES — pixel (480,140)=(34,170,68) == 0xFF22AA44 EXACT",
+  "drawText": "YES — 31,150 glyph pixels present around (55..500, 230..300)",
+  "drawPath": "YES — pixel (150,420)=(221,136,17) == 0xFFDD8811 EXACT",
+  "drawBitmap": "RECORDED (op counted in ops=5) BUT 0 app-owned pixels — in-memory Bitmap.createBitmap+Canvas.drawColor source never composites. OBSERVED gap (runtime-created bitmap canvas path); resource-drawable bitmaps DO composite (see fishrings provenance). Not root-caused this wave per §16 discipline.",
+  "frame_submitted": "YES",
+  "framebuffer_changed": "YES (EXP092-COPY fb 2073600/2073600 non-white)",
+  "app_owned_pixels": "full frame",
+  "REAL_APP_CONTENT": "YES"
+ },
+ "probe_B_viewgroup": {
+  "tree_created": "YES (FrameLayout childCount=2: ProbeAView + TextView)",
+  "draw_children_entered": "YES (child ProbeAView drew via ViewGroup dispatch; TextView 'W4LADDER-B-GROUP' rendered at (0,0) 390x44)",
+  "REAL_APP_CONTENT": "YES"
+ },
+ "probe_CDE_compose": {
+  "buildable": "NO (no kotlinc/Compose compiler in toolchain)",
+  "covered_by": "Dooz (Probe F) — contains Box/Text/Image/Canvas composables in its real UI"
+ },
+ "probe_F_dooz": {
+  "tree_created": "YES (AndroidComposeView Lt4; + root LayoutNode Lel0;)",
+  "child_count_layoutnode_tree": "EXACTLY 1 node inserted (Lv02;.c insertBottomUp x1 -> Lel0;.B insertAt x1)",
+  "attached": "YES",
+  "measured": "YES (1080x1920 reached)",
+  "draw_entered": "YES (Lt4;.dispatchDraw -> Lel0;.i root draw -> Lpz0;.L0 layer draw)",
+  "draw_recursion": "YES (Lpz0;.M0 x9, T0 x9, Lug0;.h1 x4, Lrc0;.a draw-block, wrapper chain Lbt0;/Lfl0;/Lzs0;)",
+  "canvas_state_ops": "YES (translate family only — Ly3;.f x8, save/restore)",
+  "canvas_content_ops": "NO (CanvasShadow ops=0; Ljt1; AndroidCanvas draw-family NEVER entered)",
+  "frame_submitted": "YES",
+  "framebuffer_changed": "NO app-owned change (default background)",
+  "app_owned_pixels": "0",
+  "REAL_APP_CONTENT": "NO",
+  "first_no_in_ladder": "COMPOSE TREE MATERIALIZATION (between Probe B and Probe C)"
+ },
+ "ladder_conclusion": "The first NO is NOT the Canvas bridge and NOT layer routing (faces b/c of the W3 classification are REFUTED): the native View/ViewGroup pipeline records and replays content ops with color-exact framebuffer proof. The first NO is the Compose node-tree materialization: Dooz's composition records only 4 changes and inserts exactly 1 node, so dispatchDraw faithfully draws an empty 1-node tree. See fnew256_w4_trace.json for the refined first divergence."
+}

@@ -1,0 +1,16 @@
+{
+ "artifact": "fnew256_w4_baseline.json — CONT-8 W4 §0/§10/§11: Dooz BASE re-run at current HEAD before any patch; directive §0 rule 3-4 reconciliation",
+ "head": "50b63bc74a44fa1fc506f3e0f97f2142b8960c32",
+ "binary_sha16": "c0fa65ccc7f284e7",
+ "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+ "baseline_runs": [
+  {"run": 1, "status": "PARTIAL SUCCESS", "uncaught_exceptions": 0, "errors": 6,
+   "verdict": "DEFAULT_BACKGROUND_ONLY", "first_missing_stage": "APP_DRAW_OPS",
+   "app_draw_ops": 0, "screenshot_sha16": "d602648e8e401895",
+   "stub_census": {"implemented": 33464, "stubbed": 280, "missing": 0, "error": 0}},
+  {"run": 2, "screenshot_sha16": "d602648e8e401895", "note": "census run, identical visual state"},
+  {"run": 3, "screenshot_sha16": "d602648e8e401895", "note": "method-trace run, identical visual state"}
+ ],
+ "wave3_anchor_match": true,
+ "anchor": "d602648e8e401895 (== evidence/cont7 recorded; zero drift at current HEAD)"
+}
