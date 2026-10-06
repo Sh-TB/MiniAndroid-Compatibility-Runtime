@@ -15,7 +15,7 @@
   "op": "OP-2",
   "name": "prerequisites machine-readable schema",
   "pass": true,
-  "detail": "minSdk=24 verdict=EXECUTABLE_NATIVE mismatches=0"
+  "detail": "minSdk=24 verdict=NO_NATIVE_CODE mismatches=0"
  },
  {
   "op": "N-1",
@@ -27,7 +27,7 @@
   "op": "OP-3",
   "name": "install + installed identity = source identity",
   "pass": true,
-  "detail": "installed sha16=d872ff166d4f2d8c"
+  "detail": "installed sha16=be8fc84fdf1ff5cc"
  },
  {
   "op": "OP-4",

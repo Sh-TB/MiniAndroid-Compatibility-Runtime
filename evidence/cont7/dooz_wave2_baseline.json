@@ -1,0 +1,44 @@
+{
+  "wave": "CONT-7 WAVE 2",
+  "head": "07a2d538 (code base) + wave-2 engine edits",
+  "binary_sha16": "5006834b2d2ae63b",
+  "apk": {
+    "path": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+    "sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+    "package": "io.github.yamin8000.dooz",
+    "version": 23,
+    "abi_class": "MIXED (arm64-v8a/armeabi-v7a/x86/x86_64; ELF machines 183,3,40,62)",
+    "law001_verdict": "IN_SCOPE"
+  },
+  "install_verdict": "PREFLIGHT_PASS/INSTALLED",
+  "launch_verdict": "RESUMED (MainActivity.onCreate entered; compose runs)",
+  "baseline_binary": "382e595771901c00 (HEAD e172fd7b+cont7 code, pre-wave-2)",
+  "baseline_first_divergence": {
+    "exception": "IllegalArgumentException 'Only add dependencies during a tracking block'",
+    "surface": "Lt4;.dispatchDraw pc=148 (catch-block rethrow after Trace.endSection)",
+    "throw_site": "Lng0;.a pc=2 (R8 throw-helper: new IllegalArgumentException(msg))",
+    "guard": "Lyl;.z pc=260-268: iget-object Lrc0;.r -> iget-boolean Lfj;.a -> if-nez skip -> throw",
+    "data_chain": [
+      "Lt4;.dispatchDraw pc=45-46: const/4 v5,0 (null) + invoke-virtual {v4,v2,v5} Lel0;.i(Ldi;Lrc0;)V — the app passes null as the LayoutNode draw state param",
+      "Lel0;.i pc=4: passes its own p2 through to Lpz0;.L0(Ldi;Lrc0;)V (try-covered, handler Lel0;.Y rethrow)",
+      "Lpz0;.L0 pc=34: iput-object v7(=p2=null), v1(=the Lkc; from Lgi;.f), Lkc;.c:Object — the app stores the null draw-state into the draw-context holder",
+      "Lpz0;.L0 pc=36-38: v6 = Luc0;.e (the REAL Lrc0; draw manager) -> invoke-static {v5,v6} Lyl;.z(Lp00;Lrc0;)V",
+      "Lyl;.z pc=10-16: v2 = p0.C() (Lgi;.C returns Lgi;.f) -> iget-object Lkc;.c -> check-cast Lrc0;",
+      "MINIANDROID: read of Lkc;.c answered R414-fabricated 'new Object' because the R-NEW-414 initializer law treated the stored NULL_REF as 'missing'",
+      "Lyl;.z pc=258: if-eqz v2 ->+345 (the app's null-guard) NOT taken because v2 was the fabricated non-null Object",
+      "Lyl;.z pc=260-268: iget-object Lrc0;.r on the fabricated Object -> R414 fabricated 'new Lfj;' (isTracking=false) -> guard failed -> Lng0;.a threw the IAE"
+    ]
+  },
+  "semantic_law": "ART: a field explicitly assigned null by executed bytecode reads null; null passes check-cast; the app's own null-guard (if-eqz) then skips the snapshot-tracker block. Snapshot state reads during draw are legal ONLY inside a tracking block (SnapshotStateObserver contract) — the app relies on the null-guard to avoid the tracker path when no draw state exists.",
+  "miniandroid_divergence": "R-NEW-414 (field-initializer default materialization) treated a PRESENT heap entry holding NULL_REF as 'missing' and fabricated the declared initializer type over it, converting the app's legal null into a fabricated object and forcing the tracker read path.",
+  "fix": "F-NEW-252 explicit-null-beats-initializer law (dalvik_engine.cpp R414 read-side): r414_missing no longer includes NULL_REF entries; missing stays = absent entry OR dangling object ref. Chess ContentFrameLayout.mDecorPadding case (absent entries on inflater-materialized objects) unchanged.",
+  "synthetic_positive": "fixtures/fnew252_probe PNULL row: null param stored to a field after an intermediate invoke reads back null and casts null successfully — PASS",
+  "synthetic_negative": "R414 still fires for genuinely ABSENT fields (inflater-materialized objects): anchors chess/opencalc/microtimer/unote/dooz 5/5 x3 byte-identical after the change",
+  "dooz_result": "tracking IAE occurrences 17(pre-F-NEW-251)->1(baseline)->0(fixed); remaining uncaught exception = F-NEW-253 rememberSaveable IAE (separate root)",
+  "three_run": {
+    "screenshot_sha16": ["d602648e8e401895", "d602648e8e401895", "d602648e8e401895"],
+    "matches_recorded_anchor": true,
+    "verdict": "DEFAULT_BACKGROUND_ONLY"
+  },
+  "status": "ROOT_CAUSED_FIXED"
+}

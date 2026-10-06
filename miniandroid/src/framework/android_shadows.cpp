@@ -289,6 +289,26 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
 
+    // ── F-NEW-252 wave-2 (S102 ServiceLoader decline law) ────────────────
+    // java.util.ServiceLoader is NOT a collection. The generic iterator
+    // law below claims any Iterable-shaped receiver and answers
+    // hasNext()=false for an unregistered state — which silently emptied
+    // ServiceLoader provider discovery (dooz Dispatchers.Main frontier;
+    // synthetic f252_probe SLPOS). The S102 load() marker field `service`
+    // on the receiver identifies a live ServiceLoader: DECLINE it so the
+    // engine's S102 META-INF/services law (dalvik_engine bridge_to_api)
+    // materializes the providers per the OpenJDK LazyIterator contract.
+    // Generic: keyed on the load marker, not on any app class name.
+    if (m == "iterator" || m == "hasNext" || m == "next") {
+        if (heap_) {
+            std::string sld_svc;
+            if (heap_->get_object_string_field(obj_id, "service", sld_svc) &&
+                !sld_svc.empty()) {
+                return CallResult::not_handled();
+            }
+        }
+    }
+
     // S24 probe (env-gated, bounded): the Navigator-attach loop zero-iterates
     // because a Kotlin `toReadOnlyMap(providerMap).values` chain answers
     // empty; this reveals which collection op breaks the chain.
