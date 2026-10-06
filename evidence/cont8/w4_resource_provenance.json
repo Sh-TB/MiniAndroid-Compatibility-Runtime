@@ -1,0 +1,19 @@
+{
+ "artifact": "w4_resource_provenance.json — CONT-8 W4 §14: end-to-end provenance for real app-owned visual assets (APK entry -> resource id/name -> Resources/AssetManager -> decoded Bitmap -> View -> framebuffer)",
+ "head": "50b63bc7",
+ "apk": "upload/canonical_apks/fishrings_v1.23_vc6.apk (eu.veldsoft.fish.rings)",
+ "chain": {
+  "apk_entry": ["res/mipmap-mdpi-v4/red.png (300x300)", "res/mipmap-mdpi-v4/blue.png (300x300)", "res/mipmap-mdpi-v4/green.png (300x300)"],
+  "resource_runtime": "[U007-RES] ResourceRuntime loaded: named_ids=99 types=7; [ARSC-VALUES] raw=5; [A7] application label resolved through ARSC; [U007-INFLATE] setContentView(layoutResId=0x7f020004) -> views inflated",
+  "view": "GameActivity ImageView nodes (Landroid/widget/ImageView; EXP092-RENDER node=75 (184,184) 110x78, node=76 (551,184) 110x78, ...) each bound to a piece drawable",
+  "framebuffer": "run/w4/fishrings2/frames/frame_399.png (sha16 a341e3ad9092f640)"
+ },
+ "color_identity_proof": {
+  "red.png_dominant_rgb": [212, 0, 0],
+  "blue.png_dominant_rgb": [0, 0, 212],
+  "green.png_dominant_rgb": [44, 160, 44],
+  "framebuffer_pixels": {"(212,0,0)": 831, "(0,0,212)": 474, "(44,160,44)": 474},
+  "verdict": "APK-encoded drawable colors appear EXACTLY in the authoritative framebuffer — provenance is pixel-true, not 'a screenshot contains color'"
+ },
+ "note": "A screenshot containing color is NOT the proof; the proof is the decoded-APK-entry dominant color == framebuffer pixel value identity for three independent assets. Contrast: the W4 ladder probe's runtime-created in-memory bitmap (createBitmap + Canvas.drawColor) RECORDED a drawBitmap op but composited 0 pixels — an honest OBSERVED gap recorded in fnew256_w4_ladder.json (not classified as a root per §16)."
+}

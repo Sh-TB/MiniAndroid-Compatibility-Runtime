@@ -1,0 +1,36 @@
+{
+ "artifact": "w4_verification_battery.json — CONT-8 W4 §3/§4/§5/§6: previous-root re-verification at CURRENT HEAD (binary c0fa65ccc7f284e7 unchanged since the W3 re-proof commit; every probe re-RUN live this wave)",
+ "head": "50b63bc7",
+ "runs": {
+  "skill_selftest": {"result": "13/13 PASS", "path": "docs/execution-skill/selftest_report.json"},
+  "fnew253_probe_21": {
+   "result": "21/21 PASS (F253PROBE 21/21)",
+   "rows": "B-01..B-08 Bundle parcel-family content contract (F-NEW-257); S-01..S-07 SaveableStateRegistry accept contract incl. runtime-vs-static type row S-05 and Bundle->BaseBundle generic-superclass row S-07 (F-NEW-253); M-01..M-06 Class.isInstance matrix incl. STRING_REF B-07 (F-NEW-258)",
+   "apk": "tmp/w4_probebuild/fnew253_probe/fnew253_probe.apk"
+  },
+  "cont7w3_probe_12": {"result": "12/12 PASS (W3PROBE 12/12)", "rows": "W3-01..W3-12: parcel family + platform exception chain (CancellationException instanceof Throwable) + ListIterator cursor laws (F-NEW-253/254/255)"},
+  "fnew252_probe_7": {
+   "result": "7/7 PASS (SUMMARY|PASS 7 pass, 0 fail)",
+   "rows": "CAS1/2/3 AtomicIntegerFieldUpdater CAS semantics (F-NEW-251 field-slot identity NOT reopened, VERIFIED_CURRENT); UPD get/set/getAndInc/getAndDec; PNULL explicit-null-beats-initializer (F-NEW-252); SLPOS ServiceLoader provider DISCOVERED + loaded via no-arg ctor; SLNEG no-provider honest false (§6 generic ServiceLoader test)",
+   "note": "first rebuild omitted META-INF/services (aapt2 does not package it) -> SLPOS failed; repackaged with the services entry -> 7/7. Same binary before/after: the root cause was the probe package, not the runtime."
+  }
+ },
+ "fnew251_field_identity": {
+  "status": "VERIFIED_CURRENT",
+  "action": "7/7 CAS/FieldUpdater contract re-run; no regression; NOT reopened (§5 directive)"
+ },
+ "fnew252_null_ref": {"status": "VERIFIED_CURRENT (PNULL row)"},
+ "fnew253_class_isinstance_bundle": {"status": "VERIFIED_CURRENT (21/21 + 12/12)"},
+ "fnew254_platform_exception_chain": {"status": "VERIFIED_CURRENT (W3-06..W3-09)"},
+ "fnew255_list_iterator": {"status": "VERIFIED_CURRENT (W3-10..W3-12)"},
+ "fnew257_bundle_parcel_family": {"status": "VERIFIED_CURRENT (B-01..B-08)"},
+ "fnew258_string_ref_instanceof": {"status": "VERIFIED_CURRENT (B-07 + M-matrix)"},
+ "dispatchers_main_generic_serviceloader": {
+  "status": "MECHANISM VERIFIED_CURRENT — DISPATCHER PATH UNREACHED (PENDING)",
+  "evidence": "SLPOS: META-INF/services entry -> ServiceLoader discovery -> SvcImpl instantiated -> tag()==svcimpl; SLNEG negative; W2 live evidence: dooz carries R8-renamed provider e6->m6 discovered through the real APK-entry reader; no Lv;.o interception exists; no Dooz-specific dispatcher",
+  "honest_gap": "provider-priority/multiple-provider ordering not synthetically probed (single-provider fixture); MainDispatcherLoader selection remains UNREACHED in dooz behind F-NEW-256"
+ },
+ "looper_handler_messagequeue_choreographer": {
+  "status": "VERIFIED_CURRENT on the View path (anchors run through post/invalidate/draw); frame pump = R-NEW-340 PARTIAL-FIX (post-lifecycle 16-tick pump); FishRings virtual-time face classified separately"
+ }
+}

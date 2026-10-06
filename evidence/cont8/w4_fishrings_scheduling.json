@@ -1,0 +1,25 @@
+{
+ "artifact": "w4_fishrings_scheduling.json — CONT-8 W4 §7/§8: FishRings (eu.veldsoft.fish.rings) scheduling classification — directive-required chain launch->timer->delay->virtual time->queue->callback->SplashActivity transition->content Activity->draw",
+ "head": "50b63bc7",
+ "binary_sha16": "c0fa65ccc7f284e7",
+ "apk": "upload/canonical_apks/fishrings_v1.23_vc6.apk",
+ "chain_proof": {
+  "launch": "SplashActivity onCreate/onResume executed ([EXP088-B-DISPATCH])",
+  "timer_creation": "java.util.Timer.<init> + TimerTask.<init> (REC-MISS triage lines; real objects)",
+  "delay_scheduled": "[QUEUE] Runnable id=24 enqueued (delay=5000ms, ready_at=5000ms virtual, queue_depth=1, source=Timer.schedule)",
+  "virtual_time": "default launch window (~2 frames) never reaches 5000ms virtual; with --frames 400 (@+300ms virtual each) the queue dequeues at now=5100ms",
+  "callback": "[QUEUE] Runnable id=24 dequeued (ready_at=5000ms <= now=5100ms virtual)",
+  "splash_transition": "[EXP088-B-DISPATCH] startActivity; [S123-SA] startActivity intent_id=25 component=Leu/veldsoft/fish/rings/GameActivity;",
+  "content_activity": "GameActivity onCreate executed (MediaPlayer.create -> PREPARED players 78/79); GameActivity view tree materializes",
+  "draw": "GameActivity ImageView nodes render: node=75 (184,184) 110x78, node=76 (551,184), node=77 (0,1747) 1080x173 ...; framebuffer 2073360/2073600 non-white"
+ },
+ "content_evidence": {
+  "final_frame_sha16_x3": "a341e3ad9092f640 (runs 1/2/3 byte-identical)",
+  "top_colors": "black game background (0,0,0) + app-owned fish pieces: (212,0,0)x831 red, (212,0,170)x657, (0,0,212)x474 blue, (44,160,44)x474 green, (154,0,0)x390",
+  "frame0_vs_final": "frame_000 = uniform (48,48,48) default background; frame_399 = real game board — the transition is app-owned content, not a placeholder"
+ },
+ "classification": "SCHEDULER-VIRTUAL-TIME FACE (not a rendering face): the splash Timer.schedule(5000ms) callback dispatches correctly once virtual time advances; the default 2-frame launch window simply never reaches the 5-second delay. With time-driven capture (--frames) the FULL chain works and the game renders REAL content. The Canvas/rendering path of this app is HEALTHY.",
+ "3_run": {"runs": 3, "final_frame_sha16": "a341e3ad9092f640 x3", "deterministic": true},
+ "default_launch_verdict": "DEFAULT_BACKGROUND_ONLY + F-NEW-232 deferred-UI pending (queue_size=1) — honest for a 2-frame window",
+ "artifacts": ["evidence/cont8/fishrings_gamecontent_frame399.png", "run/w4/fishrings2/frames/"]
+}
