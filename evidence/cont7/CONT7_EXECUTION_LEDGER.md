@@ -270,3 +270,73 @@ patch (synthetic Canvas-op probe first next wave).
   lost; unaffected surface; restore next wave.
 * Registry: 559 → **562 roots** (F-NEW-253 upgraded to ROOT-CAUSED-FIXED;
   F-NEW-254/255 added ROOT-CAUSED-FIXED; F-NEW-256 added CLASSIFIED).
+
+## 11. WAVE-3 RE-PROOF SESSION (2026-10-06, directive-faithful re-execution)
+
+Trigger: the user re-issued the WAVE 3 directive; audit showed the
+registry referenced evidence/cont7/w3/ artifacts that were NEVER committed
+(c1407326 carried fixtures+scripts only) — the honest response was to
+re-prove the entire F-NEW-253 chain live instead of trusting the claim.
+
+### What was re-proven / discovered
+
+* **F-NEW-253 verified live (VERIFIED_CURRENT)** at final binary
+  c0fa65ccc7f284e7: decisive rows `[CLASS-LAW] isInstance
+  Parcelable/Bundle caller=Le72;.k -> TRUE` (+ honest Serializable->FALSE
+  negative) with the anchor-identical screenshot; saveable IAE 0.
+* **Directive §3 possibility matrix answered**: A/D (Bundle CONTENT
+  fidelity) = real second divergence → **F-NEW-257**; B/C/E classified
+  per-row in fnew253_baseline.json; the ORIGINAL root was C-face
+  (reflection hierarchy metadata) — already fixed, now re-proven.
+* **F-NEW-257 ROOT-CAUSED-FIXED** (Bundle parcel-family content):
+  putParcelable dropped values / getParcelable+get answered null pre-fix
+  (probe 14/20). Generic AOSP reference-storage law in the EXP-093 Bundle
+  block; probe 21/21 post-fix (B-01..B-08 + S-01..S-07 + M-01..M-06).
+* **F-NEW-258 ROOT-CAUSED-FIXED** (STRING_REF instance-of): discovered by
+  probe row B-07 — `raw instanceof String` FALSE while getClass said
+  java.lang.String. One branch in execute_instance_of through the SAME
+  is_subclass_of walk.
+* **F-NEW-253 completeness**: AOSP Bundle→BaseBundle extends edge added
+  to framework_superclass_of (S-07 probed via getGenericSuperclass —
+  forName cannot name shadow classes, recorded honestly).
+* **Dooz final**: ×3 clean runs, 0 uncaught, 0 APP BOUNDARY, stub census
+  33460/280/0/0, screenshots byte-identical d602648e8e401895 (= anchor);
+  verdict honestly DEFAULT_BACKGROUND_ONLY — **F-NEW-256 re-verified live
+  as the ONE next root** (app_draw_ops=0, first_missing_stage=APP_DRAW_OPS
+  in every run); NOT fixed per §15 scope discipline.
+* **Fan-out (§14)**: gmdice (real, parcel-family in DEX) REAL_APP_CONTENT
+  6 ops / 741,084 px / 0 errors; chess runs the same isInstance law at
+  runtime (lawful rows, 0 errors).
+
+### Regression battery at final binary
+
+122/122 battery ALL PASS · gate A 97/0/2 (deterministic libprobe.so
+d5ec1f57fef3d271 rebuilt; asset-compression metadata preserved) ·
+negatives 19/19 · reinstall 8/8 · skill 13/13 · anchors 5/5×3
+byte-identical · probes 21/21 + 12/12 + 7/7.
+
+### Environment restorations this session
+
+Toolchain symlinks (default TOOLS path), DroidSansMono.ttf (mg-087
+14/14), EXT-01 external fixture refetched (SHA exact match to frozen doc
+009b4671...), gate_a_probe.apk rebuilt with lib/x86_64/libprobe.so,
+harness stderr-redirect ordering fixed for traced runs.
+
+### Artifacts
+
+evidence/cont7/{fnew253_baseline, fnew253_bundle_probe,
+fnew253_class_probe, fnew253_saveable_probe, fnew253_final}.json
+(+ fnew253_bundle_probe_prefix_run_view_tree.json pre-fix capture).
+
+Registry: 562 → **564 roots** (F-NEW-253 evidence repaired + verified;
+F-NEW-257/258 added ROOT-CAUSED-FIXED; F-NEW-256 re-verified CLASSIFIED).
+
+### Honest limitations
+
+* Dooz content frontier = F-NEW-256 (CLASSIFIED; Canvas-op synthetic
+  probe first next wave).
+* Runtime parcel-path exercise for gmdice needs a lifecycle-save trigger
+  (no rotation/background flag in the harness CLI — harness gap recorded).
+* Class.forName cannot name shadow framework classes (S-07 probed via
+  getGenericSuperclass instead) — separate unrequired surface, recorded.
+* CONT-6 Phases 1/2/3 archive re-supply still owed (unchanged).

@@ -1,0 +1,30 @@
+{
+  "artifact": "fnew253_baseline.json — CONT-7 WAVE 3 §3/§7 baseline + first-divergence reconciliation (directive-faithful re-execution)",
+  "written_at": "2026-10-06",
+  "base_head": "c1407326 (wave-3 commit; session start HEAD de6ede5c = c1407326 + issue377 html)",
+  "final_binary_sha16": "c0fa65ccc7f284e7",
+  "state_at_wave_start": {
+    "F-NEW-251": "ROOT_CAUSED_FIXED",
+    "F-NEW-252": "ROOT_CAUSED_FIXED",
+    "F-NEW-253": "ROOT_CAUSED_FIXED (per registry) — but evidence/cont7/w3/ referenced by the registry DID NOT EXIST in the container; commit c1407326 carried fixtures+scripts only. Honest action: re-prove the whole chain with fresh runs instead of trusting the claim.",
+    "F-NEW-254": "ROOT_CAUSED_FIXED",
+    "F-NEW-255": "ROOT_CAUSED_FIXED",
+    "F-NEW-256": "CLASSIFIED (dooz draw-ops frontier)",
+    "dooz": "install OK / launch RESUMED / composition clean / verdict DEFAULT_BACKGROUND_ONLY (recorded)"
+  },
+  "directive_section_3_possibility_classification": {
+    "A_bundle_content_fidelity": "REAL SECOND DIVERGENCE — PROVEN this session by the directive-required §4 probe: at start-HEAD the engine's Bundle block implemented only putString/putInt/putBoolean/putLong/getString/getInt/getBoolean/containsKey; putParcelable stored NOTHING (containsKey=false after put) and getParcelable/get(String) answered null. NOT the F-NEW-253 root (dooz composition never reaches putParcelable before canBeSaved) — registered as F-NEW-257 and fixed generically this session.",
+    "B_parcelable_identity": "NOT the root — Parcelable recognition now correct via F-NEW-253 law (parcel family in framework_class_interfaces + closure fallback); proven by W3-01..03 + M-02 + B-04 rows.",
+    "C_class_isInstance_semantics": "ORIGINAL ROOT (already fixed at start-HEAD, re-verified LIVE this session): the canBeSaved walk is REFLECTION (Class.isInstance over the R8-trimmed 7-class array), not instance-of bytecode; the F-103 assignable walk had no boot-classpath metadata for engine-shadowed Landroid/os/Bundle;. LIVE ROW on final binary: [CLASS-LAW] isInstance a0=Ljava/io/Serializable; a1=Landroid/os/Bundle; caller=Le72;.k -> FALSE (honest AOSP negative: Bundle is not Serializable); [CLASS-LAW] isInstance a0=Landroid/os/Parcelable; a1=Landroid/os/Bundle; caller=Le72;.k -> TRUE (decisive).",
+    "D_bundle_getter_semantics": "REAL SECOND DIVERGENCE — same probe face as A; getParcelable returned null for stored values; fixed with F-NEW-257 (same law family as A, one generic point).",
+    "E_saveablestate_registry_semantics": "NOT the root — the registry decision shape itself (walk acceptable array with isInstance) is correct once the hierarchy law answers truthfully; proven by S-01..S-07 rows including boundary rows.",
+    "F_upstream_compose_expectation": "NOT the root — no additional Compose prerequisite divergence on the canBeSaved path; composition proceeds past rememberSaveable with 0 APP BOUNDARY exceptions at final binary."
+  },
+  "directive_section_7_bundle_fidelity_trace_dooz": {
+    "question": "Is the value already wrong when entering canBeSaved, or does MiniAndroid corrupt the decision inside canBeSaved?",
+    "answer": "At BASE the Bundle entered canBeSaved with the CORRECT runtime type (Landroid/os/Bundle;) — the DECISION inside canBeSaved was corrupted by missing platform-hierarchy metadata (possibility C/E face), NOT by wrong value (A/D). At PATCH the walk answers TRUE and dooz's own navigation-state Bundles store/retrieve lawfully at runtime: [EXP093-BUNDLE] class=Landroid/os/Bundle; bundle_id=5045 key=\"nav-entry-state:id\" has_obj=1 (+ destination-id; bundle_id=5065 same shape) — Bundle content storage LIVE in dooz's own state path.",
+    "saveable_iae_count_at_final_binary": 0,
+    "saveable_iae_count_at_recorded_base": 1
+  },
+  "evidence_provenance_note": "Recorded BASE (pre-c1407326) runtime rows are cited from the F-NEW-253 registry entry + dooz_wave2_final.json (binary 5006834b2d2ae63b era: IAE at Lxe1;.a pc=85/88 via Lpm;.A, chain Ldf1;.d -> Lm4; -> Le72;.k, Parcelable.isInstance(Bundle) FALSE pre-fix). The BASE binary no longer exists in this container (environment reset); the BASE->PATCH delta is anchored by the recorded anchor SHA d602648e8e401895 which is byte-identical across BASE, start-HEAD and final-binary runs — zero visual drift at every step of this wave."
+}

@@ -6986,3 +6986,27 @@ Stage Summary:
 - Three new generic runtime roots closed (platform-class hierarchy via reflection arm AND extends arm; ListIterator shadow law) — dooz composition is clean for the first time with zero uncaught exceptions and zero visual drift on every anchor.
 - Issue #377: read fully; runtime-verifiable duties done (six-game claim CONFIRMED 6/6; required final table with reasoned recommendation); archive-derived duties honestly blocked on re-supply.
 - Next wave owns: F-NEW-256 (dooz/Compose draw-ops frontier — Canvas-op probe first), archive re-supply + Phases 1-3, second-APK live fan-out, gate-A multiapp corpus restoration.
+
+---
+Task ID: CONT-7-WAVE-3-REPROOF
+Agent: Super Z (main)
+Task: WAVE 3 directive re-issued — re-prove F-NEW-253 end-to-end honestly (registry referenced w3/ evidence that was never committed), execute the directive's §4-§19 contracts fresh, fix what the required probes expose, keep Dooz honest.
+
+Work Log:
+- Reconciled HEAD: c1407326 (wave-3 commit) + de6ede5c (issue377 html). Audit found registry evidence/cont7/w3/ ABSENT (never committed) — chose re-proof over trust.
+- Rebuilt engine from source (post-reset; -j2 OOMs, single-thread OK).
+- §2 SOURCE-FIRST audit: both F-NEW-253 fix points verified in source (parcel family in framework_class_interfaces + dalvik_class_assignable closure fallback); instance-of path already composes framework_implements. Gap noted: documented "Bundle extends BaseBundle" edge missing.
+- Built directive-faithful probe fixtures/fnew253_probe (real aapt2/ECJ/D8): §4 Bundle contract rows B-01..B-08, §5 SaveableStateRegistry rows S-01..S-07, §6 isInstance matrix M-01..M-06.
+- PRE-FIX probe at start-HEAD: 14/20 — all §4 identity rows FAILED: putParcelable drops values, getParcelable/get null (§3 possibility A/D PROVEN real and separate from the fixed reflection root).
+- F-NEW-257 generic fix: AOSP BaseBundle reference-storage law in the EXP-093 Bundle block (putParcelable/putSerializable store, getParcelable/getSerializable/get return same reference, typed-getter CCE-inside-getter law, get(key,def)). Probe → 20/20.
+- F-NEW-258 generic fix (discovered by B-07): execute_instance_of fell through STRING_REF registers — `x instanceof String` FALSE for string values. One STRING_REF branch through the same is_subclass_of walk. Probe → B-07 PASS.
+- F-NEW-253 completeness: Bundle→BaseBundle framework_superclass_of edge; S-07 probes it via getGenericSuperclass (F-NEW-224 surface; forName can't name shadow classes — recorded). Probe v1.1 → 21/21.
+- Live dooz decisive rows at final binary: Serializable.isInstance(Bundle)->FALSE (honest), Parcelable.isInstance(Bundle)->TRUE at caller=Le72;.k; saveable IAE 0; EXP093-BUNDLE rows show dooz's own nav-state Bundles storing lawfully (bundle_id 5045/5065).
+- Dooz final ×3: 0 uncaught, 0 APP BOUNDARY, stubs 33460/280/0/0, screenshots d602648e8e401895 ×3 (= anchor, zero visual drift); verdict honestly DEFAULT_BACKGROUND_ONLY; F-NEW-256 re-verified live as the ONE next root (app_draw_ops=0 every run) — NOT fixed per §15.
+- §14 fan-out: gmdice REAL_APP_CONTENT (6 ops/741,084 px/0 errors; parcel calls unreachable at first launch — harness lacks lifecycle-save trigger, recorded); chess exercises the isInstance law at runtime (lawful rows, 0 errors).
+- Full battery at final binary c0fa65ccc7f284e7 after environment restoration: toolchain symlinks (TOOLS default path), DroidSansMono.ttf (mg-087 → 14/14), EXT-01 fixture refetch (SHA exact match to frozen doc), gate_a_probe.apk rebuilt + lib/x86_64/libprobe.so (gcc sha d5ec1f57fef3d271 reproduced; asset compression preserved after an intermediate repack broke FD-01..03 — root-caused and fixed by preserving aapt2 entry metadata): battery 122/122, gate A 97/0/2, negatives 19/19, reinstall 8/8, skill 13/13, anchors 5/5×3 byte-identical (recorded SHAs), probes 21/21 + 12/12 + 7/7.
+- Artifacts: evidence/cont7/{fnew253_baseline,fnew253_bundle_probe,fnew253_class_probe,fnew253_saveable_probe,fnew253_final}.json (+prefix view tree capture); ledger §11; registry 562→564 (F-NEW-257/258 ROOT-CAUSED-FIXED; F-NEW-253 evidence repaired + verified_current; F-NEW-256 re-verified).
+
+Stage Summary:
+- The wave's required synthetic contracts now exist, pass, and are committed as evidence; F-NEW-253 is re-proven live end-to-end with the decisive trace rows and the evidence-pointer gap repaired. Two NEW generic roots (F-NEW-257 Bundle parcel-family content, F-NEW-258 STRING_REF instance-of) were closed by the directive's own probe discipline — no app-specific or R8-specific code anywhere.
+- Dooz: composition fully clean (0 uncaught across the whole run), but the FINAL SUCCESS CONDITION (real app-owned UI) is honestly NOT reached: F-NEW-256 (zero canvas content ops) stands re-verified as the single next root. Next wave: Canvas-op synthetic probe → LayoutNode/layer draw recursion (candidates: root children materialization / Canvas-bridge draw-op family / LayerBuilder software routing).

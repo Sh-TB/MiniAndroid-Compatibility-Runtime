@@ -1,0 +1,34 @@
+{
+  "artifact": "fnew253_class_probe.json — directive §6 CLASS.ISINSTANCE DIRECT MATRIX (verify, do not assume)",
+  "invariant": "Class.isInstance(x) follows RUNTIME-TYPE ASSIGNABILITY — never descriptor-name coincidence, never bare-name matching. No special handling for Dooz or Compose classes exists anywhere in the fix (grep-able: no 'dooz', no 'Lxe1;', no 'Lv;' conditions).",
+  "rows_prefix_M": {
+    "M-01": {"row": "Object.isInstance(plainObject)", "expected": "true", "actual": "true", "verdict": "PASS"},
+    "M-02": {"row": "Parcelable.isInstance(PointParcelable) — app-implemented Parcelable", "expected": "true", "actual": "true", "verdict": "PASS", "runtime": "com.probe.fnew253.MainActivity$PointParcelable"},
+    "M-03": {"row": "Parent.isInstance(Child)", "expected": "true", "actual": "true", "verdict": "PASS"},
+    "M-04": {"row": "Child.isInstance(Parent)", "expected": "false", "actual": "false", "verdict": "PASS"},
+    "M-05": {"row": "Unrelated.isInstance(Object)", "expected": "false", "actual": "false", "verdict": "PASS"},
+    "M-06": {"row": "Parcelable.isInstance(null)", "expected": "false (OpenJDK)", "actual": "false", "verdict": "PASS"}
+  },
+  "matrix_verdict": "6/6 PASS at start-HEAD AND at final binary c0fa65ccc7f284e7 (no regression from the two new generic laws added this session)",
+  "live_dooz_rows_same_law": {
+    "decisive_canBeSaved_walk": [
+      "[CLASS-LAW] isInstance argc=2 a0:t6(Ljava/io/Serializable;) a1:t7(Landroid/os/Bundle;) caller=Le72;.k -> FALSE",
+      "[CLASS-LAW-ANS] isInstance token=Landroid/os/Parcelable; -> TRUE"
+    ],
+    "meaning": "The R8-trimmed acceptable-classes walk (dooz v23) consults Serializable first (honest AOSP FALSE for Bundle), then Parcelable (TRUE — the decisive row). Captured on the FINAL binary with screenshot byte-identical to the anchor."
+  },
+  "independent_apk_reflection_rows": {
+    "apk": "jwtc.android.chess (chess_jwtc_298.apk sha20 3245b9ec35f6c1df771c)",
+    "rows": [
+      "[CLASS-LAW] isInstance token=Landroidx/fragment/app/x; -> FALSE",
+      "[CLASS-LAW] isInstance token=Landroidx/lifecycle/i0; -> FALSE"
+    ],
+    "meaning": "emoji2's initializer walks Class.isInstance over Fragment/LifecycleOwner tokens at runtime — the SAME reflection-law surface as F-NEW-253 — and the answers are lawful honest negatives; run completes with Errors: 0. Proves the law is generic, not Dooz-specific."
+  },
+  "new_generic_law_added_this_session": {
+    "id": "F-NEW-258",
+    "title": "instance-of bytecode on a STRING_REF register answered FALSE",
+    "proof": "Probe row B-07 pre-fix detail: raw=java.lang.String (getClass answers) while raw instanceof String == false — the two type paths disagreed on the same value. execute_instance_of handled CLASS_REF/OBJECT_REF but fell through for STRING_REF registers. Fix: one branch classifying STRING_REF values as Ljava/lang/String; through the SAME is_subclass_of walk (composes framework closure: CharSequence/Serializable/Comparable).",
+    "matrix_impact": "M-01..M-06 unchanged and green post-fix"
+  }
+}
