@@ -119,6 +119,39 @@ framework_direct_superclass() {
         {"Ljava/lang/NoSuchElementException;",
          "Ljava/lang/RuntimeException;"},
         {"Ljava/lang/Throwable;", "Ljava/lang/Object;"},
+        // ── F-NEW-254 (CONT-7 W3): LIBCORE EXCEPTION CHAIN — JDK/libcore
+        // source law. The saveable fix exposed the extends-arm of the same
+        // platform-metadata gap: dooz's CancellationException carrier
+        // (R8 Lij0; extends java.util.concurrent.CancellationException)
+        // failed `instance-of Throwable` because the DEX walk ends at the
+        // platform boundary (CancellationException has no class_def in the
+        // APK) and NO framework extends edge existed for it. JDK truth:
+        // CancellationException extends IllegalStateException; the rest of
+        // the family below is the standard libcore chain apps hit daily.
+        {"Ljava/util/concurrent/CancellationException;",
+         "Ljava/lang/IllegalStateException;"},
+        {"Ljava/io/IOException;", "Ljava/lang/Exception;"},
+        {"Ljava/util/concurrent/ExecutionException;",
+         "Ljava/lang/Exception;"},
+        {"Ljava/util/concurrent/TimeoutException;", "Ljava/lang/Exception;"},
+        {"Ljava/util/concurrent/RejectedExecutionException;",
+         "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/ClassCastException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/ArithmeticException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/NumberFormatException;",
+         "Ljava/lang/IllegalArgumentException;"},
+        {"Ljava/lang/InterruptedException;", "Ljava/lang/Exception;"},
+        {"Ljava/lang/CloneNotSupportedException;", "Ljava/lang/Exception;"},
+        {"Ljava/lang/ReflectiveOperationException;",
+         "Ljava/lang/Exception;"},
+        {"Ljava/lang/ClassNotFoundException;",
+         "Ljava/lang/ReflectiveOperationException;"},
+        {"Ljava/lang/ArrayIndexOutOfBoundsException;",
+         "Ljava/lang/IndexOutOfBoundsException;"},
+        {"Ljava/lang/StringIndexOutOfBoundsException;",
+         "Ljava/lang/IndexOutOfBoundsException;"},
+        {"Ljava/lang/NegativeArraySizeException;",
+         "Ljava/lang/RuntimeException;"},
         // F-NEW-226 companion: TextPaint IS-A Paint (AOSP android.text).
         {"Landroid/text/TextPaint;", "Landroid/graphics/Paint;"},
     };
@@ -288,6 +321,28 @@ framework_class_interfaces() {
         {"Ljava/util/concurrent/Executors$DelegatedExecutorService;",
          {"Ljava/util/concurrent/Executor;",
           "Ljava/util/concurrent/ExecutorService;"}},
+        // ── F-NEW-253 (CONT-7 W3): ANDROID PARCEL FAMILY — AOSP
+        // android.os / android.util source law (Bundle.java, Size.java,
+        // SizeF.java, Binder.java, Intent.java, ParcelUuid.java,
+        // SparseArray.java). Live face (dooz v23): the saveable platform
+        // check walks `Parcelable.isInstance(value)` (Class.isInstance,
+        // NOT instance-of bytecode) over an engine-shadowed Bundle →
+        // the walk found NO Parcelable edge for Landroid/os/Bundle; →
+        // canBeSaved=false → DisposableSaveableStateRegistry.registerValue
+        // IAE "…cannot be saved using the current SaveableStateRegistry…"
+        // — rememberSaveable died in composition, app draw never ran.
+        // AOSP truth: Bundle extends BaseBundle implements Parcelable,
+        // Cloneable; Size/SizeF/Intent/ParcelUuid implement Parcelable;
+        // Binder implements IBinder; SparseArray implements Cloneable.
+        {"Landroid/os/Bundle;",
+         {"Landroid/os/Parcelable;", "Ljava/lang/Cloneable;"}},
+        {"Landroid/content/Intent;",
+         {"Landroid/os/Parcelable;", "Ljava/lang/Cloneable;"}},
+        {"Landroid/os/ParcelUuid;", {"Landroid/os/Parcelable;"}},
+        {"Landroid/util/Size;", {"Landroid/os/Parcelable;"}},
+        {"Landroid/util/SizeF;", {"Landroid/os/Parcelable;"}},
+        {"Landroid/os/Binder;", {"Landroid/os/IBinder;"}},
+        {"Landroid/util/SparseArray;", {"Ljava/lang/Cloneable;"}},
     };
     return kTable;
 }
@@ -322,6 +377,9 @@ framework_iface_supers() {
         {"Ljava/lang/Comparable;", {}},
         {"Ljava/lang/Runnable;", {}},
         {"Ljava/util/Comparator;", {}},
+        // F-NEW-253: android parcel markers (membership-only interfaces)
+        {"Landroid/os/Parcelable;", {}},
+        {"Landroid/os/IBinder;", {}},
     };
     return kTable;
 }
