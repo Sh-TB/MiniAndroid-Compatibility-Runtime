@@ -16644,8 +16644,29 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
                             oc.c_str(), dex_report_->classes.size());
             }
         }
-    }
 
+    }
+    // CONT-10 W6 (F-NEW-259 forensics): env-gated bounded trace of the
+    // AUTHORITATIVE instanceof result for OBJECT_REF checks — generic
+    // (no class gating): answers "which check dropped this element"
+    // without per-app knowledge. Cap 1024 lines.
+    if (std::getenv("MINIANDROID_F259_TRACE")) {
+        static thread_local uint64_t f259_ins = 0;
+        bool f259_dex_target =
+            target_type.size() > 1 && target_type[0] == 'L' &&
+            target_type.rfind("Ljava/", 0) != 0 &&
+            target_type.rfind("Landroid/", 0) != 0;
+        if (f259_dex_target && f259_ins++ < 1024) {
+            std::string f259_oc = src_val.type == DalvikType::OBJECT_REF
+                                      ? src_val.class_desc
+                                      : std::string("-");
+            std::cerr << "[F259-INS] " << current_class_ << "."
+                      << current_method_ << " target=" << target_type
+                      << " obj=o" << src_val.object_id << " " << f259_oc
+                      << " -> " << (is_instance ? "TRUE" : "FALSE")
+                      << std::endl;
+        }
+    }
     set_register(dest, DalvikValue::make_bool(is_instance));
 
     // EXP-092+ PHASE 1: Trace instance-of in fillNextCodeParams AND lambda$onNextPressed$22
@@ -35856,7 +35877,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // try_recursive_invoke against DEX-defined receivers; F-036 backing store
     // fast path for shadow ArrayLists). No field-layout guessing.
     // ────────────────────────────────────────────────────────────────────
-    if (method == "<init>" &&
+    if ((method == "<init>" || method == "addAll") &&
         (class_name == "Ljava/util/ArrayList;" ||
          class_name.find("ArrayList") != std::string::npos ||
          class_name == "Ljava/util/LinkedList;") &&
@@ -35905,6 +35926,103 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         //      assumed dense — Arrays.asList-like wrappers only).
         uint32_t f101_read_obj = f101_src;
         int32_t f101_copied = 0;
+        // ── F-NEW-259b (CONT-10 W6): addAll(Collection) APPEND LAW ──────
+        // OpenJDK ArrayList.addAll(c) appends c's elements after the
+        // receiver's CURRENT logical end (elementData size). The R-NEW-360
+        // cascade previously served only <init>(Collection); addAll calls
+        // fell through to the silent-default dispatch — the append was a
+        // NO-OP and every `entries += collection.filter{...}` chain lost
+        // its elements (dooz23 NavController.populateVisibleEntries: the
+        // start-destination entry never reached `entries`, the
+        // _visibleEntries StateFlow replayed empty forever, the NavHost
+        // gate `visibleEntries.lastOrNull() != null` never opened, the
+        // destination content never composed → 1-node tree → 0 draw ops).
+        // The append base is the receiver's authoritative current count:
+        // the F-036 backing store when present, else the registry-side
+        // CollectionState (the store shadow-side add() owns), else 0.
+        int32_t f101_append_base = 0;
+        if (method == "addAll") {
+            auto f101_rlen =
+                heap_.get_object_field(f101_arr, "__array_length__");
+            if (f101_rlen.has_value() && f101_rlen->type == DalvikType::INT32)
+                f101_append_base = f101_rlen->int_val;
+            else if (shadow_registry_ != nullptr) {
+                auto* f101_csh0 =
+                    shadow_registry_->find_as<framework::CollectionShadow>();
+                if (f101_csh0) {
+                    auto* f101_st0 = f101_csh0->get_or_create(
+                        f101_arr, /*is_map=*/false);
+                    if (f101_st0)
+                        f101_append_base =
+                            static_cast<int32_t>(f101_st0->elements.size());
+                }
+            }
+            // ── F-NEW-259b SHADOW→SHADOW APPEND FAST PATH ────────────────
+            // When both the receiver and the source keep their elements in
+            // the registry-side CollectionState (engine-minted ArrayLists
+            // grown via shadow add()), the append must be KIND-FAITHFUL:
+            // the heap round-trip drops STRING/INT element kinds (the
+            // step-0 object-id store records 0 for them — the R-NEW-464
+            // string law). Append the source's four parallel vectors
+            // index-aligned, then mirror the new logical size into the
+            // F-036 __array_length__ so the heap-side readers agree.
+            if (shadow_registry_ != nullptr) {
+                auto* f101_csh_d =
+                    shadow_registry_->find_as<framework::CollectionShadow>();
+                auto* f101_dst =
+                    f101_csh_d ? f101_csh_d->get_or_create(
+                                     f101_arr, /*is_map=*/false)
+                               : nullptr;
+                auto* f101_csh_s =
+                    f101_csh_d ? f101_csh_d->get_or_create(
+                                     f101_src, /*is_map=*/false)
+                               : nullptr;
+                auto* f101_sst2 =
+                    f101_csh_d ? f101_csh_d->get_or_create(
+                                     f101_src, /*is_map=*/false)
+                               : nullptr;
+                (void)f101_csh_s;
+                if (f101_dst && f101_sst2 &&
+                    !f101_sst2->elements.empty()) {
+                    size_t f101_sn = f101_sst2->elements.size();
+                    for (size_t f101_i = 0; f101_i < f101_sn; ++f101_i) {
+                        f101_dst->elements.push_back(
+                            f101_sst2->elements[f101_i]);
+                        uint8_t k = f101_i < f101_sst2->elem_kinds.size()
+                                        ? f101_sst2->elem_kinds[f101_i]
+                                        : 0;
+                        f101_dst->elem_kinds.push_back(k);
+                        f101_dst->elem_strings.push_back(
+                            f101_i < f101_sst2->elem_strings.size()
+                                ? f101_sst2->elem_strings[f101_i]
+                                : std::string());
+                        f101_dst->elem_ints.push_back(
+                            f101_i < f101_sst2->elem_ints.size()
+                                ? f101_sst2->elem_ints[f101_i]
+                                : 0);
+                        // Mirror the element into the heap store at the
+                        // append slot so heap-side readers stay coherent.
+                        if (k == 1 && f101_sst2->elements[f101_i] != 0)
+                            heap_.set_object_field(
+                                f101_arr,
+                                "array[" +
+                                    std::to_string(f101_append_base +
+                                                   (int32_t)f101_i) +
+                                    "]",
+                                DalvikValue::make_object(
+                                    f101_sst2->elements[f101_i],
+                                    "Ljava/lang/Object;"));
+                    }
+                    heap_.set_object_field(
+                        f101_arr, "__array_length__",
+                        DalvikValue::make_int(
+                            static_cast<int32_t>(f101_dst->elements.size())));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(f101_sn > 0);
+                    return true;
+                }
+            }
+        }
         std::vector<uint32_t> f101_elem_ids;  // object-id elements for the
                                               // REGISTRY-side store (the
                                               // CollectionShadow keeps its
@@ -35939,9 +36057,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     f101_copied = f101_n;
                     for (size_t f101_i = 0; f101_i < f101_elem_ids.size();
                          ++f101_i) {
+                        // F-NEW-259b: addAll appends — the heap-store write
+                        // must honor the append base (never clobber the
+                        // receiver's pre-existing slots).
                         heap_.set_object_field(
                             f101_arr,
-                            "array[" + std::to_string(f101_i) + "]",
+                            "array[" +
+                                std::to_string(f101_append_base + f101_i) +
+                                "]",
                             DalvikValue::make_object(
                                 f101_elem_ids[f101_i],
                                 "Ljava/lang/Object;"));
@@ -35988,7 +36111,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (f101_got && !f101_elem.is_null) {
                     heap_.set_object_field(
                         f101_arr,
-                        "array[" + std::to_string(f101_copied) + "]",
+                        "array[" + std::to_string(f101_append_base +
+                                                  f101_copied) + "]",
                         f101_elem);
                     if (f101_elem.type == DalvikType::OBJECT_REF &&
                         f101_elem.object_id != 0)
@@ -36162,7 +36286,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         heap_.set_object_field(f101_arr, "__array_length__",
-                               DalvikValue::make_int(f101_copied));
+                               DalvikValue::make_int(f101_append_base +
+                                                     f101_copied));
         {
             static thread_local uint64_t f235_cp = 0;
             static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
@@ -36203,16 +36328,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 auto* f101_st = f101_csh->get_or_create(f101_arr,
                                                         /*is_map=*/false);
                 if (f101_st) {
-                    f101_st->elements.clear();
-                    f101_st->elem_kinds.clear();
-                    f101_st->elem_strings.clear();
-                    f101_st->elem_ints.clear();
+                    // F-NEW-259b: addAll APPENDS — the pre-existing shadow
+                    // elements (added via shadow-side add()) stay; <init>
+                    // keeps the rebuild-from-scratch semantics.
+                    if (method != "addAll") {
+                        f101_st->elements.clear();
+                        f101_st->elem_kinds.clear();
+                        f101_st->elem_strings.clear();
+                        f101_st->elem_ints.clear();
+                    }
                     f101_st->is_map = false;
                     for (int32_t f101_i = 0; f101_i < f101_copied;
                          ++f101_i) {
                         auto f101_ev = heap_.get_object_field(
                             f101_arr,
-                            "array[" + std::to_string(f101_i) + "]");
+                            "array[" + std::to_string(f101_append_base +
+                                                      f101_i) + "]");
                         if (!f101_ev.has_value()) {
                             f101_st->elements.push_back(0);
                             f101_st->elem_kinds.push_back(0);
@@ -36264,7 +36395,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_void();
+        // OpenJDK addAll returns true when the collection changed (the
+        // empty-source no-op returns false). The cascade reports the copy
+        // count — answer the contract faithfully.
+        result = method == "addAll"
+                     ? DalvikValue::make_bool(f101_copied > 0)
+                     : DalvikValue::make_void();
         return true;
     }
     if ((class_name == "Ljava/util/ArrayList;" ||
@@ -36433,7 +36569,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         bool f91_dex_defined =
             f91_recv != nullptr && !f91_cls.empty() && f91_cls[0] == 'L' &&
             class_info_index_.find(f91_cls) != class_info_index_.end();
+        static thread_local const bool f259_iter_trace =
+            std::getenv("MINIANDROID_F259_TRACE") != nullptr;
         if (f91_dex_defined) {
+            if (f259_iter_trace) {
+                static thread_local uint64_t f259_e = 0;
+                if (f259_e < 64)
+                    ++f259_e;
+                std::cerr << "[F259-ITER] entry method=" << method
+                          << " recv=o" << f91_id << f91_cls
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
             if (method == "iterator" || method == "listIterator") {
                 int32_t f91_start = 0;
                 if (method == "listIterator" && args.size() >= 2 &&
@@ -36455,6 +36602,61 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto f91_pf = heap_.get_object_field(f91_id, "__iterator_pos__");
             if (f91_pf.has_value() && f91_pf->type == DalvikType::INT32)
                 f91_pos = f91_pf->int_val;
+            // ── F-NEW-259 (CONT-10 W6): R8-RENAME-SAFE SLOT RESOLUTION ────
+            // Upstream law (JDK AbstractList.iterator contract): the iterator
+            // protocol reads the receiver's OWN size()/get(I). R8 renames the
+            // Kotlin collection overrides (kotlin.collections.ArrayDeque.size
+            // → a()I, get → b(I) — dooz v23 backQueue Lcx0;.f:Lad;), so the
+            // NAME lookup below silently misses and the legacy fallback
+            // answered a zero-element iteration. The stable identity of the
+            // override is the DESCRIPTOR SLOT in the receiver's DEX chain:
+            // the closest concrete declared method with exactly the shadow
+            // slot's signature (size()I / get(I)Object). Bounded walk, DEX
+            // classes only, abstract/static skipped. No field-layout
+            // guessing; the returned method is EXECUTED by the interpreter
+            // (try_recursive_invoke), never emulated.
+            auto f91_slot_override = [&](const std::string& recv_cls,
+                                         const std::string& want_desc)
+                -> std::pair<std::string, std::string> {
+                std::string walk = recv_cls;
+                for (int hop = 0; hop < 16 && !walk.empty(); ++hop) {
+                    auto cit = class_info_index_.find(walk);
+                    if (cit == class_info_index_.end()) break;
+                    const auto& ci = dex_report_->classes[cit->second];
+                    for (const auto& m : ci.virtual_methods) {
+                        if (m.is_abstract || m.is_static || m.is_constructor)
+                            continue;
+                        if (m.descriptor == want_desc) return {walk, m.name};
+                    }
+                    auto sit = class_to_superclass_.find(walk);
+                    if (sit == class_to_superclass_.end()) break;
+                    walk = sit->second;
+                    if (walk.rfind("Ljava/", 0) == 0) break;  // shadow root
+                }
+                return {"", ""};
+            };
+            auto f259_slot_invoke = [&](const std::string& want_desc,
+                                        std::vector<DalvikValue> cb_args,
+                                        DalvikValue& cb_ret) -> bool {
+                auto slot = f91_slot_override(f91_cls, want_desc);
+                if (slot.first.empty()) return false;
+                DalvikExecutionResult cb_res;
+                bool ok = try_recursive_invoke(slot.first, slot.second,
+                                               cb_args, cb_ret, cb_res,
+                                               want_desc);
+                if (f259_iter_trace) {
+                    static thread_local uint64_t f259_n = 0;
+                    if (f259_n < 64)
+                        ++f259_n;
+                    std::cerr << "[F259-ITER] slot \"" << want_desc
+                              << "\" recv=o" << args[0].object_id << f91_cls
+                              << " -> " << slot.first << "." << slot.second
+                              << (ok ? " (invoked)" : " (invoke FAILED)")
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+                return ok;
+            };
             int32_t f91_size = -1;
             {
                 std::vector<DalvikValue> cb_args{args[0]};
@@ -36464,6 +36666,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                          cb_res, "()I") &&
                     cb_ret.type == DalvikType::INT32) {
                     f91_size = cb_ret.int_val;
+                }
+                if (f91_size < 0) {
+                    // F-NEW-259: name miss → slot override (R8-renamed size).
+                    cb_ret = DalvikValue::make_null();
+                    if (f259_slot_invoke("()I", cb_args, cb_ret) &&
+                        cb_ret.type == DalvikType::INT32) {
+                        f91_size = cb_ret.int_val;
+                    }
                 }
             }
             if (f91_size >= 0) {
@@ -36501,9 +36711,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::vector<DalvikValue> cb_args{args[0], f91_idx};
                     DalvikValue cb_ret;
                     DalvikExecutionResult cb_res;
-                    if (try_recursive_invoke(f91_cls, "get", cb_args, cb_ret,
-                                             cb_res,
-                                             "(I)Ljava/lang/Object;")) {
+                    bool f91_got = try_recursive_invoke(
+                        f91_cls, "get", cb_args, cb_ret, cb_res,
+                        "(I)Ljava/lang/Object;");
+                    if (!f91_got) {
+                        // F-NEW-259: R8-renamed get → slot override.
+                        cb_ret = DalvikValue::make_null();
+                        f91_got = f259_slot_invoke("(I)Ljava/lang/Object;",
+                                                   cb_args, cb_ret);
+                    }
+                    if (f91_got) {
                         heap_.set_object_field(
                             f91_id, "__iterator_pos__",
                             DalvikValue::make_int(
@@ -50075,6 +50292,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 int32_t a = self_ord.has_value() ? self_ord->int_val : 0;
                 int32_t b = other_ord.has_value() ? other_ord->int_val : 0;
                 result = DalvikValue::make_int(a - b);
+                if (std::getenv("MINIANDROID_F259_TRACE")) {
+                    static thread_local uint64_t f259_cmp = 0;
+                    if (f259_cmp++ < 1024) {
+                        auto self_nm = heap_.get_object_field(args[0].object_id, "enum_name");
+                        auto other_nm = heap_.get_object_field(args[1].object_id, "enum_name");
+                        std::string sn = (self_nm.has_value() && self_nm->type == DalvikType::STRING_REF) ? self_nm->string_val : "?";
+                        std::string on = (other_nm.has_value() && other_nm->type == DalvikType::STRING_REF) ? other_nm->string_val : "?";
+                        std::cerr << "[F259-CMP] " << args[0].class_desc << " " << sn
+                                  << "(ord=" << (self_ord.has_value() ? (int)self_ord->int_val : -1) << ")"
+                                  << " vs " << on
+                                  << "(ord=" << (other_ord.has_value() ? (int)other_ord->int_val : -1) << ")"
+                                  << " -> " << (a - b)
+                                  << " caller=" << current_class_ << "." << current_method_
+                                  << std::endl;
+                    }
+                }
                 return true;
             }
             if (method == "ordinal" && !args.empty()) {

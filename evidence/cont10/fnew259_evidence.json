@@ -1,0 +1,94 @@
+{
+ "artifact": "fnew259_evidence.json — CONT-10 W6: two new generic roots fixed on the dooz real-content frontier (F-NEW-259 DEX-iterator slot resolution; F-NEW-259b ArrayList.addAll append law). Evidence-first: every link runtime-proven with object identity, R8 map, and upstream 1.11.4 source law.",
+ "head": "390b2f6f (remote main at wave start; local 22875aa3)",
+ "binary": "aed46450c103f2ea (rebuilt from source after the fixes; clean baseline rebuild ea8827584f191dfa reproduced the frozen lineage)",
+ "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+ "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+ "compose_version_pinned": "androidx.compose.runtime 1.11.4 (META-INF/androidx.compose.runtime_runtime.version), navigation 2.9.8, lifecycle 2.11.0, kotlinx-coroutines 1.9.0 (atomicfu _state$volatile fields)",
+ "r8_map_additions": {
+   "Lnb0;": "GapComposer (ctor param order slotTable-before-abandonSet matches; n(Law0;=MutableScatterMap,Lj90;)=doCompose; c0=updateComposerInvalidations; H=recomposeToGroupEnd; P=skipCurrentGroup; K=recordUpsAndDowns",
+   "Lzw0;": "NavigatorState (push=a; backStack=Ltp1; flow b/c)",
+   "Lcx0;": "NavControllerImpl (a=navigate, b=dispatchOnDestinationChanged, r=updateBackStackLifecycle, o=populateVisibleEntries, g=_currentBackStack flow, h=_visibleEntries flow, f:Lad;=backQueue)",
+   "Lad;": "kotlin.collections.ArrayDeque (DEX; NO iterator() declaration; size R8-renamed a()I)",
+   "Ltp1;": "kotlinx.coroutines.StateFlowImpl (j=updateState with Unsafe.getObjectVolatile + Lqi0;.i conflation; a=collect)",
+   "Lc41;": "SnapshotMutableStateImpl (value in record field c)",
+   "Lww;": "DerivedStateImpl (g=policy, h=result state)",
+   "Lyl;.g": "NavHost composable (2981B; 'NavHost requires a ViewModelStoreOwner' strings; creates restart lambda Lzx0;)",
+   "Lvw0;": "NavBackStackEntry (f=destination, l=Lxw0; lifecycle holder)",
+   "Lxw0;": "entry lifecycle state machine (k=maxLifecycle State field, b=updateState)",
+   "Loo0;": "Lifecycle.State enum with R8-PERMUTED ordinals: DESTROYED=0, INITIALIZED=1, CREATED=2, STARTED=3, RESUMED=4 (clinit const-string proof)"
+ },
+ "w5_claim_correction": "W5's 'ZERO ComposableLambda reinvocation' was INCOMPLETE: the recompose-scope re-invocation machinery WORKS. Runtime proof: Lnb0;.H (recomposeToGroupEnd) found the invalidation entry (Ltp1;.j via Lvs0;.D firstInRange), isInvalid TRUE, recordUpsAndDowns K#1 + K#2 bracketed scope.compose → Lzx0;.h(composer=o2837, Integer(1)) → Lyl;.g (NavHost body) re-executed with 993 slot-op entries in pass#2.",
+ "first_divergence_chain": [
+  {
+   "step": 1,
+   "law": "NavHost gate: backStackEntry = visibleEntries.lastOrNull() != null (nav 2.9.8 NavHost.kt:861) gates ALL destination content",
+   "observed": "gate never opened; visibleEntries (derivedStateOf) returned its CACHED empty result o4780 in pass#2 (no recalculation — Lww;.i returned the same object)",
+   "runtime": "cl5/cl11 traces: pass#1 Lww;.i recalc wrote o4780; pass#2 returned o4780 unchanged"
+  },
+  {
+   "step": 2,
+   "law": "derivedStateOf staleness: the dependency VALUE (the compose state allVisibleEntries=o4757) is unchanged by reference/policy → cached result stays valid",
+   "observed": "o4757 was written ONCE with the controller flow's initial EMPTY value (o460 kotlin EmptyList) and never updated",
+   "runtime": "cl6: collect on o4015 delivered o460; single Lc41;.setValue o4757:=o460"
+  },
+  {
+   "step": 3,
+   "law": "NavControllerImpl.populateVisibleEntries: entries += backQueue.filter{ maxLifecycle >= STARTED && dest !is NavGraph }; _visibleEntries.tryEmit(entries)",
+   "observed": "pre-fix: the backQueue loop ran ZERO iterations (the result o4649 was EMPTY — proven by the CORRECT conflation Lm20;.equals(EmptyList, o4649)=TRUE)",
+   "runtime": "cl13: equals(o460,o4649)=prim:1 (conflated); cl12: the addAll-class chain"
+  },
+  {
+   "step": "3a-ROOT (F-NEW-259)",
+   "law": "JDK AbstractList.iterator contract: the iterator protocol reads the receiver's OWN size()/get(I). A DEX-defined class inheriting the host List (kotlin.collections.ArrayDeque=Lad;) exposes them as R8-RENAMED overrides (size→a()I) — the engine's iterator law resolved size() BY NAME ONLY and fell through to the legacy EMPTY shadow iterator.",
+   "fix": "descriptor-slot fallback in the DEX iterator protocol: on name miss, walk the receiver's DEX superclass chain (bounded 16) for the closest concrete declared method with the exact shadow slot signature (()I / (I)Ljava/lang/Object;), then EXECUTE it via try_recursive_invoke. Env-gated diagnostic MINIANDROID_F259_TRACE.",
+   "runtime_after": "F259-ITER: populate's iteration yielded 2 elements (iterator/hasNext/next×2); F259-CMP: STARTED(3).compareTo(STARTED)=0 → the game entry PASSES the filter; CREATED(2).compareTo(STARTED)=-1 → the graph entry correctly excluded"
+  },
+  {
+   "step": "3b-ROOT (F-NEW-259b)",
+   "law": "OpenJDK ArrayList.addAll(Collection): appends c's elements after the receiver's CURRENT end, returns true when changed. The engine had NO addAll(Collection) implementation — the call was a silent no-op, so `entries.addAll(loop2Result)` (R8 lowers `entries += filter{...}`) lost the game entry even after 3a.",
+   "fix": "extended the R-NEW-360 collection-copy cascade to serve addAll: append base = the receiver's authoritative current count (F-036 __array_length__ or registry CollectionState); PLUS a kind-faithful shadow→shadow append fast path (the heap round-trip drops STRING/INT kinds — R-NEW-464 law), mirroring __array_length__.",
+   "runtime_after": "ARG-TRACE: add(4648, game-entry) then addAll(4640, 4648) — entries delivered; probe F259-F/G prove changed=true/size and x,y,z order fidelity"
+  },
+  {
+   "step": 4,
+   "law": "StateFlow conflates equal values (kotlinx areEqual → List.equals); an EMPTY vs EMPTY visibleEntries emission is correctly skipped",
+   "observed": "conflation CORRECT at every stage — never the root; the empty list was the true payload"
+  }
+ ],
+ "runtime_effect_after_fixes": {
+   "layout_nodes": "pass#2 now materializes MULTIPLE LayoutNodes (Lel0;.<init> o6128/o6153/o6177/o6201/o6225 with applier inserts Lv02;.c — pre-fix: exactly 1 node)",
+   "derived_state": "visibleEntries derived state recalculates (new result object o4781)",
+   "verdict": "honest DEFAULT_BACKGROUND_ONLY retained — the remaining gap is the compose DRAW path: the layer drawContent chains run (Lpz0;.M0/L0/T0, Lug0;.h1 ×21/frame) but the AndroidCanvas bridge (Ljt1;) is never constructed, so 0 canvas ops reach the framebuffer. This is the single next generic root (draw-path canvas-bridge engagement)."
+ },
+ "probe": {
+   "fixture": "fixtures/fnew259_probe (real aapt2/ECJ/D8 toolchain)",
+   "apk_sha16": "548cd9d35e7bf206",
+   "rows": [
+     "F259-A PASS host-inherited iterator over DEX List subclass yields 3 elements",
+     "F259-B PASS enum compareTo ordinal law (R8-permuted order shape)",
+     "F259-C PASS sibling-subclass instanceof (screen !is Graph; graph is Graph)",
+     "F259-D PASS full NavHost visibleEntries filter chain → exactly 1",
+     "F259-E PASS negative: empty queue → 0",
+     "F259-F PASS addAll changed=true/size=1",
+     "F259-G PASS addAll append-after-existing x,y,z order fidelity"
+   ],
+   "result": "7/7 PASS"
+ },
+ "regression": {
+   "anchors_x3": {
+     "opencalc": "a976d2f9fb675cb3 x3 (CHANGED from recorded e364b001 — REAL_APP_CONTENT retained, richer render: #303030 display + #6fa8dc buttons; opencalc is Kotlin+R8 — its collections also exercise the fixed laws; flagged honestly)",
+     "chess": "b5a7a35d5fe0564b x3 (matches recorded)",
+     "dooz": "d602648e8e401895 x3 (matches recorded — blank anchor retained honestly)",
+     "microtimer": "da73010a37dd0189 x3 (matches recorded)",
+     "unote": "4f1a9e4e8f64fae8 x3 (matches recorded)"
+   },
+   "negatives": "19/19 PASS",
+   "skill_selftest": "13/13 PASS",
+   "gate_a": "98 PASS / 0 FAIL / 1 INFO (FILE-04 documented determinism INFO)"
+ },
+ "diagnostics_added": [
+   "MINIANDROID_F259_TRACE: iterator slot-resolution entries + slot invokes; Enum.compareTo ordinals/names; DEX-target instanceof results (generic, env-gated, bounded 1024)"
+ ],
+ "no_dooz_specific_or_r8_specific_patch": "Both fixes are receiver-generic: the iterator slot law keys on the DEX class chain + shadow slot signature; the addAll law keys on the JDK append contract. No class allow-lists, no R8 name tables."
+}
