@@ -2,7 +2,7 @@
   "primaryAbi": "x86_64",
   "nativeLibraryDir": "/data/app/com.probe.gatea/lib/x86_64",
   "extracted": [
-    {"entry": "lib/x86_64/libprobe.so", "size": 15568}
+    {"entry": "lib/x86_64/libprobe.so", "size": 15080}
   ],
   "count": 1
 }
