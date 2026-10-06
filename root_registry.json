@@ -4676,13 +4676,13 @@
   },
   {
    "id": "F-NEW-256",
-   "title": "Compose LayoutNode draw produces ZERO canvas content ops: Lt4;.dispatchDraw runs clean (AndroidOwner:draw entered, Lel0;.i root draw + Luc0;.g draw-manager loop invoked, Canvas receives only translate x10) with first_missing_stage=APP_DRAW_OPS (dooz; DEFAULT_BACKGROUND_ONLY verdict after F-NEW-255)",
+   "title": "Compose real-content frontier \u2014 REFINED CONT-10: scope re-invocation WORKS (W5 'zero reinvocation' corrected); destination content NOW MATERIALIZES (LayoutNodes+inserts) after F-NEW-259/259b; remaining single root = compose DRAW path: layer drawContent chains run (Lpz0;.M0/L0/T0) but the AndroidCanvas bridge (Ljt1;) is never constructed \u2192 0 canvas ops \u2192 framebuffer background-only.",
    "status": "CLASSIFIED",
    "priority": "P1",
    "layer": "framework/compose-draw",
    "root_cause": "CLASSIFIED with proven first divergence (NOT investigated to root this wave per battery-priority discipline): dispatchDraw pass-1 (METHOD-TRACE) shows tv0.i()=TRUE and ONE Luc0;.g() draw-manager invocation; the engine's CanvasShadow records ZERO draw ops (C013-ONDRAW ops=0, CUSTOMVIEW unrendered recorded). The gap is inside the LayoutNode/layer draw recursion (render-node vs software-canvas path): either the composed node tree is empty at the root, or the per-node draw records into a detached graphics-layer recording surface instead of the passed Canvas. Candidate faces named for next wave: (a) root LayoutNode children materialization, (b) Canvas-bridge draw-op family (drawRect/drawImage/drawText on the shadow channel), (c) LayerBuilder software-path routing.",
    "fix": "NOT IMPLEMENTED (discipline: no blind patching of the draw path; synthetic Canvas-op probe first next wave).",
-   "evidence": "evidence/cont8/{fnew256_w4_baseline,fnew256_w4_ladder,fnew256_w4_trace}.json + run/w4/dooz_mtrace (24,539-entry method trace) + fixtures/w4_ladder_probe (native View/ViewGroup color-exact ladder: drawRect/drawCircle/drawPath framebuffer pixels == paint colors, drawText glyphs, drawBitmap recorded-but-0-pixels for in-memory bitmaps = OBSERVED gap)",
+   "evidence": "evidence/cont10/fnew259_evidence.json",
    "first_divergence": "CONT-9 W5 REFINED (evidence/cont9/fnew256_w5_refutation.json): W4's 'mid-content-pass apply' face REFUTED \u2014 [METHOD-IN]-only traces have no exit lines; the W4 'Ld;.i span' was entry#1..entry#2, not entry..exit. Caller-frame evidence (new CL-TRACE): the apply runs AFTER the content lambda returns at depth 16 (Lt4;.setOnReadyForComposition -> Ls7;.i -> Lwo;.A -> Lfb1;.a -> Lwo;.d -> Lwo;.e(Lli;) -> apply), the content pass at depth 44 \u2014 upstream order CORRECT. Change-list machinery proven correct end-to-end (record Lbo;.Q -> per-group lists o2874/o2878 -> lazy nested execution at apply -> applier Lv02;.f/.c -> Lel0;.B -> LayoutNode). App structure DISCOVERED: dooz = Compose + androidx.navigation.compose NavHost (destination registration Llo;.t->Lpn; entries; deep-link strings in Lmx0;.a; NavBackStackEntry ctor chain Le;->Lir1;->Lnq;->Lne; in the post-apply LaunchedEffect coroutine). REFINED FIRST DIVERGENCE: the frame-driven recomposition pass (#2, Lj9;.doFrame -> Lnb0;.n at trace line 49187) ran 335 slot-table reader ops + 32 invalidation-group walks but invoked ZERO ComposableLambdas (Lom;.h=0 in pass#2) \u2014 no invalidated scope was ever re-invoked, so the NavHost destination content lambda never runs, the tree stays at root+1 node, dispatchDraw faithfully draws it -> 0 content ops. REPAIR SURFACE: recompose-scope re-invocation chain (invalidated-scope -> lambda invoke), the generic blocker for every Compose app with side-effect-driven first content.",
    "reverified": "2026-10-06 binary c0fa65ccc7f284e7 (byte-identical rebuild): dooz x3 anchor d602648e8e401895, app_draw_ops=0 every run; W4 face refuted + W5 divergence proven live with caller-frame traces; status stays CLASSIFIED \u2014 no fix attempted this wave (evidence-first discipline).",
    "wave4": "CONT-8 W4: refined first divergence proven (composition change-recording stops; mid-content-pass apply), ladder probes A/B PASS color-exact, C/D/E not buildable (no kotlinc) recorded honestly; generic fix NOT attempted this wave per \u00a716 discipline \u2014 the repair surface is the compose coroutine continuation ordering (same chain as R-NEW-340 pump / Dispatchers.Main PENDING); Dooz anchor d602648e8e401895 x3 zero drift.",
@@ -4710,11 +4710,31 @@
    "fix": "ONE branch in execute_instance_of: STRING_REF values classify as Ljava/lang/String; through the SAME is_subclass_of walk \u2014 which composes the framework closure so the full ART truth holds (String is-a CharSequence/Serializable/Comparable). No name matching, no special classes.",
    "synthetic_probe": "B-07 PASS post-fix (raw=java.lang.String, Parcelable.isInstance(raw)=false \u2014 String stays String with BOTH conditions lawful); M-01..M-06 isInstance matrix unchanged 6/6 (no regression).",
    "evidence": "evidence/cont7/fnew253_class_probe.json (F-NEW-258 section) + fnew253_bundle_probe.json (B-07 pre/post)."
+  },
+  {
+   "id": "F-NEW-259",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "DEX-list iterator protocol resolves size()/get(I) by NAME only \u2014 R8-renamed Kotlin collection overrides (kotlin.collections.ArrayDeque size\u2192a()I) silently iterated as EMPTY. Fix: descriptor-slot fallback (closest concrete override of the shadow slot in the receiver's DEX chain), executed via try_recursive_invoke; env-gated MINIANDROID_F259_TRACE.",
+   "priority": "P0",
+   "layer": "dalvik/collections",
+   "evidence": "evidence/cont10/fnew259_evidence.json",
+   "probe": "fixtures/fnew259_probe 7/7 PASS (F259-A..G)",
+   "verified_current": "run/w6 evidence: dooz populateVisibleEntries backQueue loop iterated 2 entries post-fix (F259-ITER); pre-fix zero iterations"
+  },
+  {
+   "id": "F-NEW-259b",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "java.util.ArrayList.addAll(Collection) had NO engine implementation \u2014 silent no-op; R8 lowers `list += filter{...}` to addAll, so dooz NavController.populateVisibleEntries lost the start-destination entry. Fix: extend the R-NEW-360 collection-copy cascade to addAll with APPEND semantics (base = F-036 length or registry CollectionState count) + kind-faithful shadow\u2192shadow append fast path (R-NEW-464 string/INT fidelity).",
+   "priority": "P0",
+   "layer": "dalvik/collections",
+   "evidence": "evidence/cont10/fnew259_evidence.json",
+   "probe": "fixtures/fnew259_probe F259-F/G PASS (changed=true/1; x,y,z order fidelity)",
+   "verified_current": "ARG-TRACE addAll(4640,4648) delivered; dooz LayoutNode tree materialized post-fix (Lel0;.<init> o6128..o6225 + Lv02;.c inserts vs pre-fix 1 node)"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
  "total": 564,
- "count": 564,
+ "count": 566,
  "meta": {
   "last_update": "CONT-7 WAVE 3 re-proof session 2026-10-06: F-NEW-253 evidence repaired + verified_current; F-NEW-257/258 registered ROOT-CAUSED-FIXED; F-NEW-256 re-verified live",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
@@ -4750,6 +4770,6 @@
   "OBSERVED": 2,
   "CLASSIFIED": 2
  },
- "total_roots": 562,
+ "total_roots": 566,
  "generated": "2026-10-04"
 }
