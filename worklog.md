@@ -6939,3 +6939,27 @@ Stage Summary:
   (section 6), second-APK F-NEW-251 fan-out A/B, R8 identity matrix,
   full 25-item achievement reconciliation — all recorded in the ledger
   as PENDING for the next wave.
+
+---
+Task ID: CONT-7-WAVE-2
+Agent: Super Z (main)
+Task: CONT-7 WAVE 2 — F-NEW-252 root cause + Dooz real execution (scope-locked: no acquisition, no broad reconciliation, no unrelated roots)
+
+Work Log:
+- Read issue #377 (fetched from GitHub) and reconciled it honestly: KB SHA/counts consumed and hard rules honored, but the formal CONT-6 deliverables (research/external-root-kb MANIFEST, evidence/cont6 required final table, six-game re-validation) were never produced — recorded as PENDING; not expanded this wave per scope lock.
+- Rebuilt the engine from source (environment reset had no binary); restored gate_a_probe/hmap_probe fixture APKs via the deterministic fixture builder.
+- Built a proper Dalvik DEX static-analysis toolchain (scripts/cont7w2_dex_xref.py with full instruction-size table, cont7w2_callers.py, cont7w2_field_rw.py) and decoded the dooz v23 (Compose 1.11.4-era) R8 chain end-to-end.
+- §3 baseline at current HEAD: reproduced F-NEW-252 exactly (IAE "Only add dependencies during a tracking block" via R8 throw-helper Lng0;.a, rethrow chain to Lt4;.dispatchDraw pc=148; 3 uncaught; APP_DRAW_OPS=0).
+- §2 first divergence proven with runtime ground truth (MINIANDROID_PARAM_TRACE p2=NULL_REF at Lpz0;.L0 entry; FIELD-TRACE put Lkc;.c obj#5223; R414 fabricated 'new Object' over the stored null; app null-guard at Lyl;.z pc=258 defeated; nested .r read fabricated 'new Lfj;' isTracking=false).
+- Generic fix: F-NEW-252 explicit-null-beats-initializer law (R414 read-side; NULL_REF entries read null; absent/dangling still materialize). Prototyped param-slot law in get_register, measured 0 firings, removed per minimalism.
+- §6 ServiceLoader: synthetic probe exposed a SECOND face — CollectionShadow's generic iterator law claimed ServiceLoader receivers (hasNext=false). Fixed generically (CollectionShadow decline on the S102 `service` marker; S102 iterator block widened to ServiceLoader-typed dispatch + marker re-stamp). SLPOS/SLNEG now PASS.
+- §7 CAS/AtomicFieldUpdater directive contract: all PASS (7/7 probe rows) — F-NEW-251 NOT reopened.
+- §4/§5: Dispatchers.Main mechanism answered from evidence (dooz carries R8-renamed META-INF/services e6->m6; S102 reads real APK entries; still unreached behind F-NEW-253); R8-identity hypothesis marked NOT_ROOT_CAUSE (renamed chain executed; no resolver change; no Lv;.o intercept added).
+- §9/§10 dooz after fix: tracking IAE 1->0; uncaught 3->1; 3-run byte-identical d602648e8e401895 = recorded anchor; verdict honestly DEFAULT_BACKGROUND_ONLY; remaining blocker registered as F-NEW-253 (SaveableStateRegistry canBeSaved / Bundle contents fidelity), CLASSIFIED, first divergence proven (Lxe1;.a pc=85), not implemented.
+- §11 regression battery at 5006834b2d2ae63b: anchors 5/5x3 byte-identical, goldens 4/4 (pixel-gate REAL_APP_CONTENT), negatives 19/19, reinstall 8/8, uninstall proof, ABI census zero flips, skill 13/13. Gate A multiapp harness deferred with explicit reason (staged corpus lost in reset; unaffected surface).
+- Registry 558->559 (F-NEW-252 ROOT-CAUSED-FIXED; F-NEW-253 CLASSIFIED). Evidence artifacts: evidence/cont7/{dooz_wave2_baseline,dooz_wave2_final,fnew252_evidence,service_loader_probe,cas_probe}.json + ledger wave-2 section.
+
+Stage Summary:
+- The dooz draw frontier moved: F-NEW-252 (Snapshot tracking IAE) is ROOT-CAUSED-FIXED via one generic heap-read law (explicit null beats initializer), with the app's own null contract proven from real DEX + runtime traces — no app-specific patch, no R8 interception, no duplicate root.
+- Dooz still does NOT produce real app content (honest): the proven remaining blocker is F-NEW-253 (rememberSaveable/SaveableStateRegistry canBeSaved), registered CLASSIFIED with first divergence; next wave owns it plus the owed second-APK fan-out and the restored gate-A corpus.
+- ServiceLoader provider discovery (incl. R8-renamed entries) now works generically — prerequisite for Dispatchers.Main when the chain reaches it.

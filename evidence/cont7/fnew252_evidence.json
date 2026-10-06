@@ -1,0 +1,32 @@
+{
+  "root": "F-NEW-252",
+  "title": "Compose Snapshot state tracking IAE 'Only add dependencies during a tracking block' at Lt4;.dispatchDraw pc=148",
+  "status": "ROOT_CAUSED_FIXED",
+  "source": {
+    "upstream_law": "androidx.compose.runtime.snapshots.SnapshotStateObserver: snapshot-state reads are recorded ONLY inside a tracking block (observeReads scope); a read outside it raises IllegalArgumentException('Only add dependencies during a tracking block'). The LayoutNode draw cascade opens/closes the tracking window per node via OwnerSnapshotObserver.observeLayoutModifierSnapshotReads.",
+    "app_side_null_contract": "AndroidComposeView.dispatchDraw passes NULL as the LayoutNode draw-state param for the root draw (Lt4;.dispatchDraw pc=45-46: const/4 v5,0; invoke-virtual {v4,v2,v5} Lel0;.i). Lpz0;.L0 stores that param into the draw-context holder Lkc;.c (pc=34). Lyl;.z (the CanvasDrawScope draw) reads Lkc;.c and guards with if-eqz (pc=258) — on ART the null guard SKIPS the tracker read entirely. Null checks + null casts are legal ART semantics."
+  },
+  "bytecode_evidence": {
+    "throw_helper": "Lng0;.a(Ljava/lang/String;)V — R8 throw-collapse synthetic: new IllegalArgumentException(msg); throw (msg = string idx 6190 'Only add dependencies during a tracking [block]')",
+    "guard_method": "Lyl;.z(Lp00;Lrc0;)V pc=258 if-eqz v2 ->+345; pc=260 iget-object v2,v2,Lrc0;.r; pc=262 iget-boolean v2,v2,Lfj;.a; pc=264 if-nez ->+271; pc=266 const-string; pc=268 invoke-static Lng0;.a",
+    "store_site": "Lpz0;.L0(Ldi;Lrc0;)V pc=34: iput-object v7(p2=null), v1(Lkc; from Lgi;.f), Lkc;.c:Ljava/lang/Object;",
+    "tracker": "Lfj; = tracking-state holder (boolean a = isTracking; fields b..e); created by Lrc0;.<init> and by Lt4;.<init>; Lfj;.a(method) = notification drain + tracking window"
+  },
+  "runtime_evidence": {
+    "baseline": "PARAM-TRACE proved p2 arrives as NULL_REF(t=8) at Lpz0;.L0 entry; FIELD-TRACE proved the iput at pc=34 stores it into Lkc;.c on obj#5223; the read at Lyl;.z pc=14 then hit R-NEW-414 which treated the NULL_REF entry as 'missing' and fabricated 'new Object' (recv was object-classed, R414 log); the fabricated non-null defeated the app's null-guard; .r read on the fabricated Object hit R414 again fabricating 'new Lfj;' with isTracking=false; the guard threw.",
+    "stack": "Lt4;.dispatchDraw(caller_pc=0) -> Lel0;.i@46 -> Lpz0;.L0@4 -> (else-path M0/child cascade) -> Lel0;.i@27 -> Lpz0;.L0@4 -> Lyl;.z@38 -> Lng0;.a@268; IAE caught by Lel0;.i catch-all (handler@8: Lel0;.Y(Throwable) rethrow @26) -> dispatchDraw catch-all handler@144 -> rethrow @pc=148 -> APP BOUNDARY",
+    "ab": "tracking IAE count: 17 (pre-F-NEW-251) -> 1 (wave-2 baseline) -> 0 (after the R414 explicit-null law); uncaught in-flight exceptions 3 -> 1"
+  },
+  "fix": {
+    "name": "F-NEW-252 explicit-null-beats-initializer law",
+    "site": "dalvik_engine.cpp R-NEW-414 read-side (single point)",
+    "law": "A heap ENTRY holding NULL_REF is an explicitly written null and reads null; initializer materialization fires only for ABSENT entries or dangling refs.",
+    "generality": "No package/class/method conditions. Every APK whose draw/compose path passes a null context through a param slot into a heap field benefits. The original R414 purpose (chess ContentFrameLayout.mDecorPadding: inflater-materialized object whose <init> never ran = ABSENT entries) is preserved — anchors 5/5 x3 byte-identical after the change.",
+    "considered_and_dropped": "A param-slot integrity law in get_register (UNSET param reads answer null) was prototyped and dropped: runtime evidence (PARAM-TRACE t=8 at entry) showed the param arrived correctly as NULL_REF, so the read-side R414 law is the true single divergence point; the extra law never fired (0 hits) and was removed per minimalism."
+  },
+  "synthetic_tests": {
+    "positive": "f252_probe PNULL: null param -> store after intermediate invoke -> read-back null -> null cast — PASS",
+    "negative": "anchors x3 (chess = the R414 absent-field case) byte-identical; f252_probe SLNEG (missing provider honest empty) PASS; gate A negatives 19/19 PASS"
+  },
+  "dooz_result": "F-NEW-252 eliminated (0 occurrences); dooz advances to the F-NEW-253 rememberSaveable frontier; verdict honestly stays DEFAULT_BACKGROUND_ONLY"
+}

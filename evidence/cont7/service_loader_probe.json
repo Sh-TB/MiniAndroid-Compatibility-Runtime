@@ -1,0 +1,20 @@
+{
+  "probe_apk": "run/cont7w2/f252_probe.apk",
+  "probe_sha256": "ff97b7905e2fb58d335a0c3efb7d465528b1399a240bb326cc357e027a30feaa",
+  "fixture": "fixtures/fnew252_probe/",
+  "package": "com.probe.f252",
+  "binary_sha16": "5006834b2d2ae63b",
+  "results": [
+    {"id": "CAS1",  "expect": "initial=1; CAS(expected=1,update=0)==true; read==0",       "actual": "CAS(1->0)=true read=0",          "verdict": "PASS"},
+    {"id": "CAS2",  "expect": "CAS(expected=1,update=2)==false; read==0",                 "actual": "CAS(1->2)=false read=0",         "verdict": "PASS"},
+    {"id": "CAS3",  "expect": "CAS(expected=0,update=2)==true; read==2",                  "actual": "CAS(0->2)=true read=2",          "verdict": "PASS"},
+    {"id": "UPD",   "expect": "AtomicIntegerFieldUpdater get/set/getAndIncrement/getAndDecrement on the same logical field: 10 -> set 20 -> gai=20/21 -> gad=21/20", "actual": "get=10 set=20 getAndInc=20/21 getAndDec=21/20", "verdict": "PASS"},
+    {"id": "PNULL", "expect": "null passed through a parameter slot, stored to a field after an intermediate invoke, reads back null; (String)null cast succeeds", "actual": "slot==null:true castNull:true", "verdict": "PASS"},
+    {"id": "SLPOS", "expect": "META-INF/services/com.probe.f252.Svc present -> ServiceLoader discovers SvcImpl, instantiates via no-arg ctor, tag()=='svcimpl'", "actual": "hasNext=true impl=com.probe.f252.SvcImpl tag=svcimpl", "verdict": "PASS"},
+    {"id": "SLNEG", "expect": "no provider file for SvcMissing -> empty iterator, hasNext=false, no crash", "actual": "hasNext=false (no crash)", "verdict": "PASS"}
+  ],
+  "summary": "7 pass, 0 fail",
+  "section7_conclusion": "The directive-required CAS contract holds on current HEAD. CAS atomicity, expected-value semantics, and updater visibility are correct; F-NEW-251's one-logical-slot invariant (interpreter field access, Unsafe, Atomic*FieldUpdater all address the same slot) needs no second field resolver and F-NEW-251 is NOT reopened.",
+  "section6_conclusion": "ServiceLoader did NOT already work: the generic CollectionShadow iterator law claimed ServiceLoader receivers (hasNext=false via empty CollectionState). Fixed by (a) the S102 decline law in CollectionShadow::dispatch (receivers carrying the S102 'service' load-marker are declined) and (b) widening S102's iterator block to accept the ServiceLoader-typed runtime dispatch (class_name == Ljava/util/ServiceLoader;) and to re-stamp the __sld_service__ marker from the load-time `service` field. Positive AND negative semantics both verified after the fix.",
+  "section4_note": "dooz v23 APK carries R8-renamed META-INF/services entries: 'e6' -> m6 (MainDispatcherFactory -> AndroidDispatcherFactory) and 'pr'. The S102 engine law reads META-INF/services/<name> from real APK entries, so renamed service contracts are handled by the same generic mechanism. Dispatchers.Main itself remains unreached on dooz (blocked earlier by F-NEW-253); the mechanism-level questions in directive section 4 are answered from this evidence without any Lv;.o-style interception."
+}

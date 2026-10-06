@@ -17067,12 +17067,26 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
             // Rect.set NPE -> onCreate dead). The value is STORED so identity
             // stays stable.
             {
+                // F-NEW-252 (explicit-null beats initializer law): a heap
+                // ENTRY holding NULL_REF is a NULL that executed bytecode
+                // WROTE (iput-object with a null source — dooz draw path:
+                // Lpz0;.L0 stores its null p2 into Lkc;.c, and Lyl;.z's
+                // `if-eqz v2` null-guard then skips the tracker block, which
+                // is the real-ART behavior). Fabricating the initializer
+                // default over an explicit null turned the app's legal null
+                // into a fake `new Object`, forced the tracker read, and
+                // crashed dispatchDraw with the app's own
+                // "Only add dependencies during a tracking block" IAE.
+                // Absent entries (no value at all) and dangling refs stay
+                // missing — the chess ContentFrameLayout.mDecorPadding case
+                // (inflater-materialized object whose <init> never ran) is
+                // unchanged: its fields have NO entries.
                 bool r414_missing = !field_val.has_value();
                 if (!r414_missing) {
                     const DalvikValue& fv = field_val.value();
                     r414_missing =
-                        fv.type == DalvikType::NULL_REF ||
-                        (fv.type == DalvikType::OBJECT_REF && fv.object_id == 0) ||
+                        (fv.type == DalvikType::OBJECT_REF &&
+                         fv.object_id == 0) ||
                         (fv.type == DalvikType::OBJECT_REF &&
                          !heap_.has_object(fv.object_id));
                 }
@@ -43341,6 +43355,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
 
         if (class_name == "Ljava/util/ServiceLoader;") {
+            {
+                // F-NEW-252 wave-2 (bounded evidence): S102 ServiceLoader
+                // block reached — which method of the load/iterator family
+                // dispatched through bridge_to_api.
+                static thread_local uint64_t s102_sl_n = 0;
+                if (s102_sl_n < 12) {
+                    ++s102_sl_n;
+                    std::cerr << "[S102-SL] reached method=" << method
+                              << " recv=" << (!args.empty()
+                                                 ? args[0].object_id
+                                                 : 0)
+                              << std::endl;
+                }
+ }
             if (method == "load" || method == "loadInstalled") {
                 // load(Class<S> service, ClassLoader loader) → ServiceLoader
                 // (lazy — real law: no work until iterator()).
@@ -43393,10 +43421,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // self-iterator materializes provider instances lazily, exactly as
         // OpenJDK's LazyIterator (parse one provider name per step,
         // Class.forName → no-arg ctor → newInstance).
-        if (class_name == "Ljava/util/Iterator;" && !args.empty() &&
-            args[0].type == DalvikType::OBJECT_REF) {
+        // F-NEW-252 wave-2: the iteration protocol dispatches with the
+        // RECEIVER'S RUNTIME CLASS — `Ljava/util/ServiceLoader;.hasNext`
+        // (ServiceLoader implements Iterable; javac emits the interface
+        // method against the receiver's own type). Accept BOTH the
+        // Iterator-typed and the ServiceLoader-typed entry: the body keys
+        // on the receiver's heap fields (the `service` marker from load),
+        // never on the static type. Also re-stamp the marker when another
+        // engine iterator law minted the self-iterator without it (the
+        // OpenJDK LazyIterator is bound to its service at construction —
+        // same contract).
+        if ((class_name == "Ljava/util/Iterator;" ||
+             class_name == "Ljava/util/ServiceLoader;") &&
+            !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
             uint32_t recv_id = args[0].object_id;
             auto svcf = heap_.get_object_field(recv_id, "__sld_service__");
+            if (!svcf.has_value() || svcf->type != DalvikType::STRING_REF) {
+                auto svc2 = heap_.get_object_field(recv_id, "service");
+                if (svc2.has_value() && svc2->type == DalvikType::STRING_REF &&
+                    !svc2->string_val.empty()) {
+                    heap_.set_object_field(recv_id, "__sld_service__", *svc2);
+                    if (!heap_
+                             .get_object_field(recv_id, "__sld_pos__")
+                             .has_value()) {
+                        heap_.set_object_field(recv_id, "__sld_pos__",
+                                               DalvikValue::make_int(0));
+                    }
+                    svcf = svc2;
+                }
+            }
             if (svcf.has_value() && svcf->type == DalvikType::STRING_REF) {
                 const std::string& dotted = svcf->string_val;
                 auto posf = heap_.get_object_field(recv_id, "__sld_pos__");

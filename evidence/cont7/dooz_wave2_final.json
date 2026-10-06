@@ -1,0 +1,36 @@
+{
+  "wave": "CONT-7 WAVE 2 final state",
+  "binary_sha16": "5006834b2d2ae63b",
+  "base_binary_sha16": "382e595771901c00",
+  "dooz": {
+    "install": "INSTALLED (PREFLIGHT_PASS, LAW-001 IN_SCOPE: MIXED x86/x86_64 present)",
+    "launch": "RESUMED; compose runtime boots, composition and first frames run",
+    "tracking_iae": {"baseline": 1, "after_fix": 0},
+    "uncaught_exceptions": {"baseline": 3, "after_fix": 1},
+    "stub_census": {"baseline": {"implemented": 29602, "stubbed": 256}, "after_fix": {"implemented": 29735, "stubbed": 262}},
+    "app_content": "DEFAULT_BACKGROUND_ONLY (honest) — app-owned draw ops still 0",
+    "remaining_blocker": {
+      "id": "F-NEW-253 (new, CLASSIFIED)",
+      "exception": "IllegalArgumentException: 'Landroid/os/Bundle;@<id> cannot be saved using the current SaveableStateRegistry. The default implementation only supports types which can be stored inside the Bundle...'",
+      "throw_site": "Lxe1;.a pc=85 (R8: DisposableSaveableStateRegistry.registerValue/canBeSaved path)",
+      "chain": "rememberSaveable during dooz composition -> registerValue(Bundle) -> canBeSaved walks the Bundle contents -> one entry's runtime type fails the acceptable-classes/bundle-storable check on the engine",
+      "first_missing_link": "the engine's Bundle shadow returns/stores a value whose runtime class the app's canBeSaved check does not accept (ART accepts it — the app ships); needs a Bundle-contents type-fidelity investigation + synthetic Bundle canBeSaved probe",
+      "note": "separate root; NOT investigated/implemented this wave per section-0 scope lock"
+    }
+  },
+  "three_run": [
+    {"run": 1, "install": "OK", "launch": "RESUMED", "first_divergence": "F-NEW-253 rememberSaveable IAE at Lxe1;.a pc=85", "exception": "IAE (1 uncaught)", "app_content": "DEFAULT_BACKGROUND_ONLY", "screenshot_sha16": "d602648e8e401895"},
+    {"run": 2, "install": "OK", "launch": "RESUMED", "first_divergence": "F-NEW-253 rememberSaveable IAE at Lxe1;.a pc=85", "exception": "IAE (1 uncaught)", "app_content": "DEFAULT_BACKGROUND_ONLY", "screenshot_sha16": "d602648e8e401895"},
+    {"run": 3, "install": "OK", "launch": "RESUMED", "first_divergence": "F-NEW-253 rememberSaveable IAE at Lxe1;.a pc=85", "exception": "IAE (1 uncaught)", "app_content": "DEFAULT_BACKGROUND_ONLY", "screenshot_sha16": "d602648e8e401895"}
+  ],
+  "determinism": "3/3 byte-identical; equals the recorded dooz anchor d602648e8e401895 (zero visual drift through two generic engine law changes)",
+  "r8_class_identity_hypothesis": {
+    "verdict": "NOT_ROOT_CAUSE",
+    "evidence": "The R8-renamed chain (Lt4;.dispatchDraw, Lel0;.i, Lpz0;.L0, Lyl;.z, Lkc;, Lrc0;, Lfj;, Lng0;) resolved and executed correctly end-to-end on current HEAD — the divergence was a heap-read law (R414 treating an explicit null as missing), not a rename-resolution failure. The R8-specific intercept proposed externally (intercept Lv;.o) was NOT added; directive section-5 invariant upheld."
+  },
+  "dispatchers_main": {
+    "reached": false,
+    "mechanism_evidence": "dooz v23 carries R8-renamed META-INF/services entries (e6->m6 = MainDispatcherFactory->AndroidDispatcherFactory); the engine's S102 META-INF/services law reads real APK entries generically; synthetic SLPOS/SLNEG prove discovery+materialization and honest-empty semantics at current HEAD",
+    "status": "PENDING (unreached frontier behind F-NEW-253)"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "probe": "section-7 CAS / AtomicFieldUpdater synthetic contract (directive-required)",
+  "binary_sha16": "5006834b2d2ae63b",
+  "same_logical_field_invariant": "VERIFIED — interpreter plain field access (this.counter = X), AtomicIntegerFieldUpdater (UPD.get/set/compareAndSet/getAndIncrement/getAndDecrement) all address ONE slot; no second field resolver introduced",
+  "contract_results": [
+    {"step": "initial",        "expect": "counter = 1",                                        "result": "PASS"},
+    {"step": "cas(1->0)",      "expect": "true,  read 0",                                      "result": "PASS"},
+    {"step": "cas(1->2)",      "expect": "false, read 0 (stale expected rejected)",            "result": "PASS"},
+    {"step": "cas(0->2)",      "expect": "true,  read 2",                                      "result": "PASS"},
+    {"step": "updater ops",    "expect": "get=10; set 20; getAndIncrement=20 then 21; getAndDecrement=21 then 20", "result": "PASS"}
+  ],
+  "fnew251_status": "ROOT-CAUSED-FIXED / VERIFIED_CURRENT — NOT reopened (directive section 7); the split-brain storage face is dead: no released-permits ISE, dooz anchor byte-identical d602648e8e401895 across 3 runs at the wave-2 binary",
+  "evidence_file": "run/cont7w2/store_f252/data/data/com.probe.f252/files/f252_results.txt (regenerable: scripts/build/build_fixture_apk.sh fixtures/fnew252_probe + install/run)"
+}
