@@ -16473,6 +16473,21 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
         (current_class_ == "Loj0;" || current_class_ == "Lkp1;" ||
          target_type == "Ljava/util/Set;" ||
          target_type == "[Ljava/lang/Object;" ||
+         // CONT-7 W3 F-NEW-253: the SaveableStateRegistry canBeSaved
+         // platform walk checks Bundle-storability via instance-of on
+         // these platform types — log the authoritative classification
+         // for every check in that family (bounded by the 200 cap).
+         target_type == "Landroid/os/Bundle;" ||
+         target_type == "Landroid/os/Parcelable;" ||
+         target_type == "Ljava/io/Serializable;" ||
+         target_type == "Ljava/lang/String;" ||
+         target_type == "Ljava/lang/Number;" ||
+         target_type == "Ljava/lang/Boolean;" ||
+         target_type == "Ljava/lang/Character;" ||
+         target_type == "Ljava/util/List;" ||
+         target_type == "Ljava/util/Map;" ||
+         target_type == "Landroid/util/SparseArray;" ||
+         target_type == "Landroid/os/IBinder;" ||
          // S59 R-NEW-379: view-tree owner walks (Lxd1;.g) check
          // `parent as? View` after a static-wrapper getParent — log the
          // authoritative classification for View targets too.
@@ -23147,8 +23162,20 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
     std::string walk = from_desc;
     for (int hop = 0; hop < kMaxAssignHops; ++hop) {
         auto sup_it = class_to_superclass_.find(walk);
-        if (sup_it == class_to_superclass_.end()) break;
-        walk = sup_it->second;
+        // F-NEW-254 (CONT-7 W3): DEX + FRAMEWORK HIERARCHY COMPOSITION —
+        // one walk. When the DEX tables end at the platform boundary
+        // (e.g. Ljava/util/concurrent/CancellationException; has no
+        // class_def in the APK), continue through the F-NEW-236 framework
+        // extends table instead of stopping — the SAME fallback law
+        // is_subclass_of (instance-of path) already implements. Without
+        // it, Class.isInstance(Throwable-target) on a platform exception
+        // subclass answered FALSE and kotlinx Finishing threw its own
+        // ISE "State is …" during dooz composition.
+        std::string sup = (sup_it != class_to_superclass_.end())
+                              ? sup_it->second
+                              : framework::framework_superclass_of(walk);
+        if (sup.empty()) break;
+        walk = sup;
         if (walk.empty()) break;
         if (walk == to_desc) return true;
         // Interface declared anywhere along the super chain counts.
@@ -23163,6 +23190,24 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
     if (ifc_it != class_to_interfaces_.end()) {
         for (const auto& ifc : ifc_it->second)
             if (ifc == to_desc) return true;
+    }
+    // ── F-NEW-253 (CONT-7 W3): PLATFORM HIERARCHY FALLBACK — one central
+    // point. Class.isInstance/isAssignableFrom ask assignability between
+    // types that may be ENGINE-SHADOWED PLATFORM classes (Landroid/os/Bundle;
+    // etc.) with no DEX class_def and no entry in class_to_superclass_ /
+    // class_to_interfaces_. The F-NEW-236 framework tables (libcore +
+    // android.os source law) are the runtime's boot-classpath metadata:
+    // consult the same transitive closure here, after the DEX walk, so
+    // EVERY consumer of this walk (the F-103 isInstance law, the
+    // saveable platform check, future reflection-family callers) sees
+    // the same truth ART sees from its boot classpath.
+    // Live face (dooz v23): Parcelable.isInstance(Bundle) answered FALSE
+    // → rememberSaveable IAE at registerValue → composition died before
+    // the first app frame.
+    {
+        std::unordered_set<std::string> platform_closure;
+        framework::framework_interface_closure(from_desc, platform_closure);
+        if (platform_closure.count(to_desc)) return true;
     }
     return false;
 }

@@ -6963,3 +6963,26 @@ Stage Summary:
 - The dooz draw frontier moved: F-NEW-252 (Snapshot tracking IAE) is ROOT-CAUSED-FIXED via one generic heap-read law (explicit null beats initializer), with the app's own null contract proven from real DEX + runtime traces — no app-specific patch, no R8 interception, no duplicate root.
 - Dooz still does NOT produce real app content (honest): the proven remaining blocker is F-NEW-253 (rememberSaveable/SaveableStateRegistry canBeSaved), registered CLASSIFIED with first divergence; next wave owns it plus the owed second-APK fan-out and the restored gate-A corpus.
 - ServiceLoader provider discovery (incl. R8-renamed entries) now works generically — prerequisite for Dispatchers.Main when the chain reaches it.
+
+---
+Task ID: CONT-7-WAVE-3
+Agent: Super Z (main)
+Task: Issue #377 (CONT-6) read completely + executed the runtime-verifiable duties; F-NEW-253 root cause; fix-all-unfixed continuation (dooz composition chain); six-game independent re-validation; full battery; registry/ledger/push.
+
+Work Log:
+- Read Issue #377 end-to-end (tmp/issue377.html committed at HEAD). Snapshot protocol printout given honestly: archive bytes ABSENT this container; Phases 1/2 (per-record reconciliation + clustering of 5,976 records) NOT performed; no fabricated numbers. research/external-root-kb/current/MANIFEST.md created (snapshot history + re-supply contract).
+- Rebuilt engine from source post-reset; first rebuild reproduced wave-2's binary byte-identically (5006834b2d2ae63b) — clean repro.
+- F-NEW-253 (dooz SaveableStateRegistry IAE): runtime-traced the canBeSaved chain (Lxe1;.a -> Ldf1;.d -> R8 lambda Lm4; -> Le72;.k) — the platform check uses Class.isInstance REFLECTION over a 7-class array; Parcelable.isInstance(Bundle) answered FALSE because the hierarchy walk had no platform (boot-classpath) metadata. Fixed generically: AOSP parcel family added to framework_class_interfaces + dalvik_class_assignable consults framework_interface_closure.
+- F-NEW-254 (kotlinx Finishing "State is Lij0;" ISE): platform exception-chain extends edges missing (CancellationException has no DEX class_def; no framework edge) -> instance-of Throwable FALSE. Fixed generically: libcore exception chain in framework_direct_superclass + DEX-map-miss fallback to framework_superclass_of in dalvik_class_assignable (one composed walk everywhere).
+- F-NEW-255 (ListIterator.hasPrevious NPE): CollectionShadow listIterator stub answered handled_void (NULL) for an object-returning method; app ctor stored null backing iterator. Fixed generically: real listIterator()/listIterator(int) + hasPrevious/previous/nextIndex/previousIndex cursor laws, F-NEW-237-box-compatible.
+- Synthetic probe fixtures/cont7w3_probe: 12/12 rows PASS (positives + honest negatives for all three laws).
+- Dooz: uncaught 1 -> 0; composition clean-to-budget for the FIRST time; screenshot x3 byte-identical = anchor d602648e8e401895 (zero drift); verdict honestly DEFAULT_BACKGROUND_ONLY; remaining draw-ops frontier registered F-NEW-256 CLASSIFIED (dispatchDraw clean but zero canvas content ops — first divergence proven).
+- Six-game CONT-6 Phase 4 validation at current HEAD: 2048 / mini-tetris / minicraft / snake-deluxe / snake-neon / tictactoe-deluxe ALL REAL_APP_CONTENT x3 byte-identical each (evidence/cont6/six_game_validation.json). External six-game claim CONFIRMED 6/6.
+- CONT-6 required final table + reasoned verdict written (evidence/cont6/CONT6_FINAL_TABLE.md): recommendation PARTIAL-IMPORT (runtime-verified parts) / DISCOVERY-ONLY (rest); per-record import REJECTED until archive resupply + runtime proof; 0 roots imported from KB.
+- Battery at daeb0aa8daaec2b3: anchors 5/5x3 byte-identical, goldens 4/4, gate A 97/0/2 (after deterministic native-lib fixture restoration; the 2 transient FAILs were fixture-byte drift, not runtime regression), negatives 19/19, reinstall 8/8, loading ALL PASS, uninstall ALL PASS, skill 13/13, ABI census zero flips.
+- Registry 559 -> 562 roots (F-NEW-253 upgraded ROOT-CAUSED-FIXED; F-NEW-254/255 ROOT-CAUSED-FIXED; F-NEW-256 CLASSIFIED).
+
+Stage Summary:
+- Three new generic runtime roots closed (platform-class hierarchy via reflection arm AND extends arm; ListIterator shadow law) — dooz composition is clean for the first time with zero uncaught exceptions and zero visual drift on every anchor.
+- Issue #377: read fully; runtime-verifiable duties done (six-game claim CONFIRMED 6/6; required final table with reasoned recommendation); archive-derived duties honestly blocked on re-supply.
+- Next wave owns: F-NEW-256 (dooz/Compose draw-ops frontier — Canvas-op probe first), archive re-supply + Phases 1-3, second-APK live fan-out, gate-A multiapp corpus restoration.

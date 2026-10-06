@@ -4639,18 +4639,55 @@
   },
   {
    "id": "F-NEW-253",
-   "title": "SaveableStateRegistry canBeSaved rejects the app's Bundle during rememberSaveable (dooz composition frontier after F-NEW-252)",
+   "title": "SaveableStateRegistry canBeSaved rejects engine-shadowed platform classes: IAE 'Landroid/os/Bundle;@id cannot be saved using the current SaveableStateRegistry' at Lxe1;.a pc=88 (dooz rememberSaveable; the last uncaught dooz exception after F-NEW-252)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "runtime/platform-class-hierarchy",
+   "root_cause": "PROVEN AT RUNTIME (METHOD-TRACE + IFACE-RT + CLASS-LAW, 2026-10-06): androidx DisposableSaveableStateRegistry.registerValue (Lxe1;.a) calls the canBeSaved predicate (Lcf1;.d -> Ldf1;.d -> Lf90;.i on R8 lambda Lm4; -> invoke-static Le72;.k). The platform check Le72;.k walks a static acceptable-classes array Le72;.d (R8-trimmed to 7: Serializable, Parcelable, String, SparseArray, Binder, Size, SizeF) via java.lang.Class.isInstance — REFLECTION, not instance-of bytecode (widened MINIANDROID_INSTANCEOF_TRACE saw zero Bundle-target checks; MINIANDROID_CLASS_LAW_TRACE captured the exact isInstance rows). For a Bundle the decisive row is Parcelable.isInstance(Bundle): the F-103 walk (dalvik_class_assignable) consulted ONLY class_to_superclass_/class_to_interfaces_ (APK DEX + framework Views + Class token) — Landroid/os/Bundle; is an engine-shadowed platform class with NO DEX class_def and NO Parcelable edge -> FALSE -> registerValue IAE -> rememberSaveable died in composition -> app draw never ran. ART truth: Bundle extends BaseBundle implements Parcelable, Cloneable.",
+   "fix": "TWO COORDINATED GENERIC POINTS (one semantic law): (1) view_ancestry.h framework_class_interfaces gained the ANDROID PARCEL FAMILY from AOSP source truth (Bundle->Parcelable+Cloneable, Intent->Parcelable+Cloneable, ParcelUuid/Size/SizeF->Parcelable, Binder->IBinder, SparseArray->Cloneable) plus Parcelable/IBinder as membership-only interface markers; (2) dalvik_class_assignable (the F-103 Class.isInstance/isAssignableFrom walk) now consults the F-NEW-236 framework_interface_closure as a fallback after the DEX walk — ONE central point so every reflection-family consumer sees the boot-classpath truth ART sees. No app conditions, no package names, no R8-name interception.",
+   "synthetic_probe": "fixtures/cont7w3_probe (w3_probe.apk sha256 7db7ef0dda248836...): W3-01 Parcelable.isInstance(Bundle)=true PASS; W3-02 acceptable-classes walk accepts Bundle PASS; W3-03 isAssignableFrom=true PASS; W3-04 Parcelable.isInstance(String)=false PASS (honest negative); W3-05 isInstance(null)=false PASS (OpenJDK). 12/12 rows PASS.",
+   "evidence": "evidence/cont7/w3/ (dooz baseline IAE reproduction at Lxe1;.a pc=88 msg via Lpm;.A; Ldf1;.d->Lm4;->Le72;.k lambda chain; CLASS-LAW rows showing token=Landroid/os/Parcelable; probe=Landroid/os/Bundle; -> FALSE pre-fix); anchors 5/5x3 byte-identical after fix.",
+   "first_fixed_run": "dooz saveable IAE 1 -> 0; uncaught exceptions 1 -> 0; stub census 29735 -> 34552 implemented (composition advanced); dooz screenshot byte-identical d602648e8e401895 (zero visual drift)"
+  },
+  {
+   "id": "F-NEW-254",
+   "title": "Platform exception-chain extends edges missing: kotlinx Finishing ISE 'State is Lij0;@id' (Lnj0;.a -> Lv;.i) — instance-of Throwable answered FALSE for an app CancellationException subclass (dooz composition after F-NEW-253)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "runtime/platform-class-hierarchy",
+   "root_cause": "PROVEN AT RUNTIME (2026-10-06): Lnj0; = kotlinx.coroutines.internal.Finishing (_rootCause/_isCompleting/_exceptionsHolder via sun.misc.Unsafe volatile slots, offsets 336/344/352 from objectFieldOffset). addExceptionLocked's else->error('State is ...') fired because the _exceptionsHolder held R8 Lij0; (extends java.util.concurrent.CancellationException) while the holder class test (instance-of Throwable arm) answered FALSE: the DEX superclass walk ends at the platform boundary (CancellationException has no class_def in the APK, so class_to_superclass_ has no edge) and framework_direct_superclass had NO CancellationException edge — the walk broke instead of reaching Throwable. Same platform-metadata gap as F-NEW-253 but the EXTENDS arm.",
+   "fix": "TWO COORDINATED GENERIC POINTS: (1) framework_direct_superclass gained the LIBCORE EXCEPTION CHAIN from JDK source truth (CancellationException->IllegalStateException, IOException->Exception, ExecutionException/TimeoutException->Exception, RejectedExecutionException/ClassCastException/ArithmeticException/NegativeArraySizeException->RuntimeException, NumberFormatException->IllegalArgumentException, InterruptedException/CloneNotSupportedException/ReflectiveOperationException->Exception, ClassNotFoundException->ReflectiveOperationException, Array/StringIndexOutOfBounds->IndexOutOfBoundsException); (2) dalvik_class_assignable's walk now falls back to framework_superclass_of(walk) on a DEX-map miss — the SAME fallback law is_subclass_of (instance-of path) already implements, so DEX and framework hierarchies compose into ONE ancestry walk everywhere.",
+   "synthetic_probe": "fixtures/cont7w3_probe: W3-06 CancellationException instanceof Throwable PASS; W3-07 Throwable.isInstance(app CancellationException subclass)=true PASS; W3-08 IllegalStateException.isAssignableFrom(app subclass) PASS; W3-09 isInstance(null)=false PASS (honest negative).",
+   "evidence": "evidence/cont7/w3/ (R337-UNSAFE objectFieldOffset rows for Lnj0;._rootCause/_isCompleting/_exceptionsHolder; static decode of Lnj0;.a CAS-with-list-accumulation + 'State is ' throw helper; Lij0; class hierarchy from DEX class_defs).",
+   "first_fixed_run": "dooz 'State is Lij0;' ISE 1 -> 0; run reached clean composition-to-budget with ZERO uncaught exceptions for the first time; screenshot byte-identical d602648e8e401895"
+  },
+  {
+   "id": "F-NEW-255",
+   "title": "List.listIterator() shadow stub answered NULL (handled_void) for an OBJECT-returning method: ListIterator.hasPrevious NPE at Lyl;.g pc=1746 via Ljd1;.<init> storing a null backing iterator (dooz composition after F-NEW-254)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "framework/collection-shadow",
+   "root_cause": "PROVEN AT RUNTIME (FIELD-TRACE + METHOD-TRACE + static decode, 2026-10-06): CollectionShadow.dispatch routed 'listIterator' into the generic-stub block returning handled_void() — on the shadow channel an OBJECT-returning method must never answer void/null (ART: listIterator() NEVER returns null). Live chain: R8 Ljd1; (implements java.util.ListIterator, fields e:I cursor / f:Object next / g:Object backing) ctor reads kd1.e (the backing List) and calls List.listIterator() (ctor pc=23 invoke-interface) to store f; the NULL answer left f unset/null; Lyl;.g pc=1742 iget-object read null; pc=1746 invoke-interface ListIterator.hasPrevious -> f141-null-recv NPE -> uncaught at MainActivity.onCreate. Direct successor of the F-NEW-237 per-iterator-cursor law (iterator() already minted real boxes).",
+   "fix": "ONE POINT, GENERIC (OpenJDK AbstractList.ListItr law on the shadow channel, box-compatible with F-NEW-237): CollectionShadow gained a real listIterator()/listIterator(int) implementation minting an iterator box (__iterator_parent__ + __iterator_pos__ = start index) typed Ljava/util/ListIterator;, plus hasPrevious (pos>0), previous (serve element[pos-1] kind-faithfully through the SAME view/array/elements layers as next(), cursor moves back), nextIndex (pos), previousIndex (pos-1). hasNext/next interoperate on the same box. No app conditions; listIterator removed from the handled_void stub list.",
+   "synthetic_probe": "fixtures/cont7w3_probe: W3-10 forward+backward cursor walk (next x3, previous x2, nextIndex/previousIndex) PASS; W3-11 listIterator(index=size) starts at end, previous works PASS; W3-12 empty list: hasNext=false AND hasPrevious=false, no crash PASS (honest negative).",
+   "evidence": "evidence/cont7/w3/ (FIELD-TRACE window: put-obj Lkd1;.e obj#5332 -> ctor Ljd1;.e=0/g=5332 with NO f store -> get-obj Lkd1;.e -> hasPrevious NPE; METHOD-TRACE register window v6=obj#5333 -> v6=<unset> at pc=1744).",
+   "first_fixed_run": "dooz hasPrevious NPE 1 -> 0; stub census 34552 -> 34736 implemented; zero uncaught exceptions; screenshot byte-identical d602648e8e401895"
+  },
+  {
+   "id": "F-NEW-256",
+   "title": "Compose LayoutNode draw produces ZERO canvas content ops: Lt4;.dispatchDraw runs clean (AndroidOwner:draw entered, Lel0;.i root draw + Luc0;.g draw-manager loop invoked, Canvas receives only translate x10) with first_missing_stage=APP_DRAW_OPS (dooz; DEFAULT_BACKGROUND_ONLY verdict after F-NEW-255)",
    "status": "CLASSIFIED",
    "priority": "P1",
-   "layer": "framework/compose-savedstate",
-   "root_cause": "After F-NEW-252 the dooz composition reaches rememberSaveable registration: DisposableSaveableStateRegistry.registerValue (R8: Lxe1;.a pc=85) throws IAE 'Landroid/os/Bundle;@<id> cannot be saved using the current SaveableStateRegistry...' because canBeSaved's bundle-storable check rejects one of the Bundle's contents. On ART the same Bundle passes (the app ships). First divergence: Lxe1;.a pc=85, chain rememberSaveable -> registerValue -> canBeSaved walk. The app-side check inspects Bundle contents through Bundle.get/keySet — the engine's Bundle shadow must return values whose runtime types satisfy the canBeSavedToBundle law for bundles the app legitimately stores.",
-   "evidence": "run/cont7w2/fix3.log THROWABLE-MSG at Lxe1;.a pc=85 depth=14; 1 uncaught in-flight exception at dooz HEAD-wave-2 binary 5006834b2d2ae63b; verdict DEFAULT_BACKGROUND_ONLY with APP_DRAW_OPS=0",
-   "next": "source-first: androidx.compose.runtime.saveable DisposableSaveableStateRegistry.canBeSavedToBundle law + the engine Bundle shadow's value-class fidelity; synthetic Bundle canBeSaved probe (positive: primitives/String/Bundle-nested; negative: non-storable type -> the REAL IAE) before any engine change; do NOT patch the exception site"
+   "layer": "framework/compose-draw",
+   "root_cause": "CLASSIFIED with proven first divergence (NOT investigated to root this wave per battery-priority discipline): dispatchDraw pass-1 (METHOD-TRACE) shows tv0.i()=TRUE and ONE Luc0;.g() draw-manager invocation; the engine's CanvasShadow records ZERO draw ops (C013-ONDRAW ops=0, CUSTOMVIEW unrendered recorded). The gap is inside the LayoutNode/layer draw recursion (render-node vs software-canvas path): either the composed node tree is empty at the root, or the per-node draw records into a detached graphics-layer recording surface instead of the passed Canvas. Candidate faces named for next wave: (a) root LayoutNode children materialization, (b) Canvas-bridge draw-op family (drawRect/drawImage/drawText on the shadow channel), (c) LayerBuilder software-path routing.",
+   "fix": "NOT IMPLEMENTED (discipline: no blind patching of the draw path; synthetic Canvas-op probe first next wave).",
+   "evidence": "evidence/cont7/w3/ (dispatchDraw trace window ending at pc=103 taken -> pc=143; DRAWWIN-BRIDGE inventory showing Canvas.translate x10 only; NODE-CENSUS Lt4; children=0 with measure 1080x1920 reached).",
+   "first_divergence": "dooz: composition clean, frames run, verdict DEFAULT_BACKGROUND_ONLY (honest), APP_DRAW_OPS=0"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 558,
- "count": 558,
+ "total": 562,
+ "count": 562,
  "meta": {
   "last_update": "S132 reuse-proof wave",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
@@ -4666,7 +4703,7 @@
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 8,
   "IMPLEMENTED": 35,
-  "ROOT-CAUSED-FIXED": 88,
+  "ROOT-CAUSED-FIXED": 91,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 23,
@@ -4683,8 +4720,9 @@
   "VERIFIED": 3,
   "BLOCKED": 1,
   "PENDING": 13,
-  "OBSERVED": 2
+  "OBSERVED": 2,
+  "CLASSIFIED": 1
  },
- "total_roots": 556,
+ "total_roots": 562,
  "generated": "2026-10-04"
 }

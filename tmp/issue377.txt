@@ -1,0 +1,427 @@
+CONT-6 — External Root KB Forensic Audit + Runtime Fan-out Validation · Issue #377 · Sh-TB/MiniAndroid-Compatibility-Runtime · GitHub
+Skip to content
+Navigation Menu
+Sign in
+Appearance settings
+Platform
+AI CODE CREATION
+GitHub Copilot
+Write better code with AI
+GitHub Copilot app
+Direct agents from issue to merge
+MCP Registry
+Integrate external tools
+DEVELOPER WORKFLOWS
+Actions
+Automate any workflow
+Codespaces
+Instant dev environments
+Issues
+Plan and track work
+Code Review
+Manage code changes
+Code Quality
+Enforce quality at merge
+APPLICATION SECURITY
+GitHub Advanced Security
+Find and fix vulnerabilities
+Code security
+Secure your code as you build
+Secret protection
+Stop leaks before they start
+EXPLORE
+Why GitHub
+Documentation
+Blog
+Changelog
+Marketplace
+View all features
+Solutions
+BY COMPANY SIZE
+Enterprises
+Small and medium teams
+Startups
+Nonprofits
+BY USE CASE
+App Modernization
+DevSecOps
+DevOps
+CI/CD
+View all use cases
+BY INDUSTRY
+Healthcare
+Financial services
+Manufacturing
+Government
+View all industries
+View all solutions
+Resources
+EXPLORE BY TOPIC
+AI
+Software Development
+DevOps
+Security
+View all topics
+EXPLORE BY TYPE
+Customer stories
+Events & webinars
+Ebooks & reports
+Business insights
+GitHub Skills
+SUPPORT & SERVICES
+Documentation
+Customer support
+Community forum
+Trust center
+Partners
+View all resources
+Open Source
+COMMUNITY
+GitHub Sponsors
+Fund open source developers
+PROGRAMS
+Security Lab
+Maintainer Community
+GitHub Stars
+Archive Program
+REPOSITORIES
+Topics
+Trending
+Collections
+Enterprise
+ENTERPRISE SOLUTIONS
+Enterprise platform
+AI-powered developer platform
+AVAILABLE ADD-ONS
+GitHub Advanced Security
+Enterprise-grade security features
+Copilot for Business
+Enterprise-grade AI features
+Premium Support
+Enterprise-grade 24/7 support
+Pricing
+Search
+/
+Sign in
+Sign up
+Appearance settings
+You signed in with another tab or window.
+Reload
+to refresh your session.
+You signed out in another tab or window.
+Reload
+to refresh your session.
+You switched accounts on another tab or window.
+Reload
+to refresh your session.
+Dismiss alert
+{{ message }}
+Sh-TB
+/
+MiniAndroid-Compatibility-Runtime
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+1
+Star
+1
+Code
+Issues
+270
+Pull requests
+0
+Actions
+Projects
+Security and quality
+0
+Insights
+Additional navigation options
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security and quality
+Insights
+CONT-6 — External Root KB Forensic Audit + Runtime Fan-out Validation
+#377
+New issue
+Copy link
+New issue
+Copy link
+Open
+Open
+CONT-6 — External Root KB Forensic Audit + Runtime Fan-out Validation
+#377
+Copy link
+Description
+Sh-TB
+opened
+on Oct 5, 2026
+Issue body actions
+CONT-6 — External Root Knowledge Base Forensic Audit + Runtime Fan-out Validation
+Canonical external knowledge snapshot
+The latest supplied archive has now been independently inspected.
+Archive:
+MiniAndroid_Root_Audit_Archive (1).zip
+Archive SHA-256:
+d717e9c745609fdf3ca11eb5d60649910089c9e2ca1d2ad942c22f4712ad7931
+Archive size:
+2,171,810 bytes
+Audit date:
+2026-10-05
+Audited MiniAndroid HEAD inside archive:
+f8d4088b9384b603ce5a903eefe037412eb104d3
+Current project HEAD at CONT-6 creation:
+1c2ccdfd24957cef8affc4989dd439ccb30d7276
+The latest archive DOES contain the claimed 5,434/5,976 dataset
+Independent count of
+download/MiniAndroid_Root_Knowledge_Base.jsonl
+:
+5,976 total records
+5,434 VERIFIED-NEW
+274 VERIFIED-EXISTING
+266 PARTIAL-EXISTING
+2 REJECTED
+40 domain JSONL files
+5,976 unique IDs
+250 VERIFIED-NEW entries have empty
+test_apks
+all rows are source/audit knowledge records; the
+VERIFIED-NEW
+label must NOT be interpreted as real-APK runtime proof
+head
+is empty in the JSONL rows; use the archive INDEX/report's audited HEAD
+f8d4088b...
+as snapshot provenance
+the archive's own human report states that existing registry roots were catalogued rather than independently re-verified in this audit.
+The archive is therefore a legitimate and useful
+external discovery database
+, but it is NOT a ready-made 5,434-item runtime worklist.
+CRITICAL ARTIFACT ACCESS CONTRACT
+Do NOT paste the 6.5 MB JSONL into this Issue.
+The full archive must remain available to the coder as a separate artifact. Use this priority order:
+Preferred permanent location:
+a dedicated repository research-data path, NOT
+root_registry.json
+, e.g.
+research/external-root-kb/current/MiniAndroid_Root_Audit_Archive.zip
+plus a small
+MANIFEST.md
+containing archive SHA-256, audit HEAD, record counts, and update date.
+If repository binary/data publication is not yet available:
+attach the exact ZIP to this Issue as a GitHub issue attachment and record its SHA-256 here.
+Never copy the full JSONL into the Issue body.
+Never merge these 5,434 findings into the runtime root registry merely because they exist in the KB.
+Future snapshots replace/update only the external KB artifact and manifest; the Issue remains the stable audit contract.
+Keep old snapshot hashes in a tiny history table so a later KB can always be compared against the previous one.
+Future snapshot protocol
+For every new archive:
+new archive -> SHA256 -> record counts -> compare IDs -> compare semantic clusters -> compare current HEAD -> runtime validation -> only then promote selected roots
+The coder MUST print the exact snapshot SHA it consumed at the beginning of every CONT-6 run.
+REQUIRED WORKFLOW
+Phase 0 — snapshot and current HEAD
+Read the external KB artifact directly.
+Verify archive SHA-256.
+Verify current main HEAD.
+Verify the archive's audited HEAD.
+Record stale-vs-current findings.
+Do not modify
+root_registry.json
+in the ingestion phase.
+Phase 1 — forensic reconciliation
+Classify every external candidate:
+A
+= already covered by current registry
+B
+= same root, additional evidence
+C
+= existing semantic root but missing sub-law
+D
+= genuinely new generic runtime/platform root
+E
+= environment/prerequisite
+F
+= source-only/reference/future/out-of-scope
+X
+= duplicate/invalid/over-split/malformed
+Mandatory:
+exact ID uniqueness
+semantic duplicates
+original/source collisions
+current registry overlap
+already-fixed-at-current-HEAD findings
+stale source references
+source-only vs runtime-proven distinction
+environment findings incorrectly counted as runtime roots.
+Do NOT create 5,434 registry entries.
+Phase 2 — semantic clustering
+Collapse API/method-level observations into semantic laws.
+Explicitly cluster:
+Intent/Activity/Service/lifecycle families
+Collections/ArrayList/Map/Iterator families
+JNI slot families
+View/ViewGroup families
+Compose/Material3 families
+WebView families
+reflection families
+NIO/security/crypto families
+Kotlin/coroutines families
+media/camera families
+libGDX/game-engine families.
+For each cluster:
+raw findings
+distinct semantic laws
+current coverage
+fan-out estimate
+best real APK consumers
+highest-confidence candidate root.
+Raw row count MUST NOT be reported as independent root-cause count.
+Phase 3 — highest-ROI runtime validation
+Select approximately 20 high-confidence semantic clusters, not thousands of rows.
+Selection priority:
+current white/black/partial frontiers
+games
+general apps
+high fan-out
+strongest source evidence
+independent consumer diversity.
+Use approximately 10–20 real APK consumers total, including at least:
+3 games
+3 non-game apps
+one previously white/partial title
+one known-good regression control.
+Phase 4 — six-game claim validation
+The external audit claims these six built-in games reached REAL_APP_CONTENT:
+2048
+mini-tetris
+minicraft
+snake-deluxe
+snake-neon
+tictactoe-deluxe
+Validate independently at current HEAD where possible.
+For every title record:
+exact APK SHA
+build provenance
+install identity
+ViewTree
+draw operations
+app-owned content provenance
+pixel metrics
+screenshot SHA
+state/input evidence where applicable
+3 clean runs
+first divergence if not successful.
+Non-white pixels alone are NOT sufficient. A fixture/background/harness surface is not REAL_APP_CONTENT.
+The archive's six-game result is a valuable hypothesis and acceptance candidate, not a current-HEAD fact until re-run.
+Phase 5 — generic law and fan-out
+For each confirmed law:
+source -> law -> current divergence -> first runtime divergence -> generic fix/non-fix -> real APK -> 3 runs -> independent consumer -> fan-out
+Measure:
+titles improved
+games improved
+apps improved
+visual/state/lifecycle/storage/media/native effect
+regressions.
+Do not claim “5,434 roots fixed”.
+Phase 6 — registry promotion
+Only
+C/D
+candidates can enter the normal registry.
+Before adding anything:
+full registry search
+evidence-history search
+current HEAD check
+semantic duplicate check
+external provenance attached
+runtime proof attached separately.
+The external KB remains a discovery/source artifact.
+Required final table
+Metric
+Count
+External raw records
+VERIFIED-NEW source findings
+Existing
+REJECTED
+Semantic clusters
+A existing
+B evidence-only
+C missing sub-law
+D genuinely new
+E environment
+F source/future/out-of-scope
+X duplicate/over-split/invalid
+Runtime-proven new roots
+Real APK consumers
+Independently improved games
+Independently improved apps
+Regressions
+Also report:
+top 20 semantic clusters
+strongest 5 runtime proofs
+six-game claim verdict
+current-HEAD overlap
+stale-finding count
+duplicate/over-splitting estimate
+recommendation:
+IMPORT / PARTIAL-IMPORT / DISCOVERY-ONLY / REJECT
+HARD RULES
+No app-specific hacks.
+No package-name conditionals.
+No bulk 5,434-root implementation.
+No registry pollution.
+No source-only -> runtime-proven promotion.
+No RESUMED/exit=0/PNG-only closure.
+Preserve source -> law -> divergence -> runtime -> 3-run evidence discipline.
+The external KB is a continuously growing
+searchlight
+, not the runtime registry.
+Snapshot history
+Snapshot
+SHA-256
+Records
+NEW
+Audited HEAD
+2026-10-05 FINAL v3
+d717e9c745609fdf3ca11eb5d60649910089c9e2ca1d2ad942c22f4712ad7931
+5976
+5434
+f8d4088b
+Add one row for every future snapshot. Never delete old hashes.
+Reactions are currently unavailable
+Activity
+Sign up for free
+to join this conversation on GitHub.
+Already have an account?
+Sign in to comment
+Metadata
+Metadata
+Assignees
+No one assigned
+Labels
+No labels
+No labels
+Projects
+No projects
+Milestone
+No milestone
+Relationships
+None yet
+Development
+No branches or pull requests
+Issue actions
+Open in GitHub Copilot app
+Footer
+© 2026 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Community
+Docs
+Contact
+Manage cookies
+Do not share my personal information
+You can’t perform that action at this time.

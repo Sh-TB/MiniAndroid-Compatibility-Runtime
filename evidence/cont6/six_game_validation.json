@@ -1,0 +1,289 @@
+{
+ "wave": "CONT-7 W3 / CONT-6 Phase 4",
+ "head": "2938a888",
+ "binary_sha16": "daeb0aa8daaec2b3",
+ "games": [
+  {
+   "apk": "/home/z/my-project/upload/s80_games/build_2048/g2048_v1.0_vc1.apk",
+   "apk_sha256": "c933b5b82192087585b30a0bd1bdaf1ae6e8d80a3901ecdec12b75f0a3eac13d",
+   "install": "OK",
+   "runs": [
+    {
+     "run": 1,
+     "screenshot_sha16": "7ad9a8bdefba539b",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1175590,
+     "app_draw_ops": 34,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 2,
+     "screenshot_sha16": "7ad9a8bdefba539b",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1175590,
+     "app_draw_ops": 34,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 3,
+     "screenshot_sha16": "7ad9a8bdefba539b",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1175590,
+     "app_draw_ops": 34,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    }
+   ],
+   "deterministic_x3": true,
+   "verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "all_runs_verdict": "REAL_APP_CONTENT",
+   "title": "2048",
+   "package": "com.miniandroid.g2048"
+  },
+  {
+   "apk": "/home/z/my-project/upload/s80_games/build_tetris/tetris_v1.0_vc1.apk",
+   "apk_sha256": "700a3dcf9a98b26ef49ef8c36040011da325d926edb4c9a56853008924928bab",
+   "install": "OK",
+   "runs": [
+    {
+     "run": 1,
+     "screenshot_sha16": "26ccfce917c0e24c",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1143938,
+     "app_draw_ops": 70,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 2,
+     "screenshot_sha16": "26ccfce917c0e24c",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1143938,
+     "app_draw_ops": 70,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 3,
+     "screenshot_sha16": "26ccfce917c0e24c",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1143938,
+     "app_draw_ops": 70,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    }
+   ],
+   "deterministic_x3": true,
+   "verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "all_runs_verdict": "REAL_APP_CONTENT",
+   "title": "mini-tetris",
+   "package": "com.miniandroid.tetris"
+  },
+  {
+   "apk": "/home/z/my-project/upload/s86_games/build_minicraft/minicraft_v1.0_vc1.apk",
+   "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
+   "install": "OK",
+   "runs": [
+    {
+     "run": 1,
+     "screenshot_sha16": "ce27f331770f6979",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1211493,
+     "app_draw_ops": 735,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 2,
+     "screenshot_sha16": "ce27f331770f6979",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1211493,
+     "app_draw_ops": 735,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 3,
+     "screenshot_sha16": "ce27f331770f6979",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1211493,
+     "app_draw_ops": 735,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    }
+   ],
+   "deterministic_x3": true,
+   "verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "all_runs_verdict": "REAL_APP_CONTENT",
+   "title": "minicraft",
+   "package": "com.miniandroid.minicraft"
+  },
+  {
+   "apk": "/home/z/my-project/upload/s80_games/build_sd/snake_deluxe_v1.0_vc1.apk",
+   "apk_sha256": "551eca798f88c1bbc44726d6a1f97a2a501cc753edcff76001ed8440aee282de",
+   "install": "OK",
+   "runs": [
+    {
+     "run": 1,
+     "screenshot_sha16": "34a712689ce66e58",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1425075,
+     "app_draw_ops": 262,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 2,
+     "screenshot_sha16": "34a712689ce66e58",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1425075,
+     "app_draw_ops": 262,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 3,
+     "screenshot_sha16": "34a712689ce66e58",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1425075,
+     "app_draw_ops": 262,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    }
+   ],
+   "deterministic_x3": true,
+   "verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "all_runs_verdict": "REAL_APP_CONTENT",
+   "title": "snake-deluxe",
+   "package": "com.miniandroid.snakedeluxe"
+  },
+  {
+   "apk": "/home/z/my-project/upload/s98_games/build_snakeneon/snakeneon_v1.0_vc1.apk",
+   "apk_sha256": "b36885c181a323ab5f86d73ba4538ae4f226b9fdc0be8eff11aab05c2f76be26",
+   "install": "OK",
+   "runs": [
+    {
+     "run": 1,
+     "screenshot_sha16": "477bb95e1e6398ce",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 166363,
+     "app_draw_ops": 44,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 2,
+     "screenshot_sha16": "477bb95e1e6398ce",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 166363,
+     "app_draw_ops": 44,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 3,
+     "screenshot_sha16": "477bb95e1e6398ce",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 166363,
+     "app_draw_ops": 44,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    }
+   ],
+   "deterministic_x3": true,
+   "verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "all_runs_verdict": "REAL_APP_CONTENT",
+   "title": "snake-neon",
+   "package": "com.miniandroid.snakeneon"
+  },
+  {
+   "apk": "/home/z/my-project/upload/s83_games/build_ttt/tictactoe_deluxe_v1.0_vc1.apk",
+   "apk_sha256": "d04d92eab8dbbb11b38f4299c877766b7aca3b9bcc5b0631ef1183fbca98209a",
+   "install": "OK",
+   "runs": [
+    {
+     "run": 1,
+     "screenshot_sha16": "0a1cd01bb490fdc5",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1198904,
+     "app_draw_ops": 63,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 2,
+     "screenshot_sha16": "0a1cd01bb490fdc5",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1198904,
+     "app_draw_ops": 63,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    },
+    {
+     "run": 3,
+     "screenshot_sha16": "0a1cd01bb490fdc5",
+     "app_boundary_exceptions": 0,
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1198904,
+     "app_draw_ops": 63,
+     "uncaught_exceptions": 0,
+     "canvas_ops_file": false
+    }
+   ],
+   "deterministic_x3": true,
+   "verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "all_runs_verdict": "REAL_APP_CONTENT",
+   "title": "tictactoe-deluxe",
+   "package": "com.miniandroid.tictactoedeluxe"
+  }
+ ]
+}
