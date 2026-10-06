@@ -1,0 +1,36 @@
+{
+ "artifact": "w5_regression_battery.json — CONT-9 W5 §C/§11: full regression at the diagnostics-patched binary (semantic-neutral proof). Dooz = Compose consumer under test; six games = View/Canvas regression controls (3 of 6 independently re-run per §H budget).",
+ "head": "fda41b78f2535484fe654895c2ad9ceb737df3f1",
+ "binary_sha16": "c0fa65ccc7f284e7",
+ "engine_changes_this_wave": "diagnostics only (MINIANDROID_CL_TRACE caller-frame trace + qualified FIELD-TRACE filter) — env-gated, read-only; zero semantic change asserted by byte-identical anchors",
+ "anchors_x3": {
+  "opencalc": ["e364b001ee7abd66", "e364b001ee7abd66", "e364b001ee7abd66"],
+  "chess": ["b5a7a35d5fe0564b", "b5a7a35d5fe0564b", "b5a7a35d5fe0564b"],
+  "dooz": ["d602648e8e401895", "d602648e8e401895", "d602648e8e401895"],
+  "microtimer": ["da73010a37dd0189", "da73010a37dd0189", "da73010a37dd0189"],
+  "unote": ["4f1a9e4e8f64fae8", "4f1a9e4e8f64fae8", "4f1a9e4e8f64fae8"],
+  "result": "5/5 x3 byte-identical to recorded anchors (evidence/cont375/EXECUTION_LEVEL_MATRIX.jsonl lineage) — ZERO DRIFT"
+ },
+ "six_game_controls": {
+  "harness": "canonical cont7w3_sixgames run profile (install store, --package, real-dalvik, --dump-view-tree --trace --max-seconds 110)",
+  "tested": {
+   "2048": {"sha_x3": "7ad9a8bdefba539b", "matches_recorded": true, "recorded_verdict": "REAL_APP_CONTENT"},
+   "mini-tetris": {"sha_x3": "26ccfce917c0e24c", "matches_recorded": true, "recorded_verdict": "REAL_APP_CONTENT"},
+   "minicraft": {"sha_x3": "ce27f331770f6979", "matches_recorded": true, "recorded_verdict": "REAL_APP_CONTENT"}
+  },
+  "not_tested_this_wave": "snake-deluxe / snake-neon / tictactoe-deluxe — controls unaffected by the wave (zero semantic changes); recorded anchors stand from CONT-7 W3 (evidence/cont6/six_game_validation.json)",
+  "result": "3/3 tested reproduce recorded REAL_APP_CONTENT anchors x3"
+ },
+ "gate_a_probe": {
+  "apk_rebuilt": "gate_a_probe.apk restored via scripts/cont9_rebuild_gate_a_probe.sh (aapt2 link + ECJ 1.8 + D8 release + gcc x86_64 libprobe.so + STORED assets — W4 metadata lesson applied)",
+  "rows": "98 PASS / 0 FAIL / 1 INFO (recorded historical: 97/0/2 — the rebuilt probe is STRICTER: NAT real-load rows now genuinely execute)",
+  "apk_sha256": "33ebb0b7cb1eeb7e3907b968c37ae165",
+  "libprobe_sha16": "ad413625925ed8e5"
+ },
+ "negatives": "19/19 PASS (scripts/s41_gatea_negative.py, live run at this binary)",
+ "reinstall_matrix": "8/8 PASS",
+ "skill_selftest": "13/13 PASS (restored from 1/13 by gate_a_probe.apk rebuild — OP-1 depends on the canonical probe APK)",
+ "goldens": "4/4 PASS REAL_APP_CONTENT (user_golden_gate.py)",
+ "fishrings": "not re-run this wave — zero engine semantic changes, CONT-8 scheduling classification stands (a341e3ad9092f640 x3 recorded)",
+ "verdict": "REGRESSION GREEN — the wave's diagnostics and evidence collection broke nothing"
+}
