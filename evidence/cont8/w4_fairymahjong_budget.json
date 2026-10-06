@@ -1,0 +1,15 @@
+{
+ "artifact": "w4_fairymahjong_budget.json — CONT-8 W4 §9: FairyMahjong productive-progress / budget classification",
+ "head": "50b63bc7",
+ "classification": "SUPERSEDED + ARTIFACT-LOST (honest)",
+ "apk_path_historical": "tmp/s115_apks/com.fairytrick.fairymahjong_5.apk (container reset destroyed tmp/; APK absent this session)",
+ "why_not_re-run": "APK artifact lost in the mid-campaign container reset; re-supply required. Not fabricated; not substituted.",
+ "historical_chain_supersedes_the_55M_budget_premise": [
+  "CONT-4: 'fairymahjong frontier CLASSIFIED with deterministic evidence chain (runtime root — three sequential engine law breaks: set-return, bounds-decode, reader-EOF, writer-accumulation) and FIXED source-first with four generic laws; the game completes its own pipeline exit=0' (worklog 6742)",
+  "CONT-5: Lr5;.g pc=150 chain — org.json JSONObject.toString() answered NULL for fully-serializable settings (F-NEW-243 generic org.json laws fixed: put/toString/get/opt/parse/remove/has/length + JSONArray(Collection) + boxed unwrap + AOSP typeMismatch). POST-FIX: fairymahjong exit=0 Status:SUCCESS x3 BYTE-IDENTICAL 76e097244767d6c3 (worklog 6777)",
+  "F-NEW-244 (same app family): kotlin-stdlib clinit spin (Ln3/b pc=0x44, 50001-visit F084 halt -> VirtualMachineError) — the 'infinite/repeated semantic loop' the directive worries about was PROVEN to be a semantic loop (const-class array slots; cursor never advanced), NOT instruction starvation; fixed at three faithful sites (worklog 6779)",
+  "CONT-5 phase-3 regression: fairymahjong 76e097244767d6c3 x3 SUCCESS at binary f19af76f4082f2f3 (worklog 6805)"
+ ],
+ "budget_verdict": "Instruction-budget increase is NOT the fix for this app and was never justified: the VirtualMachineError was a F084 halted infinite semantic loop (F-NEW-244) plus missing framework contracts (F-NEW-243), both root-caused and fixed. No productive-progress probe needed on top of the recorded halting-loop evidence.",
+ "re_verification_status": "PENDING on APK re-supply (recorded sha 76e097244767d6c3 is the acceptance target)"
+}
