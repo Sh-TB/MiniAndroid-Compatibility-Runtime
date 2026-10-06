@@ -129,3 +129,144 @@ GATE A multiapp harness NOT re-run this wave: its staged corpus (run/diff366/hid
 - Dispatchers.Main: **PENDING** (unreached; mechanism answered from evidence, no Lv;.o hack — none needed).
 - R8-identity hypothesis: **NOT_ROOT_CAUSE** (proven by the executed chain; no resolver change).
 - F-NEW-251: **VERIFIED_CURRENT** (§7 contract green; not reopened).
+
+---
+
+# WAVE 3 — CONT-6 EXECUTION + F-NEW-253/254/255 (2026-10-06)
+
+HEAD at execution: `2938a888` (code base) · FINAL BINARY SHA16: `daeb0aa8daaec2b3`
+(deterministic repro of wave-2 binary `5006834b2d2ae63b` FIRST — byte-identical rebuild from source after the container reset, zero code delta — then the three new generic laws)
+SKILL SELFTEST: 13/13 PASS · LAW-001 ABI census: zero flips (ELF e_machine from real bytes)
+
+## 1. ISSUE #377 READ COMPLETELY + SNAPSHOT PROTOCOL
+
+The full CONT-6 contract was read (tmp/issue377.html, committed). Snapshot
+printout: **archive bytes ABSENT this container** (post-reset loss) —
+Phases 1/2 (per-record reconciliation, clustering) NOT performed, honestly
+recorded. `research/external-root-kb/current/MANIFEST.md` created with the
+snapshot-history table and re-supply requirement. Runtime duties (Phase 4
+six-game re-validation + Phase 5 discipline) WERE executed.
+
+## 2. F-NEW-253 ROOT CAUSE (ROOT-CAUSED-FIXED) — SaveableStateRegistry / Class.isInstance
+
+Baseline reproduction at rebuilt HEAD: IAE "Landroid/os/Bundle;@5037 cannot
+be saved…" via Lxe1;.a pc=88 (message from Lpm;.A). The canBeSaved chain
+proven at runtime: Lxe1;.a → Lcf1;.d (obj#3216=Lfy;) → Ldf1;.d → Lf90;.i
+(obj#3194 = R8 merged-lambda Lm4;, sparse-switch selector 19) →
+invoke-static Le72;.k — the platform check walks the R8-trimmed
+acceptable-classes array (Serializable, Parcelable, String, SparseArray,
+Binder, Size, SizeF) via **java.lang.Class.isInstance (reflection)** — NOT
+instance-of bytecode (widened INSTANCEOF trace: zero Bundle-target checks;
+CLASS-LAW trace captured the exact rows: Parcelable.isInstance(Bundle) →
+FALSE). ROOT: dalvik_class_assignable consulted only APK-DEX + framework
+Views tables; Landroid/os/Bundle; (engine shadow, no DEX class_def) had no
+Parcelable edge. ART truth: Bundle implements Parcelable.
+FIX (generic, two points, one law): AOSP parcel family added to
+framework_class_interfaces + dalvik_class_assignable falls back to
+framework_interface_closure (F-NEW-236 tables = boot-classpath metadata).
+
+## 3. F-NEW-254 ROOT CAUSE (ROOT-CAUSED-FIXED) — platform exception chain
+
+Next face: ISE "State is Lij0;@5405" (kotlinx Finishing Lnj0;.a; fields
+_rootCause/_isCompleting/_exceptionsHolder via Unsafe offsets 336/344/352).
+Lij0; extends java.util.concurrent.CancellationException (DEX class_def) —
+the holder class-test (instance-of Throwable) answered FALSE because the
+DEX superclass walk ends at the platform boundary and
+framework_direct_superclass had no CancellationException edge.
+FIX (generic): libcore exception chain added (CancellationException→
+IllegalStateException + the standard family) + dalvik_class_assignable's
+walk falls back to framework_superclass_of on DEX-map miss — the SAME
+fallback is_subclass_of already implements; DEX+framework hierarchies now
+compose into ONE walk everywhere.
+
+## 4. F-NEW-255 ROOT CAUSE (ROOT-CAUSED-FIXED) — ListIterator shadow law
+
+Next face: NPE "ListIterator.hasPrevious on null" at Lyl;.g pc=1746. Chain
+proven: R8 Ljd1; (implements ListIterator) ctor calls List.listIterator()
+(ctor pc=23) to store backing field f — CollectionShadow routed
+'listIterator' to the handled_void() stub → NULL for an OBJECT-returning
+method → f never stored → hasPrevious NPE.
+FIX (generic, OpenJDK AbstractList.ListItr law): real listIterator()/
+listIterator(int) minting F-NEW-237-compatible iterator boxes + hasPrevious/
+previous/nextIndex/previousIndex cursor laws (kind-faithful element serving
+through the same view/array/elements layers as next()).
+
+## 5. SYNTHETIC PROBE (§6 discipline) — 12/12 PASS
+
+fixtures/cont7w3_probe (w3_probe.apk, SHA 7db7ef0d…): W3-01..05 F-NEW-253
+positives+honest negatives (Parcelable.isInstance(Bundle)=true; String/null
+stay FALSE); W3-06..09 F-NEW-254 (CancellationException→Throwable chain,
+app subclass, null negative); W3-10..12 F-NEW-255 (cursor walk,
+index-start, empty-list honesty). Zero uncaught exceptions.
+
+## 6. DOOZ RESULT (§9/§10 — honest)
+
+| Metric | Wave 1 | Wave 2 | Wave 3 (this) |
+|---|---|---|---|
+| Uncaught exceptions | 17 ISE errors | 1 | **0** |
+| Saveable IAE | — | 1 | **0** |
+| 'State is' ISE | — | — | **0** (fixed pre-bite) |
+| hasPrevious NPE | — | — | **0** (fixed pre-bite) |
+| Composition | died | died | **clean to budget** |
+| Stub census (implemented) | 29602 | 29735 | **34736** |
+| Verdict | DEFAULT_BACKGROUND_ONLY | DEFAULT_BACKGROUND_ONLY | **DEFAULT_BACKGROUND_ONLY (honest)** |
+| Screenshot SHA16 ×3 | d602648e8e401895 | d602648e8e401895 | **d602648e8e401895** (= anchor, zero drift) |
+
+Remaining blocker registered **F-NEW-256 (CLASSIFIED)**: dispatchDraw runs
+clean (AndroidOwner:draw → Lel0;.i root draw → Luc0;.g draw-manager loop)
+but records ZERO canvas content ops (only Canvas.translate ×10) — the
+LayoutNode/layer draw recursion face; first divergence proven, no blind
+patch (synthetic Canvas-op probe first next wave).
+
+## 7. FAN-OUT (§11)
+
+* chess (Compose anchor): byte-identical b5a7a35d ×3 — zero drift; its own
+  frontier (DEFAULT_BACKGROUND_ONLY/APP_DRAW_OPS) unchanged; it does not
+  reach the saveable/listIterator paths (only 2 isInstance calls) — deeper
+  fan-out owed when its frontier advances.
+* sudokusolver: NO_ROOT/WINDOW_ROOT (pre-existing frontier, unchanged).
+* The three laws are heap/shadow-central with zero app conditions; the
+  structural genericity is proven by the 12-row synthetic probe + zero
+  anchor drift. Second-APK live fan-out for F-NEW-253/254/255 stays OWED
+  (recorded) until another Compose title reaches those paths.
+
+## 8. REGRESSION BATTERY (§12) — ALL GREEN at daeb0aa8daaec2b3
+
+| Gate | Result |
+|---|---|
+| Anchors ×3 | 5/5 BYTE-IDENTICAL: opencalc e364b001 / chess b5a7a35d / dooz d602648e / microtimer da73010a / unote 4f1a9e4e |
+| User goldens | 4/4 PASS (2048 / snakedeluxe / minicraft REAL_APP_CONTENT, helloworld L6) |
+| Gate A probe | **97 PASS / 0 FAIL / 2 INFO** (after fixture restoration — see §9) |
+| Negatives | 19/19 PASS |
+| Reinstall matrix | 8/8 PASS |
+| Uninstall proof | ALL PASS |
+| Loading probe | ALL PASS (restart persistence ×2, WAL/db + file persisted) |
+| Skill self-test | 13/13 PASS |
+| ABI census | zero flips; dooz/chess MIXED IN-SCOPE; others PURE_DEX |
+
+## 9. ENVIRONMENT REPAIRS (post-reset, deterministic)
+
+* Engine rebuilt from source twice: first rebuild reproduced wave-2's
+  binary BYTE-IDENTICALLY (5006834b2d2ae63b) — clean repro proof.
+* gate_a_probe.apk rebuilt (fixture build) — first attempt drifted vs the
+  recorded probe (97/0/2 → 95/2/2, NAT-03/04 FAIL): the native libs were
+  lost in the reset. fixtures/native_probe/build_native_libs.sh rebuilt
+  libprobe.so (x86_64 SHA d5ec1f57fef3d2713958 == the recorded value,
+  byte-deterministic); staged into fixtures/gate_a_probe/lib/ → probe back
+  to 97/0/2 with NAT-04 real dlopen+JNI_OnLoad success. The gate-A FAILs
+  were fixture-byte drift, NOT a runtime regression.
+* hmap_probe.apk + loading_probe.apk rebuilt; loading + uninstall gates
+  restored to ALL PASS.
+
+## 10. HONEST LIMITATIONS (NOT COMPLETE)
+
+* **F-NEW-256** (dooz draw-ops frontier) CLASSIFIED, not fixed — the app
+  content frontier needs the Canvas-op synthetic probe first.
+* **CONT-6 Phases 1/2/3**: blocked on archive re-supply (bytes absent);
+  recorded in research MANIFEST + CONT6_FINAL_TABLE.
+* **Second-APK live fan-out** for the three new laws: owed (chess/sudoku
+  don't reach the paths at their current frontiers).
+* **Gate-A multiapp harness corpus** (run/diff366/hidden_sources): still
+  lost; unaffected surface; restore next wave.
+* Registry: 559 → **562 roots** (F-NEW-253 upgraded to ROOT-CAUSED-FIXED;
+  F-NEW-254/255 added ROOT-CAUSED-FIXED; F-NEW-256 added CLASSIFIED).

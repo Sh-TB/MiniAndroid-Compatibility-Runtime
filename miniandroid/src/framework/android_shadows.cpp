@@ -1417,6 +1417,179 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
 
+    // ── F-NEW-255 (CONT-7 W3): GENERIC LISTITERATOR LAW — OpenJDK
+    // AbstractList.ListItr semantics on the shadow channel, box-compatible
+    // with the F-NEW-237 iterator law (same __iterator_parent__ +
+    // __iterator_pos__ fields, so hasNext/next interoperate on the SAME
+    // box). Live face (dooz v23): List.listIterator() fell into the
+    // handled_void() stub — an OBJECT-returning method answered NULL —
+    // the app's ListIterator wrapper stored the null as its backing
+    // iterator and ListIterator.hasPrevious threw the NPE that killed
+    // composition before the first app frame. ART law: listIterator()
+    // never returns null; listIterator(int) starts at the requested
+    // index; hasPrevious/previous walk the SAME cursor backward;
+    // nextIndex/previousIndex are pure cursor arithmetic.
+    if (m == "listIterator") {
+        auto* state = get_or_create(obj_id);
+        int32_t start = 0;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::INT)
+            start = ctx.args[0].int_val > 0 ? ctx.args[0].int_val : 0;
+        if (heap_) {
+            uint32_t it_id = heap_->allocate("Ljava/util/ListIterator;");
+            heap_->set_object_ref_field(it_id, "__iterator_parent__", obj_id,
+                                        ctx.class_name, "", false);
+            heap_->set_object_int_field(it_id, "__iterator_pos__", start);
+            return CallResult::handled_object(it_id,
+                                              "Ljava/util/ListIterator;");
+        }
+        state->iterator_position = start;
+        return CallResult::handled_object(obj_id, ctx.class_name);
+    }
+    if (m == "hasPrevious") {
+        uint32_t parent_id = obj_id;
+        bool is_box = false;
+        uint32_t box_parent = 0;
+        if (heap_ &&
+            heap_->get_object_ref_field(obj_id, "__iterator_parent__",
+                                        box_parent) &&
+            box_parent != 0) {
+            parent_id = box_parent;
+            is_box = true;
+        }
+        auto* state = get_or_create(parent_id);
+        int32_t pos = 0;
+        if (is_box) {
+            heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
+        } else {
+            pos = static_cast<int32_t>(state->iterator_position);
+        }
+        return CallResult::handled_bool(pos > 0);
+    }
+    if (m == "previous" || m == "nextIndex" || m == "previousIndex") {
+        uint32_t parent_id = obj_id;
+        bool is_box = false;
+        uint32_t box_parent = 0;
+        if (heap_ &&
+            heap_->get_object_ref_field(obj_id, "__iterator_parent__",
+                                        box_parent) &&
+            box_parent != 0) {
+            parent_id = box_parent;
+            is_box = true;
+        }
+        auto* state = get_or_create(parent_id);
+        int32_t pos = 0;
+        if (is_box) {
+            heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
+        } else {
+            pos = static_cast<int32_t>(state->iterator_position);
+        }
+        if (m == "nextIndex") return CallResult::handled_int(pos);
+        if (m == "previousIndex") return CallResult::handled_int(pos - 1);
+        // previous(): AOSP serves element[pos-1] and moves the cursor back.
+        // Out-of-range previous (no previous element) answers null on the
+        // shadow channel — the guarded call pattern (hasPrevious first)
+        // never reaches it, same honesty law as next() out-of-range.
+        if (pos <= 0) return CallResult::handled_null();
+        int32_t idx = pos - 1;
+        if (state->is_view) {
+            if (idx < static_cast<int32_t>(state->view_elements.size())) {
+                const auto& el = state->view_elements[idx];
+                if (is_box)
+                    heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                idx);
+                else
+                    state->iterator_position = idx;
+                if (el.kind == 2) return CallResult::handled_string(el.string_val);
+                if (el.kind == 3) return CallResult::handled_int(el.int_val);
+                if (el.kind == 1 && el.object_id != 0)
+                    return CallResult::handled_object(el.object_id,
+                                                      "Ljava/lang/Object;");
+                return CallResult::handled_null();
+            }
+            return CallResult::handled_null();
+        }
+        // Array-backed parent fallback (same layering as next()).
+        {
+            int32_t alen = 0;
+            if (state->elements.empty() && heap_ &&
+                heap_->get_object_array_length(parent_id, alen) &&
+                alen >= 0 && idx < alen) {
+                std::string selem;
+                if (heap_->get_object_array_string_element(
+                        parent_id, static_cast<size_t>(idx), selem)) {
+                    if (is_box)
+                        heap_->set_object_int_field(obj_id,
+                                                    "__iterator_pos__", idx);
+                    else
+                        state->iterator_position = idx;
+                    return CallResult::handled_string(selem);
+                }
+                int32_t ielem = 0;
+                if (heap_->get_object_int_field(
+                        parent_id,
+                        "array[" + std::to_string(idx) + "]", ielem)) {
+                    if (is_box)
+                        heap_->set_object_int_field(obj_id,
+                                                    "__iterator_pos__", idx);
+                    else
+                        state->iterator_position = idx;
+                    return CallResult::handled_int(ielem);
+                }
+                uint32_t relem = 0;
+                if (heap_->get_object_array_ref_element(
+                        parent_id, static_cast<size_t>(idx), relem)) {
+                    if (is_box)
+                        heap_->set_object_int_field(obj_id,
+                                                    "__iterator_pos__", idx);
+                    else
+                        state->iterator_position = idx;
+                    if (relem != 0) {
+                        std::string relem_cls;
+                        if (heap_->get_object_class(relem, relem_cls))
+                            return CallResult::handled_object(relem, relem_cls);
+                        return CallResult::handled_object(relem,
+                                                          "Ljava/lang/Object;");
+                    }
+                    return CallResult::handled_null();
+                }
+            }
+        }
+        if (idx < static_cast<int32_t>(state->elements.size())) {
+            uint32_t elem = state->elements[idx];
+            if (is_box) {
+                heap_->set_object_int_field(obj_id, "__iterator_pos__", idx);
+            } else {
+                state->iterator_position = idx;
+            }
+            if (idx < static_cast<int32_t>(state->elem_kinds.size()) &&
+                state->elem_kinds[idx] == 2) {
+                std::string sv =
+                    idx < static_cast<int32_t>(state->elem_strings.size())
+                        ? state->elem_strings[idx]
+                        : std::string();
+                return CallResult::handled_string(sv);
+            }
+            if (idx < static_cast<int32_t>(state->elem_kinds.size()) &&
+                state->elem_kinds[idx] == 3) {
+                int32_t iv =
+                    idx < static_cast<int32_t>(state->elem_ints.size())
+                        ? state->elem_ints[idx]
+                        : 0;
+                return CallResult::handled_int(iv);
+            }
+            if (elem != 0) {
+                std::string elem_cls;
+                if (heap_ && heap_->get_object_class(elem, elem_cls)) {
+                    return CallResult::handled_object(elem, elem_cls);
+                }
+                return CallResult::handled_object(elem, "Ljava/lang/Object;");
+            }
+            return CallResult::handled_null();
+        }
+        return CallResult::handled_null();
+    }
+
     // Map operations
     if (m == "put") {
         auto* state = get_or_create(obj_id, true);
@@ -1764,8 +1937,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     // Generic stubs for less common methods.
     // (toArray moved to the F-066 real implementation above.)
+    // (listIterator family moved to the F-NEW-255 real implementation above.)
     if (m == "keySet" || m == "values" || m == "entrySet" ||
-        m == "subList" || m == "listIterator" ||
+        m == "subList" ||
         m == "sort" || m == "getIndex") {
         return CallResult::handled_void();
     }
