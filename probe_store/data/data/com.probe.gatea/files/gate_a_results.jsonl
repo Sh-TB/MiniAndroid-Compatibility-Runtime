@@ -79,7 +79,7 @@ GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@268
 GATEA|PREF-03|PASS|fresh-instance k_int=-42 contains=true
 GATEA|PREF-06|PASS|restart_counter=1
 GATEA|PREF-04|PASS|removed=true afterClear=0
-GATEA|DB-01|PASS|rows=1 last=row-1791277054602615242 isOpen=true
+GATEA|DB-01|PASS|rows=1 last=row-1791288332182508122 isOpen=true
 GATEA|DB-02|PASS|databaseList=[gatea.db] has-gatea=true
 GATEA|DB-03|PASS|helper-db=true name=helper.db
 GATEA|CFG-01|PASS|locale default wins (-zh-rCN/-land unreachable)

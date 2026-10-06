@@ -16427,6 +16427,22 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
         // law degenerates to the declaration). Classify by class_desc.
         is_instance = is_subclass_of(src_val.class_desc, target_type);
     }
+    else if (src_val.type == DalvikType::STRING_REF) {
+        // F-NEW-258 (CONT-7 W3): STRING-VALUE RUNTIME-TYPE LAW. An
+        // in-register string value IS a java.lang.String instance — ART
+        // instance-of and Class.isInstance agree on every non-null
+        // string (OpenJDK: String.class.isInstance(s) == true, s != null).
+        // The reflection path (F-103 isInstance law) already classifies
+        // STRING_REF probes as Ljava/lang/String;; the bytecode path
+        // fell through EVERY branch and answered FALSE. is_subclass_of
+        // then composes the framework closure so the full ART truth
+        // holds: String is-a CharSequence / Serializable / Comparable.
+        // Live face (directive §4 contract row B-07): a String retrieved
+        // from Bundle.get() answered getClass().getName()="java.lang.String"
+        // (getClass handles STRING_REF) while `raw instanceof String`
+        // answered FALSE — the two type paths disagreed on the same value.
+        is_instance = is_subclass_of("Ljava/lang/String;", target_type);
+    }
     else if (src_val.type == DalvikType::OBJECT_REF && src_val.object_id != 0) {
         // F-103 (S58, R-NEW-378) ART RUNTIME-TYPE LAW: the class of the
         // object a reference points to is the AUTHORITY for instance-of.
@@ -52039,6 +52055,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             bool def = (args.size() >= 3 && args[2].type == DalvikType::BOOLEAN) ? args[2].int_val != 0 : false;
             result = DalvikValue::make_bool(def);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── F-NEW-257 (CONT-7 W3): ANDROID BUNDLE PARCEL-FAMILY LAW ────
+        // AOSP BaseBundle/Bundle (android.os source truth): a Bundle is an
+        // in-memory key→value ArrayMap; the put* family stores the value's
+        // object reference and the get* family returns that SAME reference
+        // (no marshalling happens before Parcel.writeToParcel actually runs
+        // at the process boundary). putParcelable/putSerializable store the
+        // reference; getParcelable/getSerializable return it; get(key)
+        // returns the raw value (2-arg form answers the default when
+        // absent); a missing key answers null (AOSP get→null contract).
+        // Typed-getter mismatch law: getParcelable on a String-typed entry
+        // is a ClassCastException caught INSIDE the getter → null (AOSP
+        // Bundle.getParcelable typeWarning path — String is NOT a
+        // Parcelable); getSerializable on a String is LAWFUL (OpenJDK:
+        // java.lang.String implements Serializable).
+        // Live face (directive §4 contract probe, HEAD pre-fix): values
+        // given to putParcelable were silently dropped — containsKey=false,
+        // getParcelable=null — the Bundle content-fidelity divergence
+        // (§3 possibility A/D), distinct from the fixed canBeSaved
+        // reflection root (F-NEW-253).
+        if (method == "putParcelable" || method == "putSerializable") {
+            if (args.size() >= 3 && bundle_id && heap_.has_object(bundle_id)) {
+                std::string key =
+                    args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
+                if (!key.empty()) {
+                    heap_.set_object_field(bundle_id, "bundle:" + key, args[2]);
+                }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "get" || method == "getParcelable" ||
+            method == "getSerializable") {
+            if (args.size() >= 2 && bundle_id && heap_.has_object(bundle_id)) {
+                std::string key =
+                    args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
+                if (!key.empty()) {
+                    auto val = heap_.get_object_field(bundle_id, "bundle:" + key);
+                    if (val.has_value()) {
+                        if (method == "getParcelable" &&
+                            val->type == DalvikType::STRING_REF) {
+                            result = DalvikValue::make_null();
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        result = *val;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
+            }
+            // Bundle.get(key, defaultValue) 2-arg form (AOSP BaseBundle).
+            if (method == "get" && args.size() >= 3) {
+                result = args[2];
+            } else {
+                result = DalvikValue::make_null();
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }

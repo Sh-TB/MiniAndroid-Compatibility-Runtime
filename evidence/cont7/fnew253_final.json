@@ -1,0 +1,85 @@
+{
+  "artifact": "fnew253_final.json — CONT-7 WAVE 3 §11/§12/§13/§18: Dooz A/B, real-content proof, 3 clean runs, honest final status",
+  "final_binary_sha16": "c0fa65ccc7f284e7",
+  "final_head": "de6ede5c + this wave's changes (see commit)",
+  "dooz_apk": {"path": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk", "sha256_20": "299eab21ac8b3c6192ed"},
+  "ab_test": {
+    "BASE_recorded": {
+      "binary": "pre-c1407326 (5006834b2d2ae63b era; BASE binary lost to environment reset — cited from registry + dooz_wave2_final.json)",
+      "first_divergence": "F-NEW-253: IllegalArgumentException 'Landroid/os/Bundle;@<id> cannot be saved using the current SaveableStateRegistry' at Lxe1;.a pc=85/88 — rememberSaveable died in composition",
+      "uncaught_exceptions": 1,
+      "screenshot_sha16": "d602648e8e401895",
+      "visual_state": "DEFAULT_BACKGROUND_ONLY"
+    },
+    "PATCH_final": {
+      "binary": "c0fa65ccc7f284e7",
+      "first_divergence": "NONE on the canBeSaved path — [CLASS-LAW] Parcelable.isInstance(Bundle) -> TRUE at caller=Le72;.k; saveable IAE count = 0",
+      "uncaught_exceptions": 0,
+      "app_boundary_exceptions": 0,
+      "stub_census": {"implemented": 33460, "stubbed": 280, "missing": 0, "error": 0},
+      "screenshot_sha16_x3": "d602648e8e401895",
+      "visual_state": "DEFAULT_BACKGROUND_ONLY (honest)"
+    },
+    "delta": "exception chain fully cleared (F-NEW-252 tracking IAE 0, F-NEW-253 saveable IAE 0, F-NEW-254 Finishing ISE 0, F-NEW-255 NPE 0); composition clean-to-budget; VISUALS BYTE-IDENTICAL at every step — the draw frontier (F-NEW-256) is the remaining blocker, unaffected by the type-system fixes as classified"
+  },
+  "directive_section_12_real_content_proof": {
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "verdict_law": "21-P0-6 pixel ownership + correlated proof (F-NEW-233 frame truth)",
+    "frame_analysis": {
+      "app_draw_ops": 0,
+      "app_owned_pixels": 0,
+      "non_default_pixels": 0,
+      "unique_colors": 1,
+      "dominant_color": "#fafafa (window background)",
+      "nodes_visited": 2,
+      "draw_walk_ran": true,
+      "measure_ran": true,
+      "layout_ran": true,
+      "first_missing_stage": "APP_DRAW_OPS"
+    },
+    "viewtree_materialization": "AndroidOwner content root materialized (content-root-walk, 2 nodes) — Compose content does NOT attach view nodes (expected for Compose) and records ZERO canvas content ops",
+    "success_declaration": "NOT REAL_APP_CONTENT — the wave's FINAL SUCCESS CONDITION is honestly NOT met; per directive §15 the ONE next first divergence is F-NEW-256 (already CLASSIFIED): dispatchDraw runs clean (tv0.i true, one Luc0;.g draw-manager pass, Canvas receives translate-only ops), gap inside the LayoutNode/layer draw recursion — candidates (a) root LayoutNode children materialization, (b) Canvas-bridge draw-op family, (c) LayerBuilder software-path routing. F-NEW-256 re-verified live this session at the final binary (app_draw_ops=0 in every run, draw_walk_ran=true)."
+  },
+  "directive_section_13_three_clean_runs": [
+    {"run": 1, "install": "OK (LAW-001 IN_SCOPE, MIXED x86/x86_64)", "launch": "RESUMED", "first_divergence": "none (composition clean)", "exceptions_app_boundary": 0, "materialized_content": "content root + 1 node, no app-owned pixels", "app_owned_pixels": 0, "screenshot_sha16": "d602648e8e401895"},
+    {"run": 2, "install": "OK", "launch": "RESUMED", "first_divergence": "none", "exceptions_app_boundary": 0, "materialized_content": "identical", "app_owned_pixels": 0, "screenshot_sha16": "d602648e8e401895"},
+    {"run": 3, "install": "OK", "launch": "RESUMED", "first_divergence": "none", "exceptions_app_boundary": 0, "materialized_content": "identical", "app_owned_pixels": 0, "screenshot_sha16": "d602648e8e401895"}
+  ],
+  "three_run_semantic_result": "IDENTICAL — same clean composition, same verdict, byte-identical screenshots (= recorded dooz anchor since F-NEW-251: zero visual drift through four waves of runtime fixes)",
+  "directive_section_14_independent_fanout": {
+    "purpose": "prove the type-system laws are generic, not Dooz-specific",
+    "apks": [
+      {
+        "apk": "de.duenndns.gmdice_8.apk (real third-party; DEX statically contains putParcelable/getParcelable/onSaveInstanceState — same Bundle parcel-family contract)",
+        "install": "OK", "launch": "RESUMED", "errors": 0,
+        "verdict": "REAL_APP_CONTENT (app_draw_ops=6, app_owned_pixels=741084, screenshot sha16 ad35f81bd02328b2)",
+        "runtime_parcel_exercise": "first-launch path does not call onSaveInstanceState (no rotation/background trigger in the harness CLI — recorded harness gap); the parcel-family contract is proven by the §4 probe rows",
+        "status": "HEALTHY on the runtime"
+      },
+      {
+        "apk": "jwtc.android.chess (chess_jwtc_298.apk; reflection-heavy real app)",
+        "install": "OK", "launch": "RESUMED", "errors": 0,
+        "reflection_rows": "Class.isInstance rows answered lawfully at runtime (Fragment/LifecycleOwner tokens -> honest FALSE negatives), same F-103/F-NEW-253 law surface",
+        "verdict": "DEFAULT_BACKGROUND_ONLY (pre-existing recorded frontier, screenshot anchor b5a7a35d5fe0564b byte-identical — NOT a regression of this wave)",
+        "status": "law exercises generically; visual state unchanged as recorded"
+      }
+    ],
+    "conclusion": "No Dooz-specific or R8-specific code exists in any fix (all three are table/dispatch laws in the generic semantic layer); two independent real APKs run the same laws with lawful answers."
+  },
+  "directive_section_18_final_status": {
+    "F-NEW-253": "ROOT_CAUSED_FIXED — VERIFIED_CURRENT (source audit + live decisive trace rows + 21/21 directive-contract probe + 12/12 W3 regression rows; evidence gap from the lost w3/ artifacts repaired with fresh artifacts)",
+    "F-NEW-257": "ROOT_CAUSED_FIXED (new this session — Bundle parcel-family content fidelity, §4 contract)",
+    "F-NEW-258": "ROOT_CAUSED_FIXED (new this session — STRING_REF instance-of law, discovered by the §4 probe)",
+    "F-NEW-256": "CLASSIFIED — the ONE next root (dooz content frontier), re-verified live, NOT fixed this wave per §15 scope discipline"
+  },
+  "regression_battery_final_binary": {
+    "test_battery": "122/122 ALL PASS",
+    "gate_a": "97 PASS / 0 FAIL / 2 INFO (NAT-03 extraction-backed x86_64 libprobe.so gcc sha d5ec1f57fef3d271 reproduced deterministically; NAT-04 real dlopen + JNI_OnLoad)",
+    "negatives": "19/19 PASS",
+    "reinstall_matrix": "8/8 PASS",
+    "skill_selftest": "13/13 PASS",
+    "anchors": "5/5 x3 byte-identical (opencalc e364b001ee7abd66, chess b5a7a35d5fe0564b, dooz d602648e8e401895, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8)",
+    "synthetic_probes": "fnew253_probe 21/21, w3_probe 12/12, fnew252_probe 7/7 (CAS contract + updater + explicit-null + ServiceLoader POS/NEG)",
+    "environment_restorations_this_session": "toolchain symlinks (/home/z/my-project/tools -> /tmp/my-project/tools), DroidSansMono.ttf (DejaVu Sans Mono; mg-087 14/14), external EXT-01 fixture refetched (SHA 009b4671... exact match to frozen doc), gate_a_probe.apk rebuilt with lib/x86_64/libprobe.so (asset compression metadata preserved — FD rows stay green)"
+  }
+}

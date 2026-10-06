@@ -1,0 +1,32 @@
+{
+  "artifact": "fnew253_bundle_probe.json — directive §4 SYNTHETIC BUNDLE CONTRACT (independent of Dooz)",
+  "probe_apk": {
+    "source": "fixtures/fnew253_probe (src/com/probe/fnew253/MainActivity.java)",
+    "v1.0_pre_fix_sha256_20": "299eab21ac8b3c6192ed",
+    "v1.1_final_sha256_20": "bc05344cfa8cfeb09411",
+    "build": "real toolchain: aapt2 compile+link, ECJ 1.8, D8 release (TOOLS=/tmp/my-project/tools)",
+    "package": "com.probe.fnew253"
+  },
+  "contract_rows_prefix_B": {
+    "B-01": {"row": "putParcelable(k1, PointParcelable) -> containsKey(k1)", "expected": "true", "pre_fix": "FAIL (containsKey=false — value silently dropped)", "post_fix": "PASS"},
+    "B-02": {"row": "getParcelable(k1) == same reference", "expected": "true (ART in-memory Bundle returns the SAME object; no marshalling before writeToParcel)", "pre_fix": "FAIL (retrieved=null)", "post_fix": "PASS (retrieved=com.probe.fnew253.MainActivity$PointParcelable, reference identity)"},
+    "B-03": {"row": "retrieved runtime class preserved", "expected": "PointParcelable", "pre_fix": "FAIL (null)", "post_fix": "PASS"},
+    "B-04": {"row": "Parcelable.isInstance(retrieved)", "expected": "true (the canBeSaved decisive shape on a retrieved Bundle value)", "pre_fix": "FAIL (false)", "post_fix": "PASS"},
+    "B-05": {"row": "getParcelable(missing key)", "expected": "null (Android semantics)", "pre_fix": "PASS (null via stub — lawful answer)", "post_fix": "PASS (null via storage miss — lawful answer, correct reason)"},
+    "B-06": {"row": "containsKey(missing key)", "expected": "false", "pre_fix": "PASS", "post_fix": "PASS"},
+    "B-07": {"row": "String stored via putString stays String; does NOT become Parcelable merely because Bundle accepts Objects; raw identity preserved via get()", "expected": "raw instanceof String == true AND Parcelable.isInstance(raw) == false", "pre_fix": "FAIL (get() unimplemented -> raw=null; identity not verifiable)", "post_fix": "PASS (raw=java.lang.String, isInstance=false)"},
+    "B-08": {"row": "key/type preservation: getString(k2) and getParcelable(k1) coexist without crosstalk", "expected": "plain-string + reference identity", "pre_fix": "FAIL", "post_fix": "PASS"}
+  },
+  "pre_fix_verdict": "14/20 rows total (M+S families passed; all §4 identity rows failed) — captured live at start-HEAD binary, view tree saved: evidence/cont7/fnew253_bundle_probe_prefix_run_view_tree.json",
+  "post_fix_verdict": "20/20 (probe v1.0) then 21/21 (v1.1 with S-07 BaseBundle completeness row), binary c0fa65ccc7f284e7",
+  "root_registered": {
+    "id": "F-NEW-257",
+    "title": "Bundle parcel-family content fidelity: putParcelable dropped values, getParcelable/get answered null",
+    "fix": "ONE generic point in the EXP-093 Bundle op block (dalvik_engine.cpp): AOSP BaseBundle in-memory reference-storage law — putParcelable/putSerializable store the value's object reference under the same \"bundle:<key>\" field law as putString; getParcelable/getSerializable/get(key) return that SAME reference; missing key -> null; Bundle.get(key,def) 2-arg form; typed-getter mismatch law (getParcelable on a String-typed entry -> null via the AOSP typeWarning/CCE-inside-getter path; getSerializable on a String is lawful — OpenJDK String implements Serializable). No app conditions, no class-name hacks.",
+    "synthetic_rows": "B-01..B-08 all PASS post-fix"
+  },
+  "honesty_notes": [
+    "Pre-fix B-05 PASS is recorded as a lawful-null answer arriving via the stub path — the directive's 'do not merely test that methods return without crashing' is honored by the identity rows B-02..B-04/B-07/B-08 which actually failed pre-fix.",
+    "putParcelableArrayList/getSparseParcelableArray and Parcel.marshalling round-trips are NOT implemented and NOT tested — recorded as untested scope, no fake claims."
+  ]
+}

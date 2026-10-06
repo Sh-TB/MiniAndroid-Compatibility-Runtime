@@ -4646,8 +4646,9 @@
    "root_cause": "PROVEN AT RUNTIME (METHOD-TRACE + IFACE-RT + CLASS-LAW, 2026-10-06): androidx DisposableSaveableStateRegistry.registerValue (Lxe1;.a) calls the canBeSaved predicate (Lcf1;.d -> Ldf1;.d -> Lf90;.i on R8 lambda Lm4; -> invoke-static Le72;.k). The platform check Le72;.k walks a static acceptable-classes array Le72;.d (R8-trimmed to 7: Serializable, Parcelable, String, SparseArray, Binder, Size, SizeF) via java.lang.Class.isInstance — REFLECTION, not instance-of bytecode (widened MINIANDROID_INSTANCEOF_TRACE saw zero Bundle-target checks; MINIANDROID_CLASS_LAW_TRACE captured the exact isInstance rows). For a Bundle the decisive row is Parcelable.isInstance(Bundle): the F-103 walk (dalvik_class_assignable) consulted ONLY class_to_superclass_/class_to_interfaces_ (APK DEX + framework Views + Class token) — Landroid/os/Bundle; is an engine-shadowed platform class with NO DEX class_def and NO Parcelable edge -> FALSE -> registerValue IAE -> rememberSaveable died in composition -> app draw never ran. ART truth: Bundle extends BaseBundle implements Parcelable, Cloneable.",
    "fix": "TWO COORDINATED GENERIC POINTS (one semantic law): (1) view_ancestry.h framework_class_interfaces gained the ANDROID PARCEL FAMILY from AOSP source truth (Bundle->Parcelable+Cloneable, Intent->Parcelable+Cloneable, ParcelUuid/Size/SizeF->Parcelable, Binder->IBinder, SparseArray->Cloneable) plus Parcelable/IBinder as membership-only interface markers; (2) dalvik_class_assignable (the F-103 Class.isInstance/isAssignableFrom walk) now consults the F-NEW-236 framework_interface_closure as a fallback after the DEX walk — ONE central point so every reflection-family consumer sees the boot-classpath truth ART sees. No app conditions, no package names, no R8-name interception.",
    "synthetic_probe": "fixtures/cont7w3_probe (w3_probe.apk sha256 7db7ef0dda248836...): W3-01 Parcelable.isInstance(Bundle)=true PASS; W3-02 acceptable-classes walk accepts Bundle PASS; W3-03 isAssignableFrom=true PASS; W3-04 Parcelable.isInstance(String)=false PASS (honest negative); W3-05 isInstance(null)=false PASS (OpenJDK). 12/12 rows PASS.",
-   "evidence": "evidence/cont7/w3/ (dooz baseline IAE reproduction at Lxe1;.a pc=88 msg via Lpm;.A; Ldf1;.d->Lm4;->Le72;.k lambda chain; CLASS-LAW rows showing token=Landroid/os/Parcelable; probe=Landroid/os/Bundle; -> FALSE pre-fix); anchors 5/5x3 byte-identical after fix.",
-   "first_fixed_run": "dooz saveable IAE 1 -> 0; uncaught exceptions 1 -> 0; stub census 29735 -> 34552 implemented (composition advanced); dooz screenshot byte-identical d602648e8e401895 (zero visual drift)"
+   "evidence": "evidence/cont7/{fnew253_baseline.json, fnew253_bundle_probe.json, fnew253_class_probe.json, fnew253_saveable_probe.json, fnew253_final.json} (2026-10-06 re-proof session: the previously referenced evidence/cont7/w3/ was never committed and is absent from the container — the full chain was re-proven live at binary c0fa65ccc7f284e7: decisive rows Serializable.isInstance(Bundle)->FALSE then Parcelable.isInstance(Bundle)->TRUE at caller=Le72;.k on the final binary with anchor-identical screenshot). Fix completeness added: AOSP Bundle extends BaseBundle edge registered in framework_superclass_of (probed via getGenericSuperclass S-07 — forName cannot name shadow framework classes, honest recorded limitation).",
+   "first_fixed_run": "dooz saveable IAE 1 -> 0; uncaught exceptions 1 -> 0; stub census 29735 -> 34552 implemented (composition advanced); dooz screenshot byte-identical d602648e8e401895 (zero visual drift)",
+   "verified_current": "2026-10-06 binary c0fa65ccc7f284e7 — saveable IAE 0, composition clean, anchor d602648e8e401895 byte-identical x3"
   },
   {
    "id": "F-NEW-254",
@@ -4682,14 +4683,38 @@
    "root_cause": "CLASSIFIED with proven first divergence (NOT investigated to root this wave per battery-priority discipline): dispatchDraw pass-1 (METHOD-TRACE) shows tv0.i()=TRUE and ONE Luc0;.g() draw-manager invocation; the engine's CanvasShadow records ZERO draw ops (C013-ONDRAW ops=0, CUSTOMVIEW unrendered recorded). The gap is inside the LayoutNode/layer draw recursion (render-node vs software-canvas path): either the composed node tree is empty at the root, or the per-node draw records into a detached graphics-layer recording surface instead of the passed Canvas. Candidate faces named for next wave: (a) root LayoutNode children materialization, (b) Canvas-bridge draw-op family (drawRect/drawImage/drawText on the shadow channel), (c) LayerBuilder software-path routing.",
    "fix": "NOT IMPLEMENTED (discipline: no blind patching of the draw path; synthetic Canvas-op probe first next wave).",
    "evidence": "evidence/cont7/w3/ (dispatchDraw trace window ending at pc=103 taken -> pc=143; DRAWWIN-BRIDGE inventory showing Canvas.translate x10 only; NODE-CENSUS Lt4; children=0 with measure 1080x1920 reached).",
-   "first_divergence": "dooz: composition clean, frames run, verdict DEFAULT_BACKGROUND_ONLY (honest), APP_DRAW_OPS=0"
+   "first_divergence": "dooz: composition clean, frames run, verdict DEFAULT_BACKGROUND_ONLY (honest), APP_DRAW_OPS=0",
+   "reverified": "2026-10-06 binary c0fa65ccc7f284e7: app_draw_ops=0 / draw_walk_ran=true / nodes_visited=2 / first_missing_stage=APP_DRAW_OPS in every dooz run (x3 byte-identical d602648e8e401895) — classification stands as the ONE next root; NOT fixed this wave per §15 scope discipline."
+  },
+  {
+   "id": "F-NEW-257",
+   "title": "Bundle parcel-family content fidelity: putParcelable silently dropped values and getParcelable/get(String) answered null (directive §4 synthetic contract face A/D; dooz-independent)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "framework/bundle-content-storage",
+   "root_cause": "PROVEN BY THE DIRECTIVE-REQUIRED SYNTHETIC PROBE (fixtures/fnew253_probe, real aapt2/ECJ/D8 toolchain): the EXP-093 Bundle op block implemented only putString/putInt/putBoolean/putLong/getString/getInt/getBoolean/containsKey — putParcelable fell to the generic stub law (value dropped: containsKey=false after put), getParcelable/get(String) returned null (pre-fix probe 14/20 with every §4 identity row failing: B-01..B-04, B-07, B-08). ART law: a Bundle is an in-memory key->value map; put* stores the object reference, get* returns the SAME reference (no marshalling before writeToParcel).",
+   "fix": "ONE generic point in the EXP-093 Bundle op block (dalvik_engine.cpp): AOSP BaseBundle reference-storage law — putParcelable/putSerializable store the value under the same 'bundle:<key>' field law as putString; getParcelable/getSerializable/get(key) return that reference; missing key -> null; Bundle.get(key,def) 2-arg form; typed-getter mismatch law (getParcelable on a String-typed entry -> null via the AOSP CCE-inside-getter path; getSerializable on a String lawful — OpenJDK String implements Serializable). No app conditions, no class-name hacks.",
+   "synthetic_probe": "fixtures/fnew253_probe B-01..B-08 all PASS post-fix (probe v1.0 20/20; v1.1 21/21 incl. S-07 BaseBundle completeness). Pre-fix run preserved: evidence/cont7/fnew253_bundle_probe_prefix_run_view_tree.json (14/20).",
+   "evidence": "evidence/cont7/fnew253_bundle_probe.json + fnew253_final.json; dooz's own navigation-state Bundles exercise the storage law live ([EXP093-BUNDLE] bundle_id=5045/5065 nav-entry-state keys).",
+   "not_claimed": "putParcelableArrayList/getSparseParcelableArray and Parcel marshalling round-trips are NOT implemented/tested (honest untested scope); the fix does NOT affect dooz's draw frontier (F-NEW-256) — dooz composition never reaches putParcelable before canBeSaved."
+  },
+  {
+   "id": "F-NEW-258",
+   "title": "instance-of bytecode on a STRING_REF register answered FALSE (String-value runtime-type law; discovered by directive §4 probe row B-07)",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "runtime/instance-of-classification",
+   "root_cause": "PROVEN BY PROBE ROW B-07 (pre-fix): a String retrieved from Bundle.get() answered getClass().getName()='java.lang.String' (getClass handles STRING_REF) while `raw instanceof String` answered FALSE — the reflection path (F-103 isInstance law) classifies STRING_REF probes as Ljava/lang/String; but execute_instance_of handled only CLASS_REF/OBJECT_REF branches and fell through every branch for STRING_REF registers, leaving is_instance=false. OpenJDK/ART law: any non-null string value IS a java.lang.String instance; instance-of and Class.isInstance must agree.",
+   "fix": "ONE branch in execute_instance_of: STRING_REF values classify as Ljava/lang/String; through the SAME is_subclass_of walk — which composes the framework closure so the full ART truth holds (String is-a CharSequence/Serializable/Comparable). No name matching, no special classes.",
+   "synthetic_probe": "B-07 PASS post-fix (raw=java.lang.String, Parcelable.isInstance(raw)=false — String stays String with BOTH conditions lawful); M-01..M-06 isInstance matrix unchanged 6/6 (no regression).",
+   "evidence": "evidence/cont7/fnew253_class_probe.json (F-NEW-258 section) + fnew253_bundle_probe.json (B-07 pre/post)."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
- "total": 562,
- "count": 562,
+ "total": 564,
+ "count": 564,
  "meta": {
-  "last_update": "S132 reuse-proof wave",
+  "last_update": "CONT-7 WAVE 3 re-proof session 2026-10-06: F-NEW-253 evidence repaired + verified_current; F-NEW-257/258 registered ROOT-CAUSED-FIXED; F-NEW-256 re-verified live",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
   "last_updated": "2026-10-04 R-NEW-464 ROOT-CAUSED-FIXED at binary 583b3a2a6f3d30c8"
  },
@@ -4703,7 +4728,7 @@
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 8,
   "IMPLEMENTED": 35,
-  "ROOT-CAUSED-FIXED": 91,
+  "ROOT-CAUSED-FIXED": 111,
   "PARTIAL-FIX": 1,
   "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 23,
@@ -4715,13 +4740,13 @@
   "USED_BY_EXECUTION": 7,
   "ROOT_CAUSED-FIXED": 2,
   "FIXED-VERIFIED": 1,
-  "ROOT-CAUSED-CLOSED": 2,
+  "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED_3RUN": 1,
   "VERIFIED": 3,
   "BLOCKED": 1,
   "PENDING": 13,
   "OBSERVED": 2,
-  "CLASSIFIED": 1
+  "CLASSIFIED": 2
  },
  "total_roots": 562,
  "generated": "2026-10-04"
