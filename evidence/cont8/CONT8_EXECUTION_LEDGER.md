@@ -55,3 +55,6 @@ Directive: CONT-8 / WAVE 4 (multi-root execution/rendering closure). HEAD `50b63
 - drawBitmap for in-memory (non-resource) bitmaps: recorded-but-0-pixels — OBSERVED, not root-classed.
 - FairyMahjong/BlockBlast APKs lost to container reset — re-supply needed.
 - GitHub comment threads unreadable this session (rate limit) — bodies only.
+
+## ADDENDUM — push hygiene
+- tmp/issue377_saved.html (an automated-commit accident from the previous session, a raw GitHub HTML scrape) removed from the tree: its embedded GitHub feature-flag JSON trips the fail-closed guard, and the issue content is already preserved in tmp/issue377.html, tmp/issue377.txt, and the worklog. Also documented: when the staged file list is EMPTY, the guard's per-pattern grep runs with no path arguments and recurses into .git/ — it then hits the container's .git/config remote URL (env-var policy violation by the environment, not repo content). Guard fix candidates recorded for the next engine-touching wave: (a) fail the scan cleanly when the path list is empty, (b) always exclude .git/.
