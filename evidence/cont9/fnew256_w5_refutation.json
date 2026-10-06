@@ -1,0 +1,61 @@
+{
+ "artifact": "fnew256_w5_refutation.json — CONT-9 W5 §B: F-NEW-256 first-divergence RE-PROVEN. W4's 'mid-content-pass apply' face is REFUTED by caller-frame evidence; the divergence moves DOWN the chain to recompose-scope re-invocation. No engine semantic change this wave (diagnostics-only).",
+ "head": "fda41b78f2535484fe654895c2ad9ceb737df3f1",
+ "binary_sha16": "c0fa65ccc7f284e7",
+ "binary_repro": "clean rebuild from source reproduced the frozen W3/W4 lineage byte-identically (c0fa65ccc7f284e7)",
+ "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+ "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+ "baseline_x3": {
+  "anchor": "d602648e8e401895",
+  "byte_identical_x3": true,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "uncaught_fatal": 0,
+  "errors": 6,
+  "errors_identity": "La; (CancellationException-family) unwind cascade at SETUP phase — trace lines 6880-6900, BEFORE composition (19253) — the W2-era known chain, NOT the draw blocker"
+ },
+ "w4_face_refutation": {
+  "w4_claim": "change list applied at trace line 43094 INSIDE the game-screen composable Ld;.i's live span (31698..44545) — apply-during-content-pass desync",
+  "refutation": "[METHOD-IN]-only traces have NO exit lines: W4's 'Ld;.i span' was actually entry#1(31695)..entry#2(44543), not entry..exit. Ld;.i has THREE entries (31695, 44543, 44660).",
+  "caller_frame_evidence": "MINIANDROID_CL_TRACE (new W5 diagnostic) shows the apply executes at DEPTH 16 under the stack Lt4;.setOnReadyForComposition -> Ls7;.i -> Lwo;.A(Lj90;) -> Lfb1;.a -> Lwo;.d() -> Lwo;.e(Lli;) -> Lnb0;.z -> Lli;.L -> Ls21;.Y(o2809) -> La21;.a -> Ls21;.Y(o2874) -> Ly11;.a — while the content pass ran at depth 44. Different stacks: the apply runs AFTER the content lambda returns. Upstream order CONFIRMED, W4 face REFUTED."
+ },
+ "apply_machinery_proven_correct": {
+  "record": "Lbo;.Q records (Ls21; list, opcode, value) into per-group lists owned by the SlotWriter (o2874/o2878); composition-level list o2809 owned by Lwo;.<init>",
+  "lazy_nesting": "the root-level list iteration EXECUTES the per-group lists nested (Ls21;.Y(o2874) under La21;.a under Ls21;.Y(o2809)) — upstream 1.7 deferred-node-creation law",
+  "applier": "Ly11;.a -> Lel0;.<init> (node factory runs AT APPLY) -> Lv02;.f insertTopDown / .c insertBottomUp -> Lel0;.B insertAt — all correct",
+  "conclusion": "record -> list -> iterate -> execute -> applier -> LayoutNode ALL work; only ONE node insert exists because the app content recorded only ONE node emission (the composition root)"
+ },
+ "app_structure_discovery": {
+  "dooz_stack": "Compose + androidx.navigation.compose NavHost (+ rememberSaveable + custom fonts)",
+  "evidence": [
+   "Ld;.i (the app root composable) registers nav destinations via Llo;.t(Lqx0;,String,Lom;) -> Lpn;(Lon;,String,Lom;) entries into the nav graph",
+   "Lmx0;.a (307 bytes) contains the literal strings 'Deep link ', \" can't be used to open destination \", 'Following required arguments are missi...' — androidx.navigation deep-link matching",
+   "post-apply LaunchedEffect coroutine (Loj0;.start = JobSupport.start) constructs the NavBackStackEntry chain Lir1;.<init> -> Lnq;.<init> -> Lne;.<init> under Le;.<init> / Lg;.<init> — the SAME Le;-family the directive Phase 8 flags for getWindow receiver identity",
+   "GameScreen's UI helper Lp00;.t (3 call sites in Ld;.i bytecode) NEVER RAN — the NavHost destination content lambda was never invoked"
+  ]
+ },
+ "refined_first_divergence": {
+  "stage": "RECOMPOSITION (pass #2, frame-driven: Lj9;.doFrame -> Ldb1;.i -> Lwo;.w -> Lnb0;.n#2 at trace line 49187)",
+  "law": "upstream Compose: a recomposition pass MUST re-invoke every invalidated RecomposeScope's lambda (RecomposeScopeImpl.invoke -> ComposableLambda.invoke = Lom;.h). The NavHost destination content requires exactly this second pass: NavHost pass#1 records the LaunchedEffect(setGraph+navigate) side effect; apply#1 runs it (coroutine window 42711-49187, back-stack entries constructed); the navigate() state write invalidates the NavHost scope; pass#2 re-invokes the scope; the visibleEntries loop finally invokes the destination content lambda and the real UI composes.",
+  "divergence": "pass #2 ran (335 slot-table reader ops, 32 invalidation-group walks Lnb0;.o, composer ops) but invoked ZERO ComposableLambdas (Lom;.h count in pass#2 = 0; all 6 Lom;.h entries of the whole run are in pass#1). No scope lambda re-invoked -> NavHost destination content never materializes -> tree stays at root+1 node -> dispatchDraw faithfully draws it -> 0 content ops.",
+  "verdict": "FIRST DIVERGENCE = recompose-scope re-invocation chain (invalidated-scope -> lambda invoke), upstream of NavHost content and downstream of the (healthy) change-list/applier machinery"
+ },
+ "engine_diagnostics_added_this_wave": [
+  "MINIANDROID_CL_TRACE='Lcls;,...' or 'Lcls;.meth,...' — generic env-gated caller-frame trace for class prefixes / class;method tokens, bounded 8000 lines, read-only (dalvik_engine.cpp method-entry region)",
+  "MINIANDROID_FIELD_TRACE qualified form 'Lcls;.field' — exact declaring-class+field-name filter, read-only"
+ ],
+ "no_dooz_specific_or_r8_specific_runtime_code": "both diagnostics are env-gated and parameterized from the run config; zero behavior changes; anchors byte-identical prove semantics unchanged",
+ "fallback_check": "no F-NEW-260 hardcoded visual fallback exists in the current engine tree (grep: only doc-comment references citing dooz as evidence for generic laws); dooz runs are fallback-free by construction (DEFAULT_BACKGROUND_ONLY anchor)",
+ "instruction_budget_rule": "respected — no budget increase used; the frontier moved via caller-frame evidence, not longer runs",
+ "artifacts": [
+  "run/w5/dooz_mtrace (25,757-entry method trace)",
+  "run/w5/dooz_cltrace (caller frames: composer/applier/composition)",
+  "run/w5/dooz_cl2 (change-record targets: o2809 vs o2874/o2878)",
+  "run/w5/dooz_cl3 (record->execute mapping incl. lazy nested lists)",
+  "run/w5/dooz_cl4 (createNode/endNode call sites)",
+  "run/w5/dooz_nav (NavBackStackEntry family)",
+  "run/w5/dooz_skip (invalidation group walk)",
+  "run/w5/dooz_field3 (writer inserting flag)",
+  "scripts/cont9_dexdump.py (fast targeted Dalvik dumper, W5 toolchain)"
+ ],
+ "next_repair_surface": "the recompose-scope re-invocation path in the slot-table/composer machinery (who clears/decides scope invalidation between the frame-driven pass and the Lom;.h invoke) — same generic chain for EVERY Compose app with side-effect-driven first content (navigation, LaunchedEffect, produceState)"
+}
