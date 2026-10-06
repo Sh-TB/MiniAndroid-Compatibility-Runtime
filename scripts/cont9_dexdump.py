@@ -153,15 +153,19 @@ class Dex:
         inst_n, p = self.uleb(p)
         direct_n, p = self.uleb(p)
         virt_n, p = self.uleb(p)
-        # skip static fields
+        out['fields'] = []
         fidx = 0
         for _ in range(static_n):
             d, p = self.uleb(p); fidx += d
             _, p = self.uleb(p)
+            _, fname, ftype = self.field_ref(fidx)
+            out['fields'].append(('static', ftype, fname))
         fidx = 0
         for _ in range(inst_n):
             d, p = self.uleb(p); fidx += d
             _, p = self.uleb(p)
+            _, fname, ftype = self.field_ref(fidx)
+            out['fields'].append(('inst', ftype, fname))
         for kind, count in (('direct', direct_n), ('virtual', virt_n)):
             midx = 0
             for _ in range(count):
@@ -285,6 +289,8 @@ def main():
         info = d.class_methods(off)
         print(f"== {desc} in {name}")
         print(f"   super={info['super']} ifaces={info['ifaces']}")
+        for fkind, ftype, fname in info.get('fields', []):
+            print(f"   field({fkind}) {ftype} {fname}")
         for kind in ('direct','virtual'):
             for mname, mdesc, acc, sz, code in info[kind]:
                 flag = 'D' if kind=='direct' else 'V'
