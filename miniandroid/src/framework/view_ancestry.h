@@ -154,6 +154,13 @@ framework_direct_superclass() {
          "Ljava/lang/RuntimeException;"},
         // F-NEW-226 companion: TextPaint IS-A Paint (AOSP android.text).
         {"Landroid/text/TextPaint;", "Landroid/graphics/Paint;"},
+        // F-NEW-253 completeness (CONT-7 W3): AOSP Bundle extends
+        // BaseBundle — the parcel-family table above registers Bundle's
+        // INTERFACES (Parcelable+Cloneable); this registers the EXTENDS
+        // edge so BaseBundle.isInstance(Bundle) / assignability queries
+        // against the base class answer the AOSP truth too (one composed
+        // walk everywhere — no second resolver).
+        {"Landroid/os/Bundle;", "Landroid/os/BaseBundle;"},
     };
     return kTable;
 }

@@ -1,0 +1,20 @@
+{
+  "artifact": "fnew253_saveable_probe.json — directive §5 SAVEABLESTATE REGISTRY DECISION CONTRACT",
+  "decision_shape": "canBeSavedShape(value) walks the R8-trimmed 7-class acceptable array {Serializable, Parcelable, String, SparseArray, Binder, Size, SizeF} with Class.isInstance (the exact androidx DisposableSaveableStateRegistry decision shape dooz executes via Le72;.k), re-implemented generically in the probe — no app names.",
+  "rows_prefix_S": {
+    "S-01": {"input_runtime_class": "android.os.Bundle", "expected": true, "actual": true, "reason": "AOSP Bundle implements Parcelable", "verdict": "PASS"},
+    "S-02": {"input_runtime_class": "com.probe.fnew253.MainActivity$AppData", "expected": true, "actual": true, "reason": "app class implements Serializable", "verdict": "PASS"},
+    "S-03": {"input_runtime_class": "java.lang.String", "expected": true, "actual": true, "reason": "String is in the accept array", "verdict": "PASS"},
+    "S-04": {"input_runtime_class": "java.lang.Object", "expected": false, "actual": false, "reason": "no accept-class isInstance matches — registerValue would throw the IAE (lawful rejection)", "verdict": "PASS"},
+    "S-05": {"input_runtime_class": "static type Object, runtime android.os.Bundle", "expected": true, "actual": true, "reason": "runtime-type assignability, not static type — the boundary law", "verdict": "PASS"},
+    "S-06": {"input_runtime_class": "com.probe.fnew253.MainActivity$PointParcelable", "expected": true, "actual": true, "reason": "app-implemented Parcelable accepted via parcel family + app DEX interface edge composed together", "verdict": "PASS"},
+    "S-07": {"input_runtime_class": "android.os.Bundle probed against BaseBundle via getGenericSuperclass", "expected": "BaseBundle token, isInstance=true", "actual": "BaseBundle/true", "reason": "AOSP Bundle extends BaseBundle — framework_superclass_of edge added this session; probed through the documented F-NEW-224 getGenericSuperclass surface because Class.forName cannot name shadow framework classes (honest recorded limitation of forName, separate unrequired surface)", "verdict": "PASS"}
+  },
+  "boundary_results": "S-05 (runtime class behind a static Object reference) and S-06/S-07 (runtime class != static reference type families) all match the semantic contract — the decision consults the RUNTIME class through one composed walk (DEX tables -> framework extends fallback F-NEW-254 -> framework interface closure F-NEW-253).",
+  "matrix_verdict": "7/7 PASS at final binary c0fa65ccc7f284e7 (6/6 at start-HEAD before the S-07 completeness row)",
+  "dooz_cross_check": {
+    "saveable_iae_at_final_binary": 0,
+    "recorded_base_iae": 1,
+    "composition": "clean — rememberSaveable registration proceeds; navigation-state Bundles store lawfully ([EXP093-BUNDLE] bundle_id=5045/5065 keys nav-entry-state:id, nav-entry-state:destination-id)"
+  }
+}
