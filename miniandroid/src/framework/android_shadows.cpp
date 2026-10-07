@@ -285,6 +285,35 @@ static std::string map_key_value_law(const CallContext& ctx, size_t i,
     return ctx.arg_as_string(i);
 }
 
+// ── LAW-D (CONT-18): KIND-AWARE SLOT SERVE (shared deque read law) ────
+// OpenJDK deque read faces (getFirst/getLast/peek/element) return the
+// ELEMENT, not the internal storage slot. MiniAndroid's kind-2/3 slots
+// carry their value in the parallel stores with elements[idx]==0 by
+// design — serving elements[idx] as an object id handed apps a zero-id
+// "object" (fcol K4 getFirst, K5 peek = null faces).
+static CallResult lawa_serve_slot(CollectionShadow::CollectionState& st,
+                                  int32_t idx) {
+    if (idx < 0 || static_cast<size_t>(idx) >= st.elements.size())
+        return CallResult::handled_null();
+    uint8_t k = idx < static_cast<int32_t>(st.elem_kinds.size())
+                    ? st.elem_kinds[idx]
+                    : (st.elements[idx] != 0 ? uint8_t{1} : uint8_t{0});
+    if (k == 3)
+        return CallResult::handled_int(
+            idx < static_cast<int32_t>(st.elem_ints.size())
+                ? st.elem_ints[idx]
+                : 0);
+    if (k == 2)
+        return CallResult::handled_string(
+            idx < static_cast<int32_t>(st.elem_strings.size())
+                ? st.elem_strings[idx]
+                : std::string());
+    if (st.elements[idx] != 0)
+        return CallResult::handled_object(st.elements[idx],
+                                          "Ljava/lang/Object;");
+    return CallResult::handled_null();
+}
+
 // ── LAW-A (CONT-18): KIND-FAITHFUL REMOVE-BY-INDEX (shared) ─────────────
 // OpenJDK ArrayList.remove(int) fastRemove()s the ONE backing array and
 // returns the removed element. MiniAndroid's CollectionState models that
@@ -1182,15 +1211,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (state->elements.empty()) return CallResult::handled_null();
-        return CallResult::handled_object(state->elements.front(),
-                                          "Ljava/lang/Object;");
+        // LAW-D (CONT-18): kind-aware front serve.
+        return lawa_serve_slot(*state, 0);
     }
     if (m == "getLast" || m == "peekLast") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (state->elements.empty()) return CallResult::handled_null();
-        return CallResult::handled_object(state->elements.back(),
-                                          "Ljava/lang/Object;");
+        // LAW-D (CONT-18): kind-aware back serve.
+        return lawa_serve_slot(*state,
+                               static_cast<int32_t>(state->elements.size()) -
+                                   1);
     }
     if (m == "removeFirst" || m == "remove" || m == "pop" || m == "poll" ||
         m == "pollFirst") {
@@ -1232,30 +1263,54 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_bool(false);
         }
         if (state->elements.empty()) return CallResult::handled_null();
-        uint32_t front = state->elements.front();
-        state->elements.erase(state->elements.begin());
-        return CallResult::handled_object(front, "Ljava/lang/Object;");
+        // LAW-A/D (CONT-18): kind-faithful front removal — the four
+        // parallel stores move in lockstep (lawa_remove_index) and the
+        // serve is kind-aware (a deque of strings pops "f", not a zero
+        // object id).
+        return lawa_remove_index(*state, 0);
     }
     if (m == "removeLast" || m == "pollLast") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (state->elements.empty()) return CallResult::handled_null();
-        uint32_t back = state->elements.back();
-        state->elements.pop_back();
-        return CallResult::handled_object(back, "Ljava/lang/Object;");
+        return lawa_remove_index(*state,
+                                 static_cast<int32_t>(state->elements.size()) -
+                                     1);
     }
     if (m == "addFirst" || m == "push" || m == "offerFirst") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
-        state->elements.insert(state->elements.begin(),
-                               ctx.arg_as_object(0, 0));
+        // LAW-D (CONT-18): kind-aware 4-store front insert — the pre-fix
+        // elements-only insert desynced kinds/strings/ints (fcol K4:
+        // addFirst("f") poisoned slot 0 -> order "mnull").
+        uint32_t item = ctx.arg_as_object(0, 0);
+        uint8_t kind = 2;
+        int32_t ival = 0;
+        std::string sval;
+        if (!ctx.args.empty())
+            lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+        state->elements.insert(state->elements.begin(), item);
+        state->elem_kinds.insert(state->elem_kinds.begin(), kind);
+        state->elem_strings.insert(state->elem_strings.begin(), sval);
+        state->elem_ints.insert(state->elem_ints.begin(), ival);
         return m == "offerFirst" ? CallResult::handled_bool(true)
                                  : CallResult::handled_void();
     }
     if (m == "addLast" || m == "offer" || m == "offerLast") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
-        state->elements.push_back(ctx.arg_as_object(0, 0));
+        // LAW-D (CONT-18): kind-aware 4-store back append (same coherence
+        // law as addFirst).
+        uint32_t item = ctx.arg_as_object(0, 0);
+        uint8_t kind = 2;
+        int32_t ival = 0;
+        std::string sval;
+        if (!ctx.args.empty())
+            lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+        state->elements.push_back(item);
+        state->elem_kinds.push_back(kind);
+        state->elem_strings.push_back(sval);
+        state->elem_ints.push_back(ival);
         return (m == "offer" || m == "offerLast")
                    ? CallResult::handled_bool(true)
                    : CallResult::handled_void();

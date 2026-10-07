@@ -2456,6 +2456,12 @@ public:
                // precedence for its own methods (bridge_to_api returns
                // before the shadow dispatch).
                class_name == "Ljava/util/Vector;" ||
+               // LAW-D (CONT-18): ArrayDeque routes to the same generic
+               // collection laws (add append / peek / poll front / size /
+               // iterator) — the class was absent from this list entirely,
+               // so every ArrayDeque op REC-MISSed and peek answered null
+               // (fcol probe K5). No app names, pure java.util family.
+               class_name == "Ljava/util/ArrayDeque;" ||
                class_name.find("/ArrayList;") != std::string::npos ||
                class_name.find("/HashMap;") != std::string::npos ||
                class_name.find("/HashSet;") != std::string::npos ||

@@ -7275,3 +7275,17 @@ Work Log:
 Stage Summary:
 - 2 of 6 collection laws closed this wave (LAW-A, LAW-B), fcol 3/18 -> 8/18, zero drift at every checkpoint, all work pushed.
 - Standing queue: LAW-C (Java-8 default methods K13/K14/K16/K17/K18 — needs lambda/predicate invocation machinery check), LAW-D (deque order K4/K5), LAW-E (getOrDefault K6 face), LAW-F (subList/stream K3/K15); then PHASE 2/3: F-265 reclassification trace, F-217 waiter-resume root (tasks 23-48 in CONT18_TASK_LIST.md).
+
+---
+Task ID: CONT-18-W10-LAWD
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — collection LAW-D (deque order) implement/prove.
+
+Work Log:
+- LAW-D implemented: (1) addFirst/push/offerFirst + addLast/offer/offerLast kind-aware 4-store inserts (pre-fix elements-only insert desynced parallel stores, K4 order "mnull"); (2) removeFirst/removeLast/poll/pollFirst/pollLast/pop via LAW-A shared kind-faithful helper; (3) getFirst/getLast/element/peek/peekFirst/peekLast kind-aware serve via lawa_serve_slot; (4) Ljava/util/ArrayDeque; added to handles_class (was absent entirely — every op REC-MISSed, peek=null, K5).
+- Proof: fcol 8/18 -> 10/18 (K4+K5 PASS). Regression at 755774469a200f8b: anchors 18/18 MATCH, f266 6/6, f259 7/7, f259g 12/13 honest, negatives 19/19, skill 13/13.
+- Registry F-NEW-264d evidence += LAW-D.
+
+Stage Summary:
+- 3 of 6 collection laws closed this wave (LAW-A, LAW-B, LAW-D), fcol 3/18 -> 10/18, zero drift at every checkpoint, all pushed.
+- Standing queue: LAW-C (Java-8 default methods K13/K14/K16/K17/K18), LAW-E (getOrDefault K6), LAW-F (subList K3 / stream K15); then F-265 reclassification + F-217 root (tasks 23-48).
