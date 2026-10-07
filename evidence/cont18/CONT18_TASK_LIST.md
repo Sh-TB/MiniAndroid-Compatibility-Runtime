@@ -40,11 +40,11 @@ Full battery at baseline AND at every fix binary: **ALL PASS, zero drift**
 | 14 | LAW-A 3-run proof (T-07) | **VERIFIED** | anchors ×3 + probe rows above |
 | 15 | LAW-A registry update | **IMPLEMENTED** | F-NEW-264d evidence += LAW-A (`cont18_registry_lawa.py`) |
 | 16 | LAW-B iterator write-back (K2 listIterator.set, K11 Iterator.remove+ISE, K12 ListIterator.add) | **IMPLEMENTED+TESTED** | fcol 5/18→8/18; lastReturned box law; ISE double-remove; probe-artifact expectations corrected per OpenJDK ListItr (K2 nix==0, K12 pidx==1) |
-| 17 | LAW-C Java-8 default-method family (K13/K14/K16/K17/K18) | **PENDING** | one machinery, seven faces |
+| 17 | LAW-C Java-8 default-method family (K13/K14/K16/K17/K18) | **IMPLEMENTED+TESTED** | fcol 10/18→18/18; dex_invoke_slot channel; boxed compareTo/Integer.sum laws; commit 75dae014 |
 | 18 | LAW-D deque order (K4 LinkedList head/tail, K5 ArrayDeque FIFO) | **IMPLEMENTED+TESTED** | fcol 8/18→10/18 at 755774469a200f8b; kind-aware addFirst/addLast/peek/poll/removeFirst/Last + ArrayDeque added to handles_class (was entirely absent) |
-| 19 | LAW-E map-default/hash-view coherence (K6 getOrDefault, K9-contains face done via LAW-A) | **BLOCKED→FRONTIER-SCOPED** | K6 decomposed: Map.remove no-op + getOrDefault null; shadow law never reached (F089-REMOVE diag 0 hits); virtual-rewritten iface calls (invocation_type=virtual, class Ljava/util/Map;) lose receiver identity — execute_invoke_virtual bridge scope for next wave |
-| 20 | LAW-F subList view (K3) + stream family (K15) | **PENDING** | |
-| 21 | AbstractCollection.toString face (K14 detail shows `@hash`) | **PENDING** | recorded as LAW-C sub-face |
+| 19 | LAW-E map-default/hash-view coherence (K6 getOrDefault, K9-contains face done via LAW-A) | **IMPLEMENTED+TESTED** | K6 PASS (remOk=true def=42): root = dead-code kill (deque-block terminal return) + missing getOrDefault law; the earlier 'receiver identity loss' hypothesis REFUTED by the LAWCEF two-layer trace; commit 75dae014 |
+| 20 | LAW-F subList view (K3) + stream family (K15) | **IMPLEMENTED+TESTED** | K3 PASS (write-through view + OpenJDK bounds); K15 PASS (bounded of/toList/filter/collect-toList eager pipeline; static-face gate exemption); rest of java.util.stream DEFERRED with scope; commit 75dae014 |
+| 21 | AbstractCollection.toString face (K14 detail shows `@hash`) | **PENDING** | recorded as LAW-C sub-face (probe row detail cosmetics; no semantic row depends on it) |
 | 22 | LAW-B..F each: implement → fcol row → anchors ×3 → negatives (one law = one fix cycle) | **PENDING** | standing queue, one at a time |
 
 ## C. PHASE 2 — F-265 downstream reclassification
@@ -58,7 +58,7 @@ Full battery at baseline AND at every fix binary: **ALL PASS, zero drift**
 
 | # | Task | Status | Evidence |
 |---|------|--------|----------|
-| 25 | T-11 F-217 source reconstruction: waiter registration path | **PENDING** | |
+| 25 | T-11 F-217 source reconstruction: waiter registration path | **CLASSIFIED** | real DEX extraction (17 methods, unlock 88 units) + disasm (CONT18_F217_FIRST_DIVERGENCE.md §1) |
 | 26 | T-11a continuation capture | **PENDING** | |
 | 27 | T-11b resume/unpark dispatch | **PENDING** | |
 | 28 | T-11c Handler/Looper/MessageQueue interaction | **PENDING** | |

@@ -7303,3 +7303,36 @@ Work Log:
 
 Stage Summary:
 - Wave 10 collection block: LAW-A, LAW-B, LAW-D closed (fcol 3/18 -> 10/18); LAW-E scoped with evidence; LAW-C (default methods) + LAW-F (subList/stream) still PENDING. F-217 chain (tasks 23-48) remains the next major engineering target per the brief.
+
+---
+Task ID: CONT-18-W10-LAWCEF
+Agent: Super Z (main)
+Task: user directive — "investigate LAW-C/E/F only to definitive determination; fix only a proven generic root; else explicit REJECT/DEFER; then move directly to F-217 first-divergence."
+
+Work Log:
+- Two-layer dispatch diagnostics built (env-gated LAWCEF in try_shadow_dispatch + CollectionShadow::dispatch); four probe runs (lawcef_diag1..4).
+- Determination: (1) receiver identity CORRECT on every face — LAW-E bridge-loss hypothesis REFUTED; root = no handlers; (2) F089-REMOVE 0-hits explained: deque-block terminal return made the F-063 Map.remove law dead code since s86/#371B1; (3) static no-receiver gate declined Stream.of/Collectors.toList.
+- LAW-C/E/F all fixed generic: 7-face Java-8 default-method family via new engine-installed dex_invoke_slot (D8 lambda objects = real DEX code, ok=false -> loud decline); boxed compareTo + Integer.sum framework laws; Map fall-through revival; getOrDefault; subList view (write-through, OpenJDK bounds); bounded stream pipeline (of/toList/filter/collect-toList eager; rest of java.util.stream DEFERRED with scope — absent-family root is generic, one-law-one-fix discipline).
+- Proof: fcol 18/18 (K6 remOk=true def=42, K13 size=2, K14 [1,2,3], K15 size=2, K17 n=3 c=9, K18 f1;f2;/mf); f266 6/6; f259 7/7; f259g 12/13 honest; anchors 6/6 x3 BYTE-IDENTICAL; negatives 19/19; skill 13/13. Binary 8ee839e718877216.
+- Registry F-NEW-264d -> TESTED (6/6 laws closed), evidence appended (sha16 2043002891facf8b). Evidence file evidence/cont18/CONT18_LAWCEF_DETERMINATION.md. Commit 75dae014 pushed.
+
+Stage Summary:
+- F-264d umbrella COMPLETE: all six collection laws A/B/C/D/E/F closed, fcol 3/18 -> 18/18 across the wave.
+- Standing queue: F-217 first-divergence (T-01 runtime trace -> formal documentation) is NOW the active target per user directive.
+
+---
+Task ID: CONT-18-T01-F217
+Agent: Super Z (main)
+Task: user directive — "سپس مستقیم F-217 را به first-divergence تبدیل کن" (then directly convert F-217 to first-divergence).
+
+Work Log:
+- dooz reproduction attempts at HEAD: anchor invocation reproduces golden d602648e8e401895 exactly; click-test found 0 clickable views (Compose UI); --tap 540,960 → [F117-TAP] target=0 (Compose tap frontier — recorded, not worked around).
+- MutexImpl vehicle search: NO canonical anchor APK carries kotlinx Mutex; corpus scan found sudoku_secuso_101/klondike/notes_secuso_105 (classes load, zero lock/unlock traffic in headless runs at HEAD — T-13 face honestly unreachable).
+- SOURCE-FIRST: wrote DEX extractor + disassembler (cont18_t01_dex_extract.py / _disasm.py) — extracted the REAL kotlinx MutexImpl bytecode from the corpus DEX (17 methods, unlock 88 units; f217_dex_extract.json + f217_unlock_disasm.txt): retry loop + NO-OWNER ISE arm + owner-mismatch ISE arm + forwarding0.m CAS + queue-drain invoke.
+- Built fixtures/f217_mutex_probe (plain Java, extracted state machine verbatim; apk run/w7/f217.apk 1e3e0a03e0a221c2): F217-A CAS-retry-progress PASS (spins=4, terminates), F217-B unlock-drain-resume PASS (runs=1, drain;body;owned; — inline nested side effects SURVIVE), F217-C no-owner ISE PASS.
+- FIRST-DIVERGENCE RECORD written (evidence/cont18/CONT18_F217_FIRST_DIVERGENCE.md): concurrency layer honors the extracted contract at HEAD; historical spin = unlock retry loop starved by nested waiter-resume losses UPSTREAM in the composition chain (F-256/F-265 family) — the mutex loop was the loudest victim, not the root. F-265 stays CLASSIFIED (T-09 causal-order trace gated by the Compose tap frontier).
+- Registry: F-NEW-217 → CLASSIFIED with FIRST-DIVERGENCE DOCUMENTED evidence (sha16 8bb3256241c4f5a0); CONT18_TASK_LIST rows 17/19/20/25 updated; fcol row 21 stays PENDING (cosmetic sub-face).
+
+Stage Summary:
+- LAW-C/E/F closed (fcol 18/18) + F-217 first-divergence documented in one session, all evidence committed.
+- Standing queue: T-09/T-10 (F-265 reclassification) gated by the Compose tap frontier (target=0); T-14 ARM-A audit for the composition chain (Lnb0.H) belongs to the F-265 family; stream-family rest + subList CoMod + AbstractCollection.toString = DEFERRED with scope.

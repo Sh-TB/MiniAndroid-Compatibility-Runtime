@@ -1,0 +1,155 @@
+{
+ "d:Lkotlinx/coroutines/sync/MutexImpl;-><clinit>": {
+  "dex": "classes.dex",
+  "access": 65544,
+  "registers": 3,
+  "ins": 0,
+  "outs": 3,
+  "insns_size": 13,
+  "insns_hex": "1c00e3181a0109d51c0230217130eabe02010c00690030890e00"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;-><init>": {
+  "dex": "classes.dex",
+  "access": 65537,
+  "registers": 3,
+  "ins": 2,
+  "outs": 3,
+  "insns_size": 24,
+  "insns_hex": "1210703096fe01023802040012022805710081fe00000c025b122f8922022f21702063fe12001f02fc1b5b122e890e00"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;->access$getOwner$FU$p": {
+  "dex": "classes.dex",
+  "access": 4121,
+  "registers": 1,
+  "ins": 0,
+  "outs": 0,
+  "insns_size": 3,
+  "insns_hex": "620030891100"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;->access$lockSuspend": {
+  "dex": "classes.dex",
+  "access": 4121,
+  "registers": 3,
+  "ins": 3,
+  "outs": 3,
+  "insns_size": 5,
+  "insns_hex": "703072fe10020c001100"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;->getOnLock$annotations": {
+  "dex": "classes.dex",
+  "access": 4105,
+  "registers": 0,
+  "ins": 0,
+  "outs": 0,
+  "insns_size": 1,
+  "insns_hex": "0e00"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;->lock$suspendImpl": {
+  "dex": "classes.dex",
+  "access": 4104,
+  "registers": 4,
+  "ins": 3,
+  "outs": 3,
+  "insns_size": 23,
+  "insns_hex": "6e2079fe21000a00380005006201337c1101703072fe21030c017100b0d700000c023321030011016201337c1101"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;->lockSuspend": {
+  "dex": "classes.dex",
+  "access": 18,
+  "registers": 5,
+  "ins": 3,
+  "outs": 4,
+  "insns_size": 46,
+  "insns_hex": "7110b1d704000c007110a6ec00000c0022012a2170403dfe21301f01e41d6e206afe12006e107bec00000c037100b0d700000c0033030500711003d804007100b0d700000c043343030011036203337c11030d036e108fec00002703"
+ },
+ "d:Lkotlinx/coroutines/sync/MutexImpl;->tryLockImpl": {
+  "dex": "classes.dex",
+  "access": 18,
+  "registers": 4,
+  "ins": 2,
+  "outs": 3,
+  "insns_size": 56,
+  "insns_hex": "6e1078fe02000a003800220071007fed00000a0038001500620030896e20e7be20000c00710081fe00000c013310030028072203ba187010c5b903002703620030896e30ebbe200312030f03380310006e206efe32000a003800040012230f036e106ffe02000a003800ccff12130f03"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->getOnLock": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 6,
+  "ins": 1,
+  "outs": 5,
+  "insns_size": 37,
+  "insns_hex": "22001121620129891a0226d0712032dd2100123271206ede21000c011f01fc1b62032a891a0425d0712032dd430071206ede23000c021f02fc1b54532e897053a7fd50211f0010211100"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->holdsLock": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 5,
+  "ins": 2,
+  "outs": 2,
+  "insns_size": 24,
+  "insns_hex": "6e106ffe03000a001201390003000f01620030896e20e7be30000c00710081fe00000c023220eeff3340030012110f01"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->isLocked": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 2,
+  "ins": 1,
+  "outs": 1,
+  "insns_size": 10,
+  "insns_hex": "6e106bfe01000a00390004001210280212000f00"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->lock": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 3,
+  "ins": 3,
+  "outs": 3,
+  "insns_size": 5,
+  "insns_hex": "713071fe10020c011101"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->onLockProcessResult": {
+  "dex": "classes.dex",
+  "access": 4,
+  "registers": 5,
+  "ins": 3,
+  "outs": 2,
+  "insns_size": 35,
+  "insns_hex": "710082fe00000c0071202bdd04000a043904030011022204d2182200f0181a018274702031bb10006e2039bb30006e104bbb00000c036e10d2ba03000c03702056ba34002704"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->onLockRegFunction": {
+  "dex": "classes.dex",
+  "access": 4,
+  "registers": 5,
+  "ins": 3,
+  "outs": 4,
+  "insns_size": 34,
+  "insns_hex": "380410006e206efe42000a0038000a00710082fe00000c047220e7fd4300281222002b211a0169d0712032dd13001f031821704052fe20431f0017216e3073fe02040e00"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->toString": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 3,
+  "ins": 1,
+  "outs": 2,
+  "insns_size": 50,
+  "insns_hex": "2200f0181a014460702031bb1000711085ed02000c016e203abb10001a01617e6e203abb10006e106ffe02000a016e203cbb10001a011e186e203abb1000620130896e20e7be21000c016e2039bb100013015d006e2032bb10006e104bbb00000c001100"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->tryLock": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 5,
+  "ins": 2,
+  "outs": 2,
+  "insns_size": 50,
+  "insns_hex": "70207afe43000a00121138002c0032102900122132100e002204d2181a00b1f36e10d2ba00000c00702056ba040027042200d2182201f0181a028274702031bb21006e2039bb41006e104bbb01000c046e10d2ba04000c04702056ba4000270012010f01"
+ },
+ "v:Lkotlinx/coroutines/sync/MutexImpl;->unlock": {
+  "dex": "classes.dex",
+  "access": 1,
+  "registers": 5,
+  "ins": 2,
+  "outs": 4,
+  "insns_size": 88,
+  "insns_hex": "6e106ffe03000a0038004600620030896e20e7be30000c01710081fe00000c023221f0ff32412a003904030028262200f0181a028374702031bb20006e2039bb10001a014b176e203abb10006e2039bb40001a0480086e203abb40006e104bbb00000c042200d2186e10d2ba04000c04702056ba40002700710081fe00000c0271401e3430210a003800bcff6e1076fe03000e002204d2181a0084746e10d2ba00000c00702056ba04002802270428ff"
+ }
+}
