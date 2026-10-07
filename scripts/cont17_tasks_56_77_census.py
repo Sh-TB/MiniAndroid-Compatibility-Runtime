@@ -23,10 +23,15 @@ census = {'generated': '2026-10-08', 'binary': 'a8761a482a186eac',
             'note': 'this battery is the live HEAD evidence covering every shadow-law row it exercises'},
           'blocks': {}}
 
+def as_text(v):
+    if isinstance(v, str):
+        return v
+    return json.dumps(v) if v is not None else ''
+
 def classify(rows):
     out = []
     for r in rows:
-        ev = (r.get('evidence') or '')
+        ev = as_text(r.get('evidence'))
         runnable = any(k in ev for k in ('run/cont', 'probe', 'anchor', 'REAL_APP_CONTENT'))
         out.append({'id': r['id'], 'priority': r.get('priority'),
                     'has_head_evidence_field': bool(ev.strip()),
@@ -37,11 +42,11 @@ for st, key in [('IMPLEMENTED', 'I'), ('PARTIAL', 'J'), ('UNPROVEN', 'K')]:
     rows = [r for r in reg['roots'] if r['status'] == st]
     census['blocks'][key] = {
         'status': st, 'n_rows': len(rows),
-        'with_evidence_field': sum(1 for r in rows if (r.get('evidence') or '').strip()),
+        'with_evidence_field': sum(1 for r in rows if as_text(r.get('evidence')).strip()),
         'runnable_hint': sum(1 for r in classify(rows) if r['runnable_evidence_hint']),
         'rows': classify(rows),
     }
 
-json.dump(census, open(f'{BASE}/evidence/cont17/ijk_census.json', indent=1), default=str)
+json.dump(census, open(f'{BASE}/evidence/cont17/ijk_census.json', 'w'), default=str, indent=1)
 print('census:', {k: (v['n_rows'], v['with_evidence_field'], v['runnable_hint'])
                  for k, v in census['blocks'].items()})
