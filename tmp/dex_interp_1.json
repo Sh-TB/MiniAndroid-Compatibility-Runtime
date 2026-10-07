@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://frogermcs.github.io",
+    "name": "MultiDex solution for 64k limit in Dalvik.",
+    "snippet": "Nov 2, 2014 — de x file (bytecode interpreted by Dalvik VM) can have only 64k (exactly 65536) methods. What does it meat (for those who haven't faced with ... Read more",
+    "host_name": "frogermcs.github.io",
+    "rank": 0,
+    "date": "Nov 2, 2014",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net",
+    "name": "DEX2C: Translation of Dalvik Bytecodes into C Code and",
+    "snippet": "Jun 30, 2015 — In this paper, we introduce our DEX2C compiler, which dynamic ally translates Dalvik bytecodes (DEX) into C code with method granularity.",
+    "host_name": "www.researchgate.net",
+    "rank": 1,
+    "date": "Jun 30, 2015",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com",
+    "name": "BEND0US/DexLoader: A demo Android project",
+    "snippet": "This project demonstrates different methods of loading and executing DEX files in Android, with a focus on dynamic loading techniques such as DexClassLoader , ... Read more",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mirrors.aliyun.com",
+    "name": "Controlling the Embedded VM",
+    "snippet": "Bytecode Verification and Optimization The system tries to pre-verify all classes in a DEX file to reduce class load overhead, and performs a series of ...",
+    "host_name": "mirrors.aliyun.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://zhuanlan.zhihu.com",
+    "name": "dalvikvm run dex-- source code analysis",
+    "snippet": "#Android run dex : # for details: http://www.herongyang.com/Android/shell- dalvikvm -Command-to- Run -Java-Application.html dalvikvm -cp Hello. dex Hello class ... Read more",
+    "host_name": "zhuanlan.zhihu.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

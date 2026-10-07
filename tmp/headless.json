@@ -1,0 +1,65 @@
+[
+  {
+    "url": "https://www.slideshare.net",
+    "name": "Headless Android | PDF",
+    "snippet": "Headless Android allows running the full Android system software stack without a graphical user interface. It is achieved by disabling SurfaceFlinger and ...",
+    "host_name": "www.slideshare.net",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://sourceforge.net",
+    "name": "Best Open Source Android Frameworks 2026",
+    "snippet": "JUCE is an open-source cross-platform C++ application framework for creating high-quality desktop and mobile applications, including VST, VST3, AU, AUv3, RTAS ... Read more",
+    "host_name": "sourceforge.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://wix.github.io",
+    "name": "Setting Up an Android Development & Testing Environment",
+    "snippet": "This guide provides some core practices to follow in setting up a stable, reliable environment for running automated UI tests using Android emulators",
+    "host_name": "wix.github.io",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://repomind.in",
+    "name": "Best Open Source Android Repositories",
+    "snippet": "Discover and analyze the top open - source GitHub repositories for android . Deep architecture and code analysis powered by RepoMind.",
+    "host_name": "repomind.in",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android-review.googlesource.com",
+    "name": "Android Review - Google Open Source",
+    "snippet": "No information is available for this page. Learn why",
+    "host_name": "android-review.googlesource.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://pt.slideshare.net",
+    "name": "Headless Android | PDF",
+    "snippet": "Headless Android allows running the full Android system software stack without a graphical user interface. It is achieved by disabling SurfaceFlinger and ...",
+    "host_name": "pt.slideshare.net",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com",
+    "name": "remote-android repositories",
+    "snippet": "redroid (Remote- Android ) is a multi-arch, GPU enabled, Android in Cloud solution. Track issues / docs here. android dockercontainer · android dockercontainer. Read more",
+    "host_name": "github.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  }
+]

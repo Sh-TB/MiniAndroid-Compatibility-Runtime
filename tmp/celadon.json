@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://www.opennet.ru",
+    "name": "Список изменений",
+    "snippet": "Sadly, gemini was only permitting RGMII mode with no delays, which would require the required delay to be inserted via PCB tracking or by the MAC.",
+    "host_name": "www.opennet.ru",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net",
+    "name": "Colour and Colorimetry Multidisciplinary Contributions",
+    "snippet": "Genova Genova, Colour design in Web 3.0 mobile app and OS : proper and specific application of colour rendering of lighting sources 497 pages",
+    "host_name": "www.researchgate.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.gizmochina.com",
+    "name": "Page 294",
+    "snippet": "Nov 2, 2025 — In terms of battery life, the glasses deliver up to 4 hours of runtime in teleprompter mode , 8 to 10 hours in translation mode , and around 2.6 ...",
+    "host_name": "www.gizmochina.com",
+    "rank": 2,
+    "date": "Nov 2, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://domainarrivals.com",
+    "name": "Paperwork for the Close-Up - Domain Arrivals",
+    "snippet": "Sep 6, 2026 — PurrNap presents a free Android game collection built to run without an internet connection, including Sudoku, Chess, Solitaire, Ludo, 2048, ...",
+    "host_name": "domainarrivals.com",
+    "rank": 3,
+    "date": "Sep 6, 2026",
+    "favicon": ""
+  }
+]
