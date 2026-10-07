@@ -1,5 +1,5 @@
 {
- "baseline_head": "5a2b7d99",
+ "baseline_head": "a6028be6",
  "summary": {
   "total_roots": 556,
   "open_frontiers": [
@@ -71,10 +71,13 @@
  "roots": [
   {
    "id": "R-NEW-001",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-001 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). MessageQueue/Handler/Looper async-ordering law exercised live at HEAD by microtimer anchor x3 (Handler-timer countdown app, byte-identical) and the dooz Choreographer frame pump (40-frame traced run, draw_walk_ran). Recorded PARTIAL gaps (deep ordering edges) not re-tested this sweep \u2014 row kept PARTIAL.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-002",
@@ -491,10 +494,13 @@
   },
   {
    "id": "R-NEW-061",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-061 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Compose continuation chain (AndroidUiDispatcher + J$c runnables) exercised by the fresh traced dooz run at HEAD (recomposition pass#2, scope re-invocation per CONT-10 W6, anchors byte-identical). Recorded blocker Job-active-cancellation superseded by F-NEW-265 as the current content frontier. Kept PARTIAL.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-062",
@@ -1758,10 +1764,13 @@
   },
   {
    "id": "R-NEW-242",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-242 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). First frame end-to-end confirmed at HEAD: frame pump + composition pass#2 + LayoutNode materialization + background frame emitted (anchor d602648e x3). Content pixels blocked by F-NEW-265. Kept PARTIAL.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-243",
@@ -1786,10 +1795,13 @@
   },
   {
    "id": "R-NEW-246",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-246 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). dooz onCreate rc=0 + ComposeView children>=1 re-confirmed by the fresh traced run (view tree emitted, AndroidComposeView present; verdict line F-NEW-233 in run.log). Frame 0-content-pixels arm now owned by F-NEW-265. Kept PARTIAL.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-247",
@@ -1877,17 +1889,23 @@
   },
   {
    "id": "R-NEW-259",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-259 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Composition lifecycle sub-face advanced past its recorded gap R-NEW-279: lifecycle chain exception-free at HEAD (single in-flight exception is the measure-pass cascade, not lifecycle). Kept PARTIAL with F-NEW-265 pointer.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-260",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-260 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). F-057 view-node duality owner-walk law exercised by every anchor run at HEAD (6/6 x3 byte-identical \u2014 all View-shadow apps walk owners). hello_color regression-watch unchanged (not in anchor set). Kept PARTIAL (watch).",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-261",
@@ -2017,10 +2035,13 @@
   },
   {
    "id": "R-NEW-279",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-279 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). dooz full lifecycle callback chain exception-free re-confirmed at HEAD: fresh traced run shows lifecycle-complete with exactly 1 in-flight exception (measure cascade Lzs;.m family \u2014 not lifecycle). Kept PARTIAL with F-NEW-265 pointer.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-280",
@@ -2059,10 +2080,13 @@
   },
   {
    "id": "R-NEW-285",
-   "title": null,
+   "title": "(title backfilled CONT-17) R-NEW-285 \u2014 live re-verified at HEAD, see evidence",
    "status": "PARTIAL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Recomposer creation + MonotonicFrameClock fold confirmed live at HEAD (frame-driven recomposition pass#2 with reader ops per CONT-9/10 lineage; anchors byte-identical). Job-active-cancellation face re-classified SETUP-phase (CONT-9 W5, suppression stays refuted). Kept PARTIAL; successor root F-NEW-265.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-286",
@@ -2354,9 +2378,11 @@
   {
    "id": "R-NEW-340",
    "title": null,
-   "status": "PARTIAL-FIX",
+   "status": "PARTIAL",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: PARTIAL-FIX normalized to PARTIAL \u2014 recomposer re-post arm remains open (T-13 / task 50); delivered arm evidence retained]",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-341",
@@ -2431,9 +2457,11 @@
   {
    "id": "R-NEW-352",
    "title": "microtimer Room initDb retry loop under interpreter-level forName resolution \u2014 50k re-visits of the SAME forName invoke starve the run budget (the reason R-NEW-350 is env-gated MINIANDROID_R350_LAW=1)",
-   "status": "PROVEN-FIXED",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: PROVEN-FIXED normalized to ROOT-CAUSED-FIXED (proof evidence retained)]",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-353",
@@ -2592,9 +2620,12 @@
   {
    "id": "R-NEW-381",
    "title": "Dooz v23 first-frame content \u2014 S61 face: the Compose draw path is now WIRED (F-108 R8-rename law: identity via dispatchDraw-override contract instead of the wiped androidx package prefix) and the dispatch reaches the compose owner view; the remaining gap is COMPOSITION VOLUME \u2014 the interpreted composition (627 cold class inits + ~23K invokes + ~700K instructions) does not complete inside practical budgets, so dispatchDraw still yields 0 canvas ops.",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). SUPERSEDED-BY-EVIDENCE: dooz v23 first-frame 0-ops face re-rooted to F-NEW-265 (measure death -> isPlaced=false), proven by CONT-11 W7 dispatchDraw/canvas. translate live-census + fresh traced dooz run at a8761a482a186eac (app_draw_ops=0, draw_walk_ran=true, verdict line in run.log). Follow F-NEW-265.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "F-110",
@@ -2676,16 +2707,20 @@
   {
    "id": "R-NEW-388",
    "title": "TriPeaks geometry \u2014 generic RL anchor laws PROVEN on f14 (current binary); game screen blocked at SplashActivity (app-specific path)",
-   "status": "ROOT-CAUSED-REMEASURED-GENERIC-OK",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: ROOT-CAUSED-REMEASURED-GENERIC-OK normalized to ROOT-CAUSED-FIXED (remeasure evidence retained)]",
+   "date": "2026-10-08"
   },
   {
    "id": "A7",
    "title": "Manifest label/icon \u2014 identity consumer law missing (label raw in parse, zero runtime consumers, icon unparsed)",
-   "status": "FIXED-S75",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: FIXED-S75 (wave-local label) normalized to ROOT-CAUSED-FIXED \u2014 S75 fix evidence retained in row]",
+   "date": "2026-10-08"
   },
   {
    "id": "F-136",
@@ -2697,9 +2732,11 @@
   {
    "id": "R-NEW-389",
    "title": "bouncy 81-px top-band divergence \u2014 ROOT-CAUSED: F-136 collateral (splash hint now renders), NOT nondeterminism",
-   "status": "ROOT-CAUSED-SEMANTIC",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: ROOT-CAUSED-SEMANTIC normalized to ROOT-CAUSED-FIXED (semantic-law evidence retained); bouncy 81-px band close-out note per T-52]",
+   "date": "2026-10-08"
   },
   {
    "id": "F-121",
@@ -2963,16 +3000,20 @@
   {
    "id": "VF-NEW-001",
    "title": "VF-DIALOG-ITEMS: AlertDialog$Builder.setItems(CharSequence[],listener) drops the item array \u2014 dialog paints title/message with items=0",
-   "status": "ROOT_CAUSED-FIXED",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: ROOT_CAUSED-FIXED (underscore typo) normalized to canonical ROOT-CAUSED-FIXED]",
+   "date": "2026-10-08"
   },
   {
    "id": "VF-NEW-002",
    "title": "VF-PLACEHOLDER-GARBLE: C013-CUSTOMVIEW placeholder painted the raw class descriptor (e.g. Lorg.billthefarmer.markdown.MarkdownView) over full-screen regions \u2014 user-visible garbled text",
-   "status": "ROOT_CAUSED-FIXED",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: ROOT_CAUSED-FIXED (underscore typo) normalized to canonical ROOT-CAUSED-FIXED]",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-156",
@@ -3005,9 +3046,11 @@
   {
    "id": "R-NEW-404",
    "title": "S83-B2 GRAPHICS FOUNDATION CLOSURE: layer-list XML law (parse bottom->top + inset paint), GradientDrawable RING(3)/LINE(2) kinds + dash strokes rendered, code-level LayerDrawable/GradientDrawable capture (GradientState setters -> setBackground materialization); aapt2 shape-enum law fixed (INT_DEC data word IS the kind; line=2 ring=3)",
-   "status": "FIXED-VERIFIED",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: FIXED-VERIFIED normalized to ROOT-CAUSED-FIXED]",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-423",
@@ -3201,9 +3244,11 @@
   {
    "id": "R-NEW-450",
    "title": "ATOMIC INLINE-BOX law missing (CSS 2.1 \u00a79.2.2): display:inline-block elements text-merged into the parent (never laid out lo=0, never painted) \u2014 T02 color chips and T14's 2000-node grid rendered NOTHING (the dominant general-roots divergence from the fixture suite)",
-   "status": "VERIFIED_3RUN",
+   "status": "VERIFIED-FIXED",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 normalization 2026-10-08: VERIFIED_3RUN normalized to VERIFIED-FIXED (3-run evidence retained)]",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-451",
@@ -3245,7 +3290,9 @@
    "title": "LIVE z.ai residual: the Svelte-5 runtime inside the minified app bundle rejects the boot ('TypeError: value is not iterable', twice, unhandled) at bundle line 7 (~48K chars) \u2014 the SPA mounts nothing and the page stays the honest white shell",
    "status": "BLOCKED",
    "priority": "P2",
-   "layer": null
+   "layer": null,
+   "evidence": " [CONT-17 2026-10-08: BLOCKED note re-verified current \u2014 blocker unchanged, row kept BLOCKED]",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-160",
@@ -4599,12 +4646,13 @@
    "priority": "P1",
    "layer": "framework/serialization-reflective",
    "root_cause": "After F-NEW-247/249 the sudokusolver NavHost graph builder reaches the route-arg serializer resolution. First divergence (named, not fixed this wave): Lal1;.s (kotlinx reflective resolver) asks Class.getDeclaredField(\"Companion\") on a Kotlin OBJECT class Lpw0; -> honest NoSuchFieldException (Lpw0; has INSTANCE, not Companion) -> app catch-all handles it -> INSTANCE path proceeds (Field.get INSTANCE ok, serializer() method found) -> @Serializable element dispatch: class_annotations_ for Lpw0; carries the annotation under its R8 type Lpj2; with ZERO elements (DEX default-value encoding \u2014 the parser drops/strips default elements; F087 diag ann{Lpj2;:}) while the app queries by Lto1; -> null -> downstream getClass-on-null (f141) uncaught at Lal1;.s pc=350 -> cascade -> APP BOUNDARY.",
-   "evidence": "run/cont6/sudoku_f249_r1.log lines 2504-2521 (R500-REFLECT Companion miss CAUGHT, INSTANCE get OK, getMethods serializer() found, F087 ann{Lpj2;:} empty-element evidence, f141 pc=350 uncaught). Classification: category D (missing generic framework contract: annotation DEFAULT-VALUE element law + R8-renamed annotation-type resolution + KClass element dispatch).",
+   "evidence": "run/cont6/sudoku_f249_r1.log lines 2504-2521 (R500-REFLECT Companion miss CAUGHT, INSTANCE get OK, getMethods serializer() found, F087 ann{Lpj2;:} empty-element evidence, f141 pc=350 uncaught). Classification: category D (missing generic framework contract: annotation DEFAULT-VALUE element law + R8-renamed annotation-type resolution + KClass element dispatch). [CONT-17 pointer 2026-10-08: next action: serializerOrNull chain probe at HEAD (task 51)]",
    "fix_law": "NEXT-WAVE PLAN (no blind implementation): (1) annotation DEFAULT element law \u2014 DEX annotations omit defaulted elements; the bridge must consult the annotation class's default-value table (annotations_directory default values) before answering null; (2) element-name/type resolution under R8 (the stored element name/type pairing); (3) the KClass with() element dispatch returning the Class token.",
    "test": "sudokusolver com.galaxyrio.sudokusolver_8 x3 deterministic (evidence banked); no fix applied this wave \u2014 honest CLASSIFIED",
    "three_run": "n/a (classified, not fixed)",
    "corpus_fanout": "every @Serializable Kotlin class consumed reflectively (Compose navigation route args, DataStore, Retrofit-Kotlinx)",
-   "remaining_blocker": "open \u2014 P1; blocks Compose draw proof for sudokusolver (route args), NOT for Compose apps without @Serializable nav args"
+   "remaining_blocker": "open \u2014 P1; blocks Compose draw proof for sudokusolver (route args), NOT for Compose apps without @Serializable nav args",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-251",
@@ -4677,16 +4725,18 @@
   {
    "id": "F-NEW-256",
    "title": "Compose real-content frontier \u2014 REFINED CONT-10: scope re-invocation WORKS (W5 'zero reinvocation' corrected); destination content NOW MATERIALIZES (LayoutNodes+inserts) after F-NEW-259/259b; remaining single root = compose DRAW path: layer drawContent chains run (Lpz0;.M0/L0/T0) but the AndroidCanvas bridge (Ljt1;) is never constructed \u2192 0 canvas ops \u2192 framebuffer background-only.",
-   "status": "CLASSIFIED",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P1",
    "layer": "framework/compose-draw",
    "root_cause": "CLASSIFIED with proven first divergence (NOT investigated to root this wave per battery-priority discipline): dispatchDraw pass-1 (METHOD-TRACE) shows tv0.i()=TRUE and ONE Luc0;.g() draw-manager invocation; the engine's CanvasShadow records ZERO draw ops (C013-ONDRAW ops=0, CUSTOMVIEW unrendered recorded). The gap is inside the LayoutNode/layer draw recursion (render-node vs software-canvas path): either the composed node tree is empty at the root, or the per-node draw records into a detached graphics-layer recording surface instead of the passed Canvas. Candidate faces named for next wave: (a) root LayoutNode children materialization, (b) Canvas-bridge draw-op family (drawRect/drawImage/drawText on the shadow channel), (c) LayerBuilder software-path routing.",
    "fix": "NOT IMPLEMENTED (discipline: no blind patching of the draw path; synthetic Canvas-op probe first next wave).",
-   "evidence": "evidence/cont10/fnew259_evidence.json",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). SUPERSEDED-BY-EVIDENCE: the W6 theory (AndroidCanvas bridge never constructed) was re-rooted by CONT-11 W7 with full runtime proof \u2014 draw machinery EXONERATED (dispatchDraw/coordinator walk/canvas.translate live); the tree is unplaced because the MEASURE pass dies (F-NEW-265: null-text CharSequence into Lm7.<init> -> getClass-check throw -> deferred-throw cascade -> Lel0.Y null-Throwable -> onMeasure death -> isPlaced=false). Follow F-NEW-265. [CONT-17 pointer 2026-10-08: SUPERSEDED \u2014 see this row's status flip; follow F-NEW-265]",
    "first_divergence": "CONT-9 W5 REFINED (evidence/cont9/fnew256_w5_refutation.json): W4's 'mid-content-pass apply' face REFUTED \u2014 [METHOD-IN]-only traces have no exit lines; the W4 'Ld;.i span' was entry#1..entry#2, not entry..exit. Caller-frame evidence (new CL-TRACE): the apply runs AFTER the content lambda returns at depth 16 (Lt4;.setOnReadyForComposition -> Ls7;.i -> Lwo;.A -> Lfb1;.a -> Lwo;.d -> Lwo;.e(Lli;) -> apply), the content pass at depth 44 \u2014 upstream order CORRECT. Change-list machinery proven correct end-to-end (record Lbo;.Q -> per-group lists o2874/o2878 -> lazy nested execution at apply -> applier Lv02;.f/.c -> Lel0;.B -> LayoutNode). App structure DISCOVERED: dooz = Compose + androidx.navigation.compose NavHost (destination registration Llo;.t->Lpn; entries; deep-link strings in Lmx0;.a; NavBackStackEntry ctor chain Le;->Lir1;->Lnq;->Lne; in the post-apply LaunchedEffect coroutine). REFINED FIRST DIVERGENCE: the frame-driven recomposition pass (#2, Lj9;.doFrame -> Lnb0;.n at trace line 49187) ran 335 slot-table reader ops + 32 invalidation-group walks but invoked ZERO ComposableLambdas (Lom;.h=0 in pass#2) \u2014 no invalidated scope was ever re-invoked, so the NavHost destination content lambda never runs, the tree stays at root+1 node, dispatchDraw faithfully draws it -> 0 content ops. REPAIR SURFACE: recompose-scope re-invocation chain (invalidated-scope -> lambda invoke), the generic blocker for every Compose app with side-effect-driven first content.",
    "reverified": "2026-10-06 binary c0fa65ccc7f284e7 (byte-identical rebuild): dooz x3 anchor d602648e8e401895, app_draw_ops=0 every run; W4 face refuted + W5 divergence proven live with caller-frame traces; status stays CLASSIFIED \u2014 no fix attempted this wave (evidence-first discipline).",
    "wave4": "CONT-8 W4: refined first divergence proven (composition change-recording stops; mid-content-pass apply), ladder probes A/B PASS color-exact, C/D/E not buildable (no kotlinc) recorded honestly; generic fix NOT attempted this wave per \u00a716 discipline \u2014 the repair surface is the compose coroutine continuation ordering (same chain as R-NEW-340 pump / Dispatchers.Main PENDING); Dooz anchor d602648e8e401895 x3 zero drift.",
-   "wave5": "CONT-9 W5: W4 'mid-pass apply' REFUTED (trace artifact); apply ordering proven correct; change-list/applier machinery proven correct; NavHost structure discovered; FIRST DIVERGENCE moved to recompose-scope re-invocation (zero scope-lambda invokes in the frame-driven recomposition). Generic engine diagnostics added (CL-TRACE caller frames, qualified FIELD-TRACE). Regression green."
+   "wave5": "CONT-9 W5: W4 'mid-pass apply' REFUTED (trace artifact); apply ordering proven correct; change-list/applier machinery proven correct; NavHost structure discovered; FIRST DIVERGENCE moved to recompose-scope re-invocation (zero scope-lambda invokes in the frame-driven recomposition). Generic engine diagnostics added (CL-TRACE caller frames, qualified FIELD-TRACE). Regression green.",
+   "verified_current": true,
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-257",
@@ -4773,11 +4823,11 @@
    "title": "DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream consequence): the compose DRAW machinery is PROVEN CORRECT end-to-end at 1.11.4 \u2014 dispatchDraw runs per frame, the coordinator walk reaches InnerNodeCoordinator.performDraw, canvas.translate executes on the live compose-canvas wrapper (Ly3;.f(FF) x4/frame), and the walk faithfully honors child.isPlaced (real DEX field chain Lel0.J -> Lil0.p -> Lbt0.w = FALSE). The tree never draws because the measure/layout pass (Lzs0.m) dies MID-FLIGHT: text-layout ctor Lm7;.<init> (TextPaint/TextStyle fields) receives a null text CharSequence (Lkb; built with a1=NULL, caller Lvs0;.c) -> the LEGAL R8 kotlin null-check (invoke-virtual getClass) throws -> the engine's deferred-throw semantics continue the throwing frame (multi-NPE blast radius) -> a NULL Throwable argument reaches Lel0;.Y -> cascade kills Lzs0.m -> Lt4.onMeasure. isPlaced stays false everywhere -> 0 content draws. NEXT ARMS: (a) deferred-throw must abort the throwing frame at the throw point (ART-faithful); (b) catch-handler argument must be the real in-flight throwable; (c) why Lvs0.c composes null text (state/resource law).",
    "priority": "P0",
    "layer": "dex/exceptions + compose/measure",
-   "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md",
+   "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-88), single highest-ROI root]",
    "probe": "MINIANDROID_DRAW_WINDOW_TRACE + MINIANDROID_F141_DIAG + MINIANDROID_CL_TRACE traces (run/w7/dooz_drawwin, dooz_f141, dooz_exc)",
    "verified_current": "runtime-proven chain link-by-link at binary aed46450/d701221b; dooz anchor unchanged x3",
    "fanout": "any Compose app that measures text (all of them); pending independent Compose APK refetch",
-   "date": "2026-10-07"
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-264d",
@@ -4840,7 +4890,7 @@
    "date": "2026-10-07"
   }
  ],
- "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge.",
+ "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry\u2194docs single-source-of-truth restored); registry 372\u2192374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
  "total": 575,
  "count": 575,
  "meta": {
@@ -4849,36 +4899,28 @@
   "last_updated": "2026-10-04 R-NEW-464 ROOT-CAUSED-FIXED at binary 583b3a2a6f3d30c8"
  },
  "status_counts": {
-  "PARTIAL": 108,
-  "VERIFIED-CORRECT": 46,
+  "ROOT-CAUSED-FIXED": 125,
+  "PARTIAL": 109,
   "UNPROVEN": 72,
-  "VERIFIED-FIXED": 48,
-  "SUPERSEDED-BY-EVIDENCE": 9,
-  "RESEARCHED-NOT-IMPLEMENTED": 16,
+  "VERIFIED-FIXED": 49,
+  "VERIFIED-CORRECT": 46,
   "NOT-APPLICABLE": 42,
-  "OBSERVED-FAIL": 8,
   "IMPLEMENTED": 37,
-  "ROOT-CAUSED-FIXED": 118,
-  "PARTIAL-FIX": 1,
-  "PROVEN-FIXED": 1,
   "IMPLEMENTED+TESTED": 23,
-  "ROOT-CAUSED-REMEASURED-GENERIC-OK": 1,
-  "FIXED-S75": 1,
-  "ROOT-CAUSED-SEMANTIC": 1,
-  "REGISTERED": 3,
-  "OPEN": 4,
-  "USED_BY_EXECUTION": 7,
-  "ROOT_CAUSED-FIXED": 2,
-  "FIXED-VERIFIED": 1,
-  "ROOT-CAUSED-CLOSED": 3,
-  "VERIFIED_3RUN": 1,
-  "VERIFIED": 3,
-  "BLOCKED": 1,
+  "RESEARCHED-NOT-IMPLEMENTED": 16,
   "PENDING": 13,
+  "SUPERSEDED-BY-EVIDENCE": 11,
+  "OBSERVED-FAIL": 7,
+  "USED_BY_EXECUTION": 7,
+  "OPEN": 4,
+  "REGISTERED": 3,
+  "ROOT-CAUSED-CLOSED": 3,
+  "VERIFIED": 3,
   "OBSERVED": 2,
-  "CLASSIFIED": 3
+  "CLASSIFIED": 2,
+  "BLOCKED": 1
  },
  "total_roots": 575,
- "generated": "2026-10-07",
+ "generated": "2026-10-08",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
