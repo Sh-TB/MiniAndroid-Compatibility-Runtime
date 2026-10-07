@@ -1,0 +1,79 @@
+{
+ "generated": "2026-10-08",
+ "binary": "a8761a482a186eac",
+ "title": "dubrowgn.microtimer (Simple Microtimer \u2014 Handler-timer XML-widget family)",
+ "law": "SP-2/3/12 common minimum render contract: every stage PASS/FAIL/NOT_USED/UNKNOWN",
+ "stages": [
+  {
+   "stage": "APK->manifest parse",
+   "state": "PASS",
+   "evidence": "install rc=0 + post-install identity = source identity (skill OP-3)"
+  },
+  {
+   "stage": "Application attach",
+   "state": "PASS",
+   "evidence": "lifecycle_trace.json Application chain"
+  },
+  {
+   "stage": "Activity onCreate",
+   "state": "PASS",
+   "evidence": "activity=dubrowgn.microtimer.MainActivity reached, lifecycle callbacks complete"
+  },
+  {
+   "stage": "Window->Decor/content root",
+   "state": "PASS",
+   "evidence": "auth_root_valid=True content_bounds={'b': 1920, 'l': 0, 'r': 1080, 't': 0, 'valid': True}"
+  },
+  {
+   "stage": "setContentView->ViewTree",
+   "state": "PASS",
+   "evidence": "no_root=False; view tree dumped (OP-5 census 398309 owned px on probe; app px 1029909)"
+  },
+  {
+   "stage": "measure->layout->draw traversal",
+   "state": "PASS",
+   "evidence": "app_draw_ops=22 APP_REAL_DRAW (renderer CLASSIC_CANVAS)"
+  },
+  {
+   "stage": "app-owned draw op -> framebuffer",
+   "state": "PASS",
+   "evidence": "app_owned_pixels=1029909 inside content bounds=1029909"
+  },
+  {
+   "stage": "capture",
+   "state": "PASS",
+   "evidence": "screenshot sha da73010a37dd0189 x3 byte-identical (run/cont16/reg)"
+  },
+  {
+   "stage": "no synthetic pixels",
+   "state": "PASS",
+   "evidence": "diag_owned_pixels=0 (diagnostic ownership ZERO)"
+  },
+  {
+   "stage": "input path",
+   "state": "NOT_USED",
+   "evidence": "no click-test in this run (S79 unote click evidence covers the input stage family)"
+  },
+  {
+   "stage": "state mutation",
+   "state": "NOT_USED",
+   "evidence": "timer not started in capture run; persistence family covered by unote SQLITE-SHADOW record"
+  }
+ ],
+ "white-family separation (SP-3)": {
+  "REAL_APP_CONTENT": [
+   "microtimer",
+   "unote",
+   "opencalc",
+   "gmdice",
+   "chess",
+   "six-game family",
+   "telegram(forkgram)"
+  ],
+  "DEFAULT_BACKGROUND_ONLY": [
+   "dooz (F-NEW-265 measure-death)",
+   "tictactoe_emmanuel (F-NEW-219 JNI family)"
+  ],
+  "distinct_root_families_law": "APP_DRAW_OPS=0 rows kept distinct from VIEWTREE_NOT_REACHED rows \u2014 first_missing_stage names the family"
+ }
+}

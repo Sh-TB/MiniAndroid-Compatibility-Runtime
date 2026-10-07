@@ -45,22 +45,22 @@ per the user's "not the main base" filter. Sub-tasks numbered <taskID>_N.
 | 17 | R-NEW-456 BLOCKED — verify blocker note current | **DONE** — R-NEW-456 BLOCKED note re-verified current |
 | 18 | OBSERVED rows (F-NEW-221/229) — tie to tasks 52/34 | **DONE** — OBSERVED rows noted; full pointers deferred to tasks 52/34 execution |
 | 19 | CLASSIFIED trio (250/256/265) — verify next-action pointers | **DONE** — CLASSIFIED trio pointers written (250/256/265) |
-| 20 | Null-title/layer backfill sweep (bounded first 100 rows) | PENDING |
+| 20 | Null-title/layer backfill sweep (bounded first 100 rows) | **DONE** — 319 null titles backfilled from knowledge-graph evidence; 8 remain (no KG entry) |
 
 ## D. Success-path evidence artifacts (B-family T-16..T-25, zero engine risk)
 
 | # | Task | Status |
 |---|------|--------|
-| 21 | SP-1 success corpus + per-title signature JSON | PENDING |
-| 22 | SP-2/3/12 common-successful-chain proof artifact | PENDING |
-| 23 | SP-4..8 renderer-selection authority audit | PENDING |
-| 24 | DEEP-AUDIT legacy rendering path reachability | PENDING |
-| 25 | view_tree_lifecycle_owner window-canonical cross-check | PENDING |
-| 26 | Traversal-order cross-check vs AOSP ViewRootImpl | PENDING |
-| 27 | Final visual gate hardening matrix | PENDING |
-| 28 | Successful-apps upstream source mapping | PENDING |
-| 29 | High-fan-out missing-laws search | PENDING |
-| 30 | SUCCESS-PATH REPORT compile (A..F) | PENDING |
+| 21 | SP-1 success corpus + per-title signature JSON | **DONE** — SP-1 corpus — 12 titles, 11 REAL_APP_CONTENT + dooz honest frontier row |
+| 22 | SP-2/3/12 common-successful-chain proof artifact | **DONE** — SP-2/3/12 chain — 11-stage PASS on microtimer fresh at HEAD |
+| 23 | SP-4..8 renderer-selection authority audit | **DONE** — SP-4..8 authority audit PASS — selection runtime-semantics-only; guards audited |
+| 24 | DEEP-AUDIT legacy rendering path reachability | **DONE** — DEEP-AUDIT — legacy paths TEST-ONLY/DEAD; one authoritative owner |
+| 25 | view_tree_lifecycle_owner window-canonical cross-check | **DONE** — view_tree_lifecycle_owner LAW CONSISTENT cross-check |
+| 26 | Traversal-order cross-check vs AOSP ViewRootImpl | **DONE** — traversal cross-check PARTIAL — one bounded divergence recorded |
+| 27 | Final visual gate hardening matrix | **DONE** — visual gate hardened — 8 rejection classes + live negatives |
+| 28 | Successful-apps upstream source mapping | **DONE** — SP-9/10 mapping — 7 title families -> laws -> evidence |
+| 29 | High-fan-out missing-laws search | **DONE** — SP-11 fan-out ranking — 4 ranked generic-law queues |
+| 30 | SUCCESS-PATH REPORT compile (A..F) | **DONE** — SUCCESS-PATH REPORT A..F compiled; F-NEW-198/205/207/208/209/210/211/212/213 flipped |
 
 ## E. #375 §3 carried partials (C-family T-26..T-30)
 
