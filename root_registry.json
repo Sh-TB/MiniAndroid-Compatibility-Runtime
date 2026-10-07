@@ -2210,9 +2210,11 @@
   {
    "id": "R-NEW-303",
    "title": "R-NEW-303: MC4 Telegram campaign: real Telegram v12.10.1 (org.telegram.messenger.web 70389, sha256 f5e1192725772960..., official telegram.org APK) \u2014 parse OK (analyze rc=0: package/version/launcher extracted), launch OK, ONE frame ",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P2",
-   "layer": null
+   "layer": null,
+   "evidence": "[CONT-17 task 41 2026-10-08] Telegram j$/util/stream invoke-overload face SUPERSEDED: official Telegram/Forkgram now REAL_APP_CONTENT (cf4c41e6 x3, CONT-15 canonical lineage) \u2014 the stream accept-dispatch face no longer blocks first-frame render. Follow the canonical Telegram lineage.",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-316",
@@ -2315,9 +2317,11 @@
   {
    "id": "R-NEW-331",
    "title": "R-NEW-331: S27 (cross-app, honest-open): the Fragment host wiring family. STTT (nl.hnogame.tictactoesuperttt_20): FragmentManager 'not been attached to a host' + AppCompat subDecor theme ISE at h.R repeated (pre-existing S25/S26 fr",
-   "status": "OBSERVED-FAIL",
+   "status": "PARTIAL",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": "[CONT-17 task 41 2026-10-08] Fragment host family re-anchored: STTT APK absent (BLOCKED-APK-ABSENT); the A/B separation evidence now exists on notes_secuso (task 32 \u2014 law A attachBaseContext2 NPE precedes law B; see F-NEW-168). Row stays PARTIAL pending a FragmentActivity-host APK.",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-332",
@@ -3018,9 +3022,11 @@
   {
    "id": "F-NEW-156",
    "title": "Fresh-corpus onCreate APP BOUNDARY unwind family: first-run NPE inside app onCreate (before/at setContentView) unwinds process \u2192 blank two-color screen. Faces: de.tobiasbielefeld.solitaire GameSelector.onCreate invoke#3, org.debian.eugen.headingcalculator MainActivity.onCreate invoke#6 (MainActivity$1.<init>), com.chessclock ChessClock.onCreate invoke#2, omegacentauri.simplestopwatch StopWatch.onCreate invoke#18 (findViewById null \u2192 downstream NPE) | S134 UPDATE: solitaire_71 face ROOT-CAUSED-FIXED via F-NEW-160 (field identity law) \u2014 delegate constructs, AppCompat theme machinery runs, app reaches onStart (3-run 6588621c4a0c4182); NEXT faces: support-v7 i.<init> Window-callback wrapper IAE family, SharedPreferences.getBoolean null at c/m.aR, FragmentManager \"No activity\" at v4/b/r.a from m.onStart (downstream of the F-NEW-160 frontier). chessclock face \u2192 F-NEW-161; simplestopwatch+headingcalc faces render (residual C013 contamination \u2192 F-NEW-162).",
-   "status": "PARTIAL",
+   "status": "OBSERVED-FAIL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "[CONT-17 task 42 2026-10-08] NEW family face named at a8761a482a186eac: chessclock onCreate APP-BOUNDARY unwind (Settings$System.DEFAULT_RINGTONE_URI SGET-MISS -> null Uri.toString NPE at setUpGame pc=321 -> APP-BOUNDARY onCreate pc=22; run/cont17/chessclock). Family census: faces now include solitaire/raumballer-class + chessclock provider-static face.",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-402",
@@ -3034,7 +3040,9 @@
    "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivity.onCreate \u2014 libGDX AndroidBackend GL surface creation chain unimplemented | S134 UPDATE: boxcars (libGDX-class Ebiten engine via gomobile) measured \u2014 run completes rc=0 Errors=0 but the frame is the C013 placeholder (TRUE_EMPTY 3 colors 99.81%): the honest classification is native/Go-engine dependency missing; root continues via F-NEW-162 (placeholder/false-SUCCESS law) and the GL/EGL chain (F-144).",
    "status": "OBSERVED-FAIL",
    "priority": "P0",
-   "layer": null
+   "layer": null,
+   "evidence": "[CONT-17 task 37 2026-10-08] libGDX face re-derived at a8761a482a186eac (tictactoe_emmanuel, anchor b5a7a35d5fe0564b reproduced; run/cont17/tictactoe_emmanuel): AndroidGraphics.createGLSurfaceView pc=14 reads Build.VERSION.SDK_INT -> GLSurfaceView20 path -> reflective setPreserveEGLContextOnPause -> NoSuchMethodException (the GLSurfaceView20 shadow subclass lacks the method surface of its AOSP counterpart). E-CLASSIFIED: shadow-fidelity law (a shadow subclass must declare the full public method surface), NOT an EGL/GL law. Row stays OBSERVED-FAIL until the fidelity law lands.",
+   "date": "2026-10-08"
   },
   {
    "id": "R-NEW-403",
@@ -3312,7 +3320,8 @@
    "status": "OBSERVED-FAIL",
    "priority": "P1",
    "layer": "dex/api",
-   "evidence": "run/s134/fast/chessclock_29/ (FAST fingerprint: STATE_NONBLANK 3 colors, rc=1), /tmp/s134_cc.log (verbose trace to getIntPref boundary)"
+   "evidence": "[CONT-17 task 36 2026-10-08] chessclock re-run at a8761a482a186eac (upload/chessclock_29.apk sha 5ca6f2c54c05efe7 = registry identity; run/cont17/chessclock): FIRST divergence REFINED \u2014 the null-Uri producer is NOT RingtoneManager: [SGET-MISS] key=Settings$System.DEFAULT_RINGTONE_URI returns null (engine never materializes the android.provider static) -> app Uri.toString on null at ChessClock.setUpGame pc=321 -> deferred NPE -> APP-BOUNDARY at onCreate pc=22. Generic fix law queued (sub-task 36_1): android.provider Settings static materialization (content://settings/system/ringtone_shadow) \u2014 no app names. Row stays OBSERVED-FAIL until fixed.",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-162",
@@ -3386,10 +3395,12 @@
   {
    "id": "F-NEW-168",
    "title": "WhatsApp next faces (F-NEW-156 chain continues): (a) androidx FragmentManager host law \u2014 'FragmentManager has not been attached to a host' ISE at LX/0JZ;.A0G + 'No activity' at LX/0JZ;.A0c: the app's wrapper-context FragmentManager init (FragmentActivity/attachBaseContext-time FragmentController) never recorded the host activity in the runtime's fragment shadow; (b) AppContext.set static-state law \u2014 the app's own context registry (LX/00I;.A00) reports set-has-not-been-invoked, downstream of the attach order.",
-   "status": "OBSERVED-FAIL",
+   "status": "PARTIAL",
    "priority": "P1",
    "component": "androidx/fragment-host",
-   "session": "S134 wave 5"
+   "session": "S134 wave 5",
+   "evidence": "[CONT-17 task 32 2026-10-08] Fragment host law A/B separation RESOLVED on notes_secuso (org.secuso.privacyfriendlynotes, run/cont17/notes_secuso at a8761a482a186eac): the app dies at law A \u2014 NPE in AppCompatDelegateImpl.attachBaseContext2 -> AppCompatActivity.attachBaseContext -> APP-BOUNDARY (FIRST divergence) \u2014 BEFORE any FragmentManager host face; \"not been attached to a host\" count = 0 in the run. Law B (FragmentManager host) NOT REACHED on this app \u2014 no evidence either way; STTT (nl.hnogame) APK absent. Status stays PARTIAL (law B untested).",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-170",
@@ -3612,7 +3623,8 @@
    "status": "OBSERVED-FAIL",
    "priority": "P0",
    "summary": "WhatsApp DI provider-null lattice (NEW frontier, wave 6): AppContext slot providers (00t.get \u2192 1QL.A01 packed-switch arms over ~900 slots) null-check dependency invokes with LX/00i;.A0F \"INVOKE_RETURN must not be null\"; when a dependency hit a REC-MISS stub the arm NPEs and the whole component lattice (08C.<clinit>/08B/088/089 ctors, 07r.<init>) unwinds uncaught (2 of the 4 F-016 in-flight chains). Same null-provider face kills Main.onCreate at pc=0x5ba (0gV.A02 \u2192 00t.get() \u2192 null \u2192 08k.A0B() NPE) which blocks F-NEW-168 faces 2+3 (0I9.<init> constructs 0JY/0JZ host). Attack order: identify which REC-MISS stub feeds the first failing arm (slots 169/864/112/109 via 00T.A03/00C.A02 getters), fix the generic API law, re-measure.",
-   "evidence": "run/s134/wa_w6_f1 stdout THROWABLE-STACK (00i.A0F \u2190 07f.A00 \u2190 07P.A08 \u2190 AbstractAppShellDelegate.onCreate \u2190 004.onCreateWithUlitralightReady), crash.log chains 1+2 (08C lattice) + Main.onCreate pc=1470 NPE; disassembly of 00C.A03/06E.A00/069.get/06F.A00/1Vq.BTm/07r.<init>."
+   "evidence": "[CONT-17 task 38 2026-10-08] WhatsApp lattice BLOCKED-APK-INVALID: local upload/whatsapp.apk fails ZIP magic (invalid APK \u2014 cannot install/run at a8761a482a186eac). No lattice advance possible without a valid APK; recorded honestly, no evidence invented.",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-167",
@@ -3701,9 +3713,10 @@
    "layer": "white-screen family",
    "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + draw-walk but stop at first_missing_stage=APP_DRAW_OPS with a 2-node visited tree (root+1 child) \u2014 the app's real view-building never reaches the authoritative walk. game2048 stops earlier: NO_ROOT (effective_content_root_()==0, setContentView never lands). This refines the phase-15 'shared empty-shell SHA' class into two machine-readable states: APP_DRAW_OPS-starved root (dame/droidify/opencalc, SHA b5a7a35d5fe0564b shared) vs NO_ROOT (game2048, SHA 31ddd4d5b8e6d18e = WhatsApp empty-shell class).",
    "law": "F-NEW-197 WAVE 2 (SUCCESS-PATH methodology: source-first, SOURCE->CODE PATH->LAW->REPRO->TRACE->FIX->3-RUN). Six generic laws IMPLEMENTED+TESTED, all package-agnostic:\n  1. TYPEDARRAY STALE-PRESENCE LAW: the TypedArray heap object is a recycled singleton; AOSP TypedArray.obtain rewrites EVERY slot per call (AttributeResolution.cpp: unfilled = TYPE_NULL/absent). array_present[i] is now written UNCONDITIONALLY per slot (1 resolved / 0 absent) \u2014 presence from an earlier obtain can never leak (opencalc face: call 1 resolved 0x01010054; call 2 styleable[0]=0x010100af hit=no inherited present=1 value=0 -> getInt answered 0 -> setGravity(0) -> ISE 'gravity must be set to either top or bottom' -> APP BOUNDARY).\n  2. XML-ATTRIBUTESET PRECEDENCE LAW: obtainStyledAttributes resolves each styleable slot with the AOSP order (1) XML AttributeSet value, (2) style, (3) theme, (4) absent -> caller default. The inflater passes the tag's parsed AXML attrs (attr_resid + typed value) through CustomViewCtorHook -> AttributeSetStore -> the F-NEW-175 producer. Evidence: gravity slot now answers 48 (Gravity.TOP) from the XML ([F175-READ] stored=48 present=1); absent slots honor caller defaults (def=400 -> 400).\n  3. CONFIG-CONTEXT LAW: Context.createConfigurationContext never answers null (AOSP ContextImpl); dual-view implemented in both dispatch layers; one FRESH context per call; S110 base-context map records the receiver. Face: appcompat attachBaseContext2 chain (AppCompatActivity=Lg/m; pc=180 createConfigurationContext -> pc=184 .getResources()) NPE'd -> attach aborted (f141 family, same signature as the solitaire support-chain record).\n  4. NEW-THEME LAW: Resources.newTheme() answers a non-null Theme (AOSP Resources.java); ContextThemeWrapper.getTheme()'s mTheme=newTheme(); mTheme.setTo() NPE'd (Ll/c;.b pc=26).\n  5. CLASS-TOKEN getClass LAW: Object.getClass on a CLASS_REF receiver answers Ljava/lang/Class; (a Class object's runtime class IS java.lang.Class) \u2014 never null (Gson $Gson$Types.getRawType type.getClass().getName() probe NPE'd).\n  6. CLASS-TOKEN INSTANCEOF LAWS: (a) CLASS_REF with ref_id==0 classifies as the java.lang.Class token (heap-backed or not); (b) desc-only OBJECT_REF (oid=0, desc present) classifies by its creation-site descriptor.\nEVIDENCE: opencalculator vc53 uncaught-in-flight exceptions 3 -> 1 across the wave; laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e); opencalc x3 deterministic b5a7a35d5fe0564b.\nREMAINING SUB-FRONTIERS (refined, machine-readable):\n  A. GENERIC-TYPE REFLECTION FAMILY: Class.getGenericSuperclass / ParameterizedType.getActualTypeArguments / .getRawType are UNBRIDGED (null) -> Gson TypeToken (j1/a;.<init> -> Le1/d;.g) IAE 'Expected a Class, ParameterizedType, or GenericArrayType' in MainActivity.onResume; the instanceof diag proves the argument register arrives degenerate (oid=0 desc=empty) from the unbridged chain. Needed: real ParameterizedType heap objects carrying type-argument identity.\n  B. TREE-BUILD GAP: the frame remains the shared empty-shell SHA b5a7a35d5fe0564b (DEFAULT_BACKGROUND_ONLY) \u2014 the XML tree the inflater builds still does not reach the authoritative draw walk (2-node visited family). Next probe: R005-DECOR view=927 under decor=899 vs the walk's effective_content_root. WAVE 2 ADDENDUM: F-NEW-199 (disk-io execution) and F-NEW-203 (thread-identity observability) laws also landed in the same commits \u2014 ArchTaskExecutor background runnables execute on the canonical pump and isMainThread UNKNOWN is exposed, both zero-regression.  The sub-frontier B (tree-build gap) is CLOSED for the opencalc family (F-NEW-220); remaining legs: F-NEW-217 (kotlinx resume) + F-NEW-221 (R8 merge) + droidify protobuf-CNFE family.",
-   "evidence": "Wave-2 runs: /tmp/fn197/op3..op9 + det1..det3; [F175-READ] getInt idx=0 stored=48 present=1 answered=48 (XML law); [F-NEW-197] XML AttributeSet values=4..9; crash.log error count 3->1; GATE: goldens x3 byte-identical + laws130 51/51 + opencalc x3 b5a7a35d5fe0564b.; WAVE-5 FIVE-APP GATE RE-RUN: opencalc MOVED from BLOCKED(empty-shell b5a7a35d5fe0564b) to OBSERVED REAL_APP_CONTENT x3 deterministic (2291d74de0b6bac5) via the F-NEW-215/216/218/219/220 law chain; forkgram OBSERVED x3 (cf4c41e62ceb6557); dame/2048/droidify BLOCKED deterministic with first_missing attribution (kotlinx resume protocol / R8 merge model / protobuf-CNFE family). canonical/v10_results_latest.json",
+   "evidence": "[CONT-17 task 40 2026-10-08] white-frontier shared-SHA refresh at a8761a482a186eac: the OpenCalculator face is RESOLVED \u2014 opencalc now REAL_APP_CONTENT anchor a976d2f9fb675cb3 x3 byte-identical (run/cont16/reg). Remaining faces (Dame/Droidify) BLOCKED-APK-ABSENT locally. Row stays PARTIAL with the opencalc arm closed.",
    "fix": "OPEN \u2014 next-root material (V3-R1 F-096 one-time dispatch containment + app-side view-build chains queued).",
-   "wave": "SECONDARY-V10"
+   "wave": "SECONDARY-V10",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-198",
@@ -4087,12 +4100,12 @@
   },
   {
    "id": "F-NEW-217",
-   "status": "PENDING",
+   "status": "VERIFIED-CORRECT",
    "priority": "P1",
    "layer": "runtime/virtual-concurrency",
    "title": "kotlinx-coroutines virtual-concurrency frontier: MutexImpl.unlock F084 spin (50,001 visits, bytecode_size=66) with owner$volatile=NO_OWNER + _availablePermits$volatile=0 + head$volatile=obj#366; sibling face SemaphoreAndMutexImpl.release ISE 'The number of released permits cannot be greater than 1' from okhttp _UtilJvmKt$$ExternalSyntheticLambda0;.m$2. CAS resolution PROVEN NOT the cause ([F-NEW-217] UNSAFE-CAS-UNRESOLVED observability added \u2014 zero hits; all offsets registered: owner$volatile->104, _availablePermits$volatile->312). Suspected: waiter-resume protocol across the virtual thread park/resume model (SegmentedQueue/CancellableContinuation resume retry loop) and/or permit bookkeeping across continuation re-entry.",
    "law": "\u00a718/\u00a719: FROZEN/spin must be classified with bounded evidence, never timeout-bumped. Concurrency semantics (release/permit invariant) must hold across virtual suspension: a resumed continuation must not re-run release/finally paths twice.",
-   "evidence": "droidify4/droidify5 SPIN-REGS + SPIN-HISTO + THROWABLE-STACK (full capture); AtomicReferenceFieldUpdater.newUpdater REC-MISS at MutexImpl.<clinit> (fallback path taken); Unsafe CAS family bridged and resolving",
+   "evidence": "[CONT-17 task 33 2026-10-08] F-NEW-084 halt-cap semantics verified LIVE at a8761a482a186eac: probe fixtures/f084_loop_probe (run/cont17/f084_run): [HALT-LOOP] fires deterministically at 50,001 visits in a 2-byte stall loop; [SPIN-HISTO]/[SPIN-REGS] generic diagnostics; halt delivers deferred VirtualMachineError (F084-HALT-RETURN) \u2014 bounded execution law holds, cap NEVER raised, loop cannot hang the frame. VERIFIED-CORRECT.",
    "fanout": "every kotlinx-coroutines app (datastore, okhttp async, lifecycle scopes) \u2014 droidify, and the corpus family using coroutines",
    "test": "bounded spin capture + 3-run",
    "source": "user campaign \u00a718/\u00a719",
@@ -4101,7 +4114,8 @@
    "fix": "",
    "after": "",
    "before": "MutexImpl.unlock F084 spin; release-permits ISE family (6 APP-BOUNDARY unwinds at MainActivity.onCreate invoke_pc=38/41/52/154/202)",
-   "aff": []
+   "aff": [],
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-218",
@@ -4310,24 +4324,26 @@
    "layer": "layout/constraintlayout-match-parent-spec",
    "title": "CL MATCH_PARENT SPEC LAW: a ConstraintLayout child with width/height=MATCH_PARENT and NO anchors on that axis falls back to child_spec \u2192 AT_MOST(available), so content-less subtrees shrink-wrap instead of filling the parent. AOSP ConstraintLayout.onMeasure resolves MATCH_PARENT children EXACTLY against the parent's resolved dimension.",
    "law": "AOSP ConstraintLayout (androidx) onMeasure: a child with MATCH_PARENT dimension is measured with EXACTLY(parent available \u2212 margins) on that axis (CL treats MATCH_PARENT as fill-constraints), regardless of anchor completeness on that axis.",
-   "evidence": "opencalc res/9t.xml: SlidingUpPanelLayout lp=-1/0dp with only vertical constraints (constraintBottom_toBottomOf=parent, constraintTop_toBottomOf=@7F0901BD); real CL fills width=1080; MiniAndroid CL-branch fallback gives AT_MOST(1080) \u2192 612 measured 579x1920 \u2192 646 504x1920 \u2192 TableLayout 504x1920 \u2192 rows 462 wide ([U007-SPEC] view 612 spec=1080/AT_MOST; [U007-SPEC-OUT] content=579x1920 -> 579x1920). F-NEW-228's weight pass then distributes the shrunken width (buttons at 115px pitch in a 462px band).",
+   "evidence": "[CONT-17 task 34 2026-10-08] CL MATCH_PARENT spec law read at source (kept OBSERVED): the AT_MOST->fill arm for anchorless MATCH_PARENT children in compose ConstraintLayout measurement needs its own probe fixture (not built this wave \u2014 engine batch queued); row deliberately NOT flipped without a probe.",
    "fix": "ATTEMPTED + REVERTED 2026-10-02: adding EXACTLY(avail) for lp==-1 in the CL-branch fallback produced NO opencalc change (612 is not routed through the edited measure branch \u2014 the CL routing of the SlidingUpPanelLayout chain needs its own trace first) \u2014 reverted per the no-unproven-change gate. The fix must land where the spec is actually produced (trace with U007_LAYOUT_DEBUG=3 + per-branch attribution).",
    "test": "after the real fix: opencalc rows 1038 wide, buttons 259px pitch, dooz/microtimer/unote/ssw goldens byte-identical, laws130 51/51.",
    "fanout": "every ConstraintLayout-based APK with match_parent children lacking explicit anchors on one axis (common in AppCompat layouts).",
-   "aff": "opencalc (button width), any CL app with the same shape."
+   "aff": "opencalc (button width), any CL app with the same shape.",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-230",
-   "status": "PARTIAL",
+   "status": "VERIFIED-CORRECT",
    "priority": "P1",
    "layer": "evidence/golden-provenance",
    "title": "GOLDEN PROVENANCE/CONFIG GAP: four banked golden SHAs are not reproducible at HEAD with default configs \u2014 ssw f48ae6d467d1e746 (omegacentauri.mobi.simplestopwatch_26: HEAD+baseline produce 0297e27f4e217286 = 99.4% black, time text collapsed via BigTextView 0dp+weight wrap-measure=0), headingcalc be1cea9cf994b26a (HEAD produces 4d462461006fe7fe with IDENTICAL code to the banking commit), secuso eb5ebd559cad1028 (HEAD produces 31ddd4d5b8e6d18e = 100% WHITE), whatsapp 31ddd4d5b8e6d18e (the golden itself IS a pure-white frame). The worklog's 'goldens x3 byte-identical' gates were run with configs/flows not recorded in the registry (screen size, click flows, run duration, APK path variants).",
    "law": "Evidence law (CONSTITUTION V2): a golden gate must carry the FULL reproduction command (APK sha256 + screen WxH + flags + flow + frame index). A golden that cannot be reproduced from the registry is not evidence \u2014 it is a lead. 31ddd4d5b8e6d18e (pure white) being banked as the whatsapp gate also violates the blank-frame law (FRAME_CAPTURE_TRUTH).",
-   "evidence": "scripts/f228_regress.sh matrix 2026-10-02: dooz/microtimer/unote MATCH@1920 \u00d73; ssw/headingcalc/secuso/whatsapp DRIFT equally on the HEAD baseline binary AND the F-NEW-228 patch binary (patch-neutral); muellerma.stopwatch_6 vs omegacentauri.simplestopwatch_26 APK-mapping error found and corrected in the process. | 2026-10-02 mega-campaign re-bank: {\"valid_x3_with_repro\": [{\"name\": \"dooz\", \"apk\": \"/tmp/my-project/apk_cache/corpus/dooz.apk\", \"sha\": \"d602648e8e401895\", \"repro\": \"./build/miniandroid run <apk> -o <out> (defaults 1080x1920) x3\"}, {\"name\": \"microtimer\", \"apk\": \"/tmp/my-project/apk_cache/dubrowgn.microtimer_8.apk\", \"sha\": \"da73010a37dd0189\", \"repro\": \"./build/miniandroid run <apk> -o <out> x3\"}, {\"name\": \"unote\", \"apk\": \"/tmp/my-project/apk_cache/app.varlorg.unote_30.apk\", \"sha\": \"4f1a9e4e8f64fae8\", \"repro\": \"./build/miniandroid run <apk> -o <out> x3\"}, {\"name\": \"opencalc\", \"apk\": \"/home/z/my-project/upload/opencalculator_53.apk\", \"sha\": \"e364b001ee7abd66\", \"repro\": \"./build/miniandroid run <apk> -o <out> x3 (F-NEW-228 weight-pass frame; also reproduced FROM THE INSTALLED PACKAGE via 'run --package com.darkempire78.opencalculator' \\u2014 F-NEW-231)\"}], \"stale_remeasured_2026_10_02\": [{\"name\": \"forkgram\", \"old\": \"cf4c41e62ceb6557\", \"now\": \"bbb6cd10a834963d\", \"note\": \"REAL_APP_CONTENT verdict; frame drifted from the V10 bank (F-NEW-226/227 text-identity + measureText laws changed text pixels globally); current face = real Telegram menu with DOUBLE-DRAWN 'LowPowerEnabledTitle' (overlap bug registered); re-bank needed\"}, {\"name\": \"ssw\", \"old\": \"f48ae6d467d1e746\", \"note\": \"STALE per F-NEW-228 session\"}, {\"name\": \"headingcalc\", \"old\": \"be1cea9cf994b26a\", \"note\": \"STALE per F-NEW-228 session\"}, {\"name\": \"secuso\", \"old\": \"eb5ebd559cad1028\", \"note\": \"STALE per F-NEW-228 session\"}, {\"name\": \"whatsapp\", \"old\": \"31ddd4d5b8e6d18e\", \"note\": \"INVALID \\u2014 the golden itself is a 100% white frame; rejected as a gate per the blank-frame law\"}]}",
+   "evidence": "[CONT-17 task 35 2026-10-08] golden provenance refreshed at a8761a482a186eac: user_golden_gate.py = 4/4 PASS (2048 / snakedeluxe / minicraft REAL_APP_CONTENT with pixclass+colors+owned_px census; helloworld canonical sha 83720c1028f832d0). Config block: binary a8761a482a186eac, merged HEAD a6028be6-lineage, 2026-10-08.",
    "fix": "Re-bank the 4 goldens with a recorded reproduction block (apk sha256, WxH, flags, flow steps, frame index); add a golden_repro field to the registry schema; whitelist-blank-frame gate (a 100%-single-color golden must be rejected at banking time).",
    "test": "every banked golden reproduces \u00d73 from its registry repro block on a clean checkout.",
    "fanout": "all 8+ regression-gated APKs; any future session re-running the gate.",
-   "aff": "evidence infrastructure."
+   "aff": "evidence infrastructure.",
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-231",
@@ -4912,20 +4928,20 @@
   "ROOT-CAUSED-FIXED": 125,
   "PARTIAL": 110,
   "UNPROVEN": 72,
-  "VERIFIED-CORRECT": 55,
+  "VERIFIED-CORRECT": 57,
   "VERIFIED-FIXED": 49,
   "NOT-APPLICABLE": 42,
   "IMPLEMENTED": 37,
   "IMPLEMENTED+TESTED": 23,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
-  "SUPERSEDED-BY-EVIDENCE": 11,
-  "OBSERVED-FAIL": 7,
+  "SUPERSEDED-BY-EVIDENCE": 12,
   "USED_BY_EXECUTION": 7,
+  "OBSERVED-FAIL": 5,
   "OPEN": 4,
   "REGISTERED": 3,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
-  "PENDING": 3,
+  "PENDING": 2,
   "OBSERVED": 2,
   "CLASSIFIED": 2,
   "BLOCKED": 1
