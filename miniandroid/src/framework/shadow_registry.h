@@ -98,6 +98,19 @@ struct CallResult {
     bool handled = false;             // false = "I don't handle this; try next shadow"
     ApiCallStatus status = ApiCallStatus::UNHANDLED;
 
+    // ── F-NEW-259g-a: SHADOW EXCEPTION CHANNEL (CONT-16) ────────────────
+    // JDK/ART law: framework collection methods THROW on contract
+    // violations (ArrayList.get out-of-range → IndexOutOfBoundsException).
+    // The old channel had no exception kind — shadows answered silent
+    // null/bool and the divergence propagated downstream (f259g probe row
+    // K: a 4-iteration walk instead of the JDK IOOBE law). A shadow signals
+    // a REAL exception here; the engine's conversion sites turn it into
+    // the deferred-throw path — the SAME semantics as the engine-side
+    // F-141/F-036 throw_deferred (NPE/NoSuchElementException) laws.
+    bool is_exc = false;
+    std::string exc_class;   // e.g. "Ljava/lang/IndexOutOfBoundsException;"
+    std::string exc_msg;
+
     // Return value (only meaningful when handled == true and the called
     // method is non-void).
     enum class RetKind { VOID, INT, LONG, FLOAT, DOUBLE, BOOL, STRING, OBJECT, NULL_REF };
@@ -121,6 +134,8 @@ struct CallResult {
     static CallResult handled_object(uint32_t obj_id, const std::string& cls);
     static CallResult handled_null();
     static CallResult handled_void();
+    static CallResult handled_exception(const std::string& cls,
+                                        const std::string& msg);
     static CallResult not_handled();   // pass-through to next shadow
 };
 

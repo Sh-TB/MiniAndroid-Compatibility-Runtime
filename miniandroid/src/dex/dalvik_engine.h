@@ -2178,7 +2178,18 @@ public:
     // ────────────────────────────────────────────────────────────────────
     static bool f141_is_null_receiver(const DalvikValue& v) {
         return v.type == DalvikType::NULL_REF ||
-               (v.type == DalvikType::OBJECT_REF && v.object_id == 0);
+               (v.type == DalvikType::OBJECT_REF && v.object_id == 0) ||
+               // ── F-NEW-266a CONT-16: DALVIK UNTYPED-REGISTER NULL LAW ──
+               // DEX registers are UNTYPED; `const/4 vN, 0` (the universal
+               // javac/D8 null materialization — const-string/const-class
+               // never emit 0) leaves the register as DalvikValue INT32 0
+               // in this engine. On every instance invoke form the FIRST
+               // register is the receiver and the verifier guarantees it
+               // is the callee class or null — an INT32 0 in that slot is
+               // therefore a typed null (probe face: f266 row D
+               // `OtherDefI o = null; o.other()` — the gate saw INT32 and
+               // the call fell through to a silent stub answer, no NPE).
+               (v.type == DalvikType::INT32 && v.int_val == 0);
     }
 
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): REAL XmlPullParser

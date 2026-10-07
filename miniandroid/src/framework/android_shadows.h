@@ -2443,6 +2443,19 @@ public:
                class_name == "Ljava/util/Collections$SingletonList;" ||
                class_name == "Ljava/util/Iterator;" ||
                class_name == "Ljava/util/ListIterator;" ||
+               // ── F-NEW-259g-b (CONT-16): java.util.Vector claim ───────
+               // `new Vector().iterator()` NPE'd: Vector was claimed by NO
+               // shadow and the F-NEW-246 engine law (bridge_to_api) covers
+               // <init>/addElement/add/size/isEmpty/get/elementAt/elements/
+               // hasMoreElements/nextElement but NOT the iterator() mint —
+               // the call answered null → Iterator.hasNext NPE (f259g probe
+               // row L). Claimed here so the generic F-237 iterator-box law
+               // mints a box over the Vector's engine array-fields store
+               // (__array_length__ + array[i] — the F-NEW-246 convention),
+               // which hasNext/next already read. The F-NEW-246 law keeps
+               // precedence for its own methods (bridge_to_api returns
+               // before the shadow dispatch).
+               class_name == "Ljava/util/Vector;" ||
                class_name.find("/ArrayList;") != std::string::npos ||
                class_name.find("/HashMap;") != std::string::npos ||
                class_name.find("/HashSet;") != std::string::npos ||
