@@ -172,11 +172,11 @@ per the user's "not the main base" filter. Sub-tasks numbered <taskID>_N.
 
 | # | Task | Status |
 |---|------|--------|
-| 92 | Push W0 baseline evidence (scripts + run artifacts + task list) | PENDING |
-| 93 | Push B-block evidence | PENDING |
-| 94 | Push C-block registry update | PENDING |
-| 95 | Push D-block artifacts | PENDING |
-| 96 | Push E/F/G/H block evidence | PENDING |
-| 97 | Push I/J/K sweep evidence + registry updates | PENDING |
+| 92 | Push W0 baseline evidence (scripts + run artifacts + task list) | **DONE** — W0+W1 pushed e162c411 |
+| 93 | Push B-block evidence | **DONE** — D-block pushed 9fabb821 |
+| 94 | Push C-block registry update | **DONE** — registry updates pushed (within 9fabb821/bf784a8d) |
+| 95 | Push D-block artifacts | **DONE** — D-block artifacts pushed 9fabb821 |
+| 96 | Push E/F/G/H block evidence | **DONE** — E/F/G/H evidence pushed bf784a8d + 46b06a03 |
+| 97 | Push I/J/K sweep evidence + registry updates | **DONE** — I/J/K census pushed 29bbf2ad |
 | 98 | Push L-block (fixes + probes + regression) | PENDING |
 | 99 | CONT-17 final report (CONT17_SIMPLE_FIX_BATCH.md) + final push | PENDING |

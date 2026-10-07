@@ -7225,3 +7225,22 @@ Stage Summary:
   queue and every future range/format law.
 - Next: T-01..T-03 (F-NEW-265 arms, the P0), then 264d laws one at a time; the backlog is
   the standing queue for subsequent waves.
+
+---
+Task ID: CONT-17-SIMPLE-FIX-BATCH
+Agent: Super Z (main)
+Task: user directive — "search GitHub finely, find problems with simpler solutions that are not the main base, list 50–100, solve one by one ('No. X solved — next'), push everything unpushed."
+
+Work Log:
+- W0 GitHub sweep: all 380 issues CLOSED (0 open; evidence/cont17/github_issue_index.json); trailing comments are our own ledgers (github_trailing_comments.json). Problem surface = registry open rows + CONT-16 backlog.
+- W0 baseline: merged remote (CONT-15 W9 + CONT-16 batch, fast-forward); foreground rebuild -> binary a8761a482a186eac = recorded SHA byte-identical; anchors 6/6 x3 (chess package fix jwtc.android.chess, sub-task 2_1); probes rebuilt from fixtures (f266 6/6, f259 7/7, f259g 12/13, fcol 3/18); gate A 98/0/1; negatives 19/19; skill 13/13 restored after gate_a_probe.apk rebuild (lib ad413625925ed8e5, sub-task 4_1).
+- W1 B-block: 8 D-family rows live re-verified PARTIAL with fresh traced-dooz evidence (verdict DEFAULT_BACKGROUND_ONLY, APP_DRAW_OPS, Lzs;.m measure-family unwind); F-NEW-256 + R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; 8 odd statuses normalized with evidence quotes; baseline_head -> a6028be6.
+- W2 C/D-block: 319 null titles backfilled from KG evidence; SP-1 corpus (12 titles, 11 REAL_APP_CONTENT); SP-2/3/12 11-stage chain; SP-4..8 authority audit PASS; legacy-path DEEP-AUDIT (TEST-ONLY/DEAD classifications); view_tree_lifecycle_owner LAW-CONSISTENT; traversal PARTIAL (1 bounded divergence); visual gate 8-class rejection matrix; SP-9/10 mapping; SP-11 ranking; SUCCESS-PATH REPORT A..F; F-NEW-198/205/207/208/209/210/211/212/213 flipped (PENDING 13->3).
+- W3 E/F-block: chessclock fetched (identity 5ca6f2c5) + run — F-NEW-161 REFINED: producer is Settings$System.DEFAULT_RINGTONE_URI SGET-MISS (RingtoneManager exonerated); f084 probe LIVE (HALT-LOOP 50,001 visits, deferred VME, cap never raised -> F-NEW-217 VERIFIED-CORRECT); libGDX E-classified (GLSurfaceView20 shadow-fidelity); notes_secuso A/B (law A attachBaseContext2 NPE precedes law B); goldens 4/4; whatsapp BLOCKED-APK-INVALID; F-NEW-197 opencalc arm RESOLVED; R-NEW-303 SUPERSEDED; 11 rows updated.
+- W4 H-block: sudoku_secuso anchor 45962e01 BYTE-IDENTICAL (serializer face dormant); f259g row-L CLOSED-AS-DOCUMENTED; fcol K7/K8/K10 locked as protected anchors; PENDING census 13->2 (F-NEW-204/214).
+- W5 I/J/K: honest runnability census (I 37/21/2, J 110/16/13, K 72/0/0) — NO paper flips (constitution law); feeds next engine-wave queue.
+
+Stage Summary:
+- 78 of 100 numbered tasks executed with per-task evidence (0-55 fully, 56-77 honest census; pushes incremental through 29bbf2ad).
+- Remaining queue: 78-85 (264d six collection laws, engine batch with LAW-A..F one law = one fix + fcol regression), 86-91 (F-NEW-265 arms — the deferred P0), 98-99 (L/M push + final report).
+- Zero drift all waves: anchors 6/6 x3 byte-identical at every checkpoint; no app-specific code; no suppression; all claims runtime- or source-cited.
