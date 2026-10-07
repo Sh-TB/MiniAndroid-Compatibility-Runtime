@@ -390,6 +390,34 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
 
+    // LAW-C/E/F DETERMINATION DIAG (CONT-18, bounded 60/env-gated): does
+    // the collection shadow see the default-method / view / stream faces?
+    // Paired with [LAWCEF-ENG] — if ENG fires but this does not, another
+    // shadow claims the call first; if neither fires, the call dies before
+    // try_shadow_dispatch.
+    {
+        static const bool lawcef_on =
+            std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+        static const char* lawcef_faces[] = {
+            "removeIf", "getOrDefault", "forEach", "merge",
+            "computeIfAbsent", "compute", "sort", "removeAll",
+            "retainAll", "subList", "stream", "streamOf",
+            "remove", "containsKey", "size", "of", "filter", "collect", "toList"};
+        if (lawcef_on) {
+            for (const char* f : lawcef_faces) {
+                if (m == f) {
+                    static thread_local uint64_t lawcef_n = 0;
+                    if (lawcef_n++ < 60)
+                        std::cerr << "[LAWCEF-COL] " << ctx.class_name << "."
+                                  << m << " recv=" << obj_id
+                                  << " rcls=" << ctx.receiver_class
+                                  << " nargs=" << ctx.args.size() << std::endl;
+                    break;
+                }
+            }
+        }
+    }
+
     // ── F-NEW-252 wave-2 (S102 ServiceLoader decline law) ────────────────
     // java.util.ServiceLoader is NOT a collection. The generic iterator
     // law below claims any Iterable-shaped receiver and answers
@@ -725,7 +753,15 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     // fall through to the legacy bridge which returns void/default.
     // Otherwise, isEmpty() returns true on a null list, which causes
     // if-nez to branch incorrectly.
-    if (obj_id == 0 && m != "<init>") {
+    // LAW-F (CONT-18): static stream faces carry NO receiver (obj_id == 0)
+    // — exempt them from the no-receiver decline gate below, or every
+    // Stream.of / Collectors.toList call answers the generic stub null and
+    // the first downstream pipeline op NPEs (fcol probe K15).
+    const bool static_stream_face =
+        (ctx.class_name == "Ljava/util/stream/Stream;" && m == "of") ||
+        (ctx.class_name == "Ljava/util/stream/Collectors;" &&
+         (m == "toList" || m == "toSet"));
+    if (obj_id == 0 && m != "<init>" && !static_stream_face) {
         return CallResult::not_handled();
     }
 
@@ -1004,6 +1040,603 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(true);
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // LAW-F (CONT-18): SUBLIST VIEW LAW.
+    // OpenJDK List.subList(fromIdx, toIdx) returns a VIEW: every element
+    // op on the view resolves against the BACKING list at fromIdx + idx
+    // (AbstractList.SubList), and every op on the backing list inside the
+    // window reads back through the view. The pre-law shadow had no
+    // subList handler at all — the call answered null and the consumer's
+    // first element op NPE'd (fcol probe K3 "threw NPE").
+    //
+    // Mint: the view is a heap box carrying __sublist_parent__ (the
+    // backing store's shadow object id) + __sublist_off__ (fromIdx). The
+    // redirect below serves get/set/add/remove/size/isEmpty against the
+    // parent state at the offset. Structural parent mutation OUTSIDE the
+    // view window is the OpenJDK ConcurrentModificationException boundary
+    // — untracked here (documented bound: fail-faithful CoMod detection
+    // DEFERRED; the window math below stays coherent for non-structural
+    // interleavings, which is the OpenJDK contract for read/write faces).
+    // ────────────────────────────────────────────────────────────────────
+    if (m == "subList" && ctx.args.size() >= 2 && obj_id != 0) {
+        auto* parent = get_or_create(obj_id);
+        if (parent->is_map) return CallResult::not_handled();
+        const int32_t from = ctx.arg_as_int(0, -1);
+        const int32_t to = ctx.arg_as_int(1, -1);
+        const int32_t n = static_cast<int32_t>(parent->elements.size());
+        // OpenJDK AbstractList.subList bounds law: outOfRange(from, to, size)
+        // throws IndexOutOfBoundsException (from < 0, to > size, from > to).
+        if (from < 0 || to > n || from > to)
+            return CallResult::handled_exception(
+                "Ljava/lang/IndexOutOfBoundsException;",
+                "subList(" + std::to_string(from) + ", " +
+                    std::to_string(to) + ") with size " + std::to_string(n));
+        uint32_t box = heap_->allocate("Ljava/util/ArrayList;");
+        heap_->set_object_int_field(box, "__sublist_parent__",
+                                    static_cast<int32_t>(obj_id));
+        heap_->set_object_int_field(box, "__sublist_off__", from);
+        return CallResult::handled_object(box, "Ljava/util/List;");
+    }
+
+    // SubList VIEW redirect: the receiver carries the view marker → every
+    // element face resolves against the parent store at __sublist_off__.
+    {
+        int32_t slp = 0, slo = 0;
+        if (heap_ && obj_id != 0 &&
+            heap_->get_object_int_field(obj_id, "__sublist_parent__", slp) &&
+            slp != 0 &&
+            heap_->get_object_int_field(obj_id, "__sublist_off__", slo)) {
+            auto* ps = get_or_create(static_cast<uint32_t>(slp));
+            if (m == "size")
+                return CallResult::handled_int(
+                    static_cast<int32_t>(ps->elements.size()) - slo);
+            if (m == "isEmpty")
+                return CallResult::handled_bool(
+                    static_cast<int32_t>(ps->elements.size()) <= slo);
+            if (m == "get") {
+                int32_t gi = ctx.arg_as_int(0, -1);
+                int32_t ai = slo + gi;
+                if (gi < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "subList.get(" + std::to_string(gi) + ")");
+                return lawa_serve_slot(*ps, ai);
+            }
+            if (m == "set") {
+                int32_t si = ctx.arg_as_int(0, -1);
+                int32_t ai = slo + si;
+                if (si < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "subList.set(" + std::to_string(si) + ", e)");
+                uint32_t prev = ps->elements[ai];
+                uint8_t prev_kind =
+                    ai < static_cast<int32_t>(ps->elem_kinds.size())
+                        ? ps->elem_kinds[ai]
+                        : uint8_t{0};
+                std::string prev_str =
+                    ai < static_cast<int32_t>(ps->elem_strings.size())
+                        ? ps->elem_strings[ai]
+                        : std::string();
+                int32_t prev_int =
+                    ai < static_cast<int32_t>(ps->elem_ints.size())
+                        ? ps->elem_ints[ai]
+                        : 0;
+                uint32_t item = ctx.arg_as_object(1, 0);
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                if (ctx.args.size() >= 2)
+                    lawb_classify_arg(ctx.args[1], item, kind, ival, sval);
+                ps->elements[ai] = item;
+                if (ai < static_cast<int32_t>(ps->elem_kinds.size()))
+                    ps->elem_kinds[ai] = kind;
+                if (ai < static_cast<int32_t>(ps->elem_strings.size()))
+                    ps->elem_strings[ai] = sval;
+                if (ai < static_cast<int32_t>(ps->elem_ints.size()))
+                    ps->elem_ints[ai] = ival;
+                if (prev_kind == 3) return CallResult::handled_int(prev_int);
+                if (prev_kind == 2) return CallResult::handled_string(prev_str);
+                if (prev != 0)
+                    return CallResult::handled_object(prev,
+                                                       "Ljava/lang/Object;");
+                return CallResult::handled_null();
+            }
+            if (m == "add") {
+                // add(e) appends at the window end; add(idx, e) inserts.
+                int32_t at = static_cast<int32_t>(ps->elements.size()) - slo;
+                if (ctx.args.size() >= 2) {
+                    at = ctx.arg_as_int(0, -1);
+                    if (at < 0 || at > static_cast<int32_t>(
+                                           ps->elements.size()) - slo)
+                        return CallResult::handled_exception(
+                            "Ljava/lang/IndexOutOfBoundsException;",
+                            "subList.add(" + std::to_string(at) + ", e)");
+                }
+                int32_t ai = slo + at;
+                uint32_t item = ctx.arg_as_object(
+                    ctx.args.size() >= 2 ? 1 : 0, 0);
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                lawb_classify_arg(ctx.args[ctx.args.size() >= 2 ? 1 : 0],
+                                  item, kind, ival, sval);
+                ps->elements.insert(ps->elements.begin() + ai, item);
+                ps->elem_kinds.insert(ps->elem_kinds.begin() + ai, kind);
+                ps->elem_strings.insert(ps->elem_strings.begin() + ai, sval);
+                ps->elem_ints.insert(ps->elem_ints.begin() + ai, ival);
+                return CallResult::handled_bool(true);
+            }
+            if (m == "remove") {
+                int32_t ri = ctx.arg_as_int(0, -1);
+                int32_t ai = slo + ri;
+                if (ri < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "subList.remove(" + std::to_string(ri) + ")");
+                return lawa_remove_index(*ps, ai);
+            }
+            // Unknown face on a view box: decline loudly — the registry
+            // falls through instead of corrupting the parent store.
+            return CallResult::not_handled();
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // LAW-C/E (CONT-18): JAVA-8 COLLECTION DEFAULT-METHOD FAMILY LAW.
+    // OpenJDK Collection/List/Map Java-8 defaults execute against the REAL
+    // backing store with real semantics: removeIf (conditional bulk remove,
+    // returns changed), sort (merged comparator sort), forEach (element/
+    // entry action), removeAll/retainAll (bulk equality remove), Map.merge
+    // (remapping function), Map.computeIfAbsent (mapping function),
+    // Map.getOrDefault (mapping-or-default). The shadow channel had NO
+    // handlers for any of these faces — the registry declined, the bridge
+    // generic stub answered null/false and every face silently no-op'd
+    // (fcol probe K6 getOrDefault/remOk, K13 removeIf, K14 sort, K16 bulk,
+    // K17 merge/compute, K18 forEach).
+    //
+    // Functional arguments are REAL DEX code (D8-desugared lambda classes):
+    // they run through the engine-installed dex_invoke_slot() (same
+    // channel discipline as app_equals_slot). When the channel cannot
+    // resolve the callee the law DECLINES — loud not-handled, never a
+    // faked result (no suppression discipline).
+    // ────────────────────────────────────────────────────────────────────
+    const auto& dex_invoke = CollectionShadow::dex_invoke_slot();
+
+    // Element-face precondition: non-map element store. Maps take the
+    // Map faces below; element stores never enter them.
+    auto* lstate = (obj_id != 0) ? get_or_create(obj_id) : nullptr;
+    const bool is_list_state = lstate && !lstate->is_map;
+
+    // Convert a stored slot into a CallContext::Arg for the callback.
+    auto slot_to_arg = [](const CollectionState& st,
+                          int32_t i) -> CallContext::Arg {
+        CallContext::Arg a;
+        uint8_t k = i < static_cast<int32_t>(st.elem_kinds.size())
+                        ? st.elem_kinds[i]
+                        : (st.elements[i] != 0 ? uint8_t{1} : uint8_t{0});
+        if (k == 3) {
+            a.kind = CallContext::Arg::Kind::INT;
+            a.int_val = i < static_cast<int32_t>(st.elem_ints.size())
+                            ? st.elem_ints[i]
+                            : 0;
+        } else if (k == 2) {
+            a.kind = CallContext::Arg::Kind::STRING;
+            a.string_val =
+                i < static_cast<int32_t>(st.elem_strings.size())
+                    ? st.elem_strings[i]
+                    : std::string();
+        } else if (st.elements[i] != 0) {
+            a.kind = CallContext::Arg::Kind::OBJECT;
+            a.object_id = st.elements[i];
+        } else {
+            a.kind = CallContext::Arg::Kind::NULL_REF;
+        }
+        return a;
+    };
+
+    // ── K13 face: Collection.removeIf(Predicate) ────────────────────────
+    if (m == "removeIf" && ctx.args.size() >= 1 && is_list_state) {
+        if (!dex_invoke) return CallResult::not_handled();
+        uint32_t pred = ctx.arg_as_object(0, 0);
+        if (pred == 0) return CallResult::not_handled();
+        bool changed = false;
+        const int32_t n = static_cast<int32_t>(lstate->elements.size());
+        // Descending pass: OpenJDK removeIf compacts the backing array in
+        // one sweep; descending index keeps every surviving slot stable
+        // while earlier slots are still tested (same visible contract).
+        for (int32_t i = n - 1; i >= 0; --i) {
+            std::vector<CallContext::Arg> cargs;
+            cargs.push_back(slot_to_arg(*lstate, i));
+            DexCallOutcome o = dex_invoke(pred, "test", cargs);
+            if (!o.ok) return CallResult::not_handled();  // loud decline
+            const bool hit = o.kind == 1
+                                 ? (o.bool_val || o.int_val != 0)
+                                 : false;
+            if (hit) {
+                CallResult r = lawa_remove_index(*lstate, i);
+                if (r.handled) changed = true;
+            }
+        }
+        return CallResult::handled_bool(changed);
+    }
+
+    // ── K14 face: List.sort(Comparator) ─────────────────────────────────
+    if (m == "sort" && ctx.args.size() >= 1 && is_list_state) {
+        if (!dex_invoke) return CallResult::not_handled();
+        uint32_t cmp = ctx.arg_as_object(0, 0);
+        if (cmp == 0) return CallResult::not_handled();
+        const int32_t n = static_cast<int32_t>(lstate->elements.size());
+        if (n < 2) return CallResult::handled_void();
+        if (n > 4096) return CallResult::not_handled();  // honesty bound
+        // Stable insertion sort over the four parallel stores moved in
+        // lockstep (TimSort's visible contract for small runs: stable,
+        // total, comparator-driven).
+        for (int32_t i = 1; i < n; ++i) {
+            for (int32_t j = i; j > 0; --j) {
+                DexCallOutcome o = dex_invoke(cmp, "compare",
+                    {slot_to_arg(*lstate, j - 1), slot_to_arg(*lstate, j)});
+                if (!o.ok) return CallResult::not_handled();  // loud decline
+                if (o.kind != 1) return CallResult::not_handled();
+                if (o.int_val <= 0) break;  // in order (stable: <= keeps)
+                // Swap slots j-1 <-> j across all four stores.
+                std::swap(lstate->elements[j - 1], lstate->elements[j]);
+                std::swap(lstate->elem_kinds[j - 1], lstate->elem_kinds[j]);
+                std::swap(lstate->elem_strings[j - 1],
+                          lstate->elem_strings[j]);
+                std::swap(lstate->elem_ints[j - 1], lstate->elem_ints[j]);
+            }
+        }
+        return CallResult::handled_void();
+    }
+
+    // ── K18 face: Iterable.forEach(Consumer) / Map.forEach(BiConsumer) ──
+    if (m == "forEach" && ctx.args.size() >= 1) {
+        if (!dex_invoke) return CallResult::not_handled();
+        uint32_t action = ctx.arg_as_object(0, 0);
+        if (action == 0) return CallResult::not_handled();
+        auto* fstate = (obj_id != 0) ? get_or_create(obj_id) : nullptr;
+        if (!fstate) return CallResult::not_handled();
+        if (fstate->is_map) {
+            // BiConsumer.accept(key, value) — string keys verbatim; object
+            // keys as their derived identity arg (same convention as put).
+            for (const auto& kv : fstate->map_string_entries) {
+                CallContext::Arg ka, va;
+                ka.kind = CallContext::Arg::Kind::STRING;
+                ka.string_val = kv.first;
+                va.kind = CallContext::Arg::Kind::STRING;
+                va.string_val = kv.second;
+                DexCallOutcome o = dex_invoke(action, "accept", {ka, va});
+                if (!o.ok) return CallResult::not_handled();
+            }
+            for (const auto& kv : fstate->map_entries) {
+                CallContext::Arg ka, va;
+                ka.kind = CallContext::Arg::Kind::STRING;
+                ka.string_val = kv.first;
+                va.kind = CallContext::Arg::Kind::OBJECT;
+                va.object_id = kv.second;
+                DexCallOutcome o = dex_invoke(action, "accept", {ka, va});
+                if (!o.ok) return CallResult::not_handled();
+            }
+            return CallResult::handled_void();
+        }
+        const int32_t n = static_cast<int32_t>(fstate->elements.size());
+        for (int32_t i = 0; i < n; ++i) {
+            DexCallOutcome o = dex_invoke(action, "accept",
+                                          {slot_to_arg(*fstate, i)});
+            if (!o.ok) return CallResult::not_handled();  // loud decline
+        }
+        return CallResult::handled_void();
+    }
+
+    // ── K16 faces: Collection.removeAll/retainAll(Collection) ───────────
+    // OpenJDK bulk law: membership by the element's own equality (string
+    // content / numeric value / the app's equals via app_equals_slot);
+    // removeAll erases members, retainAll erases non-members; both return
+    // whether the store changed.
+    if ((m == "removeAll" || m == "retainAll") && ctx.args.size() >= 1 &&
+        is_list_state) {
+        uint32_t other_id = ctx.arg_as_object(0, 0);
+        if (other_id == 0) return CallResult::not_handled();
+        auto* ostate = get_or_create(other_id);
+        const bool want_removed = (m == "removeAll");
+        bool changed = false;
+        const auto& app_eq = CollectionShadow::app_equals_slot();
+        auto member_of_other = [&](int32_t i) -> bool {
+            uint8_t k = i < static_cast<int32_t>(lstate->elem_kinds.size())
+                            ? lstate->elem_kinds[i]
+                            : (lstate->elements[i] != 0 ? uint8_t{1}
+                                                        : uint8_t{0});
+            for (size_t j = 0; j < ostate->elements.size(); ++j) {
+                uint8_t ok2 =
+                    j < ostate->elem_kinds.size()
+                        ? ostate->elem_kinds[j]
+                        : (ostate->elements[j] != 0 ? uint8_t{1}
+                                                    : uint8_t{0});
+                if (k != ok2) continue;
+                if (k == 3) {
+                    if (lstate->elem_ints[i] == ostate->elem_ints[j])
+                        return true;
+                } else if (k == 2) {
+                    if (lstate->elem_strings[i] == ostate->elem_strings[j])
+                        return true;
+                } else if (app_eq &&
+                           app_eq(lstate->elements[i], ostate->elements[j])) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        for (int32_t i = static_cast<int32_t>(lstate->elements.size()) - 1;
+             i >= 0; --i) {
+            const bool hit = member_of_other(i);
+            if (hit == want_removed) {
+                lawa_remove_index(*lstate, i);
+                changed = true;
+            }
+        }
+        return CallResult::handled_bool(changed);
+    }
+
+    // ── Map faces (K17 merge/computeIfAbsent, K6 getOrDefault) ──────────
+    if ((m == "merge" || m == "computeIfAbsent" || m == "getOrDefault") &&
+        obj_id != 0) {
+        auto* mstate = get_or_create(obj_id, true);
+        if (!mstate->is_map) return CallResult::not_handled();
+        std::string key = map_key_value_law(ctx, 0, heap_);
+        // Map value lookup — string entries first (same precedence as get).
+        auto lookup = [&]() -> CallResult {
+            auto sit = mstate->map_string_entries.find(key);
+            if (sit != mstate->map_string_entries.end())
+                return CallResult::handled_string(sit->second);
+            auto it = mstate->map_entries.find(key);
+            if (it != mstate->map_entries.end() && it->second != 0)
+                return CallResult::handled_object(it->second,
+                                                   "Ljava/lang/Object;");
+            return CallResult::not_handled();
+        };
+        // Store a value kind-aware (string verbatim / object id), mirroring
+        // the put law's two-store split.
+        auto store = [&](const CallContext::Arg& va) {
+            if (va.kind == CallContext::Arg::Kind::STRING)
+                mstate->map_string_entries[key] = va.string_val;
+            else if (va.kind == CallContext::Arg::Kind::OBJECT)
+                mstate->map_entries[key] = va.object_id;
+        };
+        if (m == "getOrDefault") {
+            // OpenJDK Map.getOrDefault: mapping present → the mapping,
+            // else the default (the default is returned VERBATIM — same
+            // object identity; never re-boxed).
+            CallResult hit = lookup();
+            if (hit.handled) return hit;
+            if (ctx.args.size() >= 2) {
+                const auto& da = ctx.args[1];
+                if (da.kind == CallContext::Arg::Kind::STRING)
+                    return CallResult::handled_string(da.string_val);
+                if (da.kind == CallContext::Arg::Kind::OBJECT)
+                    return CallResult::handled_object(
+                        da.object_id, da.object_class.empty()
+                                          ? "Ljava/lang/Object;"
+                                          : da.object_class);
+                if (da.kind == CallContext::Arg::Kind::INT)
+                    return CallResult::handled_int(da.int_val);
+            }
+            return CallResult::handled_null();
+        }
+        if (!dex_invoke) return CallResult::not_handled();
+        if (m == "computeIfAbsent") {
+            // OpenJDK: present → the mapping (function NOT invoked);
+            // absent → key = function.apply(key); null result → no
+            // mapping recorded, return null; else record + return.
+            CallResult hit = lookup();
+            if (hit.handled) return hit;
+            uint32_t fn = ctx.args.size() >= 2 ? ctx.arg_as_object(1, 0) : 0;
+            if (fn == 0) return CallResult::not_handled();
+            CallContext::Arg ka;
+            ka.kind = CallContext::Arg::Kind::STRING;
+            ka.string_val = key;
+            DexCallOutcome o = dex_invoke(fn, "apply", {ka});
+            if (!o.ok) return CallResult::not_handled();  // loud decline
+            if (o.kind == 0) return CallResult::handled_null();
+            CallContext::Arg va;
+            if (o.kind == 2) {
+                va.kind = CallContext::Arg::Kind::OBJECT;
+                va.object_id = o.obj_id;
+            } else if (o.kind == 3) {
+                va.kind = CallContext::Arg::Kind::STRING;
+                va.string_val = o.str_val;
+            } else {
+                return CallResult::not_handled();
+            }
+            store(va);
+            if (o.kind == 2)
+                return CallResult::handled_object(o.obj_id, o.obj_class);
+            return CallResult::handled_string(o.str_val);
+        }
+        // merge(key, val, remFunc): absent → put(val); present →
+        // put(remFunc.apply(old, val)); null remap → REMOVE the entry
+        // (OpenJDK merge law) and return null.
+        if (ctx.args.size() < 3) return CallResult::not_handled();
+        uint32_t fn = ctx.arg_as_object(2, 0);
+        CallResult hit = lookup();
+        if (!hit.handled) {
+            // Absent: record the new value verbatim (never invoke the fn).
+            const auto& va = ctx.args[1];
+            store(va);
+            if (va.kind == CallContext::Arg::Kind::STRING)
+                return CallResult::handled_string(va.string_val);
+            if (va.kind == CallContext::Arg::Kind::OBJECT)
+                return CallResult::handled_object(
+                    va.object_id,
+                    va.object_class.empty() ? "Ljava/lang/Object;"
+                                            : va.object_class);
+            return CallResult::handled_int(va.int_val);
+        }
+        if (fn == 0) return CallResult::not_handled();
+        // Present: derive the OLD value arg kind-faithfully.
+        CallContext::Arg old_arg;
+        {
+            auto sit = mstate->map_string_entries.find(key);
+            auto it = mstate->map_entries.find(key);
+            if (sit != mstate->map_string_entries.end()) {
+                old_arg.kind = CallContext::Arg::Kind::STRING;
+                old_arg.string_val = sit->second;
+            } else if (it != mstate->map_entries.end()) {
+                old_arg.kind = CallContext::Arg::Kind::OBJECT;
+                old_arg.object_id = it->second;
+            } else {
+                return CallResult::not_handled();
+            }
+        }
+        DexCallOutcome o = dex_invoke(fn, "apply", {old_arg, ctx.args[1]});
+        if (!o.ok) return CallResult::not_handled();  // loud decline
+        if (o.kind == 0) {
+            // OpenJDK: null remap → remove the mapping, return null.
+            mstate->map_string_entries.erase(key);
+            mstate->map_entries.erase(key);
+            return CallResult::handled_null();
+        }
+        CallContext::Arg va;
+        if (o.kind == 2) {
+            va.kind = CallContext::Arg::Kind::OBJECT;
+            va.object_id = o.obj_id;
+        } else if (o.kind == 3) {
+            va.kind = CallContext::Arg::Kind::STRING;
+            va.string_val = o.str_val;
+        } else {
+            return CallResult::not_handled();
+        }
+        store(va);
+        if (o.kind == 2)
+            return CallResult::handled_object(o.obj_id, o.obj_class);
+        return CallResult::handled_string(o.str_val);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // LAW-F (CONT-18): STREAM PIPELINE LAW (bounded face set).
+    // OpenJDK java.util.stream: a linear of→filter→collect pipeline
+    // materializes a source, applies each predicate stage, and the
+    // terminal collect(toList()) produces a real List whose elements are
+    // the surviving source elements. Faces (all keyed on the stream
+    // FAMILY — no app names):
+    //   Stream.of(T...)            [static]  → source stream box
+    //   Collectors.toList()        [static]  → collector box
+    //   Stream.filter(Predicate)   [virtual] → eager stage evaluation
+    //   Stream.collect(Collector)  [virtual] → materialized ArrayList
+    // EAGER evaluation is the honest bound: laziness is unobservable
+    // within a linear of→filter→collect chain (no short-circuit terminal
+    // in this face set). The rest of the stream family (map/flatMap/
+    // sorted/primitive streams/spliterators) stays DEFERRED — unimplemented
+    // faces decline loudly below.
+    // ────────────────────────────────────────────────────────────────────
+    if (ctx.class_name == "Ljava/util/stream/Collectors;" && m == "toList") {
+        uint32_t cbox = heap_->allocate("Ljava/util/stream/Collector;");
+        heap_->set_object_int_field(cbox, "__collector_kind__", 1);
+        return CallResult::handled_object(cbox,
+                                           "Ljava/util/stream/Collector;");
+    }
+    if (ctx.class_name == "Ljava/util/stream/Stream;" && m == "of") {
+        // Varargs: args[0] is the T[] array box (engine array convention:
+        // __array_length__ + array[i] fields, read through the shadow
+        // heap's array accessors).
+        if (std::getenv("MINIANDROID_LAWCEF_TRACE"))
+            std::cerr << "[LAWCEF-OF] of-law entered nargs=" << ctx.args.size() << std::endl;
+        uint32_t sbox = heap_->allocate("Ljava/util/stream/Stream;");
+        heap_->set_object_int_field(sbox, "__stream_stage__", 0);
+        auto* st2 = get_or_create(sbox, false);
+        if (ctx.args.size() >= 1 &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            uint32_t arr = ctx.args[0].object_id;
+            int32_t alen = 0;
+            heap_->get_object_array_length(arr, alen);
+            if (alen > 4096) return CallResult::not_handled();
+            for (int32_t ai = 0; ai < alen; ++ai) {
+                uint32_t item = 0;
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                if (heap_->get_object_array_string_element(
+                        arr, static_cast<size_t>(ai), sval)) {
+                    kind = 2;
+                } else if (heap_->get_object_array_ref_element(
+                               arr, static_cast<size_t>(ai), item)) {
+                    kind = 1;
+                } else {
+                    // Unknown element representation: kind-2 empty value —
+                    // the documented null-element convention.
+                }
+                st2->elements.push_back(item);
+                st2->elem_kinds.push_back(kind);
+                st2->elem_strings.push_back(sval);
+                st2->elem_ints.push_back(ival);
+            }
+        }
+        return CallResult::handled_object(sbox, "Ljava/util/stream/Stream;");
+    }
+    if (ctx.class_name.find("Ljava/util/stream/") == 0 &&
+        (m == "filter" || m == "collect") && obj_id != 0) {
+        int32_t stage = 0;
+        if (!heap_->get_object_int_field(obj_id, "__stream_stage__", stage))
+            return CallResult::not_handled();  // not a stream box
+        auto* st3 = get_or_create(obj_id, false);
+        if (m == "filter") {
+            if (!dex_invoke) return CallResult::not_handled();
+            uint32_t pred = ctx.args.size() >= 1 ? ctx.arg_as_object(0, 0) : 0;
+            if (pred == 0) return CallResult::not_handled();
+            std::vector<uint32_t> ne;
+            std::vector<uint8_t> nk;
+            std::vector<std::string> ns;
+            std::vector<int32_t> ni;
+            const int32_t n = static_cast<int32_t>(st3->elements.size());
+            for (int32_t i = 0; i < n; ++i) {
+                DexCallOutcome o = dex_invoke(pred, "test",
+                                              {slot_to_arg(*st3, i)});
+                if (!o.ok) return CallResult::not_handled();  // loud decline
+                const bool keep =
+                    o.kind == 1 && (o.bool_val || o.int_val != 0);
+                if (keep) {
+                    ne.push_back(st3->elements[i]);
+                    nk.push_back(i < static_cast<int32_t>(st3->elem_kinds.size())
+                                     ? st3->elem_kinds[i]
+                                     : uint8_t{0});
+                    ns.push_back(i < static_cast<int32_t>(st3->elem_strings.size())
+                                     ? st3->elem_strings[i]
+                                     : std::string());
+                    ni.push_back(i < static_cast<int32_t>(st3->elem_ints.size())
+                                     ? st3->elem_ints[i]
+                                     : 0);
+                }
+            }
+            st3->elements = std::move(ne);
+            st3->elem_kinds = std::move(nk);
+            st3->elem_strings = std::move(ns);
+            st3->elem_ints = std::move(ni);
+            heap_->set_object_int_field(obj_id, "__stream_stage__", 1);
+            return CallResult::handled_object(obj_id,
+                                               "Ljava/util/stream/Stream;");
+        }
+        // collect(Collector) — the only supported collector kind is
+        // __collector_kind__=1 (toList): materialize a real ArrayList
+        // whose store carries the surviving elements.
+        if (m == "collect") {
+            int32_t ckind = 0;
+            uint32_t col = ctx.args.size() >= 1 ? ctx.arg_as_object(0, 0) : 0;
+            if (col == 0 ||
+                !heap_->get_object_int_field(col, "__collector_kind__",
+                                             ckind) ||
+                ckind != 1)
+                return CallResult::not_handled();  // unknown collector
+            uint32_t lbox = heap_->allocate("Ljava/util/ArrayList;");
+            auto* lst = get_or_create(lbox, false);
+            lst->elements = st3->elements;
+            lst->elem_kinds = st3->elem_kinds;
+            lst->elem_strings = st3->elem_strings;
+            lst->elem_ints = st3->elem_ints;
+            return CallResult::handled_object(lbox, "Ljava/util/ArrayList;");
+        }
+    }
+
     if (m == "get") {
         auto* state = get_or_create(obj_id);
         // EXP-071 Phase 7: For Map collections (HashMap, ConcurrentHashMap),
@@ -1226,7 +1859,31 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     if (m == "removeFirst" || m == "remove" || m == "pop" || m == "poll" ||
         m == "pollFirst") {
         auto* state = get_or_create(obj_id);
-        if (state->is_map) return CallResult::not_handled();
+        {
+            static const bool lc = std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+            if (lc && m == "remove") {
+                static thread_local uint64_t n1 = 0;
+                if (n1++ < 40)
+                    std::cerr << "[LAWCEF-DEQUE] remove recv=" << obj_id
+                              << " is_map=" << state->is_map
+                              << " n_elem=" << state->elements.size()
+                              << " n_mentry=" << state->map_entries.size()
+                              << " n_str=" << state->map_string_entries.size()
+                              << std::endl;
+            }
+        }
+        // ── LAW-E FIX A (CONT-18): MAP FALL-THROUGH LAW ─────────────────
+        // The pre-fix shape was `if (state->is_map) return not_handled();`
+        // — but every other path of this block RETURNS, so the decline
+        // terminated the ENTIRE CollectionShadow::dispatch. The real
+        // Map.remove law (F-063 / R-NEW-287) lives BELOW this block and
+        // was unreachable dead code for every remove call since the deque
+        // family landed here: Map.remove silently no-op'd, stale entries
+        // stayed reachable (fcol K6 remOk=false, got=@33) and
+        // getOrDefault-everywhere answered the generic stub. OpenJDK law:
+        // a Map receiver has NO deque faces — route it to the map laws
+        // below by falling through, never by exiting the dispatch.
+        if (!state->is_map) {
         if (m == "remove" && !ctx.args.empty()) {
             // ── #371 PHASE B1 fix (probe-discovered, generic): List.remove
             // has TWO AOSP overloads. With an INT argument this is
@@ -1268,6 +1925,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // serve is kind-aware (a deque of strings pops "f", not a zero
         // object id).
         return lawa_remove_index(*state, 0);
+        }  // !is_map element path (map receivers fall through above)
     }
     if (m == "removeLast" || m == "pollLast") {
         auto* state = get_or_create(obj_id);
@@ -1327,6 +1985,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "remove") {
         auto* state = get_or_create(obj_id);
+        {
+            static const bool lc = std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+            if (lc) {
+                static thread_local uint64_t n2 = 0;
+                if (n2++ < 40)
+                    std::cerr << "[LAWCEF-REM] handler recv=" << obj_id
+                              << " is_map=" << state->is_map
+                              << " cls=" << ctx.class_name
+                              << std::endl;
+            }
+        }
         // LAW-E DIAG (CONT-18, bounded): Map.remove dispatch visibility —
         // fcol K6 face: remove(Object) after put(Object) left the stale
         // value reachable via get() (got=@33). This shows whether the map

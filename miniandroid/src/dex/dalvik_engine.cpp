@@ -4911,6 +4911,95 @@ void DalvikExecutionEngine::install_collection_equality_law() {
     cs->app_equals_slot() = [this](uint32_t a, uint32_t b) -> bool {
         return this->app_object_equals(a, b);
     };
+    // ── LAW-C/E/F (CONT-18): DEX CALLABLE INVOCATION CHANNEL INSTALL ────
+    // The Java-8 collection default-method law (removeIf/sort/forEach/
+    // merge/computeIfAbsent) and the stream filter stage receive their
+    // functional arguments as D8-desugared lambda objects — real DEX code.
+    // The shadow cannot execute DEX code, so the engine (the only layer
+    // that can) installs this invoker: it resolves the callee's runtime
+    // class from the heap, converts the shadow args to DalvikValues
+    // (receiver = callee identity first), and runs try_recursive_invoke.
+    // ok=false = no DEX body resolved → the shadow law declines loudly
+    // (never a faked result).
+    cs->dex_invoke_slot() =
+        [this](uint32_t callee, const std::string& method,
+               const std::vector<framework::CallContext::Arg>& cargs)
+        -> framework::CollectionShadow::DexCallOutcome {
+        if (callee == 0 || !heap_.has_object(callee))
+            return framework::CollectionShadow::DexCallOutcome::fail();
+        const auto* obj = heap_.get(callee);
+        if (!obj || obj->class_descriptor.empty())
+            return framework::CollectionShadow::DexCallOutcome::fail();
+        const std::string cls = obj->class_descriptor;
+        std::vector<DalvikValue> dargs;
+        dargs.push_back(DalvikValue::make_object(callee, cls));
+        for (const auto& a : cargs) {
+            switch (a.kind) {
+                case framework::CallContext::Arg::Kind::INT:
+                    dargs.push_back(DalvikValue::make_int(a.int_val));
+                    break;
+                case framework::CallContext::Arg::Kind::LONG:
+                    dargs.push_back(DalvikValue::make_long(a.long_val));
+                    break;
+                case framework::CallContext::Arg::Kind::FLOAT:
+                    dargs.push_back(DalvikValue::make_float(a.float_val));
+                    break;
+                case framework::CallContext::Arg::Kind::DOUBLE:
+                    dargs.push_back(DalvikValue::make_double(a.double_val));
+                    break;
+                case framework::CallContext::Arg::Kind::BOOL:
+                    dargs.push_back(DalvikValue::make_bool(a.bool_val));
+                    break;
+                case framework::CallContext::Arg::Kind::STRING:
+                    dargs.push_back(DalvikValue::make_string(a.string_val, 0));
+                    break;
+                case framework::CallContext::Arg::Kind::OBJECT:
+                    dargs.push_back(DalvikValue::make_object(
+                        a.object_id,
+                        a.object_class.empty()
+                            ? (heap_.has_object(a.object_id)
+                                   ? heap_.get(a.object_id)->class_descriptor
+                                   : "Ljava/lang/Object;")
+                            : a.object_class));
+                    break;
+                case framework::CallContext::Arg::Kind::NULL_REF:
+                default:
+                    dargs.push_back(DalvikValue::make_null());
+                    break;
+            }
+        }
+        DalvikValue ret;
+        DalvikExecutionResult sub;
+        if (!try_recursive_invoke(cls, method, dargs, ret, sub)) {
+            if (!try_recursive_invoke_on_super(cls, method, dargs, ret, sub,
+                                               "")) {
+                return framework::CollectionShadow::DexCallOutcome::fail();
+            }
+        }
+        namespace f = framework;
+        using Out = f::CollectionShadow::DexCallOutcome;
+        switch (ret.type) {
+            case DalvikType::BOOLEAN:
+                return Out::of_bool(ret.int_val != 0);
+            case DalvikType::INT32:
+                return Out::of_int(ret.int_val);
+            case DalvikType::INT64:
+                return Out::of_int(static_cast<int32_t>(ret.long_val));
+            case DalvikType::OBJECT_REF:
+                if (ret.object_id == 0) return Out::of_null();
+                return Out::of_obj(
+                    ret.object_id,
+                    heap_.has_object(ret.object_id)
+                        ? heap_.get(ret.object_id)->class_descriptor
+                        : std::string("Ljava/lang/Object;"));
+            case DalvikType::STRING_REF:
+                return Out::of_str(ret.string_val);
+            case DalvikType::FLOAT32:
+            case DalvikType::FLOAT64:
+            default:
+                return Out::of_null();
+        }
+    };
 }
 
 bool DalvikExecutionEngine::app_object_equals(uint32_t a, uint32_t b) {
@@ -22559,6 +22648,37 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+    // LAW-C/E/F DETERMINATION DIAG (CONT-18, bounded 60/env-gated): every
+    // try_shadow_dispatch entry for a Java-8 default-method / view / stream
+    // face — answers which class_name the engine routes, with which
+    // receiver, and (paired with the CollectionShadow entry diag) whether
+    // the collection shadow even sees the call.
+    {
+        static const bool lawcef_on =
+            std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+        static const char* lawcef_faces[] = {
+            "removeIf", "getOrDefault", "forEach", "merge",
+            "computeIfAbsent", "compute", "sort", "removeAll",
+            "retainAll", "subList", "stream", "streamOf",
+            "remove", "containsKey", "size", "of", "filter", "collect", "toList"};
+        if (lawcef_on) {
+            for (const char* f : lawcef_faces) {
+                if (method == f) {
+                    static thread_local uint64_t lawcef_n = 0;
+                    if (lawcef_n++ < 60)
+                        std::cerr << "[LAWCEF-ENG] " << class_name << "."
+                                  << method << " recv="
+                                  << (!args.empty() ? args[0].object_id : 0u)
+                                  << " cls="
+                                  << (!args.empty() ? args[0].class_desc
+                                                    : std::string("-"))
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    break;
+                }
+            }
+        }
+    }
 
     // ────────────────────────────────────────────────────────────────────
     // S81 FIX-1 (VF-DIALOG-ITEMS) — dual-view of the bridge_to_api law:
@@ -51421,6 +51541,56 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
         }
+    }
+    // ── LAW-C (CONT-18): BOXED NUMERIC COMPARISON + SUM LAW ──────────────
+    // OpenJDK X.compareTo(Y) (Integer/Long/Short/Byte/Character — the
+    // Comparable<X> contract: numerically less → negative, equal → 0,
+    // greater → positive) and Integer.sum/Long.sum (binary +). These
+    // framework faces are the comparators/accumulators behind
+    // List.sort(Integer::compareTo) and Map.merge(Integer::sum) — the
+    // D8-desugared lambda bodies unbox through the intValue law above and
+    // then call compareTo/sum. With no law the bridge answered the generic
+    // stub and the comparison result was garbage (K14 sort no-op,
+    // K17 merge n=-1).
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        (class_name == "Ljava/lang/Integer;" ||
+         class_name == "Ljava/lang/Long;" ||
+         class_name == "Ljava/lang/Short;" ||
+         class_name == "Ljava/lang/Byte;" ||
+         class_name == "Ljava/lang/Character;")) {
+        auto unbox_box = [&](uint32_t id, int64_t& out) -> bool {
+            auto* b = heap_.get(id);
+            if (!b) return false;
+            DalvikValue v = b->get_field("value");
+            if (v.type == DalvikType::UNINITIALIZED ||
+                v.type == DalvikType::REGISTER_UNSET)
+                return false;
+            out = v.type == DalvikType::INT64 ? v.long_val
+                                              : static_cast<int64_t>(v.int_val);
+            return true;
+        };
+        if (method == "compareTo" && args.size() >= 2 &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            int64_t a64 = 0, b64 = 0;
+            if (unbox_box(args[0].object_id, a64) &&
+                unbox_box(args[1].object_id, b64)) {
+                result = DalvikValue::make_int(
+                    a64 < b64 ? -1 : (a64 > b64 ? 1 : 0));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    if (class_name == "Ljava/lang/Integer;" && method == "sum" &&
+        args.size() >= 2 && args[0].type == DalvikType::INT32 &&
+        args[1].type == DalvikType::INT32) {
+        // Static Integer.sum(int, int) with raw INT32 params (OpenJDK:
+        // Math.addExact wrapping semantics at int width).
+        result = DalvikValue::make_int(
+            static_cast<int32_t>(static_cast<uint32_t>(args[0].int_val) +
+                                 static_cast<uint32_t>(args[1].int_val)));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
     if (method == "toString" && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && !args.empty() &&
