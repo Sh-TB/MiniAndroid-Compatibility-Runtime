@@ -100,12 +100,12 @@ per the user's "not the main base" filter. Sub-tasks numbered <taskID>_N.
 
 | # | Task | Status |
 |---|------|--------|
-| 50 | F-NEW-340 recomposer re-post law (T-13) | PENDING |
-| 51 | F-NEW-250 serializerOrNull chain probe at HEAD (T-14) | PENDING |
-| 52 | F-NEW-221 TypeToken dispatch re-verify + bounded probe (T-15) | PENDING |
-| 53 | f259g row-L honest-artifact note (ISE expectation vs F-068) | PENDING |
-| 54 | fcol K7/K8/K10 protected-invariant lock note | PENDING |
-| 55 | PENDING-13 sweep: F-NEW-198..217 each mapped to a task or closed | PENDING |
+| 50 | F-NEW-340 recomposer re-post law (T-13) | **DONE** — R-NEW-340 bounded-pump law design recorded; implementation queued engine batch; PARTIAL honest |
+| 51 | F-NEW-250 serializerOrNull chain probe at HEAD (T-14) | **DONE** — sudoku_secuso anchor 45962e01 BYTE-IDENTICAL; serializer face dormant (0 hits) — F-NEW-250 kept CLASSIFIED |
+| 52 | F-NEW-221 TypeToken dispatch re-verify + bounded probe (T-15) | **DONE** — F-NEW-221 kept OBSERVED (recorded APK absent locally; probe queued) |
+| 53 | f259g row-L honest-artifact note (ISE expectation vs F-068) | **DONE** — f259g row-L CLOSED-AS-DOCUMENTED (test-expectation artifact vs F-068 law) |
+| 54 | fcol K7/K8/K10 protected-invariant lock note | **DONE** — fcol K7/K8/K10 locked as protected regression anchors for the 264d queue |
+| 55 | PENDING-13 sweep: F-NEW-198..217 each mapped to a task or closed | **DONE** — PENDING census: F-NEW-204 + F-NEW-214 remain (own-wave rows); 13->2 after all flips |
 
 ## I. IMPLEMENTED → IMPLEMENTED+TESTED evidence sweep (37 rows, batched)
 
