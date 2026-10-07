@@ -5641,6 +5641,118 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
     return false;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CONT-12 F-NEW-266 — invoke-virtual TRANSITIVE INTERFACE-DEFAULT dispatch.
+// ART/JVMS 5.4.5 resolution law: when the receiver's class chain declares no
+// implementation, the resolution continues into every transitively
+// implemented interface; the first code-bearing (default) method with the
+// exact descriptor executes. The invoke-interface path already implements
+// this (F-023, see execute_invoke_interface); invoke-virtual historically
+// fell through to the API bridge, whose stub silently returned NULL — the
+// null then fed the next instruction (dooz-native evidence: none; external
+// un-renamed Compose 1.11.4 oracle: AndroidComposeView$root$1$1.then(other)
+// → interface Modifier.then default body → null receiver → NPE ×172 →
+// setContent dead). Generic: no app, package, or R8-name knowledge.
+// Bounded: 12-hop extends chain, 64-interface closure, memoized results.
+// ─────────────────────────────────────────────────────────────────────────────
+bool DalvikExecutionEngine::try_interface_default_invoke(
+    const std::string& receiver_class,
+    const std::string& method_name,
+    const std::string& method_descriptor,
+    const std::vector<DalvikValue>& args,
+    DalvikValue& return_val,
+    DalvikExecutionResult& result,
+    std::string* dispatched_out) {
+    if (!dex_report_) return false;
+    if (method_descriptor.empty()) return false;
+
+    // Memo key: method ref identity (class.name + proto). The receiver's
+    // runtime class does NOT participate: the resolution result is a
+    // property of the method ref and the implementing interface, and the
+    // default body executes with the ORIGINAL receiver either way.
+    const std::string memo_key =
+        receiver_class + "." + method_name + method_descriptor;
+    {
+        auto it = iface_default_memo_.find(memo_key);
+        if (it != iface_default_memo_.end()) {
+            if (it->second.first.empty()) return false;  // negative memo
+            return try_recursive_invoke(it->second.first, it->second.second,
+                                        args, return_val, result,
+                                        method_descriptor);
+        }
+    }
+
+    // Resolution gate: only for app-bundled (DEX-defined) method refs —
+    // framework refs (Landroid/*, Ljava/*) belong to the API bridge and
+    // must not pay the closure scan.
+    if (class_info_index_.find(receiver_class) == class_info_index_.end()) {
+        iface_default_memo_[memo_key] = {"", ""};  // negative memo
+        return false;
+    }
+
+    // 1. Receiver extends chain (bounded, mirrors F-023).
+    std::vector<std::string> cls_chain;
+    std::string cc = receiver_class;
+    for (int hop = 0; hop < 12 && !cc.empty() &&
+                      cc != "Ljava/lang/Object;"; ++hop) {
+        cls_chain.push_back(cc);
+        auto sit = class_to_superclass_.find(cc);
+        if (sit == class_to_superclass_.end()) break;
+        cc = sit->second;
+    }
+
+    // 2. Transitive interface closure (declared interfaces of every class
+    //    in the chain, closed over super-interfaces, bounded at 64).
+    std::vector<std::string> ifq;
+    std::set<std::string> visited;
+    auto enqueue_ifaces = [&](const std::string& cls) {
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.name != cls) continue;
+            for (const auto& ifc : cd.interfaces) {
+                if (!ifc.empty() && visited.insert(ifc).second)
+                    ifq.push_back(ifc);
+            }
+            break;
+        }
+    };
+    for (const auto& k : cls_chain) enqueue_ifaces(k);
+    for (size_t qi = 0; qi < ifq.size() && qi < 64; ++qi)
+        enqueue_ifaces(ifq[qi]);
+
+    // 3. Dispatch the first code-bearing method with the exact descriptor.
+    //    Exact-descriptor match keeps overloaded defaults unambiguous, and
+    //    the class-def linear scan matches the F-023 cost envelope.
+    for (const auto& ifc : ifq) {
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.name != ifc) continue;
+            for (const auto& mi : cd.all_methods()) {
+                if (mi.code_offset == 0 || mi.is_abstract) continue;
+                if (mi.descriptor != method_descriptor) continue;
+                if (mi.name != method_name) continue;
+                if (try_recursive_invoke(ifc, mi.name, args, return_val,
+                                         result, method_descriptor)) {
+                    iface_default_memo_[memo_key] = {ifc, mi.name};
+                    if (dispatched_out)
+                        *dispatched_out = ifc + "." + mi.name;
+                    static std::atomic<uint64_t> f266_n{0};
+                    if (f266_n.fetch_add(1, std::memory_order_relaxed) < 24) {
+                        std::cerr << "[INTERFACE-DEFAULT-V] " << ifc << "."
+                                  << mi.name << method_descriptor
+                                  << " (invoke-virtual default-method dispatch"
+                                  << ", receiver " << receiver_class << ")"
+                                  << std::endl;
+                    }
+                    return true;
+                }
+            }
+            break;
+        }
+    }
+    if (iface_default_memo_.size() < 4096)
+        iface_default_memo_[memo_key] = {"", ""};  // negative memo
+    return false;
+}
+
 bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& declaring_class,
     const std::string& method_name,
@@ -13323,6 +13435,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         status = ApiCallTrace::Status::IMPLEMENTED;
                     }
                 }
+                // ── CONT-12 F-NEW-266 (3rc) ──────────────────────────────
+                // Same transitive interface-default law as the 35c path:
+                // after runtime-class and declaring-class misses, ART
+                // resolves virtual dispatch into the receiver's transitive
+                // superinterfaces (default methods). Without it the bridge
+                // stub silently returned null (un-renamed Compose 1.11.4
+                // oracle face: Modifier.then default body via 3rc sites).
+                if (!recursively_invoked && config_.enable_api_bridge &&
+                    range_virtual_like && !args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF) {
+                    const std::string& f266_recv =
+                        range_runtime_class.empty() ? class_name
+                                                    : range_runtime_class;
+                    std::string f266_dispatched;
+                    if (try_interface_default_invoke(
+                            f266_recv, method_name, range_proto, args,
+                            return_val, result, &f266_dispatched)) {
+                        last_invoke_return_ = return_val;
+                        recursively_invoked = true;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        trace.invoked_method =
+                            f266_dispatched + " [default-method " +
+                            range_proto + "]";
+                    }
+                }
                 if (!recursively_invoked && config_.enable_api_bridge) {
                     bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
                 }
@@ -19043,6 +19180,28 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                 // Without this, move-result-object reads stale VOID_ from a
                 // previous method's return-void.
                 last_invoke_return_ = return_val;
+            }
+        }
+        // ── CONT-12 F-NEW-266 ─────────────────────────────────────────────
+        // ART/JVMS 5.4.5: after the class chain misses, virtual resolution
+        // continues into the receiver's TRANSITIVELY IMPLEMENTED INTERFACES
+        // (default methods). The pre-266 path fell to the API bridge whose
+        // stub silently returned null — the null fed the next instruction
+        // (un-renamed Compose 1.11.4 oracle face: root$1$1.then(other) →
+        // interface Modifier.then default body → null → chained
+        // invoke-interface receiver NPE ×172 → setContent dead).
+        if (!recursively_invoked && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            !runtime_type.empty() && runtime_type != "<unknown>") {
+            std::string f266_dispatched;
+            if (try_interface_default_invoke(
+                    runtime_type, method_name_from_dex, invoke_descriptor_35c,
+                    args, return_val, result, &f266_dispatched)) {
+                recursively_invoked = true;
+                api_status = ApiCallTrace::Status::IMPLEMENTED;
+                last_invoke_return_ = return_val;
+                trace.invoked_method = f266_dispatched +
+                    " [default-method " + invoke_descriptor_35c + "]";
             }
         }
     }
