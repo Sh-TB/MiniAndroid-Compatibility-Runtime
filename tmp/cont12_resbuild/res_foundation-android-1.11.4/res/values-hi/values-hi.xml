@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string msgid="8719607706653693137" name="androidx_compose_foundation_autofill">"ऑटोमैटिक तरीके से जानकारी भरने की सुविधा"</string>
+    <string msgid="3765533235322692011" name="tooltip_description">"टूलटिप"</string>
+    <string msgid="3124740595719787496" name="tooltip_label">"टूलटिप दिखाएं"</string>
+</resources>

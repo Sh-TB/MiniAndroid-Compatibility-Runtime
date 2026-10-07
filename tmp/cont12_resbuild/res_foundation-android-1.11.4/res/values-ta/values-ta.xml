@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string msgid="8719607706653693137" name="androidx_compose_foundation_autofill">"தன்னிரப்பி"</string>
+    <string msgid="3765533235322692011" name="tooltip_description">"உதவிக்குறிப்பு"</string>
+    <string msgid="3124740595719787496" name="tooltip_label">"உதவிக்குறிப்பைக் காட்டும்"</string>
+</resources>
