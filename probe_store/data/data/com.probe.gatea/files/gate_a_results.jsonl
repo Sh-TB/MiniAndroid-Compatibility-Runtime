@@ -55,7 +55,7 @@ GATEA|IO-06|PASS|available=17
 GATEA|IO-07|PASS|write(int)=77 read=77 match=true
 GATEA|IO-08|PASS|fileList has stream_io.bin=true
 GATEA|IO-09|PASS|delete true-then-false=true/false
-GATEA|FD-01|PASS|offset=96326 declaredLen=75 offOk=true lenOk=true
+GATEA|FD-01|PASS|offset=96207 declaredLen=75 offOk=true lenOk=true
 GATEA|FD-02|PASS|afd-stream-bytes=75 equal-to-direct=true
 GATEA|FD-03|PASS|fd=Ljava/io/FileDescriptor;@213
 GATEA|FD-04|PASS|fd=6 dup=7 fdOk=true
@@ -79,7 +79,7 @@ GATEA|PREF-02|PASS|escaped-roundtrip=true set=Ljava/util/HashSet;@269
 GATEA|PREF-03|PASS|fresh-instance k_int=-42 contains=true
 GATEA|PREF-06|PASS|restart_counter=1
 GATEA|PREF-04|PASS|removed=true afterClear=0
-GATEA|DB-01|PASS|rows=1 last=row-1791307188829972067 isOpen=true
+GATEA|DB-01|PASS|rows=1 last=row-1791341649213561070 isOpen=true
 GATEA|DB-02|PASS|databaseList=[gatea.db] has-gatea=true
 GATEA|DB-03|PASS|helper-db=true name=helper.db
 GATEA|CFG-01|PASS|locale default wins (-zh-rCN/-land unreachable)
