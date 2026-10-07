@@ -1917,6 +1917,12 @@ public:
     // Built from dex_report_->classes[i].superclass_name.
     // Used by is_subclass_of() for semantic View inheritance resolution.
     std::map<std::string, std::string> class_to_superclass_;
+    // CONT-12 F-NEW-266: memo for the invoke-virtual interface-default
+    // dispatch (key = method-ref class.name + descriptor; value = resolved
+    // interface + method name, or empty on negative resolution). Keeps the
+    // transitive-closure scan off the hot path after first resolution.
+    std::map<std::string, std::pair<std::string, std::string>>
+        iface_default_memo_;
     // S122 (R-NEW-414): DEX class descriptor → (field name → inline
     // initializer type descriptor). Built lazily by scanning each DEX class's
     // <init> bytecode for the javac field-initializer pattern
@@ -2024,6 +2030,30 @@ public:
         DalvikValue& return_val,
         DalvikExecutionResult& result,
         const std::string& method_descriptor
+    );
+
+    // CONT-12 F-NEW-266 (oracle-found law, ART/JVMS 5.4.5 virtual
+    // resolution): an invoke-virtual whose class-hierarchy walk finds no
+    // implementation must CONTINUE the search into the receiver's
+    // transitively implemented interfaces and dispatch the first
+    // code-bearing (default) method with the exact descriptor. The
+    // invoke-interface path already implements this (F-023); invoke-virtual
+    // fell through to the API bridge and silently returned null.
+    // Real-APK face (external-Compose 1.11.4 oracle, no R8):
+    // AndroidComposeView$root$1$1.then(other) → Modifier.then default body
+    // (interface Modifier, transitive via Modifier$Element) returned null →
+    // the chained invoke-interface receiver was null → NPE ×172 →
+    // setContent dead → composition never created.
+    // Bounded: 12 superclass hops, 64-interface closure, memoized positive
+    // and negative results keyed by (method ref, proto).
+    bool try_interface_default_invoke(
+        const std::string& receiver_class,
+        const std::string& method_name,
+        const std::string& method_descriptor,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result,
+        std::string* dispatched_out = nullptr
     );
 
     // AOSP ActivityThread.performLaunchActivity fidelity: after allocating

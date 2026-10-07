@@ -5641,6 +5641,118 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
     return false;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CONT-12 F-NEW-266 — invoke-virtual TRANSITIVE INTERFACE-DEFAULT dispatch.
+// ART/JVMS 5.4.5 resolution law: when the receiver's class chain declares no
+// implementation, the resolution continues into every transitively
+// implemented interface; the first code-bearing (default) method with the
+// exact descriptor executes. The invoke-interface path already implements
+// this (F-023, see execute_invoke_interface); invoke-virtual historically
+// fell through to the API bridge, whose stub silently returned NULL — the
+// null then fed the next instruction (dooz-native evidence: none; external
+// un-renamed Compose 1.11.4 oracle: AndroidComposeView$root$1$1.then(other)
+// → interface Modifier.then default body → null receiver → NPE ×172 →
+// setContent dead). Generic: no app, package, or R8-name knowledge.
+// Bounded: 12-hop extends chain, 64-interface closure, memoized results.
+// ─────────────────────────────────────────────────────────────────────────────
+bool DalvikExecutionEngine::try_interface_default_invoke(
+    const std::string& receiver_class,
+    const std::string& method_name,
+    const std::string& method_descriptor,
+    const std::vector<DalvikValue>& args,
+    DalvikValue& return_val,
+    DalvikExecutionResult& result,
+    std::string* dispatched_out) {
+    if (!dex_report_) return false;
+    if (method_descriptor.empty()) return false;
+
+    // Memo key: method ref identity (class.name + proto). The receiver's
+    // runtime class does NOT participate: the resolution result is a
+    // property of the method ref and the implementing interface, and the
+    // default body executes with the ORIGINAL receiver either way.
+    const std::string memo_key =
+        receiver_class + "." + method_name + method_descriptor;
+    {
+        auto it = iface_default_memo_.find(memo_key);
+        if (it != iface_default_memo_.end()) {
+            if (it->second.first.empty()) return false;  // negative memo
+            return try_recursive_invoke(it->second.first, it->second.second,
+                                        args, return_val, result,
+                                        method_descriptor);
+        }
+    }
+
+    // Resolution gate: only for app-bundled (DEX-defined) method refs —
+    // framework refs (Landroid/*, Ljava/*) belong to the API bridge and
+    // must not pay the closure scan.
+    if (class_info_index_.find(receiver_class) == class_info_index_.end()) {
+        iface_default_memo_[memo_key] = {"", ""};  // negative memo
+        return false;
+    }
+
+    // 1. Receiver extends chain (bounded, mirrors F-023).
+    std::vector<std::string> cls_chain;
+    std::string cc = receiver_class;
+    for (int hop = 0; hop < 12 && !cc.empty() &&
+                      cc != "Ljava/lang/Object;"; ++hop) {
+        cls_chain.push_back(cc);
+        auto sit = class_to_superclass_.find(cc);
+        if (sit == class_to_superclass_.end()) break;
+        cc = sit->second;
+    }
+
+    // 2. Transitive interface closure (declared interfaces of every class
+    //    in the chain, closed over super-interfaces, bounded at 64).
+    std::vector<std::string> ifq;
+    std::set<std::string> visited;
+    auto enqueue_ifaces = [&](const std::string& cls) {
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.name != cls) continue;
+            for (const auto& ifc : cd.interfaces) {
+                if (!ifc.empty() && visited.insert(ifc).second)
+                    ifq.push_back(ifc);
+            }
+            break;
+        }
+    };
+    for (const auto& k : cls_chain) enqueue_ifaces(k);
+    for (size_t qi = 0; qi < ifq.size() && qi < 64; ++qi)
+        enqueue_ifaces(ifq[qi]);
+
+    // 3. Dispatch the first code-bearing method with the exact descriptor.
+    //    Exact-descriptor match keeps overloaded defaults unambiguous, and
+    //    the class-def linear scan matches the F-023 cost envelope.
+    for (const auto& ifc : ifq) {
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.name != ifc) continue;
+            for (const auto& mi : cd.all_methods()) {
+                if (mi.code_offset == 0 || mi.is_abstract) continue;
+                if (mi.descriptor != method_descriptor) continue;
+                if (mi.name != method_name) continue;
+                if (try_recursive_invoke(ifc, mi.name, args, return_val,
+                                         result, method_descriptor)) {
+                    iface_default_memo_[memo_key] = {ifc, mi.name};
+                    if (dispatched_out)
+                        *dispatched_out = ifc + "." + mi.name;
+                    static std::atomic<uint64_t> f266_n{0};
+                    if (f266_n.fetch_add(1, std::memory_order_relaxed) < 24) {
+                        std::cerr << "[INTERFACE-DEFAULT-V] " << ifc << "."
+                                  << mi.name << method_descriptor
+                                  << " (invoke-virtual default-method dispatch"
+                                  << ", receiver " << receiver_class << ")"
+                                  << std::endl;
+                    }
+                    return true;
+                }
+            }
+            break;
+        }
+    }
+    if (iface_default_memo_.size() < 4096)
+        iface_default_memo_[memo_key] = {"", ""};  // negative memo
+    return false;
+}
+
 bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& declaring_class,
     const std::string& method_name,
@@ -12365,12 +12477,68 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             case Opcode::MOVE_EXCEPTION: {
                 trace.opcode_name = "move-exception";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
-                // Read the pending exception set by THROW.
-                // If no pending exception (shouldn't happen), use null.
+                // F-NEW-264 (CONT-11 W7): EXCEPTION-INTEGRITY DELIVERY LAW.
+                // Upstream law (AOSP ART InterpDoThrow + move-exception /
+                // JVM athrow-catch contract): a catch handler ALWAYS
+                // receives the REAL in-flight java.lang.Throwable object —
+                // never null. ART cannot enter a handler without a
+                // throwable in flight. Runtime face (dooz23, MINIANDROID_
+                // F141_DIAG + EXC-PROPAGATE traces): a deferred engine
+                // throw (f141-null-recv inside Lm7;.<init>) unwound and
+                // was caught by Lto1;.d's catch-all, but by the time the
+                // handler's move-exception executed, pending_exception_
+                // had been cleared by an intervening redirect/clear — the
+                // handler register received NULL and the compose
+                // exception-report helper Lel0;.Y(Throwable) NPE'd on
+                // `t.getClass()` (the R8 kotlin-report idiom), killing
+                // the whole measure/layout pass (Lzs0;.m → Lt4;.onMeasure
+                // cascade, placement never completed, isPlaced stayed
+                // false, the draw walk skipped the entire tree).
+                // Fix: delivery falls back through the engine's exception
+                // slots in authority order (pending → deferred → in-flight
+                // unwind) so the handler ALWAYS gets a real throwable
+                // object; a bounded env-gated diagnostic records every
+                // fallback (each one is itself a state-machine bug worth
+                // a future root — the fallback preserves JVM semantics
+                // without inventing framework state).
                 DalvikValue exc = pending_exception_;
+                bool f264_delivered_pending = true;
+                if (!(exc.type == DalvikType::OBJECT_REF &&
+                      exc.object_id != 0)) {
+                    f264_delivered_pending = false;
+                    exc = deferred_exception_;
+                    if (!(exc.type == DalvikType::OBJECT_REF &&
+                          exc.object_id != 0) &&
+                        frame_unwind_exception_valid_) {
+                        exc = frame_unwind_exception_;
+                    }
+                    if (!(exc.type == DalvikType::OBJECT_REF &&
+                          exc.object_id != 0)) {
+                        exc = DalvikValue::make_null();
+                    }
+                    static thread_local const bool f264_trace =
+                        std::getenv("MINIANDROID_F264_TRACE") != nullptr;
+                    static thread_local uint64_t f264_n = 0;
+                    if (f264_trace && f264_n < 40) {
+                        ++f264_n;
+                        std::cerr << "[F264-MOVE-EXC] null pending at "
+                                  << current_class_ << "." << current_method_
+                                  << " pc=" << pc_ << " → fallback "
+                                  << exc.class_desc
+                                  << (exc.type == DalvikType::OBJECT_REF &&
+                                              exc.object_id != 0
+                                          ? " (delivered)"
+                                          : " (STILL NULL — honesty)")
+                                  << std::endl;
+                    }
+                }
                 set_register(vAA, exc);
                 trace.operands.push_back({"v" + std::to_string(vAA), exc.to_string()});
-                // Clear the pending exception after move.
+                // Clear the pending exception after move (the delivered
+                // object is now owned by the handler register). The
+                // deferred/unwind slots are left INTACT — forensic reads
+                // (S100 last-op ring, crash forensics) and nested-unwind
+                // matching still consult them after the handler runs.
                 pending_exception_ = DalvikValue::make_null();
                 pc_ += 1;
                 break;
@@ -13265,6 +13433,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         try_recursive_invoke(class_name, method_name, args, return_val, result, range_proto)) { last_invoke_return_ = return_val;
                         recursively_invoked = true;
                         status = ApiCallTrace::Status::IMPLEMENTED;
+                    }
+                }
+                // ── CONT-12 F-NEW-266 (3rc) ──────────────────────────────
+                // Same transitive interface-default law as the 35c path:
+                // after runtime-class and declaring-class misses, ART
+                // resolves virtual dispatch into the receiver's transitive
+                // superinterfaces (default methods). Without it the bridge
+                // stub silently returned null (un-renamed Compose 1.11.4
+                // oracle face: Modifier.then default body via 3rc sites).
+                if (!recursively_invoked && config_.enable_api_bridge &&
+                    range_virtual_like && !args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF) {
+                    const std::string& f266_recv =
+                        range_runtime_class.empty() ? class_name
+                                                    : range_runtime_class;
+                    std::string f266_dispatched;
+                    if (try_interface_default_invoke(
+                            f266_recv, method_name, range_proto, args,
+                            return_val, result, &f266_dispatched)) {
+                        last_invoke_return_ = return_val;
+                        recursively_invoked = true;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        trace.invoked_method =
+                            f266_dispatched + " [default-method " +
+                            range_proto + "]";
                     }
                 }
                 if (!recursively_invoked && config_.enable_api_bridge) {
@@ -18987,6 +19180,28 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                 // Without this, move-result-object reads stale VOID_ from a
                 // previous method's return-void.
                 last_invoke_return_ = return_val;
+            }
+        }
+        // ── CONT-12 F-NEW-266 ─────────────────────────────────────────────
+        // ART/JVMS 5.4.5: after the class chain misses, virtual resolution
+        // continues into the receiver's TRANSITIVELY IMPLEMENTED INTERFACES
+        // (default methods). The pre-266 path fell to the API bridge whose
+        // stub silently returned null — the null fed the next instruction
+        // (un-renamed Compose 1.11.4 oracle face: root$1$1.then(other) →
+        // interface Modifier.then default body → null → chained
+        // invoke-interface receiver NPE ×172 → setContent dead).
+        if (!recursively_invoked && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            !runtime_type.empty() && runtime_type != "<unknown>") {
+            std::string f266_dispatched;
+            if (try_interface_default_invoke(
+                    runtime_type, method_name_from_dex, invoke_descriptor_35c,
+                    args, return_val, result, &f266_dispatched)) {
+                recursively_invoked = true;
+                api_status = ApiCallTrace::Status::IMPLEMENTED;
+                last_invoke_return_ = return_val;
+                trace.invoked_method = f266_dispatched +
+                    " [default-method " + invoke_descriptor_35c + "]";
             }
         }
     }
@@ -35877,10 +36092,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // try_recursive_invoke against DEX-defined receivers; F-036 backing store
     // fast path for shadow ArrayLists). No field-layout guessing.
     // ────────────────────────────────────────────────────────────────────
+    // F-NEW-264c (CONT-11 W7): RECEIVER-BASED GATE EXTENSION. The original
+    // gate matched the DECLARING class of the method reference only. A
+    // DEX-defined collection SUBCLASS receiver (guest: `class GuestB
+    // extends ArrayList<String>` in the app's own DEX — any Kotlin/Java app
+    // that subclasses a collection) resolves addAll/<init>(Collection) to
+    // an inherited method whose declaring class IS java/util/ArrayList,
+    // but the engine's runtime dispatch classifies the call by the
+    // RECEIVER's runtime class (GuestB) — the string match missed, the
+    // call fell through to the silent-default dispatch, and the append was
+    // a NO-OP. Runtime face (f259g probe rows R/S): shadow→guest and
+    // guest→guest addAll delivered size=0; [F264-ADDALL-DIAG] shows the
+    // handler never fired for those two rows while every plain-ArrayList
+    // receiver row fired. Fix mirrors the F-097 TreeSet dispatch law:
+    // (b) ANY declaring class when the receiver's runtime class is an
+    // ArrayList-family subclass (heap hierarchy walk via is_subclass_of).
+    // The F-101/F-NEW-259b cascade then reads/writes the SAME stores the
+    // plain path uses — no new state, no app-specific code.
+    // ────────────────────────────────────────────────────────────────────
+    bool f264_recv_is_list = false;
     if ((method == "<init>" || method == "addAll") &&
-        (class_name == "Ljava/util/ArrayList;" ||
-         class_name.find("ArrayList") != std::string::npos ||
-         class_name == "Ljava/util/LinkedList;") &&
+        args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        const auto* f264_ro = heap_.get(args[0].object_id);
+        std::string f264_rcls =
+            f264_ro ? f264_ro->class_descriptor : args[0].class_desc;
+        if (!f264_rcls.empty() && f264_rcls != "Ljava/util/ArrayList;" &&
+            f264_rcls != "Ljava/util/LinkedList;" &&
+            is_subclass_of(f264_rcls, "Ljava/util/ArrayList;"))
+            f264_recv_is_list = true;
+        if (!f264_recv_is_list && !f264_rcls.empty() &&
+            f264_rcls != "Ljava/util/LinkedList;" &&
+            is_subclass_of(f264_rcls, "Ljava/util/LinkedList;"))
+            f264_recv_is_list = true;
+    }
+    if ((method == "<init>" || method == "addAll") &&
+        ((class_name == "Ljava/util/ArrayList;" ||
+          class_name.find("ArrayList") != std::string::npos ||
+          class_name == "Ljava/util/LinkedList;") ||
+         f264_recv_is_list) &&
         args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
         args[1].type == DalvikType::OBJECT_REF &&
         args[1].object_id != 0) {
@@ -35940,6 +36190,60 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // The append base is the receiver's authoritative current count:
         // the F-036 backing store when present, else the registry-side
         // CollectionState (the store shadow-side add() owns), else 0.
+        // F-NEW-264b DIAG (env-gated, bounded): store census at entry —
+        // answers which layer owns the receiver/source elements when an
+        // addAll drops data (f259g probe rows R/S: shadow→guest and
+        // guest→guest append delivered size=0).
+        if (method == "addAll" &&
+            std::getenv("MINIANDROID_F264_ADDALL_DIAG") != nullptr) {
+            static thread_local uint64_t f264_diag_n = 0;
+            if (f264_diag_n < 24) {
+                ++f264_diag_n;
+                auto f264_rlen =
+                    heap_.get_object_field(f101_arr, "__array_length__");
+                auto f264_slen_d =
+                    heap_.get_object_field(f101_src, "__array_length__");
+                int32_t f264_rcnt = -1, f264_scnt = -1;
+                if (shadow_registry_ != nullptr) {
+                    auto* f264_csh = shadow_registry_->find_as<
+                        framework::CollectionShadow>();
+                    if (f264_csh) {
+                        auto* f264_rs = f264_csh->get_or_create(
+                            f101_arr, /*is_map=*/false);
+                        f264_rcnt =
+                            f264_rs ? (int32_t)f264_rs->elements.size() : -2;
+                        auto* f264_ss = f264_csh->get_or_create(
+                            f101_src, /*is_map=*/false);
+                        f264_scnt =
+                            f264_ss ? (int32_t)f264_ss->elements.size() : -2;
+                    }
+                }
+                const auto* f264_ro = heap_.get(f101_arr);
+                const auto* f264_so = heap_.get(f101_src);
+                int f264_ra = 0, f264_sa = 0;
+                if (f264_ro)
+                    for (const auto& f264_kv : f264_ro->fields)
+                        if (f264_kv.first.rfind("array[", 0) == 0) ++f264_ra;
+                if (f264_so)
+                    for (const auto& f264_kv : f264_so->fields)
+                        if (f264_kv.first.rfind("array[", 0) == 0) ++f264_sa;
+                std::cerr << "[F264-ADDALL-DIAG] recv=o" << f101_arr
+                          << " rlen="
+                          << (f264_rlen.has_value()
+                                  ? f264_rlen->int_val : -1)
+                          << " reg=" << f264_rcnt
+                          << " arrfields=" << f264_ra
+                          << " | src=o" << f101_src << " (" << f101_scls
+                          << ") slen="
+                          << (f264_slen_d.has_value()
+                                  ? f264_slen_d->int_val : -1)
+                          << " reg=" << f264_scnt
+                          << " arrfields=" << f264_sa
+                          << " dex_src=" << (f101_dex_src ? 1 : 0)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
         int32_t f101_append_base = 0;
         if (method == "addAll") {
             auto f101_rlen =
@@ -36045,7 +36349,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // even though 5 @Subscribe subscriber methods had just been added.
         // OpenJDK law: ArrayList(Collection c) = c.toArray() — the source's
         // OWN authoritative store must be consumed, whatever layer owns it.
-        if (f101_n < 0 && shadow_registry_ != nullptr) {
+        // F-NEW-264b (CONT-11 W7): the gate broadens from `f101_n < 0` to
+        // `f101_n <= 0`. Upstream law (OpenJDK ArrayList.addAll(Collection):
+        // the source's OWN authoritative store decides the element set).
+        // Runtime face (f259g probe row R, [F235-COPY] copied=0): a shadow
+        // ArrayList source grown via the registry-side shadow add() carries
+        // a STALE/mirrored __array_length__ (2) but NO heap array[i] fields
+        // — the array-field read loop yields 0, the (f101_n != f101_copied)
+        // guard resets copied to 0, and the step-0 registry read (the ONLY
+        // reader that sees the real elements) was skipped because
+        // __array_length__ had already set f101_n=2. A non-negative n with
+        // zero heap-field copies is exactly the "stale mirror" shape, so
+        // the registry read must run whenever the heap mirror has not been
+        // PROVEN consistent (n<0 = unknown, n==0 = unproven-empty). Empty
+        // sources are unaffected: the registry read of an empty state is a
+        // no-op and f101_n stays <= 0.
+        if (f101_n <= 0 && shadow_registry_ != nullptr) {
             auto* f101_csh_src =
                 shadow_registry_->find_as<framework::CollectionShadow>();
             if (f101_csh_src) {
@@ -36128,6 +36447,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (f101_slen.has_value() && f101_n != f101_copied) {
                 f101_copied = 0;
                 f101_elem_ids.clear();
+            }
+            // F-NEW-264b (CONT-11 W7): STALE-MIRROR REGISTRY FALLBACK.
+            // When the __array_length__ mirror promised elements the heap
+            // array[i] fields did not deliver (copied reset to 0 above),
+            // the source's authoritative store is the REGISTRY-side
+            // CollectionState — shadow add() appends there and the heap
+            // mirror is written only by some paths. OpenJDK law
+            // (ArrayList.addAll(Collection) → c.toArray()): the source's
+            // OWN store decides the element set, whatever layer owns it.
+            // Runtime face (f259g probe row R, [F235-COPY] copied=0):
+            // shadow→guest addAll dropped 2 real String elements and the
+            // receiver answered size=0 afterwards (the final mirror below
+            // then stamped the receiver's __array_length__ down to the
+            // dropped count). Bounded by the same store; empty → no-op.
+            if (f101_copied == 0 && shadow_registry_ != nullptr) {
+                auto* f264_csh =
+                    shadow_registry_->find_as<framework::CollectionShadow>();
+                auto* f264_sst =
+                    f264_csh ? f264_csh->get_or_create(f101_src,
+                                                       /*is_map=*/false)
+                             : nullptr;
+                if (f264_sst && !f264_sst->elements.empty()) {
+                    const size_t f264_sn = f264_sst->elements.size();
+                    for (size_t f264_i = 0; f264_i < f264_sn; ++f264_i) {
+                        DalvikValue f264_ev;
+                        uint8_t k = f264_i < f264_sst->elem_kinds.size()
+                                        ? f264_sst->elem_kinds[f264_i]
+                                        : 0;
+                        if (k == 1) {
+                            f264_ev = DalvikValue::make_object(
+                                f264_sst->elements[f264_i],
+                                "Ljava/lang/Object;");
+                        } else if (k == 2) {
+                            f264_ev = DalvikValue::make_string(
+                                f264_i < f264_sst->elem_strings.size()
+                                    ? f264_sst->elem_strings[f264_i]
+                                    : std::string(),
+                                0);
+                        } else if (k == 3) {
+                            f264_ev = DalvikValue::make_int(
+                                f264_i < f264_sst->elem_ints.size()
+                                    ? f264_sst->elem_ints[f264_i]
+                                    : 0);
+                        } else {
+                            continue;
+                        }
+                        heap_.set_object_field(
+                            f101_arr,
+                            "array[" +
+                                std::to_string(f101_append_base + f101_copied) +
+                                "]",
+                            f264_ev);
+                        if (k == 1 && f264_sst->elements[f264_i] != 0)
+                            f101_elem_ids.push_back(
+                                f264_sst->elements[f264_i]);
+                        ++f101_copied;
+                    }
+                    if (f101_copied > 0) {
+                        std::cerr << "[F264-ADDALL] stale-mirror fallback "
+                                  << "src=o" << f101_src << " (" << f101_scls
+                                  << ") elems=" << f101_copied
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                }
             }
         }
         // R-NEW-360 step 3: ITERATOR-DRIVEN copy — the Collection contract
