@@ -327,6 +327,36 @@ static CallResult lawa_remove_index(CollectionShadow::CollectionState& st,
     return CallResult::handled_null();
 }
 
+// ── LAW-B (CONT-18): kind classification shared by the iterator
+// write-back faces — mirrors the add()/set() kind law (R-NEW-464 string
+// fidelity, F-NEW-238 int fidelity): INT/BOOL/LONG arg -> kind 3 with the
+// numeric value; non-zero object ref -> kind 1; STRING arg (or zero-ref
+// fallback) -> kind 2 with the string content; NULL_REF stays kind 2 with
+// an empty value = the documented null-element representation.
+static void lawb_classify_arg(const CallContext::Arg& a, uint32_t item,
+                              uint8_t& kind, int32_t& ival,
+                              std::string& sval) {
+    kind = 2; ival = 0; sval.clear();
+    const bool is_int = a.kind == CallContext::Arg::Kind::INT ||
+                        a.kind == CallContext::Arg::Kind::BOOL ||
+                        a.kind == CallContext::Arg::Kind::LONG;
+    if (is_int) {
+        kind = 3;
+        ival = a.kind == CallContext::Arg::Kind::INT
+                   ? a.int_val
+                   : (a.kind == CallContext::Arg::Kind::BOOL
+                          ? (a.bool_val ? 1 : 0)
+                          : static_cast<int32_t>(a.long_val));
+    } else if (item != 0) {
+        kind = 1;
+    } else if (a.kind == CallContext::Arg::Kind::STRING) {
+        sval = a.string_val;
+    } else {
+        // zero-ref object / null: kind-2 empty value (documented null
+        // element representation on the shadow channel)
+    }
+}
+
 CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
@@ -348,6 +378,116 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 !sld_svc.empty()) {
                 return CallResult::not_handled();
             }
+        }
+    }
+
+    // ── LAW-B (CONT-18): ITERATOR WRITE-BACK LAW ─────────────────────────
+    // OpenJDK AbstractList.Itr / ListItr contracts for the WRITE faces of
+    // an iterator: ListIterator.set(Object) overwrites the lastReturned
+    // slot in the BACKING list; Iterator.remove() removes lastReturned
+    // (IllegalStateException when no element has been returned yet or when
+    // called twice without an intervening next/previous);
+    // ListIterator.add(Object) inserts at the cursor, advances the cursor
+    // past the new element, and invalidates lastReturned.
+    //
+    // The F-NEW-237 real-iterator box carries __iterator_parent__ (source
+    // identity) + __iterator_pos__ (cursor) — the read faces are kind-aware
+    // and real. The write faces had NO handler: ListIterator.set fell into
+    // the LIST set(index,item) arm (args!=2 -> silent handled_void),
+    // Iterator.remove was a silent no-op, ListIterator.add mutated the
+    // BOX's own (wrong) state — the fcol probe rows K2/K11/K12 divergences.
+    // Generic: keyed on the box marker field, never on a class name.
+    //
+    // lastReturned tracking: next()/previous() record the served index in
+    // __iterator_last_ret__ (box int field, -1 = none). Array-backed
+    // parents (Arrays.asList products) are read-only on this channel —
+    // write faces DECLINE for them (loud handled_void → next shadow),
+    // matching the documented read-only layering.
+    if (heap_ && (m == "set" || m == "remove" || m == "add")) {
+        uint32_t lawb_parent = 0;
+        bool lawb_box =
+            heap_->get_object_ref_field(obj_id, "__iterator_parent__",
+                                        lawb_parent) &&
+            lawb_parent != 0;
+        if (lawb_box) {
+            auto* pstate = get_or_create(lawb_parent);
+            if (!pstate->is_view && !pstate->elements.empty()) {
+                int32_t pos = 0;
+                int32_t last = -1;
+                heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
+                heap_->get_object_int_field(obj_id, "__iterator_last_ret__",
+                                            last);
+                if (m == "set") {
+                    if (ctx.args.empty())
+                        return CallResult::handled_void();
+                    if (last < 0 || last >= static_cast<int32_t>(
+                                             pstate->elements.size()))
+                        return CallResult::handled_exception(
+                            "Ljava/lang/IllegalStateException;",
+                            "ListIterator.set: no last returned element");
+                    uint32_t item = ctx.arg_as_object(0, 0);
+                    uint8_t kind = 2;
+                    int32_t ival = 0;
+                    std::string sval;
+                    lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+                    pstate->elements[last] = item;
+                    if (last < static_cast<int32_t>(pstate->elem_kinds.size()))
+                        pstate->elem_kinds[last] = kind;
+                    if (last <
+                        static_cast<int32_t>(pstate->elem_strings.size()))
+                        pstate->elem_strings[last] = sval;
+                    if (last < static_cast<int32_t>(pstate->elem_ints.size()))
+                        pstate->elem_ints[last] = ival;
+                    return CallResult::handled_void();
+                }
+                if (m == "remove") {
+                    if (last < 0 || last >= static_cast<int32_t>(
+                                             pstate->elements.size()))
+                        return CallResult::handled_exception(
+                            "Ljava/lang/IllegalStateException;",
+                            "Iterator.remove: no last returned element "
+                            "(double remove)");
+                    CallResult r = lawa_remove_index(*pstate, last);
+                    // JDK cursor law: cursor = lastRet after removal; the
+                    // next element shifts into that index.
+                    heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                last);
+                    heap_->set_object_int_field(obj_id,
+                                                "__iterator_last_ret__", -1);
+                    if (r.handled) return r;
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IllegalStateException;",
+                        "Iterator.remove: backing store shrank");
+                }
+                // m == "add" — insert at the cursor, all four stores in
+                // lockstep (same as the add(index,item) law).
+                if (!ctx.args.empty()) {
+                    uint32_t item = ctx.arg_as_object(0, 0);
+                    uint8_t kind = 2;
+                    int32_t ival = 0;
+                    std::string sval;
+                    lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+                    if (pos < 0) pos = 0;
+                    if (pos > static_cast<int32_t>(pstate->elements.size()))
+                        pos = static_cast<int32_t>(pstate->elements.size());
+                    pstate->elements.insert(pstate->elements.begin() + pos,
+                                            item);
+                    pstate->elem_kinds.insert(pstate->elem_kinds.begin() + pos,
+                                              kind);
+                    pstate->elem_strings.insert(
+                        pstate->elem_strings.begin() + pos, sval);
+                    pstate->elem_ints.insert(pstate->elem_ints.begin() + pos,
+                                             ival);
+                    heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                pos + 1);
+                    heap_->set_object_int_field(obj_id,
+                                                "__iterator_last_ret__", -1);
+                    return CallResult::handled_void();
+                }
+                return CallResult::handled_void();
+            }
+            // View-backed or empty-store iterators: DECLINE to the legacy
+            // faces (no behavior change this wave).
         }
     }
 
@@ -1494,6 +1634,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         } else {
             pos = static_cast<int32_t>(state->iterator_position);
         }
+        // LAW-B (CONT-18): lastReturned tracking — a next() that SERVES
+        // (any layer) returns element[pos]; every successful serve below
+        // advances the cursor, so recording pos here is exact for all
+        // serve paths and stale-safe for the null-at-end paths (their
+        // LAW-B remove() then hits the size bound -> ISE, JDK-honest).
+        if (is_box)
+            heap_->set_object_int_field(obj_id, "__iterator_last_ret__", pos);
         if (state->is_view) {
             if (pos < static_cast<int32_t>(state->view_elements.size())) {
                 const auto& el = state->view_elements[pos];
@@ -1692,6 +1839,11 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // shadow channel — the guarded call pattern (hasPrevious first)
         // never reaches it, same honesty law as next() out-of-range.
         if (pos <= 0) return CallResult::handled_null();
+        // LAW-B (CONT-18): lastReturned tracking — previous() serves
+        // element[pos-1] on every successful path below.
+        if (is_box)
+            heap_->set_object_int_field(obj_id, "__iterator_last_ret__",
+                                        pos - 1);
         int32_t idx = pos - 1;
         if (state->is_view) {
             if (idx < static_cast<int32_t>(state->view_elements.size())) {

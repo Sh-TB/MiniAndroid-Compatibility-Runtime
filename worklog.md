@@ -7260,3 +7260,18 @@ Work Log:
 Stage Summary:
 - Baseline LOCKED + pushed (012bd840), LAW-A implemented+tested+pushed. Zero drift at every checkpoint.
 - Standing queue: LAW-B (iterator write-back K2/K11/K12) next, then LAW-C..F one law = one fix cycle; then PHASE 2/3 (F-265 reclassification, F-217 root) per CONT18_TASK_LIST.md tasks 23-48.
+
+---
+Task ID: CONT-18-W10-LAWB
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — collection LAW-B (iterator write-back) implement/prove.
+
+Work Log:
+- LAW-B implemented: __iterator_last_ret__ box tracking (next/previous optimistic-exact record); ListIterator.set kind-aware write-through to parent; Iterator.remove via LAW-A shared helper + ISE on double-remove (JDK cursor law cursor=lastRet); ListIterator.add insert-at-cursor in 4 stores + cursor++ + lastRet=-1. Write faces decline for view/empty stores (read-only layering preserved).
+- T-03 probe-artifact corrections (OpenJDK ListItr source law): K12 previousIndex after add == 1 (old ==2 contradicted the contract); K2 nextIndex after previous() == 0 (same defect). Probe expectations fixed, NOT the runtime.
+- Proof: fcol 5/18 -> 8/18 (K2/K11/K12 PASS). Regression at f6e9cd7315c6c9f1: anchors 6/6 x3 byte-identical, f266 6/6, f259 7/7, f259g 12/13 honest, negatives 19/19, skill 13/13.
+- Registry F-NEW-264d evidence += LAW-B.
+
+Stage Summary:
+- 2 of 6 collection laws closed this wave (LAW-A, LAW-B), fcol 3/18 -> 8/18, zero drift at every checkpoint, all work pushed.
+- Standing queue: LAW-C (Java-8 default methods K13/K14/K16/K17/K18 — needs lambda/predicate invocation machinery check), LAW-D (deque order K4/K5), LAW-E (getOrDefault K6 face), LAW-F (subList/stream K3/K15); then PHASE 2/3: F-265 reclassification trace, F-217 waiter-resume root (tasks 23-48 in CONT18_TASK_LIST.md).
