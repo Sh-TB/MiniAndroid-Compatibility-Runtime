@@ -4,8 +4,9 @@ Status vocabulary: `IMPLEMENTED / TESTED / VERIFIED / OBSERVED / PARTIAL / BLOCK
 PENDING / DEFERRED / CLASSIFIED / REJECTED / SUPERSEDED / PROBE-BOUND`. No "DONE"
 without runtime evidence (constitution law).
 
-Baseline binary `a8761a482a186eac` → LAW-A binary `57a2612db3a70d39`. Full battery at
-baseline: **ALL PASS, zero drift** (`CONT18_BASELINE.md`).
+Baseline binary `a8761a482a186eac` → LAW-A `57a2612db3a70d39` → LAW-B `f6e9cd7315c6c9f1`.
+Full battery at baseline AND at both fix binaries: **ALL PASS, zero drift**
+(`CONT18_BASELINE.md`; anchors 18/18 byte-identical at every checkpoint).
 
 ## A. PHASE 0 — baseline
 
@@ -38,7 +39,7 @@ baseline: **ALL PASS, zero drift** (`CONT18_BASELINE.md`).
 | 13 | LAW-A real-APK exercise (T-06) | **VERIFIED** | opencalc ArrayList.remove ×19, dooz ×9 via shadow channel (REAL_DALVIK_INTERPRETER traces); byte-identical ×3 = behavior-preserving on coherent stores |
 | 14 | LAW-A 3-run proof (T-07) | **VERIFIED** | anchors ×3 + probe rows above |
 | 15 | LAW-A registry update | **IMPLEMENTED** | F-NEW-264d evidence += LAW-A (`cont18_registry_lawa.py`) |
-| 16 | LAW-B iterator write-back (K2 listIterator.set, K11 Iterator.remove+ISE, K12 ListIterator.add) | **PENDING** | audit doc table |
+| 16 | LAW-B iterator write-back (K2 listIterator.set, K11 Iterator.remove+ISE, K12 ListIterator.add) | **IMPLEMENTED+TESTED** | fcol 5/18→8/18; lastReturned box law; ISE double-remove; probe-artifact expectations corrected per OpenJDK ListItr (K2 nix==0, K12 pidx==1) |
 | 17 | LAW-C Java-8 default-method family (K13/K14/K16/K17/K18) | **PENDING** | one machinery, seven faces |
 | 18 | LAW-D deque order (K4 LinkedList head/tail, K5 ArrayDeque FIFO) | **PENDING** | |
 | 19 | LAW-E map-default/hash-view coherence (K6 getOrDefault, K9-contains face done via LAW-A) | **PARTIAL** | K9 PASS via LAW-A; getOrDefault face pending |
