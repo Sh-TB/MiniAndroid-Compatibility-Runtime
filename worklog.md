@@ -7082,3 +7082,29 @@ Stage Summary:
 - Two new generic runtime roots closed with probe+live evidence; the dooz composition now MATERIALIZES real destination nodes for the first time (tree 1→5+ nodes) — the directive's "identity before Compose" and "prove the object graph" discipline is what unblocked it (the re-invocation was never broken; the DATA the recomposed NavHost reads was).
 - Next wave owns the single remaining draw-path root: engage the compose layer drawContent → AndroidCanvas bridge so the materialized tree emits real canvas ops (the ladder already proved the native canvas is color-exact).
 - opencalc anchor change flagged honestly (retains REAL_APP_CONTENT).
+
+---
+Task ID: CONT-14-AUDIT
+Agent: Super Z (main)
+Task: CONT-14 AUDIT OF FRIEND'S F-NEW-271..277 FINDINGS — classify the 7 reported roots (real generic law / valid shim / app-specific / symptom suppression), audit the 55/100 claim, compare Telegram/Dooz/Janken/tictactoe states, re-check the "7 new roots" count, produce CONT-14_FRIEND_FINDINGS_AUDIT.md (17 sections).
+
+Work Log:
+- PHASE 0 baseline locked: HEAD e99c2fbd (CONT-10 W6); engine rebuilt from source (aed46450c103f2ea; link-env differs from recorded ea8827584f191dfa — behavior anchored instead); dooz APK 299eab21, tictactoe 760fe5ac, forkgram 3baeecb3; registry 566 roots (last IDs F-NEW-259/259b; generated 2026-10-04).
+- dooz baseline x3: anchor d602648e8e401895 x3 BYTE-IDENTICAL to the recorded canonical CONT-7..10 anchor (zero drift); verdict DEFAULT_BACKGROUND_ONLY, app_draw_ops=0, 6 uncaught = the known La; SETUP-phase cascade; stub census 5155446/1150/0/0.
+- F-NEW-271 AUDIT: REFUTED NON-ROOT — grep '"Lr;"' src/ = 0 hits; the engine's ctor-Context law is the generic F-031 AOSP View.mContext block (android_shadows.cpp:4421, first ctor Context arg captured for EVERY View subclass; dooz named in its doc-comment as the historical first hit); claimed defect absent from canonical tree, fix would be a no-op.
+- F-NEW-276 AUDIT (critical): INVALID — SYMPTOM SUPPRESSION. No LF/r;.c or Compose-error-helper suppression exists (grep: only AOSP PerformClick suppression + REAL_DALVIK synthetic-renderer suppression = the honesty law itself); dooz still reports 6 uncaught at HEAD (EXC-UNCAUGHT-TOP strict latch, F-016); exceptions 15->0 with 0 draw ops/0 px is the PHASE-9 lesson (exception count != compatibility).
+- F-NEW-277 AUDIT (critical): INVALID — forbidden matcher (R8 short-name) + no THROW-site suppression exists in the engine; ART process-death honesty + F-NEW-233 frame-truth are the opposite discipline.
+- F-NEW-272..275: UNVERIFIABLE — report content lost with the severed session; never registered (0/7 present in registry), no code/probe/evidence anywhere in the tree.
+- P0-B ID COLLISION PROVEN: canonical F-NEW-236 = JDK Set-Family (fairymahjong, f235_set_probe 14/14x3), NOT JNI slot binding; no JNI-slot root exists in the registry.
+- P0-C NOT INTEGRATED: 0 hits for FirebaseInitProvider/BillingController/GoogleApiAvailability/GmsClient in src/.
+- TELEGRAM live at HEAD: org.forkgram.classic LaunchActivity = REAL_APP_CONTENT, 11 draw ops, 117,133 app-owned px, real settings fragment (LowPowerEnabledTitle x2 = recorded overlap law + Disable action), 6 EXC-UNCAUGHT-TOP / 44 in-flight, deferred_ui_pending=True — advanced beyond s115's measured-but-not-painted, NOT login/chat-list; friend's counts unverifiable (its APK set not in tree).
+- JANKEN: recorded s107 pixels = C013 placeholder face "custom view (not rendered)" — placeholder-only, NOT real pixels (APK purged from container, re-supply pending).
+- TICTACTOE_EMMAUEL first divergence NAMED (not patched, per directive): F-NEW-219 NOT-RESOLVED GLSurfaceView20.setPreserveEGLContextOnPause reflection (AndroidGraphics.preserveEGLContextOnPause pc=34) -> NoSuchMethodException -> APP-BOUNDARY at AndroidLauncher.onCreate; parallel GdxRuntimeException at SharedLibraryLoader.loadFile + AndroidApplication.<clinit> (libgdx native-load family); RelativeLayout.addView REC-MISS face; verdict DEFAULT_BACKGROUND_ONLY, 9 uncaught, anchor b5a7a35d (pure default background). Handed to the next JNI wave.
+- CORPUS RETEST at HEAD: telegram REAL_APP_CONTENT(11)/gmdice REAL_APP_CONTENT(6, f3b483fe == recorded batch367 anchor)/dooz DEFAULT_BACKGROUND_ONLY(x3 honest)/tictactoe DEFAULT_BACKGROUND_ONLY(honest).
+- SCORE AUDIT: 55/100 REJECTED (no rubric/per-item evidence map); replaced with engine frame-truth verdicts + draw-op/pixel/exception counts + byte-identical anchors x3.
+- Registry: ZERO changes (audit-only; registering unevidenced IDs would inflate). Bookkeeping note: registry total=564 vs total_roots=566 stale counter flagged for the next registry-touching wave.
+- Artifacts: CONT-14_FRIEND_FINDINGS_AUDIT.md (17 sections, verdict table + success statement), evidence/cont14/cont14_audit_evidence.json, run/cont14/{dooz_baseline_x3.json, corpus_retest.json, dooz_base_run1..3/, tictactoe_emmanuel_run1/, telegram_forkgram_run1/, gmdice_run1/}, scripts/cont14_baseline.py, scripts/cont14_retest.py.
+
+Stage Summary:
+- REQUIRED SUCCESS STATEMENT: of the 7 reported roots, 0 real generic laws, 0 valid shims, 1 refuted non-root (271), 2 invalid symptom suppressions (276/277), 4 unverifiable (272-275); F-NEW-236-JNI = ID collision; Firebase/Billing = not integrated; 55/100 rejected (no rubric). None of the friend's roots are adopted; none registered.
+- Canonical truth unchanged and re-verified live: dooz = F-NEW-256 Compose draw-path root (AndroidCanvas bridge never constructed -> 0 ops) is the next highest-ROI root; tictactoe's freshly-named F-NEW-219+SharedLibraryLoader chain is the JNI wave's entry probe; Telegram now has REAL_APP_CONTENT pixels (recorded-lineage achievement) with layout face remaining.
