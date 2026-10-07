@@ -833,6 +833,31 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
         // List: get(index) → element (R-NEW-464: kind-2 string fidelity)
         int32_t idx = ctx.arg_as_int(0, -1);
+        // ── F-NEW-259g-a: JDK LIST GET RANGE LAW (CONT-16) ──────────────
+        // OpenJDK ArrayList.get/LinkedList.get → rangeCheck(index):
+        //   index < 0 || index >= size → IndexOutOfBoundsException
+        //   ("Index: N, Size: S"). AbstractList$Itr.next() RELIES on the
+        //   concrete get() to bound the walk (f259g probe row K: size()
+        //   = 4 through the inherited salt field, backing size 2 → the
+        //   extra get(2)/get(3) MUST throw — the old channel answered
+        //   null and the iterator walked 4 iterations, masking the law).
+        // Authoritative size mirrors the size() law: the shadow store
+        // when non-empty, else the engine array-fields store
+        // (__array_length__ — the F-101/Arrays.asList convention).
+        {
+            int32_t eff_size = static_cast<int32_t>(state->elements.size());
+            if (state->elements.empty() && heap_) {
+                int32_t alen = 0;
+                if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
+                    eff_size = alen;
+            }
+            if (idx < 0 || idx >= eff_size) {
+                return CallResult::handled_exception(
+                    "Ljava/lang/IndexOutOfBoundsException;",
+                    "Index: " + std::to_string(idx) +
+                        ", Size: " + std::to_string(eff_size));
+            }
+        }
         // ── F-NEW-237b: engine-array-backed fallback — serve the element
         // from the heap "array[i]" store (Arrays.asList / F-101 products)
         // when the shadow state is empty (see the size() law).

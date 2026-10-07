@@ -7172,3 +7172,56 @@ Stage Summary:
 - The GitHub lineage is now unified in one tree: CONT-11 (external-runtime REJECTED, F-NEW-265 re-root, 264c proven) and CONT-12 (TEST-ONLY real-Compose oracle, F-NEW-266 FIXED, 266a honest) merged with the CONT-14 audit; the rebuilt binary byte-matches CONT-12's own record.
 - FINAL RECONCILIATION ANSWER: friend reusable semantic roots = 0; valid shims accepted = 0; already solved by CONT-9..12 = 271 + 276's symptom area + deep-Compose conclusion + six-game claim; duplicates = "F-NEW-236 JNI" (ID collision) + 276/277 (suppression family) + 271 (F-031); symptom suppression = 276/277 INVALID; unproven = 272/273/274/275 + unknown 267/268 (UNVERIFIABLE until re-supply). The one real generic root of this era (F-NEW-266) is canonical, probed 5/6 live, and preserved.
 - Single highest-ROI next root: F-NEW-265 (Lm7.<init> null-text CharSequence from Lvs0.c -> measure dies -> isPlaced=false -> 0 content ops) — every-Compose-family impact, instruction-level first divergence already proven.
+
+---
+Task ID: CONT-16-FIX-BATCH
+Agent: Super Z (main)
+Task: user directive — "pick the remaining ~50, make each a small task, solve many small
+problems instead of one big one." GitHub lineage consumption (#375/#379/#380 HTML bodies,
+API rate-limited) + 52-task backlog + first fix batch (3 roots) + full regression.
+
+Work Log:
+- PHASE 0 GitHub: API rate-limited (recorded); HTML fetch works — scripts/cont16_fetch_issues.py
+  (div-depth extractor) pulled full bodies of #375/#379/#380 into evidence/cont16/github_issues.json.
+  All three are consumed directives; #375 §3 carried partials (R-NEW-464 CLOSED, ViewPager
+  identity gate, F-NEW-221, Fragment host A/B, F-NEW-084 cap) mapped into backlog tasks.
+- Backlog: evidence/cont16/CONT16_TASK_BACKLOG.md — 52 bounded tasks T-01..T-52 in six
+  families (F-NEW-265 arms, 264d six laws, #375 partials, stale-status sweep, OBSERVED-FAIL
+  attributions, OPEN single-faces). Open rows 235 → 231 after this wave.
+- FIX 1 (F-NEW-266a) two layers: f141_is_null_receiver INT32-0 arm (const/4 0 = the
+  universal null materialization; registers are UNTYPED in DEX — the verifier guarantees
+  an instance-invoke receiver slot is callee-class-or-null) + null-receiver gate at the
+  top of try_interface_default_invoke before the memo (NPE is a receiver property).
+  Verified all 5 gate sites are receiver slots; invoke-static/range already excluded.
+- FIX 2 (F-NEW-259g-a): GENERIC SHADOW EXCEPTION CHANNEL — CallResult is_exc/exc_class/
+  exc_msg + handled_exception factory + conversion at the three try_shadow_dispatch sites
+  (pass-1/pass-2/hierarchy) via throw_deferred; CollectionShadow list get() enforces the
+  OpenJDK range law ("Index: N, Size: S") with size mirroring the size() law (shadow store
+  else __array_length__).
+- FIX 3 (F-NEW-259g-b): Ljava/util/Vector; claimed by CollectionShadow — the generic F-237
+  iterator-box law now mints real boxes over the F-NEW-246 array store; F-NEW-246 keeps
+  precedence (bridge_to_api order). Honest probe note: row L still reports threw=false —
+  its ISE expectation contradicts F-068 most-derived dispatch (NoSlots defines its own
+  iterator(); an empty Vector iterates zero elements on real Android too). NPE (the
+  registered finding) GONE. No suppression anywhere.
+- Builds: aed46450→(fix batch 1) fa3309803b13fd29→(null-arm) a8761a482a186eac, foreground
+  timeout-bounded make -j2 both times.
+- Probes: pre-fix state preserved (run/cont16_prefix: f266 5/6, f259g 11/13 — exactly the
+  registered rows). Post-fix: f266 6/6 (D flipped NPE=true r4=0); f259g 12/13 (K flipped
+  n=2 k1,k2; L honest); f259 7/7; fcol 3/18 UNCHANGED (K7/K8/K10; zero regression from the
+  exception channel + range law). Scripts: scripts/cont16_probe_run.py.
+- Regression at a8761a482a186eac: anchors 6/6 x3 BYTE-IDENTICAL (dooz d602648e, microtimer
+  da73010a, unote 4f1a9e4e, gmdice f3b483fe, opencalc a976d2f9, chess b5a7a35d — chess
+  package corrected jwtc.android.chess from the stale jp.sblo row); negatives 19/19;
+  skill 13/13. Script: scripts/cont16_regression.sh.
+- Registry: 266a/259g-a/259g-b → ROOT-CAUSED-FIXED with full law text + probe rows;
+  status_counts refreshed; F-NEW-264d re-verified unchanged. scripts/cont16_registry_update.py.
+
+Stage Summary:
+- 3 roots closed this wave (231 open remain), zero native drift on 6 anchors x3, all
+  probe suites green or honestly unchanged.
+- The shadow exception channel is the wave's reusable infrastructure: shadows can now
+  THROW per JDK/ART law instead of answering silent null/bool — unblocks the 264d six-law
+  queue and every future range/format law.
+- Next: T-01..T-03 (F-NEW-265 arms, the P0), then 264d laws one at a time; the backlog is
+  the standing queue for subsequent waves.

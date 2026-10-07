@@ -5666,6 +5666,24 @@ bool DalvikExecutionEngine::try_interface_default_invoke(
     if (!dex_report_) return false;
     if (method_descriptor.empty()) return false;
 
+    // ── F-NEW-266a (CONT-16): ART NULL-RECEIVER LAW on the default-method
+    // route. A typed-null receiver must throw NullPointerException AT THE
+    // CALL SITE, before ANY callee body runs (ART interpreter law — the
+    // same F-141 gate the generic invoke-interface path enforces before
+    // its dispatch walk). The default-method route bypassed that gate: the
+    // resolution/memo machinery below is a property of the METHOD REF, so
+    // it dispatched the default body for a null receiver (probe face:
+    // fixtures/f266_probe row D — OtherDefI.other() on a typed null
+    // answered without NPE). The gate must precede the memo lookup: NPE is
+    // a receiver property, not a resolution property.
+    if (!args.empty() && f141_is_null_receiver(args[0])) {
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to invoke interface method '" + receiver_class +
+                           "." + method_name + "' on a null object reference",
+                       "f266a-null-recv");
+        return true;
+    }
+
     // Memo key: method ref identity (class.name + proto). The receiver's
     // runtime class does NOT participate: the resolution result is a
     // property of the method ref and the implementing interface, and the
@@ -22863,6 +22881,17 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                   << std::endl;
     }
     if (cr.handled) {
+        // ── F-NEW-259g-a: SHADOW EXCEPTION CHANNEL (conversion) ──────────
+        // A shadow-detected JDK/ART contract violation (e.g. ArrayList.get
+        // range law) becomes a deferred throw at THIS call site — the same
+        // semantics as the engine-side F-141/F-036 throw_deferred laws.
+        // ART: the exception surfaces at the invoking frame's call site;
+        // the catch-handler redirect resolves at the interpreter boundary.
+        if (cr.is_exc) {
+            throw_deferred(cr.exc_class, cr.exc_msg, "SHADOW-EXC");
+            result = DalvikValue::make_void();
+            return true;
+        }
         switch (cr.status) {
             case framework::ApiCallStatus::IMPLEMENTED:
                 status = ApiCallTrace::Status::IMPLEMENTED; break;
@@ -22890,6 +22919,12 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         !args[0].class_desc.empty() && args[0].class_desc != class_name) {
         cr = shadow_registry_->dispatch(build_ctx(args[0].class_desc));
         if (cr.handled) {
+            // F-NEW-259g-a: shadow exception channel (pass-2 conversion).
+            if (cr.is_exc) {
+                throw_deferred(cr.exc_class, cr.exc_msg, "SHADOW-EXC");
+                result = DalvikValue::make_void();
+                return true;
+            }
             switch (cr.status) {
                 case framework::ApiCallStatus::IMPLEMENTED:
                     status = ApiCallTrace::Status::IMPLEMENTED; break;
@@ -22950,6 +22985,12 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                              args[0].type == DalvikType::OBJECT_REF
                              ? args[0].class_desc : std::string("-"))
                           << ")" << std::endl;
+                // F-NEW-259g-a: shadow exception channel (hierarchy walk).
+                if (cr3.is_exc) {
+                    throw_deferred(cr3.exc_class, cr3.exc_msg, "SHADOW-EXC");
+                    result = DalvikValue::make_void();
+                    return true;
+                }
                 switch (cr3.status) {
                     case framework::ApiCallStatus::IMPLEMENTED:
                         status = ApiCallTrace::Status::IMPLEMENTED; break;
