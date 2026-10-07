@@ -1327,6 +1327,27 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "remove") {
         auto* state = get_or_create(obj_id);
+        // LAW-E DIAG (CONT-18, bounded): Map.remove dispatch visibility —
+        // fcol K6 face: remove(Object) after put(Object) left the stale
+        // value reachable via get() (got=@33). This shows whether the map
+        // law is reached, with the receiver identity, derived key and
+        // both stores' occupancy at the moment of dispatch.
+        {
+            static thread_local uint64_t lawe_rem = 0;
+            if (state->is_map && lawe_rem < 40) {
+                ++lawe_rem;
+                std::string lawe_key = ctx.args.empty()
+                                           ? std::string()
+                                           : map_key_value_law(ctx, 0, heap_);
+                std::cerr << "[F089-REMOVE] map=" << obj_id
+                          << " cls=" << ctx.class_name
+                          << " key=\"" << lawe_key << "\""
+                          << " obj_entries=" << state->map_entries.size()
+                          << " str_entries=" << state->map_string_entries.size()
+                          << " caller=" << ctx.class_name << "." << ctx.method
+                          << std::endl;
+            }
+        }
         // ── F-063 (R-NEW-287): java.util.Map.remove(Object key) law ────────
         // OpenJDK (java.util.Map#remove): removes the mapping for the key
         // IF PRESENT and returns the previous value (null when absent). A

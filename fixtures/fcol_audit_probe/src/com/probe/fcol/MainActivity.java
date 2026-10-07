@@ -135,13 +135,20 @@ public class MainActivity extends Activity {
         try {
             Map<String, Integer> m = new HashMap<String, Integer>();
             m.put("a", 1); m.put("b", 2);
-            boolean ok = Integer.valueOf(1).equals(m.get("a"))
-                && m.containsKey("b") && m.size() == 2;
+            boolean g = Integer.valueOf(1).equals(m.get("a"));
+            boolean ck = m.containsKey("b");
+            int sz = m.size();
             m.remove("a");
-            ok &= m.get("a") == null && m.size() == 1;
+            String got = String.valueOf(m.get("a"));
+            int sz2 = m.size();
+            boolean remOk = m.get("a") == null && m.size() == 1;
             Integer def = m.getOrDefault("zz", 42);
-            ok &= def != null && def.intValue() == 42;
-            row("K6", ok, "hashmap ok=" + ok);
+            boolean defOk = def != null && def.intValue() == 42;
+            boolean ok = g && ck && sz == 2 && remOk && defOk;
+            row("K6", ok, "g=" + g + " ck=" + ck + " sz=" + sz
+                + " remOk=" + remOk + " defOk=" + defOk
+                + (def != null ? " def=" + def : " def=null")
+                + " got=" + got + " sz2=" + sz2);
         } catch (Throwable t) { row("K6", false, "threw " + t); }
 
         // ── K7: HashMap keySet/entrySet iteration ───────────────────────
