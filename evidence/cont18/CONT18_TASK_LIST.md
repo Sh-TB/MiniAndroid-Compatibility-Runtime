@@ -4,7 +4,7 @@ Status vocabulary: `IMPLEMENTED / TESTED / VERIFIED / OBSERVED / PARTIAL / BLOCK
 PENDING / DEFERRED / CLASSIFIED / REJECTED / SUPERSEDED / PROBE-BOUND`. No "DONE"
 without runtime evidence (constitution law).
 
-Baseline binary `a8761a482a186eac` → LAW-A `57a2612db3a70d39` → LAW-B `f6e9cd7315c6c9f1` → LAW-D `755774469a200f8b`.
+Baseline binary `a8761a482a186eac` → LAW-A `57a2612db3a70d39` → LAW-B `f6e9cd7315c6c9f1` → LAW-D `755774469a200f8b` → final `d762aa0f03d2ab0a` (+ LAW-E bounded diag).
 Full battery at baseline AND at every fix binary: **ALL PASS, zero drift**
 (`CONT18_BASELINE.md`; anchors 18/18 byte-identical at every checkpoint).
 
@@ -42,7 +42,7 @@ Full battery at baseline AND at every fix binary: **ALL PASS, zero drift**
 | 16 | LAW-B iterator write-back (K2 listIterator.set, K11 Iterator.remove+ISE, K12 ListIterator.add) | **IMPLEMENTED+TESTED** | fcol 5/18→8/18; lastReturned box law; ISE double-remove; probe-artifact expectations corrected per OpenJDK ListItr (K2 nix==0, K12 pidx==1) |
 | 17 | LAW-C Java-8 default-method family (K13/K14/K16/K17/K18) | **PENDING** | one machinery, seven faces |
 | 18 | LAW-D deque order (K4 LinkedList head/tail, K5 ArrayDeque FIFO) | **IMPLEMENTED+TESTED** | fcol 8/18→10/18 at 755774469a200f8b; kind-aware addFirst/addLast/peek/poll/removeFirst/Last + ArrayDeque added to handles_class (was entirely absent) |
-| 19 | LAW-E map-default/hash-view coherence (K6 getOrDefault, K9-contains face done via LAW-A) | **PARTIAL** | K9 PASS via LAW-A; getOrDefault face pending |
+| 19 | LAW-E map-default/hash-view coherence (K6 getOrDefault, K9-contains face done via LAW-A) | **BLOCKED→FRONTIER-SCOPED** | K6 decomposed: Map.remove no-op + getOrDefault null; shadow law never reached (F089-REMOVE diag 0 hits); virtual-rewritten iface calls (invocation_type=virtual, class Ljava/util/Map;) lose receiver identity — execute_invoke_virtual bridge scope for next wave |
 | 20 | LAW-F subList view (K3) + stream family (K15) | **PENDING** | |
 | 21 | AbstractCollection.toString face (K14 detail shows `@hash`) | **PENDING** | recorded as LAW-C sub-face |
 | 22 | LAW-B..F each: implement → fcol row → anchors ×3 → negatives (one law = one fix cycle) | **PENDING** | standing queue, one at a time |
