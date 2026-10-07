@@ -60,11 +60,19 @@ public class MainActivity extends Activity {
             List<String> l = new ArrayList<String>();
             l.add("a"); l.add("b"); l.add("c");
             l.set(1, "B");
-            boolean ok = "B".equals(l.get(1)) && l.indexOf("B") == 1
-                && l.contains("c") && !l.isEmpty() && l.size() == 3;
+            // CONT-18 T-03: self-decomposing detail — each conjunct is its
+            // own fact so a compound ok=false is never opaque again.
+            boolean g1 = "B".equals(l.get(1));
+            int ix = l.indexOf("B");
+            boolean cx = l.contains("c");
+            boolean nemp = !l.isEmpty();
+            int sz = l.size();
             l.remove(1);
-            ok &= "c".equals(l.get(1)) && l.size() == 2;
-            row("K1", ok, "set/remove/indexOf/contains ok=" + ok);
+            boolean g2 = "c".equals(l.get(1));
+            int sz2 = l.size();
+            boolean ok = g1 && ix == 1 && cx && nemp && sz == 3 && g2 && sz2 == 2;
+            row("K1", ok, "g1=" + g1 + " ix=" + ix + " cx=" + cx
+                + " nemp=" + nemp + " sz=" + sz + " g2=" + g2 + " sz2=" + sz2);
         } catch (Throwable t) { row("K1", false, "threw " + t); }
 
         // ── K2: listIterator set/add/previous ───────────────────────────
