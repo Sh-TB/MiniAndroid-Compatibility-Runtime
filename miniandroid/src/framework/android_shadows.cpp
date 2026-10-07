@@ -285,6 +285,48 @@ static std::string map_key_value_law(const CallContext& ctx, size_t i,
     return ctx.arg_as_string(i);
 }
 
+// ── LAW-A (CONT-18): KIND-FAITHFUL REMOVE-BY-INDEX (shared) ─────────────
+// OpenJDK ArrayList.remove(int) fastRemove()s the ONE backing array and
+// returns the removed element. MiniAndroid's CollectionState models that
+// single array as FOUR parallel stores (elements/elem_kinds/elem_strings/
+// elem_ints — the R-NEW-464/F-NEW-238 fidelity laws). Two intercept sites
+// in CollectionShadow::dispatch serve remove(int) (the deque-family early
+// block and the List remove block); BOTH must move all four stores in
+// lockstep and serve the removed element kind-faithfully. Pre-LAW-A the
+// deque-site erased only `elements` — remove(1) on [a,b,c] left
+// strings=["a","B","c"] and kinds=[2,2,2] behind → get(1) served the
+// STALE "B" (fcol probe K1 g2=false; live trace run/cont18/k1trace3).
+static CallResult lawa_remove_index(CollectionShadow::CollectionState& st,
+                                    int32_t idx) {
+    if (idx < 0 || static_cast<size_t>(idx) >= st.elements.size())
+        return CallResult::not_handled();
+    uint32_t removed = st.elements[idx];
+    uint8_t rk = idx < static_cast<int32_t>(st.elem_kinds.size())
+                     ? st.elem_kinds[idx]
+                     : (removed != 0 ? uint8_t{1} : uint8_t{2});
+    std::string rs = idx < static_cast<int32_t>(st.elem_strings.size())
+                         ? st.elem_strings[idx]
+                         : std::string();
+    int32_t ri = idx < static_cast<int32_t>(st.elem_ints.size())
+                     ? st.elem_ints[idx]
+                     : 0;
+    st.elements.erase(st.elements.begin() + idx);
+    if (idx < static_cast<int32_t>(st.elem_kinds.size()))
+        st.elem_kinds.erase(st.elem_kinds.begin() + idx);
+    if (idx < static_cast<int32_t>(st.elem_strings.size()))
+        st.elem_strings.erase(st.elem_strings.begin() + idx);
+    if (idx < static_cast<int32_t>(st.elem_ints.size()))
+        st.elem_ints.erase(st.elem_ints.begin() + idx);
+    // Kind-faithful removed-element serve (OpenJDK returns the element
+    // itself — for a List<String> that is the string, for List<Integer>
+    // the unboxed int law flows through the caller's check-cast).
+    if (rk == 3) return CallResult::handled_int(ri);
+    if (rk == 2) return CallResult::handled_string(rs);
+    if (removed != 0)
+        return CallResult::handled_object(removed, "Ljava/lang/Object;");
+    return CallResult::handled_null();
+}
+
 CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
@@ -1027,12 +1069,12 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 ctx.class_name != "Ljava/util/HashSet;" &&
                 ctx.class_name != "Ljava/util/LinkedHashSet;") {
                 int32_t idx = ctx.args[0].int_val;
-                if (idx >= 0 && (size_t)idx < state->elements.size()) {
-                    uint32_t removed = state->elements[idx];
-                    state->elements.erase(state->elements.begin() + idx);
-                    return CallResult::handled_object(removed,
-                                                      "Ljava/lang/Object;");
-                }
+                // LAW-A (CONT-18): the shared kind-faithful 4-store
+                // remove — the deque-site pre-LAW-A erase desynced the
+                // parallel stores (fcol K1 g2=false divergence).
+                CallResult r = lawa_remove_index(*state, idx);
+                if (r.handled)
+                    return r;
                 // AOSP: index out of range → IndexOutOfBoundsException;
                 // the shadow channel has no exception kind yet — loud bool
                 // false, never a silent success.
@@ -1135,16 +1177,23 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // List receiver: remove(int index) → removed element (OpenJDK
         // returns it; previously void was returned — callers that consume
         // the element got garbage). Out-of-range: no mutation.
+        //
+        // ── LAW-A (CONT-18): PARALLEL-STORE COHERENCE LAW ───────────────
+        // OpenJDK ArrayList.remove(int) fastRemove()s the SINGLE backing
+        // array. MiniAndroid's shadow models that one array as FOUR
+        // parallel stores (elements/elem_kinds/elem_strings/elem_ints —
+        // the R-NEW-464/F-NEW-238 fidelity laws). The pre-LAW-A code
+        // erased ONLY elements: after remove(1) on [a,b,c] the kind/
+        // string/int stores kept 3 rows → get(1) served the STALE
+        // strings[1]="B" instead of "c" (fcol probe K1 first divergence,
+        // live trace run/cont18/k1trace). Coherence law: a writer moves
+        // all four stores in lockstep, a reader resolves kind-aware.
         if (ctx.args.size() >= 1) {
             int32_t idx = ctx.arg_as_int(0, -1);
-            if (idx >= 0 && (size_t)idx < state->elements.size()) {
-                uint32_t removed = state->elements[idx];
-                state->elements.erase(state->elements.begin() + idx);
-                if (removed != 0) {
-                    return CallResult::handled_object(removed,
-                                                       "Ljava/lang/Object;");
-                }
-            }
+            // LAW-A (CONT-18): the shared kind-faithful 4-store remove.
+            CallResult r = lawa_remove_index(*state, idx);
+            if (r.handled)
+                return r;
         }
         return CallResult::handled_void();
     }
@@ -1197,6 +1246,35 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         const auto& app_eq = CollectionShadow::app_equals_slot();
         for (size_t ei = 0; ei < state->elements.size(); ++ei) {
             uint32_t e = state->elements[ei];
+            // ── LAW-A (CONT-18): kind-aware slot resolution — kind-2/3
+            // elements carry their value in the PARALLEL stores
+            // (elem_strings/elem_ints) with elements[ei]==0 by design
+            // (R-NEW-464/F-NEW-238). The pre-LAW-A loop compared only the
+            // heap object id, so contains("c") on a List<String> answered
+            // FALSE for content-present lists (fcol K1 divergence).
+            // OpenJDK contains = o.equals(elementData[ei]) regardless of
+            // which store holds the element's value.
+            if (item.kind == CallContext::Arg::Kind::STRING &&
+                ei < state->elem_kinds.size() &&
+                state->elem_kinds[ei] == 2 &&
+                ei < state->elem_strings.size() &&
+                state->elem_strings[ei] == item.string_val)
+                return CallResult::handled_bool(true);
+            if ((item.kind == CallContext::Arg::Kind::INT ||
+                 item.kind == CallContext::Arg::Kind::BOOL ||
+                 item.kind == CallContext::Arg::Kind::LONG) &&
+                ei < state->elem_kinds.size() &&
+                state->elem_kinds[ei] == 3 &&
+                ei < state->elem_ints.size()) {
+                int32_t want =
+                    item.kind == CallContext::Arg::Kind::INT
+                        ? item.int_val
+                        : (item.kind == CallContext::Arg::Kind::BOOL
+                               ? (item.bool_val ? 1 : 0)
+                               : static_cast<int32_t>(item.long_val));
+                if (state->elem_ints[ei] == want)
+                    return CallResult::handled_bool(true);
+            }
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
                 item.object_id != 0 && e == item.object_id)
                 return CallResult::handled_bool(true);
@@ -1215,6 +1293,104 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
         }
         return CallResult::handled_bool(false);
+    }
+
+    // ── LAW-A (CONT-18): indexOf/lastIndexOf REAL HANDLER ────────────────
+    // OpenJDK ArrayList.indexOf(Object o)/lastIndexOf(Object o):
+    //   first/last index i with o.equals(elementData[i]); -1 when absent.
+    // The shadow channel previously had NO handler for either — the
+    // generic-stub answer served a divergence (fcol probe K1:
+    // indexOf("B") on a 3-element list failed the row). Reader side of
+    // the PARALLEL-STORE COHERENCE LAW: kind-aware scan — kind-2 slots
+    // compare string content, kind-3 slots compare int values, kind-1
+    // slots compare object ids (plus the F-NEW-236d app-equals resolver
+    // when installed). NULL_REF arg matches kind-0/zero slots (null
+    // elements). Layering identical to contains/get: the heap "array[i]"
+    // store is consulted when the shadow store is empty (Arrays.asList /
+    // F-101 engine products).
+    if (m == "indexOf" || m == "lastIndexOf") {
+        auto* state = get_or_create(obj_id);
+        if (!state->is_map && !ctx.args.empty()) {
+            const CallContext::Arg& a0 = ctx.args[0];
+            const bool from_back = (m == "lastIndexOf");
+            int32_t n = static_cast<int32_t>(state->elements.size());
+            auto match_at = [&](int32_t i) -> bool {
+                uint8_t k = i < static_cast<int32_t>(state->elem_kinds.size())
+                                ? state->elem_kinds[i]
+                                : (state->elements[i] != 0 ? uint8_t{1}
+                                                           : uint8_t{0});
+                switch (a0.kind) {
+                case CallContext::Arg::Kind::STRING:
+                    if (k == 2 &&
+                        i < static_cast<int32_t>(state->elem_strings.size()) &&
+                        state->elem_strings[i] == a0.string_val)
+                        return true;
+                    if (k == 1 && state->elements[i] != 0 && heap_) {
+                        std::string es;
+                        if (heap_->get_object_string_field(
+                                state->elements[i], "__string_value__", es) &&
+                            es == a0.string_val)
+                            return true;
+                    }
+                    return false;
+                case CallContext::Arg::Kind::INT:
+                case CallContext::Arg::Kind::BOOL:
+                case CallContext::Arg::Kind::LONG: {
+                    if (k != 3)
+                        return false;
+                    int32_t want =
+                        a0.kind == CallContext::Arg::Kind::INT
+                            ? a0.int_val
+                            : (a0.kind == CallContext::Arg::Kind::BOOL
+                                   ? (a0.bool_val ? 1 : 0)
+                                   : static_cast<int32_t>(a0.long_val));
+                    return i < static_cast<int32_t>(state->elem_ints.size()) &&
+                           state->elem_ints[i] == want;
+                }
+                case CallContext::Arg::Kind::OBJECT: {
+                    if (a0.object_id == 0)
+                        return false;
+                    if (state->elements[i] == a0.object_id)
+                        return true;
+                    const auto& app_eq = CollectionShadow::app_equals_slot();
+                    return k == 1 && state->elements[i] != 0 && app_eq &&
+                           app_eq(state->elements[i], a0.object_id);
+                }
+                case CallContext::Arg::Kind::NULL_REF:
+                    return k != 1 && state->elements[i] == 0;
+                default:
+                    return false;
+                }
+            };
+            for (int32_t step = 0; step < n; ++step) {
+                int32_t i = from_back ? (n - 1 - step) : step;
+                if (match_at(i)) return CallResult::handled_int(i);
+            }
+            // Heap array-backed fallback (engine-materialized lists).
+            if (n == 0 && heap_) {
+                int32_t alen = 0;
+                if (heap_->get_object_array_length(obj_id, alen) && alen >= 0) {
+                    for (int32_t step = 0; step < alen; ++step) {
+                        int32_t i = from_back ? (alen - 1 - step) : step;
+                        if (a0.kind == CallContext::Arg::Kind::STRING) {
+                            std::string s;
+                            if (heap_->get_object_array_string_element(
+                                    obj_id, static_cast<size_t>(i), s) &&
+                                s == a0.string_val)
+                                return CallResult::handled_int(i);
+                        } else if (a0.kind == CallContext::Arg::Kind::OBJECT &&
+                                   a0.object_id != 0) {
+                            uint32_t e = 0;
+                            if (heap_->get_object_array_ref_element(
+                                    obj_id, static_cast<size_t>(i), e) &&
+                                e == a0.object_id)
+                                return CallResult::handled_int(i);
+                        }
+                    }
+                }
+            }
+            return CallResult::handled_int(-1);
+        }
     }
 
     if (m == "iterator") {
@@ -1914,9 +2090,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 static thread_local uint64_t f238_set_diag = 0;
                 bool f238_dropped =
                     idx < 0 || (size_t)idx >= state->elements.size();
-                bool f238_poison = (item == 0 && kind != 3) &&
-                    ctx.args[1].kind != CallContext::Arg::Kind::NULL_REF &&
-                    ctx.args[1].kind != CallContext::Arg::Kind::INT;
+                // LAW-A (CONT-18): kind-2 with a STRING arg is the DESIGNED
+                // string-element representation (value lives in
+                // elem_strings; item==0 is correct there). The old
+                // predicate flagged every legal string write as POISON
+                // (fcol K1 live trace: arg_kind=5 POISON on a valid
+                // set(1,"B")). Real poison = a kind-2 slot written from a
+                // non-string, non-null arg — the value silently collapses
+                // to "" (the fairymahjong F-NEW-238 face).
+                bool f238_poison = (item == 0 && kind == 2 && sval.empty()) &&
+                    ctx.args[1].kind != CallContext::Arg::Kind::STRING &&
+                    ctx.args[1].kind != CallContext::Arg::Kind::NULL_REF;
                 if ((f238_dropped || f238_poison) && f238_set_diag < 24) {
                     ++f238_set_diag;
                     int32_t f238_alen = -1;

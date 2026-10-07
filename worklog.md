@@ -7244,3 +7244,19 @@ Stage Summary:
 - 78 of 100 numbered tasks executed with per-task evidence (0-55 fully, 56-77 honest census; pushes incremental through 29bbf2ad).
 - Remaining queue: 78-85 (264d six collection laws, engine batch with LAW-A..F one law = one fix + fcol regression), 86-91 (F-NEW-265 arms — the deferred P0), 98-99 (L/M push + final report).
 - Zero drift all waves: anchors 6/6 x3 byte-identical at every checkpoint; no app-specific code; no suppression; all claims runtime- or source-cited.
+
+---
+Task ID: CONT-18-W10-LAWA
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — PHASE 0 baseline lock + collection LAW-A (parallel-store coherence) implement/prove.
+
+Work Log:
+- T-01 baseline at recorded CONT-17 binary a8761a482a186eac (brief's e752b6d9c669558a NOT-FOUND-IN-REPO, recorded honestly): anchors 6/6 x3 byte-identical, Telegram 2/3 REAL_APP_CONTENT (run2 = 120s wall-cap flake), f266 6/6, f259 7/7, f259g 12/13 honest, fcol 3/18, negatives 19/19, skill 13/13, f084 spin probe HALT-50001 deferred-VME reproduced. 3 env restorations evidence-pinned: DroidSansMono.ttf+NOTICE re-added to tracking (deleted by 46f56737 while engine/tests require it; SHA db19a1fd..c862 verified), external HelloWorldSelfAware fixture+ref refetched = frozen SHAs, resource_trace rebuilt (stale numbered resume-cache had skipped its build). Battery ALL PASS.
+- T-02/T-03/T-04: six-law reconstruction table; bundled-java.util double-bookkeeping hypothesis REFUTED for fcol.apk (no java/util entries); K1 decomposed live (g1=true ix=-1 cx=false g2=false pre-fix).
+- LAW-A implemented (4 edits, generic): shared kind-faithful lawa_remove_index (both remove(int) intercept sites — the deque-site early intercept was the K1 killer), contains kind-aware slot compare, NEW indexOf/lastIndexOf real handler, F-238-SET diag predicate fix.
+- Proof: fcol 3/18 -> 5/18 (K1+K9 PASS, K7/K8/K10 unchanged); f266 6/6; f259 7/7; f259g 12/13 honest; anchors 6/6 x3 byte-identical at 57a2612db3a70d39; negatives 19/19; skill 13/13. Real-APK exercise: opencalc ArrayList.remove x19 + dooz x9 via shadow channel, byte-identical x3 (behavior-preserving on coherent stores).
+- Registry: F-NEW-264d evidence += LAW-A (umbrella stays REGISTERED; LAW-B..F pending). fcol probe K1 detail self-decomposing (honesty upgrade).
+
+Stage Summary:
+- Baseline LOCKED + pushed (012bd840), LAW-A implemented+tested+pushed. Zero drift at every checkpoint.
+- Standing queue: LAW-B (iterator write-back K2/K11/K12) next, then LAW-C..F one law = one fix cycle; then PHASE 2/3 (F-265 reclassification, F-217 root) per CONT18_TASK_LIST.md tasks 23-48.
