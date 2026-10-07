@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://android.googlesource.com",
+    "name": "dalvik/src/main/java/dalvik/system/VMDebug.java",
+    "snippet": "Start an ART trace of executed dex methods that execute longer than a set threshold. * The threshold is defined by ART and isn't configurable.",
+    "host_name": "android.googlesource.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://softwareengineering.stackexchange.com",
+    "name": "Functional Languages that compile to Android's Dalvik VM?",
+    "snippet": "Mar 29, 2011 — Closed. This question needs to be more focused. It is not currently accepting answers.             Want to improve this question? Guide the asker to update ...",
+    "host_name": "softwareengineering.stackexchange.com",
+    "rank": 1,
+    "date": "Mar 29, 2011",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.scribd.com",
+    "name": "Dalvik VM Debugger Overview | PDF | Virtual Machine",
+    "snippet": "This document describes a Dalvik VM debugger extension for Lauterbach's TRACE32 tool. The extension provides commands to: 1. List running Dalvik VM threads ... Read more",
+    "host_name": "www.scribd.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mirrors.aliyun.com",
+    "name": "Controlling the Embedded VM",
+    "snippet": "The Dalvik VM supports a variety of command-line arguments (use adb shell dalvikvm -help to get a summary), but it's not possible to pass arbitrary arguments ... Read more",
+    "host_name": "mirrors.aliyun.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://secrary.com",
+    "name": "Android 101 - Introduction - Secrary·com",
+    "snippet": "Jul 9, 2022 — Dalvik bytecode , also known as Dex Code , before execution. To run the bytecode , a virtual machine is required—a runtime that intercepts the  ...",
+    "host_name": "secrary.com",
+    "rank": 4,
+    "date": "Jul 9, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com",
+    "name": "ponsonio/bytecode-viewer",
+    "snippet": "Bytecode Viewer is an Advanced Lightweight Java Bytecode Viewer, GUI Java Decompiler, GUI Bytecode Editor, GUI Smali, GUI Baksmali, GUI APK Editor, GUI Dex ... Read more",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

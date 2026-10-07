@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://forum.sailfishos.org",
+    "name": "Alien Dalvik on older devices has the same naming as",
+    "snippet": "Nov 5, 2021 — Hey folks, it seems that Alien Dalvik on older devices and Android App Support on newer devices have the same naming, which is quite ...",
+    "host_name": "forum.sailfishos.org",
+    "rank": 0,
+    "date": "Nov 5, 2021",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.osnews.com",
+    "name": "Alien Dalvik Brings Android Apps to Other Platforms",
+    "snippet": "Feb 8, 2011 — Alien Dalvik allows Android applications to run on different platforms at comparable speed. It seems developers only need to repackaging Android ... Read more",
+    "host_name": "www.osnews.com",
+    "rank": 1,
+    "date": "Feb 8, 2011",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.stackexchange.com",
+    "name": "Is it possible to run Android applications on (normal) Linux?",
+    "snippet": "Aug 5, 2011 — Since Android is a forked Linux kernel plus software stack I am wondering whether there are any projects or ideas regarding creating a version of Android ...",
+    "host_name": "android.stackexchange.com",
+    "rank": 2,
+    "date": "Aug 5, 2011",
+    "favicon": ""
+  },
+  {
+    "url": "https://lwn.net",
+    "name": "Android apps on Linux with Waydroid",
+    "snippet": "Jul 19, 2022 — The official, paid version includes a similar Android compatibility layer called Alien Dalvik , originally developed by Myriad . It's a ... Read more",
+    "host_name": "lwn.net",
+    "rank": 3,
+    "date": "Jul 19, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.adweek.com",
+    "name": "Alien Dalvik Virtual Machine Will Let Android Apps Run",
+    "snippet": "Feb 8, 2011 — Their Alien Dalvik will let Android apps run on non - Android devices like the Nokia N900 which is based on Maemo (a Linux based mobile platform ... Read more",
+    "host_name": "www.adweek.com",
+    "rank": 4,
+    "date": "Feb 8, 2011",
+    "favicon": ""
+  },
+  {
+    "url": "https://pyra-handheld.com",
+    "name": "Isn't there a way to run Android-apps on ARM-Linux?",
+    "snippet": "Jan 2, 2013 — As the topic says I am wondering if there isn't a way to run Android-apps on an ARM-linux without porting/running the complete AndroidOS.",
+    "host_name": "pyra-handheld.com",
+    "rank": 5,
+    "date": "Jan 2, 2013",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://source.android.com",
+    "name": "Android runtime and Dalvik",
+    "snippet": "Jul 14, 2026 — ART and Dalvik are compatible runtimes running DEX bytecode , so apps developed for Dalvik should work when running with ART. However, some ... Read more",
+    "host_name": "source.android.com",
+    "rank": 0,
+    "date": "Jul 14, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://en.wikipedia.org",
+    "name": "Android Runtime",
+    "snippet": "Runtime ( ART ) is an application runtime environment used by the Android operating system. Replacing Dalvik, the process virtual machine originally used by  ...",
+    "host_name": "en.wikipedia.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.electronicsweekly.com",
+    "name": "What isthe Dalvik virtual machine?",
+    "snippet": "Oct 25, 2011 — Linux roots of Android's design, ART is a new Android runtime being introduced experimentally in the 4.4 release.",
+    "host_name": "www.electronicsweekly.com",
+    "rank": 2,
+    "date": "Oct 25, 2011",
+    "favicon": ""
+  },
+  {
+    "url": "https://levelup.gitconnected.com",
+    "name": "Android: Dalvik vs ART - Level Up Coding",
+    "snippet": "Aug 2, 2020 — In this article, we will talk about the Android runtime environment. Notably, we promise to be brief and explain in short ART and Dalvik ... Read more",
+    "host_name": "levelup.gitconnected.com",
+    "rank": 3,
+    "date": "Aug 2, 2020",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.stackexchange.com",
+    "name": "does ART use dalvik bytecode?",
+    "snippet": "May 16, 2018 — I know dalvik vm use dalvik bytecode. does ART use dalvik bytecode or something else ?",
+    "host_name": "android.stackexchange.com",
+    "rank": 4,
+    "date": "May 16, 2018",
+    "favicon": ""
+  }
+]

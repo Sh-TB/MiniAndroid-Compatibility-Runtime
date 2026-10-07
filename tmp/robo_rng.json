@@ -1,0 +1,65 @@
+[
+  {
+    "url": "https://github.com",
+    "name": "Robolectric native graphics times out with captureToImage",
+    "snippet": "Mar 19, 2023 — Description. Testing out the native graphics from the Robolectric 4.10 Alpha 1 release. I tried to do simple screenshot testing in Jetpack ... Read more",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "Mar 19, 2023",
+    "favicon": ""
+  },
+  {
+    "url": "https://robolectric.org",
+    "name": "Robolectric Simulator",
+    "snippet": "Robolectric Simulator . Starting with Robolectric 4.15, it's possible to launch an interactive preview of your app or tests in a Robolectric environment. Read more",
+    "host_name": "robolectric.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://sergiosastre.hashnode.dev",
+    "name": "Efficient Testing with Robolectric & Roborazzi Across Many UI",
+    "snippet": "Nov 17, 2023 — Robolectric recently added support for screenshot testing through \"Robolectric Native Graphics\" (RNG), and libraries like Roborazzi 1 help ... Read more",
+    "host_name": "sergiosastre.hashnode.dev",
+    "rank": 2,
+    "date": "Nov 17, 2023",
+    "favicon": ""
+  },
+  {
+    "url": "https://slack-chats.kotlinlang.org",
+    "name": "Any opinions on snapshot testing for a greenfield project",
+    "snippet": "Sep 30, 2024 — If you want to take snapshot after some UI action, Roborazzi is the only choice . • Parapazzi actually supports hardware rendering better than ... Read more",
+    "host_name": "slack-chats.kotlinlang.org",
+    "rank": 3,
+    "date": "Sep 30, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://speakerdeck.com",
+    "name": "Robolectric Native Graphics and Roborazzi",
+    "snippet": "Dec 9, 2023 — Robolectric is a framework that brings fast and reliable unit tests to Android. Robolectric is compatible with the Compose testing library.  ...",
+    "host_name": "speakerdeck.com",
+    "rank": 4,
+    "date": "Dec 9, 2023",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.android.com",
+    "name": "Robolectric strategies | Test your app on Android",
+    "snippet": "Mar 5, 2026 — Robolectric can also run UI tests such as Espresso or Compose tests. You can convert an instrumented test to Robolectric by moving it to the ... Read more",
+    "host_name": "developer.android.com",
+    "rank": 5,
+    "date": "Mar 5, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://kmpbits.com",
+    "name": "Testing Jetpack Compose UI on the JVM - KMP Bits",
+    "snippet": "Dec 8, 2025 — Robolectric also supports Compose UI testing directly on the JVM, letting you use the exact same testing APIs as instrumented tests ( ... Read more",
+    "host_name": "kmpbits.com",
+    "rank": 6,
+    "date": "Dec 8, 2025",
+    "favicon": ""
+  }
+]

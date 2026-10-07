@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://kotlinlang.org",
+    "name": "Kotlin Multiplatform quickstart",
+    "snippet": "5 days ago — In this tutorial, you'll learn how to build and run a simple Kotlin Multiplatform app with a Compose Multiplatform UI. With this configuration, ...",
+    "host_name": "kotlinlang.org",
+    "rank": 0,
+    "date": "Oct 2, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://dev.to",
+    "name": "Testing Compose Desktop apps: preparations",
+    "snippet": "May 12, 2025 — It runs on Android , iOS, and the Desktop . The JVM allows us to run bytecode programs on any operating system or platform the JVM is available ...",
+    "host_name": "dev.to",
+    "rank": 1,
+    "date": "May 12, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://composables.com",
+    "name": "Compose Desktop in Production: my experience and gotchas",
+    "snippet": "Dec 30, 2022 — Compose Desktop generates a JVM app and its UI is powered by everyone's favorite Compose. This has both benefits and disadvantages compared ...",
+    "host_name": "composables.com",
+    "rank": 2,
+    "date": "Dec 30, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.marcogomiero.com",
+    "name": "The rollercoaster of releasing an Android, iOS and desktop",
+    "snippet": "Sep 4, 2025 — In this talk, I will share all the things I've learned around distributing FeedFlow, an Android , iOS, macOS, Windows, and Linux app built with ...",
+    "host_name": "www.marcogomiero.com",
+    "rank": 3,
+    "date": "Sep 4, 2025",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://www.eurecom.fr",
+    "name": "A Comprehensive Analysis of Android Evasive Malware",
+    "snippet": "by A Ruggia · Cited by 41 — We start by presenting the relevant details of how an Android app is built, the Android RunTime system, and then introduce the Zygote process. Read more 16 pages",
+    "host_name": "www.eurecom.fr",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net",
+    "name": "(PDF) An Explainable Memory Forensics Approach for",
+    "snippet": "Feb 23, 2026 — Memory forensics is an effective methodology for analyzing living-off-the-land malware, both Windows and Android malware, runtime app execution ...",
+    "host_name": "www.researchgate.net",
+    "rank": 1,
+    "date": "Feb 23, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com",
+    "name": "platform/docs/source.android.com - Git at Google",
+    "snippet": "... Android encourages applications to be run in the ART runtime . Similarly, we won't accept contributions such as GPL or LGPL libraries that are incompatible ... Read more",
+    "host_name": "android.googlesource.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.scribd.com",
+    "name": "Android Malware Detection Methods | PDF",
+    "snippet": "Android malware frequently loads extra .jar, . apk , and . dex files at runtime from application assets, another application (collusion attack), or remote systems.",
+    "host_name": "www.scribd.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com",
+    "name": "awesome-stars/README.md at master",
+    "snippet": "A modern ebook manager and reader with sync and backup capacities for Windows, macOS, Linux , Android , iOS and Web",
+    "host_name": "github.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.flanker017.me",
+    "name": "Java | Flanker Sky",
+    "snippet": "Oct 21, 2024 — Abstract. This article analyzes the cause of CVE- 2024 -31317, an Android user-mode universal vulnerability, and shares our exploitation ... Read more",
+    "host_name": "blog.flanker017.me",
+    "rank": 5,
+    "date": "Oct 21, 2024",
+    "favicon": ""
+  }
+]

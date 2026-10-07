@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="compose_prefetch_scheduler" type="id"/>
+    <string name="androidx_compose_foundation_autofill">Autofill</string>
+    <string name="tooltip_description">tooltip</string>
+    <string name="tooltip_label">show tooltip</string>
+</resources>

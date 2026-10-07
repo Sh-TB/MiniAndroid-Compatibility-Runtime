@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# cont10_build_probe.sh — build fixtures/fnew259_probe into run/w6/f259.apk
+# cont10_build_probe.sh — build fixtures/fnew259_probe into run/w7/f259.apk
 set -euo pipefail
 cd /home/z/my-project
 FIX=fixtures/fnew259_probe
@@ -17,6 +17,6 @@ find "$WORK/obj" -name "*.class" > "$WORK/classes.txt"
 java -cp "$D8JAR" com.android.tools.r8.D8 --release \
   --lib "$BOOT" --output "$WORK/dex" @"$WORK/classes.txt"
 # repack: resources.apk + classes.dex (STORED for classes like aapt2 metadata lesson)
-cp "$WORK/apk/resources.apk" run/w6/f259.apk
-cd "$WORK/dex" && zip -j -X /home/z/my-project/run/w6/f259.apk classes.dex > /dev/null
-echo "probe apk: $(sha256sum /home/z/my-project/run/w6/f259.apk | cut -c1-16)"
+cp "$WORK/apk/resources.apk" run/w7/f259.apk
+cd "$WORK/dex" && zip -j -X /home/z/my-project/run/w7/f259.apk classes.dex > /dev/null
+echo "probe apk: $(sha256sum /home/z/my-project/run/w7/f259.apk | cut -c1-16)"
