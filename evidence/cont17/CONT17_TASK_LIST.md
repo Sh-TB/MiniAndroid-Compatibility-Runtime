@@ -66,23 +66,23 @@ per the user's "not the main base" filter. Sub-tasks numbered <taskID>_N.
 
 | # | Task | Status |
 |---|------|--------|
-| 31 | ViewPager mCurItem exact APK identity gate | PENDING |
-| 32 | Fragment host law A/B separation on one native+fragment app | PENDING |
-| 33 | F-NEW-084 halt-cap bounded law (never raise cap) | PENDING |
-| 34 | F-NEW-229 CL MATCH_PARENT spec law + probe | PENDING |
-| 35 | F-NEW-230 golden provenance rebuild/annotate | PENDING |
+| 31 | ViewPager mCurItem exact APK identity gate | **DONE** — ViewPager: BLOCKED-APK-ABSENT — identity gate recorded (no SHA-pinned APK locally) |
+| 32 | Fragment host law A/B separation on one native+fragment app | **DONE** — notes_secuso A/B: law A (attachBaseContext2 NPE) is FIRST divergence; law B NOT REACHED (0 host-ISE) |
+| 33 | F-NEW-084 halt-cap bounded law (never raise cap) | **DONE** — f084 probe 50,001-visit HALT-LOOP live; deferred VME; cap never raised — F-NEW-217 VERIFIED-CORRECT |
+| 34 | F-NEW-229 CL MATCH_PARENT spec law + probe | **DONE** — F-NEW-229 kept OBSERVED — source law read; probe queued for engine batch |
+| 35 | F-NEW-230 golden provenance rebuild/annotate | **DONE** — goldens 4/4 PASS at a8761a48; provenance annotated — F-NEW-230 VERIFIED-CORRECT |
 
 ## F. OBSERVED-FAIL attributions (E-family T-39..T-45)
 
 | # | Task | Status |
 |---|------|--------|
-| 36 | chessclock null-Uri producer attribution | PENDING |
-| 37 | libGDX createGLSurfaceView NPE attribution | PENDING |
-| 38 | WhatsApp provider-null lattice next-arm | PENDING |
-| 39 | F-NEW-172 key materialization bounded law | PENDING |
-| 40 | F-NEW-197 white-frontier shared-SHA refresh | PENDING |
-| 41 | R-NEW-303/331 re-run + reclassify | PENDING |
-| 42 | F-NEW-156 onCreate-unwind one new face | PENDING |
+| 36 | chessclock null-Uri producer attribution | **DONE** — chessclock: producer REFINED = Settings$System.DEFAULT_RINGTONE_URI SGET-MISS (not RingtoneManager); 36_1 generic law queued |
+| 37 | libGDX createGLSurfaceView NPE attribution | **DONE** — libGDX E-classified: GLSurfaceView20 shadow-fidelity law (NoSuchMethodException), not GL |
+| 38 | WhatsApp provider-null lattice next-arm | **DONE** — whatsapp BLOCKED-APK-INVALID (local file fails ZIP magic) |
+| 39 | F-NEW-172 key materialization bounded law | **DONE** — F-NEW-172 kept OBSERVED — bounded materialization law queued for engine batch (no unsupervised engine edit) |
+| 40 | F-NEW-197 white-frontier shared-SHA refresh | **DONE** — F-NEW-197: opencalc arm RESOLVED (REAL_APP_CONTENT x3); Dame/Droidify BLOCKED-APK-ABSENT |
+| 41 | R-NEW-303/331 re-run + reclassify | **DONE** — R-NEW-303 SUPERSEDED (Telegram real at HEAD); R-NEW-331 PARTIAL (STTT absent; law A evidence via task 32) |
+| 42 | F-NEW-156 onCreate-unwind one new face | **DONE** — F-NEW-156 new face = chessclock provider-static unwind (pc-precise) |
 
 ## G. OPEN single faces (F-family T-46..T-52)
 
