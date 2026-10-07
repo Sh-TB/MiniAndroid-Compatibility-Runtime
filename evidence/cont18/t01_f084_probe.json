@@ -1,0 +1,31 @@
+{
+  "binary_sha16": "a8761a482a186eac",
+  "apk_sha16": "21351bd0df1571cd",
+  "package": "com.probe.f084",
+  "run_rc": 1,
+  "halt_loop_lines": [
+    "[HALT-LOOP] Infinite loop at PC=0x1 in Lcom/probe/f084/MainActivity;.stalledSpin (visited 50001 times in this frame, bytecode_size=2, op_at_pc=0x0x0028)."
+  ],
+  "spin_histo_lines": [
+    "[SPIN-HISTO] pc0x1=50001 pc0x0=50000"
+  ],
+  "spin_regs_lines": [
+    "[SPIN-REGS] Lcom/probe/f084/MainActivity;.stalledSpin regs=16 v0=uninit v1=uninit v2=uninit v3=uninit v4=uninit v5=uninit v6=uninit v7=uninit v8=uninit v9=uninit v10=uninit v11=uninit v12=uninit v13=uninit v14=uninit v15=uninit"
+  ],
+  "halt_return_lines": [
+    "F084-HALT-RETURN (deferred): Ljava/lang/VirtualMachineError; (F084 interpreter halt in callee (no return value): Infinite loop at PC=0x1 in Lcom/probe/f084/MainActivity;.stalledSpin (visited 50001 times in this frame, bytecode_size=2, op_at_pc=0x0x0028).) method=Lcom/probe/f084/MainActivity;.stalledSpin pc=1 → uncaught (deferred frame unwind + propagate)"
+  ],
+  "vme_lines": [
+    "VirtualMachineError; (F084 interpreter halt in callee (no return value): Infinite loop at PC=0x1 in Lcom/probe/f084/MainActivity;.stalledSpin (visited 50001 times in this frame, bytecode_size=2, op_at_pc=0x0x0028).) method=Lcom/probe/f084/MainActivity;.stalledSpin pc=1 → uncaught (deferred frame unwind + propagate)",
+    "VirtualMachineError; caught at caller Lcom/probe/f084/MainActivity;.onCreate invoke_pc=73 handler=0x0x52 type=<catch-all>",
+    "VirtualMachineError;.getClass dex_report=YES",
+    "VirtualMachineError;.getClass caller=Lcom/probe/f084/MainActivity;.onCreate"
+  ],
+  "halt_loop_count": 1,
+  "halt_visits": 50001,
+  "expect_halt_visits": 50001,
+  "halt_deterministic": true,
+  "deferred_vme_delivered": true,
+  "cap_never_raised": true,
+  "VERIFIED": true
+}
