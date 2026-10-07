@@ -1,0 +1,59 @@
+{
+ "binary": "a8761a482a186eac",
+ "head": "a6028be6+merge",
+ "date": "2026-10-08",
+ "anchors": {
+  "dooz": "d602648e8e401895",
+  "microtimer": "da73010a37dd0189",
+  "unote": "4f1a9e4e8f64fae8",
+  "gmdice": "f3b483fe7b7cf51b",
+  "opencalc": "a976d2f9fb675cb3",
+  "chess": "b5a7a35d5fe0564b"
+ },
+ "dooz_traced_run": {
+  "dir": "run/cont17/dooz_traced",
+  "screenshot_sha16": "d602648e8e401895",
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "first_missing_stage": "APP_DRAW_OPS",
+  "app_draw_ops": 0,
+  "draw_walk_ran": true,
+  "uncaught_in_flight": 1,
+  "unwind_chain_head": "La; unwound Lzs;.m invoke_pc=0x4a depth=17 [measure family]"
+ },
+ "probes": {
+  "f266": "6/6",
+  "f259": "7/7",
+  "f259g": "12/13 (L honest artifact)",
+  "fcol": "3/18 unchanged"
+ },
+ "gates": {
+  "gate_a": "98 PASS / 0 FAIL / 1 INFO",
+  "negatives": "19/19",
+  "skill": "13/13"
+ },
+ "reverified_keep_partial": [
+  "R-NEW-001",
+  "R-NEW-061",
+  "R-NEW-242",
+  "R-NEW-246",
+  "R-NEW-259",
+  "R-NEW-260",
+  "R-NEW-279",
+  "R-NEW-285"
+ ],
+ "superseded": {
+  "F-NEW-256": "-> F-NEW-265",
+  "R-NEW-381": "-> F-NEW-265"
+ },
+ "normalized": {
+  "VF-NEW-001": "ROOT-CAUSED-FIXED",
+  "VF-NEW-002": "ROOT-CAUSED-FIXED",
+  "A7": "ROOT-CAUSED-FIXED",
+  "R-NEW-352": "ROOT-CAUSED-FIXED",
+  "R-NEW-450": "VERIFIED-FIXED",
+  "R-NEW-404": "ROOT-CAUSED-FIXED",
+  "R-NEW-389": "ROOT-CAUSED-FIXED",
+  "R-NEW-388": "ROOT-CAUSED-FIXED",
+  "R-NEW-340": "PARTIAL"
+ }
+}

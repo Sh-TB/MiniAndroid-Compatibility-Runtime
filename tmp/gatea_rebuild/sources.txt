@@ -1,5 +1,5 @@
 fixtures/gate_a_probe/src/com/probe/gatea/MainActivity.java
-fixtures/gate_a_probe/src/com/probe/gatea/GateProvider.java
 fixtures/gate_a_probe/src/com/probe/gatea/GateReceiver.java
+fixtures/gate_a_probe/src/com/probe/gatea/GateProvider.java
 fixtures/gate_a_probe/src/com/probe/gatea/GateService.java
 tmp/gatea_rebuild/gen/com/probe/gatea/R.java

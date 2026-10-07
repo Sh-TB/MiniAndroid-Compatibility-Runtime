@@ -32,5 +32,5 @@ run3 dubrowgn.microtimer     "$CA/dubrowgn.microtimer_8.apk" da73010a37dd0189
 run3 app.varlorg.unote       "$CA/app.varlorg.unote_30.apk"  4f1a9e4e8f64fae8
 run3 de.duenndns.gmdice      "$CA/de.duenndns.gmdice_8.apk"  f3b483fe7b7cf51b
 run3 com.darkempire78.opencalculator "$BASE/upload/opencalculator_53.apk" a976d2f9fb675cb3
-run3 jp.sblo.pandora1.chess  "$BASE/upload/chess_jwtc_298.apk" b5a7a35d5fe0564b
+run3 jwtc.android.chess  "$BASE/upload/chess_jwtc_298.apk" b5a7a35d5fe0564b
 echo "battery part 1 (anchors) done"
