@@ -2462,6 +2462,13 @@ public:
                // so every ArrayDeque op REC-MISSed and peek answered null
                // (fcol probe K5). No app names, pure java.util family.
                class_name == "Ljava/util/ArrayDeque;" ||
+               // LAW-F (CONT-18): stream-pipeline family claims — the
+               // source/collector boxes minted by the stream law dispatch
+               // through their own class descriptors; without the claims
+               // every of/filter/collect face REC-MISSed to the generic
+               // stub (fcol probe K15 NPE).
+               class_name == "Ljava/util/stream/Stream;" ||
+               class_name == "Ljava/util/stream/Collectors;" ||
                class_name.find("/ArrayList;") != std::string::npos ||
                class_name.find("/HashMap;") != std::string::npos ||
                class_name.find("/HashSet;") != std::string::npos ||
@@ -2484,15 +2491,58 @@ public:
         return fn;
     }
 
+    // ── LAW-C/E/F (CONT-18): DEX CALLABLE INVOCATION CHANNEL ────────────
+    // OpenJDK Java-8 collection default methods (removeIf/sort/forEach/
+    // merge/computeIfAbsent) and the stream pipeline take FUNCTIONAL
+    // INTERFACE arguments whose bodies are real DEX code (D8-desugared
+    // lambda classes). The shadow cannot execute DEX code, so — same
+    // pattern as app_equals_slot — the engine installs an invoker at
+    // set_shadow_registry time: it runs the named method on the callee's
+    // runtime class (try_recursive_invoke, receiver identity preserved)
+    // and converts the result. ok=false = no DEX body resolved: the
+    // shadow law MUST then decline (not_handled) — never fake a result.
+    struct DexCallOutcome {
+        bool ok = false;
+        // Kind tag of the returned value: 0=null, 1=bool/int, 2=object,
+        // 3=string, 4=long, 5=double, 6=float.
+        uint8_t kind = 0;
+        int32_t int_val = 0;
+        int64_t long_val = 0;
+        double  dbl_val = 0.0;
+        float   flt_val = 0.0f;
+        bool    bool_val = false;
+        uint32_t obj_id = 0;
+        std::string obj_class;
+        std::string str_val;
+        static DexCallOutcome fail() { return DexCallOutcome(); }
+        static DexCallOutcome of_null() { DexCallOutcome o; o.ok = true; return o; }
+        static DexCallOutcome of_int(int32_t v) { DexCallOutcome o; o.ok = true; o.kind = 1; o.int_val = v; return o; }
+        static DexCallOutcome of_bool(bool b) { DexCallOutcome o; o.ok = true; o.kind = 1; o.bool_val = b; o.int_val = b ? 1 : 0; return o; }
+        static DexCallOutcome of_obj(uint32_t id, std::string cls) { DexCallOutcome o; o.ok = true; o.kind = 2; o.obj_id = id; o.obj_class = std::move(cls); return o; }
+        static DexCallOutcome of_str(std::string s) { DexCallOutcome o; o.ok = true; o.kind = 3; o.str_val = std::move(s); return o; }
+    };
+    using DexInvokeFn = std::function<DexCallOutcome(
+        uint32_t callee_obj, const std::string& method,
+        const std::vector<CallContext::Arg>& args)>;
+    static DexInvokeFn& dex_invoke_slot() {
+        static DexInvokeFn fn;
+        return fn;
+    }
+
     std::vector<std::string> implemented_methods() const override {
         return {"add", "get", "size", "isEmpty", "clear", "remove",
                 "contains", "iterator", "hasNext", "next", "toArray",
                 "put", "containsKey", "keySet", "values", "entrySet",
                 "putAll", "getKey", "getValue", "singletonMap",
-                "getIndex", "set"};
+                "getIndex", "set",
+                // LAW-C/E/F (CONT-18): Java-8 default-method + view +
+                // stream faces (were STUBBED/absent — silent no-ops).
+                "removeIf", "sort", "forEach", "removeAll", "retainAll",
+                "merge", "computeIfAbsent", "getOrDefault", "subList",
+                "of", "filter", "collect", "toList"};
     }
     std::vector<std::string> stubbed_methods() const override {
-        return {"subList", "listIterator", "sort"};
+        return {"listIterator"};
     }
 
     // Get or create CollectionState for a heap object.
