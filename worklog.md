@@ -7289,3 +7289,17 @@ Work Log:
 Stage Summary:
 - 3 of 6 collection laws closed this wave (LAW-A, LAW-B, LAW-D), fcol 3/18 -> 10/18, zero drift at every checkpoint, all pushed.
 - Standing queue: LAW-C (Java-8 default methods K13/K14/K16/K17/K18), LAW-E (getOrDefault K6), LAW-F (subList K3 / stream K15); then F-265 reclassification + F-217 root (tasks 23-48).
+
+---
+Task ID: CONT-18-W10-LAW-E-SCOPE
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — LAW-E K6 decomposition (blocked-path scoping).
+
+Work Log:
+- K6 fully decomposed live: g=true ck=true sz=2 remOk=false (got=Ljava/lang/Object;@33, sz2=2) defOk=false (def=null) — Map.remove(Object) silent no-op; Map.getOrDefault answers null.
+- F089-REMOVE bounded diag added to the shadow's remove law (0 hits) — the shadow remove law is NEVER REACHED for this map, while put/get reach it correctly (F089 put trace fires on the same obj#32).
+- method_trace evidence: remove/getOrDefault arrive as invocation_type=virtual with DECLARED class Ljava/util/Map; (D8 rewrite of iface calls) — the virtual-dispatch bridge loses receiver identity for these faces; put/get resolve runtime class per R-NEW-318 and work. Next-wave scope: execute_invoke_virtual bridge receiver construction for virtual-rewritten interface calls + getOrDefault map law (kind-aware default serve).
+- Regression at d762aa0f03d2ab0a: fcol 10/18 stable, f266 6/6, anchors 18/18 MATCH, negatives 19/19, skill 13/13. No fix landed for LAW-E — no suppression; honest BLOCKED status with scope.
+
+Stage Summary:
+- Wave 10 collection block: LAW-A, LAW-B, LAW-D closed (fcol 3/18 -> 10/18); LAW-E scoped with evidence; LAW-C (default methods) + LAW-F (subList/stream) still PENDING. F-217 chain (tasks 23-48) remains the next major engineering target per the brief.
