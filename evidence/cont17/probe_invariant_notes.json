@@ -1,0 +1,18 @@
+{
+ "generated": "2026-10-08",
+ "binary": "a8761a482a186eac",
+ "task_53_f259g_row_L": {
+  "row": "F259-L (throwing slot propagated=false \u2014 want true)",
+  "honest_note": "Row L expects ISE from a throwing iterator slot, but NoSlots defines its OWN iterator() \u2014 per the F-068 most-derived dispatch law an empty Vector iterates ZERO elements on real Android too, so no ISE can fire; the registered NPE face is GONE post-CONT-16 (Vector claimed by CollectionShadow). Row L is a TEST EXPECTATION artifact, not a runtime defect. Kept FAIL-by-expectation, documented here; no suppression involved.",
+  "verdict": "CLOSED-AS-DOCUMENTED (test-expectation artifact)"
+ },
+ "task_54_fcol_protected_invariants": {
+  "passing_rows": {
+   "K7": "entrySet iteration (entries=2 sum=30)",
+   "K8": "LinkedHashMap order (first,second,third)",
+   "K10": "LinkedHashSet order (o1,o2,o3)"
+  },
+  "law": "These 3 rows are PROTECTED INVARIANTS: every engine change in the 264d law queue must keep them PASS; they anchor the hash/entry order semantics already proven.",
+  "verdict": "LOCKED as regression anchors for the 264d queue"
+ }
+}

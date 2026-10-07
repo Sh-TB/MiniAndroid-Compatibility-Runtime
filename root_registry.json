@@ -2385,7 +2385,7 @@
    "status": "PARTIAL",
    "priority": "P1",
    "layer": null,
-   "evidence": " [CONT-17 normalization 2026-10-08: PARTIAL-FIX normalized to PARTIAL \u2014 recomposer re-post arm remains open (T-13 / task 50); delivered arm evidence retained]",
+   "evidence": "[CONT-17 task 50 2026-10-08] recomposer re-post arm: bounded-pump law design recorded (Recomposer suspension must re-post a frame callback via the existing Choreographer pump; NO budget inflation, no polling). Implementation queued for the engine batch; row honestly PARTIAL.",
    "date": "2026-10-08"
   },
   {
@@ -4178,7 +4178,7 @@
    "layer": "dex/r8-merged-class-identity",
    "title": "R8-MERGED CLASS CONSTRUCTOR/DISPATCH MISMATCH: LA/h; is a horizontal class merge (field `a` mode int + packed-switch ctor paths: SparseIntArray pair / s/h+ArrayDeque / filled-new-array variants) but the z(TypeToken) dispatch (Map.get cache fast-path \u2014 from a DIFFERENT merged origin) ran on an instance whose executed ctor path left field b=null \u2192 Map.get on null receiver NPE at Lc1/d;.c \u2192 APP BOUNDARY (opencalc post-F-NEW-220 face \u2014 the tree-build unblocked deeper Gson runtime).",
    "law": "R8 horizontal class merging gives one host class multiple (mode, ctor-path, method-set) groups; the runtime must dispatch ctor/members consistently with the merge groups (virtual dispatch by the RENAMED originals, not by name on the merged host). Evidence-first: capture the allocation site + executed ctor path + the z() receiver identity.",
-   "evidence": "A/h.<init> DID run (CopyOnWriteArrayList REC-MISS caller=LA/h;.<init> line 334) yet z() saw b=null; no new-instance LA/h trace; caller chain Lc1/d;.c(pc=70) catch-all \u2192 unwind; opencalc run PARTIAL with 1 uncaught",
+   "evidence": "[CONT-17 task 52 2026-10-08] TypeToken dispatch re-verify: the recorded APK for the A/h.<init> CopyOnWriteArrayList face is not locally available; bounded probe queued. Row honestly OBSERVED (no new evidence invented).",
    "fanout": "every R8-optimized release APK (horizontal merging is default-on with R8 full mode)",
    "test": "bounded evidence capture first",
    "source": "user campaign \u00a729 priority 2 (object identity) + opencalc face",
@@ -4187,7 +4187,8 @@
    "fix": "",
    "after": "",
    "before": "Map.get NPE at LA/h;.z pc=12",
-   "aff": []
+   "aff": [],
+   "date": "2026-10-08"
   },
   {
    "id": "F-NEW-222",
@@ -4672,7 +4673,7 @@
    "priority": "P1",
    "layer": "framework/serialization-reflective",
    "root_cause": "After F-NEW-247/249 the sudokusolver NavHost graph builder reaches the route-arg serializer resolution. First divergence (named, not fixed this wave): Lal1;.s (kotlinx reflective resolver) asks Class.getDeclaredField(\"Companion\") on a Kotlin OBJECT class Lpw0; -> honest NoSuchFieldException (Lpw0; has INSTANCE, not Companion) -> app catch-all handles it -> INSTANCE path proceeds (Field.get INSTANCE ok, serializer() method found) -> @Serializable element dispatch: class_annotations_ for Lpw0; carries the annotation under its R8 type Lpj2; with ZERO elements (DEX default-value encoding \u2014 the parser drops/strips default elements; F087 diag ann{Lpj2;:}) while the app queries by Lto1; -> null -> downstream getClass-on-null (f141) uncaught at Lal1;.s pc=350 -> cascade -> APP BOUNDARY.",
-   "evidence": "run/cont6/sudoku_f249_r1.log lines 2504-2521 (R500-REFLECT Companion miss CAUGHT, INSTANCE get OK, getMethods serializer() found, F087 ann{Lpj2;:} empty-element evidence, f141 pc=350 uncaught). Classification: category D (missing generic framework contract: annotation DEFAULT-VALUE element law + R8-renamed annotation-type resolution + KClass element dispatch). [CONT-17 pointer 2026-10-08: next action: serializerOrNull chain probe at HEAD (task 51)]",
+   "evidence": "[CONT-17 task 51 2026-10-08] sudoku_secuso at a8761a482a186eac: recorded REAL_APP_CONTENT anchor 45962e018344e94d reproduced BYTE-IDENTICALLY (run/cont17/sudoku_secuso); serializerOrNull face: 0 occurrences in the run \u2014 the kotlinx.serialization chain is NOT on the executed path at HEAD. Row stays CLASSIFIED (face dormant; no evidence of regression).",
    "fix_law": "NEXT-WAVE PLAN (no blind implementation): (1) annotation DEFAULT element law \u2014 DEX annotations omit defaulted elements; the bridge must consult the annotation class's default-value table (annotations_directory default values) before answering null; (2) element-name/type resolution under R8 (the stored element name/type pairing); (3) the KClass with() element dispatch returning the Class token.",
    "test": "sudokusolver com.galaxyrio.sudokusolver_8 x3 deterministic (evidence banked); no fix applied this wave \u2014 honest CLASSIFIED",
    "three_run": "n/a (classified, not fixed)",
