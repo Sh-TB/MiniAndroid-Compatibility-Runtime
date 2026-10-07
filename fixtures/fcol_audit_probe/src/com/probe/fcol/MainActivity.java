@@ -81,10 +81,16 @@ public class MainActivity extends Activity {
             l.add("x"); l.add("y");
             ListIterator<String> it = l.listIterator(1);
             String cur = it.previous();          // "x", index 0
-            boolean ok = "x".equals(cur) && it.nextIndex() == 1;
+            boolean prevOk = "x".equals(cur);
+            int nix = it.nextIndex();
             it.set("X");
-            ok &= "X".equals(l.get(0));
-            row("K2", ok, "listIterator prev/set ok=" + ok);
+            String g0 = l.get(0);
+            // OpenJDK ListItr law: previous() sets cursor = lastRet = 0, so
+            // nextIndex() == cursor == 0 (a following next() re-serves "x").
+            // The old ==1 expectation contradicted ListItr.previous() —
+            // probe artifact fixed (CONT-18 T-03).
+            row("K2", prevOk && nix == 0 && "X".equals(g0),
+                "prev=" + cur + " nix=" + nix + " g0=" + g0);
         } catch (Throwable t) { row("K2", false, "threw " + t); }
 
         // ── K3: subList is a VIEW ───────────────────────────────────────
@@ -206,9 +212,14 @@ public class MainActivity extends Activity {
             ListIterator<String> it = l.listIterator();
             it.next();               // cursor 1
             it.add("b");             // insert at 1, cursor 2
+            // OpenJDK ListItr law: add() does cursor++ -> after the insert
+            // cursor=2, so previousIndex()=cursor-1=1 (the CONT-18 T-03
+            // audit found the old ==2 expectation contradicted the very
+            // contract the row claims to test — probe artifact, fixed).
             boolean ok = l.size() == 3 && "b".equals(l.get(1))
-                && it.previousIndex() == 2;
-            row("K12", ok, "add law ok=" + ok + " size=" + l.size());
+                && it.previousIndex() == 1 && it.nextIndex() == 2;
+            row("K12", ok, "add law ok=" + ok + " size=" + l.size()
+                + " g1=" + l.get(1) + " pidx=" + it.previousIndex());
         } catch (Throwable t) { row("K12", false, "threw " + t); }
 
         // ── K13: removeIf (Iterable/Collection default) ─────────────────
