@@ -13,14 +13,14 @@ rm -rf "$B"; mkdir -p "$B"/{classes,dex}
 cd "$B"
 
 "$TOOLS/aapt2/aapt2" compile --dir "$SRC/res" -o res.zip
-"$TOOLS/aapt2/aapt2" link -o base.apk -I "$TOOLS/android-34.jar" \
+"$TOOLS/aapt2/aapt2" link -o base.apk -I "$TOOLS/android-34/android-34.jar" \
   --manifest "$SRC/AndroidManifest.xml" \
   --java rjava --min-sdk-version 19 --target-sdk-version 26 \
   --version-code 2 --version-name 2.0 res.zip
 
 find "$SRC/java" rjava -name "*.java" > sources.txt
 java -jar "$TOOLS/ecj/ecj.jar" -source 1.8 -target 1.8 -encoding UTF-8 \
-  -cp "$TOOLS/android-34.jar" -d classes @sources.txt -nowarn -g
+  -cp "$TOOLS/android-34/android-34.jar" -d classes @sources.txt -nowarn -g
 
 python3 - classes classes.jar <<'PY'
 import sys, zipfile
@@ -34,7 +34,7 @@ print(f"      jar entries: {len(files)}")
 PY
 
 java -cp "$TOOLS/d8/r8.jar" com.android.tools.r8.D8 \
-  --release --lib "$TOOLS/android-34.jar" --output dex classes.jar
+  --release --lib "$TOOLS/android-34/android-34.jar" --output dex classes.jar
 
 cp base.apk minibrowser_v2.0_vc2.apk
 (cd dex && zip -q ../minibrowser_v2.0_vc2.apk classes.dex)

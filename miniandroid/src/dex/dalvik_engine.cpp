@@ -23264,6 +23264,92 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
 
     // Pass 1: try with the declared class_name.
     // ────────────────────────────────────────────────────────────────────
+    // CONT-21 / #384 (F-NEW-272) — Thread UncaughtExceptionHandler laws.
+    // AOSP Thread law (libcore Thread + AOSP RuntimeInit):
+    //   Thread.getUncaughtExceptionHandler()  → the per-thread handler if
+    //     set, ELSE Thread.defaultUncaughtExceptionHandler — and on a live
+    //     ART runtime the default is NEVER null (RuntimeInit installs
+    //     RuntimeInit$KillApplicationHandler at process start).
+    //   Thread.setDefaultUncaughtExceptionHandler(h) (static) → installs h.
+    //   Thread.getDefaultUncaughtExceptionHandler() (static) → the default.
+    //   KillApplicationHandler.uncaughtException(t, e) → logs FATAL
+    //     EXCEPTION (process-death modeling stays owned by the runtime's
+    //     F-016 exception-honesty machinery — this call itself completes).
+    // Runtime evidence (run/cont21/after/dooz_r2): kotlinx coroutine
+    // machinery (Llo;.K pc=0x52) runs currentThread()
+    // .getUncaughtExceptionHandler().uncaughtException(t,e) whenever a
+    // coroutine scope fails; the prior no-op answered null → interface
+    // invoke NPE → APP BOUNDARY (the registered CONT-20 next root).
+    // Static-vs-instance disambiguation by arg shape (statics carry no
+    // receiver): get = 0 args → static; set = 1 arg → static.
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/lang/Thread;" || is_thread_receiver(class_name)) &&
+        (method == "getUncaughtExceptionHandler" ||
+         method == "setUncaughtExceptionHandler")) {
+        auto ensure_default_handler = [&]() -> DalvikValue {
+            if (default_uncaught_handler_.object_id != 0 &&
+                heap_.has_object(default_uncaught_handler_.object_id))
+                return default_uncaught_handler_;
+            uint32_t hid = heap_.allocate(
+                "Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;",
+                pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            default_uncaught_handler_ = DalvikValue::make_object(
+                hid,
+                "Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;");
+            return default_uncaught_handler_;
+        };
+        if (method == "getUncaughtExceptionHandler") {
+            if (args.empty()) {
+                // static Thread.getDefaultUncaughtExceptionHandler()
+                result = ensure_default_handler();
+            } else {
+                // instance: per-thread handler, else the default (AOSP law).
+                uint32_t t_oid = args[0].type == DalvikType::OBJECT_REF
+                                     ? args[0].object_id
+                                     : 0;
+                auto it = thread_uncaught_handlers_.find(t_oid);
+                if (it != thread_uncaught_handlers_.end() &&
+                    it->second.object_id != 0)
+                    result = it->second;
+                else
+                    result = ensure_default_handler();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // setUncaughtExceptionHandler: 1 arg (static handler) vs
+        // 2 args (instance receiver + handler).
+        DalvikValue hv = args.size() >= 2 ? args[1] : args[0];
+        if (hv.type == DalvikType::OBJECT_REF && hv.object_id != 0) {
+            if (args.size() >= 2) {
+                thread_uncaught_handlers_[args[0].object_id] = hv;
+            } else {
+                default_uncaught_handler_ = hv;
+            }
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "uncaughtException" &&
+        class_name.find("KillApplicationHandler") != std::string::npos) {
+        // AOSP RuntimeInit$KillApplicationHandler: log the fatal exception;
+        // the process-death face is modeled by the runtime's existing
+        // exception-honesty machinery, so the call itself completes.
+        static thread_local uint64_t ueh_log = 0;
+        if (ueh_log < 12) {
+            ++ueh_log;
+            std::cerr << "[UEH-DEFAULT] FATAL EXCEPTION (KillApplicationHandler)"
+                      << " thread="
+                      << (args.empty() ? 0 : args[0].object_id)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
     // F-NEW-166 (S134 wave 3): AOSP ContextWrapper BASE-CONTEXT law —
     // served for EVERY ContextWrapper-family receiver, not only Activities.
     // AOSP: getBaseContext()/attachBaseContext() are ContextWrapper
@@ -39516,6 +39602,188 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // CONT-21 / #384 (F-NEW-273, producer half) — ComponentName.<init> law.
+    // AOSP ComponentName(String pkg, String cls) / (Context, String cls):
+    // the constructor stores the identity the later PM queries read back
+    // (mPackage/mClass — ComponentName.flattenToString contract). The
+    // runtime evidence (run/cont21/family/dooz): every androidx.startup app
+    // constructs `new ComponentName(context.getPackageName(),
+    // InitializationProvider.class.getName())` at process start and the
+    // REC-MISS'd ctor left the object empty — the consumer half below
+    // (getProviderInfo) would then MISS its manifest lookup. Evidence is
+    // the same 5-target/3-family cluster as the consumer half. Generic:
+    // any app building ComponentName for PM resolution benefits.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "<init>" && class_name == "Landroid/content/ComponentName;" &&
+        args.size() >= 3) {
+        // (String pkg, String cls): args[1]=pkg args[2]=cls
+        // (Context ctx, String cls): args[1]=ctx  args[2]=cls
+        std::string pkg_v, cls_v;
+        if (args[1].type == DalvikType::STRING_REF) pkg_v = args[1].string_val;
+        if (args[2].type == DalvikType::STRING_REF) cls_v = args[2].string_val;
+        if (pkg_v.empty() && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0)
+            pkg_v = package_name_;  // Context-form: the running package.
+        if (!cls_v.empty()) {
+            if (!pkg_v.empty())
+                heap_.set_object_field(args[0].object_id, "mPackage",
+                                       DalvikValue::make_string(pkg_v, 0));
+            heap_.set_object_field(args[0].object_id, "mClass",
+                                   DalvikValue::make_string(cls_v, 0));
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-21 / #384 (F-NEW-273) — PackageManager.getProviderInfo law.
+    // AOSP PackageManager.getProviderInfo(ComponentName, flags): returns the
+    // ProviderInfo of the manifest-declared <provider> for the component —
+    // NEVER null (throws PackageManager.NameNotFoundException when no
+    // provider matches). With GET_META_DATA (0x80) ProviderInfo.metaData is
+    // the Bundle built from the <provider>'s <meta-data> children
+    // (PackageParser.parseProvider → PackageItemInfo.metaData).
+    // Shared-primitive evidence (run/cont21 cluster scan): androidx.startup
+    // InitializationProvider.onCreate / AppInitializer.discoverAndInitialize
+    // runs this exact call at process start in EVERY androidx-startup app —
+    // dooz, opencalc, stopwatch, forkgram, telegram all REC-MISS'd it and
+    // NPE'd at `providerInfo.metaData` (iget on the null answered by the
+    // REC-MISS fallback; stopwatch died at APP BOUNDARY before any UI).
+    // Seed law mirrors the S1-PROVIDER install path (identity + grants +
+    // component meta-data) so the served ProviderInfo equals the installed
+    // provider's identity. Generic across all APKs — zero app checks.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getProviderInfo" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        // Resolve the target provider class from the ComponentName arg
+        // (same arg convention as getActivityInfo above).
+        std::string prov_class;
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            auto cls_f = heap_.get_object_field(args[1].object_id, "mClass");
+            if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
+                prov_class = cls_f->string_val;
+        }
+        // Normalize: ".Foo" → pkg.Foo; "Foo" (no dot) → pkg.Foo.
+        auto normalize_prov = [&](std::string c) {
+            if (c.empty()) return c;
+            if (c[0] == '.') return package_name_ + c;
+            if (c.find('.') == std::string::npos) return package_name_ + "." + c;
+            return c;
+        };
+        std::string norm = normalize_prov(prov_class);
+        // Trim an L...; descriptor to a bare dotted class name.
+        std::string bare = norm;
+        if (!bare.empty() && bare.front() == 'L' && bare.back() == ';')
+            bare = bare.substr(1, bare.size() - 2);
+        for (auto& ch : bare) if (ch == '/') ch = '.';
+        // Manifest <provider> identity lookup: exact → bare → suffix match
+        // (same matching law as getActivityInfo's meta-data lookup).
+        bool found = false;
+        std::string auth;
+        for (const auto& [pname, pauth] : manifest_provider_identity_) {
+            if (pname == norm || pname == bare ||
+                (!pname.empty() &&
+                 (norm.rfind(pname) != std::string::npos ||
+                  bare.rfind(pname) != std::string::npos))) {
+                auth = pauth;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // AOSP contract: absent component → NameNotFoundException, never
+            // a null ProviderInfo.
+            std::cerr << "[F273-PROVINFO] MISS " << bare
+                      << " → PackageManager$NameNotFoundException (AOSP contract)"
+                      << std::endl;
+            throw_deferred(
+                "Landroid/content/pm/PackageManager$NameNotFoundException;",
+                bare, "F273-PROVINFO");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Flags: GET_META_DATA (0x80) gates the metaData Bundle (AOSP
+        // PackageParser law — components carry metaData only when requested).
+        int64_t pi_flags = 0;
+        for (size_t i = 2; i < args.size(); i++) {
+            if (args[i].type == DalvikType::INT32) {
+                pi_flags = args[i].int_val;
+                break;
+            }
+        }
+        uint32_t pi_id = heap_.allocate("Landroid/content/pm/ProviderInfo;",
+                                        pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(pi_id, "name",
+                               DalvikValue::make_string(bare, 1));
+        heap_.set_object_field(pi_id, "packageName",
+                               DalvikValue::make_string(
+                                   package_name_.empty() ? "unknown.package"
+                                                         : package_name_, 1));
+        // AOSP ProviderInfo field is `authority` (singular); seed the legacy
+        // plural alias too — consumers may read either (same law as the
+        // getPackageInfo GET_PROVIDERS path).
+        heap_.set_object_field(pi_id, "authority",
+                               DalvikValue::make_string(auth, 1));
+        heap_.set_object_field(pi_id, "authorities",
+                               DalvikValue::make_string(auth, 1));
+        // #371: grantUriPermissions from the manifest (FileProvider contract).
+        for (const auto& [gname, gval] : manifest_provider_grants_) {
+            if (gname == norm || gname == bare || gname == prov_class) {
+                heap_.set_object_field(pi_id, "grantUriPermissions",
+                                       DalvikValue::make_bool(gval));
+                break;
+            }
+        }
+        if ((pi_flags & 0x80) != 0) {
+            // metaData seeding — identical law to the S1-PROVIDER install
+            // path: component_meta_data_ entries, descriptor→dotted fallback,
+            // resource refs as ints, numeric strings as ints, else String.
+            auto md_it = component_meta_data_.find(norm);
+            if (md_it == component_meta_data_.end())
+                md_it = component_meta_data_.find(bare);
+            if (md_it == component_meta_data_.end() && !prov_class.empty())
+                md_it = component_meta_data_.find(prov_class);
+            if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
+                uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
+                                                    pc_,
+                                                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                static const std::string kDigits = "0123456789";
+                for (const auto& mde : md_it->second) {
+                    if (mde.has_resource && mde.resource_id != 0) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(
+                                static_cast<int32_t>(mde.resource_id)));
+                    } else if (!mde.value.empty() &&
+                               mde.value.find_first_not_of(kDigits) ==
+                                   std::string::npos) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(std::stoi(mde.value)));
+                    } else if (!mde.value.empty()) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_string(mde.value, 0));
+                    }
+                }
+                heap_.set_object_field(
+                    pi_id, "metaData",
+                    DalvikValue::make_object(md_bundle, "Landroid/os/Bundle;"));
+                std::cerr << "[F273-PROVINFO] " << bare
+                          << " metaData entries=" << md_it->second.size()
+                          << std::endl;
+            }
+        }
+        result = DalvikValue::make_object(pi_id, "Landroid/content/pm/ProviderInfo;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P0.10 — PackageManager.getPackageInfo → PackageInfo
     // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
     // Telegram values. This is a GENERIC fix — affects ALL APKs.
@@ -53296,6 +53564,56 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 heap_.set_object_field(bundle_id, "bundle:" + key, args[2]);
             }
             result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // CONT-21 / #384 (F-NEW-273 chain) — BaseBundle.keySet()/containsKey()
+        // laws. AOSP BaseBundle: keySet() returns the Set of key Strings
+        // (never null; empty when the bundle has no entries); containsKey(k)
+        // answers the mapping existence. Shared-primitive evidence: the
+        // androidx.startup AppInitializer initializer discovery iterates
+        // metadata.keySet() in EVERY androidx-startup app (dooz run log:
+        // [REC-MISS] Landroid/os/Bundle;.keySet caller=Lkc;.c →
+        // Set.iterator on null NPE). Same materialization convention as the
+        // ContentValues keySet law (array + ArrayList) so the generic
+        // iterator protocol consumes it. Generic across all Bundle users.
+        if (method == "keySet" || method == "containsKey" || method == "isEmpty") {
+            std::vector<std::string> keys;
+            if (bundle_id && heap_.has_object(bundle_id)) {
+                auto* bo = heap_.get(bundle_id);
+                if (bo) {
+                    for (const auto& [fname, fval] : bo->fields) {
+                        static const std::string kPrefix = "bundle:";
+                        if (fname.size() > kPrefix.size() &&
+                            fname.compare(0, kPrefix.size(), kPrefix) == 0)
+                            keys.push_back(fname.substr(kPrefix.size()));
+                    }
+                }
+            }
+            if (method == "keySet") {
+                uint32_t arr = heap_.allocate("[Ljava/lang/Object;", pc_, 0);
+                heap_.set_object_field(arr, "__array_length__",
+                                       DalvikValue::make_int((int)keys.size()));
+                for (size_t i = 0; i < keys.size(); ++i)
+                    heap_.set_object_field(
+                        arr, "array[" + std::to_string(i) + "]",
+                        DalvikValue::make_string(keys[i], 0));
+                uint32_t set = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+                heap_.set_object_field(
+                    set, "array",
+                    DalvikValue::make_object(arr, "[Ljava/lang/Object;"));
+                result = DalvikValue::make_object(set, "Ljava/util/ArrayList;");
+            } else if (method == "isEmpty") {
+                result = DalvikValue::make_bool(keys.empty());
+            } else {  // containsKey
+                std::string k = args.size() >= 2 && args[1].type == DalvikType::STRING_REF
+                                    ? args[1].string_val
+                                    : std::string();
+                bool hit = false;
+                for (const auto& kk : keys)
+                    if (kk == k) { hit = true; break; }
+                result = DalvikValue::make_bool(hit);
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }

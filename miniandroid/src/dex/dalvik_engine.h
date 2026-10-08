@@ -2905,6 +2905,12 @@ public:
         std::vector<std::tuple<std::string, std::string, int>> rules;
     };
     std::map<uint32_t, UriMatcherState> uri_matchers_;
+    // ── F-NEW-272 (CONT-21/#384): Thread UncaughtExceptionHandler state ──
+    // AOSP Thread law: per-thread handler map + the process default
+    // (RuntimeInit$KillApplicationHandler — never null on a live ART
+    // runtime; materialized lazily on first read).
+    DalvikValue default_uncaught_handler_;
+    std::map<uint32_t, DalvikValue> thread_uncaught_handlers_;
     // IntentFilter state (heap oid → declared actions). AOSP IntentFilter:
     // <init>(String... actions) / addAction(String); match by exact action.
     std::map<uint32_t, std::vector<std::string>> intent_filters_;
