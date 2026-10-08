@@ -7355,3 +7355,5 @@ Stage Summary:
 - No engine source changed; the only main-code change is the guard fix (scripts/, selftest-proven). Registry +1 (F-NEW-267 CLASSIFIED, evidence-backed).
 - The audit's answer to the directive: every historical finding now either (a) lives in the registry with an explicit status, (b) is a committed tool/fix, or (c) carries an explicit DEFERRED/OBSERVED/BLOCKED disposition with scope — nothing is abandoned-unused.
 - Campaign impact made concrete: fcol 3/18 → 18/18 live at a byte-identical reproduced binary; anchors 18/18 zero drift; next frontier (F-265 → F-267 tap gate) registered and ranked P0/P1 in the usable queue.
+
+Push record: remote main a6c6fb7a verified (c15e2661..a6c6fb7a), secret guard PASS at push time. CONT-18f complete: audit dispositions + guard main-code fix + F-NEW-267 registration + queue tool + live fcol 18/18 / anchors 18/18 / binary reproduction proofs.
