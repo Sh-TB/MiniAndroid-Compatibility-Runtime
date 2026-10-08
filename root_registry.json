@@ -4850,9 +4850,9 @@
    "title": "DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream consequence): the compose DRAW machinery is PROVEN CORRECT end-to-end at 1.11.4 — dispatchDraw runs per frame, the coordinator walk reaches InnerNodeCoordinator.performDraw, canvas.translate executes on the live compose-canvas wrapper (Ly3;.f(FF) x4/frame), and the walk faithfully honors child.isPlaced (real DEX field chain Lel0.J -> Lil0.p -> Lbt0.w = FALSE). The tree never draws because the measure/layout pass (Lzs0.m) dies MID-FLIGHT: text-layout ctor Lm7;.<init> (TextPaint/TextStyle fields) receives a null text CharSequence (Lkb; built with a1=NULL, caller Lvs0;.c) -> the LEGAL R8 kotlin null-check (invoke-virtual getClass) throws -> the engine's deferred-throw semantics continue the throwing frame (multi-NPE blast radius) -> a NULL Throwable argument reaches Lel0;.Y -> cascade kills Lzs0.m -> Lt4.onMeasure. isPlaced stays false everywhere -> 0 content draws. NEXT ARMS: (a) deferred-throw must abort the throwing frame at the throw point (ART-faithful); (b) catch-handler argument must be the real in-flight throwable; (c) why Lvs0.c composes null text (state/resource law).",
    "priority": "P0",
    "layer": "dex/exceptions + compose/measure",
-   "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-88), single highest-ROI root]",
+   "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-88), single highest-ROI root] CONT-18h pointer 2026-10-08: arms (a)+(b) VERIFIED at HEAD (binary be95a47f797d3d99/f882ca1832b955e3) — deferred-throw aborts the throwing frame (throw_deferred + frame_unwind + try_recursive_invoke caller-side catch search) and catch handlers receive the REAL in-flight throwable ([EXC-PROPAGATE] lines with live NPE messages in run/cont18h/dooz_f265); the recorded \"deferred-throw continues the throwing frame\" face is gone. The first death face has MOVED off Lm7 null-text (that ctor never fired this run) to the ROOT-059 bypass (F-NEW-270, fixed) and then to F-NEW-271 (j/e field corruption — the arm-(c) root). Lzs.m still unwinds at depth 17 in the live trace, confirming the measure-pass death persists at HEAD.",
    "probe": "MINIANDROID_DRAW_WINDOW_TRACE + MINIANDROID_F141_DIAG + MINIANDROID_CL_TRACE traces (run/w7/dooz_drawwin, dooz_f141, dooz_exc)",
-   "verified_current": "runtime-proven chain link-by-link at binary aed46450/d701221b; dooz anchor unchanged x3",
+   "verified_current": "CONT-18h: arms (a)+(b) verified live at HEAD; arm (c) re-rooted to F-NEW-271; measure-pass death (Lzs.m depth-17 unwind) still reproduced at be95a47f797d3d99/f882ca1832b955e3; historical chain link-by-link proof at aed46450/d701221b stands.",
    "fanout": "any Compose app that measures text (all of them); pending independent Compose APK refetch",
    "date": "2026-10-08"
   },
@@ -4945,10 +4945,34 @@
    "evidence": "issue #381 section B/C claims ('Two separate String.split handlers existed', 'the old empty-delimiter split path was actually observed to hang', 'retained trailing empty elements'); source review at 8ee839e718877216 confirmed both sites live with the divergence. evidence/cont18g/CONT18G_FINAL_REVIEW.md",
    "probe": "fixtures/f268_exception_probe rows H/I/J/K at be95a47f797d3d99: trailing-empty removal (a,b,, -> len 2), empty-delim per-char (ab -> [a,b], no hang), Pattern.quote literal law (x.y -> [x,y]), control unchanged — PASS in both dispatch layers via the same public API surface.",
    "verified_current": "anchors 18/18 x3 byte-identical + fcol 18/18 + f259 7/7 + f259g 12/13 honest + f266 6/6 + negatives 19/19 at be95a47f797d3d99 (split is corpus-wide: zero behavior drift on every coherent input the anchors exercise)."
+  },
+  {
+   "id": "F-NEW-270",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "ROOT-059 route domain law (FIXED): the f141 null-receiver shadow-materialization route was ungated — any shadow-claimed class routed, and ViewShadow's EXP-060 heuristic claims every non-framework class — so R8-obfuscated app classes (dooz Lhv0; LongSet) executed real DEX bodies with this=null (wrong-site NPE inside the callee) and silently swallowed a paired null-receiver put; route also existed only at invoke-virtual 35c. Fix = f141_is_framework_class() prefix allowlist gating the route; ART-faithful throw for non-framework classes; caller identity in the route log.",
+   "priority": "P1",
+   "layer": "dex/exceptions + framework/shadow-claim-domain",
+   "evidence": "Live at be95a47f797d3d99 (pre-fix) run/cont18h/dooz_f265: [ROOT-059] routed Lhv0.h+Lhv0.d (user class) -> SYNTH-EXC iget-null-recv method=Lhv0;.d pc=17 inside callee -> cascade -> APP BOUNDARY. Post-fix run/cont18h/dooz_f270: zero ROOT-059 routes; f141-null-recv fires at the TRUE site (Lnb0;.S pc=185, message 'Lhv0;.h on a null object reference'); anchor d602648e8e401895 byte-identical x3. Regression at f882ca1832b955e3: anchors 18/18, fcol 18/18, f259 7/7, f259g 12/13 honest, f266 6/6, f268 12/12, negatives 19/19, reinstall 8/8, skill 13/13.",
+   "probe": "run/cont18h/dooz_f265 (pre-fix face) vs run/cont18h/dooz_f270 + dooz_f270b (post-fix); scripts/cont18h_regression.py battery; scripts/cont18h_newinst_xref.py + cont3_disasm_full.py source-first chain proof",
+   "verified_current": "fixed at binary f882ca1832b955e3; anchors 18/18 x3 byte-identical (d602648e8e401895, da73010a37dd0189, 4f1a9e4e8f64fae8, f3b483fe7b7cf51b, a976d2f9fb675cb3, b5a7a35d5fe0564b); full probe battery green at the same binary",
+   "fanout": "every R8-obfuscated Compose app: any null-receiver invoke on a user class previously executed the callee with this=null",
+   "date": "2026-10-08"
+  },
+  {
+   "id": "F-NEW-271",
+   "status": "CLASSIFIED",
+   "title": "COMPOSITION INVALIDATION FIELD CORRUPTION (F-265 arm (c) root): Lnb0 (CompositionImpl) o2838 field j (:Lqb0 invalidation holder) carries an alien-typed STRING_REF/0 — outside the f141_is_null_receiver domain (NULL_REF/OBJECT_REF-0/INT32-0) — so the chained Lqb0.e read skips the null law and the Lhv0.h invoke dies at f141, uncaught, killing composeContent (Lzs.m measure unwind, blank frame). Bytecode proven coherent; both Lqb0 constructions healthy; corruption is engine-side state (R-NEW-414 initializer-default / F-NEW-251 field-key split-brain families suspected).",
+   "priority": "P0",
+   "layer": "dex/fields + compose/invalidation",
+   "evidence": "run/cont18h/dooz_f270b: [F141-DIAG] Lnb0;.S pc=185 regs v2:t5/o0 (STRING_REF/0 in the j slot), v4:t8/o0; [TRI-F040] Lqb0;.<init> o3108/o3131 with healthy Lhv0;.<init>+fill chains; disasm (scripts/cont3_disasm_full.py + cont18h raw decode): Lnb0.S pc=0xf9/0x394 new-instance + real <init> + iput register-coherent; Lqb0;.<init> pc=0x3b iput fresh Lhv0 -> e unconditional. Issue: only two healthy constructions exist while o2838.j holds no Lqb0 — the store/read state split requires a heap-dump probe.",
+   "probe": "PENDING: extend MINIANDROID_F141_DIAG to dump the receiver source-object heap entry (all fields+types) at the failing iget; then audit scan_init_field_defaults/materialize_init_default store keys for single-letter R8 fields",
+   "verified_current": "registered at binary f882ca1832b955e3; anchors 18/18 x3 MATCH at the same binary (no drift while registering)",
+   "fanout": "every Compose app whose composition reaches the invalidation-record path on a composition instance whose j field was never DEX-initialized",
+   "date": "2026-10-08"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 578,
+ "total": 580,
  "count": 575,
  "meta": {
   "last_update": "CONT-16 fix-batch session 2026-10-07: F-NEW-266a (typed-null NPE law, f266 6/6), F-NEW-259g-a (shadow exception channel + JDK list-get range law, f259g row K flip), F-NEW-259g-b (Vector claim, NPE gone; row L expectation classified probe artifact) all ROOT-CAUSED-FIXED at binary a8761a482a186eac; anchors 6/6 x3 byte-identical, f259 7/7, fcol 3/18 unchanged, negatives 19/19, skill 13/13. CONT-16 52-task backlog: evidence/cont16/CONT16_TASK_BACKLOG.md",
@@ -4977,7 +5001,7 @@
   "CLASSIFIED": 2,
   "BLOCKED": 1
  },
- "total_roots": 578,
+ "total_roots": 580,
  "generated": "2026-10-08",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
