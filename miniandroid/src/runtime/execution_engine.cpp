@@ -14,6 +14,7 @@
 #include "../diagnostics/trace_overlay.h"   // S135: visual runtime boot/trace logger
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
+#include "../renderer/skeleton_light.h"  // CONT-24 EXPERIMENT (test branch only)
 #include "../fonts/text_shaper.h"
 #include "../resources/resource_runtime.h"
 #include "../resources/res_id.h"  // S67 A2: canonical complexToDimensionPixelSize law
@@ -3054,6 +3055,55 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         }
                     }
                     fb.clear(win_bg);
+                    // ── CONT-24 SKEL-LIGHT EXPERIMENT (TEST BRANCH ONLY) ────
+                    // env MINIANDROID_SKELETON_LIGHT=1 replaces the ~2,260-line
+                    // canvas-op draw walk (plus canvas/text/drawable machinery)
+                    // with ONE generic skeleton painter over the same
+                    // authoritative root. Default OFF = main-line pipeline.
+                    if (renderer::skeleton_light_enabled()) {
+                        renderer::SkeletonLightStats sk;
+                        const bool sk_ok = renderer::skeleton_light_render(
+                            view_shadow, root_id, config.screen_width,
+                            config.screen_height, win_bg, fb, sk);
+                        if (sk_ok) {
+                            const auto& sk_px = fb.get_pixels();
+                            for (size_t i = 0; i < sk_px.size() && i * 4 + 3 < framebuffer_.size(); i++) {
+                                framebuffer_[i * 4]     = sk_px[i].r;
+                                framebuffer_[i * 4 + 1] = sk_px[i].g;
+                                framebuffer_[i * 4 + 2] = sk_px[i].b;
+                                framebuffer_[i * 4 + 3] = sk_px[i].a;
+                            }
+                            // frame-truth census: the skeleton paints ONLY real
+                            // tree state — app_draw_ops counts real painted rows
+                            frame_census_.auth_root_valid = true;
+                            frame_census_.measure_ran = true;
+                            frame_census_.layout_ran = true;
+                            frame_census_.draw_walk_ran = true;
+                            frame_census_.app_draw_ops =
+                                (uint64_t)(sk.boxes_painted + sk.texts_painted);
+                            frame_census_.nodes_visited = sk.nodes_total;
+                            frame_census_.depth_max = sk.depth_max;
+                            frame_census_.content_bounds_valid = true;
+                            frame_census_.content_l = root_node->x;
+                            frame_census_.content_t = root_node->y;
+                            frame_census_.content_r = root_node->x + root_node->width;
+                            frame_census_.content_b = root_node->y + root_node->height;
+                            std::cerr << "[SKEL-LIGHT] nodes=" << sk.nodes_total
+                                      << " boxes=" << sk.boxes_painted
+                                      << " texts=" << sk.texts_painted
+                                      << " nonascii=" << sk.texts_skipped_non_ascii
+                                      << " imgs=" << sk.images_marked
+                                      << " click=" << sk.clickables
+                                      << " gone=" << sk.gone_skipped
+                                      << " depth=" << sk.depth_max
+                                      << " touched=" << sk.pixels_touched << std::endl;
+                            trace_engine_.increment_frame_count();
+                            return true;
+                        }
+                        // sk_ok == false → fall through to the full main-line
+                        // render (honest fallback, never a blank frame).
+                    }
+                    // ── END CONT-24 SKEL-LIGHT EXPERIMENT ────────────────────
                     renderer::SoftwareCanvas canvas(&fb);
                     renderer::BitmapFont font;
 
