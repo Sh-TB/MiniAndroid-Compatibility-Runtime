@@ -1,10 +1,10 @@
 # FINDINGS QUEUE (generated — do not edit by hand)
 
-Source: root_registry.json (581 rows). Regenerate: `python3 scripts/findings_queue.py`.
+Source: root_registry.json (585 rows). Regenerate: `python3 scripts/findings_queue.py`.
 
-Queued (actionable): **256**   Terminal (closed/rejected/superseded/not-applicable): **325**
+Queued (actionable): **258**   Terminal (closed/rejected/superseded/not-applicable): **327**
 
-Queued by priority: {"P3": 105, "P2": 65, "P1": 53, "P0": 33}
+Queued by priority: {"P3": 105, "P2": 66, "P1": 54, "P0": 33}
 
 ## Top 40 of the queue
 
@@ -14,7 +14,7 @@ Queued by priority: {"P3": 105, "P2": 65, "P1": 53, "P0": 33}
 | 2 | F-NEW-157 | P0 | OBSERVED-FAIL | — | libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivi |
 | 3 | F-NEW-169 | P0 | OBSERVED-FAIL | — |  |
 | 4 | F-NEW-265 | P0 | CLASSIFIED | dex/exceptions + compose/measure | DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream c |
-| 5 | F-NEW-272 | P0 | CLASSIFIED | framework/threads + exceptions | THREAD DEFAULT UNCAUGHT-EXCEPTION-HANDLER LAW GAP: the engine answers Thread.getDefaultUncaughtExceptionHandle |
+| 5 | F-NEW-274 | P0 | CLASSIFIED | framework/savedstate + coroutines | SAVEDSTATE/COROUTINE CHAIN NPE: Lwg0;.y pc=17 reads field Lrf1;.f on a null receiver (dooz next divergence aft |
 | 6 | F-NEW-172 | P0 | PARTIAL | DEX interpreter / array + loop seman | F-NEW-172 |
 | 7 | F-NEW-197 | P0 | PARTIAL | white-screen family | V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculato |
 | 8 | R-NEW-001 | P0 | PARTIAL | — | (title backfilled CONT-17) R-NEW-001 — live re-verified at HEAD, see evidence |
