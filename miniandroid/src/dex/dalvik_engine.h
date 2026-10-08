@@ -2192,6 +2192,46 @@ public:
                (v.type == DalvikType::INT32 && v.int_val == 0);
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-270 (CONT-18h): ROOT-059 ROUTE DOMAIN LAW — framework classes
+    // only. The S113 ROOT-059 null-receiver routing (invoke on a null
+    // receiver of a shadow-claimed class → the shadow's materialization
+    // law instead of the ART NPE) was built for PLATFORM classes (the
+    // androidx WindowInsets chain: Builder→Impl30→consume*). But
+    // ViewShadow's EXP-060 claim heuristic accepts ANY class that is not
+    // framework-prefixed ("user-defined class … could be a View subclass;
+    // let dispatch() decide by method name") — so claims_class() answers
+    // true for every R8-obfuscated Compose-internal class (dooz Lhv0; = a
+    // LongSet, Lvx1;, Lnb0; = CompositionImpl …). Routing THEIR null
+    // receivers past the ART NPE law re-created the exact wrong-site
+    // exception disease F-141 was built to kill: the callee's real DEX
+    // body executed with this=null (live face at be95a47f797d3d99: dooz
+    // Lhv0;.h self-calls Lhv0;.d → iget NPE at pc=17 INSIDE the callee
+    // instead of the ART NPE at the invoke site; the multi-NPE cascade
+    // killed CompositionImpl.composeContent → Lzs.m measure unwind →
+    // blank frame), and the paired silent-swallow face dropped a
+    // null-receiver h() put on the floor with no exception at all.
+    // Law (AOSP-faithful): ART never routes — the interpreter throws NPE
+    // at the invoke site for EVERY null receiver. Shadow materialization
+    // for null platform receivers is a MiniAndroid runtime law that only
+    // makes sense where the runtime IS the platform: framework packages
+    // only. The prefix set mirrors the ViewShadow heuristic's own
+    // framework allowlist plus the kotlinx/xmlpull/json runtime families
+    // the engine serves. Non-framework (user/obfuscated) classes keep
+    // the ART-faithful throw at every invoke format.
+    // ────────────────────────────────────────────────────────────────────
+    static bool f141_is_framework_class(const std::string& cls) {
+        return cls.rfind("Landroid/", 0) == 0 ||
+               cls.rfind("Landroidx/", 0) == 0 ||
+               cls.rfind("Ljava/", 0) == 0 ||
+               cls.rfind("Ljavax/", 0) == 0 ||
+               cls.rfind("Lkotlin/", 0) == 0 ||
+               cls.rfind("Lkotlinx/", 0) == 0 ||
+               cls.rfind("Lcom/google/", 0) == 0 ||
+               cls.rfind("Lorg/xmlpull/", 0) == 0 ||
+               cls.rfind("Lorg/json/", 0) == 0;
+    }
+
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): REAL XmlPullParser
     // pull-parse state — event machine advances on next().
     // NOTE: struct must precede the member-function declarations below.

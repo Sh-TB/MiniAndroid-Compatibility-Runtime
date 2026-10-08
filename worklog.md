@@ -7376,3 +7376,24 @@ Stage Summary:
 - The sweep's answer: 5 real "found-but-never-fixed" faces + 1 dual-handler divergence — all FIXED with one probe + full green regression; 1 claim refuted with source evidence; 2 documented-design; the rest already registered or superseded. Zero floats.
 - The interim negatives 9/19 was diagnosed to environment (probe-run stage absent), NOT engine drift — recorded per discipline.
 - Engine now at be95a47f797d3d99; anchors byte-identical prove the exception laws are behavior-preserving on the whole anchor corpus while closing real semantic gaps.
+
+---
+Task ID: CONT-18h
+Agent: Super Z (main)
+Task: user directive — "ادامه خط اصلی کمپن رو ادامه بده ۸۰ درصد کمپین اصلی و ۲۰ درصد هم سایر موارد" (continue the main campaign line: 80% main line / 20% other).
+
+Work Log:
+- 20% hygiene: pushed the pending CONT-18g artifact commit (02122b94..562ff2cb) before starting; secret guard PASS.
+- Main line: F-265 live decomposition at HEAD be95a47f797d3d99 (run/cont18h/dooz_f265, F141-DIAG + DRAW_WINDOW traces). VERDICT: arms (a)+(b) of the F-265 record are FIXED at HEAD — deferred-throw aborts the throwing frame (frame_unwind + caller-side catch search) and handlers receive the real in-flight throwable ([EXC-PROPAGATE] lines carry the true NPE message). The recorded "deferred-throw continues the throwing frame" face is gone. Lzs.m still unwinds at depth 17 → measure-pass death persists; Lm7 null-text face never fired (composition dies earlier).
+- New first death face: [ROOT-059] routed Lhv0.h + Lhv0.d (R8-obfuscated USER class) → DEX bodies executed with this=null → wrong-site iget NPE at Lhv0;.d pc=17 INSIDE the callee (ART throws at the invoke site) + silent swallow of the paired h() put. Root: ROOT-059's claims_class routing is ungated and ViewShadow's EXP-060 heuristic claims every non-framework class; route also existed only at invoke-virtual 35c (5 other f141 sites never route) — format-inconsistent.
+- F-NEW-270 FIXED in main code: f141_is_framework_class() prefix allowlist (Landroid/, Landroidx/, Ljava/, Ljavax/, Lkotlin/, Lkotlinx/, Lcom/google/, Lorg/xmlpull/, Lorg/json/) gates the ROOT-059 route; ART-faithful throw for non-framework classes; caller identity added to the route log. Rebuild → binary f882ca1832b955e3.
+- Post-fix live proof: zero ROOT-059 routes in dooz; f141-null-recv fires at the TRUE invoke site ([SYNTH-EXC] 'Lhv0;.h' on null @ method=Lnb0;.S pc=185); anchor d602648e8e401895 byte-identical.
+- F-265 arm (c) root-cause advanced (source-first, payload-aware DEX tooling written: scripts/cont18h_newinst_xref.py; cont3 disasm + raw unit decodes): the failing frame is Lnb0 (CompositionImpl) o2838 .S pc=185 reading this.j (:Lqb0 invalidation holder) → chained .e (:Lhv0) → h() put. REGISTER WINDOW PROOF: j slot holds t5/o0 = STRING_REF/0 — an alien type outside f141_is_null_receiver's domain. Bytecode proven coherent: both Lqb0 construction sites run the real <init> ([TRI-F040] o3108/o3131 with healthy Lhv0.<init>+fill chains), Lqb0.<init> unconditionally iputs a fresh Lhv0 into e. Corruption is engine-side state → registered F-NEW-271 (CLASSIFIED, P0) with next arms (heap-dump probe at the failing iget; R-NEW-414/F-NEW-251 field-key audit; Lnb0 ownership check).
+- F-267 dependency honest: stays PENDING behind F-265 arm (c) (placed-node bounds still unavailable — blank anchor + Lzs.m unwind reproduced).
+- Full regression at f882ca1832b955e3 (scripts/cont18h_regression.py + canonical runners): anchors 18/18 x3 BYTE-IDENTICAL; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; f268 12/12; negatives 19/19; reinstall 8/8; skill 13/13 — identical to the recorded CONT-18g green state (F-270 is behavior-preserving on the whole corpus).
+- Registry 578→580: F-NEW-270 ROOT-CAUSED-FIXED; F-NEW-271 CLASSIFIED (P0, front of the arm-(c) queue); F-265 evidence appended (arms a+b verified, arm c re-rooted). Queue refreshed: 256 queued / 324 terminal.
+
+Stage Summary:
+- The main line moved two notches this wave: F-265 arms (a)+(b) formally verified at HEAD (previously only assumed), and the composition-death root narrowed from "somewhere in the measure pass" to a single named corrupt field (Lnb0.j = STRING_REF/0) with the bytecode exonerated — F-267's tap gate is now exactly one field-store law away from re-triage.
+- One engine source fix landed (F-270, framework-only ROOT-059 route domain), full-battery green, zero drift.
+- Evidence: evidence/cont18h/CONT18H_MAINLINE.md; task list rows 50_1..50_4 (67 genuine tasks); run artifacts run/cont18h/{dooz_f265,dooz_f270,dooz_f270b,reg}.

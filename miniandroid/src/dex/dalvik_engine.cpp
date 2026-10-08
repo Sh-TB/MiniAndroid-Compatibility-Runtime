@@ -5882,6 +5882,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
          // climb to the depth cap in Dooz v18 Compose init.
          (declaring_class == "Lj/j0;" && method_name == "<init>") ||
          (declaring_class == "Lt0/t;" && method_name == "<init>") ||
+         // CONT-18h F-265 arm-(c): did the invalidation-holder ctor chain
+         // (Lqb0.<init> → Lhv0.<init>) ever reach DEX dispatch? The dooz
+         // composition died on Lnb0.j.e == null even though Lqb0.<init>'s
+         // bytecode unconditionally iputs a fresh Lhv0 before use.
+         (declaring_class == "Lqb0;" && method_name == "<init>") ||
+         (declaring_class == "Lhv0;" && method_name == "<init>") ||
          (declaring_class == "LE0/c;" && method_name == "<init>"))) {
         static thread_local uint64_t tri_f040 = 0;
         if (tri_f040 < 100000) {
@@ -19113,9 +19119,20 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // on non-null WindowInsets objects everywhere, and the runtime's
         // platform law provides them. Unclaimed classes keep the
         // ART-faithful throw below.
-        if (shadow_registry_ && shadow_registry_->claims_class(declaring_class)) {
+        // F-NEW-270 (CONT-18h) ROUTE DOMAIN LAW: the route is lawful for
+        // FRAMEWORK classes only. ViewShadow's EXP-060 heuristic claims
+        // every non-framework class ("could be a View subclass"), so an
+        // ungated claims_class() check also captured R8-obfuscated app
+        // classes and let their real DEX bodies run with this=null — the
+        // wrong-site-exception disease F-141 eliminated (live face: dooz
+        // Lhv0;.h→Lhv0;.d iget NPE at pc=17 inside the callee + silent
+        // h() swallow). Non-framework classes keep the ART throw.
+        if (shadow_registry_ && f141_is_framework_class(declaring_class) &&
+            shadow_registry_->claims_class(declaring_class)) {
             std::cerr << "[ROOT-059] null-recv routed to shadow law: " << declaring_class
-                      << "." << method_name_from_dex << std::endl;
+                      << "." << method_name_from_dex
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
             static_type = declaring_class;
             runtime_type = declaring_class;
             resolved_method = declaring_class + "." + method_name_from_dex;
