@@ -7336,3 +7336,22 @@ Work Log:
 Stage Summary:
 - LAW-C/E/F closed (fcol 18/18) + F-217 first-divergence documented in one session, all evidence committed.
 - Standing queue: T-09/T-10 (F-265 reclassification) gated by the Compose tap frontier (target=0); T-14 ARM-A audit for the composition chain (Lnb0.H) belongs to the F-265 family; stream-family rest + subList CoMod + AbstractCollection.toString = DEFERRED with scope.
+
+---
+Task ID: CONT-18f
+Agent: Super Z (main)
+Task: Orphan-findings audit (make every discrete/abandoned finding usable or explicitly dispositioned) + practical next-step proof + push to GitHub.
+
+Work Log:
+- Lineage recovery: this container was stale at CONT-10 (local main 23 commits behind); fast-forwarded to origin/main c15e2661 (full CONT-11..18 lineage incl. LAW-A..F fixes and the F-217 T-01 first-divergence).
+- Binary reproduction: clean cold build (make -j1 after -j2 OOM) reproduces the recorded CONT-18 binary byte-identically — build/miniandroid sha16 8ee839e718877216.
+- LAW-A..F cumulative impact proven live: fcol probe APK rebuilt from committed fixture (scripts/cont11_build_fcol.sh), run at the reproduced binary — fcol 18/18 PASS (K1–K18; was 3/18 at CONT-18 baseline). Anchors 6/6 ×3 = 18/18 MATCH byte-identical.
+- Next-step frontier live evidence: dooz scripted tap at the game button — [F117-TAP] frame 15 DOWN (540,960) target=0; post-tap screenshot d602648e8e401895 = dooz anchor (byte-identical = zero state consumed). Registered F-NEW-267 (CLASSIFIED; Compose tap hit-test gap; hard dependency F-265 placement) — registry 575→576 (scripts/cont18f_register_f267.py).
+- Orphan-findings audit: evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md — 14 recorded loose ends (L1–L14), each INTEGRATED / FIXED / REGISTERED / RESOLVED / DEFERRED(scope) / OBSERVED / BLOCKED, zero floats. Includes the pre-push guard empty-staged-list defect (recorded twice since CONT-8, never fixed): root cause verified live (GNU grep -r with no path operands recurses into CWD); FIXED in scripts/security/check_secrets.sh (empty scan set = NO-OP; fail-closed unchanged) + permanent selftest law (7 detection + 5 FP + empty-list NO-OP rows all PASS).
+- Usability artifact: scripts/findings_queue.py — registry+census → deterministic ranked queue (255 queued / 321 terminal of 576; P0 first: F-NEW-156, F-NEW-157, F-NEW-265). Output committed to evidence/cont18f/findings_queue.{json,md}.
+- Evidence: evidence/cont18f/cont18f_live_proofs.json (binary/anchors/fcol/tap/guard/queue proofs, all generated from this container's runs); CONT18_BASELINE.md §7 addendum; CONT18_TASK_LIST.md rows 49_1..49_7 (56 genuine tasks).
+
+Stage Summary:
+- No engine source changed; the only main-code change is the guard fix (scripts/, selftest-proven). Registry +1 (F-NEW-267 CLASSIFIED, evidence-backed).
+- The audit's answer to the directive: every historical finding now either (a) lives in the registry with an explicit status, (b) is a committed tool/fix, or (c) carries an explicit DEFERRED/OBSERVED/BLOCKED disposition with scope — nothing is abandoned-unused.
+- Campaign impact made concrete: fcol 3/18 → 18/18 live at a byte-identical reproduced binary; anchors 18/18 zero drift; next frontier (F-265 → F-267 tap gate) registered and ranked P0/P1 in the usable queue.

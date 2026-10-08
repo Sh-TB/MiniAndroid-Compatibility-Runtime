@@ -4915,10 +4915,20 @@
    "verified_current": "anchors 6/6 x3 byte-identical at binary a8761a482a186eac (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b all UNCHANGED — zero native drift); f259 probe 7/7; fcol audit 3/18 (unchanged vs recorded state — no regression); negatives 19/19; skill selftest 13/13; evidence/cont16/cont16_reconciliation.md",
    "fanout": "every typed-null invoke-interface/invoke-virtual in any app (null-guarded API surfaces, compose Modifier chains, SAM interfaces held in nullable fields)",
    "date": "2026-10-07"
+  },
+  {
+   "id": "F-NEW-267",
+   "status": "CLASSIFIED",
+   "title": "COMPOSE TAP HIT-TEST GAP: the canonical TouchDispatcher hit-test walks the ViewShadow tree only; when the walk lands on a Compose host view (AndroidComposeView/AbstractComposeView family) there is no bridge into the materialized Compose node tree (LayoutNode bounds from the measure pass), so every Compose-owned interactive surface is tap-dead (target=0). This gates CONT-18 T-09/T-10: the dooz GAME screen (game-mode button on the materialized main-menu tree) is unreachable by scripted taps, so the F-084-halt-before-null-text causal-order trace cannot run on live games. Generic law surface (AOSP): ComposeView.onTouchEvent -> Owner.hitTest -> hitTest over placed LayoutNodes honoring Modifier pointerInput/clickable semantics; minimal engine bridge = at the Compose-host ViewShadow, resolve the Compose root node from the heap (UiApplier root chain) and hit-test placed node bounds depth-first (topmost placed node containing the point wins), then schedule the click through the SAME PerformClick HandlerShadow law pipeline (no input bypass). HARD DEPENDENCY: F-NEW-265 (measure pass dies mid-flight -> isPlaced=false) must be resolved first or node bounds are unavailable.",
+   "priority": "P1",
+   "layer": "framework/input+compose-bridge",
+   "evidence": "evidence/cont18/CONT18_F217_FIRST_DIVERGENCE.md sec.4 (recorded face run/cont18/t01_run_tap1: [F117-TAP] DOWN (540,960) target=0); LIVE reproduction this wave at binary 8ee839e718877216: run/cont18f/tap1/run.log '[F117-TAP] frame 15 DOWN (540,960) target=0', screenshot sha16 d602648e8e401895 == dooz anchor (byte-identical pre/post tap = zero state consumed, no interactive surface reachable); the tap pipeline itself is exonerated (F-117/R-NEW-394/S129 dialog+swipe laws all green on View-tree apps: negatives 19/19).",
+   "probe": "PENDING (next wave): scripted-tap probe on a materialized Compose tree (synthetic Compose APK with a known clickable node at a known placed bound); positive = target!=0 + PerformClick -> DEX onClick; negative = tap outside all placed bounds stays target=0.",
+   "verified_current": "registered at binary 8ee839e718877216 (clean rebuild reproduces the recorded CONT-18 binary byte-identically); anchors 18/18 x3 MATCH at the same binary (no drift while registering)."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 575,
+ "total": 576,
  "count": 575,
  "meta": {
   "last_update": "CONT-16 fix-batch session 2026-10-07: F-NEW-266a (typed-null NPE law, f266 6/6), F-NEW-259g-a (shadow exception channel + JDK list-get range law, f259g row K flip), F-NEW-259g-b (Vector claim, NPE gone; row L expectation classified probe artifact) all ROOT-CAUSED-FIXED at binary a8761a482a186eac; anchors 6/6 x3 byte-identical, f259 7/7, fcol 3/18 unchanged, negatives 19/19, skill 13/13. CONT-16 52-task backlog: evidence/cont16/CONT16_TASK_BACKLOG.md",
@@ -4947,7 +4957,7 @@
   "CLASSIFIED": 2,
   "BLOCKED": 1
  },
- "total_roots": 575,
+ "total_roots": 576,
  "generated": "2026-10-08",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
