@@ -1,0 +1,84 @@
+{
+ "artifact": "CONT-11 W7 wave summary — dooz draw-path root cause driven to its final link (isPlaced gate) with static/runtime/upstream triangulation. Evidence-first: no fix attempted, no fake closure, registry refined F-NEW-256 + registered F-NEW-260.",
+ "binary": "aed46450c103f2ea (clean rebuild, byte-exact W6 lineage reproduction)",
+ "head_at_wave_start": "e99c2fbd (local) / 6a66806a (origin main)",
+ "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+ "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+ "baseline": {
+  "runs": 3,
+  "anchor": "d602648e8e401895 x3 (zero drift vs recorded)",
+  "ondraw_rows": "[C013-ONDRAW] view=1430 class=Lt4; dispatched=YES ops=0 (every frame)",
+  "uncaught": 6,
+  "uncaught_identity": "known setup-phase La; CancellationException cascade (W5-classified, unchanged)"
+ },
+ "static_analysis": {
+  "tooling": [
+   "scripts/cont11_flatxref.py",
+   "scripts/cont11_rawscan.py",
+   "scripts/cont11_w7_baseline.py"
+  ],
+  "r8_identities_proven": {
+   "Lt4;": "AndroidComposeView (dispatchDraw 149 units decoded)",
+   "Lhi;+Ly3;": "CanvasHolder + AndroidCanvas (adopt: Ly3;.a = platform canvas)",
+   "Lel0;.i": "LayoutNode.draw -> outerCoordinator.draw (via I:Lkz0;.d:Lpz0;.L0)",
+   "Lpz0;": "NodeCoordinator (P:Lc31; = layer:OwnedLayer?; t/u = wrapped/inner)",
+   "Lpz0;.L0": "NodeCoordinator.draw: P!=null -> layer.drawLayer else translate+M0+translate-back",
+   "Lpz0;.M0": "drawContainedDrawModifiers: T0(4)=head(Nodes.Draw); null -> h1=performDraw",
+   "T0(4)": "head(Nodes.Draw), 4 = Nodes.Draw mask (NodeKind.kt:86)",
+   "Lqz0;.g": "NodeKind.includeSelfInTraversal — FALSE for Draw (upstream-correct)",
+   "Lxk0;/Lug0;": "Outer/Inner NodeCoordinator (h1=performDraw)",
+   "Lpz0;.r1": "OwnedLayer.reuseLayer (strings 'layer should have been released before reuse' @0x118)",
+   "Luc0;": "GraphicsLayerOwnerLayer — only ctor site inside r1 cache-miss branch",
+   "Ljt1;": "per-thread platform-Canvas forwarder; sole site Lj7;.e = android.text.Layout.draw (text path)"
+  }
+ },
+ "runtime_proofs": {
+  "method_trace_12_frames": {
+   "entries": 85838,
+   "Lgl0;.c (CanvasDrawScope.draw)": 0,
+   "Lyl;.z (layered content driver)": 0,
+   "Luc0;.<init>": 0,
+   "Lpz0;.r1": 2,
+   "Lqz0;.a/.b (chain attach/detach)": "65/65 — kindSets REAL (o6325 kindSet=13 = Any|Draw|Semantics)"
+  },
+  "draw_window_6_frames": "430 [DRAWWIN-IN] rows; full per-frame chain: dispatchDraw -> adopt -> Lel0;.i -> L0(P=null) -> translate -> M0 -> T0(4)=null -> h1 -> children loop count=1 -> I()=FALSE -> frame ends 0 ops",
+  "field_traces": {
+   "Lpz0;.P": "371 reads, 0 writes (OwnedLayer slot legitimately null — no graphicsLayer modifiers)",
+   "Lt4;.B0": "1 put (ctor), 0 reads",
+   "Lpz0;.N": "read x2 by r1; M: 0 reads; x: written x2 by r1",
+   "Lbt0;.K": "1 put value=NULL_REF (printer shows <unset> for NULL_REF — diagnostic quirk documented), 1 get",
+   "Lbt0;.w (isPlaced)": "get x89 (Lel0;.I gate), put-init x1, place-writers x0 — NEVER flips true",
+   "Liw0;.g": "Lug0;.h1 draw-time children count = 1 (obj#2007)"
+  },
+  "param_trace": "Lbt0;.v0(J,F,Lf90;) regs=10 ins=5: v9 (Lf90;) = NULL_REF at entry — engine arg-passing CORRECT (F-028c wide layout verified); the null drawBlock = upstream-normal for graphicsLayer-free nodes"
+ },
+ "root_cause": {
+  "id": "F-NEW-260",
+  "statement": "Compose measure/place lifecycle never completes for applier-inserted LayoutNodes: MeasurePassDelegate.isPlaced (Lbt0;.w) stays false (place writers Lbt0;.q0/.r0 never execute), so InnerNodeCoordinator.performDraw's upstream gate if (layoutNode.isPlaced) child.draw(...) skips every content node (child o6128: I()=FALSE) -> CanvasDrawScope.draw 0 invocations -> 0 canvas ops -> dooz background-only.",
+  "upstream_anchors": [
+   "ui 1.11.4 LayoutNode.kt:826 isPlaced = measurePassDelegate.isPlaced ('this node AND ALL OF ITS PARENTS have been placed')",
+   "NodeCoordinator.drawBlock: 'if (layoutNode.isPlaced) {draw} else {skip — invalidated when finally placed}'",
+   "AndroidComposeView.dispatchDraw calls measureAndLayout() BEFORE root.draw"
+  ],
+  "fix_surface": "engine-side measure+place scheduling for applier-inserted subtrees (generic law: node inserted -> request layout -> measure+place before next draw); probe next wave: synthetic applier-insert assert isPlaced flips + draw lambdas fire"
+ },
+ "registry": {
+  "before": 566,
+  "after": 567,
+  "changes": [
+   "F-NEW-256 refined (draw-path diagnosis advanced, W6 Ljt1; claim corrected)",
+   "F-NEW-260 registered CLASSIFIED P0"
+  ]
+ },
+ "honesty_notes": [
+  "No engine source changes this wave (diagnosis-only wave) — zero regression risk by construction.",
+  "No fix claimed for F-NEW-260; the CLASSIFIED chain is the deliverable (evidence-first discipline).",
+  "dalvik_value_to_string prints NULL_REF as <unset> (default case) — the Lbt0;.K 'unset' value was actually a clean NULL_REF; documented to prevent future misreads.",
+  "The W6 'Ljt1; never constructed' primary-root claim is corrected: Ljt1; belongs to the text-layout draw path (Lj7;.e), a symptom not the root."
+ ],
+ "reconciliation": {
+  "note": "Pre-reconciliation this wave provisionally numbered its finding F-NEW-260 against the stale local registry (566 roots, CONT-10 W6 era). On push, origin/main had advanced to CONT-18h (580 roots) where the SAME root was already independently registered as F-NEW-265 (measure-pass death -> isPlaced gate) with F-NEW-271 as arm (c). Per no-duplicate discipline, this wave's evidence was FOLDED into F-NEW-265 (evidence + verified_current fields) instead of registering a duplicate root.",
+  "contribution": "independent re-derivation + complementary quantitative evidence: Lgl0;.c=0/85,838 METHOD-TRACE; Lbt0;.w 89 reads/0 place-writers; draw-window 430 rows; children count=1; F-028c arg-passing verified clean; 13 R8<->1.11.4 identities; 2 new forensic tools",
+  "local_file_ids": "references to 'F-NEW-260' inside this file's registry block are the provisional pre-reconciliation numbering"
+ }
+}
