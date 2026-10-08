@@ -1,10 +1,10 @@
 {
  "generated_by": "scripts/findings_queue.py",
  "total_rows": 585,
- "queued_rows": 258,
- "terminal_rows": 327,
+ "queued_rows": 256,
+ "terminal_rows": 329,
  "counts_by_status": {
-  "ROOT-CAUSED-FIXED": 131,
+  "ROOT-CAUSED-FIXED": 133,
   "PARTIAL": 110,
   "UNPROVEN": 72,
   "VERIFIED-CORRECT": 56,
@@ -15,8 +15,8 @@
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "SUPERSEDED-BY-EVIDENCE": 12,
   "USED_BY_EXECUTION": 7,
-  "CLASSIFIED": 7,
   "OBSERVED-FAIL": 5,
+  "CLASSIFIED": 5,
   "OPEN": 4,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
@@ -29,8 +29,8 @@
  "queued_by_priority": {
   "P3": 105,
   "P2": 66,
-  "P1": 54,
-  "P0": 33
+  "P1": 53,
+  "P0": 32
  },
  "queue_top": [
   {
@@ -64,14 +64,6 @@
    "layer": "dex/exceptions + compose/measure",
    "title": "DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream consequence): the compose DRAW machinery is PROVEN ",
    "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-8"
-  },
-  {
-   "id": "F-NEW-274",
-   "status": "CLASSIFIED",
-   "priority": "P0",
-   "layer": "framework/savedstate + coroutines",
-   "title": "SAVEDSTATE/COROUTINE CHAIN NPE: Lwg0;.y pc=17 reads field Lrf1;.f on a null receiver (dooz next divergence after F-272/F-273; the run continues via compatibilit",
-   "evidence": "run/cont21/after/dooz_r3 (~line 3036) at 882b7cdf389aabc3: single remaining uncaught face; F089 map put of SavedStateHan"
   },
   {
    "id": "F-NEW-172",
@@ -352,6 +344,14 @@
    "layer": "dex/r8-merged-class-identity",
    "title": "R8-MERGED CLASS CONSTRUCTOR/DISPATCH MISMATCH: LA/h; is a horizontal class merge (field `a` mode int + packed-switch ctor paths: SparseIntArray pair / s/h+Array",
    "evidence": "[CONT-17 task 52 2026-10-08] TypeToken dispatch re-verify: the recorded APK for the A/h.<init> CopyOnWriteArrayList face"
+  },
+  {
+   "id": "F-NEW-229",
+   "status": "OBSERVED",
+   "priority": "P1",
+   "layer": "layout/constraintlayout-match-parent-spec",
+   "title": "CL MATCH_PARENT SPEC LAW: a ConstraintLayout child with width/height=MATCH_PARENT and NO anchors on that axis falls back to child_spec → AT_MOST(available), so ",
+   "evidence": "[CONT-17 task 34 2026-10-08] CL MATCH_PARENT spec law read at source (kept OBSERVED): the AT_MOST->fill arm for anchorle"
   }
  ],
  "note": "rank = (priority P0<P1<P2<P3, status class OPEN/CLASSIFIED < PARTIAL < UNPROVEN < IMPLEMENTED, id); terminal rows excluded; full order deterministic; dispositions per evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md"

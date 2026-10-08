@@ -7484,3 +7484,21 @@ Work Log:
 Stage Summary:
 - The family matrix is built on runtime-traced paths, not APK names; clustering selected the primitive BEFORE any patch, and the two landed fixes (F-273 identity chain, F-272 UEH law) both carry multi-target runtime evidence + green cross-family regression. dooz remains honestly PARTIAL: its remaining uncaught face is now exactly F-NEW-274 (savedstate chain), the next wave's P0.
 - Next wave owns: F-NEW-274 (same source-first workflow), then F-275/F-276; family-level candidates (SurfaceView identity, libGDX surface/input, native-ABI extraction) stay clustered-only until a second target hits them.
+
+---
+Task ID: CONT-22
+Agent: Super Z (main)
+Task: CONT-22 / Issue #384 follow-up — audit CONT-21, harvest first divergences across the 7 execution families, fix the next highest-value shared Base roots source-first, prove cross-family runtime improvement, push.
+
+Work Log:
+- State sync: engine byte-exact 882b7cdf389aabc3 at start; pre-fix family evidence preserved (run/cont22/family_paths_PREFIX_CONT21.json).
+- AUDIT (evidence/cont22/CONT21_AUDIT.md): re-verified F-272/F-273 source+runtime, APP BOUNDARY 2->0, [F273-PROVINFO], F-274 face at line 3036, anchors 18/18 re-run. FINDING: cont21_family_sweep.sh run1() declared `local sha rc` between the engine call and rc=$? — bash `local` resets $?, so the sweep ALWAYS reported rc=0; the CONT-21 "5/5 rc 1->0" claim REJECTED as measured (Python truth: all rc=1 = PARTIAL SUCCESS by main.cpp:992 law). Script fixed; face-level claims survive.
+- HARVEST (scripts/cont22_cluster_scan.py -> run/cont22/cluster_scan.json): 14 targets re-run; wide framework-signature clustering; uncaught census: dooz 1, opencalc 5, chessclock 1, bouncy 2, tictactoe 2, telegram/forkgram 9 (family-internal), others 0.
+- ROOT SELECTION: R1 F-275 getServiceInfo/GET_SERVICES (opencalc F1 + telegram F4 = 2/2); R2 F-274 dooz face root-caused DEEPER via androguard chain (scripts/cont22_disasm*.py): R-NEW-414 fabricated zero-objects of initializer types with NO ()V ctor — Lgf1;.g -> new Lwg0; (R8 merged-lambda, capture .f set only by its parameterized ctor) -> app's own if-eqz null-guard defeated -> iget Lrf1;.f on null in the SavedStateRegistry.performSave lambda. ART law: never-written field reads null; zero-object legal only with a ()V ctor.
+- FIXES (dalvik_engine.cpp/.h only, zero app checks): F-NEW-274 class_has_no_arg_ctor() gate in BOTH R414 arms (honest null + [F274-CTORGATE]/[F274-CTORGATE-B] diags; framework Rect/Point/TypedValue behavior preserved); F-NEW-275 PackageManager.getServiceInfo law (manifest_service_classes_ identity walk, ServiceInfo seed + metaData under GET_META_DATA, NameNotFoundException via throw_deferred) + GET_SERVICES (0x20) PackageInfo.services array law (GET_PROVIDERS mirror). Rebuild: timeout 570 make -j1 BUILD_DIR=build -> fa88902fdee6e982.
+- RUNTIME PROOF: dooz uncaught 1->0 (zero uncaught faces first time; [UEH-DEFAULT] kill path GONE; Lrf1;.f mentions 37->0; +113 log lines deeper; anchor d602648e8e401895 unchanged); opencalc uncaught/APP-BOUNDARY 5->4, ServiceInfo NPE 0, NameNotFoundException APP-CAUGHT (upstream-faithful: opencalc's manifest does NOT declare AppLocalesMetadataHolderService — verified in the binary manifest), anchor unchanged; telegram Firebase ComponentDiscovery served x2, app catches. CROSS-TARGET F-274: [F274-CTORGATE-B] fired in opencalc too (Lm0/i0;.e -> RecyclerView accessibility delegate Lm0/h0;, only <init>(Lm0/i0;)V) — 2 targets/2 families (F6+F1) from one law, discovered at runtime.
+- REGRESSION at fa88902f: anchors 18/18 x3 byte-identical + g2048 59ca1526 x3; fcol 20/20, f259 7/7, f259g 12/13 (same known honest F259-L row), f266 6/6, f268 12/12; 5-target sweep screenshots byte-identical. Registry 585 rows: F-274 + F-275 -> ROOT-CAUSED-FIXED (terminal 329/queued 256).
+- Deliverables: evidence/cont22/{CONT21_AUDIT.md, CROSS_FAMILY_PROGRESS.md, CONT22_REPORT.md}; scripts/cont22_cluster_scan.py, cont22_disasm{,2,3,4}.py, cont22_registry.py.
+
+Stage Summary:
+- Two generic roots closed with cross-family runtime proof + the audit layer caught a false exit-code claim (method working as designed). dooz = zero uncaught faces at RENDER_STARTED; the next wave's P0 is the F-265 measure-pass chain (the Compose visual gate), then the libGDX surface/input family (P10, now 2 targets).

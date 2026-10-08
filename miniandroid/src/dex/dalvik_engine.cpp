@@ -17553,6 +17553,36 @@ DalvikValue DalvikExecutionEngine::materialize_init_default(
     return v;
 }
 
+// F-NEW-274 (CONT-22) — ART constructor-contract gate for R-NEW-414
+// initializer materialization (see header for the law). Live face (dooz,
+// run/cont21/after/dooz_r3 + fresh CONT-22 runs): Lgf1;.g's initializer is
+// `new Lwg0;(Lrf1;, I)` — an R8 merged-lambda class whose ONLY constructors
+// take captured arguments; R414 fabricated a zero Lwg0; whose capture field
+// .f stayed null, the caller's own `if-eqz` null-guard at the read site
+// (Lg8;.a:  iget g; if-eqz; …invoke .y) then saw a NON-null broken object,
+// invoked the save-lambda body, and died at `iget Lrf1;.f` on the null
+// capture (SavedStateRegistry.performSave neighborhood). ART law: a field
+// never written reads null; an initializer-default object exists only after
+// its constructing <init> ran, so a class with no ()V ctor cannot have a
+// legal zero-state instance. DEX-defined classes are inspected for a ()V
+// <init>; non-DEX classes (framework Rect/Point/TypedValue shells the
+// materializer seeds itself) keep the old behavior.
+bool DalvikExecutionEngine::class_has_no_arg_ctor(const std::string& type_desc) {
+    if (type_desc.empty() || type_desc[0] != 'L') return false;
+    auto cit = class_info_index_.find(type_desc);
+    if (cit == class_info_index_.end() ||
+        cit->second >= dex_report_->classes.size()) {
+        // Framework-owned type: materialize_init_default's seed block
+        // defines its zero-state contract (Rect/Point/PointF/TypedValue).
+        return true;
+    }
+    const auto& cls = dex_report_->classes[cit->second];
+    for (const auto& m : cls.direct_methods) {
+        if (m.name == "<init>" && m.descriptor == "()V") return true;
+    }
+    return false;
+}
+
 bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& trace) {
     // Format: 22c iget-object vA, vB, field@CCCC
     // Read object field from object and place reference in destination register
@@ -17748,6 +17778,28 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                             auto ft = fm->second.find(field_res.field_name);
                             if (ft != fm->second.end() && !ft->second.empty() &&
                                 ft->second == field_res.field_type) {
+                                // F-NEW-274 constructor-contract gate: fabricate
+                                // ONLY when the initializer type has a ()V ctor
+                                // (or is framework-owned). Otherwise the honest
+                                // ART default (null) flows and the app's own
+                                // null-handling runs.
+                                if (!class_has_no_arg_ctor(ft->second)) {
+                                    static thread_local uint64_t f274_n = 0;
+                                    if (f274_n < 16) {
+                                        ++f274_n;
+                                        std::cerr << "[F274-CTORGATE] "
+                                                  << walk << "."
+                                                  << field_res.field_name
+                                                  << " initializer type "
+                                                  << ft->second
+                                                  << " has no ()V ctor -> honest null (recv="
+                                                  << r414_cls << " caller="
+                                                  << current_class_ << "."
+                                                  << current_method_
+                                                  << " pc=" << pc << ")"
+                                                  << std::endl;
+                                    }
+                                } else {
                                     DalvikValue dv =
                                         materialize_init_default(ft->second);
                                     if (dv.type == DalvikType::OBJECT_REF &&
@@ -17791,6 +17843,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                                 }
                             }
                         }
+                    }
                     }
                 }
             }
@@ -17876,6 +17929,23 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                 if (fm != init_field_defaults_.end()) {
                     auto ft = fm->second.find(field_res.field_name);
                     if (ft != fm->second.end() && !ft->second.empty()) {
+                        // F-NEW-274 constructor-contract gate (same law as the
+                        // in-heap arm): a class with no ()V constructor has no
+                        // legal zero-state instance — answer the honest ART
+                        // default (null) instead of a fabricated object.
+                        if (!class_has_no_arg_ctor(ft->second)) {
+                            static thread_local uint64_t f274b_n = 0;
+                            if (f274b_n < 16) {
+                                ++f274b_n;
+                                std::cerr << "[F274-CTORGATE-B] field "
+                                          << field_res.class_descriptor << "."
+                                          << field_res.field_name
+                                          << " initializer type " << ft->second
+                                          << " has no ()V ctor -> honest null"
+                                          << std::endl;
+                            }
+                            break;
+                        }
                         DalvikValue dv = materialize_init_default(ft->second);
                         if (dv.type == DalvikType::OBJECT_REF &&
                             dv.object_id != 0) {
@@ -39784,6 +39854,142 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // CONT-22 (F-NEW-275) — PackageManager.getServiceInfo law.
+    // AOSP PackageManager.getServiceInfo(ComponentName, flags): returns the
+    // ServiceInfo of the manifest-declared <service> for the component —
+    // NEVER null (throws PackageManager.NameNotFoundException when no
+    // service matches). With GET_META_DATA (0x80) ServiceInfo.metaData is
+    // the Bundle built from the <service>'s <meta-data> children
+    // (PackageParser.parseService → PackageItemInfo.metaData).
+    // Shared-primitive evidence (run/cont22/cluster_scan.json, fresh
+    // post-CONT-21 logs): opencalc (F1) AppCompatDelegate locale-service
+    // discovery — Lg/t;.b builds ComponentName(ctx,
+    // AppLocalesMetadataHolderService) with flags 640
+    // (GET_SERVICES|GET_META_DATA), calls getServiceInfo then igets
+    // ServiceInfo.metaData with NO null-check (the app only catches
+    // NameNotFoundException; the engine's REC-MISS null became an NPE and
+    // its uncaught face); telegram (F4) Firebase ComponentDiscovery
+    // Lkg/i;.P calls getServiceInfo(cn, 128) twice and degrades on the
+    // returned null — 2 targets / 2 execution families at the same
+    // primitive. Mirror of the F-NEW-273 getProviderInfo law (same
+    // matching, seeding, and NameNotFoundException contract; the manifest
+    // service table and component_meta_data_ already cover services).
+    // Generic across all APKs — zero app checks.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getServiceInfo" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        // Resolve the target service class from the ComponentName arg
+        // (same arg convention as getProviderInfo above).
+        std::string svc_class;
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            auto cls_f = heap_.get_object_field(args[1].object_id, "mClass");
+            if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
+                svc_class = cls_f->string_val;
+        }
+        // Normalize: ".Foo" → pkg.Foo; "Foo" (no dot) → pkg.Foo.
+        auto normalize_svc = [&](std::string c) {
+            if (c.empty()) return c;
+            if (c[0] == '.') return package_name_ + c;
+            if (c.find('.') == std::string::npos) return package_name_ + "." + c;
+            return c;
+        };
+        std::string norm = normalize_svc(svc_class);
+        // Trim an L...; descriptor to a bare dotted class name.
+        std::string bare = norm;
+        if (!bare.empty() && bare.front() == 'L' && bare.back() == ';')
+            bare = bare.substr(1, bare.size() - 2);
+        for (auto& ch : bare) if (ch == '/') ch = '.';
+        // Manifest <service> identity lookup: exact → bare → suffix match
+        // (same matching law as getProviderInfo's manifest walk).
+        bool found = false;
+        for (const auto& [sname, _acts] : manifest_service_classes_) {
+            if (sname == norm || sname == bare ||
+                (!sname.empty() &&
+                 (norm.rfind(sname) != std::string::npos ||
+                  bare.rfind(sname) != std::string::npos))) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // AOSP contract: absent component → NameNotFoundException, never
+            // a null ServiceInfo.
+            std::cerr << "[F275-SVCINFO] MISS " << bare
+                      << " → PackageManager$NameNotFoundException (AOSP contract)"
+                      << std::endl;
+            throw_deferred(
+                "Landroid/content/pm/PackageManager$NameNotFoundException;",
+                bare, "F275-SVCINFO");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Flags: GET_META_DATA (0x80) gates the metaData Bundle (AOSP
+        // PackageParser law — components carry metaData only when requested).
+        int64_t si_flags = 0;
+        for (size_t i = 2; i < args.size(); i++) {
+            if (args[i].type == DalvikType::INT32) {
+                si_flags = args[i].int_val;
+                break;
+            }
+        }
+        uint32_t sid = heap_.allocate("Landroid/content/pm/ServiceInfo;",
+                                      pc_,
+                                      call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(sid, "name",
+                               DalvikValue::make_string(bare, 1));
+        heap_.set_object_field(sid, "packageName",
+                               DalvikValue::make_string(
+                                   package_name_.empty() ? "unknown.package"
+                                                         : package_name_, 1));
+        if ((si_flags & 0x80) != 0) {
+            // metaData seeding — identical law to the F-273 getProviderInfo
+            // seeding: component_meta_data_ entries, descriptor→dotted
+            // fallback, resource refs as ints, numeric strings as ints, else
+            // String.
+            auto md_it = component_meta_data_.find(norm);
+            if (md_it == component_meta_data_.end())
+                md_it = component_meta_data_.find(bare);
+            if (md_it == component_meta_data_.end() && !svc_class.empty())
+                md_it = component_meta_data_.find(svc_class);
+            if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
+                uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
+                                                    pc_,
+                                                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                static const std::string kDigitsS = "0123456789";
+                for (const auto& mde : md_it->second) {
+                    if (mde.has_resource && mde.resource_id != 0) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(
+                                static_cast<int32_t>(mde.resource_id)));
+                    } else if (!mde.value.empty() &&
+                               mde.value.find_first_not_of(kDigitsS) ==
+                                   std::string::npos) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(std::stoi(mde.value)));
+                    } else if (!mde.value.empty()) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_string(mde.value, 0));
+                    }
+                }
+                heap_.set_object_field(
+                    sid, "metaData",
+                    DalvikValue::make_object(md_bundle, "Landroid/os/Bundle;"));
+                std::cerr << "[F275-SVCINFO] " << bare
+                          << " metaData entries=" << md_it->second.size()
+                          << std::endl;
+            }
+        }
+        result = DalvikValue::make_object(sid, "Landroid/content/pm/ServiceInfo;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P0.10 — PackageManager.getPackageInfo → PackageInfo
     // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
     // Telegram values. This is a GENERIC fix — affects ALL APKs.
@@ -39856,6 +40062,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             pav.class_desc = "[Landroid/content/pm/ProviderInfo;";
             pav.int_val = (int64_t)manifest_provider_identity_.size();
             heap_.set_object_field(obj_id, "providers", pav);
+        }
+        // CONT-22 (F-NEW-275) — GET_SERVICES (flags bit 0x20) law. AOSP
+        // PackageManager.getPackageInfo: with GET_SERVICES the returned
+        // PackageInfo.services array lists every manifest <service> as a
+        // ServiceInfo carrying name + packageName. Mirror of the
+        // GET_PROVIDERS law above (same array shape: array[N] fields +
+        // __array_length__). Sibling evidence: opencalc reads the services
+        // family via getServiceInfo(cn, 640) (the ComponentName path is the
+        // getServiceInfo law); this arm covers the PackageInfo.services
+        // iteration path (F-NEW-275's registered face).
+        if ((pm_flags & 0x20) != 0 && !manifest_service_classes_.empty()) {
+            uint32_t sarr_id = heap_.allocate(
+                "[Landroid/content/pm/ServiceInfo;", pc_, 0);
+            heap_.set_object_field(
+                sarr_id, "__array_length__",
+                DalvikValue::make_int((int)manifest_service_classes_.size()));
+            for (size_t i = 0; i < manifest_service_classes_.size(); i++) {
+                uint32_t sid2 = heap_.allocate(
+                    "Landroid/content/pm/ServiceInfo;", pc_, 0);
+                heap_.set_object_field(
+                    sid2, "name",
+                    DalvikValue::make_string(manifest_service_classes_[i].first, 1));
+                heap_.set_object_field(
+                    sid2, "packageName",
+                    DalvikValue::make_string(
+                        package_name_.empty() ? "unknown.package" : package_name_, 1));
+                DalvikValue siv;
+                siv.type = DalvikType::OBJECT_REF;
+                siv.object_id = sid2;
+                siv.class_desc = "Landroid/content/pm/ServiceInfo;";
+                heap_.set_object_field(sarr_id, "array[" + std::to_string(i) + "]",
+                                       siv);
+            }
+            DalvikValue sav;
+            sav.type = DalvikType::OBJECT_REF;
+            sav.object_id = sarr_id;
+            sav.class_desc = "[Landroid/content/pm/ServiceInfo;";
+            sav.int_val = (int64_t)manifest_service_classes_.size();
+            heap_.set_object_field(obj_id, "services", sav);
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
