@@ -105,3 +105,17 @@ findings during execution (per the task-count rule; derived sub-tasks use `N_M` 
 | 49_7 | Findings queue tool (registry+census → ranked usable queue) | **IMPLEMENTED** | `scripts/findings_queue.py`; `evidence/cont18f/findings_queue.{json,md}` (255 queued/321 terminal) |
 
 **Count: 56 genuine tasks (0–48 + 7 derived `49_N`). No filler.**
+
+## G. PHASE 0g — CONT-18g final source review (claims sweep + F-268/269 fix family)
+
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 49_8 | Issue-claims sweep: #353–#381 fetched fresh; #381 (never audited) fully dispositioned | **IMPLEMENTED** | `evidence/cont18g/CONT18G_FINAL_REVIEW.md` §1–2 |
+| 49_9 | F-NEW-268 exception-semantics family implemented (aget null/zero-len, aput zero-len, iget/iget-object null, new-array negative, throw-null) | **IMPLEMENTED+TESTED** | dalvik_engine.cpp; f268 probe 12/12 at `be95a47f797d3d99` |
+| 49_10 | F-NEW-269 split dual-handler law parity (quote-strip, empty-delim per-char, trailing-empty removal; hang killed) | **IMPLEMENTED+TESTED** | f268 probe rows H–K; both dispatch layers |
+| 49_11 | Refuted claims recorded (class_to_superclass end() — 32/32 guarded; write_v/monitor documented-design) | **IMPLEMENTED** | final review §2 |
+| 49_12 | Full regression at fixed binary | **VERIFIED** | anchors 18/18 x3 byte-identical; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; negatives 19/19; reinstall 8/8; skill 13/13 |
+| 49_13 | Registry delta | **IMPLEMENTED** | 576→578 (F-268/269 ROOT-CAUSED-FIXED); queue refreshed 255 queued/323 terminal |
+| 49_14 | Probe-infrastructure restoration in clean container (gate_a probe rebuilt+RUN, libprobe sha `ad413625925ed8e5` = recorded) | **VERIFIED** | negatives 19/19 + reinstall 8/8 unblocked |
+
+**Count: 63 genuine tasks (0–48 + 14 derived `49_N`). No filler.**
