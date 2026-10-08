@@ -731,6 +731,28 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         class_info_index_[report.classes[i].name] = i;
     }
     log("Built class→ClassInfo index: " + std::to_string(class_info_index_.size()) + " entries");
+    // F-NEW-271 LAW DIAG (env-gated MINIANDROID_CLASS_FIELD_DUMP=<Ldesc;>,
+    // one-shot, read-only): dump the ENGINE-PARSED declared field table of
+    // one class — the authoritative view resolve_field_declarer and the
+    // collapse-family audit reason over. Answers "does the engine's
+    // class_data walk produce the same field list a spec-faithful walk
+    // produces" without any app knowledge.
+    if (const char* f271_cls = std::getenv("MINIANDROID_CLASS_FIELD_DUMP")) {
+        std::string want(f271_cls);
+        for (size_t i = 0; i < report.classes.size(); i++) {
+            if (report.classes[i].name != want) continue;
+            const auto& ci = report.classes[i];
+            std::cerr << "[F271-CLASS] " << ci.name
+                      << " super=" << ci.superclass_name
+                      << " static=" << ci.static_fields.size()
+                      << " instance=" << ci.instance_fields.size()
+                      << std::endl;
+            for (const auto& f : ci.instance_fields)
+                std::cerr << "[F271-CLASS]   ifield " << f.name << " : "
+                          << f.type << std::endl;
+            break;
+        }
+    }
 }
 
 // EXP-088+ Phase 1.2: Inject ALL classes from secondary DEX files into
@@ -17881,6 +17903,69 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
             }
         }
     }
+    // ── F-NEW-271 LAW DIAG (read-side twin, env-gated MINIANDROID_FIELD_LAW_DIAG,
+    // bounded, read-only). A field read answering a STRING_REF while the
+    // field's declared type (from field_ids) is NOT Ljava/lang/String is an
+    // alien-typed value — the exact face F-271 recorded on Lnb0.j (STRING_REF
+    // in a :Lqb0 slot). Dump the read-key identity (qualified vs bare via the
+    // resolved declarer), the receiver's heap class, and the receiver's FULL
+    // field map (all slots, keys, types, bounded contents) so the polluted
+    // slot and the value's origin are both visible. The write-side twin lives
+    // in execute_iput_object and catches the alien store in the act.
+    if (std::getenv("MINIANDROID_FIELD_LAW_DIAG") &&
+        result_value.type == DalvikType::STRING_REF &&
+        field_res.field_type != "Ljava/lang/String;") {
+        static thread_local uint64_t f271_rn = 0;
+        if (f271_rn < 40) {
+            ++f271_rn;
+            std::cerr << "[F271-READ] " << current_class_ << "."
+                      << current_method_ << " pc=" << pc
+                      << " field=" << field_res.class_descriptor << "."
+                      << field_res.field_name << " : " << field_res.field_type
+                      << " answered STRING_REF len="
+                      << result_value.string_val.size()
+                      << " str=\"" << result_value.string_val.substr(0, 48)
+                      << "\"";
+            if (obj_ref.type == DalvikType::OBJECT_REF) {
+                const std::string f271_decl = resolved_field_declarer(
+                    field_res.class_descriptor, field_res.field_name);
+                std::cerr << " recv#" << obj_ref.object_id
+                          << " recv_reg_cls=" << obj_ref.class_desc
+                          << " declarer=" << f271_decl
+                          << " dex_defined="
+                          << (is_dex_defined_class(f271_decl) ? 1 : 0)
+                          << " readkey="
+                          << s134_dex_field_key(
+                                 f271_decl, field_res.field_name,
+                                 is_dex_defined_class(f271_decl));
+                if (heap_.has_object(obj_ref.object_id)) {
+                    const HeapObject* f271_ho = heap_.get(obj_ref.object_id);
+                    if (f271_ho) {
+                        std::cerr << " heap_cls=" << f271_ho->class_descriptor
+                                  << " fields[" << f271_ho->fields.size()
+                                  << "]:";
+                        int f271_nf = 0;
+                        for (const auto& [fk, fv] : f271_ho->fields) {
+                            if (f271_nf++ >= 20) {
+                                std::cerr << " ...";
+                                break;
+                            }
+                            std::cerr << " " << fk << "=t"
+                                      << static_cast<int>(fv.type) << "/o"
+                                      << fv.object_id;
+                            if (fv.type == DalvikType::STRING_REF)
+                                std::cerr << "(\""
+                                          << fv.string_val.substr(0, 32)
+                                          << "\")";
+                        }
+                    }
+                } else {
+                    std::cerr << " recv-not-in-heap";
+                }
+            }
+            std::cerr << std::endl;
+        }
+    }
     // EXP-042 Phase 2: if obj_ref is not OBJECT_REF (uninit, null, primitive),
     // just return null. Previously this returned false and caused infinite
     // loops in ComponentActivity.onCreate, UserConfig.isClientActivated,
@@ -18152,6 +18237,60 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
 
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
+        // ── F-NEW-271 LAW DIAG (write-side twin, env-gated
+        // MINIANDROID_FIELD_LAW_DIAG, bounded, read-only): an iput-object
+        // storing a STRING_REF into a field whose declared type is not
+        // Ljava/lang/String is the alien-typed store family — catch it in
+        // the act with caller identity, both store keys, the receiver's
+        // runtime class, and its pre-store field map.
+        if (std::getenv("MINIANDROID_FIELD_LAW_DIAG") &&
+            src_val.type == DalvikType::STRING_REF &&
+            (field_res.field_type != "Ljava/lang/String;" ||
+             src_val.string_val.empty())) {
+            static thread_local uint64_t f271_wn = 0;
+            if (f271_wn < 40) {
+                ++f271_wn;
+                std::cerr << "[F271-WRITE] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc
+                          << " field=" << field_res.class_descriptor << "."
+                          << field_res.field_name << " : "
+                          << field_res.field_type
+                          << " <- STRING_REF len=" << src_val.string_val.size()
+                          << " str=\"" << src_val.string_val.substr(0, 48)
+                          << "\" recv#" << obj_ref.object_id
+                          << " recv_reg_cls=" << obj_ref.class_desc;
+                {
+                    const std::string f271_wdecl = resolved_field_declarer(
+                        field_res.class_descriptor, field_res.field_name);
+                    std::cerr << " declarer=" << f271_wdecl
+                              << " qkey="
+                              << s134_dex_field_key(
+                                     f271_wdecl, field_res.field_name,
+                                     is_dex_defined_class(f271_wdecl));
+                }
+                const HeapObject* f271_who = heap_.get(obj_ref.object_id);
+                if (f271_who) {
+                    std::cerr << " heap_cls=" << f271_who->class_descriptor
+                              << " pre-fields["
+                              << f271_who->fields.size() << "]:";
+                    int f271_wnf = 0;
+                    for (const auto& [fk, fv] : f271_who->fields) {
+                        if (f271_wnf++ >= 12) {
+                            std::cerr << " ...";
+                            break;
+                        }
+                        std::cerr << " " << fk << "=t"
+                                  << static_cast<int>(fv.type) << "/o"
+                                  << fv.object_id;
+                        if (fv.type == DalvikType::STRING_REF)
+                            std::cerr << "(\""
+                                      << fv.string_val.substr(0, 24)
+                                      << "\")";
+                    }
+                }
+                std::cerr << std::endl;
+            }
+        }
         // S134 F-NEW-160: dual write (qualified primary + bare legacy mirror).
         {
             const std::string s134_decl = resolved_field_declarer(
