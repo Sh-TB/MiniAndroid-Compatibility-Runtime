@@ -7397,3 +7397,26 @@ Stage Summary:
 - The main line moved two notches this wave: F-265 arms (a)+(b) formally verified at HEAD (previously only assumed), and the composition-death root narrowed from "somewhere in the measure pass" to a single named corrupt field (Lnb0.j = STRING_REF/0) with the bytecode exonerated — F-267's tap gate is now exactly one field-store law away from re-triage.
 - One engine source fix landed (F-270, framework-only ROOT-059 route domain), full-battery green, zero drift.
 - Evidence: evidence/cont18h/CONT18H_MAINLINE.md; task list rows 50_1..50_4 (67 genuine tasks); run artifacts run/cont18h/{dooz_f265,dooz_f270,dooz_f270b,reg}.
+
+
+---
+Task ID: CONT-11-WAVE-7
+Agent: Super Z (main)
+Task: Directive "convert the next steps into 50-100 granular tasks and execute ALL in one run" (80% main line + 20% sweep) — dooz draw-path frontier: drive the W6 remaining root to its final link with static/runtime/upstream triangulation; register evidence; commit the diagnostic tooling; push.
+
+Work Log:
+- Session opened on a STALE local lineage (CONT-10 W6 era, 566 roots) — discovered at push time; origin had advanced to CONT-18h (580 roots). Evidence reconciled into F-NEW-265 per no-duplicate discipline; all findings below INDEPENDENTLY RE-DERIVED this session before the reconciliation.
+- Ground truth: dooz APK sha256 verified 299eab21ac8b3c61; clean rebuild reproduced the frozen W6 binary BYTE-EXACTLY (aed46450c103f2ea); baseline x3 anchor d602648e8e401895 zero-drift; [C013-ONDRAW] dispatched=YES ops=0 every frame; 6 uncaught = known setup-phase La; cascade.
+- Built 3 generic DEX forensics tools: cont11_flatxref.py (desync-proof u16-pattern xref), cont11_rawscan.py (correct per-method disassembler: proper 35c register lists, payload skipping), cont11_w7_baseline.py harness.
+- STATIC MAP: 13 R8<->upstream identities proven against ui-1.11.4/ui-android-1.11.4 sources (Lpz0;=NodeCoordinator with P:Lc31;=layer:OwnedLayer?; L0=NodeCoordinator.draw; M0=drawContainedDrawModifiers; T0(4)=head(Nodes.Draw); Lqz0;.g=NodeKind.includeSelfInTraversal (FALSE for Draw, upstream-correct); Lxk0;/Lug0;=Outer/Inner coordinator; r1=OwnedLayer.reuseLayer via embedded strings; Luc0;=GraphicsLayerOwnerLayer; Ljt1;=text-path Canvas forwarder).
+- RUNTIME: draw-window 430 rows/6 frames (per-frame chain: dispatchDraw -> adopt -> Lel0;.i -> L0(P=null) -> translate -> M0 -> T0(4)=null -> h1 -> children loop count=1 -> I()=FALSE -> 0 ops); METHOD-TRACE 85,838 entries: Lgl0;.c=0, Lyl;.z=0, Luc0;.<init>=0; Lqz0;.a/.b attach pairs carry REAL kindSets (o6325 kindSet=13 has the Draw bit).
+- Field-trace bisection: Lpz0;.P 371 reads/0 writes (legit null — no graphicsLayer modifiers); Lbt0;.w (isPlaced) 89 reads/0 place-writer executions; Liw0;.g draw-time children count=1; PARAM-TRACE proves engine F-028c wide-param passing CLEAN (v9=NULL_REF at v0 entry — no arg-layout bug); documented the dalvik_value_to_string NULL_REF-><unset> printing quirk.
+- ROOT CONFIRMED (independent re-derivation, folded into F-NEW-265): composed nodes' isPlaced never flips (place-writers Lbt0;.q0/.r0 never execute), so the upstream draw gate if(layoutNode.isPlaced) child.draw skips all content. W6's "Ljt1; never constructed" claim corrected honestly: text-path symptom (Lj7;.e = Layout.draw), bridge healthy (adopt+translate verified live).
+- Registry: F-NEW-265 evidence + verified_current extended with this wave's quantitative proofs (no duplicate root registered; no inflation; 580 roots).
+- 20% sweep (real commands): 2 live TODOs dispositioned — ApplicationContext::loadClass stub SUPERSEDED by the ClassLoader law at dalvik_engine.cpp:43631; TextWatcher dispatch KNOWN-GAP (documented dalvik_engine.h:1644, carried). Guard empty-staged-list quirk still documented, not forgotten.
+- Zero engine source changes this wave (diagnosis-only) — zero regression risk by construction.
+
+Stage Summary:
+- The dooz draw frontier independently re-derived to the isPlaced gate with full upstream law map + quantitative counts; evidence folded into F-NEW-265 (CONT-18h lineage) with no registry duplication.
+- 61 granular tasks executed in one run (evidence/cont11/CONT11_TASK_ACCOUNTING.md); rawscan/flatxref/baseline tooling committed for the next wave.
+- Next wave owns: F-NEW-260-family fix work per the CONT-18h plan (F-265 arm (c) = F-NEW-271 first, then F-267) — with this wave's rawscan/flatxref tools available for the applier/measure-path work.
