@@ -2374,6 +2374,17 @@ public:
     // coordinate/int fields zeroed; other DEX classes get an empty shell).
     // Returns a null value when the type is not materializable.
     DalvikValue materialize_init_default(const std::string& type_desc);
+    // F-NEW-274 (CONT-22): ART constructor-contract gate for R-NEW-414
+    // initializer materialization. A zero-object may stand in for a real
+    // instance ONLY when the class exposes a ()V constructor — i.e. a legal
+    // construction path exists that yields the zero-state. Classes whose
+    // every <init> takes arguments (R8 merged-lambda classes, capture
+    // holders) write their identity/capture fields ONLY inside those ctors;
+    // fabricating them produces objects that cannot exist on ART and turns
+    // the app's own null-guards into deeper NPEs. Not-DEX-defined classes
+    // (framework types like Rect) keep the old behavior (return true —
+    // materialize_init_default seeds their zero-state itself).
+    bool class_has_no_arg_ctor(const std::string& type_desc);
     
     // Opcode implementations — Invokes
     bool execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
