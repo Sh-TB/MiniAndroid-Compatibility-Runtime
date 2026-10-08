@@ -11,11 +11,13 @@ CA=$BASE/upload/canonical_apks
 echo "binary: $(sha256sum $BIN | cut -c1-16)  head: $(git -C $BASE rev-parse --short HEAD)"
 
 run1() { # label apk outdir
-  local label="$1" apk="$2" o="$OUT/$3"
+  # CONT-22 audit fix: `local` resets $?, so declare locals BEFORE the engine
+  # call — the previous order always reported rc=0 (bogus; found in the
+  # CONT-22 CONT21_AUDIT, engine law = exit 0 iff Status==SUCCESS).
+  local label="$1" apk="$2" o="$OUT/$3" sha rc
   rm -rf "$o"; mkdir -p "$o"
   timeout 300 "$BIN" run "$apk" --width 1080 --height 1920 \
     --frames 5 --max-seconds 15 -o "$o" > "$o/run.log" 2>&1
-  local sha rc
   rc=$?
   sha=$(sha256sum "$o/screenshot.png" 2>/dev/null | cut -c1-16)
   echo "SWEEP $label rc=$rc sha=$sha"
