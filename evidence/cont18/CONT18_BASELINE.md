@@ -85,3 +85,40 @@ Registry untouched this phase (per PHASE 0 discipline).
 - `run/cont18/probes/probe_report.json` — f266/f259/f259g/fcol rows
 - `run/cont18/f084_run/` — f084 probe run dir
 - `run/cont18/battery_fresh1.log`, `run/cont18/battery_fresh2.log` — battery logs
+
+## 7. CONT-18f addendum — clean-container reproduction + orphan-audit wave
+
+A fresh container had NO local history (local main was 23 commits behind
+origin/main; the CONT-11..18 lineage existed only on GitHub). Recovery and
+live re-proof, all in THIS container:
+
+1. **Lineage recovery**: `git merge --ff-only origin/main` → HEAD `c15e2661`.
+2. **Binary reproducibility**: clean cold rebuild (`timeout 570 make -j1
+   BUILD_DIR=build`) reproduces the recorded CONT-18 binary **byte-identically**:
+   `build/miniandroid` sha16 `8ee839e718877216` (the LAW-C/E/F + T-01 recorded
+   binary). One honest build note: `-j2` OOM-killed cc1plus in this container;
+   `-j1` (the standing discipline) succeeds.
+3. **LAW-A..F cumulative impact, live**: fcol probe APK rebuilt from the
+   committed fixture (`scripts/cont11_build_fcol.sh`, apk sha16
+   `d03cc97f82f47c55`) and run at the reproduced binary (`run/cont18f/probes/`):
+   **fcol 18/18 PASS (K1–K18)** — vs 3/18 recorded at the CONT-18 baseline.
+   This is the runtime-visible impact of the campaign's main-code fixes.
+4. **Zero-drift regression**: anchors 6/6 ×3 = **18/18 MATCH byte-identical**
+   (`run/cont18/anchors/`, `scripts/cont18_anchors.sh` part1+part2).
+5. **T-01 tap exposure reproduced live** (`run/cont18f/tap1/run.log`):
+   `[F117-TAP] frame 15 DOWN (540,960) target=0`; post-tap screenshot sha16
+   `d602648e8e401895` = the dooz anchor (byte-identical = zero state consumed
+   by the tap). Registered as **F-NEW-267 (CLASSIFIED)** — registry 575→576.
+6. **Orphan-findings audit** (user directive): every discrete/abandoned
+   finding dispositioned — see `evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md`
+   (14 loose ends: 1 fixed in main code, 1 registered as a root, 1 toolified,
+   4 resolved/resolved-by-lineage, rest explicitly DEFERRED/OBSERVED/BLOCKED
+   with scope). The pre-push guard empty-list defect (recorded twice, never
+   fixed) is **fixed in main code** with a permanent selftest law.
+7. **Usability artifact**: `scripts/findings_queue.py` → the 576-row registry
+   becomes a ranked work order (255 queued / 321 terminal; P0 first:
+   F-NEW-156, F-NEW-157, F-NEW-265, …).
+
+No engine source was changed this wave (build reproducibility wave + audit +
+input-frontier evidence + infra fix). The guard fix is the only main-code
+change (scripts/, fail-closed semantics preserved, selftest green).

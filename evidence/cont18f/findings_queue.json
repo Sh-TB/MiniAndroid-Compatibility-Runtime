@@ -1,0 +1,358 @@
+{
+ "generated_by": "scripts/findings_queue.py",
+ "total_rows": 576,
+ "queued_rows": 255,
+ "terminal_rows": 321,
+ "counts_by_status": {
+  "ROOT-CAUSED-FIXED": 125,
+  "PARTIAL": 110,
+  "UNPROVEN": 72,
+  "VERIFIED-CORRECT": 56,
+  "VERIFIED-FIXED": 49,
+  "NOT-APPLICABLE": 42,
+  "IMPLEMENTED": 37,
+  "IMPLEMENTED+TESTED": 23,
+  "RESEARCHED-NOT-IMPLEMENTED": 16,
+  "SUPERSEDED-BY-EVIDENCE": 12,
+  "USED_BY_EXECUTION": 7,
+  "OBSERVED-FAIL": 5,
+  "OPEN": 4,
+  "CLASSIFIED": 4,
+  "ROOT-CAUSED-CLOSED": 3,
+  "VERIFIED": 3,
+  "REGISTERED": 2,
+  "PENDING": 2,
+  "OBSERVED": 2,
+  "BLOCKED": 1,
+  "TESTED": 1
+ },
+ "queued_by_priority": {
+  "P3": 105,
+  "P2": 65,
+  "P1": 53,
+  "P0": 32
+ },
+ "queue_top": [
+  {
+   "id": "F-NEW-156",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "layer": "",
+   "title": "Fresh-corpus onCreate APP BOUNDARY unwind family: first-run NPE inside app onCreate (before/at setContentView) unwinds process → blank two-color screen. Faces: ",
+   "evidence": "[CONT-17 task 42 2026-10-08] NEW family face named at a8761a482a186eac: chessclock onCreate APP-BOUNDARY unwind (Setting"
+  },
+  {
+   "id": "F-NEW-157",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "layer": "",
+   "title": "libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivity.onCreate — libGDX AndroidBackend GL surface cre",
+   "evidence": "[CONT-17 task 37 2026-10-08] libGDX face re-derived at a8761a482a186eac (tictactoe_emmanuel, anchor b5a7a35d5fe0564b rep"
+  },
+  {
+   "id": "F-NEW-169",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "layer": "",
+   "title": "",
+   "evidence": "[CONT-17 task 38 2026-10-08] WhatsApp lattice BLOCKED-APK-INVALID: local upload/whatsapp.apk fails ZIP magic (invalid AP"
+  },
+  {
+   "id": "F-NEW-265",
+   "status": "CLASSIFIED",
+   "priority": "P0",
+   "layer": "dex/exceptions + compose/measure",
+   "title": "DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream consequence): the compose DRAW machinery is PROVEN ",
+   "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-8"
+  },
+  {
+   "id": "F-NEW-172",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "DEX interpreter / array + loop semantics",
+   "title": "F-NEW-172",
+   "evidence": "wa_spin2-6.log SPIN-HISTO (pc0xaf=50001/pc0xdf=49685 quadratic signature), SPIN-REGS (v10=Integer(22183), v9=17750, v6=3"
+  },
+  {
+   "id": "F-NEW-197",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "white-screen family",
+   "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + d",
+   "evidence": "[CONT-17 task 40 2026-10-08] white-frontier shared-SHA refresh at a8761a482a186eac: the OpenCalculator face is RESOLVED "
+  },
+  {
+   "id": "R-NEW-001",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-001 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-061",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-061 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-242",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-242 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-246",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-246 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-256",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "R-NEW-256: composition constructs deep into Material3 (1.13M trace lines, M13); state→tree law partial",
+   "evidence": ""
+  },
+  {
+   "id": "R-NEW-259",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-259 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-260",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-260 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-279",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-279 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "R-NEW-285",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "layer": "",
+   "title": "(title backfilled CONT-17) R-NEW-285 — live re-verified at HEAD, see evidence",
+   "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / m"
+  },
+  {
+   "id": "F-NEW-179",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "renderer/frame-pump",
+   "title": "Per-frame canonical pump for Compose/WebView/Choreographer (item 21 P0-8)",
+   "evidence": "microtimer --frames 5 x3: frame_003 da73010a37dd0189 BYTE-IDENTICAL x3 (deterministic). Compose animation >=3-frame acce"
+  },
+  {
+   "id": "F-NEW-199",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "runtime/arch-task-executor",
+   "title": "DEEP-AUDIT P0-2: ArchTaskExecutorShadow::dispatch treats executeOnDiskIO(Runnable) as effectively no-op — background work disappears, so an AndroidX app that co",
+   "evidence": "[F-NEW-199] executeOnDiskIO runnable=N enqueued; laws130 51/51; goldens x3"
+  },
+  {
+   "id": "F-NEW-215",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "dex/class-initialization",
+   "title": "DEEP-AUDIT (new campaign §6) CLASS-INIT HONESTY LAW: failed <clinit> left the class silently INITIALIZED — ensure_class_initialized marked initialized BEFORE <c",
+   "evidence": "[F-NEW-215] CLINIT-FAILED class=Lj$/util/concurrent/ConcurrentHashMap; evidence= (empty pre-fix) + ACTIVE-USE new-instan"
+  },
+  {
+   "id": "F-NEW-216",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "framework/enum-constant-identity",
+   "title": "ENUM-CONSTANT NAME LAW (kOrdinals): the table carried a FICTIONAL member TimeUnit.NANOS (that name belongs to java.time.temporal.ChronoUnit); OpenJDK TimeUnit.j",
+   "evidence": "droidify [SGET-MISS] key=Ljava/util/concurrent/TimeUnit;.NANOSECONDS same_class_keys=1 first=TimeUnit;.SECONDS; post-fix"
+  },
+  {
+   "id": "F-NEW-218",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "dex/class-token-identity",
+   "title": "CLASS-TOKEN BACKING VALIDATION LAW: execute_instance_of's F-105c arm dereferenced CLASS_REF.ref_id as a heap id — but getClass answers tokens with ref_id = inst",
+   "evidence": "[F-NEW-218] TOKEN-BACKING-COLLISION ref_id=63 heap_desc=Ljava/util/concurrent/CopyOnWriteArrayList; token_referent=Ljava"
+  },
+  {
+   "id": "F-NEW-219",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "runtime/reflection-method-family",
+   "title": "REFLECTION METHOD-FAMILY LAW: Class.getMethod/getDeclaredMethod minted a Method record for ANY name (F-029 mint-for-any-name) — the §17 silent-wrong. Gson 2.10.",
+   "evidence": "[F-NEW-219] ABSENT-ON-ANDROID java.lang.Class.isRecord → NoSuchMethodException (Gson probe falls back); [F-NEW-219] NOT-"
+  },
+  {
+   "id": "F-NEW-220",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "runtime/window-content-anchor",
+   "title": "CONTENT-PARENT REUSE LAW (F-NEW-197-B first leg): the F165-CONTENT anchor materialized a PARALLEL android.R.id.content node ABOVE the appcompat screen root inst",
+   "evidence": "[F-NEW-220] CONTENT-PARENT-REUSED node=939 (subDecor's own ContentFrameLayout; android.R.id.content id-swap law); openca"
+  },
+  {
+   "id": "F-NEW-222",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "framework/collections-empty-factory",
+   "title": "COLLECTIONS EMPTY-FACTORY LAW: Collections.emptyMap()/emptySet() had NO handler — the bridge fallback answered UNSET, `move-result-object v1` stored an unset re",
+   "evidence": "[F-NEW-222] Collections.emptyMap → shared singleton obj#976 (opencalc run rc NPE→gone); FIELD-TRACE captured put-obj LA/"
+  },
+  {
+   "id": "F-NEW-223",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "storage/external-volume",
+   "title": "VIRTUAL EXTERNAL-STORAGE VOLUME + HONEST FILE CREATION LAW: android.os.Environment had NO handler (getExternalStorageDirectory/State/PublicDirectory/isExternalS",
+   "evidence": "user-captured face: app onCreate died because /storage/emulated/0 'does not exist'; [F-NEW-223] Environment statics now "
+  },
+  {
+   "id": "F-NEW-225",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "reflection/generic-type-identity",
+   "title": "GENERIC-TYPE + FRAMEWORK-REFLECTION FAMILY (4 sub-laws): (225a) Field.getGenericType() unbridged → null → Gson TypeToken.get(null) IAE; (225b) framework classes",
+   "evidence": "stack e1/d.g ← j1/a.<init> ← f1/m.b (pc=0x132 getGenericType / pc=0x406 getGenericSuperclass); [F-NEW-225c] climb ArrayL"
+  },
+  {
+   "id": "F-NEW-226",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "framework/view-paint-identity",
+   "title": "VIEW PAINT IDENTITY LAW: TextView.getPaint() unbridged → NULL → TextPaint.measureText NPE at ssw MyChrono.setFractionView pc=23 (face became reachable after F-N",
+   "evidence": "225d bisect isolated the face; getPaint law + measureText law → ssw rc=0, real UI frame x3"
+  },
+  {
+   "id": "F-NEW-264",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "dex/exceptions",
+   "title": "EXCEPTION-INTEGRITY DELIVERY LAW: move-exception must deliver the REAL in-flight java.lang.Throwable object (ART InterpDoThrow / JVM athrow-catch law) — never n",
+   "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md"
+  },
+  {
+   "id": "R-NEW-300",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "",
+   "title": "R-NEW-300: S22 [M3-19-CYCLE] LB1/a;.B re-entered (depth=17) stubbed the runner's coroutineScope start; [S22] gate: pre-fix exactly one E0.t entry with ZERO E0$a",
+   "evidence": ""
+  },
+  {
+   "id": "R-NEW-345",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "",
+   "title": "runBlocking/BlockingCoroutine joinBlocking livelock — kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two c",
+   "evidence": ""
+  },
+  {
+   "id": "R-NEW-347",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "",
+   "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name fam",
+   "evidence": ""
+  },
+  {
+   "id": "R-NEW-349",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "",
+   "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree — windowRecomposer chec",
+   "evidence": ""
+  },
+  {
+   "id": "R-NEW-350",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "layer": "",
+   "title": "protobuf-javalite MessageInfo chain dead: 3-arg Class.forName(String,Z,ClassLoader) silently void + Class.asSubclass unimplemented -> defaultInstanceMap never p",
+   "evidence": ""
+  },
+  {
+   "id": "F-143",
+   "status": "OPEN",
+   "priority": "P1",
+   "layer": "",
+   "title": "Service launch/lifecycle family: Service.onCreate/onStartCommand/startForegroundService (stopwatch = service-only manifest, no activity)",
+   "evidence": ""
+  },
+  {
+   "id": "F-145",
+   "status": "OPEN",
+   "priority": "P1",
+   "layer": "",
+   "title": "Final screenshot capture surface does not follow the top-of-stack window (multi-activity apps capture the splash/first window)",
+   "evidence": ""
+  },
+  {
+   "id": "F-147",
+   "status": "OPEN",
+   "priority": "P1",
+   "layer": "",
+   "title": "dooz: ViewGroup.getChildAt(I) on null receiver at MainActivity.onCreate pc=228 (v10 null — likely a findViewById/content-view resolution gap)",
+   "evidence": ""
+  },
+  {
+   "id": "F-138",
+   "status": "REGISTERED",
+   "priority": "P1",
+   "layer": "",
+   "title": "ScoreView hint HUD geometry — bitmap-font text drawn at (0,0) (legacy text path, text_size=0)",
+   "evidence": ""
+  },
+  {
+   "id": "F-NEW-161",
+   "status": "OBSERVED-FAIL",
+   "priority": "P1",
+   "layer": "dex/api",
+   "title": "chessclock_29: NPE \"Uri.toString on null receiver\" at ChessClock.setUpGame pc=321 → APP-BOUNDARY unwind. getIntPref chain works (prefs shadow OK); the null Uri ",
+   "evidence": "[CONT-17 task 36 2026-10-08] chessclock re-run at a8761a482a186eac (upload/chessclock_29.apk sha 5ca6f2c54c05efe7 = regi"
+  },
+  {
+   "id": "F-NEW-217",
+   "status": "CLASSIFIED",
+   "priority": "P1",
+   "layer": "runtime/virtual-concurrency",
+   "title": "kotlinx-coroutines virtual-concurrency frontier: MutexImpl.unlock F084 spin (50,001 visits, bytecode_size=66) with owner$volatile=NO_OWNER + _availablePermits$v",
+   "evidence": "[CONT-17 task 33 2026-10-08] F-NEW-084 halt-cap semantics verified LIVE at a8761a482a186eac: probe fixtures/f084_loop_pr"
+  },
+  {
+   "id": "F-NEW-221",
+   "status": "OBSERVED",
+   "priority": "P1",
+   "layer": "dex/r8-merged-class-identity",
+   "title": "R8-MERGED CLASS CONSTRUCTOR/DISPATCH MISMATCH: LA/h; is a horizontal class merge (field `a` mode int + packed-switch ctor paths: SparseIntArray pair / s/h+Array",
+   "evidence": "[CONT-17 task 52 2026-10-08] TypeToken dispatch re-verify: the recorded APK for the A/h.<init> CopyOnWriteArrayList face"
+  },
+  {
+   "id": "F-NEW-229",
+   "status": "OBSERVED",
+   "priority": "P1",
+   "layer": "layout/constraintlayout-match-parent-spec",
+   "title": "CL MATCH_PARENT SPEC LAW: a ConstraintLayout child with width/height=MATCH_PARENT and NO anchors on that axis falls back to child_spec → AT_MOST(available), so ",
+   "evidence": "[CONT-17 task 34 2026-10-08] CL MATCH_PARENT spec law read at source (kept OBSERVED): the AT_MOST->fill arm for anchorle"
+  }
+ ],
+ "note": "rank = (priority P0<P1<P2<P3, status class OPEN/CLASSIFIED < PARTIAL < UNPROVEN < IMPLEMENTED, id); terminal rows excluded; full order deterministic; dispositions per evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md"
+}

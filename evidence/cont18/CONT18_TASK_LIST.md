@@ -88,6 +88,20 @@ Full battery at baseline AND at every fix binary: **ALL PASS, zero drift**
 | 47 | Registry delta + counts refresh | **PENDING** | F-NEW-264d already carries LAW-A evidence |
 | 48 | Worklog + push discipline (commit after each evidence block) | **IMPLEMENTED** | baseline + LAW-A pushes |
 
-**Count: 49 genuine tasks enumerated (0–48). No filler.** The remaining slots up to 100
-stay **unfilled by design** — populated only by genuine findings during F-217 execution
-(per the task-count rule: if only 47 exist, record 47; derived sub-tasks use `N_M` form).
+**Count: 56 genuine tasks (0–48 + 7 derived `49_N` rows, CONT-18f wave). No filler.**
+The remaining slots up to 100 stay **unfilled by design** — populated only by genuine
+findings during execution (per the task-count rule; derived sub-tasks use `N_M` form).
+
+## F. PHASE 0f — CONT-18f orphan-audit + reproduction wave (derived rows)
+
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 49_1 | Clean-container lineage recovery + binary reproduction (recorded CONT-18 binary byte-identical) | **VERIFIED** | clean rebuild sha16 `8ee839e718877216`; addendum §7.2 |
+| 49_2 | LAW-A..F cumulative impact re-proven live (fcol 18/18 at reproduced binary) | **VERIFIED** | `run/cont18f/probes/probe_report.json`; addendum §7.3 |
+| 49_3 | Anchors 18/18 ×3 zero drift at reproduced binary | **VERIFIED** | `run/cont18/anchors/`; addendum §7.4 |
+| 49_4 | T-01 tap exposure live-reproduced + registered as F-NEW-267 (CLASSIFIED) | **IMPLEMENTED** | `run/cont18f/tap1/`; registry 576 rows |
+| 49_5 | Orphan-findings audit: all discrete findings dispositioned (no floats) | **IMPLEMENTED** | `evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md` (14 rows) |
+| 49_6 | Pre-push guard empty-list defect FIXED in main code + selftest law | **IMPLEMENTED+TESTED** | `scripts/security/check_secrets.sh` (no-op law + selftest arm) |
+| 49_7 | Findings queue tool (registry+census → ranked usable queue) | **IMPLEMENTED** | `scripts/findings_queue.py`; `evidence/cont18f/findings_queue.{json,md}` (255 queued/321 terminal) |
+
+**Count: 56 genuine tasks (0–48 + 7 derived `49_N`). No filler.**
