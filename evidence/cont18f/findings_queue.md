@@ -1,8 +1,8 @@
 # FINDINGS QUEUE (generated — do not edit by hand)
 
-Source: root_registry.json (580 rows). Regenerate: `python3 scripts/findings_queue.py`.
+Source: root_registry.json (581 rows). Regenerate: `python3 scripts/findings_queue.py`.
 
-Queued (actionable): **256**   Terminal (closed/rejected/superseded/not-applicable): **324**
+Queued (actionable): **256**   Terminal (closed/rejected/superseded/not-applicable): **325**
 
 Queued by priority: {"P3": 105, "P2": 65, "P1": 53, "P0": 33}
 
@@ -14,7 +14,7 @@ Queued by priority: {"P3": 105, "P2": 65, "P1": 53, "P0": 33}
 | 2 | F-NEW-157 | P0 | OBSERVED-FAIL | — | libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier): app-boundary unwind at MainActivi |
 | 3 | F-NEW-169 | P0 | OBSERVED-FAIL | — |  |
 | 4 | F-NEW-265 | P0 | CLASSIFIED | dex/exceptions + compose/measure | DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream c |
-| 5 | F-NEW-271 | P0 | CLASSIFIED | dex/fields + compose/invalidation | COMPOSITION INVALIDATION FIELD CORRUPTION (F-265 arm (c) root): Lnb0 (CompositionImpl) o2838 field j (:Lqb0 in |
+| 5 | F-NEW-272 | P0 | CLASSIFIED | framework/threads + exceptions | THREAD DEFAULT UNCAUGHT-EXCEPTION-HANDLER LAW GAP: the engine answers Thread.getDefaultUncaughtExceptionHandle |
 | 6 | F-NEW-172 | P0 | PARTIAL | DEX interpreter / array + loop seman | F-NEW-172 |
 | 7 | F-NEW-197 | P0 | PARTIAL | white-screen family | V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculato |
 | 8 | R-NEW-001 | P0 | PARTIAL | — | (title backfilled CONT-17) R-NEW-001 — live re-verified at HEAD, see evidence |

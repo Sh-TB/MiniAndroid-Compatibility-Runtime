@@ -42,6 +42,8 @@ import java.util.stream.Stream;
  *   K16 removeAll/retainAll/clear bulk laws
  *   K17 Map.merge / computeIfAbsent (Map default methods)
  *   K18 Iterable.forEach on List and Map (default methods)
+ *   K19 null-element round-trip (OpenJDK: remove/get return typed null)
+ *   K20 null vs empty-string element distinction (no conflation)
  */
 public class MainActivity extends Activity {
 
@@ -307,6 +309,54 @@ public class MainActivity extends Activity {
                 && "mf".contentEquals(mkeys),
                 "forEach list=" + seen + " map=" + mkeys);
         } catch (Throwable t) { row("K18", false, "threw " + t); }
+
+        // ── K19 (CONT-20 / F-NEW-271): NULL-ELEMENT ROUND-TRIP ──────────
+        // OpenJDK law: ArrayList permits null elements; remove(int)/get(int)
+        // return THE STORED ELEMENT — a null element comes back as typed
+        // null, never as a fabricated "" String. The consumer's null-check
+        // must observe null. (The dooz F-271 face: a legal add(null) queue
+        // round-tripped as STRING_REF "" and defeated the null-check.)
+        try {
+            List<Object> l = new ArrayList<Object>();
+            l.add(null);                      // legal: nulls are elements
+            l.add("x");
+            l.add(null);
+            Object head = l.remove(0);        // the stored null, typed
+            boolean headNull = (head == null);
+            Object last = l.remove(l.size() - 1);
+            boolean lastNull = (last == null);
+            Object mid = l.get(0);
+            boolean midStr = "x".equals(mid);
+            List<Object> q = new ArrayList<Object>();
+            q.add("h"); q.add(null);          // enqueue-current-holder idiom
+            Object popped = q.remove(q.size() - 1);
+            boolean poppedNull = (popped == null);
+            boolean ok = headNull && lastNull && midStr && poppedNull;
+            row("K19", ok, "headNull=" + headNull + " lastNull=" + lastNull
+                + " midStr=" + midStr + " poppedNull=" + poppedNull);
+        } catch (Throwable t) { row("K19", false, "threw " + t); }
+
+        // ── K20 (CONT-20 / F-NEW-271): NULL vs EMPTY-STRING DISTINCTION ─
+        // The element store must not conflate a null element with the
+        // empty-string element: both must round-trip with their own
+        // identity (OpenJDK: null == null check vs "x".equals("") false).
+        try {
+            List<String> l = new ArrayList<String>();
+            l.add("");                        // genuine empty-string element
+            l.add(null);                      // null element
+            l.add("z");
+            Object first = l.remove(0);
+            boolean firstEmptyStr = (first instanceof String)
+                && ((String) first).isEmpty();
+            boolean firstNotNull = (first != null);
+            Object second = l.remove(0);
+            boolean secondNull = (second == null);
+            int sz = l.size();
+            boolean ok = firstNotNull && firstEmptyStr && secondNull && sz == 1;
+            row("K20", ok, "firstNotNull=" + firstNotNull
+                + " firstEmptyStr=" + firstEmptyStr
+                + " secondNull=" + secondNull + " sz=" + sz);
+        } catch (Throwable t) { row("K20", false, "threw " + t); }
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);

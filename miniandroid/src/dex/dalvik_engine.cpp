@@ -19646,6 +19646,48 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             }
         }
         bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status, method_idx); last_invoke_return_ = return_val;
+        // ── F-NEW-271 LAW DIAG (collection add/remove channel, env-gated
+        // MINIANDROID_F271_COLL_TRACE, bounded, read-only). The F271-WRITE
+        // face (dooz Lnb0.p pc=1553 storing STRING_REF "" into Lnb0.j:Lqb0)
+        // is served by the CollectionShadow remove(int) channel: a slot that
+        // stored a NULL/zero-ref element (kind-2 + "" null-element
+        // representation) is served back as handled_string("") → STRING_REF/0
+        // — an alien type ART would never produce (ArrayList.remove of a null
+        // element returns typed null). This trace records BOTH directions of
+        // the channel with the live arg kinds and the served value so the
+        // first incorrect state (a legal add(null) vs a zero-ref OBJECT arg
+        // fed by an upstream conversion defect) is evidence, not guesswork.
+        if (std::getenv("MINIANDROID_F271_COLL_TRACE") &&
+            (method_name_from_dex == "add" || method_name_from_dex == "remove" ||
+             method_name_from_dex == "removeAt" || method_name_from_dex == "removeFirst" ||
+             method_name_from_dex == "removeLast" || method_name_from_dex == "pop" ||
+             method_name_from_dex == "poll" || method_name_from_dex == "pollLast") &&
+            (api_class.find("Ljava/util/ArrayList;") != std::string::npos ||
+             api_class.find("Ljava/util/ArrayDeque;") != std::string::npos ||
+             api_class.find("Ljava/util/LinkedList;") != std::string::npos)) {
+            static thread_local uint64_t f271_coll_n = 0;
+            if (f271_coll_n < 100) {
+                ++f271_coll_n;
+                std::cerr << "[F271-COLL] " << method_name_from_dex
+                          << " recv=" << api_class
+                          << " recv_id=" << (!args.empty() ? args[0].object_id : 0)
+                          << " argc=" << args.size();
+                for (size_t fci = 1; fci < args.size() && fci <= 3; ++fci) {
+                    std::cerr << " a" << fci << ":t"
+                              << static_cast<int>(args[fci].type) << "/o"
+                              << args[fci].object_id;
+                    if (args[fci].type == DalvikType::STRING_REF)
+                        std::cerr << "(\"" << args[fci].string_val.substr(0, 24) << "\")";
+                }
+                std::cerr << " -> served t"
+                          << static_cast<int>(return_val.type) << "/o"
+                          << return_val.object_id;
+                if (return_val.type == DalvikType::STRING_REF)
+                    std::cerr << "(\"" << return_val.string_val.substr(0, 24) << "\")";
+                std::cerr << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+            }
+        }
     }
 
     // EXP-094 (CM-018): Record the receiver of a successful "setParams" call.
