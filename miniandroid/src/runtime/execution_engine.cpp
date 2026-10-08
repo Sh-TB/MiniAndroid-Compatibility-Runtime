@@ -6241,6 +6241,40 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
         }
         pump_ms += 16.6;
         if (!did_work) {
+            // F-NEW-277 (CONT-25): POLL-TIMEOUT PARITY with drain_quiescent
+            // (M3 FINDING-009) — quiescence is an EMPTY queue, not a
+            // future-dated head. AOSP law (MessageQueue.next): the main
+            // Looper never exits while messages are pending; when the head
+            // is future-dated it sleeps nativePollOnce(head.when - now) and
+            // dispatches when the clock reaches `when`. The compose pump's
+            // old `break` treated "nothing due NOW" as quiescence and
+            // stranded every future-scheduled dispatcher resumption — the
+            // Recomposer runner's wake-up work (Recomposer.kt
+            // awaitWorkAvailable/workContinuation, AndroidUiDispatcher.dispatch
+            // handler post) is exactly such future-due queue work, so the
+            // runner slept forever and recomposition #2 never ran (dooz:
+            // 3 frames, then 0 app draw ops for the rest of the run).
+            //
+            // Scope guard (no app/package checks): the parity law arms only
+            // when THIS pump call actually entered the compose frame family
+            // (fired_frames > 0 — a Choreographer frame callback was served).
+            // Apps that never post a frame callback keep the F-115b frozen
+            // launch-frame law byte-exactly (their launch frame remains the
+            // Looper-time≈0 state; GATE H/G07 goldens unaffected).
+            if (fired_frames > 0 && hs && hs->queue_size() > 0) {
+                int64_t next_ready = hs->next_ready_ms();
+                int64_t now_ms = hs->virtual_now_ms();
+                if (next_ready > now_ms) {
+                    hs->advance_virtual(next_ready - now_ms);
+                    did_work = true;  // keep ticking; the next tick drains
+                    std::cerr << "[F277-POLL] quiescence poll-timeout"
+                              << " fast-forward to virtual_ms=" << next_ready
+                              << " (delta=" << (next_ready - now_ms)
+                              << "ms)" << std::endl;
+                }
+            }
+        }
+        if (!did_work) {
             // F-115b REVISED (R-NEW-384 family): the LAUNCH-frame quiescence
             // does NOT advance the virtual clock. Contract: the launch frame
             // is the app state at Looper time ≈ 0 (a real device's first
