@@ -1,10 +1,10 @@
 {
  "generated_by": "scripts/findings_queue.py",
- "total_rows": 580,
+ "total_rows": 581,
  "queued_rows": 256,
- "terminal_rows": 324,
+ "terminal_rows": 325,
  "counts_by_status": {
-  "ROOT-CAUSED-FIXED": 128,
+  "ROOT-CAUSED-FIXED": 129,
   "PARTIAL": 110,
   "UNPROVEN": 72,
   "VERIFIED-CORRECT": 56,
@@ -66,12 +66,12 @@
    "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-8"
   },
   {
-   "id": "F-NEW-271",
+   "id": "F-NEW-272",
    "status": "CLASSIFIED",
    "priority": "P0",
-   "layer": "dex/fields + compose/invalidation",
-   "title": "COMPOSITION INVALIDATION FIELD CORRUPTION (F-265 arm (c) root): Lnb0 (CompositionImpl) o2838 field j (:Lqb0 invalidation holder) carries an alien-typed STRING_R",
-   "evidence": "run/cont18h/dooz_f270b: [F141-DIAG] Lnb0;.S pc=185 regs v2:t5/o0 (STRING_REF/0 in the j slot), v4:t8/o0; [TRI-F040] Lqb0"
+   "layer": "framework/threads + exceptions",
+   "title": "THREAD DEFAULT UNCAUGHT-EXCEPTION-HANDLER LAW GAP: the engine answers Thread.getDefaultUncaughtExceptionHandler() with null (no law exists), so an app crash-rep",
+   "evidence": "run/cont20/dooz_after (+dooz_after2) at b6ee41e77acb88ec: f141-null-recv \"Thread$UncaughtExceptionHandler.uncaughtExcept"
   },
   {
    "id": "F-NEW-172",

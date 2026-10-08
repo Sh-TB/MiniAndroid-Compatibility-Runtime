@@ -298,6 +298,8 @@ static CallResult lawa_serve_slot(CollectionShadow::CollectionState& st,
     uint8_t k = idx < static_cast<int32_t>(st.elem_kinds.size())
                     ? st.elem_kinds[idx]
                     : (st.elements[idx] != 0 ? uint8_t{1} : uint8_t{0});
+    if (k == 4)  // F-NEW-271: null element → typed null
+        return CallResult::handled_null();
     if (k == 3)
         return CallResult::handled_int(
             idx < static_cast<int32_t>(st.elem_ints.size())
@@ -349,6 +351,10 @@ static CallResult lawa_remove_index(CollectionShadow::CollectionState& st,
     // Kind-faithful removed-element serve (OpenJDK returns the element
     // itself — for a List<String> that is the string, for List<Integer>
     // the unboxed int law flows through the caller's check-cast).
+    // F-NEW-271: kind 4 = null element → typed null (OpenJDK ArrayList
+    // "permits all elements, including null"; remove(int) returns it AS
+    // null — never the fabricated "" String the kind-2 encoding leaked).
+    if (rk == 4) return CallResult::handled_null();
     if (rk == 3) return CallResult::handled_int(ri);
     if (rk == 2) return CallResult::handled_string(rs);
     if (removed != 0)
@@ -362,6 +368,17 @@ static CallResult lawa_remove_index(CollectionShadow::CollectionState& st,
 // numeric value; non-zero object ref -> kind 1; STRING arg (or zero-ref
 // fallback) -> kind 2 with the string content; NULL_REF stays kind 2 with
 // an empty value = the documented null-element representation.
+// ── F-NEW-271 NULL-ELEMENT KIND LAW (CONT-20): the kind-2+"" encoding was
+// LOSSY — a genuine empty-string element and a null element stored
+// identically, so every serve path answered a fabricated STRING_REF ""
+// where OpenJDK returns typed null (ArrayList "permits all elements,
+// including null"; remove(int)/get(int) return the stored element). Null
+// elements now carry their own kind 4 (elements[idx]==0, strings[idx]="",
+// ints[idx]=0) and every reader serves kind 4 as typed null. STRING args —
+// INCLUDING the empty string — stay kind 2, so the genuine-""
+// round-trip is preserved bit-for-bit. Generic: no class/package checks;
+// every current and future writer/readers of the four parallel stores
+// obey one law.
 static void lawb_classify_arg(const CallContext::Arg& a, uint32_t item,
                               uint8_t& kind, int32_t& ival,
                               std::string& sval) {
@@ -381,8 +398,11 @@ static void lawb_classify_arg(const CallContext::Arg& a, uint32_t item,
     } else if (a.kind == CallContext::Arg::Kind::STRING) {
         sval = a.string_val;
     } else {
-        // zero-ref object / null: kind-2 empty value (documented null
-        // element representation on the shadow channel)
+        // F-NEW-271: NULL_REF (and the zero-ref object face — ART has no
+        // object 0; a zero ref in a register IS null) → kind 4, the
+        // unambiguous null element. Previously kind 2 + "" — the lossy
+        // encoding that fabricated "" Strings on every serve.
+        kind = 4;
     }
 }
 
@@ -911,8 +931,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                   : static_cast<int32_t>(a1.long_val));
             } else if (item != 0) {
                 kind = 1;
-            } else {
+            } else if (a1.kind == CallContext::Arg::Kind::STRING) {
+                // F-NEW-271: a genuine empty-string element stays kind 2.
                 sval = ctx.arg_as_string(1);
+            } else {
+                // F-NEW-271: NULL_REF / zero-ref object → kind 4 null
+                // element (typed null on every serve).
+                kind = 4;
             }
             if (idx >= 0 && (size_t)idx <= state->elements.size()) {
                 state->elements.insert(state->elements.begin() + idx, item);
@@ -1031,9 +1056,12 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     }
                 }
                 state->elements.push_back(item);
-                state->elem_kinds.push_back(item != 0 ? 1 : 2);
-                state->elem_strings.push_back(
-                    item != 0 ? std::string() : ctx.arg_as_string(0));
+                // F-NEW-271: this branch is reached only for non-string,
+                // non-int args, so item == 0 here IS a null element
+                // (NULL_REF / zero-ref object) → kind 4, not the lossy
+                // kind-2 + "" encoding that fabricated "" Strings.
+                state->elem_kinds.push_back(item != 0 ? 1 : 4);
+                state->elem_strings.push_back(std::string());
                 state->elem_ints.push_back(0);
             }
         }
@@ -1215,7 +1243,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         uint8_t k = i < static_cast<int32_t>(st.elem_kinds.size())
                         ? st.elem_kinds[i]
                         : (st.elements[i] != 0 ? uint8_t{1} : uint8_t{0});
-        if (k == 3) {
+        if (k == 4) {  // F-NEW-271: null element → typed null arg
+            a.kind = CallContext::Arg::Kind::NULL_REF;
+        } else if (k == 3) {
             a.kind = CallContext::Arg::Kind::INT;
             a.int_val = i < static_cast<int32_t>(st.elem_ints.size())
                             ? st.elem_ints[i]
@@ -1354,6 +1384,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                         : (ostate->elements[j] != 0 ? uint8_t{1}
                                                     : uint8_t{0});
                 if (k != ok2) continue;
+                if (k == 4) return true;  // F-NEW-271: null == null element
                 if (k == 3) {
                     if (lstate->elem_ints[i] == ostate->elem_ints[j])
                         return true;
@@ -1563,8 +1594,10 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                arr, static_cast<size_t>(ai), item)) {
                     kind = 1;
                 } else {
-                    // Unknown element representation: kind-2 empty value —
-                    // the documented null-element convention.
+                    // F-NEW-271: unknown/null element representation →
+                    // kind 4 (typed null on serve), not the lossy kind-2
+                    // + "" encoding.
+                    kind = 4;
                 }
                 st2->elements.push_back(item);
                 st2->elem_kinds.push_back(kind);
@@ -2163,6 +2196,18 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
                 item.object_id != 0 && e == item.object_id)
                 return CallResult::handled_bool(true);
+            // F-NEW-271: contains(null) matches ONLY kind-4 null elements
+            // (OpenJDK indexOf(o): o==null ? e==null : o.equals(e)) — the
+            // identity check below would otherwise match every kind-2/3
+            // slot (their stored id is 0 too).
+            if (item.kind == CallContext::Arg::Kind::NULL_REF &&
+                ei < state->elem_kinds.size() &&
+                state->elem_kinds[ei] == 4)
+                return CallResult::handled_bool(true);
+            if (item.kind == CallContext::Arg::Kind::NULL_REF &&
+                !(ei < state->elem_kinds.size() &&
+                  state->elem_kinds[ei] == 4))
+                continue;
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
                 item.object_id != 0 && e != 0 && e != item.object_id &&
                 app_eq && app_eq(e, item.object_id))
@@ -2475,6 +2520,11 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                             pos + 1);
             } else {
                 state->iterator_position = pos + 1;
+            }
+            // F-NEW-271: kind-4 null elements serve typed null.
+            if (pos < static_cast<int32_t>(state->elem_kinds.size()) &&
+                state->elem_kinds[pos] == 4) {
+                return CallResult::handled_null();
             }
             // R-NEW-464 closeout: kind-2 string elements serve their value.
             if (pos < static_cast<int32_t>(state->elem_kinds.size()) &&
@@ -2975,8 +3025,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                   : static_cast<int32_t>(a1.long_val));
             } else if (item != 0) {
                 kind = 1;
-            } else {
+            } else if (a1.kind == CallContext::Arg::Kind::STRING) {
+                // F-NEW-271: a genuine empty-string element stays kind 2.
                 sval = ctx.arg_as_string(1);
+            } else {
+                // F-NEW-271: NULL_REF / zero-ref object → kind 4 null
+                // element (typed null on every serve).
+                kind = 4;
             }
             // ── F-NEW-238 DIAG (bounded): silent-write audit. The F-101
             // dual-store law keeps heap array[i] and shadow elements
