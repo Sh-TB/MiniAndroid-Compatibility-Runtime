@@ -1941,6 +1941,39 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 if (method.name == "onCreate") {
                                     dispatch_activity_lifecycle_callbacks(
                                         "onActivityCreated", result);
+                                    // ── A93 (A1–A104 knowledge transfer,
+                                    // Issue #382 audit): AOSP
+                                    // ActivityThread.performLaunchActivity
+                                    // dispatches Activity.onPostCreate(Bundle)
+                                    // after callActivityOnCreate (+ restore)
+                                    // and BEFORE the record is started
+                                    // (handleStartActivity → onStart). Apps
+                                    // that build content in onPostCreate
+                                    // (e.g. minos GameView) need this hop;
+                                    // non-overriders fall through to the
+                                    // framework Activity stub. Same Bundle
+                                    // shape as onCreate (null on cold launch).
+                                    {
+                                        DalvikValue postcreate_val;
+                                        std::vector<DalvikValue> postcreate_args;
+                                        postcreate_args.push_back(activity_val);  // p0 = this
+                                        postcreate_args.push_back(
+                                            DalvikValue::make_null());  // p1 = Bundle
+                                        bool post_ok = try_recursive_invoke(
+                                            cls.name,
+                                            "onPostCreate",
+                                            postcreate_args,
+                                            postcreate_val,
+                                            result,
+                                            "(Landroid/os/Bundle;)V"
+                                        );
+                                        log(post_ok
+                                                ? "[A93-POSTCREATE] Activity."
+                                                  "onPostCreate dispatched"
+                                                : "[A93-POSTCREATE] onPostCreate "
+                                                  "not overridden (framework "
+                                                  "stub fall-through)");
+                                    }
                                     dispatch_activity_lifecycle_callbacks(
                                         "onActivityPostCreated", result);
                                 }
@@ -2142,6 +2175,35 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 // then onActivityPostCreated (API 29 pre/post pairing).
                 dispatch_activity_lifecycle_callbacks("onActivityCreated",
                                                       result);
+                // ── A93 (A1–A104 knowledge transfer, Issue #382 audit) ──
+                // AOSP ActivityThread.performLaunchActivity: after
+                // callActivityOnCreate (+ onRestoreInstanceState when state
+                // exists), Instrumentation.callActivityOnPostCreate dispatches
+                // Activity.onPostCreate(Bundle) BEFORE the activity record is
+                // started (handleStartActivity → onStart). Apps that build
+                // their content view in onPostCreate (e.g. minos GameView)
+                // never reach content creation without this hop; apps that do
+                // not override it fall through to the framework Activity
+                // stub — the super-class law. Bundle carries the same launch
+                // state argument shape as onCreate (null on a cold launch).
+                {
+                    DalvikValue postcreate_val;
+                    std::vector<DalvikValue> postcreate_args;
+                    postcreate_args.push_back(activity_val);          // p0 = this
+                    postcreate_args.push_back(DalvikValue::make_null());  // p1 = Bundle
+                    bool post_ok = try_recursive_invoke(
+                        result.main_class,
+                        "onPostCreate",
+                        postcreate_args,
+                        postcreate_val,
+                        result,
+                        "(Landroid/os/Bundle;)V"
+                    );
+                    log(post_ok
+                            ? "[A93-POSTCREATE] Activity.onPostCreate dispatched"
+                            : "[A93-POSTCREATE] onPostCreate not overridden "
+                              "(framework stub fall-through)");
+                }
                 dispatch_activity_lifecycle_callbacks("onActivityPostCreated",
                                                       result);
                 goto entry_point_search_done;
@@ -49180,17 +49242,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (cache_it == asset_lines_cache.end()) {
             // Load from APK.
             std::vector<std::string> lines;
+            // A62 LAW (A1–A104 transfer alignment): asset bytes come from the
+            // INSTALLED APK through the in-process ZIP parser ONLY — the same
+            // one-byte-source law as DalvikExecutionEngine::read_asset (the
+            // popen("unzip -p …") host-tool dependency was removed there but
+            // this BufferedReader.readLine lazy path still shelled out with
+            // the APK path interpolated into a shell command: injection-prone,
+            // uncapped, unprovenanced). Found during the Issue #382 audit.
             if (!apk_path_.empty()) {
-                FILE* fp = popen(
-                    ("unzip -p \"" + apk_path_ + "\" assets/" + asset_name + " 2>/dev/null").c_str(),
-                    "r");
-                if (fp) {
-                    char buf[4096];
-                    std::string content;
-                    while (fgets(buf, sizeof(buf), fp)) {
-                        content += buf;
-                    }
-                    pclose(fp);
+                auto bytes = asset_entry_bytes("assets/" + asset_name);
+                if (!bytes.empty()) {
+                    std::string content(bytes.begin(), bytes.end());
                     // Split by lines.
                     std::string current;
                     for (char c : content) {
@@ -49207,8 +49269,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::cerr << "[EXP071-ASSET] Loaded asset \"" << asset_name
                               << "\" — " << lines.size() << " lines" << std::endl;
                 } else {
-                    std::cerr << "[EXP071-ASSET] Failed to open APK for asset \""
-                              << asset_name << "\"" << std::endl;
+                    std::cerr << "[EXP071-ASSET] Asset \"" << asset_name
+                              << "\" not present in APK entry table (empty)"
+                              << std::endl;
                 }
             }
             asset_lines_cache[asset_name] = std::move(lines);
