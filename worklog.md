@@ -7420,3 +7420,23 @@ Stage Summary:
 - The dooz draw frontier independently re-derived to the isPlaced gate with full upstream law map + quantitative counts; evidence folded into F-NEW-265 (CONT-18h lineage) with no registry duplication.
 - 61 granular tasks executed in one run (evidence/cont11/CONT11_TASK_ACCOUNTING.md); rawscan/flatxref/baseline tooling committed for the next wave.
 - Next wave owns: F-NEW-260-family fix work per the CONT-18h plan (F-265 arm (c) = F-NEW-271 first, then F-267) — with this wave's rawscan/flatxref tools available for the applier/measure-path work.
+
+---
+Task ID: CONT-19
+Agent: Super Z (main)
+Task: user directive — continue from Issue #383 (BASE-FIRST) + amendment (upstream-source-first; verify the Compose chain and the 7 FULLY_VERIFIED claim); final review of Issue #382 to wherever it went.
+
+Work Log:
+- Read #383 fully (body + amendment comment) and #382 fully (51,774-char body + 2 owner comments + committed A1_A104_PRIMARY_CODER_AUDIT.md). Finding: #382 had NO primary-coder claim-by-claim audit posted — gap closed this wave.
+- READ LOCAL SOURCE: repo contains NO local Compose runtime (no C++ SlotTable/Composer/Applier/ComposeNode/LayoutNode/Recomposer). Real surface = host bridge (~330 Compose-referencing lines; ComposeView/AndroidComposeView/WrappedComposition shadow hosts). The "~6K-line Compose runtime" figure appears nowhere in the repo — REJECTED as stated.
+- READ UPSTREAM SOURCE: vendored dooz-pinned compose 1.11.4 sources (upstream/s43/): Composer.kt (ComposerImpl coordinates slot-table + Applier ops); Composables.kt:290-303 ComposeNode law verbatim.
+- VERIFY (chain): mapped Composer→SlotTable→Applier→ComposeNode→LayoutNode→measure/layout/draw onto runtime evidence — composition RUNS partially (kindSets real, Lqb0 healthy ×2), measure/layout DIES (Lzs.m depth-17; place-writers 0 executions → isPlaced never flips), draw SKIPPED (upstream isPlaced gate → 0 canvas ops in 85,838-entry trace). Earliest break = F-NEW-271 (engine heap/field corruption: Lnb0.j alien STRING_REF/0) — a GENERIC Base root, not a Compose primitive. Historical "Compose internals not implemented" narrative SUPERSEDED.
+- VERIFY (7 FULLY_VERIFIED): targeted battery scripts/cont19_seven_target_battery.sh — 24 runs at rebuilt binary b4937c81aba0998c (HEAD 0b019608): 2048/tetris/snake_deluxe/snakeneon/tictactoe_deluxe/minicraft/gmdice ALL ×3 byte-identical and MATCH every A103 claimed hash; dooz anchor d602648e8e401895 ×3 zero-drift. snakeneon contradiction settled IN FAVOR of A103 (cont15 record 24fb… was the mis-provenanced outlier, superseded). Pixel metrics + APK sha256 identities recorded (scripts/cont19_metrics.py → run/cont19/battery/cont19_metrics.json).
+- #382 final review verdicts (source-verified at HEAD): 9 ACCEPTED (A61/A62/A64/A92/A93/A95/A101/A102/A103), 6 PARTIAL (A1-A50, A51/A52, A68, A91, keySet carried, A104), 1 REJECTED (A94 Display.getWidth/getDisplayInfo absent at HEAD), 48 SOURCE GAP. Arithmetic reconciled: 14 apps = 13-table + blockblast (5th FRAME_CAPTURED, diff366 report).
+- #383 Phase 0 lock recorded (HEAD/build/run/capture/working examples; registry unchanged 580 roots; verification-only wave, zero engine source changes). Phase 1 baseline proposal recorded (g2048, glxy, opencalc, unote, blockbuster; dooz = boundary test). Decision gate answered: F-271 is shared-Base work (heap/field-identity law); C++ Compose implementation unjustified by cross-app evidence.
+- Posted: #382 final review comment (issuecomment-6060546098); #383 wave-1 report comment (issuecomment-6060565126).
+
+Stage Summary:
+- Both demanded verifications closed with runtime evidence: (1) "~6K-line Compose runtime" REJECTED — host bridge only; the real chain executes from app DEX and breaks earliest at generic engine law F-NEW-271; (2) "7 FULLY_VERIFIED, no regression" ACCEPTED — 7/7 hash claims re-proven byte-identical ×3 at current binary, snakeneon contradiction resolved for the claim.
+- Evidence: evidence/cont19/CONT19_BASE_FIRST.md; artifacts run/cont19/battery/; scripts cont19_seven_target_battery.sh + cont19_metrics.py committed.
+- Next wave owns: F-NEW-271 arms (heap-dump probe at the failing iget; R-NEW-414/F-NEW-251 field-key audit; Lnb0 ownership check) → F-265 measure-pass completion → F-267 tap bridge; Phase 5 interaction proofs for the baseline five.
