@@ -4925,10 +4925,30 @@
    "evidence": "evidence/cont18/CONT18_F217_FIRST_DIVERGENCE.md sec.4 (recorded face run/cont18/t01_run_tap1: [F117-TAP] DOWN (540,960) target=0); LIVE reproduction this wave at binary 8ee839e718877216: run/cont18f/tap1/run.log '[F117-TAP] frame 15 DOWN (540,960) target=0', screenshot sha16 d602648e8e401895 == dooz anchor (byte-identical pre/post tap = zero state consumed, no interactive surface reachable); the tap pipeline itself is exonerated (F-117/R-NEW-394/S129 dialog+swipe laws all green on View-tree apps: negatives 19/19).",
    "probe": "PENDING (next wave): scripted-tap probe on a materialized Compose tree (synthetic Compose APK with a known clickable node at a known placed bound); positive = target!=0 + PerformClick -> DEX onClick; negative = tap outside all placed bounds stays target=0.",
    "verified_current": "registered at binary 8ee839e718877216 (clean rebuild reproduces the recorded CONT-18 binary byte-identically); anchors 18/18 x3 MATCH at the same binary (no drift while registering)."
+  },
+  {
+   "id": "F-NEW-268",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "EXCEPTION-SEMANTICS LAW FAMILY (five faces found stated-but-never-fixed in the engine and in issue #381's claims audit; each now fixed to the ART/JLS law): (a) aget on a NULL array ref answered a silent default instead of NPE — aput had carried the mirror arm since EXP-038 (asymmetry); (b) aget/aput on a CONFIRMED zero-length array (recorded __array_length__==0) warn-and-continued instead of AIOOBE — the old guard treated recorded-0 as 'length unknown'; the unknown-length legacy gate is preserved and now strictly means 'never recorded'; (c) new-array with negative size was silently CLAMPED to 0 instead of NegativeArraySizeException; (d) iget/iget-object on a null receiver answered the field default instead of NPE (ART order kept: field resolution first, then the null check); (e) `throw null` dispatched an exception object with class '<unknown>' instead of NPE at the throw site (JLS 14.18; probe face: ECJ folds a provable-null dereference into athrow of the null register itself). All arms reuse f141_is_null_receiver (F-141 + F-266a untyped-register law: NULL_REF / OBJECT_REF-id-0 / INT32-0) and raise_synthetic_exception (catch handlers + UNIFIED_011.3 propagation law) — no app-specific knowledge.",
+   "priority": "P1",
+   "layer": "dex/exceptions+arrays+fields",
+   "evidence": "issue #381 claims audit (sections C/E: 'the current aget guard is insufficient for arr_len == 0', aget/iget NPE arms, new-array negative, 'write_v silent discard', class_to_superclass end() claim); source review at 8ee839e718877216 confirmed every face live in dalvik_engine.cpp before the fix. evidence/cont18g/CONT18G_FINAL_REVIEW.md",
+   "probe": "fixtures/f268_exception_probe (real aapt2/ECJ/D8; apk sha16 089eea98dbe6dee2): 12/12 PASS at binary be95a47f797d3d99 — A new-array-neg NASE; B aget confirmed-zero AIOOBE; C aget null NPE; D aput confirmed-zero AIOOBE; E iget null-recv NPE; F/G in-bounds controls unchanged; H split trailing-empty law; I split empty-delim per-char law; J split Pattern.quote law; K split control; L throw-null NPE. Rows are method-isolated with instanceof-only handlers (ECJ folds provable-null derefs into athrow — the probe's own blackhole nulls exercise the real opcode paths).",
+   "verified_current": "full regression at be95a47f797d3d99: anchors 6/6 x3 = 18/18 MATCH byte-identical (dooz d602648e8e401895, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8, gmdice f3b483fe7b7cf51b, opencalc a976d2f9fb675cb3, chess b5a7a35d5fe0564b); fcol 18/18; f259 7/7; f259g 12/13 honest row-L unchanged; f266 6/6; negatives 19/19; reinstall matrix 8/8; skill 13/13."
+  },
+  {
+   "id": "F-NEW-269",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "STRING.SPLIT DUAL-HANDLER DIVERGENCE: the engine had TWO live String.split implementations in different dispatch layers (invoke-layer dalvik_engine.cpp ~49143 EXP-071 Phase 6 site and bridge-layer ~52416 site) with DIVERGENT semantics — the invoke layer stripped the Pattern.quote \\Q..\\E wrapper, the bridge layer did not; the bridge layer answered whole-string for an empty delimiter while the invoke layer HUNG FOREVER (find(\"\") returns the current position, start never advances — issue #381's observed ~5s timeout face); both retained trailing empty elements against the JDK split(String)=limit-0 law. Fix: LAW PARITY in both layers — (1) \\Q..\\E strip, (2) empty delimiter = JDK zero-length-match per-char law, (3) trailing empty strings removed. Remaining structural note (DEFERRED): the two sites are now law-identical by construction+comment, but a single shared implementation is the eventual cleanup (mechanical refactor, no semantic delta).",
+   "priority": "P2",
+   "layer": "dex/strings",
+   "evidence": "issue #381 section B/C claims ('Two separate String.split handlers existed', 'the old empty-delimiter split path was actually observed to hang', 'retained trailing empty elements'); source review at 8ee839e718877216 confirmed both sites live with the divergence. evidence/cont18g/CONT18G_FINAL_REVIEW.md",
+   "probe": "fixtures/f268_exception_probe rows H/I/J/K at be95a47f797d3d99: trailing-empty removal (a,b,, -> len 2), empty-delim per-char (ab -> [a,b], no hang), Pattern.quote literal law (x.y -> [x,y]), control unchanged — PASS in both dispatch layers via the same public API surface.",
+   "verified_current": "anchors 18/18 x3 byte-identical + fcol 18/18 + f259 7/7 + f259g 12/13 honest + f266 6/6 + negatives 19/19 at be95a47f797d3d99 (split is corpus-wide: zero behavior drift on every coherent input the anchors exercise)."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 576,
+ "total": 578,
  "count": 575,
  "meta": {
   "last_update": "CONT-16 fix-batch session 2026-10-07: F-NEW-266a (typed-null NPE law, f266 6/6), F-NEW-259g-a (shadow exception channel + JDK list-get range law, f259g row K flip), F-NEW-259g-b (Vector claim, NPE gone; row L expectation classified probe artifact) all ROOT-CAUSED-FIXED at binary a8761a482a186eac; anchors 6/6 x3 byte-identical, f259 7/7, fcol 3/18 unchanged, negatives 19/19, skill 13/13. CONT-16 52-task backlog: evidence/cont16/CONT16_TASK_BACKLOG.md",
@@ -4957,7 +4977,7 @@
   "CLASSIFIED": 2,
   "BLOCKED": 1
  },
- "total_roots": 576,
+ "total_roots": 578,
  "generated": "2026-10-08",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }

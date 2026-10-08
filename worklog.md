@@ -7357,3 +7357,22 @@ Stage Summary:
 - Campaign impact made concrete: fcol 3/18 → 18/18 live at a byte-identical reproduced binary; anchors 18/18 zero drift; next frontier (F-265 → F-267 tap gate) registered and ranked P0/P1 in the usable queue.
 
 Push record: remote main a6c6fb7a verified (c15e2661..a6c6fb7a), secret guard PASS at push time. CONT-18f complete: audit dispositions + guard main-code fix + F-NEW-267 registration + queue tool + live fcol 18/18 / anchors 18/18 / binary reproduction proofs.
+
+---
+Task ID: CONT-18g
+Agent: Super Z (main)
+Task: Final source review — sweep issue comments/archives/source for findings stated-but-never-fixed; fix them; prove cumulative source impact; push.
+
+Work Log:
+- Sweep: fetched issues #353–#381 bodies fresh (HTML; comments JS-rendered + API rate-limited 403 — recorded, local archives mined instead: cont17 trailing comments 375–380, forensic_data, tmp comment files). Issue #381 (20.7k chars, the complete claims audit) was created after the last snapshot and NEVER audited — mined claim-by-claim.
+- Source verification at 8ee839e7: aget zero-length + aget null + iget/iget-object null + new-array negative clamp + throw <unknown> + split dual-handler divergence (invoke layer HANGS on empty delim; bridge layer whole-string; no quote parity; trailing empties retained) — ALL REAL and unregistered. class_to_superclass end() claim REFUTED (32/32 sites guarded).
+- FIXES (generic, ART/JLS law, f141_is_null_receiver + raise_synthetic_exception reuse): F-NEW-268 a–e (aget null NPE, aget/aput recorded-zero AIOOBE with unknown-length legacy gate preserved, new-array NegativeArraySizeException, iget/iget-object null NPE with ART resolution order, throw-null NPE) + F-NEW-269 (split law parity in both layers: \Q..\E strip, per-char empty-delim, trailing-empty removal). New binary be95a47f797d3d99.
+- Probe: fixtures/f268_exception_probe (real toolchain) — 12/12 PASS incl. in-bounds controls. Probe design lessons recorded honestly: ECJ folds provable-null derefs into athrow of the null register (became face L: throw-null → NPE); row isolation + instanceof-only handlers required (exception-object method dispatch hits REC-MISS fallback edges).
+- Full regression at be95a47f797d3d99: anchors 18/18 x3 BYTE-IDENTICAL; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; f268 12/12; negatives 19/19 (interim 9/19 = missing gate_a probe-RUN stage in clean container — probe rebuilt, libprobe sha ad413625925ed8e5 = recorded, probe executed into canonical stores, unblocked); reinstall 8/8; skill 13/13.
+- Final review doc: evidence/cont18g/CONT18G_FINAL_REVIEW.md — every #381 claim dispositioned (fixed/refuted/documented/superseded/non-floating), cumulative source-impact map, opcode-family coverage review answering #381 §F, remaining frontier (F-265 → F-267 main line).
+- Registry 576→578 (F-268/F-269 ROOT-CAUSED-FIXED); queue refreshed (255 queued/323 terminal).
+
+Stage Summary:
+- The sweep's answer: 5 real "found-but-never-fixed" faces + 1 dual-handler divergence — all FIXED with one probe + full green regression; 1 claim refuted with source evidence; 2 documented-design; the rest already registered or superseded. Zero floats.
+- The interim negatives 9/19 was diagnosed to environment (probe-run stage absent), NOT engine drift — recorded per discipline.
+- Engine now at be95a47f797d3d99; anchors byte-identical prove the exception laws are behavior-preserving on the whole anchor corpus while closing real semantic gaps.

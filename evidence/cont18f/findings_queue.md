@@ -1,8 +1,8 @@
 # FINDINGS QUEUE (generated — do not edit by hand)
 
-Source: root_registry.json (576 rows). Regenerate: `python3 scripts/findings_queue.py`.
+Source: root_registry.json (578 rows). Regenerate: `python3 scripts/findings_queue.py`.
 
-Queued (actionable): **255**   Terminal (closed/rejected/superseded/not-applicable): **321**
+Queued (actionable): **255**   Terminal (closed/rejected/superseded/not-applicable): **323**
 
 Queued by priority: {"P3": 105, "P2": 65, "P1": 53, "P0": 32}
 
