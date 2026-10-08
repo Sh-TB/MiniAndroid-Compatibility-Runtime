@@ -1,10 +1,10 @@
 {
  "generated_by": "scripts/findings_queue.py",
- "total_rows": 578,
- "queued_rows": 255,
- "terminal_rows": 323,
+ "total_rows": 580,
+ "queued_rows": 256,
+ "terminal_rows": 324,
  "counts_by_status": {
-  "ROOT-CAUSED-FIXED": 127,
+  "ROOT-CAUSED-FIXED": 128,
   "PARTIAL": 110,
   "UNPROVEN": 72,
   "VERIFIED-CORRECT": 56,
@@ -16,8 +16,8 @@
   "SUPERSEDED-BY-EVIDENCE": 12,
   "USED_BY_EXECUTION": 7,
   "OBSERVED-FAIL": 5,
+  "CLASSIFIED": 5,
   "OPEN": 4,
-  "CLASSIFIED": 4,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
   "REGISTERED": 2,
@@ -30,7 +30,7 @@
   "P3": 105,
   "P2": 65,
   "P1": 53,
-  "P0": 32
+  "P0": 33
  },
  "queue_top": [
   {
@@ -64,6 +64,14 @@
    "layer": "dex/exceptions + compose/measure",
    "title": "DOOZ FIRST DIVERGENCE RE-ROOTED (supersedes the W6 'canvas bridge never constructed' reading as a downstream consequence): the compose DRAW machinery is PROVEN ",
    "evidence": "evidence/cont11/CONT11_EXECUTION_LEDGER.md [CONT-17 pointer 2026-10-08: next action: ARM-1/2/3 decomposition (tasks 86-8"
+  },
+  {
+   "id": "F-NEW-271",
+   "status": "CLASSIFIED",
+   "priority": "P0",
+   "layer": "dex/fields + compose/invalidation",
+   "title": "COMPOSITION INVALIDATION FIELD CORRUPTION (F-265 arm (c) root): Lnb0 (CompositionImpl) o2838 field j (:Lqb0 invalidation holder) carries an alien-typed STRING_R",
+   "evidence": "run/cont18h/dooz_f270b: [F141-DIAG] Lnb0;.S pc=185 regs v2:t5/o0 (STRING_REF/0 in the j slot), v4:t8/o0; [TRI-F040] Lqb0"
   },
   {
    "id": "F-NEW-172",
@@ -344,14 +352,6 @@
    "layer": "dex/r8-merged-class-identity",
    "title": "R8-MERGED CLASS CONSTRUCTOR/DISPATCH MISMATCH: LA/h; is a horizontal class merge (field `a` mode int + packed-switch ctor paths: SparseIntArray pair / s/h+Array",
    "evidence": "[CONT-17 task 52 2026-10-08] TypeToken dispatch re-verify: the recorded APK for the A/h.<init> CopyOnWriteArrayList face"
-  },
-  {
-   "id": "F-NEW-229",
-   "status": "OBSERVED",
-   "priority": "P1",
-   "layer": "layout/constraintlayout-match-parent-spec",
-   "title": "CL MATCH_PARENT SPEC LAW: a ConstraintLayout child with width/height=MATCH_PARENT and NO anchors on that axis falls back to child_spec → AT_MOST(available), so ",
-   "evidence": "[CONT-17 task 34 2026-10-08] CL MATCH_PARENT spec law read at source (kept OBSERVED): the AT_MOST->fill arm for anchorle"
   }
  ],
  "note": "rank = (priority P0<P1<P2<P3, status class OPEN/CLASSIFIED < PARTIAL < UNPROVEN < IMPLEMENTED, id); terminal rows excluded; full order deterministic; dispositions per evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md"

@@ -117,5 +117,9 @@ findings during execution (per the task-count rule; derived sub-tasks use `N_M` 
 | 49_12 | Full regression at fixed binary | **VERIFIED** | anchors 18/18 x3 byte-identical; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; negatives 19/19; reinstall 8/8; skill 13/13 |
 | 49_13 | Registry delta | **IMPLEMENTED** | 576→578 (F-268/269 ROOT-CAUSED-FIXED); queue refreshed 255 queued/323 terminal |
 | 49_14 | Probe-infrastructure restoration in clean container (gate_a probe rebuilt+RUN, libprobe sha `ad413625925ed8e5` = recorded) | **VERIFIED** | negatives 19/19 + reinstall 8/8 unblocked |
+| 50_1 | CONT-18h: F-265 live decomposition at HEAD — arms (a)+(b) VERIFIED (deferred-throw aborts frame; real throwable to handlers); measure-pass death (Lzs.m depth-17 unwind) still reproduced | **VERIFIED** | `evidence/cont18h/CONT18H_MAINLINE.md` §1; run/cont18h/dooz_f265 |
+| 50_2 | F-NEW-270 ROOT-059 route-domain law fixed (framework-only gate + caller identity; wrong-site this=null DEX execution eliminated) | **IMPLEMENTED+TESTED** | `f141_is_framework_class` in dalvik_engine.h/.cpp; f882ca1832b955e3; anchors 18/18 |
+| 50_3 | F-265 arm (c) re-rooted: F-NEW-271 registered (alien STRING_REF/0 in :Lqb0-typed field kills compose invalidation; bytecode coherence proven source-first) | **IMPLEMENTED** | registry 580 rows; CONT18H_MAINLINE §3 |
+| 50_4 | CONT-18h full regression at f882ca1832b955e3 | **VERIFIED** | anchors 18/18 x3; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; f268 12/12; negatives 19/19; reinstall 8/8; skill 13/13 |
 
-**Count: 63 genuine tasks (0–48 + 14 derived `49_N`). No filler.**
+**Count: 67 genuine tasks (0–48 + 14 derived `49_N` + 4 derived `50_N`). No filler.**
