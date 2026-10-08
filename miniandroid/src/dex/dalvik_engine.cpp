@@ -12687,7 +12687,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     std::cerr << "]" << std::endl;
                 }
                 int32_t array_size = dalvik_int_value(size_val);
-                if (array_size < 0) array_size = 0;
+                /* F-NEW-268c (CONT-18g): ART new-array negative-size law — a
+                 * negative size throws NegativeArraySizeException (ART
+                 * art::ThrowNegativeArraySizeException; the old code silently
+                 * CLAMPED to 0, manufacturing an empty array out of UB and
+                 * hiding the first divergence — issue #381 face c). */
+                if (array_size < 0) {
+                    raise_synthetic_exception(
+                        "Ljava/lang/NegativeArraySizeException;",
+                        "size=" + std::to_string(array_size), "new-array-neg");
+                    break;
+                }
 
                 // F-NEW-181 (WAVE C, FINAL CAMPAIGN phase 5/6 law — array
                 // runtime identity): NEW_ARRAY was the ONLY array producer
@@ -12835,23 +12845,47 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue idx_val = get_register(vCC); \
                     int32_t idx = dalvik_int_value(idx_val); \
                     trace.opcode_name = op_name; \
+                    /* F-NEW-268a (CONT-18g): AOSP HandleAGet null-array law — \
+                     * aget on a NULL array reference throws NPE at the access. \
+                     * aput has carried the mirror arm since EXP-038 \
+                     * ("AOSP HandleAPut: null array → NPE"); the aget side \
+                     * silently answered a default value instead, hiding the \
+                     * first divergence (issue #381 claims-audit face a). \
+                     * f141_is_null_receiver = NULL_REF / OBJECT_REF-id-0 / \
+                     * INT32-0 typed null (F-141 + F-266a untyped-register law). */ \
+                    if (f141_is_null_receiver(arr_val)) { \
+                        log("⚠️ AGET from null array (" + std::string(op_name) + \
+                            ") idx=" + std::to_string(idx)); \
+                        raise_synthetic_exception( \
+                            "Ljava/lang/NullPointerException;", \
+                            "Attempt to read from null array", "aget-null"); \
+                        break; \
+                    } \
                     /* EXP-062: Read array length from heap field */ \
                     int32_t arr_len = 0; \
+                    /* F-NEW-268b: a RECORDED length — even 0 — is authoritative. \
+                     * new-array(0) stores __array_length__/__new_array_length__ = 0; \
+                     * the old guard treated 0 as "length unknown" and warn-and- \
+                     * continued, so a confirmed zero-length array answered null \
+                     * instead of AIOOBE (#381 face b). */ \
+                    bool len_recorded = false; \
                     if (arr_val.type == DalvikType::OBJECT_REF && \
                         heap_.has_object(arr_val.object_id)) { \
                         auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
                         if (len_field.has_value() && len_field->type == DalvikType::INT32) { \
                             arr_len = len_field->int_val; \
+                            len_recorded = true; \
                         } \
                         /* Also check if new-array stored a length */ \
                         if (arr_len == 0) { \
                             auto nm_field = heap_.get_object_field(arr_val.object_id, "__new_array_length__"); \
                             if (nm_field.has_value() && nm_field->type == DalvikType::INT32) { \
                                 arr_len = nm_field->int_val; \
+                                len_recorded = true; \
                             } \
                         } \
                     } \
-                    if (arr_len == 0) { \
+                    if (arr_len == 0 && !len_recorded) { \
                         /* Fallback: use int_val from arr_val (old behavior) */ \
                         arr_len = (arr_val.type == DalvikType::OBJECT_REF) ? arr_val.int_val : 0; \
                     } \
@@ -12867,8 +12901,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                          * arr_len == 0 may mean "length unknown" in this engine, so that \
                          * path keeps the legacy warn-and-continue to avoid regressing \
                          * APKs whose array length was never recorded. \
+                         * F-NEW-268b: a RECORDED length (even 0) makes the OOB \
+                         * CONFIRMED — idx>=0 against a recorded 0 is always OOB. \
                          */ \
-                        if (arr_len > 0) { \
+                        if (len_recorded || arr_len > 0) { \
                             /* S36 (R-NEW-335): bounded AOOB evidence probe — \
                              * which array object is indexed OOB (class + id + \
                              * element classes when the store is heap-side). */ \
@@ -13089,23 +13125,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     bool arr_on_heap = (arr_val.type == DalvikType::OBJECT_REF && \
                                         heap_.has_object(arr_val.object_id)); \
                     int32_t arr_len = 0; \
+                    /* F-NEW-268b: a RECORDED length — even 0 — is authoritative \
+                     * (mirror of the aget side): a confirmed zero-length array \
+                     * must AIOOBE on any store, not grow silently. */ \
+                    bool len_recorded = false; \
                     if (arr_on_heap) { \
                         auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
                         if (len_field.has_value() && len_field->type == DalvikType::INT32) { \
                             arr_len = len_field->int_val; \
+                            len_recorded = true; \
                         } \
                         if (arr_len == 0) { \
                             auto nm_field = heap_.get_object_field(arr_val.object_id, "__new_array_length__"); \
                             if (nm_field.has_value() && nm_field->type == DalvikType::INT32) { \
                                 arr_len = nm_field->int_val; \
+                                len_recorded = true; \
                             } \
                         } \
-                        if (arr_len == 0) { \
+                        if (arr_len == 0 && !len_recorded) { \
                             arr_len = arr_val.int_val; \
                         } \
                     } \
                     std::string field = "array[" + std::to_string(idx) + "]"; \
-                    if (arr_on_heap && arr_len > 0) { \
+                    if (arr_on_heap && (len_recorded || arr_len > 0)) { \
                         /* CONFIRMED array: full AOSP semantics. */ \
                         if (idx < 0 || idx >= arr_len) { \
                             { \
@@ -13184,7 +13226,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         } \
                         /* Length immutable — NO auto-grow (AOSP). */ \
                     } else if (arr_on_heap) { \
-                        /* Length unknown (0): legacy path — store + record/grow. \
+                        /* Length unknown (0, never recorded): legacy path — store + record/grow. \
+                         * F-NEW-268b: a RECORDED zero never reaches here (it threw above); \
+                         * this legacy gate is now strictly the unknown-length face. \
                          * Preserves arrays filled aput-by-aput with no recorded \
                          * length (mirrors aget's arr_len==0 legacy gate). */ \
                         heap_.set_object_field(arr_val.object_id, field, src_val); \
@@ -14942,6 +14986,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "throw";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 DalvikValue exc = get_register(vAA);
+                /* F-NEW-268e (CONT-18g): JLS/ART throw-null law — `throw null`
+                 * throws NullPointerException AT THE THROW SITE (JLS 14.18:
+                 * "If evaluation of the Expression is null, a NullPointerException
+                 * is thrown"). The old path dispatched an exception object whose
+                 * class was "<unknown>" (a null register carries no class); the
+                 * probe face: ECJ folds a provable-null dereference into `athrow`
+                 * of the null register itself (rowC pc=1). */
+                if (f141_is_null_receiver(exc)) {
+                    raise_synthetic_exception(
+                        "Ljava/lang/NullPointerException;",
+                        "throw null", "throw-null");
+                    break;
+                }
                 std::string exc_class = exc.class_desc.empty()
                                       ? "<unknown>" : exc.class_desc;
 
@@ -17173,6 +17230,21 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     
     if (field_res.resolved) {
         DalvikValue obj_ref = get_register(obj_reg);
+        /* F-NEW-268d (CONT-18g): ART iget null-receiver law — iget on a null
+         * receiver throws NullPointerException at the access (ART resolves
+         * the field first, then null-checks — same order here; the silent
+         * default-value answer hid the first divergence, issue #381 face d).
+         * f141_is_null_receiver covers NULL_REF / OBJECT_REF-id-0 / INT32-0
+         * typed null (F-141 + F-266a untyped-register law). */
+        if (f141_is_null_receiver(obj_ref)) {
+            raise_synthetic_exception(
+                "Ljava/lang/NullPointerException;",
+                "Attempt to read from field '" + field_res.class_descriptor +
+                    "." + field_res.field_name +
+                    "' on a null object reference",
+                "iget-null-recv");
+            return true;  /* pc_ set by raise (catch handler) or frame unwind */
+        }
         if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
             // S134 F-NEW-160: qualified field identity (declaring class + name).
             const std::string s134_decl = resolved_field_declarer(
@@ -17430,6 +17502,19 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     
     // Get object reference from register
     DalvikValue obj_ref = get_register(obj_reg);
+
+    /* F-NEW-268d (CONT-18g): ART iget-object null-receiver law — mirror of
+     * the iget arm (field resolved first, then the null check; issue #381
+     * face d). The old path answered a silent null default. */
+    if (f141_is_null_receiver(obj_ref)) {
+        raise_synthetic_exception(
+            "Ljava/lang/NullPointerException;",
+            "Attempt to read from field '" + field_res.class_descriptor +
+                "." + field_res.field_name +
+                "' on a null object reference",
+            "iget-null-recv");
+        return true;  /* pc_ set by raise (catch handler) or frame unwind */
+    }
 
     // S88 DIAG (bounded, env-gated): MiniFont$Glyph field reads — tweakWidth
     // NPE "Path.transform on null" while iput traces show the path field
@@ -49218,13 +49303,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             delim = delim.substr(2, delim.size() - 4);
         }
         std::vector<std::string> parts;
-        size_t start = 0;
-        size_t pos;
-        while ((pos = str.find(delim, start)) != std::string::npos) {
-            parts.push_back(str.substr(start, pos - start));
-            start = pos + delim.length();
+        /* F-NEW-269 (CONT-18g): JDK String.split zero-length-match law — an
+         * EMPTY delimiter splits at every char boundary ("ab".split("") →
+         * ["a","b"]). The old loop hung forever here (find("") returns the
+         * current position, start never advanced — issue #381 face). */
+        if (delim.empty()) {
+            for (size_t ci = 0; ci < str.size(); ++ci)
+                parts.push_back(std::string(1, str[ci]));
+        } else {
+            size_t start = 0;
+            size_t pos;
+            while ((pos = str.find(delim, start)) != std::string::npos) {
+                parts.push_back(str.substr(start, pos - start));
+                start = pos + delim.length();
+            }
+            parts.push_back(str.substr(start));
+            /* F-NEW-269: JDK split(String) = split(regex, 0) — TRAILING
+             * empty strings are removed (OpenJDK String.split: "trailing
+             * empty strings are not included in the resulting array"). */
+            while (parts.size() > 1 && parts.back().empty()) parts.pop_back();
         }
-        parts.push_back(str.substr(start));
         {
             static thread_local uint64_t f235_sp = 0;
             static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
@@ -52426,7 +52524,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         uint32_t arr_id = heap_.allocate("Larray;", pc_,
                                           call_stack_.empty() ? 0 : call_stack_.top().frame_id);
         std::vector<std::string> parts;
-        if (!delim.empty()) {
+        /* F-NEW-269 (CONT-18g): LAW PARITY with the invoke-layer split
+         * handler (dalvik_engine.cpp F-NEW-269 site) — the two dispatch
+         * layers must stay semantically identical:
+         *   (1) \\Q...\\E quote wrapper stripped (Pattern.quote literal law),
+         *   (2) EMPTY delimiter = zero-length-match law: per-char split
+         *       ("ab".split("") → ["a","b"]), never whole-string,
+         *   (3) TRAILING empty strings removed (JDK split(String) = limit 0).
+         * The old divergence: this layer lacked (1) and (3) and answered
+         * whole-string for (2) — same API, two laws by dispatch layer. */
+        if (delim.size() >= 4 && delim.rfind("\\Q", 0) == 0 &&
+            delim.compare(delim.size() - 2, 2, "\\E") == 0) {
+            delim = delim.substr(2, delim.size() - 4);
+        }
+        if (delim.empty()) {
+            for (size_t ci = 0; ci < s.size(); ++ci)
+                parts.push_back(std::string(1, s[ci]));
+        } else if (!delim.empty()) {
             size_t start = 0;
             size_t pos;
             while ((pos = s.find(delim, start)) != std::string::npos) {
@@ -52434,8 +52548,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 start = pos + delim.size();
             }
             parts.push_back(s.substr(start));
-        } else {
-            parts.push_back(s);
+            while (parts.size() > 1 && parts.back().empty()) parts.pop_back();
         }
         for (size_t i = 0; i < parts.size(); ++i) {
             std::string fn = "array[" + std::to_string(i) + "]";
