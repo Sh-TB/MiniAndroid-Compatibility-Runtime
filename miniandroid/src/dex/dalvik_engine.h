@@ -2606,6 +2606,10 @@ public:
     // the later activity's F-023 links. Keyed by the ActivityShadow
     // current-activity view id.
     std::map<uint32_t, uint32_t> window_decor_for_activity_;
+    // F-NEW-290: Window receiver oid → its WindowManager$LayoutParams
+    // object (AOSP PhoneWindow: mWindowAttributes exists from construction;
+    // getAttributes() NEVER answers null). One LayoutParams per Window.
+    std::map<uint32_t, uint32_t> window_layout_params_;
     // S88 F-NEW-179: path → File object id (distinct dir File per path).
     std::map<std::string, uint32_t> dir_files_;
     // S88 F-NEW-181: code point → boxed Character id (valueOf cache 0..127).
