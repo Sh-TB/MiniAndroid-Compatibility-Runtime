@@ -2834,6 +2834,53 @@ bool DalvikExecutionEngine::execute_method_internal(
     size_t tries_data_size
 ) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().invoke_internal, f107_t0);
+
+    // F-NEW-282: CLASS_REF TOKEN MATERIALIZATION AT THE ARGUMENT BOUNDARY.
+    // A CLASS_REF-typed register value (const-class / getOrCreateKotlinClass
+    // token) is NOT a heap reference; the engine's frame machinery only
+    // carries OBJECT_REF values intact across nested DEX calls, so a raw
+    // CLASS_REF argument degrades to REGISTER_UNSET/zero by the time the
+    // callee stores or compares it. Live face (real-Compose oracle):
+    // ClassReference.<init>(Ljava/lang/Class;)V bound the token as
+    // p1={t=CLASS_REF} at frame entry (PARAM-TRACE), yet the body's
+    // iput-object v2, v1, jClass stored <unset> — every later consumer
+    // (getJClass/equals/isInstance/getQualifiedName) then saw null and
+    // ViewModelProvider.get(KClass) could not match its registered
+    // initializer (IAE "No initializer set for given class null" → APP
+    // BOUNDARY). ART law: a class literal IS a java.lang.Class instance —
+    // one identity per (descriptor, loader). The F-103 law already mints
+    // heap-backed Class tokens for const-class; materialize CLASS_REF
+    // arguments to the SAME stable token object at the frame boundary so
+    // the callee handles an ordinary reference. Identity per descriptor is
+    // preserved (F-069 map), no app/package knowledge involved.
+    std::vector<DalvikValue> f282_args = args;
+    {
+        const bool f282_diag = std::getenv("MINIANDROID_F282_TRACE") != nullptr;
+        for (auto& f282_a : f282_args) {
+            if (f282_a.type != DalvikType::CLASS_REF) continue;
+            uint32_t f282_token = 0;
+            auto f282_it = class_token_ids_.find(f282_a.class_desc);
+            if (f282_it != class_token_ids_.end()) {
+                f282_token = f282_it->second;
+            } else {
+                f282_token = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+                heap_.set_object_field(f282_token, "__referent_desc",
+                                       DalvikValue::make_string(f282_a.class_desc, 0));
+                class_token_ids_.emplace(f282_a.class_desc, f282_token);
+            }
+            if (f282_diag) {
+                static std::atomic<uint64_t> f282_n{0};
+                if (f282_n.fetch_add(1, std::memory_order_relaxed) < 24)
+                    std::cerr << "[F282-TOKEN] arg CLASS_REF "
+                              << f282_a.class_desc
+                              << " → heap token obj#" << f282_token
+                              << " (callee " << class_name << "."
+                              << method_name << ")" << std::endl;
+            }
+            f282_a = DalvikValue::make_object(f282_token, "Ljava/lang/Class;");
+        }
+    }
+
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
     uint64_t f107_su0 = 0; phase_clock().enter(phase_clock().em_setup, f107_su0);  // S61 setup
     current_result_ = &result;
@@ -3973,13 +4020,13 @@ bool DalvikExecutionEngine::execute_method_internal(
             uint8_t slot = 0;
             if (args.size() == ptypes.size() + 1) {
                 // instance call: the receiver occupies slot 0
-                frame.registers.write_p(0, args[0]);
+                frame.registers.write_p(0, f282_args[0]);
                 ai = 1;
                 slot = 1;
             }
             for (size_t ti = 0; ti < ptypes.size() && ai < args.size();
                  ++ti, ++ai) {
-                frame.registers.write_p(slot, args[ai]);
+                frame.registers.write_p(slot, f282_args[ai]);
                 const std::string& t = ptypes[ti];
                 if (t == "J" || t == "D") {
                     // Fill the shadow slot with the high 32-bit word so
@@ -4004,7 +4051,7 @@ bool DalvikExecutionEngine::execute_method_internal(
         } else {
             // Proto unresolvable → legacy 1:1 fallback layout.
             for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
-                frame.registers.write_p(static_cast<uint8_t>(i), args[i]);
+                frame.registers.write_p(static_cast<uint8_t>(i), f282_args[i]);
             }
         }
     }
@@ -18332,6 +18379,15 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     // EXP-042 Phase 2 FIX: never return false — always advance pc_.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
 
+    // F-NEW-282 (store side): a CLASS_REF source value written through
+    // iput-object must land as its heap-backed Class token (F-103 identity
+    // map), not as a raw class-typed register value — raw CLASS_REF does
+    // not survive the frame machinery (see the F-NEW-282 law comment in
+    // execute_method_internal) and consumers read the field back as
+    // null/unset (oracle: ClassReference.jClass → getJClass/equals/
+    // isInstance/getQualifiedName all null). Same generic law as the
+    // argument-boundary materialization; no app knowledge.
+
     uint16_t instr = bytecode_[pc];
     uint8_t src_reg = (instr >> 8) & 0xF;
     uint8_t obj_reg = (instr >> 12) & 0xF;
@@ -18339,9 +18395,21 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
 
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
+    // F-NEW-282 (store side) — materialize now that src_val is bound.
+    if (src_val.type == DalvikType::CLASS_REF && !src_val.class_desc.empty()) {
+        auto f282_it = class_token_ids_.find(src_val.class_desc);
+        uint32_t f282_token = 0;
+        if (f282_it != class_token_ids_.end()) {
+            f282_token = f282_it->second;
+        } else {
+            f282_token = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+            heap_.set_object_field(f282_token, "__referent_desc",
+                                   DalvikValue::make_string(src_val.class_desc, 0));
+            class_token_ids_.emplace(src_val.class_desc, f282_token);
+        }
+        src_val = DalvikValue::make_object(f282_token, "Ljava/lang/Class;");
+    }
     DalvikValue obj_ref = get_register(obj_reg);
-
-    // EXP-058: Debug — log iput-object for actionBarLayout field.
     if (field_res.resolved && field_res.field_name == "actionBarLayout") {
         std::cerr << "[EXP058-IPUT] iput-object actionBarLayout"
                   << " src_reg=v" << (int)src_reg
@@ -21154,6 +21222,49 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // MainActivity.onCreate died at invoke_pc=109 → first frame died.
     if (heap_obj && !heap_obj->class_descriptor.empty() &&
         heap_obj->class_descriptor != class_name) {
+        // F-NEW-281c: EXACT (name, descriptor) gate on the runtime-class-
+        // first arm. JVMS 5.4.3.4: a same-name different-proto method is
+        // NEVER a candidate for an interface invoke. With a concrete call-
+        // site proto, this arm may dispatch via try_recursive_invoke's
+        // legacy lenient (name-only) selection — which let a same-name
+        // WRONG-shape overload win BEFORE the interface-default search
+        // could run. Live face (real-Compose oracle): Factory.create(
+        // KClass, extras) dispatched InitializerViewModelFactory.create(
+        // Class, extras) — the KClass flowed into the Class slot,
+        // getKotlinClass re-wrapped it, and the initializer match failed
+        // with IAE "No initializer set for given class null" → APP
+        // BOUNDARY. Gate: when the proto is resolvable, the runtime class
+        // chain must declare an EXACT (name, proto) non-abstract method
+        // for this arm to fire; otherwise control proceeds to the
+        // declared-interface and interface-hierarchy default search
+        // (F-023 / F-NEW-281), which find the TRUE candidate. Empty proto
+        // keeps the legacy behavior unchanged.
+        bool f281c_exact = false;
+        if (!iface_proto.empty() && dex_report_) {
+            std::string f281c_cls = heap_obj->class_descriptor;
+            for (int f281c_hop = 0;
+                 f281c_hop < 8 && !f281c_cls.empty() && !f281c_exact;
+                 ++f281c_hop) {
+                for (const auto& cls : dex_report_->classes) {
+                    if (cls.name != f281c_cls) continue;
+                    for (const auto& mi : cls.all_methods()) {
+                        if (mi.code_offset == 0 || mi.is_abstract) continue;
+                        if (mi.name != method_name) continue;
+                        if (mi.descriptor == iface_proto) {
+                            f281c_exact = true;
+                            break;
+                        }
+                    }
+                    break;  // found the class def
+                }
+                if (f281c_exact) break;
+                auto f281c_sup = class_to_superclass_.find(f281c_cls);
+                if (f281c_sup == class_to_superclass_.end()) break;
+                f281c_cls = f281c_sup->second;
+                if (f281c_cls == "Ljava/lang/Object;") break;
+            }
+        }
+        if (f281c_exact || iface_proto.empty())
         // F-090i (R-NEW-322): pass the interface proto as the exact
         // descriptor so the F-023 overload law resolves same-name
         // overloads on the runtime class correctly.
@@ -21239,6 +21350,110 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                 }
             }
             if (f91b_dex_interface) {
+            // F-NEW-281: ART invoke-interface resolution law (JVMS
+            // 5.4.3.4): the candidate must match the (NAME, descriptor)
+            // pair — a same-descriptor different-name method is NEVER a
+            // candidate. The descriptor-only walk below is the R8
+            // independent-rename FALLBACK and must run LAST.
+            // Oracle proof of the gap: CompositionLocalAccessorScope.
+            // getCurrentValue(local) on a PersistentCompositionLocalHashMap
+            // receiver — the class declares no getCurrentValue, so the
+            // descriptor walk picked the FIRST same-shape method, the raw
+            // PersistentMap.get override (invoke-super + check-cast
+            // ValueHolder + return), answering a ValueHolder where the
+            // accessor law demands readValue()'s value; the real
+            // implementation is the inherited interface DEFAULT
+            // PersistentCompositionLocalMap.getCurrentValue = read(this)
+            // (getOrElse(key){defaultValueHolder}.readValue(this)).
+            // Order: (1) exact (name, descriptor) in the receiver's class
+            // chain; (2) exact (name, descriptor) DEFAULT body in the
+            // interface hierarchy (receiver interfaces, transitive,
+            // bounded); (3) legacy descriptor-only walk (unchanged).
+            bool f281_diag = std::getenv("MINIANDROID_F281_TRACE") != nullptr;
+            {
+                std::string f281_walk = heap_obj->class_descriptor;
+                for (int hop = 0; hop < 8 && !f281_walk.empty(); ++hop) {
+                    for (const auto& cls : dex_report_->classes) {
+                        if (cls.name != f281_walk) continue;
+                        for (const auto& mi : cls.all_methods()) {
+                            if (mi.code_offset == 0 || mi.is_abstract) continue;
+                            if (mi.descriptor != iface_proto) continue;
+                            if (mi.name != method_name) continue;
+                            if (try_recursive_invoke(f281_walk, mi.name, args,
+                                                     return_val, result)) {
+                                last_invoke_return_ = return_val;
+                                trace.invoked_method =
+                                    f281_walk + "." + mi.name;
+                                if (f281_diag)
+                                    std::cerr << "[F281-IFACE-NAME] "
+                                              << f281_walk << "." << mi.name
+                                              << iface_proto
+                                              << " (exact name+descriptor, class chain; call-site "
+                                              << class_name << "." << method_name
+                                              << ") → REAL DEX dispatched"
+                                              << std::endl;
+                                pc_ = pc + 3;
+                                return true;
+                            }
+                        }
+                        break;  // found the class def; stop scanning classes
+                    }
+                    auto sup_it = class_to_superclass_.find(f281_walk);
+                    if (sup_it == class_to_superclass_.end()) break;
+                    f281_walk = sup_it->second;
+                    if (f281_walk == "Ljava/lang/Object;") break;
+                }
+            }
+            {
+                // (2) interface-hierarchy DEFAULT bodies, exact
+                // (name, descriptor). BFS from the receiver's direct
+                // interfaces through super-interfaces (bounded 16 levels).
+                std::vector<std::string> f281_q;
+                auto ifc_it = class_to_interfaces_.find(
+                    heap_obj->class_descriptor);
+                if (ifc_it != class_to_interfaces_.end())
+                    f281_q = ifc_it->second;
+                for (int level = 0; level < 16 && !f281_q.empty(); ++level) {
+                    std::vector<std::string> f281_next;
+                    for (const auto& ifc : f281_q) {
+                        bool ifc_has_def = false;
+                        for (const auto& cls : dex_report_->classes) {
+                            if (cls.name != ifc) continue;
+                            for (const auto& mi : cls.all_methods()) {
+                                if (mi.code_offset == 0 || mi.is_abstract)
+                                    continue;
+                                if (mi.descriptor != iface_proto) continue;
+                                if (mi.name != method_name) continue;
+                                ifc_has_def = true;
+                                if (try_recursive_invoke(ifc, mi.name, args,
+                                                         return_val, result)) {
+                                    last_invoke_return_ = return_val;
+                                    trace.invoked_method = ifc + "." + mi.name;
+                                    if (f281_diag)
+                                        std::cerr << "[F281-IFACE-DEFAULT] "
+                                                  << ifc << "." << mi.name
+                                                  << iface_proto
+                                                  << " (interface-hierarchy default; call-site "
+                                                  << class_name << "."
+                                                  << method_name
+                                                  << ") → REAL DEX dispatched"
+                                                  << std::endl;
+                                    pc_ = pc + 3;
+                                    return true;
+                                }
+                            }
+                            break;  // found the interface def
+                        }
+                        if (!ifc_has_def) {
+                            auto sup_ifc = class_to_interfaces_.find(ifc);
+                            if (sup_ifc != class_to_interfaces_.end())
+                                for (const auto& p : sup_ifc->second)
+                                    f281_next.push_back(p);
+                        }
+                    }
+                    f281_q = f281_next;
+                }
+            }
             // Walk the receiver's class + superclass chain (DEX virtual
             // dispatch law: inherited implementations answer interface
             // calls; R8 renames per class, so the signature is the only
@@ -44033,6 +44248,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             referent_desc = args[0].class_desc;
         else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
             referent_desc = args[0].class_desc;
+        // F-NEW-282b (token-referent law): when the receiver is a HEAP
+        // java.lang.Class TOKEN (the F-103 materialization — also what
+        // F-NEW-282 produces at the argument boundary), the queried class
+        // is the token's REFERENT (__referent_desc), not the token's own
+        // runtime class. ART: every method on a Class object
+        // (getAnnotation/getName/getCanonicalName/isInstance/…) classifies
+        // the REFERRED type; reading the token's own class answered
+        // "java.lang.Class" for every token receiver (live face:
+        // NavigatorProvider.getNameForNavigator received the materialized
+        // NavGraphNavigator token and getAnnotation queried
+        // Ljava/lang/Class; → IAE "No @Navigator.Name annotation found for
+        // Class"). Resolution is read-only; unknown descriptors fall back
+        // to the token's own class unchanged.
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].class_desc == "Ljava/lang/Class;" &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto f282b_tok = heap_.get(args[0].object_id);
+            if (f282b_tok) {
+                auto f282b_ref = heap_.get_object_field(
+                    args[0].object_id, "__referent_desc");
+                if (f282b_ref.has_value() &&
+                    f282b_ref->type == DalvikType::STRING_REF &&
+                    !f282b_ref->string_val.empty() &&
+                    f282b_ref->string_val != "Ljava/lang/Class;") {
+                    referent_desc = f282b_ref->string_val;
+                }
+            }
+        }
         const std::string dotted = dotted_from_desc(referent_desc);
 
         // FIX-M3-012b (static): Class.forName — resolve the named class

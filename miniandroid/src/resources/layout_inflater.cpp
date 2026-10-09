@@ -995,7 +995,31 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     // calculator_display.xml into itself via LayoutInflater.inflate(res, this)).
     // App-class test is a pure descriptor gate (framework prefixes excluded);
     // the hook re-verifies the class actually exists in the app DEX.
-    if (custom_view_ctor_hook_ && is_app_class_descriptor(node->class_desc)) {
+    //
+    // F-NEW-283: DEX-EXISTENCE CONSTRUCTOR AUTHORITY. The AOSP authority the
+    // ADDITIONAL-AUDIT P1-3 note states is "does the class exist in the APK
+    // DEX" — NOT the package prefix. The prefix gate above predates that law
+    // and blanket-suppresses the whole Landroid/ tree — including
+    // support-v7/androidx classes that ARE shipped in the app DEX. Live face
+    // (Simple Calculator com.simplemobiletools.calculator vc8):
+    // Landroid/support/v7/widget/Toolbar; is a real DEX class, but the prefix
+    // gate skipped its <init>, so the ctor-initialized measure-scratch int[]
+    // fields stayed null and Toolbar.onMeasure pc=152 died with aput-null NPE
+    // (→ APP BOUNDARY → white screen). Gate = prefix rule OR DEX existence
+    // (probe result cached per descriptor — classes cannot disappear).
+    bool f283_in_dex = false;
+    if (dex_class_exists_hook_) {
+        static thread_local std::unordered_map<std::string, bool> f283_cache;
+        auto f283_it = f283_cache.find(node->class_desc);
+        if (f283_it != f283_cache.end()) {
+            f283_in_dex = f283_it->second;
+        } else {
+            f283_in_dex = dex_class_exists_hook_(node->class_desc);
+            f283_cache.emplace(node->class_desc, f283_in_dex);
+        }
+    }
+    if (custom_view_ctor_hook_ &&
+        (is_app_class_descriptor(node->class_desc) || f283_in_dex)) {
         // F-NEW-197 XML-AttributeSet law: the constructor receives the SAME
         // XML attribute set AOSP passes (AttributeSet argument) — the parsed
         // attrs travel with the call so obtainStyledAttributes can resolve
