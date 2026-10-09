@@ -350,6 +350,30 @@ framework_class_interfaces() {
         {"Landroid/util/SizeF;", {"Landroid/os/Parcelable;"}},
         {"Landroid/os/Binder;", {"Landroid/os/IBinder;"}},
         {"Landroid/util/SparseArray;", {"Ljava/lang/Cloneable;"}},
+        // ── F-NEW-292 (CONT-33): libcore java.util.UUID hierarchy. AOSP
+        // libcore/luni/src/main/java/java/util/UUID.java:
+        //   public final class UUID implements Serializable, Comparable<UUID>
+        // The DisposableSaveableStateRegistry whitelist walk
+        // (DisposableSaveableStateRegistry.android.kt canBeSavedToBundle)
+        // probes Class[] {Serializable, Parcelable, String, SparseArray,
+        // Binder, Size, SizeF} via Class.isInstance — with no UUID row the
+        // Serializable edge was missing, canBeSaved answered false for the
+        // rememberSaveable(UUID) value and the registry threw IAE
+        // "…cannot be saved using the current SaveableStateRegistry…"
+        // (composeStopwatch ground truth: IAE x51/run, Lh4;.onMeasure
+        // catch-all, measure aborted, ops=0, DEFAULT_BACKGROUND_ONLY).
+        // On ART the same APK saves the UUID through the Serializable arm
+        // of the SAME whitelist — the IAE never occurs.
+        {"Ljava/util/UUID;", {"Ljava/io/Serializable;", "Ljava/lang/Comparable;"}},
+        // F-NEW-292 (second family member): libcore java.lang.Enum —
+        //   public abstract class Enum<E extends Enum<E>>
+        //       implements Comparable<E>, Serializable
+        // R8-minified app enums (Ll71; extends Ljava/lang/Enum;, composeStopwatch
+        // ground truth: IAE "Ll71;@… cannot be saved…" x26/run after the UUID
+        // row) carry the Serializable edge ONLY through the platform hop — the
+        // app's own class_def declares none. The whitelist arm that accepts
+        // enum values on ART is the same Serializable class.
+        {"Ljava/lang/Enum;", {"Ljava/io/Serializable;", "Ljava/lang/Comparable;"}},
     };
     return kTable;
 }

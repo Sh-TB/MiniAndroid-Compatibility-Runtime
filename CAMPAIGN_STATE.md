@@ -4,6 +4,23 @@ HEAD at state update: #371/#372/#373 CONT wave 58b5c14e (binary 4c01757e8f11c8a0
 Date: 2026-10-03 (#371 FINAL CLOSEOUT — Suntimes/time4j + touch-claim + full regression)
 ← 51f7e5f9 (MASTER-CONT-371 verification) ← 9c35863b (GATE A) ← F-NEW-234 e9ce717b
 
+## CONT-33 HIGHLIGHT (2026-10-09)
+
+**composeStopwatch paints its FIRST content** — after F-NEW-291 (String.format
+Locale overload: the EXP093 bridge consumed the Locale AS the format string;
+every Locale-overload call answered "" → Lwv;.p substring(0,2) SIOOBE) and
+F-NEW-292 (libcore UUID+Enum interface rows + per-hop platform consult in
+dalvik_class_assignable — the DisposableSaveableStateRegistry whitelist
+{Serializable,…} rejected rememberSaveable(UUID) ×51/run and app enums ×26/
+run), the app moves FAILURE → PARTIAL SUCCESS and renders a dialog window
+(new deterministic frame 9afb2bd2606f303e ×3, was DEFAULT_BACKGROUND_ONLY
+5c4a0172628849ba since CONT-31). Probes fnew291 (PRE FAIL 2/5 → POST PASS
+7/0 ×3) and fnew292 (PRE FAIL 3/3 → POST PASS 9/0 ×3, negatives honest).
+Full regression ZERO DRIFT: 24/24 anchors ×3, battery == CONT-28..32 records
+exactly, simplecalc ×3 FULL SUCCESS. DataStore mangled path ROOT-CAUSED
+(getFilesDir host-prefix leak) and honestly DEFERRED to CONT-34 with the
+fix contract. Registry 599→601. Evidence: evidence/cont33/FORMAT_LOCALE_FRONTIER.md
+
 ## CONT-32 HIGHLIGHT (2026-10-09)
 
 - F-NEW-290 Dialog object law ROOT_CAUSED_FIXED: Dialog.getWindow/getContext
