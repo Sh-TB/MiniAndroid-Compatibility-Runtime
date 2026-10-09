@@ -189,7 +189,22 @@ public:
                cls == "Landroid/graphics/Path;" ||
                cls.find("graphics/Path;") != std::string::npos ||
                // UC009 H-072: Compose draws through RenderNode recording.
+               // F-NEW-285 (CONT-28): the claim gate must match the dispatch
+               // matcher below — dispatch() already implements the law for
+               // ANY "*RenderNode;" class (cls.find("RenderNode;")), but the
+               // gate only claimed Landroid/view/RenderNode;. The real-
+               // Compose oracle (GraphicsLayerV29.record, ui 1.11.4) calls
+               // Landroid/graphics/RenderNode;.beginRecording() (AOSP moved
+               // RenderNode to android.graphics for RecordingCanvas access);
+               // unclaimed, the call answered VOID, GraphicsLayerV29.record
+               // stored the unset value into AndroidCanvas.internalCanvas
+               // (setInternalCanvas), and every recorded draw op died
+               // f141-null-recv — the draw-pipeline APP BOUNDARY. Claim the
+               // family the dispatch already serves; android.graphics.
+               // RenderNode.beginRecording() law is identical (returns the
+               // node's RecordingCanvas).
                cls == "Landroid/view/RenderNode;" ||
+               cls.find("RenderNode;") != std::string::npos ||
                cls.find("graphics/RecordingCanvas;") != std::string::npos;
     }
 

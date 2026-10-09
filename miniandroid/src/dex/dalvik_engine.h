@@ -843,6 +843,28 @@ public:
     uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
         HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
         objects_[obj.object_id] = obj;
+        // CONT-28 (generic diagnostic): env-gated allocation trace. When
+        // MINIANDROID_ALLOC_TRACE names a class-descriptor substring, every
+        // heap allocation whose class matches logs object_id + class + pc +
+        // frame_id to stderr (bounded 200). Read-only, zero app knowledge —
+        // names the ENGINE allocation site for ctor-skip faces (AOSP law:
+        // an object whose <init> never ran must be identifiable).
+        {
+            static thread_local const char* alloc_trace_env =
+                getenv("MINIANDROID_ALLOC_TRACE");
+            if (alloc_trace_env && *alloc_trace_env &&
+                !class_desc.empty() &&
+                class_desc.find(alloc_trace_env) != std::string::npos) {
+                static thread_local uint64_t alloc_trace_n = 0;
+                if (alloc_trace_n < 200) {
+                    fprintf(stderr,
+                            "[ALLOC-TRACE] obj#%u %s pc=%u frame=%u seq=%llu\n",
+                            obj.object_id, class_desc.c_str(), pc, frame_id,
+                            (unsigned long long)(alloc_sequence_ - 1));
+                    ++alloc_trace_n;
+                }
+            }
+        }
         
         // EXP-042 Phase 1: ring-buffer the allocation log. Each json entry is
         // ~256 B; uncapped, 10 M allocations would consume 2.5 GB. With cap=1000
