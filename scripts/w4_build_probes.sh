@@ -54,4 +54,5 @@ build_probe() {
 build_probe fnew253_probe com.probe.fnew253
 build_probe fnew252_probe com.probe.fnew252
 build_probe cont7w3_probe com.probe.cont7w3
+build_probe fnew289_probe com.probe.f289
 echo "ALL PROBES BUILT"
