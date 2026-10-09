@@ -3,6 +3,19 @@
 HEAD at state update: #371/#372/#373 CONT wave 58b5c14e (binary 4c01757e8f11c8a0) ← #371 FINAL CLOSEOUT wave bd9e9fbd (binary 267bf47d5d901054 reproduced byte-identically at wave start)
 Date: 2026-10-03 (#371 FINAL CLOSEOUT — Suntimes/time4j + touch-claim + full regression)
 ← 51f7e5f9 (MASTER-CONT-371 verification) ← 9c35863b (GATE A) ← F-NEW-234 e9ce717b
+
+## CONT-32 HIGHLIGHT (2026-10-09)
+
+- F-NEW-290 Dialog object law ROOT_CAUSED_FIXED: Dialog.getWindow/getContext
+  answered NULL for renamed Dialog receivers (DialogWrapper ctor killed the
+  dialog path with ISE "Dialog has no window" x31/run, composeStopwatch).
+  Fix = receiver-identity dispatch to DialogShadow + stable per-dialog Window
+  object + per-receiver WindowManager.LayoutParams law. Probe fnew290 x3
+  7/0; target ISE 31->0 x3; full regression ZERO DRIFT at c280b243f880e7e6.
+- AndroidCompositionLocals CNFE verdict: FAITHFUL (class genuinely absent
+  from the R8-minified APK; app catches; ART-identical).
+- Registry 598->599. Next: Lwv;.p STR-BRIDGE SIOOBE, mangled DataStore path,
+  standing F-NEW-288 + input-pump.
 Date: 2026-10-03 (INSTALLED-APP FILESYSTEM + MEDIA campaign)
 
 ## LAWS READ
