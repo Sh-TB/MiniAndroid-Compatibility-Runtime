@@ -335,3 +335,20 @@ composeStopwatch claims UNVERIFIED (APK NOT FOUND). Real find: fnew252 probe
 packaging regression (META-INF/services lost in the w4 rebuild) — fixed
 generically in the build script, proven ×3 (7/0 PASS). Registry UNCHANGED.
 Evidence: evidence/cont30w/WHITESCREEN_CLAIM_AUDIT.md (§9 = next checkpoint).
+
+## CONT-31 (2026-10-09) — composeStopwatch re-supply + F-NEW-289 MAIN-QUEUE DELIVERY IDENTITY (ROOT_CAUSED_FIXED)
+
+Container reset recovered (56-commit chain from origin/main; binary rebuilt
+byte-exact b84114cd6f8bad1d → wave binary 9bdd61328d0f01d9 after the fix).
+composeStopwatch v1.9.1 vc1009011 re-supplied SHA-pinned (dbf937ebbe7c0b3d…).
+R-NEW-466 verdicts on THIS lineage: Main-dispatcher ISE never occurs; l5/t5
+materialize WITHOUT their patch; fix stays untransplanted. First genuine
+divergence root-caused: park-drain delivered main-queue runnables with the
+INHERITED WORKER identity (F-110d window) → LiveData assertMainThread ISE ×60/
+run; F-NEW-289 law (main-delivery identity re-bind, 4 entry points, save/
+restore) fixes it generically. Probe fnew289: pre QUEUE-MAIN|FAIL → post ×3
+ALL PASS (28/0). Target post-fix ×3: ISE 0/run, frame byte-identical
+(divergence honestly MOVED to "Dialog has no window" at Lea;.r). Full
+regression ZERO DRIFT: 24/24 anchors ×3, battery == CONT-28/29/30 records
+(fnew253 147/0, fnew286 10/0, fnew252 56/0), simplecalc ×3 FULL SUCCESS.
+Registry 598. Evidence: evidence/cont31/COMPOSESTOPWATCH_FRONTIER.md.

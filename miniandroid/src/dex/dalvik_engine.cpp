@@ -24535,13 +24535,43 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
                     DalvikExecutionResult res;
                     std::vector<DalvikValue> run_args{
                         DalvikValue::make_object(rid, rcls)};
+                    // F-NEW-289 (CONT-31) MAIN-QUEUE DELIVERY IDENTITY LAW
+                    // (AOSP Looper/Handler model): code delivered by the
+                    // main MessageQueue ALWAYS executes on the MAIN thread —
+                    // inside every main-queue Runnable,
+                    //   Thread.currentThread() == Looper.getMainLooper().getThread()
+                    // (the DefaultTaskExecutor.isMainThread contract behind
+                    // androidx LiveData.assertMainThread). The deterministic
+                    // park drain runs NESTED inside a worker thread's
+                    // run-to-completion body (F-110d binds the worker
+                    // identity there — correct for the body itself), so
+                    // without this re-bind the delivery INHERITS the worker
+                    // identity and main-thread asserts throw
+                    // (composeStopwatch ground truth: R8-renamed
+                    // DefaultTaskExecutor.isMainThread Lca;.P()Z answered
+                    // false -> Lcm0;.a ISE "Cannot invoke setValue on a
+                    // background thread" -> DEFAULT_BACKGROUND_ONLY frame).
+                    // Save/restore mirrors run_thread_start_body's F-110d
+                    // pattern; 0 = main identity. No-op when already main.
+                    uint32_t saved_mq_identity = 0;
+                    bool bound_mq_identity = false;
+                    if (ts && ts->current_thread_id() !=
+                                  ts->main_thread_id()) {
+                        saved_mq_identity = ts->current_thread_id();
+                        ts->set_active_drained_thread(0);
+                        bound_mq_identity = true;
+                    }
                     try_recursive_invoke(rcls, "run", run_args, ret, res, "()V");
+                    if (bound_mq_identity)
+                        ts->set_active_drained_thread(saved_mq_identity);
                 }
                 work_units += drained.size();
             }
         }
         // 2) Choreographer due frame callbacks (vsync during park — the
-        // withFrameNanos continuation resume path).
+        //    withFrameNanos continuation resume path). F-NEW-289: doFrame
+        //    is a MAIN-looper delivery (AOSP Choreographer rides the main
+        //    thread) — same identity law as arm 1.
         if (cs && cs->has_pending_callbacks()) {
             auto due = cs->take_due_callbacks();
             for (auto& d : due) {
@@ -24551,8 +24581,17 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
                 std::vector<DalvikValue> cb_args{
                     DalvikValue::make_object(d.callback_id, d.callback_class),
                     DalvikValue::make_long(d.frame_time_nanos)};
+                uint32_t saved_frame_identity = 0;
+                bool bound_frame_identity = false;
+                if (ts && ts->current_thread_id() != ts->main_thread_id()) {
+                    saved_frame_identity = ts->current_thread_id();
+                    ts->set_active_drained_thread(0);
+                    bound_frame_identity = true;
+                }
                 try_recursive_invoke(d.callback_class, "doFrame", cb_args, ret,
                                      res);
+                if (bound_frame_identity)
+                    ts->set_active_drained_thread(saved_frame_identity);
             }
             if (!due.empty()) did_work = true;
         }
