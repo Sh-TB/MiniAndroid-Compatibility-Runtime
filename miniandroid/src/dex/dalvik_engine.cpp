@@ -8393,6 +8393,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // execute real DEX). MAX_RECURSION_DEPTH remains the backstop for
     // recursion over fresh argument identities.
     static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
+    // F-NEW-286 payload-parts counter: how many IDENTITY parts beyond the
+    // base key (class.method+descriptor+receiver) were appended. The stub
+    // decision consumes this — see the law at the firing site below.
+    int m3_payload_parts = 0;
     std::string m3_active_key = class_descriptor + "." + method_name;
     // S54 FIX (F-081) — overload-distinct identity. JVM/ART method identity
     // is (name, descriptor)-exact; two same-name overloads on the same
@@ -8457,6 +8461,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     args[i].object_id != 0 && !args[i].is_null) {
                     m3_active_key += "#" + std::to_string(args[i].object_id);
                     ++appended;
+                    ++m3_payload_parts;
                 }
             }
             // S122 (R-NEW-412) instance identity refinement: append up to 2
@@ -8497,6 +8502,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                         case DalvikType::SHORT:
                             m3_active_key += "=" + std::to_string(args[i].int_val);
                             ++prims;
+                            ++m3_payload_parts;
                             break;
                         default:
                             break;
@@ -8540,6 +8546,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                         !args[i].class_desc.empty()) {
                         m3_active_key += "@" + args[i].class_desc;
                         ++clz;
+                        ++m3_payload_parts;
                     }
                 }
             }
@@ -8555,6 +8562,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 !args[i].is_null) {
                 m3_active_key += "#" + std::to_string(args[i].object_id);
                 ++appended;
+                ++m3_payload_parts;
             }
         }
         // ────────────────────────────────────────────────────────────────
@@ -8596,6 +8604,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 case DalvikType::SHORT:
                     m3_active_key += "=" + std::to_string(args[i].int_val);
                     ++prims;
+                    ++m3_payload_parts;
                     break;
                 default:
                     break;
@@ -8613,6 +8622,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     !args[i].class_desc.empty()) {
                     m3_active_key += "@" + args[i].class_desc;
                     ++clz;
+                    ++m3_payload_parts;
                 }
             }
         }
@@ -8640,7 +8650,64 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Constructors therefore NEVER hit the active-cycle stub;
         // MAX_RECURSION_DEPTH remains the backstop.
         // ────────────────────────────────────────────────────────────────
-        if (method_name != "<init>") {
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-286 (CONT-30): ZERO-PAYLOAD re-entrant dispatch is upstream
+        // LEGAL — the stub may fire only for PAYLOAD-DISTINCT keys.
+        //
+        // SOURCE (upstream Compose 1.11.4, runtime GapComposer.kt):
+        //   skipToGroupEnd(): if (!inserting) {
+        //       currentRecomposeScope?.scopeSkipped()
+        //       if (invalidations.isEmpty()) skipReaderToGroupEnd()
+        //       else recomposeToGroupEnd() }
+        //   skipCurrentGroup(): ... else {
+        //       startReaderGroup(...); recomposeToGroupEnd(); ... }
+        //   recomposeToGroupEnd(): while (firstInRange != null) {
+        //       ... scope.compose(this) ... }   // ← re-entrancy source
+        //   → every exit path advances the reader to the group end
+        //     (skipToGroupEnd / skipReaderToGroupEnd).
+        //
+        // OBSERVATION (CONT-12 un-renamed oracle, METHOD-IN trace,
+        // run/cont30/trace1): the frame-1 recompose window ran
+        // recomposeToGroupEnd call#1 REAL (from skipCurrentGroup) →
+        // RecomposeScopeImpl.compose(3953) → NavHost re-run → AnimatedContent
+        // scope startSkipped → skipToGroupEnd → invalidations NON-empty →
+        // recomposeToGroupEnd call#2 — STUBBED at depth 18 (lifetime_calls=2):
+        // the nested skip-advance never ran, the reader stayed inside the
+        // group, endRestartGroup → end() hit the "detect removing nodes at
+        // the end" tail loop (while (!reader.isGroupEnd) { recordDelete();
+        // skipGroup(); }) and recorded Operation$RemoveCurrentGroup ×2 for
+        // LIVE destination groups; the apply mass-detached
+        // TextStringSimpleNode ×2 → uniform theme-surface frame (CONT-29's
+        // frame-1 group-deletion root). The same pattern repeated at depth 19
+        // (lifetime_calls=3).
+        //
+        // LAW: for a method whose key carries NO payload identity beyond the
+        // receiver (zero non-receiver object/class args, zero primitive
+        // args), the engine has NO evidence that a re-entrant call is the
+        // SAME computation: upstream distinguishes the nestings by INTERNAL
+        // dispatch state (the slot-table reader position), invisible to any
+        // argument-identity key. Upstream such re-entrancy is structurally
+        // bounded (each nested window consumes its invalidations or
+        // skip-advances). Stubbing it fabricates a void/null mid-dispatch
+        // and desynchronizes the caller's structural accounting — exactly
+        // the F-098/S122/S137 failure shape, with the payload carried by
+        // internal state instead of an argument. LAW: zero-payload keys
+        // NEVER hit the active-cycle stub — real DEX executes; the
+        // [RECURSION-LIMIT] backstop (depth 80, loud, observable) still
+        // bounds any genuine unbounded recursion. Payload-distinct keys
+        // (object #id / primitive =v / class @desc parts present) keep the
+        // stub: same-payload re-entry IS same-computation evidence (S22).
+        //
+        // IMPACT: the whole Compose recompose-window chain — skipped-scope
+        // accounting (keep-vs-delete) in end() — for every Compose app;
+        // generically, any zero-payload re-entrant dispatcher.
+        //
+        // PROOF (this wave): oracle frame-1 window — pre-fix recordDelete ×4
+        // + RemoveCurrentGroup ×2 + mass TextStringSimpleNode detach;
+        // post-fix: nested windows execute, no frame-1 deletion, destination
+        // content materializes. Regression gate: 24/24 anchors byte-exact.
+        // ────────────────────────────────────────────────────────────────
+        if (method_name != "<init>" && m3_payload_parts > 0) {
             std::cerr << "[M3-19-CYCLE] " << m3_active_key
                       << " re-entered while active on the call stack (depth="
                       << recursion_depth_ << ") — active-cycle stub"
@@ -26416,6 +26483,120 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     if (class_name == "Ljava/lang/reflect/Method;" &&
+        (method == "getAnnotations" || method == "getDeclaredAnnotations")) {
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-287 (CONT-30): Method.getAnnotations/getDeclaredAnnotations
+        // — the ART/JLS never-null law.
+        //
+        // SOURCE (OpenJDK/ART AnnotatedElement):
+        //   public Annotation[] getAnnotations() — returns the runtime-
+        //   visible annotations; the array is EMPTY (length 0) when none
+        //   exist. It NEVER returns null on a live Method object.
+        //
+        // OBSERVATION (CONT-12 un-renamed oracle, post-F-NEW-286 run
+        // run/cont30/oracle_post1): the frame-1 initial composition reaches
+        // androidx.savedstate.compose.LocalSavedStateRegistryOwnerKt.<clinit>
+        // — a reflection-based deprecated-API probe:
+        //   loadClass(AndroidCompositionLocals_androidKt)
+        //   .getMethod("getLocalSavedStateRegistryOwner")
+        //   .getAnnotations()  →  Intrinsics.checkNotNullExpressionValue(
+        //                            anns, "getAnnotations(...)")
+        // The engine had NO getAnnotations handler → REC-MISS → the f141
+        // null law answered null → the Intrinsics check threw NPE inside
+        // the <clinit> (caught by the clinit's own catch-all, degrading the
+        // composition-local init — the first uncaught face of the post-fix
+        // run). Real ART answers the empty array; the deprecated-scan loop
+        // then honestly finds no @Deprecated (or the real ones) and the
+        // clinit completes the upstream way.
+        //
+        // LAW: the answer resolves through the parsed
+        // annotations_directory_item method_annotations table (F-NEW-191,
+        // the same authority getAnnotation/isAnnotationPresent consume):
+        // EVERY runtime-visible annotation of the resolved method becomes
+        // a heap proxy (annotation type as class, "element:<name>" fields
+        // — the F-087/F-191 proxy shape). Zero matches → EMPTY array.
+        // NEVER null, both accessors (ART: getAnnotations ==
+        // getDeclaredAnnotations for runtime-visible method annotations).
+        // Generic: no app knowledge; serves every reflective annotation
+        // scan (EventBus @Subscribe, Lifecycling, savedstate deprecated
+        // probes).
+        // ────────────────────────────────────────────────────────────────
+        std::string decl_cls287, meth_name287;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto d = heap_.get_object_field(args[0].object_id,
+                                            "declaring_class");
+            auto n = heap_.get_object_field(args[0].object_id,
+                                            "method_name");
+            if (d.has_value() && d->type == DalvikType::STRING_REF)
+                decl_cls287 = d->string_val;
+            if (n.has_value() && n->type == DalvikType::STRING_REF)
+                meth_name287 = n->string_val;
+            if ((!n.has_value() || n->type != DalvikType::STRING_REF ||
+                 n->string_val.empty())) {
+                auto n2 = heap_.get_object_field(args[0].object_id,
+                                                 "__reflect_name");
+                if (n2.has_value() && n2->type == DalvikType::STRING_REF)
+                    meth_name287 = n2->string_val;
+            }
+        }
+        std::vector<std::pair<
+            std::string,
+            std::vector<std::pair<std::string, std::string>>>>
+            anns287;
+        if (!decl_cls287.empty() && !meth_name287.empty()) {
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != decl_cls287) continue;
+                for (const auto& md : cd.direct_methods) {
+                    if (md.name != meth_name287) continue;
+                    for (const auto& pa : md.method_annotations)
+                        anns287.push_back(pa);
+                }
+                for (const auto& md : cd.virtual_methods) {
+                    if (md.name != meth_name287) continue;
+                    for (const auto& pa : md.method_annotations)
+                        anns287.push_back(pa);
+                }
+                break;
+            }
+        }
+        uint32_t arr287 = heap_.allocate(
+            "[Ljava/lang/annotation/Annotation;", pc_, 0);
+        DalvikValue len287 =
+            DalvikValue::make_int((int32_t)anns287.size());
+        heap_.set_object_field(arr287, "__array_length__", len287);
+        heap_.set_object_field(arr287, "__new_array_length__", len287);
+        heap_.set_object_field(
+            arr287, "__element_type__",
+            DalvikValue::make_string(
+                "[Ljava/lang/annotation/Annotation;", 0));
+        for (size_t i = 0; i < anns287.size(); ++i) {
+            uint32_t proxy287 = heap_.allocate(anns287[i].first, pc_, 0);
+            // F-087c proxy shape: the marker field is what makes the
+            // element-dispatch law recognize this object as an annotation
+            // instance (same contract the F-087 Class.getAnnotation bridge
+            // stamps). Without it the proxy is an anonymous heap object.
+            heap_.set_object_field(
+                proxy287, "__annotation_proxy__",
+                DalvikValue::make_string(anns287[i].first, 0));
+            for (const auto& el : anns287[i].second) {
+                heap_.set_object_field(
+                    proxy287, "element:" + el.first,
+                    DalvikValue::make_string(el.second, 0));
+            }
+            DalvikValue pv287;
+            pv287.type = DalvikType::OBJECT_REF;
+            pv287.object_id = proxy287;
+            pv287.class_desc = anns287[i].first;
+            heap_.set_object_field(
+                arr287, "array[" + std::to_string(i) + "]", pv287);
+        }
+        result = DalvikValue::make_object(
+            arr287, "[Ljava/lang/annotation/Annotation;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
         (method == "getName" || method == "getDeclaringClass" ||
          method == "toGenericString")) {
         // ────────────────────────────────────────────────────────────────
@@ -33155,6 +33336,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto proxy = heap_.get_object_field(args[0].object_id,
                                             "__annotation_proxy__");
         if (proxy.has_value() && proxy->type == DalvikType::STRING_REF) {
+            // F-NEW-287 (CONT-30) companion arm — Annotation.annotationType()
+            // (OpenJDK law): returns the Class token of the annotation
+            // interface. The proxy's class IS the annotation type, so the
+            // answer is that token — identity-comparable with the app's
+            // Mark.class / Navigator.Name.class literals. Runtime-visible
+            // annotation consumers (the oracle's savedstate deprecated
+            // probe, EventBus scanners) compare tokens, not element values.
+            if (method == "annotationType") {
+                result = DalvikValue::make_class(proxy->string_val,
+                                                 instruction_sequence_);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             auto elem = heap_.get_object_field(args[0].object_id,
                                                "element:" + method);
             if (elem.has_value()) {
