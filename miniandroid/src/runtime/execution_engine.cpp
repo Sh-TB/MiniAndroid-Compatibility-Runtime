@@ -6110,7 +6110,25 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
         miniandroid::dalvik::DalvikExecutionResult drain_result;
         std::vector<miniandroid::dalvik::DalvikValue> args;
         args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+        // F-NEW-289 (CONT-31) MAIN-QUEUE DELIVERY IDENTITY LAW (AOSP
+        // Looper/Handler model): code delivered by the main MessageQueue
+        // ALWAYS executes on the MAIN thread. No-op when the identity is
+        // already main (the proven case at this entry — fnew289 v1);
+        // binds main when a future call path drains nested inside a worker
+        // body (same root as the park-drain arm).
+        auto* ts289 = shadow_registry_
+                          ? shadow_registry_->find_as<
+                                framework::ThreadShadow>()
+                          : nullptr;
+        uint32_t saved289 = 0;
+        bool bound289 = false;
+        if (ts289 && ts289->current_thread_id() != ts289->main_thread_id()) {
+            saved289 = ts289->current_thread_id();
+            ts289->set_active_drained_thread(0);
+            bound289 = true;
+        }
         dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
+        if (bound289) ts289->set_active_drained_thread(saved289);
         // F-115 (R-NEW-384) java.util.Timer periodic re-enqueue law: a
         // TimerTask enqueued with period>0 re-posts itself after every
         // run (OpenJDK Timer.sched → mainLoop fixed-delay repeat). The
@@ -6163,7 +6181,22 @@ void ExecutionEngine::invoke_choreographer_do_frame(uint32_t callback_id,
         std::vector<miniandroid::dalvik::DalvikValue> args;
         args.push_back(miniandroid::dalvik::DalvikValue::make_object(callback_id, callback_class));
         args.push_back(miniandroid::dalvik::DalvikValue::make_long(frame_time_nanos));
+        // F-NEW-289: doFrame is a MAIN-looper delivery (AOSP Choreographer
+        // rides the main thread) — same identity law as the park-drain arm.
+        auto* ts289f = shadow_registry_
+                           ? shadow_registry_->find_as<
+                                 framework::ThreadShadow>()
+                           : nullptr;
+        uint32_t saved289f = 0;
+        bool bound289f = false;
+        if (ts289f && ts289f->current_thread_id() !=
+                          ts289f->main_thread_id()) {
+            saved289f = ts289f->current_thread_id();
+            ts289f->set_active_drained_thread(0);
+            bound289f = true;
+        }
         dalvik_engine_.try_recursive_invoke(callback_class, "doFrame", args, ret, frame_result);
+        if (bound289f) ts289f->set_active_drained_thread(saved289f);
         if (cs) cs->set_in_do_frame(false);
         std::cerr << "[CHOREO-DISPATCH] doFrame cb=" << callback_id << " invoked" << std::endl;
     } catch (const std::exception& e) {
