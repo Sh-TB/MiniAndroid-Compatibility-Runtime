@@ -55,9 +55,19 @@ DEX1 = "/home/z/my-project/run/w8/oracle12.apk"
 
 # collect the R packages actually referenced in the oracle dexes
 rpkgs = set()
-z = zipfile.ZipFile(DEX1)
-for dex in [n for n in z.namelist() if n.endswith(".dex")]:
-    d = z.read(dex)
+import os
+def _dex_blobs():
+    if os.path.exists(DEX1):
+        z = zipfile.ZipFile(DEX1)
+        for n in [n for n in z.namelist() if n.endswith(".dex")]:
+            yield z.read(n)
+    else:
+        # CONT-26: run/w8 was wiped with the container; the built dexes
+        # survive at tmp/cont12_oracle_build/dex — scan those directly.
+        import glob
+        for p in sorted(glob.glob("/home/z/my-project/tmp/cont12_oracle_build/dex/*.dex")):
+            yield open(p, "rb").read()
+for d in _dex_blobs():
     for m in re.finditer(rb"L([a-zA-Z0-9_/]+/R)(\$\w+)?;", d):
         pkg_with_r = m.group(1).decode()          # e.g. androidx/lifecycle/runtime/R
         pkg = pkg_with_r[:-2].replace("/", ".")   # strip trailing /R
