@@ -9548,6 +9548,44 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     const dex::MethodInfo* selected_ptr = best_match ? best_match : fallback_match;
 
+    // CONT-28 (generic diagnostic): env-gated overload-selection trace.
+    // MINIANDROID_OVERLOAD_TRACE=<method-name-substr> logs, at every
+    // selection whose requested method name matches the substring, the
+    // requested (name, descriptor), whether the F-023 exact law had a
+    // descriptor to work with, every candidate (name, descriptor, size),
+    // and the picked method. Read-only; bounded 120 rows; zero app
+    // knowledge. Names same-shape overload mispicks (ART JVMS 5.4.5:
+    // selection is (name, descriptor)-based; shape-only selection is a
+    // divergence source).
+    {
+        static thread_local const char* ov_filter =
+            std::getenv("MINIANDROID_OVERLOAD_TRACE");
+        if (ov_filter && *ov_filter &&
+            class_descriptor.find(method_name) == std::string::npos &&
+            method_name.find(ov_filter) != std::string::npos) {
+            static thread_local uint64_t ov_n = 0;
+            if (ov_n < 120) {
+                ++ov_n;
+                fprintf(stderr,
+                        "[OVERLOAD-PICK] %s want=%s%s exact_desc=%s\n",
+                        cls_ref.name.c_str(), method_name.c_str(),
+                        method_descriptor.c_str(),
+                        (!method_descriptor.empty() && best_match) ? "hit"
+                            : (!method_descriptor.empty() ? "missed" : "absent"));
+                for (const dex::MethodInfo* mp : f107_cands) {
+                    fprintf(stderr, "[OVERLOAD-PICK]   cand %s%s bc=%u\n",
+                            mp->name.c_str(), mp->descriptor.c_str(),
+                            (unsigned)mp->bytecode.size());
+                }
+                if (selected_ptr)
+                    fprintf(stderr, "[OVERLOAD-PICK]   picked %s%s bc=%u\n",
+                            selected_ptr->name.c_str(),
+                            selected_ptr->descriptor.c_str(),
+                            (unsigned)selected_ptr->bytecode.size());
+            }
+        }
+    }
+
     if (selected_ptr) {
         const dex::MethodInfo& method = *selected_ptr;  // F-107d: stable pointer into dex_report_
         // Found a method with bytecode — recursively execute!
@@ -20052,12 +20090,18 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
 
     // CYCLE-E: signature-aware param conversion for 35c instance calls
     // (super). See execute_invoke_virtual for the full rationale.
+    // F-NEW-284: proto_35c is declared at dispatch scope (not inside the
+    // dex_report_ guard) so the super-dispatch arm can pass it to
+    // try_recursive_invoke as the F-023 exact-descriptor authority. Empty
+    // when the proto is unresolvable — legacy behavior preserved.
+    std::string proto_35c;
     if (dex_report_) {
-        const std::string proto_35c =
-            resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        proto_35c = resolve_method_proto_for_dex(method_idx, current_dex_index_);
         if (proto_35c != "<unknown>") {
             args = build_invoke_args(args, parse_proto_param_types(proto_35c),
                                      /*is_static=*/false);
+        } else {
+            proto_35c.clear();
         }
     }
 
@@ -20119,8 +20163,25 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
 
     // EXP-038 (BLOCKER-034): Try recursive invocation for super calls too.
     bool recursively_invoked = false;
+    // F-NEW-284 (CONT-28): the call-site proto is the F-023 overload law's
+    // AUTHORITY here too — the proto was already resolved above for the
+    // EXP-095 arg conversion but was NOT passed to the dispatcher, so every
+    // super-dispatch selected overloads by SHAPE. Real-Compose oracle proof
+    // (proto-free selection, JVMS 5.4.5): NodeCoordinator declares TWO
+    // same-name 32-unit overloads placeAt-f8xVGno(JF, GraphicsLayer)V and
+    // placeAt-f8xVGno(JF, Function1)V; LayoutModifierNodeCoordinator.
+    // placeAt(JF, Function1)V invoke-super'd without a descriptor, the
+    // loose shape loop hit the GraphicsLayer body first, its `layer` param
+    // register received the Function1 lambda, placeSelf carried the lambda
+    // into the explicitLayer slot, and GraphicsLayerOwnerLayer ended up
+    // with a lambda where its GraphicsLayer belongs — every later
+    // GraphicsLayer.setPosition/record died f141-null-recv on the missing
+    // impl field (the draw-pipeline APP BOUNDARY). The proto restores
+    // exact-descriptor selection; without one the legacy behavior is
+    // byte-identical (descriptor=="" keeps the old path).
     if (config_.enable_api_bridge) {
-        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result,
+                                 proto_35c)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             api_status = ApiCallTrace::Status::IMPLEMENTED;
         }
