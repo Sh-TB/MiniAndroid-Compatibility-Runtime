@@ -321,3 +321,17 @@ sole tictactoedeluxe/GL dependency. Safir/BLACK remain BLOCKED-BY-IDENTITY.
   goldens 4/4, battery 122/122 fresh, gate A 95/0/2 x2, negatives 17/17,
   reinstall 8/8, uninstall, NATX 10/10x3, skill selftest 13/13. Classifier
   untouched. Registry 538 roots. Issue ledgers posted to #371/#372/#373.
+
+## CONT-30W (2026-10-09) — WHITE-SCREEN CLAIM AUDIT + R-NEW-466 SERVICELOADER TEST
+
+HEAD b473c69b (binary b84114cd6f8bad1d, UNCHANGED — zero engine edits).
+Report lineage reconciled: 5/6 claimed commits NOT FOUND; all R-IDs absent —
+substances already carried by F-NEW-273/F-064/F-103/F-NEW-249/F-106 +
+effective_content_root_(). Simple Calculator vc8 re-supplied SHA-exact
+(68da25fd9fdf54b4) and FULL SUCCESS retained ×3 (7960bce447ac6d8f byte-identical);
+dooz anchor byte-identical. R-NEW-466 defects do NOT reproduce on main
+(fnew252 SLPOS runtime proof); its fix is absent and NOT transplanted;
+composeStopwatch claims UNVERIFIED (APK NOT FOUND). Real find: fnew252 probe
+packaging regression (META-INF/services lost in the w4 rebuild) — fixed
+generically in the build script, proven ×3 (7/0 PASS). Registry UNCHANGED.
+Evidence: evidence/cont30w/WHITESCREEN_CLAIM_AUDIT.md (§9 = next checkpoint).
