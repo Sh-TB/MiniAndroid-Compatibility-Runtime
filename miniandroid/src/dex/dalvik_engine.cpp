@@ -906,6 +906,45 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
                   << class_to_interfaces_.size() << ")" << std::endl;
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // F-087 MULTIDEX-ANNOTATION-CLOSURE (CONT-26; S102/EXP-095 family).
+    //   Upstream: ART copies runtime-visible class annotations
+    //   (annotations_directory_item, visibility=RUNTIME) into the Class
+    //   object at load time REGARDLESS of which classesN.dex defines the
+    //   class — Class.getAnnotation cannot see a DEX-file boundary
+    //   (libcore Class.java: annotatedClasses resolved per loaded class).
+    //   Root-gap evidence (CONT-26 oracle run, com.probe.oracle12 at
+    //   e980887e39aee977): the F-087 class_annotations index was populated
+    //   ONLY from DEX 0 (dalvik_engine.cpp primary ingestion loop), so
+    //   every class defined in classes2.dex+ answered NULL for its own
+    //   runtime annotations. First hit: navigation-compose
+    //   NavigatorProvider.Companion.getNameForNavigator →
+    //   Class.getAnnotation(@Navigator.Name) on NavGraphNavigator
+    //   (classes2.dex, annotation verified present with vis=1
+    //   value="navigation" by scripts/cont26_dex_ann_scan.py) → IAE
+    //   "No @Navigator.Name annotation found for NavGraphNavigator" →
+    //   rememberNavController dead → NavHost dead → composition never
+    //   completes. Affected surface: EVERY multi-DEX APK's annotations
+    //   (this oracle: all androidx classes live in classes2.dex).
+    //   Fix is the third member of the EXP-095 (superclass) + S102
+    //   (interfaces) closure family: same loop, same dedup law, no
+    //   app/package/R8-name knowledge.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        size_t ann_added = 0;
+        for (const auto& cls : mutable_classes) {
+            if (!cls.class_annotations.empty() &&
+                class_annotations_.find(cls.name) ==
+                    class_annotations_.end()) {
+                class_annotations_[cls.name] = cls.class_annotations;
+                ann_added++;
+            }
+        }
+        std::cerr << "[F087-MD-ANN] class-annotation index extended by "
+                  << ann_added << " secondary-DEX classes (total "
+                  << class_annotations_.size() << ")" << std::endl;
+    }
+
     return injected_count;
 }
 
@@ -9006,6 +9045,75 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // across recursive execution. best_match/fallback_match now hold
     // pointers; selection semantics (F-023 exact-descriptor law, EXP-080
     // lambda-name law, arity fallback) are unchanged.
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-280 (CONT-26; S108 ROOT-019 cross-class extension): the
+    // exact-descriptor overload authority is a HIERARCHY law, not a
+    // per-class law. ART/LVMS resolution (JVMS 5.4.5 / dalvik invoke
+    // resolution): method selection matches the (name, proto) pair; a
+    // same-name method with a DIFFERENT proto is never a candidate, and
+    // when the runtime class itself declares no (name, proto) match the
+    // search CONTINUES into the superclass chain — it never "falls back"
+    // to a differently-shaped same-name method.
+    // Root-gap evidence (CONT-26, com.simplemobiletools.calculator vc8 at
+    // binary 59a6b548): AppCompatActivity.onCreate
+    // (u.onCreate) → invoke-virtual delegate.a(Landroid/os/Bundle;)V —
+    // the runtime class ac (AppCompatDelegateImplN) declares ONLY
+    // a(Landroid/view/Window$Callback;) (wrapWindowCallback); the real
+    // a(Bundle)V override lives in the superclass aa
+    // (AppCompatDelegateImpl). The local scan found no exact match, the
+    // S108 strict skip is default-OFF (recorded bogus-descriptor blocker:
+    // wanted descriptors that exist NOWHERE — hard-filtering selected
+    // nothing and ctors never ran, the v6.q→u.<init> family), and the
+    // lenient arity heuristic accepted the same-name wrong-shape method:
+    // the saved-Bundle null flowed into wrapWindowCallback →
+    // WindowCallbackWrapper.<init> IAE "Window callback may not be null"
+    // → MainActivity.onCreate APP-BOUNDARY death → white screen.
+    // Fix (the blocker-safe middle path): when the call site carries a
+    // concrete descriptor and the runtime class has NO exact (name,
+    // descriptor, non-empty-code) match, run the F-074 super-walk for the
+    // EXACT match FIRST; only when no ancestor declares it either does the
+    // legacy lenient selection run (unchanged). The recorded
+    // bogus-descriptor family keeps its old behavior (bogus descriptors
+    // match locally nowhere AND up-chain nowhere → lenient path identical);
+    // the ac.a family resolves to the true ancestor override.
+    // ────────────────────────────────────────────────────────────────────
+    if (!method_descriptor.empty() && method_descriptor[0] == '(') {
+        bool local_exact = false;
+        for (const auto& mm : cls_ref.direct_methods) {
+            if (mm.name == method_name && mm.descriptor == method_descriptor &&
+                !mm.bytecode.empty()) { local_exact = true; break; }
+        }
+        if (!local_exact) {
+            for (const auto& mm : cls_ref.virtual_methods) {
+                if (mm.name == method_name &&
+                    mm.descriptor == method_descriptor &&
+                    !mm.bytecode.empty()) { local_exact = true; break; }
+            }
+        }
+        if (!local_exact) {
+            {
+                static thread_local uint64_t f280_diag = 0;
+                if (std::getenv("MINIANDROID_F280_TRACE") &&
+                    f280_diag < 40) {
+                    ++f280_diag;
+                    std::cerr << "[F280-SUPERWALK] " << class_descriptor
+                              << "." << method_name
+                              << " want=" << method_descriptor
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+            recursion_depth_--;
+            if (try_recursive_invoke_on_super(class_descriptor, method_name,
+                                             args, return_val, result,
+                                             method_descriptor)) {
+                return true;
+            }
+            recursion_depth_++;
+            // No ancestor declares the exact (name, proto) either — the
+            // legacy lenient selection below keeps its recorded behavior.
+        }
+    }
     std::vector<const dex::MethodInfo*> f107_cands;
     f107_cands.reserve(cls_ref.direct_methods.size() + cls_ref.virtual_methods.size());
     for (const auto& m : cls_ref.direct_methods) f107_cands.push_back(&m);
@@ -54158,6 +54266,112 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             result = msg.empty() ? DalvikValue::make_null()
                                  : DalvikValue::make_string(msg, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-279: THROWABLE SUPPRESSED-EXCEPTION LAW (OpenJDK
+        // Throwable.java, Java 7+; CONT-26). Contract:
+        //   * getSuppressed() returns the recorded suppressed list — an
+        //     EMPTY array when none were recorded. It NEVER returns null
+        //     (OpenJDK allocates EMPTY_THROWABLE_ARRAY when suppression is
+        //     absent/disabled) — Kotlin's Intrinsics-asserted callers
+        //     (JDK7PlatformImplementations.getSuppressed →
+        //     checkNotNullExpressionValue) rely on that non-null law.
+        //   * addSuppressed(t) appends t to the receiver's suppressed list
+        //     (null receiver arg → NPE upstream; self-suppression is
+        //     silently ignored upstream when suppression is enabled).
+        // Root-gap evidence (CONT-26 oracle run at e980887e39aee977):
+        // compose's GapComposer.doCompose catch-all attaches a compose
+        // stack trace (ComposeStackTraceKt.tryAttachComposeStackTrace →
+        // ExceptionsKt.getSuppressedExceptions → JDK7PlatformImplementations
+        // .getSuppressed). The engine had NO getSuppressed handler → the
+        // generic stub answered null → Intrinsics threw NPE
+        // "getSuppressed(...) must not be null" INSIDE the exception
+        // handler → the original IAE became an uncaught NPE → APP BOUNDARY
+        // death. Every exception-handling path that inspects suppressed
+        // exceptions through Kotlin shares this family.
+        // ────────────────────────────────────────────────────────────────
+        if (is_throwable_family && method == "getSuppressed") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+                auto stored = heap_.get_object_field(args[0].object_id,
+                                                     "__suppressed__");
+                if (stored.has_value() && stored->type == DalvikType::OBJECT_REF &&
+                    stored->object_id != 0 &&
+                    heap_.has_object(stored->object_id)) {
+                    result = *stored;
+                } else {
+                    uint32_t arr = heap_.allocate("[Ljava/lang/Throwable;",
+                                                  pc_, 0);
+                    heap_.set_object_field(arr, "__array_length__",
+                                           DalvikValue::make_int(0));
+                    result = DalvikValue::make_object(arr,
+                                                      "[Ljava/lang/Throwable;");
+                }
+            } else {
+                uint32_t arr = heap_.allocate("[Ljava/lang/Throwable;", pc_, 0);
+                heap_.set_object_field(arr, "__array_length__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_object(arr, "[Ljava/lang/Throwable;");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (is_throwable_family && method == "addSuppressed" &&
+            args.size() >= 2) {
+            uint32_t recv = args[0].type == DalvikType::OBJECT_REF
+                                ? args[0].object_id
+                                : 0;
+            uint32_t sup = args[1].type == DalvikType::OBJECT_REF
+                               ? args[1].object_id
+                               : 0;
+            if (recv != 0 && heap_.has_object(recv)) {
+                // Self-suppression is silently ignored upstream.
+                if (sup != 0 && sup != recv && heap_.has_object(sup)) {
+                    // Read the existing list (array object), append, store.
+                    std::vector<DalvikValue> items;
+                    auto stored = heap_.get_object_field(recv,
+                                                         "__suppressed__");
+                    if (stored.has_value() &&
+                        stored->type == DalvikType::OBJECT_REF &&
+                        stored->object_id != 0 &&
+                        heap_.has_object(stored->object_id)) {
+                        auto len = heap_.get_object_field(stored->object_id,
+                                                          "__array_length__");
+                        int32_t n = len.has_value() &&
+                                            len->type == DalvikType::INT32
+                                        ? len->int_val
+                                        : 0;
+                        for (int32_t i = 0; i < n; ++i) {
+                            auto ev = heap_.get_object_field(
+                                stored->object_id,
+                                "array[" + std::to_string(i) + "]");
+                            if (ev.has_value())
+                                items.push_back(*ev);
+                        }
+                    }
+                    items.push_back(DalvikValue::make_object(
+                        sup, args[1].class_desc.empty()
+                                 ? "Ljava/lang/Throwable;"
+                                 : args[1].class_desc));
+                    uint32_t arr = heap_.allocate("[Ljava/lang/Throwable;",
+                                                  pc_, 0);
+                    heap_.set_object_field(arr, "__array_length__",
+                                           DalvikValue::make_int(
+                                               (int32_t)items.size()));
+                    for (size_t i = 0; i < items.size(); ++i) {
+                        heap_.set_object_field(
+                            arr, "array[" + std::to_string(i) + "]",
+                            items[i]);
+                    }
+                    heap_.set_object_field(
+                        recv, "__suppressed__",
+                        DalvikValue::make_object(arr,
+                                                 "[Ljava/lang/Throwable;"));
+                }
+            }
+            result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
