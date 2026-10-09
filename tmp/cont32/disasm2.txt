@@ -1,0 +1,763 @@
+=== STRING CENSUS (window/dialog) ===
+'Dialog has no window'
+
+=== CLASS Lea;  (super=Ljava/lang/Object;) ===
+
+--- METHOD Lea;<init>(I)V  regs=2 ---
+     0 iput                           v1, v0, Lea;->e I
+     1 invoke-direct                  v0, Ljava/lang/Object;-><init>()V
+     2 return-void                    
+
+--- METHOD Lea;j(Ljava/lang/StringBuilder; Ljava/lang/Object; Ljava/lang/Object;)V  regs=3 ---
+     0 invoke-virtual                 v0, v1, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+     1 invoke-virtual                 v0, v2, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+     2 invoke-virtual                 v0, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+     3 move-result-object             v0
+     4 new-instance                   v1, Ljava/lang/IllegalArgumentException;
+     5 invoke-virtual                 v0, Ljava/lang/Object;->toString()Ljava/lang/String;
+     6 move-result-object             v0
+     7 invoke-direct                  v1, v0, Ljava/lang/IllegalArgumentException;-><init>(Ljava/lang/String;)V
+     8 throw                          v1
+
+--- METHOD Lea;n()V  regs=1 ---
+     0 new-instance                   v0, Ljava/util/NoSuchElementException;
+     1 invoke-direct                  v0, Ljava/util/NoSuchElementException;-><init>()V
+     2 throw                          v0
+
+--- METHOD Lea;r(Ljava/lang/String;)V  regs=2 ---
+     0 new-instance                   v0, Ljava/lang/IllegalStateException;
+     1 invoke-direct                  v0, v1, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+     2 throw                          v0
+
+=== CLASS Lel;  (super=Ljava/lang/Object;) ===
+
+--- METHOD Lel;<init>(Lzk; Lbi1;)V  regs=13 ---
+     0 invoke-direct                  v10, Ljava/lang/Object;-><init>()V
+     1 iput-object                    v11, v10, Lel;->e Lzk;
+     2 iput-object                    v12, v10, Lel;->f Lbi1;
+     3 new-instance                   v0, Ljava/util/concurrent/atomic/AtomicReference;
+     4 const/4                        v1, 0
+     5 invoke-direct                  v0, v1, Ljava/util/concurrent/atomic/AtomicReference;-><init>(Ljava/lang/Object;)V
+     6 iput-object                    v0, v10, Lel;->g Ljava/util/concurrent/atomic/AtomicReference;
+     7 new-instance                   v0, Ljava/lang/Object;
+     8 invoke-direct                  v0, Ljava/lang/Object;-><init>()V
+     9 iput-object                    v0, v10, Lel;->h Ljava/lang/Object;
+    10 new-instance                   v0, Lqm0;
+    11 invoke-direct                  v0, Lqm0;-><init>()V
+    12 new-instance                   v5, Lsm0;
+    13 invoke-direct                  v5, v0, Lsm0;-><init>(Lqm0;)V
+    14 iput-object                    v5, v10, Lel;->i Lsm0;
+    15 new-instance                   v0, Lz71;
+    16 invoke-direct                  v0, Lz71;-><init>()V
+    17 invoke-virtual                 v11, Lzk;->d()Z
+    18 move-result                    v1
+    19 if-eqz                         v1, +009h
+    20 new-instance                   v1, Lzl0;
+    21 invoke-direct                  v1, Lzl0;-><init>()V
+    22 iput-object                    v1, v0, Lz71;->o Lzl0;
+    23 invoke-virtual                 v11, Lzk;->f()Z
+    24 move-result                    v1
+    25 if-eqz                         v1, +005h
+    26 invoke-virtual                 v0, Lz71;->c()V
+    27 iput-object                    v0, v10, Lel;->j Lz71;
+    28 invoke-static                  Lwv;->o()Lpm0;
+    29 move-result-object             v1
+    30 iput-object                    v1, v10, Lel;->k Lpm0;
+    31 new-instance                   v1, Lqm0;
+    32 invoke-direct                  v1, Lqm0;-><init>()V
+    33 iput-object                    v1, v10, Lel;->l Lqm0;
+    34 new-instance                   v1, Lqm0;
+    35 invoke-direct                  v1, Lqm0;-><init>()V
+    36 iput-object                    v1, v10, Lel;->m Lqm0;
+    37 invoke-static                  Lwv;->o()Lpm0;
+    38 move-result-object             v1
+    39 iput-object                    v1, v10, Lel;->n Lpm0;
+    40 new-instance                   v6, Lxf;
+    41 invoke-direct                  v6, Lxf;-><init>()V
+    42 iput-object                    v6, v10, Lel;->o Lxf;
+    43 new-instance                   v7, Lxf;
+    44 invoke-direct                  v7, Lxf;-><init>()V
+    45 iput-object                    v7, v10, Lel;->p Lxf;
+    46 invoke-static                  Lwv;->o()Lpm0;
+    47 move-result-object             v1
+    48 iput-object                    v1, v10, Lel;->q Lpm0;
+    49 invoke-static                  Lwv;->o()Lpm0;
+    50 move-result-object             v1
+    51 iput-object                    v1, v10, Lel;->r Lpm0;
+    52 new-instance                   v8, Lgi0;
+    53 const/16                       v1, 8
+    54 invoke-direct                  v8, v1, v11, Lgi0;-><init>(I Ljava/lang/Object;)V
+    55 iput-object                    v8, v10, Lel;->x Lgi0;
+    56 new-instance                   v1, Lxz0;
+    57 invoke-direct                  v1, Lxz0;-><init>()V
+    58 iput-object                    v1, v10, Lel;->y Lxz0;
+    59 invoke-static                  v0, Lb81;->d(Lz71;)Lz71;
+    60 move-result-object             v4
+    61 new-instance                   v1, Lx30;
+    62 move-object                    v9, v10
+    63 move-object                    v3, v11
+    64 move-object                    v2, v12
+    65 invoke-direct/range            v1 ... v9, Lx30;-><init>(Lbi1; Lzk; Lz71; Lsm0; Lxf; Lxf; Lgi0; Lel;)V
+    66 invoke-virtual                 v3, v1, Lzk;->p(Lx30;)V
+    67 iput-object                    v1, v9, Lel;->z Lx30;
+    68 return-void                    
+
+--- METHOD Lel;j(Lf30;)V  regs=7 ---
+     0 iget-object                    v0, v5, Lel;->h Ljava/lang/Object;
+     1 monitor-enter                  v0
+     2 invoke-virtual                 v5, Lel;->n()V
+     3 iget-object                    v1, v5, Lel;->r Lpm0;
+     4 invoke-static                  Lwv;->o()Lpm0;
+     5 move-result-object             v2
+     6 iput-object                    v2, v5, Lel;->r Lpm0;
+     7 iget-object                    v2, v5, Lel;->z Lx30;
+     8 iget-object                    v3, v5, Lel;->t Lm71;
+     9 iget-object                    v4, v2, Lx30;->e Lxf;
+    10 iget-object                    v4, v4, Lxf;->n Ltr0;
+    11 invoke-virtual                 v4, Ltr0;->U()Z
+    12 move-result                    v4
+    13 if-nez                         v4, +007h
+    14 const-string                   v4, "Expected applyChanges() to have been called"
+    15 invoke-static                  v4, Lxk;->a(Ljava/lang/String;)V
+    16 iput-object                    v3, v2, Lx30;->P Lm71;
+    17 const/4                        v3, 0
+    18 invoke-virtual                 v2, v1, v6, Lx30;->n(Lpm0; Lf30;)V
+    19 iput-object                    v3, v2, Lx30;->P Lm71;
+    20 monitor-exit                   v0
+    21 return-void                    
+    22 move-exception                 v6
+    23 goto                           +ch
+    24 move-exception                 v6
+    25 iput-object                    v3, v2, Lx30;->P Lm71;
+    26 throw                          v6
+    27 move-exception                 v6
+    28 iput-object                    v1, v5, Lel;->r Lpm0;
+    29 throw                          v6
+    30 move-exception                 v6
+    31 monitor-exit                   v0
+    32 throw                          v6
+    33 iget-object                    v0, v5, Lel;->i Lsm0;
+    34 iget-object                    v0, v0, Lsm0;->e Lqm0;
+    35 invoke-virtual                 v0, Lqm0;->g()Z
+    36 move-result                    v0
+    37 if-nez                         v0, +01dh
+    38 iget-object                    v0, v5, Lel;->y Lxz0;
+    39 iget-object                    v1, v5, Lel;->i Lsm0;
+    40 iget-object                    v2, v5, Lel;->z Lx30;
+    41 invoke-virtual                 v2, Lx30;->z()Lcl;
+    42 move-result-object             v2
+    43 invoke-virtual                 v0, v1, v2, Lxz0;->g(Ljava/util/Set; Lcl;)V
+    44 invoke-virtual                 v0, Lxz0;->b()V
+    45 invoke-virtual                 v0, Lxz0;->a()V
+    46 goto                           +8h
+    47 move-exception                 v6
+    48 goto                           +7h
+    49 move-exception                 v6
+    50 invoke-virtual                 v0, Lxz0;->a()V
+    51 throw                          v6
+    52 throw                          v6
+    53 invoke-virtual                 v5, Lel;->a()V
+    54 throw                          v6
+
+--- METHOD Lel;n()V  regs=6 ---
+     0 sget-object                    v0, Lxi0;->b Ljava/lang/Object;
+     1 iget-object                    v1, v5, Lel;->g Ljava/util/concurrent/atomic/AtomicReference;
+     2 invoke-virtual                 v1, v0, Ljava/util/concurrent/atomic/AtomicReference;->getAndSet(Ljava/lang/Object;)Ljava/lang/Object;
+     3 move-result-object             v2
+     4 if-eqz                         v2, +047h
+     5 invoke-virtual                 v2, v0, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+     6 move-result                    v0
+     7 if-nez                         v0, +036h
+     8 instance-of                    v0, v2, Ljava/util/Set;
+     9 const/4                        v3, 1
+    10 if-eqz                         v0, +008h
+    11 check-cast                     v2, Ljava/util/Set;
+    12 invoke-virtual                 v5, v2, v3, Lel;->c(Ljava/util/Set; Z)V
+    13 return-void                    
+    14 instance-of                    v0, v2, [Ljava/lang/Object;
+    15 if-eqz                         v0, +010h
+    16 check-cast                     v2, [Ljava/util/Set;
+    17 array-length                   v0, v2
+    18 const/4                        v1, 0
+    19 if-ge                          v1, v0, +02ch
+    20 aget-object                    v4, v2, v1
+    21 invoke-virtual                 v5, v4, v3, Lel;->c(Ljava/util/Set; Z)V
+    22 add-int/lit8                   v1, v1, 1
+    23 goto                           -9h
+    24 new-instance                   v5, Ljava/lang/StringBuilder;
+    25 const-string                   v0, "corrupt pendingModifications drain: "
+    26 invoke-direct                  v5, v0, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+    27 invoke-virtual                 v5, v1, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+    28 invoke-virtual                 v5, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    29 move-result-object             v5
+    30 invoke-static                  v5, Lxk;->b(Ljava/lang/String;)Ljava/lang/Void;
+    31 new-instance                   v5, Lcj;
+    32 invoke-direct                  v5, Ljava/lang/RuntimeException;-><init>()V
+    33 throw                          v5
+    34 const-string                   v5, "pending composition has not been applied"
+    35 invoke-static                  v5, Lxk;->b(Ljava/lang/String;)Ljava/lang/Void;
+    36 new-instance                   v5, Lcj;
+    37 invoke-direct                  v5, Ljava/lang/RuntimeException;-><init>()V
+    38 throw                          v5
+    39 return-void                    
+
+--- METHOD Lel;r(Ljava/util/ArrayList;)V  regs=5 ---
+     0 iget-object                    v0, v3, Lel;->i Lsm0;
+     1 iget-object                    v1, v3, Lel;->z Lx30;
+     2 invoke-interface               v4, Ljava/util/Collection;->size()I
+     3 move-result                    v2
+     4 if-lez                         v2, +015h
+     5 const/4                        v2, 0
+     6 invoke-interface               v4, v2, Ljava/util/List;->get(I)Ljava/lang/Object;
+     7 move-result-object             v2
+     8 check-cast                     v2, Lss0;
+     9 iget-object                    v2, v2, Lss0;->e Ljava/lang/Object;
+    10 check-cast                     v2, Lnl0;
+    11 invoke-virtual                 v2, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+    12 const-string                   v2, "Check failed"
+    13 invoke-static                  v2, Lxk;->a(Ljava/lang/String;)V
+    14 invoke-virtual                 v1, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+    15 const-string                   v2, "Compose:insertMovableContent"
+    16 invoke-static                  v2, Landroid/os/Trace;->beginSection(Ljava/lang/String;)V
+    17 invoke-virtual                 v1, v4, Lx30;->B(Ljava/util/ArrayList;)V
+    18 invoke-virtual                 v1, Lx30;->i()V
+    19 invoke-static                  Landroid/os/Trace;->endSection()V
+    20 return-void                    
+    21 move-exception                 v4
+    22 goto                           +6h
+    23 move-exception                 v4
+    24 invoke-virtual                 v1, Lx30;->a()V
+    25 throw                          v4
+    26 invoke-static                  Landroid/os/Trace;->endSection()V
+    27 throw                          v4
+    28 move-exception                 v4
+    29 iget-object                    v2, v0, Lsm0;->e Lqm0;
+    30 invoke-virtual                 v2, Lqm0;->g()Z
+    31 move-result                    v2
+    32 if-nez                         v2, +019h
+    33 iget-object                    v2, v3, Lel;->y Lxz0;
+    34 invoke-virtual                 v1, Lx30;->z()Lcl;
+    35 move-result-object             v1
+    36 invoke-virtual                 v2, v0, v1, Lxz0;->g(Ljava/util/Set; Lcl;)V
+    37 invoke-virtual                 v2, Lxz0;->b()V
+    38 invoke-virtual                 v2, Lxz0;->a()V
+    39 goto                           +8h
+    40 move-exception                 v4
+    41 goto                           +7h
+    42 move-exception                 v4
+    43 invoke-virtual                 v2, Lxz0;->a()V
+    44 throw                          v4
+    45 throw                          v4
+    46 invoke-virtual                 v3, Lel;->a()V
+    47 throw                          v4
+
+=== CLASS Lfs;  (super=Lq;) ===
+
+--- METHOD Lfs;<init>(Landroid/content/Context; Landroid/view/Window;)V  regs=3 ---
+     0 invoke-direct                  v0, v1, Lq;-><init>(Landroid/content/Context;)V
+     1 iput-object                    v2, v0, Lfs;->n Landroid/view/Window;
+     2 sget-object                    v1, Lsj;->a Lrj;
+     3 invoke-static                  v1, Llw;->I(Ljava/lang/Object;)Let0;
+     4 move-result-object             v1
+     5 iput-object                    v1, v0, Lfs;->o Let0;
+     6 sget                           v1, Lnk1;->a I
+     7 invoke-static                  v0, v0, Lik1;->b(Landroid/view/View; Lrp0;)V
+     8 new-instance                   v1, Les;
+     9 invoke-direct                  v1, v0, Les;-><init>(Lfs;)V
+    10 invoke-static                  v0, v1, Lnk1;->a(Landroid/view/View; Loh;)V
+    11 return-void                    
+
+=== CLASS Lpj;  (super=Landroid/app/Dialog;) ===
+
+--- METHOD Lpj;<init>(Landroid/view/ContextThemeWrapper;)V  regs=5 ---
+     0 const/4                        v0, 0
+     1 invoke-direct                  v3, v4, v0, Landroid/app/Dialog;-><init>(Landroid/content/Context; I)V
+     2 new-instance                   v4, La31;
+     3 new-instance                   v1, Lb7;
+     4 const/16                       v2, 12
+     5 invoke-direct                  v1, v2, v3, Lb7;-><init>(I Ljava/lang/Object;)V
+     6 invoke-direct                  v4, v3, v1, La31;-><init>(Lb31; Lb7;)V
+     7 new-instance                   v1, Ld3;
+     8 const/16                       v2, 20
+     9 invoke-direct                  v1, v4, v2, Ld3;-><init>(La31; I)V
+    10 iput-object                    v1, v3, Lpj;->f Ld3;
+    11 new-instance                   v4, Loj;
+    12 invoke-direct                  v4, v3, v0, Loj;-><init>(Lpj; I)V
+    13 new-instance                   v0, Lnc1;
+    14 invoke-direct                  v0, v4, Lnc1;-><init>(Lq20;)V
+    15 iput-object                    v0, v3, Lpj;->g Lnc1;
+    16 new-instance                   v4, Loj;
+    17 const/4                        v0, 1
+    18 invoke-direct                  v4, v3, v0, Loj;-><init>(Lpj; I)V
+    19 new-instance                   v0, Lnc1;
+    20 invoke-direct                  v0, v4, Lnc1;-><init>(Lq20;)V
+    21 iput-object                    v0, v3, Lpj;->h Lnc1;
+    22 return-void                    
+
+=== CLASS Lis;  (super=Lpj;) ===
+
+--- METHOD Lis;<init>(Lq20; Lgs; Landroid/view/View; Lzb0; Lqr; Ljava/util/UUID;)V  regs=12 ---
+     0 new-instance                   v0, Landroid/view/ContextThemeWrapper;
+     1 invoke-virtual                 v8, Landroid/view/View;->getContext()Landroid/content/Context;
+     2 move-result-object             v1
+     3 iget-boolean                   v2, v7, Lgs;->e Z
+     4 if-eqz                         v2, +006h
+     5 const                          v2, 2131427335
+     6 goto                           +4h
+     7 const                          v2, 2131427338
+     8 invoke-direct                  v0, v1, v2, Landroid/view/ContextThemeWrapper;-><init>(Landroid/content/Context; I)V
+     9 invoke-direct                  v5, v0, Lpj;-><init>(Landroid/view/ContextThemeWrapper;)V
+    10 iput-object                    v6, v5, Lis;->i Lq20;
+    11 iput-object                    v7, v5, Lis;->j Lgs;
+    12 iput-object                    v8, v5, Lis;->k Landroid/view/View;
+    13 invoke-virtual                 v5, Landroid/app/Dialog;->getWindow()Landroid/view/Window;
+    14 move-result-object             v6
+    15 const/4                        v7, 0
+    16 if-eqz                         v6, +0e1h
+    17 iget-object                    v0, v5, Lis;->j Lgs;
+    18 invoke-virtual                 v5, Landroid/app/Dialog;->getWindow()Landroid/view/Window;
+    19 move-result-object             v1
+    20 if-eqz                         v1, +00dh
+    21 invoke-virtual                 v1, Landroid/view/Window;->getAttributes()Landroid/view/WindowManager$LayoutParams;
+    22 move-result-object             v2
+    23 iget                           v0, v0, Lgs;->g I
+    24 iput                           v0, v2, Landroid/view/WindowManager$LayoutParams;->type I
+    25 invoke-virtual                 v1, v2, Landroid/view/Window;->setAttributes(Landroid/view/WindowManager$LayoutParams;)V
+    26 const/4                        v0, 1
+    27 invoke-virtual                 v6, v0, Landroid/view/Window;->requestFeature(I)Z
+    28 const                          v1, 17170445
+    29 invoke-virtual                 v6, v1, Landroid/view/Window;->setBackgroundDrawableResource(I)V
+    30 iget-object                    v1, v5, Lis;->j Lgs;
+    31 iget-boolean                   v1, v1, Lgs;->e Z
+    32 invoke-static                  v6, v1, Lmw;->E(Landroid/view/Window; Z)V
+    33 const/16                       v1, 17
+    34 invoke-virtual                 v6, v1, Landroid/view/Window;->setGravity(I)V
+    35 iget-object                    v1, v5, Lis;->j Lgs;
+    36 iget-boolean                   v1, v1, Lgs;->e Z
+    37 const/4                        v2, 0
+    38 if-nez                         v1, +026h
+    39 const                          v1, 65792
+    40 invoke-virtual                 v6, v1, Landroid/view/Window;->addFlags(I)V
+    41 invoke-virtual                 v6, Landroid/view/Window;->getAttributes()Landroid/view/WindowManager$LayoutParams;
+    42 move-result-object             v1
+    43 sget                           v3, Landroid/os/Build$VERSION;->SDK_INT I
+    44 const/16                       v4, 28
+    45 if-lt                          v3, v4, +007h
+    46 sget-object                    v4, Lc9;->a Lc9;
+    47 invoke-virtual                 v4, v1, Lc9;->a(Landroid/view/WindowManager$LayoutParams;)V
+    48 const/16                       v4, 30
+    49 if-lt                          v3, v4, +00ah
+    50 sget-object                    v3, Ld9;->a Ld9;
+    51 invoke-virtual                 v3, v1, v2, Ld9;->b(Landroid/view/WindowManager$LayoutParams; I)V
+    52 invoke-virtual                 v3, v1, v2, Ld9;->c(Landroid/view/WindowManager$LayoutParams; I)V
+    53 invoke-virtual                 v6, v1, Landroid/view/Window;->setAttributes(Landroid/view/WindowManager$LayoutParams;)V
+    54 new-instance                   v1, Lfs;
+    55 invoke-virtual                 v5, Landroid/app/Dialog;->getContext()Landroid/content/Context;
+    56 move-result-object             v3
+    57 invoke-direct                  v1, v3, v6, Lfs;-><init>(Landroid/content/Context; Landroid/view/Window;)V
+    58 iget-object                    v3, v5, Lis;->j Lgs;
+    59 iget-object                    v3, v3, Lgs;->f Ljava/lang/String;
+    60 invoke-virtual                 v5, v3, Landroid/app/Dialog;->setTitle(Ljava/lang/CharSequence;)V
+    61 new-instance                   v3, Ljava/lang/StringBuilder;
+    62 const-string                   v4, "Dialog:"
+    63 invoke-direct                  v3, v4, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+    64 invoke-virtual                 v3, v11, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+    65 invoke-virtual                 v3, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    66 move-result-object             v11
+    67 const                          v3, 2131099699
+    68 invoke-virtual                 v1, v3, v11, Landroid/view/View;->setTag(I Ljava/lang/Object;)V
+    69 invoke-virtual                 v1, v2, Landroid/view/ViewGroup;->setClipChildren(Z)V
+    70 const/high16                   v11, 1090519040
+    71 invoke-interface               v10, v11, Lqr;->u(F)F
+    72 move-result                    v10
+    73 invoke-virtual                 v1, v10, Landroid/view/View;->setElevation(F)V
+    74 new-instance                   v10, Lhs;
+    75 invoke-direct                  v10, v2, Lhs;-><init>(I)V
+    76 invoke-virtual                 v1, v10, Landroid/view/View;->setOutlineProvider(Landroid/view/ViewOutlineProvider;)V
+    77 iput-object                    v1, v5, Lis;->l Lfs;
+    78 invoke-virtual                 v6, Landroid/view/Window;->getDecorView()Landroid/view/View;
+    79 move-result-object             v6
+    80 instance-of                    v10, v6, Landroid/view/ViewGroup;
+    81 if-eqz                         v10, +005h
+    82 move-object                    v7, v6
+    83 check-cast                     v7, Landroid/view/ViewGroup;
+    84 if-eqz                         v7, +005h
+    85 invoke-static                  v7, Lis;->e(Landroid/view/ViewGroup;)V
+    86 invoke-virtual                 v5, v1, Lpj;->setContentView(Landroid/view/View;)V
+    87 invoke-static                  v8, Lfw;->q(Landroid/view/View;)Lpf0;
+    88 move-result-object             v6
+    89 const                          v7, 2131099766
+    90 invoke-virtual                 v1, v7, v6, Landroid/view/View;->setTag(I Ljava/lang/Object;)V
+    91 invoke-static                  v8, Llw;->y(Landroid/view/View;)Lal1;
+    92 move-result-object             v6
+    93 const                          v7, 2131099770
+    94 invoke-virtual                 v1, v7, v6, Landroid/view/View;->setTag(I Ljava/lang/Object;)V
+    95 invoke-static                  v8, Lgw;->y(Landroid/view/View;)Lb31;
+    96 move-result-object             v6
+    97 const                          v7, 2131099769
+    98 invoke-virtual                 v1, v7, v6, Landroid/view/View;->setTag(I Ljava/lang/Object;)V
+    99 iget-object                    v6, v5, Lis;->i Lq20;
+   100 iget-object                    v7, v5, Lis;->j Lgs;
+   101 invoke-virtual                 v5, v6, v7, v9, Lis;->g(Lq20; Lgs; Lzb0;)V
+   102 iget-object                    v6, v5, Lpj;->h Lnc1;
+   103 invoke-virtual                 v6, Lnc1;->getValue()Ljava/lang/Object;
+   104 move-result-object             v6
+   105 check-cast                     v6, Lbq0;
+   106 new-instance                   v7, Lf5;
+   107 invoke-direct                  v7, v5, v0, Lf5;-><init>(Lis; I)V
+   108 invoke-virtual                 v6, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+   109 new-instance                   v8, Lcq0;
+   110 invoke-direct                  v8, v7, Lcq0;-><init>(Lf5;)V
+   111 invoke-virtual                 v6, v5, v8, Lbq0;->a(Lpf0; Lvp0;)V
+   112 return-void                    
+   113 const-string                   v5, "Dialog has no window"
+   114 invoke-static                  v5, Lea;->r(Ljava/lang/String;)V
+   115 throw                          v7
+
+=== CLASS Lx30;  (super=Ljava/lang/Object;) ===
+
+--- METHOD Lx30;<init>(Lbi1; Lzk; Lz71; Lsm0; Lxf; Lxf; Lgi0; Lel;)V  regs=9 ---
+     0 invoke-direct                  v0, Ljava/lang/Object;-><init>()V
+     1 iput-object                    v1, v0, Lx30;->a Lbi1;
+     2 iput-object                    v2, v0, Lx30;->b Lzk;
+     3 iput-object                    v3, v0, Lx30;->c Lz71;
+     4 iput-object                    v4, v0, Lx30;->d Lsm0;
+     5 iput-object                    v5, v0, Lx30;->e Lxf;
+     6 iput-object                    v6, v0, Lx30;->f Lxf;
+     7 iput-object                    v7, v0, Lx30;->g Lgi0;
+     8 iput-object                    v8, v0, Lx30;->h Lel;
+     9 new-instance                   v1, Ljava/util/ArrayList;
+    10 invoke-direct                  v1, Ljava/util/ArrayList;-><init>()V
+    11 iput-object                    v1, v0, Lx30;->i Ljava/util/ArrayList;
+    12 new-instance                   v1, Le90;
+    13 invoke-direct                  v1, Le90;-><init>()V
+    14 iput-object                    v1, v0, Lx30;->n Le90;
+    15 new-instance                   v1, Ljava/util/ArrayList;
+    16 invoke-direct                  v1, Ljava/util/ArrayList;-><init>()V
+    17 iput-object                    v1, v0, Lx30;->s Ljava/util/ArrayList;
+    18 new-instance                   v1, Le90;
+    19 invoke-direct                  v1, Le90;-><init>()V
+    20 iput-object                    v1, v0, Lx30;->t Le90;
+    21 sget-object                    v1, Lku0;->h Lku0;
+    22 iput-object                    v1, v0, Lx30;->u Lku0;
+    23 new-instance                   v1, Le90;
+    24 invoke-direct                  v1, Le90;-><init>()V
+    25 iput-object                    v1, v0, Lx30;->x Le90;
+    26 const/4                        v1, -1
+    27 iput                           v1, v0, Lx30;->z I
+    28 invoke-virtual                 v2, Lzk;->f()Z
+    29 move-result                    v1
+    30 const/4                        v4, 0
+    31 const/4                        v6, 1
+    32 if-nez                         v1, +00bh
+    33 invoke-virtual                 v2, Lzk;->d()Z
+    34 move-result                    v1
+    35 if-eqz                         v1, +003h
+    36 goto                           +3h
+    37 move                           v1, v4
+    38 goto                           +2h
+    39 move                           v1, v6
+    40 iput-boolean                   v1, v0, Lx30;->C Z
+    41 new-instance                   v1, Lw30;
+    42 invoke-direct                  v1, v4, v0, Lw30;-><init>(I Ljava/lang/Object;)V
+    43 iput-object                    v1, v0, Lx30;->D Lw30;
+    44 new-instance                   v1, Ljava/util/ArrayList;
+    45 invoke-direct                  v1, Ljava/util/ArrayList;-><init>()V
+    46 iput-object                    v1, v0, Lx30;->E Ljava/util/ArrayList;
+    47 invoke-virtual                 v3, Lz71;->d()Ly71;
+    48 move-result-object             v1
+    49 invoke-virtual                 v1, Ly71;->c()V
+    50 iput-object                    v1, v0, Lx30;->G Ly71;
+    51 new-instance                   v1, Lz71;
+    52 invoke-direct                  v1, Lz71;-><init>()V
+    53 invoke-virtual                 v2, Lzk;->f()Z
+    54 move-result                    v3
+    55 if-eqz                         v3, +005h
+    56 invoke-virtual                 v1, Lz71;->c()V
+    57 invoke-virtual                 v2, Lzk;->d()Z
+    58 move-result                    v3
+    59 if-eqz                         v3, +009h
+    60 new-instance                   v3, Lzl0;
+    61 invoke-direct                  v3, Lzl0;-><init>()V
+    62 iput-object                    v3, v1, Lz71;->o Lzl0;
+    63 iput-object                    v1, v0, Lx30;->H Lz71;
+    64 invoke-virtual                 v1, Lz71;->e()Lc81;
+    65 move-result-object             v1
+    66 invoke-virtual                 v1, v6, Lc81;->e(Z)V
+    67 iput-object                    v1, v0, Lx30;->I Lc81;
+    68 new-instance                   v1, Lwk;
+    69 invoke-direct                  v1, v0, v5, Lwk;-><init>(Lx30; Lxf;)V
+    70 iput-object                    v1, v0, Lx30;->M Lwk;
+    71 iget-object                    v1, v0, Lx30;->H Lz71;
+    72 invoke-virtual                 v1, Lz71;->d()Ly71;
+    73 move-result-object             v1
+    74 invoke-virtual                 v1, v4, Ly71;->a(I)Ls30;
+    75 move-result-object             v3
+    76 invoke-virtual                 v1, Ly71;->c()V
+    77 iput-object                    v3, v0, Lx30;->N Ls30;
+    78 new-instance                   v1, Lxz;
+    79 invoke-direct                  v1, Lxz;-><init>()V
+    80 iput-object                    v1, v0, Lx30;->O Lxz;
+    81 new-instance                   v1, Lcl;
+    82 invoke-direct                  v1, v0, Lcl;-><init>(Lx30;)V
+    83 iput-object                    v1, v0, Lx30;->Q Lcl;
+    84 invoke-virtual                 v2, Lzk;->j()Lvm;
+    85 move-result-object             v1
+    86 invoke-virtual                 v0, Lx30;->z()Lcl;
+    87 move-result-object             v2
+    88 if-eqz                         v2, +003h
+    89 goto                           +3h
+    90 sget-object                    v2, Lrx;->e Lrx;
+    91 invoke-interface               v1, v2, Lvm;->k(Lvm;)Lvm;
+    92 move-result-object             v1
+    93 iput-object                    v1, v0, Lx30;->R Lvm;
+    94 return-void                    
+    95 move-exception                 v0
+    96 invoke-virtual                 v1, Ly71;->c()V
+    97 throw                          v0
+
+--- METHOD Lx30;j(Lky0;)Ljava/lang/Object;  regs=2 ---
+     0 invoke-virtual                 v0, Lx30;->l()Lku0;
+     1 move-result-object             v0
+     2 invoke-static                  v0, v1, Ls90;->F(Lku0; Lky0;)Ljava/lang/Object;
+     3 move-result-object             v0
+     4 return-object                  v0
+
+--- METHOD Lx30;n(Lpm0; Lf30;)V  regs=10 ---
+     0 const-string                   v0, "Check failed"
+     1 iget-object                    v1, v7, Lx30;->s Ljava/util/ArrayList;
+     2 iget-boolean                   v2, v7, Lx30;->F Z
+     3 if-eqz                         v2, +007h
+     4 const-string                   v2, "Reentrant composition is not supported"
+     5 invoke-static                  v2, Lxk;->a(Ljava/lang/String;)V
+     6 iget-object                    v2, v7, Lx30;->g Lgi0;
+     7 invoke-virtual                 v2, Lgi0;->h()V
+     8 const-string                   v2, "Compose:recompose"
+     9 invoke-static                  v2, Landroid/os/Trace;->beginSection(Ljava/lang/String;)V
+    10 invoke-static                  Lr81;->j()Li81;
+    11 move-result-object             v2
+    12 invoke-virtual                 v2, Li81;->g()J
+    13 move-result-wide               v2
+    14 invoke-static                  v2, v3, Ljava/lang/Long;->hashCode(J)I
+    15 move-result                    v2
+    16 iput                           v2, v7, Lx30;->B I
+    17 const/4                        v2, 0
+    18 iput-object                    v2, v7, Lx30;->v Lzl0;
+    19 invoke-virtual                 v7, v8, Lx30;->c0(Lpm0;)V
+    20 const/4                        v8, 0
+    21 iput                           v8, v7, Lx30;->k I
+    22 const/4                        v2, 1
+    23 iput-boolean                   v2, v7, Lx30;->F Z
+    24 invoke-virtual                 v7, Lx30;->a0()V
+    25 invoke-virtual                 v7, Lx30;->D()Ljava/lang/Object;
+    26 move-result-object             v3
+    27 if-eq                          v3, v9, +00ah
+    28 if-eqz                         v9, +008h
+    29 invoke-virtual                 v7, v9, Lx30;->h0(Ljava/lang/Object;)V
+    30 goto                           +3h
+    31 move-exception                 v9
+    32 goto                           +62h
+    33 iget-object                    v4, v7, Lx30;->D Lw30;
+    34 invoke-static                  Llw;->o()Lzm0;
+    35 move-result-object             v5
+    36 invoke-virtual                 v5, v4, Lzm0;->b(Ljava/lang/Object;)V
+    37 sget-object                    v4, Lxk;->a Lkq0;
+    38 const/16                       v6, 200
+    39 if-eqz                         v9, +00eh
+    40 invoke-virtual                 v7, v6, v4, Lx30;->U(I Lkq0;)V
+    41 invoke-static                  v7, v9, Lgw;->E(Lx30; Lf30;)V
+    42 invoke-virtual                 v7, v8, Lx30;->p(Z)V
+    43 goto                           +24h
+    44 move-exception                 v9
+    45 goto                           +40h
+    46 iget-boolean                   v9, v7, Lx30;->w Z
+    47 if-eqz                         v9, +01ch
+    48 if-eqz                         v3, +01ah
+    49 sget-object                    v9, Luk;->a Lqz0;
+    50 invoke-virtual                 v3, v9, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+    51 move-result                    v9
+    52 if-nez                         v9, +012h
+    53 invoke-virtual                 v7, v6, v4, Lx30;->U(I Lkq0;)V
+    54 const/4                        v9, 2
+    55 invoke-static                  v9, v3, Lih1;->l(I Ljava/lang/Object;)V
+    56 check-cast                     v3, Lf30;
+    57 invoke-static                  v7, v3, Lgw;->E(Lx30; Lf30;)V
+    58 invoke-virtual                 v7, v8, Lx30;->p(Z)V
+    59 goto                           +4h
+    60 invoke-virtual                 v7, Lx30;->P()V
+    61 iget                           v9, v5, Lzm0;->g I
+    62 sub-int/2addr                  v9, v2
+    63 invoke-virtual                 v5, v9, Lzm0;->k(I)Ljava/lang/Object;
+    64 invoke-virtual                 v7, Lx30;->t()V
+    65 iput-boolean                   v8, v7, Lx30;->F Z
+    66 invoke-virtual                 v1, Ljava/util/ArrayList;->clear()V
+    67 iget-object                    v8, v7, Lx30;->I Lc81;
+    68 iget-boolean                   v8, v8, Lc81;->w Z
+    69 if-nez                         v8, +005h
+    70 invoke-static                  v0, Lxk;->a(Ljava/lang/String;)V
+    71 invoke-virtual                 v7, Lx30;->v()V
+    72 invoke-static                  Landroid/os/Trace;->endSection()V
+    73 return-void                    
+    74 iget                           v3, v5, Lzm0;->g I
+    75 sub-int/2addr                  v3, v2
+    76 invoke-virtual                 v5, v3, Lzm0;->k(I)Ljava/lang/Object;
+    77 throw                          v9
+    78 new-instance                   v3, Lt30;
+    79 invoke-direct                  v3, v2, v7, Lt30;-><init>(I Lx30;)V
+    80 invoke-static                  v9, v3, Lih1;->J(Ljava/lang/Throwable; Lq20;)Z
+    81 throw                          v9
+    82 move-exception                 v9
+    83 iput-boolean                   v8, v7, Lx30;->F Z
+    84 invoke-virtual                 v1, Ljava/util/ArrayList;->clear()V
+    85 invoke-virtual                 v7, Lx30;->a()V
+    86 iget-object                    v8, v7, Lx30;->I Lc81;
+    87 iget-boolean                   v8, v8, Lc81;->w Z
+    88 if-nez                         v8, +005h
+    89 invoke-static                  v0, Lxk;->a(Ljava/lang/String;)V
+    90 invoke-virtual                 v7, Lx30;->v()V
+    91 throw                          v9
+    92 move-exception                 v7
+    93 invoke-static                  Landroid/os/Trace;->endSection()V
+    94 throw                          v7
+
+--- METHOD Lx30;r()Lyy0;  regs=22 ---
+     0 move-object/from16             v0, v21
+     1 iget-object                    v1, v0, Lx30;->E Ljava/util/ArrayList;
+     2 invoke-virtual                 v1, Ljava/util/ArrayList;->isEmpty()Z
+     3 move-result                    v2
+     4 const/4                        v3, 1
+     5 if-nez                         v2, +00eh
+     6 invoke-virtual                 v1, Ljava/util/ArrayList;->size()I
+     7 move-result                    v2
+     8 sub-int/2addr                  v2, v3
+     9 invoke-virtual                 v1, v2, Ljava/util/ArrayList;->remove(I)Ljava/lang/Object;
+    10 move-result-object             v1
+    11 check-cast                     v1, Lyy0;
+    12 goto                           +2h
+    13 const/4                        v1, 0
+    14 const/4                        v2, 0
+    15 if-eqz                         v1, +0b1h
+    16 iget                           v5, v1, Lyy0;->b I
+    17 and-int/lit8                   v5, v5, -9
+    18 iput                           v5, v1, Lyy0;->b I
+    19 iget-object                    v5, v0, Lx30;->g Lgi0;
+    20 invoke-virtual                 v5, Lgi0;->h()V
+    21 iget                           v5, v0, Lx30;->B I
+    22 iget-object                    v6, v1, Lyy0;->f Lhm0;
+    23 if-eqz                         v6, +05bh
+    24 iget                           v7, v1, Lyy0;->b I
+    25 and-int/lit8                   v7, v7, 16
+    26 if-eqz                         v7, +003h
+    27 goto                           +53h
+    28 iget-object                    v7, v6, Lhm0;->b [Ljava/lang/Object;
+    29 iget-object                    v8, v6, Lhm0;->c [I
+    30 iget-object                    v9, v6, Lhm0;->a [J
+    31 array-length                   v10, v9
+    32 add-int/lit8                   v10, v10, -2
+    33 if-ltz                         v10, +049h
+    34 move                           v11, v2
+    35 aget-wide                      v12, v9, v11
+    36 not-long                       v14, v12
+    37 const/16                       v16, 7
+    38 shl-long                       v14, v14, v16
+    39 and-long/2addr                 v14, v12
+    40 const-wide                     v16, -9187201950435737472
+    41 and-long                       v14, v14, v16
+    42 cmp-long                       v14, v14, v16
+    43 if-eqz                         v14, +02fh
+    44 sub-int                        v14, v11, v10
+    45 not-int                        v14, v14
+    46 ushr-int/lit8                  v14, v14, 31
+    47 const/16                       v15, 8
+    48 rsub-int/lit8                  v14, v14, 8
+    49 move                           v4, v2
+    50 if-ge                          v4, v14, +021h
+    51 const-wide/16                  v17, 255
+    52 and-long                       v17, v12, v17
+    53 const-wide/16                  v19, 128
+    54 cmp-long                       v17, v17, v19
+    55 if-gez                         v17, +012h
+    56 shl-int/lit8                   v17, v11, 3
+    57 add-int                        v17, v17, v4
+    58 aget-object                    v18, v7, v17
+    59 aget                           v3, v8, v17
+    60 if-eq                          v3, v5, +008h
+    61 new-instance                   v3, Lxy0;
+    62 invoke-direct                  v3, v5, v2, v1, v6, Lxy0;-><init>(I I Ljava/lang/Object; Ljava/lang/Object;)V
+    63 goto                           +fh
+    64 shr-long/2addr                 v12, v15
+    65 add-int/lit8                   v4, v4, 1
+    66 const/4                        v3, 1
+    67 goto                           -20h
+    68 if-ne                          v14, v15, +008h
+    69 if-eq                          v11, v10, +006h
+    70 add-int/lit8                   v11, v11, 1
+    71 const/4                        v3, 1
+    72 goto                           -45h
+    73 const/4                        v3, 0
+    74 iget-object                    v4, v0, Lx30;->M Lwk;
+    75 if-eqz                         v3, +011h
+    76 iget-object                    v5, v4, Lwk;->b Lxf;
+    77 iget-object                    v5, v5, Lxf;->n Ltr0;
+    78 sget-object                    v6, Ltq0;->c Ltq0;
+    79 invoke-virtual                 v5, v6, Ltr0;->V(Lrr0;)V
+    80 iget-object                    v6, v0, Lx30;->h Lel;
+    81 const/4                        v7, 1
+    82 invoke-static                  v5, v2, v3, v7, v6, Lcx;->L(Ltr0; I Ljava/lang/Object; I Ljava/lang/Object;)V
+    83 iget                           v3, v1, Lyy0;->b I
+    84 and-int/lit16                  v5, v3, 512
+    85 if-eqz                         v5, +02dh
+    86 and-int/lit16                  v3, v3, -513
+    87 iput                           v3, v1, Lyy0;->b I
+    88 iget-object                    v3, v4, Lwk;->b Lxf;
+    89 iget-object                    v3, v3, Lxf;->n Ltr0;
+    90 sget-object                    v4, Lwq0;->c Lwq0;
+    91 invoke-virtual                 v3, v4, Ltr0;->V(Lrr0;)V
+    92 invoke-static                  v3, v2, v1, Lcx;->K(Ltr0; I Ljava/lang/Object;)V
+    93 iget                           v3, v1, Lyy0;->b I
+    94 and-int/lit16                  v4, v3, -129
+    95 iput                           v4, v1, Lyy0;->b I
+    96 and-int/lit16                  v4, v3, 1024
+    97 if-eqz                         v4, +013h
+    98 and-int/lit16                  v3, v3, -1153
+    99 iput                           v3, v1, Lyy0;->b I
+   100 iget                           v3, v0, Lx30;->z I
+   101 iget-object                    v4, v0, Lx30;->G Ly71;
+   102 iget                           v4, v4, Ly71;->i I
+   103 if-ne                          v3, v4, +007h
+   104 iput-boolean                   v2, v0, Lx30;->y Z
+   105 const/4                        v3, -1
+   106 iput                           v3, v0, Lx30;->z I
+   107 if-eqz                         v1, +037h
+   108 iget                           v3, v1, Lyy0;->b I
+   109 and-int/lit8                   v4, v3, 16
+   110 if-eqz                         v4, +003h
+   111 goto                           +2fh
+   112 const/16                       v18, 1
+   113 and-int/lit8                   v3, v3, 1
+   114 if-eqz                         v3, +003h
+   115 goto                           +5h
+   116 iget-boolean                   v3, v0, Lx30;->q Z
+   117 if-eqz                         v3, +025h
+   118 iget-object                    v3, v1, Lyy0;->c Ls30;
+   119 if-nez                         v3, +019h
+   120 iget-boolean                   v3, v0, Lx30;->S Z
+   121 if-eqz                         v3, +00bh
+   122 iget-object                    v3, v0, Lx30;->I Lc81;
+   123 iget                           v4, v3, Lc81;->v I
+   124 invoke-virtual                 v3, v4, Lc81;->b(I)Ls30;
+   125 move-result-object             v3
+   126 goto                           +9h
+   127 iget-object                    v3, v0, Lx30;->G Ly71;
+   128 iget                           v4, v3, Ly71;->i I
+   129 invoke-virtual                 v3, v4, Ly71;->a(I)Ls30;
+   130 move-result-object             v3
+   131 iput-object                    v3, v1, Lyy0;->c Ls30;
+   132 iget                           v3, v1, Lyy0;->b I
+   133 and-int/lit8                   v3, v3, -5
+   134 iput                           v3, v1, Lyy0;->b I
+   135 move-object                    v4, v1
+   136 goto                           +2h
+   137 const/4                        v4, 0
+   138 invoke-virtual                 v0, v2, Lx30;->p(Z)V
+   139 return-object                  v4
