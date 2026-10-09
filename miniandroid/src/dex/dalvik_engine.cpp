@@ -24679,6 +24679,14 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
             for (const auto& ifc : ifc_it->second)
                 if (ifc == to_desc) return true;
         }
+        // F-NEW-292: the hop class may itself be a PLATFORM class whose
+        // libcore implements metadata lives in the framework tables
+        // (Ljava/lang/Enum; implements Serializable, Comparable — an
+        // R8-minified app enum carries those edges ONLY through this hop;
+        // its own class_def declares none). Same consult the F-NEW-253
+        // tail performs for from_desc, applied per hop so every
+        // intermediate platform hop sees the same boot-classpath truth.
+        if (framework::framework_implements(walk, to_desc)) return true;
     }
     // Directly-declared interfaces of `from` itself.
     auto ifc_it = class_to_interfaces_.find(from_desc);
@@ -53278,15 +53286,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // 1-char-spec walk returned the LITERAL format for "%02d"-style specs
     // (chessclock's clock read "0:%02d" instead of "0:00").
     if (class_name == "Ljava/lang/String;" && method == "format" && !args.empty()) {
-        // String.format is static: args[0] = format string, args[1+] = format args
-        // In DEX, the varargs array is passed as a single Object[] argument
-        std::string fmt = (args[0].type == DalvikType::STRING_REF) ? args[0].string_val : "";
+        // String.format is static. DEX has TWO overloads, discriminated by arg
+        // SHAPE (no name checks):
+        //   format(String, Object...)         → args = [fmt STRING_REF, Object[]]
+        //   format(Locale, String, Object...) → args = [Locale OBJECT_REF,
+        //                                        fmt STRING_REF, Object[]]
+        // AOSP law: for the Locale overload the format string is args[1] and
+        // the varargs array is args[2]. The previous unconditional args[0]
+        // read consumed the Locale AS the format (fmt=""), pushed the real
+        // "%02d" + the array into fargs, and returned "" (composeStopwatch
+        // Lwv;.p String.format(Locale.US,"%02d",…) → "" → substring(0,2)
+        // SIOOBE length=0 broke the composition text pass).
+        size_t fmt_idx = 0, varargs_idx = 1;
+        if (args.size() >= 3 && args[0].type != DalvikType::STRING_REF &&
+            args[1].type == DalvikType::STRING_REF) {
+            fmt_idx = 1;
+            varargs_idx = 2;
+        }
+        std::string fmt = (args[fmt_idx].type == DalvikType::STRING_REF)
+                              ? args[fmt_idx].string_val : "";
 
         // Fetch varargs from the Object[] on the heap.
         std::vector<DalvikValue> fargs;
-        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
-            heap_.has_object(args[1].object_id)) {
-            uint32_t arr_id = args[1].object_id;
+        if (args.size() > varargs_idx && args[varargs_idx].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[varargs_idx].object_id)) {
+            uint32_t arr_id = args[varargs_idx].object_id;
             int arr_len = 0;
             auto len_field = heap_.get_object_field(arr_id, "__array_length__");
             if (len_field.has_value() && len_field->type == DalvikType::INT32)
@@ -53297,7 +53321,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         } else {
             // Non-array extra args (defensive — DEX varargs are arrays).
-            for (size_t k = 1; k < args.size(); ++k) fargs.push_back(args[k]);
+            for (size_t k = varargs_idx; k < args.size(); ++k) fargs.push_back(args[k]);
         }
 
         // VISUAL-CAMPAIGN (EXT-01 gate G25): the format engine was
