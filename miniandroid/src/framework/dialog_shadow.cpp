@@ -277,10 +277,16 @@ CallResult DialogShadow::dispatch(const CallContext& ctx) {
     DialogWindow* win = window_by_obj(ctx.receiver_id);
     if (!win) {
         // <init> on a new Builder object → create a window bound to it.
+        // F-NEW-290: this branch also serves android.app.Dialog.<init>
+        // (DialogShadow::handles_class accepts the platform class; the
+        // receiver is the dialog instance itself, renamed subclass or not).
+        // AOSP Dialog.<init>(Context, int): arg 0 is the context — record it
+        // so getContext() answers the SAME object (mContext law).
         if (m == "<init>" || m == "<clinit>") {
             windows_.emplace_back();
             DialogWindow& nw = windows_.back();
             nw.builder_obj_id = ctx.receiver_id;
+            nw.context_obj_id = ctx.arg_as_object(0);
             nw.positive.which = -1;
             nw.negative.which = -2;
             nw.neutral.which = -3;
@@ -445,6 +451,31 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
         m == "setOnCancelListener" || m == "setCanceledOnTouchOutside" ||
         m == "setCancelable") {
         return CallResult::handled_void();
+    }
+    // ── F-NEW-290: AOSP Dialog object law (getWindow / getContext) ──────
+    // android.app.Dialog ctor: mWindow = new PhoneWindow(context);
+    // getWindow() NEVER answers null after construction. androidx
+    // DialogWrapper's ctor does `val window = window ?: error("Dialog has
+    // no window")` (composeStopwatch Lis; pc=13-16 → Lea;.r ISE) — a null
+    // here kills the whole dialog chain. The Window object is minted once
+    // per DialogWindow and stays stable (one PhoneWindow per Dialog).
+    // getContext() answers the ctor-bound mContext (recorded at <init>).
+    if (m == "getWindow") {
+        if (win.window_obj_id == 0 && heap_ != nullptr) {
+            win.window_obj_id = heap_->allocate("Landroid/view/Window;");
+            std::cerr << "[F290-DIALOG] getWindow obj=" << ctx.receiver_id
+                      << " -> window=" << win.window_obj_id << std::endl;
+        }
+        if (win.window_obj_id != 0)
+            return CallResult::handled_object(win.window_obj_id,
+                                              "Landroid/view/Window;");
+        return CallResult::not_handled();
+    }
+    if (m == "getContext") {
+        if (win.context_obj_id != 0)
+            return CallResult::handled_object(win.context_obj_id,
+                                              "Landroid/content/Context;");
+        return CallResult::not_handled();
     }
     if (m == "setTitle") {
         if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT) {

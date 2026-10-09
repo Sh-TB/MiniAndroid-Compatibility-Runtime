@@ -42195,6 +42195,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-290 (CONT-32, composeStopwatch) — Dialog object law:
+    // Dialog.getWindow() / Dialog.getContext() on a receiver whose class
+    // chain reaches android.app.Dialog.
+    //
+    // AOSP android.app.Dialog.java ctor: mWindow = new PhoneWindow(context)
+    // and mContext are bound BEFORE any subclass ctor body runs —
+    // getWindow()/getContext() NEVER answer null afterwards, for ANY Dialog
+    // receiver, renamed or not. Same receiver-identity principle as
+    // S134-F134A above (dispatch keys on the live object, never on the
+    // reference-class string).
+    //
+    // Runtime evidence (run/cont32/csw_r1): androidx.compose.ui.window
+    // DialogWrapper (Lis; extends Lpj; extends android.app.Dialog) ctor
+    // pc=13 invoke-virtual Dialog.getWindow() reached this bridge with the
+    // RENAMED runtime class (Lis;) — DialogShadow::handles_class gates on
+    // the platform class names, so the shadow was never asked; the S71
+    // ancestry walk then re-dispatched Dialog→Context (kPlatformSuper) and
+    // the stub default answered null → DialogWrapper pc=113-115
+    // error("Dialog has no window") IllegalStateException ×31/run — the
+    // app's whole dialog path died. Dispatch here re-keys on the RECEIVER
+    // chain and hands the call to the DialogShadow under the PLATFORM class
+    // name (the receiver IS a Dialog — the nearest guard-visible ancestor
+    // that owns this method).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "getWindow" || method == "getContext") &&
+        is_subclass_of(class_name, "Landroid/app/Dialog;") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && shadow_registry_ != nullptr) {
+        auto* dsh = shadow_registry_->find_as<framework::DialogShadow>();
+        if (dsh != nullptr) {
+            framework::CallContext dctx;
+            dctx.class_name = "Landroid/app/Dialog;";  // platform gate name
+            dctx.method = method;
+            dctx.has_receiver = true;
+            dctx.receiver_id = args[0].object_id;
+            dctx.receiver_class = args[0].class_desc;
+            framework::CallResult dcr = dsh->dispatch(dctx);
+            if (dcr.handled) {
+                result = call_result_to_dalvik(dcr);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                static thread_local uint64_t f290_n = 0;
+                if (f290_n++ < 16)
+                    std::cerr << "[F290-DIALOG] " << class_name << "."
+                              << method << " recv=" << args[0].object_id
+                              << " answered by DialogShadow" << std::endl;
+                return true;
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // S122 (R-NEW-418) — Activity/Context.getWindowManager → WindowManager
     // singleton (AOSP Activity.java attach law: mWindowManager is assigned
     // during attach() and getWindowManager() NEVER answers null afterwards).
@@ -42287,6 +42338,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-290 companion (CONT-32) — Window attribute law (AOSP
+    // PhoneWindow). The dialog Window object minted by F-NEW-290 is consumed
+    // by androidx DialogWrapper's ctor chain (composeStopwatch Lis;): it
+    // reads getAttributes() and iputs WindowManager.LayoutParams.type
+    // (pc 21-25 — a null answer is an instant NPE), then calls
+    // setAttributes / requestFeature / setBackgroundDrawableResource /
+    // setGravity / addFlags. AOSP law: mWindowAttributes exists from
+    // PhoneWindow construction — getAttributes() NEVER answers null; every
+    // Window carries its OWN LayoutParams (per-receiver, not a global
+    // singleton); requestFeature answers true while no content is installed.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Window;") != std::string::npos &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        if (method == "getAttributes") {
+            uint32_t recv = args[0].object_id;
+            auto it = window_layout_params_.find(recv);
+            if (it != window_layout_params_.end() &&
+                heap_.has_object(it->second)) {
+                result = DalvikValue::make_object(
+                    it->second, "Landroid/view/WindowManager$LayoutParams;");
+            } else {
+                uint32_t lp = heap_.allocate(
+                    "Landroid/view/WindowManager$LayoutParams;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                window_layout_params_[recv] = lp;
+                result = DalvikValue::make_object(
+                    lp, "Landroid/view/WindowManager$LayoutParams;");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setAttributes" || method == "setBackgroundDrawableResource" ||
+            method == "setGravity" || method == "addFlags") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "requestFeature") {
+            // AOSP PhoneWindow.requestFeature: true while content is not
+            // installed (PanelFeatureState mismatch would answer false —
+            // never the ctor-window case).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(true);
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────

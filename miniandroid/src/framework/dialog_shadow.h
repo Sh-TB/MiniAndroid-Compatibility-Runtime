@@ -63,6 +63,15 @@ struct DialogWindow {
     uint32_t adapter_obj_id = 0;     // ListAdapter backed by ArrayAdapterShadow
     uint32_t custom_view_id = 0;     // setView(View)
 
+    // F-NEW-290 (CONT-32, composeStopwatch DialogWrapper chain): AOSP
+    // android.app.Dialog.<init> binds mContext + mWindow = new
+    // PhoneWindow(context) BEFORE any subclass ctor body runs — getWindow()
+    // and getContext() NEVER answer null afterwards. The Window heap object
+    // is minted lazily on the first getWindow() and stays stable for the
+    // dialog's lifetime (AOSP: one PhoneWindow per Dialog).
+    uint32_t window_obj_id = 0;      // F-NEW-290: the dialog's Window object
+    uint32_t context_obj_id = 0;     // F-NEW-290: mContext (ctor arg 0)
+
     bool showing = false;
     bool ever_shown = false;
     bool dismissed = false;
