@@ -1,0 +1,344 @@
+classes.dex Landroidx/compose/runtime/GapComposer;.end(Z)V regs=22 ins=2 units=663
+  @0x0000 move-object/from16       v0, v20
+  @0x0002 iget-object              v1, v0, Landroidx/compose/runtime/GapComposer;->parentStateStack Landroidx/compose/runtime/IntStack;
+  @0x0004 invoke-virtual           v1, Landroidx/compose/runtime/IntStack;->peek2()I
+  @0x0007 move-result              v1
+  @0x0008 const/4                  v2, 1
+  @0x0009 sub-int/2addr            v1, v2
+  @0x000a invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getInserting()Z
+  @0x000d move-result              v3
+  @0x000e const/16                 v4, 207
+  @0x0010 const/4                  v5, 0
+  @0x0011 const/4                  v6, 3
+  @0x0012 if-eqz                   v3, +72
+  @0x0014 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x0016 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->getParent()I
+  @0x0019 move-result              v3
+  @0x001a iget-object              v7, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x001c invoke-virtual           v7, v3, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->groupKey(I)I
+  @0x001f move-result              v7
+  @0x0020 iget-object              v8, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x0022 invoke-virtual           v8, v3, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->groupObjectKey(I)Ljava/lang/Object;
+  @0x0025 move-result-object       v8
+  @0x0026 iget-object              v9, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x0028 invoke-virtual           v9, v3, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->groupAux(I)Ljava/lang/Object;
+  @0x002b move-result-object       v3
+  @0x002c if-nez                   v8, +36
+  @0x002e if-eqz                   v3, +28
+  @0x0030 if-ne                    v7, v4, +26
+  @0x0032 sget-object              v4, Landroidx/compose/runtime/Composer;->Companion Landroidx/compose/runtime/Composer$Companion;
+  @0x0034 invoke-virtual           v4, Landroidx/compose/runtime/Composer$Companion;->getEmpty()Ljava/lang/Object;
+  @0x0037 move-result-object       v4
+  @0x0038 invoke-static            v3, v4, Lkotlin/jvm/internal/Intrinsics;->areEqual(Ljava/lang/Object; Ljava/lang/Object;)Z
+  @0x003b move-result              v4
+  @0x003c if-nez                   v4, +1a
+  @0x003e invoke-virtual           v3, Ljava/lang/Object;->hashCode()I
+  @0x0041 move-result              v3
+  @0x0042 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getCompositeKeyHashCode()J
+  @0x0045 move-result-wide         v7
+  @0x0046 int-to-long              v9, v1
+  @0x0047 xor-long/2addr           v7, v9
+  @0x0048 invoke-static            v7, v8, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x004b move-result-wide         v7
+  @0x004c int-to-long              v3, v3
+  @0x004d xor-long/2addr           v3, v7
+  @0x004e invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x0051 move-result-wide         v3
+  @0x0052 iput-wide                v3, v0, Landroidx/compose/runtime/GapComposer;->compositeKeyHashCode J
+  @0x0054 goto/16                  +9e
+  @0x0056 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getCompositeKeyHashCode()J
+  @0x0059 move-result-wide         v3
+  @0x005a int-to-long              v8, v1
+  @0x005b xor-long/2addr           v3, v8
+  @0x005c invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x005f move-result-wide         v3
+  @0x0060 int-to-long              v7, v7
+  @0x0061 goto                     +1b
+  @0x0062 instance-of              v1, v8, Ljava/lang/Enum;
+  @0x0064 if-eqz                   v1, +9
+  @0x0066 check-cast               v8, Ljava/lang/Enum;
+  @0x0068 invoke-virtual           v8, Ljava/lang/Enum;->ordinal()I
+  @0x006b move-result              v1
+  @0x006c goto                     +5
+  @0x006d invoke-virtual           v8, Ljava/lang/Object;->hashCode()I
+  @0x0070 move-result              v1
+  @0x0071 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getCompositeKeyHashCode()J
+  @0x0074 move-result-wide         v3
+  @0x0075 int-to-long              v7, v5
+  @0x0076 xor-long/2addr           v3, v7
+  @0x0077 invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x007a move-result-wide         v3
+  @0x007b int-to-long              v7, v1
+  @0x007c xor-long/2addr           v3, v7
+  @0x007d invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x0080 move-result-wide         v3
+  @0x0081 iput-wide                v3, v0, Landroidx/compose/runtime/GapComposer;->compositeKeyHashCode J
+  @0x0083 goto                     +6f
+  @0x0084 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x0086 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getParent()I
+  @0x0089 move-result              v3
+  @0x008a iget-object              v7, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x008c invoke-virtual           v7, v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->groupKey(I)I
+  @0x008f move-result              v7
+  @0x0090 iget-object              v8, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x0092 invoke-virtual           v8, v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->groupObjectKey(I)Ljava/lang/Object;
+  @0x0095 move-result-object       v8
+  @0x0096 iget-object              v9, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x0098 invoke-virtual           v9, v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->groupAux(I)Ljava/lang/Object;
+  @0x009b move-result-object       v3
+  @0x009c if-nez                   v8, +35
+  @0x009e if-eqz                   v3, +27
+  @0x00a0 if-ne                    v7, v4, +25
+  @0x00a2 sget-object              v4, Landroidx/compose/runtime/Composer;->Companion Landroidx/compose/runtime/Composer$Companion;
+  @0x00a4 invoke-virtual           v4, Landroidx/compose/runtime/Composer$Companion;->getEmpty()Ljava/lang/Object;
+  @0x00a7 move-result-object       v4
+  @0x00a8 invoke-static            v3, v4, Lkotlin/jvm/internal/Intrinsics;->areEqual(Ljava/lang/Object; Ljava/lang/Object;)Z
+  @0x00ab move-result              v4
+  @0x00ac if-nez                   v4, +19
+  @0x00ae invoke-virtual           v3, Ljava/lang/Object;->hashCode()I
+  @0x00b1 move-result              v3
+  @0x00b2 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getCompositeKeyHashCode()J
+  @0x00b5 move-result-wide         v7
+  @0x00b6 int-to-long              v9, v1
+  @0x00b7 xor-long/2addr           v7, v9
+  @0x00b8 invoke-static            v7, v8, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x00bb move-result-wide         v7
+  @0x00bc int-to-long              v3, v3
+  @0x00bd xor-long/2addr           v3, v7
+  @0x00be invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x00c1 move-result-wide         v3
+  @0x00c2 iput-wide                v3, v0, Landroidx/compose/runtime/GapComposer;->compositeKeyHashCode J
+  @0x00c4 goto                     +2e
+  @0x00c5 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getCompositeKeyHashCode()J
+  @0x00c8 move-result-wide         v3
+  @0x00c9 int-to-long              v8, v1
+  @0x00ca xor-long/2addr           v3, v8
+  @0x00cb invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x00ce move-result-wide         v3
+  @0x00cf int-to-long              v7, v7
+  @0x00d0 goto                     +1b
+  @0x00d1 instance-of              v1, v8, Ljava/lang/Enum;
+  @0x00d3 if-eqz                   v1, +9
+  @0x00d5 check-cast               v8, Ljava/lang/Enum;
+  @0x00d7 invoke-virtual           v8, Ljava/lang/Enum;->ordinal()I
+  @0x00da move-result              v1
+  @0x00db goto                     +5
+  @0x00dc invoke-virtual           v8, Ljava/lang/Object;->hashCode()I
+  @0x00df move-result              v1
+  @0x00e0 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getCompositeKeyHashCode()J
+  @0x00e3 move-result-wide         v3
+  @0x00e4 int-to-long              v7, v5
+  @0x00e5 xor-long/2addr           v3, v7
+  @0x00e6 invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x00e9 move-result-wide         v3
+  @0x00ea int-to-long              v7, v1
+  @0x00eb xor-long/2addr           v3, v7
+  @0x00ec invoke-static            v3, v4, v6, Ljava/lang/Long;->rotateRight(J I)J
+  @0x00ef move-result-wide         v3
+  @0x00f0 iput-wide                v3, v0, Landroidx/compose/runtime/GapComposer;->compositeKeyHashCode J
+  @0x00f2 iget                     v1, v0, Landroidx/compose/runtime/GapComposer;->groupNodeCount I
+  @0x00f4 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->pending Landroidx/compose/runtime/GapPending;
+  @0x00f6 if-eqz                   v3, +ef
+  @0x00f8 invoke-virtual           v3, Landroidx/compose/runtime/GapPending;->getKeyInfos()Ljava/util/List;
+  @0x00fb move-result-object       v4
+  @0x00fc invoke-interface         v4, Ljava/util/List;->size()I
+  @0x00ff move-result              v4
+  @0x0100 if-lez                   v4, +e5
+  @0x0102 invoke-virtual           v3, Landroidx/compose/runtime/GapPending;->getKeyInfos()Ljava/util/List;
+  @0x0105 move-result-object       v4
+  @0x0106 invoke-virtual           v3, Landroidx/compose/runtime/GapPending;->getUsed()Ljava/util/List;
+  @0x0109 move-result-object       v6
+  @0x010a invoke-static            v6, Landroidx/compose/runtime/snapshots/ListUtilsKt;->fastToSet(Ljava/util/List;)Ljava/util/Set;
+  @0x010d move-result-object       v7
+  @0x010e invoke-static            Landroidx/collection/ScatterSetKt;->mutableScatterSetOf()Landroidx/collection/MutableScatterSet;
+  @0x0111 move-result-object       v8
+  @0x0112 invoke-interface         v6, Ljava/util/List;->size()I
+  @0x0115 move-result              v9
+  @0x0116 invoke-interface         v4, Ljava/util/List;->size()I
+  @0x0119 move-result              v10
+  @0x011a move                     v11, v5
+  @0x011b move                     v12, v11
+  @0x011c move                     v13, v12
+  @0x011d if-ge                    v11, v10, +ad
+  @0x011f invoke-interface         v4, v11, Ljava/util/List;->get(I)Ljava/lang/Object;
+  @0x0122 move-result-object       v14
+  @0x0123 check-cast               v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;
+  @0x0125 invoke-interface         v7, v14, Ljava/util/Set;->contains(Ljava/lang/Object;)Z
+  @0x0128 move-result              v15
+  @0x0129 if-nez                   v15, +58
+  @0x012b invoke-virtual           v3, v14, Landroidx/compose/runtime/GapPending;->nodePositionOf(Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;)I
+  @0x012e move-result              v15
+  @0x012f iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x0131 invoke-virtual           v3, Landroidx/compose/runtime/GapPending;->getStartIndex()I
+  @0x0134 move-result              v16
+  @0x0135 add-int                  v15, v15, v16
+  @0x0137 invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getNodes()I
+  @0x013a move-result              v5
+  @0x013b invoke-virtual           v2, v15, v5, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->removeNode(I I)V
+  @0x013e invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getLocation()I
+  @0x0141 move-result              v2
+  @0x0142 const/4                  v5, 0
+  @0x0143 invoke-virtual           v3, v2, v5, Landroidx/compose/runtime/GapPending;->updateNodeCount(I I)Z
+  @0x0146 iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x0148 invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getLocation()I
+  @0x014b move-result              v5
+  @0x014c invoke-virtual           v2, v5, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->moveReaderRelativeTo(I)V
+  @0x014f iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x0151 invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getLocation()I
+  @0x0154 move-result              v5
+  @0x0155 invoke-virtual           v2, v5, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->reposition(I)V
+  @0x0158 invoke-direct/range      v20, Landroidx/compose/runtime/GapComposer;->recordDelete()V
+  @0x015b iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x015d invoke-virtual           v2, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->skipGroup()I
+  @0x0160 iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->invalidations Ljava/util/List;
+  @0x0162 invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getLocation()I
+  @0x0165 move-result              v5
+  @0x0166 invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getLocation()I
+  @0x0169 move-result              v15
+  @0x016a move-object/from16       v17, v7
+  @0x016c iget-object              v7, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x016e invoke-virtual           v14, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;->getLocation()I
+  @0x0171 move-result              v14
+  @0x0172 invoke-virtual           v7, v14, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->groupSize(I)I
+  @0x0175 move-result              v7
+  @0x0176 add-int/2addr            v15, v7
+  @0x0177 invoke-static            v2, v5, v15, Landroidx/compose/runtime/GapComposerKt;->access$removeRange(Ljava/util/List; I I)V
+  @0x017a add-int/lit8             v11, v11, 1
+  @0x017c move-object/from16       v7, v17
+  @0x017e const/4                  v2, 1
+  @0x017f const/4                  v5, 0
+  @0x0180 goto                     -63
+  @0x0181 move-object/from16       v17, v7
+  @0x0183 invoke-virtual           v8, v14, Landroidx/collection/MutableScatterSet;->contains(Ljava/lang/Object;)Z
+  @0x0186 move-result              v2
+  @0x0187 if-eqz                   v2, +3
+  @0x0189 goto                     -f
+  @0x018a if-ge                    v12, v9, -e
+  @0x018c invoke-interface         v6, v12, Ljava/util/List;->get(I)Ljava/lang/Object;
+  @0x018f move-result-object       v2
+  @0x0190 check-cast               v2, Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;
+  @0x0192 if-eq                    v2, v14, +28
+  @0x0194 invoke-virtual           v3, v2, Landroidx/compose/runtime/GapPending;->nodePositionOf(Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;)I
+  @0x0197 move-result              v5
+  @0x0198 invoke-virtual           v8, v2, Landroidx/collection/MutableScatterSet;->add(Ljava/lang/Object;)Z
+  @0x019b if-eq                    v5, v13, +1c
+  @0x019d invoke-virtual           v3, v2, Landroidx/compose/runtime/GapPending;->updatedNodeCountOf(Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;)I
+  @0x01a0 move-result              v7
+  @0x01a1 iget-object              v14, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x01a3 invoke-virtual           v3, Landroidx/compose/runtime/GapPending;->getStartIndex()I
+  @0x01a6 move-result              v15
+  @0x01a7 add-int/2addr            v15, v5
+  @0x01a8 invoke-virtual           v3, Landroidx/compose/runtime/GapPending;->getStartIndex()I
+  @0x01ab move-result              v18
+  @0x01ac move-object/from16       v19, v6
+  @0x01ae add-int                  v6, v13, v18
+  @0x01b0 invoke-virtual           v14, v15, v6, v7, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->moveNode(I I I)V
+  @0x01b3 invoke-virtual           v3, v5, v13, v7, Landroidx/compose/runtime/GapPending;->registerMoveNode(I I I)V
+  @0x01b6 goto                     +8
+  @0x01b7 move-object/from16       v19, v6
+  @0x01b9 goto                     +5
+  @0x01ba move-object/from16       v19, v6
+  @0x01bc add-int/lit8             v11, v11, 1
+  @0x01be add-int/lit8             v12, v12, 1
+  @0x01c0 invoke-virtual           v3, v2, Landroidx/compose/runtime/GapPending;->updatedNodeCountOf(Landroidx/compose/runtime/composer/gapbuffer/KeyInfo;)I
+  @0x01c3 move-result              v2
+  @0x01c4 add-int/2addr            v13, v2
+  @0x01c5 move-object/from16       v7, v17
+  @0x01c7 move-object/from16       v6, v19
+  @0x01c9 goto                     -4b
+  @0x01ca iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x01cc invoke-virtual           v2, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->endNodeMovement()V
+  @0x01cf invoke-interface         v4, Ljava/util/List;->size()I
+  @0x01d2 move-result              v2
+  @0x01d3 if-lez                   v2, +12
+  @0x01d5 iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x01d7 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x01d9 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getGroupEnd()I
+  @0x01dc move-result              v3
+  @0x01dd invoke-virtual           v2, v3, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->moveReaderRelativeTo(I)V
+  @0x01e0 iget-object              v2, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x01e2 invoke-virtual           v2, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->skipToGroupEnd()V
+  @0x01e5 invoke-virtual/range     v20, Landroidx/compose/runtime/GapComposer;->getInserting()Z
+  @0x01e8 move-result              v2
+  @0x01e9 if-nez                   v2, +f
+  @0x01eb iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x01ed invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getRemainingSlots()I
+  @0x01f0 move-result              v3
+  @0x01f1 if-lez                   v3, +7
+  @0x01f3 iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x01f5 invoke-virtual           v4, v3, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->trimValues(I)V
+  @0x01f8 iget                     v3, v0, Landroidx/compose/runtime/GapComposer;->nodeIndex I
+  @0x01fa iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x01fc invoke-virtual           v4, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->isGroupEnd()Z
+  @0x01ff move-result              v4
+  @0x0200 if-nez                   v4, +22
+  @0x0202 iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x0204 invoke-virtual           v4, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getCurrentGroup()I
+  @0x0207 move-result              v4
+  @0x0208 invoke-direct/range      v20, Landroidx/compose/runtime/GapComposer;->recordDelete()V
+  @0x020b iget-object              v5, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x020d invoke-virtual           v5, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->skipGroup()I
+  @0x0210 move-result              v5
+  @0x0211 iget-object              v6, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x0213 invoke-virtual           v6, v3, v5, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->removeNode(I I)V
+  @0x0216 iget-object              v5, v0, Landroidx/compose/runtime/GapComposer;->invalidations Ljava/util/List;
+  @0x0218 iget-object              v6, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x021a invoke-virtual           v6, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getCurrentGroup()I
+  @0x021d move-result              v6
+  @0x021e invoke-static            v5, v4, v6, Landroidx/compose/runtime/GapComposerKt;->access$removeRange(Ljava/util/List; I I)V
+  @0x0221 goto                     -27
+  @0x0222 if-eqz                   v2, +48
+  @0x0224 if-eqz                   v21, +8
+  @0x0226 iget-object              v1, v0, Landroidx/compose/runtime/GapComposer;->insertFixups Landroidx/compose/runtime/composer/gapbuffer/changelist/FixupList;
+  @0x0228 invoke-virtual           v1, Landroidx/compose/runtime/composer/gapbuffer/changelist/FixupList;->endNodeInsert()V
+  @0x022b const/4                  v1, 1
+  @0x022c iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x022e invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->endEmpty()V
+  @0x0231 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x0233 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->getParent()I
+  @0x0236 move-result              v3
+  @0x0237 iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x0239 invoke-virtual           v4, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->endGroup()I
+  @0x023c iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x023e invoke-virtual           v4, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getInEmpty()Z
+  @0x0241 move-result              v4
+  @0x0242 if-nez                   v4, +51
+  @0x0244 invoke-direct            v0, v3, Landroidx/compose/runtime/GapComposer;->insertedGroupVirtualIndex(I)I
+  @0x0247 move-result              v3
+  @0x0248 iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x024a invoke-virtual           v4, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->endInsert()V
+  @0x024d iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->writer Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;
+  @0x024f const/4                  v5, 1
+  @0x0250 invoke-virtual           v4, v5, Landroidx/compose/runtime/composer/gapbuffer/SlotWriter;->close(Z)V
+  @0x0253 iget-object              v4, v0, Landroidx/compose/runtime/GapComposer;->insertAnchor Landroidx/compose/runtime/composer/gapbuffer/GapAnchor;
+  @0x0255 invoke-direct            v0, v4, Landroidx/compose/runtime/GapComposer;->recordInsert(Landroidx/compose/runtime/composer/gapbuffer/GapAnchor;)V
+  @0x0258 const/4                  v4, 0
+  @0x0259 iput-boolean             v4, v0, Landroidx/compose/runtime/GapComposer;->inserting Z
+  @0x025b iget-object              v5, v0, Landroidx/compose/runtime/GapComposer;->slotTable Landroidx/compose/runtime/composer/gapbuffer/SlotTable;
+  @0x025d invoke-virtual           v5, Landroidx/compose/runtime/composer/gapbuffer/SlotTable;->isEmpty()Z
+  @0x0260 move-result              v5
+  @0x0261 if-nez                   v5, +32
+  @0x0263 invoke-direct            v0, v3, v4, Landroidx/compose/runtime/GapComposer;->updateNodeCount(I I)V
+  @0x0266 invoke-direct            v0, v3, v1, Landroidx/compose/runtime/GapComposer;->updateNodeCountOverrides(I I)V
+  @0x0269 goto                     +2a
+  @0x026a const/4                  v5, 1
+  @0x026b if-eqz                   v21, +7
+  @0x026d iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x026f invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->moveUp()V
+  @0x0272 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x0274 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->endCurrentGroup()V
+  @0x0277 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x0279 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->getParent()I
+  @0x027c move-result              v3
+  @0x027d invoke-direct            v0, v3, Landroidx/compose/runtime/GapComposer;->updatedNodeCount(I)I
+  @0x0280 move-result              v4
+  @0x0281 if-eq                    v1, v4, +5
+  @0x0283 invoke-direct            v0, v3, v1, Landroidx/compose/runtime/GapComposer;->updateNodeCountOverrides(I I)V
+  @0x0286 if-eqz                   v21, +3
+  @0x0288 move                     v1, v5
+  @0x0289 iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->reader Landroidx/compose/runtime/composer/gapbuffer/SlotReader;
+  @0x028b invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/SlotReader;->endGroup()V
+  @0x028e iget-object              v3, v0, Landroidx/compose/runtime/GapComposer;->changeListWriter Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;
+  @0x0290 invoke-virtual           v3, Landroidx/compose/runtime/composer/gapbuffer/changelist/ComposerChangeListWriter;->endNodeMovement()V
+  @0x0293 invoke-direct            v0, v1, v2, Landroidx/compose/runtime/GapComposer;->exitGroup(I Z)V
+  @0x0296 return-void              
