@@ -35,6 +35,18 @@ build_probe() {
     --lib "$JAR" --output "$O/dex" $(find "$O/classes" -name '*.class')
   # 4. package dex into APK (keep aapt2-produced entries: add classes.dex via zip)
   (cd "$O/dex" && zip -q -j "$O/${name}.apk" classes.dex)
+  # 4b. CONT-30W: package the fixture's root META-INF tree (if present) into
+  # the APK. ServiceLoader discovers providers at the classpath root — for an
+  # APK that is the APK's own ZIP entry table (META-INF/services/<Service>).
+  # The CONT-7-era probe APKs carried this entry; the w4 rebuild lost it and
+  # fnew252's SLPOS row silently regressed to hasNext=false (the engine's
+  # apk-entry law then answered honest-empty, which is correct for a
+  # provider-less APK). Fixture-driven and generic: any fixture shipping a
+  # META-INF tree gets it packaged verbatim, no per-probe special case.
+  if [ -d "$F/META-INF" ]; then
+    (cd "$F" && zip -q -r "$O/${name}.apk" META-INF)
+    r unzip -l "$O/${name}.apk" | rg "META-INF" || true
+  fi
   # align+zipalign not needed for the runtime; sha20 identity print
   echo "BUILT $name -> $O/${name}.apk sha256_20=$(sha256sum "$O/${name}.apk" | cut -c1-20)"
 }
