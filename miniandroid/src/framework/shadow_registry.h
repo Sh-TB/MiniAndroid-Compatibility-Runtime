@@ -59,6 +59,9 @@ struct CallContext {
     std::string class_name;       // DEX descriptor, e.g. "Landroid/os/Looper;"
     std::string method;           // method name, e.g. "getMainLooper"
     std::string descriptor;       // DEX prototype, e.g. "()Landroid/os/Looper;"
+    // CONT-38: the executing DEX caller (class.method pc=N) at the dispatch
+    // site — paint-state forensics (which Compose site drives setColor).
+    std::string caller;
 
     // Receiver (this) for instance methods. For static methods, receiver
     // is null. object_id is the heap-allocated object ID assigned by the
