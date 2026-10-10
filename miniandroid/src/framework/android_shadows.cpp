@@ -6860,6 +6860,41 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    // CONT-39 (F-NEW-301): TextView.getCurrentTextColor() — AOSP returns
+    // mCurTextColor, the color the view's text actually paints with. The
+    // setter law above stores it on the ViewNode (text_color, provenance
+    // tagged); the getter answers the SAME state and mirrors the
+    // renderer's default law EXACTLY (view_renderer draw_text_into:
+    // text_color==0 → opaque black, Button label → white), so a reader
+    // of the getter observes the same color the rasterizer paints —
+    // getter state and rendered pixels cannot diverge. A getter never
+    // creates render nodes (find_node only). The ColorStateList variant's
+    // default-color resolution stays the recorded draw-time gap (the
+    // captured object has no failing consumer; NOT value-guessed here).
+    if (m == "getCurrentTextColor") {
+        static const uint32_t kDefaultBlack = 0xFF000000u;  // renderer default
+        static const uint32_t kButtonWhite  = 0xFFFFFFFFu;  // button label default
+        uint32_t col = kDefaultBlack;
+        const auto* n = find_node(ctx.receiver_id);
+        if (n && n->text_color != 0) {
+            col = n->text_color;
+        } else {
+            const std::string& cls = n ? n->class_desc
+                : (ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+            if (cls.find("Button;") != std::string::npos &&
+                cls.find("ImageButton;") == std::string::npos)
+                col = kButtonWhite;
+        }
+        static const bool s_tc_trace =
+            std::getenv("MINIANDROID_TEXT_COLOR_TRACE") != nullptr;
+        if (s_tc_trace) {
+            std::cerr << "[F301-GETTEXTCOLOR] view_id=" << ctx.receiver_id
+                      << " color=0x" << std::hex << col << std::dec
+                      << " prov=" << (n ? int(n->text_color_provenance) : -1)
+                      << std::endl;
+        }
+        return CallResult::handled_int((int32_t)col);
+    }
     // EXP-065: Capture setHint / setHintText — EditText hint text is
     // important for the Login UI (e.g., "Phone number" appears as a hint).
     // Previously setHintText was stubbed at the engine level; now it's
