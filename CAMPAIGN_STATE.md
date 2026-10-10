@@ -1,7 +1,38 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: CONT-40 eeae06db (binary 111340a583d48d92 — unchanged; the audit's prototype law PARKED) ← CONT-39 771b4b80 ← CONT-38 0d73926f ← CONT-38v 11a6c2b9 ← CONT-37 8cbd94e7
-Date: 2026-10-10 (CONT-40 — the Dooz getWindowToken/Recomposer audit: hypothesis REJECTED, frontier = case E)
+HEAD at state update: CONT-41 (binary e1fc1915e88fe2a8 — the Notification$Builder fluent-chain law) ← CONT-40 eeae06db (binary 111340a583d48d92 — unchanged; the audit's prototype law PARKED) ← CONT-39 771b4b80 ← CONT-38 0d73926f ← CONT-38v 11a6c2b9 ← CONT-37 8cbd94e7
+Date: 2026-10-10 (CONT-41 — the friend knowledge-package source-level audit: 1 genuinely missing generic law integrated, 6 claims already present, 2 rejected as unsafe, package script missing)
+
+## CONT-41 HIGHLIGHT (2026-10-10)
+
+**The friend-package audit closed: of the 13 claimed laws, SIX were already on main (two with the
+CONT-38v probe proofs), TWO were rejected as semantically unsafe, and ONE genuinely missing generic
+fix was integrated — F-NEW-303, the AOSP Notification$Builder fluent-chain object law.** The package
+contained ONLY the two narrative Markdown files + images: the reported patch script
+`/home/z/my-project/scripts/apply_all_patches.py` is NOT in the ZIP and NOT in the workspace — every
+claim was verified by CONTENT against canonical source, per directive. Already present (canonical
+equal or stronger): ServiceLoader dedicated iterator + F-NEW-252 decline gate; Class-key stability
+(F-069/F-103 family — the friend's string-key patch would be WEAKER than the shipped stable-token
+law); listIterator typed box + LAW-B; Bundle parcel-family interfaces; compose-pump drain + scoped
+virtual-clock advance (F100-IDLEDRAIN + F-NEW-277 — the friend's unguarded advance would break the
+frozen launch-frame law). Rejected: F-NEW-260 (R8 app-class exception suppression — canonical fixed
+the storable-type instanceof walk honestly) and F-NEW-261 (fabricated isAttachedToWindow/synthetic
+token — REJECTED on the merits by CONT-40's A/B: composition creation happens without a token and
+shipping the law lost composeStopwatch's visible text). The ONE gap: no Notification$Builder law
+anywhere — the CONT-38v recorded tananaev frontier (NotificationCompat$Builder.<init> pc=64 NPE →
+DEFAULT_BACKGROUND_ONLY). F-NEW-303 (one generic bridge law: set* → THIS, build() → fresh
+Notification; the §12 Builder family) flips the notif_builder_probe 28/28→56/0 markers ×3 (8/8 rows:
+fluent identity, distinct build(), post-build reuse, the compat WRAPPER face) and advances the real
+app FAILURE→PARTIAL SUCCESS with Errors=0 (NPE gone ×3; frame honestly unchanged d602648e8e401895;
+next blocker = FragmentTransaction.commit REC-MISS — the Fragment/Preference family is the recorded
+next wave; NO render claim). Full regression ZERO DRIFT at e1fc1915e88fe2a8 (anchors 24/24 +
+composeStopwatch ×3 + battery == records + simplecalc ×3). Registry 610→611 (F-NEW-302 SKIPPED —
+the standing frame-loop probe is named fnew302; ID collision avoided). Session-environment recovery
+recorded in evidence (disk-full cleanup, 73-commit fast-forward, probe APK rebuilds, SHA-exact
+F-Droid re-downloads, root-owned runtime/ moved aside). Evidence:
+evidence/cont41/FRIEND_PACKAGE_AUDIT.md. Next: the Fragment/Preference family (fragment-commit
+pending-op drain → addPreferencesFromResource → preference tag mapping through the REAL measure
+laws — no fixed-geometry hacks), the dooz case-E boot budget, the identity-hash interleaving root.
 
 ## CONT-40 HIGHLIGHT (2026-10-10)
 
