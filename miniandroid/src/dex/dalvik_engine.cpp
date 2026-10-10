@@ -25484,6 +25484,68 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     // ────────────────────────────────────────────────────────────────────
+    // CONT-41 (friend-package audit) — AOSP Notification$Builder
+    // fluent-chain object law (android.app, API 34).
+    // UPSTREAM (frameworks/base/core/java/android/app/Notification.java):
+    // `new Notification.Builder(Context[, String channelId])` constructs a
+    // mutable builder; EVERY public set*() (and addAction/addPerson/
+    // addExtras/extend) returns THIS (@NonNull fluent, API 21+ fluent
+    // convention); build() returns a non-null Notification.
+    // EVIDENCE (CONT-38v recorded frontier, com.tananaev.calculator v1.10
+    // vc11 294a68bd00debbdc): androidx NotificationCompat$Builder.<init>
+    // wraps a framework builder — with no law the fluent setter answered
+    // the STUBBED void → move-result-object wrote NULL →
+    // "Attempt to invoke virtual method 'Notification$Builder;.setSmallIcon'
+    // on a null object reference" at NotificationCompat$Builder.<init>
+    // pc=64 → MainActivity.onCreate died (invoke_pc=29) → the frame was
+    // DEFAULT_BACKGROUND_ONLY (d602648e8e401895 ×3). Same §12 family as
+    // the AudioAttributes$Builder / LineBreakConfig$Builder laws above:
+    // the framework object law must hold so app control flow survives.
+    // The Notification object itself is carried opaquely (a headless
+    // runtime presents no notification UI — the OBJECT law is what app
+    // flow depends on). Generic: keyed on the framework class descriptor,
+    // zero app knowledge; setLatestEventInfo (the one deprecated void
+    // setter) is harmless to answer fluent-this — void methods are never
+    // move-result'd (verifier-illegal).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/app/Notification$Builder;") {
+        if (method == "<init>") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method.rfind("set", 0) == 0 || method == "addAction" ||
+             method == "addPerson" || method == "addExtras" ||
+             method == "extend")) {
+            result = args[0];  // fluent: return THIS (AOSP Builder law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t notif_id = heap_.allocate("Landroid/app/Notification;",
+                                               pc_, 0);
+            heap_.set_object_field(notif_id, "__from_builder__",
+                                   DalvikValue::make_int(1));
+            result = DalvikValue::make_object(notif_id,
+                                              "Landroid/app/Notification;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Landroid/app/Notification;") {
+        if (method == "<init>") {
+            // The deprecated public ctor: the object is already allocated
+            // by new-instance; answer the honest void contract.
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
     // F-NEW-296 (CONT-35) — AOSP LineBreakConfig$Builder object law
     // (android.graphics.text, API 33+; Builder API 34).
     // UPSTREAM (frameworks/base/graphics/java/android/graphics/text/
