@@ -1,7 +1,27 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: CONT-39 771b4b80 (binary 111340a583d48d92) ← CONT-38 0d73926f (binary 80d9ea341f1b6ccc) ← CONT-38v 11a6c2b9 (the friend-claim verification + F-NEW-299) ← CONT-37 8cbd94e7
-Date: 2026-10-10 (CONT-39 — the TextView color-state law closed)
+HEAD at state update: CONT-40 eeae06db (binary 111340a583d48d92 — unchanged; the audit's prototype law PARKED) ← CONT-39 771b4b80 ← CONT-38 0d73926f ← CONT-38v 11a6c2b9 ← CONT-37 8cbd94e7
+Date: 2026-10-10 (CONT-40 — the Dooz getWindowToken/Recomposer audit: hypothesis REJECTED, frontier = case E)
+
+## CONT-40 HIGHLIGHT (2026-10-10)
+
+**The friend's Dooz claim audited and REJECTED; the real frontier is the execution budget.**
+Static decode (field-ref-exact on the R8-renamed DEX): AbstractComposeView (Lr;) stores
+getWindowToken() RAW with ZERO null-gates, getShouldCreate... is CONSTANT TRUE, the token
+field has exactly ONE reader (its own setter), and composition creation runs
+unconditionally — the real attach gate is the parent walk. Runtime: the call fires once
+on Lho;; the F-050 frame clock DELIVERED (2 doFrame callbacks, monotonic virtual vsyncs);
+the resumed composition executed 14.3 MILLION instructions (45 s budget also exhausted)
+painting 151 app-owned ops before the F084 budget halt — case E (budget), NOT a parked
+frame clock. The AOSP-faithful getWindowToken law was prototyped and A/B'd ON THE SAME
+BINARY: it flips dooz to a valid-but-empty scheduling path AND loses composeStopwatch's
+visible text (causality proven byte-exact via MINIANDROID_WTOKEN_NULL) — PARKED, not
+shipped (shipping it would regress visible content for a non-problem). New standing probe
+fnew302 (9 rows): the Choreographer RE-REGISTRATION loop proven end-to-end for the first
+time (exact 16666667 ns quanta ×3); the window-token rows = the documented parked-law face
+(6/9). Full regression ZERO DRIFT at the byte-exact CONT-39 binary. Evidence:
+evidence/cont40/DOOZ_WTOKEN_AUDIT.md. Next: the identity-hash interleaving sensitivity
+(the Lrz1 cycle-stub vs StateFlow-spin divergence) + the dooz boot-cost root (case E).
 
 ## CONT-39 HIGHLIGHT (2026-10-10)
 
