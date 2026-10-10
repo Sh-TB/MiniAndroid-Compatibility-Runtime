@@ -10,7 +10,7 @@
 set -uo pipefail
 BASE=/home/z/my-project
 BIN=$BASE/miniandroid/build/miniandroid
-OUT=$BASE/run/cont35/regression
+OUT=$BASE/run/cont36/regression
 mkdir -p "$OUT"
 echo "binary: $(sha256sum $BIN | cut -c1-16)  head: $(git -C $BASE rev-parse --short HEAD)"
 
@@ -88,6 +88,7 @@ probes)
   probe1 fnew294 "$BASE/tmp/w4_probebuild/fnew294_probe/fnew294_probe.apk"
   probe1 fnew295 "$BASE/tmp/w4_probebuild/fnew295_probe/fnew295_probe.apk"
   probe1 fnew296 "$BASE/tmp/w4_probebuild/fnew296_probe/fnew296_probe.apk"
+  probe1 fnew297 "$BASE/tmp/w4_probebuild/fnew297_probe/fnew297_probe.apk"
   ;;
 control)
   for i in 1 2 3; do

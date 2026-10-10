@@ -441,3 +441,42 @@ evidence/cont35/TEXT_PIPELINE_FRONTIER.md. Next: the Compose DRAW path
 (Lh4; ops=0 — the layer drawContent → AndroidCanvas bridge family, dooz
 shares it), empty dialog body; STREAM-OPEN message spelling (probe row
 first); standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B).
+
+---
+
+## CONT-36 (2026-10-10) — DRAW-DISPATCH IDENTITY + LAYOUT.draw TEXT LAW (F-NEW-297 ROOT_CAUSED_FIXED)
+
+CONT-35 independently verified first: local == origin/main (1cc38daa),
+binary 6508a51d01b54280 byte-exact; probes fnew294/295/296 ×3 == records
+(77/0, 49/0, 42/0); composeStopwatch ×3 9afb2bd2606f303e with all three
+NPE faces 0/run; SimpleCalc ×3 FULL SUCCESS. Friend's Fragment/Preference
+report verified per-claim: FragmentTransaction.commit no-drain + unhandled
+addPreferencesFromResource CONFIRMED as real gaps (no failing consumer —
+not speculatively patched); the friend's inflation patches NOT in this
+lineage; the "F-NEW-253 nested in AudioAttributes" claim FALSE (top-level
+view_ancestry.h rows, battery 147/0). Draw root decoded op-level: the
+R8'd CanvasDrawScope (Loc0.c) is a REUSED dispatcher — the M3-19/F-098
+re-entry key carried only 2 object args so every NESTED subtree draw
+collided and was silently stubbed (125 stubs/run, depth 109-111): outer
+shapes painted (ops=64), the text chain (Lg6.d → Layout.draw) never ran.
+FIX (4 generic points, one family): identity cap 2→8 (keys strictly more
+specific, depth-80 backstop); Layout.draw(Canvas) text law (ROOT-063
+fields + carried paintOid, per-line DRAW_TEXT at the canvas translate
+state, 0.928em ascent); CanvasShadow handles_class generic "Paint;" row
+(TextPaint gate alignment, F-NEW-285 family); ROOT-063 paint_size probes
+__text_size_px__ (F-NEW-226). Probe fnew297 (reused-dispatcher +
+StaticLayout-draw shapes) PRE ×3 FAIL (nestedRan=0, 0 TEXT ops) → POST ×3
+42/0 with BOTH text ops at the app's TRUE color/size (ff2244cc, 72px).
+Target ×3: stubs 125→1 (Loc0.c 0), first-frame ops 64→236, frame UNCHANGED
+9afb2bd2606f303e ×3; dooz anchor byte-stable ×3. dooz white frame DECODED:
+RGB(250,250,250) theme background — boot composition burns the 15 s budget
+then per-frame dispatchDraw halts at pc=2 (F084); frame-honesty law
+ROOT_CAUSED/PENDING. FULL REGRESSION ZERO DRIFT at 054b9bd52fa695fc
+(anchors 24/24 ×3, battery == CONT-28..35 records, fnew297 42/0,
+simplecalc ×3 7960bce447ac6d8f). Registry 605→606. Evidence:
+evidence/cont36/DRAW_DISPATCH_FRONTIER.md. Next: the paragraph-paint
+dispatch (renamed DrawScope.drawText → Lte1.I/Lod1.I → Lg6 → Layout.draw
+— Lte1.e0 runs in composition, its paint entry never fires); the
+frame-honesty law (in-draw F084 halt → keep previous frame, dooz anchor
+movement); STREAM-OPEN message spelling; standing F-NEW-288 (Track A) +
+SimpleCalc input-pump (Track B).
