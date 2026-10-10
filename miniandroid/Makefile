@@ -107,6 +107,14 @@ $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
+# CONT-39 (F-NEW-301): android_shadows.cpp hit the SAME cc1plus -g peak
+# (OOM kill at ~936 MB RSS during this wave's build — dmesg recorded).
+# Same precedent, same contract: -O2 unchanged, debug sections dropped
+# for THIS translation unit only.
+$(BUILDDIR)/framework/android_shadows.o: $(SRCDIR)/framework/android_shadows.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
 $(BUILDDIR)/quickjs/%.o: $(QUICKJS_DIR)/%.c
 	@mkdir -p $(dir $@)
 	gcc $(QUICKJS_CFLAGS) -I$(QUICKJS_DIR) -c -o $@ $<

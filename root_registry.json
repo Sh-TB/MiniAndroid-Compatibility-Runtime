@@ -5314,13 +5314,26 @@
    "not_claimed": "the DEVICE dynamic palette (Material You wallpaper colors) is not implemented — the framework table's static defaults are the AOSP-honest answer for a static-table runtime; brush/shader text (SolidColor-as-brush, setShader) stays honest-untested; TextView.setTextColor state (cpipe PC rows) is the recorded next checkpoint.",
    "regression": "binary 80d9ea341f1b6ccc: anchors 8/8 x3 BYTE-IDENTICAL (dooz 31ddd4d5b8e6d18e, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8, gmdice f3b483fe7b7cf51b, opencalc a976d2f9fb675cb3, tttdeluxe af6094295ecb50e3, flappycow 13cf47464d9787f4, g2048 59ca1526611c4622) — ZERO collateral drift; composeStopwatch bbaf8f76308dc267 → 3442d9a9dc0fa0f9 x3 (the LEGITIMATE analyzed movement: visible themed text); battery == CONT-28..37 records EXACTLY + ckey 15/0 + cpipe 13/4; simplecalc x3 rc=0 7960bce447ac6d8f.",
    "three_run": "composeStopwatch 3442d9a9dc0fa0f9 x3; anchors x3; simplecalc x3; cpipe x3 (13/4 deterministic)."
+  },
+  {
+   "id": "F-NEW-301",
+   "title": "TextView color-state law: getCurrentTextColor() had NO shadow handler — the typed-default stub answered 0, so TextView.setTextColor(int) → getCurrentTextColor() never round-tripped (explicit colors, alpha, and recolor-between-draws all read back as 0)",
+   "status": "ROOT_CAUSED_FIXED",
+   "priority": "P1",
+   "layer": "framework/view-text-color-state",
+   "root_cause": "PROVEN BY THE STANDING colorpipe PROBE (fixtures/colorpipe_probe rows PC-01..04, the recorded CONT-38 checkpoint) + the [M3-SETTEXTCOLOR] trace: the setter side was ALREADY faithful — TextView.setTextColor(int) reaches the ViewShadow law (android_shadows.cpp, M3 FIX-M3-005b, ADDITIONAL-AUDIT P1-10 provenance) and stores the value on the ViewNode (text_color + text_color_provenance=EXPLICIT_RUNTIME; the trace shows all 7 probe calls stored the EXACT argb incl. the red→green change). The GETTER side had no law anywhere in the engine: rg 'getCurrentTextColor' src/ = zero matches pre-fix — every call fell through all shadows to the typed-default int stub and answered 0. PRE ×3 on the CONT-38 binary 80d9ea341f1b6ccc: PC-01 FAIL (getCurrentTextColor=0), PC-02 FAIL, PC-03 FAIL (alpha=0), PC-04 FAIL. AOSP law: TextView.getCurrentTextColor() returns mCurTextColor — the color the view's text actually paints with; setTextColor(int) sets it to EXACTLY the argument (ColorStateList.valueOf → updateTextColors → getColorForState default state), preserving alpha.",
+   "fix": "ONE generic point in the ViewShadow (android_shadows.cpp, immediately after the setTextColor law, same state store): getCurrentTextColor() answers find_node(receiver).text_color when set (covers BOTH EXPLICIT_RUNTIME and STYLE_RESOLVED provenance), else mirrors the RENDERER's default law EXACTLY as view_renderer draw_text_into applies it — text_color==0 → opaque black 0xFF000000, Button-label (non-ImageButton) → white 0xFFFFFFFF — so a getter reader observes the same color the rasterizer paints (getter state and rendered pixels cannot diverge). A getter never creates render nodes (find_node only, no side effect). The ColorStateList variant's default-color resolution stays the recorded draw-time gap (text_color_state_object has no failing consumer; NOT value-guessed in the getter). Env-gated MINIANDROID_TEXT_COLOR_TRACE diag [F-301-GETTEXTCOLOR]. No name matching, no app branches. Build config: android_shadows.cpp hit the cc1plus -g OOM peak (dmesg, ~936 MB RSS) — the CONT-37 per-file -g0 Makefile precedent extended to this TU (same -O2, debug sections dropped).",
+   "synthetic_probe": "fixtures/colorpipe_probe (com.probe.cpipe, real toolchain, 17 rows — ALREADY the standing battery): PC-01 explicit non-black round-trip, PC-02 explicit black is a valid requested color (the removed M3-007b heuristic would have broken it), PC-03 alpha preserved (no truncation to opaque), PC-04 color CHANGE between two draws on the SAME widget. PRE ×3 on 80d9ea341f1b6ccc: 13/4 (PC-01..04 FAIL with getCurrentTextColor=0) → POST ×3 on 111340a583d48d92: 17/0 (ff3366cc / ff000000 / 80ff8800 / ff0000→ff00ff00 all read back exactly). TR-01..08 + SC-01..05 unchanged PASS both binaries.",
+   "evidence": "evidence/cont39/TEXT_COLOR_STATE.md; runs run/cont39/pre/{r1..3} (PRE) + run/cont39/post/{r1..3} (POST); scripts/cont39_pre.sh + cont39_post.sh",
+   "not_claimed": "TextView.getTextColors() (the ColorStateList object getter) and the CSL default-color draw-time resolution remain honest untested scope (no failing consumer; the captured text_color_state_object is untouched). The law covers the View/ViewShadow path — the Compose path's color resolution is F-NEW-300's package-routed law (unaffected; composeStopwatch frame byte-stable through this wave).",
+   "regression": "binary 111340a583d48d92: anchors 8/8 ×3 BYTE-IDENTICAL (dooz 31ddd4d5b8e6d18e, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8, gmdice f3b483fe7b7cf51b, opencalc a976d2f9fb675cb3, tttdeluxe af6094295ecb50e3, flappycow 13cf47464d9787f4, g2048 59ca1526611c4622); composeStopwatch 3442d9a9dc0fa0f9 ×3 (F-NEW-300 state retained, zero drift); battery == CONT-28..38 records EXACTLY (fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, ckey 15/0, fnew252 56/0, fnew290 56/0, fnew291 56/0, fnew292 70/0, fnew293 56/0, fnew294 77/0, fnew295 49/0, fnew296 42/0, fnew297 42/0, fnew298 19/0 KEEP=5 corner=PASS) + cpipe 17/0 (was 13/4); simplecalc ×3 rc=0 7960bce447ac6d8f. ZERO DRIFT."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 609,
+ "total": 610,
  "count": 597,
  "meta": {
-  "last_update": "CONT-38 session 2026-10-10: F-NEW-300 (the package-routed color law — Resources.getColor 0x01-package resids resolve through the framework table; composeStopwatch theme all-black → real palette, TextPaints 0xff000000 → 0xff30323a, frame bbaf8f76308dc267 → 3442d9a9dc0fa0f9 x3, zero collateral anchor drift).",
+  "last_update": "CONT-39 session 2026-10-10: F-NEW-301 (the TextView color-state law — getCurrentTextColor answers the stored state; cpipe PC-01..04 flip 13/4→17/0 ×3 both directions; zero drift).",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
   "last_updated": "2026-10-04 R-NEW-464 ROOT-CAUSED-FIXED at binary 583b3a2a6f3d30c8"
  },
@@ -5339,7 +5352,7 @@
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "ROOT-CAUSED-CLOSED": 3,
   "ROOT-CAUSED-FIXED": 143,
-  "ROOT_CAUSED_FIXED": 12,
+  "ROOT_CAUSED_FIXED": 13,
   "SUPERSEDED-BY-EVIDENCE": 12,
   "TESTED": 1,
   "UNPROVEN": 72,
@@ -5349,6 +5362,6 @@
   "VERIFIED-FIXED": 49
  },
  "total_roots": 599,
- "generated": "CONT-38v session",
+ "generated": "CONT-39 session",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
