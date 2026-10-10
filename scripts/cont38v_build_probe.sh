@@ -35,3 +35,4 @@ build_probe() {
 }
 
 build_probe classkey_probe com.probe.ckey
+build_probe colorpipe_probe com.probe.cpipe

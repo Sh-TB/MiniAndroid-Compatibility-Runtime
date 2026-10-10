@@ -4429,12 +4429,35 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     //   * execution_guard still bounds interpreter steps per method.
     // Need DexReport to find the class.
     if (!dex_report_) {
+        // CONT-38 decode diag (env-gated, bounded): which class got
+        // POISON-marked initialized without its <clinit> running.
+        {
+            static thread_local const bool cpt_on =
+                std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+            static thread_local uint64_t cpt_n = 0;
+            if (cpt_on && cpt_n++ < 40)
+                std::cerr << "[CLINIT-PATH] NO-DEX-REPORT poison class="
+                          << class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+        }
         initialized_classes_.insert(class_descriptor);
         return false;
     }
     // Find the class in the DexReport.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
+        // CONT-38 decode diag: the LOOKUP-MISS poison path.
+        {
+            static thread_local const bool cpt2_on =
+                std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+            static thread_local uint64_t cpt2_n = 0;
+            if (cpt2_on && cpt2_n++ < 40)
+                std::cerr << "[CLINIT-PATH] LOOKUP-MISS poison class="
+                          << class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+        }
         // EXP-062: Debug — trace R class lookups
         if (class_descriptor.find("R$") != std::string::npos) {
             std::cerr << "[EXP062-RLOOKUP] " << class_descriptor
@@ -6214,7 +6237,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (trie_trace &&
             (declaring_class.rfind("LK/", 0) == 0 ||
              declaring_class.rfind("LL/", 0) == 0 ||
-             declaring_class.rfind("LN/d", 0) == 0)) {
+             declaring_class.rfind("LN/d", 0) == 0 ||
+             // CONT-38: the composeStopwatch composition-local scope-map
+             // family (Llu0; map, Lku0; context, Lju0; builder, Lch1; trie
+             // node) — the LocalContentColor provider put/get miss face.
+             declaring_class.rfind("Lch1;", 0) == 0 ||
+             declaring_class.rfind("Llu0;", 0) == 0 ||
+             declaring_class.rfind("Lju0;", 0) == 0 ||
+             declaring_class.rfind("Lku0;", 0) == 0)) {
             std::cerr << "[TRIE-TRY] " << declaring_class << "." << method_name
                       << " depth=" << recursion_depth_;
             for (size_t ai = 0; ai < args.size() && ai < 5; ++ai) {
@@ -6468,6 +6498,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
         if (method_name == "setContentView" && args.size() >= 2) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
             ctx.receiver_id = ctx.has_receiver ? args[0].object_id : 0;
             ctx.receiver_class = ctx.has_receiver ? args[0].class_desc
@@ -6491,6 +6523,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
         if (method_name == "findViewById" && args.size() >= 2) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
             ctx.receiver_id = ctx.has_receiver ? args[0].object_id : 0;
             ctx.receiver_class = ctx.has_receiver ? args[0].class_desc
@@ -7810,6 +7844,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Dispatch to ViewShadow to capture the text on the ViewNode.
         if (shadow_registry_ != nullptr) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
             if (ctx.has_receiver) {
                 ctx.receiver_id = args[0].object_id;
@@ -8235,6 +8271,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // into the bytecode (which would loop).
             if (shadow_registry_ != nullptr) {
                 framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
                 ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
                 if (ctx.has_receiver) {
                     ctx.receiver_id = args[0].object_id;
@@ -12521,6 +12559,8 @@ bool DalvikExecutionEngine::dispatch_text_input(uint32_t view_object_id,
     // Dispatch to ViewShadow.setText — this stores the text on the ViewNode.
     // We use the shadow dispatch path (same as what DEX setText would use).
     framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
     ctx.has_receiver = true;
     ctx.receiver_id = view_object_id;
     ctx.receiver_class = node->class_desc;
@@ -12903,6 +12943,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                       << std::endl;
         }
         
+        // CONT-38 decode diag (env-gated, bounded): the painter body's
+        // instruction stream — where does the black J come from?
+        if (std::getenv("MINIANDROID_PAINTER_TRACE") != nullptr &&
+            ((current_class_ == "Lte1;" && current_method_ == "I") ||
+             (current_class_ == "Lod1;" && current_method_ == "I") ||
+             (current_class_ == "Lg6;" && current_method_ == "e"))) {
+            static thread_local uint64_t pt_n = 0;
+            if (pt_n++ < 20000)
+                std::cerr << "[PAINTER] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc_
+                          << " op=0x" << std::hex << opcode << std::dec
+                          << std::endl;
+        }
         // EXP-042 Phase 1: Per-instruction register snapshots are the #1 OOM
         // offender (5 KB per instruction). Capture them ONLY when explicitly
         // enabled via config_.trace_register_snapshots. Default is false.
@@ -17388,7 +17441,12 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
          target_type == "Landroid/view/ViewParent;" ||
          // S59 R-NEW-379 follow-up: Lwl0;.containsKey "Key must be a
          // class" at depth 79 — the Class-key guard classification.
-         target_type == "Ljava/lang/Class;")) {
+         target_type == "Ljava/lang/Class;" ||
+         // CONT-38: the composition-local provider-map identity gate
+         // (Lku0;.get instance-of Lky0; — ProvidableCompositionLocal)
+         // — a FALSE here short-circuits every local read to its default
+         // (the LocalContentColor black face) before the trie lookup.
+         target_type == "Lky0;")) {
         static thread_local uint64_t iof_n = 0;
         if (iof_n < 200) {
             ++iof_n;
@@ -18806,6 +18864,17 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     uint16_t field_idx = bytecode_[pc + 1];
 
     FieldResolution field_res = resolve_field(field_idx);
+    // CONT-38 decode diag (env-gated, bounded): UNRESOLVED static-field
+    // reads answer 0 silently — the theme-defaults zero face.
+    if (!field_res.resolved) {
+        static thread_local const bool ufs_on =
+            std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+        static thread_local uint64_t ufs_n = 0;
+        if (ufs_on && ufs_n++ < 40)
+            std::cerr << "[SGET-UNRESOLVED] field_idx=" << field_idx
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << " pc=" << pc << std::endl;
+    }
 
     // EXP-053: Ensure the class is initialized before reading its static field.
     // F-NEW-215: active use (sget) of an ERRONEOUS class raises
@@ -18836,6 +18905,27 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // CONT-38 decode diag (env-gated, bounded): the sget-WIDE color
+        // statics — the actual path the painter takeOrElse chain reads.
+        if (std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr &&
+            (field_res.class_descriptor == "Lzh;" ||
+             field_res.class_descriptor == "Lai;" ||
+             field_res.class_descriptor == "Lts0;" ||
+             field_res.class_descriptor == "Lci;")) {
+            static thread_local uint64_t c38s_n = 0;
+            if (c38s_n++ < 8000)
+                {
+                    auto vit = static_field_storage_.find(static_key);
+                    long long vhex = (vit != static_field_storage_.end() &&
+                                      vit->second.type == DalvikType::INT64)
+                                         ? vit->second.long_val : -1;
+                    std::cerr << "[COLOR-SGET-W] " << static_key
+                              << " hit=" << (vit != static_field_storage_.end())
+                              << " val=0x" << std::hex << vhex << std::dec
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc << std::endl;
+                }
+        }
         if (it != static_field_storage_.end()) {
             result_value = it->second;
         } else if (field_res.class_descriptor ==
@@ -18982,6 +19072,19 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // CONT-38 decode diag (env-gated, bounded): the theme-defaults
+        // color statics — who reads them and what the storage answers.
+        if (std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr &&
+            (field_res.class_descriptor == "Lzh;" ||
+             field_res.class_descriptor == "Lai;" ||
+             field_res.class_descriptor == "Lts0;")) {
+            static thread_local uint64_t c38_n = 0;
+            if (c38_n++ < 300)
+                std::cerr << "[COLOR-SGET] " << static_key
+                          << " hit=" << (it != static_field_storage_.end())
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+        }
         if (it != static_field_storage_.end()) {
             result_value = it->second;
         } else {
@@ -24028,6 +24131,8 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     //     for the actual runtime subclass like IntroActivity$4).
     auto build_ctx = [&](const std::string& chosen_class) {
         framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
         ctx.class_name = chosen_class;
         ctx.method = method;
         // EXP-071 Phase 8: For INSTANCE methods, args[0] is `this` (the receiver)
@@ -39988,6 +40093,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // when the View constructor captures the Context arg.
         if (shadow_registry_ != nullptr) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
                 ctx.has_receiver = true;
                 ctx.receiver_id = args[0].object_id;
@@ -43993,9 +44100,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         {
             auto& rt = resources::ResourceRuntime::instance();
             if (rt.loaded()) {
-                auto v = rt.arsc().resolve_value((uint32_t)resid);
-                if (v && (v->is_color() || v->is_int())) {
-                    color_val = (int32_t)v->data;
+                // F-NEW-300 (CONT-38): PACKAGE-ROUTED COLOR LAW. AOSP
+                // Resources.getColor resolves through AssetManager2 for
+                // EVERY package — the framework's 0x01-package colors
+                // (android:color/*, including the API-31+ system_*
+                // dynamic-color defaults) resolve from the FRAMEWORK
+                // table, never the app table. The old law consulted the
+                // app table only: every android:color lookup answered the
+                // black fallback, and an app whose MaterialTheme scheme is
+                // built from android:color/system_* materialized an
+                // ALL-BLACK theme — the Compose content color painted
+                // black-on-dark (composeStopwatch: 8 [RES] rows
+                // 0x10600b0-0x10600c0 ALL "(M3-COLOR-UNRESOLVED)"; the
+                // TextPaints carried 0xFF000000 through the
+                // LocalContentColor → TextStyle → TextPaint chain).
+                // resolve_color_reference_argb is the S127
+                // package-routed terminal-value law (framework table +
+                // the resolve_framework_file_color ColorStateList
+                // fallback) — the SAME resolution the theme-attr
+                // machinery already uses. No name matching, no app
+                // branches.
+                auto c = rt.resolve_color_reference_argb((uint32_t)resid);
+                if (c) {
+                    color_val = (int32_t)*c;
                     resolved = true;
                 }
             }
@@ -51996,6 +52123,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Try shadow dispatch first
         if (shadow_registry_ != nullptr && !args.empty()) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
             if (ctx.has_receiver) {
                 ctx.receiver_id = args[0].object_id;
@@ -55230,6 +55359,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     if (shadow_registry_ != nullptr) {
         framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
             ctx.has_receiver = true;
             ctx.receiver_id = args[0].object_id;
@@ -55239,6 +55370,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             ctx.class_name = class_name;
         }
         ctx.method = method;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
         // Convert DalvikValue args to CallContext::Arg (skip arg[0] = receiver)
         for (size_t i = 1; i < args.size(); i++) {
             framework::CallContext::Arg arg;

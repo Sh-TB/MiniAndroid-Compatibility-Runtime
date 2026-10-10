@@ -898,11 +898,12 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // color from THIS map; a missed setColor = black-on-black text.
             {
                 static thread_local uint64_t sc_n = 0;
-                if (sc_n++ < 40)
+                if (sc_n++ < 60)
                     std::cerr << "[F298-SETCOLOR] recv=" << recv
                               << " cls=" << cls
                               << " color=0x" << std::hex
                               << paint_color_[recv] << std::dec
+                              << " caller=" << ctx.caller
                               << std::endl;
             }
             return CallResult::handled_void();
