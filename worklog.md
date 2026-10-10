@@ -7899,3 +7899,22 @@ Stage Summary:
 - Honest bounds: the cpipe PC rows (TextView.setTextColor/getCurrentTextColor state) are the next wave's first checkpoint; brush/shader text stays honest-untested; the dynamic-color (Material You) palette is not implemented (the framework table's static defaults are the AOSP-honest static-table answer); dooz boot-budget PENDING.
 - Next wave owns: the TextView color-state law (cpipe PC-01..04, probe standing), then brush/shader text; standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B) + Fragment/Preference family.
 - Evidence: evidence/cont38/TEXT_COLOR_FRONTIER.md; runs run/cont38v/*; scripts cont38v_build_probe.sh + cont38v_targets.sh + cont38v_registry.py + cont38_color_decode.py; binary 80d9ea341f1b6ccc.
+
+---
+Task ID: CONT-39
+Agent: Super Z (main agent)
+Task: Continue (user: "ادامه") — the recorded CONT-38 checkpoint: the TextView color-state law (colorpipe probe rows PC-01..04, TextView.setTextColor → getCurrentTextColor round-trip).
+
+Work Log:
+- Phase 0: local HEAD == origin/main == 73d72e6f (the CONT-38 CAMPAIGN_STATE push); binary 80d9ea341f1b6ccc byte-exact CONT-38 record; tree clean (tmp flag only). PRE reproduced ×3 on the frozen binary: cpipe 13/4, PC-01..04 FAIL with getCurrentTextColor=0 (the exact recorded face).
+- Decode: the SETTER side is already faithful — the ViewShadow setTextColor law (M3 FIX-M3-005b + P1-10 provenance) fires with the EXACT argb values ([M3-SETTEXTCOLOR] ×7 in every PRE run incl. PC-04's red→green). The GETTER side had NO law anywhere (rg 'getCurrentTextColor' src/ = zero matches pre-fix) — every call fell through to the typed-default int stub and answered 0. AOSP: getCurrentTextColor() returns mCurTextColor; setTextColor(int) sets it to EXACTLY the argument, preserving alpha.
+- Fix F-NEW-301 (ONE generic point, android_shadows.cpp right after the setTextColor law): getCurrentTextColor answers find_node(receiver).text_color when set (both EXPLICIT_RUNTIME and STYLE_RESOLVED provenance), else mirrors the RENDERER's default law EXACTLY (draw_text_into: 0 → opaque black, Button-label non-ImageButton → white) so getter state and rendered pixels cannot diverge; a getter never creates render nodes; the CSL variant's default-color draw-time resolution stays the recorded gap (no failing consumer, NOT value-guessed); env-gated MINIANDROID_TEXT_COLOR_TRACE diag.
+- Build: android_shadows.cpp hit the cc1plus -g OOM peak (dmesg: cc1plus killed at ~936 MB RSS) — the CONT-37 per-file -g0 Makefile precedent extended to this TU (same -O2, debug sections dropped, comment recorded). Binary 111340a583d48d92.
+- POST ×3: cpipe 17/0 (ff3366cc / ff000000 / 80ff8800 / ff0000→ff00ff00 all round-trip exactly; TR+SC rows unchanged PASS both binaries).
+- FULL REGRESSION at 111340a583d48d92: anchors 8/8 ×3 BYTE-IDENTICAL; composeStopwatch 3442d9a9dc0fa0f9 ×3 MATCH (F-NEW-300 state retained — the law does not touch the Compose path); battery == CONT-28..38 records EXACTLY + cpipe 17/0 (was 13/4); simplecalc ×3 rc=0 7960bce447ac6d8f. ZERO DRIFT.
+- Registry 609→610 (F-NEW-301 ROOT_CAUSED_FIXED, dedup-checked). Evidence: evidence/cont39/TEXT_COLOR_STATE.md; runs run/cont39/{pre,post}/*; scripts cont39_pre.sh + cont39_post.sh + cont39_registry.py.
+
+Stage Summary:
+- The TextView color-state law is closed: setTextColor(int) → getCurrentTextColor() round-trips exactly (value, alpha, explicit black, recolor-between-draws) and the getter cannot disagree with the rasterizer because it answers the renderer's own state law. The CONT-38 checkpoint face is dead at the source; the colorpipe standing probe is now 17/0.
+- Honest bounds: getTextColors()/CSL default-color draw-time resolution remain untested scope (no failing consumer); the Compose path is F-NEW-300's domain (byte-stable through this wave).
+- Next wave owns: brush/shader text (the CONT-38 recorded honest-untested leg); the dooz boot-budget face; the tananaev NotificationCompat$Builder null-receiver frontier; STREAM-OPEN spelling; standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B) + Fragment/Preference family.
