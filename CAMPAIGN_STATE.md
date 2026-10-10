@@ -382,3 +382,25 @@ ALL PASS (28/0). Target post-fix ×3: ISE 0/run, frame byte-identical
 regression ZERO DRIFT: 24/24 anchors ×3, battery == CONT-28/29/30 records
 (fnew253 147/0, fnew286 10/0, fnew252 56/0), simplecalc ×3 FULL SUCCESS.
 Registry 598. Evidence: evidence/cont31/COMPOSESTOPWATCH_FRONTIER.md.
+
+## CONT-34 (2026-10-10) — GATE A VIRTUAL-PATH LAW (F-NEW-293 ROOT_CAUSED_FIXED)
+
+Container reset recovered again (fast-forward 61 commits to 8081a64e; binary
+rebuilt byte-exact 859557953a3b144c; composeStopwatch dbf937ebbe7c0b3d +
+SimpleCalc 68da25fd9fdf54b4 re-supplied SHA-exact). CONT-33 §9's mangled
+DataStore path decoded to ONE root: logical_android_path compared the
+ABSOLUTE host side against prefixes from the DEFAULT RELATIVE root literal
+("runtime/data") → silent no-op → dir getters minted Files with HOST
+spellings → three consumers re-anchored by three different laws
+(package_data_dir / app_data_root / raw) → prefix multiplication. Fix = two
+lines (anchor canonicalization, same process anchor both sides). Probe
+fnew293 PRE ×3 FAIL (double-prefix face) → POST ×3 PASS 7/0
+(/data/data/<pkg>/files). composeStopwatch ×3: mangled app-visible
+spellings 10→0, frame UNCHANGED 9afb2bd2606f303e (zero render drift).
+Residual recorded PENDING: STREAM-OPEN exception MESSAGE spelling. Full
+regression ZERO DRIFT at 702813ff2d5d8be8 (24/24 anchors ×3, battery ==
+CONT-28..33 records, fnew293 56/0, simplecalc ×3 7960bce447ac6d8f).
+Registry 601→602. Evidence: evidence/cont34/VIRTUAL_PATH_FRONTIER.md.
+Next: composeStopwatch f141-null-recv + Lh4; ops=0 face; STREAM-OPEN
+message spelling; standing F-NEW-288 (Track A) + SimpleCalc input-pump
+(Track B).
