@@ -1,8 +1,49 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: #371/#372/#373 CONT wave 58b5c14e (binary 4c01757e8f11c8a0) ← #371 FINAL CLOSEOUT wave bd9e9fbd (binary 267bf47d5d901054 reproduced byte-identically at wave start)
-Date: 2026-10-03 (#371 FINAL CLOSEOUT — Suntimes/time4j + touch-claim + full regression)
-← 51f7e5f9 (MASTER-CONT-371 verification) ← 9c35863b (GATE A) ← F-NEW-234 e9ce717b
+HEAD at state update: CONT-38 0d73926f (binary 80d9ea341f1b6ccc) ← CONT-38v 11a6c2b9 (the friend-claim verification + F-NEW-299) ← CONT-37 8cbd94e7
+Date: 2026-10-10 (CONT-38 — the Compose text-color pipeline closed for the solid-color path)
+
+## CONT-38 HIGHLIGHT (2026-10-10)
+
+**composeStopwatch's text is VISIBLE with its real theme color** — the CONT-37
+"TextPaints carry pipeline-default black" face is dead at the source. ROOT:
+F-NEW-300 — Resources.getColor(int,Theme) resolved every resid through the APP
+table only; the app's theme colors are android:color/system_* FRAMEWORK
+resources (0x0106005e-0x010600c0) and all answered the black fallback ([RES]
+rows "M3-COLOR-UNRESOLVED" x9) → the app's darkColorScheme materialized
+ALL-BLACK → the M3 Surface's LocalContentColor provides SolidColor(black) →
+the Text merged style color=black → TextPaint.setColor(0xff000000) →
+black-on-dark. FIX (one generic point): the getColor law now routes through the
+S127 package-routed law (0x01-package resids resolve through the FRAMEWORK
+table + the ColorStateList file fallback; AOSP: package-agnostic AssetManager2).
+PRE/POST: [RES] all-black → real values (0xffb9cbff/0xff30436e/0xff4c5e8b/...);
+TextPaints 0xff000000 → 0xff30323a x3; frame bbaf8f76308dc267 → 3442d9a9dc0fa0f9
+x3 (themed surface + accent + white text pixels — the frame-truth distinction
+holds). The engine's color machinery verified EXACT during the decode
+(Color.Unspecified=0x10 per androidx; the M3 palette constants correct). PROBE
+FIRST: fixtures/colorpipe_probe (17 rows) — TR/SC rows ALL PASS x3 (the
+identity-keyed HAMT scope-map machinery PROVEN SOUND), PC-01..04
+TextView.setTextColor state FAIL x3 (the honest next checkpoint). Full
+regression: anchors 8/8 x3 BYTE-IDENTICAL (zero collateral drift), battery ==
+the standing records + ckey 15/0 + cpipe 13/4, simplecalc x3 FULL SUCCESS.
+Registry 608→609. Evidence: evidence/cont38/TEXT_COLOR_FRONTIER.md
+
+## CONT-38v HIGHLIGHT (2026-10-10)
+
+The friend-reported "F-NEW-257"/"F-NEW-258" verified by CONTENT (the numbers are
+occupied by unrelated CONT-7 roots): both are re-discoveries of already-fixed
+generic roots (F-069/F-103/F-NEW-249/F-NEW-282 the Class-token identity family;
+F-NEW-255 + LAW-B the ListIterator family) — verified with the new standing
+classkey probe (15 rows) ×3 both directions. The probe EXPOSED F-NEW-299 (the
+String copy-constructor content law): new String()/new String(String) left the
+heap object unmaterialized → F-NEW-248's map-key content law fell back to
+identity keying → const-string lookups missed. One generic point fixed; PRE
+14/1 → POST 15/0 x3; ZERO drift. Phase-3 targets: dooz x3 honest anchor;
+SimpleCalc x3 rc=0 (the friend's "calculator loads" claim TRUE on THIS lineage);
+com.tananaev.calculator v1.10 = PARTIAL (NEW frontier: NotificationCompat$Builder
+null-receiver NPE → DEFAULT_BACKGROUND_ONLY — recorded, not patched);
+headingcalc re-supplied SHA-exact (274ec873…) → the new baseline be1cea9cf994b26a
+x3. Registry 607→608. Evidence: evidence/cont38v/FRIEND_CLAIM_VERIFICATION.md
 
 ## CONT-33 HIGHLIGHT (2026-10-09)
 
