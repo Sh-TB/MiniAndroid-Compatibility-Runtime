@@ -1,0 +1,5 @@
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x3062956 for forwardPass ===
+[M3-19-CYCLE] Landroidx/arch/core/internal/SafeIterableMap$IteratorWithAdditions;.next#195 re-entered while active on the call stack (depth=8) — active-cycle stub, lifetime_calls=2
+[REC-MISS] Ljava/util/Map$Entry;.getKey caller=Landroidx/lifecycle/LifecycleRegistry;.forwardPass
+[REC-MISS] Ljava/util/Map$Entry;.getValue caller=Landroidx/lifecycle/LifecycleRegistry;.forwardPass
+02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8  apk_cache/s46/org.secuso.privacyfriendly2048_100.apk

@@ -1,0 +1,106 @@
+{
+ "head": "a0184622baceb9f8134a5dcb69e875ceebf7c714",
+ "binary_now": "a8761a482a186eac",
+ "binary_anchors": {
+  "CONT-10": "ea882758 (recorded; toolchain-generation artifact, superseded by semantic anchors)",
+  "CONT-11": "aed46450c103f2ea",
+  "CONT-12": "0ee46f5a719d2a8c",
+  "CONT-14": "aed46450c103f2ea (rebuild; behavior identity via dooz x3 anchor d602648e8e401895)",
+  "CONT-15": "0ee46f5a719d2a8c (merged-HEAD rebuild byte-matches CONT-12 record)",
+  "CONT-16": "a8761a482a186eac",
+  "CONT-17": "a8761a482a186eac (start state)"
+ },
+ "issue_map": {
+  "#379": "CONT-9/WAVE-5",
+  "#380": "CONT-11/WAVE-7",
+  "#375": "BASE+CAMPAIGN (post-#374 follow-through)",
+  "#364-#374": "prior campaign (consumed)"
+ },
+ "not_found_in_github": [
+  "CONT-13 (severed session, no commit, no issue)",
+  "CONT-14 (audit ran locally; no issue posting)",
+  "CONT-16 (local fix batch)"
+ ],
+ "commits": [
+  {
+   "sha": "a0184622",
+   "msg_first_line": "e6eadff7-c4a3-4c13-b1a6-cfa851989371"
+  },
+  {
+   "sha": "a6028be6",
+   "msg_first_line": "CONT-16 FIX-BATCH: 52-task backlog + 3 roots closed (266a/259g-a/259g-b) at binary a8761a482a186eac \u2014 zero drift."
+  },
+  {
+   "sha": "80a340ab",
+   "msg_first_line": "CONT-15 WAVE 9: full GitHub lineage reconciled (CONT-11/12 merged from remote; clean rebuild reproduces CONT-12's recorded binary 0ee46f5a719d2a8c byt"
+  },
+  {
+   "sha": "9ab1b891",
+   "msg_first_line": "CONT-15 PHASE 0: merge remote main (CONT-11 W7 + CONT-12 W8) into local lineage (CONT-14 audit) \u2014 full GitHub lineage now unified at f0a36646 + CONT-1"
+  },
+  {
+   "sha": "5059ff79",
+   "msg_first_line": "9b523f44-f035-483a-b88f-dde92e25c9e3"
+  },
+  {
+   "sha": "f0a36646",
+   "msg_first_line": "CONT-12 WAVE 8: external real-Compose oracle experiment \u2014 measured answer to the mission question. oracle12.apk (exact 55-artifact/11,767-class Maven "
+  },
+  {
+   "sha": "06c9f853",
+   "msg_first_line": "CONT-11 W7: issue ledger posted to #379/#375 (external-runtime rejection with measured evidence, primary-path verification green, F-NEW-265 re-root, 2"
+  },
+  {
+   "sha": "ee7bf6c3",
+   "msg_first_line": "CONT-11 WAVE 7: external-runtime experiment REJECTED with measured evidence (KEEP MINIANDROID PATH \u2014 westlake prior art proves framework bridge domina"
+  },
+  {
+   "sha": "e99c2fbd",
+   "msg_first_line": "f188f3c3-0f7a-457d-862c-4ef056364bb3"
+  },
+  {
+   "sha": "6a66806a",
+   "msg_first_line": "CONT-10 WAVE 6: dooz real-content frontier advanced \u2014 two new generic roots FIXED. W5 'zero reinvocation' corrected (scope.compose runs; Lzx0;.h\u2192Lyl;."
+  },
+  {
+   "sha": "22875aa3",
+   "msg_first_line": "f3562d70-4a8f-4c85-a593-768db7128ed5"
+  },
+  {
+   "sha": "390b2f6f",
+   "msg_first_line": "CONT-9 W5: worklog push record (remote main f5a2c399 verified)"
+  },
+  {
+   "sha": "f5a2c399",
+   "msg_first_line": "CONT-9 WAVE 5: F-NEW-256 first divergence RE-PROVEN \u2014 W4 'mid-content-pass apply' REFUTED (METHOD-IN-only traces lack exit lines; Ld;.i span was entry"
+  },
+  {
+   "sha": "fda41b78",
+   "msg_first_line": "ebffcc30-604f-4354-ae6b-6ad5258e27d9"
+  },
+  {
+   "sha": "e3ae6a62",
+   "msg_first_line": "CONT-8 W4: worklog push record (remote main 0931e922 verified)"
+  },
+  {
+   "sha": "0931e922",
+   "msg_first_line": "CONT-8 W4 cleanup + ledger addendum: remove tmp/issue377_saved.html (accidental GitHub HTML scrape from automated commit de6ede5c; trips the fail-clos"
+  },
+  {
+   "sha": "299e84d2",
+   "msg_first_line": "CONT-8 WAVE 4 SUCCESS-PATH CLOSURE: F-NEW-256 first divergence REFINED+PROVEN (composition applies mid-content-pass at trace line 43094 inside Ld;.i s"
+  },
+  {
+   "sha": "50b63bc7",
+   "msg_first_line": "e4e6163b-6ef7-4434-aca5-715a0b4a5240"
+  },
+  {
+   "sha": "77bcf9fc",
+   "msg_first_line": "CONT-7 WAVE 3 RE-PROOF: F-NEW-253 chain re-proven live (w3/ evidence gap repaired) \u2014 F-NEW-257 Bundle parcel-family content law + F-NEW-258 STRING_REF"
+  },
+  {
+   "sha": "de6ede5c",
+   "msg_first_line": "966e9563-937a-4262-be02-8adfbe5e0f21"
+  }
+ ]
+}

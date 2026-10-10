@@ -1,0 +1,27 @@
+apk	rc	uncaught	throwable	nonwhite	category
+gmdice	0	0
+0	-	1744539	RENDERED
+microtimer	0	0
+0	MSG: No lock directory was provided.	1041116	RENDERED
+unote	0	0
+0	-	236520	RENDERED
+chessclock	0	0
+0	-	2073600	RENDERED
+stopwatch-muellerma	1	0
+0	-	23472	EXECUTED(rc=1)
+bgclock	1	1	MSG: Path should end with a slash '/'	2073600	BLOCKED
+simplestopwatch	0	0
+0	-	1944411	RENDERED
+notes-billthefarmer	0	0
+0	-	18200	RENDERED
+headingcalculator	0	0
+0	-	2046423	RENDERED
+tictactoe-emmanuelmess	1	1	-	0	BLOCKED
+bouncy	1	0
+0	-	-1	EXECUTED(rc=1)
+tictactoeclassic	1	0
+0	-	-1	EXECUTED(rc=1)
+tictactoe-corpus	1	0
+0	-	-1	EXECUTED(rc=1)
+dooz	0	0
+0	-	802	EXECUTED

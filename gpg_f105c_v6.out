@@ -1,0 +1,14 @@
+method Landroidx/navigation/c;.a['Landroidx/navigation/f;', 'Landroid/os/Bundle;', 'Landroidx/navigation/b;', 'Ljava/util/List;'] regs=21 insns=543
+ALL v6 writes:
+  pc=   24  instance-of v6, v5, Lh1/b;
+  pc=   46  move-result v6
+  pc=   58  move-result-object v6
+  pc=   60  check-cast v6, Landroidx/navigation/b;
+  pc=   64  iget-object v6, v6, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=   68  instance-of v6, v6, Lh1/b;
+  pc=   82  move-result-object v6
+  pc=   84  check-cast v6, Landroidx/navigation/b;
+  pc=   88  iget-object v6, v6, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=   92  iget v6, v6, Landroidx/navigation/f;.o:I
+  pc=  102  move-result v6
+  pc=  108  new-instance v6, Lz1/i;

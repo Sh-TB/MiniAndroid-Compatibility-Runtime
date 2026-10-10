@@ -1,0 +1,78 @@
+{
+ "document_url": "https://chat.z.ai/",
+ "resource_count": 6,
+ "resources": [
+  {
+   "bytes": 436235,
+   "consumer": "stylesheet",
+   "error": "",
+   "final_url": "https://z-cdn.chatglm.cn/z-ai/frontend/prod-fe-1.1.98/assets/index-CqXvxGON.css",
+   "ms": 95.889753,
+   "request_id": 1,
+   "source": "mininet-http",
+   "status": 200,
+   "type": "style",
+   "url": "https://z-cdn.chatglm.cn/z-ai/frontend/prod-fe-1.1.98/assets/index-CqXvxGON.css"
+  },
+  {
+   "bytes": 57488,
+   "consumer": "font-face",
+   "error": "",
+   "final_url": "https://z-cdn.chatglm.cn/z-ai/static/fonts/bitstream-iowan-old-style-bt-586c36a8d7712.ttf",
+   "ms": 33.390403,
+   "request_id": 2,
+   "source": "mininet-http",
+   "status": 200,
+   "type": "font",
+   "url": "https://z-cdn.chatglm.cn/z-ai/static/fonts/bitstream-iowan-old-style-bt-586c36a8d7712.ttf"
+  },
+  {
+   "bytes": 168932,
+   "consumer": "font-face",
+   "error": "",
+   "final_url": "https://z-cdn.chatglm.cn/z-ai/static/fonts/Geist%5Bwght%5D.ttf",
+   "ms": 49.092982,
+   "request_id": 3,
+   "source": "mininet-http",
+   "status": 200,
+   "type": "font",
+   "url": "https://z-cdn.chatglm.cn/z-ai/static/fonts/Geist%5Bwght%5D.ttf"
+  },
+  {
+   "bytes": 244917,
+   "consumer": "script-exec",
+   "error": "",
+   "final_url": "https://www.googletagmanager.com/gtag/js",
+   "ms": 112.469779,
+   "request_id": 4,
+   "source": "mininet-http",
+   "status": 200,
+   "type": "script",
+   "url": "https://www.googletagmanager.com/gtag/js?id=G-Z8QTHYBHP3"
+  },
+  {
+   "bytes": 3244563,
+   "consumer": "script-exec",
+   "error": "",
+   "final_url": "https://z-cdn.chatglm.cn/z-ai/frontend/prod-fe-1.1.98/assets/index-BEIsjDOv.js",
+   "ms": 168.619607,
+   "request_id": 5,
+   "source": "mininet-http",
+   "status": 200,
+   "type": "script",
+   "url": "https://z-cdn.chatglm.cn/z-ai/frontend/prod-fe-1.1.98/assets/index-BEIsjDOv.js"
+  },
+  {
+   "bytes": 174933,
+   "consumer": "script-exec",
+   "error": "",
+   "final_url": "https://o.alicdn.com/frontend-lib/common-lib/jquery.min.js",
+   "ms": 52.613214,
+   "request_id": 6,
+   "source": "mininet-http",
+   "status": 200,
+   "type": "script",
+   "url": "//o.alicdn.com/frontend-lib/common-lib/jquery.min.js"
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "try_interface_default_invoke_occurrences": 3,
+ "call_sites": 3,
+ "expected_sites": "definition + 2 wiring (35c execute_invoke_virtual + 3rc range path)",
+ "probe_fixture_files": 2,
+ "registry_266_status": "ROOT-CAUSED-FIXED",
+ "registry_266a_status": "ROOT-CAUSED-FIXED",
+ "protected": true
+}

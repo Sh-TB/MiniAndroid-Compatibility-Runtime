@@ -1,0 +1,553 @@
+{
+  "agent": {
+    "dynamic_selection": true,
+    "observation_source": "ViewShadow rendered node texts (the app's own visible state)",
+    "policy": "win:complete-line > block:opponent-line > take-center > take-corner > first-empty",
+    "screen": {
+      "height": 1920,
+      "width": 1080
+    }
+  },
+  "agent_final_status": "DRAW",
+  "agent_game_over": true,
+  "agent_moves_made": 9,
+  "agent_play_requested": 9,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "613cfccc0f27b5bf8c0eb88bcb34221305c25a5d4b77d675849575be5e36cb47",
+      "sha256": "2f72572d7e9ace2f0955d7faee1b69849cd81d2e303955753ea34e10388e5e5e",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "X to move",
+          "view_id": 11
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2741,
+      "chosen_cell_index": 4,
+      "chosen_view_id": 29,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_001.png",
+      "index": 1,
+      "observation_board": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "2f7ae2198e2c166618796817d2f836d0d7adcc829276623e637161e248935433",
+      "policy_reason": "take-center",
+      "sha256": "5c69d5a2dc9f66dcb1c2bf77bdfa4509cfcaf71dae46b7b96c540aad2db7ddf6",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "O to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2797,
+      "chosen_cell_index": 0,
+      "chosen_view_id": 43,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_002.png",
+      "index": 2,
+      "observation_board": [
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "6ef95c5a0882b859feaa51a32063ea4d8d3202d11e13c5c7eca108e6abbac480",
+      "policy_reason": "take-corner",
+      "sha256": "69d3103deda8f20e765fb9a43d18574170d65d5d24f53a0c28a84cb1b51ba033",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "X to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2741,
+      "chosen_cell_index": 2,
+      "chosen_view_id": 37,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_003.png",
+      "index": 3,
+      "observation_board": [
+        "O",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "d97ebe04c09fe4fb057e9abc71888254dcfabdc84331d9d16e009aff4d068274",
+      "policy_reason": "take-corner",
+      "sha256": "cff8863383dd9900321c75fccd453284e26e13277ded7e112372d7007382928c",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "O to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2797,
+      "chosen_cell_index": 6,
+      "chosen_view_id": 21,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_004.png",
+      "index": 4,
+      "observation_board": [
+        "O",
+        "",
+        "X",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "9ca3a913ff4fa743421cced6175d7663e87f82933daf96069a08548df8d0bdd9",
+      "policy_reason": "win:complete-line",
+      "sha256": "4bfdaf3de871e45a2ef52a8adbc99422feb6121eabda8947c87c077a75884a80",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "X to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2741,
+      "chosen_cell_index": 3,
+      "chosen_view_id": 32,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_005.png",
+      "index": 5,
+      "observation_board": [
+        "O",
+        "",
+        "X",
+        "",
+        "X",
+        "",
+        "O",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "21b92bba336a1ebad824469710931085afcb7fb58710b45532c1481f15b7faee",
+      "policy_reason": "block:opponent-line",
+      "sha256": "7050255e1a58a13b26e61c243a80624564a590742cf4b638c62165cef097e31b",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "O to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 32
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2797,
+      "chosen_cell_index": 5,
+      "chosen_view_id": 26,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_006.png",
+      "index": 6,
+      "observation_board": [
+        "O",
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "O",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "676f9ca372aacb9285a3e3c0120d78618b0edf08c24ad9ef56a0f7afc713601e",
+      "policy_reason": "win:complete-line",
+      "sha256": "218e2947d9fa084bee5b9f6bab870eceeb2e0f34687e910bddcf77b2827c434a",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "X to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 32
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2741,
+      "chosen_cell_index": 8,
+      "chosen_view_id": 15,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_007.png",
+      "index": 7,
+      "observation_board": [
+        "O",
+        "",
+        "X",
+        "X",
+        "X",
+        "O",
+        "O",
+        "",
+        ""
+      ],
+      "observation_status": "",
+      "png_sha256": "5c833e91893e566c686999a2f3f22a943f9d9c4173ee6efd0c77fb91bc50ed55",
+      "policy_reason": "take-corner",
+      "sha256": "6f419bcf98a731c1f6f99635be74b20d1a74a90b793a24dd1d08bcd357d7d994",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "O to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 15
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 32
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2797,
+      "chosen_cell_index": 1,
+      "chosen_view_id": 40,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_008.png",
+      "index": 8,
+      "observation_board": [
+        "O",
+        "",
+        "X",
+        "X",
+        "X",
+        "O",
+        "O",
+        "",
+        "X"
+      ],
+      "observation_status": "",
+      "png_sha256": "33048194e19cebcac266523edbd274dac29665dd902e559f0486ca77b74e4766",
+      "policy_reason": "first-empty",
+      "sha256": "4ad3e00f62f6eeab35bc5a63e43eab0e97ff8ffce75ce8aa559f414d66406d42",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "X to move",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 15
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 32
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    },
+    {
+      "action": "dispatch_click",
+      "changed_pixels_vs_previous": 2765,
+      "chosen_cell_index": 7,
+      "chosen_view_id": 18,
+      "click_dispatched": true,
+      "event": "agent_move",
+      "file": "frame_009.png",
+      "index": 9,
+      "observation_board": [
+        "O",
+        "O",
+        "X",
+        "X",
+        "X",
+        "O",
+        "O",
+        "",
+        "X"
+      ],
+      "observation_status": "",
+      "png_sha256": "cb4fddb3f48928f84d7a3627c55497a49918c87977e0d7ea846d3fcd43fb47c0",
+      "policy_reason": "first-empty",
+      "sha256": "ce23894000d7253324fff6457a3b5a50093d6cc7b8d082a918d9a4294de8df73",
+      "state_transition_verified": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "DRAW",
+          "view_id": 11
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 15
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 18
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 26
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 29
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 32
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "X",
+          "view_id": 37
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 40
+        },
+        {
+          "class": "Landroid/widget/Button;",
+          "text": "O",
+          "view_id": 43
+        }
+      ]
+    }
+  ]
+}

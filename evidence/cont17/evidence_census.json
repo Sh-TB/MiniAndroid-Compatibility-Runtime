@@ -1,0 +1,200 @@
+{
+ "census": {
+  "audit_s107": {
+   "n_files": 69,
+   "bytes": 1588904
+  },
+  "batch367_rerun": {
+   "n_files": 46,
+   "bytes": 461577
+  },
+  "cleanup": {
+   "n_files": 7,
+   "bytes": 27472
+  },
+  "cont10": {
+   "n_files": 1,
+   "bytes": 8469
+  },
+  "cont11": {
+   "n_files": 2,
+   "bytes": 15197
+  },
+  "cont12": {
+   "n_files": 3,
+   "bytes": 39180
+  },
+  "cont14": {
+   "n_files": 1,
+   "bytes": 4717
+  },
+  "cont15": {
+   "n_files": 2,
+   "bytes": 5673
+  },
+  "cont16": {
+   "n_files": 3,
+   "bytes": 49239
+  },
+  "cont17": {
+   "n_files": 7,
+   "bytes": 54180
+  },
+  "cont6": {
+   "n_files": 2,
+   "bytes": 16186
+  },
+  "cont7": {
+   "n_files": 13,
+   "bytes": 68358
+  },
+  "cont8": {
+   "n_files": 10,
+   "bytes": 135254
+  },
+  "cont9": {
+   "n_files": 3,
+   "bytes": 16815
+  },
+  "current_head": {
+   "n_files": 2,
+   "bytes": 11670
+  },
+  "diff366": {
+   "n_files": 430,
+   "bytes": 3510205
+  },
+  "f231_installed_access": {
+   "n_files": 13,
+   "bytes": 56018
+  },
+  "law001_abi_scope": {
+   "n_files": 5,
+   "bytes": 19033
+  },
+  "s105_issues": {
+   "n_files": 5,
+   "bytes": 4443515
+  },
+  "s106_fresh": {
+   "n_files": 150,
+   "bytes": 796376
+  },
+  "s107_fresh": {
+   "n_files": 106,
+   "bytes": 602557
+  },
+  "s107_games": {
+   "n_files": 769,
+   "bytes": 4325839
+  },
+  "s108_telegram": {
+   "n_files": 2,
+   "bytes": 253094
+  },
+  "s109_telegram": {
+   "n_files": 10,
+   "bytes": 37946
+  },
+  "s109_webview": {
+   "n_files": 90,
+   "bytes": 401322
+  },
+  "s110_telegram": {
+   "n_files": 3,
+   "bytes": 13406
+  },
+  "s110_tickets": {
+   "n_files": 22,
+   "bytes": 2008282
+  },
+  "s112_html5_generalization": {
+   "n_files": 61,
+   "bytes": 362692
+  },
+  "s113_fullgui": {
+   "n_files": 136,
+   "bytes": 2439315
+  },
+  "s114_bigfix": {
+   "n_files": 156,
+   "bytes": 1246425
+  },
+  "s115_sweep": {
+   "n_files": 150,
+   "bytes": 1040972
+  },
+  "s115_telegram": {
+   "n_files": 7,
+   "bytes": 41843
+  },
+  "s117_complete_graphics": {
+   "n_files": 31,
+   "bytes": 91966
+  },
+  "s118_complete": {
+   "n_files": 4,
+   "bytes": 33674
+  },
+  "s119_games": {
+   "n_files": 8,
+   "bytes": 359266
+  },
+  "s120_new_games": {
+   "n_files": 6,
+   "bytes": 239278
+  },
+  "s121_full_sessions": {
+   "n_files": 7,
+   "bytes": 146553
+  },
+  "s122_harder_games": {
+   "n_files": 4,
+   "bytes": 50496
+  },
+  "s123_themed_apps": {
+   "n_files": 7,
+   "bytes": 182231
+  },
+  "s124_theme_base": {
+   "n_files": 10,
+   "bytes": 53381
+  },
+  "s127_base_graphics": {
+   "n_files": 7,
+   "bytes": 134911
+  },
+  "s128_input_law": {
+   "n_files": 8,
+   "bytes": 138632
+  },
+  "s129_input_law": {
+   "n_files": 9,
+   "bytes": 101870
+  },
+  "s131_input_wave": {
+   "n_files": 3,
+   "bytes": 22772
+  },
+  "s132_reuse_wave": {
+   "n_files": 3,
+   "bytes": 45047
+  },
+  "s133_browser": {
+   "n_files": 3,
+   "bytes": 33504
+  },
+  "s133_webfix": {
+   "n_files": 10,
+   "bytes": 365937
+  }
+ },
+ "missing_dirs": [
+  "cont1",
+  "cont2",
+  "cont3",
+  "cont4",
+  "cont5",
+  "cont13"
+ ]
+}

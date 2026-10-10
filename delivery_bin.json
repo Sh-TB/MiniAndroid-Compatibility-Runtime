@@ -1,0 +1,77 @@
+{
+    "bin": {
+        "id": "miniandroid-gamechanger-02e72ae",
+        "readonly": false,
+        "bytes": 313301968,
+        "bytes_readable": "313 MB",
+        "files": 5,
+        "updated_at": "2026-09-03T05:13:27.907709Z",
+        "updated_at_relative": "5 hours ago",
+        "created_at": "2026-09-03T05:11:21.952725Z",
+        "created_at_relative": "5 hours ago",
+        "expired_at": "2026-09-10T05:13:27.907709Z",
+        "expired_at_relative": "6 days from now"
+    },
+    "files": [
+        {
+            "filename": "FINAL_GAME_CHANGER_REPORT.md",
+            "content-type": "text/plain; charset=utf-8",
+            "bytes": 15620,
+            "bytes_readable": "16 kB",
+            "md5": "7a+7UHUaTtUj1MdBwnK/3A==",
+            "sha256": "72ae35fecbfca026bc4008c1e9d15124f9dc0e51f575a4dff26d745f1c86f19c",
+            "updated_at": "2026-09-03T05:13:26.015117Z",
+            "updated_at_relative": "5 hours ago",
+            "created_at": "2026-09-03T05:13:26.015117Z",
+            "created_at_relative": "5 hours ago"
+        },
+        {
+            "filename": "GAME_CHANGER_SHA256.txt",
+            "content-type": "text/plain; charset=utf-8",
+            "bytes": 2396,
+            "bytes_readable": "2.4 kB",
+            "md5": "IQLVRy3WhXQRZrJbkRJASg==",
+            "sha256": "e14f638c8d5adb5aba62cd5135cf47da245389b706968b32cc02e74c6d4fec92",
+            "updated_at": "2026-09-03T05:13:25.123134Z",
+            "updated_at_relative": "5 hours ago",
+            "created_at": "2026-09-03T05:13:25.123134Z",
+            "created_at_relative": "5 hours ago"
+        },
+        {
+            "filename": "HELPER_SOURCE_LIST.md",
+            "content-type": "text/plain; charset=utf-8",
+            "bytes": 52835,
+            "bytes_readable": "53 kB",
+            "md5": "A3XC7TwrDbH1gywnJjoagQ==",
+            "sha256": "b72bddc846d622d487f924d4bcae92c9cee7157c618cc8dafb7df97e930a3342",
+            "updated_at": "2026-09-03T05:13:27.905327Z",
+            "updated_at_relative": "5 hours ago",
+            "created_at": "2026-09-03T05:13:27.905327Z",
+            "created_at_relative": "5 hours ago"
+        },
+        {
+            "filename": "MiniAndroid_GAME_CHANGER_02e72ae.bundle",
+            "content-type": "application/octet-stream",
+            "bytes": 153825218,
+            "bytes_readable": "154 MB",
+            "md5": "wxCzV6yst1jdb8oVmj+NTQ==",
+            "sha256": "830d20700ddb64f7d1776e5655684d6de0d716de2578b223a8a6d99df9eb6daa",
+            "updated_at": "2026-09-03T05:13:24.4204Z",
+            "updated_at_relative": "5 hours ago",
+            "created_at": "2026-09-03T05:13:24.4204Z",
+            "created_at_relative": "5 hours ago"
+        },
+        {
+            "filename": "MiniAndroid_GAME_CHANGER_02e72ae.zip",
+            "content-type": "application/zip",
+            "bytes": 159405899,
+            "bytes_readable": "159 MB",
+            "md5": "Sf1WQV8vTOj0qrt5HUBnBQ==",
+            "sha256": "82769ec5e7f669133988a42643f01f693ca5afe69efafedc5d6bbb8010676561",
+            "updated_at": "2026-09-03T05:12:26.189667Z",
+            "updated_at_relative": "5 hours ago",
+            "created_at": "2026-09-03T05:12:26.189667Z",
+            "created_at_relative": "5 hours ago"
+        }
+    ]
+}

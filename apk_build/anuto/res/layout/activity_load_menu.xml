@@ -1,0 +1,19 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.load.LoadGameActivity">
+
+    <GridView
+        android:id="@+id/grid_savegames"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="150dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="20dp"
+        android:horizontalSpacing="20dp"
+        android:clipToPadding="false"
+        android:stretchMode="columnWidth"
+        android:scrollbarStyle="outsideOverlay" />
+
+</RelativeLayout>

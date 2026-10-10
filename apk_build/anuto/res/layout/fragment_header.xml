@@ -1,0 +1,138 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="ch.logixisland.anuto.view.game.HeaderFragment"
+    android:orientation="vertical"
+    android:background="?attr/backgroundHeader">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="25dp">
+
+        <TextView
+            android:id="@+id/txt_credits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:text="@string/credits" />
+
+        <TextView
+            android:id="@+id/txt_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/txt_credits"
+            android:layout_marginStart="5dp"
+            android:text="@string/bonus" />
+
+        <TextView
+            android:id="@+id/txt_lives"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/txt_bonus"
+            android:layout_marginStart="5dp"
+            android:text="@string/lives" />
+
+        <TextView
+            android:id="@+id/txt_wave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:text="@string/wave" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_build_tower"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:minWidth="60dp"
+            android:text="@string/build_tower" />
+
+        <LinearLayout
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ch.logixisland.anuto.view.game.TowerView
+                android:id="@+id/view_tower_1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp" />
+
+            <ch.logixisland.anuto.view.game.TowerView
+                android:id="@+id/view_tower_2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp" />
+
+            <ch.logixisland.anuto.view.game.TowerView
+                android:id="@+id/view_tower_3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp" />
+
+            <ch.logixisland.anuto.view.game.TowerView
+                android:id="@+id/view_tower_4"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_next_wave"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/next_wave" />
+
+        <Button
+            android:id="@+id/btn_fast_forward_active"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_next_wave"
+            android:layout_marginEnd="5dp"
+            android:minWidth="35dp"
+            android:text="@string/fast_forward" />
+
+        <Button
+            android:id="@+id/btn_fast_forward_speed"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_fast_forward_active"
+            android:layout_marginEnd="-3dp"
+            android:minWidth="35dp"
+            android:text="2x" />
+
+        <Button
+            android:id="@+id/btn_menu"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_fast_forward_speed"
+            android:layout_marginEnd="5dp"
+            android:text="@string/menu" />
+
+    </RelativeLayout>
+
+</LinearLayout>
