@@ -1,0 +1,3287 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260902-050343-8757",
+      "method": "start_session",
+      "timestamp": 1788325423137
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/apk_cache/corpus/notesbillthefarmer.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1788325423137
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: org.billthefarmer.notes, Main Activity: org.billthefarmer.notes.Notes",
+      "method": "stage_load_apk",
+      "timestamp": 1788325423137
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325423137
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 373 classes, 2499 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325423183
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325423183
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Landroid/support/v4/content/FileProvider$PathStrategy; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Landroid/support/v4/content/FileProvider; extends Landroid/content/ContentProvider; (17 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetDetector$CSRecognizerInfo; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetDetector; extends Ljava/lang/Object; (15 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetMatch; extends Ljava/lang/Object; (10 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$iteratedChar; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$NGramParser; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$NGramsPlusLang; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecognizer; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/markdown/BuildConfig; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/markdown/HttpHelper$Response; extends Ljava/lang/Object; (11 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/markdown/HttpHelper; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/markdown/MarkdownView$LoadMarkdownUrlTask; extends Landroid/os/AsyncTask; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/markdown/MarkdownView; extends Landroid/webkit/WebView; (14 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/markdown/R; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/AboutPreference; extends Landroid/preference/DialogPreference; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/BuildConfig; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Editor$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Editor$$ExternalSyntheticLambda1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Editor$$ExternalSyntheticLambda2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Editor$$ExternalSyntheticLambda3; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Editor$1; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Editor; extends Landroid/app/Activity; (18 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/FileAdapter; extends Landroid/widget/BaseAdapter; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/FileUtils$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/FileUtils$$ExternalSyntheticLambda1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/FileUtils$$ExternalSyntheticLambda2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/FileUtils; extends Ljava/lang/Object; (28 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda10; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda11; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda12; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda13; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda14; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda15; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda16; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda17; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda18; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda19; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda20; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda21; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda22; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda23; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda24; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda25; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda26; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda27; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda28; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda29; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda30; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda3; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda4; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda5; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda6; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda7; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda8; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda9; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$1; extends Landroid/webkit/WebViewClient; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$2$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$2; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$FindTask$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$FindTask$$ExternalSyntheticLambda1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$FindTask; extends Landroid/os/AsyncTask; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$GestureListener$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$GestureListener; extends Landroid/view/GestureDetector$SimpleOnGestureListener; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$QueryTextListener; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$ReadTask$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$ReadTask; extends Landroid/os/AsyncTask; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$ZipTask$$ExternalSyntheticLambda0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes$ZipTask; extends Landroid/os/AsyncTask; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Notes; extends Landroid/app/Activity; (145 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$anim; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$array; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$attr; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$drawable; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$id; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$integer; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$layout; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$menu; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$string; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$style; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$styleable; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R$xml; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/R; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Settings; extends Landroid/app/Activity; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/SettingsFragment; extends Landroid/preference/PreferenceFragment; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/billthefarmer/notes/Shortcut; extends Landroid/app/Activity; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/Extension; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/autolink/internal/AutolinkPostProcessor$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TableCell$Alignment; extends Ljava/lang/Enum; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableBlockParser$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableHtmlNodeRenderer$1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/HeadingAnchorExtension$Builder; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/IdGenerator$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/IdGenerator$Builder; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/IdGenerator; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/internal/TaskListItemPostProcessor$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/BlockContent; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/Bracket; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/DocumentParser$OpenBlockParser; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/HtmlBlockParser$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/InlineParserImpl$DelimiterData; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/LinkReferenceDefinitionParser$1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/LinkReferenceDefinitionParser$State; extends Ljava/lang/Enum; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/LinkReferenceDefinitionParser; extends Ljava/lang/Object; (13 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/LinkReferenceDefinitions; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ListBlockParser$ListData; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ListBlockParser$ListMarkerData; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/InlineContentParser; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/InlineParserState; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/ParsedInline; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/Position; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/Scanner; extends Ljava/lang/Object; (19 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/renderer/NodeRendererMap; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/renderer/text/ListHolder; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/AsciiMatcher$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/AsciiMatcher$Builder; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/CharMatcher; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/Escaping$Replacer; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/Escaping; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/Html5Entities; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/LinkScanner; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/Parsing; extends Ljava/lang/Object; (18 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Delimited; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Node; extends Ljava/lang/Object; (18 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Nodes$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Nodes$NodeIterable; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Nodes$NodeIterator; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Nodes; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/SourceSpan; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/SourceSpans; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Visitor; extends Ljava/lang/Object; (23 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/IncludeSourceSpans; extends Ljava/lang/Enum; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/InlineParser; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/InlineParserContext; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/InlineParserFactory; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/Parser$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/Parser$Builder; extends Ljava/lang/Object; (16 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/Parser; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/PostProcessor; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/SourceLine; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/SourceLines; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/BlockContinue; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/BlockParser; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/BlockParserFactory; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/BlockStart; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/MatchedBlockParser; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/ParserState; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/delimiter/DelimiterProcessor; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/delimiter/DelimiterRun; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/NodeRenderer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/Renderer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/AttributeProvider; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/AttributeProviderContext; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/AttributeProviderFactory; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/CoreHtmlNodeRenderer$1; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlNodeRendererContext; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlNodeRendererFactory; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlRenderer$Builder; extends Ljava/lang/Object; (17 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlWriter; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/UrlSanitizer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentNodeRendererContext; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentNodeRendererFactory; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentRenderer$Builder; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentWriter; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/Autolink; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkExtractor$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkExtractor$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkExtractor$Builder; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkExtractor$LinkIterator; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkExtractor$SpanIterator; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkExtractor; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkRenderer; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkType; extends Ljava/lang/Enum; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/Span; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/Scanner; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/Scanners; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Landroid/support/v4/content/FileProvider$SimplePathStrategy; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_2022; extends Lcom/ibm/icu/text/CharsetRecognizer; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_UTF8; extends Lcom/ibm/icu/text/CharsetRecognizer; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_Unicode; extends Lcom/ibm/icu/text/CharsetRecognizer; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs; extends Lcom/ibm/icu/text/CharsetRecognizer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$NGramParser_IBM420; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$NGramParser; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs; extends Lcom/ibm/icu/text/CharsetRecognizer; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/autolink/internal/AutolinkPostProcessor; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/StrikethroughExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/StrikethroughExtension$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/internal/StrikethroughDelimiterProcessor; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/internal/StrikethroughNodeRenderer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TablesExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TablesExtension$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableNodeRenderer; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/HeadingAnchorExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/internal/HeadingIdAttributeProvider; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/InsExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/InsExtension$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/internal/InsDelimiterProcessor; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/internal/InsNodeRenderer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/SubExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/SubExtension$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/internal/SubDelimiterProcessor; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/internal/SubNodeRenderer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/SupExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/SupExtension$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/internal/SupDelimiterProcessor; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/internal/SupNodeRenderer; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/TaskListItemsExtension$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/internal/TaskListItemHtmlNodeRenderer; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/internal/TaskListItemPostProcessor; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/BlockContinueImpl; extends Lorg/commonmark/parser/block/BlockContinue; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/BlockStartImpl; extends Lorg/commonmark/parser/block/BlockStart; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/Delimiter; extends Ljava/lang/Object; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/DocumentParser$MatchedBlockParserImpl; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/DocumentParser; extends Ljava/lang/Object; (32 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/InlineParserContextImpl; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/InlineParserImpl; extends Ljava/lang/Object; (30 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/StaggeredDelimiterProcessor; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/AutolinkInlineParser; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/BackslashInlineParser; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/BackticksInlineParser; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/EmphasisDelimiterProcessor; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/EntityInlineParser; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/HtmlInlineParser; extends Ljava/lang/Object; (10 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/ParsedInlineImpl; extends Lorg/commonmark/internal/inline/ParsedInline; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/renderer/text/BulletListHolder; extends Lorg/commonmark/internal/renderer/text/ListHolder; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/renderer/text/OrderedListHolder; extends Lorg/commonmark/internal/renderer/text/ListHolder; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/AsciiMatcher; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/Escaping$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/util/Escaping$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/AbstractVisitor; extends Ljava/lang/Object; (25 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423203
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Block; extends Lorg/commonmark/node/Node; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Code; extends Lorg/commonmark/node/Node; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/CustomNode; extends Lorg/commonmark/node/Node; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Emphasis; extends Lorg/commonmark/node/Node; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/HardLineBreak; extends Lorg/commonmark/node/Node; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/HtmlInline; extends Lorg/commonmark/node/Node; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Image; extends Lorg/commonmark/node/Node; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Link; extends Lorg/commonmark/node/Node; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/LinkReferenceDefinition; extends Lorg/commonmark/node/Node; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/SoftLineBreak; extends Lorg/commonmark/node/Node; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/StrongEmphasis; extends Lorg/commonmark/node/Node; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Text; extends Lorg/commonmark/node/Node; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/Parser$Builder$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/Parser$ParserExtension; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/AbstractBlockParser; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/parser/block/AbstractBlockParserFactory; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/DefaultUrlSanitizer; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlRenderer$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlRenderer$HtmlRendererExtension; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlRenderer$RendererContext; extends Ljava/lang/Object; (11 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/HtmlRenderer; extends Ljava/lang/Object; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentRenderer$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentRenderer$RendererContext; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentRenderer$TextContentRendererExtension; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/TextContentRenderer; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/LinkSpan; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/EmailScanner; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/SpanImpl; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/UrlScanner; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/WwwScanner; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_2022$CharsetRecog_2022CN; extends Lcom/ibm/icu/text/CharsetRecog_2022; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_2022$CharsetRecog_2022JP; extends Lcom/ibm/icu/text/CharsetRecog_2022; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_2022$CharsetRecog_2022KR; extends Lcom/ibm/icu/text/CharsetRecog_2022; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_16_BE; extends Lcom/ibm/icu/text/CharsetRecog_Unicode; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_16_LE; extends Lcom/ibm/icu/text/CharsetRecog_Unicode; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_32; extends Lcom/ibm/icu/text/CharsetRecog_Unicode; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_big5; extends Lcom/ibm/icu/text/CharsetRecog_mbcs; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_euc; extends Lcom/ibm/icu/text/CharsetRecog_mbcs; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_gb_18030; extends Lcom/ibm/icu/text/CharsetRecog_mbcs; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_sjis; extends Lcom/ibm/icu/text/CharsetRecog_mbcs; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_1; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_2; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_5; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_6; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_7; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_8; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_9; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM420_ar; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM424_he; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_KOI8_R; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_windows_1251; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_windows_1256; extends Lcom/ibm/icu/text/CharsetRecog_sbcs; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/autolink/AutolinkExtension; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/autolink/internal/AutolinkPostProcessor$AutolinkVisitor; extends Lorg/commonmark/node/AbstractVisitor; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/front/matter/YamlFrontMatterExtension; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/front/matter/YamlFrontMatterNode; extends Lorg/commonmark/node/CustomNode; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/front/matter/YamlFrontMatterVisitor; extends Lorg/commonmark/node/AbstractVisitor; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/front/matter/internal/YamlFrontMatterBlockParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/front/matter/internal/YamlFrontMatterBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/Strikethrough; extends Lorg/commonmark/node/CustomNode; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/StrikethroughExtension; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/internal/StrikethroughHtmlNodeRenderer; extends Lorg/commonmark/ext/gfm/strikethrough/internal/StrikethroughNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/strikethrough/internal/StrikethroughTextContentNodeRenderer; extends Lorg/commonmark/ext/gfm/strikethrough/internal/StrikethroughNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TableBody; extends Lorg/commonmark/node/CustomNode; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TableCell; extends Lorg/commonmark/node/CustomNode; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TableHead; extends Lorg/commonmark/node/CustomNode; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TableRow; extends Lorg/commonmark/node/CustomNode; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TablesExtension; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableBlockParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (13 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableHtmlNodeRenderer; extends Lorg/commonmark/ext/gfm/tables/internal/TableNodeRenderer; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/internal/TableTextContentNodeRenderer; extends Lorg/commonmark/ext/gfm/tables/internal/TableNodeRenderer; (10 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/HeadingAnchorExtension; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/heading/anchor/internal/HeadingIdAttributeProvider$1; extends Lorg/commonmark/node/AbstractVisitor; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/Ins; extends Lorg/commonmark/node/CustomNode; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/InsExtension; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/internal/InsHtmlNodeRenderer; extends Lorg/commonmark/ext/ins/internal/InsNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/ins/internal/InsTextContentNodeRenderer; extends Lorg/commonmark/ext/ins/internal/InsNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/Sub; extends Lorg/commonmark/node/CustomNode; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/SubExtension; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/internal/SubHtmlNodeRenderer; extends Lorg/commonmark/ext/sub/internal/SubNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sub/internal/SubTextContentNodeRenderer; extends Lorg/commonmark/ext/sub/internal/SubNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/Sup; extends Lorg/commonmark/node/CustomNode; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/SupExtension; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/internal/SupHtmlNodeRenderer; extends Lorg/commonmark/ext/sup/internal/SupNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/sup/internal/SupTextContentNodeRenderer; extends Lorg/commonmark/ext/sup/internal/SupNodeRenderer; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/TaskListItemMarker; extends Lorg/commonmark/node/CustomNode; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/TaskListItemsExtension; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/task/list/items/internal/TaskListItemPostProcessor$TaskListItemVisitor; extends Lorg/commonmark/node/AbstractVisitor; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/BlockQuoteParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/BlockQuoteParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/DocumentBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/FencedCodeBlockParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/FencedCodeBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/HeadingParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/HeadingParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/HtmlBlockParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/HtmlBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/IndentedCodeBlockParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/IndentedCodeBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ListBlockParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ListBlockParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (13 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ListItemParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ParagraphParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (10 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ThematicBreakParser$Factory; extends Lorg/commonmark/parser/block/AbstractBlockParserFactory; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/ThematicBreakParser; extends Lorg/commonmark/parser/block/AbstractBlockParser; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/AsteriskDelimiterProcessor; extends Lorg/commonmark/internal/inline/EmphasisDelimiterProcessor; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/internal/inline/UnderscoreDelimiterProcessor; extends Lorg/commonmark/internal/inline/EmphasisDelimiterProcessor; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/BlockQuote; extends Lorg/commonmark/node/Block; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/CustomBlock; extends Lorg/commonmark/node/Block; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Document; extends Lorg/commonmark/node/Block; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/FencedCodeBlock; extends Lorg/commonmark/node/Block; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Heading; extends Lorg/commonmark/node/Block; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/HtmlBlock; extends Lorg/commonmark/node/Block; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/IndentedCodeBlock; extends Lorg/commonmark/node/Block; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/ListBlock; extends Lorg/commonmark/node/Block; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/ListItem; extends Lorg/commonmark/node/Block; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/Paragraph; extends Lorg/commonmark/node/Block; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/ThematicBreak; extends Lorg/commonmark/node/Block; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/CoreHtmlNodeRenderer$AltTextVisitor; extends Lorg/commonmark/node/AbstractVisitor; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/html/CoreHtmlNodeRenderer; extends Lorg/commonmark/node/AbstractVisitor; (29 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/renderer/text/CoreTextContentNodeRenderer; extends Lorg/commonmark/node/AbstractVisitor; (26 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/nibor/autolink/internal/LinkSpanImpl; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_32_BE; extends Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_32; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_32_LE; extends Lcom/ibm/icu/text/CharsetRecog_Unicode$CharsetRecog_UTF_32; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_euc$CharsetRecog_euc_jp; extends Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_euc; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_euc$CharsetRecog_euc_kr; extends Lcom/ibm/icu/text/CharsetRecog_mbcs$CharsetRecog_euc; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_5_ru; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_5; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_6_ar; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_6; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_7_el; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_7; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_8_I_he; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_8; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_8_he; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_8; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_9_tr; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_8859_9; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM420_ar_ltr; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM420_ar; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM420_ar_rtl; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM420_ar; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM424_he_ltr; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM424_he; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM424_he_rtl; extends Lcom/ibm/icu/text/CharsetRecog_sbcs$CharsetRecog_IBM424_he; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/front/matter/YamlFrontMatterBlock; extends Lorg/commonmark/node/CustomBlock; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/ext/gfm/tables/TableBlock; extends Lorg/commonmark/node/CustomBlock; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/BulletList; extends Lorg/commonmark/node/ListBlock; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lorg/commonmark/node/OrderedList; extends Lorg/commonmark/node/ListBlock; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325423204
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 928",
+      "method": "execute_apk",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 296",
+      "method": "execute_apk",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 88",
+      "method": "execute_apk",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 928 opcodes executed",
+      "method": "validation",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Using text from API call: p4294967293",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Lifecycle method 'Landroid/app/Activity;<super>.onCreate' from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_source",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_verified",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: /home/z/my-project/miniandroid_ws/triage014/after/notesbillthefarmer/exp031_5/traces/org.billthefarmer.notes",
+      "method": "trace_export",
+      "timestamp": 1788325423232
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1788325423241
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325423241
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325423241
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325423241
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325423241
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1788325423241
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Found 2 views with click listeners",
+      "method": "phase_b_click",
+      "timestamp": 1788325423242
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(13) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1788325423243
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(12) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1788325423244
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325423244
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325423244
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=11)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325423275
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1788325423276
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/miniandroid_ws/triage014/after/notesbillthefarmer/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1788325423345
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/miniandroid_ws/triage014/after/notesbillthefarmer/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1788325423345
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1788325423387
+    }
+  ],
+  "generated_at": "2026-09-02 05:03:43 UTC",
+  "session_id": "EXP-001-20260902-050343-8757",
+  "total_calls": 410
+}

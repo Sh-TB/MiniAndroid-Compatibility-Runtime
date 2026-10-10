@@ -1,0 +1,425 @@
+==============================================================================
+[Q1] Lz1/i; — class identity + addAll method dump
+==============================================================================
+
+--- Lz1/i;.addAll(['?T', 'F']) -> Z  insns=228 (dex=classes.dex)
+  pc=    0 op=0x1a w=0x001a  const-string v0, "elements"
+  pc=    4 op=0x71 w=0x2071  invoke-static LM1/i;.f(['?T', 'D']) -> V  [v0 v2]
+  pc=   10 op=0x52 w=0x8052  iget v2, v0, Lz1/i;.k:I
+  pc=   14 op=0x3a w=0x093a  
+  pc=   18 op=0x36 w=0x0936  
+  pc=   22 op=0x72 w=0x1072  invoke-interface Ljava/util/Collection;.isEmpty([]) -> Z  [v0]
+  pc=   28 op=0x0a w=0x000a  return-void
+  pc=   30 op=0x12 w=0x0112  const/4 v2, 1
+  pc=   32 op=0x38 w=0x0038  
+  pc=   36 op=0x0f w=0x010f  return v1
+  pc=   38 op=0x52 w=0x8052  iget v2, v0, Lz1/i;.k:I
+  pc=   42 op=0x33 w=0x0933  
+  pc=   46 op=0x6e w=0x206e  invoke-virtual Lz1/i;.addAll(['Ljava/util/Collection;']) -> Z  [v0 v2]
+  pc=   52 op=0x0a w=0x090a  return-void
+  pc=   54 op=0x0f w=0x090f  return v9
+  pc=   56 op=0x6e w=0x106e  invoke-virtual Lz1/i;.z([]) -> V  [v0]
+  pc=   62 op=0x52 w=0x8052  iget v2, v0, Lz1/i;.k:I
+  pc=   66 op=0x72 w=0x1072  invoke-interface Ljava/util/Collection;.size([]) -> I  [v0]
+  pc=   72 op=0x0a w=0x020a  return-void
+  pc=   74 op=0xb0 w=0x02b0  
+  pc=   76 op=0x6e w=0x206e  invoke-virtual Lz1/i;.t(['I']) -> V  [v0 v2]
+  pc=   82 op=0x52 w=0x8052  iget v2, v0, Lz1/i;.i:I
+  pc=   86 op=0x52 w=0x8252  iget v2, v2, Lz1/i;.k:I
+  pc=   90 op=0xb0 w=0x02b0  
+  pc=   92 op=0x6e w=0x206e  invoke-virtual Lz1/i;.y(['I']) -> I  [v0 v2]
+  pc=   98 op=0x0a w=0x000a  return-void
+  pc=  100 op=0x52 w=0x8252  iget v2, v2, Lz1/i;.i:I
+  pc=  104 op=0xb0 w=0x92b0  
+  pc=  106 op=0x6e w=0x206e  invoke-virtual Lz1/i;.y(['I']) -> I  [v0 v2]
+  pc=  112 op=0x0a w=0x020a  return-void
+  pc=  114 op=0x72 w=0x1072  invoke-interface Ljava/util/Collection;.size([]) -> I  [v0]
+  pc=  120 op=0x0a w=0x030a  return-void
+  pc=  122 op=0x52 w=0x8452  iget v2, v4, Lz1/i;.k:I
+  pc=  126 op=0x12 w=0x1512  const/4 v2, 5
+  pc=  128 op=0xb0 w=0x54b0  
+  pc=  130 op=0xb9 w=0x54b9  
+  pc=  132 op=0x35 w=0x4935  
+  pc=  136 op=0x52 w=0x8952  iget v2, v9, Lz1/i;.i:I
+  pc=  140 op=0x91 w=0x0091  
+  pc=  142 op=0x09 w=0x0309  move-object/from16 v9, v37428
+  pc=  144 op=0x34 w=0x9234  
+  pc=  148 op=0x3a w=0x003a  
+  pc=  152 op=0x54 w=0x8154  iget-object v4, v1, Lz1/i;.j:[Ljava/lang/Object;
+  pc=  156 op=0x71 w=0x5271  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v2 v5 v0 v0 v0]
+  pc=  162 op=0x28 w=0x3728  
+  pc=  166 op=0xa3 w=0x31a3  
+  pc=  168 op=0x21 w=0x4621  throw v1
+  pc=  170 op=0xb0 w=0x60b0  
+  pc=  172 op=0x91 w=0x0691  
+  pc=  174 op=0x02 w=0x0902  
+  pc=  178 op=0xb1 w=0x07b1  
+  pc=  180 op=0x34 w=0x6734  
+  pc=  184 op=0x71 w=0x5271  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v2 v5 v0 v0 v0]
+  pc=  190 op=0x28 w=0x2928  
+  pc=  194 op=0x09 w=0x0709  move-object/from16 v9, v22129
+  pc=  196 op=0x71 w=0x5671  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v6 v5 v0 v0 v0]
+  pc=  202 op=0x54 w=0x8954  iget-object v4, v9, Lz1/i;.j:[Ljava/lang/Object;
+  pc=  206 op=0x52 w=0x8452  iget v2, v4, Lz1/i;.i:I
+  pc=  210 op=0xb0 w=0x74b0  
+  pc=  212 op=0x71 w=0x5271  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v2 v5 v0 v0 v0]
+  pc=  218 op=0x28 w=0x1b28  
+  pc=  222 op=0xa3 w=0x31a3  
+  pc=  224 op=0x21 w=0x4621  throw v1
+  pc=  226 op=0x71 w=0x5671  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v6 v5 v0 v0 v0]
+  pc=  232 op=0x54 w=0x8954  iget-object v4, v9, Lz1/i;.j:[Ljava/lang/Object;
+  pc=  236 op=0x34 w=0x2334  
+  pc=  240 op=0x21 w=0x9421  throw v1
+  pc=  242 op=0xb1 w=0x34b1  
+  pc=  244 op=0x71 w=0x5271  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v2 v5 v0 v0 v0]
+  pc=  250 op=0x28 w=0x0b28  
+  pc=  254 op=0xb1 w=0x34b1  
+  pc=  256 op=0x71 w=0x5371  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v3 v5 v0 v0 v0]
+  pc=  262 op=0x54 w=0x8954  iget-object v4, v9, Lz1/i;.j:[Ljava/lang/Object;
+  pc=  266 op=0x71 w=0x5271  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v2 v5 v0 v0 v0]
+  pc=  272 op=0x59 w=0x8059  iput v9, v0, Lz1/i;.i:I
+  pc=  276 op=0xb1 w=0x32b1  
+  pc=  278 op=0x6e w=0x206e  invoke-virtual Lz1/i;.w(['I']) -> I  [v0 v2]
+  pc=  284 op=0x0a w=0x090a  return-void
+  pc=  286 op=0x6e w=0x306e  invoke-virtual Lz1/i;.s(['?T', 'F']) -> V  [v0 v3 v0]
+  pc=  292 op=0x28 w=0x4328  
+  pc=  296 op=0x02 w=0x0302  
+  pc=  300 op=0x1f w=0x001f  
+  pc=  304 op=0x54 w=0x8454  iget-object v4, v4, Lz1/i;.j:[Ljava/lang/Object;
+  pc=  308 op=0x21 w=0x4621  throw v1
+  pc=  310 op=0x36 w=0x6336  
+  pc=  314 op=0x71 w=0x5071  invoke-static Ln/a;.k(['?T', '?T', 'I', 'C', '[Ljava/lang/StackTraceElement;']) -> V  [v0 v5 v0 v0 v0]
+
+--- Lz1/i;.addAll(['Ljava/util/Collection;']) -> Z  insns=44 (dex=classes.dex)
+  pc=    0 op=0x1a w=0x001a  const-string v0, "elements"
+  pc=    4 op=0x71 w=0x2071  invoke-static LM1/i;.f(['?T', 'D']) -> V  [v0 v2]
+  pc=   10 op=0x72 w=0x1072  invoke-interface Ljava/util/Collection;.isEmpty([]) -> Z  [v0]
+  pc=   16 op=0x0a w=0x000a  return-void
+  pc=   18 op=0x38 w=0x0038  
+  pc=   22 op=0x12 w=0x0312  const/4 v2, 3
+  pc=   24 op=0x0f w=0x030f  return v3
+  pc=   26 op=0x6e w=0x106e  invoke-virtual Lz1/i;.z([]) -> V  [v0]
+  pc=   32 op=0x6e w=0x106e  invoke-virtual Lz1/i;.c([]) -> I  [v0]
+  pc=   38 op=0x0a w=0x000a  return-void
+  pc=   40 op=0x72 w=0x1072  invoke-interface Ljava/util/Collection;.size([]) -> I  [v0]
+  pc=   46 op=0x0a w=0x010a  return-void
+  pc=   48 op=0xb0 w=0x01b0  
+  pc=   50 op=0x6e w=0x206e  invoke-virtual Lz1/i;.t(['I']) -> V  [v0 v2]
+  pc=   56 op=0x52 w=0x2052  iget v2, v0, Lz1/i;.i:I
+  pc=   60 op=0x6e w=0x106e  invoke-virtual Lz1/i;.c([]) -> I  [v0]
+  pc=   66 op=0x0a w=0x010a  return-void
+  pc=   68 op=0xb0 w=0x01b0  
+  pc=   70 op=0x6e w=0x206e  invoke-virtual Lz1/i;.y(['I']) -> I  [v0 v2]
+  pc=   76 op=0x0a w=0x000a  return-void
+  pc=   78 op=0x6e w=0x306e  invoke-virtual Lz1/i;.s(['?T', 'F']) -> V  [v0 v3 v0]
+  pc=   84 op=0x12 w=0x1312  const/4 v2, 3
+  pc=   86 op=0x0f w=0x030f  return v3
+
+==============================================================================
+[Q2] call sites of z1/i;.addAll inside Landroidx/navigation/c; and c$e;
+==============================================================================
+
+--- CALL SITE: Landroidx/navigation/c;.a(['?T', '?T', 'I', '?T']) -> V  pc=1000 calls Lz1/i;.addAll(['Ljava/util/Collection;'])
+  pc=    0 op=0x08 w=0x0008  move-object/16 v8, v0
+  pc=    4 op=0x08 w=0x0108  move-object/16 v8, v1
+  pc=    8 op=0x08 w=0x0208  move-object/16 v8, v2
+  pc=   12 op=0x08 w=0x0308  move-object/16 v8, v3
+  pc=   16 op=0x08 w=0x0408  move-object/16 v8, v4
+  pc=   20 op=0x54 w=0x3554  iget-object v4, v5, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=   24 op=0x20 w=0x5620  
+  pc=   28 op=0x12 w=0x1712  const/4 v2, 7
+  pc=   30 op=0x12 w=0x0812  const/4 v2, -8
+  pc=   32 op=0x54 w=0x0954  iget-object v4, v9, Landroidx/navigation/c;.g:Lz1/i;
+  pc=   36 op=0x39 w=0x0639  
+  pc=   40 op=0x6e w=0x106e  invoke-virtual Lz1/i;.isEmpty([]) -> Z  [v0]
+  pc=   46 op=0x0a w=0x060a  return-void
+  pc=   48 op=0x39 w=0x0639  
+  pc=   52 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=   58 op=0x0c w=0x060c  move-result v6
+  pc=   60 op=0x1f w=0x061f  
+  pc=   64 op=0x54 w=0x6654  iget-object v4, v6, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=   68 op=0x20 w=0x6620  
+  pc=   72 op=0x38 w=0x0638  
+  pc=   76 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=   82 op=0x0c w=0x060c  move-result v6
+  pc=   84 op=0x1f w=0x061f  
+  pc=   88 op=0x54 w=0x6654  iget-object v4, v6, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=   92 op=0x52 w=0x6652  iget v2, v6, Landroidx/navigation/f;.o:I
+  pc=   96 op=0x6e w=0x406e  invoke-virtual Landroidx/navigation/c;.k(['?T', 'Z', 'I']) -> Z  [v0 v4 v0 v0]
+  pc=  102 op=0x0a w=0x060a  return-void
+  pc=  104 op=0x39 w=0x0639  
+  pc=  108 op=0x22 w=0x0622  new-instance v6, Lz1/i;
+  pc=  112 op=0x70 w=0x1070  invoke-direct Lz1/i;.<init>([]) -> V  [v0]
+  pc=  118 op=0x20 w=0x1a20  
+  pc=  122 op=0x54 w=0x0b54  iget-object v4, v11, Landroidx/navigation/c;.a:Landroid/content/Context;
+  pc=  126 op=0x12 w=0x0c12  const/4 v2, -4
+  pc=  128 op=0x38 w=0x0a38  
+  pc=  132 op=0x07 w=0x5a07  move-object v7, v10
+  pc=  134 op=0x71 w=0x1071  invoke-static LM1/i;.c(['Ljava/lang/Object;']) -> V  [v0]
+  pc=  140 op=0x54 w=0xaa54  iget-object v4, v10, Landroidx/navigation/f;.j:Landroidx/navigation/g;
+  pc=  144 op=0x38 w=0x0a38  
+  pc=  148 op=0x78 w=0x0178  invoke-interface/range Ljava/util/List;.size([]) -> I  [v20..+1]
+  pc=  154 op=0x0a w=0x0d0a  return-void
+  pc=  156 op=0x72 w=0x2072  invoke-interface Ljava/util/List;.listIterator(['I']) -> Ljava/util/ListIterator;  [v0 v2]
+  pc=  162 op=0x0c w=0x0d0c  move-result v13
+  pc=  164 op=0x72 w=0x1072  invoke-interface Ljava/util/ListIterator;.hasPrevious([]) -> Z  [v0]
+  pc=  170 op=0x0a w=0x0e0a  return-void
+  pc=  172 op=0x38 w=0x0e38  
+  pc=  176 op=0x72 w=0x1072  invoke-interface Ljava/util/ListIterator;.previous([]) -> Ljava/lang/Object;  [v0]
+  pc=  182 op=0x0c w=0x0e0c  move-result v14
+  pc=  184 op=0x07 w=0xef07  move-object v7, v15
+  pc=  186 op=0x1f w=0x0f1f  
+  pc=  190 op=0x54 w=0xff54  iget-object v4, v15, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  194 op=0x71 w=0x2071  invoke-static LM1/i;.a(['?T', 'D']) -> Z  [v0 v2]
+  pc=  200 op=0x0a w=0x0f0a  return-void
+  pc=  202 op=0x38 w=0x0f38  
+  pc=  206 op=0x28 w=0x0228  
+  pc=  210 op=0x1f w=0x0e1f  
+  pc=  214 op=0x39 w=0x0e39  
+  pc=  218 op=0x74 w=0x0174  invoke-virtual/range Landroidx/navigation/c;.f([]) -> Landroidx/lifecycle/i$b;  [v16..+1]
+  pc=  224 op=0x0c w=0x0d0c  move-result v13
+  pc=  226 op=0x54 w=0x0e54  iget-object v4, v14, Landroidx/navigation/c;.p:Lh1/i;
+  pc=  230 op=0x71 w=0x5e71  invoke-static Landroidx/navigation/b$a;.a(['?T', '?T', 'Lh1/i;', 'I', '?T']) -> Landroidx/navigation/b;  [v14 v5 v0 v0 v0]
+  pc=  236 op=0x0c w=0x0e0c  move-result v14
+  pc=  238 op=0x6e w=0x206e  invoke-virtual Lz1/i;.q(['Ljava/lang/Object;']) -> V  [v0 v2]
+  pc=  244 op=0x6e w=0x106e  invoke-virtual Lz1/i;.isEmpty([]) -> Z  [v0]
+  pc=  250 op=0x0a w=0x0d0a  return-void
+  pc=  252 op=0xb7 w=0x7db7  
+  pc=  254 op=0x38 w=0x0d38  
+  pc=  258 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=  264 op=0x0c w=0x0d0c  move-result v13
+  pc=  266 op=0x1f w=0x0d1f  
+  pc=  270 op=0x54 w=0xdd54  iget-object v4, v13, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  274 op=0x33 w=0xad33  
+  pc=  278 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=  284 op=0x0c w=0x0d0c  move-result v13
+  pc=  286 op=0x1f w=0x0d1f  
+  pc=  290 op=0x71 w=0x2071  invoke-static Landroidx/navigation/c;.m(['?T', 'D']) -> V  [v0 v2]
+  pc=  296 op=0x38 w=0x0a38  
+  pc=  300 op=0x33 w=0x1a33  
+  pc=  304 op=0x6e w=0x106e  invoke-virtual Lz1/i;.isEmpty([]) -> Z  [v0]
+  pc=  310 op=0x0a w=0x0a0a  return-void
+  pc=  312 op=0x38 w=0x0a38  
+  pc=  316 op=0x07 w=0x5a07  move-object v7, v10
+  pc=  318 op=0x28 w=0x0928  
+  pc=  322 op=0x1b w=0x4b1b  const-string/jumbo v11, "<str168558598>"
+  pc=  324 op=0x06 w=0x0006  
+  pc=  326 op=0x0c w=0x0a0c  move-result v10
+  pc=  328 op=0x1f w=0x0a1f  
+  pc=  332 op=0x54 w=0xaa54  iget-object v4, v10, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  336 op=0x38 w=0x0a38  
+  pc=  340 op=0x52 w=0xad52  iget v2, v13, Landroidx/navigation/f;.o:I
+  pc=  344 op=0x6e w=0x206e  invoke-virtual Landroidx/navigation/c;.d(['I']) -> Landroidx/navigation/f;  [v0 v2]
+  pc=  350 op=0x0c w=0x0d0c  move-result v13
+  pc=  352 op=0x32 w=0xad32  
+  pc=  356 op=0x54 w=0xaa54  iget-object v4, v10, Landroidx/navigation/f;.j:Landroidx/navigation/g;
+  pc=  360 op=0x38 w=0x0a38  
+  pc=  364 op=0x38 w=0x0238  
+  pc=  368 op=0x74 w=0x0174  invoke-virtual/range Landroid/os/BaseBundle;.isEmpty([]) -> Z  [v18..+1]
+  pc=  374 op=0x0a w=0x0d0a  return-void
+  pc=  376 op=0x33 w=0x7d33  
+  pc=  380 op=0x07 w=0xcd07  move-object v7, v13
+  pc=  382 op=0x28 w=0x0228  
+  pc=  386 op=0x78 w=0x0178  invoke-interface/range Ljava/util/List;.size([]) -> I  [v20..+1]
+  pc=  392 op=0x0a w=0x0e0a  return-void
+  pc=  394 op=0x72 w=0x2072  invoke-interface Ljava/util/List;.listIterator(['I']) -> Ljava/util/ListIterator;  [v0 v2]
+  pc=  400 op=0x0c w=0x0e0c  move-result v14
+  pc=  402 op=0x72 w=0x1072  invoke-interface Ljava/util/ListIterator;.hasPrevious([]) -> Z  [v0]
+  pc=  408 op=0x0a w=0x0f0a  return-void
+  pc=  410 op=0x38 w=0x0f38  
+  pc=  414 op=0x72 w=0x1072  invoke-interface Ljava/util/ListIterator;.previous([]) -> Ljava/lang/Object;  [v0]
+  pc=  420 op=0x0c w=0x0f0c  move-result v15
+  pc=  422 op=0x07 w=0xf707  move-object v7, v7
+  pc=  424 op=0x1f w=0x071f  
+  pc=  428 op=0x54 w=0x7754  iget-object v4, v7, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  432 op=0x71 w=0x2071  invoke-static LM1/i;.a(['?T', 'D']) -> Z  [v0 v2]
+  pc=  438 op=0x0a w=0x070a  return-void
+  pc=  440 op=0x38 w=0x0738  
+  pc=  444 op=0x28 w=0x0428  
+  pc=  448 op=0x28 w=0xe928  
+  pc=  452 op=0x1f w=0x0f1f  
+  pc=  456 op=0x39 w=0x0f39  
+  pc=  460 op=0x6e w=0x206e  invoke-virtual Landroidx/navigation/f;.f(['Landroid/os/Bundle;']) -> Landroid/os/Bundle;  [v0 v2]
+  pc=  466 op=0x0c w=0x070c  move-result v7
+  pc=  468 op=0x74 w=0x0174  invoke-virtual/range Landroidx/navigation/c;.f([]) -> Landroidx/lifecycle/i$b;  [v16..+1]
+  pc=  474 op=0x0c w=0x0d0c  move-result v13
+  pc=  476 op=0x54 w=0x0e54  iget-object v4, v14, Landroidx/navigation/c;.p:Lh1/i;
+  pc=  480 op=0x71 w=0x5e71  invoke-static Landroidx/navigation/b$a;.a(['?T', '?T', 'Lh1/i;', 'I', '?T']) -> Landroidx/navigation/b;  [v14 v5 v0 v0 v0]
+  pc=  486 op=0x0c w=0x0f0c  move-result v15
+  pc=  488 op=0x6e w=0x206e  invoke-virtual Lz1/i;.q(['Ljava/lang/Object;']) -> V  [v0 v2]
+  pc=  494 op=0x12 w=0x1712  const/4 v2, 7
+  pc=  496 op=0x28 w=0xb028  
+  pc=  500 op=0x1e w=0x4b1e  
+  pc=  502 op=0x06 w=0x0006  
+  pc=  504 op=0x0a w=0x070a  return-void
+  pc=  506 op=0x38 w=0x0738  
+  pc=  510 op=0x28 w=0x0928  
+  pc=  514 op=0x1b w=0x4b1b  const-string/jumbo v11, "<str84672518>"
+  pc=  516 op=0x06 w=0x0006  
+  pc=  518 op=0x0c w=0x050c  move-result v5
+  pc=  520 op=0x1f w=0x051f  
+  pc=  524 op=0x54 w=0x5554  iget-object v4, v5, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  528 op=0x6e w=0x106e  invoke-virtual Lz1/i;.isEmpty([]) -> Z  [v0]
+  pc=  534 op=0x0a w=0x070a  return-void
+  pc=  536 op=0x39 w=0x0739  
+  pc=  540 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=  546 op=0x0c w=0x070c  move-result v7
+  pc=  548 op=0x1f w=0x071f  
+  pc=  552 op=0x54 w=0x7754  iget-object v4, v7, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  556 op=0x20 w=0x7720  
+  pc=  560 op=0x38 w=0x0738  
+  pc=  564 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=  570 op=0x0c w=0x070c  move-result v7
+  pc=  572 op=0x1f w=0x071f  
+  pc=  576 op=0x54 w=0x7754  iget-object v4, v7, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  580 op=0x1a w=0x0a1a  const-string v10, "null cannot be cast to non-null type androidx.navigation.Nav"
+  pc=  584 op=0x71 w=0x2071  invoke-static LM1/i;.d(['?T', 'D']) -> V  [v0 v2]
+  pc=  590 op=0x1f w=0x071f  
+  pc=  594 op=0x52 w=0x5a52  iget v2, v10, Landroidx/navigation/f;.o:I
+  pc=  598 op=0x6e w=0x306e  invoke-virtual Landroidx/navigation/g;.t(['?T', 'F']) -> Landroidx/navigation/f;  [v0 v3 v0]
+  pc=  604 op=0x0c w=0x070c  move-result v7
+  pc=  606 op=0x39 w=0x0739  
+  pc=  610 op=0x6e w=0x106e  invoke-virtual Lz1/i;.last([]) -> Ljava/lang/Object;  [v0]
+  pc=  616 op=0x0c w=0x070c  move-result v7
+  pc=  618 op=0x1f w=0x071f  
+  pc=  622 op=0x71 w=0x2071  invoke-static Landroidx/navigation/c;.m(['?T', 'D']) -> V  [v0 v2]
+  pc=  628 op=0x28 w=0xce28  
+  pc=  632 op=0x1e w=0x4b1e  
+  pc=  634 op=0x09 w=0x0009  move-object/from16 v9, v1290
+  pc=  636 op=0x0a w=0x050a  return-void
+  pc=  638 op=0x38 w=0x0538  
+  pc=  642 op=0x07 w=0xc507  move-object v7, v5
+  pc=  644 op=0x28 w=0x0728  
+  pc=  648 op=0xa3 w=0x31a3  
+  pc=  650 op=0x52 w=0x9752  iget v2, v7, Lz1/i;.i:I
+  pc=  654 op=0x46 w=0x0546  
+  pc=  658 op=0x1f w=0x051f  
+  pc=  662 op=0x39 w=0x0539  
+  pc=  666 op=0x6e w=0x106e  invoke-virtual Lz1/i;.isEmpty([]) -> Z  [v0]
+  pc=  672 op=0x0a w=0x050a  return-void
+  pc=  674 op=0x38 w=0x0538  
+  pc=  678 op=0x07 w=0xc507  move-object v7, v5
+  pc=  680 op=0x28 w=0x0728  
+  pc=  684 op=0xa3 w=0x31a3  
+  pc=  686 op=0x52 w=0x6752  iget v2, v7, Lz1/i;.i:I
+  pc=  690 op=0x46 w=0x0546  
+  pc=  694 op=0x1f w=0x051f  
+  pc=  698 op=0x38 w=0x0538  
+  pc=  702 op=0x54 w=0x5554  iget-object v4, v5, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  706 op=0x28 w=0x0228  
+  pc=  710 op=0x54 w=0x0754  iget-object v4, v7, Landroidx/navigation/c;.c:Landroidx/navigation/g;
+  pc=  714 op=0x71 w=0x2071  invoke-static LM1/i;.a(['?T', 'D']) -> Z  [v0 v2]
+  pc=  720 op=0x0a w=0x050a  return-void
+  pc=  722 op=0x39 w=0x0539  
+  pc=  726 op=0x78 w=0x0178  invoke-interface/range Ljava/util/List;.size([]) -> I  [v20..+1]
+  pc=  732 op=0x0a w=0x050a  return-void
+  pc=  734 op=0x72 w=0x2072  invoke-interface Ljava/util/List;.listIterator(['I']) -> Ljava/util/ListIterator;  [v0 v2]
+  pc=  740 op=0x0c w=0x040c  move-result v4
+  pc=  742 op=0x72 w=0x1072  invoke-interface Ljava/util/ListIterator;.hasPrevious([]) -> Z  [v0]
+  pc=  748 op=0x0a w=0x050a  return-void
+  pc=  750 op=0x38 w=0x0538  
+  pc=  754 op=0x72 w=0x1072  invoke-interface Ljava/util/ListIterator;.previous([]) -> Ljava/lang/Object;  [v0]
+  pc=  760 op=0x0c w=0x050c  move-result v5
+  pc=  762 op=0x07 w=0x5707  move-object v7, v7
+  pc=  764 op=0x1f w=0x071f  
+  pc=  768 op=0x54 w=0x7754  iget-object v4, v7, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  772 op=0x54 w=0x0854  iget-object v4, v8, Landroidx/navigation/c;.c:Landroidx/navigation/g;
+  pc=  776 op=0x71 w=0x1071  invoke-static LM1/i;.c(['Ljava/lang/Object;']) -> V  [v0]
+  pc=  782 op=0x71 w=0x2071  invoke-static LM1/i;.a(['?T', 'D']) -> Z  [v0 v2]
+  pc=  788 op=0x0a w=0x070a  return-void
+  pc=  790 op=0x38 w=0x0738  
+  pc=  794 op=0x07 w=0x5c07  move-object v7, v12
+  pc=  796 op=0x1f w=0x0c1f  
+  pc=  800 op=0x39 w=0x0c39  
+  pc=  804 op=0x54 w=0x0454  iget-object v4, v4, Landroidx/navigation/c;.c:Landroidx/navigation/g;
+  pc=  808 op=0x71 w=0x1071  invoke-static LM1/i;.c(['Ljava/lang/Object;']) -> V  [v0]
+  pc=  814 op=0x54 w=0x0554  iget-object v4, v5, Landroidx/navigation/c;.c:Landroidx/navigation/g;
+  pc=  818 op=0x71 w=0x1071  invoke-static LM1/i;.c(['Ljava/lang/Object;']) -> V  [v0]
+  pc=  824 op=0x6e w=0x206e  invoke-virtual Landroidx/navigation/f;.f(['Landroid/os/Bundle;']) -> Landroid/os/Bundle;  [v0 v2]
+  pc=  830 op=0x0c w=0x020c  move-result v2
+  pc=  832 op=0x74 w=0x0174  invoke-virtual/range Landroidx/navigation/c;.f([]) -> Landroidx/lifecycle/i$b;  [v16..+1]
+  pc=  838 op=0x0c w=0x050c  move-result v5
+  pc=  840 op=0x54 w=0x0754  iget-object v4, v7, Landroidx/navigation/c;.p:Lh1/i;
+  pc=  844 op=0x71 w=0x5771  invoke-static Landroidx/navigation/b$a;.a(['?T', '?T', 'Lh1/i;', 'I', '?T']) -> Landroidx/navigation/b;  [v7 v5 v0 v0 v0]
+  pc=  850 op=0x0c w=0x0c0c  move-result v12
+  pc=  852 op=0x6e w=0x206e  invoke-virtual Lz1/i;.q(['Ljava/lang/Object;']) -> V  [v0 v2]
+  pc=  858 op=0x6e w=0x106e  invoke-virtual Ljava/util/AbstractList;.iterator([]) -> Ljava/util/Iterator;  [v0]
+  pc=  864 op=0x0c w=0x020c  move-result v2
+  pc=  866 op=0x72 w=0x1072  invoke-interface Ljava/util/Iterator;.hasNext([]) -> Z  [v0]
+  pc=  872 op=0x0a w=0x040a  return-void
+  pc=  874 op=0x38 w=0x0438  
+  pc=  878 op=0x72 w=0x1072  invoke-interface Ljava/util/Iterator;.next([]) -> Ljava/lang/Object;  [v0]
+  pc=  884 op=0x0c w=0x040c  move-result v4
+  pc=  886 op=0x1f w=0x041f  
+  pc=  890 op=0x54 w=0x4554  iget-object v4, v5, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc=  894 op=0x54 w=0x5554  iget-object v4, v5, Landroidx/navigation/f;.i:Ljava/lang/String;
+  pc=  898 op=0x54 w=0x0754  iget-object v4, v7, Landroidx/navigation/c;.v:Landroidx/navigation/m;
+  pc=  902 op=0x6e w=0x206e  invoke-virtual Landroidx/navigation/m;.b(['Ljava/lang/String;']) -> Landroidx/navigation/l;  [v0 v2]
+  pc=  908 op=0x0c w=0x050c  move-result v5
+  pc=  910 op=0x54 w=0x0754  iget-object v4, v7, Landroidx/navigation/c;.w:Ljava/util/LinkedHashMap;
+  pc=  914 op=0x6e w=0x206e  invoke-virtual Ljava/util/LinkedHashMap;.get(['Ljava/lang/Object;']) -> Ljava/lang/Object;  [v0 v2]
+  pc=  920 op=0x0c w=0x050c  move-result v5
+  pc=  922 op=0x38 w=0x0538  
+  pc=  926 op=0x1f w=0x051f  
+  pc=  930 op=0x6e w=0x206e  invoke-virtual Landroidx/navigation/c$a;.f(['Landroidx/navigation/b;']) -> V  [v0 v2]
+  pc=  936 op=0x28 w=0xdd28  
+  pc=  940 op=0x73 w=0x0d73  
+  pc=  942 op=0x1a w=0x031a  const-string v3, "NavigatorBackStack for "
+  pc=  946 op=0x70 w=0x2070  invoke-direct Ljava/lang/StringBuilder;.<init>(['Ljava/lang/String;']) -> V  [v0 v2]
+  pc=  952 op=0x54 w=0x1154  iget-object v4, v1, Landroidx/navigation/f;.i:Ljava/lang/String;
+  pc=  956 op=0x6e w=0x206e  invoke-virtual Ljava/lang/StringBuilder;.append(['Ljava/lang/String;']) -> Ljava/lang/StringBuilder;  [v0 v2]
+  pc=  962 op=0x1a w=0x011a  const-string v1, " should already be created"
+  pc=  966 op=0x6e w=0x206e  invoke-virtual Ljava/lang/StringBuilder;.append(['Ljava/lang/String;']) -> Ljava/lang/StringBuilder;  [v0 v2]
+  pc=  972 op=0x6e w=0x106e  invoke-virtual Ljava/lang/StringBuilder;.toString([]) -> Ljava/lang/String;  [v0]
+  pc=  978 op=0x0c w=0x010c  move-result v1
+  pc=  980 op=0x22 w=0x0222  new-instance v2, Ljava/lang/IllegalStateException;
+  pc=  984 op=0x6e w=0x106e  invoke-virtual Ljava/lang/Object;.toString([]) -> Ljava/lang/String;  [v0]
+  pc=  990 op=0x0c w=0x010c  move-result v1
+  pc=  992 op=0x70 w=0x2070  invoke-direct Ljava/lang/IllegalStateException;.<init>(['Ljava/lang/String;']) -> V  [v0 v2]
+  pc=  998 op=0x27 w=0x0227  throw v7
+  pc= 1000 op=0x6e w=0x206e  invoke-virtual Lz1/i;.addAll(['Ljava/util/Collection;']) -> Z  [v0 v2]
+  pc= 1006 op=0x6e w=0x206e  invoke-virtual Lz1/i;.r(['Ljava/lang/Object;']) -> V  [v0 v2]
+  pc= 1012 op=0x71 w=0x2071  invoke-static Lz1/r;.D(['?T', 'D']) -> Ljava/util/ArrayList;  [v0 v2]
+  pc= 1018 op=0x0c w=0x010c  move-result v1
+  pc= 1020 op=0x6e w=0x106e  invoke-virtual Ljava/util/ArrayList;.iterator([]) -> Ljava/util/Iterator;  [v0]
+  pc= 1026 op=0x0c w=0x010c  move-result v1
+  pc= 1028 op=0x72 w=0x1072  invoke-interface Ljava/util/Iterator;.hasNext([]) -> Z  [v0]
+  pc= 1034 op=0x0a w=0x020a  return-void
+  pc= 1036 op=0x38 w=0x0238  
+  pc= 1040 op=0x72 w=0x1072  invoke-interface Ljava/util/Iterator;.next([]) -> Ljava/lang/Object;  [v0]
+  pc= 1046 op=0x0c w=0x020c  move-result v2
+  pc= 1048 op=0x1f w=0x021f  
+  pc= 1052 op=0x54 w=0x2354  iget-object v4, v3, Landroidx/navigation/b;.j:Landroidx/navigation/f;
+  pc= 1056 op=0x54 w=0x3354  iget-object v4, v3, Landroidx/navigation/f;.j:Landroidx/navigation/g;
+  pc= 1060 op=0x38 w=0x0338  
+  pc= 1064 op=0x52 w=0x3352  iget v2, v3, Landroidx/navigation/f;.o:I
+  pc= 1068 op=0x6e w=0x206e  invoke-virtual Landroidx/navigation/c;.e(['I']) -> Landroidx/navigation/b;  [v0 v2]
+  pc= 1074 op=0x0c w=0x030c  move-result v3
+  pc= 1076 op=0x6e w=0x306e  invoke-virtual Landroidx/navigation/c;.g(['?T', 'D']) -> V  [v0 v3 v0]
+  pc= 1082 op=0x28 w=0xe528  
+
+
+==============================================================================
+[Q4] Landroidx/navigation/c$e;.o full dump
+==============================================================================
+
+--- Landroidx/navigation/c$e;.o(['Ljava/lang/Object;']) -> Ljava/lang/Object;  insns=26
+  pc=    0 op=0x1f w=0x051f  
+  pc=    4 op=0x1a w=0x001a  const-string v0, "it"
+  pc=    8 op=0x71 w=0x2071  invoke-static LM1/i;.f(['?T', 'D']) -> V  [v0 v2]
+  pc=   14 op=0x54 w=0x4054  iget-object v4, v0, Landroidx/navigation/c$e;.j:LM1/p;
+  pc=   18 op=0x12 w=0x1112  const/4 v2, 1
+  pc=   20 op=0x5c w=0x015c  iput-boolean v12, v1, LM1/p;.i:Z
+  pc=   24 op=0x62 w=0x0062  sget-object v0, Lz1/t;.i:Lz1/t;
+  pc=   28 op=0x54 w=0x4154  iget-object v4, v1, Landroidx/navigation/c$e;.l:Landroidx/navigation/f;
+  pc=   32 op=0x54 w=0x4254  iget-object v4, v2, Landroidx/navigation/c$e;.m:Landroid/os/Bundle;
+  pc=   36 op=0x54 w=0x4354  iget-object v4, v3, Landroidx/navigation/c$e;.k:Landroidx/navigation/c;
+  pc=   40 op=0x6e w=0x506e  invoke-virtual Landroidx/navigation/c;.a(['?T', '?T', 'I', '?T']) -> V  [v0 v5 v0 v0 v0]
+  pc=   46 op=0x62 w=0x0562  sget-object v5, Ly1/l;.a:Ly1/l;
+  pc=   50 op=0x11 w=0x0511  return-object v5
+
+==============================================================================
+[Q4b] Landroidx/navigation/c$e; — class + all method list
+==============================================================================
+Landroidx/navigation/c$e;.<init>(['?T', '?T', 'J', '?T']) -> V
+Landroidx/navigation/c$e;.o(['Ljava/lang/Object;']) -> Ljava/lang/Object;

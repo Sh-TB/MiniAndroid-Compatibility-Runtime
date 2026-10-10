@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/z/my-project/scripts/forensic/gpg_f105b_andro.py", line 14, in <module>
+    a, d, dx = AnalyzeDex(dex_path)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/home/z/.venv/lib/python3.12/site-packages/androguard/misc.py", line 98, in AnalyzeDex
+    return session.addDEX(filename, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z/.venv/lib/python3.12/site-packages/androguard/session.py", line 221, in addDEX
+    d = DalvikVMFormat(data)
+        ^^^^^^^^^^^^^^^^^^^^
+  File "/home/z/.venv/lib/python3.12/site-packages/androguard/core/bytecodes/dvm.py", line 7643, in __init__
+    self._load(buff)
+  File "/home/z/.venv/lib/python3.12/site-packages/androguard/core/bytecodes/dvm.py", line 7654, in _load
+    self.map_list = MapList(self.CM, self.__header.map_off, self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z/.venv/lib/python3.12/site-packages/androguard/core/bytecodes/dvm.py", line 7498, in __init__
+    self.size = unpack("=I", buff.read(4))[0]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+struct.error: unpack requires a buffer of 4 bytes

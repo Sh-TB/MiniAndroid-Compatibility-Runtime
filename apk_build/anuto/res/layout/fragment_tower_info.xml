@@ -1,0 +1,166 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="?attr/backgroundPopup">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_level_text"
+                android:layout_column="0"
+                android:paddingRight="20dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_level"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_property_text1"
+                android:layout_column="0"
+                android:paddingRight="20dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_property1"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_property_text2"
+                android:layout_column="0"
+                android:paddingRight="20dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_property2"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_property_text3"
+                android:layout_column="0"
+                android:paddingRight="20dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_property3"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_property_text4"
+                android:layout_column="0"
+                android:paddingRight="10dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_property4"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_property_text5"
+                android:layout_column="0"
+                android:paddingRight="10dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_property5"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt_property_text6"
+                android:layout_column="0"
+                android:paddingRight="10dp"
+                android:text="Property:" />
+
+            <TextView
+                android:id="@+id/txt_property6"
+                android:layout_column="1"
+                android:text="1234" />
+        </TableRow>
+    </TableLayout>
+
+    <Space
+        android:layout_height="10dp"
+        android:layout_width="match_parent" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:orientation="vertical">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/strategy"
+            android:id="@+id/btn_strategy" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lock_target"
+            android:id="@+id/btn_lock_target" />
+
+        <Space
+            android:layout_height="10dp"
+            android:layout_width="match_parent" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enhance"
+            android:id="@+id/btn_enhance" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/upgrade"
+            android:id="@+id/btn_upgrade" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sell"
+            android:id="@+id/btn_sell" />
+
+    </LinearLayout>
+
+</LinearLayout>
