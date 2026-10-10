@@ -118,6 +118,7 @@ probes)
   probe1 fnew253 "$BASE/tmp/w4_probebuild/fnew253_probe/fnew253_probe.apk"
   probe1 fnew286 "$BASE/tmp/cont30_probebuild/fnew286_probe/fnew286_probe.apk"
   probe1 fnew289 "$BASE/tmp/w4_probebuild/fnew289_probe/fnew289_probe.apk"
+  probe1 ckey   "$BASE/tmp/w4_probebuild/classkey_probe/classkey_probe.apk"
   probe1 fnew252 "$BASE/tmp/w4_probebuild/fnew252_probe/fnew252_probe.apk"
   probe1 fnew290 "$BASE/tmp/w4_probebuild/fnew290_probe/fnew290_probe.apk"
   probe1 fnew291 "$BASE/tmp/w4_probebuild/fnew291_probe/fnew291_probe.apk"

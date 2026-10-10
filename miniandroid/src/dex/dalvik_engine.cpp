@@ -52108,6 +52108,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-299 (CONT-38v): STRING COPY-CONSTRUCTOR CONTENT LAW.
+    // OpenJDK String.java: new String() is the empty string and
+    // new String(String) copies the source's characters — the copy is
+    // CONTENT-EQUAL to the source (String.equals is content equality; the
+    // only observable difference is identity, which Map keys must NOT see:
+    // F-NEW-248's map_key_value_law classifies String-object keys by
+    // __string_value__ content). The engine had NO handler for either
+    // form (only the byte[] family below): the new-instance allocation
+    // stayed unmaterialized (no __string_value__), so map_key_value_law
+    // fell back to identity keying ("obj:<id>") and a get with the SAME
+    // text as a const-string missed — probe-proven (fixtures/classkey_probe
+    // row CK-07, PRE FAIL ×3 on a181d7b317e015c8). Materialize onto the
+    // CALLER's heap object register — the same new-instance → <init>
+    // identity convention the byte[] family honors (comment below) — and
+    // answer the content as the STRING_REF result. Discriminators, both
+    // structural: STRING_REF source = the copy form; OBJECT_REF source
+    // accepted ONLY when its heap class is Ljava/lang/String; (a byte[]
+    // source keeps falling through to the byte[] law below). No name
+    // matching, no app branches. new String(char[])/StringBuffer forms
+    // remain honest untested scope (same posture the byte[] entry
+    // originally recorded).
+    if (class_name == "Ljava/lang/String;" && method == "<init>" &&
+        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        std::string f299_content;
+        bool f299_copy_form = false;
+        if (args.size() == 1) {
+            // new String() — the empty string (OpenJDK law).
+            f299_copy_form = true;
+        } else if (args.size() >= 2 &&
+                   args[1].type == DalvikType::STRING_REF) {
+            // new String(<string expression>) — direct content copy.
+            f299_content = args[1].string_val;
+            f299_copy_form = true;
+        } else if (args.size() >= 2 &&
+                   args[1].type == DalvikType::OBJECT_REF &&
+                   args[1].object_id != 0 &&
+                   heap_.has_object(args[1].object_id)) {
+            std::string f299_src_cls;
+            if (heap_.get_object_class(args[1].object_id, f299_src_cls) &&
+                f299_src_cls == "Ljava/lang/String;") {
+                auto f299_sv = heap_.get_object_field(args[1].object_id,
+                                                      "__string_value__");
+                if (f299_sv.has_value() &&
+                    f299_sv->type == DalvikType::STRING_REF) {
+                    f299_content = f299_sv->string_val;
+                    f299_copy_form = true;
+                }
+            }
+        }
+        if (f299_copy_form) {
+            heap_.set_object_field(args[0].object_id, "__string_value__",
+                                   DalvikValue::make_string(f299_content, 0));
+            result = DalvikValue::make_string(f299_content, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-082 (R-NEW-308) — String.getBytes(charset) family law.
     // OpenJDK/AOSP (String.java): getBytes(Charset)/getBytes(String) encode
     // the string's characters and answer a NEW byte[]; the no-arg getBytes()
