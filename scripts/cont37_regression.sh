@@ -106,7 +106,7 @@ anchors)
   ;;
 target)
   for i in 1 2 3; do
-    run1 "csw_r$i" "$CSW" bbaf8f76308dc267
+    run1 "csw_r$i" "$CSW" 3442d9a9dc0fa0f9
   done
   ;;
 probes)
@@ -119,6 +119,7 @@ probes)
   probe1 fnew286 "$BASE/tmp/cont30_probebuild/fnew286_probe/fnew286_probe.apk"
   probe1 fnew289 "$BASE/tmp/w4_probebuild/fnew289_probe/fnew289_probe.apk"
   probe1 ckey   "$BASE/tmp/w4_probebuild/classkey_probe/classkey_probe.apk"
+  probe1 cpipe  "$BASE/tmp/w4_probebuild/colorpipe_probe/colorpipe_probe.apk"
   probe1 fnew252 "$BASE/tmp/w4_probebuild/fnew252_probe/fnew252_probe.apk"
   probe1 fnew290 "$BASE/tmp/w4_probebuild/fnew290_probe/fnew290_probe.apk"
   probe1 fnew291 "$BASE/tmp/w4_probebuild/fnew291_probe/fnew291_probe.apk"
