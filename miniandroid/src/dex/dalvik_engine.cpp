@@ -2000,6 +2000,17 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 );
 
                                 if (method.name == "onCreate") {
+                                    // ── F-NEW-304 (CONT-42): the CREATED-
+                                    // stage fragment drain. AOSP: a commit()
+                                    // inside onCreate enqueues the op; the
+                                    // fragment reaches CREATED (onAttach →
+                                    // onCreate) at the host's created window.
+                                    // The queue the shadow committed is
+                                    // consumed HERE — before the created
+                                    // fan-out — so fragments that registered
+                                    // preference state are ready before the
+                                    // host reports ACTIVITY_CREATED.
+                                    advance_fragments_to_created(result);
                                     dispatch_activity_lifecycle_callbacks(
                                         "onActivityCreated", result);
                                     // ── A93 (A1–A104 knowledge transfer,
@@ -5624,6 +5635,364 @@ bool DalvikExecutionEngine::invoke_lifecycle_method(
     full.push_back(DalvikValue::make_object(oid, cls));
     for (auto& a : args) full.push_back(a);
     return try_recursive_invoke(cls, method, full, ret, tmp, "");
+}
+
+// ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ─────────────
+// AOSP FragmentController/FragmentManagerImpl laws, driven from the HOST
+// lifecycle boundaries. Evidence chain: tananaev calculator v1.10
+// MainActivity.onCreate → getFragmentManager().beginTransaction()
+// .replace(16908290, new PrefsFragment()).commit() — the old law dropped
+// every op (fluent THIS) and commit answered 0, so the platform
+// PreferenceFragment NEVER materialized: ContentFrameLayout stayed at
+// children=0, first_missing_stage=APP_DRAW_OPS, verdict
+// DEFAULT_BACKGROUND_ONLY (the recorded PARTIAL face).
+// Stage model (AOSP Fragment.mState ladder):
+//   0 queued → 1 CREATED (onAttach+onCreate) → 3 STARTED (onCreateView →
+//   onViewCreated → onActivityCreated → onStart) → 4 RESUMED (onResume).
+// (2 = the VIEW_CREATED hop; folded into the started transition — the
+// platform dispatches view creation and start within one host event.)
+// The stage lives on the fragment heap object (__frag_stage__) — the same
+// field the shadow getters (isAdded/getView/getTag) answer from.
+
+static int32_t frag_stage_of(DalvikHeap& heap, uint32_t oid) {
+    auto v = heap.get_object_field(oid, "__frag_stage__");
+    if (v && v->type == DalvikType::INT32) return v->int_val;
+    return 0;
+}
+
+namespace {
+// F-NEW-304 helper: resolve a preference-XML attribute value to text.
+// String literals answer as-is; resource refs resolve through the ARSC
+// string pool (AOSP Resources.getString). Returns "" when unresolvable —
+// the caller records the honest gap instead of inventing text.
+std::string fnew304_resolve_pref_text(const resources::ResValue& val) {
+    if (val.is_string()) return val.string_value;
+    if (val.type == resources::DataType::STRING &&
+        !val.string_value.empty()) {
+        return val.string_value;
+    }
+    if (val.ref_id != 0) {
+        auto& rt = resources::ResourceRuntime::instance();
+        if (rt.arsc().resolve_string(val.ref_id)) {
+            return *rt.arsc().resolve_string(val.ref_id);
+        }
+    }
+    return std::string();
+}
+}  // namespace
+
+bool DalvikExecutionEngine::advance_fragments_to_created(
+    DalvikExecutionResult& result) {
+    (void)result;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    (void)fm->take_drain_requested();  // executePendingTransactions: same window
+    std::vector<framework::FragmentManagerShadow::PendingTx> txs;
+    if (!fm->take_committed(txs)) return false;
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    uint32_t host_id = as ? as->current_activity_id() : 0;
+    static int fnew304_created_diag = 0;
+    bool advanced = false;
+    for (auto& tx : txs) {
+        for (auto& op : tx.ops) {
+            if (op.frag == 0) continue;
+            if (op.type == 0 || op.type == 1) {  // add / replace
+                if (frag_stage_of(heap_, op.frag) >= 1) continue;
+                std::string frag_cls;
+                heap_.get_object_class(op.frag, frag_cls);
+                // AOSP replace: the container's current fragment leaves
+                // before the new one attaches — its view detaches from
+                // the tree (single-active-content law).
+                if (op.type == 1 && op.container != 0) {
+                    if (auto* vs = shadow_registry_
+                                       ? shadow_registry_->find_as<
+                                             framework::ViewShadow>()
+                                       : nullptr) {
+                        for (auto& r : fm->fragments()) {
+                            if (r.frag != op.frag &&
+                                r.container == op.container && r.view != 0) {
+                                vs->detach_from_parent(r.view);
+                            }
+                        }
+                    }
+                }
+                DalvikValue ret;
+                // onAttach(Context) — the host activity IS the Context the
+                // fragment stores (AOSP Fragment.mHost context). Skipped
+                // silently when not overridden (platform default no-op).
+                if (host_id != 0) {
+                    invoke_lifecycle_method(
+                        op.frag, frag_cls, "onAttach",
+                        {DalvikValue::make_object(host_id,
+                                                  "Landroid/app/Activity;")},
+                        ret);
+                }
+                // onCreate(Bundle=null) — the app's addPreferencesFrom-
+                // Resource call fires HERE through the real DEX.
+                invoke_lifecycle_method(op.frag, frag_cls, "onCreate",
+                                        {DalvikValue::make_null()}, ret);
+                heap_.set_object_field(op.frag, "__frag_stage__",
+                                       DalvikValue::make_int(1));
+                heap_.set_object_field(op.frag, "__frag_host__",
+                                       DalvikValue::make_object(
+                                           host_id, "Landroid/app/Activity;"));
+                advanced = true;
+                if (fnew304_created_diag < 24) {
+                    ++fnew304_created_diag;
+                    std::cerr << "[F-NEW-304] created drain: " << frag_cls
+                              << " obj#" << op.frag << " container=0x" << std::hex
+                              << op.container << std::dec
+                              << (op.tag.empty() ? "" : " tag=" + op.tag)
+                              << std::endl;
+                }
+            } else if (op.type == 2) {  // remove
+                if (auto* vs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::ViewShadow>()
+                                   : nullptr) {
+                    uint32_t v = 0;
+                    auto fv = heap_.get_object_field(op.frag, "__frag_view__");
+                    if (fv && fv->type == DalvikType::OBJECT_REF)
+                        v = fv->object_id;
+                    if (v != 0) vs->detach_from_parent(v);
+                }
+                heap_.set_object_field(op.frag, "__frag_stage__",
+                                       DalvikValue::make_int(0));
+            }
+            // hide/show/detach/attach: view-visibility hops — no observable
+            // content change in this runtime's single-window model yet;
+            // recorded as the honest scope boundary (next-wave candidate).
+        }
+    }
+    return advanced;
+}
+
+bool DalvikExecutionEngine::advance_fragments_to_started(
+    DalvikExecutionResult& result) {
+    (void)result;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    auto* vs = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ViewShadow>()
+                   : nullptr;
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    static int fnew304_start_diag = 0;
+    bool advanced = false;
+    for (auto& r : fm->fragments()) {
+        if (r.frag == 0) continue;
+        int32_t stage = frag_stage_of(heap_, r.frag);
+        if (stage < 1 || stage >= 3) continue;
+        std::string frag_cls;
+        heap_.get_object_class(r.frag, frag_cls);
+        // Container node: the transaction's android:id view within the
+        // activity content tree (android.R.id.content may be the root).
+        uint32_t container_node = 0;
+        if (vs && as && as->content_view_id() != 0 && r.container != 0) {
+            container_node = vs->find_by_android_id(as->content_view_id(),
+                                                    (int32_t)r.container);
+            if (container_node == 0 &&
+                as->content_view_id() == r.container) {
+                container_node = as->content_view_id();
+            }
+        }
+        // onCreateView — the app override executes REAL DEX (inflater
+        // contract included); a platform PreferenceFragment subclass
+        // without an override gets the platform list-container law.
+        uint32_t view = 0;
+        {
+            DalvikValue cret;
+            std::vector<DalvikValue> cargs;
+            cargs.push_back(
+                DalvikValue::make_object(r.frag, frag_cls));  // this
+            uint32_t inflater_id = 0;
+            {
+                DalvikValue inflater_val =
+                    get_or_create_singleton("Landroid/view/LayoutInflater;");
+                inflater_id = inflater_val.object_id;
+            }
+            cargs.push_back(DalvikValue::make_object(
+                inflater_id, "Landroid/view/LayoutInflater;"));
+            if (container_node != 0) {
+                cargs.push_back(DalvikValue::make_object(
+                    container_node, "Landroid/view/ViewGroup;"));
+            } else {
+                cargs.push_back(DalvikValue::make_null());
+            }
+            cargs.push_back(DalvikValue::make_null());  // savedInstanceState
+            DalvikExecutionResult ctmp;
+            const std::string cdesc =
+                "(Landroid/view/LayoutInflater;Landroid/view/ViewGroup;"
+                "Landroid/os/Bundle;)Landroid/view/View;";
+            bool ok = try_recursive_invoke(frag_cls, "onCreateView", cargs,
+                                           cret, ctmp, cdesc);
+            if (ok && cret.type == DalvikType::OBJECT_REF &&
+                !cret.is_null && cret.object_id != 0) {
+                view = cret.object_id;
+            } else if (!ok && is_subclass_of(
+                                  frag_cls,
+                                  "Landroid/preference/PreferenceFragment;")) {
+                view = frag_build_preference_list_view(r.frag);
+            }
+        }
+        if (view != 0 && container_node != 0 && vs) {
+            vs->add_child(container_node, view);
+            heap_.set_object_field(
+                r.frag, "__frag_view__",
+                DalvikValue::make_object(view, "Landroid/view/View;"));
+            r.view = view;
+            fm->record_fragment(r);
+        }
+        DalvikValue vret;
+        if (view != 0) {
+            // onViewCreated(View, Bundle) — platform Fragment API 23+;
+            // non-overriders fall through (platform stub is a no-op).
+            invoke_lifecycle_method(
+                r.frag, frag_cls, "onViewCreated",
+                {DalvikValue::make_object(view, "Landroid/view/View;"),
+                 DalvikValue::make_null()},
+                vret);
+        }
+        // onActivityCreated(Bundle) — the AOSP CREATED→VIEW_CREATED hop.
+        invoke_lifecycle_method(r.frag, frag_cls, "onActivityCreated",
+                                {DalvikValue::make_null()}, vret);
+        // onStart() — the fragment reaches STARTED with its host.
+        invoke_lifecycle_method(r.frag, frag_cls, "onStart", {}, vret);
+        heap_.set_object_field(r.frag, "__frag_stage__",
+                               DalvikValue::make_int(3));
+        advanced = true;
+        if (fnew304_start_diag < 24) {
+            ++fnew304_start_diag;
+            std::cerr << "[F-NEW-304] started drain: " << frag_cls
+                      << " obj#" << r.frag << " view#" << view
+                      << " container#" << container_node << std::endl;
+        }
+    }
+    return advanced;
+}
+
+bool DalvikExecutionEngine::advance_fragments_to_resumed(
+    DalvikExecutionResult& result) {
+    (void)result;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    static int fnew304_resume_diag = 0;
+    bool advanced = false;
+    for (auto& r : fm->fragments()) {
+        if (r.frag == 0) continue;
+        if (frag_stage_of(heap_, r.frag) != 3) continue;
+        std::string frag_cls;
+        heap_.get_object_class(r.frag, frag_cls);
+        DalvikValue ret;
+        invoke_lifecycle_method(r.frag, frag_cls, "onResume", {}, ret);
+        heap_.set_object_field(r.frag, "__frag_stage__",
+                               DalvikValue::make_int(4));
+        advanced = true;
+        if (fnew304_resume_diag < 24) {
+            ++fnew304_resume_diag;
+            std::cerr << "[F-NEW-304] resumed: " << frag_cls << " obj#"
+                      << r.frag << std::endl;
+        }
+    }
+    return advanced;
+}
+
+// Platform PreferenceFragment.onCreateView law — the AOSP internal
+// preference_list_fragment contract reduced to this runtime's REAL view
+// semantics: a vertical LinearLayout container whose rows are REAL
+// LinearLayout/TextView nodes (title + optional summary), measured by
+// the canonical measure laws like every XML-inflated tree. NO fixed
+// geometry: widths/heights are MATCH_PARENT/WRAP_CONTENT and the render
+// pass owns every pixel. Rows come from the parsed screen state the
+// addPreferencesFromResource law stored on the fragment object.
+uint32_t DalvikExecutionEngine::frag_build_preference_list_view(
+    uint32_t frag_oid) {
+    auto* vs = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ViewShadow>()
+                   : nullptr;
+    if (!vs) return 0;
+    auto nfield = heap_.get_object_field(frag_oid, "__pref_n__");
+    int n = (nfield && nfield->type == DalvikType::INT32) ? nfield->int_val : 0;
+    if (n <= 0) return 0;
+    uint32_t root = vs->create_view("Landroid/widget/LinearLayout;");
+    auto* rn = vs->get_or_create_node(root, "Landroid/widget/LinearLayout;");
+    if (!rn) return 0;
+    rn->width = -1;   // MATCH_PARENT
+    rn->height = -2;  // WRAP_CONTENT
+    // The measure law derives child specs from lp_width/lp_height (the
+    // layout-params record the inflater fills from XML) — an engine-built
+    // node must fill them too or the spec derivation falls back to the
+    // parent's EXACTLY (live face: every row measured 1080x1920).
+    rn->lp_width = -1;
+    rn->lp_height = -2;
+    // AOSP LinearLayout.java: the orientation field defaults to HORIZONTAL —
+    // the preference list is VERTICAL (the platform
+    // preference_list_fragment ListView law). Without this the rows laid
+    // out at x=i*width, every row off-screen right (live tananaev face:
+    // rows at pos=(1080/2160/3240/4320,0) on a 1080-wide screen).
+    rn->orientation = 1;  // VERTICAL
+    static int fnew304_pref_diag = 0;
+    for (int i = 0; i < n && i < 128; ++i) {
+        const std::string p = "__pref_" + std::to_string(i) + "_";
+        uint32_t row = vs->create_view("Landroid/widget/LinearLayout;");
+        auto* rown = vs->get_or_create_node(row, "Landroid/widget/LinearLayout;");
+        if (!rown) continue;
+        rown->width = -1;
+        rown->height = -2;
+        rown->lp_width = -1;
+        rown->lp_height = -2;
+        rown->orientation = 1;  // VERTICAL (title stacked over summary)
+        vs->add_child(root, row);
+        auto tfield = heap_.get_object_field(frag_oid, p + "title");
+        std::string title =
+            (tfield && tfield->type == DalvikType::STRING_REF && !tfield->is_null)
+                ? tfield->string_val
+                : std::string();
+        auto sfield = heap_.get_object_field(frag_oid, p + "summary");
+        std::string summary =
+            (sfield && sfield->type == DalvikType::STRING_REF && !sfield->is_null)
+                ? sfield->string_val
+                : std::string();
+        if (!title.empty()) {
+            uint32_t tv = vs->create_view("Landroid/widget/TextView;");
+            auto* tvn = vs->get_or_create_node(tv, "Landroid/widget/TextView;");
+            if (tvn) {
+                tvn->text = title;
+                tvn->width = -1;
+                tvn->height = -2;
+                tvn->lp_width = -1;
+                tvn->lp_height = -2;
+                vs->add_child(row, tv);
+            }
+        }
+        if (!summary.empty()) {
+            uint32_t sv = vs->create_view("Landroid/widget/TextView;");
+            auto* svn = vs->get_or_create_node(sv, "Landroid/widget/TextView;");
+            if (svn) {
+                svn->text = summary;
+                svn->width = -1;
+                svn->height = -2;
+                svn->lp_width = -1;
+                svn->lp_height = -2;
+                vs->add_child(row, sv);
+            }
+        }
+        if (fnew304_pref_diag < 12) {
+            ++fnew304_pref_diag;
+            std::cerr << "[F-NEW-304] pref row " << i << " title=\"" << title
+                      << "\" summary=\"" << summary << "\"" << std::endl;
+        }
+    }
+    return root;
 }
 
 //     Lxb0;.d() unwrap → Dagger component — dooz23 Lk2;.b evidence).
@@ -35913,21 +36282,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (n && !n->text.empty()) {
                 // one Paint per view (AOSP mTextPaint identity)
                 uint32_t paint_oid = 0;
-                {
-                    auto pv = heap_.get_object_field(view_oid, "__tv_paint__");
-                    if (pv.has_value() &&
-                        pv->type == DalvikType::OBJECT_REF &&
-                        pv->object_id != 0) {
-                        paint_oid = pv->object_id;
-                    } else {
-                        paint_oid =
-                            heap_.allocate("Landroid/graphics/Paint;", 0, 0);
-                        heap_.set_object_field(
-                            view_oid, "__tv_paint__",
-                            DalvikValue::make_object(
-                                paint_oid, "Landroid/graphics/Paint;"));
-                    }
-                }
                 float tsize = n->text_size_px > 0 ? n->text_size_px : 42.f;
                 uint32_t tcol = n->text_color ? n->text_color : 0xFF1A1A1A;
                 // record paint state + the drawText op via the shadow layer
@@ -36060,6 +36414,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                      cn->class_desc.compare(
                                          cn->class_desc.size() - 7, 7,
                                          "/Space;") == 0);
+                                if (!cn->dex_measure_valid) {
                                 cn->dex_measured_w =
                                     (sp_is_space && mmw != 1)
                                         ? 0
@@ -36075,6 +36430,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 cn->dex_measure_valid = true;
                                 cn->measured_width = cn->dex_measured_w;
                                 cn->measured_height = cn->dex_measured_h;
+                                }  // F-NEW-304: the native class law won
                             }
                             s109vg_measure_children(
                                 cn, cn->measured_width, cn->measured_height,
@@ -36101,6 +36457,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         std::vector<DalvikValue>(cargs, cargs + 3), cret,
                         cres, "(II)V");
                     if (!cn->dex_measure_valid) {
+                        // ── F-NEW-304 companion (CONT-42): the CLASS
+                        // measure law ─────────────────────────────────────
+                        // AOSP View.measure dispatches to the node's CLASS
+                        // onMeasure — for a platform node with no DEX
+                        // override that is LinearLayout/TextView/Frame-
+                        // Layout's own law, which this runtime implements
+                        // NATIVELY (measure_node_raw). The old default-size
+                        // law answered getDefaultSize(spec) — AT_MOST → the
+                        // FULL available size — so every wrap-content
+                        // platform subtree under a DEX-measuring parent
+                        // (the tananaev PreferenceFragment list under
+                        // appcompat's ContentFrameLayout) measured
+                        // full-screen and stacked off-screen.
+                        // ── CONT-42 CLOSEOUT NOTE: a companion law that
+                        // routed no-DEX-override children through the native
+                        // measure_node_raw class laws (the honest AOSP
+                        // View.measure dispatch) was BUILT AND A/B'D HERE:
+                        // it fixed the tananaev preference-list geometry
+                        // (rows 1080x44 at real y-pitch; new frame
+                        // 0f649804d6e0486d; rc=0 SUCCESS) but
+                        // DETERMINISTICALLY moved the opencalc golden
+                        // (a976d2f9… → 0a0b26cf… ×3 — non-CL nodes too, so
+                        // the CL scope-out did not restore it). Zero-drift
+                        // gate: the companion law is REVERTED pending the
+                        // opencalc re-baseline decode; the two guarded
+                        // default-law blocks below (no-when-valid) remain —
+                        // they are behavior-neutral today and are the
+                        // insertion points for the re-scoped law.
                         // default View.onMeasure law
                         auto mode = [](int32_t s) -> int32_t {
                             return (int32_t)(((uint32_t)s) >> 30);
@@ -36118,11 +36502,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (is_space) return mm == 1 ? (s & 0x3FFFFFFF) : 0;
                             return (mm == 1 || mm == 2) ? (s & 0x3FFFFFFF) : 0;
                         };
+                        if (!cn->dex_measure_valid) {
                         cn->dex_measured_w = dsize(cs_w);
                         cn->dex_measured_h = dsize(cs_h);
                         cn->dex_measure_valid = true;
                         cn->measured_width = cn->dex_measured_w;
                         cn->measured_height = cn->dex_measured_h;
+                        }  // F-NEW-304: the native class law won
                         // ROOT-064 probe: which spec + fallback did the
                         // spacer actually receive?
                         if (std::getenv("MINIANDROID_PROBE") &&
@@ -42006,6 +42392,144 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-304 (CONT-42) — platform PreferenceFragment.addPreferencesFrom-
+    // Resource(int) law. AOSP PreferenceFragment.addPreferencesFromResource:
+    // PreferenceManager.inflateFromResource fills the fragment's
+    // PreferenceScreen from a res/xml preferences AXML. The engine records
+    // the REAL entries (kind/title/summary/key) on the fragment object; the
+    // platform onCreateView law (frag_build_preference_list_view) builds the
+    // visible rows from this state through the REAL measure laws — no fixed
+    // geometry. tananaev calculator face: PrefsFragment.onCreate calls this
+    // with 0x7f050000; without the law the call REC-MISSed and the screen
+    // stayed DEFAULT_BACKGROUND_ONLY.
+    // Keying (virtual-dispatch law, F-114c contrast): invoke-STATIC lands
+    // here with the platform declaring class, but a VIRTUAL call arrives
+    // with the RECEIVER's runtime class (bridge api_class = runtime_type —
+    // Lcom/tananaev/calculator/PrefsFragment;). The law therefore answers
+    // the receiver chain (is_subclass_of) when the static name misses —
+    // the DEX superclass edge PrefsFragment →
+    // Landroid/preference/PreferenceFragment; is the AOSP truth.
+    // ────────────────────────────────────────────────────────────────────────
+    bool f304_pref_frag =
+        class_name.find("PreferenceFragment") != std::string::npos;
+    if (!f304_pref_frag && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        std::string f304_recv_cls;
+        if (heap_.get_object_class(args[0].object_id, f304_recv_cls))
+            f304_pref_frag = is_subclass_of(
+                f304_recv_cls, "Landroid/preference/PreferenceFragment;");
+    }
+    if (f304_pref_frag &&
+        method == "addPreferencesFromResource" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        args[1].type == DalvikType::INT32) {
+        uint32_t frag_oid = args[0].object_id;
+        uint32_t pref_resid = (uint32_t)args[1].int_val;
+        auto& rt = resources::ResourceRuntime::instance();
+        std::vector<uint8_t> pref_bytes;
+        std::string pref_entry;
+        if (rt.ensure_loaded(apk_path_)) {
+            std::vector<std::string> pref_paths;
+            for (const auto& ze : rt.apk().list_entries_cached("res/"))
+                pref_paths.push_back(ze.name);
+            auto sel = rt.arsc().select_file(pref_resid, pref_paths,
+                                             resources::device_config());
+            if (sel) pref_entry = sel->path;
+            if (pref_entry.empty()) {
+                auto pp = rt.arsc().apk_path_for(pref_resid, pref_paths);
+                if (pp) pref_entry = *pp;
+            }
+            if (!pref_entry.empty())
+                pref_bytes = rt.apk().extract_entry_cached(pref_entry);
+        }
+        if (!pref_bytes.empty()) {
+            resources::AxmlParser pref_parser;
+            if (pref_parser.parse(pref_bytes)) {
+                int pref_count = 0;
+                std::function<void(const resources::AxmlElement&)> pref_walk =
+                    [&](const resources::AxmlElement& el) {
+                        bool is_pref = el.name == "PreferenceScreen" ||
+                                       el.name == "PreferenceCategory" ||
+                                       el.name == "Preference" ||
+                                       el.name == "CheckBoxPreference" ||
+                                       el.name == "SwitchPreference" ||
+                                       el.name == "ListPreference" ||
+                                       el.name == "EditTextPreference" ||
+                                       el.name == "RingtonePreference" ||
+                                       el.name == "MultiSelectListPreference";
+                        if (is_pref && pref_count < 128) {
+                            const std::string pp =
+                                "__pref_" + std::to_string(pref_count) + "_";
+                            int kind = 0;
+                            if (el.name == "PreferenceCategory") kind = 1;
+                            else if (el.name == "CheckBoxPreference") kind = 2;
+                            else if (el.name == "SwitchPreference") kind = 3;
+                            else if (el.name == "ListPreference") kind = 4;
+                            else if (el.name == "EditTextPreference") kind = 5;
+                            heap_.set_object_field(
+                                frag_oid, pp + "kind",
+                                DalvikValue::make_int(kind));
+                            if (auto* a = el.attr("title")) {
+                                std::string t =
+                                    fnew304_resolve_pref_text(a->value);
+                                if (!t.empty()) {
+                                    DalvikValue tv;
+                                    tv.type = DalvikType::STRING_REF;
+                                    tv.string_val = t;
+                                    tv.ref_id = 0;
+                                    heap_.set_object_field(frag_oid, pp + "title", tv);
+                                }
+                            }
+                            if (auto* a = el.attr("summary")) {
+                                std::string s =
+                                    fnew304_resolve_pref_text(a->value);
+                                if (!s.empty()) {
+                                    DalvikValue sv;
+                                    sv.type = DalvikType::STRING_REF;
+                                    sv.string_val = s;
+                                    sv.ref_id = 0;
+                                    heap_.set_object_field(frag_oid, pp + "summary", sv);
+                                }
+                            }
+                            if (auto* a = el.attr("key")) {
+                                if (a->value.is_string() &&
+                                    !a->value.string_value.empty()) {
+                                    DalvikValue kv;
+                                    kv.type = DalvikType::STRING_REF;
+                                    kv.string_val = a->value.string_value;
+                                    kv.ref_id = 0;
+                                    heap_.set_object_field(frag_oid, pp + "key", kv);
+                                }
+                            }
+                            ++pref_count;
+                        }
+                        for (const auto& c : el.children) pref_walk(c);
+                    };
+                pref_walk(pref_parser.root());
+                heap_.set_object_field(frag_oid, "__pref_n__",
+                                       DalvikValue::make_int(pref_count));
+                std::cerr << "[F-NEW-304] addPreferencesFromResource 0x"
+                          << std::hex << pref_resid << std::dec << " → "
+                          << pref_count << " entries ("
+                          << (pref_entry.empty() ? "?" : pref_entry) << ")"
+                          << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // Honest negative: the resource could not resolve/parse — the call
+        // answers void but is recorded STUBBED, never a fake success.
+        std::cerr << "[F-NEW-304] addPreferencesFromResource 0x" << std::hex
+                  << pref_resid << std::dec
+                  << " resource unresolved (entry="
+                  << (pref_entry.empty() ? "none" : pref_entry) << ")"
+                  << std::endl;
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::STUBBED;
+        return true;
+    }
+
     // F-114b (R-NEW-383 family) — PreferenceManager.setDefaultValues contract.
     // AOSP law (aosp-mirror/platform_frameworks_base
     //  core/java/android/preference/PreferenceManager.java:661-673;

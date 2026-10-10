@@ -27,8 +27,10 @@ build_probe() {
     r "$AAPT2" link -o "$O/${name}.apk" -I "$JAR" --manifest "$F/AndroidManifest.xml" \
       --java "$O/gen" --auto-add-overlay
   fi
-  # 2. ECJ compile
-  local SRCS=$(find "$F/src" -name '*.java')
+  # 2. ECJ compile — app sources PLUS the aapt2 --java gen output when the
+  #    fixture carries resources (F-NEW-304 wave: frag_tx_probe references
+  #    R.layout/R.id; the real-toolchain recipe always compiles gen).
+  local SRCS=$(find "$F/src" "$O/gen" -name '*.java' 2>/dev/null)
   r java -jar "$ECJJAR" -1.8 -nowarn -cp "$JAR" -d "$O/classes" $SRCS
   # 3. D8 dex
   r java -cp "$R8JAR" com.android.tools.r8.D8 --release \
@@ -68,4 +70,5 @@ build_probe classkey_probe com.probe.ckey
 build_probe colorpipe_probe com.probe.cpipe
 build_probe fnew302_probe com.probe.fclk
 build_probe notif_builder_probe com.probe.notif
+build_probe frag_tx_probe com.probe.fragtx
 echo "ALL PROBES BUILT"

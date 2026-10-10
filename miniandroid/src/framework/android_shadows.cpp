@@ -3344,19 +3344,40 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
 CallResult FragmentManagerShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     if (ctx.class_name == "Landroid/app/FragmentManager;") {
-        if (m == "findFragmentByTag" || m == "findFragmentById") {
-            // Fragment registry starts empty in this runtime — the honest
-            // answer is null; the androidx LifecycleDispatcher installs the
-            // report fragment on seeing null (install-on-miss contract).
+        if (m == "findFragmentByTag") {
+            // F-NEW-304: answer the ACTIVE fragment record by tag (AOSP
+            // FragmentManagerImpl.findFragmentByTag walks mActive). Null
+            // remains the honest answer before any commit drained.
+            const std::string tag = ctx.arg_as_string(0, "");
+            for (const auto& r : fragments_) {
+                if (!tag.empty() && r.tag == tag && r.frag != 0)
+                    return CallResult::handled_object(
+                        r.frag, "Landroid/app/Fragment;");
+            }
+            return CallResult::handled_null();
+        }
+        if (m == "findFragmentById") {
+            const int32_t id = ctx.arg_as_int(0, 0);
+            for (const auto& r : fragments_) {
+                if (r.frag != 0 && r.container == (uint32_t)id)
+                    return CallResult::handled_object(
+                        r.frag, "Landroid/app/Fragment;");
+            }
             return CallResult::handled_null();
         }
         if (m == "beginTransaction") {
             if (!heap_) return CallResult::not_handled();
             uint32_t tx_id = heap_->allocate("Landroid/app/FragmentTransaction;");
+            // AOSP BackStackRecord starts with an EMPTY op list.
+            heap_->set_object_int_field(tx_id, "__ftx_n__", 0);
             return CallResult::handled_object(tx_id,
                                               "Landroid/app/FragmentTransaction;");
         }
         if (m == "executePendingTransactions") {
+            // AOSP: execPendingActions() runs NOW. The engine consumes the
+            // flag at the next lifecycle boundary (same observable order
+            // for the host-created window this runtime models).
+            set_drain_requested();
             return CallResult::handled_bool(true);
         }
     }
@@ -3365,17 +3386,146 @@ CallResult FragmentManagerShadow::dispatch(const CallContext& ctx) {
             m == "show" || m == "detach" || m == "attach") {
             // BackStackRecord fluent law: every op returns the SAME
             // transaction (this) — object identity is part of the contract.
-            if (ctx.has_receiver && ctx.receiver_id != 0)
+            // F-NEW-304: the op itself is RECORDED on the tx object:
+            //   __ftx_n__                              op count
+            //   __ftx_<i>_type__      int              0=add 1=replace
+            //                         2=remove 3=hide 4=show 5=detach 6=attach
+            //   __ftx_<i>_container__ int              container view id
+            //   __ftx_<i>_frag__      ref              Fragment object
+            //   __ftx_<i>_tag__       string           optional tag
+            // Argument shapes (AOSP BackStackRecord):
+            //   add(int, Fragment) / add(int, Fragment, String)
+            //   add(Fragment, String) / replace(int, Fragment[, String])
+            //   remove/hide/show/detach/attach(Fragment)
+            if (!heap_) return CallResult::not_handled();
+            if (ctx.has_receiver && ctx.receiver_id != 0) {
+                int type = (m == "add") ? 0 : (m == "replace") ? 1
+                         : (m == "remove") ? 2 : (m == "hide") ? 3
+                         : (m == "show") ? 4 : (m == "detach") ? 5 : 6;
+                uint32_t container = 0, frag = 0;
+                std::string tag;
+                for (size_t i = 0; i < ctx.args.size(); ++i) {
+                    const auto& a = ctx.args[i];
+                    if (a.kind == CallContext::Arg::Kind::INT)
+                        container = (uint32_t)a.int_val;
+                    else if (a.kind == CallContext::Arg::Kind::STRING)
+                        tag = a.string_val;
+                    else if (a.kind == CallContext::Arg::Kind::OBJECT &&
+                             a.object_id != 0)
+                        frag = a.object_id;
+                }
+                int n = 0;
+                heap_->get_object_int_field(ctx.receiver_id, "__ftx_n__", n);
+                if (n < 64) {  // AOSP has no hard cap; bounded for safety
+                    const std::string p =
+                        "__ftx_" + std::to_string(n) + "_";
+                    heap_->set_object_int_field(ctx.receiver_id, p + "type__", type);
+                    heap_->set_object_int_field(ctx.receiver_id, p + "container__",
+                                                (int32_t)container);
+                    if (frag != 0)
+                        heap_->set_object_ref_field(ctx.receiver_id, p + "frag__",
+                                                    frag, "Landroid/app/Fragment;",
+                                                    "", false);
+                    if (!tag.empty())
+                        heap_->set_object_string_field(ctx.receiver_id, p + "tag__",
+                                                       tag);
+                    heap_->set_object_int_field(ctx.receiver_id, "__ftx_n__", n + 1);
+                }
                 return CallResult::handled_object(ctx.receiver_id,
                                                   ctx.class_name);
+            }
             return CallResult::handled_void();
         }
-        if (m == "commitNow" || m == "commitNowAllowingStateLoss") {
-            return CallResult::handled_void();
+        if (m == "commitNow" || m == "commitNowAllowingStateLoss" ||
+            m == "commit" || m == "commitAllowingStateLoss") {
+            // F-NEW-304 harvest: the op record moves onto the
+            // FragmentManager queue; commit()/commitNow() answer the
+            // BackStackRecord id (AOSP: mIndex, non-negative).
+            if (!heap_) return CallResult::not_handled();
+            const bool immediate =
+                (m == "commitNow" || m == "commitNowAllowingStateLoss");
+            PendingTx tx;
+            tx.immediate = immediate;
+            tx.id = next_tx_id_++;
+            int n = 0;
+            if (!heap_->get_object_int_field(ctx.receiver_id, "__ftx_n__", n))
+                n = 0;
+            for (int i = 0; i < n && i < 64; ++i) {
+                const std::string p = "__ftx_" + std::to_string(i) + "_";
+                PendingOp op;
+                int t = 0, c = 0;
+                heap_->get_object_int_field(ctx.receiver_id, p + "type__", t);
+                heap_->get_object_int_field(ctx.receiver_id, p + "container__", c);
+                op.type = t;
+                op.container = (uint32_t)c;
+                uint32_t f = 0;
+                heap_->get_object_ref_field(ctx.receiver_id, p + "frag__", f);
+                op.frag = f;
+                heap_->get_object_string_field(ctx.receiver_id, p + "tag__",
+                                               op.tag);
+                tx.ops.push_back(op);
+            }
+            // Fragment records registered at COMMIT time (AOSP: the
+            // fragment becomes active when the op executes; findFragmentByTag
+            // answers after execPendingActions — the engine boundary that
+            // consumes this queue runs within the same host event).
+            for (const auto& op : tx.ops) {
+                if (op.frag != 0 &&
+                    (op.type == 0 || op.type == 1)) {  // add / replace
+                FragmentRec r;
+                r.frag = op.frag;
+                r.container = op.container;
+                r.tag = op.tag;
+                record_fragment(r);
+                // Stage 0 = queued; the engine advances __frag_stage__ as
+                // lifecycle callbacks fire.
+                heap_->set_object_int_field(op.frag, "__frag_stage__", 0);
+                heap_->set_object_int_field(op.frag, "__frag_container__",
+                                            (int32_t)op.container);
+                if (!op.tag.empty())
+                    heap_->set_object_string_field(op.frag, "__frag_tag__",
+                                                   op.tag);
+                }
+            }
+            committed_.push_back(tx);
+            return CallResult::handled_int(tx.id);
         }
-        if (m == "commit" || m == "commitAllowingStateLoss") {
-            // BackStackRecord.commit → int id (non-negative in AOSP).
-            return CallResult::handled_int(0);
+    }
+    if (ctx.class_name == "Landroid/app/Fragment;") {
+        // F-NEW-304 fragment state getters — all answered from the state
+        // fields the commit/drain laws maintain on the fragment object.
+        if (m == "getTag") {
+            std::string tag;
+            if (heap_) heap_->get_object_string_field(ctx.receiver_id,
+                                                      "__frag_tag__", tag);
+            if (tag.empty()) return CallResult::handled_null();
+            return CallResult::handled_string(tag);
+        }
+        if (m == "getId") {
+            int32_t c = 0;
+            if (heap_) heap_->get_object_int_field(ctx.receiver_id,
+                                                   "__frag_container__", c);
+            return CallResult::handled_int(c);
+        }
+        if (m == "getView") {
+            uint32_t v = 0;
+            if (heap_) heap_->get_object_ref_field(ctx.receiver_id,
+                                                   "__frag_view__", v);
+            if (v == 0) return CallResult::handled_null();
+            return CallResult::handled_object(v, "Landroid/view/View;");
+        }
+        if (m == "isAdded" || m == "isVisible") {
+            int s = 0;
+            if (heap_) heap_->get_object_int_field(ctx.receiver_id,
+                                                   "__frag_stage__", s);
+            return CallResult::handled_bool(s >= 1);
+        }
+        if (m == "getArguments") {
+            uint32_t b = 0;
+            if (heap_) heap_->get_object_ref_field(ctx.receiver_id,
+                                                   "__frag_args__", b);
+            if (b == 0) return CallResult::handled_null();
+            return CallResult::handled_object(b, "Landroid/os/Bundle;");
         }
     }
     return CallResult::not_handled();

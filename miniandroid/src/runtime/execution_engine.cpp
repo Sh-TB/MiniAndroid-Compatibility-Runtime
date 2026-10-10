@@ -1530,6 +1530,14 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityPreStarted", dalvik_result);
                 bool start_ok = dispatch_app_lifecycle("onStart", &rec);
+                // ── F-NEW-304 (CONT-42): the STARTED-stage fragment drain.
+                // AOSP FragmentActivity.onStart → mFragments.dispatchStart:
+                // fragments move CREATED→VIEW_CREATED→STARTED inside the
+                // host's start window (onCreateView → onViewCreated →
+                // onActivityCreated → onStart). The fragment's view lands in
+                // its transaction container here — the frame render's
+                // canonical measure/draw owns it from the next traversal.
+                dalvik_engine_.advance_fragments_to_started(dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityStarted", dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
@@ -1552,6 +1560,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityPreResumed", dalvik_result);
                 bool resume_ok = dispatch_app_lifecycle("onResume", &rec);
+                // ── F-NEW-304 (CONT-42): the RESUMED-stage fragment drain
+                // (fragments reach RESUMED with their host).
+                dalvik_engine_.advance_fragments_to_resumed(dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityResumed", dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(

@@ -3034,6 +3034,29 @@ public:
                                  const std::string& method,
                                  std::vector<DalvikValue> args,
                                  DalvikValue& ret);
+    // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ──────────
+    // AOSP FragmentController/FragmentManagerImpl stage laws, driven from
+    // the HOST lifecycle boundaries (ExecutionEngine dispatch sites):
+    //   * to_created()  — runs the committed pending-op queue (onAttach →
+    //     onCreate per fragment; AOSP moveToState(CREATED) at the host's
+    //     dispatchActivityCreated window).
+    //   * to_started()  — onCreateView → onViewCreated → onActivityCreated
+    //     → onStart per stage-1 fragment (AOSP CREATED→VIEW_CREATED→STARTED
+    //     on the host's performStart); the returned view attaches into the
+    //     transaction's container node (real measure laws own the geometry).
+    //   * to_resumed()  — onResume per stage-3 fragment.
+    // Each stage skips fragments already at/past it (__frag_stage__ on the
+    // fragment heap object is the single truth) and answers false when no
+    // fragment advanced (bounded [F-NEW-304] diag, never silent).
+    bool advance_fragments_to_created(DalvikExecutionResult& result);
+    bool advance_fragments_to_started(DalvikExecutionResult& result);
+    bool advance_fragments_to_resumed(DalvikExecutionResult& result);
+    // Platform PreferenceFragment.onCreateView law (AOSP internal
+    // preference_list_fragment contract): builds the real list container
+    // rows for the fragment's parsed preference screen through the
+    // ViewShadow tree (no fixed-geometry hacks — the measure laws size
+    // every row). Returns 0 when the fragment has no parsed screen.
+    uint32_t frag_build_preference_list_view(uint32_t frag_oid);
     // S-1 FIX: the provider install stage (runs at bind entry, every path).
     void install_content_providers(DalvikExecutionResult& result);
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes

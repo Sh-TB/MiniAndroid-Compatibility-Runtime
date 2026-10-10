@@ -300,17 +300,81 @@ public:
     void init(HeapAllocator* heap) override { heap_ = heap; }
     bool handles_class(const std::string& class_name) const override {
         return class_name == "Landroid/app/FragmentManager;" ||
-               class_name == "Landroid/app/FragmentTransaction;";
+               class_name == "Landroid/app/FragmentTransaction;" ||
+               class_name == "Landroid/app/Fragment;";
     }
     CallResult dispatch(const CallContext& ctx) override;
     std::vector<std::string> implemented_methods() const override {
         return {"findFragmentByTag", "findFragmentById", "beginTransaction",
                 "add", "replace", "remove", "hide", "show", "detach",
                 "attach", "commit", "commitAllowingStateLoss", "commitNow",
-                "commitNowAllowingStateLoss", "executePendingTransactions"};
+                "commitNowAllowingStateLoss", "executePendingTransactions",
+                "getTag", "getId", "getView", "isAdded", "getArguments",
+                "isVisible"};
     }
+
+    // ── F-NEW-304 (CONT-42): FragmentTransaction pending-op law ─────────
+    // AOSP BackStackRecord records every add/replace/... op; commit()
+    // enqueues the record on the FragmentManager; the host's state
+    // changes (or executePendingTransactions) run execPendingActions.
+    // The old law dropped ops at record time (fluent THIS only) and
+    // commit answered 0 — every platform-Fragment app (tananaev
+    // calculator's PreferenceFragment host, androidx ReportFragment
+    // install) silently contributed NO fragment.
+    //
+    // Recording: ops live on the TRANSACTION heap object as named fields
+    // (__ftx_n__ + per-op __ftx_<i>_{type,container,frag,tag}__), so
+    // identity stays with the object the app manipulates. On commit the
+    // record is harvested into the shadow's committed queue; the ENGINE
+    // consumes it at the host lifecycle boundaries (created/started/
+    // resumed) via take_committed()/has_work() — the shadow holds
+    // DATA, the engine owns the DEX lifecycle dispatch.
+    struct PendingOp {
+        int type = 0;             // 0=add 1=replace 2=remove 3=hide
+                                  // 4=show 5=detach 6=attach
+        uint32_t container = 0;   // android.R.id container (0 = no-id add)
+        uint32_t frag = 0;        // heap oid of the Fragment object
+        std::string tag;          // optional tag
+    };
+    struct PendingTx {
+        std::vector<PendingOp> ops;
+        bool immediate = false;   // commitNow family
+        int32_t id = 0;           // the commit() answer
+    };
+    // Fragment record — one per fragment that entered the queue (AOSP
+    // FragmentManager.mActive analog). Drives findFragmentByTag/Id.
+    struct FragmentRec {
+        uint32_t frag = 0;
+        uint32_t container = 0;
+        std::string tag;
+        uint32_t view = 0;        // onCreateView answer (0 = none yet)
+    };
+    // Engine consumer API (single host runtime — one FragmentManager
+    // singleton; the queue is drained whole at each boundary).
+    bool take_committed(std::vector<PendingTx>& out) {
+        out.swap(committed_);
+        return !out.empty();
+    }
+    void record_fragment(const FragmentRec& r) {
+        for (auto& e : fragments_)
+            if (e.frag == r.frag) { e = r; return; }
+        fragments_.push_back(r);
+    }
+    std::vector<FragmentRec>& fragments() { return fragments_; }
+    const std::vector<FragmentRec>& fragments() const { return fragments_; }
+    void set_drain_requested() { drain_requested_ = true; }
+    bool take_drain_requested() {
+        bool v = drain_requested_;
+        drain_requested_ = false;
+        return v;
+    }
+
 private:
     HeapAllocator* heap_ = nullptr;
+    std::vector<PendingTx> committed_;
+    std::vector<FragmentRec> fragments_;
+    bool drain_requested_ = false;
+    int32_t next_tx_id_ = 1;
 };
 
 // ─────────────────────────────────────────────────────────────────────────
