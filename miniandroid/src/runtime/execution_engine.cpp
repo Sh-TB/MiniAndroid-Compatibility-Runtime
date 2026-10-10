@@ -2907,6 +2907,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     // its own honest state — never a stale ledger from a previous frame.
     frame_census_.reset();
     frame_baseline_ = framebuffer_;
+    // F-NEW-298 (CONT-37) FRAME-HONESTY: re-arm the in-draw budget-halt
+    // signal for THIS frame's render pass (P1-6 extension, CONT-36 §6).
+    dalvik_engine_.frame_honesty_begin();
     // S135 §3: render-pass frontier — MEASURE/LAYOUT/DRAW are now formally
     // STARTED (PENDING) until the composed frame confirms them.
     {
@@ -4998,8 +5001,45 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 });
                         }
 
+                        // ────────────────────────────────────────────
+                        // F-NEW-298 (CONT-37) FRAME-HONESTY: an in-draw F084
+                        // budget halt means this frame NEVER COMPLETED —
+                        // under ART/SurfaceFlinger an unfinished frame is
+                        // never presented; the display keeps the LAST
+                        // COMPLETE frame. Skip the fb→framebuffer_
+                        // presentation so the theme-background wipe that
+                        // erased every late-halting app's first real frame
+                        // (composeStopwatch cards+text, dooz boot content)
+                        // is dead. The P1-6 law covered render FAILURES;
+                        // this extends the same contract to in-draw halts.
+                        // ────────────────────────────────────────────
+                        // F-NEW-298 hoisted state (visible to the RENDER_OK
+                        // law below in both branches).
+                        int fb_non_white = 0;
+                        size_t fb_pixels_total = 0;
+                        // ────────────────────────────────────────────
+                        // F-NEW-298 (CONT-37) FRAME-HONESTY: an in-draw F084
+                        // budget halt means this frame NEVER COMPLETED —
+                        // under ART/SurfaceFlinger an unfinished frame is
+                        // never presented; the display keeps the LAST
+                        // COMPLETE frame. Skip the fb→framebuffer_
+                        // presentation so the theme-background wipe that
+                        // erased every late-halting app's first real frame
+                        // (composeStopwatch cards+text, dooz boot content)
+                        // is dead. The P1-6 law covered render FAILURES;
+                        // this extends the same contract to in-draw halts.
+                        // ────────────────────────────────────────────
+                        if (dalvik_engine_.frame_honesty_keep_prev()) {
+                            std::cerr << "[F298-KEEP] in-draw F084 budget halt"
+                                      << " this frame — presentation SKIPPED,"
+                                      << " keeping the last complete frame"
+                                      << " (P1-6 extension)" << std::endl;
+                            fb_non_white = -1;   // honest signal: not presented
+                            fb_pixels_total = framebuffer_.size() / 4;
+                        } else {
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
                         const auto& pixels = fb.get_pixels();
+                        fb_pixels_total = pixels.size();
                         // EXP-092: Debug — check if any non-white pixels exist in fb
                         int non_white = 0;
                         for (size_t i = 0; i < pixels.size(); i++) {
@@ -5016,13 +5056,13 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             framebuffer_[i * 4 + 3] = pixels[i].a;
                         }
                         std::cerr << "[EXP092-COPY] framebuffer_ updated, checking..." << std::endl;
-                        int fb_non_white = 0;
                         for (size_t i = 0; i < framebuffer_.size(); i += 4) {
                             if (framebuffer_[i] != 255 || framebuffer_[i+1] != 255 || framebuffer_[i+2] != 255) {
                                 fb_non_white++;
                             }
                         }
                         std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
+                        }
                         // S135 §3: DRAW/MEASURE/LAYOUT confirmation — the
                         // composed frame IS the evidence the pipeline
                         // reached the end of the draw walk.
@@ -5042,7 +5082,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                  : diagnostics::EventSev::PENDING,
                                 "render",
                                 "nonwhite=" + std::to_string(fb_non_white) +
-                                " total=" + std::to_string(pixels.size()) +
+                                " total=" + std::to_string(fb_pixels_total) +
                                 " app_ops=" + std::to_string(frame_census_.app_draw_ops) +
                                 " diag_regions=" + std::to_string(frame_census_.diag_regions.size()),
                                 app_content_drew ? "OK" : "NO_APP_OPS"));

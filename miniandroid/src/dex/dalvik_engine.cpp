@@ -3886,6 +3886,30 @@ bool DalvikExecutionEngine::execute_method_internal(
                   << " " << descriptor << std::endl;
         drawwin_count++;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): ATTACH watch. The Compose
+    // text painter (Lte1/Lod1) draw body starts with `if (!this.r) return`
+    // (Lok0.r = the attached flag, written ONLY by Lok0.u0/v0). Dispatch
+    // reaches Lte1.I (UV-DISPATCH ×15) yet no Lg6 call ever runs → r is
+    // false at draw time. Watch the attach/detach pair: receiver object id
+    // + class, correlate with the dispatched painter ids. Env-gated,
+    // bounded — zero behavior change.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool attw_on =
+            std::getenv("MINIANDROID_ATTACH_WATCH") != nullptr;
+        if (attw_on && class_name == "Lok0;" &&
+            (method_name == "u0" || method_name == "v0")) {
+            static thread_local uint64_t attw_n = 0;
+            if (attw_n++ < 400)
+                std::cerr << "[ATTACH-WATCH] "
+                          << (method_name == "u0" ? "u0(attach)" : "v0(detach)")
+                          << " recv=" << (!args.empty() ? args[0].object_id : 0u)
+                          << " cls=" << (!args.empty() ? args[0].class_desc : "?")
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
+    }
     // S33 (R-NEW-332): method entries inside the F-096 lifecycle dispatch
     // window (real-DEX onMeasure/onLayout) — shows the measure/layout
     // traversal the placement pass actually executes.
@@ -9645,6 +9669,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     const dex::MethodInfo* selected_ptr = best_match ? best_match : fallback_match;
 
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): the text-painter resolution
+    // watch — try_recursive_invoke("Lte1;","I",…,"(Loc0;)V") returns false
+    // despite an exact (name, proto, non-empty-code) method on the class
+    // (static decode: 101 instructions). Log the candidate pool + the
+    // selection to expose which lookup stage drops it.
+    if (class_descriptor == "Lte1;" && method_name == "I") {
+        static thread_local uint64_t lte1_sel_n = 0;
+        if (lte1_sel_n++ < 40)
+            std::cerr << "[LTE1-SEL] cands=" << f107_cands.size()
+                      << " best="
+                      << (best_match ? best_match->descriptor : "null")
+                      << " fb="
+                      << (fallback_match ? fallback_match->descriptor : "null")
+                      << " want=" << method_descriptor << std::endl;
+    }
+
     // CONT-28 (generic diagnostic): env-gated overload-selection trace.
     // MINIANDROID_OVERLOAD_TRACE=<method-name-substr> logs, at every
     // selection whose requested method name matches the substring, the
@@ -9861,9 +9901,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (callee_halted) {
             return_val = DalvikValue::make_null();
             last_invoke_return_ = DalvikValue::make_null();
-            // Deferred variant: this site sits inside the invoke opcode
-            // handler — the wrapper rewrites pc_ after we return, so the
-            // raise must record a post-switch redirect, not write pc_.
+            // ────────────────────────────────────────────────────────────
+            // F-NEW-298 (CONT-37): FRAME-HONESTY SIGNAL (the P1-6
+            // extension recorded PENDING in CONT-36 §6). ANY halt that
+            // unwinds through the draw window — wall-clock budget (F084),
+            // loop-guard spin ([HALT-LOOP]), stack overflow — means the
+            // app's frame NEVER COMPLETED. Under ART/SurfaceFlinger an
+            // unfinished frame is never presented: the display keeps the
+            // LAST COMPLETE frame. The compositor (execution_engine)
+            // consults frame_honesty_keep_prev() at the presentation
+            // point and skips the framebuffer→framebuffer_ copy for that
+            // frame — the theme-background wipe that erased every
+            // late-halting app's first real frame (composeStopwatch
+            // cards+text, dooz boot content) is dead.
+            // ────────────────────────────────────────────────────────────
+            if (draw_window_active_)
+                draw_window_budget_halted_ = true;
             throw_deferred(
                 "Ljava/lang/VirtualMachineError;",
                 "F084 interpreter halt in callee (no return value): " +
@@ -21384,6 +21437,53 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
 
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): UV-DISPATCH watch. The Compose
+    // text painter (Lte1/Lod1) reaches the canvas ONLY as a Luv draw block
+    // through Loc0.c — this is the APK's SINGLE Luv;->I dispatch site. Log
+    // the receiver's runtime class per dispatch: answers WHICH draw blocks
+    // actually run per frame (observed: only 20 of 82 D0 walk nodes reach
+    // here; the text painter's I never fires). Env-gated, bounded — zero
+    // behavior change.
+    // ────────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool uvw_on =
+            std::getenv("MINIANDROID_UV_WATCH") != nullptr;
+        if (uvw_on && class_name == "Luv;" && method_name == "I") {
+            static thread_local uint64_t uvw_n = 0;
+            if (uvw_n++ < 400) {
+                const char* uvw_t = "(noargs)";
+                if (!args.empty()) {
+                    if (args[0].type == DalvikType::OBJECT_REF)
+                        uvw_t = args[0].class_desc.c_str();
+                    else if (args[0].type == DalvikType::NULL_REF)
+                        uvw_t = "NULL";
+                    else
+                        uvw_t = "other";
+                }
+                std::cerr << "[UV-DISPATCH] recv-cls=" << uvw_t
+                          << " obj=" << (args.empty() ? 0u : args[0].object_id)
+                          << " caller=" << current_class_ << "."
+                          << current_method_;
+                // CONT-37: dump the receiver's attached flag (Lok0.r) — the
+                // painter body's first gate — plus the coordinator field (l)
+                // identity, to answer whether attach state survived to draw.
+                if (!args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF) {
+                    auto rf = heap_.get_object_field(args[0].object_id, "r");
+                    auto lf = heap_.get_object_field(args[0].object_id, "l");
+                    std::cerr << " r="
+                              << (rf ? std::to_string(rf->bool_val)
+                                     : std::string("?"))
+                              << " l="
+                              << (lf ? std::to_string(lf->object_id)
+                                     : std::string("?"));
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
+
     // ── F-068 (R-NEW-292): RUNTIME-CLASS-FIRST interface dispatch law ─────
     // DEX invoke-interface dispatch: ART resolves the target against the
     // RECEIVER'S RUNTIME CLASS — the most specific implementation among
@@ -21481,6 +21581,23 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                 f281c_cls = f281c_sup->second;
                 if (f281c_cls == "Ljava/lang/Object;") break;
             }
+        }
+        // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): log the f281c gate result
+        // for the draw-block dispatch (Luv;.I) — if the exact walk misses a
+        // method that exists, the runtime-first arm is skipped and the
+        // dispatch falls to the deeper fallbacks (observed: painter paint
+        // dispatch never reaches the body).
+        if (std::getenv("MINIANDROID_UV_WATCH") && class_name == "Luv;" &&
+            method_name == "I" &&
+            (heap_obj->class_descriptor == "Lte1;" ||
+             heap_obj->class_descriptor == "Lod1;")) {
+            static thread_local uint64_t uvf_n = 0;
+            if (uvf_n++ < 60)
+                std::cerr << "[UV-F281C] recv=" << heap_obj->class_descriptor
+                          << " obj=" << (args.empty() ? 0u : args[0].object_id)
+                          << " proto=" << iface_proto
+                          << " exact=" << (f281c_exact ? 1 : 0)
+                          << std::endl;
         }
         if (f281c_exact || iface_proto.empty())
         // F-090i (R-NEW-322): pass the interface proto as the exact
@@ -22050,6 +22167,33 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
                       << " obj=" << val.object_id
                       << " int_val=" << val.int_val
                       << std::endl;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): K0-DRAW-FETCH watch. The
+    // Compose LayoutNode.draw dispatch (Lmo0.D0) branches on K0(4): null →
+    // Z0 fallback (observed 0 executions in the draw window — impossible for
+    // a real tree where most nodes have no draw modifier), non-null → block
+    // dispatch (observed only 20 of 82). Watch K0's return value class to
+    // answer WHICH node object the fetch answers per call. Env-gated,
+    // bounded — zero behavior change.
+    // ────────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool k0w_on =
+            std::getenv("MINIANDROID_K0_WATCH") != nullptr;
+        if (k0w_on && current_class_ == "Lmo0;" && current_method_ == "K0") {
+            static thread_local uint64_t k0w_n = 0;
+            if (k0w_n++ < 400) {
+                const char* k0w_t = "other";
+                if (val.type == DalvikType::OBJECT_REF) k0w_t = val.class_desc.c_str();
+                else if (val.type == DalvikType::NULL_REF) k0w_t = "NULL";
+                else if (val.type == DalvikType::REGISTER_UNSET) k0w_t = "UNSET";
+                std::cerr << "[K0-RET] obj=" << val.object_id
+                          << " cls=" << k0w_t
+                          << " null=" << (val.is_null ? 1 : 0)
+                          << std::endl;
+            }
         }
     }
 
@@ -25064,6 +25208,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             drawwin_miss_count++;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): ATTACH watch placeholder is
+    // at the DEX method-entry site (execute_method_internal) — Lok0.u0/v0
+    // are APP classes executed as DEX, not bridge calls.
+    // ────────────────────────────────────────────────────────────────────
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-400 (S79) — AOSP MediaPlayer object law (F-155 fix).
     // UPSTREAM: android.media.MediaPlayer (frameworks/base/media/java/
@@ -31932,6 +32081,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 ? args[0].object_id
                                 : 0;
             if (method == "obtain") {
+                // CONT-37 diag (bounded): what the Compose text pipeline
+                // feeds the builder — arg type + payload size.
+                {
+                    static thread_local uint64_t obt_n = 0;
+                    if (obt_n++ < 24)
+                        std::cerr << "[F298-OBTAIN] a0_type="
+                                  << static_cast<int>(args[0].type)
+                                  << " str_len="
+                                  << (args[0].type == DalvikType::STRING_REF
+                                          ? args[0].string_val.size() : 0)
+                                  << " str=\""
+                                  << (args[0].type == DalvikType::STRING_REF
+                                          ? args[0].string_val.substr(0, 32)
+                                          : std::string())
+                                  << "\" argc=" << args.size() << std::endl;
+                }
                 // static: args = [source, start, end, paint, width]
                 self = heap_.allocate("Landroid/text/StaticLayout$Builder;",
                                       pc_, 0);
@@ -31986,13 +32151,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             // fluent setters — store and return `this`
             if (self && heap_.has_object(self)) {
+                // CONT-37 diag (bounded): every builder setter — which call
+                // clobbers the stored source (obtain verified text.len=17 at
+                // store time; build() reads source_len=0).
+                {
+                    static thread_local uint64_t stt_n = 0;
+                    if (stt_n++ < 40) {
+                        std::cerr << "[F298-SETTER] " << method
+                                  << " builder=obj#" << self
+                                  << " argc=" << args.size();
+                        if (args.size() >= 2)
+                            std::cerr << " a1_type="
+                                      << static_cast<int>(args[1].type)
+                                      << (args[1].type == DalvikType::STRING_REF
+                                              ? (" len=" + std::to_string(
+                                                     args[1].string_val.size()))
+                                              : "");
+                        std::cerr << std::endl;
+                    }
+                }
                 DalvikValue v;
-                if (method.rfind("setText", 0) == 0 && args.size() >= 2) {
+                // ────────────────────────────────────────────────────────
+                // F-NEW-298 (CONT-37): the "setText" PREFIX match conflated
+                // AOSP Builder.setText(CharSequence, start, end) with
+                // setTextDirection(TextDirectionHeuristic) — every layout
+                // whose chain calls setTextDirection (Compose does: the
+                // [F298-SETTER] trace) OVERWROTE the obtain-stored source
+                // with the heuristic argument (a null/unreadable constant),
+                // so build() laid out an EMPTY string and the paint-side
+                // text law drew nothing. AOSP: setText and setTextDirection
+                // are distinct setters; the source store keys on the EXACT
+                // name only.
+                // ────────────────────────────────────────────────────────
+                if (method == "setText" && args.size() >= 2) {
                     heap_.set_object_field(self, "source", args[1]);
                     if (args.size() >= 4 && args[2].type == DalvikType::INT32)
                         heap_.set_object_field(self, "start", args[2]);
                     if (args.size() >= 4 && args[3].type == DalvikType::INT32)
                         heap_.set_object_field(self, "end", args[3]);
+                } else if (method == "setTextDirection" && args.size() >= 2) {
+                    // AOSP setTextDirection(TextDirectionHeuristic) — store
+                    // opaque (own field; never the text payload).
+                    heap_.set_object_field(self, "textDir", args[1]);
                 } else if (method == "setMaxLines" && args.size() >= 2) {
                     heap_.set_object_field(self, "maxLines", args[1]);
                 } else if (method == "setWidth" && args.size() >= 2) {
@@ -32036,6 +32236,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                              args[0].type == DalvikType::OBJECT_REF)
                                 ? args[0].object_id
                                 : 0;
+            // CONT-37 diag (bounded): the build law's inputs/outputs.
+            {
+                static thread_local uint64_t bld_n = 0;
+                if (bld_n++ < 16)
+                    std::cerr << "[F298-BUILD] builder=obj#" << self
+                              << " source_len="
+                              << sl_string(self, "source").size()
+                              << " start=" << sl_int(self, "start", -1)
+                              << " end=" << sl_int(self, "end", -1)
+                              << std::endl;
+            }
             std::string text = sl_string(self, "source");
             int32_t start = sl_int(self, "start", 0);
             int32_t end = sl_int(self, "end", 0);
@@ -32138,6 +32349,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (method == "draw" && args.size() >= 2 &&
                     args[1].type == DalvikType::OBJECT_REF &&
                     args[1].object_id != 0) {
+                    // CONT-37 diag (bounded): the law's inputs — layout
+                    // text payload size, recorded paint, and WHICH canvas
+                    // object the drawText dispatch will target.
+                    {
+                        static thread_local uint64_t sld_n = 0;
+                        std::string dtext = sl_string(self, "text");
+                        if (sld_n++ < 24) {
+                            auto cv = heap_.get_object_field(self, "paintOid");
+                            std::cerr << "[F298-SLDRAW] layout=obj#" << self
+                                      << " text_len=" << dtext.size()
+                                      << " canvas_arg=obj#"
+                                      << args[1].object_id
+                                      << " cls=" << args[1].class_desc
+                                      << " paintOid="
+                                      << (cv.has_value() ? cv->int_val : -1)
+                                      << std::endl;
+                        }
+                    }
                     std::string text = sl_string(self, "text");
                     if (!text.empty()) {
                         float size = sl_float(self, "textSize", 42.0f);
