@@ -98,6 +98,15 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
+# CONT-37 (F-NEW-298): dalvik_engine.cpp has grown past the -g debug-info
+# cc1plus peak on the 4 GB build host (repeated OOM kills at -O2 -g; the
+# -O2 -g0 compile of the same TU fits). Same optimization level (-O2),
+# only the debug sections are dropped for THIS translation unit — the
+# generated code is unchanged vs -O2. Recorded in evidence/cont37.
+$(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
 $(BUILDDIR)/quickjs/%.o: $(QUICKJS_DIR)/%.c
 	@mkdir -p $(dir $@)
 	gcc $(QUICKJS_CFLAGS) -I$(QUICKJS_DIR) -c -o $@ $<
@@ -178,8 +187,8 @@ help:
 
 clean:
 	rm -rf $(BUILDDIR)
-        # UNIFIED_011 (28): never delete run/ - it contains TRACKED evidence
-        # (exp096/exp097 BEFORE/AFTER proof). Only build/ is a build artifact.
+	# UNIFIED_011 (28): never delete run/ - it contains TRACKED evidence
+	# (exp096/exp097 BEFORE/AFTER proof). Only build/ is a build artifact.
 	@echo "Cleaned build artifacts"
 
 # Download nlohmann/json if not present

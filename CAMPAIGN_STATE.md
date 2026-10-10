@@ -480,3 +480,51 @@ dispatch (renamed DrawScope.drawText → Lte1.I/Lod1.I → Lg6 → Layout.draw
 frame-honesty law (in-draw F084 halt → keep previous frame, dooz anchor
 movement); STREAM-OPEN message spelling; standing F-NEW-288 (Track A) +
 SimpleCalc input-pump (Track B).
+
+---
+
+CONT-37 (binary a181d7b317e015c8): the paint/present contract F-NEW-298
+ROOT_CAUSED_FIXED as THREE coordinated generic points, one semantic
+family. Decode op-level end-to-end: the text painter Lte1.I IS dispatched
+(r=1, coordinator set; the attach-gate theory dead) and its resolution
+SUCCEEDS — two silent gates inside the body killed it: (a) Lg6.d gates
+the whole paragraph paint on Canvas.getClipBounds(Rect) — unhandled →
+typed-default FALSE → silent abort BEFORE Layout.draw ([F298-GCB]); (b)
+the StaticLayout$Builder law's "setText" PREFIX match conflated
+setTextDirection — Compose calls setTextDirection FIRST and its heuristic
+arg OVERWROTE the obtain-stored source (obtain text.len=17/2/2 → build
+chars=0); (c) THE FRAME WIPE — composeStopwatch frame 1 drew 265 ops
+INCLUDING all three texts and replayed them, frames 2-6 halted in-window,
+and the unconditional fb.clear(win_bg)+present erased frame 1 (the
+visible face was the (13,15,18) fill + the dialog). FIX: (1) CanvasShadow
+getClipBounds law (tracked clip or device bounds, AOSP-honest); (2)
+Builder setter EXACT match (setTextDirection stores textDir, never the
+payload); (3) FRAME-HONESTY law — any halt unwinding the draw window
+sets draw_window_budget_halted_, the compositor skips the presentation
+([F298-KEEP]) and keeps the last COMPLETE frame (the P1-6 extension
+recorded PENDING in CONT-36 §6; ART/SurfaceFlinger: an unfinished frame
+is never presented). Build config: dalvik_engine.cpp now builds -O2 -g0
+per-file (the TU outgrew the -g cc1plus peak on the 4 GB host; same
+optimizer, debug sections dropped). PROBE fnew298 (frame-1 green marker +
+frame-2 DEX busy loop halted mid-draw; runner-side KEEP-CORNER pixel row)
+PRE ×3 on ddc37884601ca802 corner=(48,48,48) FAIL ×3 → POST ×3 on
+a181d7b317e015c8 corner green ×3, 19/0. Target ×3: composeStopwatch
+9afb2bd2606f303e → bbaf8f76308dc267 ×3 — the app's OWN first frame
+presented for the first time (265 ops: black surface, cards, the three
+StaticLayout texts at the app's positions/sizes; 45 Layout.draw text-op
+rows/run). dooz anchor MOVED d602648e8e401895 → 31ddd4d5b8e6d18e ×3
+(legitimate: the old 250-gray was the DISHONEST presentation of an
+unfinished frame — the boot composition needs ~15.3 s, never completes;
+the honest state is keep-empty white). FULL REGRESSION at a181d7b317e015c8:
+7/8 anchors ×3 BYTE-IDENTICAL (KEEP=0, zero drift), battery == CONT-28..36
+records EXACTLY + fnew298 19/0, simplecalc ×3 rc=0 7960bce447ac6d8f.
+Registry 606→607. Evidence: evidence/cont37/FRAME_HONESTY_FRONTIER.md.
+Friend-report question answered from the recorded CONT-36 §9 verdicts:
+the calculator claim is OUR law chain (SimpleCalc 7960bce447ac6d8f ×3);
+the friend's patches are NOT in this lineage. Next: the Compose
+draw-brush color application (the TextPaints carry pipeline-default
+black — the Lbo1 brush→paint application point is the last leg of text
+visibility); the dooz boot-budget face (PENDING, composition-cost wave);
+STREAM-OPEN message spelling; standing F-NEW-288 (Track A) + SimpleCalc
+input-pump (Track B) + Fragment/Preference family (probe-first, build on
+F-NEW-234).
