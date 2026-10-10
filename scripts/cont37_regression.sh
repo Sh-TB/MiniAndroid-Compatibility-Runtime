@@ -94,6 +94,15 @@ print('PASS' if ok else 'FAIL')
 case "${1:-all}" in
 anchors)
   for i in 1 2 3; do
+    # CONT-40: the friend-claim audit REJECTED the "null getWindowToken
+    # prevents composition creation" hypothesis (composition creation
+    # happens both ways; the DEX stores the token raw with zero
+    # null-gates). The AOSP-faithful getWindowToken law was PROTOTYPED and
+    # PARKED: it flips dooz to a valid-but-empty scheduling path AND loses
+    # composeStopwatch's visible text (5c4a0172628849ba, causality proven
+    # via MINIANDROID_WTOKEN_NULL on the same binary) — shipping it would
+    # regress visible content for a non-problem. Binary reverted to the
+    # byte-exact CONT-39 record. Evidence: evidence/cont40/DOOZ_WTOKEN_AUDIT.md.
     run1 "dooz_r$i"       "$DOOZ"      31ddd4d5b8e6d18e
     run1 "microtimer_r$i" "$MICRO"     da73010a37dd0189
     run1 "unote_r$i"      "$UNOTE"     4f1a9e4e8f64fae8
@@ -120,6 +129,7 @@ probes)
   probe1 fnew289 "$BASE/tmp/w4_probebuild/fnew289_probe/fnew289_probe.apk"
   probe1 ckey   "$BASE/tmp/w4_probebuild/classkey_probe/classkey_probe.apk"
   probe1 cpipe  "$BASE/tmp/w4_probebuild/colorpipe_probe/colorpipe_probe.apk"
+  probe1 fnew302 "$BASE/tmp/w4_probebuild/fnew302_probe/fnew302_probe.apk"
   probe1 fnew252 "$BASE/tmp/w4_probebuild/fnew252_probe/fnew252_probe.apk"
   probe1 fnew290 "$BASE/tmp/w4_probebuild/fnew290_probe/fnew290_probe.apk"
   probe1 fnew291 "$BASE/tmp/w4_probebuild/fnew291_probe/fnew291_probe.apk"

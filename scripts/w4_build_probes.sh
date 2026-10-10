@@ -66,4 +66,5 @@ build_probe fnew297_probe com.probe.f297
 build_probe fnew298_probe com.probe.f298
 build_probe classkey_probe com.probe.ckey
 build_probe colorpipe_probe com.probe.cpipe
+build_probe fnew302_probe com.probe.fclk
 echo "ALL PROBES BUILT"
