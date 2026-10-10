@@ -404,3 +404,40 @@ Registry 601→602. Evidence: evidence/cont34/VIRTUAL_PATH_FRONTIER.md.
 Next: composeStopwatch f141-null-recv + Lh4; ops=0 face; STREAM-OPEN
 message spelling; standing F-NEW-288 (Track A) + SimpleCalc input-pump
 (Track B).
+
+---
+
+## CONT-35 (2026-10-10) — TEXT-PIPELINE FRONTIERS: F-NEW-294/295/296
+
+Environment recovery (fast-forward to 13d233b2; binary rebuilt BYTE-EXACT
+702813ff2d5d8be8 == CONT-34 record; composeStopwatch dbf937ebbe7c0b3d +
+SimpleCalc 68da25fd9fdf54b4 re-supplied SHA-exact). THREE generic roots
+closed along the composeStopwatch text pipeline, one chain, probe-proven
+each: (1) F-NEW-294 — the engine had NO Typeface law at all: sget
+Typeface.DEFAULT hit SGET-MISS → NULL, create/defaultFromStyle fell to the
+typed-default stub; the R8-inlined AndroidParagraphIntrinsics (Lk6;.<init>)
+fed the null into the Kotlin platform-type `!!` (getClass BEFORE check-cast)
+→ the recorded f141-null-recv at pc=409, one per run. Fix = sget constant
+synthesis row (DEFAULT/DEFAULT_BOLD/SANS_SERIF/SERIF/MONOSPACE with
+family/style fields) + bridge create×3/defaultFromStyle law (per-request
+cached, non-null, family fallback). (2) F-NEW-295 — Layout$Alignment had no
+kOrdinals rows → the 371-CLOSEOUT values() law answered NULL → Ljd1;.<clinit>
+array-length NPE at pc=6; fix = 3 table rows in the decoded AOSP order
+(NORMAL=0, OPPOSITE=1, CENTER=2; decoded from the android-34.jar clinit —
+no ALIGN_LEFT/RIGHT on this API level). (3) F-NEW-296 — no
+LineBreakConfig$Builder law (API 33+/34): new Builder() allocated but the
+fluent setters returned NULL → chain broke at the SECOND link (the recorded
+Lb1;.n pc=0 NPE); fix = Builder object law (fluent THIS, build() non-null)
++ StaticLayout$Builder.setLineBreakConfig whitelist row. Probes
+fnew294/295/296 PRE ×3 FAIL (0/10, 0/6, 2/3 — exact recorded NPE messages)
+→ POST ×3 PASS (10/0, 6/0, 5/0). composeStopwatch ×3: ALL uncaught
+text-pipeline NPEs dead (pc409/Ljd1/Lb1 0 per run), only the 3 faithful
+deferred faces + F084 budget halts remain, frame UNCHANGED 9afb2bd2606f303e
+×3 — PARTIAL SUCCESS retained, text pass UNBLOCKED. Full regression ZERO
+DRIFT at 6508a51d01b54280 (24/24 anchors ×3 byte-identical, probe battery ==
+CONT-28..34 records EXACTLY, fnew294 77/0 + fnew295 49/0 + fnew296 42/0,
+simplecalc ×3 rc=0 7960bce447ac6d8f). Registry 602→605. Evidence:
+evidence/cont35/TEXT_PIPELINE_FRONTIER.md. Next: the Compose DRAW path
+(Lh4; ops=0 — the layer drawContent → AndroidCanvas bridge family, dooz
+shares it), empty dialog body; STREAM-OPEN message spelling (probe row
+first); standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B).

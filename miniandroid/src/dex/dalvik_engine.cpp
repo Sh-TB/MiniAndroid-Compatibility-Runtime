@@ -19093,6 +19093,66 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                           << field_res.field_name << " obj#" << e_id
                           << std::endl;
             } else if (field_res.class_descriptor ==
+                           "Landroid/graphics/Typeface;" &&
+                       (field_res.field_name == "DEFAULT" ||
+                        field_res.field_name == "DEFAULT_BOLD" ||
+                        field_res.field_name == "SANS_SERIF" ||
+                        field_res.field_name == "SERIF" ||
+                        field_res.field_name == "MONOSPACE")) {
+                // F-NEW-294 (CONT-35): AOSP Typeface static-constant law.
+                // frameworks/base/graphics/java/android/graphics/Typeface.java
+                // declares the family constants as static finals built by
+                // create() inside <clinit>:
+                //   DEFAULT       = create((String) null, NORMAL)
+                //   DEFAULT_BOLD  = create((String) null, BOLD)
+                //   SANS_SERIF    = create("sans-serif", NORMAL)
+                //   SERIF         = create("serif", NORMAL)
+                //   MONOSPACE     = create("monospace", NORMAL)
+                // A live ART <clinit> ALWAYS completes — the constants are
+                // NEVER null (same platform-constant law family as the
+                // Boolean/Locale/StandardCharsets arms above). The engine
+                // runs no framework <clinit> for the platform class, so the
+                // sget hit [SGET-MISS] and answered NULL; the R8-inlined
+                // Compose font resolver (FontListFontFamilyTypefaceAdapter
+                // .resolve → TypefaceResult(value, immediate)) then handed
+                // the null value to the consumer's Kotlin platform-type
+                // `!!` check — compiled as invoke-virtual getClass() BEFORE
+                // the check-cast — and composeStopwatch's
+                // AndroidParagraphIntrinsics (Lk6;.<init> pc=409) NPE'd
+                // once per run ("getClass on a null object reference"),
+                // aborting the text pass and leaving the Compose stopwatch
+                // view (Lh4;) at onDraw ops=0. Materialize each constant as
+                // a REAL heap Typeface object carrying its family/style
+                // (__typeface_family__/__typeface_style__), cached per
+                // static_key so identity comparisons hold — the same shape
+                // the bridge_to_api create/defaultFromStyle law answers.
+                const char* fam = "sans-serif";
+                int st = 0;
+                if (field_res.field_name == "DEFAULT_BOLD") {
+                    fam = "sans-serif"; st = 1;
+                } else if (field_res.field_name == "SANS_SERIF") {
+                    fam = "sans-serif"; st = 0;
+                } else if (field_res.field_name == "SERIF") {
+                    fam = "serif"; st = 0;
+                } else if (field_res.field_name == "MONOSPACE") {
+                    fam = "monospace"; st = 0;
+                } else {
+                    fam = "sans-serif"; st = 0;   // DEFAULT
+                }
+                uint32_t tf_id = heap_.allocate("Landroid/graphics/Typeface;",
+                                                pc, 0);
+                heap_.set_object_field(tf_id, "__typeface_family__",
+                                       DalvikValue::make_string(fam, 0));
+                heap_.set_object_field(tf_id, "__typeface_style__",
+                                       DalvikValue::make_int(st));
+                result_value = DalvikValue::make_object(
+                    tf_id, "Landroid/graphics/Typeface;");
+                static_field_storage_[static_key] = result_value;
+                std::cerr << "[F-NEW-294] synthesized Typeface."
+                          << field_res.field_name << " family=" << fam
+                          << " style=" << st << " oid=" << tf_id
+                          << std::endl;
+            } else if (field_res.class_descriptor ==
                            "Landroid/view/View$MeasureSpec;" &&
                        (field_res.field_name == "EXACTLY" ||
                         field_res.field_name == "AT_MOST" ||
@@ -23256,6 +23316,20 @@ static const miniandroid::dalvik::KvInt kOrdinals[] = {
     {"Ljava/lang/Thread$State;.WAITING", 3},
     {"Ljava/lang/Thread$State;.TIMED_WAITING", 4},
     {"Ljava/lang/Thread$State;.TERMINATED", 5},
+    // F-NEW-295 (CONT-35): android.text.Layout$Alignment — AOSP Layout.java
+    // declaration order, decoded instruction-level from the toolchain's
+    // android-34.jar clinit (ALIGN_NORMAL=0, ALIGN_OPPOSITE=1,
+    // ALIGN_CENTER=2; NO ALIGN_LEFT/ALIGN_RIGHT members exist on this API
+    // level). Compose's R8-inlined text-layout alignment resolver
+    // (composeStopwatch Ljd1;.<clinit>) calls Layout.Alignment.values(),
+    // searches the array for the names "ALIGN_LEFT"/"ALIGN_RIGHT" and falls
+    // back to the ALIGN_NORMAL sget when absent — but with no table rows
+    // the 371-CLOSEOUT values() arm found no constants and answered NULL,
+    // so the clinit's array-length (pc=6) NPE'd and the text pass aborted.
+    // Same table drives the sget constant law → identity coherent.
+    {"Landroid/text/Layout$Alignment;.ALIGN_NORMAL", 0},
+    {"Landroid/text/Layout$Alignment;.ALIGN_OPPOSITE", 1},
+    {"Landroid/text/Layout$Alignment;.ALIGN_CENTER", 2},
 };
 static int framework_enum_ordinal(const std::string& class_desc,
                                   const std::string& field_name) {
@@ -25095,6 +25169,192 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-296 (CONT-35) — AOSP LineBreakConfig$Builder object law
+    // (android.graphics.text, API 33+; Builder API 34).
+    // UPSTREAM (frameworks/base/graphics/java/android/graphics/text/
+    // LineBreakConfig.java): Builder() constructs a mutable builder with
+    // the AOSP defaults (LINE_BREAK_STYLE_NONE, LINE_BREAK_WORD_STYLE_
+    // NONE); setLineBreakStyle(int)/setLineBreakWordStyle(int) are FLUENT
+    // (return this, declared @NonNull); build() returns a non-null
+    // LineBreakConfig. The Compose text pipeline (R8'd into Llw;.i /
+    // Lb1; in composeStopwatch) gates on SDK >= 33 and runs
+    //   new LineBreakConfig$Builder().setLineBreakStyle(s)
+    //       .setLineBreakWordStyle(w).build()
+    // then StaticLayout$Builder.setLineBreakConfig(config) — with no ctor
+    // law the new-instance answered NULL and the first fluent setter NPE'd
+    // at APP BOUNDARY (f141-null-recv "setLineBreakWordStyle on a null
+    // object reference" at Lb1;.n pc=0, one per run, text pass dead →
+    // Lh4; ops=0). Same §12 family as the AudioAttributes$Builder law
+    // below: framework object law must hold so app control flow survives.
+    // The config object itself is carried opaquely (its consumer here is
+    // the StaticLayout builder chain, which stores it the same way).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/text/LineBreakConfig$Builder;") {
+        if (method == "<init>") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+                heap_.set_object_field(args[0].object_id,
+                                       "__lbc_style__",
+                                       DalvikValue::make_int(0));
+                heap_.set_object_field(args[0].object_id,
+                                       "__lbc_word_style__",
+                                       DalvikValue::make_int(0));
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "setLineBreakStyle" ||
+             method == "setLineBreakWordStyle")) {
+            heap_.set_object_field(args[0].object_id,
+                                   method == "setLineBreakStyle"
+                                       ? "__lbc_style__"
+                                       : "__lbc_word_style__",
+                                   args.size() > 1 &&
+                                           args[1].type == DalvikType::INT32
+                                       ? args[1]
+                                       : DalvikValue::make_int(0));
+            result = args[0];  // fluent: return THIS (AOSP Builder law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t lbc_id = heap_.allocate(
+                "Landroid/graphics/text/LineBreakConfig;", pc_, 0);
+            for (const char* f :
+                 {"__lbc_style__", "__lbc_word_style__"}) {
+                auto fv = heap_.get_object_field(args[0].object_id, f);
+                if (fv.has_value())
+                    heap_.set_object_field(lbc_id, f, *fv);
+            }
+            result = DalvikValue::make_object(
+                lbc_id, "Landroid/graphics/text/LineBreakConfig;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-294 (CONT-35) — AOSP Typeface static creation law.
+    // frameworks/base/graphics/java/android/graphics/Typeface.java:
+    //   create(String familyName, int style) — the family-name entry;
+    //     null/empty/UNKNOWN family falls back to the default family and
+    //     the method NEVER returns null (every documented overload is
+    //     declared @NonNull; the DEFAULT constant itself is create(null,0)).
+    //   create(Typeface family, int style) — same never-null contract;
+    //     a null family argument answers the default family.
+    //   create(Typeface family, int weight, boolean italic) — API 28+
+    //     weight-variant entry (androidx Ly0;.b shape), never null.
+    //   defaultFromStyle(int style) — DEFAULT family for the style bits,
+    //     never null.
+    // Pre-fix there was NO Typeface law anywhere in the engine: every
+    // static create/defaultFromStyle fell to the typed-default stub (NULL)
+    // and sget-object Typeface.DEFAULT hit [SGET-MISS] — the Compose font
+    // resolver wrapped the null into TypefaceResult and the consumer's
+    // Kotlin `!!` (getClass before check-cast) NPE'd (composeStopwatch
+    // Lk6;.<init> pc=409, one per run; probe rows TF-* FAIL 10/10).
+    // IMPLEMENTATION: allocate a REAL heap Typeface per request carrying
+    // __typeface_family__/__typeface_style__ (+ weight/italic for the
+    // API 28+ form), cached per request key in static_field_storage_ so
+    // same-request identity holds (AOSP caches created typefaces); the
+    // sget constant law above answers the same object shape. No name
+    // dispatch beyond the class, no app-specific branches.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/Typeface;") {
+        auto tf_read_family = [&](const DalvikValue& v) -> std::string {
+            // null/empty family → the AOSP default family ("sans-serif");
+            // a Typeface receiver carries its family in __typeface_family__.
+            const std::string def = "sans-serif";
+            if (v.type != DalvikType::OBJECT_REF || v.object_id == 0)
+                return def;
+            auto fv = heap_.get_object_field(v.object_id,
+                                             "__typeface_family__");
+            if (fv && fv->type == DalvikType::STRING_REF &&
+                !fv->string_val.empty())
+                return fv->string_val;
+            return def;
+        };
+        auto tf_make = [&](const std::string& fam, int style, int weight,
+                           int italic) -> DalvikValue {
+            uint32_t tf_id = heap_.allocate("Landroid/graphics/Typeface;",
+                                            pc_, 0);
+            heap_.set_object_field(tf_id, "__typeface_family__",
+                                   DalvikValue::make_string(fam, 0));
+            heap_.set_object_field(tf_id, "__typeface_style__",
+                                   DalvikValue::make_int(style));
+            if (weight >= 0)
+                heap_.set_object_field(tf_id, "__typeface_weight__",
+                                       DalvikValue::make_int(weight));
+            if (italic >= 0)
+                heap_.set_object_field(tf_id, "__typeface_italic__",
+                                       DalvikValue::make_int(italic));
+            return DalvikValue::make_object(tf_id,
+                                            "Landroid/graphics/Typeface;");
+        };
+        // create(String, int) / create(Typeface, int)
+        if (method == "create" && args.size() == 2) {
+            std::string fam =
+                args[0].type == DalvikType::STRING_REF
+                    ? (args[0].string_val.empty() ? "sans-serif"
+                                                  : args[0].string_val)
+                    : tf_read_family(args[0]);
+            int style = args[1].type == DalvikType::INT32 ? args[1].int_val
+                                                          : 0;
+            std::string key = "Landroid/graphics/Typeface;.create(" + fam +
+                              "|" + std::to_string(style) + ")";
+            auto it = static_field_storage_.find(key);
+            if (it != static_field_storage_.end()) {
+                result = it->second;
+            } else {
+                result = tf_make(fam, style, -1, -1);
+                static_field_storage_[key] = result;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // create(Typeface, int weight, boolean italic) — API 28+.
+        if (method == "create" && args.size() == 3) {
+            std::string fam = tf_read_family(args[0]);
+            int weight = args[1].type == DalvikType::INT32 ? args[1].int_val
+                                                           : 400;
+            int italic =
+                (args[2].type == DalvikType::BOOLEAN ||
+                 args[2].type == DalvikType::INT32)
+                    ? (args[2].int_val != 0 ? 1 : 0)
+                    : 0;
+            std::string key = "Landroid/graphics/Typeface;.create(" + fam +
+                              "|" + std::to_string(weight) + "|" +
+                              std::to_string(italic) + "w)";
+            auto it = static_field_storage_.find(key);
+            if (it != static_field_storage_.end()) {
+                result = it->second;
+            } else {
+                result = tf_make(fam, -1, weight, italic);
+                static_field_storage_[key] = result;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // defaultFromStyle(int style) — DEFAULT family for the style bits.
+        if (method == "defaultFromStyle" && args.size() >= 1) {
+            int style = args[0].type == DalvikType::INT32 ? args[0].int_val
+                                                          : 0;
+            std::string key = "Landroid/graphics/Typeface;.defaultFromStyle(" +
+                              std::to_string(style) + ")";
+            auto it = static_field_storage_.find(key);
+            if (it != static_field_storage_.end()) {
+                result = it->second;
+            } else {
+                result = tf_make("sans-serif", style, -1, -1);
+                static_field_storage_[key] = result;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
         }
     }
     // M3 FINDING-011 diagnostics (bounded): function-entry probe.
@@ -31600,6 +31860,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
              method.rfind("setHyphenationFrequency", 0) == 0 ||
              method.rfind("setIndents", 0) == 0 ||
              method.rfind("setUseFallbackLineSpacing", 0) == 0 ||
+             method.rfind("setLineBreakConfig", 0) == 0 ||  // F-NEW-296 (API 33+)
              method.rfind("setWidth", 0) == 0 ||
              method.rfind("setTextLocale", 0) == 0)) {
             uint32_t self = (!args.empty() &&
@@ -31684,6 +31945,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 } else if (method == "setIndents" && args.size() >= 2) {
                     // int[] indents — stored opaque
                     heap_.set_object_field(self, "indents", args[1]);
+                } else if (method == "setLineBreakConfig" && args.size() >= 2) {
+                    // F-NEW-296 (CONT-35): API 33+ fluent setter — the
+                    // Compose text pipeline (Lb1;.i in composeStopwatch)
+                    // applies the built LineBreakConfig to the StaticLayout
+                    // Builder. Stored opaque, same law family as the
+                    // builder fields above; build() keeps carrying it.
+                    heap_.set_object_field(self, "lineBreakConfig", args[1]);
                 }
                 DalvikValue r;
                 r.type = DalvikType::OBJECT_REF;

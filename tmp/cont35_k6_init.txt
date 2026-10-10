@@ -1,0 +1,261 @@
+Lk6;.<init>(Ljava/lang/String; Lue1; Ljava/util/List; Ljava/util/List; Ls10; Lqr;)V  regs=46 ins=7 insns=2544
+  @0x0000 move-object/from16       v0, v39
+  @0x0002 move-object/from16       v1, v41
+  @0x0004 move-object/from16       v2, v42
+  @0x0006 move-object/from16       v3, v45
+  @0x0008 invoke-direct            v0, Ljava/lang/Object;-><init>()V
+  @0x000b move-object/from16       v4, v40
+  @0x000d iput-object              v4, v0, Lk6;->e Ljava/lang/String;
+  @0x000f iput-object              v1, v0, Lk6;->f Lue1;
+  @0x0011 iput-object              v2, v0, Lk6;->g Ljava/util/List;
+  @0x0013 move-object/from16       v4, v43
+  @0x0015 iput-object              v4, v0, Lk6;->h Ljava/util/List;
+  @0x0017 move-object/from16       v4, v44
+  @0x0019 iput-object              v4, v0, Lk6;->i Ls10;
+  @0x001b iput-object              v3, v0, Lk6;->j Lqr;
+  @0x001d new-instance             v4, Ld7;
+  @0x001f invoke-interface         v3, Lqr;->b()F
+  @0x0022 move-result              v5
+  @0x0023 const/4                  v6, 1
+  @0x0024 invoke-direct            v4, v6, Landroid/text/TextPaint;-><init>(I)V
+  @0x0027 iput                     v5, v4, Landroid/text/TextPaint;->density F
+  @0x0029 sget-object              v5, Lqd1;->b Lqd1;
+  @0x002b iput-object              v5, v4, Ld7;->b Lqd1;
+  @0x002d const/4                  v5, 3
+  @0x002e iput                     v5, v4, Ld7;->c I
+  @0x0030 sget-object              v7, Lr61;->d Lr61;
+  @0x0032 iput-object              v7, v4, Ld7;->d Lr61;
+  @0x0034 iput-object              v4, v0, Lk6;->k Ld7;
+  @0x0036 invoke-static            v1, Lu4;->n(Lue1;)Z
+  @0x0039 move-result              v7
+  @0x003a const/4                  v8, 0
+  @0x003b if-nez                   v7, +004h
+  @0x003d move                     v7, v8
+  @0x003e goto                     +23h
+  @0x003f sget-object              v7, Lix;->a Lgi0;
+  @0x0041 sget-object              v7, Lix;->a Lgi0;
+  @0x0043 iget-object              v9, v7, Lgi0;->f Ljava/lang/Object;
+  @0x0045 check-cast               v9, Lz91;
+  @0x0047 if-eqz                   v9, +003h
+  @0x0049 goto                     +eh
+  @0x004a sget-object              v9, Ldx;->k Ldx;
+  @0x004c if-eqz                   v9, +009h
+  @0x004e invoke-virtual           v7, Lgi0;->j()Lz91;
+  @0x0051 move-result-object       v9
+  @0x0052 iput-object              v9, v7, Lgi0;->f Ljava/lang/Object;
+  @0x0054 goto                     +3h
+  @0x0055 sget-object              v9, Lgq;->e Lq60;
+  @0x0057 invoke-interface         v9, Lz91;->getValue()Ljava/lang/Object;
+  @0x005a move-result-object       v7
+  @0x005b check-cast               v7, Ljava/lang/Boolean;
+  @0x005d invoke-virtual           v7, Ljava/lang/Boolean;->booleanValue()Z
+  @0x0060 move-result              v7
+  @0x0061 iput-boolean             v7, v0, Lk6;->o Z
+  @0x0063 iget-object              v7, v1, Lue1;->b Lys0;
+  @0x0065 iget                     v7, v7, Lys0;->b I
+  @0x0067 iget-object              v9, v1, Lue1;->a Lj91;
+  @0x0069 iget-object              v9, v9, Lj91;->k Lch0;
+  @0x006b const/4                  v10, 4
+  @0x006c const/4                  v12, 2
+  @0x006d if-ne                    v7, v10, +004h
+  @0x006f move                     v7, v12
+  @0x0070 goto                     +2eh
+  @0x0071 const/4                  v13, 5
+  @0x0072 if-ne                    v7, v13, +004h
+  @0x0074 move                     v7, v5
+  @0x0075 goto                     +29h
+  @0x0076 if-ne                    v7, v6, +004h
+  @0x0078 move                     v7, v8
+  @0x0079 goto                     +25h
+  @0x007a if-ne                    v7, v12, +004h
+  @0x007c move                     v7, v6
+  @0x007d goto                     +21h
+  @0x007e if-ne                    v7, v5, +003h
+  @0x0080 goto                     +3h
+  @0x0081 if-nez                   v7, +967h
+  @0x0083 if-eqz                   v9, +00eh
+  @0x0085 iget-object              v7, v9, Lch0;->e Ljava/util/List;
+  @0x0087 invoke-interface         v7, v8, Ljava/util/List;->get(I)Ljava/lang/Object;
+  @0x008a move-result-object       v7
+  @0x008b check-cast               v7, Lbh0;
+  @0x008d iget-object              v7, v7, Lbh0;->a Ljava/util/Locale;
+  @0x008f if-nez                   v7, +006h
+  @0x0091 invoke-static            Ljava/util/Locale;->getDefault()Ljava/util/Locale;
+  @0x0094 move-result-object       v7
+  @0x0095 invoke-static            v7, Landroid/text/TextUtils;->getLayoutDirectionFromLocale(Ljava/util/Locale;)I
+  @0x0098 move-result              v7
+  @0x0099 if-eqz                   v7, -02ah
+  @0x009b if-eq                    v7, v6, -027h
+  @0x009d goto                     -2eh
+  @0x009e iput                     v7, v0, Lk6;->p I
+  @0x00a0 new-instance             v7, Lj6;
+  @0x00a2 invoke-direct            v7, v8, v0, Lj6;-><init>(I Ljava/lang/Object;)V
+  @0x00a5 iget-object              v9, v1, Lue1;->b Lys0;
+  @0x00a7 iget-object              v9, v9, Lys0;->i Lke1;
+  @0x00a9 if-nez                   v9, +004h
+  @0x00ab sget-object              v9, Lke1;->c Lke1;
+  @0x00ad iget-boolean             v13, v9, Lke1;->b Z
+  @0x00af if-eqz                   v13, +009h
+  @0x00b1 invoke-virtual           v4, Landroid/graphics/Paint;->getFlags()I
+  @0x00b4 move-result              v13
+  @0x00b5 or-int/lit16             v13, v13, 128
+  @0x00b7 goto                     +7h
+  @0x00b8 invoke-virtual           v4, Landroid/graphics/Paint;->getFlags()I
+  @0x00bb move-result              v13
+  @0x00bc and-int/lit16            v13, v13, -129
+  @0x00be invoke-virtual           v4, v13, Landroid/graphics/Paint;->setFlags(I)V
+  @0x00c1 iget                     v9, v9, Lke1;->a I
+  @0x00c3 if-ne                    v9, v6, +00fh
+  @0x00c5 invoke-virtual           v4, Landroid/graphics/Paint;->getFlags()I
+  @0x00c8 move-result              v5
+  @0x00c9 or-int/lit8              v5, v5, 64
+  @0x00cb invoke-virtual           v4, v5, Landroid/graphics/Paint;->setFlags(I)V
+  @0x00ce invoke-virtual           v4, v8, Landroid/graphics/Paint;->setHinting(I)V
+  @0x00d1 goto                     +16h
+  @0x00d2 if-ne                    v9, v12, +009h
+  @0x00d4 invoke-virtual           v4, Landroid/graphics/Paint;->getFlags()I
+  @0x00d7 invoke-virtual           v4, v6, Landroid/graphics/Paint;->setHinting(I)V
+  @0x00da goto                     +dh
+  @0x00db if-ne                    v9, v5, +009h
+  @0x00dd invoke-virtual           v4, Landroid/graphics/Paint;->getFlags()I
+  @0x00e0 invoke-virtual           v4, v8, Landroid/graphics/Paint;->setHinting(I)V
+  @0x00e3 goto                     +4h
+  @0x00e4 invoke-virtual           v4, Landroid/graphics/Paint;->getFlags()I
+  @0x00e7 iget-object              v1, v1, Lue1;->a Lj91;
+  @0x00e9 invoke-interface         v2, Ljava/util/Collection;->size()I
+  @0x00ec move-result              v5
+  @0x00ed move                     v9, v8
+  @0x00ee if-ge                    v9, v5, +013h
+  @0x00f0 invoke-interface         v2, v9, Ljava/util/List;->get(I)Ljava/lang/Object;
+  @0x00f3 move-result-object       v13
+  @0x00f4 move-object              v14, v13
+  @0x00f5 check-cast               v14, Lu8;
+  @0x00f7 iget-object              v14, v14, Lu8;->a Ljava/lang/Object;
+  @0x00f9 instance-of              v14, v14, Lj91;
+  @0x00fb if-eqz                   v14, +003h
+  @0x00fd goto                     +5h
+  @0x00fe add-int/lit8             v9, v9, 1
+  @0x0100 goto                     -12h
+  @0x0101 const/4                  v13, 0
+  @0x0102 if-eqz                   v13, +004h
+  @0x0104 move                     v2, v6
+  @0x0105 goto                     +2h
+  @0x0106 move                     v2, v8
+  @0x0107 iget-wide                v13, v1, Lj91;->b J
+  @0x0109 iget-object              v5, v1, Lj91;->g Ljava/lang/String;
+  @0x010b iget-object              v9, v1, Lj91;->k Lch0;
+  @0x010d iget-object              v15, v1, Lj91;->a Ltd1;
+  @0x010f const/16                 v40, 0
+  @0x0111 iget-object              v11, v1, Lj91;->j Lud1;
+  @0x0113 move-object/from16       v41, v11
+  @0x0115 iget-wide                v10, v1, Lj91;->h J
+  @0x0117 move-object/from16       v42, v9
+  @0x0119 invoke-static            v13, v14, Lwe1;->b(J)J
+  @0x011c move-result-wide         v8
+  @0x011d move/from16              v16, v6
+  @0x011f move-object/from16       v17, v7
+  @0x0121 const-wide               v6, 4294967296
+  @0x0126 invoke-static            v8, v9, v6, v7, Lxe1;->a(J J)Z
+  @0x0129 move-result              v18
+  @0x012a const-wide               v6, 8589934592
+  @0x012f if-eqz                   v18, +00ah
+  @0x0131 invoke-interface         v3, v13, v14, Lqr;->W(J)F
+  @0x0134 move-result              v8
+  @0x0135 invoke-virtual           v4, v8, Landroid/graphics/Paint;->setTextSize(F)V
+  @0x0138 goto                     +13h
+  @0x0139 invoke-static            v8, v9, v6, v7, Lxe1;->a(J J)Z
+  @0x013c move-result              v8
+  @0x013d if-eqz                   v8, +00eh
+  @0x013f invoke-virtual           v4, Landroid/graphics/Paint;->getTextSize()F
+  @0x0142 move-result              v8
+  @0x0143 invoke-static            v13, v14, Lwe1;->c(J)F
+  @0x0146 move-result              v9
+  @0x0147 mul-float/2addr          v9, v8
+  @0x0148 invoke-virtual           v4, v9, Landroid/graphics/Paint;->setTextSize(F)V
+  @0x014b iget-object              v8, v1, Lj91;->f Lpc1;
+  @0x014d if-nez                   v8, +00eh
+  @0x014f iget-object              v9, v1, Lj91;->d Lg20;
+  @0x0151 if-nez                   v9, +00ah
+  @0x0153 iget-object              v9, v1, Lj91;->c Li20;
+  @0x0155 if-eqz                   v9, +003h
+  @0x0157 goto                     +4h
+  @0x0158 move-object/from16       v12, v17
+  @0x015a goto                     +47h
+  @0x015b iget-object              v9, v1, Lj91;->c Li20;
+  @0x015d if-nez                   v9, +004h
+  @0x015f sget-object              v9, Li20;->g Li20;
+  @0x0161 iget-object              v13, v1, Lj91;->d Lg20;
+  @0x0163 if-eqz                   v13, +005h
+  @0x0165 iget                     v13, v13, Lg20;->a I
+  @0x0167 goto                     +2h
+  @0x0168 const/4                  v13, 0
+  @0x0169 iget-object              v14, v1, Lj91;->e Lh20;
+  @0x016b if-eqz                   v14, +007h
+  @0x016d iget                     v14, v14, Lh20;->a I
+  @0x016f move-object/from16       v12, v17
+  @0x0171 goto                     +5h
+  @0x0172 const                    v14, 65535
+  @0x0175 goto                     -6h
+  @0x0176 iget-object              v6, v12, Lj6;->f Ljava/lang/Object;
+  @0x0178 check-cast               v6, Lk6;
+  @0x017a iget-object              v7, v6, Lk6;->i Ls10;
+  @0x017c check-cast               v7, Lt10;
+  @0x017e invoke-virtual           v7, v8, v9, v13, v14, Lt10;->b(Lpc1; Li20; I I)Luh1;
+  @0x0181 move-result-object       v7
+  @0x0182 instance-of              v8, v7, Luh1;
+  @0x0184 if-nez                   v8, +013h
+  @0x0186 new-instance             v8, Ly9;
+  @0x0188 iget-object              v9, v6, Lk6;->n Ly9;
+  @0x018a invoke-direct            v8, v7, v9, Ly9;-><init>(Luh1; Ly9;)V
+  @0x018d iput-object              v8, v6, Lk6;->n Ly9;
+  @0x018f iget-object              v6, v8, Ly9;->c Ljava/lang/Object;
+  @0x0191 invoke-virtual           v6, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+  @0x0194 check-cast               v6, Landroid/graphics/Typeface;
+  @0x0196 goto                     +8h
+  @0x0197 iget-object              v6, v7, Luh1;->e Ljava/lang/Object;
+  @0x0199 invoke-virtual           v6, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+  @0x019c check-cast               v6, Landroid/graphics/Typeface;
+  @0x019e invoke-virtual           v4, v6, Landroid/graphics/Paint;->setTypeface(Landroid/graphics/Typeface;)Landroid/graphics/Typeface;
+  @0x01a1 const/16                 v6, 10
+  @0x01a3 if-eqz                   v42, +049h
+  @0x01a5 sget-object              v7, Lch0;->g Lch0;
+  @0x01a7 invoke-static            Lmw;->v()Lch0;
+  @0x01aa move-result-object       v7
+  @0x01ab move-object/from16       v8, v42
+  @0x01ad invoke-virtual           v8, v7, Lch0;->equals(Ljava/lang/Object;)Z
+  @0x01b0 move-result              v7
+  @0x01b1 if-nez                   v7, +03bh
+  @0x01b3 new-instance             v7, Ljava/util/ArrayList;
+  @0x01b5 invoke-static            v8, v6, Luh;->o(Ljava/lang/Iterable; I)I
+  @0x01b8 move-result              v9
+  @0x01b9 invoke-direct            v7, v9, Ljava/util/ArrayList;-><init>(I)V
+  @0x01bc iget-object              v8, v8, Lch0;->e Ljava/util/List;
+  @0x01be invoke-interface         v8, Ljava/util/List;->iterator()Ljava/util/Iterator;
+  @0x01c1 move-result-object       v8
+  @0x01c2 invoke-interface         v8, Ljava/util/Iterator;->hasNext()Z
+  @0x01c5 move-result              v9
+  @0x01c6 if-eqz                   v9, +00eh
+  @0x01c8 invoke-interface         v8, Ljava/util/Iterator;->next()Ljava/lang/Object;
+  @0x01cb move-result-object       v9
+  @0x01cc check-cast               v9, Lbh0;
+  @0x01ce iget-object              v9, v9, Lbh0;->a Ljava/util/Locale;
+  @0x01d0 invoke-virtual           v7, v9, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+  @0x01d3 goto                     -11h
+  @0x01d4 const/4                  v9, 0
+  @0x01d5 new-array                v8, v9, [Ljava/util/Locale;
+  @0x01d7 invoke-virtual           v7, v8, Ljava/util/ArrayList;->toArray([Ljava/lang/Object;)[Ljava/lang/Object;
+  @0x01da move-result-object       v7
+  @0x01db check-cast               v7, [Ljava/util/Locale;
+  @0x01dd array-length             v8, v7
+  @0x01de invoke-static            v7, v8, Ljava/util/Arrays;->copyOf([Ljava/lang/Object; I)[Ljava/lang/Object;
+  @0x01e1 move-result-object       v7
+  @0x01e2 check-cast               v7, [Ljava/util/Locale;
+  @0x01e4 new-instance             v8, Landroid/os/LocaleList;
+  @0x01e6 invoke-direct            v8, v7, Landroid/os/LocaleList;-><init>([Ljava/util/Locale;)V
+  @0x01e9 invoke-virtual           v4, v8, Landroid/graphics/Paint;->setTextLocales(Landroid/os/LocaleList;)V
+  @0x01ec if-eqz                   v5, +00dh
+  @0x01ee const-string             v7, ""
+  @0x01f0 invoke-virtual           v5, v7, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+  @0x01f3 move-result              v7
+  @0x01f4 if-nez                   v7, +005h
+  ... (capped)
