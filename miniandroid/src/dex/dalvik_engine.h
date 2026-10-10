@@ -1571,6 +1571,21 @@ public:
     // draw phase — evidence for the R-NEW-328 compose draw frontier.
     bool draw_window_active_ = false;
 
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-298 (CONT-37) FRAME-HONESTY: set when an in-draw F084 budget
+    // halt unwound through the draw window — the app's frame NEVER
+    // completed. ART/SurfaceFlinger contract: an unfinished frame is never
+    // presented; the display keeps the last complete frame. The compositor
+    // resets this at the start of each render pass (frame_honesty_begin)
+    // and consults it at the presentation point (frame_honesty_keep_prev).
+    // P1-6 extension recorded PENDING in CONT-36 §6.
+    // ────────────────────────────────────────────────────────────────────
+    bool draw_window_budget_halted_ = false;
+    void frame_honesty_begin() { draw_window_budget_halted_ = false; }
+    bool frame_honesty_keep_prev() const {
+        return draw_window_budget_halted_;
+    }
+
     // S33 diagnostic (env-gated, read-only): TRUE while the F-096 real-DEX
     // onMeasure/onLayout lifecycle dispatch window is open. Method-entry
     // and ()Z-return probes attribute entries to the measure/layout phase —
