@@ -8455,8 +8455,38 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // MAX_RECURSION_DEPTH (80) remains the backstop.
         // ────────────────────────────────────────────────────────────────
         {
+            // F-NEW-297 (CONT-36) — the object-payload cap widens 2 → 8.
+            //
+            // OBSERVATION (composeStopwatch v1.9.1 vc1009011, CONT-36
+            // op-attributed draw window, run/cont36/csw_attr): the R8'd
+            // Compose CanvasDrawScope Loc0;.c(Ltf;JLmo0;Luv;Lt40;)V is a
+            // REUSED dispatcher — ONE instance per view, called once per
+            // SUBTREE with (canvas, packedSize, transform, layoutDir,
+            // drawBlock). decode (androguard, scripts/cont36_disasm_loc0.py):
+            //   pc=100 canvas.save(); pc=106 block.I(this); pc=112 restore()
+            // — the WHOLE subtree draws inside block.I. The 2-object cap
+            // filled on (canvas, transform) — both INVARIANT across
+            // nestings — so the distinguishing payload, the draw block
+            // (args[4]), never entered the key: every nested subtree draw
+            // collided on the same key and the active-cycle stub killed it
+            // mid-dispatch ([M3-19-CYCLE] lifetime_calls=32, depth 109-111).
+            // The outer subtree's roundrects painted (ops=64) and every
+            // nested subtree — including TextPainter Lg6;.d (ZERO executions
+            // in the whole run) → Landroid/text/Layout;.draw — silently
+            // vanished. Same failure shape as F-098 (visitor target payload)
+            // and F-NEW-286 (slot-table-internal state): argument-identity
+            // keys cannot see upstream's structural nesting.
+            //
+            // LAW: object payloads beyond the 2-object cap are STILL
+            // computation identity (a reused dispatcher's nestings differ by
+            // the block/target/visitor arguments, which arrive as further
+            // object args). Widen the appended object identities 2 → 8 —
+            // keys become strictly more specific, the guard only fires LESS
+            // often, genuine same-argument cycles still collide, and
+            // MAX_RECURSION_DEPTH (80) remains the loud backstop. No
+            // name dispatch, no app branches: the cap is universal.
             int appended = 0;
-            for (size_t i = 1; i < args.size() && appended < 2; ++i) {
+            for (size_t i = 1; i < args.size() && appended < 8; ++i) {
                 if (args[i].type == DalvikType::OBJECT_REF &&
                     args[i].object_id != 0 && !args[i].is_null) {
                     m3_active_key += "#" + std::to_string(args[i].object_id);
@@ -23588,6 +23618,34 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+    // CONT-36 (F-NEW-297 evidence): DRAW-OP ATTRIBUTION — env-gated,
+    // bounded. Every Canvas draw-primitive bridge call INSIDE the
+    // custom-view draw window, with the EXECUTING DEX caller. Answers
+    // which DEX site records the frame canvas ops (the Compose draw walk
+    // stops before the text path — where exactly?).
+    {
+        static thread_local const bool cdw_on =
+            std::getenv("MINIANDROID_CANVAS_DRAW_WIN_TRACE") != nullptr;
+        static const char* cdw_faces[] = {
+            "drawColor", "drawRect", "drawRoundRect", "drawCircle",
+            "drawLine", "drawText", "drawTextRun", "drawPosText",
+            "drawPath", "drawBitmap", "drawArc", "drawOval",
+            "drawPoints", "drawLines", "saveLayer", "clipRect", "clipPath"};
+        if (cdw_on && draw_window_active_) {
+            for (const char* f : cdw_faces) {
+                if (method == f) {
+                    static thread_local uint64_t cdw_n = 0;
+                    if (cdw_n++ < 400)
+                        std::cerr << "[CDW-OP] " << class_name << "."
+                                  << method << " caller=" << current_class_
+                                  << "." << current_method_ << " recv="
+                                  << (!args.empty() ? args[0].object_id : 0u)
+                                  << std::endl;
+                    break;
+                }
+            }
+        }
+    }
     // LAW-C/E/F DETERMINATION DIAG (CONT-18, bounded 60/env-gated): every
     // try_shadow_dispatch entry for a Java-8 default-method / view / stream
     // face — answers which class_name the engine routes, with which
@@ -31832,7 +31890,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // paint's text size: probe the common field names, honest fallback.
         auto paint_size = [&](uint32_t paint_oid) -> float {
             if (paint_oid && heap_.has_object(paint_oid)) {
-                for (const char* f : {"textSize", "mTextSize"}) {
+                // F-NEW-297 (CONT-36): the F-NEW-226 Paint.setTextSize law
+                // records the size under __text_size_px__ (identity state) —
+                // probe it too, else every Compose text layout falls back to
+                // the 42px documented default and the drawn text has the
+                // wrong metrics.
+                for (const char* f : {"textSize", "mTextSize",
+                                      "__text_size_px__"}) {
                     auto fv = heap_.get_object_field(paint_oid, f);
                     if (fv.has_value() && fv->type == DalvikType::FLOAT32 &&
                         fv->float_val > 0)
@@ -32022,6 +32086,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             v.float_val = size;    heap_.set_object_field(lay, "textSize", v);
             v.float_val = line_h;  heap_.set_object_field(lay, "lineHeight", v);
             v.float_val = height;  heap_.set_object_field(lay, "height", v);
+            // F-NEW-297 (CONT-36): carry the paint identity on the layout —
+            // the paragraph paint path (Lg6;.d = AndroidParagraph/
+            // TextPainter paint: save/clip/translate/layout.draw/restore)
+            // sets the TextPaint color BEFORE Layout.draw; the draw law
+            // reads the color through CanvasShadow's per-paint state so the
+            // recorded DRAW_TEXT op carries the app's real text color.
+            v.type = DalvikType::INT32;
+            v.int_val = (int32_t)paint_oid;
+            heap_.set_object_field(lay, "paintOid", v);
             DalvikValue r;
             r.type = DalvikType::OBJECT_REF;
             r.object_id = lay;
@@ -32042,6 +32115,107 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 ? args[0].object_id
                                 : 0;
             if (self && heap_.has_object(self)) {
+                // ── F-NEW-297 (CONT-36): LAYOUT.draw(Canvas) TEXT LAW ────
+                // AOSP android.text.Layout.draw(Canvas) is the entry the
+                // Compose paragraph paint path funnels into:
+                //   AndroidParagraph.paint(topOffset, canvas) →
+                //   layout.paint(nativeCanvas) → Layout.draw(Canvas)
+                // (frameworks/base/core/java/android/text/Layout.java)
+                // draws each text line onto the canvas through TextLine.
+                // R8'd caller decoded (composeStopwatch, Lg6;.d): save →
+                // clipRect → getClipBounds cull → translate → layout.draw →
+                // translate back → restore. Pre-fix the engine had NO law —
+                // a silent void — so Compose text NEVER reached the canvas
+                // op stream (0 DRAW_TEXT ops in the whole run; the frame
+                // showed shapes only). The paint-side translate/clip is
+                // ALREADY applied to the CanvasShadow's matrix/clip state
+                // when this arm runs, so the op records at the translated
+                // origin (AOSP coordinate contract preserved). One DRAW_TEXT
+                // op per layout line (AOSP draws line-by-line), baseline
+                // stepping by the layout's line height, first baseline at
+                // the typographic ascent (0.928em — the engine's Paint.
+                // FontMetrics ratio, same model as ROOT-063's metrics).
+                if (method == "draw" && args.size() >= 2 &&
+                    args[1].type == DalvikType::OBJECT_REF &&
+                    args[1].object_id != 0) {
+                    std::string text = sl_string(self, "text");
+                    if (!text.empty()) {
+                        float size = sl_float(self, "textSize", 42.0f);
+                        float line_h = sl_float(self, "lineHeight",
+                                                size * 1.168f);
+                        // paint identity: the TextPaint the builder recorded
+                        // (F-NEW-297 build law stores it) — its CanvasShadow
+                        // state (color/size) is the app-set paint state.
+                        uint32_t paint_oid = 0;
+                        {
+                            auto pv = heap_.get_object_field(self, "paintOid");
+                            if (pv.has_value() &&
+                                pv->type == DalvikType::INT32)
+                                paint_oid = (uint32_t)pv->int_val;
+                        }
+                        if (paint_oid == 0) {
+                            paint_oid = heap_.allocate(
+                                "Landroid/graphics/Paint;", pc_, 0);
+                            std::vector<DalvikValue> pargs;
+                            pargs.push_back(DalvikValue::make_object(
+                                paint_oid, "Landroid/graphics/Paint;"));
+                            pargs.push_back(DalvikValue::make_float(size));
+                            DalvikValue vr = DalvikValue::make_void();
+                            ApiCallTrace::Status st2 = status;
+                            try_shadow_dispatch("Landroid/graphics/Paint;",
+                                                "setTextSize", pargs, vr, st2);
+                        }
+                        // line-split (AOSP draws per line; multi-line
+                        // layouts step the baseline by lineHeight).
+                        float y = size * 0.928f;   // first baseline (ascent)
+                        uint32_t canvas_oid = args[1].object_id;
+                        size_t start = 0;
+                        int lines_drawn = 0;
+                        while (start <= text.size() && lines_drawn < 64) {
+                            size_t nl = text.find('\n', start);
+                            std::string line = (nl == std::string::npos)
+                                                   ? text.substr(start)
+                                                   : text.substr(start,
+                                                                 nl - start);
+                            if (!line.empty()) {
+                                std::vector<DalvikValue> cargs;
+                                cargs.push_back(DalvikValue::make_object(
+                                    canvas_oid, "Landroid/graphics/Canvas;"));
+                                cargs.push_back(
+                                    DalvikValue::make_string(line, 0));
+                                cargs.push_back(DalvikValue::make_float(0.f));
+                                cargs.push_back(DalvikValue::make_float(y));
+                                cargs.push_back(DalvikValue::make_object(
+                                    paint_oid, "Landroid/graphics/Paint;"));
+                                DalvikValue vr = DalvikValue::make_void();
+                                ApiCallTrace::Status st2 = status;
+                                try_shadow_dispatch(
+                                    "Landroid/graphics/Canvas;", "drawText",
+                                    cargs, vr, st2);
+                                ++lines_drawn;
+                            }
+                            if (nl == std::string::npos) break;
+                            start = nl + 1;
+                            y += line_h;
+                        }
+                        std::cerr << "[F-NEW-297] Layout.draw -> " << lines_drawn
+                                  << " text op(s) recorded (recv=" << self
+                                  << " canvas=" << canvas_oid
+                                  << " size=" << (int)size
+                                  << " paint=" << paint_oid
+                                  << " text=\"" << text.substr(0, 40)
+                                  << "\")" << std::endl;
+                    } else {
+                        std::cerr << "[F-NEW-297] Layout.draw recv=" << self
+                                  << " carries no text fields (foreign "
+                                     "layout object) — honest no-op"
+                                  << std::endl;
+                    }
+                    // AOSP Layout.draw is void; the law succeeded.
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
                 float size = sl_float(self, "textSize", 42.0f);
                 float line_h = sl_float(self, "lineHeight", size * 1.168f);
                 int line_count = sl_int(self, "lineCount", 1);
