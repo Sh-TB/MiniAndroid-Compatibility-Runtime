@@ -178,10 +178,20 @@ public:
     std::string name() const override { return "CanvasShadow"; }
 
     bool handles_class(const std::string& cls) const override {
+        // F-NEW-297 (CONT-36): the generic "Paint;" suffix row —
+        // Landroid/text/TextPaint; extends android.graphics.Paint and the
+        // dispatch() Paint arm already keys on cls.find("Paint;")
+        // (color/alpha/size state). The old gate matched ONLY
+        // graphics/Paint, so Compose's TextPaint (AndroidParagraph's
+        // textPaint — the color the paragraph paints with) never reached
+        // the shadow: setColor was swallowed and every Layout.draw text op
+        // recorded the default black. Same gate-vs-dispatch alignment law
+        // as F-NEW-285 (RenderNode claim gate).
         return cls == "Landroid/graphics/Canvas;" ||
                cls.find("graphics/Canvas;") != std::string::npos ||
                cls == "Landroid/graphics/Paint;" ||
                cls.find("graphics/Paint;") != std::string::npos ||
+               cls.find("Paint;") != std::string::npos ||
                // FIX-5: android.graphics.Path — real path recording so apps
                // that draw their own glyphs/shapes (simplestopwatch digit
                // fonts, clock hands) execute their REAL onDraw bytecode and

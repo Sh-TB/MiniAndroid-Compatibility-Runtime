@@ -62,4 +62,5 @@ build_probe fnew293_probe com.probe.f293
 build_probe fnew294_probe com.probe.f294
 build_probe fnew295_probe com.probe.f295
 build_probe fnew296_probe com.probe.f296
+build_probe fnew297_probe com.probe.f297
 echo "ALL PROBES BUILT"
