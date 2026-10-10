@@ -1,7 +1,25 @@
 # CAMPAIGN_STATE — MiniAndroid-Compatibility-Runtime
 
-HEAD at state update: CONT-38 0d73926f (binary 80d9ea341f1b6ccc) ← CONT-38v 11a6c2b9 (the friend-claim verification + F-NEW-299) ← CONT-37 8cbd94e7
-Date: 2026-10-10 (CONT-38 — the Compose text-color pipeline closed for the solid-color path)
+HEAD at state update: CONT-39 771b4b80 (binary 111340a583d48d92) ← CONT-38 0d73926f (binary 80d9ea341f1b6ccc) ← CONT-38v 11a6c2b9 (the friend-claim verification + F-NEW-299) ← CONT-37 8cbd94e7
+Date: 2026-10-10 (CONT-39 — the TextView color-state law closed)
+
+## CONT-39 HIGHLIGHT (2026-10-10)
+
+**TextView.setTextColor → getCurrentTextColor round-trips exactly** — the
+CONT-38 checkpoint (colorpipe PC-01..04, 13/4) is dead at the source. ROOT:
+F-NEW-301 — the SETTER side was already faithful (the ViewShadow setTextColor
+law stores the exact argb with provenance; [M3-SETTEXTCOLOR] shows every call
+incl. PC-04's red→green), but the GETTER had NO law anywhere in the engine —
+every call fell through to the typed-default int stub and answered 0. FIX (one
+generic point, same state store): getCurrentTextColor answers the stored
+ViewNode text_color, else mirrors the renderer's default law EXACTLY (0 →
+opaque black, Button-label → white) so getter state and rendered pixels cannot
+diverge; the CSL variant's draw-time default resolution stays the recorded gap.
+PRE ×3 13/4 → POST ×3 on 111340a583d48d92 17/0 (value/alpha/black/recolor all
+round-trip). Full regression: anchors 8/8 ×3 BYTE-IDENTICAL, composeStopwatch
+3442d9a9dc0fa0f9 ×3 (the Compose path untouched), battery == the standing
+records + cpipe 17/0, simplecalc ×3 FULL SUCCESS. Registry 609→610. Evidence:
+evidence/cont39/TEXT_COLOR_STATE.md
 
 ## CONT-38 HIGHLIGHT (2026-10-10)
 
