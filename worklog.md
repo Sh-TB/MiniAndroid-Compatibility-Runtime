@@ -8345,3 +8345,73 @@ Stage Summary:
   CLASSIFIED (own decode + A/B); notes m3 still BLOCKED behind the androidx
   fall-through A/B (standing scope decision); findViewById S83 arm deferred
   (no harm evidence).
+
+---
+Task ID: CONT-48
+Agent: Super Z (main)
+Task: Dooz white-screen closure wave — F084 budget-vs-defect judgment (the
+CONT-42 standing question), the 120s face decode, and the res/font law;
+user directive "ادامه" (continue; Dooz AND calculator past the white
+screen; high task concurrency; complete results).
+
+Work Log:
+- Phase 0 reconciliation: origin/main == local == b0b903be (CONT-47
+  closeout); binary identity == 387390a00f2de498 (recorded post-fix SHA);
+  registry 624; dooz v23 pin 299eab21ac8b3c61 exact; baseline face
+  31ddd4d5b8e6d18e x3 reproduced (verdict=DEFAULT_BACKGROUND_ONLY,
+  first_missing_stage=APP_DRAW_OPS).
+- F084 JUDGMENT (F-NEW-314, CLASSIFIED): NOT a stall — budget class.
+  15s = 4.7M instrs white anchor; 60s = SAME white face; 120s = 36.2M
+  instrs, composition COMPLETES ("Execution completed successfully") and
+  the real Scaffold renders: screenshot 6841d52a20e6597e x3 byte-identical,
+  11.3% non-background. Zero [HALT-LOOP], zero [R361-DEEP-REFUSE] at every
+  budget — the S51-era face is superseded. Every F084 row is the
+  wall-clock tail. Follow-up = throughput engineering, NOT dispatch.
+- 120s face decoded (op trace + DEX-wide static scan, 13908 methods):
+  top bar + bottom action bar with real Material geometry (IconButton
+  105x105 r52.5 = 40dp, icon slots 63x63 = 24dp @2.625); 1721/1721 PATH
+  ops EMPTY (no vector icon pixel ever lands); buildPath (Lbo;::T) has 2
+  static callers (Led0;::a pc=253, Lh41;::a pc=8) and ZERO runtime
+  presence; 4 solid-black 63x63 RECTs = drawRect(0,0,24,24) under the
+  icon canvas translate+scale, recorded BEFORE the paired empty PATHs;
+  drawBitmap(bitmap-unresolved) NO-OP chain (caller Lf22;.e); zero TEXT
+  ops. New env-gated MINIANDROID_DRAW_CALLER_TRACE diagnostic (drawRect/
+  drawPath handlers, EXP-055 convention; screenshot SHA verified
+  unchanged with it on): drawRect caller=Ly3;.p pc=6 x1098, drawPath
+  caller=Ly3;.g pc=12 x1747 — one frame deep, deeper decode needs a
+  stack-PC diagnostic. F-NEW-316/317 CLASSIFIED (decode-first discipline).
+- FIX F-NEW-315 (ROOT-CAUSED-FIXED): AOSP "Fonts in XML" res/font entries
+  were never registered — FIX-4 scanned only assets/ while aapt2 ships
+  res/font ttf's under renamed paths (dooz res/UJ.ttf). Same extension-
+  only law extended to res/. POSITIVE: dooz FONT_SOURCE font_files=1
+  registered=1 first=res/UJ.ttf. NEGATIVE: every other corpus member
+  font_files=0 unchanged. Honest bound: dooz rendered face unchanged —
+  its compose text chain stops before drawText.
+- Regression (binary c0f31ade222bdf9a = 387390a0 + diagnostics + F-NEW-
+  315): canonical gate 33/33 MATCH ZERO DRIFT (dooz 15s anchor 31ddd4d5
+  x3 held; micro/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048/tanana/
+  csw/simplecalc x3); BMI b52252c2 MATCH (REAL_APP_CONTENT held), sol
+  ba50a4d2 MATCH (x2 variants), notes eb5ebd55 MATCH, alex c8d69f81
+  MATCH; probe battery == records (fcol 140/0, f259 49/0, f259g 84/7,
+  f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, ckey
+  105/0, cpipe 119/0, fnew302 48/24, fnew252 56/0, fnew290..297 PASS,
+  fnew298 19/0 KEEP=5, fnew260 13/0, fnew262 19/0); skill 13/13; dooz
+  120s face 6841d52a x3 on the new binary.
+- Registry 624 -> 628 (scripts/cont48_registry.py): F-NEW-314 CLASSIFIED
+  (budget judgment), F-NEW-315 ROOT-CAUSED-FIXED (res/font law),
+  F-NEW-316/317 CLASSIFIED (empty paths / black icon RECTs). Evidence:
+  evidence/cont48/CONT48_RESULT.md.
+
+Stage Summary:
+- The Dooz half of the user's standing goal is closed: Dooz v23 renders
+  its REAL Scaffold layout at a 120s budget (6841d52a x3 deterministic)
+  — past the white screen, with the three remaining face-level defects
+  (empty icon paths, black icon RECTs, no text) decoded, pinned to their
+  forwarding arms, and registered for the next wave.
+- The F084 question is closed by measurement: budget class, not a
+  correctness defect; no dispatch/lifecycle law was touched.
+- Cross-app impact measured on ONE binary: 33/33 gate + BMI/sol/notes/
+  alex all byte-identical; only Dooz improved (envelope + font truth).
+- Honest bounds: 15s canonical dooz anchor unchanged (composition needs
+  ~36M instructions — throughput engineering next); icon/text rendering
+  decode continues (stack-PC forensics before any dispatch change).

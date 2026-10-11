@@ -698,8 +698,21 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // back to the system chain when the app ships none. No package or
         // filename special-casing beyond the "bold in the file name picks
         // the bold face of the family" rule.
+        // F-NEW-315 (CONT-48): AOSP "Fonts in XML" (API 26+) ships app
+        // fonts as FILE-BACKED font resources under res/font/ — aapt2 keeps
+        // them as res/*.ttf|otf entries (R8/obfuscation renames the file
+        // names arbitrarily, e.g. res/UJ.ttf), and ResourcesCompat.getFont
+        // surfaces them through the same Typeface family model. The FIX-4
+        // scan only covered assets/, so any res/font/-shipped family was
+        // silently unregistered (Dooz v23: res/UJ.ttf present, FONT_SOURCE
+        // font_files=0). The res/ scan applies the SAME law — extension
+        // match only, no package/name special-casing — so the negative
+        // space (apps with no .ttf/.otf entries anywhere) is provably
+        // unchanged (their font_files stays 0).
         {
             auto entries = apk_parser_.list_entries_cached("assets/");
+            auto res_entries = apk_parser_.list_entries_cached("res/");
+            entries.insert(entries.end(), res_entries.begin(), res_entries.end());
             int reg = 0, scanned = 0;
             std::string first_path;
             for (const auto& e : entries) {
@@ -737,7 +750,7 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             if (reg > 0)
                 trace_engine_.info("ExecutionEngine", "app_fonts",
                                    "registered " + std::to_string(reg) +
-                                   " app font face(s) from APK assets");
+                                   " app font face(s) from APK assets/res");
         }
         dalvik_engine_.build_class_dex_index(result.dex_report);
         // EXP-088+ Phase 1.2: inject_secondary_dex_classes() is called
