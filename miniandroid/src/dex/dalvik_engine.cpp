@@ -8794,15 +8794,32 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-058: Preconditions.checkNotNull loops due to incorrect
-    // overload resolution when the caller has different register layout.
-    if (class_descriptor.find("Preconditions") != std::string::npos &&
-        method_name == "checkNotNull") {
-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
-            " — skipping (overload loop)");
-        recursion_depth_--;
-        return false;
-    }
+    // F-058-R (CONT-46): the Preconditions.checkNotNull stub-only gate is
+    // REMOVED — again. The EXP-058-era name gate refused DEX dispatch for
+    // every class whose descriptor contains "Preconditions" + method
+    // "checkNotNull", so the value-returning identity helper answered via
+    // the shadow walk (not_handled → no result-slot write) and every
+    // caller's move-result-object read <unset>. First-divergence proof on
+    // the current lineage (BMI com.zola.bmi): FragmentHostCallback.<init>
+    // stores value=<unset> into its final mHandler field (FIELD-TRACE
+    // put-obj row) because the 4-arg ctor's move-result-object after the
+    // gated checkNotNull(handler, "handler == null") never received the
+    // reference — mHost.getHandler() answered null and the fragment
+    // transaction never executed (execPendingActions 0, no content).
+    // History: R-NEW-365 (S47) root-caused the same gate and F-058
+    // removed it (docs/evidence/s47/S47_EVIDENCE_MANIFEST.md — "check*
+    // helpers are identity-on-non-null; a stub must never destroy a
+    // checked reference"); the cross-campaign recovery import
+    // (d7427016) resurrected the stub with the old docs, and the code
+    // fix was lost. The original "overload loop" the gate papered over
+    // is handled generically since then: F-056 descriptor-aware cycle
+    // keys + the M3-19/F-017 active-cycle law (receiver-identity keys)
+    // stub ONLY genuine re-entries, and MAX_RECURSION_DEPTH remains the
+    // backstop — no name-based refusal is needed or lawful (a stub must
+    // never break the value-return contract of a whole method family).
+    // Probe: fixtures/fnew262_probe CK-1..CK-3 (identity + negative
+    // throw) — 3/3 FAIL pre-fix at the same binary, the exact PRE/POST
+    // discriminator for this law.
 
     // EXP-058: AppCompatTextViewAutoSizeHelper$Impl constructors loop.
     if (class_descriptor.find("AppCompatTextViewAutoSizeHelper") != std::string::npos &&
