@@ -1360,6 +1360,18 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawRect") {
+        // CONT-48 (F-NEW-314 decode): env-gated caller diagnostic — which DEX
+        // site drives the black 24dp-icon-bounding RECT (EXP-055/S24/F040
+        // diagnostic convention; evidence-only, no behavior change).
+        {
+            static const bool rect_caller_diag = [] {
+                const char* p = std::getenv("MINIANDROID_DRAW_CALLER_TRACE");
+                return p && *p;
+            }();
+            if (rect_caller_diag)
+                std::cerr << "[DRAW-CALLER] drawRect caller=" << ctx.caller
+                          << std::endl;
+        }
         DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
         // ── S86 §F-NEW-169: RectF/Rect-object overloads ──────────────────
         // AOSP Canvas.drawRect has two entry points:
@@ -1552,6 +1564,17 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawPath") {
+        // CONT-48 (F-NEW-316 decode): env-gated caller diagnostic — the
+        // 1721 empty-PATH ops' DEX producer (EXP-055 diagnostic convention).
+        {
+            static const bool path_caller_diag = [] {
+                const char* p = std::getenv("MINIANDROID_DRAW_CALLER_TRACE");
+                return p && *p;
+            }();
+            if (path_caller_diag)
+                std::cerr << "[DRAW-CALLER] drawPath caller=" << ctx.caller
+                          << std::endl;
+        }
         // FIX-5 + CYCLE-E: real path rasterization — apps that build their own
         // glyphs (stopwatch digits, clock hands) now produce real pixels.
         const uint32_t path_id = ctx.arg_as_object(0, 0);
