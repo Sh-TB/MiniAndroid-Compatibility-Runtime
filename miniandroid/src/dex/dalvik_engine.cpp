@@ -6868,6 +6868,28 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // eb5ebd559cad1028 anchor.
         bool f261_support_family =
             declaring_class.rfind("Landroid/support/", 0) == 0;
+        // CONT-47 S83-DIAG (env-gated, evidence-only, no behavior change):
+        // the f261 fall-through provably did not fire for
+        // AppCompatActivity.setContentView while the class IS indexed
+        // (F271 dump) — print the raw gate inputs at dispatch time to
+        // catch the state divergence (index size, membership, family).
+        static thread_local const bool s83_diag_on =
+            std::getenv("MINIANDROID_S83_DIAG") != nullptr;
+        static thread_local uint64_t s83_diag_n = 0;
+        if (s83_diag_on && s83_diag_n < 40 &&
+            (method_name == "setContentView" || method_name == "onCreate")) {
+            ++s83_diag_n;
+            std::cerr << "[S83-DIAG] " << declaring_class << "."
+                      << method_name
+                      << " f261_dex_body=" << (f261_dex_body ? 1 : 0)
+                      << " f261_support_family="
+                      << (f261_support_family ? 1 : 0)
+                      << " idx_size=" << class_info_index_.size()
+                      << " idx_has_class="
+                      << (class_info_index_.count(declaring_class) ? 1 : 0)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
         if (f261_dex_body && f261_support_family) {
             // real DEX body exists in the legacy support family — fall
             // through to execution
@@ -6904,16 +6926,57 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // fragment transactions, so the delegate's observable work is
         // no-op at the framework boundary while the APP-level override
         // continues (same sanctioned contract as the onCreate shadow).
-        if (method_name == "onStart" || method_name == "onResume" ||
+        // F-NEW-311 (CONT-47): same else-chain leak class as F-NEW-310 —
+        // this arm fired even when the F-NEW-261 fall-through condition
+        // holds. Measured consequence (BMI, run/cont47/bmi_f310):
+        // BMIMain.onStart dispatched "instructions=0" — the real
+        // FragmentActivity.onStart DEX (the fragment-state driver:
+        // dispatchActivityCreated → mCurState=ACTIVITY_CREATED →
+        // moveToState view creation, noteStateNotSaved, execPendingActions,
+        // dispatchStart) never ran, so the committed PlaceholderFragment
+        // stayed at CREATED and its view was never created (container
+        // FrameLayout stayed children=0). The arm's own premise ("onCreate
+        // was intercepted → fields never initialized") is void on the
+        // support family since F-NEW-261: onCreate's real DEX runs and the
+        // FragmentController/HostCallbacks fields initialize (CONT-46
+        // measured). Androidx keeps the arm (f261_support_family=false →
+        // the negated predicate holds the intercept).
+        if ((method_name == "onStart" || method_name == "onResume" ||
             method_name == "onPause" || method_name == "onStop" ||
             method_name == "onDestroy" ||
             method_name == "onSaveInstanceState" ||
-            method_name == "onBackPressed") {
+            method_name == "onBackPressed") &&
+            !(f261_dex_body && f261_support_family)) {
             return_val = DalvikValue::make_void();
             last_invoke_return_ = return_val;
             return true;
         }
-        if (method_name == "setContentView" && args.size() >= 2) {
+        // F-NEW-310 (CONT-47) — S83 else-chain repair, setContentView arm.
+        // The F-NEW-261 fall-through (`if (f261_dex_body &&
+        // f261_support_family) {} else if (onCreate)`) was written as one
+        // else-chain, but ONLY the onCreate arm sits inside it — the
+        // setContentView arm below is an INDEPENDENT if that fires even when
+        // the fall-through condition holds. Measured: BMI dispatches
+        // AppCompatActivity.setContentView with f261_dex_body=1 AND
+        // f261_support_family=1 (S83-DIAG rows, run/cont47/bmi_diag) yet the
+        // U007 shadow still stole the call — the real delegate DEX
+        // (AppCompatDelegateImpl.setContentView: ensureSubDecor →
+        // mSubDecor.findViewById(android.R.id.content) → removeAllViews →
+        // LayoutInflater.inflate(resId, contentParent)) never ran, so the app
+        // layout root was inflated into the shadow's standalone tree instead
+        // of under the sub-decor's ContentFrameLayout, and the first-traversal
+        // attach wave could never reach it (white content past the action-bar
+        // band). AOSP law: AppCompatActivity.setContentView(int) DELEGATES —
+        // the app layout belongs under the sub-decor's content parent.
+        // Gating the arm's own condition with the negated fall-through
+        // predicate makes the fall-through real for setContentView while
+        // every other arm (onCreate else-chain above; lifecycle-void and
+        // findViewById ifs below) keeps the exact pre-F-NEW-310 dispatch
+        // behavior — each of those needs its own probe + A/B before its
+        // dispatch changes (same minimal-fix discipline as the sibling
+        // EXP-058 stubs in CONT-46).
+        if (method_name == "setContentView" && args.size() >= 2 &&
+            !(f261_dex_body && f261_support_family)) {
             framework::CallContext ctx;
         ctx.caller = current_class_ + "." + current_method_ + " pc=" +
                      std::to_string(pc_);
@@ -9407,7 +9470,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // calling getSpecialEffectsControllerFactory for each Fragment state change.
     // Without proper Fragment state, this loop never terminates.
     // Stub to return void (skip Fragment state transitions).
-    if (class_descriptor.find("FragmentManager") != std::string::npos &&
+    // F-NEW-312 (CONT-47): the "FragmentManager" substring over-matched the
+    // LEGACY support FragmentManagerImpl — measured (BMI, run/cont47/bmi_ft2):
+    // FragmentManagerImpl.dispatchStateChange is the mCurState driver
+    // (dispatchCreate → dispatchStateChange(1), dispatchActivityCreated →
+    // dispatchStateChange(2)); with the stub refusing DEX dispatch, mCurState
+    // stayed 0 forever and moveToState never created fragment views (the
+    // committed PlaceholderFragment stayed CREATED; the container under the
+    // sub-decor stayed children=0 — the content gap behind the white screen).
+    // The loop premise is an ANDROIDX SpecialEffectsController property
+    // (getSpecialEffectsControllerFactory does not exist in the support
+    // machine; support dispatchStateChange is a 17-unit try-catch-guarded
+    // move+execPendingActions that terminates — disasm 0x6ee94). Scope
+    // corrected to the androidx family: the guard's original corpus
+    // (Telegram-era androidx) is unchanged, the support machine executes.
+    if (class_descriptor.rfind("Landroidx/fragment/app/FragmentManager", 0) == 0 &&
         method_name == "dispatchStateChange") {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping (Fragment state change loop)");
