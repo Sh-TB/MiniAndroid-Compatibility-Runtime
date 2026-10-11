@@ -28,7 +28,7 @@ tail = """
 - Probes: `fixtures/fnew262_probe` (bridge↔DEX object-flow + CK identity rows), `fixtures/fnew260_probe` (getModifiers zoo, OpenJDK-21-oracle-corrected)
 - Harnesses: `scripts/cont46_{refetch_apks,build_hmap,build_probes,phase0_gate,post_fix_gate,fanout,registry,disasm}.sh/.py`
 - Runs: `run/cont46/` (pre/post A/B faces, traces, view trees, gates)
-- Commit: this line will carry the wave's commit SHA.
+- Commit: d80351ed (pushed to main; binary a63bf3b53ac3c082)
 
 ### Next bounded steps (exact, not vague)
 1. **BMI delegate content-parent attach law**: decode why the shadow `Activity.setContentView(res)` path's first-traversal attach wave attached 0 of root 78 after the real-DEX delegate id-swapped `android.R.id.content` → node 163 (AOSP law: `AppCompatDelegateImpl.setContentView(int)` inflates the app layout INTO the subdecor's content parent). Fix shape: the attach wave must target the CURRENT content parent (the F-NEW-220 id-swapped node), not the pre-subdecor record. Probe: extend fnew262_probe with a delegate-host row; A/B = BMI ViewTree (root 78 under 163) ×3.
