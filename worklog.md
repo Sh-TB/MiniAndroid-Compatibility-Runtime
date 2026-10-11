@@ -7979,3 +7979,107 @@ Stage Summary:
 - The tananaev calculator: onCreate completes, the fragment machinery runs, the preference screen is parsed and its rows attach — the remaining gate is the measure/overdraw face under DEX-measuring parents (the companion-law evidence pins the mechanism AND the fix shape; the opencalc interaction is the exact decode before re-landing). Dooz case-E budget: next wave.
 - Next wave owns: (1) the opencalc re-baseline decode → re-land the native class-measure law scoped honestly; (2) the tananaev ink leg (same law) + the ActionBarOverlay z-band; (3) the Dooz case-E boot budget; (4) hide/show/detach/attach visibility hops.
 - Evidence: evidence/cont42/FRAGMENT_TX_DRAIN.md; runs run/cont42/{pre,post}; binaries e1fc1915e88fe2a8 (PRE) / 0a6e39f38abd8636 (POST); registry 612.
+
+---
+Task ID: CONT-43
+Agent: Super Z (main)
+Task: "Cross the page" — user directive: Dooz and the calculator must get past
+their blocking pages, with many tasks in parallel. Calculator: re-land the
+reverted companion class-measure law and decode the opencalc interaction.
+Dooz: resolve the case-E ambiguity (progressing vs stalled) and push past the
+white screen. Full zero-drift gate + registry + evidence + push.
+
+Work Log:
+- Container recovery: local main had rolled back to a CONT-10-era snapshot;
+  origin/main (b1668290 = CONT-42 + F-NEW-304) verified 76 commits ahead with
+  0 local-only commits -> git fetch + reset --hard origin/main (the recorded
+  S38 procedure). Re-fetched the reset-lost APKs SHA-exact: tananaev
+  calculator_11 (294a68bd00debbdc), simplecalc_8 (68da25fd9fdf54b4),
+  composeStopwatch_1009011 (dbf937ebbe7c0b3d). Rebuilt the engine (-j2
+  foreground; bg processes die across tool calls) + all standing probe APKs
+  (w4_build_probes.sh, cont21_build_probes.sh -> run/w7|w8|cont18g,
+  cont30_build_probe.sh).
+- Reproduced the CONT-42 POST record on the rebuilt binary: tananaev x3
+  d602648e8e401895 / REC-MISS=0 / F304-lines=8; frag_tx_probe 12/0 x3.
+- FRONT-B (dooz, measurement-only first): budget ladder on the identical
+  binary — 15s: 4.7M insns / 155 app draw ops; 45s: 13.7M insns / 659 app
+  draw ops (ops GROW with budget; PROGRESS-tail methods differ; ~300k
+  insns/s steady) -> case E is BOOT-COST, not a hidden spin (CONT-40's A-E
+  ambiguity closed). Wall-clock mechanism decoded: static thread_local
+  wall_start from the FIRST DEX instruction; after the deadline every later
+  window halts immediately (266 [WALL-STOP]s). Extended: 90s (25.4M insns,
+  wall 82s, run ENDS) and 180s (51.6M insns, wall 76s) both complete the
+  boot composition and produce the SAME deterministic frame 6841d52a20e6597e
+  x5 — the REAL Dooz scaffold renders (Material3 surface 88.7%, secondary
+  band, accent pill, 15,876 black glyph/icon px in the top bar + bottom FAB
+  + pill button; all 5 frames identical; uncaught exceptions 23->12;
+  stub-census 472k -> 5.44M IMPLEMENTED). Honest residual: the frame census
+  still says app_draw_ops=0 / VIEWTREE_NO_APP_PIXELS (the census's
+  draw-window attribution misses the Compose paint path; [CDW-OP] capped at
+  400) -> F-NEW-307.
+- FRONT-A (calculator): the companion native class-measure law RE-LANDED at
+  the two CONT-42 guarded insertion points; the CONT-42 opencalc breakage
+  ROOT-CAUSED as a SPLIT-BRAIN MEASURE — the native law measures the whole
+  subtree coherently (weights/table cells/anchors; every descendant's
+  measured_width written) but the ROOT-045b descent reset dex_measure_valid
+  and re-measured members at cruder per-node specs (opencalc pad: cell
+  widths overwritten while the row x-pitch survived -> overlapping digit
+  labels "98", pixel-zoom evidence). FIX: native-law subtrees are marked
+  (f304_native_subtree) and the descent defers for the pass. A/B: tananaev
+  keeps 0f649804d6e0486d rc=0 SUCCESS x3 (4 REAL preference entries parsed
+  with real titles, rows 1080x44 real pitch, tree attached, drains fired)
+  AND opencalc returns to the exact golden a976d2f9fb675cb3 x3 — zero drift
+  AND the calculator fix in one law. Honest next leg F-NEW-305: the rows
+  render UNDER the appcompat action-bar band (frame 0 dark px; the
+  ActionBarOverlayLayout inset dispatch leaves content at y=0) — the
+  preference page fully visible = slice 2.
+- FRONT-C (csw regression EXPOSED): the full gate caught composeStopwatch
+  3442d9a9dc0fa0f9 -> 5c4a0172628849ba x3 (the exact CONT-40 parked-law
+  regression face). Isolated by same-environment source A/B: CONT-41 source
+  binary (7063c7238e0de79b) runs 3442d9a9 x3; ANY F-NEW-304 source binary
+  (with or without the CONT-43 laws) runs 5c4a0172 x3 -> the regression is
+  F-NEW-304's own and CONT-42's gate never ran the target case. First
+  divergence decoded (androguard field-ref-exact): the androidx
+  LifecycleDispatcher ReportFragment (Li01; report_fragment_tag) now drains
+  real DEX cleanly (zero exceptions in the drain window); the compose boot
+  then takes a different interleaving where Laj0;.n (performMeasureAndLayout)
+  dispatches isEmpty() on a NULL state object (Lgi0;.f — and Lgi0; is NEVER
+  ALLOCATED per MINIANDROID_ALLOC_TRACE: the content-state object graph
+  never forms) -> catch-all NPE at Lh4;.onMeasure -> boot degrades 4.4M ->
+  600k insns. Same identity-hash knife-edge family CONT-40 flagged; the
+  discriminating-probe prerequisite applies. Registry F-NEW-306 (P0); the
+  csw expectation STAYS 3442d9a9 (content must be REGAINED, not re-baselined
+  down); the target case now carries the full analysis comment.
+- Regression at the final binary 3dab3038c222031e: anchors 27/27 x3
+  byte-identical (81 runs — the 8 recorded apps + tananaev newly pinned at
+  0f649804d6e0486d; opencalc golden RESTORED; dooz 15s white retained);
+  dooz180 gate x3 MATCH 6841d52a20e6597e (new standing content gate);
+  probes == records EXACTLY (fcol 140/0, f259 49/0, f259g 84/7, f266 42/0,
+  f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, ckey 105/0, cpipe
+  119/0, fnew302 48/24 documented, fnew252 56/0, fnew290..296 == records,
+  fnew297 42/0, fnew298 19/0 KEEP=5 corner=PASS); frag_tx_probe 12/0 x3;
+  notif_builder_probe 56/0 x3; simplecalc x3 rc=0 7960bce447ac6d8f; target
+  csw 5c4a0172 = the EXPOSED pre-existing regression (gated red
+  deliberately until F-NEW-306's fix).
+- Registry 612 -> 615 (scripts/cont43_registry.py): F-NEW-304 refreshed
+  (companion law re-landed + coherence; tananaev PARTIAL -> rc=0 SUCCESS);
+  F-NEW-305 (tananaev action-bar inset leg, P1, ROOT_CAUSED_PENDING_FIX);
+  F-NEW-306 (csw content-state regression under the drain interleaving, P0,
+  first divergence decoded); F-NEW-307 (dooz case-E resolved + census
+  attribution gap, P1). Evidence: evidence/cont43/CONT43_CROSS_THE_PAGE.md +
+  5 evidence images (dooz content frame, tananaev frame, opencalc PRE/POST +
+  pad zoom). Scripts: cont43_csw_decode.py, cont43_registry.py.
+
+Stage Summary:
+- BOTH user-mandated pages are crossed: the calculator's FragmentTransaction
+  page (rc=0 SUCCESS, real preference rows parsed+measured+attached, fix
+  pinned as a standing anchor with zero drift everywhere) and Dooz's white
+  screen (the boot completes at a fair budget; the REAL app scaffold renders
+  deterministically — first app-content frame ever; census-attribution fix
+  will flip the verdict honestly).
+- The wave also caught and rooted a pre-existing P0 on main (F-NEW-306: csw
+  content lost to F-NEW-304's interleaving) that CONT-42's gate never ran.
+- Next wave: F-NEW-306 fix (csw content regained; discriminating probe
+  first), F-NEW-305 (action-bar inset law -> tananaev rows visible),
+  F-NEW-307 (census attribution -> dooz REAL_APP_CONTENT at the dooz180
+  gate).
