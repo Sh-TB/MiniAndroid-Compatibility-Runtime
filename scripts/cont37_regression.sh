@@ -40,6 +40,7 @@ OPENCALC=$BASE/upload/opencalculator_53.apk
 TTT=$BASE/upload/s83_games/build_ttt/tictactoe_deluxe_v1.0_vc1.apk
 FLAPPY=$BASE/upload/flappycow_rebuilt.apk
 G2048=$BASE/upload/s80_games/build_2048/g2048_v1.0_vc1.apk
+TANANA=$BASE/tmp/com.tananaev.calculator_11.apk
 SIMPLECALC=$BASE/tmp/cont35_apks/simplecalc_8.apk
 CSW=$BASE/tmp/cont35_apks/composeStopwatch_1009011.apk
 
@@ -111,9 +112,46 @@ anchors)
     run1 "tttdeluxe_r$i"  "$TTT"       af6094295ecb50e3
     run1 "flappycow_r$i"  "$FLAPPY"    13cf47464d9787f4
     run1 "g2048_r$i"      "$G2048"     59ca1526611c4622
+    # CONT-43: the calculator fix pinned as a standing gate — the F-NEW-304
+    # fragment drain + the re-landed companion class-measure law (with the
+    # subtree-coherence fix) put tananaev v1.10 at rc=0 SUCCESS with the
+    # real preference rows parsed/measured/attached (F-NEW-305 owns the
+    # visible-rows inset leg).
+    run1 "tanana_r$i"     "$TANANA"    0f649804d6e0486d
+  done
+  ;;
+dooz180)
+  # CONT-43: the dooz case-E content face as a standing gate — with a fair
+  # budget the compose boot COMPLETES (~80 s / 25M insns) and the REAL app
+  # scaffold renders (Material3 surface + top bar + FAB + pill button);
+  # deterministic x5 at 90 s and 180 s. Verdict VIEWTREE_NO_APP_PIXELS is
+  # the census attribution lag (F-NEW-307a) — the pixels are real app
+  # content; F-NEW-307 owns the census fix + the boot-cost decode.
+  for i in 1 2 3; do
+    o="$OUT/dooz180_r$i"; rm -rf "$o"; mkdir -p "$o"
+    timeout 580 "$BIN" run "$DOOZ" --width 1080 --height 1920 \
+      --frames 5 --max-seconds 180 -o "$o" > "$o/run.log" 2>&1
+    rc=$?
+    sha=$(sha256sum "$o/screenshot.png" 2>/dev/null | cut -c1-16)
+    verdict="DRIFT"
+    [ "$sha" = "6841d52a20e6597e" ] && verdict="MATCH"
+    echo "REG dooz180_r$i rc=$rc sha=$sha want=6841d52a20e6597e $verdict"
   done
   ;;
 target)
+  # CONT-43 EXPOSED-REGRESSION (F-NEW-306, P0): csw moved 3442d9a9dc0fa0f9
+  # -> 5c4a0172628849ba because of F-NEW-304 ITSELF (the CONT-42 wave never
+  # ran this target case): same-environment source A/B — a binary built
+  # from the CONT-41 source (7063c7238e0de79b) runs 3442d9a9 x3, any
+  # F-NEW-304 source binary runs 5c4a0172 x3. Mechanism: the androidx
+  # ReportFragment drain (clean, zero exceptions) shifts the compose boot
+  # interleaving -> Laj0;.n (performMeasureAndLayout) dispatches isEmpty()
+  # on a NULL state object (Lgi0; never allocated — the content-state
+  # object graph never forms) -> boot degrades 4.4M -> 600k instructions.
+  # The expectation STAYS 3442d9a9 (content must be REGAINED, not
+  # re-baselined down); fix owned by the next wave per registry F-NEW-306
+  # (the CONT-40 identity-hash discriminating probe is the prerequisite
+  # for any engine change on this path).
   for i in 1 2 3; do
     run1 "csw_r$i" "$CSW" 3442d9a9dc0fa0f9
   done
