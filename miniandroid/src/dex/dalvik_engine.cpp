@@ -8828,6 +8828,20 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // base key (class.method+descriptor+receiver) were appended. The stub
     // decision consumes this — see the law at the firing site below.
     int m3_payload_parts = 0;
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-306 (CONT-44) payload-COMPLETENESS tracking: how many argument
+    // identities could NOT be appended to the active key. A key that
+    // dropped any argument identity is NOT same-computation evidence —
+    // see the firing site below for the law.
+    //   obj_dropped   — non-null object args beyond the 8-object cap
+    //   prim_dropped  — primitive args beyond the 2-primitive cap
+    //   class_dropped — CLASS_REF args beyond the 2-class cap
+    //   null_skipped  — null object args (no id exists to append; the
+    //                   positional identity is uncapturable, so two
+    //                   nestings with nulls at different positions collide)
+    // ────────────────────────────────────────────────────────────────────
+    int m3_obj_dropped = 0, m3_prim_dropped = 0, m3_class_dropped = 0,
+        m3_null_skipped = 0;
     std::string m3_active_key = class_descriptor + "." + method_name;
     // S54 FIX (F-081) — overload-distinct identity. JVM/ART method identity
     // is (name, descriptor)-exact; two same-name overloads on the same
@@ -8917,12 +8931,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // MAX_RECURSION_DEPTH (80) remains the loud backstop. No
             // name dispatch, no app branches: the cap is universal.
             int appended = 0;
-            for (size_t i = 1; i < args.size() && appended < 8; ++i) {
-                if (args[i].type == DalvikType::OBJECT_REF &&
-                    args[i].object_id != 0 && !args[i].is_null) {
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type != DalvikType::OBJECT_REF) continue;
+                if (args[i].is_null || args[i].object_id == 0) {
+                    // F-NEW-306: a null payload position carries no id to
+                    // append — the key cannot distinguish null-here/obj-there
+                    // nestings from the reverse. Incomplete evidence.
+                    ++m3_null_skipped;
+                    continue;
+                }
+                if (appended < 8) {
                     m3_active_key += "#" + std::to_string(args[i].object_id);
                     ++appended;
                     ++m3_payload_parts;
+                } else {
+                    // F-NEW-306: the cap dropped a non-null object identity —
+                    // two nestings differing in it collide. Incomplete evidence.
+                    ++m3_obj_dropped;
                 }
             }
             // S122 (R-NEW-412) instance identity refinement: append up to 2
@@ -8954,16 +8979,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // syntax "=<value>" cannot collide with object-id parts "#<id>".
             {
                 int prims = 0;
-                for (size_t i = 1; i < args.size() && prims < 2; ++i) {
+                for (size_t i = 1; i < args.size(); ++i) {
                     switch (args[i].type) {
                         case DalvikType::INT32:
                         case DalvikType::BOOLEAN:
                         case DalvikType::BYTE:
                         case DalvikType::CHAR:
                         case DalvikType::SHORT:
-                            m3_active_key += "=" + std::to_string(args[i].int_val);
-                            ++prims;
-                            ++m3_payload_parts;
+                            if (prims < 2) {
+                                m3_active_key += "=" + std::to_string(args[i].int_val);
+                                ++prims;
+                                ++m3_payload_parts;
+                            } else {
+                                // F-NEW-306: the cap dropped a primitive
+                                // identity — Incomplete evidence.
+                                ++m3_prim_dropped;
+                            }
                             break;
                         default:
                             break;
@@ -9002,12 +9033,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // ────────────────────────────────────────────────────────────
             {
                 int clz = 0;
-                for (size_t i = 1; i < args.size() && clz < 2; ++i) {
+                for (size_t i = 1; i < args.size(); ++i) {
                     if (args[i].type == DalvikType::CLASS_REF &&
                         !args[i].class_desc.empty()) {
-                        m3_active_key += "@" + args[i].class_desc;
-                        ++clz;
-                        ++m3_payload_parts;
+                        if (clz < 2) {
+                            m3_active_key += "@" + args[i].class_desc;
+                            ++clz;
+                            ++m3_payload_parts;
+                        } else {
+                            // F-NEW-306: the cap dropped a class identity —
+                            // Incomplete evidence.
+                            ++m3_class_dropped;
+                        }
                     }
                 }
             }
@@ -9018,12 +9055,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // per-coroutine key; same-object re-entry still collides (guard
         // preserved for genuine cycles).
         int appended = 0;
-        for (size_t i = 0; i < args.size() && appended < 2; ++i) {
-            if (args[i].type == DalvikType::OBJECT_REF && args[i].object_id != 0 &&
-                !args[i].is_null) {
+        for (size_t i = 0; i < args.size(); ++i) {
+            if (args[i].type != DalvikType::OBJECT_REF) continue;
+            if (args[i].is_null || args[i].object_id == 0) {
+                // F-NEW-306: null payload position — identity uncapturable
+                // (see the instance-arm comment). Incomplete evidence.
+                ++m3_null_skipped;
+                continue;
+            }
+            if (appended < 2) {
                 m3_active_key += "#" + std::to_string(args[i].object_id);
                 ++appended;
                 ++m3_payload_parts;
+            } else {
+                // F-NEW-306: the cap dropped a non-null object identity.
+                ++m3_obj_dropped;
             }
         }
         // ────────────────────────────────────────────────────────────────
@@ -9056,16 +9102,25 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // with object-id parts "#<id>".
         // ────────────────────────────────────────────────────────────────
         int prims = 0;
-        for (size_t i = 0; i < args.size() && prims < 2; ++i) {
+        for (size_t i = 0; i < args.size(); ++i) {
             switch (args[i].type) {
                 case DalvikType::INT32:
                 case DalvikType::BOOLEAN:
                 case DalvikType::BYTE:
                 case DalvikType::CHAR:
                 case DalvikType::SHORT:
-                    m3_active_key += "=" + std::to_string(args[i].int_val);
-                    ++prims;
-                    ++m3_payload_parts;
+                    if (prims < 2) {
+                        m3_active_key += "=" + std::to_string(args[i].int_val);
+                        ++prims;
+                        ++m3_payload_parts;
+                    } else {
+                        // F-NEW-306: the cap dropped a primitive identity —
+                        // Incomplete evidence. (The Lch1;.j trie-builder case:
+                        // its 3rd int — the recursion SHIFT — was exactly the
+                        // dropped part, so collision-path nestings with equal
+                        // captured hashes collided and were stubbed.)
+                        ++m3_prim_dropped;
+                    }
                     break;
                 default:
                     break;
@@ -9078,12 +9133,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // dispatch by the Class argument). Key part "@<descriptor>".
         {
             int clz = 0;
-            for (size_t i = 0; i < args.size() && clz < 2; ++i) {
+            for (size_t i = 0; i < args.size(); ++i) {
                 if (args[i].type == DalvikType::CLASS_REF &&
                     !args[i].class_desc.empty()) {
-                    m3_active_key += "@" + args[i].class_desc;
-                    ++clz;
-                    ++m3_payload_parts;
+                    if (clz < 2) {
+                        m3_active_key += "@" + args[i].class_desc;
+                        ++clz;
+                        ++m3_payload_parts;
+                    } else {
+                        // F-NEW-306: the cap dropped a class identity.
+                        ++m3_class_dropped;
+                    }
                 }
             }
         }
@@ -9168,7 +9228,55 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // post-fix: nested windows execute, no frame-1 deletion, destination
         // content materializes. Regression gate: 24/24 anchors byte-exact.
         // ────────────────────────────────────────────────────────────────
-        if (method_name != "<init>" && m3_payload_parts > 0) {
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-306 (CONT-44): an INCOMPLETE-payload key is not
+        // same-computation evidence — the active-cycle stub must not fire
+        // on it; real DEX executes.
+        //
+        // OBSERVATION (composeStopwatch v1009011, CONT-44, run/cont44/
+        // csw_pre): the visible-content regression 3442d9a9dc0fa0f9 ->
+        // 5c4a0172628849ba (sourced to F-NEW-304's drain interleaving)
+        // dies at Lh4;.onMeasure -> catch-all NPE from Lch1;.s pc=4
+        // (getClass on null). Decode (scripts/cont44_a_decode*.py):
+        // Lch1; = TrieNode of the bundled kotlinx.collections.immutable
+        // persistent hash trie; its ONLY allocation in the whole run is
+        // the EMPTY root singleton — every node-building call to the
+        // builder Lch1;.j(I,Object,Object,I,Object,Object,I,Lzv;)Lch1;
+        // was cycle-STUBBED (3x: [M3-19-CYCLE] lifetime_calls=2, depths
+        // 23/28), so the trie never grew and s(i)=nodeAt read a null
+        // cell. The key carried 2 of 4 objects + 2 of 3 ints: the static
+        // arms' 2-object/2-primitive caps dropped args[5] (value obj),
+        // args[7] (the Lzv; owner) and args[6] — the RECURSION SHIFT,
+        // exactly the part that distinguishes the collision-path nesting
+        // levels. A legal, upstream-bounded re-entrancy (each level
+        // recurses with shift+bits, terminating) was fabricated to null.
+        // Zero REC-MISS on the path: no shadow is missing — the stub's
+        // same-computation CLAIM was false.
+        //
+        // LAW: the stub fires only when the key captures EVERY argument
+        // identity (complete evidence). A key that dropped any identity —
+        // non-null objects beyond the cap, primitives beyond the cap,
+        // CLASS_REFs beyond the cap, or null positions (uncapturable
+        // positional identity) — is NOT same-computation evidence:
+        // execute real DEX. This generalizes F-NEW-286 from "no payload
+        // captured" to "payload capture incomplete". Keys are unchanged
+        // for complete captures; the guard only fires LESS often; the
+        // [RECURSION-LIMIT] depth-80 backstop (loud, observable) still
+        // bounds genuine non-termination.
+        //
+        // IMPACT: every method invoked with more than 2 primitives / 2
+        // (static) or 8 (instance) objects / nulls in payload positions —
+        // generically, all under-discriminating re-entrancy keys. The
+        // Compose persistent-map family (PersistentHashMap builders in
+        // snapshot/state machinery) is the observed blast radius.
+        //
+        // PROOF (this wave): csw POST regains 3442d9a9dc0fa0f9 (the
+        // pinned healthy face, x3) with the full gate byte-identical —
+        // recorded in evidence/cont44/.
+        // ────────────────────────────────────────────────────────────────
+        if (method_name != "<init>" && m3_payload_parts > 0 &&
+            m3_obj_dropped == 0 && m3_prim_dropped == 0 &&
+            m3_class_dropped == 0 && m3_null_skipped == 0) {
             std::cerr << "[M3-19-CYCLE] " << m3_active_key
                       << " re-entered while active on the call stack (depth="
                       << recursion_depth_ << ") — active-cycle stub"
@@ -9176,6 +9284,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << std::endl;
             recursion_depth_--;
             return false;
+        }
+        if (method_name != "<init>" && m3_payload_parts > 0) {
+            // The key is active AND carries payload parts BUT is incomplete
+            // (F-NEW-306): no stub — real DEX executes, loudly traced.
+            std::cerr << "[M3-19-OPEN] " << m3_active_key
+                      << " re-entered while active (depth=" << recursion_depth_
+                      << ") — INCOMPLETE payload key (obj_dropped="
+                      << m3_obj_dropped << " prim_dropped=" << m3_prim_dropped
+                      << " class_dropped=" << m3_class_dropped
+                      << " null_skipped=" << m3_null_skipped
+                      << ") — real DEX executes (F-NEW-306 evidence law)"
+                      << std::endl;
         }
     }
     active_invoke_keys_.insert(m3_active_key);
