@@ -5403,7 +5403,14 @@
    "evidence": "evidence/cont45/cont45_ledger.json",
    "probe": "scripts/cont11_innerclass_check.py (BMI BMIMain$PlaceholderFragment: class_def flags 0x1 vs InnerClass accessFlags 9 = PUBLIC|STATIC — ground truth); live A/B bmi_postfix1 (uncaught 0)",
    "verified_current": true,
-   "discovered": "CONT-45 (stale-snapshot rebase of local CONT-11-W7 work)"
+   "discovered": "CONT-45 (stale-snapshot rebase of local CONT-11-W7 work)",
+   "cont46_revalidation": {
+    "head": "8f2f6aab (rebased tree)",
+    "verdict": "LIVE INCREMENT — revalidated by probe + runtime",
+    "probe": "fixtures/fnew260_probe: 13/13 PASS on 56c04526 (public/protected/package/private × static/non-static members, nested interface, anonymous, top-level, isMemberClass predicates, framework-token negatives). Anonymous-class law verified against the OpenJDK 21 host JVM oracle: getModifiers() answers the InnerClasses access_flags VERBATIM (0x0 for anonymous) — the engine matches the law.",
+    "runtime": "BMI BackStackRecord.doAddOp getModifiers gauntlet executes with the law (Class.getModifiers/isMemberClass/Modifier.isPublic/isStatic rows on binary a63bf3b5).",
+    "implementation": "dex_parser.cpp:540-600 (InnerClass SYSTEM annotation capture) + dalvik_engine.cpp:28351+ (getModifiers preference)."
+   }
   },
   {
    "id": "F-NEW-261",
@@ -5414,22 +5421,61 @@
    "evidence": "evidence/cont45/cont45_ledger.json",
    "probe": "A/B matrix baseline-binary (git checkout e99c2fbd sources, byte-identical rebuild aed46450c103f2ea) vs fixed binary 0bb9798addccc548: solitaire 6588621c/28-uncaught IDENTICAL both arms (predates this session), BMI 2->0, notes/dooz zero drift",
    "verified_current": true,
-   "discovered": "CONT-45 (stale-snapshot rebase of local CONT-11-W7 work)"
+   "discovered": "CONT-45 (stale-snapshot rebase of local CONT-11-W7 work)",
+   "cont46_revalidation": {
+    "head": "8f2f6aab (rebased tree)",
+    "verdict": "LIVE INCREMENT — revalidated at runtime",
+    "evidence": "the support-family fall-through is live: BMI FragmentActivity.onCreate executes REAL DEX on 56c04526/a63bf3b5 (attachHost → attachController → enqueueAction rows; FragmentManagerImpl machine executes end-to-end after F-058-R). androidx family stays bypassed — notes untested on the fall-through arm this wave (masked)."
+   }
   },
   {
    "id": "F-NEW-262",
-   "status": "CLASSIFIED",
+   "status": "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)",
    "title": "Framework/API-bridge RETURN VALUE lost across specific shadow->DEX dispatch shapes — three independent manifestations at the same root family, all runtime-proven this wave: (1) BMI FragmentHostCallback.<init> stores value=<unset> into its final mHandler field (FIELD-TRACE put-obj value=<unset>), so mHost.getHandler() answers null and the commit runnable is posted on a NULL receiver (ROOT-059 null-recv law silently no-ops) — the transaction never executes (execPendingActions/moveToState/performCreateView all 0); (2) solitaire (de.tobiasbielefeld.solitaire): bridge getCallback ANSWERS act=21 (S134-GCB row) yet v7 WindowCallbackWrapper i.<init> receives NULL and throws IAE \"Window callback may not be null\" (28 uncaught at session start AND at the fixed binary — predates CONT-11); (3) notes_secuso androidx fall-through: mFragmentLifecycleRegistry null at FragmentActivity.onCreate pc=0xc (final-field initializer chain mFragments = FragmentController.createController(new HostCallbacks()) loses its value). Fix surface: the bridge_to_api result -> last_invoke_return_ -> move-result-object path under invoke shapes that cross shadow dispatch inside constructors. Blocks: BMI fragment inflation (views=1 shell), AlexCalc androidx attach (\"Fragment null has not been attached yet\"), solitaire v7 delegate chain, androidx family DEX-body execution.",
    "priority": "P0",
    "layer": "dex/bridge-return",
    "evidence": "evidence/cont45/cont45_ledger.json",
    "probe": "PENDING (next wave: FIELD-TRACE + METHOD-TRACE pc walk of the three chains)",
    "verified_current": true,
-   "discovered": "CONT-45 (stale-snapshot rebase of local CONT-11-W7 work)"
+   "discovered": "CONT-45 (stale-snapshot rebase of local CONT-11-W7 work)",
+   "cont46_reclassification": {
+    "head": "8f2f6aab4f0f54e77f6081de03e483b89b198ccd",
+    "binary_pre": "56c045260767ac667f65553275768fbef9296f01d5aa877c868545fbd3abfa95",
+    "binary_post": "a63bf3b53ac3c082 (16-prefix)",
+    "evidence": "evidence/cont46/CONT46_RESULT.md",
+    "m1_bmi": {
+     "verdict": "RE-ROOTED + FIXED (F-058-R)",
+     "first_divergence": "NOT an abstract register/identity loss: the EXP-058-era stub-only gate (dalvik_engine.cpp ~8797, resurrected by the cross-campaign recovery import d7427016 after R-NEW-365/S47 F-058 had removed it) refused DEX dispatch for EVERY \"*Preconditions*\" checkNotNull — a name-based, blanket refusal. The value-returning identity helper answered via bridge_to_api → ActivityShadow 4-level hierarchy walk (not_handled → no result-slot write) → the 4-arg FragmentHostCallback ctor's move-result-object read <unset> → iput stored <unset> into its final mHandler field (FIELD-TRACE put-obj row on binary 56c04526) → mHost.getHandler() null → scheduleCommit posted on a null receiver → transaction never executed.",
+     "fix": "F-058-R: the stub removed (restoring the proven S47 state); F-056 descriptor-aware cycle keys + M3-19 active-cycle law + MAX_RECURSION_DEPTH remain the generic protections.",
+     "probe": "fixtures/fnew262_probe CK-1..CK-3: 3/3 FAIL on 56c04526 → 3/3 PASS on a63bf3b5 (19/19 total).",
+     "runtime_effect": "FIELD-TRACE put-obj FragmentHostCallback.mHandler value=<unset> → value=obj#29 (the real Handler identity); enqueueAction → Handler.post Runnable id=38 enqueued+dequeued+invoked → ensureExecReady→generateOps→executeOps→moveToState all execute (BMI, a63bf3b5).",
+     "remaining_frontier": "BMI content attach: the app layout root 78 never attached under the delegate's id-swapped ContentFrameLayout 163 ([P0-1-ORDER] first-traversal attach wave root=78 attached=0) — the AOSP inflate(resId, contentParent) leg of the v7 delegate setContentView path; next bounded decode."
+    },
+    "m2_solitaire": {
+     "verdict": "SUPERSEDED on the current lineage",
+     "evidence": "solitaire on 56c04526: rc=1, 0 uncaught; the WindowCallbackWrapper IAE no longer reproduces — the S134-GCB getCallback bridge answers non-null (act=21 row) and the wrapper wraps successfully. The recorded 28-uncaught IAE face predates the CONT-42..44 framework laws.",
+     "new_first_divergence": "F-NEW-309 (DrawerLayout.j \"is not a drawer\")."
+    },
+    "m3_notes": {
+     "verdict": "BLOCKED for tracing (masked)",
+     "reason": "the androidx family stays on the S83 bypass (F-NEW-261 measured scope law) — mFragmentLifecycleRegistry init chain never executes on current HEAD; classification requires the experimental androidx fall-through arm (a separate bounded A/B, NOT a ship change). Static decode: androidx FragmentActivity.<init> builds mFragments via FragmentController.createController (shadow-bridge + move-result-object shape) and mFragmentLifecycleRegistry via pure-DEX new LifecycleRegistry(this) — either shape could carry the loss; runtime evidence pending the arm."
+    }
+   }
+  },
+  {
+   "id": "F-NEW-309",
+   "status": "CLASSIFIED",
+   "title": "Solitaire (de.tobiasbielefeld.solitaire) v7 delegate content machine reaches DrawerLayout and dies on the drawer-gravity check: DrawerLayout.j(View) (\"isDrawerView\") answered FALSE for the design AppBarLayout child and threw IAE \"View AppBarLayout@209 is not a drawer\" (DrawerLayout.j pc=34, uncaught, frame = single-color 0x5d80f0 theme background, ba50a4d28ea62fe7 on 56c04526).",
+   "priority": "P1",
+   "layer": "framework/layout-inflater/layoutparams-gravity",
+   "root_cause": "Static decode (solitaire base.apk fdfaf7cad18e4416): g(View) = checkDrawerViewOrFail reads (DrawerLayout$g) child.getLayoutParams() then iget g.a:I (the LayoutParams gravity) and computes GravityCompat.getAbsoluteGravity(g.a, viewLayoutDirection); j() throws IAE when no LEFT/RIGHT bit survives. The engine-materialized DrawerLayout.LayoutParams carries gravity=0 — the layout_gravity attr of the XML drawer children never resolved into the LayoutParams during inflation. First divergence row: [S134-GCB] answered, wrapper wrapped, DrawerLayout.onMeasure/child-check hit gravity=0.",
+   "classification_note": "This is the CURRENT first divergence of solitaire on the true lineage — it SUPERSEDES the F-NEW-262 manifestation-2 face (the wrapper IAE no longer reproduces on the rebased engine). Generic law family: LayoutParams subclass construction with custom attrs during XML inflation (layout_gravity / DrawerLayout_LayoutParams rules).",
+   "next_wave": "Decode the inflater's generateLayoutParams/attr resolution for LayoutParams subclasses (R8-renamed DrawerLayout$g.a field); A/B with a drawer-layout probe (positive: drawer child passes g(); negative: non-drawer child still throws); then re-run solitaire x3.",
+   "evidence": "evidence/cont46/CONT46_RESULT.md"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 611,
+ "total": 620,
  "count": 619,
  "meta": {
   "last_update": "CONT-41 session 2026-10-10: friend-package source-level audit — claim matrix closed (7 REUSE-already-present incl. 2 with CONT-38v probe proofs, 2 REJECT-unsafe, 1 NOT-IN-PACKAGE, 1 genuinely missing → F-NEW-303 the Notification$Builder fluent-chain law; notif_builder_probe 8/8 ×3 PRE→POST; tananaev frontier FAILURE→PARTIAL 0 errors; zero drift). Registry 610→611 (302 skipped: standing probe name).",
@@ -5460,7 +5506,7 @@
   "TESTED": 1,
   "ROOT_CAUSED_FIXED": 18
  },
- "total_roots": 619,
+ "total_roots": 620,
  "generated": "CONT-44 session",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
