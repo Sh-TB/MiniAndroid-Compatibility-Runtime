@@ -115,9 +115,12 @@ anchors)
     # CONT-43: the calculator fix pinned as a standing gate — the F-NEW-304
     # fragment drain + the re-landed companion class-measure law (with the
     # subtree-coherence fix) put tananaev v1.10 at rc=0 SUCCESS with the
-    # real preference rows parsed/measured/attached (F-NEW-305 owns the
-    # visible-rows inset leg).
-    run1 "tanana_r$i"     "$TANANA"    0f649804d6e0486d
+    # real preference rows parsed/measured/attached. CONT-44: F-NEW-305's
+    # ActionBarOverlayLayout inset law moved the rows BELOW the action-bar
+    # band (content top = the theme's actionBarSize, 126px) — the fix face
+    # re-pins here (0f649804d6e0486d = the pre-inset face; the inset leg is
+    # the delta; row glyphs are F-NEW-308, a separate root).
+    run1 "tanana_r$i"     "$TANANA"    5f7e0114c3bfd6b5
   done
   ;;
 dooz180)
@@ -139,19 +142,12 @@ dooz180)
   done
   ;;
 target)
-  # CONT-43 EXPOSED-REGRESSION (F-NEW-306, P0): csw moved 3442d9a9dc0fa0f9
-  # -> 5c4a0172628849ba because of F-NEW-304 ITSELF (the CONT-42 wave never
-  # ran this target case): same-environment source A/B — a binary built
-  # from the CONT-41 source (7063c7238e0de79b) runs 3442d9a9 x3, any
-  # F-NEW-304 source binary runs 5c4a0172 x3. Mechanism: the androidx
-  # ReportFragment drain (clean, zero exceptions) shifts the compose boot
-  # interleaving -> Laj0;.n (performMeasureAndLayout) dispatches isEmpty()
-  # on a NULL state object (Lgi0; never allocated — the content-state
-  # object graph never forms) -> boot degrades 4.4M -> 600k instructions.
-  # The expectation STAYS 3442d9a9 (content must be REGAINED, not
-  # re-baselined down); fix owned by the next wave per registry F-NEW-306
-  # (the CONT-40 identity-hash discriminating probe is the prerequisite
-  # for any engine change on this path).
+  # CONT-44: F-NEW-306 FIXED — the csw content-state regression is REGAINED:
+  # the M3-19 active-cycle stub no longer fires on incomplete-payload keys
+  # (the Lch1;.j persistent-trie builder's 3rd int — the recursion shift —
+  # was exactly the dropped identity; the stub fabricated null mid-build).
+  # The pinned healthy face 3442d9a9dc0fa0f9 returned byte-exact x3 with
+  # zero drift everywhere. The case stays as the standing gate.
   for i in 1 2 3; do
     run1 "csw_r$i" "$CSW" 3442d9a9dc0fa0f9
   done
@@ -180,8 +176,15 @@ probes)
   probe_fnew298
   ;;
 control)
+  # CONT-44: simplecalc re-pinned to the F-NEW-305 fix face. The app is an
+  # appcompat host (ActionBarOverlayLayout) whose content previously built
+  # at y=0 UNDER the action-bar band; the inset law moved it to the theme's
+  # actionBarSize (126px = 48dp x 2.625) with the calculator layout intact
+  # (display + pad rows all +126). The old face 7960bce447ac6d8f was the
+  # pre-inset geometry; the re-pin is the fix face (same disposition as
+  # the tananaev anchor).
   for i in 1 2 3; do
-    run1 "simplecalc_r$i" "$SIMPLECALC" none
+    run1 "simplecalc_r$i" "$SIMPLECALC" e847ca0346708f07
   done
   ;;
 *)

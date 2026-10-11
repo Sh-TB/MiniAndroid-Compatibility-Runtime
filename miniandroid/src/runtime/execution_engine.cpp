@@ -5047,6 +5047,13 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                       << " (P1-6 extension)" << std::endl;
                             fb_non_white = -1;   // honest signal: not presented
                             fb_pixels_total = framebuffer_.size() / 4;
+                            // F-NEW-307: kept-frame attribution — the PNG the
+                            // capture will hash holds the LAST COMPLETE frame;
+                            // this frame's ledger describes the aborted walk.
+                            frame_census_.draw_budget_halt = true;
+                            frame_census_.kept_prior_frame = true;
+                            frame_census_.kept_prior_app_draw_ops =
+                                last_presented_app_draw_ops_;
                         } else {
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
                         const auto& pixels = fb.get_pixels();
@@ -5098,6 +5105,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 " diag_regions=" + std::to_string(frame_census_.diag_regions.size()),
                                 app_content_drew ? "OK" : "NO_APP_OPS"));
                         }
+                        // F-NEW-307: this frame was PRESENTED — remember its
+                        // app-op ledger for the kept-frame attribution.
+                        last_presented_app_draw_ops_ = frame_census_.app_draw_ops;
                         // S82-GFX §6: SURFACE evidence — composed-frame census.
                         if (diagnostics::GfxProvenance::instance().enabled()) {
                             std::map<uint32_t, size_t> color_hist;
@@ -5512,7 +5522,20 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                 first_missing = "LAYOUT";
             else if (!frame_census_.draw_walk_ran)
                 first_missing = "DRAW";
+            // F-NEW-307 (CONT-44): the APP_DRAW_OPS missing-stage is gated on
+            // PIXEL EVIDENCE too. The op ledger counts the per-ViewShadow
+            // paint sites; the Compose paint path reaches the framebuffer
+            // through dispatch_custom_view_draw / the CDW recorder, which
+            // the ledger attribution does not cover (and a F084-halted walk
+            // presents the KEPT prior frame's pixels — the new census fields
+            // carry that provenance). When the ledger says 0 but the
+            // presented frame carries app-owned pixels, the pixels are REAL
+            // app content and the gap is the ledger's — the census reports
+            // it via kept_prior_frame/draw_budget_halt instead of a false
+            // missing-stage (dooz180 flipped honestly to REAL_APP_CONTENT;
+            // the 15s honest-white face has no app pixels and is unchanged).
             else if (frame_census_.app_draw_ops == 0 &&
+                     app_owned_px == 0 &&
                      !frame_census_.dialog_content_rendered)
                 first_missing = "APP_DRAW_OPS";
             else if (app_owned_px == 0)
@@ -5581,6 +5604,12 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                     {"synthetic_suppressed", frame_census_.synthetic_suppressed},
                     {"render_exception", frame_census_.render_exception},
                     {"budget_exhausted", frame_census_.budget_exhausted},
+                    {"draw_budget_halt", frame_census_.draw_budget_halt},
+                    {"presentation", frame_census_.kept_prior_frame
+                                          ? "kept_prior_frame"
+                                          : "this_frame"},
+                    {"kept_prior_app_draw_ops",
+                     frame_census_.kept_prior_app_draw_ops},
                     {"nodes_visited", frame_census_.nodes_visited},
                     {"nodes_skipped_depth", frame_census_.nodes_skipped_depth},
                     {"depth_max", frame_census_.depth_max},

@@ -349,6 +349,9 @@ private:
     // State
     std::vector<uint8_t> framebuffer_;
     std::string last_error_;
+    // F-NEW-307 (CONT-44): the app-op ledger of the last PRESENTED frame
+    // (0 before any presentation) — the kept-frame census attribution source.
+    uint64_t last_presented_app_draw_ops_ = 0;
 
 public:
     // ═══════════════════════════════════════════════════════════════════
@@ -369,6 +372,17 @@ public:
         bool render_exception = false;       // P0-3: real draw walk threw; framebuffer discarded
         bool no_root = false;                // P0-2: zero authoritative window content reachable
         bool budget_exhausted = false;       // P0-7: node/depth budget hit — frame is PARTIAL
+        // ── F-NEW-307 (CONT-44): kept-frame attribution ──
+        // When the F084 wall-budget halt kills a draw MID-WALK, the
+        // F-NEW-298 frame-honesty law SKIPS presentation (the PNG holds the
+        // LAST COMPLETE frame) while THIS frame's op ledger describes only
+        // the aborted walk (dooz180: ops 1189,604,604,415,0,0 → final frame
+        // ops=0 against the kept scaffold's pixels). The census must report
+        // the attribution instead of reading the aborted ledger as "no app
+        // content".
+        bool draw_budget_halt = false;        // the F084 halt fired inside THIS draw walk
+        bool kept_prior_frame = false;        // presentation skipped; PNG holds the prior frame
+        uint64_t kept_prior_app_draw_ops = 0; // the kept frame's app-op ledger count
         int  nodes_visited = 0;              // P0-7 census
         int  nodes_skipped_depth = 0;        // P0-7 census
         int  depth_max = 0;                  // P0-7 census
