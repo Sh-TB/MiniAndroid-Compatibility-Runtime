@@ -3675,6 +3675,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         bool is_cl = n->class_desc.find("ConstraintLayout") != std::string::npos;
         bool is_scroll = n->class_desc.find("ScrollView") != std::string::npos &&
                          n->class_desc.find("Horizontal") == std::string::npos;
+        // F-NEW-305 (CONT-44): appcompat ActionBarOverlayLayout — the inset
+        // dispatch host (see the layout branch below for the law).
+        bool is_abol = n->class_desc.find("ActionBarOverlayLayout") !=
+                       std::string::npos;
         bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
         // G12 FIX-G12-001: TableLayout stacks rows VERTICALLY (see measure).
         if (is_ll && is_a(n->class_desc, "Landroid/widget/TableLayout;"))
@@ -4173,6 +4177,109 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
                     stack.push_back({cid, x, y, w, h});
                 }
+            }
+        } else if (is_abol) {
+            // ── F-NEW-305 (CONT-44): AOSP ActionBarOverlayLayout inset law ──
+            // (ActionBarOverlayLayout.java @android-34, non-overlay measure
+            // path: mContentInsets.top += mActionBarTop.getMeasuredHeight();
+            // applyInsets() writes content lp.topMargin; onLayout places the
+            // bar at (paddingLeft, paddingTop) and the content BELOW it.)
+            //
+            // WHY HERE: the appcompat DEX onMeasure runs but degenerates —
+            // ViewGroup.measureChildWithMargins has no engine shadow yet, so
+            // the bar measures 0 inside the DEX body and the R-NEW-438
+            // incomplete-emulation guard demotes to the native laws, which
+            // had no ActionBarOverlayLayout branch: the content landed at
+            // y=0 and the bar parked offscreen at y=1920 (tananaev: the
+            // preference rows rendered UNDER the bar band).
+            //
+            // LAW (generic, class-dispatched, zero app knowledge): the
+            // ActionBarContainer child lays out at (paddingLeft, paddingTop)
+            // with its REAL measured size; every other visible child (the
+            // content — ContentFrameLayout family) lays out at
+            //   top    = paddingTop + bar.measured_height + lp.topMargin
+            //   height = ch − bar.measured_height − margins
+            // and is RE-MEASURED with EXACTLY(ch − bar_h) first (the AOSP
+            // second-pass law — first-pass specs resolved against the full
+            // container size are stale).
+            //
+            // SCOPE: the non-overlay path (the AOSP default when the theme
+            // requests a normal action bar). An overlay-mode window would
+            // keep the content at paddingTop — the overlay theme attr is not
+            // yet read by the engine; recorded as the law's scope boundary
+            // in the registry (no byte-exact anchor uses ActionBarOverlay
+            // Layout at all — the branch is a structural no-op for them).
+            // NoActionBar themes measure the bar at 0 height → content top
+            // = paddingTop → also a structural no-op.
+            uint32_t bar_id = 0;
+            int bar_h = 0, bar_w = 0;
+            for (uint32_t cid : kids) {
+                auto* cn = views->find_node(cid);
+                if (cn && cn->class_desc.find("ActionBarContainer") !=
+                              std::string::npos) {
+                    bar_id = cid;
+                    bar_h = cn->measured_height;
+                    bar_w = cn->measured_width;
+                    break;
+                }
+            }
+            // ── F-NEW-305 companion: the AOSP bar-height floor from the THEME ──
+            // The engine's DEX measure chain degenerates for the decor action
+            // bar (ViewGroup.measureChildWithMargins has no shadow yet): the
+            // ActionBarContainer measures 0 where AOSP measures the theme's
+            // actionBarSize (appcompat's ToolbarWidgetWrapper applies the
+            // action-bar size as the decor toolbar's minimum height — the
+            // exact attr the appcompat DEX reads in ActionBarOverlayLayout
+            // .<init>: R.attr.actionBarSize). Resolve it from the APP THEME
+            // (never a constant): the app-package attr/actionBarSize first
+            // (the appcompat attr — every appcompat app carries it), then
+            // the framework android:actionBarSize (the platform bridge
+            // theme), then NO floor — the branch stays a no-op (honest
+            // absence, not a fabricated bar).
+            int bar_h_eff = bar_h;
+            if (bar_h <= 0) {
+                std::optional<uint32_t> attr_id =
+                    arsc_.find_id("", "attr", "actionBarSize");
+                if (!attr_id) attr_id = 0x010102EBu;  // android:actionBarSize
+                if (attr_id) {
+                    auto tv = resources::ResourceRuntime::instance()
+                                  .resolve_theme_attr_typed(apk_path_, *attr_id);
+                    if (tv && tv->is_reference()) {
+                        auto rv = arsc_.resolve_value(tv->ref_id);
+                        if (rv) tv = *rv;
+                    }
+                    if (tv && (tv->is_dimension() || tv->is_int())) {
+                        bar_h_eff = std::max(0, complex_to_dimension_pixel_size(
+                                                     tv->data, density_context()));
+                    }
+                }
+            }
+            for (uint32_t cid : kids) {
+                if (cid == bar_id) continue;
+                auto* cn = views->find_node(cid);
+                int w = cn->lp_width >= 0 ? cn->lp_width : cw;
+                // AOSP applyInsets offsets the content top; a fixed-height
+                // content keeps its own measured height (only match_parent
+                // shrinks by the inset).
+                int h = cn->lp_height >= 0
+                          ? cn->lp_height
+                          : std::max(0, ch - bar_h_eff - cn->lp_margin_top -
+                                             cn->lp_margin_bottom);
+                // AOSP second pass: re-measure the content subtree with the
+                // EXACTLY inset height (first-pass specs are stale).
+                measure_node(views, cid, Spec{std::min(w, cw), M_EXACTLY},
+                             Spec{h, M_EXACTLY}, 0);
+                stack.push_back({cid, cl + cn->lp_margin_left,
+                                 ct + bar_h_eff + cn->lp_margin_top,
+                                 std::min(w, cw), h});
+            }
+            if (bar_id) {
+                // The bar's own rect uses the same effective height (its
+                // measured height is the degenerate 0; the theme floor is
+                // the honest AOSP answer the toolbar would have measured).
+                stack.push_back(
+                    {bar_id, cl, ct, std::min(bar_w, cw),
+                     bar_h > 0 ? bar_h : bar_h_eff});
             }
         } else {
             // generic ViewGroup: stack children vertically top-down

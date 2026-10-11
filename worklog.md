@@ -8083,3 +8083,163 @@ Stage Summary:
   first), F-NEW-305 (action-bar inset law -> tananaev rows visible),
   F-NEW-307 (census attribution -> dooz REAL_APP_CONTENT at the dooz180
   gate).
+
+---
+Task ID: CONT44-C
+Agent: general-purpose (sub-agent, read-only audit)
+Task: Cross-app generality audit — answer empirically whether the white-screen
+fix set (F-NEW-304 + CONT-43 companion + Recomposer family + Hilt/DI chain +
+dooz budget completion + F-NEW-303) affects other games and apps. Static
+androguard machinery matrix over the full corpus + zero-negative-drift
+verification + gate-coverage check. NO engine-source edits.
+
+Work Log:
+- Corpus inventory: all mandated globs (upload/*.apk, canonical_apks,
+  s83_games/**, s80_games/**, tmp/cont35_apks, tmp/com.tananaev.calculator_11)
+  -> 32 rows after dedupe-by-basename. Data defect found: upload/whatsapp.apk
+  is a 5.5 KB Cloudflare HTML challenge, NOT an APK (excluded from all
+  counts; re-fetch owed). base.apk x4 = engine build stubs (1 rep scanned).
+- Static scan scripts/cont44_c_scan.py (androguard 4.1.4, loguru silenced;
+  DEX class names + superclassnames + string constants ONLY — no decompile):
+  framework View-world x28 / hybrid x3; Fragment x13, Preference x9,
+  AppCompat x10, Compose x3, Hilt x0, WorkManager x2, View-only x14.
+  Outputs run/cont44/machinery_matrix.{tsv,json} + registry_grep.json.
+- Key identifications: tananaev PrefsFragment extends PLATFORM
+  PreferenceFragment (the exact F-NEW-304 shape); notes_secuso has BOTH
+  platform PreferenceFragment (HelpFragment) and androidx
+  PreferenceFragmentCompat (SettingsFragment); sudoku has platform
+  DialogFragments; dooz x2 + csw carry the androidx LifecycleDispatcher
+  ReportFragment (R8 Li01;/Loc1;) that F-NEW-304's drain now executes; the
+  6 pure View games (g2048/ttt/flappy/gmdice/snake/tetris) have ZERO
+  touched-family machinery.
+- Zero-negative-drift verification: cited the CONT-43 gate record
+  (27/27 x3 byte-identical at 3dab3038c222031e) AND re-hashed run artifacts
+  this audit: tanana_post{1..3} == 0f649804d6e0486d x3; opencalc_coh{1..3}
+  == a976d2f9fb675cb3 x3 (golden restored); dooz/ext == 6841d52a20e6597e;
+  csw_pre{1..3} == 5c4a0172628849ba x3 (the deliberate-red F-NEW-306 row).
+- Gate-coverage check -> 11 RECOMMENDED-NEW-GATES (not run; parent owns
+  scheduling): notes_secuso, sudoku_secuso, chess_jwtc (ex-anchor), klondike,
+  chessclock, bouncy, opmt, muellerma.stopwatch, emmanuelmess.tictactoe,
+  dooz_23_toplevel (optional variant), telegram/forkgram (long-horizon 120s).
+- Frontier section: tananaev -> F-NEW-305 (rows under action-bar band);
+  csw -> F-NEW-306 P0 (discriminating probe FIRST); dooz -> F-NEW-307
+  (census attribution + boot cost). Report written:
+  evidence/cont44/CROSS_APP_IMPACT.md (matrix + law mapping + evidence +
+  frontier + caveats).
+
+Stage Summary:
+- ANSWER: the fixes are generic app-agnostic laws; zero negative impact on
+  the View-world corpus is a MEASUREMENT (x3 byte-identical anchors +
+  probe battery == records), and 19/32 corpus rows carry machinery inside
+  the benefit blast radius (Fragment 13 / Preference 9 / AppCompat 10 /
+  Compose 3 / WM 2 / Hilt 0). The only observed negative anywhere is the
+  known, root-caused, deliberately-red csw interleaving row (F-NEW-306).
+- Caveats recorded: PreferenceActivity-hosted apps are NOT in the fix set
+  (Fragment path only); androidx PrefFragCompat adjacent; whatsapp.apk is
+  not an APK. No engine sources touched (read-only audit); scripts +
+  outputs under scripts/cont44_c_*.py and run/cont44/.
+
+## Task ID CONT44-A (2026-10-11) — F-NEW-306 csw regression decode-only triage
+- Repro: MINIANDROID_ALLOC_TRACE=1 run of composeStopwatch_1009011.apk → screenshot sha256 5c4a0172628849baff5eee9d8bcebb496a5e6afdc99239140b697ebf457a3d19 (matches regressed hash exactly). Artifacts: run/cont44/csw_pre/{run.log,report.md,screenshot.png,api_trace.json,lifecycle_trace.json,frames/}.
+- NPE cascade pinned (run.log 2885-2962): origin [SYNTH-EXC] f141-null-recv method=Lch1;.s pc=4 (getClass on null buffer cell) → ComposerImpl.recompose (Lx30;.n) → CompositionImpl.applyChanges (Lel;.j) → … → Lmc0;.Y (E==null, ×3 rethrows) → Laj0;.n (MeasureAndLayoutDelegate.dispatchMeasureAndLayout) → Lh4;.onMeasure catch-all → fallback 1080x1920 → boot degraded (~600k insns, PARTIAL SUCCESS/DEFAULT_BACKGROUND_ONLY).
+- Root state: Lch1; (persistent hash-trie node, androidx.compose.runtime.external.kotlinx.collections.immutable…TrieNode shape; Map views Lju0;=PersistentHashMap / Llu0;=Builder / Lku0; merge wrapper) — ONLY the EMPTY root singleton was ever allocated (obj#664, d=new Object[0]); every node-builder invocation Lch1;.j(I,Object,Object,I,Object,Object,I,Lzv;)Lch1; was killed by the engine's M3-19 active-cycle stub: [M3-19-CYCLE] …#2953#3002 re-entered while active (depth=23) lifetime_calls=2 ×3 (run.log 1838/1871/1872, ~100k insns, first composition under F-NEW-304 drain) → trie stayed empty → frame-2 onMeasure-driven recompose read s(i) → NPE.
+- Context premise corrected: Lgi0;/DepthSortedSet WAS allocated pre-measure (log 1684-1687 C013-HIER add/isEmpty on Lg91;→TreeSet; chain Laj0;.<init>(Lmc0;) pc=10-22 → Ly9;(3) pc=180-212 → Lgi0;(13) case pc=332-346). The Laj0;.n()V isEmpty site (pc=110-118, reads y9.c→Lgi0;.f→Lg91;→isEmpty) was NOT the thrower (msg mismatch: getClass-on-null). No REC-MISS anywhere on the failing path (last benign REC-MISS = log 730).
+- Verdict: REAL-MISSING-LAW on Lch1;.j re-entrancy — M3-19 active-cycle stub (dalvik_engine.cpp try_recursive_invoke, ~8840-9185) substitutes a stateless stub for a legal, progress-bearing re-entrant frame; identity key incomplete (null obj args skipped, Lzv; owner invariant, S122 caps primitives at 2 of 3 ints) → false-positive same-computation evidence. Ordering (alloc ~100k insns) precedes read (~600k) → NOT an interleaving-contract violation.
+- Scripts (decode-only, no src edits): scripts/cont44_a_decode.py, cont44_a_decode2.py, cont44_a_decode3.py; dumps: run/cont44/cont44_decode{,2,3}.txt.
+- Stage summary: CONT44-A complete — verdict + allocation chain + fix shape + discriminating probe designed; no engine behavior changed.
+
+## Task CONT44-B (decode-only — F-NEW-305 tananaev inset + F-NEW-307 dooz census) — 2026-10-11
+
+Work log:
+- [F-NEW-305] Ran tananaev com.tananaev.calculator_11.apk PRE: sha256 run/cont44/tan_pre/screenshot.png = 0f649804d6e0486d… (matches expected prefix). Scripts: scripts/cont44_b_tanpix.py, cont44_b_tanpix2.py, cont44_b_tan_tree_facts.py; decode input run/cont44/tan_decode.txt (androguard, scripts/cont44_b_tan_decode.py).
+- [F-NEW-305] Tree facts (last frame, [EXP092-RENDER]): root ActionBarOverlayLayout#338 (0,0 1080x1920) → ContentFrameLayout#379 = android.R.id.content (0,0 1080x1920) → rows LinearLayout#456 (0,0 1080x220) with 4 preference rows 1080x44/88 (text at y=0,44,88,132,176); ActionBarContainer#382 laid out at (0,1920) 1080x105 with Toolbar#390 (0,1920 1080x0). Content IS at y=0; the bar container is stacked BELOW the screen, not on top.
+- [F-NEW-305] Painter truth: frame = two flat colors — 0xE1E1E1 band y=0..219 (exactly the rows-container rect; the rows container's own bg) + windowBackground 0xfffafafa below; zero dark pixels anywhere (row text glyphs never painted — separate defect, not the inset). The "gray band" is NOT the ActionBarContainer (bg=0x0, laid out offscreen at y=1920).
+- [F-NEW-305] Root cause chain: F10/R-NEW-347 dispatches the REAL DEX ActionBarOverlayLayout.onMeasure → `[DEX-MEASURE] … -> 0x0` (write-back happened, values 0) because (1) ViewGroup.measureChildWithMargins has NO engine shadow (0 grep hits in src) so mActionBarTop never measures inside the DEX body → mContentInsets.top += getMeasuredHeight()=0; (2) content getMeasuredWidth/Height()=0 → setMeasuredDimension(0,0); R-NEW-438 INCOMPLETE-EMULATION (arm 1) correctly demotes the 0x0 result and the native law takes over — but LayoutInflater::measure_layout has NO ActionBarOverlayLayout branch, so the generic "stack children vertically top-down" else-branch (layout_inflater.cpp, end of the layout pass) stacked ContentFrameLayout at y=0 and ActionBarContainer at y=1920. AOSP (verified in the APK's own DEX, tan_decode.txt lines 151-409): onMeasure measures the bar first, `!mOverlayMode → mContentInsets.top += mActionBarTop.getMeasuredHeight()`, applyInsets() writes it into mContent's LayoutParams.topMargin, content re-measured; onLayout places every child at paddingTop + its own lp.topMargin → bar at y=0, content at y=barHeight.
+- [F-NEW-305] CHOSEN FIX SIDE: (a) engine layout law. Exact insertion point: miniandroid/src/resources/layout_inflater.cpp, LayoutInflater::measure_layout — the top-down layout pass; add an `is_a(class_desc,"Landroidx/appcompat/widget/ActionBarOverlayLayout;")` branch BEFORE the generic vertical-stack else (~line 4165). Law: bar child (descendant ActionBarContainer) at (paddingLeft, paddingTop) with its measured size; content child (ContentFrameLayout) at top = paddingTop + barMeasuredHeight (non-overlay; engine delivers no window insets so base insets are 0), height = container content height − barMeasuredHeight (AOSP onMeasure re-measure companion: re-measure content with EXACTLY(ch − bar_h) like the existing LinearLayout weight re-measure). Overlay-mode guard: contributes 0 when a captured overlay flag is set (AOSP default false; tananaev non-overlay).
+- [F-NEW-305] Why not side (b): completing the DEX emulation needs ViewGroup.measureChildWithMargins (absent), mid-measure synchronous child onMeasure dispatch, and applyInsets' heap-LayoutParams margin writes reaching ViewNode margins (field-identity law) — a broad measure-path change that would also run inside every appcompat host's LinearLayout/FrameLayout DEX bodies (large anchor blast radius). WindowInsets-dependent paths are stubbed anyway ([ROOT-059] WindowInsets.inset null-recv; 0 fitSystemWindows/applyInsets/dispatchFitSystemWindows shadows in src) but are NOT needed for the non-overlay bar inset — it flows from the bar's own measured height.
+- [F-NEW-305] Anchor A/B risk list (PRE shas verified this session): opencalc upload/opencalculator_53.apk → a976d2f9fb675cb3 ✓; microtimer dubrowgn.microtimer_8.apk → da73010a37dd0189 ✓; unote app.varlorg.unote_30.apk → 4f1a9e4e8f64fae8 ✓; gmdice de.duenndns.gmdice_8.apk → f3b483fe7b7cf51b ✓. All four runs contain ZERO ActionBarOverlayLayout/ActionBarContainer lines (NoActionBar subDecor = abc_screen_simple FitWindowsLinearLayout root; opencalc root verified FitWindowsLinearLayout) → the new branch cannot execute → byte-identical KEEP (structural, not probabilistic). dooz180: also 0 bar lines. tananaev expected POST: gray rows band shifts 0..220 → 105..325 (bar measured height 105), top 0..105 shows windowBackground until the bar's own background is painted (separate defect); row text still absent (separate defect) — the inset law only moves geometry.
+- [F-NEW-307] Ran dooz io.github.yamin8000.dooz_23.apk PRE at --max-seconds 180: sha256 run/cont44/dooz180/screenshot.png = 6841d52a20e6597e… ✓ (expected prefix; a prior-session artifact at 06:36 had the identical sha). Census: `[F-NEW-233 frame truth: verdict=VIEWTREE_NO_APP_PIXELS, first_missing_stage=APP_DRAW_OPS]`.
+- [F-NEW-307] Classifier: miniandroid/src/runtime/execution_engine.cpp, ExecutionEngine::stage_render_frame_impl — per-frame ledger reset at line 2919 (`frame_census_.reset()`); verdict at ~5475-5545 (`first_missing="APP_DRAW_OPS"` at 5515 when `app_draw_ops==0 && !dialog_content_rendered`, checked BEFORE the pixel-evidence stage; `verdict="VIEWTREE_NO_APP_PIXELS"` at 5534). app_draw_ops is fed ONLY by per-ViewShadow paint sites in the same walk (bg draws ~3956, surface replay ~4024, custom-view onDraw replay ~4068, text/image paints ~4141-4605, deferred wave ~4946-4968).
+- [F-NEW-307] Why Compose is missed: the Compose tree has no View-backed children — the whole scaffold paints through ONE AndroidComposeView (obfuscated Lt4; node 1446, children=0, 1080x1920) DEX dispatchDraw whose CanvasShadow ops reach the ledger only via dispatch_custom_view_draw's return (dalvik_engine.cpp:11174). Per-frame ops captured: 1189, 604, 604, 415, 0, 0. At the 180s budget the final frame's draw is cut by F084 wall-clock halt (154 [WALL-STOP]s; [SYNTH-EXC] F084-HALT-RETURN … 180000 ms) → final frame ops=0 → F298-KEEP skips presentation and keeps the last complete frame as the screenshot — while the census computed on the aborted final frame reports app_draw_ops=0 → APP_DRAW_OPS / VIEWTREE_NO_APP_PIXELS. The verdict describes the aborted frame; the presented pixels belong to the kept prior frame (ledger/pixel contradiction: empty ledger beside non-dominant pixels inside valid content bounds). The [CDW-OP] recorder (dalvik_engine.cpp:24255, env MINIANDROID_CANVAS_DRAW_WIN_TRACE) observes the same canvas ops but feeds NO census counter (diagnostics only).
+- [F-NEW-307] Minimal MEASUREMENT-ONLY fix shape (no rendering-path edits): (A) in the verdict chain, gate APP_DRAW_OPS on pixel evidence too — `app_draw_ops==0 && app_owned_px==0 && !dialog_content_rendered` (an empty ledger beside app-owned pixels inside valid content bounds indicts the ledger, not the content; the framebuffer is composed from scratch each pass so non-dominant inside content bounds IS this pass's app paint); (B) kept-frame attribution: when the frame-honesty signal fired (F084 in-draw halt → F298-KEEP presented the prior frame), tag the census `draw_budget_halt=true`, `presentation="kept_prior_frame"` and carry the last presented frame's ledger (last_presented_census_ member) as `*_kept_frame` fields. Both are diagnostics-layer; rendering bytes unchanged by construction. Evidence: anchors + tananaev have 0 WALL-STOP / 0 F298-KEEP lines → (B) is a structural no-op for them; (A) only reclassifies frames whose pixels already prove app paint. Caveat recorded: full-screen content roots (dooz, tananaev) make V1 content bounds = whole screen, so a decor chrome band inside it would count as app pixels — acceptable for the census, noted for reviewers.
+- Artifacts: run/cont44/tan_pre/{screenshot.png,run.log,tree_facts.txt}, run/cont44/tan_decode.txt, run/cont44/dooz180/{screenshot.png,run.log,census_evidence.txt}, run/cont44/anchor_{opencalc,microtimer,unote,gmdice}/{screenshot.png,run.log}, scripts/cont44_b_{tanpix,tanpix2,tan_tree_facts,census_evidence,tan_decode}.py. PRE shas observed: tananaev 0f649804d6e0486d, dooz 6841d52a20e6597e, opencalc a976d2f9fb675cb3, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8, gmdice f3b483fe7b7cf51b.
+
+Stage summary: DECODE 1 — F-NEW-305 root-caused to the missing ActionBarOverlayLayout branch in LayoutInflater::measure_layout's layout pass (generic vertical-stack law places content at y=0 and the bar container at y=1920); the appcompat DEX's own onMeasure ran but measured degenerately (no measureChildWithMargins shadow) and was correctly demoted by R-NEW-438; fix = side (a) engine layout law (bar-first, non-overlay content top inset = bar measured height), zero-touch for all 4 appcompat anchors (no bar nodes in any anchor run). DECODE 2 — F-NEW-307 root-caused to census mis-attribution: per-frame ledger reset + final-frame F084 draw abort (ops=0) + F298-KEEP presentation of the prior frame → verdict computed on the wrong frame with the per-ViewShadow-only app_draw_ops counter; fix = pixel-evidence gate + kept-prior-frame census tagging, diagnostics only. No src edits made (decode-only honored); no rendering-path changes proposed.
+
+---
+Task ID: CONT-44
+Agent: Super Z (main) + parallel decode agents CONT44-A/B/C
+Task: "Continue better and more precisely until the complete result" — close
+the three CONT-43 recorded frontiers (F-NEW-306 P0 csw content regained,
+F-NEW-305 tananaev action-bar inset, F-NEW-307 dooz census attribution) and
+answer the user's question: do the white-screen fixes affect other games and
+apps?
+
+Work Log:
+- Parallel wave: CONT44-A decoded F-NEW-306 to the exact law (verdict
+  REAL-MISSING-LAW; decode CORRECTION: the failing structure is the kotlinx
+  persistent-hash trie builder Lch1;.j cycle-stubbed 3x with 2-of-4 objects +
+  2-of-3 ints captured — the dropped 3rd int is the recursion shift; Lgi0;
+  DepthSortedSet WAS allocated, the CONT-43 premise corrected). CONT44-B
+  decoded F-NEW-305 (bar measured 0 — the "105" was the generic-else 40dp
+  floor; no measureChildWithMargins shadow; chosen fix side = the native
+  layout branch in measure_layout) + F-NEW-307 (census classifier mapped:
+  stage_render_frame_impl; Compose ops reach the ledger only via
+  dispatch_custom_view_draw; the F084 halt + F298-KEEP present the prior
+  frame against the aborted ledger). CONT44-C delivered the cross-app impact
+  audit (evidence/cont44/CROSS_APP_IMPACT.md): 32-app corpus, Fragment x13 /
+  Preference x9 / AppCompat x10 / Compose x3 / View-only x14, 19/32 in the
+  benefit blast radius, untouched games carry byte-identical x3 proofs,
+  11 recommended new gates.
+- F-NEW-306 FIX (dalvik_engine.cpp try_recursive_invoke): an active-cycle key
+  that dropped ANY argument identity (objects/primitives/CLASS_REFs beyond
+  the caps, null positions) is NOT same-computation evidence — real DEX
+  executes, loudly traced [M3-19-OPEN]. Generalizes F-NEW-286 to "payload
+  capture incomplete". POST: csw 3442d9a9dc0fa0f9 x3 REGAINED (the pinned
+  healthy face, not re-baselined); 3 [M3-19-OPEN] firings, 0 [M3-19-CYCLE]
+  on Lch1;.
+- F-NEW-305 FIX (layout_inflater.cpp measure_layout): the class-dispatched
+  ActionBarOverlayLayout inset law — bar at (paddingLeft, paddingTop), other
+  children at top = paddingTop + effective bar height with an EXACTLY(ch-bar)
+  second-pass re-measure (fixed-height content keeps its own height); the
+  bar-height floor resolves the THEME's actionBarSize (arsc find_id ->
+  resolve_theme_attr_typed -> complex_to_dimension_pixel_size; framework
+  0x010102EB fallback) — never a constant. tananaev: content 0 -> 126px
+  (48dp x 2.625), bar band 1080x126, rc=0 SUCCESS, fix face
+  5f7e0114c3bfd6b5 x3. simplecalc = the SECOND appcompat host fixed the
+  same way (content +126, layout intact) — caught by the gate as e847ca03
+  vs the recorded 7960bce4, pixel-profile verified as the honest inset fix
+  face and re-pinned x3.
+- F-NEW-307 FIX (execution_engine.{h,cpp}, measurement-only): the census
+  APP_DRAW_OPS missing-stage gated on pixel evidence
+  (app_draw_ops==0 && app_owned_px==0 && !dialog) + kept-frame attribution
+  (draw_budget_halt / kept_prior_frame / kept_prior_app_draw_ops from
+  last_presented_app_draw_ops_). dooz180 6841d52a20e6597e x3 gate + x1 = x4
+  byte-identical, verdict REAL_APP_CONTENT, Status SUCCESS.
+- FULL GATE at b067df784adfa727: anchors 27/27 x3 byte-identical (tananaev
+  re-pinned to the fix face); target csw x3 REGAINED; dooz180 x3;
+  probes == records exactly (fcol 140/0 ... fnew298 19/0 KEEP=5 corner=PASS);
+  frag_tx_probe 12/0; notif_builder_probe 56/0; control simplecalc x3
+  (re-pinned fix face). ZERO DRIFT — the only moved frames are the two the
+  inset law FIXED (both re-pins carry the fix-face argument).
+- Registry 615 -> 616 (scripts/cont44_registry.py): F-NEW-306 / F-NEW-305 /
+  F-NEW-307 -> ROOT_CAUSED_FIXED; F-NEW-308 appended (P1, OBSERVED: tananaev
+  preference-row TextView glyphs never paint while simplecalc Button labels
+  do — the fragment/preference family's slice 3).
+- Evidence: evidence/cont44/CONT44_COMPLETE_RESULT.md +
+  evidence/cont44/CROSS_APP_IMPACT.md. Gate: scripts/cont37_regression.sh
+  (tananaev/simplecalc re-pins + the csw target comment updated to REGAINED).
+
+Stage Summary:
+- All three recorded frontiers CLOSED: csw content REGAINED at the pinned
+  healthy face; tananaev's preference page now renders at its honest AOSP
+  geometry (rows below the action-bar band, theme-resolved inset); the dooz
+  census verdict flipped honestly to REAL_APP_CONTENT with rendering bytes
+  untouched. Registry 616. One new root recorded (F-NEW-308, the row-glyph
+  paint face) + the boot-cost perf frontier remains.
+- The user's generality question answered with evidence: the fixes are
+  app-agnostic laws; 19/32 corpus apps in the benefit blast radius; the
+  untouched games byte-identical x3; simplecalc and every future appcompat
+  fragment-host app are concrete CONT-44 beneficiaries.
+- Next wave: F-NEW-308 (row glyph paint decode), the dooz boot-cost perf
+  frontier, the 11 recommended new gates from the cross-app audit.
