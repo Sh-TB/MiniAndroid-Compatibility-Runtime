@@ -6824,6 +6824,54 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         declaring_class == "Landroid/support/v4/app/BaseFragmentActivityDonut;" ||
         declaring_class == "Landroid/support/v4/app/BaseFragmentActivityHoneycomb;" ||
         declaring_class == "Landroid/support/v4/app/SupportActivity;") {
+        // F-NEW-261 (CONT-11): DEX-BODY SCOPE GATE. The S83 bypass is the
+        // sanctioned answer ONLY where the engine would otherwise answer a
+        // missing framework class. Every appcompat/support app ships the
+        // REAL library DEX (S83's own comment says so) — when the declaring
+        // class has a body in this APK's DEX, the honest law is to EXECUTE
+        // it: FragmentActivity.onCreate runs attachHost →
+        // FragmentManagerImpl.attachController, which is what makes
+        // getSupportFragmentManager().beginTransaction().commit() lawful
+        // afterward. With the bypass, mHost stayed null forever and every
+        // fragment transaction threw ISE "Activity has been destroyed"
+        // (BMI com.zola.bmi first dive: uncaught at BMIMain.onCreate
+        // pc=31 — the app's ONLY fragment attach is its first launch
+        // path).
+        //
+        // CONT-11 A/B scope evidence (both arms measured at the same
+        // binary):
+        //   * SUPPORT-V4 family: REAL execution SURVIVES end-to-end —
+        //     HostCallbacks/FragmentHostCallback ctors run, attachHost →
+        //     attachController lands mHost, the transaction enqueues (BMI
+        //     uncaught 2→0). Fall-through = proven.
+        //   * ANDROIDX family: real FragmentActivity.onCreate re-exposes
+        //     the S83-era death NPE at invoke_pc=0xc — mFragmentLifecycle
+        //     Registry null: the final-field initializer chain (mFragments
+        //     = FragmentController.createController(new HostCallbacks()))
+        //     still loses its value under the engine (same root family as
+        //     BMI's FragmentHostCallback.mHandler <unset> — F-NEW-262,
+        //     CLASSIFIED, next wave). Fall-through = NOT yet safe; the
+        //     S83 bypass stays until F-NEW-262 closes.
+        bool f261_dex_body = class_info_index_.find(declaring_class) !=
+                             class_info_index_.end();
+        // FAMILY-LEVEL scope law: the legacy support stack is ONE machine —
+        // the v7 AppCompatActivity.onCreate drives the v4
+        // FragmentActivity.onCreate attachHost; falling through per-class
+        // breaks the chain in half (v4 attach never runs because the v7
+        // entry was bypassed — BMI uncaught 3). The gate is the whole
+        // Landroid/support/ family (v4/v7/v13/v9) with a DEX body. The
+        // androidx family stays on the S83 bypass until F-NEW-262 (the
+        // final-field initializer-chain root) closes — measured: androidx
+        // fall-through re-killed notes_secuso (NPE at
+        // FragmentActivity.onCreate pc=0xc, mFragmentLifecycleRegistry
+        // null) while the bypass keeps it byte-identical to the recorded
+        // eb5ebd559cad1028 anchor.
+        bool f261_support_family =
+            declaring_class.rfind("Landroid/support/", 0) == 0;
+        if (f261_dex_body && f261_support_family) {
+            // real DEX body exists in the legacy support family — fall
+            // through to execution
+        } else
         if (method_name == "onCreate") {
             std::cerr << "[S83-APXACT] onCreate semantic shadow: "
                       << declaring_class
@@ -28310,8 +28358,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto cit366 = is_dex_class ? class_info_index_.find(recv_cls366)
                                     : class_info_index_.end();
         uint32_t flags366 = 0x1;  // PUBLIC default for framework tokens
-        if (is_dex_class && cit366 != class_info_index_.end())
+        if (is_dex_class && cit366 != class_info_index_.end()) {
             flags366 = dex_report_->classes[cit366->second].access_flags;
+            // F-NEW-260 (CONT-11): member (nested) classes report the
+            // Ldalvik/annotation/InnerClass; accessFlags (the JVMS
+            // InnerClasses.attribute law) — class_def flags never carry
+            // ACC_STATIC for DEX member classes, so Modifier.isStatic
+            // mis-answered false and support-v4 BackStackRecord.doAddOp
+            // threw "must be a public static class" for legitimate static
+            // inner fragments (BMI com.zola.bmi first dive). OpenJDK
+            // Class.getModifiers law: nested → InnerClasses-attribute flags.
+            uint32_t icf366 =
+                dex_report_->classes[cit366->second].inner_class_flags;
+            if (icf366 != 0) flags366 = icf366;
+        }
         if (method == "getModifiers") {
             result = DalvikValue::make_int(static_cast<int32_t>(flags366));
             status = ApiCallTrace::Status::IMPLEMENTED;
