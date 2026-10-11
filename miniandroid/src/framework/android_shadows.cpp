@@ -5406,6 +5406,28 @@ CallResult LayoutInflaterShadow::dispatch(const CallContext& ctx) {
         uint32_t id = heap_->get_or_create("Landroid/view/LayoutInflater;");
         return CallResult::handled_object(id, "Landroid/view/LayoutInflater;");
     }
+    if (m == "cloneInContext") {
+        // F-NEW-313 (CONT-47): AOSP LayoutInflater.cloneInContext(Context)
+        // returns a functional inflater bound to the cloned context
+        // (PhoneLayoutInflater returns a new instance of its own class).
+        // Measured gap (BMI, run/cont47/bmi_ft7): the fragment host's
+        // real DEX onGetLayoutInflater ends in cloneInContext — with no
+        // handler the invoke answered null, Fragment.mLayoutInflater went
+        // null, the fragment's onCreateView dispatched inflate on a NULL
+        // receiver ([ROOT-059] null-recv row), the result-slot never
+        // wrote (the F-NEW-262 <unset> signature), and
+        // Fragment.mView=<unset> meant the container addView never ran —
+        // the fragment content could not materialize even with the state
+        // machine live. The runtime's inflater model is the F-021 shared
+        // singleton (same object LayoutInflater.from() and
+        // Activity.getLayoutInflater() answer); the context-clone nuance
+        // is not observable in this model, so the AOSP-observable
+        // contract here is: cloneInContext answers a FUNCTIONAL
+        // inflater — the shared one.
+        if (!heap_) return CallResult::not_handled();
+        uint32_t id = heap_->get_or_create("Landroid/view/LayoutInflater;");
+        return CallResult::handled_object(id, "Landroid/view/LayoutInflater;");
+    }
     if (m == "inflate") {
         if (!registry_ || !heap_) return CallResult::not_handled();
         auto* view_shadow = registry_->find_as<ViewShadow>();

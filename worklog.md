@@ -8281,3 +8281,67 @@ Work Log:
 Stage Summary:
 - CONT-45's honest next-wave duty is DISCHARGED: F-NEW-260/261 are live increments (probe + runtime proven on the true lineage); F-NEW-262 is no longer a monolithic hypothesis — m1 is root-caused and FIXED with the exact DEX/register/field evidence the issue demanded, m2 superseded, m3 blocked with its exact next command. The gate-to-shipped gap (the fix touches the check* family corpus-wide) is regression-proven clean (33/33 + probes + skill + fan-out x3).
 - The remaining BMI content frontier is a NEW, precisely-located root (delegate content-parent attach) — next wave's bounded decode with runtime rows and ViewTree evidence already recorded.
+
+---
+Task ID: CONT-47
+Agent: Super Z (main)
+Task: CONT-46 honest next-wave duty — the delegate content-parent attach leg
+decode; user directive "ادامه" (continue from latest remote HEAD; real
+applications past their first runtime divergence, not another report).
+
+Work Log:
+- Phase 0 reconciliation: origin/main was ALREADY 60955f06 (CONT-46 closeout
+  was pushed by the prior session); local b4d3a493 (UUID checkpoint, tmp/
+  probe builds) pushed per convention (60955f06..b4d3a493). Binary identity
+  verified == a63bf3b53ac3c082 (the recorded post-fix SHA). 7 APK SHA pins
+  exact. Issue #375 closeout comment 6111267327 verified live; no newer
+  directives. BMI baseline face reproduced exactly (57159cc2, root=78
+  attached=0, 0 uncaught).
+- Decode: [S83-APXACT] setContentView semantic shadow fired for BMI despite
+  the F-NEW-261 fall-through conditions. Added the permanent env-gated
+  MINIANDROID_S83_DIAG gate diagnostic (EXP-055/S24/F040 style): the same
+  dispatch printed f261_dex_body=1 f261_support_family=1 idx_has_class=1
+  AND the shadow row — caught the else-chain bug: `if (f261) {} else if
+  (onCreate)` — the setContentView/lifecycle/findViewById arms are
+  INDEPENDENT ifs the fall-through never governed. Static proof:
+  AppCompatActivity.setContentView delegates to AppCompatDelegateImpl
+  (exact AOSP chain, code_off 0xc3dc0/0xc7664); the runtime's
+  LayoutInflater.inflate(int,ViewGroup) law already existed.
+- Four-gate causal chain decoded with field traces (MINIANDROID_FIELD_TRACE):
+  G1 S83 setContentView steal -> F-NEW-310 (arm gated with the negated
+  fall-through predicate). G2 F-NEW-172 lifecycle-void arm (BMIMain.onStart
+  "instructions=0"; the real FragmentActivity.onStart DEX is the fragment
+  state driver) -> F-NEW-311 (same gate). G3 EXP-045 dispatchStateChange
+  stub over-match ("FragmentManager" substring caught the support
+  FragmentManagerImpl; mCurState frozen at 0; support impl is a 17-unit
+  terminating method; BMI has NO androidx) -> F-NEW-312 (scope corrected to
+  the androidx prefix). G4 LayoutInflater.cloneInContext REC-MISS -> null
+  fragment inflater -> [ROOT-059] null-recv inflate -> result slot unwritten
+  -> Fragment.mView=<unset> -> no addView -> F-NEW-313 (cloneInContext
+  answers the shared F-021 singleton).
+- POST (binary 387390a00f2de498): BMI REAL_APP_CONTENT — screenshot
+  b52252c2de19b03a x3 deterministic, 0 uncaught, 9.9% non-background, BMI
+  button blue present; window tree = ActionBarOverlayLayout ->
+  ContentFrameLayout -> FrameLayout -> RelativeLayout(6) -> 2xEditText +
+  2xSpinner + Button "Calculate BMI" (real text) + result TextView.
+- Regression: canonical gate 33/33 MATCH (dooz/micro/unote/gmdice/opencalc/
+  tttdeluxe/flappycow/g2048/tanana anchors x3 + csw x3 + simplecalc x3)
+  ZERO DRIFT; probe battery == records (fcol 140/0, f259 49/0, f259g 84/7,
+  f266 42/0, fnew298 19/0, fnew302 48/24, fnew260 13/0, fnew262 19/0);
+  skill 13/13; sol ba50a4d2 x3 / notes eb5ebd55 x3 / alex c8d69f81 x3 —
+  the androidx S83 scope law held through all four engine changes.
+- Registry 620 -> 624 (scripts/cont47_registry.py): F-NEW-310/311/312/313
+  appended ROOT-CAUSED-FIXED. Evidence: evidence/cont47/CONT47_RESULT.md.
+
+Stage Summary:
+- BMI (com.zola.bmi v402) is past its white screen to REAL_APP_CONTENT for
+  the launch page — the first app whose content path required the FULL
+  support-v7 delegate DEX machine (setContentView + lifecycle + fragment
+  state + fragment inflater) to execute end-to-end.
+- Cross-app impact (standing CONT-42 question) measured on ONE binary:
+  BMI improved, every other corpus member byte-identical x3.
+- Honest bounds: BMI input behavior (tap -> compute -> result) NOT yet
+  exercised (next wave natural target); solitaire F-NEW-309 still
+  CLASSIFIED (own decode + A/B); notes m3 still BLOCKED behind the androidx
+  fall-through A/B (standing scope decision); findViewById S83 arm deferred
+  (no harm evidence).
