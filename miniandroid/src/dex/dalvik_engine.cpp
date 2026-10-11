@@ -36373,6 +36373,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     return 0x40000000 | (child_dim & 0x3FFFFFFF);
                 };
                 int measured_children = 0;
+                // F-NEW-304 companion coherence (CONT-43): a node measured
+                // by the native class law (measure_view_spec) carries dims
+                // its OWN container law computed COHERENTLY over the whole
+                // subtree (weights, table cells, anchor edges). Re-measuring
+                // that subtree's members at the descent's cruder per-node
+                // spec would split the measure brain (opencalc pad: cell
+                // widths overwritten while the row law's x-pitch survived
+                // → overlapping digit labels). Such subtrees are marked and
+                // the descent defers to the native dims for this pass.
+                std::unordered_set<uint32_t> f304_native_subtree;
+                std::function<void(uint32_t)> f304_mark_subtree;
+                f304_mark_subtree = [&](uint32_t vid) {
+                    f304_native_subtree.insert(vid);
+                    auto* m = vs->find_node(vid);
+                    if (m)
+                        for (uint32_t c : m->children) f304_mark_subtree(c);
+                };
                 // S109 ROOT-045b: recursive descent (same law as the R347
                 // wrapper's ROOT-045) — grandchildren measured with the
                 // child's resolved sizes so deep app trees (ScrollView →
@@ -36389,6 +36406,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (!cn) continue;
                             if (cn->visibility == 4 || cn->visibility == 8)
                                 continue;
+                            if (f304_native_subtree.count(child)) {
+                                // native class-law subtree: dims already
+                                // coherent — defer (no reset, no re-measure).
+                                cn->dex_measure_valid = true;
+                                continue;
+                            }
                             int32_t cw2 = child_spec(pw2, cn->width);
                             int32_t ch2 = child_spec(ph2, cn->height);
                             cn->dex_measure_valid = false;
@@ -36414,6 +36437,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                      cn->class_desc.compare(
                                          cn->class_desc.size() - 7, 7,
                                          "/Space;") == 0);
+                                // ── F-NEW-304 companion RE-LANDED (CONT-43):
+                                // no-DEX-override child → the native
+                                // class-measure law (the honest AOSP
+                                // View.measure dispatch through
+                                // measure_view_spec → measure_node_raw:
+                                // TextView shaping, LinearLayout weights,
+                                // FrameLayout max-extent, ...). The old
+                                // default law answered getDefaultSize(spec)
+                                // — AT_MOST → the FULL available size — so
+                                // every wrap-content platform subtree under
+                                // a DEX-measuring parent (the tananaev
+                                // PreferenceFragment list under appcompat's
+                                // ContentFrameLayout) measured full-screen
+                                // and stacked off-screen.
+                                if (!apk_path_.empty() && shadow_registry_) {
+                                    auto& rt =
+                                        resources::ResourceRuntime::instance();
+                                    if (rt.ensure_loaded(apk_path_)) {
+                                        int nw = 0, nh = 0;
+                                        if (rt.inflater().measure_view_spec(
+                                                vs, child, cw2, ch2, nw, nh)) {
+                                            cn->dex_measured_w = nw;
+                                            cn->dex_measured_h = nh;
+                                            cn->dex_measure_valid = true;
+                                            cn->measured_width = nw;
+                                            cn->measured_height = nh;
+                                            f304_mark_subtree(child);
+                                        }
+                                    }
+                                }
                                 if (!cn->dex_measure_valid) {
                                 cn->dex_measured_w =
                                     (sp_is_space && mmw != 1)
@@ -36480,11 +36533,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         // DETERMINISTICALLY moved the opencalc golden
                         // (a976d2f9… → 0a0b26cf… ×3 — non-CL nodes too, so
                         // the CL scope-out did not restore it). Zero-drift
-                        // gate: the companion law is REVERTED pending the
-                        // opencalc re-baseline decode; the two guarded
-                        // default-law blocks below (no-when-valid) remain —
-                        // they are behavior-neutral today and are the
-                        // insertion points for the re-scoped law.
+                        // gate: REVERTED in CONT-42; RE-LANDED in CONT-43
+                        // after the opencalc re-baseline decode (this wave's
+                        // A/B pixel-decode owns the verdict).
                         // default View.onMeasure law
                         auto mode = [](int32_t s) -> int32_t {
                             return (int32_t)(((uint32_t)s) >> 30);
@@ -36502,6 +36553,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (is_space) return mm == 1 ? (s & 0x3FFFFFFF) : 0;
                             return (mm == 1 || mm == 2) ? (s & 0x3FFFFFFF) : 0;
                         };
+                        // ── F-NEW-304 companion RE-LANDED (CONT-43): the
+                        // native class-measure law for no-DEX-override
+                        // children (honest AOSP View.measure dispatch).
+                        // Same law as the recursion site above; the
+                        // CONT-42 A/B proved the tananaev fix shape here
+                        // (rows 1080x44 real y-pitch) — the opencalc
+                        // interaction is decoded in this wave's A/B.
+                        if (!apk_path_.empty() && shadow_registry_) {
+                            auto& rt =
+                                resources::ResourceRuntime::instance();
+                            if (rt.ensure_loaded(apk_path_)) {
+                                int nw = 0, nh = 0;
+                                if (rt.inflater().measure_view_spec(
+                                        vs, child, cs_w, cs_h, nw, nh)) {
+                                    cn->dex_measured_w = nw;
+                                    cn->dex_measured_h = nh;
+                                    cn->dex_measure_valid = true;
+                                    cn->measured_width = nw;
+                                    cn->measured_height = nh;
+                                    f304_mark_subtree(child);
+                                }
+                            }
+                        }
                         if (!cn->dex_measure_valid) {
                         cn->dex_measured_w = dsize(cs_w);
                         cn->dex_measured_h = dsize(cs_h);
