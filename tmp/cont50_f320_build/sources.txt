@@ -1,7 +1,7 @@
-fixtures/fnew320_probe/src/com/probe/f320/SupA.java
-fixtures/fnew320_probe/src/com/probe/f320/Inner.java
-fixtures/fnew320_probe/src/com/probe/f320/Flinger.java
 fixtures/fnew320_probe/src/com/probe/f320/Outer.java
-fixtures/fnew320_probe/src/com/probe/f320/SubA.java
+fixtures/fnew320_probe/src/com/probe/f320/Flinger.java
+fixtures/fnew320_probe/src/com/probe/f320/SupA.java
 fixtures/fnew320_probe/src/com/probe/f320/MainActivity.java
+fixtures/fnew320_probe/src/com/probe/f320/SubA.java
+fixtures/fnew320_probe/src/com/probe/f320/Inner.java
 tmp/cont50_f320_build/gen/com/probe/f320/R.java

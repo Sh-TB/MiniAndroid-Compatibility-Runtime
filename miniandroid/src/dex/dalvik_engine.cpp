@@ -22321,6 +22321,64 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         // try_shadow_dispatch inside bridge_to_api will see it and correctly
         // treat args[0] as the first parameter (not `this`).
         bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-326 (CONT-54): the framework-boundary static resolution
+        // law. ART invoke-static resolution walks the FULL superclass
+        // chain — INCLUDING past the DEX boundary into the framework — to
+        // the class that actually declares the method (Dalvik spec: the
+        // method must be declared in the referenced class or one of its
+        // superclasses). Byte-level evidence (solitaire classes.dex):
+        // five support-lib classes (DrawerLayout m@5133, NestedScrollView
+        // m@5251, ActionMenuView m@7364, Toolbar m@8216, ar m@8737) carry
+        // method_ids naming THEIR OWN class as the owner of
+        // getChildMeasureSpec(III)I while NO class in the DEX declares it
+        // (DrawerLayout's class_data jumps m@5124 -> m@5143 — the id is
+        // undeclared); on a real device every such invoke resolves to the
+        // framework ViewGroup.getChildMeasureSpec law. try_recursive_invoke
+        // (exact local match + F-074/F-280 super-walk) only walks DEX
+        // ancestors, and the first bridge dispatch keyed on the APP class
+        // identity — a STUBBED typed-default answer with NO handler run.
+        // Law: when (a) the named class IS a DEX class and (b) the first
+        // dispatch ended STUBBED (the typed-default tail — side-effect-
+        // free, so a retry cannot double-fire any handler), walk the
+        // superclass chain past the DEX boundary (nearest framework
+        // ancestor first, bounded 16 hops) and accept the first
+        // IMPLEMENTED framework law. Otherwise the original STUBBED
+        // answer stands — byte-identical to the pre-law behavior.
+        // ────────────────────────────────────────────────────────────────
+        if (status == ApiCallTrace::Status::STUBBED &&
+            class_info_index_.find(class_name) != class_info_index_.end()) {
+            std::string walk = class_name;
+            for (int hop = 0; hop < 16; ++hop) {
+                auto sup_it = class_to_superclass_.find(walk);
+                if (sup_it == class_to_superclass_.end()) break;
+                std::string sup = sup_it->second;
+                if (sup.empty() || sup == "Ljava/lang/Object;") break;
+                walk = sup;
+                // DEX ancestors were already covered by the resolver's
+                // own walk — the retry is for the FRAMEWORK boundary.
+                if (class_info_index_.find(sup) != class_info_index_.end())
+                    continue;
+                ApiCallTrace::Status f326_st = ApiCallTrace::Status::STUBBED;
+                DalvikValue f326_rv = DalvikValue::make_void();
+                bridge_to_api(sup, method_name, args, f326_rv, f326_st,
+                              method_idx);
+                if (f326_st == ApiCallTrace::Status::IMPLEMENTED) {
+                    static thread_local uint64_t f326_redispatch_n = 0;
+                    if (f326_redispatch_n < 40) {
+                        ++f326_redispatch_n;
+                        std::cerr << "[F-NEW-326] static re-dispatch "
+                                  << class_name << "." << method_name
+                                  << " as " << sup
+                                  << " (framework boundary)" << std::endl;
+                    }
+                    return_val = f326_rv;
+                    last_invoke_return_ = f326_rv;
+                    status = f326_st;
+                    break;
+                }
+            }
+        }
     }
 
     ApiCallTrace api_trace;
@@ -46600,6 +46658,84 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_string("MeasureSpec", 0);
             return true;
         }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-326 (CONT-54): ViewGroup.getChildMeasureSpec(III)I — the AOSP
+    // spec-derivation law (frameworks/base/core/java/android/view/
+    // ViewGroup.java, stable since API 1). Pure static spec math, zero app
+    // knowledge. Reached via the F-NEW-326 framework-boundary re-dispatch
+    // (support-lib R8 artifacts carry child-class-owned method_ids for
+    // getChildMeasureSpec that only resolve to this framework law — see
+    // execute_invoke_static) or a direct framework-owner invoke.
+    // In-place mode representation (the F-096b law this file already uses):
+    //   specMode = spec & 0xC0000000 (EXACTLY=0x40000000, AT_MOST=0x80000000,
+    //   UNSPECIFIED=0); specSize = spec & 0x3FFFFFFF.
+    // AOSP LayoutParams constants: MATCH_PARENT = -1, WRAP_CONTENT = -2.
+    //   EXACTLY parent:  dim>=0 → EXACTLY|dim; MATCH → EXACTLY|size;
+    //                    WRAP → AT_MOST|size
+    //   AT_MOST  parent: dim>=0 → EXACTLY|dim; MATCH/WRAP → AT_MOST|size
+    //   UNSPEC   parent: dim>=0 → EXACTLY|dim; MATCH/WRAP → UNSPEC|size
+    //   size = max(0, specSize - padding); result = (size&~MODE)|mode
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/view/ViewGroup;" &&
+        method == "getChildMeasureSpec" && args.size() >= 3) {
+        auto iv = [](const DalvikValue& v) -> int32_t {
+            switch (v.type) {
+                case DalvikType::INT32: return v.int_val;
+                case DalvikType::FLOAT32: return (int32_t)v.float_val;
+                case DalvikType::INT64: return (int32_t)v.long_val;
+                default: return 0;
+            }
+        };
+        const int32_t spec = iv(args[0]);
+        const int32_t padding = iv(args[1]);
+        const int32_t child_dim = iv(args[2]);
+        const int32_t spec_mode =
+            (int32_t)((uint32_t)spec & 0xC0000000u);
+        const int32_t spec_size = spec & 0x3FFFFFFF;
+        const int32_t size = std::max(0, spec_size - padding);
+        int32_t result_size = 0;
+        int32_t result_mode = 0;
+        const int32_t kExactly = (int32_t)0x40000000u;
+        const int32_t kAtMost = (int32_t)0x80000000u;
+        if (spec_mode == kExactly) {                    // parent EXACTLY
+            if (child_dim >= 0) {
+                result_size = child_dim; result_mode = kExactly;
+            } else if (child_dim == -1) {               // MATCH_PARENT
+                result_size = size; result_mode = kExactly;
+            } else if (child_dim == -2) {               // WRAP_CONTENT
+                result_size = size; result_mode = kAtMost;
+            }
+        } else if (spec_mode == kAtMost) {              // parent AT_MOST
+            if (child_dim >= 0) {
+                result_size = child_dim; result_mode = kExactly;
+            } else {                                    // MATCH or WRAP
+                result_size = size; result_mode = kAtMost;
+            }
+        } else {                                        // parent UNSPECIFIED
+            if (child_dim >= 0) {
+                result_size = child_dim; result_mode = kExactly;
+            } else {                                    // MATCH or WRAP
+                result_size = size; result_mode = 0;
+            }
+        }
+        // Bounded evidence probe (EXP-055 convention): the exact spec math
+        // answers, capped — removes the arg-value guesswork from the A/B.
+        static thread_local uint64_t f326_mspec_n = 0;
+        if (f326_mspec_n < 24) {
+            ++f326_mspec_n;
+            fprintf(stderr,
+                    "[F-NEW-326] getChildMeasureSpec(spec=0x%08x pad=%d "
+                    "dim=%d) -> 0x%08x\n",
+                    (uint32_t)spec, padding, child_dim,
+                    (uint32_t)((result_size & 0x3FFFFFFF) |
+                               (result_mode & (int32_t)0xC0000000u)));
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(
+            (result_size & 0x3FFFFFFF) | (result_mode & (int32_t)0xC0000000u));
+        return true;
     }
 
     // ────────────────────────────────────────────────────────────────────────

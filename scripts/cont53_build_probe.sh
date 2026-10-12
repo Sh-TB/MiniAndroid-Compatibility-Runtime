@@ -15,10 +15,14 @@ BOOT=tools/toolchain/android-34.jar
 ECJ=tools/toolchain/ecj.jar
 D8JAR=tools/toolchain/r8.jar
 
-"$AAPT2" compile --dir "$FIX/res" -o "$WORK/res.zip"
+if [ -d "$FIX/res" ]; then
+  "$AAPT2" compile --dir "$FIX/res" -o "$WORK/res.zip"
+fi
+RESARGS=""
+[ -f "$WORK/res.zip" ] && RESARGS="$WORK/res.zip"
 "$AAPT2" link -o "$WORK/apk/resources.apk" -I "$BOOT" \
   --manifest "$FIX/AndroidManifest.xml" --java "$WORK/gen" \
-  --auto-add-overlay "$WORK/res.zip"
+  --auto-add-overlay $RESARGS
 
 find "$FIX/src" "$WORK/gen" -name "*.java" > "$WORK/sources.txt"
 java -jar "$ECJ" -1.8 -nowarn -d "$WORK/obj" -cp "$BOOT" @"$WORK/sources.txt"
