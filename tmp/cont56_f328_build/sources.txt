@@ -1,0 +1,4 @@
+fixtures/fnew328_probe/src/com/probe/f328/MyBar.java
+fixtures/fnew328_probe/src/com/probe/f328/MyRow.java
+fixtures/fnew328_probe/src/com/probe/f328/MainActivity.java
+tmp/cont56_f328_build/gen/com/probe/f328/R.java
