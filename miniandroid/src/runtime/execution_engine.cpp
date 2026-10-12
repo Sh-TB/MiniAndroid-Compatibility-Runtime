@@ -802,6 +802,32 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.run_custom_view_constructor(
                             view_id, class_desc, recs);
                     });
+                // F-NEW-309: the generateLayoutParams hook — the child of
+                // a DEX-defined container gets the parent's OWN LayoutParams
+                // subclass constructed by its real DEX (Context,
+                // AttributeSet) ctor from the child's XML attrs (AOSP
+                // ViewGroup.generateLayoutParams law; android:
+                // layout_gravity resolution — solitaire DrawerLayout$g).
+                rt.set_generate_child_lp_hook(
+                    [this](uint32_t child_id,
+                           const std::string& parent_class_desc,
+                           const std::vector<resources::AxmlAttribute>&
+                               xml_attrs) -> uint32_t {
+                        std::vector<resources::XmlAttrRecord> recs;
+                        recs.reserve(xml_attrs.size());
+                        for (const auto& a : xml_attrs) {
+                            if (a.attr_resid == 0) continue;
+                            resources::XmlAttrRecord r;
+                            r.resid = a.attr_resid;
+                            r.type = a.value.type;
+                            r.data = (int32_t)a.value.data;
+                            r.ref_id = a.value.ref_id;
+                            r.str = a.value.string_value;
+                            recs.push_back(std::move(r));
+                        }
+                        return dalvik_engine_.generate_child_layout_params(
+                            parent_class_desc, child_id, recs);
+                    });
                 // G12 FIX-G12-002 (completes G10 FIX-G10-002's intent): the
                 // DEX superclass classifier must be wired for EVERY inflate/
                 // measure/layout path — window setContentView, constructor

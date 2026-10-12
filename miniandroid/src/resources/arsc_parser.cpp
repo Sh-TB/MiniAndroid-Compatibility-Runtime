@@ -792,6 +792,44 @@ std::optional<std::string> ArscParser::resolve_string(uint32_t resource_id) cons
     return std::nullopt;
 }
 
+// F-NEW-319 (AOSP Resources.getStringArray law): an array entry is a
+// COMPLEX entry whose ResTable_map items are keyed 0x02000000|index; STRING
+// items carry their pool string, REFERENCE items dereference through the
+// canonical resolver (typed arrays mix strings and references). Items are
+// emitted in KEY order (== index order for aapt2 arrays). The type gate is
+// the canonical type name ("string-array"/"array") — a style/attr bag is
+// NOT an array even though both are complex entries.
+std::optional<std::vector<std::string>> ArscParser::resolve_string_array(
+    uint32_t resource_id) const {
+    auto r = resolve(resource_id);
+    if (!r) return std::nullopt;
+    if (r->type_name != "string-array" && r->type_name != "array")
+        return std::nullopt;
+    const ArscEntry* e = r->best_for(device_config());
+    if (!e || !e->is_complex) return std::nullopt;
+    std::vector<std::pair<uint32_t, std::string>> items;
+    for (size_t i = 0; i < e->complex_items.size(); ++i) {
+        const uint32_t key = i < e->complex_keys.size() ? e->complex_keys[i] : (uint32_t)i;
+        const ResValue& v = e->complex_items[i];
+        if (v.is_string()) {
+            items.push_back({key, v.string_value});
+        } else if (v.is_reference()) {
+            auto s = resolve_string(v.ref_id);
+            items.push_back({key, s ? *s : std::string()});
+        } else {
+            // Typed-array non-string item (int/color/dimension): AOSP
+            // getStringArray would coerce through CharSequence; answer the
+            // decimal form (deterministic, never a silent skip).
+            items.push_back({key, std::to_string(v.data)});
+        }
+    }
+    std::sort(items.begin(), items.end());
+    std::vector<std::string> out;
+    out.reserve(items.size());
+    for (const auto& it : items) out.push_back(it.second);
+    return out;
+}
+
 std::vector<std::pair<uint32_t, std::string>> ArscParser::list_type(
         const std::string& package, const std::string& type) const {
     std::vector<std::pair<uint32_t, std::string>> out;

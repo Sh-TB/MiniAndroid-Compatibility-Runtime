@@ -11752,6 +11752,142 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
     return false;
 }
 
+// F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) — see the header
+// declaration for the full law. Structural discovery: the parent's
+// "$"-prefixed inner class whose super is ViewGroup$MarginLayoutParams and
+// which declares a (Context, AttributeSet) direct ctor — the AOSP
+// XML-inflation shape every container's LayoutParams family carries,
+// R8-renamed or not (solitaire DrawerLayout$g evidence). The ctor runs as
+// REAL DEX: super MarginLayoutParams(Context,AttributeSet) bridge +
+// Context.obtainStyledAttributes(attrs, styleable) — the F-NEW-175/197
+// XML-AttributeSet precedence resolves android:layout_gravity (0x010100F3)
+// from the CHILD's XML records, exactly the value the app's own drawer
+// checks (DrawerLayout g/j) read back through getLayoutParams.
+uint32_t DalvikExecutionEngine::generate_child_layout_params(
+    const std::string& parent_class_desc, uint32_t child_view_id,
+    const std::vector<resources::XmlAttrRecord>& xml_attrs) {
+    if (!dex_report_ || !shadow_registry_) return 0;
+    if (child_view_id == 0 || parent_class_desc.size() < 3) return 0;
+
+    // 1) The parent must be an app-DEX class (the same dual authority the
+    //    view-ctor hook uses: the inflater's prefix gate fast-filters, the
+    //    class index is the truth).
+    std::string parent_cls = parent_class_desc;
+    if (!parent_cls.empty() && parent_cls[0] == 'L' &&
+        parent_cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < parent_cls.size(); ++i)
+            norm += (parent_cls[i] == '.') ? '/' : parent_cls[i];
+        parent_cls = norm;
+    }
+    if (!class_info_index_.count(parent_cls)) return 0;
+
+    // 2) Structural discovery of the parent's LayoutParams subclass.
+    //    "<Parent;$" name prefix + super ViewGroup$MarginLayoutParams +
+    //    a (Context, AttributeSet) direct ctor. No name conditions beyond
+    //    the structural shape — R8 renames the class (DrawerLayout$g) and
+    //    the discovery holds.
+    std::string prefix = parent_cls.substr(0, parent_cls.size() - 1) + "$";
+    static const char* kMarginLp =
+        "Landroid/view/ViewGroup$MarginLayoutParams;";
+    const dex::ClassInfo* picked = nullptr;
+    for (const auto& c : dex_report_->classes) {
+        if (c.name.compare(0, prefix.size(), prefix) != 0) continue;
+        if (c.superclass_name != kMarginLp) continue;
+        bool has_ctx_attrs_ctor = false;
+        for (const auto& m : c.direct_methods) {
+            if (m.name != "<init>") continue;
+            if (m.descriptor.find(
+                    "Landroid/content/Context;Landroid/util/AttributeSet;)V") !=
+                std::string::npos) {
+                has_ctx_attrs_ctor = true;
+                break;
+            }
+        }
+        if (!has_ctx_attrs_ctor) continue;
+        // Disambiguation among candidates (rare): prefer one that also
+        // declares the (int,int) ctor (the AOSP LayoutParams shape), then
+        // the first in DEX order — deterministic either way.
+        if (picked != nullptr) {
+            auto has_ii = [](const dex::ClassInfo& k) {
+                for (const auto& m : k.direct_methods)
+                    if (m.name == "<init>" && m.descriptor == "(II)V")
+                        return true;
+                return false;
+            };
+            if (has_ii(c) && !has_ii(*picked)) picked = &c;
+        } else {
+            picked = &c;
+        }
+    }
+    if (picked == nullptr) return 0;   // AOSP ViewGroup default stands
+
+    // 3) The child node must exist (stash target + semantic w/h).
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return 0;
+    auto* node = view_shadow->find_node(child_view_id);
+    if (!node) return 0;
+
+    // 4) Allocate the LP object and run the real DEX ctor.
+    uint32_t lp_obj = heap_.allocate(picked->name, 0, 0);
+    if (lp_obj == 0 || !heap_.has_object(lp_obj)) return 0;
+
+    uint32_t ctx_id = 0;
+    if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+        ctx_id = act->current_activity_id();
+    if (ctx_id == 0)
+        ctx_id = heap_.allocate("Landroid/content/Context;", 0, 0);
+    uint32_t attrs_id = heap_.allocate("Landroid/util/AttributeSet;", 0, 0);
+    if (!xml_attrs.empty()) {
+        resources::AttributeSetStore::instance().install(attrs_id, xml_attrs);
+    }
+
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool ok = try_recursive_invoke(
+        picked->name, "<init>",
+        {DalvikValue::make_object(lp_obj, picked->name),
+         DalvikValue::make_object(ctx_id, "Landroid/content/Context;"),
+         DalvikValue::make_object(attrs_id, "Landroid/util/AttributeSet;")},
+        ret, res);
+    if (!ok) {
+        // Honest fallback: the class exists but its XML ctor did not run —
+        // the AOSP default (plain semantic LP) stands.
+        return 0;
+    }
+    heap_.mark_initialized(lp_obj);
+
+    // 5) Semantic width/height write-back: the runtime's measure truth for
+    //    w/h stays the node's parsed layout_width/height (ROOT-055 law
+    //    preserved verbatim) — the bridge does not read XML w/h, so the
+    //    real ctor leaves them at the heap default.
+    heap_.set_object_field(lp_obj, "width", DalvikValue::make_int(node->width));
+    heap_.set_object_field(lp_obj, "height", DalvikValue::make_int(node->height));
+    //    Margins: the semantic model carries the parsed XML margins —
+    //    write them when the XML declared any (0 stays 0).
+    if (node->lp_margin_left || node->lp_margin_top ||
+        node->lp_margin_right || node->lp_margin_bottom) {
+        heap_.set_object_field(lp_obj, "leftMargin",
+                               DalvikValue::make_int(node->lp_margin_left));
+        heap_.set_object_field(lp_obj, "topMargin",
+                               DalvikValue::make_int(node->lp_margin_top));
+        heap_.set_object_field(lp_obj, "rightMargin",
+                               DalvikValue::make_int(node->lp_margin_right));
+        heap_.set_object_field(lp_obj, "bottomMargin",
+                               DalvikValue::make_int(node->lp_margin_bottom));
+    }
+
+    // 6) Stash on the child node — ROOT-055 answers this exact object.
+    node->layout_params_object = lp_obj;
+    node->layout_params_class = picked->name;
+
+    std::cerr << "[F-NEW-309] generated LP parent=" << parent_cls
+              << " child=o" << child_view_id << " lp=" << picked->name
+              << " o" << lp_obj
+              << " gravity_via_real_ctor" << std::endl;
+    return lp_obj;
+}
+
 // F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):
 // dispatch onMeasure + onLayout as REAL bytecode for a view whose DEX
 // chain defines them — including programmatic views (compose's
@@ -26371,6 +26507,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << "." << method << " argc=" << args.size() << std::endl;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-318: android.view.Gravity.getAbsoluteGravity — REAL law.
+    // AOSP Gravity.java: RELATIVE_LAYOUT_DIRECTION (0x00800000) marks the
+    // START/END family (START = LEFT|REL = 0x00800003, END = RIGHT|REL =
+    // 0x00800005 — the values solitaire's DrawerLayout.a styleable and the
+    // engine's own kStaticInts table carry). getAbsoluteGravity(gravity,
+    // layoutDirection): gravities WITHOUT the relative bit answer
+    // UNCHANGED (0→0, LEFT→3, RIGHT→5); START resolves to LEFT (3) for
+    // LTR (layoutDirection != VIEW_LAYOUT_DIRECTION_RTL=1) and RIGHT (5)
+    // for RTL; END mirrors; the relative bit is consumed, all other bits
+    // (vertical/clip/fill) preserved. Evidence: solitaire DrawerLayout —
+    // NavigationView layout_gravity=0x00800003; the findDrawerWithGravity
+    // scan (masked & Gravity.HORIZONTAL_GRAVITY_MASK==0x7) matched a
+    // gravity-0 child spuriously without this law and the onMeasure
+    // drawer-leg validation threw ISE "does not have a valid
+    // layout_gravity". Pure static function: args = (gravity, dir).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/view/Gravity;" &&
+        method == "getAbsoluteGravity" && args.size() >= 2) {
+        const int32_t g = args[0].int_val;
+        const int32_t dir = args[1].int_val;   // 0 = LTR, 1 = RTL
+        int32_t out = g;
+        if (g & 0x00800000) {
+            const bool ltr = (dir != 1);
+            const int32_t low = g & 0x7;       // START carries 3, END 5
+            int32_t horiz;
+            if (low == 3)      horiz = ltr ? 3 : 5;
+            else if (low == 5) horiz = ltr ? 5 : 3;
+            else               horiz = low;
+            out = (g & ~0x00800007) | horiz;
+        }
+        result = DalvikValue::make_int(out);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // ────────────────────────────────────────────────────────────────────
     // S67 FOUNDATION (F-122, f08_canvasops fixture 2026-09-19): android
     // .graphics.Color static factories. Upstream law (AOSP Color.java):
@@ -44993,6 +45165,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string("", 0);
+        return true;
+    }
+
+    // F-NEW-319 (S-cont49): Resources.getStringArray(int) → String[] — REAL
+    // ARSC array resolution. Evidence: solitaire Settings (c/m.a pc=1200)
+    // reads a developer-options string-array; the REC-MISS null answer made
+    // the aget NPE inside the settings singleton b.g construction, which
+    // null-killed b.g for the whole app (GameSelector.onCreate pc=83/87
+    // null-receiver NPE on b.g.aR). AOSP ResourcesImpl.getStringArray →
+    // array bag items; here: rt.arsc().resolve_string_array (canonical
+    // resolver, F-NEW-319 in arsc_parser.cpp) materialized as the F-036
+    // heap-array convention ("[Ljava/lang/String;" + __array_length__ +
+    // array[i] fields — the MatrixCursor.getColumnNames precedent).
+    // GATE-A honesty: an unresolvable id throws the AOSP
+    // Resources.NotFoundException (never a silent null array).
+    if (method == "getStringArray" &&
+        class_name.find("Resources") != std::string::npos) {
+        int32_t resid = 0;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::INT32 || a.type == DalvikType::BOOLEAN ||
+                a.type == DalvikType::CHAR) {
+                resid = a.int_val;
+                break;
+            }
+        }
+        auto& rt = resources::ResourceRuntime::instance();
+        std::vector<std::string> items;
+        bool ok = false;
+        if (rt.loaded()) {
+            auto arr = rt.arsc().resolve_string_array((uint32_t)resid);
+            if (arr) { items = std::move(*arr); ok = true; }
+        }
+        if (!ok) {
+            std::cerr << "[F-NEW-319] getStringArray resid=0x" << std::hex
+                      << resid << std::dec << " → NotFoundException (GATE-A)"
+                      << std::endl;
+            if (resid != 0) {
+                throw_deferred("Landroid/content/res/Resources$NotFoundException;",
+                               "Array resource ID #0x" + ([](uint32_t v) {
+                                   char b[16]; snprintf(b, sizeof(b), "%x", v);
+                                   return std::string(b);
+                               })((uint32_t)resid),
+                               "GATEA-RES-ARRAY-NOTFOUND");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t arr = heap_.allocate("[Ljava/lang/String;", pc_, 0);
+        heap_.set_object_field(
+            arr, "__array_length__", DalvikValue::make_int((int)items.size()));
+        for (size_t i = 0; i < items.size(); ++i)
+            heap_.set_object_field(
+                arr, "array[" + std::to_string(i) + "]",
+                DalvikValue::make_string(items[i], 0));
+        std::cerr << "[F-NEW-319] getStringArray resid=0x" << std::hex
+                  << resid << std::dec << " → String[" << items.size() << "]"
+                  << std::endl;
+        result = DalvikValue::make_object(arr, "[Ljava/lang/String;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
 
