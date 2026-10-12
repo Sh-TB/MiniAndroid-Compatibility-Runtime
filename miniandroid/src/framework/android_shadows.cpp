@@ -6,6 +6,7 @@
 
 // UNIFIED_007: real resource pipeline
 #include "../resources/resource_runtime.h"
+#include "../resources/res_id.h"  // F-NEW-327: complex_unit_to_dimension_pixel_size
 #include "../resources/attribute_set_store.h"  // F-NEW-197: XML AttributeSet law
 #include "../webview/webview_engine.h"
 // ADDITIONAL-AUDIT P1-2: canonical Bitmap pixel store (setImageBitmap law)
@@ -4848,9 +4849,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // for an attribute-free lookup and lets appcompat tint paths fall
         // back gracefully instead of dying on a null receiver.
         if (heap_) {
+            const std::vector<resources::XmlAttrRecord>* xml_recs = nullptr;
             uint32_t styleable_id = 0;
             int32_t n = 0;
-            for (const auto& a : ctx.args) {
+            size_t styleable_pos = SIZE_MAX;
+            for (size_t ai = 0; ai < ctx.args.size(); ++ai) {
+                const auto& a = ctx.args[ai];
                 if (a.kind != CallContext::Arg::Kind::OBJECT ||
                     a.object_id == 0)
                     continue;
@@ -4861,20 +4865,93 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (a.object_class == "[I" || (len > 0 && len <= 256)) {
                     styleable_id = a.object_id;
                     n = len;
+                    styleable_pos = ai;
                     break;
                 }
             }
             if (n > 256) n = 256;
+            // ── F-NEW-327 (CONT-55): the def-style chain args ────────────
+            // AOSP AttributeResolution walks the defStyleAttr/defStyleRes
+            // stages between the XML and the plain theme. The overloads
+            // that carry them: (AttributeSet, int[], defStyleAttr,
+            // defStyleRes) — the 4-arg form, and (int[], defStyleAttr,
+            // defStyleRes) — the 3-arg form. The defStyle args are the
+            // INT args immediately after the styleable int[] position.
+            int32_t f327_def_style_attr = 0;
+            int32_t f327_def_style_res = 0;
+            if (styleable_pos != SIZE_MAX) {
+                // Positional extraction (F-NEW-327): the overloads that
+                // carry the def-style pair place them immediately after
+                // the styleable int[]. The bridge maps a literal-0 int to
+                // NULL_REF (kind 7) — accept INT and NULL_REF alike and
+                // read int_val positionally (a2:k7=0 / a3:k0=0x7f100180
+                // live evidence, solitaire NavigationView ctor).
+                size_t nxt = styleable_pos + 1;
+                if (nxt + 1 < ctx.args.size()) {
+                    const auto& a1 = ctx.args[nxt];
+                    const auto& a2 = ctx.args[nxt + 1];
+                    if (a1.kind == CallContext::Arg::Kind::INT ||
+                        a1.kind == CallContext::Arg::Kind::NULL_REF)
+                        f327_def_style_attr = a1.int_val;
+                    if (a2.kind == CallContext::Arg::Kind::INT ||
+                        a2.kind == CallContext::Arg::Kind::NULL_REF)
+                        f327_def_style_res = a2.int_val;
+                }
+            }
+            // ── F-NEW-327: the tag's own XML style= reference (stage 2) ────
+            int32_t f327_xml_style = 0;
+            if (xml_recs) {
+                const auto* sr =
+                    resources::AttributeSetStore::instance().find(
+                        xml_recs, 0x01010000u /* android:style */);
+                if (sr &&
+                    (sr->type == resources::DataType::REFERENCE ||
+                     sr->type == resources::DataType::DYNAMIC_REFERENCE))
+                    f327_xml_style =
+                        (int32_t)(sr->ref_id ? sr->ref_id : sr->data);
+            }
             uint32_t ta_id = heap_->get_or_create(
                 "Landroid/content/res/TypedArray;");
             heap_->set_object_int_field(ta_id, "__array_length__", n);
+            // F-NEW-327 array-content probe: which attr ids this producer
+            // saw (the 116-attr merged-styleable attribution surface).
+            {
+                static const bool f327_diag_cs =
+                    std::getenv("MINIANDROID_F327_DIAG") != nullptr;
+                static thread_local uint64_t f327_cs_n = 0;
+                if (f327_diag_cs && f327_cs_n < 24 && styleable_id != 0) {
+                    ++f327_cs_n;
+                    std::cerr << "[CS-PRODUCER] ta=o" << ta_id << " n=" << n
+                              << " dSA=0x" << std::hex << f327_def_style_attr
+                              << " dSR=0x" << f327_def_style_res << std::dec
+                              << " xmlstyle=0x" << std::hex << f327_xml_style
+                              << std::dec << " argc=" << ctx.args.size();
+                    for (size_t kk = styleable_pos;
+                         kk < ctx.args.size() && kk <= styleable_pos + 2;
+                         ++kk) {
+                        std::cerr << " a" << kk << ":k"
+                                  << static_cast<int>(ctx.args[kk].kind)
+                                  << "=0x" << std::hex
+                                  << ctx.args[kk].int_val << std::dec;
+                    }
+                    std::cerr << " attrs=[";
+                    for (int32_t k = 0; k < n && k < 30; ++k) {
+                        int32_t aid = 0;
+                        heap_->get_object_int_field(
+                            styleable_id, "array[" + std::to_string(k) + "]",
+                            aid);
+                        std::cerr << (k ? "," : "") << "0x" << std::hex
+                                  << aid << std::dec;
+                    }
+                    std::cerr << "]" << std::endl;
+                }
+            }
             auto& rt = resources::ResourceRuntime::instance();
             // ── F-NEW-197 XML-ATTRIBUTESET LAW ──────────────────────────────
             // AOSP AttributeResolution.cpp precedence per styleable slot:
             // (1) XML AttributeSet value (the view-ctor argument), (2) style,
             // (3) theme, (4) absent → caller default. The AttributeSet marker
             // carries the tag's parsed XML attributes in the store below.
-            const std::vector<resources::XmlAttrRecord>* xml_recs = nullptr;
             for (const auto& a : ctx.args) {
                 if (a.kind != CallContext::Arg::Kind::OBJECT ||
                     a.object_id == 0)
@@ -4918,6 +4995,35 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                           ? (int32_t)(r->ref_id ? r->ref_id
                                                                 : r->data)
                                           : r->data;
+                            slot_present = true;
+                        }
+                    }
+                    // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution
+                    // DEF-STYLE stages — (2) the tag XML's style= reference,
+                    // (3) the defStyleAttr (the theme's style reference —
+                    // Widget.Design.NavigationView carries the drawer
+                    // android:maxWidth=320dp law), (4) the explicit
+                    // defStyleRes. AOSP order: XML(1) → xmlStyle(2) →
+                    // defStyleAttr(3) → defStyleRes(4) → theme(5); each
+                    // style stage walks the bag parent chain and derefs the
+                    // terminal REFERENCE. DIMENSION-typed answers decode to
+                    // device px (the AOSP TypedArray getDimensionPixelSize
+                    // contract — the consumer reads px directly from the
+                    // slot; e.g. NavigationView mMaxWidth).
+                    if (!slot_present) {
+                        auto v = rt.resolve_def_style_attr_value(
+                            apk_path_, (uint32_t)attr_id,
+                            f327_def_style_attr, f327_def_style_res,
+                            f327_xml_style);
+                        if (v) {
+                            if (v->type == resources::DataType::DIMENSION) {
+                                decoded =
+                                    resources::complex_unit_to_dimension_pixel_size(
+                                        v->dim_unit, v->dim_value,
+                                        resources::DensityContext{});
+                            } else {
+                                decoded = (int32_t)v->data;
+                            }
                             slot_present = true;
                         }
                     }
