@@ -12203,6 +12203,14 @@ static std::string s130_norm_cls(std::string cls) {
 }
 
 // R-NEW-430: ViewRootImpl performTraversals → draw → computeScroll law.
+// F-NEW-320 (CONT-50): the dispatch is an INSTANCE-method invoke — the
+// receiver must be bound as args[0] (the engine-wide try_recursive_invoke
+// convention: onDraw passes {this, canvas}, onSizeChanged passes {this, …}).
+// The empty-args face executed the DEX body with this=<unset>: every iget
+// silently answered null (no trace row — the receiver is not a live heap
+// object) and the first virtual invoke raised f141-null-recv NPE at
+// DrawerLayout.computeScroll pc=35 (solitaire 71, per-frame). Probe
+// fnew320 P4-CS-RECV is the generic gate.
 void DalvikExecutionEngine::call_compute_scroll(uint32_t view_object_id) {
     if (shadow_registry_ == nullptr) return;
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
@@ -12211,6 +12219,7 @@ void DalvikExecutionEngine::call_compute_scroll(uint32_t view_object_id) {
     if (node == nullptr || !node->overrides_compute_scroll) return;
     std::string cls = s130_norm_cls(node->class_desc);
     std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
     DalvikValue ret = DalvikValue::make_void();
     DalvikExecutionResult res;
     try_recursive_invoke(cls, "computeScroll", args, ret, res);
@@ -12230,10 +12239,16 @@ void DalvikExecutionEngine::dispatch_scroll_changed(uint32_t view_object_id,
               << std::endl;
     if (node->overrides_on_scroll_changed) {
         std::string cls = s130_norm_cls(node->class_desc);
-        std::vector<DalvikValue> args{DalvikValue::make_int(l),
-                                      DalvikValue::make_int(t),
-                                      DalvikValue::make_int(oldl),
-                                      DalvikValue::make_int(oldt)};
+        // F-NEW-320 (CONT-50): same-law receiver binding as computeScroll —
+        // onScrollChanged(IIII)V is an instance method (ins=5: this + 4
+        // ints); the ints alone left this=<unset>.
+        std::vector<DalvikValue> args;
+        args.push_back(
+            DalvikValue::make_object(view_object_id, node->class_desc));
+        args.push_back(DalvikValue::make_int(l));
+        args.push_back(DalvikValue::make_int(t));
+        args.push_back(DalvikValue::make_int(oldl));
+        args.push_back(DalvikValue::make_int(oldt));
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
         try_recursive_invoke(cls, "onScrollChanged", args, ret, res);
@@ -18849,7 +18864,14 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                     std::getenv("MINIANDROID_S134_QPROBE") != nullptr;
                 if (s134_qprobe) {
                     static thread_local uint64_t s134_qn = 0;
-                    if (s134_qn < 60) {
+                    // S49 convention: budget env-configurable
+                    // (MINIANDROID_S134_QGET_BUDGET) so deep-boot forensics
+                    // can capture beyond the default 60 rows.
+                    static thread_local uint64_t s134_qcap = [] {
+                        const char* b = std::getenv("MINIANDROID_S134_QGET_BUDGET");
+                        return (b != nullptr) ? static_cast<uint64_t>(atoi(b)) : 60ull;
+                    }();
+                    if (s134_qn < s134_qcap) {
                         ++s134_qn;
                         std::cerr << "[S134-QGET] key="
                                   << s134_dex_field_key(field_res.class_descriptor,
@@ -19296,6 +19318,13 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
         heap_.has_object(obj_ref.object_id)) {
         // S134 F-NEW-160: dual write — qualified primary key (declaring
         // class + name) + bare legacy mirror (C++ shadow readers).
+        // F-NEW-321 (CONT-50): the mirror write is RAW (exact bare key, no
+        // F-NEW-251 redirect) — the redirect re-resolves the bare name
+        // against the receiver's most-derived declarer, so a SUPERCLASS
+        // write's mirror landed in the SUBCLASS's shadowed qualified slot
+        // (solitaire 71: ay$a.<init> mObservable mirror clobbered c$b.a =
+        // the outer presenter; probe fnew320 N2 PRE face). The mirror is a
+        // legacy channel, not a second identity resolution.
         {
             const std::string s134_decl = resolved_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
@@ -19306,8 +19335,8 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                 heap_.set_object_field(obj_ref.object_id,
                     s134_dex_field_key(s134_decl, field_res.field_name, true),
                     src_val);
-                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
-                                       src_val);
+                heap_.set_object_field_raw(obj_ref.object_id,
+                                           field_res.field_name, src_val);
             }
         }
         // M3 FIELD-TRACE (AG diagnostic): env-gated field-store value trace.
@@ -19551,6 +19580,9 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
             }
         }
         // S134 F-NEW-160: dual write (qualified primary + bare legacy mirror).
+        // F-NEW-321 (CONT-50): the mirror write is RAW — see the execute_iput
+        // site for the law (a superclass write's mirror must not re-resolve
+        // onto the subclass's shadowed slot; solitaire c$b.a face).
         {
             const std::string s134_decl = resolved_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
@@ -19561,8 +19593,8 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                 heap_.set_object_field(obj_ref.object_id,
                     s134_dex_field_key(s134_decl, field_res.field_name, true),
                     src_val);
-                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
-                                       src_val);
+                heap_.set_object_field_raw(obj_ref.object_id,
+                                           field_res.field_name, src_val);
             }
         }
         if (field_trace_active(field_res.field_name.c_str(),

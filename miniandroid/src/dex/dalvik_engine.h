@@ -935,22 +935,38 @@ public:
         if (it == objects_.end()) {
             return std::nullopt;
         }
-        
+
         DalvikValue val = it->second.get_field(field_name);
-        if (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) {
-            // F-NEW-251: a bare-name miss on a DEX-declared field falls back
-            // to the interpreter's qualified slot — one logical field, one
-            // storage identity, regardless of which layer reads it.
-            if (field_key_resolver_ && is_resolvable_bare_name(field_name)) {
-                const std::string qualified =
-                    field_key_resolver_(it->second.class_descriptor, field_name);
-                if (!qualified.empty() && qualified != field_name) {
-                    val = it->second.get_field(qualified);
-                    if (val.type != DalvikType::UNINITIALIZED &&
-                        val.type != DalvikType::REGISTER_UNSET)
-                        return val;
-                }
+        // F-NEW-321 (CONT-50): QUALIFIED-FIRST read for resolvable bare
+        // names on DEX-defined objects. The S134 dual-write's legacy
+        // mirror now lands in the plain slot RAW (superclass writes must
+        // not re-resolve onto a subclass's shadowed slot), so BOTH slots
+        // can be populated and the plain slot can be STALE (the
+        // Atomic*FieldUpdater face: interpreter set→qualified, bare
+        // get→plain hit = the F-NEW-251 split-brain reborn). One logical
+        // field, one storage identity: for a DEX-declared field the
+        // QUALIFIED slot is authoritative; the plain slot is the legacy
+        // compatibility channel only (C++ writers that predate the
+        // resolver). Framework-owned objects keep bare keys end to end.
+        if (field_key_resolver_ && is_resolvable_bare_name(field_name)) {
+            const std::string qualified =
+                field_key_resolver_(it->second.class_descriptor, field_name);
+            if (!qualified.empty() && qualified != field_name) {
+                const DalvikValue qv = it->second.get_field(qualified);
+                const bool q_missing =
+                    qv.type == DalvikType::UNINITIALIZED ||
+                    qv.type == DalvikType::REGISTER_UNSET;
+                if (!q_missing) return qv;
+                // qualified never written: the bare value (if any) is the
+                // only writer's truth (legacy C++ authorship).
+                if (val.type != DalvikType::UNINITIALIZED &&
+                    val.type != DalvikType::REGISTER_UNSET)
+                    return val;
+                return std::nullopt;
             }
+        }
+        if (val.type == DalvikType::UNINITIALIZED ||
+            val.type == DalvikType::REGISTER_UNSET) {
             return std::nullopt;
         }
         return val;
@@ -971,6 +987,28 @@ public:
                 field_key_resolver_(it->second.class_descriptor, field_name);
             if (!qualified.empty() && qualified != field_name)
                 key = qualified;
+        }
+        it->second.set_field(key, value);
+        return true;
+    }
+
+    // F-NEW-321 (CONT-50): RAW exact-key write — no F-NEW-251 bare-name
+    // redirect. The interpreter's S134 dual-write legacy mirror is the one
+    // caller that already KNOWS the field identity (it computed the
+    // qualified primary itself); routing its mirror through the
+    // runtime-class resolver re-resolves the bare name against the
+    // receiver's most-derived declarer, so a SUPERCLASS field write's
+    // mirror lands in the SUBCLASS's shadowed qualified slot (solitaire 71:
+    // ay$a.<init>'s mObservable mirror clobbered c$b.a = the outer
+    // presenter; probe fnew320 N2/PRE face). ART law: a field of a
+    // superclass occupies a distinct slot from a subclass field of the
+    // same name; the mirror is a legacy compatibility channel, not a
+    // second identity resolution.
+    bool set_object_field_raw(uint32_t object_id, const std::string& key,
+                              const DalvikValue& value) {
+        auto it = objects_.find(object_id);
+        if (it == objects_.end()) {
+            return false;
         }
         it->second.set_field(key, value);
         return true;
