@@ -8771,3 +8771,61 @@ Stage Summary:
   NavigationView's android:maxWidth).
 - Next wave owns: the menu-content DRAW pipeline (the open-drawer flow —
   NavigationMenuView's RecyclerView draw chain at its real geometry).
+---
+Task ID: S56-A (CONT-56 Phase A)
+Agent: Super Z (main)
+Task: the standing user question answered with FRESH measurements — "did the
+work have any real effect on Dooz and the calculators? why is the achievement
+not complete? the calculator must fully load with visible buttons."
+
+Work Log:
+- Reconciliation: local container was the CONT-10-era snapshot e99c2fbd AGAIN;
+  fetched + ff to origin/main == 5c9d72e8 (the CONT-55 closeout; 97 commits).
+- Binary rebuilt from HEAD == 1f81036989a12a7d. The recorded CONT-55 binary is
+  6014ae17af2ecd60; the runtime SOURCE is byte-identical (git diff
+  678ff67b..HEAD -- miniandroid/ is EMPTY) — the delta is this container's
+  toolchain. Semantic identity decided by the gate, not the SHA.
+- FRESH measurements at HEAD, canonical config (--frames 5 --max-seconds 15),
+  x3 each, byte-exact verdicts: opencalc a976d2f9fb675cb3 x3 / simplecalc
+  e847ca0346708f07 x3 (rc=0) / tanana 5f7e0114c3bfd6b5 x3 / BMI
+  b52252c2de19b03a x3 (rc=0) / alex c8d69f811b23f245 x3 / dooz-15s
+  31ddd4d5b8e6d18e x3; dooz FULL budget 180s 6841d52a20e6597e x2 — ALL MATCH.
+- Zero-drift gate on the rebuilt binary: 15 canonical anchors/controls x3 =
+  45/45 MATCH (micro da73010a, unote 4f1a9e4e, gmdice f3b483fe, ttt af609429,
+  flappy 13cf4746, g2048 59ca1526, csw 3442d9a9 + the six fresh rows above).
+  The rebuilt binary is semantically identical to the CONT-55 record.
+- Pixel-truth census of the fresh faces (scripts/cont56_pixel_analysis.py,
+  views under evidence/cont56/):
+  * simplecalc — the FULL calculator face: display area + ALL 5 button rows
+    visible with real labels (mod ^ sqrt C / 7 8 9 div / 4 5 6 mul / 1 2 3
+    sub / 0 . eq add), blue fills + orange glyphs, rc=0. THE USER BAR
+    ("fully load and see the buttons") IS MET on this calculator.
+  * opencalc — pad visible with real labels (AC()%/div, 789x, 456-, 123+,
+    0=) but compressed to the LEFT 45% of the window; display area empty
+    (top-left glyph debris); remaining root = the pad width/weight geometry.
+  * BMI — real tree: dark action bar + 2 outlined input fields + the blue
+    Calculate button; fields/button hug the RIGHT edge (row weight law gap).
+  * tanana — action bar band + measured/attached preference rows, body
+    light-blank (glyph leg = F-NEW-308, still pending).
+  * alex — blue app bar + dark body; content text not visible.
+  * dooz 180s — the REAL Scaffold face: Material3 surface + top-bar icons +
+    bottom app bar + FAB pill; the game board itself not yet drawn (the
+    Compose draw pipeline); at the 15s gate budget the honest keep-empty
+    white holds (boot composition needs ~80s wall — F-NEW-314 budget class).
+- Input leg (from the recorded S128 wave, re-verified line 4725): view-based
+  calculator taps PROVEN — touch_target_chain max=5, PerformClick x3 via real
+  DEX, DISPLAY STATE CHANGE 90080684 (headingcalc golden a169346e x3
+  preserved; before-frame == golden byte-exact). The Compose tap bridge
+  (F-NEW-267 CLASSIFIED) is the recorded gap that keeps dooz tap-dead.
+- Scripts persisted: scripts/cont56_fresh_apps.sh, scripts/
+  cont56_pixel_analysis.py. Views: evidence/cont56/*.png.
+
+Stage Summary:
+- The honest answer, measured at HEAD: the work DID move the calculators and
+  dooz — simplecalc is a complete visible calculator (buttons included), BMI
+  renders its real form, opencalc's pad is visible-but-compressed, tanana/alex
+  are app-bar+body faces, dooz renders its real Scaffold at a fair budget and
+  is white only under the 15s gate budget. Not complete because each fix
+  uncovers the next real root; the per-app remaining roots are recorded
+  above. Next wave (S56-B) owns the recorded CONT-55 frontier: the
+  menu-content DRAW pipeline (NavigationMenuView RecyclerView draw chain).
