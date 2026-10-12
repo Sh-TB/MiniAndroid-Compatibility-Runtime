@@ -8893,3 +8893,28 @@ Stage Summary:
   child-edge layout law (the drawer at the edge, y=0, full height).
 - Scripts persisted: cont56_fresh_apps.sh, cont56_pixel_analysis.py,
   cont56_mosaic.py, cont56_build_probe.sh, cont56_registry.py.
+
+---
+Task ID: S57 (CONT-57 WAVE A)
+Agent: main (Super Z)
+Task: User directive (Persian): "the calculators did not load 100% — numbers visible but incomplete; several apps/games still white or partial; find a way to make them load completely; loading was big progress but it must become 100% complete; see if it can be more complete and optimized — how?" Plus the standing CONT-56 mosaic+external-upload directive.
+
+Work Log:
+- Baseline frozen: binary 11e5fa2c3b4b5037 (WAVE B F-NEW-328 fix binary), HEAD a91aad8b(+ff). tmp/ APKs reset-liable note recorded (gate script tmp paths stale; upload/cont54_refetch copies used).
+- ROOT-CAUSE DECODE (OpenCalc v53, U007_LAYOUT_DEBUG=2/3 view-tree + spec dumps):
+  * sliding_layout (SlidingUpPanelLayout lp=-1/0) measured 579x1920 (should be 1080-wide, bottom-anchored); constraintLayout2=504; TableLayout rows 0-wide; 0dp+weight buttons 0x351; inputHSV/resultDisplayHSV 52x0.
+  * s132 AXML decode of res/Ok.xml (obfuscated layout names; scanned for mainConstraintLayout/sliding_layout strings): the REAL layout chains inputHSV.top=parent, inputHSV.bottom=guideline1(percent 0.18), resultHSV.top=guideline1, resultHSV.bottom=guideline2, sliding_layout.top=resultHSV.bottom, sliding_layout.bottom=parent — the whole display stack hangs off GUIDELINES.
+  * Three generic law gaps found in the F-148 native CL measure (layout_inflater.cpp): (1) anchor lookup + passes skip vis==8 nodes (Guidelines are always GONE-for-draw; GONE is a legal AOSP anchor target) AND guide percent/begin/end were never parsed; (2) lp==0 with unresolved anchor fell into child_spec(...,0) = EXACTLY(0) (AOSP: one-anchor 0dp degrades to WRAP); (3) lp==-1 with both anchors measured AT_MOST(span) (AOSP: EXACTLY(span)); plus the TYPED-FLOAT law: percent/bias compile as FLOAT 0x04 with NO raw string — atof("") pinned both guidelines at Y=0 (proved: post-gap-(1..3) build still gave HSVs 1080x0 until the FLOAT memcpy landed).
+- MINIMAL GENERIC FIX (F-NEW-329, layout_inflater.cpp + android_shadows.h ViewNode): guide attr parse (FLOAT memcpy / FRACTION /2^24 / raw fallback; begin/end via parse_dim_attr; typed-FLOAT bias); cl_name_to_id drops the vis filter; per-axis Guideline branch (never measured/drawn/wrap-content; edge=begin/end(neg=from far edge)/percent x content span + padding; orient 0=horizontal fixes Y in vertical pass, 1=vertical fixes X in horizontal pass); both-anchors dimension law (0 and -1 -> EXACTLY(span)); no/one-anchor lp==0 -> WRAP; guidelines excluded from wrap aggregation. No APK-specific hacks — all five laws are AOSP-faithful and class-agnostic.
+- Build: chunked foreground make -j2 (sandbox reclaims background jobs — standing lesson). Binary 93110eacb3a1cf41.
+- POST RUN (OpenCalc): guideline1 = 0.18x1920 = 346 EXACT; inputHSV 1080x199 @(0,147); resultHSV 1080x153 @(0,346); sliding_layout 1080x1421 @(0,499); TableLayout 1080-wide; rows 1080x351; 0dp+weight buttons 270x252. Visual: FULL pad (AC ( ) % ÷ / 7 8 9 × / 4 5 6 − / 1 2 3 + / 0 · ⌫ =), display areas on top. Remaining honest gaps recorded: srcCompat vector-drawable ImageButtons draw as plain boxes (0/554 drawable paths resolve — F-NEW-309 family), menu icon.
+- ZERO-DRIFT REGRESSION (binary 93110eacb3a1cf41): 14 anchors/controls x3 = 42/42 byte-identical (dooz 31ddd4d5, micro da73010a, unote 4f1a9e4e, gmdice f3b483fe, tanana 5f7e0114, ttt af609429, flappy 13cf4746, g2048 59ca1526, simplecalc e847ca03, csw 3442d9a9, bmi b52252c2, alex c8d69f81, notes eb5ebd55) + opencalc INTENTIONAL re-pin a976d2f9 -> 0ae271c49d2bd61c x3 deterministic (cont37_regression.sh updated with the re-pin rationale). Probe battery == records (21 probes; f259g 84/7 + fnew302 48/24 documented known rows); fnew328 4/0; fnew322 5/0 (rebuilt); fnew323 probe APK lost to run/ reset and its builder script does not exist — recorded honestly, family unrelated to the CL laws (ViewGroup detach).
+- BMI decode (bonus, same wave): RelativeLayout positions are CORRECT (spinners 0..817, EditTexts 817..1080, button below); the empty left side = Spinner selected-item content is never rendered (no native Spinner content law) — recorded as the next root, NOT fixed this wave.
+- Mosaic + external upload (standing directive): evidence/cont57/CONT57_APP_MOSAIC.png (15 tiles: OpenCalc BEFORE/AFTER pair first) uploaded to https://h.uguu.se/vuQSHepf.png and https://tmpfiles.org/wWAOKxl3jbzH/cont57_app_mosaic.png (0x0.st silent-empty, catbox 502; uguu+tmpfiles succeeded). Permanent copy = repo raw after push.
+- Registry 639 -> 640 (scripts/cont57_registry.py): F-NEW-329 appended ROOT-CAUSED-FIXED; total/count synced 640.
+
+Stage Summary:
+- The user's "calculators must load 100%" got its biggest single step: OpenCalc went from a 45%-compressed pad with NO display to a full-width pad + real display geometry (AOSP-exact guideline math) — with ZERO drift on the other 14 faces (byte-identical x3) and probe battery == records.
+- The answer to "how": one more class-agnostic law set (guidelines + dimension resolution inside ConstraintLayout), proven the same way every wave does — view-tree ground truth, AXML source decode, x3 determinism, 42/42 zero-drift.
+- Next wave owns: vector-drawable decode leg (OpenCalc icon buttons), BMI Spinner content law, tanana glyph leg (F-NEW-308), alex content text, dooz Compose tap bridge (F-NEW-267).
+- Scripts persisted: cont57_mosaic.py, cont57_registry.py (cont37_regression.sh opencalc re-pin).

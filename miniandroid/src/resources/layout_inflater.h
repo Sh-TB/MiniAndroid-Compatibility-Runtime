@@ -348,6 +348,13 @@ private:
         int cl_left_edge = 0, cl_right_edge = 0;
         int cl_top_edge = 0, cl_bottom_edge = 0;
         float cl_bias_x = 0.5f, cl_bias_y = 0.5f;
+        // F-NEW-329: Guideline position family (AOSP Guideline.java).
+        // percent/begin/end resolve the guideline's fixed offset inside the
+        // parent ConstraintLayout's content box; orientation 0 = HORIZONTAL
+        // (fixes Y), 1 = VERTICAL (fixes X). INT_MIN = unset for begin/end,
+        // negative percent = unset.
+        float cl_guide_percent = -1.0f;
+        int cl_guide_begin = INT_MIN, cl_guide_end = INT_MIN;
         // applied style values
         bool from_style_text_size = false;
         uint32_t style_text_color = 0;
