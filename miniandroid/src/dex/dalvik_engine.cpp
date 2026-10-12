@@ -11863,6 +11863,15 @@ uint32_t DalvikExecutionEngine::generate_child_layout_params(
     //    real ctor leaves them at the heap default.
     heap_.set_object_field(lp_obj, "width", DalvikValue::make_int(node->width));
     heap_.set_object_field(lp_obj, "height", DalvikValue::make_int(node->height));
+    // CONT-53 diagnostic (bounded, read-only): the write-back face — the
+    // DrawerLayout child-spec decode needs the node semantic values the
+    // LP object carries (solitaire: NavigationView o409.width read back 0
+    // by the REAL DEX DrawerLayout.onMeasure getChildMeasureSpec chain).
+    std::cerr << "[F-NEW-309-WB] lp=o" << lp_obj << " node_w=" << node->width
+              << " node_h=" << node->height
+              << " margins=(" << node->lp_margin_left << "," << node->lp_margin_top
+              << "," << node->lp_margin_right << "," << node->lp_margin_bottom << ")"
+              << std::endl;
     //    Margins: the semantic model carries the parsed XML margins —
     //    write them when the XML declared any (0 stays 0).
     if (node->lp_margin_left || node->lp_margin_top ||
@@ -18472,6 +18481,42 @@ std::string DalvikExecutionEngine::resolved_field_declarer(
     return ref_cls;  // no DEX declarer found: keep the ref class as-is
 }
 
+// ── F-NEW-325 (CONT-53): the TRUE DEX declarer of an instance field ref.
+// resolved_field_declarer returns ref_cls AS-IS when no DEX body on the
+// chain declares the field — callers cannot distinguish "the ref class
+// itself declares it" from "this field is declared by a FRAMEWORK
+// ancestor" (solitaire: DrawerLayout$g [DEX] reads `width`, declared by
+// the framework ViewGroup$LayoutParams; the DEX chain has NO declarer).
+// Under the S134 law framework-owned fields keep ONE bare slot, but the
+// iget/iput families keyed the read/write with the REF class
+// (is_dex_defined_class(ref_cls)==true → qualified "LDrawerLayout$g;->width")
+// while every non-interpreter writer (F-NEW-309's semantic write-back,
+// the set_field_key_resolver) lands on the BARE slot → the interpreter
+// read missed and answered the fabricated default (width=0 instead of the
+// written WRAP_CONTENT -2 → DrawerLayout measured its drawer at 0x0).
+// ART truth: field resolution walks the receiver's class chain; a field
+// not declared by any DEX class lives in the framework superclass — one
+// bare slot, whoever references it. This helper returns the ACTUAL DEX
+// declarer (walking the chain, verifying the field body) or "" when the
+// field is framework-owned — the key then stays bare.
+std::string DalvikExecutionEngine::true_dex_field_declarer(
+    const std::string& ref_cls, const std::string& name) const {
+    if (ref_cls.empty() || name.empty()) return std::string();
+    std::string walk = ref_cls;
+    for (int hop = 0; hop < 32 && !walk.empty(); ++hop) {
+        if (!is_dex_defined_class(walk)) break;  // framework ancestor: stop
+        auto cit = class_info_index_.find(walk);
+        if (cit != class_info_index_.end() && dex_report_ != nullptr) {
+            const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+            for (const auto& f : ci.instance_fields)
+                if (f.name == name) return walk;  // REAL declarer
+        }
+        auto sit = class_to_superclass_.find(walk);
+        walk = (sit != class_to_superclass_.end()) ? sit->second : std::string();
+    }
+    return std::string();  // framework-owned field: no DEX declarer
+}
+
 static DalvikValue s134_field_default(const std::string& type_desc) {
     if (!type_desc.empty() && (type_desc[0] == 'L' || type_desc[0] == '['))
         return DalvikValue::make_null();
@@ -18520,7 +18565,12 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
         }
         if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
             // S134 F-NEW-160: qualified field identity (declaring class + name).
-            const std::string s134_decl = resolved_field_declarer(
+            // F-NEW-325: a framework-owned field (no DEX declarer on the
+            // chain — DrawerLayout$g -> width, declared by the framework
+            // MarginLayoutParams) keeps ONE bare slot even when the REF
+            // class is DEX-defined; the ref-class key fabricated a second
+            // identity and the read answered a fabricated default.
+            const std::string s134_decl = true_dex_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
             std::string s134_fkey =
                 s134_dex_field_key(s134_decl, field_res.field_name,
@@ -18852,8 +18902,9 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                           << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
                           << std::endl;
             }
+            // F-NEW-325: true-declarer keying (see execute_iget).
             const std::string s134_decl =
-                resolved_field_declarer(field_res.class_descriptor,
+                true_dex_field_declarer(field_res.class_descriptor,
                                         field_res.field_name);
             auto field_val = heap_.get_object_field(obj_ref.object_id,
                 s134_dex_field_key(s134_decl, field_res.field_name,
@@ -19326,7 +19377,12 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
         // the outer presenter; probe fnew320 N2 PRE face). The mirror is a
         // legacy channel, not a second identity resolution.
         {
-            const std::string s134_decl = resolved_field_declarer(
+            // F-NEW-325: true-declarer keying — a framework-owned field
+            // (no DEX declarer; the bare/raw mirror IS the slot) stays
+            // bare even when the REF class is DEX-defined; a real DEX
+            // declarer keeps the qualified slot + the raw bare mirror
+            // (F-NEW-321 law unchanged).
+            const std::string s134_decl = true_dex_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
             if (!is_dex_defined_class(s134_decl)) {
                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
@@ -19584,7 +19640,12 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
         // site for the law (a superclass write's mirror must not re-resolve
         // onto the subclass's shadowed slot; solitaire c$b.a face).
         {
-            const std::string s134_decl = resolved_field_declarer(
+            // F-NEW-325: true-declarer keying — a framework-owned field
+            // (no DEX declarer; the bare/raw mirror IS the slot) stays
+            // bare even when the REF class is DEX-defined; a real DEX
+            // declarer keeps the qualified slot + the raw bare mirror
+            // (F-NEW-321 law unchanged).
+            const std::string s134_decl = true_dex_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
             if (!is_dex_defined_class(s134_decl)) {
                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,

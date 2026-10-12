@@ -8597,3 +8597,50 @@ Stage Summary:
   = the upstream child-spec (DrawerLayout → NavigationView spec 0x0).
 - Scripts persisted: cont52_build_probe.sh, cont52_registry.py.
 - Next: CONT-53 — the DrawerLayout → NavigationView child-spec decode.
+
+---
+Task ID: S53 (CONT-53)
+Agent: Super Z (main)
+Task: CONT-53 — decode the drawer child-spec 0 face (the next layer after
+F-NEW-324): the DrawerLayout DEX measure chain reads NavigationView's LP
+width as 0 where -2 was written; probe A/B; minimal generic fix
+(F-NEW-325); zero-drift gate; registry + evidence + push.
+
+Work Log:
+- Reconciliation: HEAD == origin/main == 999ffe2c (the CONT-52 push).
+- F-NEW-309-WB diagnostic (bounded, read-only) pinned the write face:
+  lp=o409 node_w=-2 node_h=-1 (XML has NO layout_width/height; the -2
+  default is AOSP-correct via getLayoutDimension's defValue).
+- FIELD-TRACE: get DrawerLayout$g;.width obj#409 value=0 x4 — the REAL DEX
+  measure chain read 0 where -2 was written → the write and read landed on
+  DIFFERENT slots.
+- Root: resolved_field_declarer returns ref_cls AS-IS when no DEX body
+  declares the field; is_dex_defined_class(ref_cls) then keyed the
+  interpreter iget/iput with the fabricated qualified identity
+  ('LDrawerLayout$g;->width') while the field lives in the framework
+  ViewGroup$LayoutParams — ONE bare slot (every non-interpreter writer,
+  including F-NEW-309's write-back, lands there).
+- F-NEW-325 FIXED: true_dex_field_declarer (the chain walk must VERIFY the
+  field body; no DEX declarer → bare) at the 4 interpreter key sites
+  (iget / iget-object / iput / iput-object); real DEX declarers keep the
+  qualified slot + raw bare mirror (F-NEW-321 untouched); the
+  set_field_key_resolver already had the correct verify logic — the
+  interpreter families now agree with it.
+- Probe fnew325 (4ba0f9edebd9d20b) A/B: PRE x3 on b5998a50 P1/P2=0 FAIL
+  (N1 DEX-declared tag + N2 framework-ref PASS); POST 4/0 x3.
+- Solitaire: FIELD-TRACE read -2 (the written value) x4; 0 uncaught;
+  screenshot face UNCHANGED ba50a4d28ea62fe7 x3 (honest).
+- Zero-drift gate on ff261b1bc2940bc2: 33/33 REG MATCH (11 anchors x3),
+  probe battery == records, support x2 MATCH, fnew325 4/0 x3.
+- Registry 635 -> 636 (F-NEW-325 ROOT-CAUSED-FIXED; F-NEW-309 next_wave
+  refreshed). Evidence: evidence/cont53/CONT53_RESULT.md.
+
+Stage Summary:
+- The interpreter field-slot identity now agrees with ART on the
+  framework-owned leg (class-agnostic: every framework field reached
+  through a DEX ref class gains the single bare slot).
+- NEW first divergence recorded: the v4 DrawerLayout.getChildMeasureSpec
+  (III)I DEX body answers -1/0 for (EXACTLY|1080, pad, wrap=-2) — the next
+  decode (MeasureSpec.getMode/getSize dispatch or branch shape).
+- Scripts persisted: cont53_build_probe.sh.
+- Next: CONT-54 — the v4 getChildMeasureSpec decode.

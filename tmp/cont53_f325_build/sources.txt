@@ -1,0 +1,4 @@
+fixtures/fnew325_probe/src/com/probe/f325/MyLP.java
+fixtures/fnew325_probe/src/com/probe/f325/MainActivity.java
+fixtures/fnew325_probe/src/com/probe/f325/MyBox.java
+tmp/cont53_f325_build/gen/com/probe/f325/R.java

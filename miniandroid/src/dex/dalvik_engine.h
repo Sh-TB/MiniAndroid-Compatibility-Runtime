@@ -2458,6 +2458,15 @@ public:
     // two ref classes). Returns ref_cls when no DEX declarer exists.
     std::string resolved_field_declarer(const std::string& ref_cls,
                                         const std::string& name) const;
+    // F-NEW-325 (CONT-53): the TRUE DEX declarer — "" when the field is
+    // declared by a FRAMEWORK ancestor (framework-owned, ONE bare slot),
+    // the real DEX declarer class otherwise. resolved_field_declarer
+    // cannot distinguish "the ref class declares it" from "no DEX body on
+    // the chain declares it" (it returns ref_cls for both); the iget/iput
+    // families must key framework-owned fields BARE even when the REF
+    // class is DEX-defined (solitaire: DrawerLayout$g -> width).
+    std::string true_dex_field_declarer(const std::string& ref_cls,
+                                        const std::string& name) const;
     // S122 (R-NEW-414): lazily scan a DEX class's <init> methods for the
     // javac inline field-initializer pattern (new-instance T vN; … ;
     // iput-object vN → F) and record field F → T in init_field_defaults_.
