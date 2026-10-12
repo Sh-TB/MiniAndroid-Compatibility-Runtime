@@ -8548,3 +8548,52 @@ Stage Summary:
   cont51_flags_xref.py, cont51_gate.sh, cont51_registry.py.
 - Next: CONT-52 — the solitaire menu-content render decode (APP_PIXELS
   stage), then the cross-app impact measurement for the two identity laws.
+
+---
+Task ID: S52 (CONT-52)
+Agent: Super Z (main)
+Task: CONT-52 — decode the NavigationView.onMeasure FAILED(no write-back)
+face (the next layer after CONT-51's two identity laws), probe first,
+implement the minimal generic fix, zero-drift regression, registry +
+evidence + push.
+
+Work Log:
+- Reconciliation: HEAD == origin/main == 67c537b0 (the CONT-51 push).
+- Decode: NavigationView.onMeasure is REAL DEX (MeasureSpec sparse-switch +
+  invoke-super f.onMeasure); f = ScrimInsetsFrameLayout is a DEX class with
+  NO onMeasure whose super is the FrameLayout boundary; execute_invoke_super
+  passed declaring_class (f) to the bridge — the FrameLayout.onMeasure
+  whitelist matched no shadow → silent miss → setMeasuredDimension never
+  reached → [DEX-MEASURE] FAILED(no write-back) on EVERY pass → the
+  NavigationView node never entered the render tree.
+- F-NEW-324 FIXED: the super-dispatch BOUNDARY law — when declaring_class is
+  DEX-defined, walk superclass_of up to the FIRST non-DEX ancestor and pass
+  THAT to bridge_to_api; framework declaring classes untouched (R-NEW-345
+  case pinned by probe P2). One call site, class-agnostic.
+- Probe FIRST: fixtures/fnew324_probe (4f06d7f711067013, Leaf extends Mid
+  [DEX, no onMeasure] extends FrameLayout). PRE x3: [DEX-MEASURE]
+  Leaf.onMeasure FAILED(no write-back) + the Leaf FrameLayout bridge 0 rows
+  (the P1 value face is masked by the View.measure fallback — the honest
+  judgment surface is the bridge-log face, pinned as the PRE/POST
+  criterion). POST x3: S109-VG-MEASURE FrameLayout children_measured=1 for
+  the leaf THROUGH the DEX intermediate; rows 3/0 x3.
+- Solitaire POST x3: the FrameLayout bridge executes FOR the NavigationView
+  receiver (obj#298 children_measured=1); 0 uncaught; onResume still
+  dispatches. NEW frontier: the measure chain hands NavigationView spec
+  0x0/0x0 upstream (R347-MEASURE view=298 wspec=0x0 hspec=0x0) — the
+  DrawerLayout child-spec computation is the next decode.
+- Zero-drift gate on b5998a50a679c2e3: 33/33 REG rows MATCH (11 anchors x3
+  byte-identical), probe battery == records (f259g 84/7 and fnew302 48/24
+  known faces unchanged), support group BMI/alex/notes MATCH x2.
+- Registry 634 -> 635 (F-NEW-324 ROOT-CAUSED-FIXED; F-NEW-309 next_wave
+  refreshed). Evidence: evidence/cont52/CONT52_RESULT.md.
+
+Stage Summary:
+- The invoke-super boundary law is now ART-faithful: every DEX-intermediate
+  super chain lands on the first framework ancestor (NavigationView/f is
+  one instance of a class-agnostic law).
+- Solitaire: NavigationView/NavigationMenuView now measure through the real
+  FrameLayout law; the frame is still DEFAULT_BACKGROUND_ONLY — next decode
+  = the upstream child-spec (DrawerLayout → NavigationView spec 0x0).
+- Scripts persisted: cont52_build_probe.sh, cont52_registry.py.
+- Next: CONT-53 — the DrawerLayout → NavigationView child-spec decode.

@@ -21308,7 +21308,34 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
         // ThreadShadow (no worker ever ran: runBlocking/BlockingCoroutine
         // spun forever in joinBlocking). Marker kept in the api_trace log
         // line below only.
-        bridge_to_api(declaring_class, method_name,
+        //
+        // ── F-NEW-324 (CONT-52): the super-dispatch BOUNDARY law. When the
+        // declaring class is a DEX-defined INTERMEDIATE that does not
+        // define the method (NavigationView.onMeasure does invoke-super
+        // f.onMeasure where f = ScrimInsetsFrameLayout is a DEX class with
+        // NO onMeasure whose super is the FrameLayout boundary), ART
+        // resolution continues PAST the DEX chain onto the FIRST framework
+        // ancestor — the bridge must see THAT boundary class, not the DEX
+        // declaring class, or every shadow keyed by a framework name
+        // silently misses: the FrameLayout.onMeasure measure law never
+        // ran, setMeasuredDimension was never reached, and the engine
+        // recorded [DEX-MEASURE] NavigationView.onMeasure
+        // "FAILED(no write-back)" on every pass → the whole drawer menu
+        // measured 0x0 and the NavigationView node never entered the
+        // render tree. Walk the DEX superclass chain up from the declaring
+        // class; the first NON-DEX ancestor is the boundary. Declaring
+        // classes that are already framework classes (the R-NEW-345 case,
+        // e.g. RecyclerView.onMeasure's super → ViewGroup) are untouched —
+        // probe fnew324 P2 pins that control face.
+        std::string bridge_cls = declaring_class;
+        if (dex_report_ && is_dex_defined_class(declaring_class)) {
+            std::string boundary = superclass_of(declaring_class);
+            while (!boundary.empty() && is_dex_defined_class(boundary)) {
+                boundary = superclass_of(boundary);
+            }
+            if (!boundary.empty()) bridge_cls = boundary;
+        }
+        bridge_to_api(bridge_cls, method_name,
                       args, return_val, api_status, method_idx);
         last_invoke_return_ = return_val;
     }
