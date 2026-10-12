@@ -36996,6 +36996,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         return 0x80000000 | (parent_size & 0x3FFFFFFF);
                     return 0x40000000 | (child_dim & 0x3FFFFFFF);
                 };
+                // ── F-NEW-328 (CONT-56): the LP-SOURCE law for the child
+                // spec. The AOSP child-spec source is the child's
+                // LayoutParams. The programmatic addView law
+                // (ViewShadow::set_layout_params — the
+                // [EXP095-ADDVIEW-LP] shape) writes lp_width/lp_height;
+                // XML-inflated nodes carry BOTH lp_* and the legacy
+                // width/height mirrors. The old child_spec read ONLY
+                // width/height — every programmatic child measured
+                // EXACTLY(parent) on both axes regardless of its real lp
+                // (probe fnew328: child lp (MATCH,48) read as (-1,-1) →
+                // child 1080x1920). Law: lp_* is authoritative when set
+                // (not the INT_MIN unset sentinel); the legacy mirrors
+                // keep their role for nodes whose lp was never written.
+                auto child_dim_of = [&](framework::ViewShadow::ViewNode* cn,
+                                        bool width_axis) -> int32_t {
+                    const int32_t lp = width_axis ? cn->lp_width
+                                                  : cn->lp_height;
+                    if (lp != INT_MIN) return lp;
+                    return width_axis ? cn->width : cn->height;
+                };
                 int measured_children = 0;
                 // F-NEW-304 companion coherence (CONT-43): a node measured
                 // by the native class law (measure_view_spec) carries dims
@@ -37036,8 +37056,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 cn->dex_measure_valid = true;
                                 continue;
                             }
-                            int32_t cw2 = child_spec(pw2, cn->width);
-                            int32_t ch2 = child_spec(ph2, cn->height);
+                            // F-NEW-328: lp-aware child dims (see the
+                            // child_dim_of law above) — programmatic
+                            // children measured by their REAL lp.
+                            int32_t cw2 = child_spec(
+                                pw2, child_dim_of(cn, true));
+                            int32_t ch2 = child_spec(
+                                ph2, child_dim_of(cn, false));
                             cn->dex_measure_valid = false;
                             DalvikValue cret2 = DalvikValue::make_void();
                             DalvikExecutionResult cres2;
@@ -37117,8 +37142,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 for (uint32_t child : n->children) {
                     auto* cn = vs->find_node(child);
                     if (!cn) continue;
-                    int32_t cs_w = child_spec(pw, cn->width);
-                    int32_t cs_h = child_spec(ph, cn->height);
+                    // F-NEW-328: lp-aware child dims (see the child_dim_of
+                    // law above).
+                    int32_t cs_w = child_spec(pw, child_dim_of(cn, true));
+                    int32_t cs_h = child_spec(ph, child_dim_of(cn, false));
                     // dispatch child.measure → the R347 law (DEX onMeasure
                     // chain + default-size fallback) by invoking the child's
                     // onMeasure directly, same as the measure() wrapper.
@@ -37227,28 +37254,90 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     (void)cok;
                     ++measured_children;
                 }
-                // container self-size: EXACTLY → spec; AT_MOST → max child
+                // container self-size — the AOSP LinearLayout.onMeasure
+                // law (F-NEW-328). The old answer initialized mw/mh to the
+                // FULL spec size and max()'d children in — every AT_MOST
+                // (wrap-content) container answered the FULL available
+                // size, and the sum law never existed: vertical children
+                // stacked and the container claimed the whole screen (the
+                // appcompat AppBarLayout face — the super pass answers the
+                // spec, the appbar's DEX reshape then reads children that
+                // never got real sizes). Law (LinearLayout receivers;
+                // the other families keep their own self semantics):
+                //   vertical   → want_h = Σ(child + margins), want_w = max
+                //   horizontal → want_w = Σ(child + margins), want_h = max
+                //   EXACTLY → spec; AT_MOST → min(want, spec);
+                //   UNSPECIFIED → want. Padding joins the sums.
                 auto* self = vs->find_node(recv);
                 if (self && !self->dex_measure_valid) {
                     auto mode = [](int32_t s) -> int32_t {
                         return (int32_t)(((uint32_t)s) >> 30);
                     };
-                    int32_t mw = pw, mh = ph;
-                    if (mode(wspec) == 2 || mode(hspec) == 2) {
+                    const bool is_linear =
+                        class_name == "Landroid/widget/LinearLayout;";
+                    if (is_linear) {
+                        // EXP-095 orientation: 0=HORIZONTAL, 1=VERTICAL,
+                        // -1 unset → the AOSP default is HORIZONTAL.
+                        const bool horiz = self->orientation != 1;
+                        int64_t sum_w = 0, sum_h = 0;
+                        int32_t max_w = 0, max_h = 0;
                         for (uint32_t child : self->children) {
                             auto* cn = vs->find_node(child);
                             if (!cn) continue;
-                            if (mode(wspec) == 2)
-                                mw = std::max(mw, cn->measured_width);
-                            if (mode(hspec) == 2)
-                                mh = std::max(mh, cn->measured_height);
+                            if (cn->visibility == 4 || cn->visibility == 8)
+                                continue;
+                            const int32_t cw3 =
+                                cn->measured_width + cn->lp_margin_left +
+                                cn->lp_margin_right;
+                            const int32_t ch3 =
+                                cn->measured_height + cn->lp_margin_top +
+                                cn->lp_margin_bottom;
+                            sum_w += cw3;
+                            sum_h += ch3;
+                            max_w = std::max(max_w, cw3);
+                            max_h = std::max(max_h, ch3);
                         }
+                        const int32_t want_w =
+                            (horiz ? sum_w : max_w) + self->padding_left +
+                            self->padding_right;
+                        const int32_t want_h =
+                            (horiz ? max_h : sum_h) + self->padding_top +
+                            self->padding_bottom;
+                        const int wm = mode(wspec), hm = mode(hspec);
+                        int32_t mw2 = (wm == 1)
+                                          ? pw
+                                          : (wm == 2 ? std::min(want_w, pw)
+                                                     : want_w);
+                        int32_t mh2 = (hm == 1)
+                                          ? ph
+                                          : (hm == 2 ? std::min(want_h, ph)
+                                                     : want_h);
+                        self->dex_measured_w = mw2;
+                        self->dex_measured_h = mh2;
+                        self->dex_measure_valid = true;
+                        self->measured_width = mw2;
+                        self->measured_height = mh2;
+                    } else {
+                        // Non-LinearLayout families keep the legacy answer
+                        // (EXACTLY → spec; AT_MOST → max(spec, child)) —
+                        // their own decode cycles own any change.
+                        int32_t mw = pw, mh = ph;
+                        if (mode(wspec) == 2 || mode(hspec) == 2) {
+                            for (uint32_t child : self->children) {
+                                auto* cn = vs->find_node(child);
+                                if (!cn) continue;
+                                if (mode(wspec) == 2)
+                                    mw = std::max(mw, cn->measured_width);
+                                if (mode(hspec) == 2)
+                                    mh = std::max(mh, cn->measured_height);
+                            }
+                        }
+                        self->dex_measured_w = mw;
+                        self->dex_measured_h = mh;
+                        self->dex_measure_valid = true;
+                        self->measured_width = mw;
+                        self->measured_height = mh;
                     }
-                    self->dex_measured_w = mw;
-                    self->dex_measured_h = mh;
-                    self->dex_measure_valid = true;
-                    self->measured_width = mw;
-                    self->measured_height = mh;
                 }
                 std::cerr << "[S109-VG-MEASURE] " << class_name << " obj#"
                           << recv << " spec=" << pw << "x" << ph
@@ -40790,8 +40879,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 if (!cn) continue;
                                 if (cn->visibility == 4 || cn->visibility == 8)
                                     continue;
-                                int32_t cw = cspec(pw, cn->width);
-                                int32_t ch = cspec(ph, cn->height);
+                                // ── F-NEW-328 (CONT-56): the LP-SOURCE law
+                                // (same as the S109-VG site): the child's
+                                // LayoutParams is the spec source. The
+                                // programmatic addView law writes
+                                // lp_width/lp_height; the legacy
+                                // width/height mirrors are the fallback
+                                // for nodes whose lp was never written.
+                                auto lp_dim = [&](bool width_axis) -> int32_t {
+                                    const int32_t lp =
+                                        width_axis ? cn->lp_width
+                                                   : cn->lp_height;
+                                    if (lp != INT_MIN) return lp;
+                                    return width_axis ? cn->width
+                                                      : cn->height;
+                                };
+                                int32_t cw = cspec(pw, lp_dim(true));
+                                int32_t ch = cspec(ph, lp_dim(false));
                                 cn->dex_measure_valid = false;
                                 DalvikValue cret2 = DalvikValue::make_void();
                                 DalvikExecutionResult cres2;

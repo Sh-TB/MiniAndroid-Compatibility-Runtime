@@ -8829,3 +8829,67 @@ Stage Summary:
   uncovers the next real root; the per-app remaining roots are recorded
   above. Next wave (S56-B) owns the recorded CONT-55 frontier: the
   menu-content DRAW pipeline (NavigationMenuView RecyclerView draw chain).
+---
+Task ID: S56-B (CONT-56 wave B)
+Agent: Super Z (main)
+Task: pick the next work-list item (the recorded CONT-55 frontier — the
+solitaire menu-content pipeline); mosaic of the loaded app faces uploaded;
+decode + probe + minimal generic fix (F-NEW-328); zero-drift gate; registry
++ evidence + push.
+
+Work Log:
+- The user deliverable: the 14-app mosaic built (scripts/cont56_mosaic.py)
+  and uploaded — uguu.se https://d.uguu.se/RoyCDwop.png + tmpfiles
+  https://tmpfiles.org/dl/weA5K0eWsdwu/cont56_app_mosaic.png + the repo raw
+  (evidence/cont56/CONT56_APP_MOSAIC.png, pushed a077ac8c).
+- Frontier decode: the menu-content pipeline is gated BY INPUT — every
+  toolbar tap answered F117-TAP target=189 (the DrawerLayout); the view
+  tree showed the Toolbar 0 WIDE (0x126, its nav ImageButton a 0-width
+  click target) + the AppBarLayout 1080x1920 + NavigationView stacked at
+  y=3840.
+- Root decode (R347 rows + probe-first): a DEX LinearLayout subclass's
+  super.onMeasure (the appcompat AppBarLayout shape) was served by the S109
+  ROOT-042 bridge law with TWO AOSP divergences: (a) the child-spec source
+  read the legacy width/height mirrors, NOT the LayoutParams
+  (lp_width/lp_height — the programmatic addView write-back store), so
+  programmatic children measured EXACTLY(parent) on both axes; (b) the
+  self answer initialized to the FULL spec and max()'d children in — the
+  wrap sum law never existed. A ViewShadow-level wall law was attempted
+  first and proved DEAD CODE (the bridge claims onMeasure before any
+  shadow dispatch) — reverted with the proof in the source comment.
+- FIX (F-NEW-328, two sites, class-agnostic): child_dim_of = lp_*
+  authoritative with the legacy fallback; the LinearLayout self law per
+  AOSP (orientation-aware sum/max; EXACTLY -> spec; AT_MOST -> min(want,
+  spec); UNSPECIFIED -> want); the other families keep their legacy self
+  answer.
+- Probe fnew328_probe.apk 1cd25382d8a29a35 (real toolchain; the exact
+  AppBarLayout read-back shape): PRE x1 = 1/3 (self=1080x1920
+  child=1080x1920); POST x3 on 11e5fa2c3b4b5037 = 4/0 x3.
+- Solitaire runtime: AppBarLayout 1080x105 (was 1080x1920); NavigationView
+  y=2025 (was 3840); the VISIBLE frame UNCHANGED ba50a4d2 (honest — the
+  closed drawer hides it). NEW frontier recorded: the Toolbar's OWN DEX
+  onMeasure 0-wide face (the support Toolbar body's child-measure/spec
+  arithmetic), then the DrawerLayout child-edge layout law.
+- Zero-drift gate on 11e5fa2c3b4b5037: 15 canonical anchors/controls x3 =
+  45/45 MATCH (dooz 31ddd4d5, micro da73010a, unote 4f1a9e4e, gmdice
+  f3b483fe, opencalc a976d2f9, ttt af609429, flappy 13cf4746, g2048
+  59ca1526, tanana 5f7e0114, csw 3442d9a9, simplecalc e847ca03, BMI
+  b52252c2, alex c8d69f81, notes eb5ebd55, sol ba50a4d2); probe battery ==
+  records (fnew326 13/0, fnew326b 13/0, fnew327 3/0) + fnew328 4/0 x3.
+- Registry 638 -> 639 (scripts/cont56_registry.py): F-NEW-328 appended
+  ROOT-CAUSED-FIXED; F-NEW-309 evidence chain extended. Evidence:
+  evidence/cont56/CONT56_RESULT.md.
+
+Stage Summary:
+- The LinearLayout super measure is now AOSP-faithful end to end
+  (probe-proven: wrap sums, EXACTLY precedence, lp-aware child specs) —
+  the appcompat AppBarLayout family (every ActionBar/Toolbar host) reads
+  real child values through its super call for the first time.
+- The appbar face moved 1920 -> 105 with ZERO visible-face drift anywhere
+  (45/45 byte-identical) — the fix is purely additive for every existing
+  face.
+- Next wave owns: the Toolbar DEX onMeasure 0-wide decode (the hamburger
+  width chain — the last leg before the drawer tap), then the DrawerLayout
+  child-edge layout law (the drawer at the edge, y=0, full height).
+- Scripts persisted: cont56_fresh_apps.sh, cont56_pixel_analysis.py,
+  cont56_mosaic.py, cont56_build_probe.sh, cont56_registry.py.
