@@ -45,6 +45,8 @@ public:
             inflater_ = std::make_unique<LayoutInflater>(arsc_, apk_, apk_path_, metrics_);
             apply_custom_view_ctor_hook();
             apply_is_a();
+            apply_dex_class_exists_hook();
+            apply_generate_child_lp_hook();
         }
         return *inflater_;
     }
@@ -87,6 +89,13 @@ public:
         if (inflater_) inflater_->set_dex_class_exists_hook(dex_class_exists_hook_);
     }
 
+    // F-NEW-309: same Factory law for the generateLayoutParams hook (the
+    // child-of-DEX-container LayoutParams generation — see LayoutInflater).
+    void set_generate_child_lp_hook(LayoutInflater::GenerateChildLpHook fn) {
+        generate_child_lp_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_generate_child_lp_hook(generate_child_lp_hook_);
+    }
+
 private:
     void apply_custom_view_ctor_hook() {
         if (inflater_ && custom_view_ctor_hook_)
@@ -103,6 +112,10 @@ private:
     void apply_dex_class_exists_hook() {
         if (inflater_ && dex_class_exists_hook_)
             inflater_->set_dex_class_exists_hook(dex_class_exists_hook_);
+    }
+    void apply_generate_child_lp_hook() {
+        if (inflater_ && generate_child_lp_hook_)
+            inflater_->set_generate_child_lp_hook(generate_child_lp_hook_);
     }
 
 public:
@@ -217,6 +230,8 @@ private:
     // (same Factory law).
     LayoutInflater::CustomViewMeasureHook custom_view_measure_hook_;
     LayoutInflater::DexClassExistsHook dex_class_exists_hook_;
+    // F-NEW-309: process-wide generateLayoutParams hook (same Factory law).
+    LayoutInflater::GenerateChildLpHook generate_child_lp_hook_;
     // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
     std::function<bool(const std::string&, const std::string&)> is_a_;
     // S124 THEME-BASE: cached AOSP-law Theme for the loaded APK.

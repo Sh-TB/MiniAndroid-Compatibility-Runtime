@@ -1631,6 +1631,25 @@ public:
                                      const std::string& class_desc_slashed,
                                      const std::vector<resources::XmlAttrRecord>& xml_attrs = {});
 
+    // F-NEW-309 (AOSP ViewGroup.generateLayoutParams law): the child of a
+    // DEX-defined container carries the CONTAINER'S OWN LayoutParams
+    // subclass, constructed by its real DEX (Context, AttributeSet) ctor
+    // from the child's XML attrs (android:layout_gravity among them —
+    // solitaire's DrawerLayout$g reads it via
+    // obtainStyledAttributes(attrs, {0x010100F3}).getInt(0,0)). Structural
+    // discovery (no name conditions): the parent's "$"-prefixed inner class
+    // whose super is ViewGroup$MarginLayoutParams and which declares the
+    // (Context, AttributeSet) ctor. The generated object is stashed on the
+    // child node (layout_params_object) — ROOT-055 answers it; width/
+    // height write back from the semantic node (the bridge does not read
+    // XML w/h — the runtime's own measure truth, unchanged from ROOT-055).
+    // Returns the heap object id, 0 when the law does not apply (parent
+    // has no discoverable LayoutParams subclass — the AOSP ViewGroup
+    // default then stands, ROOT-055's existing behavior).
+    uint32_t generate_child_layout_params(
+        const std::string& parent_class_desc, uint32_t child_view_id,
+        const std::vector<resources::XmlAttrRecord>& xml_attrs);
+
     // EXP-060: Convenience wrapper — find a View by class descriptor
     // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
     // dispatch a click on it. Returns true if a matching View with a

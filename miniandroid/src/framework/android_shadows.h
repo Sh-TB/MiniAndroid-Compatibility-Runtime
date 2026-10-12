@@ -1154,6 +1154,13 @@ public:
         std::vector<uint32_t> children;
         int32_t android_view_id = 0;     // View.getId() value
         std::string class_desc;
+        // F-NEW-309: the inflation-time generated LayoutParams — the
+        // parent container's OWN LayoutParams subclass, constructed by its
+        // real DEX (Context, AttributeSet) ctor from this child's XML attrs
+        // (AOSP ViewGroup.generateLayoutParams law). 0 = not generated
+        // (ROOT-055 falls back to the semantic parent-type materialization).
+        uint32_t layout_params_object = 0;
+        std::string layout_params_class;
         // Layout params (semantic only — no real Measure/Layout pass).
         int width  = -1;  // MATCH_PARENT = -1, WRAP_CONTENT = -2
         int height = -1;

@@ -1056,6 +1056,39 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     // S124 THEME-OVERLAY: the subtree scope ends here (AOSP ContextThemeWrapper
     // is scoped to the themed view and its descendants).
     if (overlay_cookie) resources::ThemeEngine::instance().pop_overlay(overlay_cookie);
+
+    // ── F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) ────────────
+    // AOSP LayoutInflater.inflate → root.generateLayoutParams(childAttrs)
+    // for EVERY child: the generated LayoutParams is the PARENT's own
+    // subclass, constructed from THIS child's attrs — android:
+    // layout_gravity among them (solitaire DrawerLayout → NavigationView:
+    // 0x00800003). For a DEX-defined parent the generation executes the
+    // parent's real DEX (Context, AttributeSet) LayoutParams ctor via the
+    // executor hook (same dual gate as the view-ctor hook: prefix filter
+    // OR DEX existence — DrawerLayout lives under Landroid/support/ AND in
+    // the APK DEX). 0 = law not applicable → ROOT-055's semantic
+    // materialization stands (AOSP ViewGroup default).
+    if (generate_child_lp_hook_ && parent_view_id != 0) {
+        if (const auto* pnode = views->find_node(parent_view_id)) {
+            const std::string pcls = pnode->class_desc;
+            bool parent_in_dex = false;
+            if (!pcls.empty() && dex_class_exists_hook_) {
+                static thread_local std::unordered_map<std::string, bool>
+                    f309_cache;
+                auto it = f309_cache.find(pcls);
+                if (it != f309_cache.end()) {
+                    parent_in_dex = it->second;
+                } else {
+                    parent_in_dex = dex_class_exists_hook_(pcls);
+                    f309_cache.emplace(pcls, parent_in_dex);
+                }
+            }
+            if (!pcls.empty() &&
+                (is_app_class_descriptor(pcls) || parent_in_dex)) {
+                generate_child_lp_hook_(view_id, pcls, el.attributes);
+            }
+        }
+    }
     return view_id;
 }
 
