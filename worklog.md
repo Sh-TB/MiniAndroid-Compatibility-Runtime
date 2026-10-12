@@ -8468,3 +8468,23 @@ Stage Summary:
   cross-app impact measured on ONE binary (all other corpus faces byte-identical
   x3). Next wave: ViewDragHelper (ah) construction + NavigationView menu hub
   (c$b.f) — the new solitaire first divergence; BMI input behavior still open.
+
+---
+Task ID: CONT-50
+Agent: Super Z (main)
+Task: Issue #375 CONT-50 — continue from the latest remote HEAD, execute the full investigation: reconcile the CONT-49 closeout, decode the recorded solitaire divergence wall (ViewDragHelper ah.a + menu-hub c$b.f null-recvs), probe-first generic fixes, zero-drift regression, registry/evidence/Issue #375 updates, push.
+
+Work Log:
+- Phase 0: fetched + reset to origin/main == a9a7297b (the local container was the CONT-10-era snapshot e99c2fbd again — the recurring recovery class); rebuilt the binary from HEAD == recorded CONT-49 6c478a224ab1b3f4 (reproducibility); refetched tananaev/simplecalc/composeStopwatch SHA-exact; read all 15 Issue #375 comments (newest = CONT-49 closeout, whose recorded next-wave frontiers became this wave's decode targets); SOLITAIRE ORIGINAL BYTES RECOVERED (F-Droid vc71 == fdfaf7cad18e4416, the exact CONT-46 pin) and verified ×3 on the CONT-49 binary → re-pinned, the CONT-49 substitution caveat superseded.
+- Decode: (F-NEW-320) METHOD-TRACE proved DrawerLayout.computeScroll ran with this=<unset> — call_compute_scroll passed an EMPTY args vector, violating the engine-wide receiver-first convention; every iget silently answered null (no FIELD-TRACE row: receiver not a live heap object). (F-NEW-321) S134-QGET runtime proof key=Lc$b;->a hit=Y val=ay$b#403 — the correct qualified key with a CORRUPTED slot: the super ay$a.<init> mObservable iput's bare legacy mirror re-resolved through the F-NEW-251 runtime-class redirect onto the receiver's most-derived declarer slot, clobbering the NavigationMenuPresenter outer → the menu-hub NPE; the "second presenter" hypothesis was refuted by a DEX-wide new-instance census (one site only).
+- Probe FIRST: fixtures/fnew320_probe (real aapt2/ECJ/D8) — the exact shadowing shape + a computeScroll-overriding view; PRE ×3: P4-CS-RECV FAIL (unbound receiver) + N2-SUB-UNTOUCHED FAIL (super write clobbers the sub slot).
+- Fixes: F-NEW-320 = receiver bound as args[0] in both the computeScroll dispatch and the onScrollChanged override arm; F-NEW-321 = set_object_field_raw (the dual-write mirror is a legacy channel, not a second identity resolution) + the QUALIFIED-FIRST read law. Honest intermediate recorded: the first draft regressed fnew252 to 21/35 (Atomic*FieldUpdater stale-mirror read face) — restored to 56/0 by the qualified-first law.
+- POST: fnew320 11/0 ×3; solitaire ah-NPE 0 (was 6/run) + menu-hub NPE 0 (was 1/run); the RecyclerView fill chain runs for the first time; NEW first divergence recorded for the next wave (ay$w.q at ay$h.a pc=8 — the mViewHolder law; NavigationView.onMeasure spec=0 face PRE-EXISTING, not a regression); solitaire face ba50a4d2 UNCHANGED ×3 (honest).
+- Regression on the closing binary d19d5ba63c47a19f: 33/33 anchors ×3 byte-identical ZERO DRIFT; probe battery == records exactly (incl. fnew252 56/0, fnew309 8/0 ×3 rebuilt); support group ×3 byte-identical to the CONT-46/47 records (BMI b52252c2 REAL_APP_CONTENT held, alex c8d69f811b23f245, notes eb5ebd559cad1028); skill 13/13 after the gate_a_probe rebuild.
+- Registry 630→632 (F-NEW-320/321 ROOT-CAUSED-FIXED; F-NEW-309 next_wave refreshed; unique-ID check OK). Evidence: evidence/cont50/CONT50_RESULT.md. Issue #375 audit comment posted (6117844181).
+- PUSH: remote main 939e8458 (a9a7297b..939e8458), SECRET GUARD PASS.
+
+Stage Summary:
+- The recorded CONT-49 "divergence wall" was TWO independent generic roots, both now ROOT-CAUSED-FIXED with probe + runtime + regression evidence: the per-frame instance-dispatch receiver binding (a law for every overriding view in the corpus) and the shadowed-field slot identity (a law for every R8-renamed subclass that shadows a superclass field — the exact RecyclerView$Adapter family).
+- Solitaire moved two divergence layers deeper; its original APK bytes are recovered and re-pinned; the next wave owns the RecyclerView mViewHolder law (ay.e/getChildViewHolderInt) + the NavigationView.onMeasure spec=0 face.
+- Zero drift across the whole canonical corpus; the two laws are generic interpreter contracts, no APK-specific code.
