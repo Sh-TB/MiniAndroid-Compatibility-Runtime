@@ -40458,6 +40458,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             int32_t f93_val = args.size() >= 3 && args[2].type == DalvikType::INT32
                                   ? args[2].int_val
                                   : 0;   // AOSP defValue when unset
+            // F-NEW-327 read probe (bounded, env-gated): which TypedArray
+            // slot the dimension readers consume and whether the producer
+            // marked it present — the mMaxWidth decode surface.
+            static thread_local const bool f327_read =
+                std::getenv("MINIANDROID_F327_READ") != nullptr;
+            static thread_local uint64_t f327_read_n = 0;
+            if (f327_read && f327_read_n < 40) {
+                ++f327_read_n;
+                auto pf0 = heap_.get_object_field(
+                    args[0].object_id,
+                    "array_present[" + std::to_string(f93_idx) + "]");
+                auto vf0 = heap_.get_object_field(
+                    args[0].object_id,
+                    "array[" + std::to_string(f93_idx) + "]");
+                std::cerr << "[F-NEW-327-READ] " << method << " ta=o"
+                          << args[0].object_id << " idx=" << f93_idx
+                          << " present="
+                          << (pf0 && pf0->type == DalvikType::INT32
+                                  ? pf0->int_val
+                                  : -1)
+                          << " val="
+                          << (vf0 && vf0->type == DalvikType::INT32
+                                  ? vf0->int_val
+                                  : 0)
+                          << " def=" << f93_val
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
             if (auto vf = heap_.get_object_field(
                     args[0].object_id, "array[" + std::to_string(f93_idx) + "]");
                 vf && vf->type == DalvikType::INT32) {
@@ -41759,7 +41787,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         class_name == "Landroid/content/res/Resources$Theme;") {
         uint32_t styleable_id = 0;
         int32_t n = 0;
-        for (const auto& a : args) {
+        size_t styleable_pos = SIZE_MAX;
+        for (size_t ai = 0; ai < args.size(); ++ai) {
+            const auto& a = args[ai];
             if (a.type != DalvikType::OBJECT_REF || a.object_id == 0)
                 continue;
             if (auto lf = heap_.get_object_field(a.object_id,
@@ -41768,13 +41798,80 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 lf->int_val <= 256) {
                 styleable_id = a.object_id;
                 n = lf->int_val;
+                styleable_pos = ai;
                 break;
             }
+        }
+        // ── F-NEW-327 (CONT-55): the def-style chain args — the same law
+        // the ContextShadow F-093 producer carries. The overloads that
+        // carry them: (AttributeSet, int[], defStyleAttr, defStyleRes)
+        // and (int[], defStyleAttr, defStyleRes) — the INT args right
+        // after the styleable int[] position. Evidence (solitaire): the
+        // NavigationView ctor's TypedArray rides THIS producer (the
+        // appcompat ContextThemeWrapper chain routes
+        // Context.obtainStyledAttributes through the Theme), so without
+        // the defStyle stages the Widget.Design.NavigationView
+        // android:maxWidth=320dp law never resolved → mMaxWidth=0 → the
+        // drawer measured 0 wide (the menu-content frontier).
+        int32_t f327_def_style_attr = 0;
+        int32_t f327_def_style_res = 0;
+        int32_t f327_xml_style = 0;
+        const std::vector<resources::XmlAttrRecord>* f327_xml_recs = nullptr;
+        if (styleable_pos != SIZE_MAX) {
+            // Positional extraction (F-NEW-327; see the ContextShadow
+            // producer for the NULL_REF law — the bridge maps literal-0
+            // ints to NULL_REF, so the kind gate must accept both).
+            size_t nxt = styleable_pos + 1;
+            if (nxt + 1 < args.size()) {
+                f327_def_style_attr = dalvik_int_value(args[nxt]);
+                f327_def_style_res = dalvik_int_value(args[nxt + 1]);
+            }
+        }
+        for (const auto& a : args) {
+            if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
+                a.class_desc == "Landroid/util/AttributeSet;") {
+                f327_xml_recs =
+                    resources::AttributeSetStore::instance().lookup(
+                        a.object_id);
+                break;
+            }
+        }
+        if (f327_xml_recs) {
+            const auto* sr =
+                resources::AttributeSetStore::instance().find(
+                    f327_xml_recs, 0x01010000u /* android:style */);
+            if (sr &&
+                (sr->type == resources::DataType::REFERENCE ||
+                 sr->type == resources::DataType::DYNAMIC_REFERENCE))
+                f327_xml_style =
+                    (int32_t)(sr->ref_id ? sr->ref_id : sr->data);
         }
         uint32_t ta_id = heap_.allocate(
             "Landroid/content/res/TypedArray;", pc_, 0);
         heap_.set_object_field(ta_id, "__array_length__",
                                DalvikValue::make_int(n));
+        // F-NEW-327 array-content probe: which attr ids this producer saw
+        // (the o48/o52 TypedArray attribution surface).
+        static thread_local const bool f327_diag_s101 =
+            std::getenv("MINIANDROID_F327_DIAG") != nullptr;
+        static thread_local uint64_t f327_s101_n = 0;
+        if (f327_diag_s101 && f327_s101_n < 24 && styleable_id != 0) {
+            ++f327_s101_n;
+            std::cerr << "[S101-PRODUCER] ta=o" << ta_id << " n=" << n
+                      << " dSA=0x" << std::hex << f327_def_style_attr
+                      << " dSR=0x" << f327_def_style_res << std::dec
+                      << " attrs=[";
+            for (int32_t k = 0; k < n && k < 30; ++k) {
+                int32_t aid = 0;
+                if (auto af = heap_.get_object_field(
+                        styleable_id, "array[" + std::to_string(k) + "]");
+                    af && af->type == DalvikType::INT32)
+                    aid = af->int_val;
+                std::cerr << (k ? "," : "") << "0x" << std::hex << aid
+                          << std::dec;
+            }
+            std::cerr << "]" << std::endl;
+        }
         auto& rt175 = resources::ResourceRuntime::instance();
         for (int32_t i = 0; i < n; ++i) {
             int32_t attr_id = 0;
@@ -41787,13 +41884,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             int32_t decoded = 0;
             if (attr_id != 0) {
-                auto v = rt175.resolve_theme_attr_typed(
-                    apk_path_, (uint32_t)attr_id);
-                if (v) {
-                    // AOSP TypedValue law: booleans decode as data!=0;
-                    // ints/colors pass data through. Presence recorded
-                    // separately (S99 law: value 0/false is PRESENT).
-                    decoded = (int32_t)v->data;
+                // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution
+                // order for the AttributeSet-bearing overloads — XML(1) →
+                // xmlStyle(2) → defStyleAttr(3) → defStyleRes(4) → theme(5).
+                // The resolver covers stages 2-4; stage 1 reads the raw
+                // XML attrs (the same xml_attr_is_int_family law the
+                // ContextShadow producer uses); stage 5 is the historical
+                // theme path (kept verbatim as the fallback).
+                bool slot_present = false;
+                if (f327_xml_recs) {
+                    const auto* r =
+                        resources::AttributeSetStore::instance().find(
+                            f327_xml_recs, (uint32_t)attr_id);
+                    if (r && resources::xml_attr_is_int_family(r->type)) {
+                        decoded =
+                            (r->type == resources::DataType::REFERENCE ||
+                             r->type ==
+                                 resources::DataType::DYNAMIC_REFERENCE)
+                                ? (int32_t)(r->ref_id ? r->ref_id : r->data)
+                                : r->data;
+                        slot_present = true;
+                    }
+                }
+                if (!slot_present) {
+                    if (auto v = rt175.resolve_def_style_attr_value(
+                            apk_path_, (uint32_t)attr_id,
+                            f327_def_style_attr, f327_def_style_res,
+                            f327_xml_style)) {
+                        if (v->type == resources::DataType::DIMENSION) {
+                            // AOSP TypedArray getDimensionPixelSize
+                            // contract: the slot answers device px.
+                            decoded = resources::complex_unit_to_dimension_pixel_size(
+                                v->dim_unit, v->dim_value,
+                                resources::DensityContext{});
+                        } else {
+                            decoded = (int32_t)v->data;
+                        }
+                        slot_present = true;
+                    }
+                }
+                if (!slot_present) {
+                    auto v = rt175.resolve_theme_attr_typed(
+                        apk_path_, (uint32_t)attr_id);
+                    if (v) {
+                        // AOSP TypedValue law: booleans decode as data!=0;
+                        // ints/colors pass data through. Presence recorded
+                        // separately (S99 law: value 0/false is PRESENT).
+                        decoded = (int32_t)v->data;
+                        slot_present = true;
+                    }
+                }
+                if (slot_present) {
                     heap_.set_object_field(
                         ta_id, "array_present[" + std::to_string(i) + "]",
                         DalvikValue::make_int(1));

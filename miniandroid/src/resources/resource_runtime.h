@@ -183,6 +183,25 @@ public:
     std::optional<ResValue> resolve_theme_attr_typed(const std::string& apk_path,
                                                      uint32_t attr_key,
                                                      int flavor_hint = -1);
+    // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution DEF-STYLE stages ──
+    // The F-093 producer's chain had only XML (stage 1) + theme (stage 5);
+    // the AOSP law (frameworks/base/libs/androidfw/AttributeResolution.cpp
+    // ApplyStyle) walks, BETWEEN them: (2) the tag XML's own style=
+    // reference, (3) the defStyleAttr (the theme's style reference — e.g.
+    // navigationViewStyle → Widget.Design.NavigationView, the ONLY source
+    // of the drawer android:maxWidth=320dp law), (4) the explicit
+    // defStyleRes. Each style stage walks the style's bag INCLUDING the
+    // ResTable_map_entry parent chain (bag_value law) and derefs the
+    // REFERENCE-typed result to the referenced entry's table value
+    // (AOSP ResolveAttributeReference; package-routed app → framework).
+    // Evidence (solitaire): NavigationView.<init> mMaxWidth =
+    // getDimensionPixelSize(android:maxWidth, 0) — the style-stage miss
+    // answered 0 → onMeasure AT_MOST → min(912, 0) = 0 → the drawer
+    // measured 0 wide → the menu content never rendered.
+    std::optional<ResValue> resolve_def_style_attr_value(
+        const std::string& apk_path, uint32_t attr_id,
+        int32_t def_style_attr, int32_t def_style_res,
+        int32_t xml_style_resid = 0);
     // S124 THEME-BASE: the AOSP-law Theme object for the launch theme
     // (activity > application), built ONCE per APK with Theme::apply_style
     // overlay semantics (AssetManager2.cpp Theme::ApplyStyle law). The

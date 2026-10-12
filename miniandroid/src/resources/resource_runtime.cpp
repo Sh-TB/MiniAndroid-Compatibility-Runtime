@@ -315,6 +315,100 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_value(
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// F-NEW-327 (CONT-55): the AOSP AttributeResolution DEF-STYLE stages —
+// see resource_runtime.h for the law. Bounded diagnostics (F327) expose
+// which stage answered for which attr; zero behavior beyond the new stages
+// (the XML and theme stages keep their existing code paths untouched).
+// ─────────────────────────────────────────────────────────────────────────
+std::optional<ResValue> ResourceRuntime::resolve_def_style_attr_value(
+        const std::string& apk_path, uint32_t attr_id,
+        int32_t def_style_attr, int32_t def_style_res,
+        int32_t xml_style_resid) {
+    if (!ensure_loaded(apk_path)) return std::nullopt;
+    static const bool f327_diag =
+        std::getenv("MINIANDROID_F327_DIAG") != nullptr;
+    ResTableConfig dev = device_config();
+    ArscRouter rt = arsc_router();
+
+    // AOSP ResolveAttributeReference law: a REFERENCE-typed value resolves
+    // to the referenced entry's TERMINAL table value, package-routed
+    // (app ARSC first, then the framework table for 0x01xxxxxx ids).
+    auto deref = [&](const ResValue& v) -> std::optional<ResValue> {
+        if (v.type != DataType::REFERENCE &&
+            v.type != DataType::DYNAMIC_REFERENCE)
+            return v;
+        uint32_t rid = (uint32_t)v.data;
+        if (rid == 0) return std::nullopt;
+        if ((rid >> 24) == 0x01) {
+            if (!rt.fw) return std::nullopt;
+            ResolutionResult r = rt.fw->resolve_full(rid, dev);
+            if (r.ok && r.value()) return *r.value();
+            return std::nullopt;
+        }
+        ResolutionResult r = arsc_.resolve_full(rid, dev);
+        if (r.ok && r.value()) return *r.value();
+        return std::nullopt;
+    };
+
+    // Style-bag probe helper: bag_value walks the ResTable_map_entry parent
+    // chain (style inheritance), then the terminal REFERENCE derefs.
+    auto style_probe = [&](uint32_t style_resid,
+                           const char* stage) -> std::optional<ResValue> {
+        if (style_resid == 0) return std::nullopt;
+        auto bv = arsc_.bag_value(style_resid, attr_id, dev);
+        if (!bv) {
+            if (f327_diag)
+                std::cerr << "[F-NEW-327] " << stage << " style=0x"
+                          << std::hex << style_resid << std::dec
+                          << " attr=0x" << std::hex << attr_id << std::dec
+                          << " bag=MISS" << std::endl;
+            return std::nullopt;
+        }
+        auto out = deref(*bv);
+        if (f327_diag)
+            std::cerr << "[F-NEW-327] " << stage << " style=0x"
+                      << std::hex << style_resid << std::dec
+                      << " attr=0x" << std::hex << attr_id << std::dec
+                      << " hit=" << (out ? "YES" : "no") << std::endl;
+        return out;
+    };
+
+    // (2) the tag XML's own style= reference (AOSP stage 2).
+    if (xml_style_resid != 0) {
+        if (auto v = style_probe((uint32_t)xml_style_resid, "xml-style"))
+            return v;
+    }
+    // (3) defStyleAttr — the theme's style reference (AOSP stage 3): the
+    // theme table stores navigationViewStyle → @style/...; the theme attr
+    // service answers the reference (raw REFERENCE stays meaningful per
+    // the S124 contract), and the style bag walk takes it from there.
+    if (def_style_attr != 0) {
+        uint32_t style_resid = 0;
+        if (auto tref =
+                resolve_theme_attr_typed(apk_path, (uint32_t)def_style_attr, -1)) {
+            if (tref->type == DataType::REFERENCE ||
+                tref->type == DataType::DYNAMIC_REFERENCE) {
+                style_resid = (uint32_t)tref->data;
+            } else if (tref->is_int() && tref->data != 0 &&
+                       ((uint32_t)tref->data >> 24) == 0x7f) {
+                // some merged tables inline the style id as a plain int
+                style_resid = (uint32_t)tref->data;
+            }
+        }
+        if (style_resid != 0) {
+            if (auto v = style_probe(style_resid, "defStyleAttr"))
+                return v;
+        }
+    }
+    // (4) defStyleRes — the explicit style resource (AOSP stage 4).
+    if (def_style_res != 0) {
+        if (auto v = style_probe((uint32_t)def_style_res, "defStyleRes"))
+            return v;
+    }
+    return std::nullopt;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // S68 W2 (A1/A10): ?attr resolution service (see resource_runtime.h law).
 // ─────────────────────────────────────────────────────────────────────────
 ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
