@@ -5859,6 +5859,98 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (child != 0) remove_child(ctx.receiver_id, child);
         return CallResult::handled_void();
     }
+    // ── F-NEW-323 (CONT-51): the AOSP ViewGroup detach/attach family ──
+    // RecyclerView's ChildHelper drives this family through REAL DEX
+    // (solitaire ay$5.c = ChildHelper.Callback.detachViewFromParent,
+    // ay.a synthetic accesses → ay.detachViewFromParent(I) /
+    // ay.attachViewToParent(V,I,LP)). The runtime had NO bridge for any
+    // of them — every call was a silent no-op, so after the FIRST
+    // detach the children table stayed at full length and the NEXT
+    // detachAndScrap cycle re-caught the same (FLAG_TMP_DETACHED)
+    // child, tripping the DEX-side defense: IAE "called detach on an
+    // already detached child …" → GameSelector.onCreate died (the
+    // recorded CONT-51 first divergence). AOSP ViewGroup.java laws:
+    //   detachViewFromParent(int|View): child leaves mChildren
+    //     (childCount decrements, array compacts) but child.mParent is
+    //     KEPT — detachment is a transient state inside ONE layout
+    //     traversal; no requestLayout (the caller reattaches or removes
+    //     within the same pass).
+    //   attachViewToParent(View, int, LayoutParams): child.mParent kept,
+    //     child re-inserted at the given index (index<0 → append), and
+    //     child.mLayoutParams = params (AOSP View.mLayoutParams
+    //     single-slot law — F-NEW-322's record keeps getLayoutParams
+    //     identity-faithful afterwards).
+    //   removeDetachedView(View, boolean): the FULL removal — mParent
+    //     cleared (removeView semantics; R-NEW-302 requestLayout too).
+    if (m == "detachViewFromParent") {
+        auto* n = find_node(ctx.receiver_id);
+        if (n != nullptr && !n->children.empty()) {
+            int32_t idx = -1;
+            if (ctx.args.size() >= 1 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                uint32_t child = ctx.arg_as_object(0, 0);
+                for (size_t k = 0; k < n->children.size(); ++k) {
+                    if (n->children[k] == child) { idx = static_cast<int32_t>(k); break; }
+                }
+            } else {
+                idx = ctx.arg_as_int(0, -1);
+            }
+            if (idx >= 0 && static_cast<size_t>(idx) < n->children.size()) {
+                // AOSP: mChildren compaction — the child node itself is
+                // kept alive (the app/DEX still holds it) and parent_id
+                // is NOT cleared (child.mParent survives the detach).
+                const uint32_t detached_child = n->children[static_cast<size_t>(idx)];
+                n->children.erase(n->children.begin() + idx);
+                std::cerr << "[F-NEW-323] detachViewFromParent parent="
+                          << ctx.receiver_id << " idx=" << idx
+                          << " child=" << detached_child
+                          << " left=" << n->children.size()
+                          << std::endl;
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "attachViewToParent") {
+        // AOSP attachViewToParent(View child, int index, LayoutParams
+        // params): mParent kept, mChildren[index] = child (index<0 →
+        // append), mLayoutParams = params.
+        uint32_t child = ctx.arg_as_object(0, 0);
+        if (child != 0) {
+            auto* cn = find_node(child);
+            if (cn != nullptr) {
+                if (cn->parent_id == 0) cn->parent_id = ctx.receiver_id;
+                auto* n = find_node(ctx.receiver_id);
+                if (n != nullptr) {
+                    // no double-add (AOSP asserts the child is detached)
+                    bool present = false;
+                    for (uint32_t c : n->children) if (c == child) { present = true; break; }
+                    if (!present) {
+                        int32_t idx = ctx.arg_as_int(1, -1);
+                        if (idx < 0 || static_cast<size_t>(idx) > n->children.size())
+                            n->children.push_back(child);
+                        else
+                            n->children.insert(n->children.begin() + idx, child);
+                    }
+                    // F-NEW-322 cooperation: the params argument becomes
+                    // the child's mLayoutParams object identity.
+                    if (ctx.args.size() >= 3 && ctx.args[2].kind == CallContext::Arg::Kind::OBJECT) {
+                        uint32_t lp = ctx.arg_as_object(2, 0);
+                        if (lp != 0 && heap_->has_object(lp)) {
+                            std::string lp_cls;
+                            heap_->get_object_class(lp, lp_cls);
+                            cn->layout_params_object = lp;
+                            if (!lp_cls.empty()) cn->layout_params_class = lp_cls;
+                        }
+                    }
+                }
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "removeDetachedView") {
+        uint32_t child = ctx.arg_as_object(0, 0);
+        if (child != 0) remove_child(ctx.receiver_id, child);
+        return CallResult::handled_void();
+    }
     if (m == "removeAllViews" || m == "removeAllViewsInLayout") {
         auto* n = find_node(ctx.receiver_id);
         if (n) {
@@ -7281,8 +7373,9 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         if (lp_node != nullptr && lp_node->layout_params_object != 0 &&
             heap_->has_object(lp_node->layout_params_object)) {
-            std::cerr << "[F-NEW-309] getLayoutParams view=" << ctx.receiver_id
-                      << " -> generated " << lp_node->layout_params_class
+            std::cerr << "[F-NEW-309/322] getLayoutParams view="
+                      << ctx.receiver_id << " -> layout_params_object "
+                      << lp_node->layout_params_class
                       << " o" << lp_node->layout_params_object << std::endl;
             return CallResult::handled_object(
                 lp_node->layout_params_object, lp_node->layout_params_class);
@@ -7343,6 +7436,34 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                                : ctx.receiver_class)) {
                 if (pw != 0) n->width = pw;
                 if (ph != 0) n->height = ph;
+                // ── F-NEW-322 (CONT-51): the AOSP View.mLayoutParams
+                // IDENTITY law. AOSP View.java stores ONE mLayoutParams
+                // reference: setLayoutParams(params) assigns it and
+                // getLayoutParams() returns the SAME object. The runtime
+                // previously recorded only the semantic w/h here, so the
+                // next getLayoutParams fell through to the ROOT-055
+                // by-fiat materialization and handed DEX code a DIFFERENT
+                // object — every field the app attached before the set
+                // (the RecyclerView LayoutParams.mViewHolder law:
+                // solitaire ay$i.c = holder, written in ay$o.a
+                // tryGetViewHolderForPositionByDeadline on obj#1802, read
+                // back null through the fresh fallback obj#1805 in ay.e
+                // getChildViewHolderInt) was silently dropped. Record the
+                // EXACT object identity + heap class; getLayoutParams's
+                // existing first precedence then answers it (AOSP
+                // single-slot law). Overwrite semantics: a later set
+                // replaces the slot, exactly as the field assignment does.
+                if (p != 0 && heap_->has_object(p)) {
+                    std::string lp_cls;
+                    heap_->get_object_class(p, lp_cls);
+                    n->layout_params_object = p;
+                    if (!lp_cls.empty()) n->layout_params_class = lp_cls;
+                    std::cerr << "[F-NEW-322] setLayoutParams view="
+                              << ctx.receiver_id << " lp_obj=" << p
+                              << " class=" << lp_cls
+                              << " (" << pw << "x" << ph << ")"
+                              << std::endl;
+                }
             }
         }
         return CallResult::handled_void();
