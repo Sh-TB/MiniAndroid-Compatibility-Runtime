@@ -8918,3 +8918,16 @@ Stage Summary:
 - The answer to "how": one more class-agnostic law set (guidelines + dimension resolution inside ConstraintLayout), proven the same way every wave does — view-tree ground truth, AXML source decode, x3 determinism, 42/42 zero-drift.
 - Next wave owns: vector-drawable decode leg (OpenCalc icon buttons), BMI Spinner content law, tanana glyph leg (F-NEW-308), alex content text, dooz Compose tap bridge (F-NEW-267).
 - Scripts persisted: cont57_mosaic.py, cont57_registry.py (cont37_regression.sh opencalc re-pin).
+
+---
+Task ID: S57-B (CONT-57 WAVE A addendum — F-NEW-308 root pinpointed)
+Agent: main (Super Z)
+Task: Post-push decode pass on the next calculator-family root (tanana glyph leg).
+
+Work Log:
+- Fresh tanana run (upload/cont54_refetch/com.tananaev.calculator_11.apk, binary 93110eacb3a1cf41) with U007_LAYOUT_DEBUG=2: the anchor face is the preference screen; rows are real TextViews at real geometry (1080x44 rows at y=126/170/214/258/302).
+- PINPOINT: view 456 text='Notification settings' text_size=0.0 lines=1; 458 'Ongoing notification'; 461 'Lock screen notification' — TEXT IS PRESENT, textSize is ZERO. With ts=0 the text layout yields zero-advance glyphs = the blank-bar face. F-NEW-308 moves from "pending root" to a named law gap: PROGRAMMATIC TextViews (AndroidX preference rows built by DEX code, not XML inflate) never receive the themed default textSize chain (AOSP TextView ctor: defStyleAttr textViewStyle -> TextAppearance -> theme R.attr.textSize, default 14sp).
+- NOT fixed this wave (honest): the programmatic styled-attr chain is its own campaign (same family as the F-NEW-328 programmatic-LP work — the constructor-side mirror); shipped no speculative fix.
+
+Stage Summary:
+- Next wave's fix target is exact: give the programmatic TextView shadow-ctor path the AOSP themed-default textSize law (and audit its sibling defaults: textColor, minHeight). Expected blast radius: tanana rows gain glyphs; AndroidX preference apps family-wide.
