@@ -8717,3 +8717,57 @@ Stage Summary:
 - Next wave owns: the menu-content render pipeline (NavigationMenuView's own
   DEX onMeasure dispatch — DEFAULT-MEASURE overrides_onMeasure=1 flag=0) and
   the RecyclerView/menu-adapter chain behind it (the APP_PIXELS stage).
+
+---
+Task ID: S55 (CONT-55)
+Agent: Super Z (main)
+Task: CONT-55 — the menu-content render pipeline decode: NavigationView
+measured 0 wide (the CONT-54 frontier); probe A/B; the AOSP
+AttributeResolution def-style stages (F-NEW-327); zero-drift gate;
+registry + evidence + push.
+
+Work Log:
+- Reconciliation: HEAD == origin/main == 090d4a8a (the CONT-54 closeout).
+- Decode phase 1: the CONT-54 measure rows re-read — NavigationView measured
+  0 WIDE x 1920 (the row "-> 0x1920" is w=0,h=1920); NavigationMenuView
+  setMeasuredDimension(0, 1920) through the RUNNING DEX chain (ARG-TRACE).
+- Decode phase 2: NavigationView.onMeasure (DEX, 50 units) sparse-switch
+  payload parsed (keys-first-then-targets): AT_MOST ->
+  makeMeasureSpec(min(specSize, mMaxWidth), EXACTLY); the mMaxWidth chain:
+  bn.e(a$i.NavigationView_android_maxWidth, sget a$h.Widget_Design_NavigationView)
+  via the 4-arg Context.obtainStyledAttributes (proto (AttributeSet;[III)I).
+- Decode phase 3 (attribution ladder): [SGET] proved the defStyleRes value
+  (0x7f100180) ON the register; CS-PRODUCER pinned the 10-attr call with
+  dSA/dSR read 0; the read probe pinned slot idx=13 present=0; the arg-kind
+  probe found a3:k0=0x7f100180 (the value WAS there) + a2:k7 (NULL_REF for
+  the literal-0 dSA) — the Kind::INT gate dropped BOTH.
+- FIX (F-NEW-327, three layers): (a) ResourceRuntime::
+  resolve_def_style_attr_value — the AOSP stages xmlStyle(2)/defStyleAttr(3)/
+  defStyleRes(4) via bag_value (parent chain) + REFERENCE deref +
+  DIMENSION->device-px decode; (b) wired into BOTH TypedArray producers
+  (ContextShadow F-093 + the S101 theme producer, which also gained the
+  stage-1 raw-XML read); (c) positional INT-or-NULL_REF arg extraction.
+- Probe: fixtures/fnew327_probe (real aapt2/ECJ/D8 WITH res: boxMax/boxMin
+  attrs + F327_BoxStyle 280dp/48dp + a theme without them), apk
+  57ec5cdf6806255c. PRE x3 on ff261b1bc2940bc2: got=-1 FAIL x2. POST x3 on
+  6014ae17af2ecd60: 3/0 (got=735 = 280dp px; got=126 = 48dp).
+- Solitaire runtime: R347-MEASURE NavigationView -> 735x1920 (was 0x0);
+  NavigationMenuView.setMeasuredDimension(735, 1920) (was 0). The drawer
+  measure chain is AOSP-faithful end to end. Screenshot face ba50a4d2
+  UNCHANGED (honest — the closed drawer sits off-screen).
+- Zero-drift gate on 6014ae17af2ecd60: 15 anchors/controls x3 = 45/45 MATCH
+  + probe battery == records (fnew309 8/0, fnew320 7/0, fnew322 5/0,
+  fnew323 6/0, fnew324 3/0, fnew325 4/0, fnew326 13/0).
+- Registry 637 -> 638 (scripts/cont55_registry.py): F-NEW-327 appended
+  ROOT-CAUSED-FIXED; F-NEW-309 evidence chain extended. Evidence:
+  evidence/cont55/CONT55_RESULT.md.
+
+Stage Summary:
+- The TypedArray resolution now walks the FULL AOSP AttributeResolution
+  order (XML -> xmlStyle -> defStyleAttr -> defStyleRes -> theme) on both
+  producers, and DIMENSION slots answer device px per the TypedArray
+  contract. The solitaire drawer gained its real geometry (735x1920) from
+  the style law — the exact law real Android uses (Widget.Design.
+  NavigationView's android:maxWidth).
+- Next wave owns: the menu-content DRAW pipeline (the open-drawer flow —
+  NavigationMenuView's RecyclerView draw chain at its real geometry).
