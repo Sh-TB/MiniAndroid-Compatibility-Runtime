@@ -8488,3 +8488,63 @@ Stage Summary:
 - The recorded CONT-49 "divergence wall" was TWO independent generic roots, both now ROOT-CAUSED-FIXED with probe + runtime + regression evidence: the per-frame instance-dispatch receiver binding (a law for every overriding view in the corpus) and the shadowed-field slot identity (a law for every R8-renamed subclass that shadows a superclass field — the exact RecyclerView$Adapter family).
 - Solitaire moved two divergence layers deeper; its original APK bytes are recovered and re-pinned; the next wave owns the RecyclerView mViewHolder law (ay.e/getChildViewHolderInt) + the NavigationView.onMeasure spec=0 face.
 - Zero drift across the whole canonical corpus; the two laws are generic interpreter contracts, no APK-specific code.
+
+---
+Task ID: S51 (CONT-51)
+Agent: Super Z (main)
+Task: CONT-46/51 execution wave — reconcile latest remote HEAD, decode the
+recorded solitaire first divergence (ay$w.q null-recv @ ay$h.a pc=8), probe
+first, implement minimal generic fixes, zero-drift regression, registry +
+evidence + push.
+
+Work Log:
+- Reconciliation: container was the pre-CONT-28 snapshot e99c2fbd AGAIN;
+  fetch + reset --hard origin/main == 533ecf61 (90 commits: CONT-42..50);
+  binary rebuilt byte-exact d19d5ba63c47a19f (build reproducibility).
+- Baseline face reproduced: ay$w.q NPE x5/run + EXC-PROPAGATE at
+  GameSelector.onCreate invoke_pc=120 (APP BOUNDARY unwind).
+- Decode: ay.e = AOSP getChildViewHolderInt verbatim; ay$h.a(View,I,Z) =
+  LayoutManager.measureChildWithMargins; ay$5.c(I) = ChildHelper.Callback
+  detach with the isTmpDetached defense; FIELD-TRACE ay$i.c: 5 put/get
+  pairs, write obj#1802 (caller ay$o.a) vs read obj#1805 (caller ay.e) —
+  the getLayoutParams bridge re-materialized a FRESH fallback object every
+  call (setLayoutParams recorded only w/h, never identity).
+- F-NEW-322 FIXED: setLayoutParams bridge records the exact LP object
+  identity + class into the node slot getLayoutParams answers first
+  (AOSP View.mLayoutParams single-slot law). Probe fnew322_probe
+  (56de7a4ef25cf4f9) PRE: P1/P2 FAIL x3 (back=LayoutParams/<no-tag>) —
+  POST 5/0 x3.
+- F-NEW-323 FIXED: the ViewGroup detach/attach family (detachViewFromParent /
+  attachViewToParent / removeDetachedView) had NO bridge (grep detachView =
+  0 hits); after the first detach the children table stayed full-length and
+  the next detachAndScrap re-caught the FLAG_TMP_DETACHED child → the DEX
+  defense threw IAE "called detach on an already detached child". Three
+  AOSP-faithful bridges added (detach compacts children WITHOUT clearing
+  parent_id; attach re-inserts + records the params identity (F-NEW-322
+  cooperation); removeDetachedView = full removal). Probe fnew323_probe
+  (634ebf19d04ab00d) PRE: P1/P2/P5/N1 FAIL x3 — POST 6/0 x3.
+- Solitaire POST x3: ay$w.q NPE 0, detach-IAE 0, 0 uncaught;
+  GameSelector.onCreate SURVIVES; GameSelector.onResume dispatched via DEX
+  (ok=1, 22361 insns) x3; NavigationMenuView.onMeasure measures with real
+  specs and writes back 0x1920. Screenshot face ba50a4d28ea62fe7 UNCHANGED
+  x3 (honest — DEFAULT_BACKGROUND_ONLY / APP_PIXELS still missing).
+- Zero-drift gate on the final binary f11d542108cd611b: 11/11 canonical
+  anchors x3 byte-identical; probe battery == records (21 probes + fnew309
+  8/0 x3 + fnew320 7/0 x3 rebuilt after the reset-lost run/ artifacts);
+  support group x3 MATCH (BMI b52252c2 REAL_APP_CONTENT held, alex
+  c8d69f81, notes eb5ebd55). Gate APKs lost to the reset REFETCHED
+  SHA-exact (tananaev 294a68bd, simplecalc 68da25fd, csw dbf937eb).
+- Registry 632 -> 634 (F-NEW-322/323 ROOT-CAUSED-FIXED; F-NEW-309 next_wave
+  refreshed). Evidence: evidence/cont51/CONT51_RESULT.md.
+
+Stage Summary:
+- Solitaire moved TWO divergence layers + the app-lifecycle wall: onCreate
+  death -> onResume dispatch with the RecyclerView menu machinery measured
+  at real specs. NEW first divergence recorded: the menu-content render
+  pipeline (NavigationMenuView second measure pass spec=0; menu items never
+  paint app-owned pixels) — next wave's decode.
+- Scripts persisted: cont51_build_probe.sh, cont51_build_probe323.sh,
+  cont51_flags_scan.py, cont51_dbg_scan.py, cont51_detach_census.py,
+  cont51_flags_xref.py, cont51_gate.sh, cont51_registry.py.
+- Next: CONT-52 — the solitaire menu-content render decode (APP_PIXELS
+  stage), then the cross-app impact measurement for the two identity laws.

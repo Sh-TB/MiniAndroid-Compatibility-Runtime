@@ -1,0 +1,3 @@
+fixtures/fnew309_probe/src/com/probe/f309/DrawerBox.java
+fixtures/fnew309_probe/src/com/probe/f309/MainActivity.java
+tmp/cont49_f309_build/gen/com/probe/f309/R.java
