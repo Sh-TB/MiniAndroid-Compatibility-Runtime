@@ -1553,8 +1553,45 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             else if (n == "layout_constraintTop_toBottomOf")  { cl_anchor(); a.cl_top_to = nm;   a.cl_top_edge = 2; }
             else if (n == "layout_constraintBottom_toBottomOf"){ cl_anchor(); a.cl_bottom_to = nm; a.cl_bottom_edge = 2; }
             else if (n == "layout_constraintBottom_toTopOf")  { cl_anchor(); a.cl_bottom_to = nm; a.cl_bottom_edge = 1; }
-            else if (n == "layout_constraintHorizontal_bias") a.cl_bias_x = atof(raw.c_str());
-            else if (n == "layout_constraintVertical_bias")   a.cl_bias_y = atof(raw.c_str());
+            // F-NEW-329: Guideline position family (AOSP Guideline.java).
+            // A Guideline is an invisible constraint LINE: it is never
+            // measured and never drawn, but it fully participates as an
+            // anchor TARGET. position = percent x content span, or an
+            // absolute begin/end offset (negative = from the far edge).
+            // Evidence: opencalculator v53 activity_main — every display
+            // member (inputHorizontalScrollView / resultDisplay... /
+            // sliding_layout) chains its top/bottom through guideline1/
+            // guideline2 (percents 0.18/0.24); the pre-fix law skipped
+            // GONE targets entirely, so those spans collapsed.
+            // TYPED-FLOAT LAW: aapt2 compiles percent/bias as typed FLOAT
+            // (0x04) with NO raw string — atof("") answered 0 and pinned
+            // both guidelines at Y=0 (inputHSV/resultHSV measured 1080x0).
+            // FRACTION (0x06) is the percent-by-complex form (data/2^24).
+            else if (n == "layout_constraintGuide_percent") {
+                if (at.value.type == DataType::FLOAT)
+                    std::memcpy(&a.cl_guide_percent, &at.value.data, 4);
+                else if (at.value.is_fraction())
+                    a.cl_guide_percent = (float)((double)at.value.data
+                                                 / (double)(1 << 24));
+                else if (!raw.empty())
+                    a.cl_guide_percent = (float)atof(raw.c_str());
+            }
+            else if (n == "layout_constraintGuide_begin")
+                a.cl_guide_begin = parse_dim_attr(&at, stats);
+            else if (n == "layout_constraintGuide_end")
+                a.cl_guide_end = parse_dim_attr(&at, stats);
+            // F-NEW-329 (same typed-FLOAT family): XML-set bias — an empty
+            // raw must NOT reset the AOSP default 0.5 to 0.
+            else if (n == "layout_constraintHorizontal_bias") {
+                if (at.value.type == DataType::FLOAT)
+                    std::memcpy(&a.cl_bias_x, &at.value.data, 4);
+                else if (!raw.empty()) a.cl_bias_x = (float)atof(raw.c_str());
+            }
+            else if (n == "layout_constraintVertical_bias") {
+                if (at.value.type == DataType::FLOAT)
+                    std::memcpy(&a.cl_bias_y, &at.value.data, 4);
+                else if (!raw.empty()) a.cl_bias_y = (float)atof(raw.c_str());
+            }
         }
     }
 
@@ -1694,6 +1731,10 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.cl_top_to = a.cl_top_to; node.cl_top_edge = a.cl_top_edge;
     node.cl_bottom_to = a.cl_bottom_to; node.cl_bottom_edge = a.cl_bottom_edge;
     node.cl_bias_x = a.cl_bias_x; node.cl_bias_y = a.cl_bias_y;
+    // F-NEW-329: guideline position family onto the node.
+    node.cl_guide_percent = a.cl_guide_percent;
+    node.cl_guide_begin = a.cl_guide_begin;
+    node.cl_guide_end = a.cl_guide_end;
     if (a.bg_color != 0) { node.bg_color = a.bg_color; node.bg_from_xml = true; }
     if (!a.bg_drawable.empty()) {
         node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true;
@@ -2807,7 +2848,12 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             if (nm.empty() || nm == "parent") return 0;
             for (uint32_t cid : n->children) {
                 auto* cn = views->find_node(cid);
-                if (cn && cn->visibility != 8 && cn->android_id_name == nm)
+                // F-NEW-329: GONE nodes REMAIN legal anchor targets (AOSP
+                // ConstraintLayout: constraints may bind to a GONE widget —
+                // it collapses to a point but its resolved edges still
+                // anchor dependents; Guideline children are ALWAYS flagged
+                // GONE-for-draw). Only the id NAME matters here.
+                if (cn && cn->android_id_name == nm)
                     return cid;
             }
             return 0;
@@ -2856,7 +2902,35 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                          cl_name_to_id(cn->cl_right_to)};
              })) {
             auto* cn = views->find_node(kids[i]);
-            if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+            if (!cn) { child_sizes[i] = {0, 0}; continue; }
+            // F-NEW-329: Guideline law (AOSP Guideline.java). A guideline is
+            // an invisible constraint LINE — never measured, never drawn,
+            // but its resolved edge anchors dependents. orientation 0 =
+            // HORIZONTAL (fixes Y — resolved in the vertical pass),
+            // 1 = VERTICAL (fixes X — resolved HERE against the container
+            // content width). Evidence: opencalculator v53 guideline1/2.
+            if (cn->class_desc.find("Guideline") != std::string::npos) {
+                child_sizes[i] = {0, 0};
+                if (cn->orientation == 1) {
+                    CEdge& ge = cedges[kids[i]];
+                    const int cw = std::max(0, myWidth - n->padding_left
+                                            - n->padding_right);
+                    int pos = INT_MIN;
+                    if (cn->cl_guide_begin != INT_MIN)
+                        pos = n->padding_left + (cn->cl_guide_begin >= 0
+                                 ? cn->cl_guide_begin : cw + cn->cl_guide_begin);
+                    else if (cn->cl_guide_end != INT_MIN)
+                        pos = (myWidth - n->padding_right)
+                              - (cn->cl_guide_end >= 0
+                                 ? cn->cl_guide_end : cw + cn->cl_guide_end);
+                    else if (cn->cl_guide_percent >= 0.0f)
+                        pos = n->padding_left + (int)std::lround(
+                                  cn->cl_guide_percent * (float)cw);
+                    if (pos != INT_MIN) { ge.l = pos; ge.r = pos; }
+                }
+                continue;
+            }
+            if (cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
             CEdge& e = cedges[kids[i]];
             if (cn->cl_left_edge) {
                 if (cn->cl_left_to == "parent")
@@ -2881,19 +2955,30 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             const bool h_both = e.l != NOT_SET && e.r != NOT_SET;
             if (h_both) {
                 const int span = std::max(0, e.r - e.l);
-                if (cn->lp_width == 0)            wspec = {span, M_EXACTLY};
+                // F-NEW-329 dimension law (AOSP ConstraintLayout): a child
+                // anchored on BOTH edges fills the span — MATCH_CONSTRAINT
+                // (0) spans it and MATCH_PARENT (-1) is FIXED to it. The
+                // pre-fix AT_MOST law let content-sized subtrees shrink
+                // inside their span (sliding_layout measured 579/1080).
+                if (cn->lp_width == 0 || cn->lp_width == -1)
+                    wspec = {span, M_EXACTLY};
                 else if (cn->lp_width >= 0)       wspec = {std::min(cn->lp_width, span), M_EXACTLY};
                 else                              wspec = {span, M_AT_MOST};
-            } else if (cn->lp_width >= 0) {
+            } else if (cn->lp_width >= 1) {
                 wspec = {cn->lp_width, M_EXACTLY};
             } else {
+                // F-NEW-329: MATCH_CONSTRAINT with an unresolved anchor on
+                // this axis degrades to WRAP (AOSP solver: a one-anchor 0dp
+                // widget wraps its content). The old child_spec(...,0) path
+                // answered EXACTLY(0) and collapsed whole families
+                // (opencalc inputHSV/resultHSV measured 52x0).
                 wspec = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right,
-                                   cn->lp_width);
+                                   cn->lp_width == 0 ? -2 : cn->lp_width);
             }
             // height spec: resolved in the vertical pass; fixed stays exact.
-            Spec hspec = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
+            Spec hspec = cn->lp_height > 0 ? Spec{cn->lp_height, M_EXACTLY}
                                             : child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
-                                                         cn->lp_height);
+                                                         cn->lp_height == 0 ? -2 : cn->lp_height);
             auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
             if (h_both) {
@@ -2923,7 +3008,32 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                          cl_name_to_id(cn->cl_bottom_to)};
              })) {
             auto* cn = views->find_node(kids[i]);
-            if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+            if (!cn) { child_sizes[i] = {0, 0}; continue; }
+            // F-NEW-329: Guideline law — HORIZONTAL guideline (orientation 0)
+            // fixes its Y against the container content height; VERTICAL
+            // guidelines fixed their X in the horizontal pass.
+            if (cn->class_desc.find("Guideline") != std::string::npos) {
+                child_sizes[i] = {0, 0};
+                if (cn->orientation == 0) {
+                    CEdge& ge = cedges[kids[i]];
+                    const int chh = std::max(0, myHeight - n->padding_top
+                                             - n->padding_bottom);
+                    int pos = INT_MIN;
+                    if (cn->cl_guide_begin != INT_MIN)
+                        pos = n->padding_top + (cn->cl_guide_begin >= 0
+                                 ? cn->cl_guide_begin : chh + cn->cl_guide_begin);
+                    else if (cn->cl_guide_end != INT_MIN)
+                        pos = (myHeight - n->padding_bottom)
+                              - (cn->cl_guide_end >= 0
+                                 ? cn->cl_guide_end : chh + cn->cl_guide_end);
+                    else if (cn->cl_guide_percent >= 0.0f)
+                        pos = n->padding_top + (int)std::lround(
+                                  cn->cl_guide_percent * (float)chh);
+                    if (pos != INT_MIN) { ge.t = pos; ge.b = pos; }
+                }
+                continue;
+            }
+            if (cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
             CEdge& e = cedges[kids[i]];
             if (cn->cl_top_edge) {
                 if (cn->cl_top_to == "parent")
@@ -2948,27 +3058,39 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             Spec wspec;
             if (w_both) {
                 const int span = std::max(0, e.r - e.l);
-                if (cn->lp_width == 0)            wspec = {span, M_EXACTLY};
+                // F-NEW-329 dimension law: both anchors — 0dp and match_parent
+                // both FILL the span (AOSP ConstraintLayout).
+                if (cn->lp_width == 0 || cn->lp_width == -1)
+                    wspec = {span, M_EXACTLY};
                 else if (cn->lp_width >= 0)       wspec = {std::min(cn->lp_width, span), M_EXACTLY};
                 else                              wspec = {span, M_AT_MOST};
-            } else if (cn->lp_width >= 0) {
+            } else if (cn->lp_width >= 1) {
                 wspec = {cn->lp_width, M_EXACTLY};
             } else {
+                // F-NEW-329: unresolved-anchor MATCH_CONSTRAINT degrades to
+                // WRAP (never EXACTLY(0)).
                 wspec = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right,
-                                   cn->lp_width);
+                                   cn->lp_width == 0 ? -2 : cn->lp_width);
             }
             Spec hspec;
             const bool v_both = e.t != NOT_SET && e.b != NOT_SET;
             if (v_both) {
                 const int span = std::max(0, e.b - e.t);
-                if (cn->lp_height == 0)            hspec = {span, M_EXACTLY};
+                // F-NEW-329 dimension law (vertical axis): 0dp spans, and
+                // MATCH_PARENT (-1) is FIXED to the span. Evidence:
+                // opencalc sliding_layout lp=-1/0 — the pre-fix law measured
+                // it AT_MOST and its content-sized subtree shrank to 579.
+                if (cn->lp_height == 0 || cn->lp_height == -1)
+                    hspec = {span, M_EXACTLY};
                 else if (cn->lp_height >= 0)       hspec = {std::min(cn->lp_height, span), M_EXACTLY};
                 else                               hspec = {span, M_AT_MOST};
-            } else if (cn->lp_height >= 0) {
+            } else if (cn->lp_height >= 1) {
                 hspec = {cn->lp_height, M_EXACTLY};
             } else {
+                // F-NEW-329: unresolved-anchor MATCH_CONSTRAINT degrades to
+                // WRAP (never EXACTLY(0)).
                 hspec = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
-                                   cn->lp_height);
+                                   cn->lp_height == 0 ? -2 : cn->lp_height);
             }
             auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
@@ -2996,11 +3118,14 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
         }
 
         // AOSP wrap-CL content: max extents over resolved EDGES, margins
-        // included (same law as the RL aggregation above).
+        // included (same law as the RL aggregation above). F-NEW-329:
+        // guidelines NEVER contribute to the wrap content (they are
+        // constraint lines, not widgets).
         content_w = 0; content_h = 0;
         for (size_t i = 0; i < kids.size(); i++) {
             auto* cn = views->find_node(kids[i]);
             if (!cn || cn->visibility == 8) continue;
+            if (cn->class_desc.find("Guideline") != std::string::npos) continue;
             const CEdge& e = cedges[kids[i]];
             if (e.r != INT_MIN) content_w = std::max(content_w, e.r + cn->lp_margin_right);
             if (e.b != INT_MIN) content_h = std::max(content_h, e.b + cn->lp_margin_bottom);

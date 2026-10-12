@@ -108,7 +108,14 @@ anchors)
     run1 "microtimer_r$i" "$MICRO"     da73010a37dd0189
     run1 "unote_r$i"      "$UNOTE"     4f1a9e4e8f64fae8
     run1 "gmdice_r$i"     "$GMDICE"    f3b483fe7b7cf51b
-    run1 "opencalc_r$i"   "$OPENCALC"  a976d2f9fb675cb3
+    # CONT-57 F-NEW-329 RE-PIN: the ConstraintLayout guideline + dimension
+    # laws healed opencalc v53's display geometry (guideline1 = 0.18 x 1920
+    # = 346 EXACT; inputHSV 1080x199 @y147; resultHSV 1080x153 @y346;
+    # sliding_layout 1080x1421 @y499; pad buttons 270-wide 0dp+weight rows).
+    # The pre-fix face a976d2f9fb675cb3 was the compressed pad (579-wide
+    # sliding_layout, 52x0 display HSVs). New face 0ae271c49d2bd61c x3
+    # deterministic. Every OTHER anchor byte-identical (42/42 runs).
+    run1 "opencalc_r$i"   "$OPENCALC"  0ae271c49d2bd61c
     run1 "tttdeluxe_r$i"  "$TTT"       af6094295ecb50e3
     run1 "flappycow_r$i"  "$FLAPPY"    13cf47464d9787f4
     run1 "g2048_r$i"      "$G2048"     59ca1526611c4622
