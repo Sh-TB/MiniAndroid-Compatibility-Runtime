@@ -8040,6 +8040,14 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "onMeasure" || m == "onLayout" || m == "onDraw" ||
         m == "onTouchEvent" || m == "onAttachedToWindow" ||
         m == "onDetachedFromWindow") {
+        // F-NEW-328 NOTE (CONT-56): the framework LinearLayout.onMeasure
+        // SUPER call from a DEX subclass (the appcompat AppBarLayout
+        // family) is served by the S109 ROOT-042 bridge law in
+        // bridge_to_api (dalvik_engine.cpp), which claims LinearLayout/
+        // FrameLayout/... onMeasure BEFORE any shadow dispatch — the
+        // investigation proved a ViewShadow-level law here is DEAD CODE
+        // for that path. The AOSP-faithful fix lives at the S109 sites
+        // (the lp-aware child_spec + the orientation self-size law).
         return CallResult::handled_void();
     }
     if (m == "toString") {
