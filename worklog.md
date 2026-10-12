@@ -8415,3 +8415,56 @@ Stage Summary:
 - Honest bounds: 15s canonical dooz anchor unchanged (composition needs
   ~36M instructions — throughput engineering next); icon/text rendering
   decode continues (stack-PC forensics before any dispatch change).
+
+---
+Task ID: CONT-49
+Agent: Super Z (main)
+Task: CONT-46 umbrella continuation — "Continue from the latest remote HEAD";
+solitaire first-divergence decode + fix per the 7-point priority (Issue #375).
+
+Work Log:
+- Reconciliation: local container was the CONT-10-era snapshot e99c2fbd again;
+  fetched + reset to origin/main == 44dd14db (CONT-48). Rebuilt the binary from
+  HEAD: c0f31ade222bdf9a == the recorded CONT-48 binary (build reproducibility).
+  Refetched reset-lost APKs SHA-exact (tananaev 294a68bd, simplecalc 68da25fd,
+  composeStopwatch dbf937eb); rebuilt reset-lost fixtures (gate_a_probe,
+  hmap_probe, fnew260/262 probes). Solitaire store base.apk fdfaf7ca lost to the
+  reset; F-Droid vc71 (9d782be2, 3.13) substituted with BEHAVIORAL EQUIVALENCE
+  PROVEN (recorded face ba50a4d28ea62fe7 byte-identical on the CONT-48 binary,
+  recorded IAE row reproduced). Baseline gate: 33/33 x3 + probes == records +
+  skill 13/13.
+- F-NEW-309 decoded (static): DrawerLayout$g own field a:I read via
+  obtainStyledAttributes(attrs, [0x010100F3]).getInt(0,0); g(I)=findDrawerWithGravity
+  -> j(found) = the throw path; 17-caller DEX-wide census (new
+  scripts/cont49_lp_caller_scan.py; lessons: op=LOW byte, code()=byte offset).
+- Probe FIRST (Phase-3 protocol): fixtures/fnew309_probe — PRE 7 rows with
+  P4 FAIL (plain ViewGroup$LayoutParams), then FIX: generate_child_layout_params
+  (structural LP-subclass discovery + real DEX (Context,AttributeSet) ctor via
+  AttributeSetStore/F-NEW-197 precedence + semantic w/h write-back + node stash;
+  ROOT-055 answers the stashed object; Factory-law hook in inflate_element with
+  the view-ctor dual gate). POST 8/8 PASS x3 (incl. N1 absent-attr gravity 0,
+  N2 isDrawerView(plain) false).
+- Two follow-on faces root-caused + fixed the same way: F-NEW-318
+  (Gravity.getAbsoluteGravity real static bridge — START/END family resolution,
+  rel-bit consumed, other bits preserved) and F-NEW-319 (ArscParser::
+  resolve_string_array + Resources.getStringArray bridge, F-036 heap-array
+  convention, GATE-A NotFoundException honesty).
+- Solitaire machine moved THREE divergence layers: IAE gone -> onMeasure ISE
+  gone -> settings NPE gone (b.g initializes; String[15] array resolves);
+  0 THROWABLE rows (was 9); new first divergence recorded (ViewDragHelper ah.a
+  null-recv in DrawerLayout.computeScroll pc=35 + menu/h.i null-recv in
+  design/internal/c$b.f pc=31). Screenshot face UNCHANGED ba50a4d2 x3 (honest).
+- Regression on the closing binary 6c478a224ab1b3f4: 33/33 x3 ZERO DRIFT;
+  probes == records; fnew260 13/0, fnew262 19/0, fnew309 8/0; skill 13/13;
+  support group byte-identical x3 (BMI b52252c2 REAL_APP_CONTENT held, notes
+  eb5ebd55, alex c8d69f81, sol ba50a4d2).
+- Registry 628->630 (scripts/cont49_registry.py): F-NEW-309 ROOT-CAUSED-FIXED,
+  F-NEW-318/319 appended ROOT-CAUSED-FIXED; unique-ID check OK.
+- Evidence: evidence/cont49/CONT49_RESULT.md. Issue #375 audit comment posted.
+
+Stage Summary:
+- Three generic laws landed (generateLayoutParams / Gravity.getAbsoluteGravity /
+  Resources.getStringArray); solitaire past the drawer wall (three layers);
+  cross-app impact measured on ONE binary (all other corpus faces byte-identical
+  x3). Next wave: ViewDragHelper (ah) construction + NavigationView menu hub
+  (c$b.f) — the new solitaire first divergence; BMI input behavior still open.

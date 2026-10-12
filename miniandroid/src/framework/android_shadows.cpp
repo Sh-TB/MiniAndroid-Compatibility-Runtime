@@ -7269,9 +7269,24 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // the owning ViewGroup's param class), width/height from the
         // inflate semantic model, anchorId = NO_ID. No package checks —
         // every caller sees the same lawful answer.
+        //
+        // F-NEW-309 precedence: when the inflation generated the parent's
+        // OWN LayoutParams subclass for this child (the real DEX
+        // (Context, AttributeSet) ctor ran through
+        // generate_child_layout_params — solitaire DrawerLayout$g), answer
+        // THAT exact object: it carries the XML-resolved gravity the
+        // app's own container checks read (AOSP generateLayoutParams law).
         auto* lp_node = get_or_create_node(
             ctx.receiver_id,
             ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        if (lp_node != nullptr && lp_node->layout_params_object != 0 &&
+            heap_->has_object(lp_node->layout_params_object)) {
+            std::cerr << "[F-NEW-309] getLayoutParams view=" << ctx.receiver_id
+                      << " -> generated " << lp_node->layout_params_class
+                      << " o" << lp_node->layout_params_object << std::endl;
+            return CallResult::handled_object(
+                lp_node->layout_params_object, lp_node->layout_params_class);
+        }
         std::string parent_cls;
         if (lp_node != nullptr && lp_node->parent_id != 0) {
             const auto* pn = find_node(lp_node->parent_id);

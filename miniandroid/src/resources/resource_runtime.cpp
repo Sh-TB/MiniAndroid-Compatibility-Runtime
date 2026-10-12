@@ -65,6 +65,9 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     // SECONDARY CAMPAIGN V4: same Factory law for the DEX-existence hook
     // (unknown short-tag resolution).
     apply_dex_class_exists_hook();
+    // F-NEW-309: same Factory law for the generateLayoutParams hook
+    // (child-of-DEX-container LayoutParams generation).
+    apply_generate_child_lp_hook();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids

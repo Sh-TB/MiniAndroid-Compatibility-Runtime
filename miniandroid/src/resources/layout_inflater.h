@@ -184,6 +184,28 @@ public:
         return dex_class_exists_hook_;
     }
 
+    // ── F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) ──────────
+    // At XML inflation the PARENT container generates each child's
+    // LayoutParams (ViewGroup.LayoutParams generateLayoutParams(
+    // AttributeSet) — the child's own attrs). For a DEX-defined parent the
+    // generated class is the parent's OWN LayoutParams subclass
+    // constructed by its real DEX (Context, AttributeSet) ctor — the
+    // android:layout_gravity resolution solitaire's DrawerLayout$g runs.
+    // The resources layer cannot depend on the dex layer, so the executor
+    // installs this hook (same Factory law as the ctor/measure hooks).
+    // Returns the generated heap object id, 0 = law not applicable (the
+    // AOSP ViewGroup default then stands).
+    using GenerateChildLpHook =
+        std::function<uint32_t(uint32_t child_view_id,
+                               const std::string& parent_class_desc,
+                               const std::vector<AxmlAttribute>& xml_attrs)>;
+    void set_generate_child_lp_hook(GenerateChildLpHook fn) {
+        generate_child_lp_hook_ = std::move(fn);
+    }
+    const GenerateChildLpHook& generate_child_lp_hook() const {
+        return generate_child_lp_hook_;
+    }
+
     // S82-GFX F-NEW-158: exposed — the render stage resolves programmatic
     // setBackgroundResource(resid) shape drawables through the SAME
     // inflate-time parse the XML layout path uses (one parse law).
@@ -399,6 +421,7 @@ private:
     CustomViewCtorHook custom_view_ctor_hook_;
     CustomViewMeasureHook custom_view_measure_hook_;
     DexClassExistsHook dex_class_exists_hook_;
+    GenerateChildLpHook generate_child_lp_hook_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.
     std::map<uint32_t, std::string> id_names_;
