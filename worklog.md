@@ -8644,3 +8644,76 @@ Stage Summary:
   decode (MeasureSpec.getMode/getSize dispatch or branch shape).
 - Scripts persisted: cont53_build_probe.sh.
 - Next: CONT-54 — the v4 getChildMeasureSpec decode.
+
+---
+Task ID: S54 (CONT-54)
+Agent: Super Z (main)
+Task: CONT-54 — decode the recorded next frontier (the v4 getChildMeasureSpec
+"-1/0" face); probe A/B; minimal generic fix (F-NEW-326); fresh Dooz/BMI
+measurements; zero-drift gate; registry + evidence + push.
+
+Work Log:
+- Reconciliation: local container was the CONT-10-era snapshot e99c2fbd again;
+  fetched + reset to origin/main == d5bbf5d4 (the CONT-53 push, 93 commits);
+  binary REBUILT from HEAD == recorded ff261b1bc2940bc2 byte-identical.
+- Fresh app measurements at HEAD (the standing "did Dooz and the calculator
+  progress" question): dooz 15s anchor 31ddd4d5 x3 held; dooz FULL-budget run
+  renders the real Scaffold 6841d52a x3 (the CONT-48 face re-proven at HEAD);
+  BMI b52252c2 x3 REAL_APP_CONTENT held; alex/notes/sol held.
+- Decode (byte-level): DrawerLayout.getChildMeasureSpec(III)I is invoked twice
+  in DrawerLayout.onMeasure (@0x0123/@0x012e) but NO DEX class declares it —
+  class_data gap m@5124 -> m@5143; FIVE support-lib classes carry
+  child-class-owned method_ids (DrawerLayout m@5133, NestedScrollView m@5251,
+  ActionMenuView m@7364, Toolbar m@8216, ar m@8737, all (III)I). ART resolves
+  through the super chain onto the framework ViewGroup.getChildMeasureSpec;
+  the engine's resolver stopped at the framework boundary and the bridge keyed
+  on the app class answered the STUBBED typed default (0) — the CONT-53 face.
+- Probe FIRST: fixtures/fnew326_probe (real aapt2/ECJ/D8), TWO variants from
+  one source tree — fnew326_probe.apk 36c7cb1a183b006a (direct ViewGroup
+  owner) + fnew326b_probe.apk eee1a164d1a74b60 (method_id class_idx
+  byte-rewritten to MyBox = the exact R8 artifact shape; new
+  scripts/cont54_patch_method_id.py). PRE x3 on ff261b1bc2940bc2: 12 FAIL /
+  1 PASS (N1 negative) BOTH variants, every row got=0x0. POST x3 on
+  94d626170bc86331: 13/0 x3 BOTH variants (the full AOSP matrix + the
+  subclass-owner faces through the re-dispatch chain).
+- FIX (minimal, generic): F-NEW-326a — execute_invoke_static retries the
+  bridge under the framework ancestors (nearest first, bounded 16) ONLY after
+  the first dispatch ended STUBBED (side-effect-free tail; original answer
+  stands otherwise); F-NEW-326b — the exact AOSP ViewGroup.getChildMeasureSpec
+  switch (EXACTLY/AT_MOST/UNSPECIFIED x dim>=0/MATCH/WRAP, size=max(0,
+  specSize-padding), in-place modes per F-096b) co-located with the MeasureSpec
+  statics. No app knowledge, no R8 special-casing.
+- Solitaire runtime: [F-NEW-326] re-dispatch fires (Toolbar as ViewGroup); the
+  law answers real specs (0x80000438 / 0x40000780); [R347-MEASURE] view=298
+  NavigationView wspec=0x80000390 hspec=0x40000780 -> 0x1920 — the spec-0 face
+  is DEAD; NavigationMenuView exists + attaches; screenshot face ba50a4d2
+  UNCHANGED x3 (honest). NEW frontier = the menu-content render pipeline
+  (NavigationMenuView's own DEX onMeasure dispatch + the RecyclerView chain).
+- Zero-drift gate on 94d626170bc86331: 15 canonical anchors/controls x3 under
+  the canonical config (--frames 5 --max-seconds 15) — 45/45 MATCH (dooz
+  31ddd4d5, micro da73010a, unote 4f1a9e4e, gmdice f3b483fe7b7cf51b, opencalc
+  a976d2f9, tttdeluxe af6094295ecb50e3, flappycow 13cf4746, g2048 59ca1526,
+  tanana 5f7e0114c3bfd6b5, csw 3442d9a9, simplecalc e847ca0346708f07, BMI
+  b52252c2, alex c8d69f81, notes eb5ebd55, sol ba50a4d2); probe battery ==
+  records (fnew309 8/0, fnew320 7/0, fnew322 5/0, fnew323 6/0, fnew324 3/0,
+  fnew325 4/0). Config lesson recorded: my first gate passes used no --frames
+  flag and mismatched some anchors — always use the canonical cont31 config
+  and grep the authoritative full SHAs (never recall them).
+- Reset-lost gate APKs refetched SHA-exact: tananaev vc11 294a68bd (vc10 is a
+  different build, honestly noted), simplecalc 68da25fd, composeStopwatch
+  dbf937eb.
+- Registry 636 -> 637 (scripts/cont54_registry.py): F-NEW-326 appended
+  ROOT-CAUSED-FIXED; F-NEW-309 next_wave refreshed; count/total/status_counts/
+  meta synced. Evidence: evidence/cont54/CONT54_RESULT.md.
+
+Stage Summary:
+- The invoke-static resolution now agrees with ART across the framework
+  boundary (class-agnostic; reached only on a STUBBED miss), and the framework
+  spec law answers for the first time — the drawer child-spec chain is AOSP-
+  faithful end to end. The solitaire measure chain now hands NavigationView
+  real specs through its REAL DEX onMeasure.
+- Dooz and BMI progress re-verified at HEAD with fresh measurements: Dooz
+  renders its real Scaffold on the full budget; BMI is REAL_APP_CONTENT.
+- Next wave owns: the menu-content render pipeline (NavigationMenuView's own
+  DEX onMeasure dispatch — DEFAULT-MEASURE overrides_onMeasure=1 flag=0) and
+  the RecyclerView/menu-adapter chain behind it (the APP_PIXELS stage).
