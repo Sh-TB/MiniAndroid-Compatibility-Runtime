@@ -8954,3 +8954,16 @@ Stage Summary:
 - Six new generic roots closed with byte-level + runtime-trace evidence; the support-fragment pipeline (attach → commit → queue → execute → state ladder → onCreateView → inflate) is now live end-to-end for the first time on this binary — BMI renders a real form where the same HEAD rendered nothing at wave start.
 - User's "100% complete" standard: NOT yet met corpus-wide (BMI partial-real; simplecalc/opencalc partial; tanana/alex/dooz still blank) — the remaining roots are named and queued (row-weight geometry, androidx nav/material, tanana white root, compose draw path).
 - CONT-56b REBASE NOTE: origin/main advanced with parallel waves (F-NEW-328/329 layout laws; F-NEW-260 = the same InnerClass law as F-NEW-330 — marked DUPLICATE-SUPERSEDED; F-021/F-NEW-313 = the same inflater laws as F-NEW-335 — marked DUPLICATE-SUPERSEDED, setFactory2 rider folded into F-NEW-313). Merged binary c8b078ba88ca255d: the FULL standing gate 13 anchors x3 = 39/39 MATCH (opencalc re-pin 0ae271c4 intact; tanana APK restored from upload/cont54_refetch into tmp/). BMI at the merged head: b52252c2de19b03a x1 (real form on the light theme surface + action bar; the row-weight squeeze is the named next gap).
+
+---
+Task ID: S56-CONT-PUSH
+Agent: Super Z (main)
+Task: Record CONT-56b rebase + merged-gate + push
+
+Work Log:
+- Rebased the CONT-56b commit onto the parallel waves' main (da28ea32: F-NEW-328 LinearLayout.onMeasure, F-NEW-329 ConstraintLayout guidelines — OpenCalc FULL face 0ae271c4; F-NEW-260 InnerClass law = my F-NEW-330 duplicate; F-021/F-NEW-313 inflater laws = my F-NEW-335 duplicate). Conflict resolution: union-merge (registry 640→646 with F-NEW-330/335 marked DUPLICATE-SUPERSEDED; my four NEW roots re-landed as F-NEW-331/331b/332/333/334 on the clean lineage after discarding a sed remap that touched parallel references).
+- Merged binary c8b078ba88ca255d. FULL standing gate: 13 anchors x3 = 39/39 byte-identical (incl. opencalc re-pin 0ae271c4, tanana 5f7e0114 [APK restored to tmp/ from upload/cont54_refetch], csw 3442d9a9, dooz180 6841d52a). BMI at merged head: b52252c2de19b03a — REAL FORM on the light theme surface (was uniform dark at wave start).
+- PUSH: b7fa8f13 == origin/main. SECRET GUARD PASS. Mosaic raw: https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/main/evidence/cont56/cont56_mosaic.png (+ uguu mirror).
+
+Stage Summary:
+- CONT-56b closed at the merged head: four new generic roots (fragment-host attach + state, Handler queue routing, Preconditions identity, SparseArray) live; the support-fragment pipeline works end-to-end; zero drift across the full 13-anchor gate; honest next-frontier list recorded (BMI/simplecalc row-weight geometry, alex androidx-nav/material chain, tanana F-NEW-308 text-size law [parallel-decoded], dooz F-NEW-256 draw path).
