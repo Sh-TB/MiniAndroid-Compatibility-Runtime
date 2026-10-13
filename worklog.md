@@ -9334,3 +9334,42 @@ Stage Summary:
   time; csw's title recovered from off-screen. Honest next work named:
   the paint 42px-size fallback question, the dooz icon glyphs (black
   boxes), and the 400s rc=0 completion re-check.
+
+---
+Task ID: S61-W2 (CONT-61 Wave 2)
+Agent: Super Z (main)
+Task: F-NEW-267 — the compose tap bridge (CLASSIFIED -> ROOT-CAUSED-PARTIAL).
+
+Work Log:
+- Decoded three stacked legs on the dooz tap (820,1837, the New game
+  button): LEG 1 the claim walk's touchable gate (compose hosts are
+  created programmatically — the S122 capture never saw their
+  dispatchTouchEvent override; Lt4; measured dispatchTouchEvent size=249);
+  LEG 2 the dispatch arm (invoked onTouchEvent — the override wins);
+  LEG 3 the coordinate laws (getLocationOnScreen/inWindow/
+  transformMatrixToGlobal did NOT exist — the hit-test bounds math
+  consumed zeros/identity).
+- FIXES (generic): (1) the view_touchable dispatchTouchEvent override law
+  with a lazy tri-state probe (mutable node field + engine-bound
+  DexOverrideFn); (2) the DOWN-arm gate + the dispatch arm selection;
+  (3) the three coordinate laws with the honest M33 algebra (pre=+T on
+  c/f, post=bilinear on the translate terms).
+- Measured: target=0 -> 1446; arm=dispatchTouchEvent DISPATCHED (the
+  compose input entry executes for the first time); the TOUCHWIN trace
+  shows the full pipeline (PointerEvent build -> hit-test walk -> filter
+  dispatch).
+- HONEST REMAINING LEG (decoded, named): the filter list EMPTY
+  ([TOUCHWIN-SIZE] obj#2554 -> 0 x3; the walk consults a -1x-1
+  placeholder View id=479 ([TOUCHWIN-LOC]) and the LayoutNode-tree bounds
+  walk misses every node) — the compose node-tree bounds materialization
+  is the next decode (the probe is committed: MINIANDROID_TOUCH_WINDOW_
+  TRACE + the TOUCHWIN-SIZE/LOC diags).
+- Gate: 11/11 anchors byte-identical (dooz180, csw, micro, unote, gmdice,
+  opencalc, ttt, flappy, g2048, tanana, simplecalc) + probe battery ==
+  records. Registry F-NEW-267 CLASSIFIED -> ROOT-CAUSED-PARTIAL (656
+  count synced).
+
+Stage Summary:
+- The compose tap pipeline is UNBLOCKED at the engine boundary (the
+  override executes; the coordinate laws exist); the internal hit-test
+  bounds decode is the named next wave work, probe committed.

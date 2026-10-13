@@ -1608,6 +1608,11 @@ public:
     // method-entry log gates on this to attribute method entries to the
     // draw phase — evidence for the R-NEW-328 compose draw frontier.
     bool draw_window_active_ = false;
+    // F-NEW-267 (CONT-61): true while a materialized MotionEvent is being
+    // dispatched into a DEX touch override (dispatchTouchEvent/onTouchEvent)
+    // — gates the [TOUCHWIN-BRIDGE] probe (every bridge call the override
+    // makes: which framework answers the compose input pipeline asked for).
+    bool touch_dispatch_active_ = false;
 
     // ────────────────────────────────────────────────────────────────────
     // F-NEW-298 (CONT-37) FRAME-HONESTY: set when an in-draw F084 budget

@@ -38,6 +38,11 @@
 
 namespace miniandroid { namespace framework {
 
+// F-NEW-267 (CONT-61): set by the engine while a materialized MotionEvent is
+// being dispatched into a DEX touch override — gates the shadow-side
+// [TOUCHWIN-SIZE] probe (what the compose pointer-input filter dispatch saw).
+extern std::atomic<bool> g_touch_window_active;
+
 // ─────────────────────────────────────────────────────────────────────────
 // ArchTaskExecutorShadow — handles ArchTaskExecutor.isMainThread.
 //
@@ -1208,6 +1213,18 @@ public:
         // the touchable gate must include this, else the whole custom-view
         // game family is tap-dead (klondike GameView evidence).
         bool overrides_touch_event = false;
+        // F-NEW-267 (CONT-61): tri-state probe cache for the dispatchTouchEvent
+        // override law. -1 = not probed yet (lazy DEX probe through the
+        // engine's class-chain walk on first touchable query); 0/1 = answer.
+        // AOSP View/ViewGroup law: a view whose class chain OVERRIDES
+        // dispatchTouchEvent IS a touch target — the override IS the input
+        // entry (compose AndroidComposeView.dispatchTouchEvent runs the whole
+        // compose hit-test internally; dooz v23 measured: Lt4; override,
+        // size=249). Programmatic views (compose hosts are created from DEX
+        // code, not inflation) never crossed the run_custom_view_constructor
+        // capture — the lazy probe covers every construction path. mutable:
+        // the touchable gate takes the node by const-ref.
+        mutable int8_t overrides_dispatch_touch_event = -1;
         // S128 (R-NEW-424, CAP-INPUT-100): TRUE when the DEX chain overrides
         // ViewGroup.onInterceptTouchEvent — AOSP ViewGroup.dispatchTouchEvent
         // asks every ViewGroup along the dispatch chain BEFORE the child gets

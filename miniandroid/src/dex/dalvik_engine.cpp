@@ -12663,8 +12663,16 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
     // flows into onTouchEvent(ACTION_*). Custom game boards (klondike
     // GameView) override onTouchEvent and never register a listener; the
     // old early-return left the whole custom-view game family tap-dead.
+    // F-NEW-267 (CONT-61): the dispatchTouchEvent OVERRIDE arm — AOSP
+    // View/ViewGroup: when the view's class chain OVERRIDES
+    // dispatchTouchEvent, the override IS the input entry (the framework
+    // caller invokes the override; compose's AndroidComposeView runs the
+    // whole compose hit-test + pointer pipeline there). The override wins
+    // over onTouchEvent (which the class may not even define).
     if (node->touch_listener_id == 0) {
-        if (!node->overrides_touch_event) return false;
+        if (!node->overrides_touch_event &&
+            node->overrides_dispatch_touch_event != 1)
+            return false;
         std::string cls = node->class_desc;
         if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
             std::string norm = "L";
@@ -12672,6 +12680,14 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
                 norm += (cls[i] == '.') ? '/' : cls[i];
             cls = norm;
         }
+        // The dispatch arm selects the OVERRIDE the class defines:
+        // dispatchTouchEvent (F-NEW-267) when present, else onTouchEvent
+        // (S122). The tri-state may still be -1 here (the walk answered
+        // touchable through another gate); probe it now.
+        const char* touch_arm = "onTouchEvent";
+        if (node->overrides_dispatch_touch_event == 1 ||
+            class_chain_defines_method(cls, "dispatchTouchEvent"))
+            touch_arm = "dispatchTouchEvent";
         uint32_t ev_id = heap_.allocate("Landroid/view/MotionEvent;", pc_,
                                         call_stack_.empty() ? 0
                                                             : call_stack_.top().frame_id);
@@ -12690,14 +12706,22 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
         std::cerr << "[UI-EVENT] event=TOUCH action=" << action
                   << " view_object=" << view_object_id
                   << " view_class=" << node->class_desc
-                  << " arm=onTouchEvent(override)" << std::endl;
+                  << " arm=" << touch_arm
+                  << " attached=" << (node->attached_to_window ? 1 : 0)
+                  << std::endl;
         std::vector<DalvikValue> args;
         args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
         args.push_back(DalvikValue::make_object(ev_id, "Landroid/view/MotionEvent;"));
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
-        bool dispatched = try_recursive_invoke(cls, "onTouchEvent", args,
+        touch_dispatch_active_ = true;
+        framework::g_touch_window_active.store(true,
+                                               std::memory_order_relaxed);
+        bool dispatched = try_recursive_invoke(cls, touch_arm, args,
                                                ret, res);
+        framework::g_touch_window_active.store(false,
+                                               std::memory_order_relaxed);
+        touch_dispatch_active_ = false;
         if (dispatched && ret.type == DalvikType::BOOLEAN)
             consumed = ret.int_val != 0;
         std::cerr << "[UI-EVENT] event=TOUCH action=" << action << " result="
@@ -25017,6 +25041,20 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+    // F-NEW-267 (CONT-61): TOUCH-WINDOW BRIDGE probe — every bridge call the
+    // dispatched DEX touch override makes (env-gated, bounded). Answers
+    // which framework answers the compose input pipeline asked for and
+    // which silently typed-defaulted (the consumed=false decode).
+    if (touch_dispatch_active_) {
+        static thread_local const bool tw_on =
+            std::getenv("MINIANDROID_TOUCH_WINDOW_TRACE") != nullptr;
+        static thread_local uint64_t tw_n = 0;
+        if (tw_on && tw_n++ < 400)
+            std::cerr << "[TOUCHWIN-BRIDGE] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+    }
     // F-NEW-344 probe (CONT-61): every Landroid/text/Layout; bridge call —
     // the compose text intrinsic leg (getDesiredWidth family). Answers
     // whether the intrinsic path reaches the engine and with what args.
