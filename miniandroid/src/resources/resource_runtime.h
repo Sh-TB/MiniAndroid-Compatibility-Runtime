@@ -142,6 +142,20 @@ public:
     // no package-name checks (the 0x01 test IS the AOSP package router).
     std::optional<uint32_t> resolve_framework_file_color(uint32_t resid);
 
+    // CONT-58 (F-NEW-336) APP-PACKAGE FILE-COLOR LAW: library ColorStateList
+    // files (appcompat abc_* / Material mtrl_* — e.g.
+    // res/color/abc_primary_text_material_light.xml) are file-backed entries
+    // of the APP package, NOT the framework table. A theme attr whose value
+    // is a STRING "res/color/…" (the aapt2 file-reference form) resolves by
+    // extracting that entry from the APK itself and applying the same
+    // ColorStateList default-state law as resolve_framework_file_color
+    // (tri-state first match: window_focused=true, enabled=true, everything
+    // else false). In-item @color/… references deref through the APP table
+    // (bounded depth). Returns the default-state ARGB, or nullopt (honest
+    // miss — the caller keeps its existing fallback).
+    std::optional<uint32_t> resolve_apk_file_color(const std::string& res_path,
+                                                   int depth = 0);
+
     // S127 (R-NEW-423 follow-up, AOSP AssetManager2 ResolveAttributeReference
     // law): a REFERENCE whose target is a COLOR resolves package-routed —
     // package-0x01 ids through the framework table, app ids through the app
