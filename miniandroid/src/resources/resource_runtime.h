@@ -47,6 +47,7 @@ public:
             apply_is_a();
             apply_dex_class_exists_hook();
             apply_generate_child_lp_hook();
+            apply_fragment_tag_hook();
         }
         return *inflater_;
     }
@@ -96,6 +97,13 @@ public:
         if (inflater_) inflater_->set_generate_child_lp_hook(generate_child_lp_hook_);
     }
 
+    // F-NEW-339: same Factory law for the <fragment> tag hook — the
+    // inflater reports the tag element; the engine owns the DEX lifecycle.
+    void set_fragment_tag_hook(LayoutInflater::FragmentTagHook fn) {
+        fragment_tag_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_fragment_tag_hook(fragment_tag_hook_);
+    }
+
 private:
     void apply_custom_view_ctor_hook() {
         if (inflater_ && custom_view_ctor_hook_)
@@ -116,6 +124,10 @@ private:
     void apply_generate_child_lp_hook() {
         if (inflater_ && generate_child_lp_hook_)
             inflater_->set_generate_child_lp_hook(generate_child_lp_hook_);
+    }
+    void apply_fragment_tag_hook() {
+        if (inflater_ && fragment_tag_hook_)
+            inflater_->set_fragment_tag_hook(fragment_tag_hook_);
     }
 
 public:
@@ -265,6 +277,7 @@ private:
     LayoutInflater::DexClassExistsHook dex_class_exists_hook_;
     // F-NEW-309: process-wide generateLayoutParams hook (same Factory law).
     LayoutInflater::GenerateChildLpHook generate_child_lp_hook_;
+    LayoutInflater::FragmentTagHook fragment_tag_hook_;
     // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
     std::function<bool(const std::string&, const std::string&)> is_a_;
     // S124 THEME-BASE: cached AOSP-law Theme for the loaded APK.

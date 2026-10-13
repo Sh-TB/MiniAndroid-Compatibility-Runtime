@@ -355,6 +355,11 @@ public:
         out.swap(committed_);
         return !out.empty();
     }
+    // F-NEW-339 (AOSP FragmentLayoutInflaterFactory law): the XML
+    // <fragment> tag path commits a SYNTHETIC add-record through the SAME
+    // queue the DEX commit path uses, so the F-NEW-304 drains own the
+    // lifecycle dispatch for both origins.
+    void enqueue_committed(const PendingTx& tx) { committed_.push_back(tx); }
     void record_fragment(const FragmentRec& r) {
         for (auto& e : fragments_)
             if (e.frag == r.frag) { e = r; return; }

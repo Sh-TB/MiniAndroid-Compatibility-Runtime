@@ -859,6 +859,19 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     [this](const std::string& desc) -> bool {
                         return dalvik_engine_.is_dex_defined_class(desc);
                     });
+                // ── F-NEW-339: the XML <fragment> tag law — the inflater
+                // reports the tag element (view container, fragment class,
+                // tag, xml id); the engine instantiates the fragment through
+                // the FragmentFactory law and synthetic-commits it onto the
+                // SAME queue the DEX commit path uses (F-NEW-304 drains own
+                // the lifecycle).
+                rt.set_fragment_tag_hook(
+                    [this](uint32_t view_id,
+                           const std::string& frag_class_desc,
+                           const std::string& tag, int32_t xml_id) {
+                        dalvik_engine_.instantiate_fragment_tag(
+                            view_id, frag_class_desc, tag, xml_id);
+                    });
             }
             // G06 §4: canonical input pipeline. The dispatcher shares the
             // ViewShadow tree (geometry/state) and the HandlerShadow virtual

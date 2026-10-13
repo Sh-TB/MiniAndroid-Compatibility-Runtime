@@ -183,6 +183,21 @@ public:
     const DexClassExistsHook& dex_class_exists_hook() const {
         return dex_class_exists_hook_;
     }
+    // ── F-NEW-339: the XML <fragment> short-tag law ─────────────────
+    // AOSP FragmentLayoutInflaterFactory: <fragment android:name="…">
+    // instantiates the named fragment through the FragmentFactory and
+    // attaches it with the XML id + tag; the tag's view node is the
+    // container. The engine owns the DEX lifecycle; the inflater only
+    // reports (view_id, class, tag, xml_id) after the element's attrs
+    // (id included) were applied. Unset → the V4-TAG generic-View
+    // degradation continues (honest evidence, never silent).
+    using FragmentTagHook = std::function<void(uint32_t view_id,
+                                               const std::string& frag_class_desc,
+                                               const std::string& tag,
+                                               int32_t xml_id)>;
+    void set_fragment_tag_hook(FragmentTagHook fn) {
+        fragment_tag_hook_ = std::move(fn);
+    }
 
     // ── F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) ──────────
     // At XML inflation the PARENT container generates each child's
@@ -428,6 +443,7 @@ private:
     CustomViewCtorHook custom_view_ctor_hook_;
     CustomViewMeasureHook custom_view_measure_hook_;
     DexClassExistsHook dex_class_exists_hook_;
+    FragmentTagHook fragment_tag_hook_;
     GenerateChildLpHook generate_child_lp_hook_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.

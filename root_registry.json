@@ -5785,6 +5785,22 @@
     "run/cont59_338audit/ (all ten audit faces old/new + logs)",
     "scripts/cont59b_registry.py (this update: 649 -> 650)"
    ]
+  },
+  {
+   "id": "F-NEW-339",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "resources/inflater-fragment-tag + dex/fragment-lifecycle",
+   "title": "The XML <fragment> short tag (AOSP FragmentLayoutInflaterFactory) degraded to a generic View leaf: the V4-TAG law resolved short tags against the PLATFORM packages only and the support FragmentActivity factory never intercepted the tag — the named fragment was never instantiated, never attached, and findViewById-of-container / findFragmentById returned null (alexcalc_20: '[V4-TAG] unknown short tag <fragment> not in DEX', then NPE at MainActivity.onCreate: getSupportFragmentManager().findFragmentById(R.id.nav_host) → null → NavHostFragment.getNavController() NPE → APP-BOUNDARY unwind).",
+   "root_cause": "Evidence chain (binary 1574e61808d897ea (the probe-bearing build of the same fix tree) at 0d294972): (a) [V4-TAG] line names the tag + (b) [INFLATE-DIAG] el=fragment ida=YES aid=0x7f0901b1 view=556 — the element reaches the id block; (c) the hook wiring had a REAL bug found by the F339-DBG probe: ensure_loaded() (resource_runtime.cpp) recreates the LayoutInflater with its OWN hook-reapply block — the fragment hook was only wired into the inflater() accessor and was EMPTY on the inflating instance (hook=EMPTY measured; the G11 headingcalculator lesson applies to every new hook). FIX: (1) FragmentManagerShadow.enqueue_committed — the XML path feeds the SAME committed queue the DEX commit path uses; (2) DalvikEngine::instantiate_fragment_tag — DEX-existence check, FragmentFactory no-arg ctor via try_recursive_invoke, __frag_host__ linkage, synthetic add(container=xml_id, tag) + record_fragment; (3) the inflater <fragment> branch reports (view_id, class, tag, xml_id) after the element attrs applied; (4) the fragment tag hook installed through the RT Factory law INCLUDING ensure_loaded's reapply block (the fix for the hook=EMPTY face). Measured: [F-NEW-339] synthetic add committed; [F-NEW-304] created/started/resumed drains all run for the NavHostFragment (obj#557); findFragmentById answers through the shadow law (container==id) for the support-named corpus.",
+   "next_wave": "alex honestly stays PARTIAL with the remaining chain NAMED: (1) the androidx R8-obfuscated DEX state face — findFragmentById on alex reads the REAL androidx mAdded ArrayList + mContainerId fields (R8-renamed), so the synthetic commit must eventually run the REAL androidx DEX commit chain (F-NEW-262 DEX-instruction territory; the F-NEW-331 fixed-name field walk measured 0 hits on alex — the R8 field-name law is the root); (2) CoordinatorLayout 'Could not find descendant view with id null to anchor view AppBarLayout' (the S56-CONT anchor-id root); (3) the nav-graph chain (NavController.setGraph). Gate: 33/33 MATCH at 1574e61808d897ea (the hook is additive — only <fragment> tags trigger).",
+   "evidence": [
+    "run/cont59_alex_dbg2.log ([F339-DBG] hook=SET + [F-NEW-339] + [F-NEW-304] created/started/resumed)",
+    "run/cont59_alex_dbg.log ([F339-DBG] hook=EMPTY — the ensure_loaded bug measured)",
+    "scripts/cont59_registry.py (647 -> 649: F-NEW-337/337b)",
+    "scripts/cont59b_registry.py (649 -> 650: F-NEW-338)",
+    "scripts/cont59c_registry.py (650 -> 651: F-NEW-339)"
+   ]
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
@@ -5820,7 +5836,7 @@
   "ROOT_CAUSED_FIXED": 18,
   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
  },
- "total_roots": 650,
+ "total_roots": 651,
  "generated": "CONT-44 session",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
