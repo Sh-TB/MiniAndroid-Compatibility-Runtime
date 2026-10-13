@@ -1242,6 +1242,21 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
                 if (val && val->is_string()) { a.hint = val->string_value; stats.strings_resolved++; }
             } else a.hint = raw;
         }
+        else if (n == "entries") {
+            // F-NEW-337 (AOSP AbsSpinner constructor law): android:entries
+            // names an array resource; the Spinner builds an ArrayAdapter
+            // from it (setAdapter inside the widget ctor — no DEX call) and
+            // the widget's visible content is the SELECTED item, default
+            // index 0. Resolution is the canonical getStringArray law
+            // (F-NEW-319). A Spinner never carries android:text, so writing
+            // the selected item into a.text is unambiguous and flows through
+            // the generic text pipeline (layout + paint) unchanged.
+            if (at.value.is_reference()) {
+                auto items = arsc_.resolve_string_array(at.value.ref_id);
+                if (items && !items->empty()) a.text = (*items)[0];
+                else stats.unresolved_refs++;
+            } else stats.unresolved_refs++;
+        }
         else if (n == "textSize") {
             if (at.value.is_dimension()) a.text_size_px = parse_dim_attr(&at, stats);
             else a.text_size_px = (float)resolve_dimen_px(raw, stats);
