@@ -9289,3 +9289,48 @@ Stage Summary:
   payloads flowing for the first time. Next session owns the compose
   draw-leg decode (the [F343-SL] probe is committed), the dooz tap
   bridge, and the alex/Solitaire/notes audits.
+
+---
+Task ID: S61-W1 (CONT-61 Wave 1)
+Agent: Super Z (main)
+Task: F-NEW-344 — the compose text INTRINSIC leg (Layout.getDesiredWidth);
+the W1 root of the CONT-61 doubled-scale wave list.
+
+Work Log:
+- State recovery: HEAD c1e4b9dd (probe-artifacts commit) unpushed on top
+  of 8ed70f13; binary fresh at HEAD (make clean); registry 655 at start.
+- Decode ladder (all read-only probes): [F343-SL] census (getters arrive,
+  method=draw never) -> [DRAWWIN-BRIDGE] walk shape (Lj7;.e save ->
+  getLineBottom -> clipRect -> getClipBounds -> restore; draw missing) ->
+  [F298-GCB] re-read (the clip 540,59,540,108 is l==r EMPTY — the CONT-60
+  record mis-read it as w-h) -> [F298-OBTAIN]+[F344-PCTOR] extension
+  (width arg a4_type=1 INT32 VALUE=0; ctor constraints long lo32=0 = the
+  compose Infinity encoding = wrap-content NORMAL) -> [F344-LAYOUT]
+  (Layout.getDesiredWidth DOES arrive from Lsk0;.c, argc=4, no law).
+- FIX (one generic site): the getDesiredWidth law — TextShaper real
+  advances at the paint's recorded __text_size_px__; both overloads,
+  both CharSequence payload forms; the single-source-of-truth law
+  (box == pixels). Include ../fonts/text_shaper.h.
+- Measured: intrinsics 104/219/421/39/52 px; layouts build non-zero;
+  Layout.draw dispatches ([F-NEW-297] 45 text-op rows/run on csw — the
+  CONT-36 count, now real-width); dooz face 6841d52a -> 4f32f50fd55ccf90
+  x3 (title "Dooz" + "New game" label REAL GLYPHS, title-area dark px
+  0 -> 9030); csw face 3442d9a9 -> d3c26b73ee21e571 x3 (the title moved
+  from clipped-off-screen INTO view; raw-diff = title+digits bands only).
+- Gate: anchors 27/27 MATCH + csw x3 re-pin + simplecalc x3 MATCH +
+  dooz180 x3 re-pin + probe battery == records (f259g 84/7, fnew302
+  48/24 documented; fnew298 KEEP=5 corner PASS). Two INTENTIONAL re-pins
+  with rationale in scripts/cont37_regression.sh.
+- Registry 655 -> 656 (F-NEW-344 ROOT-CAUSED-FIXED). Evidence:
+  evidence/cont61/ (pre/post faces + views). Fresh tooling:
+  scripts/cont61_tryitem.py (code_item catch-table decoder — proved the
+  Lne;.g resumeWith catch-all law + the Lat;.a typed La; handlers),
+  scripts/cont61_fast_xref2.py (raw-u16 invoke xref), cont61_sl_xref.py.
+
+Stage Summary:
+- The compose text corpus-wide blocker is FIXED: text now flows
+  getDesiredWidth -> obtain(width) -> build -> clip -> Layout.draw ->
+  drawText ops. Dooz renders its title + button label for the first
+  time; csw's title recovered from off-screen. Honest next work named:
+  the paint 42px-size fallback question, the dooz icon glyphs (black
+  boxes), and the 400s rc=0 completion re-check.

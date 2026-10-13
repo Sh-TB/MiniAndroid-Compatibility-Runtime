@@ -28,6 +28,9 @@
 #include "../diagnostics/install_inspection.h"  // GATE A: zip_contains_entry (System.loadLibrary law)
 #include "../jni/jni_bridge.h"
 #include "../jni/dlopen_exec.h"  // #371 CLOSEOUT S-2: real native execution layer
+#include "../fonts/text_shaper.h"  // F-NEW-344: getDesiredWidth via the SAME
+                                   // shaper the drawText replay uses — the
+                                   // single source of truth (box == pixels).
 #include <nlohmann/json.hpp>  // F-NEW-243: org.json real laws (ordered_json)
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
@@ -2893,6 +2896,28 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
+    // F-NEW-344 probe (CONT-61): the AndroidParagraph (Lj7;) ctor args —
+    // the zero-width root decode. The obtain width=0 chain ends here:
+    // this ctor receives (delegate, I width, I height?, J constraints?);
+    // printing the raw args answers WHERE the zero entered (the caller's
+    // constraints decode).
+    {
+        static const bool f344_on =
+            std::getenv("MINIANDROID_F344_TRACE") != nullptr;
+        if (f344_on && class_name == "Lj7;" && method_name == "<init>") {
+            std::cerr << "[F344-PCTOR] Lj7.<init> argc=" << f282_args.size();
+            for (size_t f344_i = 0; f344_i < f282_args.size() && f344_i < 6;
+                 ++f344_i) {
+                const DalvikValue& f344_a = f282_args[f344_i];
+                std::cerr << " a" << f344_i << ":t" << (int)f344_a.type;
+                if (f344_a.type == DalvikType::INT32)
+                    std::cerr << "=" << f344_a.int_val;
+                else if (f344_a.type == DalvikType::INT64)
+                    std::cerr << "=" << f344_a.long_val;
+            }
+            std::cerr << std::endl;
+        }
+    }
     uint64_t f107_su0 = 0; phase_clock().enter(phase_clock().em_setup, f107_su0);  // S61 setup
     current_result_ = &result;
     bytecode_ = bytecode;
@@ -24992,6 +25017,18 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+    // F-NEW-344 probe (CONT-61): every Landroid/text/Layout; bridge call —
+    // the compose text intrinsic leg (getDesiredWidth family). Answers
+    // whether the intrinsic path reaches the engine and with what args.
+    if (class_name == "Landroid/text/Layout;") {
+        static thread_local uint64_t lay_n = 0;
+        if (lay_n++ < 40) {
+            std::cerr << "[F344-LAYOUT] " << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
     // CONT-36 (F-NEW-297 evidence): DRAW-OP ATTRIBUTION — env-gated,
     // bounded. Every Canvas draw-primitive bridge call INSIDE the
     // custom-view draw window, with the EXECUTING DEX caller. Answers
@@ -33619,6 +33656,78 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-344 (CONT-61): Landroid/text/Layout;.getDesiredWidth — the
+    // compose text INTRINSIC leg.
+    //
+    // ROOT CAUSE this fixes: the compose text pipeline (dooz v23, compose
+    // ui 1.11) measures wrap-content text through
+    //   androidx.compose.ui.text.AndroidTextLayoutIntrinsics (R8: Lsk0;.c):
+    //   Layout.getDesiredWidth(text, paint, textDir, firstPassMode)
+    // — the paragraph width for UNBOUNDED (FocusInterceptor: maxWidth bits
+    // all zero) constraints. With NO law the typed-default answered 0 →
+    // TextDelegate width 0 → StaticLayout built with width=0 (measured
+    // [ROOT-063] width=0 at BUILD time) → AndroidParagraph.paint (Lj7.e)
+    // clipRect(0, 0, 0, h) → Canvas.getClipBounds answered the EMPTY clip
+    // (l==r → FALSE, [F298-GCB] clip=540,59,540,108) → the compose paint
+    // cull (`if (!canvas.getClipBounds(r)) return`) skipped Layout.draw —
+    // SLDRAW 0, zero exceptions, zero text pixels corpus-wide.
+    //
+    // AOSP law (android.text.Layout.java): getDesiredWidth returns the
+    // single-line advance width (no wrapping) — TextLine.metrics(null)
+    // .width. Overloads: (CharSequence, TextPaint) and (CharSequence,
+    // TextPaint, TextDirectionHeuristic, float firstPassMode) — dooz v23
+    // measured the 4-arg form (argc=4 from Lsk0;.c).
+    //
+    // FIX (one generic site, zero app knowledge): shape the text with the
+    // SAME pipeline the Canvas drawText replay uses (fonts::TextShaper —
+    // FreeType/HarfBuzz real advances) at the paint's recorded
+    // __text_size_px__ (the F-NEW-226 identity store, the same probe the
+    // StaticLayout build law consumes) — measured geometry and painted
+    // pixels stay one source of truth.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/text/Layout;" && method == "getDesiredWidth") {
+        std::string gdw_text;
+        if (!args.empty()) {
+            if (args[0].type == DalvikType::STRING_REF)
+                gdw_text = args[0].string_val;
+            else if (args[0].type == DalvikType::OBJECT_REF &&
+                     heap_.has_object(args[0].object_id)) {
+                auto sv = heap_.get_object_field(args[0].object_id, "value");
+                if (!sv.has_value())
+                    sv = heap_.get_object_field(args[0].object_id, "sb_value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                    gdw_text = sv->string_val;
+            }
+        }
+        float gdw_size = 42.0f;  // the documented pipeline default (build law)
+        if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0) {
+            auto sz = heap_.get_object_field(args[1].object_id,
+                                             "__text_size_px__");
+            if (sz.has_value() && sz->type == DalvikType::FLOAT32 &&
+                sz->float_val > 0.0f)
+                gdw_size = sz->float_val;
+        }
+        float gdw_w = 0.0f;
+        if (!gdw_text.empty() &&
+            fonts::TextShaper::instance().available()) {
+            const auto& shaped = fonts::TextShaper::instance().shape(
+                gdw_text, gdw_size, /*bold=*/false);
+            gdw_w = shaped.width;
+        }
+        // ASCII-sanitize the diag (the payload may hold arbitrary bytes).
+        std::string gdw_diag;
+        for (char c : gdw_text.substr(0, 24))
+            gdw_diag.push_back((c >= 32 && c < 127) ? c : '?');
+        std::cerr << "[F-NEW-344] getDesiredWidth len=" << gdw_text.size()
+                  << " \"" << gdw_diag << "\" size=" << gdw_size
+                  << " -> " << gdw_w << std::endl;
+        result = DalvikValue::make_float(gdw_w);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;  // pc advance is the invoke-site's contract (bridge_to_api)
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // ROOT-063 (S115): android.text.StaticLayout$Builder / StaticLayout —
     // REAL materialization (never-null fluent builder + measurable layout).
     //
@@ -33752,6 +33861,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           << sv->string_val.substr(0, 32)
                                           << "\"";
                         }
+                        // F-NEW-344 probe (CONT-61): the OBTAIN WIDTH ARG —
+                        // the paragraph clip cull chain (dooz v23: layout
+                        // width=0 → clipRect w=0 → getClipBounds FALSE →
+                        // compose cull → Layout.draw never dispatched).
+                        // Answers what type/value compose passes as the
+                        // width and WHICH DEX site calls.
+                        std::cerr << " a3_type="
+                                  << (args.size() > 3
+                                          ? (int)args[3].type : -1)
+                                  << " a4_type="
+                                  << (args.size() > 4
+                                          ? (int)args[4].type : -1)
+                                  << " a4_int="
+                                  << (args.size() > 4 &&
+                                              args[4].type == DalvikType::INT32
+                                          ? args[4].int_val : 0)
+                                  << " a4_flt="
+                                  << (args.size() > 4 &&
+                                              args[4].type == DalvikType::FLOAT32
+                                          ? args[4].float_val : 0.f)
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_;
+                        // F-NEW-344 probe: the caller CHAIN above the direct
+                        // caller — where the zero width entered.
+                        {
+                            auto frames = call_stack_.snapshot_top_first();
+                            for (size_t fi = 0;
+                                 fi < frames.size() && fi < 4; ++fi)
+                                std::cerr << " ^" << fi << "<"
+                                          << frames[fi].first << "."
+                                          << frames[fi].second << ">";
+                        }
                         std::cerr << std::endl;
                     }
                 }
@@ -33843,6 +33984,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                               ? (" len=" + std::to_string(
                                                      args[1].string_val.size()))
                                               : "");
+                        // F-NEW-344 probe: setter VALUE (the ellipsized-
+                        // width/width setters carry the real paragraph
+                        // width — compare against the obtain width arg).
+                        if (args.size() >= 2 &&
+                            args[1].type == DalvikType::INT32)
+                            std::cerr << " a1_int=" << args[1].int_val;
+                        if (args.size() >= 2 &&
+                            args[1].type == DalvikType::FLOAT32)
+                            std::cerr << " a1_flt=" << args[1].float_val;
                         std::cerr << std::endl;
                     }
                 }
