@@ -9008,3 +9008,20 @@ Stage Summary:
 - Two new generic roots closed in one wave: declarative Spinner content (entries law) and theme-attribute ColorStateList items (the 0x0101xxxx law) — both class-agnostic, zero app knowledge, probe of record = raw-diff single-region proof.
 - The BMI spinner leg advanced the user's complete-complete campaign: content now materializes with the CORRECT themed color; the remaining visibility blocker is named with its measured blast radius (the transparent-container wave).
 - Next wave owns: F-NEW-338 candidate (GREY_200 fill → transparent-container law), BMI row-weight squeeze, alex androidx-nav chain, OpenCalc srcCompat vector-drawables (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), plus the standing mosaic+external-upload directive.
+
+---
+Task ID: S59-B (CONT-59 WAVE B)
+Agent: Super Z (main)
+Task: The named next root from S59-A: the EXP-092 GREY_200 container fill vs the AOSP transparent-container law (the visibility blocker for BMI's correctly-colored spinner text). Doubled-task directive continues.
+
+Work Log:
+- FIX F-NEW-338 (one site): the container branch in the execution_engine draw walk no longer paints GREY_200 — a background-less container is TRANSPARENT (AOSP View.draw law, completing R-NEW-336); the theme windowBackground (EXT01 fb.clear law) shows through. The fill's visibility purpose stays for LEAF views (C013 diagnostic law; the placeholder requires children.empty() — containers unaffected structurally).
+- BMI measured FIRST at the fix binary 90e0112c1face89b: spinner regions (48,48,48) = the app's real dark window + WHITE glyph pixels (1108/1294) — 'Kilograms'/'Centimetres' VISIBLE. The F-NEW-337→337b→338 chain is complete end-to-end: XML entries → selected item → themed ?attr/colorForeground → visible text on the honest surface.
+- RAW-DIFF AUDIT per face (old binary re-built via stash to the byte-exact c0162daeaee55a10; all five recorded faces reproduced byte-exactly BEFORE the fix binary re-built): microtimer da73010a→55343bbe (fill 225→255,255,255 = its 0xffffffff window; zero content px lost); unote 4f1a9e4e→90a67cc1 (top band 225→48 default dark; band empty both sides — verified visually); opencalc 0ae271c4→b7a7fe8e (content region 225→48 = the app's dark Material window; pad cells + glyphs unchanged; the previously light-washed empty pad cell now honest); tanana 601e0219→afe0bd8d (1.94M px 225→250 = the app's 0xfffafafa window; rows visible, text re-blend only); simplecalc 950b955c→341b9cec (225→250; display/pad byte-stable outside the swap).
+- ZERO-DRIFT REGRESSION: gate 33/33 MATCH at 90e0112c1face89b (5 faces re-pinned with per-face raw-diff rationale in cont37_regression.sh); probe battery == records (f259g 84/7 + fnew302 48/24 documented known rows).
+- Mosaic refreshed with the post-338 faces (13 tiles) and uploaded: https://h.uguu.se/RbaoonQL.png (HTTP 200) + tmpfiles mirror; pushed as d52fec8f earlier in the wave.
+- Registry 649 → 650 (scripts/cont59b_registry.py): F-NEW-338 appended ROOT-CAUSED-FIXED; total_roots synced. Evidence: evidence/cont59/{f338_faces_review.png, unote_f338_topband.png}.
+
+Stage Summary:
+- The complete-complete campaign's biggest single visual step: dark-theme apps now show their REAL window color corpus-wide (BMI spinner labels visible; opencalc/unote honest dark surfaces; tanana/simplecalc at their true theme whites) — every changed face raw-diff-proven as fill-color-swap-only, zero content pixels lost.
+- Standing 33-anchor gate is green at the new pins; the doubled task list continues: BMI row-weight squeeze, alex androidx-nav chain, OpenCalc srcCompat vector-drawables (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267).
