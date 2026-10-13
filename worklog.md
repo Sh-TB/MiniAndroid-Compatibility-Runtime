@@ -9025,3 +9025,19 @@ Work Log:
 Stage Summary:
 - The complete-complete campaign's biggest single visual step: dark-theme apps now show their REAL window color corpus-wide (BMI spinner labels visible; opencalc/unote honest dark surfaces; tanana/simplecalc at their true theme whites) — every changed face raw-diff-proven as fill-color-swap-only, zero content pixels lost.
 - Standing 33-anchor gate is green at the new pins; the doubled task list continues: BMI row-weight squeeze, alex androidx-nav chain, OpenCalc srcCompat vector-drawables (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267).
+
+---
+Task ID: S59-C (CONT-59 WAVE C)
+Agent: Super Z (main)
+Task: The doubled list continues — alex androidx-nav chain front 1: the <fragment> tag root (the '[V4-TAG] unknown short tag <fragment>' evidence from the alex decode).
+
+Work Log:
+- ROOT DECODE (alexcalc_20 at 0d294972): MainActivity.onCreate NPEs at findFragmentById(R.id.nav_host) — the [V4-TAG] line proved the layout's <fragment> short tag degraded to a generic View leaf: the AOSP FragmentLayoutInflaterFactory (FragmentActivity factory instantiating the named fragment) never existed in the engine; no fragment was created, nothing attached, nav chain dead at birth.
+- FIX F-NEW-339 (three generic sites): (1) layout_inflater — a <fragment> branch reporting (view_id, frag_class_desc, tag, xml_id) through a new Factory-law hook after the element attrs applied (android:name with the AOSP class= fallback); (2) DalvikEngine::instantiate_fragment_tag — DEX-existence gate, the FragmentFactory NO-ARG ctor via try_recursive_invoke, __frag_host__ linkage, a synthetic add(container=xml_id, tag) pushed through FragmentManagerShadow::enqueue_committed (the SAME queue the DEX commit path feeds — one lifecycle owner), + record_fragment so findFragmentById(container==id) and the to_started drain resolve it; (3) execution_engine wiring through the RT Factory law.
+- NEW PROBLEM SEEN MID-WAVE (fixed immediately): the first test showed hook=EMPTY (F339-DBG probe) — ensure_loaded() recreates the LayoutInflater with its OWN hook-reapply block (the G11 headingcalculator Factory-law lesson applies to EVERY new hook) — the fragment tag hook was wired into the inflater() accessor only. Fixed by applying it in ensure_loaded too. Measured after: hook=SET.
+- RESULT (measured): [F-NEW-339] <fragment> NavHostFragment obj#557 container=2131296689 synthetic add committed; [F-NEW-304] created/started/resumed drains ALL run for it. Zero-drift gate: 33/33 MATCH (the hook is additive — only <fragment> tags trigger; the corpus anchors carry no fragment tags).
+- alex honestly stays PARTIAL with the remaining chain NAMED and evidenced: (1) the androidx R8-obfuscated DEX-state face — alex's findFragmentById reads the REAL mAdded ArrayList + mContainerId (R8-renamed fields); the synthetic commit must ultimately run the REAL androidx DEX commit chain (F-NEW-262 territory; F-NEW-331's fixed-name walk = 0 hits on alex — the R8 field-name law is the root); (2) the CoordinatorLayout anchor ISE ('descendant view with id null to anchor AppBarLayout' — the S56-CONT root); (3) the nav-graph setGraph chain.
+- Registry 650 → 651 (scripts/cont59c_registry.py): F-NEW-339 appended ROOT-CAUSED-FIXED.
+
+Stage Summary:
+- The <fragment> short tag now instantiates real fragments through the FragmentFactory law with the full lifecycle drain — a corpus-wide capability (any XML-fragment app benefits); the alex nav chain advanced one link with the next roots named precisely.
