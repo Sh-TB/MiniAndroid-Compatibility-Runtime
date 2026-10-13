@@ -109,6 +109,38 @@ renderer::VectorRefResolver ExecutionEngine::image_ref_resolver() {
     return [this, &rt, names, cache](uint32_t resid,
                                      renderer::VectorImageRef* out) -> bool {
         if (!out) return false;
+        // F-NEW-341 (the vector-tint theme-attr law): an ATTR id must
+        // resolve through the THEME SERVICE, never the resource table —
+        // the table deref answers the attr-DEFINITION row (a format-flag
+        // INT) and attr_color paints its data as ARGB (alpha-0); the
+        // AOSP VectorDrawable tint composes SRC_IN (output alpha =
+        // fill.a × tint.a), so an alpha-0 tint ERASED every tinted icon
+        // (OpenCalc v53: all five ImageButton vector icons decoded opaque
+        // white yet painted zero pixels; tint = app attr 0x7f0404b8).
+        // Reuses the F-NEW-337b/336 law: color/int accepted; a res/color
+        // file value recurses through the app-package file law; anything
+        // else = honest no-tint (the drawable's own fillColor paints —
+        // the AOSP fallback), never a fabricated color.
+        if ((resid >> 24) == 0x7f && ((resid >> 16) & 0xff) == 0x04) {
+            auto tv = rt.resolve_theme_attr_typed(apk_path_, resid, -1);
+            if (tv && (tv->is_color() || tv->is_int())) {
+                out->resolved = true;
+                out->is_color = true;
+                out->argb = tv->data;
+                return true;
+            }
+            if (tv && tv->is_string() &&
+                tv->string_value.rfind("res/", 0) == 0) {
+                auto c = rt.resolve_apk_file_color(tv->string_value);
+                if (c) {
+                    out->resolved = true;
+                    out->is_color = true;
+                    out->argb = *c;
+                    return true;
+                }
+            }
+            return false;
+        }
         // Colors first (ARSC typed value; framework package handled in the
         // decoder's own table).
         auto val = rt.arsc().resolve_value(resid);
@@ -409,6 +441,7 @@ bool ExecutionEngine::stage_load_apk(const std::string& path, ExecutionResult& r
     apk_parser_.set_verbose(parse_verbose);
     
     result.apk_info = apk_parser_.parse(path);
+    apk_path_ = path;  // F-NEW-341: theme-attr resolution needs the path
     
     if (!result.apk_info.is_valid) {
         set_error("APK parsing failed: " + result.apk_info.validation_error);

@@ -9105,3 +9105,52 @@ Stage Summary:
   (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge
   (F-NEW-267), alex R8 DEX-state + CoordinatorLayout anchor + nav-graph,
   Solitaire/notes audit, mosaic refresh + external upload.
+
+---
+Task ID: S60-B (CONT-60 WAVE 2)
+Agent: Super Z (main)
+Task: The doubled list continues — the OpenCalc ImageButton vector icons
+(the "srcCompat vector-drawable family" queued since S58). Standing rule:
+new problems get fixed the moment they are seen.
+
+Work Log:
+- Decode: GfxProvenance showed all five OpenCalc vector icons (menu
+  overflow, exponent, scientist-mode chevron, decimal point, backspace)
+  DECODING (vector->rgba 63x63) and DRAWING (DRAW_CALLED=true at the
+  correct fit rects, e.g. (521,531) 126x126) — yet the face census showed
+  the regions pure window color. A transparency failure, not placement.
+- Static AXML decode of res/5n.xml (corrected-offset parser): <vector>
+  tint = ?app-attr 0x7f0404b8, fillColor = ?android:attr white. The
+  resolver fed attr ids to arsc().resolve_value() FIRST — the attr-
+  DEFINITION row (a format-flag INT) came back, is_int() accepted it,
+  argb = format flags (ALPHA-0); the SRC_IN tint law then multiplied the
+  fill alpha to zero. Same law family as F-NEW-337b (the 0x0101xxxx
+  item-color deref), never applied to the vector resolver.
+- FIX (F-NEW-341, one generic site): image_ref_resolver routes app-attr
+  ids (0x7f04xxxx) through resolve_theme_attr_typed with the F-NEW-336
+  type law (color/int; res/color file recursion; else honest nullopt =
+  no tint, the own fillColor paints). Engine persists apk_path_ for the
+  resolver (set in stage_load_apk).
+- RESULT (measured): all five icons render — menu dots, exponent caret,
+  chevron, point disc, backspace tag-x (black glyphs, the themed tint).
+  NEW PROBLEM SEEN (named, not speculatively fixed): the pad ImageButtons
+  paint an opaque dark bg where the real app is borderless-transparent
+  (?attr/selectableItemBackgroundBorderless family) — recorded as the
+  next-wave root with the framework-attr branch gap.
+- RAW-DIFF single-family proof (old binary re-built via stash to the
+  byte-exact 290c9459): 22,483 changed pixels, 100% inside the five icon
+  glyph boxes; display band and pad text unchanged.
+- ZERO-DRIFT REGRESSION (d1421eb23535e163): 33/36 REG MATCH + opencalc
+  x3 INTENTIONAL re-pin (REAL_APP_CONTENT retained, richer render —
+  rationale recorded in cont37_regression.sh) + csw 3/3 + simplecalc 3/3
+  + dooz180 3/3.
+- Registry 652 → 653 (F-NEW-341 ROOT-CAUSED-FIXED). Evidence:
+  evidence/cont60/opencalc_f341_before_after.png.
+
+Stage Summary:
+- The OpenCalc face is icon-complete for the first time: every pad icon
+  and the overflow menu render real vector art with the themed tint. The
+  raw-diff proof bounds the change to exactly the icon glyphs.
+- Queued next: the borderless-transparent bg chain (F-NEW-342 candidate),
+  dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), alex R8
+  DEX-state + CoordinatorLayout anchor, Solitaire/notes audit, mosaic.

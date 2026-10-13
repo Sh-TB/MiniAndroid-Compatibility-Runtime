@@ -129,7 +129,13 @@ anchors)
     # The pre-fix face a976d2f9fb675cb3 was the compressed pad (579-wide
     # sliding_layout, 52x0 display HSVs). New face 0ae271c49d2bd61c x3
     # deterministic. Every OTHER anchor byte-identical (42/42 runs).
-    run1 "opencalc_r$i"   "$OPENCALC"  b7a7fe8efadf9aa8
+    run1 "opencalc_r$i"   "$OPENCALC"  53e8d711e8c4551e
+    # CONT-60 F-NEW-341 RE-PIN: the vector-tint theme-attr law (?attr/…
+    # tints resolve through the theme service — the table deref answered
+    # the attr-DEFINITION int and the alpha-0 SRC_IN tint erased every
+    # icon). RAW-DIFF-PROVEN: 22,483 changed px, 100% inside the five
+    # icon glyph boxes (menu dots, exponent caret, chevron, point,
+    # backspace); display band and pad text unchanged. New face x3.
     run1 "tttdeluxe_r$i"  "$TTT"       af6094295ecb50e3
     run1 "flappycow_r$i"  "$FLAPPY"    13cf47464d9787f4
     run1 "g2048_r$i"      "$G2048"     59ca1526611c4622

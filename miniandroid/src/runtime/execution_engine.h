@@ -327,6 +327,8 @@ private:
     
     // Components
     apk::ApkParser apk_parser_;
+    std::string apk_path_;  // F-NEW-341: the committed APK path (theme-attr
+                            // resolution in image_ref_resolver; set at load)
     dex::DexParser dex_parser_;
     dalvik::DalvikExecutionEngine dalvik_engine_;  // EXP-031: Real executor
     diagnostics::TraceEngine trace_engine_;
