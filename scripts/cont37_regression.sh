@@ -167,10 +167,18 @@ anchors)
 dooz180)
   # CONT-43: the dooz case-E content face as a standing gate — with a fair
   # budget the compose boot COMPLETES (~80 s / 25M insns) and the REAL app
-  # scaffold renders (Material3 surface + top bar + FAB + pill button);
-  # deterministic x5 at 90 s and 180 s. Verdict VIEWTREE_NO_APP_PIXELS is
-  # the census attribution lag (F-NEW-307a) — the pixels are real app
-  # content; F-NEW-307 owns the census fix + the boot-cost decode.
+  # scaffold renders (Material3 surface + top bar + FAB + pill button).
+  # CONT-61 F-NEW-344 RE-PIN: the Layout.getDesiredWidth law — the compose
+  # text intrinsic leg (AndroidTextLayoutIntrinsics Lsk0;.c ×2 measured;
+  # the typed-default answered 0 → every compose StaticLayout built
+  # width=0 → the paragraph clipRect w=0 → getClipBounds FALSE → the
+  # compose 1.11 paint cull skipped Layout.draw → zero text pixels).
+  # Post-fix: intrinsics 104px ("Dooz") / 219px ("New game") via the REAL
+  # shaper; layouts build non-zero; Layout.draw dispatches; the title and
+  # button label render real glyphs. RAW-DIFF: the changed pixels are the
+  # text bands (title y0-120, button label band) + AA re-blends; the
+  # scaffold/window pixels unchanged. New face 4f32f50fd55ccf90 x3
+  # deterministic — REAL_APP_CONTENT retained, richer render.
   for i in 1 2 3; do
     o="$OUT/dooz180_r$i"; rm -rf "$o"; mkdir -p "$o"
     timeout 580 "$BIN" run "$DOOZ" --width 1080 --height 1920 \
@@ -178,8 +186,8 @@ dooz180)
     rc=$?
     sha=$(sha256sum "$o/screenshot.png" 2>/dev/null | cut -c1-16)
     verdict="DRIFT"
-    [ "$sha" = "6841d52a20e6597e" ] && verdict="MATCH"
-    echo "REG dooz180_r$i rc=$rc sha=$sha want=6841d52a20e6597e $verdict"
+    [ "$sha" = "4f32f50fd55ccf90" ] && verdict="MATCH"
+    echo "REG dooz180_r$i rc=$rc sha=$sha want=4f32f50fd55ccf90 $verdict"
   done
   ;;
 target)
@@ -189,8 +197,16 @@ target)
   # was exactly the dropped identity; the stub fabricated null mid-build).
   # The pinned healthy face 3442d9a9dc0fa0f9 returned byte-exact x3 with
   # zero drift everywhere. The case stays as the standing gate.
+  # CONT-61 F-NEW-344 RE-PIN: the same Layout.getDesiredWidth law — csw's
+  # compose (older ui, no paint cull) called it ×3 ("Compose Stopwatch"
+  # →421px, "0."→39px, "00"→52px); the pre-fix width=0 layouts drew the
+  # title CLIPPED OFF-SCREEN (op x≈1070 on a 1080 face). Post-fix the
+  # real intrinsic widths move the title INTO VIEW (op x=607, fully
+  # readable). RAW-DIFF: bbox (607,36)-(1080,1095) = the title + digits
+  # bands ONLY; cards/pill/track pixels byte-identical. New face
+  # d3c26b73ee21e571 x3 deterministic — REAL_APP_CONTENT retained.
   for i in 1 2 3; do
-    run1 "csw_r$i" "$CSW" 3442d9a9dc0fa0f9
+    run1 "csw_r$i" "$CSW" d3c26b73ee21e571
   done
   ;;
 probes)
