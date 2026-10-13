@@ -3686,9 +3686,21 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     aid = an->parent_id;
                                 }
                                 if (is_container && !is_full_screen && !ancestor_has_bg) {
-                                    canvas.draw_rect(left, top, right, bottom,
-                                                   renderer::Colors::GREY_200);
-                                    drew_bg = true;
+                                    // F-NEW-338 (AOSP View.draw law, completing
+                                    // R-NEW-336): a background-less container is
+                                    // TRANSPARENT — the WINDOW background (the
+                                    // theme windowBackground, already on the
+                                    // framebuffer via the EXT01 law) shows
+                                    // through. The old EXP-092 GREY_200
+                                    // visibility fill painted a light surface
+                                    // over dark-theme windows: BMI's themed
+                                    // WHITE spinner text (F-NEW-337/337b chain)
+                                    // sat on the light fill and was invisible;
+                                    // the dark face was the AOSP truth. The
+                                    // fill's visibility purpose is retained for
+                                    // LEAF views by the C013 diagnostic law —
+                                    // containers are honest windows now.
+                                    drew_bg = false;
                                 } else if (is_container && ancestor_has_bg) {
                                     // AOSP transparent container: nothing to
                                     // paint here; the ancestor's background
