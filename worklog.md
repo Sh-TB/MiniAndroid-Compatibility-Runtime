@@ -9219,3 +9219,47 @@ Stage Summary:
 - The user-visible deliverable is live: three faces improved this session
   (OpenCalc icons+window, BMI row alignment, gmdice hint carried over).
 - 0x0.st unreachable from the container (HTTP 000); uguu/tmpfiles work.
+
+---
+Task ID: S60-D (CONT-60 WAVE 4)
+Agent: Super Z (main)
+Task: The dooz Compose draw/text frontier (F-NEW-256 legacy, the biggest
+queued front) — decode the zero-glyph compose text leg.
+
+Work Log:
+- Decode level 1: the [F298-SLDRAW] diag showed every StaticLayout.draw
+  dispatch carrying text_len=0; [ROOT-063] obtain recorded text.len=0
+  width=0 at BUILD time — the layouts were born empty.
+- Decode level 2: the extended [F298-OBTAIN] diag named the source —
+  compose passes an OBJECT_REF Landroid/text/SpannableString; with NO
+  payload fields. The engine had NO SpannableString law at all (the ctor
+  was a silent no-op) AND the obtain law stored NULL for every non-
+  STRING_REF source. TWO stacked law gaps, one pipeline.
+- FIX (F-NEW-343, two sites, generic): (a) SpannableString.<init>(
+  CharSequence) stores the arg text under the engine's CharSequence
+  convention (value + text alias; the arg read accepts STRING_REF and
+  OBJECT_REF payloads); (b) StaticLayout.Builder.obtain accepts both
+  payload forms. Measured: value="Dooz" (4 chars) / "New game" (8 chars)
+  reach the builder; build lays out chars=4/8 with the REAL compose
+  strings for the first time.
+- HONEST PARTIAL: the dooz face is byte-unchanged (6841d52a at 180s and
+  at a 400s budget that COMPLETES rc=0 — not budget truncation). The
+  remaining leg is named: with non-empty text the paint path diverges
+  before the Layout.draw dispatch — the [F298-GCB] clip answer went from
+  the broken empty clip to the REAL paragraph clip (540,59,540x108) and
+  the SLDRAW dispatch never fires (pre-fix 5x on the empty path); the
+  draw-walk gates (Ltw1;.d) flipped FALSE→TRUE (the walk reaches
+  deeper). Next wave decodes the post-clip-gate dispatch.
+- ZERO-DRIFT REGRESSION (976b3a5b4e6a5e99): anchors 27/27 + opencalc
+  re-pin 3/3 + csw 3/3 + simplecalc 3/3 + dooz180 3/3 + probe battery ==
+  records. The payload law is pixel-neutral corpus-wide.
+- Registry 654 → 655 (F-NEW-343 ROOT-CAUSED-PARTIAL).
+
+Stage Summary:
+- The compose text leg's FIRST REAL progress: the text payloads
+  ("Dooz", "New game") now flow from the DEX through SpannableString
+  into StaticLayout builds. The pixel leg (the draw dispatch after the
+  clip gate) is the named next decode with its exact evidence.
+- The mosaic deliverable is live (n.uguu.se/zYKXvGqW.png). Queued: the
+  draw-leg decode, dooz tap bridge (F-NEW-267), alex R8 DEX-state,
+  Solitaire/notes audits.

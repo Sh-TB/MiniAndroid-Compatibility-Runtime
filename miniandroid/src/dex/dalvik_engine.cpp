@@ -33352,6 +33352,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
+    // ── F-NEW-343 (CONT-60): SpannableString ctor law ──────────────────
+    // AOSP android.text.SpannableString(CharSequence source): stores the
+    // source as the CharSequence payload. The compose text pipeline wraps
+    // its text in SpannableString BEFORE StaticLayout.Builder.obtain
+    // (measured: dooz v23 obtain a0 = OBJECT_REF Landroid/text/
+    // SpannableString; with NO payload fields). With no law here the ctor
+    // was a silent no-op — the object stayed bare, obtain stored a null
+    // source, build() laid out an EMPTY string (text_len=0 at every
+    // [F298-SLDRAW]) and the whole compose text leg drew nothing.
+    // The payload uses the engine's CharSequence convention ("value",
+    // with the "text" alias for readers).
+    if (class_name == "Landroid/text/SpannableString;") {
+        uint32_t ss_id = (!args.empty() &&
+                          args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id : 0;
+        if (method == "<init>" && ss_id != 0 && args.size() >= 2) {
+            std::string text;
+            const DalvikValue& a = args[1];
+            if (a.type == DalvikType::STRING_REF) {
+                text = a.string_val;
+            } else if (a.type == DalvikType::OBJECT_REF &&
+                       heap_.has_object(a.object_id)) {
+                auto sv = heap_.get_object_field(a.object_id, "value");
+                if (!sv.has_value())
+                    sv = heap_.get_object_field(a.object_id, "sb_value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                    text = sv->string_val;
+            }
+            DalvikValue tv = DalvikValue::make_string(text, 0);
+            heap_.set_object_field(ss_id, "value", tv);
+            heap_.set_object_field(ss_id, "text", tv);
+            if (std::getenv("MINIANDROID_F343_DIAG"))
+                std::cerr << "[F-NEW-343] SpannableString.<init> obj#" << ss_id
+                          << " chars=" << text.size() << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+
     if (class_name == "Ljava/lang/StringBuilder;" ||
         class_name == "Ljava/lang/StringBuffer;") {
         uint32_t sb_id = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
@@ -33679,7 +33719,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // feeds the builder — arg type + payload size.
                 {
                     static thread_local uint64_t obt_n = 0;
-                    if (obt_n++ < 24)
+                    if (obt_n++ < 24) {
                         std::cerr << "[F298-OBTAIN] a0_type="
                                   << static_cast<int>(args[0].type)
                                   << " str_len="
@@ -33689,17 +33729,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                   << (args[0].type == DalvikType::STRING_REF
                                           ? args[0].string_val.substr(0, 32)
                                           : std::string())
-                                  << "\" argc=" << args.size() << std::endl;
+                                  << "\" argc=" << args.size();
+                        if (args[0].type == DalvikType::OBJECT_REF &&
+                            heap_.has_object(args[0].object_id)) {
+                            std::string obt_cls;
+                            heap_.get_object_class(args[0].object_id,
+                                                   obt_cls);
+                            std::cerr << " obj_cls=" << obt_cls
+                                      << " value_len=";
+                            auto sv = heap_.get_object_field(
+                                args[0].object_id, "value");
+                            if (!sv.has_value())
+                                sv = heap_.get_object_field(
+                                    args[0].object_id, "sb_value");
+                            std::cerr << (sv.has_value() &&
+                                                  sv->type ==
+                                                      DalvikType::STRING_REF
+                                              ? sv->string_val.size() : -1);
+                            if (sv.has_value() &&
+                                sv->type == DalvikType::STRING_REF)
+                                std::cerr << " value=\""
+                                          << sv->string_val.substr(0, 32)
+                                          << "\"";
+                        }
+                        std::cerr << std::endl;
+                    }
                 }
                 // static: args = [source, start, end, paint, width]
                 self = heap_.allocate("Landroid/text/StaticLayout$Builder;",
                                       pc_, 0);
-                heap_.set_object_field(
-                    self, "source",
-                    args.size() > 0 &&
-                            args[0].type == DalvikType::STRING_REF
-                        ? DalvikValue::make_string(args[0].string_val, 0)
-                        : DalvikValue::make_null());
+                // F-NEW-343: the source store accepts BOTH payload forms —
+                // a STRING_REF immediate AND an OBJECT_REF CharSequence
+                // (the engine's "value"/"sb_value" convention; compose
+                // passes SpannableString objects, dooz v23 measured). The
+                // old law stored NULL for every OBJECT_REF source.
+                {
+                    DalvikValue src = DalvikValue::make_null();
+                    if (args.size() > 0) {
+                        if (args[0].type == DalvikType::STRING_REF) {
+                            src = DalvikValue::make_string(args[0].string_val, 0);
+                        } else if (args[0].type == DalvikType::OBJECT_REF &&
+                                   heap_.has_object(args[0].object_id)) {
+                            auto sv = heap_.get_object_field(
+                                args[0].object_id, "value");
+                            if (!sv.has_value())
+                                sv = heap_.get_object_field(
+                                    args[0].object_id, "sb_value");
+                            if (sv.has_value() &&
+                                sv->type == DalvikType::STRING_REF)
+                                src = DalvikValue::make_string(sv->string_val, 0);
+                        }
+                    }
+                    heap_.set_object_field(self, "source", src);
+                }
                 int32_t start = args.size() > 1 ? sl_int(0, "x", 0) : 0;
                 if (args.size() > 1 && args[1].type == DalvikType::INT32)
                     start = args[1].int_val;
