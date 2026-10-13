@@ -9199,3 +9199,23 @@ Stage Summary:
   carries one.
 - Queued next: dooz Compose draw (F-NEW-256), dooz tap bridge
   (F-NEW-267), alex R8 DEX-state, Solitaire/notes audit, mosaic.
+
+---
+Task ID: S60-MOSAIC (CONT-60 mosaic refresh + external upload)
+Agent: Super Z (main)
+Task: The standing user directive — mosaic of the loaded apps refreshed
+with the CONT-60 faces and uploaded to an external site.
+
+Work Log:
+- Mosaic rebuilt (scripts/cont60_mosaic.py): 12 tiles — OpenCalc with the
+  F-NEW-341/342 face (icons + themed window), BMI with the F-NEW-340
+  aligned form, plus the ten standing faces (simplecalc, tanana, gmdice,
+  dooz honest-scaffold, csw, ttt, flappycow, 2048, microtimer, unote).
+- UPLOADED: uguu.se https://n.uguu.se/zYKXvGqW.png (HTTP 200 verified) +
+  tmpfiles mirror https://tmpfiles.org/wiAwK7X6Q3s6/cont60_app_mosaic.png
+  + the repo raw (evidence/cont60/CONT60_APP_MOSAIC.png).
+
+Stage Summary:
+- The user-visible deliverable is live: three faces improved this session
+  (OpenCalc icons+window, BMI row alignment, gmdice hint carried over).
+- 0x0.st unreachable from the container (HTTP 000); uguu/tmpfiles work.
