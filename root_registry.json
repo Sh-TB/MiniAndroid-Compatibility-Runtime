@@ -5841,11 +5841,21 @@
    "root_cause": "Evidence chain: (1) [F298-OBTAIN] diag extended (read-only) to print the source object's class + payload: a0_type=7 (OBJECT_REF), obj_cls=Landroid/text/SpannableString;, value_len=-1 (bare). (2) FIX site 1 (the ctor law): SpannableString.<init>(CharSequence) stores the arg's text (STRING_REF immediate or OBJECT_REF value/sb_value payload) into the engine's CharSequence convention (value + text alias) - measured: value_len=4 value=\"Dooz\", value_len=8 value=\"New game\". (3) FIX site 2 (the obtain law): the source store accepts BOTH STRING_REF and OBJECT_REF-with-payload (the old law stored NULL for every OBJECT_REF). Measured at build level: [ROOT-063] build chars=4 / chars=8 with the real compose strings.",
    "next_wave": "HONEST PARTIAL: the dooz face is byte-unchanged (6841d52a at 180s and 400s budgets; the 400s run COMPLETED rc=0 - not a budget truncation). The remaining leg is named with evidence: with non-empty text the compose paint path diverges BEFORE the Layout.draw dispatch - the [F298-GCB] clip answer changed from the broken empty clip (0,0,0,0, pre-fix) to the REAL paragraph clip (540,59,540x108, post-fix) and the [F298-SLDRAW] Layout.draw dispatch NEVER fires (pre-fix it fired 5x on the empty-text path); the draw walk's zero-return gates (Ltw1;.d) flipped FALSE->TRUE (the walk now reaches deeper). Next wave decodes the post-clip-gate dispatch (which DEX method the non-empty paint path calls and why it never reaches the StaticLayout draw arm).",
    "evidence": "dooz v23 at binary 976b3a5b4e6a5e99: obtain reads value=\"Dooz\"/\"New game\"; build chars=4/8; SLDRAW=0; face 6841d52a20e6597e x3 + 400s rc=0 byte-identical. ZERO-DRIFT: anchors 27/27 + opencalc re-pin 3/3 (f25b754c) + csw 3/3 (3442d9a9) + simplecalc 3/3 + dooz180 3/3 + probe battery == records (f259g 84/7, fnew302 48/24 documented known rows)."
+  },
+  {
+   "id": "F-NEW-344",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "dex/Layout.getDesiredWidth + fonts/TextShaper",
+   "title": "The compose text INTRINSIC leg never measured: AndroidTextLayoutIntrinsics (dooz v23 R8: Lsk0;.c x2) asks Layout.getDesiredWidth(text, paint, textDir, firstPassMode) for the wrap-content paragraph width (the compose Constraints FocusInterceptor encodes maxWidth=Infinity as all-zero bits - the WRAP-CONTENT normal state, measured [F344-PCTOR] Lj7.<init> a4 lo32=0). The engine had NO getDesiredWidth law - the typed-default answered 0.0 -> TextDelegate width 0 -> StaticLayout.Builder.obtain received width=0 (a4_type=1 a4_int=0, [F298-OBTAIN] extended) -> every compose StaticLayout corpus-wide built WIDTH=0 (pre-fix [ROOT-063] width=0 at BUILD time) -> AndroidParagraph.paint (Lj7.e) clipRect(0,0,0,h) -> Canvas.getClipBounds answered the EMPTY clip ([F298-GCB] clip=540,59,540,108 = l==r) -> the compose 1.11 paint cull (if (!canvas.getClipBounds(r)) return) skipped Layout.draw -> SLDRAW 0, zero exceptions, zero text pixels.",
+   "root_cause": "Decode chain (all read-only env-gated probes at HEAD e63feef5+c1e4b9dd): (1) [F343-SL] census: StaticLayout measurement getters arrive (getLineCount/getLineBottom/getLineBaseline x14...) but method=draw NEVER dispatches. (2) [DRAWWIN-BRIDGE]: the walk = Lj7;.e save -> Lrw1;.a getLineBottom -> clipRect -> getClipBounds -> restore (draw missing between gate and restore). (3) [F298-GCB]: the clip answer (540,59,540,108) is l==r EMPTY (the worklog record mis-read it as 540x108 w-h). (4) [F298-OBTAIN] extended: width arg a4_type=1 INT32 VALUE=0 - compose GENUINELY passed zero (caller Lxd1;.e; chain ^1<Lrw1;.<init> ^2<Lj7;.a> ^3<Lj7;.<init>). (5) [F344-PCTOR]: the paragraph ctor constraints long lo32=0 = compose Infinity encoding - the wrap-content normal state, NOT an engine long-corruption. (6) [F344-LAYOUT]: Landroid/text/Layout;.getDesiredWidth DOES arrive (argc=4, caller Lsk0;.c) and had no law. FIX (one generic site, zero app knowledge): the getDesiredWidth law shapes the text with the SAME pipeline the Canvas drawText replay uses (fonts::TextShaper FreeType/HarfBuzz real advances) at the paint's recorded __text_size_px__ (the F-NEW-226 identity store, the same probe the build law consumes) - measured geometry and painted pixels stay one source of truth. Both overloads (2-arg/4-arg), both CharSequence payload forms (STRING_REF + OBJECT_REF value/sb_value).",
+   "result": "Measured: intrinsics 104px (\"Dooz\") / 219px (\"New game\") / 421px (\"Compose Stopwatch\") / 39px (\"0.\") / 52px (\"00\"); layouts build NON-ZERO ([ROOT-063] width=104/219); Layout.draw DISPATCHES ([F-NEW-297] text ops, 45 rows/run on csw - the CONT-36 record count, now with real widths); the dooz face renders the \"Dooz\" title + \"New game\" button label as REAL GLYPHS for the first time (face 6841d52a20e6597e -> 4f32f50fd55ccf90 x3 deterministic at 180s; title-area dark pixels 0 -> 9030). csw RAW-DIFF: the title \"Compose Stopwatch\" moved from CLIPPED OFF-SCREEN (op x~1070) INTO VIEW (x=607, fully readable); diff bbox (607,36)-(1080,1095) = title + digits bands only; cards/pill/track pixels byte-identical (face 3442d9a9dc0fa0f9 -> d3c26b73ee21e571 x3). ZERO-DRIFT REGRESSION (binary 4f32f50f-wave): anchors 27/27 MATCH (dooz15 31ddd4d5b8e6d18e, micro 55343bbec712618d, unote 90a67cc1ddda57b7, gmdice 3891679dff449331, opencalc f25b754c4565c38b, ttt af6094295ecb50e3, flappy 13cf47464d9787f4, g2048 59ca1526611c4622, tanana afe0bd8dd4d09ca6 x3 byte-identical) + csw x3 re-pin (rationale in gate script) + simplecalc x3 341b9cec89d8f182 + dooz180 x3 re-pin + probe battery == records (f259g 84/7 + fnew302 48/24 documented known rows; fnew298 KEEP=5 corner=PASS). HONEST scope: the law fixes the INTRINSIC width leg - the compose text now flows end-to-end; exact per-glyph fidelity (the paint's 42px fallback size question, icon glyphs as black boxes on dooz) remains the named next work.",
+   "evidence": "run/cont61/dooz_w1_p1..p6 (the probe ladder), run/cont61/dooz_w1_fix1/fix2 + dooz180_det2/3 (the fix faces), run/cont61/csw_post1 + csw_det2/3 (the csw raw-diff pair), run/cont37/regression/* (the 36-run gate), evidence/cont61/ (views + DIFF audit)."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 646,
- "count": 646,
+ "total": 656,
+ "count": 656,
  "meta": {
   "last_update": "CONT-56 session 2026-10-12: the framework LinearLayout.onMeasure SUPER law (F-NEW-328) — the lp-aware child-spec source (lp_width/lp_height authoritative over the legacy mirrors) + the AOSP orientation self-size law (sum/max, AT_MOST clamps) at BOTH S109 sites. Probe fnew328 PRE FAIL x1 (self=1080x1920 child=1080x1920) -> POST 4/0 x3. Solitaire: AppBarLayout 1080x1920 -> 1080x105; visible frame unchanged ba50a4d2. Zero-drift 15 anchors x3 (45/45) + probe battery == records. Registry 638->639.",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
@@ -5861,7 +5871,7 @@
   "NOT-APPLICABLE": 42,
   "OBSERVED-FAIL": 5,
   "IMPLEMENTED": 37,
-  "ROOT-CAUSED-FIXED": 161,
+  "ROOT-CAUSED-FIXED": 175,
   "IMPLEMENTED+TESTED": 24,
   "REGISTERED": 2,
   "OPEN": 4,
@@ -5871,12 +5881,14 @@
   "BLOCKED": 1,
   "PENDING": 2,
   "CLASSIFIED": 10,
-  "OBSERVED": 3,
+  "OBSERVED": 2,
   "TESTED": 1,
   "ROOT_CAUSED_FIXED": 18,
-  "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
+  "DUPLICATE-SUPERSEDED": 3,
+  "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1,
+  "ROOT-CAUSED-PARTIAL": 1
  },
- "total_roots": 655,
- "generated": "CONT-44 session",
+ "total_roots": 656,
+ "generated": "2026-10-13 17:30:57",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
