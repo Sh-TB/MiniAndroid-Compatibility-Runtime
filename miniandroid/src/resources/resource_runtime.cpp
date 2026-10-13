@@ -68,6 +68,8 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     // F-NEW-309: same Factory law for the generateLayoutParams hook
     // (child-of-DEX-container LayoutParams generation).
     apply_generate_child_lp_hook();
+    // F-NEW-339: same Factory law for the <fragment> tag hook.
+    apply_fragment_tag_hook();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids

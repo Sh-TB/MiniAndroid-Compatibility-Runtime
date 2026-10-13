@@ -3117,6 +3117,17 @@ public:
     bool advance_fragments_to_created(DalvikExecutionResult& result);
     bool advance_fragments_to_started(DalvikExecutionResult& result);
     bool advance_fragments_to_resumed(DalvikExecutionResult& result);
+    // ── F-NEW-339 (CONT-59): XML <fragment> tag instantiation law ────────
+    // AOSP FragmentLayoutInflaterFactory: a <fragment android:name="…">
+    // tag instantiates the named fragment through the FragmentFactory
+    // (no-arg ctor), attaches it to the FragmentManager with the XML
+    // id + tag, and uses the tag's view node as the fragment container
+    // (the F-NEW-304 to_started drain attaches onCreateView's view into
+    // it). The synthetic add-record rides the SAME committed-queue the
+    // DEX commit path uses — one lifecycle owner, no parallel ladder.
+    bool instantiate_fragment_tag(uint32_t container_view_id,
+                                  const std::string& frag_class_desc,
+                                  const std::string& tag, int32_t xml_id);
     // Platform PreferenceFragment.onCreateView law (AOSP internal
     // preference_list_fragment contract): builds the real list container
     // rows for the fragment's parsed preference screen through the

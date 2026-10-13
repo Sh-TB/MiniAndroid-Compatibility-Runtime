@@ -987,6 +987,35 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
             if (it != id_names_.end()) node->android_id_name = it->second;
         }
     }
+    // ── F-NEW-339 (AOSP FragmentLayoutInflaterFactory law) ──────────────
+    // A <fragment> short tag instantiates the fragment named in
+    // android:name (or class=) through the FragmentFactory and attaches
+    // it with the XML id + tag; the tag's view node is the fragment's
+    // CONTAINER (the engine's to_started drain attaches onCreateView's
+    // view inside it). Reported AFTER the element attrs (id included)
+    // were applied so findFragmentById/find_by_android_id both resolve.
+    static const bool f339_dbg = std::getenv("MINIANDROID_F339_DIAG") != nullptr;
+    if (f339_dbg && el.name == "fragment")
+        std::cerr << "[F339-DBG] fragment tag at view=" << view_id
+                  << " hook=" << (fragment_tag_hook_ ? "SET" : "EMPTY")
+                  << std::endl;
+    if (el.name == "fragment" && fragment_tag_hook_) {
+        const AxmlAttribute* na = el.attr("name", "android");
+        if (!na) na = class_attr;   // AOSP law: the class= fallback form
+        std::string fname = na ? (!na->raw_value.empty()
+                                      ? na->raw_value
+                                      : na->value.string_value)
+                               : "";
+        const AxmlAttribute* ta = el.attr("tag", "android");
+        std::string ftag = ta ? (!ta->raw_value.empty()
+                                     ? ta->raw_value
+                                     : ta->value.string_value)
+                              : "";
+        if (!fname.empty()) {
+            fragment_tag_hook_(view_id, class_to_descriptor(fname), ftag,
+                               node->android_view_id);
+        }
+    }
 
     // G11 FIX-G11-001 (AOSP LayoutInflater.createView law): a fully-qualified
     // app-class tag is an INSTANTIATION. Execute the class's real DEX

@@ -5771,6 +5771,55 @@ bool DalvikExecutionEngine::advance_fragments_to_created(
     return advanced;
 }
 
+// ── F-NEW-339 (CONT-59): XML <fragment> tag instantiation law ───────────
+bool DalvikExecutionEngine::instantiate_fragment_tag(
+        uint32_t container_view_id, const std::string& frag_class_desc,
+        const std::string& tag, int32_t xml_id) {
+    (void)container_view_id;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    if (!is_dex_defined_class(frag_class_desc)) {
+        std::cerr << "[F-NEW-339] <fragment> name not in DEX: "
+                  << frag_class_desc << " — honest miss" << std::endl;
+        return false;
+    }
+    // AOSP FragmentFactory.instantiate law: the NO-ARG constructor.
+    uint32_t frag = heap_.allocate(frag_class_desc, 0, 0);
+    DalvikValue ctor_ret;
+    DalvikExecutionResult ctor_result;
+    try_recursive_invoke(frag_class_desc, "<init>", {}, ctor_ret,
+                         ctor_result, "()V");
+    // Host linkage (the F-NEW-304 laws read __frag_host__ at dispatch).
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    uint32_t host_id = as ? as->current_activity_id() : 0;
+    if (host_id != 0)
+        heap_.set_object_field(
+            frag, "__frag_host__",
+            DalvikValue::make_object(host_id, "Landroid/app/Activity;"));
+    // Synthetic BackStackRecord: add(frag, container=xml_id, tag) — the
+    // SAME committed queue the DEX commit path feeds; the F-NEW-304
+    // drains run onAttach/onCreate/onCreateView and attach the fragment
+    // view into the container node (find_by_android_id(xml_id)).
+    framework::FragmentManagerShadow::PendingOp op;
+    op.type = 0;
+    op.container = (uint32_t)xml_id;
+    op.frag = frag;
+    op.tag = tag;
+    framework::FragmentManagerShadow::PendingTx tx;
+    tx.ops.push_back(op);
+    fm->enqueue_committed(tx);
+    fm->record_fragment({frag, (uint32_t)xml_id, tag, 0});
+    std::cerr << "[F-NEW-339] <fragment> " << frag_class_desc << " obj#"
+              << frag << " container=" << xml_id
+              << (tag.empty() ? "" : " tag=" + tag)
+              << " → synthetic add committed" << std::endl;
+    return true;
+}
+
 bool DalvikExecutionEngine::advance_fragments_to_started(
     DalvikExecutionResult& result) {
     (void)result;
