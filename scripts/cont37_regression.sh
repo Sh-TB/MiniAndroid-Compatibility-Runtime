@@ -107,7 +107,15 @@ anchors)
     run1 "dooz_r$i"       "$DOOZ"      31ddd4d5b8e6d18e
     run1 "microtimer_r$i" "$MICRO"     da73010a37dd0189
     run1 "unote_r$i"      "$UNOTE"     4f1a9e4e8f64fae8
-    run1 "gmdice_r$i"     "$GMDICE"    f3b483fe7b7cf51b
+    # CONT-59 F-NEW-337b RE-PIN: the theme-attribute ColorStateList item law
+    # (?attr/… item colors resolve through the theme service — the resource-
+    # table deref read the attr-DEFINITION row and painted its INT data as
+    # ARGB → alpha-0). gmdice's 'Push buttons to roll!' hint line rendered
+    # with the themed white for the first time. RAW-DIFF-PROVEN: the ONLY
+    # changed pixels are the hint glyph bbox (62,1155)-(1020,1332); every
+    # other face byte-identical. New face 3891679dff449331 x3 deterministic
+    # — REAL_APP_CONTENT retained, richer render.
+    run1 "gmdice_r$i"     "$GMDICE"    3891679dff449331
     # CONT-57 F-NEW-329 RE-PIN: the ConstraintLayout guideline + dimension
     # laws healed opencalc v53's display geometry (guideline1 = 0.18 x 1920
     # = 346 EXACT; inputHSV 1080x199 @y147; resultHSV 1080x153 @y346;
@@ -209,10 +217,10 @@ control)
   done
   ;;
 *)
-  "$0" anchors
-  "$0" target
-  "$0" probes
-  "$0" control
+  bash "$0" anchors
+  bash "$0" target
+  bash "$0" probes
+  bash "$0" control
   echo "REGRESSION DONE"
   ;;
 esac
