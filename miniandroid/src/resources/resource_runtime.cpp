@@ -153,6 +153,25 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
             std::function<std::optional<uint32_t>(uint32_t, int)> deref =
                 [&](uint32_t ref, int depth) -> std::optional<uint32_t> {
                 if (depth > 4) return std::nullopt;
+                // F-NEW-337b (AOSP ColorStateList law): an item color may be
+                // a THEME ATTRIBUTE reference (?attr/… — TypedValue
+                // TYPE_ATTRIBUTE, ids 0x0101xxxx). Those resolve through the
+                // THEME service, never the resource table: an attr id fed to
+                // resolve_full reads the attr-DEFINITION row (an INT format
+                // byte) and its data was painted as ARGB → the alpha-0
+                // (0,0,16,0) face on every themed framework selector.
+                if ((ref >> 16 & 0xFFFF) == 0x0101) {
+                    auto ta = resolve_theme_attr_typed(apk_path_, ref, -1);
+                    if (!ta) return std::nullopt;
+                    if (ta->is_int()) return (uint32_t)ta->data;
+                    if (ta->is_color())
+                        return color_data_to_argb((uint8_t)ta->type, ta->data);
+                    if (ta->is_string() &&
+                        ta->string_value.rfind("res/color/", 0) == 0)
+                        return resolve_apk_file_color(ta->string_value,
+                                                      depth + 1);
+                    return std::nullopt;   // F-NEW-336 type law: not a color
+                }
                 ResolutionResult r = rt.fw->resolve_full(ref, device_config());
                 if (!r.ok || !r.value()) return std::nullopt;
                 const ResValue& tv = *r.value();
@@ -227,6 +246,21 @@ std::optional<uint32_t> ResourceRuntime::resolve_apk_file_color(
             continue;   // requires a non-default state — not first match
         if (it.has_color && it.color != 0) return it.color;
         if (it.has_color && it.color_ref_id != 0) {
+            // F-NEW-337b (same AOSP law, app-package path): a THEME
+            // ATTRIBUTE item color (?attr/…, 0x0101xxxx) resolves through
+            // the theme service — the resource-table deref below would read
+            // the attr-DEFINITION row and paint its INT data as ARGB.
+            if ((it.color_ref_id >> 16 & 0xFFFF) == 0x0101) {
+                auto ta = resolve_theme_attr_typed(apk_path_, it.color_ref_id, -1);
+                if (!ta) return std::nullopt;
+                if (ta->is_int()) return (uint32_t)ta->data;
+                if (ta->is_color())
+                    return color_data_to_argb((uint8_t)ta->type, ta->data);
+                if (ta->is_string() &&
+                    ta->string_value.rfind("res/color/", 0) == 0)
+                    return resolve_apk_file_color(ta->string_value, depth + 1);
+                return std::nullopt;   // F-NEW-336 type law: not a color
+            }
             // In-item @color reference — APP-table terminal value (bounded).
             ResolutionResult r = arsc_.resolve_full(it.color_ref_id,
                                                     device_config());
