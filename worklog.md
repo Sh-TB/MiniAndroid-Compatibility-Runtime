@@ -9263,3 +9263,29 @@ Stage Summary:
 - The mosaic deliverable is live (n.uguu.se/zYKXvGqW.png). Queued: the
   draw-leg decode, dooz tap bridge (F-NEW-267), alex R8 DEX-state,
   Solitaire/notes audits.
+
+---
+Task ID: S60-SESSION-CLOSE
+Agent: Super Z (main)
+Task: Session record — CONT-60 doubled-scale execution.
+
+Work Log:
+- State recovery (the 4th stale-checkout reset): fast-forwarded the
+  CONT-10-era checkout to origin/main; ALL CONT-56..59 waves intact;
+  registry 651 at start.
+- Four waves committed with full gates: F-NEW-340 (RelativeLayout
+  replay-clobber; BMI aligned), F-NEW-341 (vector-tint theme-attr; the
+  five OpenCalc icons render), F-NEW-342 (windowBackground ?attr; the
+  real themed window), F-NEW-343 (SpannableString/obtain payload;
+  compose text flows to builds — draw leg named, PARTIAL).
+- Registry 651 → 655. Mosaic refreshed + uploaded (n.uguu.se/
+  zYKXvGqW.png + tmpfiles mirror). Every wave: raw-diff-proven face
+  changes, 36/36-class zero-drift gates, probe battery == records.
+- HEAD e63feef5 == origin/main. tmp/ APKs restored for the gate script.
+
+Stage Summary:
+- User-visible progress this session: OpenCalc complete-complete pad
+  (icons + themed window), BMI XML-true row alignment, compose text
+  payloads flowing for the first time. Next session owns the compose
+  draw-leg decode (the [F343-SL] probe is committed), the dooz tap
+  bridge, and the alex/Solitaire/notes audits.
