@@ -34001,6 +34001,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                              args[0].type == DalvikType::OBJECT_REF)
                                 ? args[0].object_id
                                 : 0;
+            if (std::getenv("MINIANDROID_F343_DIAG")) {
+                static thread_local uint64_t slm_n = 0;
+                if (slm_n++ < 60)
+                    std::cerr << "[F343-SL] method=" << method
+                              << " recv=" << self
+                              << " argc=" << args.size()
+                              << " a1_type="
+                              << (args.size() > 1
+                                      ? (int)args[1].type : -1)
+                              << std::endl;
+            }
             if (self && heap_.has_object(self)) {
                 // ── F-NEW-297 (CONT-36): LAYOUT.draw(Canvas) TEXT LAW ────
                 // AOSP android.text.Layout.draw(Canvas) is the entry the
