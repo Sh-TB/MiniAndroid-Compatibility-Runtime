@@ -11,6 +11,7 @@
 #include "../webview/webview_engine.h"
 // ADDITIONAL-AUDIT P1-2: canonical Bitmap pixel store (setImageBitmap law)
 #include "bitmap_shadow.h"
+#include "matrix_shadow.h"  // F-NEW-267: the compose hit-test coordinate laws
 // S133 WEB-001: the S100 NET-001 HTTPS client is the runtime's existing
 // fetch substrate — REUSED for network document loads (no new network code).
 #include "../api/http_client.h"
@@ -31,6 +32,10 @@
 namespace miniandroid { namespace framework {
 
 using json = nlohmann::json;
+
+// F-NEW-267 (CONT-61): the engine sets this while a DEX touch override
+// executes; the CollectionShadow size law probes it for [TOUCHWIN-SIZE].
+std::atomic<bool> g_touch_window_active{false};
 
 // ─────────────────────────────────────────────────────────────────────────
 // ADDITIONAL-AUDIT P0-3 (runtime class-identity law): every View-returning
@@ -1839,6 +1844,21 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             int32_t alen = 0;
             if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
                 return CallResult::handled_int(alen);
+        }
+        // F-NEW-267 (CONT-61): the touch-window size probe — what the
+        // compose pointer-input filter dispatch saw.
+        if (g_touch_window_active.load(std::memory_order_relaxed)) {
+            int32_t sz = static_cast<int32_t>(state->elements.size());
+            if (sz == 0 && heap_) {
+                int32_t alen = -1;
+                if (heap_->get_object_array_length(obj_id, alen))
+                    sz = alen;
+            }
+            static thread_local uint64_t tws_n = 0;
+            if (tws_n++ < 40)
+                std::cerr << "[TOUCHWIN-SIZE] obj#" << obj_id << " -> " << sz
+                          << " caller=" << ctx.class_name << "."
+                          << ctx.method << std::endl;
         }
         return CallResult::handled_int(static_cast<int32_t>(state->elements.size()));
     }
@@ -5825,6 +5845,106 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                                 ? n->measured_width
                                                 : n->measured_height)
                                          : 0);
+    }
+    // ─────────────────────────────────────────────────────────────────────
+    // F-NEW-267 (CONT-61): the compose hit-test coordinate laws.
+    //
+    // ROOT CAUSE: compose's hit test (dooz v23 measured, [TOUCHWIN-BRIDGE])
+    // computes each LayoutNode's global bounds through the HOST view's
+    // getLocationOnScreen/getLocationInWindow/transformMatrixToGlobal —
+    // all three had NO law (typed-default: the int[] stayed zeros, the
+    // Matrix stayed identity) → every node's bounds math answered garbage
+    // → the pointer missed every node → the hit list EMPTY
+    // ([TOUCHWIN-SIZE] obj#2554 -> 0) → dispatchTouchEvent returned false
+    // → every compose interactive surface tap-dead.
+    //
+    // AOSP laws (View.java):
+    //   getLocationInWindow(int[] outLocation): the view's position in its
+    //     window = the parent-chain sum (each hop mLeft/mTop — the engine's
+    //     ViewShadow (x, y) IS the laid-out position, the same numbers the
+    //     render path paints at).
+    //   getLocationOnScreen(int[] outLocation): inWindow + the window's
+    //     screen origin (fullscreen window → the same values).
+    //   transformMatrixToGlobal(Matrix m): preTranslate the accumulated
+    //     chain translate — m' = T(total) ∘ m (pure-translate composition;
+    //     the engine node chain carries no rotations/scales on this path —
+    //     the render draw walks the same (x,y) chain).
+    //   transformMatrixToLocal(Matrix m): the inverse mapping — m' = m ∘
+    //     T(-total) (post law; maps global→local for the hit-test descent).
+    // ─────────────────────────────────────────────────────────────────────
+    if (m == "getLocationOnScreen" || m == "getLocationInWindow") {
+        const auto* n = find_node(ctx.receiver_id);
+        int ax = 0, ay = 0;
+        if (n) {
+            // Parent-chain sum (AOSP View annals: the position = the laid
+            // out mLeft/mTop of every ancestor hop).
+            for (const auto* cur = n; cur != nullptr;) {
+                ax += cur->x;
+                ay += cur->y;
+                if (g_touch_window_active.load(std::memory_order_relaxed)) {
+                    static thread_local uint64_t lcs_n = 0;
+                    if (lcs_n++ < 40)
+                        std::cerr << "[TOUCHWIN-LOC] hop " << cur->class_desc
+                                  << " id=" << cur->view_id << " ("
+                                  << cur->x << "," << cur->y << " "
+                                  << cur->width << "x" << cur->height
+                                  << ") sum=(" << ax << "," << ay << ")"
+                                  << std::endl;
+                }
+                cur = cur->parent_id
+                          ? find_node(cur->parent_id)
+                          : nullptr;
+                if (cur == n) break;  // cycle guard
+            }
+        }
+        if (ctx.args.size() >= 1) {
+            const uint32_t arr = ctx.arg_as_object(0, 0);
+            if (arr && heap_) {
+                heap_->set_object_int_field(arr, "array[0]", ax);
+                heap_->set_object_int_field(arr, "array[1]", ay);
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "transformMatrixToGlobal" || m == "transformMatrixToLocal") {
+        const auto* n = find_node(ctx.receiver_id);
+        int ax = 0, ay = 0;
+        if (n) {
+            for (const auto* cur = n; cur != nullptr;) {
+                // AOSP: the parent's scroll cancels part of the hop
+                // (preTranslate(-parent.scrollX, -parent.scrollY)); the
+                // node's own scroll applies to its children — the laid-out
+                // (x, y) IS already the scroll-adjusted placement in this
+                // engine (the render walk paints at (x, y)), so the chain
+                // sum is the honest global offset here.
+                ax += cur->x;
+                ay += cur->y;
+                cur = cur->parent_id
+                          ? find_node(cur->parent_id)
+                          : nullptr;
+                if (cur == n) break;  // cycle guard
+            }
+        }
+        if (ctx.args.size() >= 1) {
+            const uint32_t mat = ctx.arg_as_object(0, 0);
+            if (mat && heap_) {
+                MatrixShadow::M33 mtx;
+                MatrixShadow::read_matrix(heap_, mat, mtx);
+                if (m == "transformMatrixToGlobal") {
+                    // m' = T(total) ∘ m  (pre law): x'' = a·x + b·y + c+tx
+                    // (the translate composes AFTER m — pure addition).
+                    mtx.v[2] += ax;
+                    mtx.v[5] += ay;
+                } else {
+                    // m' = m ∘ T(-total)  (post law): c' = a·(-tx) + b·(-ty)
+                    // + c — the translate applies to the point FIRST.
+                    mtx.v[2] -= ax * mtx.v[0] + ay * mtx.v[1];
+                    mtx.v[5] -= ax * mtx.v[3] + ay * mtx.v[4];
+                }
+                MatrixShadow::write_matrix(heap_, mat, mtx);
+            }
+        }
+        return CallResult::handled_void();
     }
 
     // UC009: AOSP View attach state (mAttachInfo != null). Compose's

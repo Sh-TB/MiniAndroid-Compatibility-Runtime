@@ -959,6 +959,14 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.dispatch_touch_listener(
                             view_id, action, x, y, consumed);
                     });
+                // F-NEW-267 (CONT-61): the lazy DEX override probe for the
+                // dispatchTouchEvent touchable law (compose hosts).
+                touch_dispatcher_->set_dex_override_probe(
+                    [this](const std::string& cls,
+                           const std::string& method) -> bool {
+                        return dalvik_engine_.class_chain_defines_method(
+                            cls, method);
+                    });
                 // S128 (R-NEW-424, CAP-INPUT-100): ViewGroup
                 // onInterceptTouchEvent bridge — the intercept pass asks the
                 // app's real DEX overrides along the TouchTarget chain.
