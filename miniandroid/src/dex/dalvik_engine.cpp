@@ -6910,6 +6910,139 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // subsequent frame (setContentView, <init>, onStart/onResume,
             // startActivity) — the engine-default near-blank shell class.
             // A/B: secuso dame/2048, mykanji, no.thanks blank→rendered.
+            //
+            // F-NEW-331 (CONT-56b): the bypassed support onCreate is ALSO
+            // where the fragment-host attach happens — AOSP
+            // FragmentActivity.onCreate first instruction:
+            //     mFragments.attachHost(null)
+            //   → FragmentController.attachHost: mHost.mFragmentManager
+            //     .attachController(mHost, mHost, parent)
+            //   → FragmentManagerImpl.attachController: mHost = host;
+            //     mContainer = container;
+            // The semantic shadow skipped that write, so every app that
+            // actually USES the support FragmentManager died at its first
+            // transaction commit: enqueueAction found mHost == null →
+            // ISE "Activity has been destroyed" → BMIMain.onCreate
+            // [APP-BOUNDARY] → uniform dark frame (measured at the
+            // CONT-56b baseline: bmi_402, alexcalc_20). Repair =
+            // reproduce the OBSERVABLE attach state at the same framework
+            // boundary (same sanctioned semantic-shadow tool class):
+            // walk activity.mFragments → controller.mHost (HostCallbacks)
+            // → hostCallbacks.mFragmentManager (FragmentManagerImpl) →
+            // write mHost AND mContainer = the HostCallbacks object
+            // (attachController law: attachController(mHost, mHost,
+            // parent) sets both). Absent objects (apps that never touch
+            // support fragments) → silent skip, no state invented.
+            {
+                uint32_t act331 = (args[0].type == DalvikType::OBJECT_REF)
+                                      ? args[0].object_id
+                                      : 0;
+                if (act331 != 0 && heap_.has_object(act331)) {
+                    auto fc331 = heap_.get_object_field(
+                        act331,
+                        "Landroid/support/v4/app/FragmentActivity;->"
+                        "mFragments");
+                    if (!fc331)
+                        fc331 = heap_.get_object_field(
+                            act331,
+                            "Landroidx/fragment/app/"
+                            "FragmentActivity;->mFragments");
+                    if (fc331 && fc331->type == DalvikType::OBJECT_REF &&
+                        fc331->object_id != 0 &&
+                        heap_.has_object(fc331->object_id)) {
+                        auto hc331 = heap_.get_object_field(
+                            fc331->object_id,
+                            "Landroid/support/v4/app/FragmentController;->"
+                            "mHost");
+                        if (!hc331)
+                            hc331 = heap_.get_object_field(
+                                fc331->object_id,
+                                "Landroidx/fragment/app/"
+                                "FragmentController;->mHost");
+                        if (hc331 && hc331->type == DalvikType::OBJECT_REF &&
+                            hc331->object_id != 0 &&
+                            heap_.has_object(hc331->object_id)) {
+                            uint32_t host_cb331 = hc331->object_id;
+                            auto fm331 = heap_.get_object_field(
+                                host_cb331,
+                                "Landroid/support/v4/app/"
+                                "FragmentHostCallback;->mFragmentManager");
+                            if (!fm331)
+                                fm331 = heap_.get_object_field(
+                                    host_cb331,
+                                    "Landroidx/fragment/app/"
+                                    "FragmentHostCallback;->mFragmentManager");
+                            if (!fm331)
+                                fm331 = heap_.get_object_field(
+                                    host_cb331,
+                                    "Landroid/support/v4/app/"
+                                    "HostCallbacks;->mFragmentManager");
+                            if (fm331 &&
+                                fm331->type == DalvikType::OBJECT_REF &&
+                                fm331->object_id != 0 &&
+                                heap_.has_object(fm331->object_id)) {
+                                uint32_t fmi331 = fm331->object_id;
+                                std::string fmi_cls =
+                                    heap_.get(fmi331)
+                                        ? heap_.get(fmi331)->class_descriptor
+                                        : std::string();
+                                if (fmi_cls.empty()) fmi_cls =
+                                    "Landroid/support/v4/app/"
+                                    "FragmentManagerImpl;";
+                                DalvikValue cb_val331 =
+                                    DalvikValue::make_object(
+                                        host_cb331,
+                                        "Landroid/support/v4/app/"
+                                        "HostCallbacks;");
+                                heap_.set_object_field(
+                                    fmi331, fmi_cls + "->mHost",
+                                    cb_val331);
+                                heap_.set_object_field(
+                                    fmi331, fmi_cls + "->mContainer",
+                                    cb_val331);
+                                // F-NEW-331b: the same bypassed onCreate
+                                // tail is where the support host ADVANCES
+                                // the fragment manager state:
+                                // FragmentActivity.onCreate →
+                                // mFragments.dispatchCreate() →
+                                // FragmentManagerImpl.dispatchCreate() →
+                                // dispatchStateChange(CREATED=1, false) →
+                                // moveToState(mCurState=1). The Activity
+                                // onStart face (F-NEW-172 shadow) then
+                                // suppresses dispatchStart — so without a
+                                // state reproduction the fragment ladder
+                                // never reaches ACTIVITY_CREATED and
+                                // performCreateView/onCreateView never runs
+                                // (measured: transaction executed green but
+                                // the fragment stayed INITIALIZING →
+                                // container empty → dark frame). The
+                                // honest observable: mCurState =
+                                // ACTIVITY_CREATED (support-28 Fragment
+                                // constants: INITIALIZING=0, CREATED=1,
+                                // ACTIVITY_CREATED=2) — executeOps'
+                                // moveToState(f, mCurState) then walks the
+                                // full ladder incl. view creation.
+                                // Remaining honest gap (recorded): the
+                                // STARTED face (dispatchStart →
+                                // performStart/performResume) is NOT
+                                // reproduced — fragment.onStart/onResume
+                                // overrides do not run.
+                                heap_.set_object_field(
+                                    fmi331, fmi_cls + "->mCurState",
+                                    DalvikValue::make_int(2));
+                                std::cerr << "[F-NEW-331] support fragment"
+                                          << " attach state reproduced at"
+                                          << " the S83 boundary: FM obj#"
+                                          << fmi331
+                                          << " mHost/mContainer = HostCb obj#"
+                                          << host_cb331
+                                          << ", mCurState=ACTIVITY_CREATED"
+                                          << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
             return_val = DalvikValue::make_void();
             last_invoke_return_ = return_val;
             return true;
@@ -26115,7 +26248,259 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().bridge, f107_t0);
-    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-333 (CONT-56b) — Preconditions.checkNotNull IDENTITY law.
+    // AOSP support-lib Preconditions.java:
+    //     static <T> T checkNotNull(T reference, Object errorMessage) {
+    //         if (reference == null)
+    //             throw new NullPointerException(String.valueOf(errorMessage));
+    //         return reference;                       ← THE LAW: identity
+    //     }
+    // The EXP-058 STUB-ONLY skip in try_recursive_invoke guards a real
+    // recursion, but it left the bridge with NO law for the call — the
+    // fallback shadow dispatch answered null and the move-result-object
+    // DESTROYED every value passing through checkNotNull. Measured
+    // (bmi_402 at the CONT-56b baseline): FragmentHostCallback.<init>
+    // received the Handler argument (ARG-TRACE p3 obj#29 — the value
+    // survived the field read), the ctor's internal
+    // checkNotNull(handler,"handler == null") returned null → iput stored
+    // mHandler=<unset> → getHandler() answered null → scheduleCommit's
+    // Handler.post ran on a NULL receiver (ROOT-059 null-recv route) → the
+    // fragment transaction runnable was dropped → the fragment never
+    // instantiated → BMI/alex rendered the uniform dark default frame.
+    // The identity law is the generic repair: same contract for the 1-arg
+    // and 2-arg overloads, NPE on null (AOSP).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/support/v4/util/Preconditions;" &&
+        method == "checkNotNull" && !args.empty()) {
+        bool arg_is_null =
+            args[0].is_null ||
+            (args[0].type == DalvikType::OBJECT_REF &&
+             args[0].object_id == 0);
+        if (arg_is_null) {
+            std::string msg333 = "null";
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                msg333 = args[1].string_val;
+            else if (args.size() >= 2 &&
+                     args[1].type == DalvikType::OBJECT_REF &&
+                     args[1].object_id != 0 &&
+                     heap_.has_object(args[1].object_id)) {
+                auto s333 = heap_.get_object_field(args[1].object_id,
+                                                   "__referent_desc");
+                if (s333.has_value())
+                    msg333 = s333->string_val;
+            }
+            throw_deferred("Ljava/lang/NullPointerException;", msg333,
+                           "preconditions-checknotnull");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        result = args[0];
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-334 (CONT-56b) — android.util.SparseArray container law (the
+    // faithful AOSP subset the support FragmentManager bookkeeping needs).
+    // SparseArray had NO law: <init>/put/size/valueAt all REC-MISSed to
+    // silent defaults — FragmentManagerImpl.makeActive put fragments into
+    // mActive (no-op) and moveToState's `for (i < mActive.size())` loop
+    // iterated ZERO entries → the committed fragment never advanced past
+    // INITIALIZING → performCreateView/onCreateView never ran → the
+    // container stayed empty (measured: bmi_402 — transaction executed
+    // green after F-NEW-331/332/333, then the mActive walk found nothing).
+    // AOSP law (android.util.SparseArray): key-sorted int→Object map;
+    // put replaces in place; size counts live entries; valueAt/keyAt
+    // index the ASCENDING-KEY order (binary-search insert law); get(key)
+    // answers null (or the 2-arg default) when absent; delete/remove/
+    // clear maintain the count. Storage: heap fields keyed
+    // "__sa:has:<K>" (presence) + "__sa:val:<K>" (value) + "__sa:size".
+    // Bounded scan (corpus fragment counts are tens).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/util/SparseArray;" &&
+        (method == "<init>" || method == "put" || method == "append" ||
+         method == "size" || method == "get" || method == "valueAt" ||
+         method == "keyAt" || method == "indexOfKey" ||
+         method == "delete" || method == "remove" || method == "clear")) {
+        static thread_local uint64_t f334_arr = 0;
+        if (f334_arr < 16) {
+            ++f334_arr;
+            std::cerr << "[F-NEW-334] SparseArray law: " << method
+                      << " recv="
+                      << ((!args.empty() &&
+                           args[0].type == DalvikType::OBJECT_REF)
+                              ? args[0].object_id
+                              : 0u)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        uint32_t sa334 = (!args.empty() &&
+                          args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id
+                             : 0;
+        if (sa334 != 0 && heap_.has_object(sa334)) {
+            auto sa_size334 = [&]() -> int32_t {
+                auto v = heap_.get_object_field(sa334, "__sa:size");
+                return (v.has_value() &&
+                        v->type == DalvikType::INT32)
+                           ? v->int_val
+                           : 0;
+            };
+            auto sa_has334 = [&](int32_t k) -> bool {
+                auto v = heap_.get_object_field(
+                    sa334, "__sa:has:" + std::to_string(k));
+                return v.has_value() && v->type == DalvikType::INT32 &&
+                       v->int_val != 0;
+            };
+            if (method == "<init>") {
+                heap_.set_object_field(sa334, "__sa:size",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "put" || method == "append") {
+                if (args.size() >= 3 &&
+                    args[1].type == DalvikType::INT32) {
+                    int32_t k334 = args[1].int_val;
+                    bool present334 = sa_has334(k334);
+                    if (!present334)
+                        heap_.set_object_field(
+                            sa334, "__sa:size",
+                            DalvikValue::make_int(sa_size334() + 1));
+                    heap_.set_object_field(
+                        sa334, "__sa:has:" + std::to_string(k334),
+                        DalvikValue::make_int(1));
+                    heap_.set_object_field(
+                        sa334, "__sa:val:" + std::to_string(k334), args[2]);
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "size") {
+                result = DalvikValue::make_int(sa_size334());
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "get") {
+                if (args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32) {
+                    int32_t k334 = args[1].int_val;
+                    if (sa_has334(k334)) {
+                        auto v = heap_.get_object_field(
+                            sa334, "__sa:val:" + std::to_string(k334));
+                        if (v.has_value()) { result = *v;
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true; }
+                    }
+                    // AOSP: absent → null (2-arg: the default)
+                    if (args.size() >= 3) result = args[2];
+                    else result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            // Ascending-key index law helper: collect present keys.
+            auto sa_keys334 = [&]() {
+                std::vector<int32_t> ks;
+                const auto* hobj334 = heap_.get(sa334);
+                if (hobj334) {
+                    for (const auto& kv : hobj334->fields) {
+                        if (kv.first.rfind("__sa:has:", 0) == 0 &&
+                            kv.second.type == DalvikType::INT32 &&
+                            kv.second.int_val != 0) {
+                            try {
+                                ks.push_back(std::stoi(
+                                    kv.first.substr(9)));
+                            } catch (...) {}
+                            if (ks.size() >= 4096) break;
+                        }
+                    }
+                }
+                std::sort(ks.begin(), ks.end());
+                return ks;
+            };
+            if (method == "valueAt" || method == "keyAt") {
+                int32_t idx334 = (args.size() >= 2 &&
+                                  args[1].type == DalvikType::INT32)
+                                     ? args[1].int_val
+                                     : -1;
+                auto ks334 = sa_keys334();
+                if (idx334 >= 0 &&
+                    idx334 < static_cast<int32_t>(ks334.size())) {
+                    if (method == "keyAt") {
+                        result = DalvikValue::make_int(ks334[idx334]);
+                    } else {
+                        auto v = heap_.get_object_field(
+                            sa334,
+                            "__sa:val:" + std::to_string(ks334[idx334]));
+                        result = v.has_value() ? *v
+                                               : DalvikValue::make_null();
+                    }
+                } else if (method == "keyAt") {
+                    result = DalvikValue::make_int(0);
+                } else {
+                    result = DalvikValue::make_null();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "indexOfKey") {
+                int32_t k334 = (args.size() >= 2 &&
+                                args[1].type == DalvikType::INT32)
+                                   ? args[1].int_val
+                                   : 0;
+                auto ks334 = sa_keys334();
+                int32_t ans334 = -1;
+                for (size_t i334 = 0; i334 < ks334.size(); ++i334)
+                    if (ks334[i334] == k334) {
+                        ans334 = static_cast<int32_t>(i334);
+                        break;
+                    }
+                result = DalvikValue::make_int(ans334);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "delete" || method == "remove") {
+                if (args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32) {
+                    int32_t k334 = args[1].int_val;
+                    if (sa_has334(k334)) {
+                        heap_.set_object_field(
+                            sa334, "__sa:has:" + std::to_string(k334),
+                            DalvikValue::make_int(0));
+                        heap_.set_object_field(
+                            sa334, "__sa:size",
+                            DalvikValue::make_int(sa_size334() - 1));
+                    }
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "clear") {
+                const auto* hobj334 = heap_.get(sa334);
+                if (hobj334) {
+                    for (const auto& kv : hobj334->fields) {
+                        if (kv.first.rfind("__sa:has:", 0) == 0 &&
+                            kv.second.type == DalvikType::INT32 &&
+                            kv.second.int_val != 0)
+                            heap_.set_object_field(
+                                sa334, kv.first,
+                                DalvikValue::make_int(0));
+                    }
+                }
+                heap_.set_object_field(sa334, "__sa:size",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // 371-CLOSEOUT: FRAMEWORK-ENUM STATIC ACCESSOR LAW (values()/valueOf()).
     // Android/ART: every enum class exposes `values()` (constants in
@@ -46580,10 +46965,94 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: Handler.<init>(Looper) → no-op, return void
+    // F-NEW-332 (CONT-56b): post/postDelayed/removeCallbacks can no longer
+    // silently DROP their runnables. Bridge dispatch order means a
+    // framework-Handler post lands HERE (try_recursive_invoke REC-MISSes —
+    // android.os.Handler has no app-DEX body) and EXP-043's void stub ate
+    // the runnable: FragmentManagerImpl.scheduleCommit's
+    // Handler.post(mExecCommit) never executed its transaction (measured:
+    // bmi_402 — enqueueAction green after F-NEW-331, then scheduleCommit
+    // post swallowed → fragment never instantiated → container stayed
+    // empty → uniform dark frame). The framework HandlerShadow owns the
+    // ONE deterministic MessageQueue (FINDING-004 token law, R500
+    // front-of-queue law, F-115 Timer rides the same queue) — route the
+    // queue-shaped methods to it. <init>/sendMessage stay void stubs.
     // ────────────────────────────────────────────────────────────────────────
     if (class_name.find("Handler") != std::string::npos &&
         (method == "<init>" || method == "post" || method == "postDelayed" ||
          method == "removeCallbacks" || method == "sendMessage")) {
+        if (method == "post" || method == "postDelayed" ||
+            method == "removeCallbacks") {
+            if (auto* hs332 = shadow_registry_
+                                  ? shadow_registry_->find_as<
+                                        framework::HandlerShadow>()
+                                  : nullptr) {
+                // Engine-args layout: [0]=receiver Handler, [1]=runnable,
+                // [2]=delay (postDelayed). removeCallbacks: [1]=runnable
+                // (may be null → remove-all contract lives in the shadow).
+                uint32_t runnable332 =
+                    (args.size() >= 2 &&
+                     args[1].type == DalvikType::OBJECT_REF)
+                        ? args[1].object_id
+                        : 0;
+                if (method == "removeCallbacks") {
+                    if (runnable332 != 0) {
+                        size_t removed332 = 0;
+                        if (heap_.has_object(runnable332))
+                            removed332 = hs332->remove_callbacks(runnable332);
+                        static thread_local uint64_t f332_log = 0;
+                        if (f332_log < 12) {
+                            ++f332_log;
+                            std::cerr << "[F-NEW-332] Handler.removeCallbacks"
+                                      << " r=o" << runnable332 << " removed="
+                                      << removed332 << " caller="
+                                      << current_class_ << "."
+                                      << current_method_ << std::endl;
+                        }
+                    }
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (runnable332 != 0 && heap_.has_object(runnable332)) {
+                    int64_t delay332 = 0;
+                    if (method == "postDelayed" && args.size() >= 3) {
+                        if (args[2].type == DalvikType::INT64)
+                            delay332 = args[2].long_val;
+                        else if (args[2].type == DalvikType::INT32)
+                            delay332 = args[2].int_val;
+                    }
+                    hs332->enqueue(runnable332, delay332,
+                                   "Landroid/os/Handler;." + method);
+                    static thread_local uint64_t f332_plog = 0;
+                    if (f332_plog < 12) {
+                        ++f332_plog;
+                        std::cerr << "[F-NEW-332] Handler." << method
+                                  << " r=o" << runnable332 << " delay="
+                                  << delay332 << "ms caller="
+                                  << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                    result = DalvikValue::make_bool(true);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // null runnable: AOSP post(null) → false; loud, honest.
+                static thread_local uint64_t f332_nlog = 0;
+                if (f332_nlog < 8) {
+                    ++f332_nlog;
+                    std::cerr << "[F-NEW-332] Handler." << method
+                              << " null runnable → false (AOSP law) caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
+                }
+                result = DalvikValue::make_bool(false);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // No HandlerShadow registered: preserve the historical void
+            // stub exactly (nothing to enqueue onto).
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         return true;
