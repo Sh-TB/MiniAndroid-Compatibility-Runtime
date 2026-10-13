@@ -9154,3 +9154,48 @@ Stage Summary:
 - Queued next: the borderless-transparent bg chain (F-NEW-342 candidate),
   dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), alex R8
   DEX-state + CoordinatorLayout anchor, Solitaire/notes audit, mosaic.
+
+---
+Task ID: S60-C (CONT-60 WAVE 3)
+Agent: Super Z (main)
+Task: The new problem seen mid-wave-2, fixed immediately per the standing
+rule: the OpenCalc pad ImageButtons painted opaque dark cells where the
+real app is borderless-transparent over the themed window.
+
+Work Log:
+- Decode (two levels): (a) the pad ImageButtons carry NO bg attr (their
+  bg = the imageButtonStyle borderless chain — AOSP-transparent; the
+  draw walk correctly paints nothing); (b) the DARK behind them = the
+  WINDOW fallback — the app's theme declares windowBackground =
+  ?android:attr/colorBackground (TYPE_ATTRIBUTE 0x01010031), a framework
+  ATTR with no table row, so arsc().resolve_full() failed (ok=0, proved
+  with the extended [S95-WINBG*] read-only diagnostics) and
+  resolve_window_background_argb returned nullopt → the hardcoded
+  0x303030 default masked the themed window.
+- FIX (F-NEW-342, site #4 of the theme-attr law family): the reference
+  deref routes framework ATTR ids through resolve_theme_attr_typed; the
+  themed answer accepts color/int; res/ file strings recurse the file
+  law; else honest nullopt. OpenCalc's real answer: 0xffffffff
+  (background_material_light — the app's light theme).
+- RESULT: [EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255);
+  the borderless icons now sit on the real themed white — the light face
+  matches the app's design. The F-NEW-338 re-pin rationale is honestly
+  CORRECTED in the registry (the 48-dark "app window" was this fallback).
+- RAW-DIFF-PROVEN (old binary via stash to byte-exact 53e8d711): every
+  sampled changed pixel = the pure window swap (48,48,48)→(255,255,255)
+  in the pad band + row separators; icon glyphs unchanged.
+- ZERO-DRIFT REGRESSION (d99fe6e1596fed06): 33/36 + opencalc x3
+  INTENTIONAL re-pin (f25b754c, rationale in the gate script) + csw 3/3
+  + simplecalc 3/3 + dooz180 3/3 + probe battery == records.
+- Registry 653 → 654 (F-NEW-342 ROOT-CAUSED-FIXED).
+
+Stage Summary:
+- The theme-attr law family now covers all four painted-color sites
+  (ColorStateList items F-NEW-337b, TextView colors F-NEW-336, vector
+  tints F-NEW-341, windowBackground F-NEW-342). OpenCalc's face is
+  complete-complete for the pad: real icons on the real themed window.
+- Honest next frontier named: the windowBackground @drawable-file form
+  (ColorDrawable/InsetDrawable XML chains) still nullopts; no anchor
+  carries one.
+- Queued next: dooz Compose draw (F-NEW-256), dooz tap bridge
+  (F-NEW-267), alex R8 DEX-state, Solitaire/notes audit, mosaic.

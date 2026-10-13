@@ -129,7 +129,13 @@ anchors)
     # The pre-fix face a976d2f9fb675cb3 was the compressed pad (579-wide
     # sliding_layout, 52x0 display HSVs). New face 0ae271c49d2bd61c x3
     # deterministic. Every OTHER anchor byte-identical (42/42 runs).
-    run1 "opencalc_r$i"   "$OPENCALC"  53e8d711e8c4551e
+    run1 "opencalc_r$i"   "$OPENCALC"  f25b754c4565c38b
+    # CONT-60 F-NEW-342 RE-PIN (on top of the F-NEW-341 re-pin): the
+    # windowBackground ?android:attr/colorBackground law — the attr ref has
+    # no table row; the theme service answers it (white for OpenCalc's
+    # light theme) instead of nullopt→dark-fallback. RAW-DIFF-PROVEN: the
+    # ONLY changed pixels are the window-color swap (48,48,48)→(255,255,255)
+    # in the pad band + row separators; icon glyphs unchanged (now crisp).
     # CONT-60 F-NEW-341 RE-PIN: the vector-tint theme-attr law (?attr/…
     # tints resolve through the theme service — the table deref answered
     # the attr-DEFINITION int and the alpha-0 SRC_IN tint erased every

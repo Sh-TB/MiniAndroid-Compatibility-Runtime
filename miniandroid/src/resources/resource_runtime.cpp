@@ -344,11 +344,49 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
         //    bounded/cycle-safe path, then decode the color via the ONE
         //    color law.
         ResValue v = *wb;
+        if (std::getenv("MINIANDROID_S95_DBG"))
+            std::cerr << "[S95-WINBG0] ref=" << (v.is_reference() ? 1 : 0)
+                      << " type=" << (int)(uint8_t)v.type
+                      << " data=0x" << std::hex << v.data << std::dec
+                      << " str='" << v.string_value << "'" << std::endl;
         if (v.is_reference()) {
+            // F-NEW-342: a FRAMEWORK ATTR ref (the Theme.Material
+            // windowBackground form ?android:attr/colorBackground =
+            // 0x01010031) has NO resource-table row — the table deref
+            // fails and the whole chain nullopted to the dark default,
+            // masking the themed window (OpenCalc v53: the pad's
+            // borderless ImageButtons then sat on the fallback dark
+            // instead of the theme's colorBackground). AOSP law:
+            // Theme::ResolveAttribute — the THEME SERVICE answers attr
+            // keys (the F-NEW-337b/336 law, site #4).
+            const uint32_t rid = v.ref_id;
+            const bool fw_attr =
+                (rid >> 24) == 0x01 && ((rid >> 16) & 0xff) == 0x01;
+            if (fw_attr) {
+                auto ta = resolve_theme_attr_typed(apk_path, rid, -1);
+                if (!ta) return std::nullopt;
+                v = *ta;
+                if (v.is_string() &&
+                    v.string_value.rfind("res/", 0) == 0) {
+                    auto c = resolve_framework_file_color(rid);
+                    if (!c) c = resolve_apk_file_color(v.string_value);
+                    if (!c) return std::nullopt;
+                    return *c;
+                }
+                if (!(v.is_color() || v.is_int())) return std::nullopt;
+                return color_data_to_argb((uint8_t)v.type, v.data);
+            }
             ResolutionResult r = arsc_.resolve_full(v.ref_id, device_config());
+            if (std::getenv("MINIANDROID_S95_DBG"))
+                std::cerr << "[S95-WINBG1] deref 0x" << std::hex << v.ref_id
+                          << " ok=" << (r.ok ? 1 : 0) << std::dec << std::endl;
             if (!r.ok) return std::nullopt;
             v = *r.value();
         }
+        if (std::getenv("MINIANDROID_S95_DBG"))
+            std::cerr << "[S95-WINBG] type=" << (int)(uint8_t)v.type
+                      << " data=0x" << std::hex << v.data << std::dec
+                      << " str='" << v.string_value << "'" << std::endl;
         return color_data_to_argb((uint8_t)v.type, v.data);
     }
     // 2b. S95 (L-S95-DEFTHEME-1): a theme whose bag lacks
