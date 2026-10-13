@@ -105,8 +105,14 @@ anchors)
     # regress visible content for a non-problem. Binary reverted to the
     # byte-exact CONT-39 record. Evidence: evidence/cont40/DOOZ_WTOKEN_AUDIT.md.
     run1 "dooz_r$i"       "$DOOZ"      31ddd4d5b8e6d18e
-    run1 "microtimer_r$i" "$MICRO"     da73010a37dd0189
-    run1 "unote_r$i"      "$UNOTE"     4f1a9e4e8f64fae8
+    # CONT-59 F-NEW-338 RE-PIN: the transparent-container law (a bg-less
+    # container shows the theme windowBackground — the EXP-092 GREY_200
+    # visibility fill painted a light slab over dark-theme windows).
+    # RAW-DIFF-PROVEN per face: the ONLY changed pixels are the fill color
+    # swap (micro 225→255 winbg 0xffffffff; unote 225→48 winbg default dark)
+    # + AA re-blends; zero content pixels lost. New faces x3 deterministic.
+    run1 "microtimer_r$i" "$MICRO"     55343bbec712618d
+    run1 "unote_r$i"      "$UNOTE"     90a67cc1ddda57b7
     # CONT-59 F-NEW-337b RE-PIN: the theme-attribute ColorStateList item law
     # (?attr/… item colors resolve through the theme service — the resource-
     # table deref read the attr-DEFINITION row and painted its INT data as
@@ -123,7 +129,7 @@ anchors)
     # The pre-fix face a976d2f9fb675cb3 was the compressed pad (579-wide
     # sliding_layout, 52x0 display HSVs). New face 0ae271c49d2bd61c x3
     # deterministic. Every OTHER anchor byte-identical (42/42 runs).
-    run1 "opencalc_r$i"   "$OPENCALC"  0ae271c49d2bd61c
+    run1 "opencalc_r$i"   "$OPENCALC"  b7a7fe8efadf9aa8
     run1 "tttdeluxe_r$i"  "$TTT"       af6094295ecb50e3
     run1 "flappycow_r$i"  "$FLAPPY"    13cf47464d9787f4
     run1 "g2048_r$i"      "$G2048"     59ca1526611c4622
@@ -143,7 +149,7 @@ anchors)
     # blended away). Post-fix the rows paint real text (dark_glyph_samples
     # 0 → 4420; all five preference rows visible). New face
     # 601e0219d4cab10b x3 deterministic — REAL_APP_CONTENT retained.
-    run1 "tanana_r$i"     "$TANANA"    601e0219d4cab10b
+    run1 "tanana_r$i"     "$TANANA"    afe0bd8dd4d09ca6
   done
   ;;
 dooz180)
@@ -213,7 +219,7 @@ control)
   # are the "0" glyph bbox (1059-1078, 481-507); pad/geometry byte-stable.
   # New face 950b955c6999d72a x3 deterministic — REAL_APP_CONTENT retained.
   for i in 1 2 3; do
-    run1 "simplecalc_r$i" "$SIMPLECALC" 950b955c6999d72a
+    run1 "simplecalc_r$i" "$SIMPLECALC" 341b9cec89d8f182
   done
   ;;
 *)
