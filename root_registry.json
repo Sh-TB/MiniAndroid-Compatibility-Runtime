@@ -5801,6 +5801,16 @@
     "scripts/cont59b_registry.py (649 -> 650: F-NEW-338)",
     "scripts/cont59c_registry.py (650 -> 651: F-NEW-339)"
    ]
+  },
+  {
+   "id": "F-NEW-340",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "resources/inflater-relativelayout-layout-pass",
+   "title": "The RelativeLayout layout pass clobbered the measure-time edge replay with its simplified else-if chain: the 3-pass fixed-point loop re-derived positions for EVERY child (the '|| b.done' overwrite clause) including children whose boxes were already resolved from the measure-time cached edges (rl_cached_*, the AOSP onLayout replay law recorded at FIX-MEASURE-002e) - the chain's else-if form never reaches layout_alignTop when layout_above is present, so alignTop was silently dropped (BMI v402 weightSpinner: measure-time replay box y=231 (alignTop=weightNum) overwritten by the chain's above-law answer y=heightNum.top-105=315 - the spinner row staggered 84px below its EditText; same for heightSpinner 470 vs 420).",
+   "root_cause": "Evidence chain: (1) AXML ground truth decoded with a corrected offset parser (scripts/cont60_axml2.py; attribute layout: attrs at pos+16+attribute_start, the legacy tool read pos+attribute_start=header-overlap): fragment_bmimain.xml rows are Spinner(toLeftOf=EditText, above=nextRow, alignTop=ownRow-EditText, alignParentLeft) - the developer's alignTop intent is explicit. (2) The engine's MEASURE pass is faithful (independent top/bottom anchor chains per AOSP RelativeLayout.applyVerticalSizeRules, anchor-margin law included: mBottom = anchor.top - (child.bottomMargin + anchor.topMargin); both anchors -> EXACTLY(span)) and caches the resolved edges (rl_cached_top/bottom + rl_edges_valid). (3) MINIANDROID_RL_TRACE (new env-gated read-only diagnostic) proved the LAYOUT pass computed the fast-path box (0,231) from the cached edges and THEN the fixed-point loop overwrote it to (0,315) via the else-if chain (above-law, no alignTop reach) - the final render used the clobbered value. (4) FIX (one site, law-faithful): Box carries replay=true for fast-path children; the fixed-point loop skips replay boxes (they are FINAL per the onLayout replay law the same code block already records) - the multi-pass chain stays fully live for the fallback children (programmatic addView paths without cached edges).",
+   "next_wave": "The fallback chain's above/below formulas lack the anchor-margin law the measure pass implements (y = boxes[bid].y - b.h - margin vs mBottom = anchor.top - (child.bottomMargin + anchor.topMargin)) - recorded boundary, no measured corpus case yet; fan-out: any RelativeLayout app whose rule set has alignTop/alignBottom/alignLeft/alignRight combined with above/below/toLeftOf/toRightOf on the same child.",
+   "evidence": "BMI v402 measured: spinners (0,315)/(0,470) -> (0,231)/(0,420) (the XML alignTop ground truth); face 88a8fea88a944f31 -> fb7c45d12014e366 x3 deterministic; weightSpinner band pixel census: white glyphs (255,255,255) on (48,48,48) window. ZERO-DRIFT: 36/36 REG MATCH at binary 290c94597bf8fff4 (12 faces x3: dooz 31ddd4d5, micro 55343bbe, unote 90a67cc1, gmdice 3891679d, opencalc b7a7fe8e, ttt af609429, flappy 13cf4746, g2048 59ca1526, tanana afe0bd8d, csw 3442d9a9, simplecalc 341b9cec, dooz180 6841d52a) + probe battery == records (f259g 84/7 + fnew302 48/24 documented known rows; all others 0 fail). Evidence: evidence/cont60/bmi_w1_fixed_form.png."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
@@ -5836,7 +5846,7 @@
   "ROOT_CAUSED_FIXED": 18,
   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
  },
- "total_roots": 651,
+ "total_roots": 652,
  "generated": "CONT-44 session",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }

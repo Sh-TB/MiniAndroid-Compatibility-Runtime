@@ -9053,3 +9053,55 @@ Work Log:
 Stage Summary:
 - CONT-59 closed 4 new generic roots (F-NEW-337, 337b, 338, 339): registry 647 → 651; every face change raw-diff-proven; three zero-drift gates (33/33) at three binaries; the doubled-task directive delivered 4 fix waves + the standing mosaic upload in one session.
 - Queued next: BMI row-weight squeeze, OpenCalc srcCompat vector-drawables (F-NEW-309), alex R8 DEX-state + CoordinatorLayout anchor + nav-graph, dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), Solitaire/notes audit.
+
+---
+Task ID: S60-A (CONT-60 WAVE 1)
+Agent: Super Z (main)
+Task: User directive "continue at a high number of tasks" — the complete-
+complete loading campaign continues at doubled scale. Front 1: the BMI
+form geometry (queued since S56-CONT as the "row-weight squeeze"). Standing
+rule: new problems get fixed the moment they are seen.
+
+Work Log:
+- State reconciliation: the container had reset AGAIN to the stale CONT-10
+  checkout (e99c2fbd; empty build dir; no cont56 evidence) — fast-forwarded
+  to origin/main 1a75e8f8 (ALL CONT-56..59 waves intact; registry 651).
+  Rebuilt in one foreground chunk: 1574e61808d897ea (toolchain SHA drift
+  again container-only — semantic identity adjudicated by the gate).
+  Baseline frozen: 36/36 REG MATCH (12 faces x3) + probe battery == records
+  (f259g 84/7, fnew302 48/24 documented known rows). tmp/ APKs restored
+  from upload/cont54_refetch per the standing lesson.
+- ROOT DECODE (BMI v402): the U007 tree showed weightSpinner at (0,315)
+  while its XML ground truth (decoded with a CORRECTED offset parser,
+  scripts/cont60_axml2.py — the legacy tool read attrs 16 bytes into the
+  element header) says layout_alignTop=weightNum → y MUST be 231. The
+  engine's MEASURE pass is faithful (independent top/bottom anchor chains,
+  anchor-margin law, both-anchors EXACTLY(span)) and caches the edges; the
+  LAYOUT pass fast-path computed (0,231) from the cache — then the 3-pass
+  fixed-point loop OVERWROTE it to (0,315) via its simplified else-if
+  chain (which never reaches alignTop when above is present). The '|| b.done'
+  clause explicitly permitted overwriting replay-final boxes.
+- FIX (F-NEW-340, one site, law-faithful): Box.replay flag on fast-path
+  children; the fixed-point loop skips replay boxes (the AOSP onLayout
+  replay law the same block already records); the multi-pass chain stays
+  fully live for fallback children (programmatic addView paths).
+- RESULT (measured): weightSpinner (0,315)→(0,231), heightSpinner
+  (0,470)→(0,420) — the XML alignTop ground truth; face
+  88a8fea88a944f31 → fb7c45d12014e366; form regions pixel-verified
+  (spinner white glyphs; EditText 153-grey frames; blue Calculate button).
+- ZERO-DRIFT REGRESSION (binary 290c94597bf8fff4): 36/36 REG MATCH
+  (12 faces x3, no re-pins) + probe battery == records. The fix is
+  semantically neutral for the whole anchor corpus.
+- Registry 651 → 652 (F-NEW-340 appended ROOT-CAUSED-FIXED). Evidence:
+  evidence/cont60/bmi_w1_fixed_form.png. Diagnostics: MINIANDROID_RL_TRACE
+  (env-gated read-only, measure+layout passes).
+
+Stage Summary:
+- The BMI "right-squeeze" root is dead: the real law gap was never
+  row-weight — it was the layout pass violating its own replay contract.
+  The BMI form now matches the APK's XML ground truth line-for-line
+  (spinners left, fields right, rows aligned, blue button).
+- Queued next (doubled list): OpenCalc srcCompat vector-drawables
+  (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge
+  (F-NEW-267), alex R8 DEX-state + CoordinatorLayout anchor + nav-graph,
+  Solitaire/notes audit, mosaic refresh + external upload.
