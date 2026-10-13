@@ -5666,11 +5666,59 @@
     "run/cont56c/gate_anchors.log + gate_cont37.log (42/42 + opencalc re-pin x3)",
     "scripts/s132_axml_dump.py res/Ok.xml decode (guideline percent chain ground truth)"
    ]
+  },
+  {
+   "id": "F-NEW-330",
+   "status": "DUPLICATE-SUPERSEDED",
+   "title": "ART nested-class modifier law missing: Class.getModifiers() read the dex class_def access_flags, which omit ACC_STATIC for member classes (BMI PlaceholderFragment class_def=0x1 vs @InnerClass accessFl [DUPLICATE: the parallel CONT-11 wave shipped the identical law as F-NEW-260 (dex parser SYSTEM @InnerClass capture + Class.getModifiers consumer); F-NEW-260 is the canonical entry — this row is kept only as the duplicate-discovery record.]",
+   "priority": "P0",
+   "layer": "dex/reflection",
+   "evidence": "evidence/cont56/cont56_scoreboard.json; measured bmi_402 @InnerClass bytes; getModifiers law in dalvik_engine.cpp (CONT-366 block)."
+  },
+  {
+   "id": "F-NEW-331",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "S83-APXACT semantic shadow bypassed the support FragmentActivity.onCreate WITHOUT reproducing its fragment-host observable state: no FragmentController.attachHost → FragmentManagerImpl.mHost stayed null → first transaction commit threw ISE 'Activity has been destroyed' (enqueueAction, FIELD-TRACE + THROWABLE-MSG proven). Fix (b): shadow now walks activity.mFragments → controller.mHost (HostCallbacks) → HostCallbacks.mFragmentManager (FragmentManagerImpl) and writes mHost/mContainer = the HostCallbacks object (attachController law); plus (269b) mCurState = ACTIVITY_CREATED(2) — the bypassed onCreate tail's dispatchCreate + the F-NEW-172-suppressed dispatchStart left the fragment ladder stuck at INITIALIZING so performCreateView/onCreateView never ran. Honest gap recorded: STARTED face (fragment.onStart/onResume overrides) not reproduced.",
+   "priority": "P0",
+   "layer": "framework/fragments",
+   "evidence": "evidence/cont56/cont56_scoreboard.json; [F-NEW-269] + [THROWABLE-MSG 'Activity has been destroyed'] runtime logs."
+  },
+  {
+   "id": "F-NEW-332",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "EXP-043 bridge stub silently DROPPED Handler.post/postDelayed/removeCallbacks runnables for framework Handler receivers (try_recursive_invoke REC-MISS on android.os.Handler → bridge stub answered void). FragmentManagerImpl.scheduleCommit's Handler.post(mExecCommit) never executed → committed fragment transactions never ran. Fix: the bridge stub now routes the queue-shaped methods to the framework HandlerShadow (the ONE deterministic MessageQueue — FINDING-004 token law, R500 front-of-queue law, F-115 Timer); post returns true, null runnable returns false (AOSP), removeCallbacks removes.",
+   "priority": "P0",
+   "layer": "framework/handler",
+   "evidence": "evidence/cont56/cont56_scoreboard.json; [F-NEW-270] + [QUEUE] enqueue/dequeue runtime logs."
+  },
+  {
+   "id": "F-NEW-333",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "Preconditions.checkNotNull identity law missing: the EXP-058 STUB-ONLY skip guards a real DEX recursion but left the bridge with no law — the fallback shadow dispatch answered null and move-result-object DESTROYED every value passing through checkNotNull. Measured: FragmentHostCallback.<init> received the Handler arg (ARG-TRACE p3 obj#29) but stored mHandler=<unset> after its internal checkNotNull → getHandler() null → scheduleCommit Handler.post on NULL receiver (ROOT-059). Fix: bridge law returns args[0] (identity; AOSP Preconditions.java), NPE on null with the message element.",
+   "priority": "P0",
+   "layer": "dex/bridge",
+   "evidence": "evidence/cont56/cont56_scoreboard.json; [S134-QGET] hit=val=FragmentActivity$1#29 + put <unset> before / value=obj#29 after."
+  },
+  {
+   "id": "F-NEW-334",
+   "status": "ROOT-CAUSED-FIXED",
+   "title": "android.util.SparseArray had NO law: <init>/put/size/valueAt all REC-MISSed to silent defaults — FragmentManagerImpl.makeActive put fragments into mActive (no-op) and moveToState's `for (i < mActive.size())` iterated ZERO entries → committed fragments never advanced. Fix: faithful AOSP subset (key-sorted int→Object map; put/append replace-in-place; size; get with default; valueAt/keyAt ascending-key index; indexOfKey; delete/remove/clear) backed by heap fields __sa:has:<K>/__sa:val:<K>/__sa:size, bounded scan.",
+   "priority": "P0",
+   "layer": "dalvik/collections",
+   "evidence": "evidence/cont56/cont56_scoreboard.json; [F-NEW-272] law-hit runtime logs at makeActive/moveToState/startPendingDeferredFragments/burpActive."
+  },
+  {
+   "id": "F-NEW-335",
+   "status": "DUPLICATE-SUPERSEDED",
+   "title": "Inflater identity laws missing: Activity.getLayoutInflater() (no law → null) and LayoutInflater.cloneInContext/setFactory2 (no law). The support fragment ladder reaches FragmentHostCallback.onGetLayou [DUPLICATE: getLayoutInflater = M3 F-021 shared-singleton law; cloneInContext = F-NEW-313 (CONT-47); only the setFactory2 void rider was additive — folded into the F-NEW-313 block.]",
+   "priority": "P0",
+   "layer": "framework/inflater",
+   "evidence": "evidence/cont56/cont56_scoreboard.json; [ROOT-059] null-recv LayoutInflater.inflate before; 8-node view tree after."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 640,
- "count": 640,
+ "total": 646,
+ "count": 646,
  "meta": {
   "last_update": "CONT-56 session 2026-10-12: the framework LinearLayout.onMeasure SUPER law (F-NEW-328) — the lp-aware child-spec source (lp_width/lp_height authoritative over the legacy mirrors) + the AOSP orientation self-size law (sum/max, AT_MOST clamps) at BOTH S109 sites. Probe fnew328 PRE FAIL x1 (self=1080x1920 child=1080x1920) -> POST 4/0 x3. Solitaire: AppBarLayout 1080x1920 -> 1080x105; visible frame unchanged ba50a4d2. Zero-drift 15 anchors x3 (45/45) + probe battery == records. Registry 638->639.",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
