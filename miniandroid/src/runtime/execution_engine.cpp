@@ -3854,7 +3854,22 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 -1);
                                         tcp_probed = true;
                                     }
-                                    if (tcp_cached.has_value()) {
+                                    if (tcp_cached.has_value() &&
+                                        // CONT-58 (F-NEW-336) TYPE LAW: a
+                                        // theme COLOR attr answers as INT_HEX
+                                        // (S127/framework table paths) or a
+                                        // COLOR_* literal. Any other type
+                                        // (STRING — an unresolved file-backed
+                                        // ColorStateList — REFERENCE, …) is
+                                        // NOT a color: casting its data painted
+                                        // the string-pool INDEX as ARGB
+                                        // (alpha-0 → invisible text). AOSP
+                                        // ResourcesImpl.loadColorStateList
+                                        // never hands a string to a color
+                                        // consumer — the honest fallback is
+                                        // the legacy default below.
+                                        (tcp_cached->is_int() ||
+                                         tcp_cached->is_color())) {
                                         uint32_t c =
                                             (uint32_t)tcp_cached->data;
                                         tcol = renderer::RGBA{

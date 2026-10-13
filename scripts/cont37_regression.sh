@@ -127,7 +127,15 @@ anchors)
     # band (content top = the theme's actionBarSize, 126px) — the fix face
     # re-pins here (0f649804d6e0486d = the pre-inset face; the inset leg is
     # the delta; row glyphs are F-NEW-308, a separate root).
-    run1 "tanana_r$i"     "$TANANA"    5f7e0114c3bfd6b5
+    # CONT-58 F-NEW-336 RE-PIN: the app-package file-backed ColorStateList
+    # law resolved the theme's textColorPrimary for the first time (the
+    # base theme answered STRING 'res/color/abc_primary_text_material_
+    # light.xml', the framework router has no abc_* row, and the raw
+    # string-pool index 0x61 was cast as ARGB = alpha-0 → every glyph
+    # blended away). Post-fix the rows paint real text (dark_glyph_samples
+    # 0 → 4420; all five preference rows visible). New face
+    # 601e0219d4cab10b x3 deterministic — REAL_APP_CONTENT retained.
+    run1 "tanana_r$i"     "$TANANA"    601e0219d4cab10b
   done
   ;;
 dooz180)
@@ -190,8 +198,14 @@ control)
   # (display + pad rows all +126). The old face 7960bce447ac6d8f was the
   # pre-inset geometry; the re-pin is the fix face (same disposition as
   # the tananaev anchor).
+  # CONT-58 F-NEW-336 RE-PIN: the same app-package ColorStateList law
+  # resolved the app's textColorPrimary — the display's initial "0" was
+  # painted alpha-0 (unresolved STRING cast) and now renders (29,29,29).
+  # RAW-diff-proven: the ONLY changed pixels in the whole 1080x1920 face
+  # are the "0" glyph bbox (1059-1078, 481-507); pad/geometry byte-stable.
+  # New face 950b955c6999d72a x3 deterministic — REAL_APP_CONTENT retained.
   for i in 1 2 3; do
-    run1 "simplecalc_r$i" "$SIMPLECALC" e847ca0346708f07
+    run1 "simplecalc_r$i" "$SIMPLECALC" 950b955c6999d72a
   done
   ;;
 *)

@@ -193,6 +193,57 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
     return std::nullopt;
 }
 
+// CONT-58 (F-NEW-336): the APP-package counterpart of
+// resolve_framework_file_color. Library ColorStateList files (appcompat
+// abc_* / Material mtrl_*) ship INSIDE the APK — the framework router has
+// no entry for them (find_id MISS is the measured tanana face). The file
+// path arrives complete ("res/color/name.xml"), so: extract the entry from
+// the APK, parse the <selector>, apply the SAME default-state tri-match
+// law (window_focused=true, enabled=true, pressed/selected/checked/
+// activated=false), and deref in-item @color references through the APP
+// table (bounded depth — mirrors the framework deref law).
+std::optional<uint32_t> ResourceRuntime::resolve_apk_file_color(
+        const std::string& res_path, int depth) {
+    if (depth > 4) return std::nullopt;
+    // Only color-list files answer the COLOR question. A res/drawable file
+    // is not a ColorStateList — honest miss (the state-list bg law owns it).
+    if (res_path.rfind("res/color/", 0) != 0) return std::nullopt;
+    std::vector<uint8_t> axml = apk_.extract_entry_cached(res_path);
+    if (axml.empty()) return std::nullopt;
+    std::vector<framework::ViewShadow::ViewNode::BgStateItem> items;
+    if (!framework::parse_state_list(axml, &items) || items.empty())
+        return std::nullopt;
+    // Same default-state first-match law as the framework file path.
+    auto tri_matches = [](int req, bool cur) {
+        return req < 0 || req == (cur ? 1 : 0);
+    };
+    for (const auto& it : items) {
+        if (!tri_matches(it.state_pressed, false) ||
+            !tri_matches(it.state_enabled, true) ||
+            !tri_matches(it.state_selected, false) ||
+            !tri_matches(it.state_checked, false) ||
+            !tri_matches(it.state_window_focused, true) ||
+            !tri_matches(it.state_activated, false))
+            continue;   // requires a non-default state — not first match
+        if (it.has_color && it.color != 0) return it.color;
+        if (it.has_color && it.color_ref_id != 0) {
+            // In-item @color reference — APP-table terminal value (bounded).
+            ResolutionResult r = arsc_.resolve_full(it.color_ref_id,
+                                                    device_config());
+            if (!r.ok || !r.value()) return std::nullopt;
+            const ResValue& tv = *r.value();
+            if (tv.is_int()) return (uint32_t)tv.data;
+            if (tv.is_color())
+                return color_data_to_argb((uint8_t)tv.type, tv.data);
+            if (tv.is_string() && tv.string_value.rfind("res/", 0) == 0)
+                return resolve_apk_file_color(tv.string_value, depth + 1);
+            return std::nullopt;
+        }
+        return std::nullopt;
+    }
+    return std::nullopt;
+}
+
 std::optional<uint32_t> ResourceRuntime::resolve_color_reference_argb(uint32_t resid) {
     // S127: package-routed terminal-value color law (see resource_runtime.h).
     ArscRouter rt = arsc_router();
@@ -490,6 +541,16 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
     auto v = ThemeEngine::instance().resolve_attr(arsc_router(), device_config(),
                                                   &base_theme(), attr_key);
     if (v) {
+        // CONT-58 decode diagnostic (generic, env-gated, read-only): the raw
+        // typed attr answer — type/data/string_value — for painted-color
+        // root-cause work (the 0x61 STRING-type textColorPrimary case).
+        if (std::getenv("MINIANDROID_THEME_ATTR_DIAG"))
+            std::cerr << "[S124-ATTRRAW] attr=0x" << std::hex << attr_key
+                      << std::dec << " type=" << (int)(uint8_t)v->type
+                      << " data=0x" << std::hex << (uint32_t)v->data
+                      << std::dec << " str='" << v->string_value << "'"
+                      << std::endl;
+
         // S127 ColorStateList/DRAWABLE FILE LAW (AOSP ResourcesImpl
         // .loadColorStateList / loadDrawable): framework color/drawable
         // entries are FILE-BACKED — the entry value is a STRING carrying
@@ -529,6 +590,25 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
                             out.data = (int32_t)*col;
                             return out;
                         }
+                    }
+                }
+                // CONT-58 (F-NEW-336) APP-PACKAGE FILE LAW: library color
+                // files (appcompat abc_* / Material mtrl_*) are entries of
+                // the APP package — the framework router legitimately has
+                // no row for them. When the file value is a res/color/…
+                // path, resolve it FROM THE APK (extract + parse_state_list
+                // + default-state tri-match). AOSP ResourcesImpl
+                // .loadColorStateList is package-routed the same way.
+                if (v->string_value.rfind("res/color/", 0) == 0) {
+                    auto col = resolve_apk_file_color(v->string_value);
+                    if (csl_diag)
+                        std::cerr << "[S127-CSL] apk_file_color="
+                                  << (col ? "HIT" : "MISS") << std::endl;
+                    if (col) {
+                        ResValue out;
+                        out.type = DataType::INT_HEX;
+                        out.data = (int32_t)*col;
+                        return out;
                     }
                 }
             }
