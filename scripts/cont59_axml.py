@@ -72,8 +72,8 @@ def main(apk, resname):
                 aname, raw_idx = struct.unpack_from('<II', b, ao + 4)
                 atype = b[ao + 15]
                 adata = struct.unpack_from('<I', b, ao + 16)[0]
-                astr = strs[raw_idx] if raw_idx != 0xFFFFFFFF else ''
-                an = strs[aname] if aname != 0xFFFFFFFF else '?'
+                astr = strs[raw_idx] if raw_idx < len(strs) else ''
+                an = strs[aname] if aname < len(strs) else '?'
                 rid = resid_map[i] if i < len(resid_map) else 0
                 print(f"{'  ' * depth}   {an} = t:0x{atype:02x} d:0x{adata:x} raw:'{astr}' resid:0x{rid:08x}")
             depth += 1

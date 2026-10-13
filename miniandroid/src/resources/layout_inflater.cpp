@@ -2611,6 +2611,8 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             container && n->class_desc.find("ConstraintLayout") != std::string::npos;
         int content_w = 0, content_h = 0;
         bool rl_edges_aggregated = false;
+        static const bool rl_trace =
+            std::getenv("MINIANDROID_RL_TRACE") != nullptr;
         if (is_rl_container) {
             const int NOT_SET = INT_MIN;
             struct Edge { int l = NOT_SET, r = NOT_SET, t = NOT_SET, b = NOT_SET; };
@@ -2836,6 +2838,19 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 // FIX-MEASURE-002e: cache for the onLayout replay.
                 cn->rl_cached_top = e.t;
                 cn->rl_cached_bottom = e.b;
+                if (rl_trace) {
+                    fprintf(stderr,
+                            "[RL-TRACE-M] child=%u %s above='%s' below='%s'"
+                            " alignTop='%s' alignBottom='%s' mt=%d mb=%d"
+                            " -> t=%d b=%d sz=%dx%d\n",
+                            kids[i], cn->class_desc.c_str(),
+                            cn->rel_above_name.c_str(),
+                            cn->rel_below_name.c_str(),
+                            cn->rel_align_top_name.c_str(),
+                            cn->rel_align_bottom_name.c_str(),
+                            cn->lp_margin_top, cn->lp_margin_bottom,
+                            e.t, e.b, sz.first, sz.second);
+                }
             }
 
             // AOSP wrap-RL content: max extents over resolved EDGES (not
@@ -4195,6 +4210,8 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             }
         } else if (is_fl || is_rl || is_scroll) {
             if (is_rl) {
+                static const bool rl_trace =
+                    std::getenv("MINIANDROID_RL_TRACE") != nullptr;
                 // FIX-2c: RelativeLayout with REAL dependency rules (AOSP
                 // applyVerticalSizeRules/applyHorizontalSizeRules, simplified
                 // to the common subset). Fixed-point over children: a child
@@ -4208,7 +4225,19 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     }
                     return 0;
                 };
-                struct Box { int x, y, w, h; bool done; };
+                // F-NEW-340: a box resolved from the measure-time edge
+                // replay (rl_edges_valid) is FINAL — the AOSP onLayout
+                // replay law (RelativeLayout.onLayout reuses the edges
+                // cached by applyVerticalSizeRules/
+                // applyHorizontalSizeRules at measure; it never re-derives
+                // positions from the rule set). The fixed-point loop below
+                // must therefore skip replay boxes, or its simplified
+                // else-if chain overwrites them (BMI v402 weightSpinner:
+                // replay box y=231 (alignTop=weightNum) was clobbered by
+                // the chain's above-law answer y=315 — the 84px top-margin
+                // anchor-gap law missing from the chain made the spinner
+                // row staggered against its EditText).
+                struct Box { int x, y, w, h; bool done; bool replay; };
                 std::map<uint32_t, Box> boxes;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
@@ -4224,15 +4253,29 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const int by = ct + cn->rl_cached_top - n->padding_top;
                         const int bw = std::max(0, cn->rl_cached_right - cn->rl_cached_left);
                         const int bh = std::max(0, cn->rl_cached_bottom - cn->rl_cached_top);
-                        boxes[cid] = {bx, by, bw, bh, true};
+                        if (rl_trace) {
+                            fprintf(stderr,
+                                    "[RL-TRACE-L] child=%u %s FAST-PATH box=(%d,%d)"
+                                    " %dx%d cached=(l%d r%d t%d b%d)\n",
+                                    cid, cn->class_desc.c_str(), bx, by, bw, bh,
+                                    cn->rl_cached_left, cn->rl_cached_right,
+                                    cn->rl_cached_top, cn->rl_cached_bottom);
+                        }
+                        boxes[cid] = {bx, by, bw, bh, true, true};
                         continue;
+                    }
+                    if (rl_trace) {
+                        fprintf(stderr, "[RL-TRACE-L] child=%u %s FALLBACK"
+                                        " (rl_edges_valid=%d)\n",
+                                cid, cn ? cn->class_desc.c_str() : "?",
+                                cn ? (int)cn->rl_edges_valid : -1);
                     }
                     int w = cn->lp_width >= 0 ? cn->lp_width
                           : (cn->lp_width == -1 ? cw : cn->measured_width);
                     int h = cn->lp_height >= 0 ? cn->lp_height
                           : (cn->lp_height == -1 ? ch : cn->measured_height);
                     w = std::min(w, cw); h = std::min(h, ch > 0 ? ch : h);
-                    boxes[cid] = {cl, ct, std::max(0, w), std::max(0, h), false};
+                    boxes[cid] = {cl, ct, std::max(0, w), std::max(0, h), false, false};
                 }
                 // heights first (layout_below chains), then widths, 3 passes.
                 for (int pass = 0; pass < 3; ++pass) {
@@ -4240,6 +4283,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     for (uint32_t cid : kids) {
                         auto* cn = views->find_node(cid);
                         Box& b = boxes[cid];
+                        // F-NEW-340: measure-time replay boxes are final —
+                        // the fixed-point chain exists for the FALLBACK
+                        // children only (programmatic addView paths).
+                        if (b.replay) continue;
                         int vg = cn->child_gravity >= 0 ? cn->child_gravity
                                                        : n->container_gravity;
                         (void)vg;
