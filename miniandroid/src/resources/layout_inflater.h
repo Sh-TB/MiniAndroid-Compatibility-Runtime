@@ -183,43 +183,6 @@ public:
     const DexClassExistsHook& dex_class_exists_hook() const {
         return dex_class_exists_hook_;
     }
-    // ── F-NEW-339: the XML <fragment> short-tag law ─────────────────
-    // AOSP FragmentLayoutInflaterFactory: <fragment android:name="…">
-    // instantiates the named fragment through the FragmentFactory and
-    // attaches it with the XML id + tag; the tag's view node is the
-    // container. The engine owns the DEX lifecycle; the inflater only
-    // reports (view_id, class, tag, xml_id) after the element's attrs
-    // (id included) were applied. Unset → the V4-TAG generic-View
-    // degradation continues (honest evidence, never silent).
-    using FragmentTagHook = std::function<void(uint32_t view_id,
-                                               const std::string& frag_class_desc,
-                                               const std::string& tag,
-                                               int32_t xml_id)>;
-    void set_fragment_tag_hook(FragmentTagHook fn) {
-        fragment_tag_hook_ = std::move(fn);
-    }
-
-    // ── F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) ──────────
-    // At XML inflation the PARENT container generates each child's
-    // LayoutParams (ViewGroup.LayoutParams generateLayoutParams(
-    // AttributeSet) — the child's own attrs). For a DEX-defined parent the
-    // generated class is the parent's OWN LayoutParams subclass
-    // constructed by its real DEX (Context, AttributeSet) ctor — the
-    // android:layout_gravity resolution solitaire's DrawerLayout$g runs.
-    // The resources layer cannot depend on the dex layer, so the executor
-    // installs this hook (same Factory law as the ctor/measure hooks).
-    // Returns the generated heap object id, 0 = law not applicable (the
-    // AOSP ViewGroup default then stands).
-    using GenerateChildLpHook =
-        std::function<uint32_t(uint32_t child_view_id,
-                               const std::string& parent_class_desc,
-                               const std::vector<AxmlAttribute>& xml_attrs)>;
-    void set_generate_child_lp_hook(GenerateChildLpHook fn) {
-        generate_child_lp_hook_ = std::move(fn);
-    }
-    const GenerateChildLpHook& generate_child_lp_hook() const {
-        return generate_child_lp_hook_;
-    }
 
     // S82-GFX F-NEW-158: exposed — the render stage resolves programmatic
     // setBackgroundResource(resid) shape drawables through the SAME
@@ -363,13 +326,6 @@ private:
         int cl_left_edge = 0, cl_right_edge = 0;
         int cl_top_edge = 0, cl_bottom_edge = 0;
         float cl_bias_x = 0.5f, cl_bias_y = 0.5f;
-        // F-NEW-329: Guideline position family (AOSP Guideline.java).
-        // percent/begin/end resolve the guideline's fixed offset inside the
-        // parent ConstraintLayout's content box; orientation 0 = HORIZONTAL
-        // (fixes Y), 1 = VERTICAL (fixes X). INT_MIN = unset for begin/end,
-        // negative percent = unset.
-        float cl_guide_percent = -1.0f;
-        int cl_guide_begin = INT_MIN, cl_guide_end = INT_MIN;
         // applied style values
         bool from_style_text_size = false;
         uint32_t style_text_color = 0;
@@ -443,8 +399,6 @@ private:
     CustomViewCtorHook custom_view_ctor_hook_;
     CustomViewMeasureHook custom_view_measure_hook_;
     DexClassExistsHook dex_class_exists_hook_;
-    FragmentTagHook fragment_tag_hook_;
-    GenerateChildLpHook generate_child_lp_hook_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.
     std::map<uint32_t, std::string> id_names_;

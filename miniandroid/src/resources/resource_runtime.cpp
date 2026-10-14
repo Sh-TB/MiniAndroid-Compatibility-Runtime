@@ -65,11 +65,6 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     // SECONDARY CAMPAIGN V4: same Factory law for the DEX-existence hook
     // (unknown short-tag resolution).
     apply_dex_class_exists_hook();
-    // F-NEW-309: same Factory law for the generateLayoutParams hook
-    // (child-of-DEX-container LayoutParams generation).
-    apply_generate_child_lp_hook();
-    // F-NEW-339: same Factory law for the <fragment> tag hook.
-    apply_fragment_tag_hook();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids
@@ -155,25 +150,6 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
             std::function<std::optional<uint32_t>(uint32_t, int)> deref =
                 [&](uint32_t ref, int depth) -> std::optional<uint32_t> {
                 if (depth > 4) return std::nullopt;
-                // F-NEW-337b (AOSP ColorStateList law): an item color may be
-                // a THEME ATTRIBUTE reference (?attr/… — TypedValue
-                // TYPE_ATTRIBUTE, ids 0x0101xxxx). Those resolve through the
-                // THEME service, never the resource table: an attr id fed to
-                // resolve_full reads the attr-DEFINITION row (an INT format
-                // byte) and its data was painted as ARGB → the alpha-0
-                // (0,0,16,0) face on every themed framework selector.
-                if ((ref >> 16 & 0xFFFF) == 0x0101) {
-                    auto ta = resolve_theme_attr_typed(apk_path_, ref, -1);
-                    if (!ta) return std::nullopt;
-                    if (ta->is_int()) return (uint32_t)ta->data;
-                    if (ta->is_color())
-                        return color_data_to_argb((uint8_t)ta->type, ta->data);
-                    if (ta->is_string() &&
-                        ta->string_value.rfind("res/color/", 0) == 0)
-                        return resolve_apk_file_color(ta->string_value,
-                                                      depth + 1);
-                    return std::nullopt;   // F-NEW-336 type law: not a color
-                }
                 ResolutionResult r = rt.fw->resolve_full(ref, device_config());
                 if (!r.ok || !r.value()) return std::nullopt;
                 const ResValue& tv = *r.value();
@@ -210,72 +186,6 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
             }
             return std::nullopt;
         }
-    }
-    return std::nullopt;
-}
-
-// CONT-58 (F-NEW-336): the APP-package counterpart of
-// resolve_framework_file_color. Library ColorStateList files (appcompat
-// abc_* / Material mtrl_*) ship INSIDE the APK — the framework router has
-// no entry for them (find_id MISS is the measured tanana face). The file
-// path arrives complete ("res/color/name.xml"), so: extract the entry from
-// the APK, parse the <selector>, apply the SAME default-state tri-match
-// law (window_focused=true, enabled=true, pressed/selected/checked/
-// activated=false), and deref in-item @color references through the APP
-// table (bounded depth — mirrors the framework deref law).
-std::optional<uint32_t> ResourceRuntime::resolve_apk_file_color(
-        const std::string& res_path, int depth) {
-    if (depth > 4) return std::nullopt;
-    // Only color-list files answer the COLOR question. A res/drawable file
-    // is not a ColorStateList — honest miss (the state-list bg law owns it).
-    if (res_path.rfind("res/color/", 0) != 0) return std::nullopt;
-    std::vector<uint8_t> axml = apk_.extract_entry_cached(res_path);
-    if (axml.empty()) return std::nullopt;
-    std::vector<framework::ViewShadow::ViewNode::BgStateItem> items;
-    if (!framework::parse_state_list(axml, &items) || items.empty())
-        return std::nullopt;
-    // Same default-state first-match law as the framework file path.
-    auto tri_matches = [](int req, bool cur) {
-        return req < 0 || req == (cur ? 1 : 0);
-    };
-    for (const auto& it : items) {
-        if (!tri_matches(it.state_pressed, false) ||
-            !tri_matches(it.state_enabled, true) ||
-            !tri_matches(it.state_selected, false) ||
-            !tri_matches(it.state_checked, false) ||
-            !tri_matches(it.state_window_focused, true) ||
-            !tri_matches(it.state_activated, false))
-            continue;   // requires a non-default state — not first match
-        if (it.has_color && it.color != 0) return it.color;
-        if (it.has_color && it.color_ref_id != 0) {
-            // F-NEW-337b (same AOSP law, app-package path): a THEME
-            // ATTRIBUTE item color (?attr/…, 0x0101xxxx) resolves through
-            // the theme service — the resource-table deref below would read
-            // the attr-DEFINITION row and paint its INT data as ARGB.
-            if ((it.color_ref_id >> 16 & 0xFFFF) == 0x0101) {
-                auto ta = resolve_theme_attr_typed(apk_path_, it.color_ref_id, -1);
-                if (!ta) return std::nullopt;
-                if (ta->is_int()) return (uint32_t)ta->data;
-                if (ta->is_color())
-                    return color_data_to_argb((uint8_t)ta->type, ta->data);
-                if (ta->is_string() &&
-                    ta->string_value.rfind("res/color/", 0) == 0)
-                    return resolve_apk_file_color(ta->string_value, depth + 1);
-                return std::nullopt;   // F-NEW-336 type law: not a color
-            }
-            // In-item @color reference — APP-table terminal value (bounded).
-            ResolutionResult r = arsc_.resolve_full(it.color_ref_id,
-                                                    device_config());
-            if (!r.ok || !r.value()) return std::nullopt;
-            const ResValue& tv = *r.value();
-            if (tv.is_int()) return (uint32_t)tv.data;
-            if (tv.is_color())
-                return color_data_to_argb((uint8_t)tv.type, tv.data);
-            if (tv.is_string() && tv.string_value.rfind("res/", 0) == 0)
-                return resolve_apk_file_color(tv.string_value, depth + 1);
-            return std::nullopt;
-        }
-        return std::nullopt;
     }
     return std::nullopt;
 }
@@ -344,49 +254,11 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
         //    bounded/cycle-safe path, then decode the color via the ONE
         //    color law.
         ResValue v = *wb;
-        if (std::getenv("MINIANDROID_S95_DBG"))
-            std::cerr << "[S95-WINBG0] ref=" << (v.is_reference() ? 1 : 0)
-                      << " type=" << (int)(uint8_t)v.type
-                      << " data=0x" << std::hex << v.data << std::dec
-                      << " str='" << v.string_value << "'" << std::endl;
         if (v.is_reference()) {
-            // F-NEW-342: a FRAMEWORK ATTR ref (the Theme.Material
-            // windowBackground form ?android:attr/colorBackground =
-            // 0x01010031) has NO resource-table row — the table deref
-            // fails and the whole chain nullopted to the dark default,
-            // masking the themed window (OpenCalc v53: the pad's
-            // borderless ImageButtons then sat on the fallback dark
-            // instead of the theme's colorBackground). AOSP law:
-            // Theme::ResolveAttribute — the THEME SERVICE answers attr
-            // keys (the F-NEW-337b/336 law, site #4).
-            const uint32_t rid = v.ref_id;
-            const bool fw_attr =
-                (rid >> 24) == 0x01 && ((rid >> 16) & 0xff) == 0x01;
-            if (fw_attr) {
-                auto ta = resolve_theme_attr_typed(apk_path, rid, -1);
-                if (!ta) return std::nullopt;
-                v = *ta;
-                if (v.is_string() &&
-                    v.string_value.rfind("res/", 0) == 0) {
-                    auto c = resolve_framework_file_color(rid);
-                    if (!c) c = resolve_apk_file_color(v.string_value);
-                    if (!c) return std::nullopt;
-                    return *c;
-                }
-                if (!(v.is_color() || v.is_int())) return std::nullopt;
-                return color_data_to_argb((uint8_t)v.type, v.data);
-            }
             ResolutionResult r = arsc_.resolve_full(v.ref_id, device_config());
-            if (std::getenv("MINIANDROID_S95_DBG"))
-                std::cerr << "[S95-WINBG1] deref 0x" << std::hex << v.ref_id
-                          << " ok=" << (r.ok ? 1 : 0) << std::dec << std::endl;
             if (!r.ok) return std::nullopt;
             v = *r.value();
         }
-        if (std::getenv("MINIANDROID_S95_DBG"))
-            std::cerr << "[S95-WINBG] type=" << (int)(uint8_t)v.type
-                      << " data=0x" << std::hex << v.data << std::dec
-                      << " str='" << v.string_value << "'" << std::endl;
         return color_data_to_argb((uint8_t)v.type, v.data);
     }
     // 2b. S95 (L-S95-DEFTHEME-1): a theme whose bag lacks
@@ -437,100 +309,6 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_value(
                   << attr_key << std::dec
                   << " hit=" << (out ? "YES" : "no") << std::endl;
     return out;
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// F-NEW-327 (CONT-55): the AOSP AttributeResolution DEF-STYLE stages —
-// see resource_runtime.h for the law. Bounded diagnostics (F327) expose
-// which stage answered for which attr; zero behavior beyond the new stages
-// (the XML and theme stages keep their existing code paths untouched).
-// ─────────────────────────────────────────────────────────────────────────
-std::optional<ResValue> ResourceRuntime::resolve_def_style_attr_value(
-        const std::string& apk_path, uint32_t attr_id,
-        int32_t def_style_attr, int32_t def_style_res,
-        int32_t xml_style_resid) {
-    if (!ensure_loaded(apk_path)) return std::nullopt;
-    static const bool f327_diag =
-        std::getenv("MINIANDROID_F327_DIAG") != nullptr;
-    ResTableConfig dev = device_config();
-    ArscRouter rt = arsc_router();
-
-    // AOSP ResolveAttributeReference law: a REFERENCE-typed value resolves
-    // to the referenced entry's TERMINAL table value, package-routed
-    // (app ARSC first, then the framework table for 0x01xxxxxx ids).
-    auto deref = [&](const ResValue& v) -> std::optional<ResValue> {
-        if (v.type != DataType::REFERENCE &&
-            v.type != DataType::DYNAMIC_REFERENCE)
-            return v;
-        uint32_t rid = (uint32_t)v.data;
-        if (rid == 0) return std::nullopt;
-        if ((rid >> 24) == 0x01) {
-            if (!rt.fw) return std::nullopt;
-            ResolutionResult r = rt.fw->resolve_full(rid, dev);
-            if (r.ok && r.value()) return *r.value();
-            return std::nullopt;
-        }
-        ResolutionResult r = arsc_.resolve_full(rid, dev);
-        if (r.ok && r.value()) return *r.value();
-        return std::nullopt;
-    };
-
-    // Style-bag probe helper: bag_value walks the ResTable_map_entry parent
-    // chain (style inheritance), then the terminal REFERENCE derefs.
-    auto style_probe = [&](uint32_t style_resid,
-                           const char* stage) -> std::optional<ResValue> {
-        if (style_resid == 0) return std::nullopt;
-        auto bv = arsc_.bag_value(style_resid, attr_id, dev);
-        if (!bv) {
-            if (f327_diag)
-                std::cerr << "[F-NEW-327] " << stage << " style=0x"
-                          << std::hex << style_resid << std::dec
-                          << " attr=0x" << std::hex << attr_id << std::dec
-                          << " bag=MISS" << std::endl;
-            return std::nullopt;
-        }
-        auto out = deref(*bv);
-        if (f327_diag)
-            std::cerr << "[F-NEW-327] " << stage << " style=0x"
-                      << std::hex << style_resid << std::dec
-                      << " attr=0x" << std::hex << attr_id << std::dec
-                      << " hit=" << (out ? "YES" : "no") << std::endl;
-        return out;
-    };
-
-    // (2) the tag XML's own style= reference (AOSP stage 2).
-    if (xml_style_resid != 0) {
-        if (auto v = style_probe((uint32_t)xml_style_resid, "xml-style"))
-            return v;
-    }
-    // (3) defStyleAttr — the theme's style reference (AOSP stage 3): the
-    // theme table stores navigationViewStyle → @style/...; the theme attr
-    // service answers the reference (raw REFERENCE stays meaningful per
-    // the S124 contract), and the style bag walk takes it from there.
-    if (def_style_attr != 0) {
-        uint32_t style_resid = 0;
-        if (auto tref =
-                resolve_theme_attr_typed(apk_path, (uint32_t)def_style_attr, -1)) {
-            if (tref->type == DataType::REFERENCE ||
-                tref->type == DataType::DYNAMIC_REFERENCE) {
-                style_resid = (uint32_t)tref->data;
-            } else if (tref->is_int() && tref->data != 0 &&
-                       ((uint32_t)tref->data >> 24) == 0x7f) {
-                // some merged tables inline the style id as a plain int
-                style_resid = (uint32_t)tref->data;
-            }
-        }
-        if (style_resid != 0) {
-            if (auto v = style_probe(style_resid, "defStyleAttr"))
-                return v;
-        }
-    }
-    // (4) defStyleRes — the explicit style resource (AOSP stage 4).
-    if (def_style_res != 0) {
-        if (auto v = style_probe((uint32_t)def_style_res, "defStyleRes"))
-            return v;
-    }
-    return std::nullopt;
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -615,16 +393,6 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
     auto v = ThemeEngine::instance().resolve_attr(arsc_router(), device_config(),
                                                   &base_theme(), attr_key);
     if (v) {
-        // CONT-58 decode diagnostic (generic, env-gated, read-only): the raw
-        // typed attr answer — type/data/string_value — for painted-color
-        // root-cause work (the 0x61 STRING-type textColorPrimary case).
-        if (std::getenv("MINIANDROID_THEME_ATTR_DIAG"))
-            std::cerr << "[S124-ATTRRAW] attr=0x" << std::hex << attr_key
-                      << std::dec << " type=" << (int)(uint8_t)v->type
-                      << " data=0x" << std::hex << (uint32_t)v->data
-                      << std::dec << " str='" << v->string_value << "'"
-                      << std::endl;
-
         // S127 ColorStateList/DRAWABLE FILE LAW (AOSP ResourcesImpl
         // .loadColorStateList / loadDrawable): framework color/drawable
         // entries are FILE-BACKED — the entry value is a STRING carrying
@@ -664,25 +432,6 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
                             out.data = (int32_t)*col;
                             return out;
                         }
-                    }
-                }
-                // CONT-58 (F-NEW-336) APP-PACKAGE FILE LAW: library color
-                // files (appcompat abc_* / Material mtrl_*) are entries of
-                // the APP package — the framework router legitimately has
-                // no row for them. When the file value is a res/color/…
-                // path, resolve it FROM THE APK (extract + parse_state_list
-                // + default-state tri-match). AOSP ResourcesImpl
-                // .loadColorStateList is package-routed the same way.
-                if (v->string_value.rfind("res/color/", 0) == 0) {
-                    auto col = resolve_apk_file_color(v->string_value);
-                    if (csl_diag)
-                        std::cerr << "[S127-CSL] apk_file_color="
-                                  << (col ? "HIT" : "MISS") << std::endl;
-                    if (col) {
-                        ResValue out;
-                        out.type = DataType::INT_HEX;
-                        out.data = (int32_t)*col;
-                        return out;
                     }
                 }
             }
