@@ -1,0 +1,62 @@
+{
+ "generated": "2026-10-08",
+ "binary": "a8761a482a186eac",
+ "law": "F-NEW-233 frame truth \u2014 SUCCESS requires AUTHORITATIVE_APP_CONTENT; a PNG existing is never evidence",
+ "rejection_matrix": [
+  {
+   "class": "PLACEHOLDER/DEMO pixels",
+   "rejects": "diag_owned_pixels counted separately; never satisfies app_content_proof()",
+   "source": "execution_engine.h:396-411"
+  },
+  {
+   "class": "WINDOW_BACKGROUND dominant only",
+   "rejects": "verdict DEFAULT_BACKGROUND_ONLY via region law V1/V7 (dominant=WINDOW_BACKGROUND, AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds)",
+   "source": "trace_summary verdict_law 21-P0-6; live: dooz run/cont17/dooz_traced verdict=DEFAULT_BACKGROUND_ONLY"
+  },
+  {
+   "class": "STATUS-BAR / WINDOW CHROME",
+   "rejects": "window_chrome_pixels counted separately (non-dominant OUTSIDE content bounds class); cannot enter app_owned_pixels_inside_content_bounds",
+   "source": "frame_analysis fields (microtimer run: window_chrome_pixels=0, app px 1,029,909)"
+  },
+  {
+   "class": "PIPELINE FILLS masquerading as app draw",
+   "rejects": "pre-walk framebuffer snapshot frame_baseline_ \u2014 pixels identical to baseline after walk are NOT from this draw pass",
+   "source": "execution_engine.h:413-416"
+  },
+  {
+   "class": "DRAW WALK NEVER RAN",
+   "rejects": "app_content_proof() requires draw_walk_ran=true",
+   "source": "execution_engine.h:411"
+  },
+  {
+   "class": "NO AUTHORITATIVE ROOT",
+   "rejects": "auth_root_valid=false -> no_root census -> verdict NOT RENDERED family",
+   "source": "frame_analysis.no_root + auth_root_valid"
+  },
+  {
+   "class": "APP_DRAW_OPS=0",
+   "rejects": "first_missing_stage=APP_DRAW_OPS named (dooz live row) \u2014 distinct root family from VIEWTREE_NOT_REACHED",
+   "source": "run/cont17/dooz_traced/run.log F-NEW-233 line"
+  },
+  {
+   "class": "STUB ANSWERS inflating success",
+   "rejects": "F-NEW-200 stub-census in the run message (IMPLEMENTED/STUBBED/MISSING/ERROR counts) \u2014 success claim is stubby-bounded",
+   "source": "run/cont17/dooz_traced/run.log RUN_END line"
+  }
+ ],
+ "live_negatives_at_HEAD": [
+  {
+   "row": "dooz (Compose, F-NEW-265 frontier)",
+   "expected": "DEFAULT_BACKGROUND_ONLY",
+   "observed": "DEFAULT_BACKGROUND_ONLY",
+   "pass": true
+  },
+  {
+   "row": "gate A probe INFO row",
+   "expected": "1 INFO non-fatal",
+   "observed": "98 PASS / 0 FAIL / 1 INFO",
+   "pass": true
+  }
+ ],
+ "verdict": "HARDENED \u2014 8 rejection classes each with source + live/recorded negative"
+}

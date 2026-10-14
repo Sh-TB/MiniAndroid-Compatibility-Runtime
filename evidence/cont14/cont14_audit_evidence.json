@@ -1,0 +1,102 @@
+{
+ "wave": "CONT-14 FRIEND FINDINGS AUDIT",
+ "head": "e99c2fbd8f4e2496bb47c964c2fb6cd83d05b252",
+ "binary_rebuilt_sha16": "aed46450c103f2ea",
+ "binary_recorded_cont10": "ea8827584f191dfa (link-env differs; behavior anchored below)",
+ "registry": {
+  "total_roots": 566,
+  "last_ids": [
+   "F-NEW-259",
+   "F-NEW-259b"
+  ],
+  "fnew271_277_present": false
+ },
+ "dooz_baseline": {
+  "apk_sha16": "299eab21ac8b3c61",
+  "anchor_x3": "d602648e8e401895",
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_draw_ops": 0,
+  "uncaught": 6,
+  "matches_recorded_cont7_10_anchor": true
+ },
+ "retest": {
+  "tictactoe_emmanuel": {
+   "tag": "tictactoe_emmanuel_run1",
+   "rc": 1,
+   "screenshot_sha16": "b5a7a35d5fe0564b",
+   "apk_sha16": "760fe5acf7b39435",
+   "uncaught": 9,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "app_draw_ops": 0,
+   "first_missing_stage": "APP_DRAW_OPS",
+   "activity": "com.emmanuelmess.tictactoe.AndroidLauncher",
+   "first_failure": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_ST",
+   "exc_head": [
+    "[TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/GdxRuntimeException; unwound Lcom/badlogic/gdx/utils/",
+    "[TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/GdxRuntimeException; unwound Lcom/badlogic/gdx/backe",
+    "[TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lcom/badlogic/gdx/utils/GdxRuntimeException; unwound Lcom/emmanuelmess/ticta",
+    "[TRACE] 12 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NoSuchMethodException; unwound Lcom/badlogic/gdx/backends/android"
+   ],
+   "package": "com.emmanuelmess.tictactoe"
+  },
+  "telegram_forkgram": {
+   "tag": "telegram_forkgram_run1",
+   "rc": 1,
+   "screenshot_sha16": "cf4c41e62ceb6557",
+   "apk_sha16": "3baeecb3288577e9",
+   "uncaught": 6,
+   "verdict": "REAL_APP_CONTENT",
+   "app_draw_ops": 11,
+   "first_missing_stage": null,
+   "activity": "org.telegram.ui.LaunchActivity",
+   "first_failure": "Execution completed successfully [F-016 exception-honesty: 44 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_",
+   "exc_head": [
+    "[TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/UnsatisfiedLinkError; unwound Lorg/telegram/messenger/ApplicationL",
+    "[TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/UnsatisfiedLinkError; escaped the app boundary at <unknown>",
+    "[TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lorg/telegram/ui/ActionBar/d6;.b0 i",
+    "[TRACE] 12 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lorg/telegram/ui/ActionBar/d6;.y3 i"
+   ],
+   "package": "org.forkgram.classic"
+  },
+  "gmdice": {
+   "tag": "gmdice_run1",
+   "rc": 0,
+   "screenshot_sha16": "f3b483fe7b7cf51b",
+   "apk_sha16": "1621eda11b5dbc0c",
+   "uncaught": 0,
+   "verdict": "REAL_APP_CONTENT",
+   "app_draw_ops": 6,
+   "first_missing_stage": null,
+   "activity": "de.duenndns.gmdice.GameMasterDice",
+   "trace_summary_err": "'NoneType' object has no attribute 'get'",
+   "exc_head": [],
+   "package": "de.duenndns.gmdice"
+  }
+ },
+ "tictactoe_first_divergence": [
+  "F-NEW-219 NOT-RESOLVED GLSurfaceView20.setPreserveEGLContextOnPause reflection -> NoSuchMethodException at AndroidGraphics.preserveEGLContextOnPause pc=34",
+  "GdxRuntimeException at SharedLibraryLoader.loadFile + AndroidApplication.<clinit> (libgdx native-lib load family)",
+  "RelativeLayout.addView REC-MISS face",
+  "APP-BOUNDARY at AndroidLauncher.onCreate"
+ ],
+ "telegram_head": {
+  "package": "org.forkgram.classic",
+  "verdict": "REAL_APP_CONTENT",
+  "app_draw_ops": 11,
+  "app_owned_pixels": 117133,
+  "uncaught_top": 6,
+  "in_flight": 44,
+  "deferred_ui_pending": true,
+  "rendered": "LaunchActivity + fragment: LowPowerEnabledTitle (overlap) + Disable action"
+ },
+ "janken_recorded": {
+  "evidence": "evidence/s107_games/com.attenomy.janken_run1/screenshot.png",
+  "face": "placeholder \"custom view (not rendered)\" \u2014 NOT real app content"
+ },
+ "engine_source_audit": {
+  "hardcoded_Lr;_hits": 0,
+  "THROW_site_suppression_hits": 0,
+  "FirebaseInitProvider_BillingController_GMS_hits": 0,
+  "generic_View_ctor_Context_law": "F-031 android_shadows.cpp:4421 captures FIRST ctor Context arg (AOSP View.mContext law)"
+ }
+}

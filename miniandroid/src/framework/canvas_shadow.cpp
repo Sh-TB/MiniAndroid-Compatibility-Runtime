@@ -262,7 +262,7 @@ void CanvasShadow::warn_noop(const std::string& cls, const std::string& op) {
               << " effect=accepted_not_reproduced" << std::endl;
 }
 
-// ── F-NEW-264: bitmap-target canvases (AOSP graphics/Canvas.java law) ─────
+// ── F-NEW-345: bitmap-target canvases (AOSP graphics/Canvas.java law) ─────
 // CanvasShadow owns a fwd-declared BitmapFont for bitmap-canvas flushes; the
 // engine's own replay font is a frame-local stack object (execution_engine
 // render stage), so a stable owned instance with the same default law is the
@@ -1003,6 +1003,19 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         const uint32_t recv = ctx.receiver_id;
         if (m == "setColor") {
             paint_color_[recv] = (uint32_t)ctx.arg_as_int(0, 0xFF000000);
+            // CONT-37 diag (bounded): which objects receive setColor and
+            // with what color — the Layout.draw text law resolves the op
+            // color from THIS map; a missed setColor = black-on-black text.
+            {
+                static thread_local uint64_t sc_n = 0;
+                if (sc_n++ < 60)
+                    std::cerr << "[F298-SETCOLOR] recv=" << recv
+                              << " cls=" << cls
+                              << " color=0x" << std::hex
+                              << paint_color_[recv] << std::dec
+                              << " caller=" << ctx.caller
+                              << std::endl;
+            }
             return CallResult::handled_void();
         }
         if (m == "setARGB") {
@@ -1435,7 +1448,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
 
     // ── Canvas ─────────────────────────────────────────────────────────
-    // F-NEW-264 (AOSP graphics/Canvas.java law): `new Canvas(bitmap)` /
+    // F-NEW-345 (AOSP graphics/Canvas.java law): `new Canvas(bitmap)` /
     // setBitmap bind the canvas to a BITMAP target with its OWN matrix/clip
     // state; every op rasterizes eagerly INTO that bitmap (BitmapStore).
     // Previously such ops were silently dropped whenever the canvas was used
@@ -1489,6 +1502,18 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawRect") {
+        // CONT-48 (F-NEW-314 decode): env-gated caller diagnostic — which DEX
+        // site drives the black 24dp-icon-bounding RECT (EXP-055/S24/F040
+        // diagnostic convention; evidence-only, no behavior change).
+        {
+            static const bool rect_caller_diag = [] {
+                const char* p = std::getenv("MINIANDROID_DRAW_CALLER_TRACE");
+                return p && *p;
+            }();
+            if (rect_caller_diag)
+                std::cerr << "[DRAW-CALLER] drawRect caller=" << ctx.caller
+                          << std::endl;
+        }
         DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
         // ── S86 §F-NEW-169: RectF/Rect-object overloads ──────────────────
         // AOSP Canvas.drawRect has two entry points:
@@ -1681,6 +1706,17 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawPath") {
+        // CONT-48 (F-NEW-316 decode): env-gated caller diagnostic — the
+        // 1721 empty-PATH ops' DEX producer (EXP-055 diagnostic convention).
+        {
+            static const bool path_caller_diag = [] {
+                const char* p = std::getenv("MINIANDROID_DRAW_CALLER_TRACE");
+                return p && *p;
+            }();
+            if (path_caller_diag)
+                std::cerr << "[DRAW-CALLER] drawPath caller=" << ctx.caller
+                          << std::endl;
+        }
         // FIX-5 + CYCLE-E: real path rasterization — apps that build their own
         // glyphs (stopwatch digits, clock hands) now produce real pixels.
         const uint32_t path_id = ctx.arg_as_object(0, 0);
@@ -2115,6 +2151,62 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                      std::min(clip_.r, cr), std::min(clip_.b, cb), true};
         }
         return CallResult::handled_bool(clip_.r > clip_.l && clip_.b > clip_.t);
+    }
+    if (m == "getClipBounds") {
+        // CONT-37 diag: bounded visibility for the F-NEW-298 law.
+        {
+            static thread_local uint64_t gcb_n = 0;
+            if (gcb_n++ < 40)
+                std::cerr << "[F298-GCB] clip_active=" << (clip_.active ? 1 : 0)
+                          << " clip=" << clip_.l << "," << clip_.t << ","
+                          << clip_.r << "," << clip_.b
+                          << " canvas=" << canvas_w_ << "x" << canvas_h_
+                          << std::endl;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-298 (CONT-37): AOSP Canvas.getClipBounds — the bounds of
+        // the CURRENT clip in device coordinates; true when non-empty.
+        // UPSTREAM: frameworks/base/graphics/java/android/graphics/Canvas.java
+        //   getClipBounds(Rect bounds): "Returns the bounds of the current
+        //   clip (in device coordinates)... returns true if non-empty".
+        //   nGetClipBounds fills the Rect with the clip; the INITIAL clip
+        //   is the whole device surface — never empty.
+        // Live face (composeStopwatch, CONT-37 trace): the Compose
+        // paragraph paint funnel (R8: Lg6.d — decoded from AOSP
+        // AndroidParagraph.paint → layout.paint(nativeCanvas) →
+        // Layout.draw) gates the ENTIRE Layout.draw on
+        // getClipBounds(Rect): `if (!canvas.getClipBounds(r)) return;`.
+        // The engine had NO getClipBounds handling → the unhandled-bridge
+        // typed-default answered false → every paragraph paint silently
+        // aborted BEFORE Layout.draw (the F-NEW-297 text law never even
+        // reached) — text invisible with zero exceptions.
+        // FIX (generic, no app knowledge): answer the tracked clip when
+        // active (empty → false per AOSP), else the device bounds
+        // (canvas_w_/canvas_h_ — the initial full-surface clip).
+        // ────────────────────────────────────────────────────────────────
+        if (clip_.active) {
+            const bool nonempty = clip_.r > clip_.l && clip_.b > clip_.t;
+            if (ctx.args.size() >= 1) {
+                const uint32_t rid = ctx.arg_as_object(0, 0);
+                if (rid) {
+                    heap_->set_object_int_field(rid, "left", (int)clip_.l);
+                    heap_->set_object_int_field(rid, "top", (int)clip_.t);
+                    heap_->set_object_int_field(rid, "right", (int)clip_.r);
+                    heap_->set_object_int_field(rid, "bottom", (int)clip_.b);
+                }
+            }
+            return CallResult::handled_bool(nonempty);
+        }
+        if (ctx.args.size() >= 1) {
+            const uint32_t rid = ctx.arg_as_object(0, 0);
+            if (rid) {
+                heap_->set_object_int_field(rid, "left", 0);
+                heap_->set_object_int_field(rid, "top", 0);
+                heap_->set_object_int_field(rid, "right", canvas_w_);
+                heap_->set_object_int_field(rid, "bottom", canvas_h_);
+            }
+        }
+        return CallResult::handled_bool(true);
     }
     if (m == "drawBitmap") {
         // S68 §12 (was accepted_not_reproduced): drawBitmap family.

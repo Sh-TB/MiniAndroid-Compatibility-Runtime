@@ -1,0 +1,335 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260911-201134-2075",
+      "method": "start_session",
+      "timestamp": 1789157494740
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/hc_provenance/hello_color.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1789157494740
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.miniandroid.hellocolor, Main Activity: com.miniandroid.hellocolor.MainActivity",
+      "method": "stage_load_apk",
+      "timestamp": 1789157494740
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1789157494740
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 6 classes, 14 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1789157494741
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1789157494741
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/miniandroid/hellocolor/MainActivity; extends Landroid/app/Activity; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/miniandroid/hellocolor/R$drawable; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/miniandroid/hellocolor/R$id; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/miniandroid/hellocolor/R$layout; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/miniandroid/hellocolor/R$string; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/miniandroid/hellocolor/R; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1789157494760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 30",
+      "method": "execute_apk",
+      "timestamp": 1789157494762
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 11",
+      "method": "execute_apk",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 14",
+      "method": "execute_apk",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 30 opcodes executed",
+      "method": "validation",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Lifecycle onCreate/onStart/onResume executed as DEX bytecode (REAL_DALVIK_INTERPRETER, entry-time provenance)",
+      "method": "lifecycle_source",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_verified",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: /home/z/my-project/hc_provenance/run3/exp031_5/traces/com.miniandroid.hellocolor",
+      "method": "trace_export",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "No views with click listeners found (setContentView may not have been called)",
+      "method": "phase_b_click",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1789157494766
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "IMG-RES-RENDER drew 'res/drawable/hello_art.png' (256x256, palette→rgba, src_density=0) fit-center at (204,684 672x672)",
+      "method": "stage_render_frame",
+      "timestamp": 1789157494780
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=8)",
+      "method": "stage_render_frame",
+      "timestamp": 1789157494804
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1789157494804
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/hc_provenance/run3/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1789157494874
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/hc_provenance/run3/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1789157494874
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1789157494934
+    }
+  ],
+  "generated_at": "2026-09-11 20:11:34 UTC",
+  "session_id": "EXP-001-20260911-201134-2075",
+  "total_calls": 41
+}

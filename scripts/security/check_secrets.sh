@@ -78,6 +78,19 @@ scan_one_pattern() { # $1="NAME|regex", remaining = paths (dirs recursed)
     local spec="$1"; shift
     local name="${spec%%|*}"
     local regex="${spec#*|}"
+    # CONT-18f (S49 hardening): EMPTY FILE LIST = NOTHING TO SCAN. GNU grep
+    # with -r and NO path operands recurses into the CURRENT WORKING
+    # DIRECTORY (verified: `grep -r pat </dev/null` still walks ./). With an
+    # empty --staged list the CWD is the repo root, so the scan walked
+    # .git/ and hit .git/config's embedded remote URL credential — a
+    # false-positive PUSH BLOCK recorded twice in the CONT-8/CONT-18
+    # ledgers. Fail-closed semantics are unchanged: an empty scan set
+    # cannot contain a credential, and PATH-mode callers still pass at
+    # least one operand (main() rejects unknown modes; explicit paths are
+    # the contract).
+    if [ "$#" -eq 0 ]; then
+        return 0
+    fi
     # ONE grep per pattern over all paths. Matched line content flows only
     # through the internal pipe and is never emitted to stdout/stderr; the
     # sed reformatter keeps only "path:line" of each hit. Process
@@ -196,6 +209,21 @@ selftest() {
             echo "selftest: MISSED dummy secret in $t.txt (GUARD BROKEN)"; rm -rf "$tmp"; exit 1
         fi
     done
+    # CONT-18f: empty-file-list law — a scan with NO operands must be a
+    # NO-OP, never a CWD recursion (recorded false-block: .git/config's
+    # embedded remote PAT when the staged list was empty). Plant a dummy
+    # token in the scan CWD and prove the no-operand scan does NOT see it.
+    if (
+        cd "$tmp"
+        VIOLATIONS=0
+        scan_files
+        [ "$VIOLATIONS" -eq 0 ]
+    ) 2>/dev/null; then
+        echo "selftest: empty-list scan is a NO-OP (correct)"
+    else
+        echo "selftest: empty-list scan recursed into CWD (GUARD BROKEN)"
+        rm -rf "$tmp"; exit 1
+    fi
     for t in ok1 ok2 ok3 ok4 ok5; do
         before=$VIOLATIONS
         scan_files "$tmp/$t.txt"

@@ -176,15 +176,25 @@ struct DrawOp {
 class CanvasShadow : public Shadow {
 public:
     std::string name() const override { return "CanvasShadow"; }
-    // F-NEW-264: out-of-line dtor (owns the flush font; software_renderer.h
+    // F-NEW-345: out-of-line dtor (owns the flush font; software_renderer.h
     // is already included above so the type is complete).
     ~CanvasShadow() override;
 
     bool handles_class(const std::string& cls) const override {
+        // F-NEW-297 (CONT-36): the generic "Paint;" suffix row —
+        // Landroid/text/TextPaint; extends android.graphics.Paint and the
+        // dispatch() Paint arm already keys on cls.find("Paint;")
+        // (color/alpha/size state). The old gate matched ONLY
+        // graphics/Paint, so Compose's TextPaint (AndroidParagraph's
+        // textPaint — the color the paragraph paints with) never reached
+        // the shadow: setColor was swallowed and every Layout.draw text op
+        // recorded the default black. Same gate-vs-dispatch alignment law
+        // as F-NEW-285 (RenderNode claim gate).
         return cls == "Landroid/graphics/Canvas;" ||
                cls.find("graphics/Canvas;") != std::string::npos ||
                cls == "Landroid/graphics/Paint;" ||
                cls.find("graphics/Paint;") != std::string::npos ||
+               cls.find("Paint;") != std::string::npos ||
                // FIX-5: android.graphics.Path — real path recording so apps
                // that draw their own glyphs/shapes (simplestopwatch digit
                // fonts, clock hands) execute their REAL onDraw bytecode and
@@ -192,7 +202,22 @@ public:
                cls == "Landroid/graphics/Path;" ||
                cls.find("graphics/Path;") != std::string::npos ||
                // UC009 H-072: Compose draws through RenderNode recording.
+               // F-NEW-285 (CONT-28): the claim gate must match the dispatch
+               // matcher below — dispatch() already implements the law for
+               // ANY "*RenderNode;" class (cls.find("RenderNode;")), but the
+               // gate only claimed Landroid/view/RenderNode;. The real-
+               // Compose oracle (GraphicsLayerV29.record, ui 1.11.4) calls
+               // Landroid/graphics/RenderNode;.beginRecording() (AOSP moved
+               // RenderNode to android.graphics for RecordingCanvas access);
+               // unclaimed, the call answered VOID, GraphicsLayerV29.record
+               // stored the unset value into AndroidCanvas.internalCanvas
+               // (setInternalCanvas), and every recorded draw op died
+               // f141-null-recv — the draw-pipeline APP BOUNDARY. Claim the
+               // family the dispatch already serves; android.graphics.
+               // RenderNode.beginRecording() law is identical (returns the
+               // node's RecordingCanvas).
                cls == "Landroid/view/RenderNode;" ||
+               cls.find("RenderNode;") != std::string::npos ||
                cls.find("graphics/RecordingCanvas;") != std::string::npos;
     }
 
@@ -350,7 +375,7 @@ private:
         }
     }
 
-    // ── F-NEW-264: bitmap-target canvases (AOSP graphics/Canvas.java) ────
+    // ── F-NEW-345: bitmap-target canvases (AOSP graphics/Canvas.java) ────
     // `new Canvas(bitmap)` / setBitmap bind the canvas to a BITMAP target:
     // the canvas carries its OWN matrix/clip/save state (independent from
     // the view canvas) and every draw op rasterizes eagerly INTO the

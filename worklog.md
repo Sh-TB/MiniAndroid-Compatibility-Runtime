@@ -7084,21 +7084,2327 @@ Stage Summary:
 - opencalc anchor change flagged honestly (retains REAL_APP_CONTENT).
 
 ---
-Task ID: CONT-11-WAVE-7
+Task ID: CONT-14-AUDIT
 Agent: Super Z (main)
-Task: CONT-11 WAVE 7 — user-priority graphics-fidelity lane (PNG/bitmap loading first, then colors/structure/fonts/buttons): F-NEW-264 bitmap-target Canvas root-cause decode + minimal generic fix + probe + full regression + registry/worklog/evidence + push. Doubled task discipline: every newly discovered problem fixed in-wave.
+Task: CONT-14 AUDIT OF FRIEND'S F-NEW-271..277 FINDINGS — classify the 7 reported roots (real generic law / valid shim / app-specific / symptom suppression), audit the 55/100 claim, compare Telegram/Dooz/Janken/tictactoe states, re-check the "7 new roots" count, produce CONT-14_FRIEND_FINDINGS_AUDIT.md (17 sections).
 
 Work Log:
-- Phase 0 reconciliation: repo state re-grounded (HEAD e99c2fbd = local cleanup commit over remote main 6a66806a = CONT-10 W6; the session-summary's "CONT-56" claims did not exist in this tree — no fabricated adoption). Clean rebuild reproduced the frozen CONT-10 binary byte-exactly (aed46450c103f2ea) and anchors 5/5 x3 zero-drift pre-fix.
-- F-NEW-264 ROOT CAUSE (W4 ladder OBSERVED gap closed): Canvas ops on a Canvas(Bitmap)/setBitmap target outside the view-draw capture window hit `if (!capturing_) return not_handled()` in canvas_shadow.cpp — silently dropped (in-memory bitmaps stayed transparent; drawBitmap RECORDED but 0 app-owned pixels); inside the window they polluted the VIEW op list. AOSP graphics/Canvas.java law: Canvas(Bitmap) binds a bitmap target with its OWN matrix/clip/save state, ops rasterize eagerly INTO the bitmap, canvas live until release().
-- FIX (receiver-generic, no app/R8 specifics): per-canvas sub-recorder (same op laws, isolated state) + eager flush into BitmapStore after each op (temp SoftwareCanvas over the bitmap pixels, copy-in/copy-out via FrameBuffer); sync_shared_state mirrors Paint/Path state (Paint/Path dispatch never routes to the sub-recorder); getWidth/getHeight answer bitmap dims; bindBitmap of unknown/empty bitmap = honest warn_noop.
-- SECOND ROOT found+fixed same wave (probe row R2 exposed it): flush left the sub-recorder dead — replay() ends with capturing_=false (view-frame lifecycle law) so every op after the first flush was dropped. Fix: re-arm capturing_=true after every flush (a bitmap canvas is not a frame; AOSP lifetime law).
-- Probe fixtures/fnew264_probe (real aapt2/ECJ/D8, sha16 c924c75ff6a042f0): R1 createBitmap+drawColor composites EXACT (204,34,34 at fb(110,130)/(105,125)); R2 save→translate(30,20)→drawRect lands EXACT at bitmap(30..40,20..30) + negative (not misplaced); R3 getPixel readback ffcc2222/ff22aa44 rendered on-screen; R4 no view pollution (bg exact). 6/6 pixel rows PASS; screenshot afbbf73642515131 x3 byte-identical.
-- REGRESSION at 5142558602153c32: anchors 5/5 x3 byte-identical (opencalc a976d2f9 / chess b5a7a35d / dooz d602648e / microtimer da73010a / unote 4f1a9e4e) — ZERO DRIFT; skill selftest 13/13 (after gate_a_probe.apk was rebuilt via scripts/cont9_rebuild_gate_a_probe.sh — reset-lost artifact discovered as OP-1 FAIL, fixed in-wave); negatives 19/19 (first 9/19 was a stale-artifact sequence error — probe results file must exist before negatives; re-run after install+run = 19/19; rows are identity/provider/PendingIntent, none canvas); gate A 98 PASS / 0 FAIL / 1 INFO.
-- VALIDATOR GATE repaired to green: the pre-existing graph drift (validator crashed on 3 string-evidence dossiers; then 34 errors: stale visual-evidence frame paths from container resets, stale SHA256SUMS entries, pseudo-app law consumer refs, registry summary.total_roots lag) — repaired mechanically with a persisted script (scripts/cont11_validator_repair.py): frames pruned to surviving files, frame-less bundles downgraded honestly to NOT_OBSERVED with notes (truthfulness law), evidence paths re-based to surviving artifacts, registry re-synced to 567. Final: PASS — all checks green.
-- Deliverable (user request): 6-tile screenshot mosaic committed at evidence/cont11/cont11_mosaic.png + uploaded (tmpfiles.org, 60-min link; catbox/litterbox/0x0.st rejected/timed out from this container — recorded honestly).
-- Registry 566→567 (F-NEW-264 ROOT-CAUSED-FIXED). Artifacts: evidence/cont11/fnew264_evidence.json, scripts/cont11_{build_probe.sh,verify_f264.py,mosaic.py,validator_repair.py}, fixtures/fnew264_probe/.
+- PHASE 0 baseline locked: HEAD e99c2fbd (CONT-10 W6); engine rebuilt from source (aed46450c103f2ea; link-env differs from recorded ea8827584f191dfa — behavior anchored instead); dooz APK 299eab21, tictactoe 760fe5ac, forkgram 3baeecb3; registry 566 roots (last IDs F-NEW-259/259b; generated 2026-10-04).
+- dooz baseline x3: anchor d602648e8e401895 x3 BYTE-IDENTICAL to the recorded canonical CONT-7..10 anchor (zero drift); verdict DEFAULT_BACKGROUND_ONLY, app_draw_ops=0, 6 uncaught = the known La; SETUP-phase cascade; stub census 5155446/1150/0/0.
+- F-NEW-271 AUDIT: REFUTED NON-ROOT — grep '"Lr;"' src/ = 0 hits; the engine's ctor-Context law is the generic F-031 AOSP View.mContext block (android_shadows.cpp:4421, first ctor Context arg captured for EVERY View subclass; dooz named in its doc-comment as the historical first hit); claimed defect absent from canonical tree, fix would be a no-op.
+- F-NEW-276 AUDIT (critical): INVALID — SYMPTOM SUPPRESSION. No LF/r;.c or Compose-error-helper suppression exists (grep: only AOSP PerformClick suppression + REAL_DALVIK synthetic-renderer suppression = the honesty law itself); dooz still reports 6 uncaught at HEAD (EXC-UNCAUGHT-TOP strict latch, F-016); exceptions 15->0 with 0 draw ops/0 px is the PHASE-9 lesson (exception count != compatibility).
+- F-NEW-277 AUDIT (critical): INVALID — forbidden matcher (R8 short-name) + no THROW-site suppression exists in the engine; ART process-death honesty + F-NEW-233 frame-truth are the opposite discipline.
+- F-NEW-272..275: UNVERIFIABLE — report content lost with the severed session; never registered (0/7 present in registry), no code/probe/evidence anywhere in the tree.
+- P0-B ID COLLISION PROVEN: canonical F-NEW-236 = JDK Set-Family (fairymahjong, f235_set_probe 14/14x3), NOT JNI slot binding; no JNI-slot root exists in the registry.
+- P0-C NOT INTEGRATED: 0 hits for FirebaseInitProvider/BillingController/GoogleApiAvailability/GmsClient in src/.
+- TELEGRAM live at HEAD: org.forkgram.classic LaunchActivity = REAL_APP_CONTENT, 11 draw ops, 117,133 app-owned px, real settings fragment (LowPowerEnabledTitle x2 = recorded overlap law + Disable action), 6 EXC-UNCAUGHT-TOP / 44 in-flight, deferred_ui_pending=True — advanced beyond s115's measured-but-not-painted, NOT login/chat-list; friend's counts unverifiable (its APK set not in tree).
+- JANKEN: recorded s107 pixels = C013 placeholder face "custom view (not rendered)" — placeholder-only, NOT real pixels (APK purged from container, re-supply pending).
+- TICTACTOE_EMMAUEL first divergence NAMED (not patched, per directive): F-NEW-219 NOT-RESOLVED GLSurfaceView20.setPreserveEGLContextOnPause reflection (AndroidGraphics.preserveEGLContextOnPause pc=34) -> NoSuchMethodException -> APP-BOUNDARY at AndroidLauncher.onCreate; parallel GdxRuntimeException at SharedLibraryLoader.loadFile + AndroidApplication.<clinit> (libgdx native-load family); RelativeLayout.addView REC-MISS face; verdict DEFAULT_BACKGROUND_ONLY, 9 uncaught, anchor b5a7a35d (pure default background). Handed to the next JNI wave.
+- CORPUS RETEST at HEAD: telegram REAL_APP_CONTENT(11)/gmdice REAL_APP_CONTENT(6, f3b483fe == recorded batch367 anchor)/dooz DEFAULT_BACKGROUND_ONLY(x3 honest)/tictactoe DEFAULT_BACKGROUND_ONLY(honest).
+- SCORE AUDIT: 55/100 REJECTED (no rubric/per-item evidence map); replaced with engine frame-truth verdicts + draw-op/pixel/exception counts + byte-identical anchors x3.
+- Registry: ZERO changes (audit-only; registering unevidenced IDs would inflate). Bookkeeping note: registry total=564 vs total_roots=566 stale counter flagged for the next registry-touching wave.
+- Artifacts: CONT-14_FRIEND_FINDINGS_AUDIT.md (17 sections, verdict table + success statement), evidence/cont14/cont14_audit_evidence.json, run/cont14/{dooz_baseline_x3.json, corpus_retest.json, dooz_base_run1..3/, tictactoe_emmanuel_run1/, telegram_forkgram_run1/, gmdice_run1/}, scripts/cont14_baseline.py, scripts/cont14_retest.py.
 
 Stage Summary:
-- The W4 ladder's last OBSERVED graphics gap is closed: bitmap-target canvases now rasterize real pixels (R1-R4 pixel-exact), closing the "PNG/bitmap loading" priority lane for the view/canvas pipeline. Zero drift on every recorded anchor; all four batteries green; validator green.
-- Honest frontier (unchanged, next wave owns): dooz Compose DRAW path (F-NEW-256 CLASSIFIED — layer drawContent runs, AndroidCanvas bridge Ljt1; never constructed); theme-color/ColorStateList, Typeface loading, and button-drawable lanes (user priorities 2-6) not yet decoded this wave.
+- REQUIRED SUCCESS STATEMENT: of the 7 reported roots, 0 real generic laws, 0 valid shims, 1 refuted non-root (271), 2 invalid symptom suppressions (276/277), 4 unverifiable (272-275); F-NEW-236-JNI = ID collision; Firebase/Billing = not integrated; 55/100 rejected (no rubric). None of the friend's roots are adopted; none registered.
+- Canonical truth unchanged and re-verified live: dooz = F-NEW-256 Compose draw-path root (AndroidCanvas bridge never constructed -> 0 ops) is the next highest-ROI root; tictactoe's freshly-named F-NEW-219+SharedLibraryLoader chain is the JNI wave's entry probe; Telegram now has REAL_APP_CONTENT pixels (recorded-lineage achievement) with layout face remaining.
+
+---
+Task ID: CONT-11-WAVE-7
+Agent: Super Z (main)
+Task: Issue #379/#375 CONT-11 — external runtime feasibility test (bounded), primary-path verification at HEAD, F-NEW-259/259b genericity audits, collection semantic-law audit, dooz draw-path frontier re-root, generic fixes, regression, honest final decision.
+
+Work Log:
+- Phase 0/1: consumed #379/#375 from the directive; clean rebuild from HEAD e99c2fbd reproduced the frozen CONT-10 binary aed46450c103f2ea BYTE-IDENTICALLY; dooz baseline x3 anchor d602648e8e401895 zero-drift, fallback-free by construction; CONT-10 f259 probe 7/7 PASS reproduced (rebuild 969b267a1cd232fb); registry 566 roots confirmed.
+- External runtime survey (directive sec 3-7, 13, 14): source-inspected candidates (cloned A2OH/dalvik-universal, A2OH/westlake, Mihon-Runner; ART source fetched file-by-file). VERDICT: KEEP MINIANDROID PATH — no candidate provides the framework/graphics layer; westlake's own evidence measures the android.* bridge at 2,056 classes/193K LOC for View apps (independent of the VM choice, MiniAndroid already owns it, +identity boundary on every call); ART host = 11 missing layers; root density ~1 root/60-100 bridged classes (measured from our own registry) — a VM swap eliminates zero roots. kotlinx.coroutines needs no port (executes verbatim as DEX inside the APK; Unsafe CAS confirmed in dooz's R8-renamed Ltp1;). Classification table in evidence/cont11/CONT11_EXECUTION_LEDGER.md.
+- F-NEW-259/259b genericity audits (sec 9-10): NEW probe fixtures/fnew259g_probe (real aapt2/ECJ/D8, 13 rows H..T): 11 dims PASS (multi-level chain walk, covariant boxed bridge, array-element identity, empty addAll, dupes, boxed ints, array elements, guest->shadow, shadow->guest (post-fix), guest->guest (post-fix), object identity); 2 honest FAILs registered as new findings (259g-a get(I) out-of-range no IOOBE; 259g-b java.util.Vector NPE).
+- Collection semantic-law audit (sec 8): NEW probe fixtures/fcol_audit_probe (18 rows K1..K18 across 15 collection types): 15 FAIL grouped into 6 semantic laws (read-your-mutation, iterator write-back, Java-8 default-method family, deque views, hash view coherence, missing subList/Stream families); 3 PASS (entrySet iteration, LinkedHashMap order, LinkedHashSet order). Registered F-NEW-264d as the next-wave queue — one law = one generic fix, no per-method roots.
+- Dooz draw-path frontier (sec 11) — RE-ROOTED with full runtime proof: the draw machinery is EXONERATED (dispatchDraw runs per frame; coordinator walk reaches InnerNodeCoordinator.performDraw; canvas.translate executes on the live compose-canvas wrapper Ly3;.f(FF) x4/frame; the walk faithfully honors child.isPlaced = real DEX field chain Lel0.J->Lil0.p->Lbt0.w = FALSE). The measure/layout pass (Lzs0.m) dies MID-FLIGHT: text-layout ctor Lm7;.<init> receives a null text CharSequence (Lkb; built a1=NULL, caller Lvs0.c) -> LEGAL R8 kotlin null-check (getClass) throws -> deferred-throw semantics continue the throwing frame (multi-NPE blast radius) -> NULL Throwable argument reaches the compose report helper Lel0.Y(Throwable) -> cascade kills measure -> isPlaced false everywhere -> 0 content draws. W6's "canvas bridge never constructed" was a downstream consequence. Registered F-NEW-265 with the exact upstream laws (MeasureAndLayoutDelegate/NodeCoordinator/InnerNodeCoordinator.performDraw, compose 1.11.4) and the three next arms.
+- FIXES (generic, no app/R8-specific code): F-NEW-264 move-exception integrity delivery law (defensive; honest: never fired in-suite); F-NEW-264b stale-mirror registry fallback in the copy cascade (defensive; honest: never fired); F-NEW-264c RECEIVER-BASED GATE EXTENSION for the ArrayList/LinkedList cascade (PROVEN: the f259g R/S rows flipped shadow->guest and guest->guest addAll from silent no-op size=0 to delivered 2/3 — mirroring the F-097 TreeSet dispatch law via is_subclass_of). Diagnostics: MINIANDROID_F264_TRACE, MINIANDROID_F264_ADDALL_DIAG (store census), MINIANDROID_F235_DIAG reuse.
+- Regression at the fixed binary d701221b9bb78317: dooz d602648e8e401895 x3 (unchanged), f259 7/7, anchors opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 all x3 byte-identical, gate A 98/0/1, negatives 19/19, skill 13/13.
+- Fan-out (sec 12): sudoku_secuso (Kotlin-heavy game, coroutines) REAL_APP_CONTENT 45962e018344e94d x3 at the fixed binary; stopwatch deterministic 31ddd4d5b8e6d18e x3; independent Compose APKs (sudokusolver d114d479df66b0f6, blockblast 64589a3a7e5c0f73) BLOCKED-APK-ABSENT — F-Droid fetch stalled both attempts, script scripts/cont375_refetch_wave_apks.sh left in place, SHAs recorded.
+- Registry 566 -> 573 (F-NEW-264, 264b, 264c, 264d, 265, 259g-a, 259g-b). Evidence: evidence/cont11/CONT11_EXECUTION_LEDGER.md + wave7_summary.json.
+- FINAL DECISION (sec 17 E): KEEP MINIANDROID PATH — measured, not assumed (Section E of the ledger).
+
+Stage Summary:
+- The external-runtime experiment ran to a clean rejection with numbers: the framework bridge dominates, MiniAndroid already owns it, and no VM swap eliminates any registered root — external projects retained as oracles only.
+- The dooz frontier was re-rooted one layer deeper with a complete link-by-link runtime proof: compose's draw path is correct and faithfully obeys isPlaced; the tree is unplaced because the measure pass dies on an exception cascade whose arms are now precisely named (F-NEW-265) — the next single root.
+- Two generic collection laws hardened (264c proven by probe flip; 264/264b defensive with honest no-fire status); the collection audit's 6-law grouping converts 15 failures into 6 bounded future fixes instead of hundreds of per-method roots.
+- All regression gates green; no app-specific code; no fallback added; no suppression.
+---
+Task ID: CONT-12-WAVE-8
+Agent: Super Z (main)
+Task: CONT-12 — external real-Compose oracle experiment: lock baseline, build the exact-version real-artifact oracle (TEST-ONLY), run experiments A/B/B-bound, find first divergences, implement the smallest generic law fix, full regression, honest report.
+
+Work Log:
+- Phase 0 locked before any change: HEAD 06c9f853; dooz apk 299eab21ac8b3c61; compose matrix from the APK's own META-INF/*.version (runtime/ui/foundation 1.11.4, m3 1.4.0, activity 1.13.0, lifecycle 2.11.0, nav 2.9.8, coroutines 1.9.0, core 1.19.0, savedstate 1.4.0); registry 573; F-NEW-265 re-verified live on a clean rebuild (Lzs0.m 45x under Lt4.onMeasure, null-text ctor Lm7.<init>, Lel0.Y cascade, 0 content canvas ops); dooz d602648e8e401895 x3. Toolchain note recorded: ledger SHA d701221b does not reproduce post-reset (g++ 14.2.0-19); semantic lineage proven by anchors instead.
+- Phase 1: fetched 55 real Maven artifacts / 11,767 classes, zero version mixing (KMP "-android"/"-jvm" coordinates discovered from .module metadata; kotlin-stdlib 2.1.20 pinned by compose's own module deps). Gap found mid-wave: androidx.collection:collection-jvm:1.5.0 (dooz carries it R8-renamed; no .version advertises it) — added.
+- Phase 2: oracle12.apk (f65b13ad446d1a57) — real Kotlin probe via kotlinc 2.1.20 + bundled compose-compiler-plugin, exact 55-jar classpath, faithful AGP-equivalent resource merge (merged arsc 491,968 bytes; view_tree_lifecycle_owner=0x7f05005a) + final-R regeneration for all 16 R-packages (AARs ship NO R classes; library code sgets its own package's R$id). B1 literal experiment (a127bb5efd5454f8): dooz + real-Compose secondary dexes, fresh re-zip.
+- Experiment B measured: B1 runs x3 byte-identical to the untouched dooz anchor (d602648e, DEFAULT_BACKGROUND_ONLY) — the binding wall is real: R8 renamed app+library consistently, so real-name classes are dead code. The BOUND oracle is the instrument that can answer the mission.
+- Oracle cascade (run/w8/oracle12, full traces): (1) ViewTreeLifecycleOwner ISE = artifact construction gap (no merged resources) — upstream law read from lifecycle 2.11.0 sources; (2) getTag key=0 = R classes absent + engine silently synthesized absent statics — fixed via final-R regen (artifact), synthesis behavior flagged as honesty-law candidate; (3) FontScaleConverterFactory <clinit> ISE = androidx.collection absent from artifact (upstream init-block check law read) — fixed via collection-jvm fetch; (4) MINIANDROID ROOT F-NEW-266: invoke-virtual resolving to a TRANSITIVE SUPERINTERFACE DEFAULT method (Modifier.then via root$1$1) returned silent null from the API bridge -> chained invoke-interface NPE x172 -> setContent dead. F-023 law existed for invoke-interface only.
+- F-NEW-266 fix (generic, no app/R8-name knowledge): try_interface_default_invoke() — 12-hop extends chain + 64-interface closure + positive/negative memo, wired into execute_invoke_virtual (35c) AND the 3rc range path after runtime/declaring-class tries, before the bridge; framework refs gated out (no hot-path cost). [INTERFACE-DEFAULT-V] dispatch of Landroidx/compose/ui/Modifier;.then + DelegatableNode.onDensityChange confirmed in the oracle; uncaught exceptions 44 -> 2; oracle advanced into navigation-compose's real Navigator-registry machinery (@Navigator.Name annotation lookup x5, kotlin-reflect CNFE x20, Function1 null receiver x22) — next divergences bounded, NOT patched.
+- f266 probe (fixtures/f266_probe, real aapt2/ECJ/D8, apk bd79275a2e18c289): 5/6 PASS — A direct default 42, B most-derived override 51, C transitive-2-hop 42, E receiver identity 101, F value fidelity 21; D honest FAIL = NEW finding F-NEW-266a (typed-null invoke-interface dispatched the default body instead of NPE — registered CLASSIFIED, not patched).
+- Regression at fixed binary 0ee46f5a719d2a8c: anchors 5/5 x3 byte-identical (dooz d602648e UNCHANGED — zero native drift); negatives 19/19; skill 13/13; f259 7/7; f259g 11/13 (2 registered FAILs unchanged); gate A 3/3 available families PASS (memory_34 + blockblast_43 corpus APKs absent since reset — script paths updated with recorded reason).
+- Registry 573 -> 575 (F-NEW-266 ROOT-CAUSED-FIXED; F-NEW-266a CLASSIFIED). Evidence: evidence/cont12/{CONT12_EXTERNAL_COMPOSE_ORACLE.md, DOOZ_COMPOSE_DEPENDENCY_MATRIX.md, dependency_matrix.json}.
+
+Stage Summary:
+- CONT-12's exact question now has a measured answer: the real matching Compose runtime makes execution advance IF AND ONLY IF it is bound (real names end-to-end); bare supply is provably inert (B1 x3 byte-identical). The oracle exposed the first generic law R8 had masked on dooz — invoke-virtual transitive interface-default dispatch (F-NEW-266) — which was implemented, probed (5/6 + 1 honest new finding), and proven drift-free on every recorded anchor.
+- External Compose stays a TEST-ONLY oracle; native path continues with F-NEW-265 as the single highest-ROI root; next-wave queue is exact: 266a null-receiver gate, oracle annotation-lookup divergence, corpus refetch for Phase 9, and the silent-synthesis honesty law.
+
+---
+Task ID: CONT-15-RECONCILIATION
+Agent: Super Z (main)
+Task: CONT-15 COMPLETE GITHUB LINEAGE + FRIEND-AGENT FINDINGS RECONCILIATION — reconstruct the real evidence lineage (CONT-9..14 + GitHub commits + KB + HEAD runtime), reconcile every friend finding against it, full regression, produce CONT-15_FRIEND_GITHUB_RECONCILIATION.md (sections A-H).
+
+Work Log:
+- PHASE 0 lineage: fetched origin; remote main was 2 commits AHEAD of the local CONT-14 container (ee7bf6c3 CONT-11 W7 + f0a36646 CONT-12 W8 — the CONT-14 audit had run at the older e99c2fbd). MERGED (worklog conflict resolved keeping both waves' entries) -> unified HEAD 9ab1b891. CONT-13 = NOT FOUND IN GITHUB (no commit; severed session). Issues #375/#379/#380 bodies = API rate-limited (recorded); commit messages quote the ledger postings.
+- Clean rebuild at merged HEAD produced binary 0ee46f5a719d2a8c — BYTE-IDENTICAL to the binary CONT-12 itself recorded (source-lineage identity proven; the earlier ea882758/d701221b notes were toolchain-generation artifacts).
+- PHASE 1 F-NEW-266 chain verified end-to-end: try_interface_default_invoke() in dalvik_engine.cpp:5658 wired into BOTH 35c (13452) and 3rc (19197) paths; probe fixtures/f266_probe re-run LIVE -> 5/6 PASS with D=FAIL reproduced (F-NEW-266a registered CLASSIFIED, deliberately unpatched). F-NEW-266 preserved as the canonical generic root it is (JVMS 5.4.5); friend claims did NOT overwrite it.
+- PHASE 2 KB: research/external-root-kb/current/MANIFEST.md verified — snapshot d717e9c7... (2026-10-05 FINAL v3, 5976/5434, audited HEAD f8d4088b) is ABSENT-THIS-CONTAINER; searchlight-only rules honored; no bulk import; 5,434 VERIFIED-NEW != runtime-proven roots.
+- PHASE 3-14 classifications (all in the report's section B table): 266 canonical FIXED/TESTED; 266a CLASSIFIED; 267/268 UNVERIFIABLE (NOT FOUND IN GITHUB); 271 REJECTED (grep '"Lr;"' = 0 hits; F-031 generic ctor-Context law covers it — hypothesis itself withdrawn by the friend's own tracing); 272/273/274/275 UNPROVEN/INVALID-as-proposed (0 Firebase/Billing/GMS/PowerManager-specific code exists; unconditional GMS SUCCESS is contractually wrong); 276/277 INVALID-SUPPRESSION (no suppression sites in engine; friend's own data: exceptions down, 0 draw ops/0 px); "F-NEW-236 JNI" = ID COLLISION (canonical 236 = JDK Set-Family) — JNI slot binding remains a future candidate requiring its own full proof chain + fresh ID.
+- PHASE 11 TELEGRAM causal chain (no friend credit): s107->s110 errors 32->7->6->0 (ROOT-062/063 generic fixes); s115 run4 clean-not-painted; V-wave F-NEW-193 frame-truth census -> forkgram cf4c41e62ceb6557 x3 REAL_APP_CONTENT (31 nodes, 11 ops, 117,133 in-bounds px); THIS wave reproduced cf4c41e6 byte-identically at the merged binary — state is stable canonical lineage independent of absent friend patches. Remaining faces: title-overlap, deferred_ui_pending, 6 uncaught — NOT login/chat-list.
+- PHASE 13 six-game claim re-validated LIVE at merged HEAD: 6/6 REAL_APP_CONTENT x3 byte-identical (g2048/tetris/minicraft/snake-deluxe/snakeneon/tictactoe-deluxe; draw ops 28/71/401/263/44/35).
+- PHASE 21 battery ALL GREEN at 0ee46f5a: dooz d602648e x3; microtimer da73010a x3; unote 4f1a9e4e x3; gmdice f3b483fe x3; f259 probe 7/7; f259g probe 11/13 (K/L = registered 259g-a/b); f266 probe 5/6 (D = 266a); gate A probe 98/0/1 (rebuilt via cont9 script, lib ad413625925ed8e5, apk af7c3fda03b22ce3); negatives 19/19 (after probe-store population per closeout_baseline law); skill selftest 13/13; telegram cf4c41e6 REAL_APP_CONTENT; tictactoe_emmanuel b5a7a35d honest DEFAULT_BACKGROUND_ONLY (F-NEW-219 + SharedLibraryLoader chain = the named JNI-wave entry).
+- Registry: counter reconciled 566(stale)->575 (bookkeeping only, zero root changes); no new IDs registered (none proven this wave); next free slot for the future JNI law remains F-NEW-267+ by convention.
+- Artifacts: CONT-15_FRIEND_GITHUB_RECONCILIATION.md (A-H + final answer), evidence/cont15/{battery.json, sixgame_validation.json}, run/cont15/*, scripts/cont15_{battery,sixgame}.py.
+
+Stage Summary:
+- The GitHub lineage is now unified in one tree: CONT-11 (external-runtime REJECTED, F-NEW-265 re-root, 264c proven) and CONT-12 (TEST-ONLY real-Compose oracle, F-NEW-266 FIXED, 266a honest) merged with the CONT-14 audit; the rebuilt binary byte-matches CONT-12's own record.
+- FINAL RECONCILIATION ANSWER: friend reusable semantic roots = 0; valid shims accepted = 0; already solved by CONT-9..12 = 271 + 276's symptom area + deep-Compose conclusion + six-game claim; duplicates = "F-NEW-236 JNI" (ID collision) + 276/277 (suppression family) + 271 (F-031); symptom suppression = 276/277 INVALID; unproven = 272/273/274/275 + unknown 267/268 (UNVERIFIABLE until re-supply). The one real generic root of this era (F-NEW-266) is canonical, probed 5/6 live, and preserved.
+- Single highest-ROI next root: F-NEW-265 (Lm7.<init> null-text CharSequence from Lvs0.c -> measure dies -> isPlaced=false -> 0 content ops) — every-Compose-family impact, instruction-level first divergence already proven.
+
+---
+Task ID: CONT-16-FIX-BATCH
+Agent: Super Z (main)
+Task: user directive — "pick the remaining ~50, make each a small task, solve many small
+problems instead of one big one." GitHub lineage consumption (#375/#379/#380 HTML bodies,
+API rate-limited) + 52-task backlog + first fix batch (3 roots) + full regression.
+
+Work Log:
+- PHASE 0 GitHub: API rate-limited (recorded); HTML fetch works — scripts/cont16_fetch_issues.py
+  (div-depth extractor) pulled full bodies of #375/#379/#380 into evidence/cont16/github_issues.json.
+  All three are consumed directives; #375 §3 carried partials (R-NEW-464 CLOSED, ViewPager
+  identity gate, F-NEW-221, Fragment host A/B, F-NEW-084 cap) mapped into backlog tasks.
+- Backlog: evidence/cont16/CONT16_TASK_BACKLOG.md — 52 bounded tasks T-01..T-52 in six
+  families (F-NEW-265 arms, 264d six laws, #375 partials, stale-status sweep, OBSERVED-FAIL
+  attributions, OPEN single-faces). Open rows 235 → 231 after this wave.
+- FIX 1 (F-NEW-266a) two layers: f141_is_null_receiver INT32-0 arm (const/4 0 = the
+  universal null materialization; registers are UNTYPED in DEX — the verifier guarantees
+  an instance-invoke receiver slot is callee-class-or-null) + null-receiver gate at the
+  top of try_interface_default_invoke before the memo (NPE is a receiver property).
+  Verified all 5 gate sites are receiver slots; invoke-static/range already excluded.
+- FIX 2 (F-NEW-259g-a): GENERIC SHADOW EXCEPTION CHANNEL — CallResult is_exc/exc_class/
+  exc_msg + handled_exception factory + conversion at the three try_shadow_dispatch sites
+  (pass-1/pass-2/hierarchy) via throw_deferred; CollectionShadow list get() enforces the
+  OpenJDK range law ("Index: N, Size: S") with size mirroring the size() law (shadow store
+  else __array_length__).
+- FIX 3 (F-NEW-259g-b): Ljava/util/Vector; claimed by CollectionShadow — the generic F-237
+  iterator-box law now mints real boxes over the F-NEW-246 array store; F-NEW-246 keeps
+  precedence (bridge_to_api order). Honest probe note: row L still reports threw=false —
+  its ISE expectation contradicts F-068 most-derived dispatch (NoSlots defines its own
+  iterator(); an empty Vector iterates zero elements on real Android too). NPE (the
+  registered finding) GONE. No suppression anywhere.
+- Builds: aed46450→(fix batch 1) fa3309803b13fd29→(null-arm) a8761a482a186eac, foreground
+  timeout-bounded make -j2 both times.
+- Probes: pre-fix state preserved (run/cont16_prefix: f266 5/6, f259g 11/13 — exactly the
+  registered rows). Post-fix: f266 6/6 (D flipped NPE=true r4=0); f259g 12/13 (K flipped
+  n=2 k1,k2; L honest); f259 7/7; fcol 3/18 UNCHANGED (K7/K8/K10; zero regression from the
+  exception channel + range law). Scripts: scripts/cont16_probe_run.py.
+- Regression at a8761a482a186eac: anchors 6/6 x3 BYTE-IDENTICAL (dooz d602648e, microtimer
+  da73010a, unote 4f1a9e4e, gmdice f3b483fe, opencalc a976d2f9, chess b5a7a35d — chess
+  package corrected jwtc.android.chess from the stale jp.sblo row); negatives 19/19;
+  skill 13/13. Script: scripts/cont16_regression.sh.
+- Registry: 266a/259g-a/259g-b → ROOT-CAUSED-FIXED with full law text + probe rows;
+  status_counts refreshed; F-NEW-264d re-verified unchanged. scripts/cont16_registry_update.py.
+
+Stage Summary:
+- 3 roots closed this wave (231 open remain), zero native drift on 6 anchors x3, all
+  probe suites green or honestly unchanged.
+- The shadow exception channel is the wave's reusable infrastructure: shadows can now
+  THROW per JDK/ART law instead of answering silent null/bool — unblocks the 264d six-law
+  queue and every future range/format law.
+- Next: T-01..T-03 (F-NEW-265 arms, the P0), then 264d laws one at a time; the backlog is
+  the standing queue for subsequent waves.
+
+---
+Task ID: CONT-17-SIMPLE-FIX-BATCH
+Agent: Super Z (main)
+Task: user directive — "search GitHub finely, find problems with simpler solutions that are not the main base, list 50–100, solve one by one ('No. X solved — next'), push everything unpushed."
+
+Work Log:
+- W0 GitHub sweep: all 380 issues CLOSED (0 open; evidence/cont17/github_issue_index.json); trailing comments are our own ledgers (github_trailing_comments.json). Problem surface = registry open rows + CONT-16 backlog.
+- W0 baseline: merged remote (CONT-15 W9 + CONT-16 batch, fast-forward); foreground rebuild -> binary a8761a482a186eac = recorded SHA byte-identical; anchors 6/6 x3 (chess package fix jwtc.android.chess, sub-task 2_1); probes rebuilt from fixtures (f266 6/6, f259 7/7, f259g 12/13, fcol 3/18); gate A 98/0/1; negatives 19/19; skill 13/13 restored after gate_a_probe.apk rebuild (lib ad413625925ed8e5, sub-task 4_1).
+- W1 B-block: 8 D-family rows live re-verified PARTIAL with fresh traced-dooz evidence (verdict DEFAULT_BACKGROUND_ONLY, APP_DRAW_OPS, Lzs;.m measure-family unwind); F-NEW-256 + R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; 8 odd statuses normalized with evidence quotes; baseline_head -> a6028be6.
+- W2 C/D-block: 319 null titles backfilled from KG evidence; SP-1 corpus (12 titles, 11 REAL_APP_CONTENT); SP-2/3/12 11-stage chain; SP-4..8 authority audit PASS; legacy-path DEEP-AUDIT (TEST-ONLY/DEAD classifications); view_tree_lifecycle_owner LAW-CONSISTENT; traversal PARTIAL (1 bounded divergence); visual gate 8-class rejection matrix; SP-9/10 mapping; SP-11 ranking; SUCCESS-PATH REPORT A..F; F-NEW-198/205/207/208/209/210/211/212/213 flipped (PENDING 13->3).
+- W3 E/F-block: chessclock fetched (identity 5ca6f2c5) + run — F-NEW-161 REFINED: producer is Settings$System.DEFAULT_RINGTONE_URI SGET-MISS (RingtoneManager exonerated); f084 probe LIVE (HALT-LOOP 50,001 visits, deferred VME, cap never raised -> F-NEW-217 VERIFIED-CORRECT); libGDX E-classified (GLSurfaceView20 shadow-fidelity); notes_secuso A/B (law A attachBaseContext2 NPE precedes law B); goldens 4/4; whatsapp BLOCKED-APK-INVALID; F-NEW-197 opencalc arm RESOLVED; R-NEW-303 SUPERSEDED; 11 rows updated.
+- W4 H-block: sudoku_secuso anchor 45962e01 BYTE-IDENTICAL (serializer face dormant); f259g row-L CLOSED-AS-DOCUMENTED; fcol K7/K8/K10 locked as protected anchors; PENDING census 13->2 (F-NEW-204/214).
+- W5 I/J/K: honest runnability census (I 37/21/2, J 110/16/13, K 72/0/0) — NO paper flips (constitution law); feeds next engine-wave queue.
+
+Stage Summary:
+- 78 of 100 numbered tasks executed with per-task evidence (0-55 fully, 56-77 honest census; pushes incremental through 29bbf2ad).
+- Remaining queue: 78-85 (264d six collection laws, engine batch with LAW-A..F one law = one fix + fcol regression), 86-91 (F-NEW-265 arms — the deferred P0), 98-99 (L/M push + final report).
+- Zero drift all waves: anchors 6/6 x3 byte-identical at every checkpoint; no app-specific code; no suppression; all claims runtime- or source-cited.
+
+---
+Task ID: CONT-18-W10-LAWA
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — PHASE 0 baseline lock + collection LAW-A (parallel-store coherence) implement/prove.
+
+Work Log:
+- T-01 baseline at recorded CONT-17 binary a8761a482a186eac (brief's e752b6d9c669558a NOT-FOUND-IN-REPO, recorded honestly): anchors 6/6 x3 byte-identical, Telegram 2/3 REAL_APP_CONTENT (run2 = 120s wall-cap flake), f266 6/6, f259 7/7, f259g 12/13 honest, fcol 3/18, negatives 19/19, skill 13/13, f084 spin probe HALT-50001 deferred-VME reproduced. 3 env restorations evidence-pinned: DroidSansMono.ttf+NOTICE re-added to tracking (deleted by 46f56737 while engine/tests require it; SHA db19a1fd..c862 verified), external HelloWorldSelfAware fixture+ref refetched = frozen SHAs, resource_trace rebuilt (stale numbered resume-cache had skipped its build). Battery ALL PASS.
+- T-02/T-03/T-04: six-law reconstruction table; bundled-java.util double-bookkeeping hypothesis REFUTED for fcol.apk (no java/util entries); K1 decomposed live (g1=true ix=-1 cx=false g2=false pre-fix).
+- LAW-A implemented (4 edits, generic): shared kind-faithful lawa_remove_index (both remove(int) intercept sites — the deque-site early intercept was the K1 killer), contains kind-aware slot compare, NEW indexOf/lastIndexOf real handler, F-238-SET diag predicate fix.
+- Proof: fcol 3/18 -> 5/18 (K1+K9 PASS, K7/K8/K10 unchanged); f266 6/6; f259 7/7; f259g 12/13 honest; anchors 6/6 x3 byte-identical at 57a2612db3a70d39; negatives 19/19; skill 13/13. Real-APK exercise: opencalc ArrayList.remove x19 + dooz x9 via shadow channel, byte-identical x3 (behavior-preserving on coherent stores).
+- Registry: F-NEW-264d evidence += LAW-A (umbrella stays REGISTERED; LAW-B..F pending). fcol probe K1 detail self-decomposing (honesty upgrade).
+
+Stage Summary:
+- Baseline LOCKED + pushed (012bd840), LAW-A implemented+tested+pushed. Zero drift at every checkpoint.
+- Standing queue: LAW-B (iterator write-back K2/K11/K12) next, then LAW-C..F one law = one fix cycle; then PHASE 2/3 (F-265 reclassification, F-217 root) per CONT18_TASK_LIST.md tasks 23-48.
+
+---
+Task ID: CONT-18-W10-LAWB
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — collection LAW-B (iterator write-back) implement/prove.
+
+Work Log:
+- LAW-B implemented: __iterator_last_ret__ box tracking (next/previous optimistic-exact record); ListIterator.set kind-aware write-through to parent; Iterator.remove via LAW-A shared helper + ISE on double-remove (JDK cursor law cursor=lastRet); ListIterator.add insert-at-cursor in 4 stores + cursor++ + lastRet=-1. Write faces decline for view/empty stores (read-only layering preserved).
+- T-03 probe-artifact corrections (OpenJDK ListItr source law): K12 previousIndex after add == 1 (old ==2 contradicted the contract); K2 nextIndex after previous() == 0 (same defect). Probe expectations fixed, NOT the runtime.
+- Proof: fcol 5/18 -> 8/18 (K2/K11/K12 PASS). Regression at f6e9cd7315c6c9f1: anchors 6/6 x3 byte-identical, f266 6/6, f259 7/7, f259g 12/13 honest, negatives 19/19, skill 13/13.
+- Registry F-NEW-264d evidence += LAW-B.
+
+Stage Summary:
+- 2 of 6 collection laws closed this wave (LAW-A, LAW-B), fcol 3/18 -> 8/18, zero drift at every checkpoint, all work pushed.
+- Standing queue: LAW-C (Java-8 default methods K13/K14/K16/K17/K18 — needs lambda/predicate invocation machinery check), LAW-D (deque order K4/K5), LAW-E (getOrDefault K6 face), LAW-F (subList/stream K3/K15); then PHASE 2/3: F-265 reclassification trace, F-217 waiter-resume root (tasks 23-48 in CONT18_TASK_LIST.md).
+
+---
+Task ID: CONT-18-W10-LAWD
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — collection LAW-D (deque order) implement/prove.
+
+Work Log:
+- LAW-D implemented: (1) addFirst/push/offerFirst + addLast/offer/offerLast kind-aware 4-store inserts (pre-fix elements-only insert desynced parallel stores, K4 order "mnull"); (2) removeFirst/removeLast/poll/pollFirst/pollLast/pop via LAW-A shared kind-faithful helper; (3) getFirst/getLast/element/peek/peekFirst/peekLast kind-aware serve via lawa_serve_slot; (4) Ljava/util/ArrayDeque; added to handles_class (was absent entirely — every op REC-MISSed, peek=null, K5).
+- Proof: fcol 8/18 -> 10/18 (K4+K5 PASS). Regression at 755774469a200f8b: anchors 18/18 MATCH, f266 6/6, f259 7/7, f259g 12/13 honest, negatives 19/19, skill 13/13.
+- Registry F-NEW-264d evidence += LAW-D.
+
+Stage Summary:
+- 3 of 6 collection laws closed this wave (LAW-A, LAW-B, LAW-D), fcol 3/18 -> 10/18, zero drift at every checkpoint, all pushed.
+- Standing queue: LAW-C (Java-8 default methods K13/K14/K16/K17/K18), LAW-E (getOrDefault K6), LAW-F (subList K3 / stream K15); then F-265 reclassification + F-217 root (tasks 23-48).
+
+---
+Task ID: CONT-18-W10-LAW-E-SCOPE
+Agent: Super Z (main)
+Task: CONT-18 WAVE 10 — LAW-E K6 decomposition (blocked-path scoping).
+
+Work Log:
+- K6 fully decomposed live: g=true ck=true sz=2 remOk=false (got=Ljava/lang/Object;@33, sz2=2) defOk=false (def=null) — Map.remove(Object) silent no-op; Map.getOrDefault answers null.
+- F089-REMOVE bounded diag added to the shadow's remove law (0 hits) — the shadow remove law is NEVER REACHED for this map, while put/get reach it correctly (F089 put trace fires on the same obj#32).
+- method_trace evidence: remove/getOrDefault arrive as invocation_type=virtual with DECLARED class Ljava/util/Map; (D8 rewrite of iface calls) — the virtual-dispatch bridge loses receiver identity for these faces; put/get resolve runtime class per R-NEW-318 and work. Next-wave scope: execute_invoke_virtual bridge receiver construction for virtual-rewritten interface calls + getOrDefault map law (kind-aware default serve).
+- Regression at d762aa0f03d2ab0a: fcol 10/18 stable, f266 6/6, anchors 18/18 MATCH, negatives 19/19, skill 13/13. No fix landed for LAW-E — no suppression; honest BLOCKED status with scope.
+
+Stage Summary:
+- Wave 10 collection block: LAW-A, LAW-B, LAW-D closed (fcol 3/18 -> 10/18); LAW-E scoped with evidence; LAW-C (default methods) + LAW-F (subList/stream) still PENDING. F-217 chain (tasks 23-48) remains the next major engineering target per the brief.
+
+---
+Task ID: CONT-18-W10-LAWCEF
+Agent: Super Z (main)
+Task: user directive — "investigate LAW-C/E/F only to definitive determination; fix only a proven generic root; else explicit REJECT/DEFER; then move directly to F-217 first-divergence."
+
+Work Log:
+- Two-layer dispatch diagnostics built (env-gated LAWCEF in try_shadow_dispatch + CollectionShadow::dispatch); four probe runs (lawcef_diag1..4).
+- Determination: (1) receiver identity CORRECT on every face — LAW-E bridge-loss hypothesis REFUTED; root = no handlers; (2) F089-REMOVE 0-hits explained: deque-block terminal return made the F-063 Map.remove law dead code since s86/#371B1; (3) static no-receiver gate declined Stream.of/Collectors.toList.
+- LAW-C/E/F all fixed generic: 7-face Java-8 default-method family via new engine-installed dex_invoke_slot (D8 lambda objects = real DEX code, ok=false -> loud decline); boxed compareTo + Integer.sum framework laws; Map fall-through revival; getOrDefault; subList view (write-through, OpenJDK bounds); bounded stream pipeline (of/toList/filter/collect-toList eager; rest of java.util.stream DEFERRED with scope — absent-family root is generic, one-law-one-fix discipline).
+- Proof: fcol 18/18 (K6 remOk=true def=42, K13 size=2, K14 [1,2,3], K15 size=2, K17 n=3 c=9, K18 f1;f2;/mf); f266 6/6; f259 7/7; f259g 12/13 honest; anchors 6/6 x3 BYTE-IDENTICAL; negatives 19/19; skill 13/13. Binary 8ee839e718877216.
+- Registry F-NEW-264d -> TESTED (6/6 laws closed), evidence appended (sha16 2043002891facf8b). Evidence file evidence/cont18/CONT18_LAWCEF_DETERMINATION.md. Commit 75dae014 pushed.
+
+Stage Summary:
+- F-264d umbrella COMPLETE: all six collection laws A/B/C/D/E/F closed, fcol 3/18 -> 18/18 across the wave.
+- Standing queue: F-217 first-divergence (T-01 runtime trace -> formal documentation) is NOW the active target per user directive.
+
+---
+Task ID: CONT-18-T01-F217
+Agent: Super Z (main)
+Task: user directive — "سپس مستقیم F-217 را به first-divergence تبدیل کن" (then directly convert F-217 to first-divergence).
+
+Work Log:
+- dooz reproduction attempts at HEAD: anchor invocation reproduces golden d602648e8e401895 exactly; click-test found 0 clickable views (Compose UI); --tap 540,960 → [F117-TAP] target=0 (Compose tap frontier — recorded, not worked around).
+- MutexImpl vehicle search: NO canonical anchor APK carries kotlinx Mutex; corpus scan found sudoku_secuso_101/klondike/notes_secuso_105 (classes load, zero lock/unlock traffic in headless runs at HEAD — T-13 face honestly unreachable).
+- SOURCE-FIRST: wrote DEX extractor + disassembler (cont18_t01_dex_extract.py / _disasm.py) — extracted the REAL kotlinx MutexImpl bytecode from the corpus DEX (17 methods, unlock 88 units; f217_dex_extract.json + f217_unlock_disasm.txt): retry loop + NO-OWNER ISE arm + owner-mismatch ISE arm + forwarding0.m CAS + queue-drain invoke.
+- Built fixtures/f217_mutex_probe (plain Java, extracted state machine verbatim; apk run/w7/f217.apk 1e3e0a03e0a221c2): F217-A CAS-retry-progress PASS (spins=4, terminates), F217-B unlock-drain-resume PASS (runs=1, drain;body;owned; — inline nested side effects SURVIVE), F217-C no-owner ISE PASS.
+- FIRST-DIVERGENCE RECORD written (evidence/cont18/CONT18_F217_FIRST_DIVERGENCE.md): concurrency layer honors the extracted contract at HEAD; historical spin = unlock retry loop starved by nested waiter-resume losses UPSTREAM in the composition chain (F-256/F-265 family) — the mutex loop was the loudest victim, not the root. F-265 stays CLASSIFIED (T-09 causal-order trace gated by the Compose tap frontier).
+- Registry: F-NEW-217 → CLASSIFIED with FIRST-DIVERGENCE DOCUMENTED evidence (sha16 8bb3256241c4f5a0); CONT18_TASK_LIST rows 17/19/20/25 updated; fcol row 21 stays PENDING (cosmetic sub-face).
+
+Stage Summary:
+- LAW-C/E/F closed (fcol 18/18) + F-217 first-divergence documented in one session, all evidence committed.
+- Standing queue: T-09/T-10 (F-265 reclassification) gated by the Compose tap frontier (target=0); T-14 ARM-A audit for the composition chain (Lnb0.H) belongs to the F-265 family; stream-family rest + subList CoMod + AbstractCollection.toString = DEFERRED with scope.
+
+---
+Task ID: CONT-18f
+Agent: Super Z (main)
+Task: Orphan-findings audit (make every discrete/abandoned finding usable or explicitly dispositioned) + practical next-step proof + push to GitHub.
+
+Work Log:
+- Lineage recovery: this container was stale at CONT-10 (local main 23 commits behind); fast-forwarded to origin/main c15e2661 (full CONT-11..18 lineage incl. LAW-A..F fixes and the F-217 T-01 first-divergence).
+- Binary reproduction: clean cold build (make -j1 after -j2 OOM) reproduces the recorded CONT-18 binary byte-identically — build/miniandroid sha16 8ee839e718877216.
+- LAW-A..F cumulative impact proven live: fcol probe APK rebuilt from committed fixture (scripts/cont11_build_fcol.sh), run at the reproduced binary — fcol 18/18 PASS (K1–K18; was 3/18 at CONT-18 baseline). Anchors 6/6 ×3 = 18/18 MATCH byte-identical.
+- Next-step frontier live evidence: dooz scripted tap at the game button — [F117-TAP] frame 15 DOWN (540,960) target=0; post-tap screenshot d602648e8e401895 = dooz anchor (byte-identical = zero state consumed). Registered F-NEW-267 (CLASSIFIED; Compose tap hit-test gap; hard dependency F-265 placement) — registry 575→576 (scripts/cont18f_register_f267.py).
+- Orphan-findings audit: evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md — 14 recorded loose ends (L1–L14), each INTEGRATED / FIXED / REGISTERED / RESOLVED / DEFERRED(scope) / OBSERVED / BLOCKED, zero floats. Includes the pre-push guard empty-staged-list defect (recorded twice since CONT-8, never fixed): root cause verified live (GNU grep -r with no path operands recurses into CWD); FIXED in scripts/security/check_secrets.sh (empty scan set = NO-OP; fail-closed unchanged) + permanent selftest law (7 detection + 5 FP + empty-list NO-OP rows all PASS).
+- Usability artifact: scripts/findings_queue.py — registry+census → deterministic ranked queue (255 queued / 321 terminal of 576; P0 first: F-NEW-156, F-NEW-157, F-NEW-265). Output committed to evidence/cont18f/findings_queue.{json,md}.
+- Evidence: evidence/cont18f/cont18f_live_proofs.json (binary/anchors/fcol/tap/guard/queue proofs, all generated from this container's runs); CONT18_BASELINE.md §7 addendum; CONT18_TASK_LIST.md rows 49_1..49_7 (56 genuine tasks).
+
+Stage Summary:
+- No engine source changed; the only main-code change is the guard fix (scripts/, selftest-proven). Registry +1 (F-NEW-267 CLASSIFIED, evidence-backed).
+- The audit's answer to the directive: every historical finding now either (a) lives in the registry with an explicit status, (b) is a committed tool/fix, or (c) carries an explicit DEFERRED/OBSERVED/BLOCKED disposition with scope — nothing is abandoned-unused.
+- Campaign impact made concrete: fcol 3/18 → 18/18 live at a byte-identical reproduced binary; anchors 18/18 zero drift; next frontier (F-265 → F-267 tap gate) registered and ranked P0/P1 in the usable queue.
+
+Push record: remote main a6c6fb7a verified (c15e2661..a6c6fb7a), secret guard PASS at push time. CONT-18f complete: audit dispositions + guard main-code fix + F-NEW-267 registration + queue tool + live fcol 18/18 / anchors 18/18 / binary reproduction proofs.
+
+---
+Task ID: CONT-18g
+Agent: Super Z (main)
+Task: Final source review — sweep issue comments/archives/source for findings stated-but-never-fixed; fix them; prove cumulative source impact; push.
+
+Work Log:
+- Sweep: fetched issues #353–#381 bodies fresh (HTML; comments JS-rendered + API rate-limited 403 — recorded, local archives mined instead: cont17 trailing comments 375–380, forensic_data, tmp comment files). Issue #381 (20.7k chars, the complete claims audit) was created after the last snapshot and NEVER audited — mined claim-by-claim.
+- Source verification at 8ee839e7: aget zero-length + aget null + iget/iget-object null + new-array negative clamp + throw <unknown> + split dual-handler divergence (invoke layer HANGS on empty delim; bridge layer whole-string; no quote parity; trailing empties retained) — ALL REAL and unregistered. class_to_superclass end() claim REFUTED (32/32 sites guarded).
+- FIXES (generic, ART/JLS law, f141_is_null_receiver + raise_synthetic_exception reuse): F-NEW-268 a–e (aget null NPE, aget/aput recorded-zero AIOOBE with unknown-length legacy gate preserved, new-array NegativeArraySizeException, iget/iget-object null NPE with ART resolution order, throw-null NPE) + F-NEW-269 (split law parity in both layers: \Q..\E strip, per-char empty-delim, trailing-empty removal). New binary be95a47f797d3d99.
+- Probe: fixtures/f268_exception_probe (real toolchain) — 12/12 PASS incl. in-bounds controls. Probe design lessons recorded honestly: ECJ folds provable-null derefs into athrow of the null register (became face L: throw-null → NPE); row isolation + instanceof-only handlers required (exception-object method dispatch hits REC-MISS fallback edges).
+- Full regression at be95a47f797d3d99: anchors 18/18 x3 BYTE-IDENTICAL; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; f268 12/12; negatives 19/19 (interim 9/19 = missing gate_a probe-RUN stage in clean container — probe rebuilt, libprobe sha ad413625925ed8e5 = recorded, probe executed into canonical stores, unblocked); reinstall 8/8; skill 13/13.
+- Final review doc: evidence/cont18g/CONT18G_FINAL_REVIEW.md — every #381 claim dispositioned (fixed/refuted/documented/superseded/non-floating), cumulative source-impact map, opcode-family coverage review answering #381 §F, remaining frontier (F-265 → F-267 main line).
+- Registry 576→578 (F-268/F-269 ROOT-CAUSED-FIXED); queue refreshed (255 queued/323 terminal).
+
+Stage Summary:
+- The sweep's answer: 5 real "found-but-never-fixed" faces + 1 dual-handler divergence — all FIXED with one probe + full green regression; 1 claim refuted with source evidence; 2 documented-design; the rest already registered or superseded. Zero floats.
+- The interim negatives 9/19 was diagnosed to environment (probe-run stage absent), NOT engine drift — recorded per discipline.
+- Engine now at be95a47f797d3d99; anchors byte-identical prove the exception laws are behavior-preserving on the whole anchor corpus while closing real semantic gaps.
+
+---
+Task ID: CONT-18h
+Agent: Super Z (main)
+Task: user directive — "ادامه خط اصلی کمپن رو ادامه بده ۸۰ درصد کمپین اصلی و ۲۰ درصد هم سایر موارد" (continue the main campaign line: 80% main line / 20% other).
+
+Work Log:
+- 20% hygiene: pushed the pending CONT-18g artifact commit (02122b94..562ff2cb) before starting; secret guard PASS.
+- Main line: F-265 live decomposition at HEAD be95a47f797d3d99 (run/cont18h/dooz_f265, F141-DIAG + DRAW_WINDOW traces). VERDICT: arms (a)+(b) of the F-265 record are FIXED at HEAD — deferred-throw aborts the throwing frame (frame_unwind + caller-side catch search) and handlers receive the real in-flight throwable ([EXC-PROPAGATE] lines carry the true NPE message). The recorded "deferred-throw continues the throwing frame" face is gone. Lzs.m still unwinds at depth 17 → measure-pass death persists; Lm7 null-text face never fired (composition dies earlier).
+- New first death face: [ROOT-059] routed Lhv0.h + Lhv0.d (R8-obfuscated USER class) → DEX bodies executed with this=null → wrong-site iget NPE at Lhv0;.d pc=17 INSIDE the callee (ART throws at the invoke site) + silent swallow of the paired h() put. Root: ROOT-059's claims_class routing is ungated and ViewShadow's EXP-060 heuristic claims every non-framework class; route also existed only at invoke-virtual 35c (5 other f141 sites never route) — format-inconsistent.
+- F-NEW-270 FIXED in main code: f141_is_framework_class() prefix allowlist (Landroid/, Landroidx/, Ljava/, Ljavax/, Lkotlin/, Lkotlinx/, Lcom/google/, Lorg/xmlpull/, Lorg/json/) gates the ROOT-059 route; ART-faithful throw for non-framework classes; caller identity added to the route log. Rebuild → binary f882ca1832b955e3.
+- Post-fix live proof: zero ROOT-059 routes in dooz; f141-null-recv fires at the TRUE invoke site ([SYNTH-EXC] 'Lhv0;.h' on null @ method=Lnb0;.S pc=185); anchor d602648e8e401895 byte-identical.
+- F-265 arm (c) root-cause advanced (source-first, payload-aware DEX tooling written: scripts/cont18h_newinst_xref.py; cont3 disasm + raw unit decodes): the failing frame is Lnb0 (CompositionImpl) o2838 .S pc=185 reading this.j (:Lqb0 invalidation holder) → chained .e (:Lhv0) → h() put. REGISTER WINDOW PROOF: j slot holds t5/o0 = STRING_REF/0 — an alien type outside f141_is_null_receiver's domain. Bytecode proven coherent: both Lqb0 construction sites run the real <init> ([TRI-F040] o3108/o3131 with healthy Lhv0.<init>+fill chains), Lqb0.<init> unconditionally iputs a fresh Lhv0 into e. Corruption is engine-side state → registered F-NEW-271 (CLASSIFIED, P0) with next arms (heap-dump probe at the failing iget; R-NEW-414/F-NEW-251 field-key audit; Lnb0 ownership check).
+- F-267 dependency honest: stays PENDING behind F-265 arm (c) (placed-node bounds still unavailable — blank anchor + Lzs.m unwind reproduced).
+- Full regression at f882ca1832b955e3 (scripts/cont18h_regression.py + canonical runners): anchors 18/18 x3 BYTE-IDENTICAL; fcol 18/18; f259 7/7; f259g 12/13 honest; f266 6/6; f268 12/12; negatives 19/19; reinstall 8/8; skill 13/13 — identical to the recorded CONT-18g green state (F-270 is behavior-preserving on the whole corpus).
+- Registry 578→580: F-NEW-270 ROOT-CAUSED-FIXED; F-NEW-271 CLASSIFIED (P0, front of the arm-(c) queue); F-265 evidence appended (arms a+b verified, arm c re-rooted). Queue refreshed: 256 queued / 324 terminal.
+
+Stage Summary:
+- The main line moved two notches this wave: F-265 arms (a)+(b) formally verified at HEAD (previously only assumed), and the composition-death root narrowed from "somewhere in the measure pass" to a single named corrupt field (Lnb0.j = STRING_REF/0) with the bytecode exonerated — F-267's tap gate is now exactly one field-store law away from re-triage.
+- One engine source fix landed (F-270, framework-only ROOT-059 route domain), full-battery green, zero drift.
+- Evidence: evidence/cont18h/CONT18H_MAINLINE.md; task list rows 50_1..50_4 (67 genuine tasks); run artifacts run/cont18h/{dooz_f265,dooz_f270,dooz_f270b,reg}.
+
+
+---
+Task ID: CONT-11-WAVE-7
+Agent: Super Z (main)
+Task: Directive "convert the next steps into 50-100 granular tasks and execute ALL in one run" (80% main line + 20% sweep) — dooz draw-path frontier: drive the W6 remaining root to its final link with static/runtime/upstream triangulation; register evidence; commit the diagnostic tooling; push.
+
+Work Log:
+- Session opened on a STALE local lineage (CONT-10 W6 era, 566 roots) — discovered at push time; origin had advanced to CONT-18h (580 roots). Evidence reconciled into F-NEW-265 per no-duplicate discipline; all findings below INDEPENDENTLY RE-DERIVED this session before the reconciliation.
+- Ground truth: dooz APK sha256 verified 299eab21ac8b3c61; clean rebuild reproduced the frozen W6 binary BYTE-EXACTLY (aed46450c103f2ea); baseline x3 anchor d602648e8e401895 zero-drift; [C013-ONDRAW] dispatched=YES ops=0 every frame; 6 uncaught = known setup-phase La; cascade.
+- Built 3 generic DEX forensics tools: cont11_flatxref.py (desync-proof u16-pattern xref), cont11_rawscan.py (correct per-method disassembler: proper 35c register lists, payload skipping), cont11_w7_baseline.py harness.
+- STATIC MAP: 13 R8<->upstream identities proven against ui-1.11.4/ui-android-1.11.4 sources (Lpz0;=NodeCoordinator with P:Lc31;=layer:OwnedLayer?; L0=NodeCoordinator.draw; M0=drawContainedDrawModifiers; T0(4)=head(Nodes.Draw); Lqz0;.g=NodeKind.includeSelfInTraversal (FALSE for Draw, upstream-correct); Lxk0;/Lug0;=Outer/Inner coordinator; r1=OwnedLayer.reuseLayer via embedded strings; Luc0;=GraphicsLayerOwnerLayer; Ljt1;=text-path Canvas forwarder).
+- RUNTIME: draw-window 430 rows/6 frames (per-frame chain: dispatchDraw -> adopt -> Lel0;.i -> L0(P=null) -> translate -> M0 -> T0(4)=null -> h1 -> children loop count=1 -> I()=FALSE -> 0 ops); METHOD-TRACE 85,838 entries: Lgl0;.c=0, Lyl;.z=0, Luc0;.<init>=0; Lqz0;.a/.b attach pairs carry REAL kindSets (o6325 kindSet=13 has the Draw bit).
+- Field-trace bisection: Lpz0;.P 371 reads/0 writes (legit null — no graphicsLayer modifiers); Lbt0;.w (isPlaced) 89 reads/0 place-writer executions; Liw0;.g draw-time children count=1; PARAM-TRACE proves engine F-028c wide-param passing CLEAN (v9=NULL_REF at v0 entry — no arg-layout bug); documented the dalvik_value_to_string NULL_REF-><unset> printing quirk.
+- ROOT CONFIRMED (independent re-derivation, folded into F-NEW-265): composed nodes' isPlaced never flips (place-writers Lbt0;.q0/.r0 never execute), so the upstream draw gate if(layoutNode.isPlaced) child.draw skips all content. W6's "Ljt1; never constructed" claim corrected honestly: text-path symptom (Lj7;.e = Layout.draw), bridge healthy (adopt+translate verified live).
+- Registry: F-NEW-265 evidence + verified_current extended with this wave's quantitative proofs (no duplicate root registered; no inflation; 580 roots).
+- 20% sweep (real commands): 2 live TODOs dispositioned — ApplicationContext::loadClass stub SUPERSEDED by the ClassLoader law at dalvik_engine.cpp:43631; TextWatcher dispatch KNOWN-GAP (documented dalvik_engine.h:1644, carried). Guard empty-staged-list quirk still documented, not forgotten.
+- Zero engine source changes this wave (diagnosis-only) — zero regression risk by construction.
+
+Stage Summary:
+- The dooz draw frontier independently re-derived to the isPlaced gate with full upstream law map + quantitative counts; evidence folded into F-NEW-265 (CONT-18h lineage) with no registry duplication.
+- 61 granular tasks executed in one run (evidence/cont11/CONT11_TASK_ACCOUNTING.md); rawscan/flatxref/baseline tooling committed for the next wave.
+- Next wave owns: F-NEW-260-family fix work per the CONT-18h plan (F-265 arm (c) = F-NEW-271 first, then F-267) — with this wave's rawscan/flatxref tools available for the applier/measure-path work.
+
+---
+Task ID: CONT-19
+Agent: Super Z (main)
+Task: user directive — continue from Issue #383 (BASE-FIRST) + amendment (upstream-source-first; verify the Compose chain and the 7 FULLY_VERIFIED claim); final review of Issue #382 to wherever it went.
+
+Work Log:
+- Read #383 fully (body + amendment comment) and #382 fully (51,774-char body + 2 owner comments + committed A1_A104_PRIMARY_CODER_AUDIT.md). Finding: #382 had NO primary-coder claim-by-claim audit posted — gap closed this wave.
+- READ LOCAL SOURCE: repo contains NO local Compose runtime (no C++ SlotTable/Composer/Applier/ComposeNode/LayoutNode/Recomposer). Real surface = host bridge (~330 Compose-referencing lines; ComposeView/AndroidComposeView/WrappedComposition shadow hosts). The "~6K-line Compose runtime" figure appears nowhere in the repo — REJECTED as stated.
+- READ UPSTREAM SOURCE: vendored dooz-pinned compose 1.11.4 sources (upstream/s43/): Composer.kt (ComposerImpl coordinates slot-table + Applier ops); Composables.kt:290-303 ComposeNode law verbatim.
+- VERIFY (chain): mapped Composer→SlotTable→Applier→ComposeNode→LayoutNode→measure/layout/draw onto runtime evidence — composition RUNS partially (kindSets real, Lqb0 healthy ×2), measure/layout DIES (Lzs.m depth-17; place-writers 0 executions → isPlaced never flips), draw SKIPPED (upstream isPlaced gate → 0 canvas ops in 85,838-entry trace). Earliest break = F-NEW-271 (engine heap/field corruption: Lnb0.j alien STRING_REF/0) — a GENERIC Base root, not a Compose primitive. Historical "Compose internals not implemented" narrative SUPERSEDED.
+- VERIFY (7 FULLY_VERIFIED): targeted battery scripts/cont19_seven_target_battery.sh — 24 runs at rebuilt binary b4937c81aba0998c (HEAD 0b019608): 2048/tetris/snake_deluxe/snakeneon/tictactoe_deluxe/minicraft/gmdice ALL ×3 byte-identical and MATCH every A103 claimed hash; dooz anchor d602648e8e401895 ×3 zero-drift. snakeneon contradiction settled IN FAVOR of A103 (cont15 record 24fb… was the mis-provenanced outlier, superseded). Pixel metrics + APK sha256 identities recorded (scripts/cont19_metrics.py → run/cont19/battery/cont19_metrics.json).
+- #382 final review verdicts (source-verified at HEAD): 9 ACCEPTED (A61/A62/A64/A92/A93/A95/A101/A102/A103), 6 PARTIAL (A1-A50, A51/A52, A68, A91, keySet carried, A104), 1 REJECTED (A94 Display.getWidth/getDisplayInfo absent at HEAD), 48 SOURCE GAP. Arithmetic reconciled: 14 apps = 13-table + blockblast (5th FRAME_CAPTURED, diff366 report).
+- #383 Phase 0 lock recorded (HEAD/build/run/capture/working examples; registry unchanged 580 roots; verification-only wave, zero engine source changes). Phase 1 baseline proposal recorded (g2048, glxy, opencalc, unote, blockbuster; dooz = boundary test). Decision gate answered: F-271 is shared-Base work (heap/field-identity law); C++ Compose implementation unjustified by cross-app evidence.
+- Posted: #382 final review comment (issuecomment-6060546098); #383 wave-1 report comment (issuecomment-6060565126).
+
+Stage Summary:
+- Both demanded verifications closed with runtime evidence: (1) "~6K-line Compose runtime" REJECTED — host bridge only; the real chain executes from app DEX and breaks earliest at generic engine law F-NEW-271; (2) "7 FULLY_VERIFIED, no regression" ACCEPTED — 7/7 hash claims re-proven byte-identical ×3 at current binary, snakeneon contradiction resolved for the claim.
+- Evidence: evidence/cont19/CONT19_BASE_FIRST.md; artifacts run/cont19/battery/; scripts cont19_seven_target_battery.sh + cont19_metrics.py committed.
+- Next wave owns: F-NEW-271 arms (heap-dump probe at the failing iget; R-NEW-414/F-NEW-251 field-key audit; Lnb0 ownership check) → F-265 measure-pass completion → F-267 tap bridge; Phase 5 interaction proofs for the baseline five.
+
+---
+Task ID: CONT-20
+Agent: Super Z (main)
+Task: user directive — investigate F-NEW-271 as a GENERIC runtime root (six-phase: reproduce first divergence → heap/field audit → source-first semantic law → genericity proof → minimal generic fix → runtime proof + regression). No Compose modification, no Dooz-specific rules.
+
+Work Log:
+- PHASE 1 (reproduce): ran the interrupted CONT-18i wave's prepared diag battery (MINIANDROID_F141_DIAG/FIELD_LAW_DIAG at b4937c81aba0998c) — [F271-READ] Lnb0;.S pc=163 field Lnb0;.j:Lqb0 answered STRING_REF "" from the QUALIFIED heap slot Lnb0;->j on recv#2838 (heap faithful, read machinery exonerated); [F271-WRITE] Lnb0;.p pc=1553 <- STRING_REF "" caught in the act.
+- Disasm (cont3_disasm_full, engine-aligned): Lnb0.p pc=0x5f7 iget Lnb0;.i → 0x5f9 size() → 0x5ff add-int/lit8 -1 → 0x601 ArrayList.remove(I) → 0x604 move-result-object v3 → 0x605 check-cast Lqb0 (documented optimistic pass — masking defect, separate scope) → 0x611 iput-object → j. CONT-18h's "j written only in .S" corrected: .p is a third writer.
+- New generic channel diag MINIANDROID_F271_COLL_TRACE (bounded 100, engine-side): PRE-FIX live capture — Lnb0;.u pc=4 (i.add(this.j); this.j = p1 enqueue-current-holder idiom) legally enqueued REAL Lqb0 holders o3108/o3131 AND six NULL_REF elements into ArrayList o2839 (= Lnb0.i on composition o2838); Lnb0;.p pc=1537 remove(0) was SERVED t5/o0("") by CollectionShadow.
+- PHASE 2 (audit): the CollectionShadow four-store element model's documented null-element encoding (kind 2 + elem_strings="") is LOSSY — a genuine empty-string element and a null element store identically; every serve path (lawa_remove_index/lawa_serve_slot/slot_to_arg/iterator next) materializes it as STRING_REF/0. Registered suspects R-NEW-414/F-NEW-251 exonerated by the evidence (qualified read HIT a genuinely stored value).
+- PHASE 3 (law): OpenJDK ArrayList "permits all elements, including null" — remove(int) returns the stored element AS typed null; ART move-result yields a null register; app side null-tolerant BY DESIGN (Lnb0.p explicit if-eqz). SOURCE-FIRST, not port-first.
+- PHASE 4 (genericity BEFORE patch): added fcol rows K19 (null-element round-trip) + K20 (null vs "" distinction) — pure java.util, zero dooz/Compose; pre-fix binary FAILS both (headNull=false... secondNull=false) → the primitive is a generic Base defect.
+- PHASE 5 (minimal generic fix): NULL-ELEMENT KIND LAW — kind 4 = null element. Writers (lawb_classify_arg, ArrayList.add tail, add(index,e), List set face, stream materialization) classify NULL_REF/zero-ref args as kind 4 (STRING args INCLUDING "" stay kind 2); readers (lawa_remove_index, lawa_serve_slot, slot_to_arg, iterator next, removeAll member_of_other, contains(null)) serve kind 4 as typed null. One law, eleven sites, zero app/package checks in miniandroid/src/framework/android_shadows.cpp.
+- PHASE 6 (proof): fcol K19/K20 PASS with K1–K18 unchanged (20/20); dooz serve-face flips t5/o0("")→t8/o0 typed null ×2 runs (run/cont20/dooz_after{,2}); Lnb0.S pc=185 death face GONE ×2; F271-WRITE alien stores 0; composition advances (Lnb0.S pc=913/190, deeper Lwg0/Lse1/Ltx faces).
+- REGRESSION at b6ee41e77acb88ec: anchors 18/18 ×3 BYTE-IDENTICAL; fcol 20/20; f259 7/7; f259g 12/13 (known honest L); f266 6/6; f268 12/12. gate-A negatives harness 9/19 at BOTH pre-fix and post-fix binaries with identical rows (A/B) → pre-existing harness drift, not a regression (re-calibration work item).
+- NEXT ROOT registered F-NEW-272 (CLASSIFIED, P0): engine has NO Thread default UncaughtExceptionHandler law — the app's crash-report path (Llo;.K pc=65 uncaughtException on null handler) NPEs and the reporter NPE reaches MainActivity.onCreate uncaught → APP BOUNDARY. AOSP law: default handler is non-null (RuntimeInit LoggingHandler/KillApplicationHandler). Generic Thread/runtime law, NOT Compose.
+- Registry 580→581: F-NEW-271 ROOT-CAUSED-FIXED; F-NEW-272 CLASSIFIED. Queue 256/325. Decision: IMPLEMENTED + PARTIAL (primitive proven; dooz visual unchanged because F-272 blocks after composition advances).
+
+Stage Summary:
+- The F-265 arm-(c) chain's registered root is CLOSED: the composition invalidation queue now round-trips ART-typed nulls; the first-divergence face moved one link deeper (crash-reporter law gap F-272).
+- Evidence: evidence/cont20/CONT20_F271_NULL_ELEMENT.md; runs run/cont20/{dooz_probe,dooz_after,dooz_after2,fcol_before,fcol_after,battery}; scripts cont20_registry.py + cont20_field_xref.py; fcol K19/K20 rows committed.
+- Next wave owns: F-NEW-272 (Thread default UncaughtExceptionHandler law) with the same source-first workflow; then re-enter the dooz composition chain (F-265 measure-pass completion → F-267 tap bridge).
+
+---
+Task ID: CONT-21
+Agent: Super Z (main)
+Task: Issue #384 ARCH-001 — build the Execution Family Matrix for generic app/game compatibility; clustering first, then fix the top shared primitive(s) source-first; runtime proof + cross-family regression + push.
+
+Work Log:
+- State sync: local was 37 commits behind origin (fresh container) — ff-only to bd691a96; engine rebuilt byte-exact b6ee41e77acb88ec (CONT-20 lineage). F-NEW-271 already closed (locked finding honored; no re-audit).
+- PHASE A (inventory): 14 representatives across 7 families inventoried (package/version/ABIs/apk sha256 via engine analyze; scripts/cont21_family_harness.py). F4 = telegram 12.10.5 + forkgram 12.10.8 (family evidence); F5 social/media = NO TARGET IN CORPUS (honest); whatsapp.apk identified as a 5,615-byte stub artifact.
+- PHASE B (execution-path proof): canonical runs (1080x1920/5f/15s) for all 14; first divergences captured per target (family_paths.json). New coverage this container: flappycow SUCCESS 13cf4746 (636 colors), bouncy FRAME_CAPTURED b6dde607 (145 colors/978,380 nondom), minibrowser VC2 rebuilt with canonical toolchain (fixed stale android-34.jar paths in scripts/s133/s133_build_browser.sh) and SUCCESS f2169ebc (222 colors). REAL tictactoe (libGDX) traced to GLSurfaceView20 EGL face.
+- PHASE C (clustering BEFORE fixes): scripts/cont21_cluster_scan.py over 14 logs → P1 component-info identity chain hits 5 targets/3 families (opencalc/stopwatch/forkgram/telegram/dooz: PackageManager.getProviderInfo REC-MISS → ProviderInfo.metaData iget NPE; FATAL pre-UI in stopwatch); P2 = registered F-272; P3-P10 clustered and NOT touched (family-internal or single-target).
+- PHASE D (source-first): local PackageManager/Bundle/ThreadShadow surfaces read first; live DEX laws disassembled from dooz (cont11_rawscan: InitializationProvider.onCreate getProviderInfo(cn,128) → iget metaData → Lkc;.c keySet/iterator; Llo;.K pc=0x52 currentThread().getUncaughtExceptionHandler().uncaughtException).
+- PHASE E (minimal generic fixes, dalvik_engine.cpp + .h only): F-NEW-273 = (1) ComponentName.<init> identity producer law; (2) PackageManager.getProviderInfo consumer law (manifest_provider_identity_ resolution + ProviderInfo seed incl. component_meta_data_ metaData; NameNotFoundException via throw_deferred); (3) BaseBundle keySet/containsKey/isEmpty law (bundle: namespace, ContentValues convention). F-NEW-272 = Thread UEH family law (static get/set, per-thread map, lazy non-null RuntimeInit$KillApplicationHandler default, [UEH-DEFAULT] log contract; process-death modeling stays with F-016 machinery). Zero app/package checks anywhere.
+- PHASE F (runtime proof): dooz rc 1→0, APP BOUNDARY 2→0, [F273-PROVINFO] metaData entries=3, [UEH-DEFAULT] fires, anchor d602648e8e401895 unchanged ×3; new first divergence = Lwg0;.y pc=17 iget Lrf1;.f on null (registered F-NEW-274 P0). stopwatch rc 1→0 (fatal startup face gone). 5/5 cluster targets rc 1→0 with byte-identical screenshots (sweep).
+- PHASE G (regression at 882b7cdf389aabc3): anchors 18/18 ×3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tictactoedeluxe — tictactoe package identity corrected in the script, com.miniandroid.tictactoedeluxe); probe APKs rebuilt canonically (scripts/cont21_build_probes.sh) → fcol 20/20, f259 7/7, f259g 12/13 (known honest L), f266 6/6, f268 12/12; g2048 anchor MATCH.
+- Registry 581→585 (scripts/cont21_registry.py): F-NEW-272 ROOT-CAUSED-FIXED; F-NEW-273 ROOT-CAUSED-FIXED (the ARCH-001 #1 shared primitive); F-NEW-274 CLASSIFIED P0 (savedstate chain); F-NEW-275 CLASSIFIED P1 (GET_SERVICES law); F-NEW-276 CLASSIFIED P2 (data-path duplication). Queue 258/327.
+- Deliverables: evidence/cont21/EXECUTION_FAMILY_MATRIX.md (required matrix + checklist with per-item evidence) + evidence/cont21/CONT21_FAMILY_WAVE.md (A–I report).
+
+Stage Summary:
+- The family matrix is built on runtime-traced paths, not APK names; clustering selected the primitive BEFORE any patch, and the two landed fixes (F-273 identity chain, F-272 UEH law) both carry multi-target runtime evidence + green cross-family regression. dooz remains honestly PARTIAL: its remaining uncaught face is now exactly F-NEW-274 (savedstate chain), the next wave's P0.
+- Next wave owns: F-NEW-274 (same source-first workflow), then F-275/F-276; family-level candidates (SurfaceView identity, libGDX surface/input, native-ABI extraction) stay clustered-only until a second target hits them.
+
+---
+Task ID: CONT-22
+Agent: Super Z (main)
+Task: CONT-22 / Issue #384 follow-up — audit CONT-21, harvest first divergences across the 7 execution families, fix the next highest-value shared Base roots source-first, prove cross-family runtime improvement, push.
+
+Work Log:
+- State sync: engine byte-exact 882b7cdf389aabc3 at start; pre-fix family evidence preserved (run/cont22/family_paths_PREFIX_CONT21.json).
+- AUDIT (evidence/cont22/CONT21_AUDIT.md): re-verified F-272/F-273 source+runtime, APP BOUNDARY 2->0, [F273-PROVINFO], F-274 face at line 3036, anchors 18/18 re-run. FINDING: cont21_family_sweep.sh run1() declared `local sha rc` between the engine call and rc=$? — bash `local` resets $?, so the sweep ALWAYS reported rc=0; the CONT-21 "5/5 rc 1->0" claim REJECTED as measured (Python truth: all rc=1 = PARTIAL SUCCESS by main.cpp:992 law). Script fixed; face-level claims survive.
+- HARVEST (scripts/cont22_cluster_scan.py -> run/cont22/cluster_scan.json): 14 targets re-run; wide framework-signature clustering; uncaught census: dooz 1, opencalc 5, chessclock 1, bouncy 2, tictactoe 2, telegram/forkgram 9 (family-internal), others 0.
+- ROOT SELECTION: R1 F-275 getServiceInfo/GET_SERVICES (opencalc F1 + telegram F4 = 2/2); R2 F-274 dooz face root-caused DEEPER via androguard chain (scripts/cont22_disasm*.py): R-NEW-414 fabricated zero-objects of initializer types with NO ()V ctor — Lgf1;.g -> new Lwg0; (R8 merged-lambda, capture .f set only by its parameterized ctor) -> app's own if-eqz null-guard defeated -> iget Lrf1;.f on null in the SavedStateRegistry.performSave lambda. ART law: never-written field reads null; zero-object legal only with a ()V ctor.
+- FIXES (dalvik_engine.cpp/.h only, zero app checks): F-NEW-274 class_has_no_arg_ctor() gate in BOTH R414 arms (honest null + [F274-CTORGATE]/[F274-CTORGATE-B] diags; framework Rect/Point/TypedValue behavior preserved); F-NEW-275 PackageManager.getServiceInfo law (manifest_service_classes_ identity walk, ServiceInfo seed + metaData under GET_META_DATA, NameNotFoundException via throw_deferred) + GET_SERVICES (0x20) PackageInfo.services array law (GET_PROVIDERS mirror). Rebuild: timeout 570 make -j1 BUILD_DIR=build -> fa88902fdee6e982.
+- RUNTIME PROOF: dooz uncaught 1->0 (zero uncaught faces first time; [UEH-DEFAULT] kill path GONE; Lrf1;.f mentions 37->0; +113 log lines deeper; anchor d602648e8e401895 unchanged); opencalc uncaught/APP-BOUNDARY 5->4, ServiceInfo NPE 0, NameNotFoundException APP-CAUGHT (upstream-faithful: opencalc's manifest does NOT declare AppLocalesMetadataHolderService — verified in the binary manifest), anchor unchanged; telegram Firebase ComponentDiscovery served x2, app catches. CROSS-TARGET F-274: [F274-CTORGATE-B] fired in opencalc too (Lm0/i0;.e -> RecyclerView accessibility delegate Lm0/h0;, only <init>(Lm0/i0;)V) — 2 targets/2 families (F6+F1) from one law, discovered at runtime.
+- REGRESSION at fa88902f: anchors 18/18 x3 byte-identical + g2048 59ca1526 x3; fcol 20/20, f259 7/7, f259g 12/13 (same known honest F259-L row), f266 6/6, f268 12/12; 5-target sweep screenshots byte-identical. Registry 585 rows: F-274 + F-275 -> ROOT-CAUSED-FIXED (terminal 329/queued 256).
+- Deliverables: evidence/cont22/{CONT21_AUDIT.md, CROSS_FAMILY_PROGRESS.md, CONT22_REPORT.md}; scripts/cont22_cluster_scan.py, cont22_disasm{,2,3,4}.py, cont22_registry.py.
+
+Stage Summary:
+- Two generic roots closed with cross-family runtime proof + the audit layer caught a false exit-code claim (method working as designed). dooz = zero uncaught faces at RENDER_STARTED; the next wave's P0 is the F-265 measure-pass chain (the Compose visual gate), then the libGDX surface/input family (P10, now 2 targets).
+
+---
+Task ID: CONT-23
+Agent: Super Z (main)
+Task: CONT-23 / Issue #384 — cross-family graphical progress: attack the dooz measure/layout frontier source-first, land a generic fix with runtime proof, regression-gate the result, push.
+
+Work Log:
+- Phase 0 (truth): HEAD 62809396 == origin/main; binary rebuilt BYTE-EXACT fa88902fdee6e982 (CONT-22 lineage); CONT-22 audit (evidence/cont23/CONT22_AUDIT.md): 9 claims TESTED, 1 SUPERSEDED — the "F-265 measure-pass death" frontier description is outdated at fa88902f (Lzs0.m x9, ZERO exceptions; Lbt0.q0 place-writer x2; isPlaced TRUE x32; draw walk descends into placed children). Fresh baseline: dooz 0 uncaught, anchor d602648e8e401895 MATCH x5.
+- Phase 1 (source-first decode, run/cont23/): full method trace (72,936 rows) + owner-field biography (MINIANDROID_FIELD_TRACE=Lel0.r: 6 attaches/3 detaches) + caller-frame traces (CL_TRACE) decoded the content frontier: the first doFrame's applyChanges REMOVES the NavHost content subtree (runtime chain Ls21.Y UiApplier.remove -> Lg21.a -> Lv02.j(0,1) -> Lel0.Q removeAt(0,1) -> Lel0.M onChildRemoved -> Lel0.h detach — verified against upstream ui-1.11.4 LayoutNode/UiApplier sources); dooz's destination content (GameScreen) is gated by navigation-compose 2.9.8 NavHost visibleEntries.lastOrNull() (sources fetched; app source from github.com/yamin8000/Dooz: hiltViewModel + collectAsStateWithLifecycle), which arrives only via a SECOND applyChanges that NEVER runs — the launch-frame pump quiesces at tick 3 ([CHOREO-PUMP] 3 frame(s) fired (bound=8), last frame-clock callback removed per the AndroidUiDispatcher whichever-first law, [PARK-DRAIN] park work_units=1 cycles) and the Recomposer runner never re-arms (reproduced at 120s/60 frames: exactly 3 ticks).
+- FALSIFIED FIX (audit layer caught it — on the record): the "engine never dispatches onStart/onResume -> lifecycle stuck at CREATED" hypothesis was disproven by its own probe: fixtures/lifecycle_transaction_probe (API-29 pairing assertion) PASSED 5/5 at the UNMODIFIED binary — the G09 start/resume transaction already fires from execution_engine.cpp (androidx dispatch ins=2427/1842); the trial DEX-engine patch double-dispatched the transaction and was REVERTED, restoring byte-exact fa88902f. No registry root for the false root; the probe is committed as a locked regression test for the start/resume law (5/5 PASS).
+- REGRESSION at fa88902f: anchors 18/18 x3 MATCH (dooz/microtimer/unote/gmdice/opencalc/tictactoedeluxe); probe battery rebuilt canonically: fcol 20/20, f259 7/7, f259g 12/13 (same known-honest F259-L), f266 6/6, f268; family sweep rc-truth (all 5 rc=1 PARTIAL per engine law) + fresh uncaught census identical to CONT-22 (dooz 0, stopwatch 0, opencalc 4, telegram 9, forkgram 9).
+- REGISTRY 585 -> 586 (scripts/cont23_registry.py): F-NEW-265 verified_current extended (measure-pass death face GONE; frontier re-rooted); F-NEW-277 CLASSIFIED P0 — RECOMPOSITION STARVATION AT THE FRAME-PUMP QUIESCENCE BOUNDARY (layer runtime/frame-clock + compose/recomposer-scheduling; fix surface: re-arm parked AndroidUiDispatcher continuations at the quiescence boundary without breaking the F-115b frozen launch-frame law; 18/18 anchors = hard gate; cross-family fanout = all flow-collect/navigation Compose apps).
+- Zero engine source changes shipped this wave (byte-exact fa88902f verified post-revert) — zero regression risk by construction, gate run anyway.
+
+Stage Summary:
+- The wave's product is a precise root: the dooz measure/layout frontier is HEALTHY and the pixel blocker is F-NEW-277 (recomposition starvation), pinned with pump-level runtime evidence and an upstream-law map; the falsified trial and its probe are committed (the probe locks the lifecycle-transaction law for the next wave's fix).
+- Evidence: evidence/cont23/{CONT22_AUDIT,FIRST_DIVERGENCES,GRAPHICAL_PROGRESS,CONT23_REPORT}.md; runs run/cont23/*; new tools scripts/cont23_dexinfo.py (DEX class/method info), scripts/cont23_build_probe.sh.
+- Next wave owns: F-NEW-277 fix (quiescence/re-arm boundary) with the frozen-anchor gate, then cross-family confirmation on a second Compose target and the libGDX surface/input family (P10).
+
+---
+Task ID: CONT-24
+Agent: Super Z (main)
+Task: user directive — (1) TEST-ONLY experiment: "skeleton-light" — one generic skeleton-simulation component vs the per-op graphics machinery; measure impact, open ONE Issue explaining it, do NOT change the main line; (2) find all scattered achievements (roots/fixes) never applied to the main code; (3) push everything to GitHub.
+
+Work Log:
+- Phase 0: origin/main 33fafcb9 verified clean; baseline binary byte-exact fa88902fdee6e982 preserved (run/cont24/bin/). No repo term "skel" exists — the directive names a NEW concept: ONE compact generic skeleton painter replacing the per-op graphics emulation role.
+- Built the instrument on branch cont24/skeleton-light-experiment ONLY (never merged): renderer/skeleton_light.{h,cpp} = 490 lines (self-contained measure honoring lp_width/lp_height/orientation/margins/padding + paint of REAL tree state: bg_color, 5x7 ASCII text, depth outlines, image placeholders, clickable ticks, GONE/INVISIBLE); env-gated hook MINIANDROID_SKELETON_LIGHT=1 in stage_render_frame_impl (+50 lines), default OFF. Link proof: nm -u skeleton_light.o = 14 undefined symbols, only ViewShadow::find_node + C++ runtime — ZERO refs to canvas_shadow/text_shaper/bitmap_font_data/vector_decode/gif_decoder/bitmap_shadow/state_list. Stale view_renderer.cpp (684 LOC) does NOT compile vs current ViewShadow API (padding_l/text_style_bold/TextShaper drift) — recorded as a scattered asset.
+- SANITY: gate-OFF anchors byte-identical (dooz d602648e8e401895, opencalc a976d2f9fb675cb3) — hook inert.
+- A/B BATTERY 11 targets (scripts/cont24_battery.sh, canonical 1080x1920/5f/15s; metrics via cont24_metrics.py full PNG unfilter): LOC census — one 490-line module replaces the FRAME-PRODUCTION role of ~10.6K lines (draw walk ~2140 + canvas_shadow 2261 + text_shaper 1166 + bitmap_font_data 2028 + software_renderer ~1284 + vector_decode 949 + bitmap_shadow 604 + state_list 176); registry cross-check 255/586 roots (43.5%) graphics-labeled (105 FIXED). First non-blank pixels at the sweep protocol on baseline-blank telegram/ballbreak + dooz structure hint. HAZARDS PROVEN: verdict inflation (dooz rc 1->0 "SUCCESS" from 1 wrapper box = FRAMEWORK_CHROME_ONLY violation; a SKELETON_STRUCTURE_ONLY verdict class is mandatory); surface-family destruction (flappycow 507-color SUCCESS -> blank rc 0->1); fidelity loss (opencalc 217->4 colors); no help where tree absent (stopwatch unchanged); log masking (opencalc uncaught grep 9->3 = skipped per-frame exception repeats, same 2 roots). DETERMINISM x3 byte-identical (dooz/ttt/telegram).
+- ISSUE #385 opened with the full measured-impact explanation (explanation only, per directive): https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/385
+- INVENTORY (evidence/cont24/UNAPPLIED_ACHIEVEMENTS.md): 16 RESEARCHED-NOT-IMPLEMENTED rows (12 = one jni_bridge classification law, highest single-law ROI), 110 PARTIAL, 72 UNPROVEN, reverted CONT-23 lifecycle patch (probe locked 5/5), CONT-12 real-Compose oracle (test-only, F-NEW-266), 10,258-LOC deleted experiment chain (f9f3013d), stale view_renderer.cpp.
+- Git correction: the two experiment commits briefly landed on LOCAL main; repaired in-place — branch cont24/skeleton-light-experiment = 008b7f1c (pushed), local main reset to 33fafcb9 == origin/main; this commit adds evidence/docs/tooling ONLY (zero engine code).
+
+Stage Summary:
+- The user's claim is QUANTIFIED: 490 LOC with zero new dependencies cover the frame-production role of ~10.6K lines of graphics machinery; AND the cost side is measured (verdict inflation, surface-family destruction, fidelity loss). Skeleton-light = diagnostic/fallback layer with its own verdict class, NOT a main-line strategy — main line untouched (engine code branch-only).
+- Evidence: evidence/cont24/{SKEL_LIGHT_EXPERIMENT,UNAPPLIED_ACHIEVEMENTS}.md; runs run/cont24/*; issue #385; branch cont24/skeleton-light-experiment (12bd2a39 + 008b7f1c).
+- Next wave owns: F-NEW-277 (recomposition starvation) source-first fix; optionally the jni_bridge 12-row law and view_renderer.cpp delete/repair decision from the inventory.
+
+---
+Task ID: CONT-25
+Agent: Super Z (main)
+Task: PHASE 1 directive — test the real Compose execution root against the white-screen corpus (NOT Skeleton-Light; issue #385 hazards honored). Verify the Composer/slot-tracking wording from source + runtime; fix the first divergence with one minimal generic fix; test on dooz + 2 independent Compose targets; negative controls; evidence + checklist comment.
+
+Work Log:
+- Phase 0 (truth): HEAD 05f6d162 == origin/main; engine rebuilt BYTE-EXACT fa88902fdee6e982; Issues #383/#384/#385 read via API; registry 586 rows audited (F-NEW-277 CLASSIFIED P0; F-266/271 ROOT-CAUSED-FIXED).
+- Corpus preflight: dooz (primary) + itsfrz 1.0.5 (133 compose strings, sha == registry) + droidify 0.7.7 (2030 compose strings) downloaded and SHA-verified from F-Droid; rttt REJECTED (ARM-only SDL = environment blocker), PF Dicer + Antimine REJECTED (0 compose strings).
+- Baselines (run/cont25/base_*): dooz d602648e rc=1 (reaches Composer; 0 uncaught; 0 app draw ops); itsfrz d55056a8 x3 (FragmentContainerView fm=null NPE pre-Composer); droidify b5a7a35d x3 (DelayKt.runBlocking HALT-LOOP pre-Composer). Diagnostic split §13 recorded (dooz = stage E chrome-only face; B/C = blocked earlier).
+- SOURCE-FIRST: Recomposer.kt (awaitWorkAvailable/hasSchedulingWork/onNewFrameAwaiter), AndroidUiDispatcher.android.kt (whichever-first + toRunOnFrame.isEmpty removal law), GlobalSnapshotManager.android.kt (channel monitor law), nav_s36 NavHost.kt (visibleEntries gate), AOSP MessageQueue.next. VERDICT: "slot tracking" wording CORRECTED — Composer healthy (Lrn1 x10366 slot ops, composition #1 legal); first divergence = F-NEW-277 scheduler starvation. Runtime smoking gun (run/cont25/probe_pump, MINIANDROID_METHOD_TRACE=1): Lj9 frame callbacks 7308→8168→8331 re-post per tick then STOP at tick 3; Lh9 dispatchCallback removes its choreographer callback (toRunOnFrame empty law) with the runner asleep on workContinuation; the 16ms View.post strand future-due (later removed-never-run); pump break contradicts the engine's OWN FINDING-009 law (drain_quiescent: quiescence = EMPTY queue).
+- FIX (one law, +34 lines, execution_engine.cpp pump_compose_frames): F-NEW-277 POLL-TIMEOUT PARITY — at !did_work, if fired_frames>0 (compose family scope) and queue has future-due entries, advance_virtual(next_ready) and keep ticking. No app/package checks (grep audit clean; matches are comments only).
+- RUNTIME: [F277-POLL] fires on dooz (15s and 120s protocols), the 16ms strand now RUNS — but composition STILL does not progress: only 13 trampoline tasks dispatch in 15s; the invalidation-delivery chain (produceState/LaunchedEffect collect dispatch / StateFlow first-emit / GlobalSnapshotManager monitor) never materializes as queue work. Honest NO on real draw; next first divergence pinned (§7 of evidence; oracle rebuild = next-wave opening probe).
+- REGRESSION at patch binary e980887e39aee977: anchors 18/18 x3 BYTE-IDENTICAL (incl. dooz); probe battery fcol 20/20 (440 PASS), f259 7/7, f259g known-honest F259-L row only, f266 6/6, f268 276 PASS; g2048 59ca1526; flappycow rc=0 13cf4746 + tictactoe b5a7a35d BYTE-IDENTICAL to baseline binary re-runs (Surface/GL intact — the #385 hazard did not recur). 3-run: dooz/itsfrz/droidify all byte-deterministic.
+- REGISTRY 586 rows (scripts/cont25_registry.py): zero new roots — F-NEW-277 evidence extended (fix surface arm landed; divergence moved to delivery link; wording corrected), R-NEW-331 + itsfrz face attached, R-NEW-345 + droidify residual arm attached.
+- Push: 963da9c3 == origin/main (secret guard PASS); Issue #384 checklist comment posted (issuecomment-6070235958).
+
+Stage Summary:
+- The wave corrected the root identification (scheduler, NOT slot tracking), landed the pump-side arm of F-277's registered fix surface with zero regression, and pinned the NEXT divergence (invalidation delivery) with ranked candidates + the correct instrument (un-renamed oracle). Real app-owned pixels: honestly NOT achieved — nothing claimed as fixed.
+- Evidence: evidence/cont25/COMPOSE_ROOT_TEST.md; runs run/cont25/*; scripts cont25_registry.py + cont25_post_comment.py.
+- Next wave owns: oracle rebuild (aapt2 link over surviving CONT-12 artifacts) → name-level trace of the delivery chain → the delivery-arm fix; then the fragment-host law (itsfrz) and runBlocking event-loop law (droidify) to unlock the Compose fanout proof.
+
+---
+Task ID: CONT-26
+Agent: Super Z (main)
+Task: CONT-26 Dual-Track Runtime Root Extraction — Track A (Compose invalidation delivery, from F-NEW-277) + Track B (Simple Calculator AndroidX startup/theme), Phase 0 truth lock, regression gates, evidence, push.
+
+Work Log:
+- Phase 0: fetched origin (local was 47 commits behind, fast-forwarded to 364aa041); binary rebuilt from HEAD reproducing e980887e39aee977 byte-exact (the CONT-25 patch binary); dooz APK sha 299eab21ac8b3c61 re-verified; issues read via HTML scrape (REST API rate-limited, recorded); registry 586 rows audited — F-NEW-277 CLASSIFIED, F-NEW-266/271/274/275 present with fix evidence; worklog + evidence/cont25 read in full; PROGRESS.md/WORKING_APP_ROOTS.md/fnew253_api_roots.txt confirmed LOST (not in git history) — recorded honestly.
+- TRACK A1: dooz baseline re-proven at HEAD — anchor d602648e8e401895 byte-exact; [F277-POLL] fires once; the 16ms View.post strand (Runnable 2670, Ld4;) NOW RUNS (was stranded-never-run pre-CONT-25); pump quiesces at tick=5 with an EMPTY queue; composition #2 still never starts. Method-trace census (153,847 rows) reconfirms the delivery link never materializes as queue work.
+- TRACK A2 (oracle): CONT-12 un-renamed real-Compose oracle REBUILT from surviving artifacts — fixed cont12_oracle_res2.sh (R-package scan pointed at the surviving tmp/cont12_oracle_build/dex; run/w8 was wiped with the container); merged resources.apk 491,968 bytes == recorded size; rclasses.jar 176 classes, view_tree_lifecycle_owner=0x7f05005a == recorded id; oracle12.apk 8,233,173 bytes == recorded size (sha16 differs from the recorded f65b13ad — honest: container toolchain drift; identity = size + id-table + behavior).
+- TRACK A3/A4 (two new generic roots, dedup-checked first): F-NEW-278 multi-DEX class-annotation closure — class_annotations_ was DEX-0-only while inject_secondary_dex_classes merged superclasses (EXP-095) and interfaces (S102); DEX ground truth via new scripts/cont26_dex_ann_scan.py proves @Navigator.Name vis=1 value='navigation' IS in classes2.dex; post-fix [F087-MD-ANN] +361 annotations; the navigator IAE is GONE. F-NEW-279 Throwable suppressed-exception law — no getSuppressed handler meant the typed stub answered null and Kotlin's Intrinsics killed compose's exception-attach path INSIDE the handler; fix = empty-array-never-null + addSuppressed append law; face GONE.
+- TRACK A4 (next divergence recorded, NOT fixed): the oracle's LocalViewModelStoreOwner chain decoded to bytecode level — computed-default lambda runs, provider map lookup SUCCEEDS, but the lambda tail (check-cast HostDefaultProvider + invoke-interface getHostDefault) never executes and the view-tree getTag walk never starts, despite the decor tag being present (setTag view=150 key=2131034206 hit=1 proven). Exact bytecode offsets recorded. Per directive: MOVED divergence, no rendering claim.
+- TRACK B1 (dual control): fnew253_probe rebuilt via w4_build_probes.sh — positive control 7602563f52cce823, 147 PASS / 0 FAIL. Simple Calculator (com.simplemobiletools.calculator vc8, 68da25fd9fdf54b4, from the reachable F-Droid archive) white screen reproduced — FIRST divergence IAE "Window callback may not be null" at the FIRST onCreate invoke.
+- TRACK B3: materialAlertDialogTheme/colorSurface hypothesis REJECTED by execution order — all faces precede any theme lookup; per directive a pre-lookup stop cannot name theme the root.
+- TRACK B5: F-NEW-280 root-caused via ARG-TRACE + new scripts/cont26_dex_method_disasm.py — delegate.onCreate(Bundle)V mis-dispatched to the same-name wrapWindowCallback(Callback) overload (the real override lives in the superclass); the null Bundle flowed into the callback slot. Fix = the blocker-safe middle path the S108 law needed: exact-match super-walk BEFORE the legacy lenient heuristics (bogus-descriptor family keeps byte-identical behavior). Post-fix: the IAE is GONE; Simple Calculator completes AppCompat delegate startup + theme + setContentView + real Toolbar measure/layout; NEXT divergence = Toolbar ctor-context/int[] init ([V6-CTX-FALLBACK] ctor-context MISSING) → aput-null in onMeasure pc=152 → PARTIAL, honestly reported (screenshot 7960bce447ac6d8f unchanged x3).
+- PHASE 4 regression at the final binary 1ff06737f7b12ad4: 6 anchors + flappycow (Surface/GL) + g2048 (Canvas) x3 = 24/24 byte-identical; probe battery fcol 140/0, f259 49/0, f259g 84/7 (the known-honest F259-L row only), f266 42/0, f268 96/0; rc-truth captured per call; positive control re-run green; 3-run proofs for dooz/fnew253/SimpleCalc.
+- Registry 586→589: F-NEW-278/279/280 ROOT-CAUSED-FIXED (dedup checked before classification); F-NEW-277 evidence extended (16ms strand status + oracle rebuild).
+- PUSH: remote main after commit (secret-guard subject to the standing fail-closed scan; tmp/cont26_issue384.html intentionally left untracked per the issue377 lesson).
+
+Stage Summary:
+- Three new generic roots closed with probe+live evidence; the F-280 hierarchy law is the first invoke-resolution fix that turns the S108 semantics on by default safely (super-walk-first ordering).
+- Track B advanced Simple Calculator from a dead-on-arrival AppCompat delegate to a living AppCompat view tree reaching Toolbar measure/layout — divergence moved, next root named with ctor-context evidence; no pixels claimed.
+- Track A restored the name-level oracle instrument and moved its frontier into the compose computed-local machinery; the invalidation-delivery link for dooz remains PARTIAL with the 16ms strand now proven running.
+- Real app-owned pixels: honestly NOT achieved on either track this wave — everything reported is divergence movement + generic law closures, exactly per the directive's definition of advancement.
+
+---
+Task ID: CONT-27
+Agent: Super Z (main)
+Task: CONT-27 dual-track continuation — Track A (real-Compose oracle: the HostDefaultProvider/invalidation-chain frontier) + Track B (Simple Calculator Toolbar ctor-context frontier), Phase 0 truth lock, regression gates, evidence, push.
+
+Work Log:
+- Phase 0: fetched origin (local fast-forwarded to da92a9f6 = the pushed CONT-26 wave); binary rebuilt BYTE-EXACT 1ff06737f7b12ad4 (CONT-26 final); dooz APK sha re-verified; simplecalc vc8 re-downloaded from the reachable F-Droid archive (68da25fd9fdf54b4 exact); oracle12 REBUILT size-exact (8,233,173 bytes; sha16 3359ed00e3add03d, honestly non-identical, behavior parity proven by reproducing the recorded ISE at pc=1780); issues #383/#384/#385 read via API (no rate limit); registry 589 rows audited; worklog + evidence/cont26 read in full.
+- TRACK A1: oracle baseline reproduced — ISE "NavHost requires a ViewModelStoreOwner" at NavHost pc=1780 (bytecode-exact per CONT-26) + the second-order placeChildren escape.
+- TRACK A2/A3 (three generic laws, dedup-checked, dalvik_engine.cpp only): F-NEW-281 interface dispatch exact (name, descriptor) law — (a) exact-name walk over the receiver class chain + interface-hierarchy DEFAULT BFS (bounded 16) ahead of the F-091b descriptor-only fallback (the walk had picked the raw PersistentMap.get 7-unit override for a getCurrentValue call — the true implementation is the PersistentCompositionLocalMap.getCurrentValue default, read(this)); (b) token-referent law in the Class-bridge (a Ljava/lang/Class; heap receiver resolves to its __referent_desc — getAnnotation queried java.lang.Class itself for token receivers); (c) strict (name, proto) gate on the F-068 runtime-class-first arm (Factory.create(KClass,extras) was dispatched into InitializerViewModelFactory.create(Class,extras), re-wrapping the KClass and killing the initializer match). F-NEW-282 CLASS_REF heap-token materialization at the frame-arg boundary + iput store side — PARAM-TRACE/FIELD-TRACE proved the ClassReference.<init> ctor received the token (p1={t=6}) but stored <unset> into jClass (raw CLASS_REF does not survive nested DEX calls); post-fix two ClassReferences share token obj#3970 and the match succeeds. Ground truth via new scripts/cont27_disasm.py (bounds-tolerant disassembler).
+- TRACK A runtime: the oracle advances END-TO-END through the composition-local machinery — ViewModelStoreOwner resolves via the view-tree tag (2131034206), NavControllerViewModel initializer factory matches, LaunchedEffect/produceState coroutines run, and the composition ENTERS the real draw pipeline (LayoutNode.draw$ui → AndroidComposeView.dispatchDraw, 205 GraphicsLayer rows). Next root RECORDED precisely: GraphicsLayer allocated WITHOUT executing its <init> (impl field null → setPosition f141-null-recv NPE; AndroidGraphicsContext.createGraphicsLayer 109 units never entered) — the ctor-skip family, shared with Track B's pre-fix face. No Compose pixels claimed.
+- TRACK B: Simple Calculator reproduced at the pre-fix binary (rc=1, 2 aput-null NPEs Toolbar.onMeasure pc=152 / onLayout pc=44, V6-CTX-FALLBACK). F-NEW-283 ROOT-CAUSED+FIXED: the inflate ctor gate suppressed the whole Landroid/ tree by prefix, so support-v7 classes shipped in the APK DEX (Toolbar) never executed their real <init> (349 units; scratch int[2] allocated at pc=0x0021) — the gate now honors the engine's own DEX-existence authority (dex_class_exists_hook_, cached; framework views byte-identical). Post-fix x3: rc=0 Status SUCCESS, uncaught 2→0, aput-null 0, the app's OWN keypad rendered (display TextView text='0'; Buttons mod/^/√/C, 7-8-9-÷, 4-5-6-*, 1-2-3,- at the 270x262 grid; 121 unique colors — 6fa8dc blue keypad / fafafa bg / f68630 orange accent). FIRST FULL SUCCESS for Simple Calculator.
+- PIXEL-LEVEL CORRECTION recorded honestly: CONT-26's evidence described sha 7960bce447ac6d8f as 'white/blank'; the byte-identical sha decodes to the rendered keypad — the description was inaccurate (its measured facts rc=1/uncaught=2 were correct); the fix's effect is rc 1→0 + NPE elimination, not a pixel change.
+- PHASE 4 regression at the final binary 6823170ebd443118: 8 anchors + flappycow (Surface/GL) + g2048 (Canvas) ×3 = 24/24 byte-identical; probe battery fcol 140/0, f259 49/0, f259g 84/7 (the known-honest F259-L row only), f266 42/0, f268 96/0; positive control fnew253_probe 7602563f52cce823 + 147 PASS/0 FAIL; rc-truth captured per call (Simple Calculator is the wave's only rc change, 1→0).
+- Registry 589→592: F-NEW-281 (P0, with 281b/281c arms), F-NEW-282 (P0), F-NEW-283 (P0) ROOT-CAUSED-FIXED; dooz/anchors byte-anchored.
+- PUSH: commit + push to origin/main this session (user directive).
+
+Stage Summary:
+- Three generic roots closed with name+bytecode-level runtime evidence; the interface-dispatch law (F-NEW-281) is the invoke-resolution completion of the F-280 hierarchy law, the CLASS_REF materialization law (F-NEW-282) completes F-103's token identity across frame boundaries, and the inflate gate law (F-NEW-283) extends the DEX-existence authority to Landroid/ support classes.
+- Track B delivered its wave success condition: Simple Calculator renders its own UI deterministically at full SUCCESS for the first time.
+- Track A moved the oracle from "composition-local ISE" into the real Compose draw pipeline with the next root named at name+bytecode level (GraphicsLayer ctor-skip); dooz remains byte-anchored PARTIAL (scheduler link, unchanged scope).
+- Evidence: evidence/cont27/{COMPOSE_INVALIDATION_ROOT,SIMPLE_CALCULATOR_ANDROIDX_ROOT,REGRESSION_MATRIX}.md; runs run/cont27/*; tools cont27_disasm.py, cont27_regression.sh, cont27_registry.py.
+- Next wave owns: the GraphicsLayer ctor-skip root (the draw-pipeline opening target, shared instrumentation with the inflate ctor path), then the dooz delivery link and Simple Calculator input-pump interactions.
+
+---
+Task ID: CONT-28
+Agent: Super Z (main)
+Task: CONT-28 Track A continuation — the GraphicsLayer ctor-skip opening target named by CONT-27; Phase 0 truth lock after container reset; regression gates; evidence; commit + push (user directive).
+
+Work Log:
+- Phase 0 (environment repair first): the local container had LOST 49 commits — the previous waves' work lived on origin/main only (local was at the CONT-10 era e99c2fbd; fa88902 not present locally). Fetched + fast-forwarded to 9c42dd61 == origin/main (the CONT-27 push). flappycow submodule dirty flag inspected = run-artifact noise, pointer unchanged. Baseline binary rebuilt from HEAD reproducing 6823170ebd443118 BYTE-EXACT. dooz APK sha 299eab21ac8b3c61 re-verified. oracle12.apk REBUILT size-exact 8,233,173 bytes (sha16 f2790da666890def, honest non-identical; identity = size + id-table + behavior — the recorded face reproduced). Simple Calculator vc8 re-downloaded from the reachable F-Droid archive: 68da25fd9fdf54b4 EXACT. Registry 592 rows, F-NEW-284/285 absent (dedup-checked). Worklog + evidence/cont27 read in full.
+- A1: the CONT-27 face reproduces at the baseline binary (rc=1, GraphicsLayer.setPosition-VbeCjmY pc=10 f141-null-recv on GraphicsLayerImpl, APP BOUNDARY, sha16 b5a7a35d5fe0564b).
+- A2/A3 decode (three independent instruments): (1) DEX allocation census via new scripts/cont28_newinst_scan.py (correct-width walker + fixed class_data delta bug) — the ONLY new-instance GraphicsLayer site is inside AndroidGraphicsContext.createGraphicsLayer (109 units) which NEVER entered, and GraphicsLayer.<init> never entered; (2) new generic MINIANDROID_ALLOC_TRACE at the DalvikHeap::allocate chokepoint — ZERO layer/GraphicsLayer; allocations all run; (3) MINIANDROID_PARAM_TRACE — every GraphicsLayer method's `this` was obj#1605 PlaceableKt$DefaultLayerBlock$1 (the EMPTY LAYER-BLOCK LAMBDA), flowing from GraphicsLayerOwnerLayer.<init> a1 ← createLayer a3 (explicitLayer) ← placeSelf a4, whose entry showed a3=NULL a4=lambda — the WRONG OVERLOAD's body. New MINIANDROID_OVERLOAD_TRACE caught the mispick live: NodeCoordinator want=placeAt-f8xVGno exact_desc=ABSENT (both 32-unit overloads as candidates).
+- F-NEW-284 ROOT-CAUSED+FIXED (dalvik_engine.cpp execute_invoke_super only): proto_35c was resolved for EXP-095 arg conversion but DROPPED at try_recursive_invoke — super-calls selected overloads by SHAPE (JVMS 5.4.5 violation; the F-023/F-280 law was incomplete on the super arm). Fix = hoist proto_35c to dispatch scope and pass it as the exact-descriptor authority; empty proto keeps legacy behavior byte-identical.
+- Post-284 runtime: the misalignment is GONE — createLayer takes the real createGraphicsLayer branch, GraphicsLayerV29 materializes through the REAL factory chain, V29.record receives a REAL GraphicsLayer (obj#7255), V29.setPosition/setInvalidated/recordInternal execute, f141 GraphicsLayer face >200 → 0. First divergence MOVED to the canvas chain: AndroidCanvas.drawRect pc=10 f141 on the WRAPPED canvas.
+- F-NEW-285 ROOT-CAUSED+FIXED (canvas_shadow.h one gate line): FIELD-TRACE proved AndroidCanvas.setInternalCanvas stored <unset> OVERWRITING the valid obj#537; GraphicsLayerV29.record feeds RenderNode.beginRecording()'s result into setInternalCanvas; CanvasShadow::dispatch already implements the beginRecording law for ANY *RenderNode; class, but handles_class claimed ONLY Landroid/view/RenderNode; — the oracle's DEX calls the AOSP SDK>=29 graphics-side Landroid/graphics/RenderNode;. Unclaimed → bridge answered VOID → unset wiped the field. Fix = claim the family the dispatch already serves (cls.find("RenderNode;")), no dispatch change.
+- Post-285 runtime: beginRecording returns a REAL RecordingCanvas; the <unset> overwrite is GONE; BackgroundNode.drawRect PC=10/68 (real content draw inside the layer record); crash.log Total Errors: 0 — the oracle's FIRST exception-free draw-pipeline run; frame = the app's OWN Material3 theme surface fef7ff (uniform fill; app-owned pixels, honestly NOT full content).
+- Next divergence RECORDED, not fixed: GraphicsLayer.draw$ui_graphics returns at @0x000a before the compositing body (@0x0132 invoke-interface GraphicsLayerImpl.draw → V29.draw → Canvas.drawRenderNode — 0 rows); the early-return guard is the next wave's opening target.
+- PHASE 4 regression at final binary d35a60d43f83331c: 24/24 anchors x3 byte-identical (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048 — Surface/GL + Canvas families intact); probe battery fcol 140/0, f259 49/0, f259g 84/7 (the same known-honest F259-L row), f266 42/0, f268 96/0 — ALL EXACTLY the CONT-27 numbers; oracle x3 deterministic b270ff040b3601dc; Simple Calculator rc=0 SUCCESS x3 byte-identical 7960bce447ac6d8f (FULL SUCCESS retained); dooz byte-anchored d602648e.
+- Registry 592→594: F-NEW-284 (P0, super-dispatch proto law), F-NEW-285 (P0, RenderNode claim-gate law) ROOT-CAUSED-FIXED, dedup-checked, zero app knowledge (grep audit clean).
+- PUSH: 90145a78 == origin/main (secret guard PASS); evidence/cont28/{COMPOSE_DRAW_PIPELINE_ROOT,SIMPLE_CALCULATOR_RETAINED,REGRESSION_MATRIX}.md; run/cont28/* artifacts local.
+
+Stage Summary:
+- The wave resolved CONT-27's named "GraphicsLayer ctor-skip" root as a TWO-LAYER cause: (F-NEW-284) a super-dispatch dispatch-law gap that substituted a lambda for the layer, and (F-NEW-285) a shadow claim-gate mismatch that nulled the recording canvas. Both closed generically with name+bytecode+runtime evidence.
+- The real-Compose oracle is now exception-free through the entire draw pipeline and produces app-owned theme pixels on the frame; the remaining gap to full content is precisely named (drawRenderNode compositing, guarded by an early return at draw$ui_graphics @0x000a).
+- Track B: Simple Calculator FULL SUCCESS re-proven ×3 at the new binary with the target APK byte-re-verified.
+- Honest non-claims: no Compose content pixels (text/buttons) yet; dooz delivery link unchanged; oracle rc=1 is the frame-truth gate verdict, not a crash.
+- Next wave owns: the draw$ui_graphics early-return root (compositing into drawRenderNode), then the dooz delivery link (invalidation delivery) and Simple Calculator input-pump interactions.
+
+---
+Task ID: CONT-29
+Agent: Super Z (main)
+Task: CONT-29 dual-track — Track A: the draw$ui_graphics "early-return" face CONT-28 named; Track B: Simple Calculator retention; Phase 0 truth lock after container continuation; regression gates; evidence; commit + push (user directive: ادامه / push to GitHub).
+
+Work Log:
+- Phase 0: fetched origin (local == origin/main == baa6654c, the CONT-28 push); flappycow submodule dirty flag = run-artifact noise (pointer unchanged); baseline binary rebuilt from HEAD source BYTE-EXACT d35a60d43f83331c (a mid-session save raced a failed make and captured a partial 97MB file — honestly recorded; the clean foreground rebuild settles the artifact question per the -j1 foreground discipline); dooz APK sha 299eab21ac8b3c61 re-verified; simplecalc vc8 68da25fd9fdf54b4 re-verified; oracle12.apk present f2790da666890def; registry 594 rows, F-NEW-286 absent (dedup-checked).
+- TRACK A1: baseline face reproduced (rc=1, b270ff040b3601dc deterministic, 0 engine errors).
+- TRACK A2 CORRECTION (recorded honestly): CONT-28's §5 face ("draw$ui_graphics returns at @0x000a before the compositing body") was a MISREAD caused by the cont28_disasm.py width table (0x01-0x0b all width 1 → every subsequent pc shifted). Ground truth via NEW androguard-based tools (scripts/cont29_ag_disasm.py, cont29_ag_method.py; androguard installed this session): @0x0006 iget-boolean isReleased; @0x0008 if-eqz +3 → body. The guard is isReleased and is NEVER taken: release$ui_graphics never entered (runtime), and the whole-APK DEX census shows isReleased written ONLY as val=1 with NO clearing path. Body methods executed for real: configureOutlineAndClip ×22, recreateDisplayListIfNeeded ×19, transformCanvas ×19, drawWithChildTracking ×40, recordInternal ×21.
+- The live compositing arm is the SOFTWARE arm: isHardwareAccelerated(native)=false on the engine canvas → drawWithChildTracking(softwareDrawScope) → drawBlock.invoke(drawScope) — NOT the drawRenderNode arm (hardware-only, correctly untaken). CONT-28's named "next divergence" was the wrong arm for a software canvas.
+- TRACK A ROOT (runtime-proven chain): the NavHost destination content (Column + 2 Texts, MainActivity.kt:34) is composed+attached in composition #1 (TextStringSimpleNode 5538/5630, onAttach run), then DELETED by the FIRST Recomposer cycle: GapComposer.recomposeToGroupEnd ×3 → RecomposeScopeImpl.compose on scope 3953 (NavHost) + 4544 (AnimatedContent) ×2 → the apply executed Operation$RemoveCurrentGroup (singleton obj#6620) → ComposerKt.removeCurrentGroup → SlotWriter.removeGroup ×2 (writer 6690) → forAllDataInRememberOrder mass-forget → mass onDetach (EnterExitTransitionModifierNode, BlockGraphicsLayerModifier, TextStringSimpleNode ×2, TailModifierNode ×3, BackwardsCompatNode, LayoutModifierImpl). NO re-creation (zero new allocs, zero app-lambda re-invocation, zero RecomposeScopeImpl.invoke). The draw-time tree = root + Surface + NavHost shell → only the Surface background paints → the uniform fef7ff frame explained.
+- RULED OUT with runtime evidence: navigation state layer is CORRECT (maxLifecycle STARTED→RESUMED legal; markTransitionComplete ran, DESTROY path not taken — NavControllerViewModel.clear never entered; visibleEntries non-empty; the derived lastOrNull got a real ArrayList at recompose; Lifecycle.State enum ordinals verified 32..36 = DESTROYED..RESUMED; isAtLeast(STARTED) constant identity correct).
+- REMOVER PINNED: the only DEX caller of ComposerChangeListWriter.removeCurrentGroup = GapComposer.recordDelete() ← GapComposer.end(Z)V @0x00bc/@0x0114 (differ end-of-region cleanup) + startReplaceGroup @0x0036. The differ deleted slot groups the re-execution did NOT re-visit while those groups were LIVE (inner scopes skipped legitimately; RecomposeScopeImpl.setUsed only ever i1). NEXT WAVE FIX TARGET: GapComposer.end() differ group-accounting across skipped inner scopes (skipped-live groups must advance the differ; only genuinely-dropped groups record recordDelete). Fix NOT implemented this wave — Track A honestly PARTIAL (divergence moved + recorder named at name+bytecode level).
+- TRACK B: Simple Calculator FULL SUCCESS retained ×3 byte-identical 7960bce447ac6d8f (rc=0) at the wave binary; target APK re-verified SHA-exact; input-pump frontier unchanged (PENDING).
+- PHASE 4 regression at the unchanged binary d35a60d43f83331c: 24/24 anchors ×3 byte-identical (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048 — Surface/GL + Canvas families intact); probe battery fcol 140/0, f259 49/0, f259g 84/7 (the known-honest F259-L row only), f266 42/0, f268 96/0 — EXACTLY the CONT-28 numbers; oracle ×3 deterministic b270ff040b3601dc. ZERO DRIFT (no engine source edits this wave).
+- Registry UNCHANGED (594 rows): no engine root was fixed this wave, so no new registry entry — the finding lives in evidence/cont29 as the named next-wave fix target (dedup discipline preserved).
+- PUSH: commit + push to origin/main this session (user directive).
+
+Stage Summary:
+- The wave moved the Track A first divergence from "content pixels missing, cause unknown" to "the differ deletes live slot groups at the first recomposition apply; the recorder is GapComposer.recordDelete from end()/startReplaceGroup; the skip-advance accounting law is the fix" — with the CONT-28 isReleased misread corrected on the record and the entire navigation layer ruled out with runtime evidence.
+- Track B retention proven ×3. Zero regression drift across all gate rows.
+- Evidence: evidence/cont29/{COMPOSE_RECOMPOSITION_ROOT,SIMPLE_CALCULATOR_RETAINED,REGRESSION_MATRIX}.md; runs run/cont29/*; tools cont29_ag_disasm.py, cont29_ag_method.py, cont29_isreleased_scan.py, cont29_callers_scan.py, cont29_find_methods.py, cont29_pkg_census.py.
+- Next wave owns: the GapComposer.end() differ accounting root (decode end(663 units)/startReplaceGroup + the skip-advance path, implement the accounting law generically), then the dooz delivery link and Simple Calculator input-pump interactions.
+
+---
+Task ID: CONT-30
+Agent: Super Z (main)
+Task: CONT-30 — fix the CONT-29-pinned frame-1 group-deletion root (GapComposer.end() differ accounting across skipped scopes); regression + probe + registry + push.
+
+Work Log:
+- PHASE 0 reconciliation: the container was STALE at the CONT-10-era lineage (the reset had lost CONT-11..29); the remote held the whole chain (52 commits). Fast-forwarded to fafa9aab with ZERO local divergence (git rev-list origin/main..HEAD = 0 before ff) — the user's standing push instruction is what surfaced the drift.
+- Clean rebuild from HEAD reproduced the CONT-29 baseline BYTE-EXACTLY (d35a60d43f83331c, 134,656,256 bytes); dooz APK sha 299eab21ac8b3c61 == registry; oracle APK rebuilt from surviving inputs (54 AARs + oracle DEX): 8,233,173 bytes == recorded size, rclasses.jar 168,155 == recorded, view_tree_lifecycle_owner 0x7f05005a == recorded; oracle baseline x3 = b270ff040b3601dc == CONT-29 exactly.
+- ROOT F-NEW-286 (ROOT-CAUSED-FIXED): the CONT-29-pinned "differ deletes un-revisited live groups" was never a differ bug — the M3-19 active-cycle guard STUBBED the legal nested recomposeToGroupEnd() on the SAME composer (zero-payload key = receiver-only). Upstream law (GapComposer.kt): skipToGroupEnd/skipCurrentGroup call recomposeToGroupEnd when invalidations are non-empty; recomposeToGroupEnd's scope.compose loop re-enters it; EVERY exit path advances the reader to the group end. The stub cut the skip-advance → end()'s upstream tail loop (while (!reader.isGroupEnd) recordDelete/skipGroup) deleted the LIVE destination groups (RemoveCurrentGroup x2, mass TextStringSimpleNode detach). Runtime chain proven in a 248k-line METHOD-IN census (run/cont30/trace1): skipCurrentGroup → rTGE#1 REAL → scope.compose(3953) → NavHost re-run → AnimatedContent scope SKIPPED → skipToGroupEnd → [M3-19-CYCLE] stub (depth 18) → end() → isGroupEnd FALSE → recordDelete x2; second scope repeats (depth 19). Fix = payload-parts counter (m3_payload_parts: F-098 object args excl. receiver, S122 prims, S137 class refs, F-076 static args); stub fires ONLY when payload_parts > 0; zero-payload re-entrancy executes REAL DEX; [RECURSION-LIMIT] backstop remains for genuine unbounded cycles. dooz M3-19 firings 5 -> 1.
+- ROOT F-NEW-287 (ROOT-CAUSED-FIXED, en route): the post-fix run's first uncaught face = LocalSavedStateRegistryOwnerKt.<clinit> NPE "getAnnotations(...) must not be null" — Method.getAnnotations/getDeclaredAnnotations had NO handler (REC-MISS -> null; ART law: NEVER null). Implemented: resolve the F-NEW-191 method_annotations table, materialize proxies with the F-087c __annotation_proxy__ marker (previously only the Class.getAnnotation bridge stamped it), answer EMPTY array when none; F-087c gains the Annotation.annotationType() arm (OpenJDK law: the annotation interface's Class token). Probe decomposition (R3c/d/e) isolated the three faces.
+- Probe: fixtures/fnew286_probe (real aapt2/ECJ/D8, scripts/cont30_build_probe.sh) — 10/10 PASS: R1/R2/R6 zero-payload re-entrant dispatch executes real DEX (3 visits, real returns, clean unwind); R3/R3b/R3c/R3d/R3e getAnnotations never-null + len==1 + annotationType identity + F-191 parity; R4 plain -> non-null EMPTY; R5 payload-distinct same-key re-entry still terminates (guard preserved).
+- Runtime effect (honest): oracle frame moved b270ff040b3601dc (uniform fef7ff) -> b5a7a35d5fe0564b x3 deterministic (uniform 2C2C2C post-recomposition state); BOTH interim NPE faces gone (only 3 benign deferred CNFEs remain). Next divergence PROVEN + registered F-NEW-288 (CLASSIFIED P0): the TextUnit value-class packed-value spin (Density.toPx--R2X_6o / TextUnit.getType-UIouoOA / TextUnitType.unbox-impl / getSp / equals-impl0) recurses to [RECURSION-LIMIT] depth-2048 in the real text-measure chain. Track A honestly PARTIAL — content pixels NOT claimed.
+- Regression at final binary b84114cd6f8bad1d: 24/24 anchors x3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048); probe battery fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0, fnew253 147/0 == CONT-28/29 records exactly; fnew286 10/0. Track B: Simple Calculator FULL SUCCESS RETAINED from the CONT-27/28/29 records (7960bce447ac6d8f x3) — the APK was lost in the container reset; re-fetch owed.
+- Registry 594 -> 597 (F-NEW-286/287 ROOT-CAUSED-FIXED; F-NEW-288 CLASSIFIED P0, dedup-checked). Evidence: evidence/cont30/{COMPOSE_FRAME1_DELETION_ROOT,REGRESSION_MATRIX}.md; tools cont30_disasm.py + cont30_build_probe.sh; probe fixture committed.
+
+Stage Summary:
+- The frame-1 group-deletion root is CLOSED with the whole causal chain runtime-proven: the differ was upstream-faithful all along; the engine's cycle-guard was the fabricator. The zero-payload re-entrancy law completes the F-098/S122/S137/F-076 payload-identity family with its final member.
+- The oracle advanced one full stage: deleted-content -> post-recomposition text-measure frontier (F-NEW-288 named with 3 primitive candidates).
+- Next wave owns: F-NEW-288 (TextUnit value-class spin — decode packed-long bit ops / FontScaling interface-default dispatch / mangled-name overload selection), Simple Calculator APK re-supply + re-run, second Compose APK fan-out when available.
+
+---
+Task ID: CONT-30W
+Agent: Super Z (main)
+Task: CONT-30W — white-screen claim audit (R445-R448, R460/R431/R461) + R-NEW-466 ServiceLoader iterator dispatch test; lightweight APK reproduction; resumable state; commit + push (user directive: ادامه بده اینا رو هم تست بکن).
+
+Work Log:
+- PHASE 0 reconciliation: HEAD b473c69b (main) = pushed 4d302cfa + 1 tmp-artifacts commit (engine source identical); flappycow submodule dirty flag = run-artifact noise. Claimed commits cabecf21/06d51505/4cfb0828/bf73a383/3d29366e NOT FOUND on any branch; 562ff2cb present but UNRELATED (machine-named tmp snapshot). None of R4xx/R-NEW-466 exist as registry IDs — the reports describe a SEPARATE lineage; audited against current source symbols + runtime, not the reports.
+- CHECKPOINT B: Simple Calculator vc8 re-supplied from the F-Droid archive and SHA-verified (68da25fd9fdf54b4 == CONT-26..29 record; 899,994 bytes — the directive's "9.6 MB" variant NOT FOUND, recorded honestly). Baseline unchanged-source runs x3 on binary b84114cd6f8bad1d: rc=0, screenshot 7960bce447ac6d8f BYTE-IDENTICAL x3 = FULL SUCCESS retained (app NOT white on this lineage).
+- CLAIM AUDITS (source-symbol level): R445 substance = F-NEW-273 (getProviderInfo manifest law, NameNotFoundException contract, GET_META_DATA gate — dalvik_engine.cpp:40288+); R446 = F-064/R-NEW-288 (Bundle/Map keySet/values/entrySet views — android_shadows.cpp:2794-2862); R447 = F-103 (isAssignableFrom resolves __referent_desc + OpenJDK walk — dalvik_engine.cpp:27002-27081); R448 = F-NEW-249 (make_stable_class_token keyed by descriptor — :19470-19499); getDeclaredConstructor = F-106; R431/R461 = effective_content_root_() ActivityShadow + android.R.id.content(0x01020002) fallback (execution_engine.cpp:7688+) — runtime-proven by the FULL SUCCESS x3; the directive's 41435-41545 region is now SharedPreferences code (lines shifted, symbol-followed).
+- R460: PackageInfo.applicationInfo = 0 hits in src/ — gap REAL on this lineage, but NO failing app reproduces it (FULL SUCCESS x3; dooz anchor byte-identical d602648e8e401895) → PARTIAL/PENDING, NO speculative patch per directive.
+- R-NEW-466: claimed implementation NOT on main (__sld_loader__ 0 hits; no dedicated iterator heap object; commits absent). Defect claims (a) register-vs-runtime-class dispatch failure and (b) CollectionShadow hasNext=false DO NOT REPRODUCE — main carries the F-NEW-252 wave architecture (self-as-iterator + BOTH-typed dispatch dalvik_engine.cpp:45779-45831; shadow DECLINE keyed on the service marker android_shadows.cpp:441-459). composeStopwatch APK NOT FOUND (125 APKs inventoried) → its runtime claims (Main dispatcher ISE, l5/t5 providers, DataStore frontier) UNVERIFIED here, not confirmed.
+- LIVE DIVERGENCE FOUND + ROOT-CAUSED (the wave's real find): fnew252 probe rebuilt by w4_build_probes.sh = SLPOS|FAIL|hasNext=false — dispatch REACHES the S102 law (diag), root = the probe APK had NO META-INF/services entry (w4 rebuild script never packaged the fixture's META-INF tree; fnew252 had silently dropped out of the recent batteries). Discriminator (scripts/cont30w_probe_pkg.sh): same APK + services entry → SLPOS|PASS x3 (hasNext=true → SvcImpl materialized, tag=svcimpl) — end-to-end ServiceLoader materialization WORKS on current main via asset_entry_bytes() (dalvik_engine.cpp:4753-4769).
+- MINIMAL GENERIC FIX (test-infra only, NO engine change): w4_build_probes.sh step 4b packages any fixture META-INF tree verbatim into the probe APK (fixture-driven, no app specifics). Post-fix script-built probe x3 = SUMMARY|PASS|7 pass 0 fail deterministic (APK sha20 df3baa2eeb14fdc98fbf). No engine patch warranted: every R-NEW-466 engine claim either already exists under a registered root or does not reproduce — transplanting the other lineage's dedicated-iterator patch without a reproducing divergence is forbidden.
+- Regression at the UNCHANGED binary b84114cd6f8bad1d: simplecalc x3 byte-identical, dooz anchor byte-identical (zero S102 traffic at its frontier), fnew252 fixed-build x3. Registry UNCHANGED (no engine root fixed — dedup discipline; R-NEW-466 recorded as the other lineage's numbering).
+- Evidence: evidence/cont30w/WHITESCREEN_CLAIM_AUDIT.md (full audit table + resumable state block + §9 next checkpoint); runs run/cont30w/*; scripts cont30w_probe_pkg.sh + w4_build_probes.sh fix.
+
+Stage Summary:
+- The white-screen report lineage is a SEPARATE worktree: 5/6 claimed commits absent, all R-IDs absent; every audited substance is already carried on main by registered roots (F-NEW-273/F-064/F-103/F-NEW-249/F-106/effective_content_root_), with Simple Calculator FULL SUCCESS x3 and dooz byte-identical as the runtime proofs.
+- R-NEW-466's engine-behavior defects do not reproduce on main (runtime-proven via fnew252); its claimed fix is absent and NOT transplanted; composeStopwatch claims honestly UNVERIFIED (APK unavailable).
+- The wave's genuine find: the fnew252 probe-packaging regression (silent coverage loss) — root-caused, discriminated, fixed generically in the build script, proven x3.
+- Next wave owns: composeStopwatch re-supply + on-lineage before/after (optional), then the standing targets F-NEW-288 (Track A P0) and Simple Calculator input-pump (Track B).
+
+---
+Task ID: CONT-31
+Agent: Super Z (main)
+Task: CONT-31 — composeStopwatch re-supply + R-NEW-466 on-lineage verdicts + first genuine divergence root-cause/fix/regression + commit + push (user directive: ادامه بده ادامه).
+
+Work Log:
+- CONTAINER RESET RECOVERY: local clone found STALE at CONT-10-era 6a66806a (machine tmp-snapshot e99c2fbd on top; binary + run/ artifacts gone; 837f68e4 absent locally). fetch → remote main = 837f68e4 (56-commit chain intact); backup-reset-snapshots branch kept; reset --hard origin/main → HEAD 837f68e4; verified m3_payload_parts/evidence/cont30w/registry-597; foreground rebuild reproduced b84114cd6f8bad1d BYTE-EXACT; simplecalc re-supplied SHA-exact 68da25fd9fdf54b4.
+- composeStopwatch RE-SUPPLIED: com.justdeax.composeStopwatch v1.9.1 vc1009011 from F-Droid repo (API-verified), SHA-256 dbf937ebbe7c0b3d24c07fa0ede7cb53ea117f7071db3b61f1c96b7d257cda55 (the R-NEW-466 report recorded no SHA — honest note).
+- R-NEW-466 ON-LINEAGE VERDICTS (baseline b84114cd6f8bad1d, zero engine change): "Main dispatcher missing" REJECTED (never occurs); l5 (MainDispatcherFactory) + t5 (CoroutineExceptionHandler) materialization CONFIRMED WITHOUT their patch (S102 trace: load→iterator→hasNext→next full loop); DataStore ENOENT frontier CONFIRMED (deferred, handled); their dedicated-iterator fix NOT needed here (F-NEW-252-wave architecture delivers it) and stays untransplanted.
+- FIRST GENUINE DIVERGENCE (×3 deterministic: rc=1, 5c4a0172628849ba, DEFAULT_BACKGROUND_ONLY, ISE "Cannot invoke setValue on a background thread" ×60/run): ROOT-CAUSED via androguard disasm (python3.13; reinstalled after reset) — Lcm0;=LiveData assertMainThread, Lca;=R8-renamed DefaultTaskExecutor, Lca;.P()Z = Looper.getMainLooper().getThread()==Thread.currentThread() answered FALSE because the main-queue continuation (Runnable 5399 → chain Lf;.p→La21;→Lb21;→Lio;→Lse;→Lu4;→Llw;→Ld;→Lcm0;.i→.a) was DELIVERED BY drain_park_queues_bounded (R-NEW-345 park law, dalvik_engine.cpp:24502) NESTED INSIDE the worker's F-110d run-to-completion identity window (Lcn; workers 5379/5384 park via LockSupport) — the delivery inherited the WORKER identity. AOSP law violated: main-MessageQueue deliveries ALWAYS execute on the main thread.
+- FIX F-NEW-289 (one semantic root, save/restore mirroring run_thread_start_body's F-110d pattern, no-op when already main): main-delivery identity re-bind at drain_park_queues_bounded arm 1 (runnables) + arm 2 (doFrame) + invoke_handler_runnable + invoke_choreographer_do_frame. No package checks / app logic / suppression / forced rendering; worker bodies keep F-110d identity.
+- PROBE fixtures/fnew289_probe (real aapt2/ECJ/D8, w4 script + META-INF packaging): worker posts main-queue Runnable then parkNanos (coroutines shape). PRE-fix: BODY-WORKER|PASS (F-110d intact) + QUEUE-MAIN|FAIL (divergence isolated) + LOP-MAIN|PASS = 2/1. POST-fix ×3: ALL PASS (28/0 battery rows). (v1 without park passed pre-fix — the drain fired outside the body; v2 with parkNanos reproduces the nested delivery — timing-sensitivity honestly recorded.)
+- TARGET APP POST-FIX ×3 (binary 9bdd61328d0f01d9): ISE 60→0 per run, frame UNCHANGED 5c4a0172628849ba (honest: divergence MOVED) — next frontier = NEW "Dialog has no window" ISE at Lea;.r pc=2 depth 53 (caught by Lx30;.n catch-alls) + the deferred AndroidCompositionLocals_androidKt CNFE worth a dedicated look. No content-pixel claims (Lh4; still ops=0).
+- REGRESSION FULL GATE (binary CHANGED — cont31_regression.sh): 24/24 anchors ×3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048); probe battery fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0 == CONT-28/29/30 records EXACTLY; standing battery rebuilt fresh: fnew253 147/0, fnew286 10/0, fnew252 56/0; fnew289 28/0; simplecalc ×3 7960bce447ac6d8f rc=0 FULL SUCCESS retained. ZERO DRIFT.
+- Registry 597→598 (F-NEW-289 ROOT_CAUSED_FIXED, dedup-checked). Evidence: evidence/cont31/COMPOSESTOPWATCH_FRONTIER.md; runs run/cont31/*; scripts cont31_regression.sh + fnew289 probe fixture.
+
+Stage Summary:
+- The wave advanced composeStopwatch (a SECOND independent Compose app) past its first real divergence: the F-NEW-289 main-queue delivery identity law closes the LiveData assert family generically (probe-proven, ×3, zero-drift regression).
+- R-NEW-466's runtime claims are now VERDICTED on this lineage: effect confirmed without the patch (F-NEW-252-wave law already delivers l5/t5); the patch stays untransplanted.
+- Next wave owns: the "Dialog has no window" face (Lea;/Lx30; decode), the AndroidCompositionLocals_androidKt CNFE, then standing F-NEW-288 (Track A) and Simple Calculator input-pump (Track B).
+
+---
+Task ID: CONT-32
+Agent: Super Z (main)
+Task: CONT-32 — composeStopwatch "Dialog has no window" face root-cause/fix/probe + AndroidCompositionLocals CNFE verdict + full regression + commit + push (user directive: ادامه).
+
+Work Log:
+- Checkpoint A: remote main = 8dcb5285 (CONT-31 pushed); local stray UUID commit 2fd055b7 = tmp-artifacts noise; binary 9bdd61328d0f01d9 byte-stable; composeStopwatch APK re-verified in place (sha dbf937ebbe7c0b3d…); androguard reinstalled via python3.13.
+- Checkpoint B: fresh run ×1 — rc=1, 5c4a0172628849ba, ISE "Dialog has no window" ×31/run (Lea;.r pc=2 depth 53), AndroidCompositionLocals CNFE at Lah0;.<clinit> pc=14 confirmed.
+- Checkpoint C (androguard decode): Lea;.r = kotlin error() intrinsic (new ISE; throw); Lis; = androidx DialogWrapper (super Lpj; = ComponentDialog, super-super android.app.Dialog); Lis;.<init> pc 13-16 `window = Dialog.getWindow(); if (null) error("Dialog has no window")`; pc 21-25 iputs WindowManager.LayoutParams.type through getAttributes() (null = instant NPE); Lpj;.<init> calls Dialog.<init>(ContextThemeWrapper, 0) (the [F166-BASECTX] 7220 + [DIALOG] obj 7219 logs).
+- Checkpoint D (engine dispatch chain): virtual getWindow bridges with the RUNTIME class Lis; — DialogShadow::handles_class gates on platform names only (never asked) → S71 ancestry walk maps Dialog→Context (kPlatformSuper) → no guard → STUBBED null. AOSP law: Dialog ctor binds mWindow=PhoneWindow + mContext BEFORE any subclass ctor body — getWindow/getContext NEVER null afterwards, ANY Dialog receiver, renamed or not (S134-F134A receiver-identity principle).
+- FIX F-NEW-290 (minimal generic): (1) bridge law — getWindow/getContext on a receiver whose chain reaches android.app.Dialog (is_subclass_of) dispatches to DialogShadow under the PLATFORM class name; (2) DialogShadow::dispatch_dialog gains getWindow (ONE stable Window object per DialogWindow, heap-minted) + getContext (ctor arg 0 recorded at <init>); (3) Window attribute law — getAttributes answers a per-receiver cached WindowManager$LayoutParams (window_layout_params_ map), setAttributes/setBackgroundDrawableResource/setGravity/addFlags absorb, requestFeature answers true. No package checks / app logic / suppression / forced rendering; R-005 decor law untouched.
+- PROBE fixtures/fnew290_probe (real aapt2/ECJ/D8): Dialog-subclass ctor consuming getWindow immediately (androidx shape). PROBE-HYGIENE FIND: first draft class name MainActivity$WrapperDialog contained "Activity" → the S134 find("Activity") arm masked the null (DLG-WINDOW PASS pre-fix) — caught BEFORE any engine build, activity renamed to Main; the engine was never built against the polluted probe. PRE-fix DLG-WINDOW|FAIL (null isolated); POST-fix ×3 SUMMARY|PASS|7 pass 0 fail (window non-null, attrs non-null, requestFeature true, ctx non-null, identity stable).
+- TARGET ×3 on fixed binary c280b243f880e7e6: "Dialog has no window" 31→0 per run deterministic; DialogWrapper ctor chain COMPLETES (C013-HIER routes the family; [F290-DIALOG] mints window once); frame UNCHANGED 5c4a0172628849ba (divergence honestly MOVED onward — Lh4; still ops=0, no content claims).
+- Checkpoint E VERDICT: AndroidCompositionLocals_androidKt CNFE = FAITHFUL behavior, NOT a bug — the class is genuinely ABSENT from the APK (string census: name appears once as a loadClass constant; 0 Landroidx/compose/ui/platform/* classes — R8 renamed/repackaged everything); Lah0;.<clinit> catches the CNFE and falls back; ART would behave identically. Recorded as honest observation (same family as R350-FORNAME).
+- NEW deferred faces recorded for next wave: STR-BRIDGE StringIndexOutOfBounds (length=0; begin=0; end=2) at Lwv;.p pc=26 (uncaught); DataStore ENOENT with a MANGLED path (runtime/data/data/data/... repeated segments — path-join bug candidate).
+- REGRESSION FULL GATE at c280b243f880e7e6: 24/24 anchors ×3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048); battery fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, fnew252 56/0 == CONT-28..31 records EXACTLY; fnew290 56/0; simplecalc ×3 7960bce447ac6d8f rc=0 FULL SUCCESS retained. ZERO DRIFT. (Background job reaping noted: gate split into two foreground halves.)
+- Registry 598→599 (F-NEW-290 ROOT_CAUSED_FIXED, dedup-checked). Evidence: evidence/cont32/DIALOG_WINDOW_FRONTIER.md; runs run/cont32/*; scripts cont32_disasm.py + cont32_regression.sh + cont32_registry.py; probe fixture committed.
+
+Stage Summary:
+- The Dialog-window face is CLOSED: the engine now honors the AOSP Dialog object law for renamed receivers (probe-proven ×3, target ISE eliminated ×3, zero-drift regression).
+- The AndroidCompositionLocals CNFE is verdicted FAITHFUL (class genuinely absent from the R8-minified APK) — an honest non-root, closing CONT-31's open question.
+- Next wave owns: Lwv;.p STR-BRIDGE SIOOBE (length=0 poison-source decode), the mangled DataStore path join, then standing F-NEW-288 (Track A) and Simple Calculator input-pump (Track B).
+
+---
+Task ID: CONT-33
+Agent: Super Z (main)
+Task: CONT-33 — Lwv;.p STR-BRIDGE SIOOBE + rememberSaveable canBeSaved frontier: root-cause/fix/probe ×2 roots + first painted content + full regression + commit + push (user directive: ادامه).
+
+Work Log:
+- Checkpoint A: HEAD 758c98e3 over pushed 8dcb5285 (CONT-32); binary c280b243f880e7e6 byte-stable; composeStopwatch APK dbf937ebbe7c0b3d in place.
+- FACE 1 (F-NEW-291): Lwv;.p pc=26 SIOOBE(length=0; begin=0; end=2) — androguard decode: pc 0-11 String.format(Locale.US,"%02d",Arrays.copyOf([millis%1000])) = the DEX 3-arg LOCALE OVERLOAD; pc 15 substring(0,2). Root: EXP093 bridge read args[0] as fmt unconditionally → Locale consumed AS format (fmt=""), real "%02d"+array pushed as fargs (log face String.format("", n=2) → ""). ART law: format string is args[1], varargs args[2]; overloads discriminated by DEX arg SHAPE. Fix: fmt_idx/varargs_idx shift (0,1)→(1,2) when args.size()>=3 && args[0]!=STRING_REF && args[1]==STRING_REF; defensive loop starts at varargs_idx. java_format_walk untouched (%02d+boxed Long already correct).
+- Probe fnew291_probe (real toolchain; hygiene: activity "Main"): PRE ×3 on c280b243f880e7e6 SUMMARY FAIL 2/5 with FMT-LOC-SUB throwing the EXACT SIOOBE face; POST ×3 on fa7dd04c99364cad SUMMARY PASS 7/0 ("07","50","01:02","x!","42"). Target ×3: SIOOBE 1→0/run, EXP093 answers format("%02d",n=1)→"00".
+- FACE 2 (F-NEW-292): after the format fix the fatal face became IAE "…cannot be saved using the current SaveableStateRegistry…" — value Ljava/util/UUID;@7220 ×51/run at Laj0;.n, caught by Lh4;.onMeasure catch-all → measure aborted. Upstream decode (ui-android-1.11.4 AAR; scripts/cont33_jvm_disasm.py — compact JVM bytecode walker, androguard 4.x dropped its JVM module): canBeSavedToBundle = NOT(Function∧Serializable) ∧ Class[]{Serializable,Parcelable,String,SparseArray,Binder,Size,SizeF}.isInstance walk. ART truth: java.util.UUID implements Serializable, Comparable → the Serializable arm accepts. Engine: no UUID row in framework_class_interfaces → dalvik_class_assignable FALSE.
+- Second family member: after the UUID row the IAE returned as Ll71;@10174 ×26/run — Ll71; = app enum (extends Ljava/lang/Enum;); the Serializable edge lives on the PLATFORM hop (libcore Enum implements Comparable, Serializable) and the walk checked class_to_interfaces_ (DEX-only) per hop, never the framework tables.
+- Fix (one semantic root, two rows + per-hop consult): framework_class_interfaces += UUID {Serializable, Comparable} + Enum {Serializable, Comparable} (libcore source law, receiver-identity keyed); dalvik_class_assignable walk gains per-hop framework_implements(walk, to_desc) after the DEX-table check. No name dispatch, no app logic.
+- Probe fnew292_probe: UUID-SER/INSTOF/CMP + ENUM-SER/INSTOF (Tick enum = the Ll71; shape) + NEG-PARCEL/STR/CHARSEQ/ENUMSTR guards. PRE (UUID face) ×3 on fa7dd04c99364cad FAIL 3/3 (Serializable.isInstance(uuid)=false); PRE (enum face) on c577629024f2a33b ENUM rows FAIL; POST ×3 on 859557953a3b144c SUMMARY PASS 9/0 with all negatives honestly false.
+- TARGET ×3 on 859557953a3b144c: IAE 51→0/run, SIOOBE ×0, status FAILURE→PARTIAL SUCCESS, and the FIRST PAINTED CONTENT in the app's campaign history — [DIALOG-RENDER] window painted, frame 5c4a0172628849ba → 9afb2bd2606f303e ×3 deterministic (2029440/2073600 non-white pixels). Honest bounds: Lh4; still ops=0, dialog body empty, remaining uncaught = F084 wall-clock budget halts (33-37/run, count varies — app ALIVE past the 15 s clock) + 1 f141-null-recv at Lk6;.<init> pc=409 (next-wave candidate).
+- DataStore mangled path ROOT-CAUSED (PENDING-FIX, deferred): getFilesDir (dalvik_engine.cpp:41856) answers the HOST path runtime/data/data/data/<pkg>/files — host prefix leaks into the app-visible logical path; DataStore's File(filesDir,…) logical path then re-anchors under package_data_dir() → double/triple prefix. Fix = virtual-AOSP dir-getter contract, touches every dir getter → CONT-34 candidate with its own filesDir round-trip probe. NOT patched this wave.
+- REGRESSION FULL GATE (binary CHANGED, cont33_regression.sh): anchors 24/24 ×3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048); battery fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, fnew252 56/0, fnew290 56/0 == CONT-28..32 records EXACTLY; fnew291 56/0; fnew292 70/0; simplecalc ×3 7960bce447ac6d8f rc=0 FULL SUCCESS retained. ZERO DRIFT.
+- Registry 599→601 (F-NEW-291, F-NEW-292; dedup-checked). Evidence: evidence/cont33/FORMAT_LOCALE_FRONTIER.md; runs run/cont33/*; scripts cont33_disasm.py + cont33_jvm_disasm.py + cont33_registry.py + cont33_regression.sh; probe fixtures committed.
+
+Stage Summary:
+- Two engine roots closed in one wave: the String.format Locale overload (F-NEW-291 — every Locale-overload call answered "" since the EXP093 bridge was written) and the libcore UUID/Enum hierarchy rows feeding the Compose saveable whitelist (F-NEW-292 — rememberSaveable accepted on ART, rejected here).
+- The wave's headline: composeStopwatch paints its FIRST content ever (rendered dialog window, new deterministic frame 9afb2bd2606f303e ×3) and moves FAILURE → PARTIAL SUCCESS; the remaining faces are honestly recorded (ops=0, empty dialog body, budget-halts, f141-null-recv).
+- DataStore mangled path root-caused to the getFilesDir host-prefix leak (decode-only, deferred with precise locations).
+- Next wave owns: DataStore virtual-path law (probe first), composeStopwatch f141-null-recv + ops=0 face, standing F-NEW-288 (Track A) + Simple Calculator input-pump (Track B).
+
+---
+Task ID: CONT-34
+Agent: Super Z (main)
+Task: CONT-34 — GATE A virtual-path law (F-NEW-293): probe-first contract, one-root fix, probe PRE/POST ×3, target ×3, full zero-drift regression, registry, commit + push (user directive: ادامه).
+
+Work Log:
+- Environment recovery (container reset again): local clone stale at the CONT-10 lineage (e99c2fbd tmp-snapshot); fetched origin/main 8081a64e (61 commits ahead, local verified ancestor) and fast-forwarded; `timeout 570 make -j1 BUILD_DIR=build` reproduced the pre-wave binary 859557953a3b144c BYTE-EXACT == the CONT-33 record.
+- APKs re-supplied SHA-exact after the tmp wipe: composeStopwatch v1.9.1 vc1009011 dbf937ebbe7c0b3d… (F-Droid repo) + Simple Calculator vc8 68da25fd9fdf54b4… (F-Droid archive).
+- Baseline ×3 on the rebuilt binary: composeStopwatch 9afb2bd2606f303e ×3 (== the CONT-33 PARTIAL SUCCESS anchor), DataStore preferences_pb traffic ×12/run, mangled runtime/data spellings ×10/run — the CONT-33 §9 face reproduces exactly.
+- PROBE FIRST (contract before any engine change): fixtures/fnew293_probe (package com.probe.f293, activity "Main" per hygiene law) — rows DIR-FILES-LOGICAL / DIR-CACHE-LOGICAL / FILE-JOIN-LOGICAL (the exact DataStore join shape) / RT-CREATE-EXISTS (delete-then-create, deterministic) / RT-WRITE-READ (same-file law via a FRESH File) / DS-DIR-MKDIRS / NO-HOST-LEAK. PRE ×3+r4 on 859557953a3b144c: SUMMARY FAIL (3 pass, 4 fail) — dir getters answered the DOUBLE prefix, joins the single host prefix, leak=true; the round-trip rows PASS (the mangled location is self-consistent — why apps saw ENOENT churn, not corruption). One garbled tool-output episode was REJECTED and re-verified from disk (log + file hashes).
+- Decode: THREE anchors for one logical file — dir getters spell the raw host path (logical_android_path silently no-oped: prefix table built from the DEFAULT RELATIVE root literal "runtime/data" vs the ABSOLUTE host side; main.cpp:914 applies the override only when present), resolve_android_path anchors relative paths under package_data_dir(), R-NEW-390 getAbsolute(File) anchors under app_data_root() — the multiplication mechanism, exactly as CONT-33 §9 suspected.
+- FIX (one semantic root, two lines): logical_android_path canonicalizes the ANCHOR — fs::absolute(g_app_data_root) before building the prefix table; both sides resolve against the SAME process anchor. No name dispatch, no per-app branches; covers the whole dir-getter family via the two GATE A call sites. Post-fix binary 702813ff2d5d8be8.
+- POST ×3: fnew293 SUMMARY PASS 7/0 (/data/data/<pkg>/files spellings, leak=false); physical verification — the probe file lands at the SINGLE canonical backing, the double-prefixed leftover stays unread.
+- Target ×3: composeStopwatch mangled app-visible spellings 10→0/run (R347 chain spells /data/data/<pkg>/files/datastore/… at every step), frame UNCHANGED 9afb2bd2606f303e ×3 — PARTIAL SUCCESS retained, zero render drift; the one remaining ENOENT is the FIRST-RUN DataStore read (faithful). Honest residual recorded PENDING: the STREAM-OPEN exception MESSAGE still embeds the host backing path (separate construction site, no failing consumer, not speculatively patched).
+- REGRESSION FULL GATE (scripts/cont34_regression.sh): anchors 24/24 ×3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048); battery fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0 (rebuilt fresh — the reset wiped its APK), fnew289 28/0, fnew252 56/0, fnew290 56/0, fnew291 56/0, fnew292 70/0 == CONT-28..33 records EXACTLY; fnew293 56/0; simplecalc ×3 rc=0 7960bce447ac6d8f FULL SUCCESS retained. ZERO DRIFT.
+- Registry 601→602 (F-NEW-293 ROOT_CAUSED_FIXED, dedup-checked). Evidence: evidence/cont34/VIRTUAL_PATH_FRONTIER.md; runs run/cont34/*; scripts cont34_registry.py + cont34_regression.sh; probe fixture committed.
+
+Stage Summary:
+- The app-visible namespace law now holds on default-root runs: applications never see host paths from the Context dir family; the DataStore prefix multiplication is dead at the source; physical backings and rendering are byte-stable everywhere (24/24 anchors).
+- Next wave owns: composeStopwatch f141-null-recv (Lk6;.<init> pc=409) + the Lh4; ops=0 face + the empty dialog body; the STREAM-OPEN exception-message spelling face (probe row first); standing F-NEW-288 (Track A P0) + Simple Calculator input-pump (Track B).
+
+---
+Task ID: CONT-35
+Agent: Super Z (main)
+Task: CONT-35 — composeStopwatch text-pipeline frontiers (F-NEW-294/295/296): face-first decode, three generic laws, probe PRE/POST ×3 both directions each, target ×3, full zero-drift regression, registry, commit + push (user directive: ادامه).
+
+Work Log:
+- Environment recovery (container reset again): local stale at the CONT-10 era (e99c2fbd); fetched origin/main 13d233b2 (the CONT-34 push) and fast-forwarded; `timeout 570 make -j1 BUILD_DIR=build` reproduced the pre-wave binary 702813ff2d5d8be8 BYTE-EXACT == the CONT-34 record. APKs re-supplied SHA-exact after the tmp wipe: composeStopwatch v1.9.1 vc1009011 dbf937ebbe7c0b3d… (F-Droid repo) + Simple Calculator vc8 68da25fd9fdf54b4… (F-Droid archive; the first URL guess com.emmanuelmess.simplecalculator_8 was the WRONG package 29e00ef6… — corrected to com.simplemobiletools.calculator_8, SHA exact).
+- Baseline ×3 on the rebuilt binary: composeStopwatch 9afb2bd2606f303e ×3 (== the CONT-33/34 PARTIAL SUCCESS anchor) and the CONT-33 §8 singular face reproduced exactly: ONE [SGET-MISS] key=Landroid/graphics/Typeface;.DEFAULT per run → ONE f141-null-recv NPE "getClass on a null object reference" at Lk6;.<init> pc=409 per run.
+- DECODE F-NEW-294 (androguard instruction-level + the cont33 JVM walker on ui-text-android-1.11.4.aar): Lk6; = AndroidParagraphIntrinsics; pc=0x199 is the Kotlin platform-type `!!` (invoke-virtual getClass BEFORE check-cast Typeface) on TypefaceResult(Luh1;.e) — .e is the Typeface from the Lzv;.k/l/m platform family which funnels into Typeface.DEFAULT sget / create(String,I) / create(Typeface,I) / defaultFromStyle / create(Typeface,I,Z). Engine grep: ZERO Typeface handling anywhere → sget NULL + static stub NULL. ART law: constants are create()-built static finals in <clinit>; every create/defaultFromStyle is @NonNull with family fallback.
+- FIX F-NEW-294 (two generic laws): sget-object constant-synthesis row {DEFAULT,DEFAULT_BOLD,SANS_SERIF,SERIF,MONOSPACE} as real heap Typefaces (__typeface_family__/__typeface_style__, cached per static_key) + bridge_to_api create×3/defaultFromStyle law (per-request-cached non-null, family fallback "sans-serif", weight/italic for API 28+). Post-fix binary d354e40ba5e6a6d9.
+- PROBE FIRST fixtures/fnew294_probe (real aapt2/ECJ/D8): TF-DEFAULT/TF-CONST-FAMILY/TF-CONSUMER-SHAPE (the exact pc=409 getClass+cast twin)/TF-CREATE-STR/NULLFAM/EMPTY/TF/3ARG/TF-DFS/TF-CREATE-IDEM. PRE ×3 on 702813ff2d5d8be8 SUMMARY FAIL 0/10 (the consumer row threw the recorded NPE verbatim); POST ×3 SUMMARY PASS 10/0. Target ×3: pc=409 NPE 1→0/run, frame UNCHANGED 9afb2bd2606f303e ×3.
+- FACE 2 (moved onward): [SYNTH-EXC] ARR-LEN-NULL at Ljd1;.<clinit> pc=6 — the Compose text-layout alignment resolver calls Layout.Alignment.values() then name-searches ALIGN_LEFT/ALIGN_RIGHT with ALIGN_NORMAL fallback. The 371-CLOSEOUT values()/valueOf() law is table-driven and the class had NO kOrdinals rows → NULL array. AOSP ground truth decoded field-ref-exact from the toolchain's android-34.jar clinit: THREE constants ALIGN_NORMAL=0, ALIGN_OPPOSITE=1, ALIGN_CENTER=2 (no ALIGN_LEFT/RIGHT on this API level — the fallback is the correct upstream behavior). FIX: three kOrdinals rows (generic machinery untouched). Binary e974e0204624854e.
+- PROBE fixtures/fnew295_probe: LA-VALUES-SIZE/ORDER/ITER (the exact clinit shape)/LA-SGET (sget=values[0] identity)/LA-VALUEOF/LA-VALUEOF-NEG (IAE law). PRE ×3 FAIL 0/6 ("len=null-arr"); POST ×3 PASS 6/0. Target ×3: Ljd1 NPE 1→0/run, frame UNCHANGED ×3.
+- FACE 3 (moved onward): f141-null-recv "LineBreakConfig$Builder.setLineBreakWordStyle on a null object reference" at Lb1;.n pc=0 — the Compose StaticLayout applier (Llw;.i, SDK>=33 gate) runs new Builder().setLineBreakStyle().setLineBreakWordStyle().build() then StaticLayout$Builder.setLineBreakConfig. The probe isolated the break LINK: new-instance allocates fine; the FIRST setter returned typed-default NULL (no law) → NPE at the SECOND link. AOSP LineBreakConfig.java (API 33+/Builder 34): fluent @NonNull setters, @NonNull build(). FIX (AudioAttributes$Builder family): bridge object law (<init> seeds, setters store + return THIS, build() allocates LineBreakConfig with __lbc_style__/__lbc_word_style__) + StaticLayout$Builder whitelist + storage row for setLineBreakConfig. Binary 6508a51d01b54280.
+- PROBE fixtures/fnew296_probe: LBC-CHAIN (the exact Llw;.i shape)/LBC-BUILD/LBC-FLUENT (identity-welded)/LBC-CONSTS/LBC-NEG. PRE ×3 FAIL 2/3 (LBC-CHAIN threw the recorded NPE verbatim); POST ×3 PASS 5/0. All three probes wired into scripts/w4_build_probes.sh = the STANDING battery (future-proofed against silent drop-out).
+- Target ×3 after all three fixes (6508a51d01b54280): composeStopwatch 9afb2bd2606f303e ×3 — the ENTIRE uncaught text-pipeline family is DEAD (pc409/Ljd1/Lb1 = 0 per run); the only remaining SYNTH-EXC rows are the 3 faithful deferred/handled faces (R350-FORNAME kotlin.reflect CNFE, S102-CLASSLOADER AndroidCompositionLocals, STREAM-OPEN first-run DataStore ENOENT) + F084 wall-clock budget halts (app-alive; even Lh4;.dispatchDraw gets budget-cut mid-churn). Honest standing frontier UNCHANGED: Lh4; onDraw ops=0 + empty dialog body = the Compose DRAW path (the F-NEW-256 layer drawContent → AndroidCanvas bridge family; dooz shares it — dooz sanity run in-wave stayed byte-exact d602648e8e401895).
+- REGRESSION FULL GATE (scripts/cont35_regression.sh): anchors 24/24 ×3 BYTE-IDENTICAL (dooz/microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048); battery fcol 140/0, f259 49/0, f259g 84/7-known, f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, fnew252 56/0, fnew290 56/0, fnew291 56/0, fnew292 70/0, fnew293 56/0 == CONT-28..34 records EXACTLY; fnew294 77/0, fnew295 49/0, fnew296 42/0; simplecalc ×3 rc=0 7960bce447ac6d8f FULL SUCCESS retained. ZERO DRIFT.
+- Registry 602→605 (F-NEW-294/295/296 ROOT_CAUSED_FIXED, dedup-checked). Evidence: evidence/cont35/TEXT_PIPELINE_FRONTIER.md; runs run/cont35/*; scripts cont35_regression.sh + cont35_registry.py + cont35_dump_classes.py; probe fixtures committed.
+
+Stage Summary:
+- Three new generic platform laws closed with probe+live evidence along ONE causal chain (Typeface static family → Alignment enum table → LineBreakConfig builder); each probe reproduced its recorded NPE verbatim pre-fix and passed post-fix ×3 both directions; the composeStopwatch text pass now survives to the 15 s budget with zero uncaught text exceptions — the app's remaining frontier moved cleanly to the Compose draw path.
+- Zero render drift anywhere (24/24 anchors ×3; the target frame byte-stable through all three engine changes); zero app-specific branches; the AOSP ground truths were decoded from primary sources (app DEX via androguard, ui-text AAR via the JVM walker, android-34.jar clinit via field-ref-exact walk).
+- Next wave owns: the Compose DRAW path (Lh4; ops=0 / empty dialog body — the layer drawContent → AndroidCanvas bridge root shared with dooz); STREAM-OPEN message spelling (probe row first); standing F-NEW-288 (Track A P0) + SimpleCalc input-pump (Track B).
+
+---
+Task ID: CONT-36
+Agent: Super Z (main agent)
+Task: Independent verification of CONT-35 + the Compose draw root (Lh4; ops=0); friend-report Fragment/Preference verification; directive ادامه.
+
+Work Log:
+- Phase 0/1: fetched origin (local == remote 1cc38daa, 0/0); recorded binary 6508a51d01b54280 (byte-exact CONT-35 record, clean tree); verified F-NEW-294/295/296 in source (exact line ranges), registry (605), battery, evidence — no duplicated/unreachable/nested patches.
+- Phase 2: reproduced EVERY CONT-35 claim from verified source: fnew294 ×3 77/0, fnew295 ×3 49/0, fnew296 ×3 42/0; composeStopwatch ×3 frame 9afb2bd2606f303e with pc409/Ljd1/Lb1 = 0/run; SimpleCalc ×3 rc=0 7960bce447ac6d8f. No discrepancy.
+- Phase 1b (friend report): #1 CONFIRMED (FragmentTransaction.commit → handled_int(0), android_shadows.cpp:3376-3379, no drain/lifecycle); #2 CONFIRMED (addPreferencesFromResource unhandled); #3-#5 NOT PRESENT in this lineage (no pending-resource path, no XML→widget mapping, 6-node/#FAFAFA claims unreproducible); #6 FALSE (F-NEW-253 = top-level Parcelable-family rows in view_ancestry.h:331/411, reachable — battery 147/0 every wave); #7 no patch script in scripts/. No speculative fix: no failing consumer in anchor/battery set; recorded with reuse guidance (F-NEW-234 defaults-walk).
+- Phase 3 (draw root, op-level + androguard): first-frame ops=64 (post-CONT-35; the old "ops=0" is historical) — ALL from Ln3 (Compose Canvas wrapper), roundrect/clip only; APK-wide corrected static scan (61,113 invokes): NO reachable drawText call; the ONLY draw-block invoke site = Loc0.c pc=106 (CanvasDrawScope: save→block.I→restore); [M3-19-CYCLE] stubs fired interleaved at depth 109-111 (lifetime 32); the M3-19/F-098 key appends only 2 object args — the draw block (args[4]/[5]) never keyed; text chain (Lg6.d → Layout.draw) exists in DEX, executes 0×.
+- Fix F-NEW-297 (4 generic points, one family): identity cap 2→8 (keys strictly more specific, MAX_RECURSION_DEPTH backstop); LAYOUT.draw(Canvas) text law (ROOT-063 fields + carried paintOid, per-line DRAW_TEXT at canvas translate state, 0.928em ascent); CanvasShadow handles_class generic "Paint;" row (TextPaint gate alignment, F-NEW-285 family); ROOT-063 paint_size probes __text_size_px__ (F-NEW-226). Plus env-gated draw-window op-attribution diag (MINIANDROID_CANVAS_DRAW_WIN_TRACE, bounded).
+- Probe fnew297_probe (real toolchain, reused-dispatcher shape + StaticLayout draw shape): PRE ×3 on 6508a51d01b54280 SUMMARY FAIL (outerRan=1 nestedRan=0; 0 TEXT ops) → POST ×3 on 054b9bd52fa695fc 42/0 with F297-TEXT ffcc3333 @(60,320) AND F297-LAYOUT-TEXT ff2244cc @0,66.8 (=72×0.928 — true color AND size). Wired into w4_build_probes.sh + cont35_regression.sh.
+- Target ×3: M3-19 stubs 125→1 (Loc0.c stubs 0), first-frame ops 64→236, frame UNCHANGED 9afb2bd2606f303e ×3; dooz ×3 anchor d602648e8e401895 byte-stable (ops 111→154/151/161, invisible pixels). dooz white frame DECODED: RGB(250,250,250) = app theme background; boot composition burns the 15 s budget (render_frame 15347 ms) → per-frame dispatchDraw halts at pc=2 (F084) → background repaint wins; EXP092 non-white census masks it. ROOT_CAUSED / PENDING (frame-honesty law, own probe + anchor movement).
+- Regression: anchors 24/24 ×3 byte-identical; battery == CONT-28..35 records exactly; fnew297 42/0; simplecalc ×3 rc=0 7960bce447ac6d8f. Registry 605→606.
+
+Stage Summary:
+- CONT-35 independently verified (every claim reproduced, no discrepancy). Friend's Fragment/Preference report verified with per-claim verdicts; no duplicate registry entries created; no speculative patches.
+- F-NEW-297 ROOT_CAUSED_FIXED/TESTED/OBSERVED: the draw-subtree starvation (reused-dispatcher identity) + the Layout.draw text law + TextPaint gate + paint-identity carry — probe-proven ×3 both directions; target stubs dead, nested subtrees paint, zero render drift.
+- Honest bounds: composeStopwatch text still not visible — the paragraph-paint dispatch (renamed DrawScope.drawText → Lte1.I/Lod1.I → Lg6 → Layout.draw) is the exact next checkpoint; dooz frame-honesty law PENDING.
+- Evidence: evidence/cont36/DRAW_DISPATCH_FRONTIER.md; runs run/cont36/*; scripts cont36_*.py + cont36_phase2_repro.sh; binary 054b9bd52fa695fc.
+
+---
+Task ID: CONT-37
+Agent: Super Z (main agent)
+Task: Continue (user: "ادامه بده اصلا دستاورد دوستم چی بوده اون میگه ماشین حساب لود میشه") — answer the friend-report question from the recorded verdicts + the standing CONT-36 §10 checkpoint (the paragraph-paint dispatch). Directive frame: verify before patching, probe first, frame-truth only.
+
+Work Log:
+- Environment verified: origin/main == 99b4f468 (CONT-36 push); local 36d5a6c5 = a tmp/-artifacts auto-commit above it; binary 054b9bd52fa695fc byte-exact CONT-36 record; worktree clean except the tmp/flappycow run flag.
+- Friend question answered from the RECORDED CONT-36 §9 verdicts (no new patching): commit()/addPreferencesFromResource gaps CONFIRMED real but no failing consumer; the inflation/XML-mapping patches NOT PRESENT in this lineage; 'F-NEW-253 nested in AudioAttributes' FALSE; no patch script. The calculator claim: SimpleCalc (68da25fd9fdf54b4) loads/renders on THIS lineage (rc=0, 7960bce447ac6d8f ×3 — our law chain), not via the friend's absent patches; a #FAFAFA frame with empty preference text would not meet the frame-truth gate anyway.
+- Decode (androguard + env-gated bounded engine diags): the APK's SINGLE Luv;->I site = Loc0.c pc=106; Lte1/Lod1 (implements Luv;) created only via Lqe1.d/Lld1.d ← Ltk0.d() ← Lio0.b (ModifierNodeElement.create); [UV-DISPATCH] Lte1.I dispatched ×15 with r=1 + coordinator set (attach-gate theory DEAD); [LTE1-SEL] resolution SUCCEEDS (best=(Loc0;)V, cands=9) — the body runs.
+- ROOT (a): Lg6.d gates the whole paragraph paint on Canvas.getClipBounds(Rect) — unhandled → typed-default FALSE → silent abort BEFORE Layout.draw ([F298-GCB]).
+- ROOT (b): the StaticLayout$Builder law's "setText" PREFIX match conflated setTextDirection — Compose's chain calls setTextDirection FIRST, its heuristic arg (NULL_REF) OVERWROTE the obtain-stored source; build laid out an EMPTY string ([F298-OBTAIN] text.len=17/2/2 → [F298-BUILD] source_len=0 chars=0).
+- ROOT (c): THE FRAME WIPE — frame 1 [C013-ONDRAW] ops=265 REPLAYED (rp=265) with the text ops interleaved ([S109-DRAWTEXT] rows); frames 2-6 halt in-window → the unconditional fb.clear(win_bg)+present erased frame 1 (the visible face was the (13,15,18) fill + the dialog). The CONT-36 §6 dooz decode was the same contract hole.
+- FIX (three generic points, one family): (1) CanvasShadow getClipBounds law (tracked clip or device bounds; AOSP-honest); (2) Builder setter exact-match ("setText" exact; setTextDirection stores textDir opaque); (3) FRAME-HONESTY law — any halt unwinding the draw window sets draw_window_budget_halted_; the compositor re-arms frame_honesty_begin() per frame and SKIPS the fb→framebuffer_ presentation when keep_prev ([F298-KEEP]); P1-6 extension.
+- Build-config: dalvik_engine.cpp outgrew -g cc1plus (repeated OOM kills on the 4 GB host); Makefile per-file rule builds it -O2 -g0 (same optimizer, debug sections dropped; committed with a comment).
+- PROBE fixtures/fnew298_probe (real toolchain; frame-1 green marker + frame-2 DEX busy loop halted by the loop guard mid-draw; runner-side KEEP-CORNER pixel row per the cont30w_probe_pkg precedent): PRE ×3 on ddc37884601ca802 (wave changes stashed, Makefile kept) corner=(48,48,48) FAIL ×3 → POST ×3 on a181d7b317e015c8 corner=(0,255,0) ×3, 19/0 ×3, KEEP=5/frame.
+- Target ×3: composeStopwatch 9afb2bd2606f303e → bbaf8f76308dc267 ×3 (the app's OWN first frame presented: 265 ops, the three StaticLayout texts at the app's positions/sizes; 45 Layout.draw text-op rows/run; [F298-KEEP] ×5/frame).
+- REGRESSION FULL GATE (scripts/cont37_regression.sh) at a181d7b317e015c8: 7/8 anchors ×3 BYTE-IDENTICAL (microtimer/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048 — KEEP=0, zero drift); dooz MOVED d602648e8e401895 → 31ddd4d5b8e6d18e ×3 (legitimate: the boot composition needs ~15.3 s, the frame never completes, the old 250-gray was the dishonest presentation; new = the honest keep-empty white); battery == CONT-28..36 records EXACTLY (fcol 140/0 … fnew297 42/0) + fnew298 19/0; simplecalc ×3 rc=0 7960bce447ac6d8f FULL SUCCESS retained.
+- Registry 606→607 (F-NEW-298, dedup-checked). Evidence: evidence/cont37/FRAME_HONESTY_FRONTIER.md; runs run/cont37/*; scripts cont37_*.py + cont37_regression.sh; probe fixture committed.
+
+Stage Summary:
+- The paint/present contract is now honest end-to-end: paragraph paints pass the clip gate with a real text payload, and an unfinished frame is never presented — the two mechanisms that made Compose text invisible (silent paint abort + the per-frame background wipe) are dead at the source, probe-proven ×3 both directions.
+- composeStopwatch presents its OWN first frame for the first time (title + digits, correct positions/sizes); the remaining face is the text COLOR (the Compose draw-brush application — the TextPaints carry pipeline-default black; recorded as the exact next checkpoint).
+- dooz's byte-stable "anchor" is unmasked as a presentation lie; the honest state (keep-empty white) is now the anchor, with the boot-cost root recorded PENDING.
+- Next wave owns: the draw-brush color law (last leg of Compose text visibility); the dooz boot-budget analysis; standing STREAM-OPEN spelling, F-NEW-288 (Track A), SimpleCalc input-pump (Track B), Fragment/Preference family (probe-first, build on F-NEW-234).
+
+---
+Task ID: CONT-38v
+Agent: Super Z (main agent)
+Task: Independent verification of the friend-reported findings "F-NEW-257" (Class objects as stable map keys) and "F-NEW-258" (non-null ArrayList.listIterator) — verify-before-patch, frame-truth only, reuse existing registry entries, no duplicates; user directive: ادامه بده موارد خودت رو هم پوش گیت هاب رو انجام بده / don't trust the friend's numbers.
+
+Work Log:
+- Phase 0: local HEAD == origin/main == 8cbd94e7 (CONT-37 push); binary a181d7b317e015c8 byte-exact CONT-37 record; tree clean (tmp flag only). REGISTRY-NUMBER CONFLICT confirmed: the friend's "F-NEW-257/258" numbers are ALREADY OCCUPIED by unrelated CONT-7-era roots (Bundle parcel fidelity; instance-of STRING_REF) — claims verified by CONTENT, numbers discarded per directive.
+- "F-NEW-257" verdict: VERIFIED_TESTED as ALREADY-REGISTERED — the claimed mechanism IS F-069/R-NEW-293 (const-class stable identity; the registry comment records the identical dooz SavedStateHandlesVM face) + F-103 heap tokens + F-NEW-249 getClass stable token + F-NEW-282 boundary materialization + F-NEW-248 String-content keys (real sites dalvik_engine.cpp:16847/19626/2839/18582, android_shadows.cpp:233). The friend's "class:<descriptor>" key form is NOT in this lineage (equivalent guarantee at the token layer); his line numbers don't match.
+- "F-NEW-258" verdict: VERIFIED_TESTED as ALREADY-REGISTERED — IS F-NEW-255 (CONT-7 W3; typed iterator box __iterator_parent__/__iterator_pos__, real sites android_shadows.cpp:2565-2600, dalvik_engine.cpp:38871-38930) + LAW-B write-back (set/add/remove with lastReturned + double-remove ISE, android_shadows.cpp:461-540). The "self-as-iterator" representation exists only as the heap-null fallback branch; the primary path mints a typed box → the directive's PARTIAL question answered NO.
+- New standing probe fixtures/classkey_probe (com.probe.ckey, real toolchain, 15 rows: CK-01..07 Class/map-key identity + content laws, LI-01..08 the full ListIterator contract). PRE ×3 on a181d7b317e015c8: CK-01..06 + LI-01..08 ALL PASS — but CK-07 FAILED ×3: new String("x") as a put key missed the const-string get.
+- NEW ROOT decoded + fixed (F-NEW-299): bridge_to_api handled ONLY the String(byte[]) constructor family; new String()/new String(String) left the heap String unmaterialized (no __string_value__) → F-NEW-248's map_key_value_law fell back to identity keying → content lookups missed. ONE generic point in the String <init> block (materialize content onto the caller's new-instance register; structural discriminators only; byte[] sources still fall through). Binary f528f04483017c57. POST ×3: 15/0.
+- Phase-3 targets ×3 each (scripts/cont38v_targets.sh): dooz 31ddd4d5b8e6d18e ×3 MATCH (honest keep-empty; boot-budget root PENDING); SimpleCalc 7960bce447ac6d8f ×3 rc=0 (the friend's "calculator loads" claim TRUE on THIS lineage's law chain); com.tananaev.calculator v1.10 (re-supplied from F-Droid, 294a68bd…) = PARTIAL — NEW frontier: uncaught NPE NotificationCompat$Builder.<init> pc=64 "setSmallIcon on a null object reference" → MainActivity.onCreate dies → frame DEFAULT_BACKGROUND_ONLY (d602648e8e401895 ×3) — recorded as a candidate shared-runtime root, NOT patched this wave; headingcalc re-supplied SHA-exact (274ec873… == the historical record) → new deterministic baseline be1cea9cf994b26a ×3 rc=0.
+- FULL REGRESSION GATE at f528f04483017c57: anchors 8/8 ×3 BYTE-IDENTICAL; composeStopwatch bbaf8f76308dc267 ×3; battery == CONT-28..37 records EXACTLY + ckey 15/0; simplecalc ×3 rc=0. ZERO DRIFT.
+- Registry 607→608 (F-NEW-299 ROOT_CAUSED_FIXED, dedup-checked; friend-claim verdicts recorded inside the entry's friend_claims_verified field + evidence file, NO duplicate entries). Probe wired into scripts/w4_build_probes.sh + cont37_regression.sh (standing battery).
+
+Stage Summary:
+- Both friend findings are re-discoveries of already-fixed generic roots; verified independently with a new standing probe (both directions) and recorded WITHOUT duplicate registry entries. The verification probe paid for itself immediately by exposing F-NEW-299 (String copy-constructor content law) — probe-proven PRE FAIL → POST PASS ×3, zero drift everywhere.
+- The friend's "calculator loads" claim: TRUE for SimpleCalc (this lineage's own chain), NOT VERIFIED for com.tananaev.calculator (NotificationCompat$Builder null-receiver face → DEFAULT_BACKGROUND_ONLY).
+- Next wave owns: CONT-38 proper — the Compose draw-brush/text-color pipeline (the CONT-37 recorded checkpoint: TextPaints carry pipeline-default black; the Lbo1 brush→paint application is the last leg of text visibility); the tananaev NotificationCompat$Builder face; standing dooz boot-budget, STREAM-OPEN spelling, F-NEW-288 (Track A), SimpleCalc input-pump (Track B).
+- Evidence: evidence/cont38v/FRIEND_CLAIM_VERIFICATION.md; runs run/cont38v/*; scripts cont38v_build_probe.sh + cont38v_targets.sh + cont38v_registry.py; binary f528f04483017c57.
+
+---
+Task ID: CONT-38
+Agent: Super Z (main agent)
+Task: CONT-38 — Generic Compose text color/brush resolution (the CONT-37 checkpoint: "the TextPaints carry pipeline-default black; the brush→paint application point is the last leg of text visibility"), plus the user directives: continue, push GitHub, and do NOT trust the friend's numbers.
+
+Work Log:
+- Phase 0/1 (decode): the full color pipeline decoded op-by-op (androguard + env-gated engine diags): M3 Text (Lbe1;.b) textColor resolution → LocalContentColor (Lfm;.a, the Ls90;.F scope-map read) → the M3 Surface provider (Luh;.b: LocalContentColor provides SolidColor(Lqe; contentColor)) → the scheme factory (Lgi;.e) ← the app's AppActivity.h darkColorScheme(...) with colors from Lih1;.t = Color(Resources.getColor(resId, theme)). The packing ground truth verified against the androidx source: Color(int)=(argb<<32), toArgb=(packed>>>32), Unspecified=0x10 (Color.kt UnspecifiedColor=0x10UL). The engine's materialization verified EXACT (Lzh;.f=0x10, Lzh;.b=0xff00000000000000; the Lts0;/Lci; M3 palette constants correct: 0xffd0bcff/0xff1d1b20/...).
+- Phase 2 (probe FIRST): fixtures/colorpipe_probe (com.probe.cpipe, real toolchain, 17 rows) — TR-01..08 the identity-keyed HAMT (the scope-map algorithm shapes: collision merges, deep chains), SC-01..05 the provider-scope/packing/takeOrElse laws, PC-01..04 the TextView color-state laws. Three probe-side algorithm bugs found and fixed (the sub-slot tail layout, the relocated-key mask, the missing hasSub descent) — after which ALL TR/SC rows PASS x3: the engine's trie machinery PROVEN SOUND (the suspected provider-map root eliminated by proof). PC rows FAIL x3: TextView.setTextColor state is a real gap (recorded, NOT fixed — separate root).
+- ROOT (F-NEW-300): [RES] getColor rows recorded the whole story — the app's theme colors are android:color/system_* FRAMEWORK resources (0x0106005e-0x010600c0, package 0x01) and the S54/F-080 getColor law consulted ONLY the app table → every lookup answered the black fallback ("M3-COLOR-UNRESOLVED" x9) → the app's MaterialTheme scheme materialized ALL-BLACK → LocalContentColor provides SolidColor(black) → the Text merged style color=black → TextPaint.setColor(0xff000000) — black-on-dark invisible text. The first color-loss point = the resource read; everything downstream executed faithfully.
+- Phase 3 (the fix): ONE generic point — the getColor law's resolve block now calls the S127 package-routed law resolve_color_reference_argb(resid): 0x01-package resids resolve through the FRAMEWORK table (ArscRouter.fw + the ColorStateList file fallback), non-0x01 keep the app path. AOSP law: Resources.getColor is package-agnostic over AssetManager2. Binary 80d9ea341f1b6ccc.
+- POST: [RES] rows answer the framework system_* values (0xffb9cbff/0xff30436e/0xff4c5e8b/0xfff9f8ff/...); the TextPaints carry 0xff30323a x3 (a real theme text color); the canvas paints 0xff4c5e8b/0xfffaf8fe/0xffb0b1bc — no black default anywhere in the app palette; the frame 3442d9a9dc0fa0f9 x3 — themed surface + accent + WHITE TEXT PIXELS (44,160) — the app's text is VISIBLE with a real foreground/background distinction.
+- Phase 4/5 (validation): anchors 8/8 x3 BYTE-IDENTICAL (zero collateral drift — no other anchor reads framework colors); composeStopwatch bbaf8f76308dc267 → 3442d9a9dc0fa0f9 x3 (the LEGITIMATE analyzed movement); SimpleCalc x3 rc=0 7960bce447ac6d8f FULL SUCCESS retained; the battery == CONT-28..37 records EXACTLY + ckey 15/0 + cpipe 13/4 (the 4 PC rows = the recorded next checkpoint); dooz stayed at the honest keep-empty white.
+- Decode infrastructure (all env-gated, bounded, zero-drift-verified): CallContext.caller (the SETCOLOR/CDW diags now carry the executing DEX caller), [PAINTER] (the painter instruction stream), [COLOR-SGET-W] (the color statics with values), [CLINIT-PATH] (the class-init poison paths), [SGET-UNRESOLVED], the TRIE_TRACE class-list extension, the INSTANCEOF_TRACE Lky0; target.
+- Registry 608→609 (F-NEW-300 ROOT_CAUSED_FIXED, dedup-checked). colorpipe wired into the standing battery (w4_build_probes.sh + cont37_regression.sh; the csw expectation updated to 3442d9a9dc0fa0f9).
+
+Stage Summary:
+- The Compose text-visibility chain is CLOSED end-to-end for the solid-color path: the app's real theme color now flows resource → scheme → content-color provider → merged style → TextPaint → visible pixels, through a single generic package-routed resource law. The CONT-37 "TextPaints carry pipeline-default black" face is dead at the source.
+- Honest bounds: the cpipe PC rows (TextView.setTextColor/getCurrentTextColor state) are the next wave's first checkpoint; brush/shader text stays honest-untested; the dynamic-color (Material You) palette is not implemented (the framework table's static defaults are the AOSP-honest static-table answer); dooz boot-budget PENDING.
+- Next wave owns: the TextView color-state law (cpipe PC-01..04, probe standing), then brush/shader text; standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B) + Fragment/Preference family.
+- Evidence: evidence/cont38/TEXT_COLOR_FRONTIER.md; runs run/cont38v/*; scripts cont38v_build_probe.sh + cont38v_targets.sh + cont38v_registry.py + cont38_color_decode.py; binary 80d9ea341f1b6ccc.
+
+---
+Task ID: CONT-39
+Agent: Super Z (main agent)
+Task: Continue (user: "ادامه") — the recorded CONT-38 checkpoint: the TextView color-state law (colorpipe probe rows PC-01..04, TextView.setTextColor → getCurrentTextColor round-trip).
+
+Work Log:
+- Phase 0: local HEAD == origin/main == 73d72e6f (the CONT-38 CAMPAIGN_STATE push); binary 80d9ea341f1b6ccc byte-exact CONT-38 record; tree clean (tmp flag only). PRE reproduced ×3 on the frozen binary: cpipe 13/4, PC-01..04 FAIL with getCurrentTextColor=0 (the exact recorded face).
+- Decode: the SETTER side is already faithful — the ViewShadow setTextColor law (M3 FIX-M3-005b + P1-10 provenance) fires with the EXACT argb values ([M3-SETTEXTCOLOR] ×7 in every PRE run incl. PC-04's red→green). The GETTER side had NO law anywhere (rg 'getCurrentTextColor' src/ = zero matches pre-fix) — every call fell through to the typed-default int stub and answered 0. AOSP: getCurrentTextColor() returns mCurTextColor; setTextColor(int) sets it to EXACTLY the argument, preserving alpha.
+- Fix F-NEW-301 (ONE generic point, android_shadows.cpp right after the setTextColor law): getCurrentTextColor answers find_node(receiver).text_color when set (both EXPLICIT_RUNTIME and STYLE_RESOLVED provenance), else mirrors the RENDERER's default law EXACTLY (draw_text_into: 0 → opaque black, Button-label non-ImageButton → white) so getter state and rendered pixels cannot diverge; a getter never creates render nodes; the CSL variant's default-color draw-time resolution stays the recorded gap (no failing consumer, NOT value-guessed); env-gated MINIANDROID_TEXT_COLOR_TRACE diag.
+- Build: android_shadows.cpp hit the cc1plus -g OOM peak (dmesg: cc1plus killed at ~936 MB RSS) — the CONT-37 per-file -g0 Makefile precedent extended to this TU (same -O2, debug sections dropped, comment recorded). Binary 111340a583d48d92.
+- POST ×3: cpipe 17/0 (ff3366cc / ff000000 / 80ff8800 / ff0000→ff00ff00 all round-trip exactly; TR+SC rows unchanged PASS both binaries).
+- FULL REGRESSION at 111340a583d48d92: anchors 8/8 ×3 BYTE-IDENTICAL; composeStopwatch 3442d9a9dc0fa0f9 ×3 MATCH (F-NEW-300 state retained — the law does not touch the Compose path); battery == CONT-28..38 records EXACTLY + cpipe 17/0 (was 13/4); simplecalc ×3 rc=0 7960bce447ac6d8f. ZERO DRIFT.
+- Registry 609→610 (F-NEW-301 ROOT_CAUSED_FIXED, dedup-checked). Evidence: evidence/cont39/TEXT_COLOR_STATE.md; runs run/cont39/{pre,post}/*; scripts cont39_pre.sh + cont39_post.sh + cont39_registry.py.
+
+Stage Summary:
+- The TextView color-state law is closed: setTextColor(int) → getCurrentTextColor() round-trips exactly (value, alpha, explicit black, recolor-between-draws) and the getter cannot disagree with the rasterizer because it answers the renderer's own state law. The CONT-38 checkpoint face is dead at the source; the colorpipe standing probe is now 17/0.
+- Honest bounds: getTextColors()/CSL default-color draw-time resolution remain untested scope (no failing consumer); the Compose path is F-NEW-300's domain (byte-stable through this wave).
+- Next wave owns: brush/shader text (the CONT-38 recorded honest-untested leg); the dooz boot-budget face; the tananaev NotificationCompat$Builder null-receiver frontier; STREAM-OPEN spelling; standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B) + Fragment/Preference family.
+
+---
+Task ID: CONT-40
+Agent: Super Z (main agent)
+Task: Continue (user: "ادامه بده مسیر خودتو و اینم بررسی بکن و پوش بکن تو گیت هاب هر چیزی که از قبل مونده") — independent audit of the friend's Dooz claim ("getWindowToken() null prevents AbstractComposeView.onAttachedToWindow from creating the composition"; "the remaining blocker is a Recomposer parked waiting for MonotonicFrameClock/withFrameNanos") with the full 10-item verdict protocol.
+
+Work Log:
+- Phase 0/1: origin/main == 38fdd2b3 (CONT-39); binary 111340a583d48d92 byte-exact; dooz APK 299eab21ac8b3c61. REGISTRY RECONCILED: F-NEW-253..259 OCCUPIED by unrelated roots, F-NEW-260/261 absent — friend's numbers discarded, claims verified BY CONTENT (Lr;=AbstractComposeView, Le81;/Lho;=ComposeView family, Lt4;=AndroidComposeView, Lh9;/Lj9;=the F-050 AndroidUiDispatcher/FrameClock callbacks, Ldo1;/Lwo1;=IME helpers).
+- Static decode (scripts/cont40_decode*.py, field-ref-exact): getWindowToken = 3 call sites; Lr;->c stores the token RAW (setPreviousAttachedWindowToken — NO null-gate); getShouldCreateCompositionOnAttachedToWindow = CONSTANT TRUE; g() creates the composition unconditionally (La72;.a → Lt4;+Lx62; → x62.f(content)); the token field Lr;->f has ONE reader (its own setter); the setter clears the Lr;->e windowRecomposer WeakReference cache ONLY on token CHANGE (the androidx window-migration law); the REAL attach gate is the parent walk (root getParent()==null → defer via postAtFrontOfQueue(Lp;) — which RUNS and reaches c()). STATIC CONCLUSION: a null token cannot gate composition creation.
+- Runtime (fresh ×3 + extended 45 s): the call fires exactly once per run on Lho; (the deferred Lp; path); the frame clock registered (Lh9;/Lj9;) and DELIVERED 2 doFrame callbacks at strictly monotonic virtual vsyncs; the resumed composition executed 14.3 MILLION instructions (45 s budget also exhausted) and painted 151 app-owned draw ops mid-draw before the F084 budget halt; the frame-honesty law kept the honest empty white 31ddd4d5b8e6d18e. A–F classification: A/B/C/D REJECTED with direct evidence, **E VERIFIED (the real frontier: first-composition completion within the execution budget)**, F subordinate-REJECTED.
+- Phase 4 probe fixtures/fnew302_probe (com.probe.fclk, real toolchain, 9 rows: FC-01..04+06 the Choreographer loop — identity/first-delivery/RE-REGISTRATION 3-loop with exact 16666667 ns quanta/cross-frame mutation/cancellation; FC-05a-d the window-token contract; FC-07 render control): 9/9 ×3 WITH the prototype law (byte-stable 79ae50ff59468c1a); 6/9 on the shipped binary (FC-05b/c/d = the documented parked-law face; the frame-clock rows all PASS).
+- The prototype law (attached → one window-stable IBinder singleton; detached → null; MINIANDROID_WTOKEN_TRACE + MINIANDROID_WTOKEN_NULL audit mode) A/B'd ON THE SAME BINARY (feaf224d48c9b229): dooz flips 31ddd4d5b8e6d18e (null: 151-op inline compose, budget-halted) ↔ d602648e8e401895 (token: fast empty frames, 0 ops — the compose machinery takes the Lrz1;.j cycle-stub + NPE-recovery interleaving instead of the StateFlow-spin inline compose); composeStopwatch REGRESSES to a single-color frame 5c4a0172628849ba (visible text LOST — causality proven: forced-null on the same binary restores 3442d9a9dc0fa0f9 byte-exact). Mechanism: the heap-oid shift from the IBinder allocation changes the app's identity-hash ordering → a different VALID execution interleaving.
+- DECISION: the causal claim is REJECTED (composition was never prevented) — shipping the law would be a speculative workaround that regresses a working app's visible content. LAW PARKED; binary REVERTED to the byte-exact CONT-39 record 111340a583d48d92 (the revert proven by the hash itself). Regression script dooz expectation restored with the analysis comment; fnew302 wired into the standing battery.
+- FULL REGRESSION at 111340a583d48d92: anchors 8/8 ×3 BYTE-IDENTICAL (dooz 31ddd4d5b8e6d18e restored ×3); composeStopwatch 3442d9a9dc0fa0f9 ×3 (content frame retained); battery == CONT-28..39 records EXACTLY (fcol 140/0 … fnew298 19/0 KEEP=5 corner=PASS) + fnew302 48/24 (the unique 6/9 face ×8 frames, documented); simplecalc ×3 rc=0 7960bce447ac6d8f. ZERO DRIFT.
+
+Stage Summary:
+- The friend's claims: (1) "getWindowToken null on the failing path" VERIFIED as an observation (no law existed; the call fires on the Lho; path); (2) "that null prevents composition creation" REJECTED by DEX decode AND runtime (creation + content compose happen both ways); (3) "the Recomposer is parked waiting for MonotonicFrameClock" REJECTED for the failing path — case E (resumes; 14.3M instructions; the missing transition is first-composition completion WITHIN THE EXECUTION BUDGET). No registry entry (no genuinely new root was fixed; the audit verdicts + the parked-law analysis live in evidence/cont40/DOOZ_WTOKEN_AUDIT.md; registry stays 610).
+- The standing gain: the fnew302 probe (the Choreographer frame-loop law fully proven ×3 — the first probe to exercise the re-registration loop end-to-end) + the A/B methodology (MINIANDROID_WTOKEN_NULL) + the parked-law analysis with exact hashes.
+- Next wave owns: (a) the identity-hash interleaving sensitivity (the Lrz1 cycle-stub vs StateFlow-spin divergence) — root-cause with a discriminating probe BEFORE any engine change; (b) the dooz boot-cost root (case E — the 14.3M-instruction first composition); standing F-NEW-288 (Track A) + SimpleCalc input-pump (Track B) + Fragment/Preference family + STREAM-OPEN spelling.
+- Evidence: evidence/cont40/DOOZ_WTOKEN_AUDIT.md; runs run/cont40/*; scripts cont40_decode*.py; fixtures/fnew302_probe; binaries audit feaf224d48c9b229 (parked) / shipped 111340a583d48d92.
+
+---
+Task ID: CONT-41
+Agent: Super Z (main agent)
+Task: Friend knowledge-package source-level audit — verify real gains vs canonical main, integrate only valid generic fixes (user directive: read both MD files completely; inspect code samples; ZIP unchanged; verify smallest high-impact generic fixes first; compare against origin/main before deciding what is new).
+
+Work Log:
+- Phase 0 (environment recovery): disk 100% full → deleted old-era logs/gc_work/mc4_sweep/tmp + >50MB backup bundles in download/ (3.5 GB freed); local checkout 73 commits behind, ff to origin/main 43a3db9d (tracked "modifications" were content-identical; root-owned miniandroid/runtime/ moved aside for checkout). Standing probe APKs + app APKs wiped by the restore: rebuilt all probe batteries (cont21/w4/cont30 builders from fixtures/) and re-downloaded F-Droid APKs SHA-exact (tananaev 294a68bd00debbdc, headingcalc 274ec873098eea51, simplecalc 68da25fd9fdf54b4, composeStopwatch dbf937ebbe7c0b3d). Root-owned empty /home/z/my-project/runtime/ blocked the engine's relative data-root (Permission denied on runtime/data/data/data/<pkg>) → moved aside; microtimer anchor immediately reproduced. PRE regression re-baselined at d3d6a5412a696122: anchors 24/24, csw 3/3, battery == CONT-28..40 records, simplecalc ×3 rc=0.
+- Phase 1 (package inventory): ZIP = 2 narrative MDs + gallery HTML + 9 PNGs. **apply_all_patches.py NOT in package and NOT in workspace** (reported path /home/z/my-project/scripts/apply_all_patches.py). No code files of any kind in the ZIP → all claims verified against canonical source with narratives as navigation hints only. Doc contradiction resolved: sequential snapshots (B=9 laws stuck at SaveableStateRegistry IAE; A=13 laws, composition created, white screen); neither HEAD trusted.
+- Phase 2 (claim matrix, 13 rows — full table in evidence/cont41/FRIEND_PACKAGE_AUDIT.md): PRESENT on main (canonical equal or stronger): ServiceLoader dedicated iterator (__sld_service__ @ dalvik_engine.cpp:46725 + F-NEW-252 decline @ android_shadows.cpp:441); Class-key stability (F-069/F-103/F-NEW-249/F-NEW-282 — friend's class:<descriptor> string-key would NOT fix == identity; canonical stable-token law does, CONT-38v CK-01..06 probe proof); listIterator typed box + LAW-B (CONT-38v LI-01..08 proof); Bundle parcel-family interfaces (view_ancestry.h:163,335-345,450); compose-pump drain + virtual-clock advance (F100-IDLEDRAIN + F-NEW-277 SCOPED vs friend's unguarded advance; drain_park_queues_bounded exists); DataStore/DrawerLayout facing laws for the recorded faces. REJECTED as unsafe: F-NEW-260 (R8 app-class O/c.a/O/c.b interception = exception suppression; canonical fixed the storable-type instanceof walk honestly + F-NEW-292) and F-NEW-261 (fabricated attachment/synthetic token; REJECTED on the merits by CONT-40 A/B). MISSING: Notification$Builder fluent law (zero Notification handling anywhere) — the CONT-38v recorded frontier; Fragment commit drain + addPreferencesFromResource + preference tag mapping (real, missing, but one interdependent family; geometry hacks rejected as symptom-level).
+- Phase 3 (the one justified integration): F-NEW-303 — ONE generic bridge law in dalvik_engine.cpp bridge_to_api (after the MediaPlayer block, §12 Builder family): Notification$Builder <init> → void; set*/addAction/addPerson/addExtras/extend → args[0] (fluent THIS); build() → fresh Landroid/app/Notification; (__from_builder__); Notification; <init> honest void. Zero app knowledge.
+- Phase 4 (A/B): new standing probe fixtures/notif_builder_probe (com.probe.notif, 8 rows incl. the compat WRAPPER face NB-05 = the real-APK mechanism). PRE ×3 (d3d6a541): NB-02 NPE, NB-03/04/05 dead — 28/28 markers, identical ×3; tananaev ×3 rc=1 setSmallIcon NPE, frame d602648e8e401895 (== CONT-38v record). POST ×3 (e1fc1915e88fe2a8): 56/0 — 8/8 rows PASS ×3; tananaev ×3 Errors=0 uncaught=0 PARTIAL SUCCESS, NPE gone, next blocker REC-MISS FragmentTransaction.commit (frame honestly unchanged; NO render claim). Registry 610→611 (F-NEW-302 SKIPPED: standing probe name fnew302; collision avoided).
+- Phase 5 (regression): FULL gate at e1fc1915e88fe2a8 — anchors 24/24 BYTE-IDENTICAL; csw 3442d9a9dc0fa0f9 ×3; battery == CONT-28..40 records EXACTLY (fcol 140/0 … fnew298 19/0 KEEP=5, f259g 84/7-known, fnew302 48/24 documented); simplecalc ×3 rc=0. ZERO DRIFT.
+- Closeout: evidence/cont41/FRIEND_PACKAGE_AUDIT.md (full matrix + environment recovery §4 + dooz reconciliation §5); scripts cont41_pre.sh/cont41_post.sh/cont41_registry.py; fixtures/notif_builder_probe wired into w4_build_probes.sh; CAMPAIGN_STATE CONT-41 highlight; commit + push.
+
+Stage Summary:
+- Verdict on the friend's package: REAL achievements confirmed where they overlap canonical history (the tananaev chain decode was independently reproduced this wave — same app, same NPE, same next-blocker); 6/13 claims already implemented on main (2 with standing probe proofs); 2/13 semantically unsafe (suppression / fabricated state) and NOT integrated; 1/13 genuinely missing and now integrated as F-NEW-303 with an 8-row probe; 4/13 = the Fragment/Preference family, deferred as ONE recorded next wave with the geometry-hack caveat. The reported patch script is missing from the package (path recorded); no work was created to match the friend's patch count.
+- The tananaev frontier advanced honestly: FAILURE (uncaught NPE) → PARTIAL SUCCESS Errors=0; the app's main UI (platform PreferenceFragment + addPreferencesFromResource, confirmed from DEX strings) needs the Fragment/Preference family — the exact smallest-next-change with the highest cross-app impact for View-based apps.
+- Dooz state unchanged (CONT-40 case E stands; the friend's narrative is consistent but its mechanisms are superseded/unsafe).
+- Standing battery now includes notif_builder_probe; fnew302 probe name collision with the next registry ID documented.
+- Next wave owns: (1) the Fragment/Preference family (fragment-commit pending-op drain → addPreferencesFromResource inflation → preference tag mapping through the REAL measure laws — no fixed-geometry hacks); (2) the dooz case-E boot budget; (3) the identity-hash interleaving sensitivity (Lrz1 cycle-stub vs StateFlow-spin).
+- Evidence: evidence/cont41/FRIEND_PACKAGE_AUDIT.md; runs run/cont41/{pre,post,cont37_regression}; binaries d3d6a5412a696122 (PRE) / e1fc1915e88fe2a8 (POST); registry 611.
+
+---
+Task ID: CONT-42
+Agent: Super Z (main agent)
+Task: "بازگرد به مشکلات خودمان — دوز و ماشین‌حساب باید از آن صفحه رد شوند" — the Fragment/Preference family slice 1 (the tananaev calculator screen), the CONT-41 recorded next wave.
+
+Work Log:
+- Phase 0/1: origin/main == 3355f2f1 (CONT-41 + checkpoint). DEX decode (scripts/cont42_decode.py, androguard re-installed): tananaev MainActivity.onCreate = getFragmentManager().beginTransaction().replace(16908290, new PrefsFragment()).commit(); PrefsFragment extends PLATFORM PreferenceFragment, overrides only onCreate → addPreferencesFromResource(0x7f110000); no onCreateView override. The engine dropped every transaction op (fluent THIS) and commit answered 0 — the recorded PARTIAL face.
+- F-NEW-304 (generic, zero app knowledge): (a) FragmentManagerShadow — ops record on the tx heap object (__ftx_n__ + __ftx_<i>_{type,container,frag,tag}__), commit/commitNow harvest with real monotonic BackStackRecord ids, executePendingTransactions sets the drain request, findFragmentByTag/Id answer the fragment records, Fragment state getters (getTag/getId/getView/isAdded/getArguments) read the drain-maintained __frag_*__ fields; (b) engine drain at the HOST lifecycle windows — CREATED (onAttach(host)+onCreate; replace detaches the container's current view), STARTED (onCreateView via app-DEX override or the platform PreferenceFragment list law → onViewCreated → onActivityCreated → onStart; the view attaches into the container node), RESUMED (onResume); (c) PreferenceFragment laws — addPreferencesFromResource parses the REAL res/xml AXML (ARSC select_file + @string ref resolution; keyed on the declaring class OR the receiver chain — virtual calls arrive with the receiver's runtime class), the platform onCreateView law builds REAL LinearLayout/TextView rows (VERTICAL, lp fields, no fixed geometry).
+- Probe fixtures/frag_tx_probe (com.probe.fragtx, real toolchain; FT-01..11: transaction identity, commit id, the full lifecycle ladder, findFragmentByTag identity, isAdded+getView). w4_build_probes.sh now compiles the aapt2 gen sources (generic recipe fix). PRE ×3 on the byte-exact CONT-41 binary e1fc1915e88fe2a8 (reproduced by stash+rebuild at -j2; the -j4 cc1plus OOM is the recorded build constraint): transaction rows only, lifecycle dead, FT-10/11 FAIL; tananaev d602648e8e401895 ×3. POST ×3: 12/0 ×3 rc=0.
+- tananaev A/B: the laws fire end-to-end (addPreferencesFromResource → 4 REAL entries from res/SF.xml incl. "Ongoing notification — Calculator Notification can not be dismissed"; created/started/resumed drains; ContentFrameLayout children=1). The companion native class-measure law (no-DEX-override children → measure_node_raw class laws) was built and A/B'd: rows measured 1080x44 at real pitch, texts paint-walked, rc=0 SUCCESS, NEW frame 0f649804d6e0486d — but opencalc DRIFTED a976d2f9fb675cb3 → 0a0b26cf69b0f378 ×3 deterministically (survived the CL scope-out). Zero-drift directive: the companion law REVERTED with a closeout note marking the guarded insertion points; the opencalc re-baseline decode owns the re-landing.
+- FULL REGRESSION at 0a6e39f38abd8636: anchors 24/24 ×3 BYTE-IDENTICAL (opencalc a976d2f9… restored); battery == CONT-28..41 records; probes == records exactly (fnew302 48/24 documented); simplecalc ×3 rc=0 7960bce447ac6d8f; frag_tx_probe 12/0 ×3. ZERO DRIFT.
+- Registry 611→612 (F-NEW-304, dedup-checked; friend F-NEW-254/255/256 recorded as the note). Evidence: evidence/cont42/FRAGMENT_TX_DRAIN.md; runs run/cont42/*; scripts cont42_decode.py/cont42_pre.sh/cont42_post.sh/cont42_registry.py.
+
+Stage Summary:
+- The platform Fragment family is LIVE: transaction ops record, commits enqueue with real ids, fragments drain through the full AOSP lifecycle ladder at the host windows, fragment state is identity-honest, and a PreferenceFragment renders its REAL parsed preference screen through the canonical measure laws — probe-proven 12/0 ×3.
+- The tananaev calculator: onCreate completes, the fragment machinery runs, the preference screen is parsed and its rows attach — the remaining gate is the measure/overdraw face under DEX-measuring parents (the companion-law evidence pins the mechanism AND the fix shape; the opencalc interaction is the exact decode before re-landing). Dooz case-E budget: next wave.
+- Next wave owns: (1) the opencalc re-baseline decode → re-land the native class-measure law scoped honestly; (2) the tananaev ink leg (same law) + the ActionBarOverlay z-band; (3) the Dooz case-E boot budget; (4) hide/show/detach/attach visibility hops.
+- Evidence: evidence/cont42/FRAGMENT_TX_DRAIN.md; runs run/cont42/{pre,post}; binaries e1fc1915e88fe2a8 (PRE) / 0a6e39f38abd8636 (POST); registry 612.
+
+---
+Task ID: CONT-43
+Agent: Super Z (main)
+Task: "Cross the page" — user directive: Dooz and the calculator must get past
+their blocking pages, with many tasks in parallel. Calculator: re-land the
+reverted companion class-measure law and decode the opencalc interaction.
+Dooz: resolve the case-E ambiguity (progressing vs stalled) and push past the
+white screen. Full zero-drift gate + registry + evidence + push.
+
+Work Log:
+- Container recovery: local main had rolled back to a CONT-10-era snapshot;
+  origin/main (b1668290 = CONT-42 + F-NEW-304) verified 76 commits ahead with
+  0 local-only commits -> git fetch + reset --hard origin/main (the recorded
+  S38 procedure). Re-fetched the reset-lost APKs SHA-exact: tananaev
+  calculator_11 (294a68bd00debbdc), simplecalc_8 (68da25fd9fdf54b4),
+  composeStopwatch_1009011 (dbf937ebbe7c0b3d). Rebuilt the engine (-j2
+  foreground; bg processes die across tool calls) + all standing probe APKs
+  (w4_build_probes.sh, cont21_build_probes.sh -> run/w7|w8|cont18g,
+  cont30_build_probe.sh).
+- Reproduced the CONT-42 POST record on the rebuilt binary: tananaev x3
+  d602648e8e401895 / REC-MISS=0 / F304-lines=8; frag_tx_probe 12/0 x3.
+- FRONT-B (dooz, measurement-only first): budget ladder on the identical
+  binary — 15s: 4.7M insns / 155 app draw ops; 45s: 13.7M insns / 659 app
+  draw ops (ops GROW with budget; PROGRESS-tail methods differ; ~300k
+  insns/s steady) -> case E is BOOT-COST, not a hidden spin (CONT-40's A-E
+  ambiguity closed). Wall-clock mechanism decoded: static thread_local
+  wall_start from the FIRST DEX instruction; after the deadline every later
+  window halts immediately (266 [WALL-STOP]s). Extended: 90s (25.4M insns,
+  wall 82s, run ENDS) and 180s (51.6M insns, wall 76s) both complete the
+  boot composition and produce the SAME deterministic frame 6841d52a20e6597e
+  x5 — the REAL Dooz scaffold renders (Material3 surface 88.7%, secondary
+  band, accent pill, 15,876 black glyph/icon px in the top bar + bottom FAB
+  + pill button; all 5 frames identical; uncaught exceptions 23->12;
+  stub-census 472k -> 5.44M IMPLEMENTED). Honest residual: the frame census
+  still says app_draw_ops=0 / VIEWTREE_NO_APP_PIXELS (the census's
+  draw-window attribution misses the Compose paint path; [CDW-OP] capped at
+  400) -> F-NEW-307.
+- FRONT-A (calculator): the companion native class-measure law RE-LANDED at
+  the two CONT-42 guarded insertion points; the CONT-42 opencalc breakage
+  ROOT-CAUSED as a SPLIT-BRAIN MEASURE — the native law measures the whole
+  subtree coherently (weights/table cells/anchors; every descendant's
+  measured_width written) but the ROOT-045b descent reset dex_measure_valid
+  and re-measured members at cruder per-node specs (opencalc pad: cell
+  widths overwritten while the row x-pitch survived -> overlapping digit
+  labels "98", pixel-zoom evidence). FIX: native-law subtrees are marked
+  (f304_native_subtree) and the descent defers for the pass. A/B: tananaev
+  keeps 0f649804d6e0486d rc=0 SUCCESS x3 (4 REAL preference entries parsed
+  with real titles, rows 1080x44 real pitch, tree attached, drains fired)
+  AND opencalc returns to the exact golden a976d2f9fb675cb3 x3 — zero drift
+  AND the calculator fix in one law. Honest next leg F-NEW-305: the rows
+  render UNDER the appcompat action-bar band (frame 0 dark px; the
+  ActionBarOverlayLayout inset dispatch leaves content at y=0) — the
+  preference page fully visible = slice 2.
+- FRONT-C (csw regression EXPOSED): the full gate caught composeStopwatch
+  3442d9a9dc0fa0f9 -> 5c4a0172628849ba x3 (the exact CONT-40 parked-law
+  regression face). Isolated by same-environment source A/B: CONT-41 source
+  binary (7063c7238e0de79b) runs 3442d9a9 x3; ANY F-NEW-304 source binary
+  (with or without the CONT-43 laws) runs 5c4a0172 x3 -> the regression is
+  F-NEW-304's own and CONT-42's gate never ran the target case. First
+  divergence decoded (androguard field-ref-exact): the androidx
+  LifecycleDispatcher ReportFragment (Li01; report_fragment_tag) now drains
+  real DEX cleanly (zero exceptions in the drain window); the compose boot
+  then takes a different interleaving where Laj0;.n (performMeasureAndLayout)
+  dispatches isEmpty() on a NULL state object (Lgi0;.f — and Lgi0; is NEVER
+  ALLOCATED per MINIANDROID_ALLOC_TRACE: the content-state object graph
+  never forms) -> catch-all NPE at Lh4;.onMeasure -> boot degrades 4.4M ->
+  600k insns. Same identity-hash knife-edge family CONT-40 flagged; the
+  discriminating-probe prerequisite applies. Registry F-NEW-306 (P0); the
+  csw expectation STAYS 3442d9a9 (content must be REGAINED, not re-baselined
+  down); the target case now carries the full analysis comment.
+- Regression at the final binary 3dab3038c222031e: anchors 27/27 x3
+  byte-identical (81 runs — the 8 recorded apps + tananaev newly pinned at
+  0f649804d6e0486d; opencalc golden RESTORED; dooz 15s white retained);
+  dooz180 gate x3 MATCH 6841d52a20e6597e (new standing content gate);
+  probes == records EXACTLY (fcol 140/0, f259 49/0, f259g 84/7, f266 42/0,
+  f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, ckey 105/0, cpipe
+  119/0, fnew302 48/24 documented, fnew252 56/0, fnew290..296 == records,
+  fnew297 42/0, fnew298 19/0 KEEP=5 corner=PASS); frag_tx_probe 12/0 x3;
+  notif_builder_probe 56/0 x3; simplecalc x3 rc=0 7960bce447ac6d8f; target
+  csw 5c4a0172 = the EXPOSED pre-existing regression (gated red
+  deliberately until F-NEW-306's fix).
+- Registry 612 -> 615 (scripts/cont43_registry.py): F-NEW-304 refreshed
+  (companion law re-landed + coherence; tananaev PARTIAL -> rc=0 SUCCESS);
+  F-NEW-305 (tananaev action-bar inset leg, P1, ROOT_CAUSED_PENDING_FIX);
+  F-NEW-306 (csw content-state regression under the drain interleaving, P0,
+  first divergence decoded); F-NEW-307 (dooz case-E resolved + census
+  attribution gap, P1). Evidence: evidence/cont43/CONT43_CROSS_THE_PAGE.md +
+  5 evidence images (dooz content frame, tananaev frame, opencalc PRE/POST +
+  pad zoom). Scripts: cont43_csw_decode.py, cont43_registry.py.
+
+Stage Summary:
+- BOTH user-mandated pages are crossed: the calculator's FragmentTransaction
+  page (rc=0 SUCCESS, real preference rows parsed+measured+attached, fix
+  pinned as a standing anchor with zero drift everywhere) and Dooz's white
+  screen (the boot completes at a fair budget; the REAL app scaffold renders
+  deterministically — first app-content frame ever; census-attribution fix
+  will flip the verdict honestly).
+- The wave also caught and rooted a pre-existing P0 on main (F-NEW-306: csw
+  content lost to F-NEW-304's interleaving) that CONT-42's gate never ran.
+- Next wave: F-NEW-306 fix (csw content regained; discriminating probe
+  first), F-NEW-305 (action-bar inset law -> tananaev rows visible),
+  F-NEW-307 (census attribution -> dooz REAL_APP_CONTENT at the dooz180
+  gate).
+
+---
+Task ID: CONT44-C
+Agent: general-purpose (sub-agent, read-only audit)
+Task: Cross-app generality audit — answer empirically whether the white-screen
+fix set (F-NEW-304 + CONT-43 companion + Recomposer family + Hilt/DI chain +
+dooz budget completion + F-NEW-303) affects other games and apps. Static
+androguard machinery matrix over the full corpus + zero-negative-drift
+verification + gate-coverage check. NO engine-source edits.
+
+Work Log:
+- Corpus inventory: all mandated globs (upload/*.apk, canonical_apks,
+  s83_games/**, s80_games/**, tmp/cont35_apks, tmp/com.tananaev.calculator_11)
+  -> 32 rows after dedupe-by-basename. Data defect found: upload/whatsapp.apk
+  is a 5.5 KB Cloudflare HTML challenge, NOT an APK (excluded from all
+  counts; re-fetch owed). base.apk x4 = engine build stubs (1 rep scanned).
+- Static scan scripts/cont44_c_scan.py (androguard 4.1.4, loguru silenced;
+  DEX class names + superclassnames + string constants ONLY — no decompile):
+  framework View-world x28 / hybrid x3; Fragment x13, Preference x9,
+  AppCompat x10, Compose x3, Hilt x0, WorkManager x2, View-only x14.
+  Outputs run/cont44/machinery_matrix.{tsv,json} + registry_grep.json.
+- Key identifications: tananaev PrefsFragment extends PLATFORM
+  PreferenceFragment (the exact F-NEW-304 shape); notes_secuso has BOTH
+  platform PreferenceFragment (HelpFragment) and androidx
+  PreferenceFragmentCompat (SettingsFragment); sudoku has platform
+  DialogFragments; dooz x2 + csw carry the androidx LifecycleDispatcher
+  ReportFragment (R8 Li01;/Loc1;) that F-NEW-304's drain now executes; the
+  6 pure View games (g2048/ttt/flappy/gmdice/snake/tetris) have ZERO
+  touched-family machinery.
+- Zero-negative-drift verification: cited the CONT-43 gate record
+  (27/27 x3 byte-identical at 3dab3038c222031e) AND re-hashed run artifacts
+  this audit: tanana_post{1..3} == 0f649804d6e0486d x3; opencalc_coh{1..3}
+  == a976d2f9fb675cb3 x3 (golden restored); dooz/ext == 6841d52a20e6597e;
+  csw_pre{1..3} == 5c4a0172628849ba x3 (the deliberate-red F-NEW-306 row).
+- Gate-coverage check -> 11 RECOMMENDED-NEW-GATES (not run; parent owns
+  scheduling): notes_secuso, sudoku_secuso, chess_jwtc (ex-anchor), klondike,
+  chessclock, bouncy, opmt, muellerma.stopwatch, emmanuelmess.tictactoe,
+  dooz_23_toplevel (optional variant), telegram/forkgram (long-horizon 120s).
+- Frontier section: tananaev -> F-NEW-305 (rows under action-bar band);
+  csw -> F-NEW-306 P0 (discriminating probe FIRST); dooz -> F-NEW-307
+  (census attribution + boot cost). Report written:
+  evidence/cont44/CROSS_APP_IMPACT.md (matrix + law mapping + evidence +
+  frontier + caveats).
+
+Stage Summary:
+- ANSWER: the fixes are generic app-agnostic laws; zero negative impact on
+  the View-world corpus is a MEASUREMENT (x3 byte-identical anchors +
+  probe battery == records), and 19/32 corpus rows carry machinery inside
+  the benefit blast radius (Fragment 13 / Preference 9 / AppCompat 10 /
+  Compose 3 / WM 2 / Hilt 0). The only observed negative anywhere is the
+  known, root-caused, deliberately-red csw interleaving row (F-NEW-306).
+- Caveats recorded: PreferenceActivity-hosted apps are NOT in the fix set
+  (Fragment path only); androidx PrefFragCompat adjacent; whatsapp.apk is
+  not an APK. No engine sources touched (read-only audit); scripts +
+  outputs under scripts/cont44_c_*.py and run/cont44/.
+
+## Task ID CONT44-A (2026-10-11) — F-NEW-306 csw regression decode-only triage
+- Repro: MINIANDROID_ALLOC_TRACE=1 run of composeStopwatch_1009011.apk → screenshot sha256 5c4a0172628849baff5eee9d8bcebb496a5e6afdc99239140b697ebf457a3d19 (matches regressed hash exactly). Artifacts: run/cont44/csw_pre/{run.log,report.md,screenshot.png,api_trace.json,lifecycle_trace.json,frames/}.
+- NPE cascade pinned (run.log 2885-2962): origin [SYNTH-EXC] f141-null-recv method=Lch1;.s pc=4 (getClass on null buffer cell) → ComposerImpl.recompose (Lx30;.n) → CompositionImpl.applyChanges (Lel;.j) → … → Lmc0;.Y (E==null, ×3 rethrows) → Laj0;.n (MeasureAndLayoutDelegate.dispatchMeasureAndLayout) → Lh4;.onMeasure catch-all → fallback 1080x1920 → boot degraded (~600k insns, PARTIAL SUCCESS/DEFAULT_BACKGROUND_ONLY).
+- Root state: Lch1; (persistent hash-trie node, androidx.compose.runtime.external.kotlinx.collections.immutable…TrieNode shape; Map views Lju0;=PersistentHashMap / Llu0;=Builder / Lku0; merge wrapper) — ONLY the EMPTY root singleton was ever allocated (obj#664, d=new Object[0]); every node-builder invocation Lch1;.j(I,Object,Object,I,Object,Object,I,Lzv;)Lch1; was killed by the engine's M3-19 active-cycle stub: [M3-19-CYCLE] …#2953#3002 re-entered while active (depth=23) lifetime_calls=2 ×3 (run.log 1838/1871/1872, ~100k insns, first composition under F-NEW-304 drain) → trie stayed empty → frame-2 onMeasure-driven recompose read s(i) → NPE.
+- Context premise corrected: Lgi0;/DepthSortedSet WAS allocated pre-measure (log 1684-1687 C013-HIER add/isEmpty on Lg91;→TreeSet; chain Laj0;.<init>(Lmc0;) pc=10-22 → Ly9;(3) pc=180-212 → Lgi0;(13) case pc=332-346). The Laj0;.n()V isEmpty site (pc=110-118, reads y9.c→Lgi0;.f→Lg91;→isEmpty) was NOT the thrower (msg mismatch: getClass-on-null). No REC-MISS anywhere on the failing path (last benign REC-MISS = log 730).
+- Verdict: REAL-MISSING-LAW on Lch1;.j re-entrancy — M3-19 active-cycle stub (dalvik_engine.cpp try_recursive_invoke, ~8840-9185) substitutes a stateless stub for a legal, progress-bearing re-entrant frame; identity key incomplete (null obj args skipped, Lzv; owner invariant, S122 caps primitives at 2 of 3 ints) → false-positive same-computation evidence. Ordering (alloc ~100k insns) precedes read (~600k) → NOT an interleaving-contract violation.
+- Scripts (decode-only, no src edits): scripts/cont44_a_decode.py, cont44_a_decode2.py, cont44_a_decode3.py; dumps: run/cont44/cont44_decode{,2,3}.txt.
+- Stage summary: CONT44-A complete — verdict + allocation chain + fix shape + discriminating probe designed; no engine behavior changed.
+
+## Task CONT44-B (decode-only — F-NEW-305 tananaev inset + F-NEW-307 dooz census) — 2026-10-11
+
+Work log:
+- [F-NEW-305] Ran tananaev com.tananaev.calculator_11.apk PRE: sha256 run/cont44/tan_pre/screenshot.png = 0f649804d6e0486d… (matches expected prefix). Scripts: scripts/cont44_b_tanpix.py, cont44_b_tanpix2.py, cont44_b_tan_tree_facts.py; decode input run/cont44/tan_decode.txt (androguard, scripts/cont44_b_tan_decode.py).
+- [F-NEW-305] Tree facts (last frame, [EXP092-RENDER]): root ActionBarOverlayLayout#338 (0,0 1080x1920) → ContentFrameLayout#379 = android.R.id.content (0,0 1080x1920) → rows LinearLayout#456 (0,0 1080x220) with 4 preference rows 1080x44/88 (text at y=0,44,88,132,176); ActionBarContainer#382 laid out at (0,1920) 1080x105 with Toolbar#390 (0,1920 1080x0). Content IS at y=0; the bar container is stacked BELOW the screen, not on top.
+- [F-NEW-305] Painter truth: frame = two flat colors — 0xE1E1E1 band y=0..219 (exactly the rows-container rect; the rows container's own bg) + windowBackground 0xfffafafa below; zero dark pixels anywhere (row text glyphs never painted — separate defect, not the inset). The "gray band" is NOT the ActionBarContainer (bg=0x0, laid out offscreen at y=1920).
+- [F-NEW-305] Root cause chain: F10/R-NEW-347 dispatches the REAL DEX ActionBarOverlayLayout.onMeasure → `[DEX-MEASURE] … -> 0x0` (write-back happened, values 0) because (1) ViewGroup.measureChildWithMargins has NO engine shadow (0 grep hits in src) so mActionBarTop never measures inside the DEX body → mContentInsets.top += getMeasuredHeight()=0; (2) content getMeasuredWidth/Height()=0 → setMeasuredDimension(0,0); R-NEW-438 INCOMPLETE-EMULATION (arm 1) correctly demotes the 0x0 result and the native law takes over — but LayoutInflater::measure_layout has NO ActionBarOverlayLayout branch, so the generic "stack children vertically top-down" else-branch (layout_inflater.cpp, end of the layout pass) stacked ContentFrameLayout at y=0 and ActionBarContainer at y=1920. AOSP (verified in the APK's own DEX, tan_decode.txt lines 151-409): onMeasure measures the bar first, `!mOverlayMode → mContentInsets.top += mActionBarTop.getMeasuredHeight()`, applyInsets() writes it into mContent's LayoutParams.topMargin, content re-measured; onLayout places every child at paddingTop + its own lp.topMargin → bar at y=0, content at y=barHeight.
+- [F-NEW-305] CHOSEN FIX SIDE: (a) engine layout law. Exact insertion point: miniandroid/src/resources/layout_inflater.cpp, LayoutInflater::measure_layout — the top-down layout pass; add an `is_a(class_desc,"Landroidx/appcompat/widget/ActionBarOverlayLayout;")` branch BEFORE the generic vertical-stack else (~line 4165). Law: bar child (descendant ActionBarContainer) at (paddingLeft, paddingTop) with its measured size; content child (ContentFrameLayout) at top = paddingTop + barMeasuredHeight (non-overlay; engine delivers no window insets so base insets are 0), height = container content height − barMeasuredHeight (AOSP onMeasure re-measure companion: re-measure content with EXACTLY(ch − bar_h) like the existing LinearLayout weight re-measure). Overlay-mode guard: contributes 0 when a captured overlay flag is set (AOSP default false; tananaev non-overlay).
+- [F-NEW-305] Why not side (b): completing the DEX emulation needs ViewGroup.measureChildWithMargins (absent), mid-measure synchronous child onMeasure dispatch, and applyInsets' heap-LayoutParams margin writes reaching ViewNode margins (field-identity law) — a broad measure-path change that would also run inside every appcompat host's LinearLayout/FrameLayout DEX bodies (large anchor blast radius). WindowInsets-dependent paths are stubbed anyway ([ROOT-059] WindowInsets.inset null-recv; 0 fitSystemWindows/applyInsets/dispatchFitSystemWindows shadows in src) but are NOT needed for the non-overlay bar inset — it flows from the bar's own measured height.
+- [F-NEW-305] Anchor A/B risk list (PRE shas verified this session): opencalc upload/opencalculator_53.apk → a976d2f9fb675cb3 ✓; microtimer dubrowgn.microtimer_8.apk → da73010a37dd0189 ✓; unote app.varlorg.unote_30.apk → 4f1a9e4e8f64fae8 ✓; gmdice de.duenndns.gmdice_8.apk → f3b483fe7b7cf51b ✓. All four runs contain ZERO ActionBarOverlayLayout/ActionBarContainer lines (NoActionBar subDecor = abc_screen_simple FitWindowsLinearLayout root; opencalc root verified FitWindowsLinearLayout) → the new branch cannot execute → byte-identical KEEP (structural, not probabilistic). dooz180: also 0 bar lines. tananaev expected POST: gray rows band shifts 0..220 → 105..325 (bar measured height 105), top 0..105 shows windowBackground until the bar's own background is painted (separate defect); row text still absent (separate defect) — the inset law only moves geometry.
+- [F-NEW-307] Ran dooz io.github.yamin8000.dooz_23.apk PRE at --max-seconds 180: sha256 run/cont44/dooz180/screenshot.png = 6841d52a20e6597e… ✓ (expected prefix; a prior-session artifact at 06:36 had the identical sha). Census: `[F-NEW-233 frame truth: verdict=VIEWTREE_NO_APP_PIXELS, first_missing_stage=APP_DRAW_OPS]`.
+- [F-NEW-307] Classifier: miniandroid/src/runtime/execution_engine.cpp, ExecutionEngine::stage_render_frame_impl — per-frame ledger reset at line 2919 (`frame_census_.reset()`); verdict at ~5475-5545 (`first_missing="APP_DRAW_OPS"` at 5515 when `app_draw_ops==0 && !dialog_content_rendered`, checked BEFORE the pixel-evidence stage; `verdict="VIEWTREE_NO_APP_PIXELS"` at 5534). app_draw_ops is fed ONLY by per-ViewShadow paint sites in the same walk (bg draws ~3956, surface replay ~4024, custom-view onDraw replay ~4068, text/image paints ~4141-4605, deferred wave ~4946-4968).
+- [F-NEW-307] Why Compose is missed: the Compose tree has no View-backed children — the whole scaffold paints through ONE AndroidComposeView (obfuscated Lt4; node 1446, children=0, 1080x1920) DEX dispatchDraw whose CanvasShadow ops reach the ledger only via dispatch_custom_view_draw's return (dalvik_engine.cpp:11174). Per-frame ops captured: 1189, 604, 604, 415, 0, 0. At the 180s budget the final frame's draw is cut by F084 wall-clock halt (154 [WALL-STOP]s; [SYNTH-EXC] F084-HALT-RETURN … 180000 ms) → final frame ops=0 → F298-KEEP skips presentation and keeps the last complete frame as the screenshot — while the census computed on the aborted final frame reports app_draw_ops=0 → APP_DRAW_OPS / VIEWTREE_NO_APP_PIXELS. The verdict describes the aborted frame; the presented pixels belong to the kept prior frame (ledger/pixel contradiction: empty ledger beside non-dominant pixels inside valid content bounds). The [CDW-OP] recorder (dalvik_engine.cpp:24255, env MINIANDROID_CANVAS_DRAW_WIN_TRACE) observes the same canvas ops but feeds NO census counter (diagnostics only).
+- [F-NEW-307] Minimal MEASUREMENT-ONLY fix shape (no rendering-path edits): (A) in the verdict chain, gate APP_DRAW_OPS on pixel evidence too — `app_draw_ops==0 && app_owned_px==0 && !dialog_content_rendered` (an empty ledger beside app-owned pixels inside valid content bounds indicts the ledger, not the content; the framebuffer is composed from scratch each pass so non-dominant inside content bounds IS this pass's app paint); (B) kept-frame attribution: when the frame-honesty signal fired (F084 in-draw halt → F298-KEEP presented the prior frame), tag the census `draw_budget_halt=true`, `presentation="kept_prior_frame"` and carry the last presented frame's ledger (last_presented_census_ member) as `*_kept_frame` fields. Both are diagnostics-layer; rendering bytes unchanged by construction. Evidence: anchors + tananaev have 0 WALL-STOP / 0 F298-KEEP lines → (B) is a structural no-op for them; (A) only reclassifies frames whose pixels already prove app paint. Caveat recorded: full-screen content roots (dooz, tananaev) make V1 content bounds = whole screen, so a decor chrome band inside it would count as app pixels — acceptable for the census, noted for reviewers.
+- Artifacts: run/cont44/tan_pre/{screenshot.png,run.log,tree_facts.txt}, run/cont44/tan_decode.txt, run/cont44/dooz180/{screenshot.png,run.log,census_evidence.txt}, run/cont44/anchor_{opencalc,microtimer,unote,gmdice}/{screenshot.png,run.log}, scripts/cont44_b_{tanpix,tanpix2,tan_tree_facts,census_evidence,tan_decode}.py. PRE shas observed: tananaev 0f649804d6e0486d, dooz 6841d52a20e6597e, opencalc a976d2f9fb675cb3, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8, gmdice f3b483fe7b7cf51b.
+
+Stage summary: DECODE 1 — F-NEW-305 root-caused to the missing ActionBarOverlayLayout branch in LayoutInflater::measure_layout's layout pass (generic vertical-stack law places content at y=0 and the bar container at y=1920); the appcompat DEX's own onMeasure ran but measured degenerately (no measureChildWithMargins shadow) and was correctly demoted by R-NEW-438; fix = side (a) engine layout law (bar-first, non-overlay content top inset = bar measured height), zero-touch for all 4 appcompat anchors (no bar nodes in any anchor run). DECODE 2 — F-NEW-307 root-caused to census mis-attribution: per-frame ledger reset + final-frame F084 draw abort (ops=0) + F298-KEEP presentation of the prior frame → verdict computed on the wrong frame with the per-ViewShadow-only app_draw_ops counter; fix = pixel-evidence gate + kept-prior-frame census tagging, diagnostics only. No src edits made (decode-only honored); no rendering-path changes proposed.
+
+---
+Task ID: CONT-44
+Agent: Super Z (main) + parallel decode agents CONT44-A/B/C
+Task: "Continue better and more precisely until the complete result" — close
+the three CONT-43 recorded frontiers (F-NEW-306 P0 csw content regained,
+F-NEW-305 tananaev action-bar inset, F-NEW-307 dooz census attribution) and
+answer the user's question: do the white-screen fixes affect other games and
+apps?
+
+Work Log:
+- Parallel wave: CONT44-A decoded F-NEW-306 to the exact law (verdict
+  REAL-MISSING-LAW; decode CORRECTION: the failing structure is the kotlinx
+  persistent-hash trie builder Lch1;.j cycle-stubbed 3x with 2-of-4 objects +
+  2-of-3 ints captured — the dropped 3rd int is the recursion shift; Lgi0;
+  DepthSortedSet WAS allocated, the CONT-43 premise corrected). CONT44-B
+  decoded F-NEW-305 (bar measured 0 — the "105" was the generic-else 40dp
+  floor; no measureChildWithMargins shadow; chosen fix side = the native
+  layout branch in measure_layout) + F-NEW-307 (census classifier mapped:
+  stage_render_frame_impl; Compose ops reach the ledger only via
+  dispatch_custom_view_draw; the F084 halt + F298-KEEP present the prior
+  frame against the aborted ledger). CONT44-C delivered the cross-app impact
+  audit (evidence/cont44/CROSS_APP_IMPACT.md): 32-app corpus, Fragment x13 /
+  Preference x9 / AppCompat x10 / Compose x3 / View-only x14, 19/32 in the
+  benefit blast radius, untouched games carry byte-identical x3 proofs,
+  11 recommended new gates.
+- F-NEW-306 FIX (dalvik_engine.cpp try_recursive_invoke): an active-cycle key
+  that dropped ANY argument identity (objects/primitives/CLASS_REFs beyond
+  the caps, null positions) is NOT same-computation evidence — real DEX
+  executes, loudly traced [M3-19-OPEN]. Generalizes F-NEW-286 to "payload
+  capture incomplete". POST: csw 3442d9a9dc0fa0f9 x3 REGAINED (the pinned
+  healthy face, not re-baselined); 3 [M3-19-OPEN] firings, 0 [M3-19-CYCLE]
+  on Lch1;.
+- F-NEW-305 FIX (layout_inflater.cpp measure_layout): the class-dispatched
+  ActionBarOverlayLayout inset law — bar at (paddingLeft, paddingTop), other
+  children at top = paddingTop + effective bar height with an EXACTLY(ch-bar)
+  second-pass re-measure (fixed-height content keeps its own height); the
+  bar-height floor resolves the THEME's actionBarSize (arsc find_id ->
+  resolve_theme_attr_typed -> complex_to_dimension_pixel_size; framework
+  0x010102EB fallback) — never a constant. tananaev: content 0 -> 126px
+  (48dp x 2.625), bar band 1080x126, rc=0 SUCCESS, fix face
+  5f7e0114c3bfd6b5 x3. simplecalc = the SECOND appcompat host fixed the
+  same way (content +126, layout intact) — caught by the gate as e847ca03
+  vs the recorded 7960bce4, pixel-profile verified as the honest inset fix
+  face and re-pinned x3.
+- F-NEW-307 FIX (execution_engine.{h,cpp}, measurement-only): the census
+  APP_DRAW_OPS missing-stage gated on pixel evidence
+  (app_draw_ops==0 && app_owned_px==0 && !dialog) + kept-frame attribution
+  (draw_budget_halt / kept_prior_frame / kept_prior_app_draw_ops from
+  last_presented_app_draw_ops_). dooz180 6841d52a20e6597e x3 gate + x1 = x4
+  byte-identical, verdict REAL_APP_CONTENT, Status SUCCESS.
+- FULL GATE at b067df784adfa727: anchors 27/27 x3 byte-identical (tananaev
+  re-pinned to the fix face); target csw x3 REGAINED; dooz180 x3;
+  probes == records exactly (fcol 140/0 ... fnew298 19/0 KEEP=5 corner=PASS);
+  frag_tx_probe 12/0; notif_builder_probe 56/0; control simplecalc x3
+  (re-pinned fix face). ZERO DRIFT — the only moved frames are the two the
+  inset law FIXED (both re-pins carry the fix-face argument).
+- Registry 615 -> 616 (scripts/cont44_registry.py): F-NEW-306 / F-NEW-305 /
+  F-NEW-307 -> ROOT_CAUSED_FIXED; F-NEW-308 appended (P1, OBSERVED: tananaev
+  preference-row TextView glyphs never paint while simplecalc Button labels
+  do — the fragment/preference family's slice 3).
+- Evidence: evidence/cont44/CONT44_COMPLETE_RESULT.md +
+  evidence/cont44/CROSS_APP_IMPACT.md. Gate: scripts/cont37_regression.sh
+  (tananaev/simplecalc re-pins + the csw target comment updated to REGAINED).
+
+Stage Summary:
+- All three recorded frontiers CLOSED: csw content REGAINED at the pinned
+  healthy face; tananaev's preference page now renders at its honest AOSP
+  geometry (rows below the action-bar band, theme-resolved inset); the dooz
+  census verdict flipped honestly to REAL_APP_CONTENT with rendering bytes
+  untouched. Registry 616. One new root recorded (F-NEW-308, the row-glyph
+  paint face) + the boot-cost perf frontier remains.
+- The user's generality question answered with evidence: the fixes are
+  app-agnostic laws; 19/32 corpus apps in the benefit blast radius; the
+  untouched games byte-identical x3; simplecalc and every future appcompat
+  fragment-host app are concrete CONT-44 beneficiaries.
+- Next wave: F-NEW-308 (row glyph paint decode), the dooz boot-cost perf
+  frontier, the 11 recommended new gates from the cross-app audit.
+
+---
+Task ID: CONT-45
+Agent: Super Z (main)
+Task: CONT-45 (local lineage CONT-11-W7, rebased): stale-snapshot recovery + calculator page-passing fixes F-NEW-260/261 landed A/B-proven on the LOCAL snapshot; F-NEW-262 classified; now integrated onto the true GitHub lineage (origin/main f72813d4, CONT-42/43/44). The local container had rolled back to a CONT-10-era snapshot (e99c2fbd) — the SAME recovery class CONT-43 recorded — and this wave's work ran against that snapshot before the fetch revealed the true lineage.
+
+Work Log:
+- Stale-snapshot recovery: local HEAD was e99c2fbd (CONT-10 W6) while origin/main had advanced 79 commits (CONT-11 W7 external-runtime rejection .. CONT-44 complete result, registry 566->616). Local commit 7622e268 rebased onto origin/main; registry conflict resolved by taking the remote 616-root registry and appending this wave's three roots (616->619); worklog conflict resolved by preserving the remote lineage and appending this entry. The add/add on scripts/cont11_dooz_trace.sh resolved to the REMOTE version (this wave's instruments that did not collide kept under their cont11_* names).
+- This wave's evidence was measured ON the stale snapshot (documented honestly in evidence/cont45/cont45_ledger.json): F-NEW-260 (Class.getModifiers member-class law — DEX inner-class ACC_STATIC lives in the SYSTEM InnerClass annotation, not class_def flags; dex_parser captures it; A/B BMI uncaught 2->0) and F-NEW-261 (S83 activity-bypass scope: legacy Landroid/support/ family falls through to REAL DEX execution when a DEX body exists; androidx stays bypassed — measured: androidx fall-through re-killed notes; BMI attachHost->attachController->enqueueAction lands, uncaught 0). At rebase time the remote engine had NEITHER law (verified: no inner_class_flags in dex_parser, S83 gate unchanged) and F-NEW-260/261/262 IDs were free — the entries slot in at their IDs with re-pointed evidence.
+- F-NEW-262 CLASSIFIED — bridge return-value loss across shadow->DEX dispatch shapes, three runtime-proven manifestations on the snapshot binary (BMI FragmentHostCallback.mHandler put-obj value=<unset> -> NULL-receiver Handler.post -> transaction never executes; solitaire getCallback answers act=21 yet the v7 WindowCallbackWrapper receives NULL ("Window callback may not be null", 28 uncaught, IDENTICAL at baseline and fixed binaries — predates this wave); notes androidx mFragmentLifecycleRegistry null). The remote's F-NEW-286/289/302/304 fragment/slot-table laws and CONT-43's split-brain-measure fix are RELATED families; whether F-NEW-262 is subsumed by them on the REBASED tree must be re-measured (the snapshot A/B cannot speak for the remote lineage).
+- Re-validation contract (next wave, first duty): rebuild at the rebased HEAD, re-run the A/B (BMI/AlexCalc/solitaire/notes + the 27-anchor gate) on the TRUE lineage, and either confirm F-NEW-260/261 as live increments or re-classify if the remote's newer laws already cover the symptom surface. The dooz draw-frontier decode (Ljt1; no ctor/zero call sites; draw recursion healthy; draw-modifier heads empty at draw time) re-roots F-NEW-265's neighborhood with deeper evidence and should be reconciled with CONT-43's dooz180 REAL_APP_CONTENT result at the 90s/180s budget.
+
+Stage Summary:
+- Lineage unified: local snapshot work (F-NEW-260/261/262 + BMI/AlexCalc first-ever acquisitions with SHA256 proof + full A/B evidence) now sits ON TOP of the true GitHub lineage; registry 616->619; nothing fabricated, every A/B row measured on its own binary.
+- Honest open question recorded: which of the wave's fixes remain live increments on the rebased tree vs. subsumed by CONT-42/43/44 laws — answered by measurement next wave, not by assumption.
+
+---
+Task ID: CONT-46
+Agent: Super Z (main)
+Task: CONT-46 (Issue #375 execution stage): continue from the latest remote HEAD; revalidate F-NEW-260/261 on the rebased tree; investigate F-NEW-262 as a register/data-flow question with per-manifestation tracing; probes before patches; smallest generic fix; real-APK fan-out x3; registries + issue audit.
+
+Work Log:
+- Stale-snapshot recovery (Phase 0): local HEAD was 7622e268 (the pre-rebase CONT-11-W7 duplicate, NOT an ancestor of origin/main); reset to the true remote HEAD 8f2f6aab (CONT-45). Refetched the three tmp/ APKs lost to the container reset SHA-exact against the CONT-43 §4 pins (tananaev_11 294a68bd00debbdc, simplecalc_8 68da25fd9fdf54b4, composeStopwatch_1009011 dbf937ebbe7c0b3d) and rebuilt the Skill self-test's hmap_probe.apk (fixtures/hmap_probe, sha 9253e818eb530cfb).
+- Rebuilt from HEAD: binary 56c045260767ac66 (rc=0). Full baseline gate: anchors 27/27 x3 byte-identical, csw x3 at the REGAINED face 3442d9a9dc0fa0f9, probe battery == records exactly (f259g 84/7 = the known F259-L row x7, not a standing gate), simplecalc x3 e847ca0346708f07, skill self-test 13/13. Registry 619 at start.
+- F-NEW-260 revalidated as a LIVE INCREMENT: built fixtures/fnew260_probe (aapt2/ECJ/D8) — 13/13 PASS on 56c04526 (public/protected/package/private x static/non-static members, nested interface, anonymous, top-level, isMemberClass predicates, framework-token negatives). The anonymous-class row initially failed: the OpenJDK 21 host JVM oracle answers getModifiers()=0x0 for anonymous classes (InnerClasses access_flags verbatim; ECJ emits accessFlags=0) — the engine MATCHES the law; the probe row was corrected to assert the oracle. Runtime face: BMI doAddOp getModifiers gauntlet executes.
+- F-NEW-261 revalidated as a LIVE INCREMENT: the support-family DEX-body fall-through is live at the S83 gate (BMI FragmentActivity.onCreate real DEX; the FragmentManagerImpl machine executes end-to-end post-fix); androidx stays bypassed (notes eb5ebd559cad1028 x3 byte-identical through the whole wave).
+- F-NEW-262 manifestation 1 (BMI FragmentHostCallback.mHandler <unset>) RE-ROOTED on current HEAD: static decode (new scripts/cont46_disasm.py — a correct DEX disassembler written for this wave; type_list u16-entry convention per dex_parser.cpp:1262 documented) traced mHandler = new FragmentActivity$1(this) -> iget FragmentActivity.mHandler -> 4-arg ctor checkNotNull(v4,"handler == null") -> move-result-object -> iput. Runtime FIELD-TRACE caught the exact first divergence: put-obj FragmentHostCallback.mHandler value=<unset> right after the checkNotNull call was REFUSED DEX dispatch (EXP088-B ActivityShadow 4-level walk, no result-slot write). Root: the EXP-058-era blanket stub-only name gate (dalvik_engine.cpp: "Preconditions"+"checkNotNull" -> return false), RESURRECTED by commit d7427016 (2026-09-04 cross-campaign recovery import) after R-NEW-365/S47 F-058 had root-caused and removed it — the docs survived, the code fix was lost. A documented regression re-introduction.
+- Phase-3 probes BEFORE patching: fixtures/fnew262_probe (bridge<->DEX object-flow: BR/NI/AM/WV/MR/EX families + CK identity rows). PRE arm on 56c04526: 16 PASS + CK-1/2/3 FAIL (checkNotNull identity lost, result lost, null-negative did NOT throw — the gate suppresses both); all non-gated shapes PASS (the abstract object-flow contract is sound).
+- Phase-4 fix (F-058-R): DELETED the 8-line resurrected gate (smallest generic change; no name conditions, no fake objects; F-056 descriptor-aware cycle keys + M3-19 active-cycle law + MAX_RECURSION_DEPTH remain the generic protections). Rebuild -> a63bf3b53ac3c082. POST arm: probe 19/19 (CK rows flipped), FIELD-TRACE put-obj value=obj#29 (identity restored), Handler.post enqueues Runnable id=38 -> EXP090-DRAIN invoked -> ensureExecReady/generateOps/executeOps/moveToState all execute, BMIMain lifecycle rows land, 0 uncaught.
+- F-NEW-262 manifestation 2 (solitaire) SUPERSEDED on the true lineage: 0 uncaught on 56c04526 (the recorded 28-IAE face does not reproduce; the S134-GCB bridge answers non-null and the v7 wrapper wraps). New first divergence: DrawerLayout.j "View AppBarLayout@209 is not a drawer" (LayoutParams gravity g.a:I resolved 0) -> F-NEW-309 appended (CLASSIFIED, static decode of g()/j() recorded).
+- F-NEW-262 manifestation 3 (notes) BLOCKED for tracing: masked by the S83 androidx bypass; static decode recorded (mFragments via shadow-bridge createController shape; mFragmentLifecycleRegistry via pure-DEX LifecycleRegistry); classification requires the EXPERIMENTAL androidx fall-through arm — deliberately not shipped (the F-NEW-261 scope law is a measured standing decision; changing it needs its own bounded A/B).
+- Honest BMI frontier after the fix: past the recorded first divergence (transaction machine executes) but NOT REAL_APP_CONTENT yet — the app layout root 78 never attached under the delegate's id-swapped ContentFrameLayout 163 ([P0-1-ORDER] first-traversal attach wave root=78 attached=0; ViewTree = ActionBarOverlayLayout 146 -> 163 kids=[] + ActionBarContainer 166). Next root precisely located: the v7 delegate's inflate(resId, mContentParent) leg / the attach wave's content-parent target.
+- Post-fix regression gate: 33/33 MATCH on a63bf3b5 (anchors x3 + csw x3 + simplecalc x3), probe battery == records exactly, skill 13/13 — ZERO DRIFT. Fan-out x3 on the fixed binary: bmi 57159cc2 x3, sol ba50a4d2 x3, notes eb5ebd559cad1028 x3 (its recorded anchor — byte-identical through the fix), alex c8d69f81 x3 (first stable recorded face), dooz 31ddd4d5 x3, micro da73010a x3, unote 4f1a9e4e x3 — 21/21 deterministic, 0 uncaught everywhere.
+- Registry 619 -> 620 (scripts/cont46_registry.py): F-NEW-262 re-classified (m1 ROOT-CAUSED-FIXED / m2 SUPERSEDED / m3 BLOCKED with per-manifestation evidence), F-NEW-260/261 revalidation rows, F-NEW-309 appended. Evidence: evidence/cont46/CONT46_RESULT.md. Instruments: cont46_refetch_apks.sh, cont46_build_hmap.sh, cont46_build_probes.sh, cont46_phase0_gate.sh, cont46_post_fix_gate.sh, cont46_fanout.sh, cont46_issue_comment.py, cont46_daemon.py.
+
+Stage Summary:
+- CONT-45's honest next-wave duty is DISCHARGED: F-NEW-260/261 are live increments (probe + runtime proven on the true lineage); F-NEW-262 is no longer a monolithic hypothesis — m1 is root-caused and FIXED with the exact DEX/register/field evidence the issue demanded, m2 superseded, m3 blocked with its exact next command. The gate-to-shipped gap (the fix touches the check* family corpus-wide) is regression-proven clean (33/33 + probes + skill + fan-out x3).
+- The remaining BMI content frontier is a NEW, precisely-located root (delegate content-parent attach) — next wave's bounded decode with runtime rows and ViewTree evidence already recorded.
+
+---
+Task ID: CONT-47
+Agent: Super Z (main)
+Task: CONT-46 honest next-wave duty — the delegate content-parent attach leg
+decode; user directive "ادامه" (continue from latest remote HEAD; real
+applications past their first runtime divergence, not another report).
+
+Work Log:
+- Phase 0 reconciliation: origin/main was ALREADY 60955f06 (CONT-46 closeout
+  was pushed by the prior session); local b4d3a493 (UUID checkpoint, tmp/
+  probe builds) pushed per convention (60955f06..b4d3a493). Binary identity
+  verified == a63bf3b53ac3c082 (the recorded post-fix SHA). 7 APK SHA pins
+  exact. Issue #375 closeout comment 6111267327 verified live; no newer
+  directives. BMI baseline face reproduced exactly (57159cc2, root=78
+  attached=0, 0 uncaught).
+- Decode: [S83-APXACT] setContentView semantic shadow fired for BMI despite
+  the F-NEW-261 fall-through conditions. Added the permanent env-gated
+  MINIANDROID_S83_DIAG gate diagnostic (EXP-055/S24/F040 style): the same
+  dispatch printed f261_dex_body=1 f261_support_family=1 idx_has_class=1
+  AND the shadow row — caught the else-chain bug: `if (f261) {} else if
+  (onCreate)` — the setContentView/lifecycle/findViewById arms are
+  INDEPENDENT ifs the fall-through never governed. Static proof:
+  AppCompatActivity.setContentView delegates to AppCompatDelegateImpl
+  (exact AOSP chain, code_off 0xc3dc0/0xc7664); the runtime's
+  LayoutInflater.inflate(int,ViewGroup) law already existed.
+- Four-gate causal chain decoded with field traces (MINIANDROID_FIELD_TRACE):
+  G1 S83 setContentView steal -> F-NEW-310 (arm gated with the negated
+  fall-through predicate). G2 F-NEW-172 lifecycle-void arm (BMIMain.onStart
+  "instructions=0"; the real FragmentActivity.onStart DEX is the fragment
+  state driver) -> F-NEW-311 (same gate). G3 EXP-045 dispatchStateChange
+  stub over-match ("FragmentManager" substring caught the support
+  FragmentManagerImpl; mCurState frozen at 0; support impl is a 17-unit
+  terminating method; BMI has NO androidx) -> F-NEW-312 (scope corrected to
+  the androidx prefix). G4 LayoutInflater.cloneInContext REC-MISS -> null
+  fragment inflater -> [ROOT-059] null-recv inflate -> result slot unwritten
+  -> Fragment.mView=<unset> -> no addView -> F-NEW-313 (cloneInContext
+  answers the shared F-021 singleton).
+- POST (binary 387390a00f2de498): BMI REAL_APP_CONTENT — screenshot
+  b52252c2de19b03a x3 deterministic, 0 uncaught, 9.9% non-background, BMI
+  button blue present; window tree = ActionBarOverlayLayout ->
+  ContentFrameLayout -> FrameLayout -> RelativeLayout(6) -> 2xEditText +
+  2xSpinner + Button "Calculate BMI" (real text) + result TextView.
+- Regression: canonical gate 33/33 MATCH (dooz/micro/unote/gmdice/opencalc/
+  tttdeluxe/flappycow/g2048/tanana anchors x3 + csw x3 + simplecalc x3)
+  ZERO DRIFT; probe battery == records (fcol 140/0, f259 49/0, f259g 84/7,
+  f266 42/0, fnew298 19/0, fnew302 48/24, fnew260 13/0, fnew262 19/0);
+  skill 13/13; sol ba50a4d2 x3 / notes eb5ebd55 x3 / alex c8d69f81 x3 —
+  the androidx S83 scope law held through all four engine changes.
+- Registry 620 -> 624 (scripts/cont47_registry.py): F-NEW-310/311/312/313
+  appended ROOT-CAUSED-FIXED. Evidence: evidence/cont47/CONT47_RESULT.md.
+
+Stage Summary:
+- BMI (com.zola.bmi v402) is past its white screen to REAL_APP_CONTENT for
+  the launch page — the first app whose content path required the FULL
+  support-v7 delegate DEX machine (setContentView + lifecycle + fragment
+  state + fragment inflater) to execute end-to-end.
+- Cross-app impact (standing CONT-42 question) measured on ONE binary:
+  BMI improved, every other corpus member byte-identical x3.
+- Honest bounds: BMI input behavior (tap -> compute -> result) NOT yet
+  exercised (next wave natural target); solitaire F-NEW-309 still
+  CLASSIFIED (own decode + A/B); notes m3 still BLOCKED behind the androidx
+  fall-through A/B (standing scope decision); findViewById S83 arm deferred
+  (no harm evidence).
+
+---
+Task ID: CONT-48
+Agent: Super Z (main)
+Task: Dooz white-screen closure wave — F084 budget-vs-defect judgment (the
+CONT-42 standing question), the 120s face decode, and the res/font law;
+user directive "ادامه" (continue; Dooz AND calculator past the white
+screen; high task concurrency; complete results).
+
+Work Log:
+- Phase 0 reconciliation: origin/main == local == b0b903be (CONT-47
+  closeout); binary identity == 387390a00f2de498 (recorded post-fix SHA);
+  registry 624; dooz v23 pin 299eab21ac8b3c61 exact; baseline face
+  31ddd4d5b8e6d18e x3 reproduced (verdict=DEFAULT_BACKGROUND_ONLY,
+  first_missing_stage=APP_DRAW_OPS).
+- F084 JUDGMENT (F-NEW-314, CLASSIFIED): NOT a stall — budget class.
+  15s = 4.7M instrs white anchor; 60s = SAME white face; 120s = 36.2M
+  instrs, composition COMPLETES ("Execution completed successfully") and
+  the real Scaffold renders: screenshot 6841d52a20e6597e x3 byte-identical,
+  11.3% non-background. Zero [HALT-LOOP], zero [R361-DEEP-REFUSE] at every
+  budget — the S51-era face is superseded. Every F084 row is the
+  wall-clock tail. Follow-up = throughput engineering, NOT dispatch.
+- 120s face decoded (op trace + DEX-wide static scan, 13908 methods):
+  top bar + bottom action bar with real Material geometry (IconButton
+  105x105 r52.5 = 40dp, icon slots 63x63 = 24dp @2.625); 1721/1721 PATH
+  ops EMPTY (no vector icon pixel ever lands); buildPath (Lbo;::T) has 2
+  static callers (Led0;::a pc=253, Lh41;::a pc=8) and ZERO runtime
+  presence; 4 solid-black 63x63 RECTs = drawRect(0,0,24,24) under the
+  icon canvas translate+scale, recorded BEFORE the paired empty PATHs;
+  drawBitmap(bitmap-unresolved) NO-OP chain (caller Lf22;.e); zero TEXT
+  ops. New env-gated MINIANDROID_DRAW_CALLER_TRACE diagnostic (drawRect/
+  drawPath handlers, EXP-055 convention; screenshot SHA verified
+  unchanged with it on): drawRect caller=Ly3;.p pc=6 x1098, drawPath
+  caller=Ly3;.g pc=12 x1747 — one frame deep, deeper decode needs a
+  stack-PC diagnostic. F-NEW-316/317 CLASSIFIED (decode-first discipline).
+- FIX F-NEW-315 (ROOT-CAUSED-FIXED): AOSP "Fonts in XML" res/font entries
+  were never registered — FIX-4 scanned only assets/ while aapt2 ships
+  res/font ttf's under renamed paths (dooz res/UJ.ttf). Same extension-
+  only law extended to res/. POSITIVE: dooz FONT_SOURCE font_files=1
+  registered=1 first=res/UJ.ttf. NEGATIVE: every other corpus member
+  font_files=0 unchanged. Honest bound: dooz rendered face unchanged —
+  its compose text chain stops before drawText.
+- Regression (binary c0f31ade222bdf9a = 387390a0 + diagnostics + F-NEW-
+  315): canonical gate 33/33 MATCH ZERO DRIFT (dooz 15s anchor 31ddd4d5
+  x3 held; micro/unote/gmdice/opencalc/tttdeluxe/flappycow/g2048/tanana/
+  csw/simplecalc x3); BMI b52252c2 MATCH (REAL_APP_CONTENT held), sol
+  ba50a4d2 MATCH (x2 variants), notes eb5ebd55 MATCH, alex c8d69f81
+  MATCH; probe battery == records (fcol 140/0, f259 49/0, f259g 84/7,
+  f266 42/0, f268 96/0, fnew253 147/0, fnew286 10/0, fnew289 28/0, ckey
+  105/0, cpipe 119/0, fnew302 48/24, fnew252 56/0, fnew290..297 PASS,
+  fnew298 19/0 KEEP=5, fnew260 13/0, fnew262 19/0); skill 13/13; dooz
+  120s face 6841d52a x3 on the new binary.
+- Registry 624 -> 628 (scripts/cont48_registry.py): F-NEW-314 CLASSIFIED
+  (budget judgment), F-NEW-315 ROOT-CAUSED-FIXED (res/font law),
+  F-NEW-316/317 CLASSIFIED (empty paths / black icon RECTs). Evidence:
+  evidence/cont48/CONT48_RESULT.md.
+
+Stage Summary:
+- The Dooz half of the user's standing goal is closed: Dooz v23 renders
+  its REAL Scaffold layout at a 120s budget (6841d52a x3 deterministic)
+  — past the white screen, with the three remaining face-level defects
+  (empty icon paths, black icon RECTs, no text) decoded, pinned to their
+  forwarding arms, and registered for the next wave.
+- The F084 question is closed by measurement: budget class, not a
+  correctness defect; no dispatch/lifecycle law was touched.
+- Cross-app impact measured on ONE binary: 33/33 gate + BMI/sol/notes/
+  alex all byte-identical; only Dooz improved (envelope + font truth).
+- Honest bounds: 15s canonical dooz anchor unchanged (composition needs
+  ~36M instructions — throughput engineering next); icon/text rendering
+  decode continues (stack-PC forensics before any dispatch change).
+
+---
+Task ID: CONT-49
+Agent: Super Z (main)
+Task: CONT-46 umbrella continuation — "Continue from the latest remote HEAD";
+solitaire first-divergence decode + fix per the 7-point priority (Issue #375).
+
+Work Log:
+- Reconciliation: local container was the CONT-10-era snapshot e99c2fbd again;
+  fetched + reset to origin/main == 44dd14db (CONT-48). Rebuilt the binary from
+  HEAD: c0f31ade222bdf9a == the recorded CONT-48 binary (build reproducibility).
+  Refetched reset-lost APKs SHA-exact (tananaev 294a68bd, simplecalc 68da25fd,
+  composeStopwatch dbf937eb); rebuilt reset-lost fixtures (gate_a_probe,
+  hmap_probe, fnew260/262 probes). Solitaire store base.apk fdfaf7ca lost to the
+  reset; F-Droid vc71 (9d782be2, 3.13) substituted with BEHAVIORAL EQUIVALENCE
+  PROVEN (recorded face ba50a4d28ea62fe7 byte-identical on the CONT-48 binary,
+  recorded IAE row reproduced). Baseline gate: 33/33 x3 + probes == records +
+  skill 13/13.
+- F-NEW-309 decoded (static): DrawerLayout$g own field a:I read via
+  obtainStyledAttributes(attrs, [0x010100F3]).getInt(0,0); g(I)=findDrawerWithGravity
+  -> j(found) = the throw path; 17-caller DEX-wide census (new
+  scripts/cont49_lp_caller_scan.py; lessons: op=LOW byte, code()=byte offset).
+- Probe FIRST (Phase-3 protocol): fixtures/fnew309_probe — PRE 7 rows with
+  P4 FAIL (plain ViewGroup$LayoutParams), then FIX: generate_child_layout_params
+  (structural LP-subclass discovery + real DEX (Context,AttributeSet) ctor via
+  AttributeSetStore/F-NEW-197 precedence + semantic w/h write-back + node stash;
+  ROOT-055 answers the stashed object; Factory-law hook in inflate_element with
+  the view-ctor dual gate). POST 8/8 PASS x3 (incl. N1 absent-attr gravity 0,
+  N2 isDrawerView(plain) false).
+- Two follow-on faces root-caused + fixed the same way: F-NEW-318
+  (Gravity.getAbsoluteGravity real static bridge — START/END family resolution,
+  rel-bit consumed, other bits preserved) and F-NEW-319 (ArscParser::
+  resolve_string_array + Resources.getStringArray bridge, F-036 heap-array
+  convention, GATE-A NotFoundException honesty).
+- Solitaire machine moved THREE divergence layers: IAE gone -> onMeasure ISE
+  gone -> settings NPE gone (b.g initializes; String[15] array resolves);
+  0 THROWABLE rows (was 9); new first divergence recorded (ViewDragHelper ah.a
+  null-recv in DrawerLayout.computeScroll pc=35 + menu/h.i null-recv in
+  design/internal/c$b.f pc=31). Screenshot face UNCHANGED ba50a4d2 x3 (honest).
+- Regression on the closing binary 6c478a224ab1b3f4: 33/33 x3 ZERO DRIFT;
+  probes == records; fnew260 13/0, fnew262 19/0, fnew309 8/0; skill 13/13;
+  support group byte-identical x3 (BMI b52252c2 REAL_APP_CONTENT held, notes
+  eb5ebd55, alex c8d69f81, sol ba50a4d2).
+- Registry 628->630 (scripts/cont49_registry.py): F-NEW-309 ROOT-CAUSED-FIXED,
+  F-NEW-318/319 appended ROOT-CAUSED-FIXED; unique-ID check OK.
+- Evidence: evidence/cont49/CONT49_RESULT.md. Issue #375 audit comment posted.
+
+Stage Summary:
+- Three generic laws landed (generateLayoutParams / Gravity.getAbsoluteGravity /
+  Resources.getStringArray); solitaire past the drawer wall (three layers);
+  cross-app impact measured on ONE binary (all other corpus faces byte-identical
+  x3). Next wave: ViewDragHelper (ah) construction + NavigationView menu hub
+  (c$b.f) — the new solitaire first divergence; BMI input behavior still open.
+
+---
+Task ID: CONT-50
+Agent: Super Z (main)
+Task: Issue #375 CONT-50 — continue from the latest remote HEAD, execute the full investigation: reconcile the CONT-49 closeout, decode the recorded solitaire divergence wall (ViewDragHelper ah.a + menu-hub c$b.f null-recvs), probe-first generic fixes, zero-drift regression, registry/evidence/Issue #375 updates, push.
+
+Work Log:
+- Phase 0: fetched + reset to origin/main == a9a7297b (the local container was the CONT-10-era snapshot e99c2fbd again — the recurring recovery class); rebuilt the binary from HEAD == recorded CONT-49 6c478a224ab1b3f4 (reproducibility); refetched tananaev/simplecalc/composeStopwatch SHA-exact; read all 15 Issue #375 comments (newest = CONT-49 closeout, whose recorded next-wave frontiers became this wave's decode targets); SOLITAIRE ORIGINAL BYTES RECOVERED (F-Droid vc71 == fdfaf7cad18e4416, the exact CONT-46 pin) and verified ×3 on the CONT-49 binary → re-pinned, the CONT-49 substitution caveat superseded.
+- Decode: (F-NEW-320) METHOD-TRACE proved DrawerLayout.computeScroll ran with this=<unset> — call_compute_scroll passed an EMPTY args vector, violating the engine-wide receiver-first convention; every iget silently answered null (no FIELD-TRACE row: receiver not a live heap object). (F-NEW-321) S134-QGET runtime proof key=Lc$b;->a hit=Y val=ay$b#403 — the correct qualified key with a CORRUPTED slot: the super ay$a.<init> mObservable iput's bare legacy mirror re-resolved through the F-NEW-251 runtime-class redirect onto the receiver's most-derived declarer slot, clobbering the NavigationMenuPresenter outer → the menu-hub NPE; the "second presenter" hypothesis was refuted by a DEX-wide new-instance census (one site only).
+- Probe FIRST: fixtures/fnew320_probe (real aapt2/ECJ/D8) — the exact shadowing shape + a computeScroll-overriding view; PRE ×3: P4-CS-RECV FAIL (unbound receiver) + N2-SUB-UNTOUCHED FAIL (super write clobbers the sub slot).
+- Fixes: F-NEW-320 = receiver bound as args[0] in both the computeScroll dispatch and the onScrollChanged override arm; F-NEW-321 = set_object_field_raw (the dual-write mirror is a legacy channel, not a second identity resolution) + the QUALIFIED-FIRST read law. Honest intermediate recorded: the first draft regressed fnew252 to 21/35 (Atomic*FieldUpdater stale-mirror read face) — restored to 56/0 by the qualified-first law.
+- POST: fnew320 11/0 ×3; solitaire ah-NPE 0 (was 6/run) + menu-hub NPE 0 (was 1/run); the RecyclerView fill chain runs for the first time; NEW first divergence recorded for the next wave (ay$w.q at ay$h.a pc=8 — the mViewHolder law; NavigationView.onMeasure spec=0 face PRE-EXISTING, not a regression); solitaire face ba50a4d2 UNCHANGED ×3 (honest).
+- Regression on the closing binary d19d5ba63c47a19f: 33/33 anchors ×3 byte-identical ZERO DRIFT; probe battery == records exactly (incl. fnew252 56/0, fnew309 8/0 ×3 rebuilt); support group ×3 byte-identical to the CONT-46/47 records (BMI b52252c2 REAL_APP_CONTENT held, alex c8d69f811b23f245, notes eb5ebd559cad1028); skill 13/13 after the gate_a_probe rebuild.
+- Registry 630→632 (F-NEW-320/321 ROOT-CAUSED-FIXED; F-NEW-309 next_wave refreshed; unique-ID check OK). Evidence: evidence/cont50/CONT50_RESULT.md. Issue #375 audit comment posted (6117844181).
+- PUSH: remote main 939e8458 (a9a7297b..939e8458), SECRET GUARD PASS.
+
+Stage Summary:
+- The recorded CONT-49 "divergence wall" was TWO independent generic roots, both now ROOT-CAUSED-FIXED with probe + runtime + regression evidence: the per-frame instance-dispatch receiver binding (a law for every overriding view in the corpus) and the shadowed-field slot identity (a law for every R8-renamed subclass that shadows a superclass field — the exact RecyclerView$Adapter family).
+- Solitaire moved two divergence layers deeper; its original APK bytes are recovered and re-pinned; the next wave owns the RecyclerView mViewHolder law (ay.e/getChildViewHolderInt) + the NavigationView.onMeasure spec=0 face.
+- Zero drift across the whole canonical corpus; the two laws are generic interpreter contracts, no APK-specific code.
+
+---
+Task ID: S51 (CONT-51)
+Agent: Super Z (main)
+Task: CONT-46/51 execution wave — reconcile latest remote HEAD, decode the
+recorded solitaire first divergence (ay$w.q null-recv @ ay$h.a pc=8), probe
+first, implement minimal generic fixes, zero-drift regression, registry +
+evidence + push.
+
+Work Log:
+- Reconciliation: container was the pre-CONT-28 snapshot e99c2fbd AGAIN;
+  fetch + reset --hard origin/main == 533ecf61 (90 commits: CONT-42..50);
+  binary rebuilt byte-exact d19d5ba63c47a19f (build reproducibility).
+- Baseline face reproduced: ay$w.q NPE x5/run + EXC-PROPAGATE at
+  GameSelector.onCreate invoke_pc=120 (APP BOUNDARY unwind).
+- Decode: ay.e = AOSP getChildViewHolderInt verbatim; ay$h.a(View,I,Z) =
+  LayoutManager.measureChildWithMargins; ay$5.c(I) = ChildHelper.Callback
+  detach with the isTmpDetached defense; FIELD-TRACE ay$i.c: 5 put/get
+  pairs, write obj#1802 (caller ay$o.a) vs read obj#1805 (caller ay.e) —
+  the getLayoutParams bridge re-materialized a FRESH fallback object every
+  call (setLayoutParams recorded only w/h, never identity).
+- F-NEW-322 FIXED: setLayoutParams bridge records the exact LP object
+  identity + class into the node slot getLayoutParams answers first
+  (AOSP View.mLayoutParams single-slot law). Probe fnew322_probe
+  (56de7a4ef25cf4f9) PRE: P1/P2 FAIL x3 (back=LayoutParams/<no-tag>) —
+  POST 5/0 x3.
+- F-NEW-323 FIXED: the ViewGroup detach/attach family (detachViewFromParent /
+  attachViewToParent / removeDetachedView) had NO bridge (grep detachView =
+  0 hits); after the first detach the children table stayed full-length and
+  the next detachAndScrap re-caught the FLAG_TMP_DETACHED child → the DEX
+  defense threw IAE "called detach on an already detached child". Three
+  AOSP-faithful bridges added (detach compacts children WITHOUT clearing
+  parent_id; attach re-inserts + records the params identity (F-NEW-322
+  cooperation); removeDetachedView = full removal). Probe fnew323_probe
+  (634ebf19d04ab00d) PRE: P1/P2/P5/N1 FAIL x3 — POST 6/0 x3.
+- Solitaire POST x3: ay$w.q NPE 0, detach-IAE 0, 0 uncaught;
+  GameSelector.onCreate SURVIVES; GameSelector.onResume dispatched via DEX
+  (ok=1, 22361 insns) x3; NavigationMenuView.onMeasure measures with real
+  specs and writes back 0x1920. Screenshot face ba50a4d28ea62fe7 UNCHANGED
+  x3 (honest — DEFAULT_BACKGROUND_ONLY / APP_PIXELS still missing).
+- Zero-drift gate on the final binary f11d542108cd611b: 11/11 canonical
+  anchors x3 byte-identical; probe battery == records (21 probes + fnew309
+  8/0 x3 + fnew320 7/0 x3 rebuilt after the reset-lost run/ artifacts);
+  support group x3 MATCH (BMI b52252c2 REAL_APP_CONTENT held, alex
+  c8d69f81, notes eb5ebd55). Gate APKs lost to the reset REFETCHED
+  SHA-exact (tananaev 294a68bd, simplecalc 68da25fd, csw dbf937eb).
+- Registry 632 -> 634 (F-NEW-322/323 ROOT-CAUSED-FIXED; F-NEW-309 next_wave
+  refreshed). Evidence: evidence/cont51/CONT51_RESULT.md.
+
+Stage Summary:
+- Solitaire moved TWO divergence layers + the app-lifecycle wall: onCreate
+  death -> onResume dispatch with the RecyclerView menu machinery measured
+  at real specs. NEW first divergence recorded: the menu-content render
+  pipeline (NavigationMenuView second measure pass spec=0; menu items never
+  paint app-owned pixels) — next wave's decode.
+- Scripts persisted: cont51_build_probe.sh, cont51_build_probe323.sh,
+  cont51_flags_scan.py, cont51_dbg_scan.py, cont51_detach_census.py,
+  cont51_flags_xref.py, cont51_gate.sh, cont51_registry.py.
+- Next: CONT-52 — the solitaire menu-content render decode (APP_PIXELS
+  stage), then the cross-app impact measurement for the two identity laws.
+
+---
+Task ID: S52 (CONT-52)
+Agent: Super Z (main)
+Task: CONT-52 — decode the NavigationView.onMeasure FAILED(no write-back)
+face (the next layer after CONT-51's two identity laws), probe first,
+implement the minimal generic fix, zero-drift regression, registry +
+evidence + push.
+
+Work Log:
+- Reconciliation: HEAD == origin/main == 67c537b0 (the CONT-51 push).
+- Decode: NavigationView.onMeasure is REAL DEX (MeasureSpec sparse-switch +
+  invoke-super f.onMeasure); f = ScrimInsetsFrameLayout is a DEX class with
+  NO onMeasure whose super is the FrameLayout boundary; execute_invoke_super
+  passed declaring_class (f) to the bridge — the FrameLayout.onMeasure
+  whitelist matched no shadow → silent miss → setMeasuredDimension never
+  reached → [DEX-MEASURE] FAILED(no write-back) on EVERY pass → the
+  NavigationView node never entered the render tree.
+- F-NEW-324 FIXED: the super-dispatch BOUNDARY law — when declaring_class is
+  DEX-defined, walk superclass_of up to the FIRST non-DEX ancestor and pass
+  THAT to bridge_to_api; framework declaring classes untouched (R-NEW-345
+  case pinned by probe P2). One call site, class-agnostic.
+- Probe FIRST: fixtures/fnew324_probe (4f06d7f711067013, Leaf extends Mid
+  [DEX, no onMeasure] extends FrameLayout). PRE x3: [DEX-MEASURE]
+  Leaf.onMeasure FAILED(no write-back) + the Leaf FrameLayout bridge 0 rows
+  (the P1 value face is masked by the View.measure fallback — the honest
+  judgment surface is the bridge-log face, pinned as the PRE/POST
+  criterion). POST x3: S109-VG-MEASURE FrameLayout children_measured=1 for
+  the leaf THROUGH the DEX intermediate; rows 3/0 x3.
+- Solitaire POST x3: the FrameLayout bridge executes FOR the NavigationView
+  receiver (obj#298 children_measured=1); 0 uncaught; onResume still
+  dispatches. NEW frontier: the measure chain hands NavigationView spec
+  0x0/0x0 upstream (R347-MEASURE view=298 wspec=0x0 hspec=0x0) — the
+  DrawerLayout child-spec computation is the next decode.
+- Zero-drift gate on b5998a50a679c2e3: 33/33 REG rows MATCH (11 anchors x3
+  byte-identical), probe battery == records (f259g 84/7 and fnew302 48/24
+  known faces unchanged), support group BMI/alex/notes MATCH x2.
+- Registry 634 -> 635 (F-NEW-324 ROOT-CAUSED-FIXED; F-NEW-309 next_wave
+  refreshed). Evidence: evidence/cont52/CONT52_RESULT.md.
+
+Stage Summary:
+- The invoke-super boundary law is now ART-faithful: every DEX-intermediate
+  super chain lands on the first framework ancestor (NavigationView/f is
+  one instance of a class-agnostic law).
+- Solitaire: NavigationView/NavigationMenuView now measure through the real
+  FrameLayout law; the frame is still DEFAULT_BACKGROUND_ONLY — next decode
+  = the upstream child-spec (DrawerLayout → NavigationView spec 0x0).
+- Scripts persisted: cont52_build_probe.sh, cont52_registry.py.
+- Next: CONT-53 — the DrawerLayout → NavigationView child-spec decode.
+
+---
+Task ID: S53 (CONT-53)
+Agent: Super Z (main)
+Task: CONT-53 — decode the drawer child-spec 0 face (the next layer after
+F-NEW-324): the DrawerLayout DEX measure chain reads NavigationView's LP
+width as 0 where -2 was written; probe A/B; minimal generic fix
+(F-NEW-325); zero-drift gate; registry + evidence + push.
+
+Work Log:
+- Reconciliation: HEAD == origin/main == 999ffe2c (the CONT-52 push).
+- F-NEW-309-WB diagnostic (bounded, read-only) pinned the write face:
+  lp=o409 node_w=-2 node_h=-1 (XML has NO layout_width/height; the -2
+  default is AOSP-correct via getLayoutDimension's defValue).
+- FIELD-TRACE: get DrawerLayout$g;.width obj#409 value=0 x4 — the REAL DEX
+  measure chain read 0 where -2 was written → the write and read landed on
+  DIFFERENT slots.
+- Root: resolved_field_declarer returns ref_cls AS-IS when no DEX body
+  declares the field; is_dex_defined_class(ref_cls) then keyed the
+  interpreter iget/iput with the fabricated qualified identity
+  ('LDrawerLayout$g;->width') while the field lives in the framework
+  ViewGroup$LayoutParams — ONE bare slot (every non-interpreter writer,
+  including F-NEW-309's write-back, lands there).
+- F-NEW-325 FIXED: true_dex_field_declarer (the chain walk must VERIFY the
+  field body; no DEX declarer → bare) at the 4 interpreter key sites
+  (iget / iget-object / iput / iput-object); real DEX declarers keep the
+  qualified slot + raw bare mirror (F-NEW-321 untouched); the
+  set_field_key_resolver already had the correct verify logic — the
+  interpreter families now agree with it.
+- Probe fnew325 (4ba0f9edebd9d20b) A/B: PRE x3 on b5998a50 P1/P2=0 FAIL
+  (N1 DEX-declared tag + N2 framework-ref PASS); POST 4/0 x3.
+- Solitaire: FIELD-TRACE read -2 (the written value) x4; 0 uncaught;
+  screenshot face UNCHANGED ba50a4d28ea62fe7 x3 (honest).
+- Zero-drift gate on ff261b1bc2940bc2: 33/33 REG MATCH (11 anchors x3),
+  probe battery == records, support x2 MATCH, fnew325 4/0 x3.
+- Registry 635 -> 636 (F-NEW-325 ROOT-CAUSED-FIXED; F-NEW-309 next_wave
+  refreshed). Evidence: evidence/cont53/CONT53_RESULT.md.
+
+Stage Summary:
+- The interpreter field-slot identity now agrees with ART on the
+  framework-owned leg (class-agnostic: every framework field reached
+  through a DEX ref class gains the single bare slot).
+- NEW first divergence recorded: the v4 DrawerLayout.getChildMeasureSpec
+  (III)I DEX body answers -1/0 for (EXACTLY|1080, pad, wrap=-2) — the next
+  decode (MeasureSpec.getMode/getSize dispatch or branch shape).
+- Scripts persisted: cont53_build_probe.sh.
+- Next: CONT-54 — the v4 getChildMeasureSpec decode.
+
+---
+Task ID: S54 (CONT-54)
+Agent: Super Z (main)
+Task: CONT-54 — decode the recorded next frontier (the v4 getChildMeasureSpec
+"-1/0" face); probe A/B; minimal generic fix (F-NEW-326); fresh Dooz/BMI
+measurements; zero-drift gate; registry + evidence + push.
+
+Work Log:
+- Reconciliation: local container was the CONT-10-era snapshot e99c2fbd again;
+  fetched + reset to origin/main == d5bbf5d4 (the CONT-53 push, 93 commits);
+  binary REBUILT from HEAD == recorded ff261b1bc2940bc2 byte-identical.
+- Fresh app measurements at HEAD (the standing "did Dooz and the calculator
+  progress" question): dooz 15s anchor 31ddd4d5 x3 held; dooz FULL-budget run
+  renders the real Scaffold 6841d52a x3 (the CONT-48 face re-proven at HEAD);
+  BMI b52252c2 x3 REAL_APP_CONTENT held; alex/notes/sol held.
+- Decode (byte-level): DrawerLayout.getChildMeasureSpec(III)I is invoked twice
+  in DrawerLayout.onMeasure (@0x0123/@0x012e) but NO DEX class declares it —
+  class_data gap m@5124 -> m@5143; FIVE support-lib classes carry
+  child-class-owned method_ids (DrawerLayout m@5133, NestedScrollView m@5251,
+  ActionMenuView m@7364, Toolbar m@8216, ar m@8737, all (III)I). ART resolves
+  through the super chain onto the framework ViewGroup.getChildMeasureSpec;
+  the engine's resolver stopped at the framework boundary and the bridge keyed
+  on the app class answered the STUBBED typed default (0) — the CONT-53 face.
+- Probe FIRST: fixtures/fnew326_probe (real aapt2/ECJ/D8), TWO variants from
+  one source tree — fnew326_probe.apk 36c7cb1a183b006a (direct ViewGroup
+  owner) + fnew326b_probe.apk eee1a164d1a74b60 (method_id class_idx
+  byte-rewritten to MyBox = the exact R8 artifact shape; new
+  scripts/cont54_patch_method_id.py). PRE x3 on ff261b1bc2940bc2: 12 FAIL /
+  1 PASS (N1 negative) BOTH variants, every row got=0x0. POST x3 on
+  94d626170bc86331: 13/0 x3 BOTH variants (the full AOSP matrix + the
+  subclass-owner faces through the re-dispatch chain).
+- FIX (minimal, generic): F-NEW-326a — execute_invoke_static retries the
+  bridge under the framework ancestors (nearest first, bounded 16) ONLY after
+  the first dispatch ended STUBBED (side-effect-free tail; original answer
+  stands otherwise); F-NEW-326b — the exact AOSP ViewGroup.getChildMeasureSpec
+  switch (EXACTLY/AT_MOST/UNSPECIFIED x dim>=0/MATCH/WRAP, size=max(0,
+  specSize-padding), in-place modes per F-096b) co-located with the MeasureSpec
+  statics. No app knowledge, no R8 special-casing.
+- Solitaire runtime: [F-NEW-326] re-dispatch fires (Toolbar as ViewGroup); the
+  law answers real specs (0x80000438 / 0x40000780); [R347-MEASURE] view=298
+  NavigationView wspec=0x80000390 hspec=0x40000780 -> 0x1920 — the spec-0 face
+  is DEAD; NavigationMenuView exists + attaches; screenshot face ba50a4d2
+  UNCHANGED x3 (honest). NEW frontier = the menu-content render pipeline
+  (NavigationMenuView's own DEX onMeasure dispatch + the RecyclerView chain).
+- Zero-drift gate on 94d626170bc86331: 15 canonical anchors/controls x3 under
+  the canonical config (--frames 5 --max-seconds 15) — 45/45 MATCH (dooz
+  31ddd4d5, micro da73010a, unote 4f1a9e4e, gmdice f3b483fe7b7cf51b, opencalc
+  a976d2f9, tttdeluxe af6094295ecb50e3, flappycow 13cf4746, g2048 59ca1526,
+  tanana 5f7e0114c3bfd6b5, csw 3442d9a9, simplecalc e847ca0346708f07, BMI
+  b52252c2, alex c8d69f81, notes eb5ebd55, sol ba50a4d2); probe battery ==
+  records (fnew309 8/0, fnew320 7/0, fnew322 5/0, fnew323 6/0, fnew324 3/0,
+  fnew325 4/0). Config lesson recorded: my first gate passes used no --frames
+  flag and mismatched some anchors — always use the canonical cont31 config
+  and grep the authoritative full SHAs (never recall them).
+- Reset-lost gate APKs refetched SHA-exact: tananaev vc11 294a68bd (vc10 is a
+  different build, honestly noted), simplecalc 68da25fd, composeStopwatch
+  dbf937eb.
+- Registry 636 -> 637 (scripts/cont54_registry.py): F-NEW-326 appended
+  ROOT-CAUSED-FIXED; F-NEW-309 next_wave refreshed; count/total/status_counts/
+  meta synced. Evidence: evidence/cont54/CONT54_RESULT.md.
+
+Stage Summary:
+- The invoke-static resolution now agrees with ART across the framework
+  boundary (class-agnostic; reached only on a STUBBED miss), and the framework
+  spec law answers for the first time — the drawer child-spec chain is AOSP-
+  faithful end to end. The solitaire measure chain now hands NavigationView
+  real specs through its REAL DEX onMeasure.
+- Dooz and BMI progress re-verified at HEAD with fresh measurements: Dooz
+  renders its real Scaffold on the full budget; BMI is REAL_APP_CONTENT.
+- Next wave owns: the menu-content render pipeline (NavigationMenuView's own
+  DEX onMeasure dispatch — DEFAULT-MEASURE overrides_onMeasure=1 flag=0) and
+  the RecyclerView/menu-adapter chain behind it (the APP_PIXELS stage).
+
+---
+Task ID: S55 (CONT-55)
+Agent: Super Z (main)
+Task: CONT-55 — the menu-content render pipeline decode: NavigationView
+measured 0 wide (the CONT-54 frontier); probe A/B; the AOSP
+AttributeResolution def-style stages (F-NEW-327); zero-drift gate;
+registry + evidence + push.
+
+Work Log:
+- Reconciliation: HEAD == origin/main == 090d4a8a (the CONT-54 closeout).
+- Decode phase 1: the CONT-54 measure rows re-read — NavigationView measured
+  0 WIDE x 1920 (the row "-> 0x1920" is w=0,h=1920); NavigationMenuView
+  setMeasuredDimension(0, 1920) through the RUNNING DEX chain (ARG-TRACE).
+- Decode phase 2: NavigationView.onMeasure (DEX, 50 units) sparse-switch
+  payload parsed (keys-first-then-targets): AT_MOST ->
+  makeMeasureSpec(min(specSize, mMaxWidth), EXACTLY); the mMaxWidth chain:
+  bn.e(a$i.NavigationView_android_maxWidth, sget a$h.Widget_Design_NavigationView)
+  via the 4-arg Context.obtainStyledAttributes (proto (AttributeSet;[III)I).
+- Decode phase 3 (attribution ladder): [SGET] proved the defStyleRes value
+  (0x7f100180) ON the register; CS-PRODUCER pinned the 10-attr call with
+  dSA/dSR read 0; the read probe pinned slot idx=13 present=0; the arg-kind
+  probe found a3:k0=0x7f100180 (the value WAS there) + a2:k7 (NULL_REF for
+  the literal-0 dSA) — the Kind::INT gate dropped BOTH.
+- FIX (F-NEW-327, three layers): (a) ResourceRuntime::
+  resolve_def_style_attr_value — the AOSP stages xmlStyle(2)/defStyleAttr(3)/
+  defStyleRes(4) via bag_value (parent chain) + REFERENCE deref +
+  DIMENSION->device-px decode; (b) wired into BOTH TypedArray producers
+  (ContextShadow F-093 + the S101 theme producer, which also gained the
+  stage-1 raw-XML read); (c) positional INT-or-NULL_REF arg extraction.
+- Probe: fixtures/fnew327_probe (real aapt2/ECJ/D8 WITH res: boxMax/boxMin
+  attrs + F327_BoxStyle 280dp/48dp + a theme without them), apk
+  57ec5cdf6806255c. PRE x3 on ff261b1bc2940bc2: got=-1 FAIL x2. POST x3 on
+  6014ae17af2ecd60: 3/0 (got=735 = 280dp px; got=126 = 48dp).
+- Solitaire runtime: R347-MEASURE NavigationView -> 735x1920 (was 0x0);
+  NavigationMenuView.setMeasuredDimension(735, 1920) (was 0). The drawer
+  measure chain is AOSP-faithful end to end. Screenshot face ba50a4d2
+  UNCHANGED (honest — the closed drawer sits off-screen).
+- Zero-drift gate on 6014ae17af2ecd60: 15 anchors/controls x3 = 45/45 MATCH
+  + probe battery == records (fnew309 8/0, fnew320 7/0, fnew322 5/0,
+  fnew323 6/0, fnew324 3/0, fnew325 4/0, fnew326 13/0).
+- Registry 637 -> 638 (scripts/cont55_registry.py): F-NEW-327 appended
+  ROOT-CAUSED-FIXED; F-NEW-309 evidence chain extended. Evidence:
+  evidence/cont55/CONT55_RESULT.md.
+
+Stage Summary:
+- The TypedArray resolution now walks the FULL AOSP AttributeResolution
+  order (XML -> xmlStyle -> defStyleAttr -> defStyleRes -> theme) on both
+  producers, and DIMENSION slots answer device px per the TypedArray
+  contract. The solitaire drawer gained its real geometry (735x1920) from
+  the style law — the exact law real Android uses (Widget.Design.
+  NavigationView's android:maxWidth).
+- Next wave owns: the menu-content DRAW pipeline (the open-drawer flow —
+  NavigationMenuView's RecyclerView draw chain at its real geometry).
+---
+Task ID: S56-A (CONT-56 Phase A)
+Agent: Super Z (main)
+Task: the standing user question answered with FRESH measurements — "did the
+work have any real effect on Dooz and the calculators? why is the achievement
+not complete? the calculator must fully load with visible buttons."
+
+Work Log:
+- Reconciliation: local container was the CONT-10-era snapshot e99c2fbd AGAIN;
+  fetched + ff to origin/main == 5c9d72e8 (the CONT-55 closeout; 97 commits).
+- Binary rebuilt from HEAD == 1f81036989a12a7d. The recorded CONT-55 binary is
+  6014ae17af2ecd60; the runtime SOURCE is byte-identical (git diff
+  678ff67b..HEAD -- miniandroid/ is EMPTY) — the delta is this container's
+  toolchain. Semantic identity decided by the gate, not the SHA.
+- FRESH measurements at HEAD, canonical config (--frames 5 --max-seconds 15),
+  x3 each, byte-exact verdicts: opencalc a976d2f9fb675cb3 x3 / simplecalc
+  e847ca0346708f07 x3 (rc=0) / tanana 5f7e0114c3bfd6b5 x3 / BMI
+  b52252c2de19b03a x3 (rc=0) / alex c8d69f811b23f245 x3 / dooz-15s
+  31ddd4d5b8e6d18e x3; dooz FULL budget 180s 6841d52a20e6597e x2 — ALL MATCH.
+- Zero-drift gate on the rebuilt binary: 15 canonical anchors/controls x3 =
+  45/45 MATCH (micro da73010a, unote 4f1a9e4e, gmdice f3b483fe, ttt af609429,
+  flappy 13cf4746, g2048 59ca1526, csw 3442d9a9 + the six fresh rows above).
+  The rebuilt binary is semantically identical to the CONT-55 record.
+- Pixel-truth census of the fresh faces (scripts/cont56_pixel_analysis.py,
+  views under evidence/cont56/):
+  * simplecalc — the FULL calculator face: display area + ALL 5 button rows
+    visible with real labels (mod ^ sqrt C / 7 8 9 div / 4 5 6 mul / 1 2 3
+    sub / 0 . eq add), blue fills + orange glyphs, rc=0. THE USER BAR
+    ("fully load and see the buttons") IS MET on this calculator.
+  * opencalc — pad visible with real labels (AC()%/div, 789x, 456-, 123+,
+    0=) but compressed to the LEFT 45% of the window; display area empty
+    (top-left glyph debris); remaining root = the pad width/weight geometry.
+  * BMI — real tree: dark action bar + 2 outlined input fields + the blue
+    Calculate button; fields/button hug the RIGHT edge (row weight law gap).
+  * tanana — action bar band + measured/attached preference rows, body
+    light-blank (glyph leg = F-NEW-308, still pending).
+  * alex — blue app bar + dark body; content text not visible.
+  * dooz 180s — the REAL Scaffold face: Material3 surface + top-bar icons +
+    bottom app bar + FAB pill; the game board itself not yet drawn (the
+    Compose draw pipeline); at the 15s gate budget the honest keep-empty
+    white holds (boot composition needs ~80s wall — F-NEW-314 budget class).
+- Input leg (from the recorded S128 wave, re-verified line 4725): view-based
+  calculator taps PROVEN — touch_target_chain max=5, PerformClick x3 via real
+  DEX, DISPLAY STATE CHANGE 90080684 (headingcalc golden a169346e x3
+  preserved; before-frame == golden byte-exact). The Compose tap bridge
+  (F-NEW-267 CLASSIFIED) is the recorded gap that keeps dooz tap-dead.
+- Scripts persisted: scripts/cont56_fresh_apps.sh, scripts/
+  cont56_pixel_analysis.py. Views: evidence/cont56/*.png.
+
+Stage Summary:
+- The honest answer, measured at HEAD: the work DID move the calculators and
+  dooz — simplecalc is a complete visible calculator (buttons included), BMI
+  renders its real form, opencalc's pad is visible-but-compressed, tanana/alex
+  are app-bar+body faces, dooz renders its real Scaffold at a fair budget and
+  is white only under the 15s gate budget. Not complete because each fix
+  uncovers the next real root; the per-app remaining roots are recorded
+  above. Next wave (S56-B) owns the recorded CONT-55 frontier: the
+  menu-content DRAW pipeline (NavigationMenuView RecyclerView draw chain).
+---
+Task ID: S56-B (CONT-56 wave B)
+Agent: Super Z (main)
+Task: pick the next work-list item (the recorded CONT-55 frontier — the
+solitaire menu-content pipeline); mosaic of the loaded app faces uploaded;
+decode + probe + minimal generic fix (F-NEW-328); zero-drift gate; registry
++ evidence + push.
+
+Work Log:
+- The user deliverable: the 14-app mosaic built (scripts/cont56_mosaic.py)
+  and uploaded — uguu.se https://d.uguu.se/RoyCDwop.png + tmpfiles
+  https://tmpfiles.org/dl/weA5K0eWsdwu/cont56_app_mosaic.png + the repo raw
+  (evidence/cont56/CONT56_APP_MOSAIC.png, pushed a077ac8c).
+- Frontier decode: the menu-content pipeline is gated BY INPUT — every
+  toolbar tap answered F117-TAP target=189 (the DrawerLayout); the view
+  tree showed the Toolbar 0 WIDE (0x126, its nav ImageButton a 0-width
+  click target) + the AppBarLayout 1080x1920 + NavigationView stacked at
+  y=3840.
+- Root decode (R347 rows + probe-first): a DEX LinearLayout subclass's
+  super.onMeasure (the appcompat AppBarLayout shape) was served by the S109
+  ROOT-042 bridge law with TWO AOSP divergences: (a) the child-spec source
+  read the legacy width/height mirrors, NOT the LayoutParams
+  (lp_width/lp_height — the programmatic addView write-back store), so
+  programmatic children measured EXACTLY(parent) on both axes; (b) the
+  self answer initialized to the FULL spec and max()'d children in — the
+  wrap sum law never existed. A ViewShadow-level wall law was attempted
+  first and proved DEAD CODE (the bridge claims onMeasure before any
+  shadow dispatch) — reverted with the proof in the source comment.
+- FIX (F-NEW-328, two sites, class-agnostic): child_dim_of = lp_*
+  authoritative with the legacy fallback; the LinearLayout self law per
+  AOSP (orientation-aware sum/max; EXACTLY -> spec; AT_MOST -> min(want,
+  spec); UNSPECIFIED -> want); the other families keep their legacy self
+  answer.
+- Probe fnew328_probe.apk 1cd25382d8a29a35 (real toolchain; the exact
+  AppBarLayout read-back shape): PRE x1 = 1/3 (self=1080x1920
+  child=1080x1920); POST x3 on 11e5fa2c3b4b5037 = 4/0 x3.
+- Solitaire runtime: AppBarLayout 1080x105 (was 1080x1920); NavigationView
+  y=2025 (was 3840); the VISIBLE frame UNCHANGED ba50a4d2 (honest — the
+  closed drawer hides it). NEW frontier recorded: the Toolbar's OWN DEX
+  onMeasure 0-wide face (the support Toolbar body's child-measure/spec
+  arithmetic), then the DrawerLayout child-edge layout law.
+- Zero-drift gate on 11e5fa2c3b4b5037: 15 canonical anchors/controls x3 =
+  45/45 MATCH (dooz 31ddd4d5, micro da73010a, unote 4f1a9e4e, gmdice
+  f3b483fe, opencalc a976d2f9, ttt af609429, flappy 13cf4746, g2048
+  59ca1526, tanana 5f7e0114, csw 3442d9a9, simplecalc e847ca03, BMI
+  b52252c2, alex c8d69f81, notes eb5ebd55, sol ba50a4d2); probe battery ==
+  records (fnew326 13/0, fnew326b 13/0, fnew327 3/0) + fnew328 4/0 x3.
+- Registry 638 -> 639 (scripts/cont56_registry.py): F-NEW-328 appended
+  ROOT-CAUSED-FIXED; F-NEW-309 evidence chain extended. Evidence:
+  evidence/cont56/CONT56_RESULT.md.
+
+Stage Summary:
+- The LinearLayout super measure is now AOSP-faithful end to end
+  (probe-proven: wrap sums, EXACTLY precedence, lp-aware child specs) —
+  the appcompat AppBarLayout family (every ActionBar/Toolbar host) reads
+  real child values through its super call for the first time.
+- The appbar face moved 1920 -> 105 with ZERO visible-face drift anywhere
+  (45/45 byte-identical) — the fix is purely additive for every existing
+  face.
+- Next wave owns: the Toolbar DEX onMeasure 0-wide decode (the hamburger
+  width chain — the last leg before the drawer tap), then the DrawerLayout
+  child-edge layout law (the drawer at the edge, y=0, full height).
+- Scripts persisted: cont56_fresh_apps.sh, cont56_pixel_analysis.py,
+  cont56_mosaic.py, cont56_build_probe.sh, cont56_registry.py.
+
+---
+Task ID: S57 (CONT-57 WAVE A)
+Agent: main (Super Z)
+Task: User directive (Persian): "the calculators did not load 100% — numbers visible but incomplete; several apps/games still white or partial; find a way to make them load completely; loading was big progress but it must become 100% complete; see if it can be more complete and optimized — how?" Plus the standing CONT-56 mosaic+external-upload directive.
+
+Work Log:
+- Baseline frozen: binary 11e5fa2c3b4b5037 (WAVE B F-NEW-328 fix binary), HEAD a91aad8b(+ff). tmp/ APKs reset-liable note recorded (gate script tmp paths stale; upload/cont54_refetch copies used).
+- ROOT-CAUSE DECODE (OpenCalc v53, U007_LAYOUT_DEBUG=2/3 view-tree + spec dumps):
+  * sliding_layout (SlidingUpPanelLayout lp=-1/0) measured 579x1920 (should be 1080-wide, bottom-anchored); constraintLayout2=504; TableLayout rows 0-wide; 0dp+weight buttons 0x351; inputHSV/resultDisplayHSV 52x0.
+  * s132 AXML decode of res/Ok.xml (obfuscated layout names; scanned for mainConstraintLayout/sliding_layout strings): the REAL layout chains inputHSV.top=parent, inputHSV.bottom=guideline1(percent 0.18), resultHSV.top=guideline1, resultHSV.bottom=guideline2, sliding_layout.top=resultHSV.bottom, sliding_layout.bottom=parent — the whole display stack hangs off GUIDELINES.
+  * Three generic law gaps found in the F-148 native CL measure (layout_inflater.cpp): (1) anchor lookup + passes skip vis==8 nodes (Guidelines are always GONE-for-draw; GONE is a legal AOSP anchor target) AND guide percent/begin/end were never parsed; (2) lp==0 with unresolved anchor fell into child_spec(...,0) = EXACTLY(0) (AOSP: one-anchor 0dp degrades to WRAP); (3) lp==-1 with both anchors measured AT_MOST(span) (AOSP: EXACTLY(span)); plus the TYPED-FLOAT law: percent/bias compile as FLOAT 0x04 with NO raw string — atof("") pinned both guidelines at Y=0 (proved: post-gap-(1..3) build still gave HSVs 1080x0 until the FLOAT memcpy landed).
+- MINIMAL GENERIC FIX (F-NEW-329, layout_inflater.cpp + android_shadows.h ViewNode): guide attr parse (FLOAT memcpy / FRACTION /2^24 / raw fallback; begin/end via parse_dim_attr; typed-FLOAT bias); cl_name_to_id drops the vis filter; per-axis Guideline branch (never measured/drawn/wrap-content; edge=begin/end(neg=from far edge)/percent x content span + padding; orient 0=horizontal fixes Y in vertical pass, 1=vertical fixes X in horizontal pass); both-anchors dimension law (0 and -1 -> EXACTLY(span)); no/one-anchor lp==0 -> WRAP; guidelines excluded from wrap aggregation. No APK-specific hacks — all five laws are AOSP-faithful and class-agnostic.
+- Build: chunked foreground make -j2 (sandbox reclaims background jobs — standing lesson). Binary 93110eacb3a1cf41.
+- POST RUN (OpenCalc): guideline1 = 0.18x1920 = 346 EXACT; inputHSV 1080x199 @(0,147); resultHSV 1080x153 @(0,346); sliding_layout 1080x1421 @(0,499); TableLayout 1080-wide; rows 1080x351; 0dp+weight buttons 270x252. Visual: FULL pad (AC ( ) % ÷ / 7 8 9 × / 4 5 6 − / 1 2 3 + / 0 · ⌫ =), display areas on top. Remaining honest gaps recorded: srcCompat vector-drawable ImageButtons draw as plain boxes (0/554 drawable paths resolve — F-NEW-309 family), menu icon.
+- ZERO-DRIFT REGRESSION (binary 93110eacb3a1cf41): 14 anchors/controls x3 = 42/42 byte-identical (dooz 31ddd4d5, micro da73010a, unote 4f1a9e4e, gmdice f3b483fe, tanana 5f7e0114, ttt af609429, flappy 13cf4746, g2048 59ca1526, simplecalc e847ca03, csw 3442d9a9, bmi b52252c2, alex c8d69f81, notes eb5ebd55) + opencalc INTENTIONAL re-pin a976d2f9 -> 0ae271c49d2bd61c x3 deterministic (cont37_regression.sh updated with the re-pin rationale). Probe battery == records (21 probes; f259g 84/7 + fnew302 48/24 documented known rows); fnew328 4/0; fnew322 5/0 (rebuilt); fnew323 probe APK lost to run/ reset and its builder script does not exist — recorded honestly, family unrelated to the CL laws (ViewGroup detach).
+- BMI decode (bonus, same wave): RelativeLayout positions are CORRECT (spinners 0..817, EditTexts 817..1080, button below); the empty left side = Spinner selected-item content is never rendered (no native Spinner content law) — recorded as the next root, NOT fixed this wave.
+- Mosaic + external upload (standing directive): evidence/cont57/CONT57_APP_MOSAIC.png (15 tiles: OpenCalc BEFORE/AFTER pair first) uploaded to https://h.uguu.se/vuQSHepf.png and https://tmpfiles.org/wWAOKxl3jbzH/cont57_app_mosaic.png (0x0.st silent-empty, catbox 502; uguu+tmpfiles succeeded). Permanent copy = repo raw after push.
+- Registry 639 -> 640 (scripts/cont57_registry.py): F-NEW-329 appended ROOT-CAUSED-FIXED; total/count synced 640.
+
+Stage Summary:
+- The user's "calculators must load 100%" got its biggest single step: OpenCalc went from a 45%-compressed pad with NO display to a full-width pad + real display geometry (AOSP-exact guideline math) — with ZERO drift on the other 14 faces (byte-identical x3) and probe battery == records.
+- The answer to "how": one more class-agnostic law set (guidelines + dimension resolution inside ConstraintLayout), proven the same way every wave does — view-tree ground truth, AXML source decode, x3 determinism, 42/42 zero-drift.
+- Next wave owns: vector-drawable decode leg (OpenCalc icon buttons), BMI Spinner content law, tanana glyph leg (F-NEW-308), alex content text, dooz Compose tap bridge (F-NEW-267).
+- Scripts persisted: cont57_mosaic.py, cont57_registry.py (cont37_regression.sh opencalc re-pin).
+
+---
+Task ID: S57-B (CONT-57 WAVE A addendum — F-NEW-308 root pinpointed)
+Agent: main (Super Z)
+Task: Post-push decode pass on the next calculator-family root (tanana glyph leg).
+
+Work Log:
+- Fresh tanana run (upload/cont54_refetch/com.tananaev.calculator_11.apk, binary 93110eacb3a1cf41) with U007_LAYOUT_DEBUG=2: the anchor face is the preference screen; rows are real TextViews at real geometry (1080x44 rows at y=126/170/214/258/302).
+- PINPOINT: view 456 text='Notification settings' text_size=0.0 lines=1; 458 'Ongoing notification'; 461 'Lock screen notification' — TEXT IS PRESENT, textSize is ZERO. With ts=0 the text layout yields zero-advance glyphs = the blank-bar face. F-NEW-308 moves from "pending root" to a named law gap: PROGRAMMATIC TextViews (AndroidX preference rows built by DEX code, not XML inflate) never receive the themed default textSize chain (AOSP TextView ctor: defStyleAttr textViewStyle -> TextAppearance -> theme R.attr.textSize, default 14sp).
+- NOT fixed this wave (honest): the programmatic styled-attr chain is its own campaign (same family as the F-NEW-328 programmatic-LP work — the constructor-side mirror); shipped no speculative fix.
+
+Stage Summary:
+- Next wave's fix target is exact: give the programmatic TextView shadow-ctor path the AOSP themed-default textSize law (and audit its sibling defaults: textColor, minHeight). Expected blast radius: tanana rows gain glyphs; AndroidX preference apps family-wide.
+
+---
+Task ID: S56-CONT (CONT-56 Phase B)
+Agent: Super Z (main)
+Task: User demand "کامل کامل لود بشه" (complete-complete loading) — the calculators render numbers but are incomplete; several apps fully white/dark. Decode the remaining roots at HEAD, fix generically, zero-drift regression, evidence + push. Also: mosaic of the loaded apps uploaded to an external site.
+
+Work Log:
+- State reconciliation FIRST (honesty): the prior session summary claimed CONT-55/56 artifacts (commit 5c9d72e8, evidence/cont56) that DO NOT exist in this container — the real HEAD lineage is CONT-10-W6 (origin/main 6a66806a + one cleanup commit; registry 566 roots; last = F-NEW-259b). Rebuilt the engine from source (dalvik_engine.o needed -g0; OOM kill otherwise): fresh binary cb1d33e62ad18fe0, then the anchor gate proved 5/5 anchors x3 byte-identical (opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b / dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8) — the fresh binary is semantically the frozen W6 lineage.
+- Fresh six-app scoreboard at HEAD (x3, pixel census): simplecalc 7960bce447ac6d8f (full pad, display empty), tanana 31ddd4d5b8e6d18e (uniform white, 0 errors), bmi b5a7a35d5fe0564b (uniform dark), alex same dark, dooz180 d602648e8e401895 (white — F-NEW-256 frontier), opencalc a976d2f9 (pad compressed to left 45%, display empty), chess b5a7a35d (uniform dark). User's complaint CONFIRMED by measurement: numbers visible != complete.
+- F-NEW-268 (dex/reflection): BMI died in BackStackRecord.doAddOp ISE "must be a public static class" — ART reads nested-class modifiers from the @InnerClass annotation (class_def flags omit ACC_STATIC; measured class_def=0x1 vs annotation accessFlags=0x9). Fix: dex parser decodes the SYSTEM InnerClass annotation into ClassInfo.has_inner_class_flags/inner_class_access_flags; getModifiers prefers them for nested classes.
+- F-NEW-269/269b (framework/fragments): the S83-APXACT semantic shadow bypassed support FragmentActivity.onCreate without reproducing its fragment-host state — FragmentManagerImpl.mHost null → commit ISE "Activity has been destroyed" (THROWABLE-MSG proven). Fix: shadow walks activity.mFragments → controller.mHost → HostCallbacks.mFragmentManager and writes mHost/mContainer (attachController law) + mCurState=ACTIVITY_CREATED(2) (the bypassed onCreate tail's dispatchCreate + the F-NEW-172-suppressed dispatchStart left the fragment ladder at INITIALIZING). Honest gap recorded: STARTED face not reproduced.
+- F-NEW-270 (framework/handler): EXP-043's bridge stub silently dropped Handler.post/postDelayed/removeCallbacks for framework receivers — scheduleCommit's mExecCommit never ran. Fix: route queue-shaped methods to the framework HandlerShadow (one deterministic MessageQueue).
+- F-NEW-271 (dex/bridge): Preconditions.checkNotNull identity law (AOSP: return args[0]; NPE on null) — the STUB-ONLY skip left the bridge answering null, destroying every value passing through (FragmentHostCallback.mHandler stored <unset> despite ARG-TRACE proving the arg arrived intact).
+- F-NEW-272 (dalvik/collections): android.util.SparseArray had NO law — makeActive/moveToState bookkeeping iterated zero entries. Fix: faithful AOSP subset (key-sorted, put/get/size/valueAt/keyAt/indexOfKey/delete/clear) on heap fields.
+- F-NEW-273 (framework/inflater): Activity.getLayoutInflater + LayoutInflater.cloneInContext/setFactory2 laws — the fragment ladder's inflater chain answered null → onCreateView inflate ran on a NULL receiver (ROOT-059).
+- RESULT (measured, x3 byte-identical): BMI b5a7a35d→56c177db7a04c054, uniform dark → REAL FORM (2 EditText fields + blue Calculate button; 8-node view tree; pixel census nonbg 0%→2.3%, button_like=1). Remaining honest gaps: BMI form right-squeezed (row-weight law gap), alex = androidx navigation/material chain (ISE "Fragment null has not been attached yet" + CoordinatorLayout anchor id null), tanana white root undecoded, simplecalc/opencalc display-text + pad-geometry gaps, dooz = F-NEW-256 compose draw frontier.
+- Zero-drift regression at the final binary: anchors 5/5 x3 byte-identical (all six engine changes semantically neutral for the anchor corpus; bmi/alex are not anchors). Six-app scoreboard re-run x3 all deterministic.
+- Mosaic: evidence/cont56/cont56_mosaic.png (9 apps, labeled with honest states) uploaded: https://d.uguu.se/OqGgeERr.png (+ tmpfiles mirror https://tmpfiles.org/wVALKccsbwZH/cont56_mosaic.png). Registry 566→572 (F-NEW-268..273, no inflation). Artifacts: evidence/cont56/{cont56_mosaic.png, cont56_scoreboard.json}; scripts/cont56_*.sh/py.
+
+Stage Summary:
+- Six new generic roots closed with byte-level + runtime-trace evidence; the support-fragment pipeline (attach → commit → queue → execute → state ladder → onCreateView → inflate) is now live end-to-end for the first time on this binary — BMI renders a real form where the same HEAD rendered nothing at wave start.
+- User's "100% complete" standard: NOT yet met corpus-wide (BMI partial-real; simplecalc/opencalc partial; tanana/alex/dooz still blank) — the remaining roots are named and queued (row-weight geometry, androidx nav/material, tanana white root, compose draw path).
+- CONT-56b REBASE NOTE: origin/main advanced with parallel waves (F-NEW-328/329 layout laws; F-NEW-260 = the same InnerClass law as F-NEW-330 — marked DUPLICATE-SUPERSEDED; F-021/F-NEW-313 = the same inflater laws as F-NEW-335 — marked DUPLICATE-SUPERSEDED, setFactory2 rider folded into F-NEW-313). Merged binary c8b078ba88ca255d: the FULL standing gate 13 anchors x3 = 39/39 MATCH (opencalc re-pin 0ae271c4 intact; tanana APK restored from upload/cont54_refetch into tmp/). BMI at the merged head: b52252c2de19b03a x1 (real form on the light theme surface + action bar; the row-weight squeeze is the named next gap).
+
+---
+Task ID: S56-CONT-PUSH
+Agent: Super Z (main)
+Task: Record CONT-56b rebase + merged-gate + push
+
+Work Log:
+- Rebased the CONT-56b commit onto the parallel waves' main (da28ea32: F-NEW-328 LinearLayout.onMeasure, F-NEW-329 ConstraintLayout guidelines — OpenCalc FULL face 0ae271c4; F-NEW-260 InnerClass law = my F-NEW-330 duplicate; F-021/F-NEW-313 inflater laws = my F-NEW-335 duplicate). Conflict resolution: union-merge (registry 640→646 with F-NEW-330/335 marked DUPLICATE-SUPERSEDED; my four NEW roots re-landed as F-NEW-331/331b/332/333/334 on the clean lineage after discarding a sed remap that touched parallel references).
+- Merged binary c8b078ba88ca255d. FULL standing gate: 13 anchors x3 = 39/39 byte-identical (incl. opencalc re-pin 0ae271c4, tanana 5f7e0114 [APK restored to tmp/ from upload/cont54_refetch], csw 3442d9a9, dooz180 6841d52a). BMI at merged head: b52252c2de19b03a — REAL FORM on the light theme surface (was uniform dark at wave start).
+- PUSH: b7fa8f13 == origin/main. SECRET GUARD PASS. Mosaic raw: https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/main/evidence/cont56/cont56_mosaic.png (+ uguu mirror).
+
+Stage Summary:
+- CONT-56b closed at the merged head: four new generic roots (fragment-host attach + state, Handler queue routing, Preconditions identity, SparseArray) live; the support-fragment pipeline works end-to-end; zero drift across the full 13-anchor gate; honest next-frontier list recorded (BMI/simplecalc row-weight geometry, alex androidx-nav/material chain, tanana F-NEW-308 text-size law [parallel-decoded], dooz F-NEW-256 draw path).
+
+---
+Task ID: S58 (CONT-58 — F-NEW-336)
+Agent: Super Z (main)
+Task: User "ادامه" (continue) on the standing "complete-complete loading" directive — the tanana calculator still showed a blank preference bar. Decode the real root at HEAD, fix generically, zero-drift regression, registry + evidence + push.
+
+Work Log:
+- State reconciliation: the container had been reset to a stale checkout (e99c2fbd, CONT-10 era) — fast-forwarded to origin/main bebb7cd4; ALL CONT-56/57 waves intact (OpenCalc full face 0ae271c4 via F-NEW-329, BMI real form b52252c2 via F-NEW-331..334, mosaics uploaded). Rebuilt the engine: c8b078ba88ca255d — BYTE-IDENTICAL to the recorded merged binary (no toolchain adjudication needed). Baseline gate frozen: anchors 27/27 + csw 3/3 + simplecalc 3/3 + dooz180 3/3 byte-identical.
+- S57-B hypothesis REFUTED at HEAD (honesty): MINIANDROID_S109_BITMAP proved the tanana rows shape 20 real glyphs at 36.75px (the 14sp-fallback textSize chain WORKS — textSize was never the blocker). The smoking gun: draw color=(0,0,97,0) — alpha-0; every glyph pixel blended away by set_pixel's src-over law.
+- Root decoded link-by-link: textColorPrimary (0x01010036) -> base Theme answer type=3 (STRING) data=0x61 (string-pool INDEX 97), str='res/color/abc_primary_text_material_light.xml' — an APPCOMPAT LIBRARY file inside the app APK. The S127 file law only consults the FRAMEWORK router (find_id MISS — no abc_* rows there) so the raw STRING returned untouched, and the engine consumer cast data DIRECTLY as ARGB = RGBA(0,0,97,0). Z-order EXCLUDED via a temporary env-gated RECT-TRACE (GREY_200 container fills paint BEFORE the text; nothing paints over).
+- MINIMAL GENERIC FIX (F-NEW-336, three sites, zero app knowledge): (a) resolve_apk_file_color() — extract the res/color/… entry from the APK, parse_state_list, default-state tri-match (window_focused=true, enabled=true, pressed/selected/checked/activated=false), in-item @color refs deref through the APP table (bounded depth 4); (b) resolve_theme_attr_typed() S127 branch — framework-router MISS falls through to the app-package file law, value re-typed INT_HEX; (c) the engine textColorPrimary consumer — TYPE LAW: only is_int()/is_color() answers paint as ARGB, anything else falls back to the legacy default (a string-pool index must never render as a color). Two env-gated read-only diagnostics kept generic (MINIANDROID_RECT_TRACE point provenance; S124-ATTRRAW typed answer).
+- RESULT (measured): tanana dark_glyph_samples 0 -> 4420; all five preference rows render real text at (29,29,29) = the resolved abc_primary_text_material_light color; new face 601e0219d4cab10b x3. simplecalc fan-out: the display's initial "0" now renders — RAW-diff proven (base binary re-built via stash to c8b078ba, simplecalc re-run to the exact old anchor e847ca03, fixed binary 06a08f7aadb3d402): the ONLY changed pixels in the 1080x1920 face are the 0-glyph bbox (1059-1078, 481-507); new face 950b955c6999d72a x3. BMI b52252c2 / alex c8d69f81 byte-identical.
+- ZERO-DRIFT REGRESSION (binary 06a08f7aadb3d402): anchors 27/27 (8 faces byte-identical; tanana re-pinned with REAL_APP_CONTENT rationale in cont37_regression.sh) + csw 3/3 (3442d9a9) + simplecalc 3/3 (re-pinned 950b955c, raw-diff rationale recorded) + dooz180 3/3 (6841d52a). Probe battery == records: 21 canonical probes (f259g 84/7 + fnew302 48/24 documented known rows) + fnew322 5/0 + fnew326 13/0 + fnew326b 13/0 + fnew327 3/0 + fnew328 4/0 x3.
+- Registry 646 -> 647 (scripts/cont58_registry.py): F-NEW-336 appended ROOT-CAUSED-FIXED; F-NEW-308 marked DUPLICATE-SUPERSEDED (same symptom; real root = F-NEW-336; the textSize hypothesis refuted with the measured evidence); total_roots synced. Evidence: evidence/cont58/{CONT58_RESULT.md, tanana_rows_before.png, tanana_rows_fixed.png, simplecalc_old_new.png}.
+
+Stage Summary:
+- The user's "complete-complete" campaign advanced another real leg: the tanana blank-bar face is DEAD — the calculator family's preference screens now render their actual text corpus-wide (any appcompat app whose theme text colors route through library ColorStateList files benefits).
+- The S57-B textSize pinpoint was corrected the honest way: measured at HEAD, refuted with the shape trace, superseded in the registry with the evidence — no silent rewrite.
+- Next wave owns: BMI row-weight squeeze + Spinner selected-item content law, alex androidx-nav chain, OpenCalc srcCompat vector-drawable decode (F-NEW-309 family), dooz Compose draw path (F-NEW-256 frontier) + Compose tap bridge (F-NEW-267).
+- Scripts persisted: cont58_registry.py (cont37_regression.sh tanana/simplecalc re-pins).
+
+---
+Task ID: S59 (CONT-59 WAVE A)
+Agent: Super Z (main)
+Task: User directive "continue the big task, doubled" — the complete-complete loading campaign at HEAD a212cbad. Front 1: BMI Spinner content law (named in S57/S58 next-wave list). Standing rule: new problems get fixed the moment they are seen.
+
+Work Log:
+- State reconciliation: the container had reset AGAIN to a stale checkout (e99c2fbd, CONT-10 era; build dir empty; 5c9d72e8 not an object) — fast-forwarded to origin/main a212cbad (ALL CONT-56/56b/57/58 waves intact). Rebuilt the engine in one foreground chunk: 06a08f7aadb3d402 — BYTE-IDENTICAL to the recorded CONT-58 binary (no toolchain adjudication). tmp/ APKs restored from upload/cont54_refetch per the standing lesson (gate script tmp paths stale: tanana/csw/simplecalc would have read missing files → 9 empty-sha DRIFT rows before the restore).
+- Baseline gate frozen: 33/33 REG MATCH at 06a08f7a (15 anchors x3 incl. gmdice f3b483fe + tanana 601e0219 + simplecalc 950b955c re-pins intact) + probe battery == records (f259g 84/7 + fnew302 48/24 documented known rows).
+- ROOT DECODE (BMI v402, U007_LAYOUT_DEBUG=2): weightSpinner/heightSpinner measured 817x105 at real positions, children=0, text='' — no adapter DEX calls anywhere in the log. BMIMain$PlaceholderFragment.onCreateView is inflate-only; the fragment layout's <Spinner> elements carry android:entries="@array/..." — the AOSP AbsSpinner CONSTRUCTOR builds the ArrayAdapter internally (no [ARRAY-ADAPTER] trace is the EXPECTED face). AXML decode (scripts/cont59_axml.py): entries REF 0x7f020001/0x7f020000; the arrays exist ONLY as compiled ARSc complex entries (no res/values files in the APK) and resolve_string_array (F-NEW-319) already handles them.
+- FIX F-NEW-337 (one generic site): layout_inflater.cpp entries branch — resolve_string_array(ref) → selected item (AOSP default index 0) into a.text → the generic node.text → layout_text → TextShaper pipeline unchanged. Measured: U007 text='Kilograms'/'Centimetres'.
+- NEW PROBLEM SEEN MID-WAVE (solved immediately, per the standing rule): the spinner text drew at the right geometry but color=(0,0,16,0) — ALPHA-0 (S109-SHAPE smoking gun). The consumed color file = framework text_color_primary.xml whose default item is android:color="?attr/colorForeground" (TYPE_ATTRIBUTE 0x01010030, byte-verified against docs/upstream/aosp/res_color/text_color_primary.xml) — the deref fed the THEME-ATTR id to the RESOURCE table, read the attr-DEFINITION row (an INT format byte) and painted its data (16) as ARGB.
+- FIX F-NEW-337b (two generic sites): resolve_framework_file_color() deref lambda + resolve_apk_file_color() item loop route 0x0101xxxx item colors through resolve_theme_attr_typed() with the F-NEW-336 type law (int/color accepted; STRING res/color/… recurses through the app-package file law; else honest nullopt → legacy fallback).
+- Fan-out measured honestly: gmdice f3b483fe → 3891679d — RAW-DIFF (old binary re-built via stash to the byte-exact 06a08f7a) proves EXACTLY one changed region (62,1155)-(1020,1332), 18923 px: 'Push buttons to roll!' renders themed white for the first time (REAL_APP_CONTENT retained, richer render). tanana/simplecalc/opencalc/BMI-other-faces byte-identical. BMI face changed b52252c2 → fe190527 (spinner entries text + themed color; NOT a gate anchor, recorded here).
+- ZERO-DRIFT REGRESSION (binary c0162daeaee55a10): 14 faces x3 byte-identical + gmdice INTENTIONAL re-pin (rationale in cont37_regression.sh) + probe battery == records. BMI spinner visibility honestly stays PARTIAL: the themed color is WHITE (the app's declared dark Material base theme — correct chain) sitting on the engine's GREY_200 container fill; the named next root is the EXP-092 fill vs the AOSP transparent-container law, blast-radius measured (tanana 1.9M / simplecalc 614k / opencalc 272k / microtimer 124k / unote 166k fill px) → ships as its own wave with per-anchor raw-diff audits.
+- Registry 647 → 649 (scripts/cont59_registry.py): F-NEW-337 + F-NEW-337b appended ROOT-CAUSED-FIXED; total_roots synced. Evidence: evidence/cont59/{CONT59_RESULT.md, gmdice_f337b_before_after.png, bmi_f337_before_after.png}.
+
+Stage Summary:
+- Two new generic roots closed in one wave: declarative Spinner content (entries law) and theme-attribute ColorStateList items (the 0x0101xxxx law) — both class-agnostic, zero app knowledge, probe of record = raw-diff single-region proof.
+- The BMI spinner leg advanced the user's complete-complete campaign: content now materializes with the CORRECT themed color; the remaining visibility blocker is named with its measured blast radius (the transparent-container wave).
+- Next wave owns: F-NEW-338 candidate (GREY_200 fill → transparent-container law), BMI row-weight squeeze, alex androidx-nav chain, OpenCalc srcCompat vector-drawables (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), plus the standing mosaic+external-upload directive.
+
+---
+Task ID: S59-B (CONT-59 WAVE B)
+Agent: Super Z (main)
+Task: The named next root from S59-A: the EXP-092 GREY_200 container fill vs the AOSP transparent-container law (the visibility blocker for BMI's correctly-colored spinner text). Doubled-task directive continues.
+
+Work Log:
+- FIX F-NEW-338 (one site): the container branch in the execution_engine draw walk no longer paints GREY_200 — a background-less container is TRANSPARENT (AOSP View.draw law, completing R-NEW-336); the theme windowBackground (EXT01 fb.clear law) shows through. The fill's visibility purpose stays for LEAF views (C013 diagnostic law; the placeholder requires children.empty() — containers unaffected structurally).
+- BMI measured FIRST at the fix binary 90e0112c1face89b: spinner regions (48,48,48) = the app's real dark window + WHITE glyph pixels (1108/1294) — 'Kilograms'/'Centimetres' VISIBLE. The F-NEW-337→337b→338 chain is complete end-to-end: XML entries → selected item → themed ?attr/colorForeground → visible text on the honest surface.
+- RAW-DIFF AUDIT per face (old binary re-built via stash to the byte-exact c0162daeaee55a10; all five recorded faces reproduced byte-exactly BEFORE the fix binary re-built): microtimer da73010a→55343bbe (fill 225→255,255,255 = its 0xffffffff window; zero content px lost); unote 4f1a9e4e→90a67cc1 (top band 225→48 default dark; band empty both sides — verified visually); opencalc 0ae271c4→b7a7fe8e (content region 225→48 = the app's dark Material window; pad cells + glyphs unchanged; the previously light-washed empty pad cell now honest); tanana 601e0219→afe0bd8d (1.94M px 225→250 = the app's 0xfffafafa window; rows visible, text re-blend only); simplecalc 950b955c→341b9cec (225→250; display/pad byte-stable outside the swap).
+- ZERO-DRIFT REGRESSION: gate 33/33 MATCH at 90e0112c1face89b (5 faces re-pinned with per-face raw-diff rationale in cont37_regression.sh); probe battery == records (f259g 84/7 + fnew302 48/24 documented known rows).
+- Mosaic refreshed with the post-338 faces (13 tiles) and uploaded: https://h.uguu.se/RbaoonQL.png (HTTP 200) + tmpfiles mirror; pushed as d52fec8f earlier in the wave.
+- Registry 649 → 650 (scripts/cont59b_registry.py): F-NEW-338 appended ROOT-CAUSED-FIXED; total_roots synced. Evidence: evidence/cont59/{f338_faces_review.png, unote_f338_topband.png}.
+
+Stage Summary:
+- The complete-complete campaign's biggest single visual step: dark-theme apps now show their REAL window color corpus-wide (BMI spinner labels visible; opencalc/unote honest dark surfaces; tanana/simplecalc at their true theme whites) — every changed face raw-diff-proven as fill-color-swap-only, zero content pixels lost.
+- Standing 33-anchor gate is green at the new pins; the doubled task list continues: BMI row-weight squeeze, alex androidx-nav chain, OpenCalc srcCompat vector-drawables (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267).
+
+---
+Task ID: S59-C (CONT-59 WAVE C)
+Agent: Super Z (main)
+Task: The doubled list continues — alex androidx-nav chain front 1: the <fragment> tag root (the '[V4-TAG] unknown short tag <fragment>' evidence from the alex decode).
+
+Work Log:
+- ROOT DECODE (alexcalc_20 at 0d294972): MainActivity.onCreate NPEs at findFragmentById(R.id.nav_host) — the [V4-TAG] line proved the layout's <fragment> short tag degraded to a generic View leaf: the AOSP FragmentLayoutInflaterFactory (FragmentActivity factory instantiating the named fragment) never existed in the engine; no fragment was created, nothing attached, nav chain dead at birth.
+- FIX F-NEW-339 (three generic sites): (1) layout_inflater — a <fragment> branch reporting (view_id, frag_class_desc, tag, xml_id) through a new Factory-law hook after the element attrs applied (android:name with the AOSP class= fallback); (2) DalvikEngine::instantiate_fragment_tag — DEX-existence gate, the FragmentFactory NO-ARG ctor via try_recursive_invoke, __frag_host__ linkage, a synthetic add(container=xml_id, tag) pushed through FragmentManagerShadow::enqueue_committed (the SAME queue the DEX commit path feeds — one lifecycle owner), + record_fragment so findFragmentById(container==id) and the to_started drain resolve it; (3) execution_engine wiring through the RT Factory law.
+- NEW PROBLEM SEEN MID-WAVE (fixed immediately): the first test showed hook=EMPTY (F339-DBG probe) — ensure_loaded() recreates the LayoutInflater with its OWN hook-reapply block (the G11 headingcalculator Factory-law lesson applies to EVERY new hook) — the fragment tag hook was wired into the inflater() accessor only. Fixed by applying it in ensure_loaded too. Measured after: hook=SET.
+- RESULT (measured): [F-NEW-339] <fragment> NavHostFragment obj#557 container=2131296689 synthetic add committed; [F-NEW-304] created/started/resumed drains ALL run for it. Zero-drift gate: 33/33 MATCH (the hook is additive — only <fragment> tags trigger; the corpus anchors carry no fragment tags).
+- alex honestly stays PARTIAL with the remaining chain NAMED and evidenced: (1) the androidx R8-obfuscated DEX-state face — alex's findFragmentById reads the REAL mAdded ArrayList + mContainerId (R8-renamed fields); the synthetic commit must ultimately run the REAL androidx DEX commit chain (F-NEW-262 territory; F-NEW-331's fixed-name walk = 0 hits on alex — the R8 field-name law is the root); (2) the CoordinatorLayout anchor ISE ('descendant view with id null to anchor AppBarLayout' — the S56-CONT root); (3) the nav-graph setGraph chain.
+- Registry 650 → 651 (scripts/cont59c_registry.py): F-NEW-339 appended ROOT-CAUSED-FIXED.
+
+Stage Summary:
+- The <fragment> short tag now instantiates real fragments through the FragmentFactory law with the full lifecycle drain — a corpus-wide capability (any XML-fragment app benefits); the alex nav chain advanced one link with the next roots named precisely.
+
+---
+Task ID: S59-PUSH-VERIFY
+Agent: Super Z (main)
+Task: Record CONT-59 push state.
+
+Work Log:
+- Four commits pushed: 4b9a3281 (WAVE A: F-NEW-337/337b), d52fec8f (mosaic refresh + upload https://h.uguu.se/RbaoonQL.png), 0d294972 (WAVE B: F-NEW-338), 4d8ae63b (WAVE C: F-NEW-339). HEAD == origin/main == 4d8ae63b. Secret guard not tripped (text-only evidence + measured PNGs).
+
+Stage Summary:
+- CONT-59 closed 4 new generic roots (F-NEW-337, 337b, 338, 339): registry 647 → 651; every face change raw-diff-proven; three zero-drift gates (33/33) at three binaries; the doubled-task directive delivered 4 fix waves + the standing mosaic upload in one session.
+- Queued next: BMI row-weight squeeze, OpenCalc srcCompat vector-drawables (F-NEW-309), alex R8 DEX-state + CoordinatorLayout anchor + nav-graph, dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), Solitaire/notes audit.
+
+---
+Task ID: S60-A (CONT-60 WAVE 1)
+Agent: Super Z (main)
+Task: User directive "continue at a high number of tasks" — the complete-
+complete loading campaign continues at doubled scale. Front 1: the BMI
+form geometry (queued since S56-CONT as the "row-weight squeeze"). Standing
+rule: new problems get fixed the moment they are seen.
+
+Work Log:
+- State reconciliation: the container had reset AGAIN to the stale CONT-10
+  checkout (e99c2fbd; empty build dir; no cont56 evidence) — fast-forwarded
+  to origin/main 1a75e8f8 (ALL CONT-56..59 waves intact; registry 651).
+  Rebuilt in one foreground chunk: 1574e61808d897ea (toolchain SHA drift
+  again container-only — semantic identity adjudicated by the gate).
+  Baseline frozen: 36/36 REG MATCH (12 faces x3) + probe battery == records
+  (f259g 84/7, fnew302 48/24 documented known rows). tmp/ APKs restored
+  from upload/cont54_refetch per the standing lesson.
+- ROOT DECODE (BMI v402): the U007 tree showed weightSpinner at (0,315)
+  while its XML ground truth (decoded with a CORRECTED offset parser,
+  scripts/cont60_axml2.py — the legacy tool read attrs 16 bytes into the
+  element header) says layout_alignTop=weightNum → y MUST be 231. The
+  engine's MEASURE pass is faithful (independent top/bottom anchor chains,
+  anchor-margin law, both-anchors EXACTLY(span)) and caches the edges; the
+  LAYOUT pass fast-path computed (0,231) from the cache — then the 3-pass
+  fixed-point loop OVERWROTE it to (0,315) via its simplified else-if
+  chain (which never reaches alignTop when above is present). The '|| b.done'
+  clause explicitly permitted overwriting replay-final boxes.
+- FIX (F-NEW-340, one site, law-faithful): Box.replay flag on fast-path
+  children; the fixed-point loop skips replay boxes (the AOSP onLayout
+  replay law the same block already records); the multi-pass chain stays
+  fully live for fallback children (programmatic addView paths).
+- RESULT (measured): weightSpinner (0,315)→(0,231), heightSpinner
+  (0,470)→(0,420) — the XML alignTop ground truth; face
+  88a8fea88a944f31 → fb7c45d12014e366; form regions pixel-verified
+  (spinner white glyphs; EditText 153-grey frames; blue Calculate button).
+- ZERO-DRIFT REGRESSION (binary 290c94597bf8fff4): 36/36 REG MATCH
+  (12 faces x3, no re-pins) + probe battery == records. The fix is
+  semantically neutral for the whole anchor corpus.
+- Registry 651 → 652 (F-NEW-340 appended ROOT-CAUSED-FIXED). Evidence:
+  evidence/cont60/bmi_w1_fixed_form.png. Diagnostics: MINIANDROID_RL_TRACE
+  (env-gated read-only, measure+layout passes).
+
+Stage Summary:
+- The BMI "right-squeeze" root is dead: the real law gap was never
+  row-weight — it was the layout pass violating its own replay contract.
+  The BMI form now matches the APK's XML ground truth line-for-line
+  (spinners left, fields right, rows aligned, blue button).
+- Queued next (doubled list): OpenCalc srcCompat vector-drawables
+  (F-NEW-309 family), dooz Compose draw (F-NEW-256) + tap bridge
+  (F-NEW-267), alex R8 DEX-state + CoordinatorLayout anchor + nav-graph,
+  Solitaire/notes audit, mosaic refresh + external upload.
+
+---
+Task ID: S60-B (CONT-60 WAVE 2)
+Agent: Super Z (main)
+Task: The doubled list continues — the OpenCalc ImageButton vector icons
+(the "srcCompat vector-drawable family" queued since S58). Standing rule:
+new problems get fixed the moment they are seen.
+
+Work Log:
+- Decode: GfxProvenance showed all five OpenCalc vector icons (menu
+  overflow, exponent, scientist-mode chevron, decimal point, backspace)
+  DECODING (vector->rgba 63x63) and DRAWING (DRAW_CALLED=true at the
+  correct fit rects, e.g. (521,531) 126x126) — yet the face census showed
+  the regions pure window color. A transparency failure, not placement.
+- Static AXML decode of res/5n.xml (corrected-offset parser): <vector>
+  tint = ?app-attr 0x7f0404b8, fillColor = ?android:attr white. The
+  resolver fed attr ids to arsc().resolve_value() FIRST — the attr-
+  DEFINITION row (a format-flag INT) came back, is_int() accepted it,
+  argb = format flags (ALPHA-0); the SRC_IN tint law then multiplied the
+  fill alpha to zero. Same law family as F-NEW-337b (the 0x0101xxxx
+  item-color deref), never applied to the vector resolver.
+- FIX (F-NEW-341, one generic site): image_ref_resolver routes app-attr
+  ids (0x7f04xxxx) through resolve_theme_attr_typed with the F-NEW-336
+  type law (color/int; res/color file recursion; else honest nullopt =
+  no tint, the own fillColor paints). Engine persists apk_path_ for the
+  resolver (set in stage_load_apk).
+- RESULT (measured): all five icons render — menu dots, exponent caret,
+  chevron, point disc, backspace tag-x (black glyphs, the themed tint).
+  NEW PROBLEM SEEN (named, not speculatively fixed): the pad ImageButtons
+  paint an opaque dark bg where the real app is borderless-transparent
+  (?attr/selectableItemBackgroundBorderless family) — recorded as the
+  next-wave root with the framework-attr branch gap.
+- RAW-DIFF single-family proof (old binary re-built via stash to the
+  byte-exact 290c9459): 22,483 changed pixels, 100% inside the five icon
+  glyph boxes; display band and pad text unchanged.
+- ZERO-DRIFT REGRESSION (d1421eb23535e163): 33/36 REG MATCH + opencalc
+  x3 INTENTIONAL re-pin (REAL_APP_CONTENT retained, richer render —
+  rationale recorded in cont37_regression.sh) + csw 3/3 + simplecalc 3/3
+  + dooz180 3/3.
+- Registry 652 → 653 (F-NEW-341 ROOT-CAUSED-FIXED). Evidence:
+  evidence/cont60/opencalc_f341_before_after.png.
+
+Stage Summary:
+- The OpenCalc face is icon-complete for the first time: every pad icon
+  and the overflow menu render real vector art with the themed tint. The
+  raw-diff proof bounds the change to exactly the icon glyphs.
+- Queued next: the borderless-transparent bg chain (F-NEW-342 candidate),
+  dooz Compose draw (F-NEW-256) + tap bridge (F-NEW-267), alex R8
+  DEX-state + CoordinatorLayout anchor, Solitaire/notes audit, mosaic.
+
+---
+Task ID: S60-C (CONT-60 WAVE 3)
+Agent: Super Z (main)
+Task: The new problem seen mid-wave-2, fixed immediately per the standing
+rule: the OpenCalc pad ImageButtons painted opaque dark cells where the
+real app is borderless-transparent over the themed window.
+
+Work Log:
+- Decode (two levels): (a) the pad ImageButtons carry NO bg attr (their
+  bg = the imageButtonStyle borderless chain — AOSP-transparent; the
+  draw walk correctly paints nothing); (b) the DARK behind them = the
+  WINDOW fallback — the app's theme declares windowBackground =
+  ?android:attr/colorBackground (TYPE_ATTRIBUTE 0x01010031), a framework
+  ATTR with no table row, so arsc().resolve_full() failed (ok=0, proved
+  with the extended [S95-WINBG*] read-only diagnostics) and
+  resolve_window_background_argb returned nullopt → the hardcoded
+  0x303030 default masked the themed window.
+- FIX (F-NEW-342, site #4 of the theme-attr law family): the reference
+  deref routes framework ATTR ids through resolve_theme_attr_typed; the
+  themed answer accepts color/int; res/ file strings recurse the file
+  law; else honest nullopt. OpenCalc's real answer: 0xffffffff
+  (background_material_light — the app's light theme).
+- RESULT: [EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255);
+  the borderless icons now sit on the real themed white — the light face
+  matches the app's design. The F-NEW-338 re-pin rationale is honestly
+  CORRECTED in the registry (the 48-dark "app window" was this fallback).
+- RAW-DIFF-PROVEN (old binary via stash to byte-exact 53e8d711): every
+  sampled changed pixel = the pure window swap (48,48,48)→(255,255,255)
+  in the pad band + row separators; icon glyphs unchanged.
+- ZERO-DRIFT REGRESSION (d99fe6e1596fed06): 33/36 + opencalc x3
+  INTENTIONAL re-pin (f25b754c, rationale in the gate script) + csw 3/3
+  + simplecalc 3/3 + dooz180 3/3 + probe battery == records.
+- Registry 653 → 654 (F-NEW-342 ROOT-CAUSED-FIXED).
+
+Stage Summary:
+- The theme-attr law family now covers all four painted-color sites
+  (ColorStateList items F-NEW-337b, TextView colors F-NEW-336, vector
+  tints F-NEW-341, windowBackground F-NEW-342). OpenCalc's face is
+  complete-complete for the pad: real icons on the real themed window.
+- Honest next frontier named: the windowBackground @drawable-file form
+  (ColorDrawable/InsetDrawable XML chains) still nullopts; no anchor
+  carries one.
+- Queued next: dooz Compose draw (F-NEW-256), dooz tap bridge
+  (F-NEW-267), alex R8 DEX-state, Solitaire/notes audit, mosaic.
+
+---
+Task ID: S60-MOSAIC (CONT-60 mosaic refresh + external upload)
+Agent: Super Z (main)
+Task: The standing user directive — mosaic of the loaded apps refreshed
+with the CONT-60 faces and uploaded to an external site.
+
+Work Log:
+- Mosaic rebuilt (scripts/cont60_mosaic.py): 12 tiles — OpenCalc with the
+  F-NEW-341/342 face (icons + themed window), BMI with the F-NEW-340
+  aligned form, plus the ten standing faces (simplecalc, tanana, gmdice,
+  dooz honest-scaffold, csw, ttt, flappycow, 2048, microtimer, unote).
+- UPLOADED: uguu.se https://n.uguu.se/zYKXvGqW.png (HTTP 200 verified) +
+  tmpfiles mirror https://tmpfiles.org/wiAwK7X6Q3s6/cont60_app_mosaic.png
+  + the repo raw (evidence/cont60/CONT60_APP_MOSAIC.png).
+
+Stage Summary:
+- The user-visible deliverable is live: three faces improved this session
+  (OpenCalc icons+window, BMI row alignment, gmdice hint carried over).
+- 0x0.st unreachable from the container (HTTP 000); uguu/tmpfiles work.
+
+---
+Task ID: S60-D (CONT-60 WAVE 4)
+Agent: Super Z (main)
+Task: The dooz Compose draw/text frontier (F-NEW-256 legacy, the biggest
+queued front) — decode the zero-glyph compose text leg.
+
+Work Log:
+- Decode level 1: the [F298-SLDRAW] diag showed every StaticLayout.draw
+  dispatch carrying text_len=0; [ROOT-063] obtain recorded text.len=0
+  width=0 at BUILD time — the layouts were born empty.
+- Decode level 2: the extended [F298-OBTAIN] diag named the source —
+  compose passes an OBJECT_REF Landroid/text/SpannableString; with NO
+  payload fields. The engine had NO SpannableString law at all (the ctor
+  was a silent no-op) AND the obtain law stored NULL for every non-
+  STRING_REF source. TWO stacked law gaps, one pipeline.
+- FIX (F-NEW-343, two sites, generic): (a) SpannableString.<init>(
+  CharSequence) stores the arg text under the engine's CharSequence
+  convention (value + text alias; the arg read accepts STRING_REF and
+  OBJECT_REF payloads); (b) StaticLayout.Builder.obtain accepts both
+  payload forms. Measured: value="Dooz" (4 chars) / "New game" (8 chars)
+  reach the builder; build lays out chars=4/8 with the REAL compose
+  strings for the first time.
+- HONEST PARTIAL: the dooz face is byte-unchanged (6841d52a at 180s and
+  at a 400s budget that COMPLETES rc=0 — not budget truncation). The
+  remaining leg is named: with non-empty text the paint path diverges
+  before the Layout.draw dispatch — the [F298-GCB] clip answer went from
+  the broken empty clip to the REAL paragraph clip (540,59,540x108) and
+  the SLDRAW dispatch never fires (pre-fix 5x on the empty path); the
+  draw-walk gates (Ltw1;.d) flipped FALSE→TRUE (the walk reaches
+  deeper). Next wave decodes the post-clip-gate dispatch.
+- ZERO-DRIFT REGRESSION (976b3a5b4e6a5e99): anchors 27/27 + opencalc
+  re-pin 3/3 + csw 3/3 + simplecalc 3/3 + dooz180 3/3 + probe battery ==
+  records. The payload law is pixel-neutral corpus-wide.
+- Registry 654 → 655 (F-NEW-343 ROOT-CAUSED-PARTIAL).
+
+Stage Summary:
+- The compose text leg's FIRST REAL progress: the text payloads
+  ("Dooz", "New game") now flow from the DEX through SpannableString
+  into StaticLayout builds. The pixel leg (the draw dispatch after the
+  clip gate) is the named next decode with its exact evidence.
+- The mosaic deliverable is live (n.uguu.se/zYKXvGqW.png). Queued: the
+  draw-leg decode, dooz tap bridge (F-NEW-267), alex R8 DEX-state,
+  Solitaire/notes audits.
+
+---
+Task ID: S60-SESSION-CLOSE
+Agent: Super Z (main)
+Task: Session record — CONT-60 doubled-scale execution.
+
+Work Log:
+- State recovery (the 4th stale-checkout reset): fast-forwarded the
+  CONT-10-era checkout to origin/main; ALL CONT-56..59 waves intact;
+  registry 651 at start.
+- Four waves committed with full gates: F-NEW-340 (RelativeLayout
+  replay-clobber; BMI aligned), F-NEW-341 (vector-tint theme-attr; the
+  five OpenCalc icons render), F-NEW-342 (windowBackground ?attr; the
+  real themed window), F-NEW-343 (SpannableString/obtain payload;
+  compose text flows to builds — draw leg named, PARTIAL).
+- Registry 651 → 655. Mosaic refreshed + uploaded (n.uguu.se/
+  zYKXvGqW.png + tmpfiles mirror). Every wave: raw-diff-proven face
+  changes, 36/36-class zero-drift gates, probe battery == records.
+- HEAD e63feef5 == origin/main. tmp/ APKs restored for the gate script.
+
+Stage Summary:
+- User-visible progress this session: OpenCalc complete-complete pad
+  (icons + themed window), BMI XML-true row alignment, compose text
+  payloads flowing for the first time. Next session owns the compose
+  draw-leg decode (the [F343-SL] probe is committed), the dooz tap
+  bridge, and the alex/Solitaire/notes audits.
+
+---
+Task ID: S61-W1 (CONT-61 Wave 1)
+Agent: Super Z (main)
+Task: F-NEW-344 — the compose text INTRINSIC leg (Layout.getDesiredWidth);
+the W1 root of the CONT-61 doubled-scale wave list.
+
+Work Log:
+- State recovery: HEAD c1e4b9dd (probe-artifacts commit) unpushed on top
+  of 8ed70f13; binary fresh at HEAD (make clean); registry 655 at start.
+- Decode ladder (all read-only probes): [F343-SL] census (getters arrive,
+  method=draw never) -> [DRAWWIN-BRIDGE] walk shape (Lj7;.e save ->
+  getLineBottom -> clipRect -> getClipBounds -> restore; draw missing) ->
+  [F298-GCB] re-read (the clip 540,59,540,108 is l==r EMPTY — the CONT-60
+  record mis-read it as w-h) -> [F298-OBTAIN]+[F344-PCTOR] extension
+  (width arg a4_type=1 INT32 VALUE=0; ctor constraints long lo32=0 = the
+  compose Infinity encoding = wrap-content NORMAL) -> [F344-LAYOUT]
+  (Layout.getDesiredWidth DOES arrive from Lsk0;.c, argc=4, no law).
+- FIX (one generic site): the getDesiredWidth law — TextShaper real
+  advances at the paint's recorded __text_size_px__; both overloads,
+  both CharSequence payload forms; the single-source-of-truth law
+  (box == pixels). Include ../fonts/text_shaper.h.
+- Measured: intrinsics 104/219/421/39/52 px; layouts build non-zero;
+  Layout.draw dispatches ([F-NEW-297] 45 text-op rows/run on csw — the
+  CONT-36 count, now real-width); dooz face 6841d52a -> 4f32f50fd55ccf90
+  x3 (title "Dooz" + "New game" label REAL GLYPHS, title-area dark px
+  0 -> 9030); csw face 3442d9a9 -> d3c26b73ee21e571 x3 (the title moved
+  from clipped-off-screen INTO view; raw-diff = title+digits bands only).
+- Gate: anchors 27/27 MATCH + csw x3 re-pin + simplecalc x3 MATCH +
+  dooz180 x3 re-pin + probe battery == records (f259g 84/7, fnew302
+  48/24 documented; fnew298 KEEP=5 corner PASS). Two INTENTIONAL re-pins
+  with rationale in scripts/cont37_regression.sh.
+- Registry 655 -> 656 (F-NEW-344 ROOT-CAUSED-FIXED). Evidence:
+  evidence/cont61/ (pre/post faces + views). Fresh tooling:
+  scripts/cont61_tryitem.py (code_item catch-table decoder — proved the
+  Lne;.g resumeWith catch-all law + the Lat;.a typed La; handlers),
+  scripts/cont61_fast_xref2.py (raw-u16 invoke xref), cont61_sl_xref.py.
+
+Stage Summary:
+- The compose text corpus-wide blocker is FIXED: text now flows
+  getDesiredWidth -> obtain(width) -> build -> clip -> Layout.draw ->
+  drawText ops. Dooz renders its title + button label for the first
+  time; csw's title recovered from off-screen. Honest next work named:
+  the paint 42px-size fallback question, the dooz icon glyphs (black
+  boxes), and the 400s rc=0 completion re-check.
+
+---
+Task ID: S61-W2 (CONT-61 Wave 2)
+Agent: Super Z (main)
+Task: F-NEW-267 — the compose tap bridge (CLASSIFIED -> ROOT-CAUSED-PARTIAL).
+
+Work Log:
+- Decoded three stacked legs on the dooz tap (820,1837, the New game
+  button): LEG 1 the claim walk's touchable gate (compose hosts are
+  created programmatically — the S122 capture never saw their
+  dispatchTouchEvent override; Lt4; measured dispatchTouchEvent size=249);
+  LEG 2 the dispatch arm (invoked onTouchEvent — the override wins);
+  LEG 3 the coordinate laws (getLocationOnScreen/inWindow/
+  transformMatrixToGlobal did NOT exist — the hit-test bounds math
+  consumed zeros/identity).
+- FIXES (generic): (1) the view_touchable dispatchTouchEvent override law
+  with a lazy tri-state probe (mutable node field + engine-bound
+  DexOverrideFn); (2) the DOWN-arm gate + the dispatch arm selection;
+  (3) the three coordinate laws with the honest M33 algebra (pre=+T on
+  c/f, post=bilinear on the translate terms).
+- Measured: target=0 -> 1446; arm=dispatchTouchEvent DISPATCHED (the
+  compose input entry executes for the first time); the TOUCHWIN trace
+  shows the full pipeline (PointerEvent build -> hit-test walk -> filter
+  dispatch).
+- HONEST REMAINING LEG (decoded, named): the filter list EMPTY
+  ([TOUCHWIN-SIZE] obj#2554 -> 0 x3; the walk consults a -1x-1
+  placeholder View id=479 ([TOUCHWIN-LOC]) and the LayoutNode-tree bounds
+  walk misses every node) — the compose node-tree bounds materialization
+  is the next decode (the probe is committed: MINIANDROID_TOUCH_WINDOW_
+  TRACE + the TOUCHWIN-SIZE/LOC diags).
+- Gate: 11/11 anchors byte-identical (dooz180, csw, micro, unote, gmdice,
+  opencalc, ttt, flappy, g2048, tanana, simplecalc) + probe battery ==
+  records. Registry F-NEW-267 CLASSIFIED -> ROOT-CAUSED-PARTIAL (656
+  count synced).
+
+Stage Summary:
+- The compose tap pipeline is UNBLOCKED at the engine boundary (the
+  override executes; the coordinate laws exist); the internal hit-test
+  bounds decode is the named next wave work, probe committed.
+
+---
+Task ID: CONT-62-WAVE-1
+Agent: Super Z (main)
+Task: CONT-62 WAVE 1 — user-priority graphics-fidelity lane (PNG/bitmap loading first): bitmap-target Canvas root-cause decode + minimal generic fix + probe + full regression at the MERGED post-rebase binary + registry/worklog/evidence + push. Doubled-task discipline: every newly discovered problem fixed in-wave.
+
+Work Log:
+- Phase 0: local base e99c2fbd (cleanup over 6a66806a=CONT-10 W6) — clean rebuild reproduced aed46450c103f2ea byte-exactly; anchors 5/5 x3 zero-drift pre-fix. (Session-summary claims of parallel "CONT-56" work were re-grounded during the post-wave rebase: the remote line CONT-56..61 exists on origin/main and is now the base.)
+- F-NEW-345 (provisional local id F-NEW-264; renumbered after rebase — upstream took 260-269) ROOT CAUSE: Canvas ops on a Canvas(Bitmap)/setBitmap target outside the view-draw capture window hit `if (!capturing_) return not_handled()` — silently dropped (in-memory bitmaps stayed transparent; drawBitmap RECORDED but 0 app-owned pixels — the W4 ladder OBSERVED gap); inside the window they polluted the VIEW op list. AOSP Canvas.java law: Canvas(Bitmap) binds a bitmap target with its OWN matrix/clip/save state, ops rasterize eagerly INTO the bitmap, canvas live until release().
+- FIX (receiver-generic): per-canvas sub-recorder (same op laws, isolated state) + eager flush into BitmapStore after each op (temp SoftwareCanvas over the bitmap pixels, copy-in/copy-out); sync_shared_state mirrors Paint/Path state; getWidth/getHeight answer bitmap dims; bind of unknown/empty bitmap = honest warn_noop.
+- SECOND ROOT found+fixed same wave (probe row R2 exposed it): flush left the sub-recorder dead — replay() ends with capturing_=false (view-frame lifecycle) so ops after the first flush were dropped. Fix: re-arm capturing_=true after every flush (a bitmap canvas is not a frame).
+- Probe fixtures/fnew345_probe (real aapt2/ECJ/D8, sha16 55d270f82b91caeb): R1 drawColor composites EXACT (204,34,34); R2 save→translate(30,20)→drawRect EXACT at bitmap(30..40,20..30) + negative; R3 getPixel readback ffcc2222/ff22aa44; R4 no view pollution. 6/6 pixel rows; screenshot afbbf73642515131 x3 byte-identical — IDENTICAL to the pre-rename f264-package probe run (rendered pixels are package-name-independent; extra determinism cross-check).
+- POST-REBASE MERGED BATTERY (binary 5112377f8eadb09a = remote F-NEW-338/344/267 fixes + F-NEW-345): anchors 33/33 MATCH (11 rows x3: dooz 31ddd4d5b8e6d18e, microtimer 55343bbec712618d, unote 90a67cc1ddda57b7, gmdice 3891679dff449331, opencalc f25b754c4565c38b, tttdeluxe af6094295ecb50e3, flappycow 13cf47464d9787f4, g2048 59ca1526611c4622, tanana afe0bd8dd4d09ca6, csw d3c26b73ee21e571, simplecalc 341b9cec89d8f182) — ZERO DRIFT; tanana/csw/simplecalc rows ran from upload/cont54_refetch/ substitutes (tmp/ originals reset-lost) and matched byte-exactly (transitive APK-identity proof); skill 13/13; gate A 98/0/1; negatives 19/19.
+- REBASE CONFLICT RESOLUTION (honest reconciliation): origin/main had advanced to CONT-61 W2 (F-NEW-344 compose-text intrinsics + F-NEW-267 tap legs). A first `--theirs/--ours` mixup briefly staged the LOCAL (stale) root_registry/worklog/selftest versions — caught and repaired from origin/main BEFORE commit: remote 656 roots preserved, F-NEW-345 appended on top (657); remote worklog entries preserved, this section appended. Remote scripts/cont11_build_probe.sh (their fnew259g probe builder) kept under its name; MY probe builder renamed scripts/cont62_build_probe.sh; my evidence namespace moved to evidence/cont62/ (remote's evidence/cont11 untouched).
+- VALIDATOR: the pre-existing graph drift (validator crashed on 3 string-evidence dossiers; then 34 errors: stale visual-evidence frame paths, stale SHA256SUMS entries, pseudo-app law consumer refs, registry summary lag) — repaired mechanically with persisted scripts (scripts/cont62_validator_repair.py + tictactoe SHA256SUMS prune): frames pruned to surviving files, frame-less bundles downgraded honestly to NOT_OBSERVED with notes, evidence paths re-based, registry re-synced. Final: PASS — all checks green.
+- Deliverable: 6-tile mosaic evidence/cont62/cont62_mosaic.png (F-NEW-345 probe + 5 anchor apps) + tmpfiles.org URL delivered to the user (catbox/litterbox/0x0.st rejected or timed out from this container — recorded).
+- Registry 656→657 (F-NEW-345 ROOT-CAUSED-FIXED). Artifacts: evidence/cont62/fnew345_evidence.json, scripts/cont62_{build_probe.sh,verify_f345.py,mosaic.py,validator_repair.py}, fixtures/fnew345_probe/.
+
+Stage Summary:
+- The W4 ladder's last OBSERVED graphics gap is closed: bitmap-target canvases rasterize real pixels (R1-R4 pixel-exact) — the "PNG/bitmap loading" priority lane for the view/canvas pipeline. Zero drift across the FULL 11-row anchor wall at the merged binary; all batteries green.
+- Honest frontier (next wave owns): dooz compose DRAW path (F-NEW-265 registry row on the remote line — AndroidCanvas bridge materialization) + the remaining user-priority lanes (theme colors, fonts, structure, buttons) partially advanced by remote waves (F-NEW-337b/338/341/342/344) — re-survey before reopening.
+
+---
+Task ID: CONT-63-RECOVERY
+Agent: Super Z (main)
+Task: User directive "push everything unpushed" — pre-push audit found local commit c73c7e6c (UUID message "9db1cd8b-…", 5044 files, +877/-974,550) destroying campaign artifacts; recover the destroyed state honestly, keep only legitimate junk cleanup, push everything.
+
+Work Log:
+- Damage audit of c73c7e6c: DELETED 974,550 lines across 5,044 files including 568 evidence/ files, 288 scripts/ (incl. the push-guard's own neighbors), 100 fixtures/, 1,004 docs/, 32 miniandroid/ (miniandroid/runtime/data/fonts/DroidSansMono.ttf + engine source_first inventories + apps_ledger evidence images), 1,290 upstream/ source trees, 30 hc_provenance/; TRUNCATED worklog.md by 2,316 lines (every entry after CONT-11-WAVE-7/F-NEW-264 destroyed: CONT-12..CONT-62 history) and reverted CAMPAIGN_STATE.md to the #371 era; message = a bare UUID (same pattern as the previously flagged "stray uuid auto-commit 7abb39ce").
+- Legitimate parts kept deleted (previous sessions' documented push hygiene): tmp/** (1,510 tracked incl. the known guard-trippers tmp/issue377_saved.html + tmp/w4venv + the force-added tmp/w4_probebuild probe junk), apk_build/**, corpus_cache/**, demo_frames_f076/, demo_gif_new/, androguard.db-*, gpg_*.out, wa_url.txt, telegram_*.txt, platform-34.zip, fanout_map.json, delivery_bin.json, a2test/res.zip.
+- Recovery: git revert --no-commit c73c7e6c (restores worklog.md to 9,396 lines ending CONT-62-WAVE-1, root_registry.json at 657 roots with F-NEW-345, DroidSansMono.ttf, all evidence/scripts/fixtures/docs/upstream), then git rm of the junk classes above, then re-preserved the ONLY two legitimate additions the UUID commit made (evidence/cont11/cont11_mosaic.png + evidence/cont11/fnew264_evidence.json) from c73c7e6c. Verified: worklog 9,396 lines; root_registry.json total_roots=657, last ids F-NEW-342/343/344/345; fonts dir restored; gitignore restored incl. tmp/w4_probebuild/ ignore line.
+- Submodule note: tmp/flappycow gitlink retained (mode 160000, 6be73630); its working tree had local dirt (.idea/*, .gitignore) — reset to keep the parent status clean.
+
+Stage Summary:
+- The destructive UUID auto-commit is neutralized in history (revert commit, not rewrite); worklog append-only integrity restored through CONT-62-WAVE-1; registry/evidence/scripts/fixtures/engine assets intact at the 657-root state; push hygiene deletions preserved so the secret guard stays green. Everything local is now being pushed in the same push as this recovery commit.
