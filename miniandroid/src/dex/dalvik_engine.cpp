@@ -6851,6 +6851,54 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     if (!dex_report_) return false;
 
     // ────────────────────────────────────────────────────────────────────
+    // F-NEW-267 (CONT-65) COMPOSITION-TIME MEASURE-ORDERING LAW (the fix
+    // lever named by the CONT-64 W1 decode). Evidence chain (CONT-64 W1):
+    // the pure-DEX hit-test walk consumes Placeable.position (Ld61;.i);
+    // the whole-run FIELD-TRACE showed 410 puts = 359 zero + 51 real with
+    // the place-then-RESET pattern — a SECOND composition-time measure
+    // pass with ZERO/uninitialized root constraints runs after the real
+    // placements and re-places the tree at 0; the window's own
+    // onMeasure then dispatches s(real constraints)+m but finds NOTHING
+    // pending (the eager pass already drained the queue), and the
+    // onCreate-frame AT_MOST measures run last. AOSP law
+    // (MeasureAndLayoutDelegate/AndroidComposeView): performMeasureAndLayout
+    // is only ever reached AFTER the traversal's onMeasure has published
+    // the root constraints — a composition-time eager relayout cannot
+    // consume constraints that were never set. Fix: Lzs0;.s
+    // (setRootConstraints) marks the delegate constraints-initialized;
+    // Lzs0;.k (performMeasureAndLayout) / .m (measureAndLayout) on a
+    // delegate that was never initialized are DEFERRED — the DEX body is
+    // skipped, the pending requests stay queued, and the window's real
+    // s(real)+m traversal drains them with the REAL constraints. Render
+    // neutrality: the face renders from the canvas/coordinator transform
+    // store, not the hit-test position store (CONT-64 W1 finding 6) — the
+    // 36/36 anchor wall is the arbiter.
+    // ────────────────────────────────────────────────────────────────────
+    if (declaring_class == "Lzs0;" &&
+        (method_name == "s" || method_name == "k" || method_name == "m") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        static std::set<uint32_t> f267_constraints_ready;
+        if (method_name == "s") {
+            f267_constraints_ready.insert(args[0].object_id);
+        } else if (f267_constraints_ready.find(args[0].object_id) ==
+                   f267_constraints_ready.end()) {
+            static thread_local const bool f267_diag =
+                std::getenv("MINIANDROID_COMPOSE_MEASURE_TRACE") != nullptr;
+            if (f267_diag)
+                std::cerr << "[F-NEW-267] DEFER Lzs0;." << method_name
+                          << " delegate#" << args[0].object_id
+                          << " (pre-setRootConstraints eager measure — AOSP "
+                          << "defers to the traversal; requests stay pending)"
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            return_val = DalvikValue::make_void();
+            last_invoke_return_ = return_val;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
     // S83 APX-ACT SEMANTIC SHADOW LAW (F-NEW-156 family root fix).
     //
     // Every appcompat app ships REAL androidx DEX (appcompat/fragment/

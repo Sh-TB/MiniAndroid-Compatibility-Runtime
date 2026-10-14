@@ -9483,3 +9483,19 @@ Work Log:
 Stage Summary:
 - The capability-audit wave is CLOSED: all 22 probe rows PASS on the committed binary, the 36/36 anchor wall holds zero drift, and the six laws (354-359) are registered with probe-level evidence. The audit matrix now stands: PNG/JPEG/WebP/GIF(anim)/vector/shape/statelist render REAL; audio decode real (sandbox-resolved); byte[] literals real; string-object materialization end-to-end real; bold/italic/BI + Arabic/Persian/CJK text real; view scale applied in render; sandbox file roundtrip real.
 - Honest frontiers (next waves own): rotation-about-pivot (the recorded rotation half of the transform frontier), scaled-container subtree re-transform, [MP-DECODE] REC-MISS api-inventory registration for MediaPlayer.prepare, and the compose-side lanes (F-NEW-267 fix lever, F-NEW-277 recomposition, OpenCalc display content, BMI row clip, tanana layout, alex blue-bar).
+
+---
+Task ID: CONT-65-W2
+Agent: Super Z (main)
+Task: The doubled-scale continuation wave — the F-NEW-267 fix lever (lever #1: the composition-time measure-ordering law), plus the on-the-spot [REC-MISS] adjudication.
+
+Work Log:
+- [REC-MISS] Landroid/media/MediaPlayer;.prepare ADJUDICATED NOT-A-DEFECT: the line is the cap-limited class-miss diagnostic (dalvik_engine.cpp ~9804) fired when the DECLARING class has no DEX body — framework classes lawfully fall through to the shadow/API bridge. The order in the audiofix log (REC-MISS printed BEFORE "[MP-DECODE] prepare OK dur=500ms") proves the fallback chain: class-miss -> bridge -> F-NEW-356 law -> success. Zero code change (the diagnostic is load-bearing for wrongful-shadow triage).
+- F-NEW-267 LEVER #1 IMPLEMENTED (the CONT-64 W1 named lever, option (a) — the ordering law): inside try_recursive_invoke, Lzs0;.s (setRootConstraints) marks the delegate object constraints-initialized; Lzs0;.k (performMeasureAndLayout) / .m (measureAndLayout) on a never-initialized delegate are DEFERRED — body skipped, pending requests stay queued for the real s(real)+m traversal (AOSP MeasureAndLayoutDelegate: performMeasureAndLayout is unreachable before onMeasure publishes constraints).
+- HONEST DECODE RESULT: the law is a NO-OP on dooz v23 at current HEAD — 0 defers (CMT shows the delegate entries already arrive s-then-m from Lt4;.onMeasure). The zeroing eager measure does NOT dispatch as Lzs0;.k/.m through try_recursive_invoke. Static decode of Lt4;.o(Lel0;)V (the W1 "degenerate root measure" candidate): size=27, a RECURSIVE node walk calling Lzs0;.r(node,false) — the pending-set remove walk, NOT a measure. Conclusion: the eager zero-constraint re-measure is R8-INLINED into host frames (consistent with the W1 "MainActivity.onCreate-frame AT_MOST onMeasure" finding) — invisible to class-level intercepts. Decode lever #2 named: extend the CMT probe to invoke-direct/static sites + FIELD-TRACE the constraints-field writes on Lzs0; to name the exact inlined caller.
+- HONEST STATUS: F-NEW-267-LEVER1 registered ROOT-CAUSED-PARTIAL (a correct, safe ordering guarantee for the virtual path + a precise map of what remains). Registry 665->666.
+- REGRESSION at the lever binary: 36/36 anchor wall ZERO DRIFT (33 wall MATCH + dooz180 c94da5a928ea213b x3) — the ordering law is render-neutral, re-verified.
+
+Stage Summary:
+- The dooz tap-dead root cause (CONT-64 W1 decode) now has lever #1 landed and adjudicated honestly: safe ordering gate, zero drift, and a sharpened next lever (R8-inlined caller identification). No speculative patch shipped — the decode evidence gates every change.
+- Next waves own: lever #2 (CMT at invoke-direct/static + constraints FIELD-TRACE), the compose-side lanes (F-NEW-277 recomposition-delivery, OpenCalc display content, BMI row-width clip, tanana main layout, alex blue-bar), rotation-about-pivot, and the scaled-container subtree re-transform.
