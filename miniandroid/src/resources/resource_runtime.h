@@ -209,6 +209,32 @@ public:
     std::optional<ResValue> resolve_theme_attr_typed(const std::string& apk_path,
                                                      uint32_t attr_key,
                                                      int flavor_hint = -1);
+    // ── F-NEW-364 (CONT-67): AOSP Resources.Theme.applyStyle ─────────────
+    // AOSP Theme.java: applyStyle(resid, force) applies the style's
+    // attribute bag onto the theme state — with force=false the style
+    // fills ONLY values the base theme lacks (AssetManager2::Theme::applyStyle
+    // merge semantics). The appcompat 1.4+ attachBaseContext2 chain applies
+    // R.style.Theme_AppCompat_Empty (which defines the FULL AppCompatTheme
+    // attr family with default values) onto EVERY AppCompatActivity
+    // context — on real devices this is why a non-AppCompat-descendant
+    // activity theme still passes the createSubDecor theme gate
+    // (hasValue(windowActionBar) answers true via the Empty-theme bag).
+    // Evidence: notes_secuso 105 — ContextThemeWrapper
+    // .onApplyThemeResource → Resources$Theme.applyStyle had NO law (the
+    // style application no-op'd) → F-093 resolved 125/127 AppCompatTheme
+    // attrs as MISS → the ISE gate fired → SplashActivity APP-BOUNDARY
+    // unwind, blank face.
+    // LAW: the applied styles record (in apply order) is consulted when
+    // the base theme chain MISSES an attr — the exact force=false merge
+    // subset. Deterministic per-apk (single-activity subset documented).
+    void record_applied_theme_style(uint32_t style_resid) {
+        for (uint32_t r : applied_theme_styles_)
+            if (r == style_resid) return;
+        applied_theme_styles_.push_back(style_resid);
+    }
+    const std::vector<uint32_t>& applied_theme_styles() const {
+        return applied_theme_styles_;
+    }
     // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution DEF-STYLE stages ──
     // The F-093 producer's chain had only XML (stage 1) + theme (stage 5);
     // the AOSP law (frameworks/base/libs/androidfw/AttributeResolution.cpp
@@ -268,6 +294,8 @@ private:
     bool loaded_ = false;
     std::string apk_path_;
     std::string load_error_;
+    // F-NEW-364: the Theme.applyStyle record (apply order; deduped).
+    std::vector<uint32_t> applied_theme_styles_;
     // G11 FIX-G11-001: process-wide custom-view constructor hook (Factory
     // law — survives LayoutInflater recreation in ensure_loaded()).
     LayoutInflater::CustomViewCtorHook custom_view_ctor_hook_;
