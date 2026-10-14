@@ -1,0 +1,1222 @@
+{
+ "generated": "S51 finalization",
+ "law": "same agent schema as S51_AGENT_C4.json; state_changed = real changed_pixels_vs_previous > 0",
+ "games": {
+  "crossword": {
+   "game": "crossword",
+   "schema": "S51-AGENT-v1",
+   "steps": [
+    {
+     "step": 0,
+     "observation": "frame_000",
+     "detected_state": "WORDS 0/3 FILLED 0/9 (initial)",
+     "chosen_action": "OBSERVE_INITIAL",
+     "input_coordinates": "click#0 (descending-view-id rotation)",
+     "previous_state_hash": null,
+     "new_state_hash": "a033c183e8d9caf47104c0dbc9935611e9c2baa564e5fe5987bb79ffd8057016",
+     "state_changed": false
+    },
+    {
+     "step": 1,
+     "observation": "frame_001",
+     "detected_state": "WORDS 0/3 FILLED 1/9",
+     "chosen_action": "FILL_CELL_r3c3",
+     "input_coordinates": "click#1 (descending-view-id rotation)",
+     "previous_state_hash": "a033c183e8d9caf47104c0dbc9935611e9c2baa564e5fe5987bb79ffd8057016",
+     "new_state_hash": "ced979b62f6e066c878737e90b73db9330275bb17fcfc77482976fa39b3378b4",
+     "state_changed": true
+    },
+    {
+     "step": 2,
+     "observation": "frame_002",
+     "detected_state": "WORDS 0/3 FILLED 2/9",
+     "chosen_action": "FILL_CELL_r3c2",
+     "input_coordinates": "click#2 (descending-view-id rotation)",
+     "previous_state_hash": "ced979b62f6e066c878737e90b73db9330275bb17fcfc77482976fa39b3378b4",
+     "new_state_hash": "4497121e3fbae615d37512f9f31005cf79e6705d725a2fa05cf98ff3457680d5",
+     "state_changed": true
+    },
+    {
+     "step": 3,
+     "observation": "frame_003",
+     "detected_state": "WORDS 0/3 FILLED 3/9",
+     "chosen_action": "FILL_CELL_r3c1",
+     "input_coordinates": "click#3 (descending-view-id rotation)",
+     "previous_state_hash": "4497121e3fbae615d37512f9f31005cf79e6705d725a2fa05cf98ff3457680d5",
+     "new_state_hash": "eec83b886101db7d0ddb70134fe14425fc8f385c1804586be72502c2b0147848",
+     "state_changed": true
+    },
+    {
+     "step": 4,
+     "observation": "frame_004",
+     "detected_state": "WORDS 1/3 FILLED 4/9",
+     "chosen_action": "FILL_CELL_r3c0",
+     "input_coordinates": "click#4 (descending-view-id rotation)",
+     "previous_state_hash": "eec83b886101db7d0ddb70134fe14425fc8f385c1804586be72502c2b0147848",
+     "new_state_hash": "401239edba86abbd7d9b089fec1f5a05f72268bd20c20d1b3ab078074dab7476",
+     "state_changed": true
+    },
+    {
+     "step": 5,
+     "observation": "frame_005",
+     "detected_state": "WORDS 1/3 FILLED 5/9",
+     "chosen_action": "FILL_CELL_r2c3",
+     "input_coordinates": "click#5 (descending-view-id rotation)",
+     "previous_state_hash": "401239edba86abbd7d9b089fec1f5a05f72268bd20c20d1b3ab078074dab7476",
+     "new_state_hash": "23a6a65cc09da3616361ab163f3a343d3a27fa05e7eecdcfcf0078f96ac15e2e",
+     "state_changed": true
+    },
+    {
+     "step": 6,
+     "observation": "frame_006",
+     "detected_state": "WORDS 2/3 FILLED 6/9",
+     "chosen_action": "FILL_CELL_r1c3",
+     "input_coordinates": "click#6 (descending-view-id rotation)",
+     "previous_state_hash": "23a6a65cc09da3616361ab163f3a343d3a27fa05e7eecdcfcf0078f96ac15e2e",
+     "new_state_hash": "d4a9a60e0d5b813a90df526032ad0f29c9b1bc80537456eff72d89246c2be4c7",
+     "state_changed": true
+    },
+    {
+     "step": 7,
+     "observation": "frame_007",
+     "detected_state": "WORDS 2/3 FILLED 7/9",
+     "chosen_action": "FILL_CELL_r1c2",
+     "input_coordinates": "click#7 (descending-view-id rotation)",
+     "previous_state_hash": "d4a9a60e0d5b813a90df526032ad0f29c9b1bc80537456eff72d89246c2be4c7",
+     "new_state_hash": "ec07a18b68939f18866593a8e681284b17e885e5603b6eaa389caf2c19a082ff",
+     "state_changed": true
+    },
+    {
+     "step": 8,
+     "observation": "frame_008",
+     "detected_state": "WORDS 2/3 FILLED 8/9",
+     "chosen_action": "FILL_CELL_r1c1",
+     "input_coordinates": "click#8 (descending-view-id rotation)",
+     "previous_state_hash": "ec07a18b68939f18866593a8e681284b17e885e5603b6eaa389caf2c19a082ff",
+     "new_state_hash": "3a6cb76c77ed0e0f26a6412305ce3c7a96a4370029719ae117bd7abd2a1802d7",
+     "state_changed": true
+    },
+    {
+     "step": 9,
+     "observation": "frame_009",
+     "detected_state": "SOLVED!",
+     "chosen_action": "FILL_CELL_r1c0",
+     "input_coordinates": "click#9 (descending-view-id rotation)",
+     "previous_state_hash": "3a6cb76c77ed0e0f26a6412305ce3c7a96a4370029719ae117bd7abd2a1802d7",
+     "new_state_hash": "027b19fd5159940e19218d73ee9b36b9e5ca5290a8a0d1e19f868e94d503f1b3",
+     "state_changed": true
+    }
+   ],
+   "hash_chain_continuous": true,
+   "state_changing_steps": "9/9",
+   "final_state": "SOLVED!"
+  },
+  "wordpredict": {
+   "game": "wordpredict",
+   "schema": "S51-AGENT-v1",
+   "steps": [
+    {
+     "step": 0,
+     "observation": "frame_000",
+     "detected_state": "Q1/5 SCORE 0 (initial)",
+     "chosen_action": "OBSERVE_INITIAL",
+     "input_coordinates": "click#0 (descending-view-id rotation)",
+     "previous_state_hash": null,
+     "new_state_hash": "2d36c464fd3cee045d67795137a140468042e25fe6e264c79d9aee80f19b6992",
+     "state_changed": false
+    },
+    {
+     "step": 1,
+     "observation": "frame_001",
+     "detected_state": "Q2/5 SCORE 1",
+     "chosen_action": "ANSWER_blue",
+     "input_coordinates": "click#1 (descending-view-id rotation)",
+     "previous_state_hash": "2d36c464fd3cee045d67795137a140468042e25fe6e264c79d9aee80f19b6992",
+     "new_state_hash": "694dbb5b2e38669c2e137d7666f5eaddd56e40edf6301d760275d89e029479c4",
+     "state_changed": true
+    },
+    {
+     "step": 2,
+     "observation": "frame_002",
+     "detected_state": "Q3/5 SCORE 2",
+     "chosen_action": "ANSWER_hot",
+     "input_coordinates": "click#2 (descending-view-id rotation)",
+     "previous_state_hash": "694dbb5b2e38669c2e137d7666f5eaddd56e40edf6301d760275d89e029479c4",
+     "new_state_hash": "5bcfc20f18d9f8eed0dc7c053cfc725844c6de8c0b9690f48a5c1f36155603c2",
+     "state_changed": true
+    },
+    {
+     "step": 3,
+     "observation": "frame_003",
+     "detected_state": "?",
+     "chosen_action": "ANSWER_calf(WRONG)",
+     "input_coordinates": "click#3 (descending-view-id rotation)",
+     "previous_state_hash": "5bcfc20f18d9f8eed0dc7c053cfc725844c6de8c0b9690f48a5c1f36155603c2",
+     "new_state_hash": "387b2c60371be0bbea54c9cacef5324c35d4efce4295b8864322d3d655c513ca",
+     "state_changed": true
+    },
+    {
+     "step": 4,
+     "observation": "frame_004",
+     "detected_state": "Q4/5 SCORE 3",
+     "chosen_action": "ANSWER_kitten",
+     "input_coordinates": "click#4 (descending-view-id rotation)",
+     "previous_state_hash": "387b2c60371be0bbea54c9cacef5324c35d4efce4295b8864322d3d655c513ca",
+     "new_state_hash": "da4bfbd87dec0c41cbcb77565201d3f2dfa0413ac97524356b8d00a005642901",
+     "state_changed": true
+    },
+    {
+     "step": 5,
+     "observation": "frame_005",
+     "detected_state": "Q5/5 SCORE 4",
+     "chosen_action": "ANSWER_four",
+     "input_coordinates": "click#5 (descending-view-id rotation)",
+     "previous_state_hash": "da4bfbd87dec0c41cbcb77565201d3f2dfa0413ac97524356b8d00a005642901",
+     "new_state_hash": "4b117006bbe711e6b0fb8a98b53344c06eb0caa64d693e6c781a781180647159",
+     "state_changed": true
+    },
+    {
+     "step": 6,
+     "observation": "frame_006",
+     "detected_state": "SCORE 5/5 DONE",
+     "chosen_action": "ANSWER_day",
+     "input_coordinates": "click#6 (descending-view-id rotation)",
+     "previous_state_hash": "4b117006bbe711e6b0fb8a98b53344c06eb0caa64d693e6c781a781180647159",
+     "new_state_hash": "40a2d61f0cc68dae155e9c44b39f878b66f9a7936e8d984182b4c3bdb63f3fda",
+     "state_changed": true
+    }
+   ],
+   "hash_chain_continuous": true,
+   "state_changing_steps": "6/6",
+   "final_state": "SCORE 5/5 DONE"
+  },
+  "balltap": {
+   "game": "balltap",
+   "schema": "S51-AGENT-v1",
+   "steps": [
+    {
+     "step": 0,
+     "observation": "frame_000",
+     "detected_state": "GOAL 0/3 SERVE (initial)",
+     "chosen_action": "OBSERVE_INITIAL",
+     "input_coordinates": "click#0 (descending-view-id rotation)",
+     "previous_state_hash": null,
+     "new_state_hash": "0a1051141aed1608f3894f6935d3827703c01fb11770c390cd43037ff59b99b7",
+     "state_changed": false
+    },
+    {
+     "step": 1,
+     "observation": "frame_001",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#1 (descending-view-id rotation)",
+     "previous_state_hash": "0a1051141aed1608f3894f6935d3827703c01fb11770c390cd43037ff59b99b7",
+     "new_state_hash": "63258452f454833df960ac0b7b2c5ae3e3bd017120384175d80d1452c160eb1c",
+     "state_changed": true
+    },
+    {
+     "step": 2,
+     "observation": "frame_002",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#2 (descending-view-id rotation)",
+     "previous_state_hash": "63258452f454833df960ac0b7b2c5ae3e3bd017120384175d80d1452c160eb1c",
+     "new_state_hash": "c4688f869f81308221ee526c2e8ef37c37f72b06748474509c9813573c625872",
+     "state_changed": true
+    },
+    {
+     "step": 3,
+     "observation": "frame_003",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#3 (descending-view-id rotation)",
+     "previous_state_hash": "c4688f869f81308221ee526c2e8ef37c37f72b06748474509c9813573c625872",
+     "new_state_hash": "c81a1555fbfab7e4b8f29aba7859e3f68cf358a70c42a8502f34e0aab75977a7",
+     "state_changed": true
+    },
+    {
+     "step": 4,
+     "observation": "frame_004",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#4 (descending-view-id rotation)",
+     "previous_state_hash": "c81a1555fbfab7e4b8f29aba7859e3f68cf358a70c42a8502f34e0aab75977a7",
+     "new_state_hash": "c4688f869f81308221ee526c2e8ef37c37f72b06748474509c9813573c625872",
+     "state_changed": true
+    },
+    {
+     "step": 5,
+     "observation": "frame_005",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#5 (descending-view-id rotation)",
+     "previous_state_hash": "c4688f869f81308221ee526c2e8ef37c37f72b06748474509c9813573c625872",
+     "new_state_hash": "23b41bbad704e0cea9b007fc8d79043fa9ed2eb4b2bf791880614c9a39e0de81",
+     "state_changed": true
+    },
+    {
+     "step": 6,
+     "observation": "frame_006",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#6 (descending-view-id rotation)",
+     "previous_state_hash": "23b41bbad704e0cea9b007fc8d79043fa9ed2eb4b2bf791880614c9a39e0de81",
+     "new_state_hash": "656f9f92e5e1b401413dc336378adffe362f8a6b6e127d2cf866ef9cf1929e8a",
+     "state_changed": true
+    },
+    {
+     "step": 7,
+     "observation": "frame_007",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#7 (descending-view-id rotation)",
+     "previous_state_hash": "656f9f92e5e1b401413dc336378adffe362f8a6b6e127d2cf866ef9cf1929e8a",
+     "new_state_hash": "23b41bbad704e0cea9b007fc8d79043fa9ed2eb4b2bf791880614c9a39e0de81",
+     "state_changed": true
+    },
+    {
+     "step": 8,
+     "observation": "frame_008",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#8 (descending-view-id rotation)",
+     "previous_state_hash": "23b41bbad704e0cea9b007fc8d79043fa9ed2eb4b2bf791880614c9a39e0de81",
+     "new_state_hash": "f8a4135fe566f9e1f50d5048f96b20a85c262c603f47a5c0b4dc37ddcbcbd9b4",
+     "state_changed": true
+    },
+    {
+     "step": 9,
+     "observation": "frame_009",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#9 (descending-view-id rotation)",
+     "previous_state_hash": "f8a4135fe566f9e1f50d5048f96b20a85c262c603f47a5c0b4dc37ddcbcbd9b4",
+     "new_state_hash": "5bfc22270508589fc3c957973e13a1ad482565b9a3e02c6dc6638e2e9d453557",
+     "state_changed": true
+    },
+    {
+     "step": 10,
+     "observation": "frame_010",
+     "detected_state": "GOAL 0/3 SERVE",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#10 (descending-view-id rotation)",
+     "previous_state_hash": "5bfc22270508589fc3c957973e13a1ad482565b9a3e02c6dc6638e2e9d453557",
+     "new_state_hash": "f8a4135fe566f9e1f50d5048f96b20a85c262c603f47a5c0b4dc37ddcbcbd9b4",
+     "state_changed": true
+    },
+    {
+     "step": 11,
+     "observation": "frame_011",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#11 (descending-view-id rotation)",
+     "previous_state_hash": "f8a4135fe566f9e1f50d5048f96b20a85c262c603f47a5c0b4dc37ddcbcbd9b4",
+     "new_state_hash": "ff2129d39479c7f40d0994d03ecf85bd7275b2288361f7fc78cf33dd17ac80e5",
+     "state_changed": true
+    },
+    {
+     "step": 12,
+     "observation": "frame_012",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#12 (descending-view-id rotation)",
+     "previous_state_hash": "ff2129d39479c7f40d0994d03ecf85bd7275b2288361f7fc78cf33dd17ac80e5",
+     "new_state_hash": "a7fdeb5f4af70de150c2ec5b16281ce9107f29d9dfa5526bda8d6a1bd4624722",
+     "state_changed": true
+    },
+    {
+     "step": 13,
+     "observation": "frame_013",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#13 (descending-view-id rotation)",
+     "previous_state_hash": "a7fdeb5f4af70de150c2ec5b16281ce9107f29d9dfa5526bda8d6a1bd4624722",
+     "new_state_hash": "ff2129d39479c7f40d0994d03ecf85bd7275b2288361f7fc78cf33dd17ac80e5",
+     "state_changed": true
+    },
+    {
+     "step": 14,
+     "observation": "frame_014",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#14 (descending-view-id rotation)",
+     "previous_state_hash": "ff2129d39479c7f40d0994d03ecf85bd7275b2288361f7fc78cf33dd17ac80e5",
+     "new_state_hash": "eae2fca55ee9efa5d5bc73674cf4a594670592af20f1e8dd1baae33e40c03aeb",
+     "state_changed": true
+    },
+    {
+     "step": 15,
+     "observation": "frame_015",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#15 (descending-view-id rotation)",
+     "previous_state_hash": "eae2fca55ee9efa5d5bc73674cf4a594670592af20f1e8dd1baae33e40c03aeb",
+     "new_state_hash": "e39ef62ef2ea22a590313a28b290652cd4b07e1cc47a6a6b14150eaa11db0b7b",
+     "state_changed": true
+    },
+    {
+     "step": 16,
+     "observation": "frame_016",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#16 (descending-view-id rotation)",
+     "previous_state_hash": "e39ef62ef2ea22a590313a28b290652cd4b07e1cc47a6a6b14150eaa11db0b7b",
+     "new_state_hash": "eae2fca55ee9efa5d5bc73674cf4a594670592af20f1e8dd1baae33e40c03aeb",
+     "state_changed": true
+    },
+    {
+     "step": 17,
+     "observation": "frame_017",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#17 (descending-view-id rotation)",
+     "previous_state_hash": "eae2fca55ee9efa5d5bc73674cf4a594670592af20f1e8dd1baae33e40c03aeb",
+     "new_state_hash": "c6658b782ea98cea825b0d5fc3b586f6762dd3b3d34e9d3b288b8a55cdc612d8",
+     "state_changed": true
+    },
+    {
+     "step": 18,
+     "observation": "frame_018",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#18 (descending-view-id rotation)",
+     "previous_state_hash": "c6658b782ea98cea825b0d5fc3b586f6762dd3b3d34e9d3b288b8a55cdc612d8",
+     "new_state_hash": "ce48f0f7e8639ddc6c15aee805e5137e4fe4ab8e5758567913d01997e454b994",
+     "state_changed": true
+    },
+    {
+     "step": 19,
+     "observation": "frame_019",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#19 (descending-view-id rotation)",
+     "previous_state_hash": "ce48f0f7e8639ddc6c15aee805e5137e4fe4ab8e5758567913d01997e454b994",
+     "new_state_hash": "c6658b782ea98cea825b0d5fc3b586f6762dd3b3d34e9d3b288b8a55cdc612d8",
+     "state_changed": true
+    },
+    {
+     "step": 20,
+     "observation": "frame_020",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#20 (descending-view-id rotation)",
+     "previous_state_hash": "c6658b782ea98cea825b0d5fc3b586f6762dd3b3d34e9d3b288b8a55cdc612d8",
+     "new_state_hash": "4d35961c725822f9bbabf6ebea7b916fa00adc064d57af4be4b85330b9723a65",
+     "state_changed": true
+    },
+    {
+     "step": 21,
+     "observation": "frame_021",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#21 (descending-view-id rotation)",
+     "previous_state_hash": "4d35961c725822f9bbabf6ebea7b916fa00adc064d57af4be4b85330b9723a65",
+     "new_state_hash": "ebcbffb68c501e8cd63cc0e843fc39e0e4e0e2bfc4e3a478d31404ad9cd34ff3",
+     "state_changed": true
+    },
+    {
+     "step": 22,
+     "observation": "frame_022",
+     "detected_state": "GOAL 1/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#22 (descending-view-id rotation)",
+     "previous_state_hash": "ebcbffb68c501e8cd63cc0e843fc39e0e4e0e2bfc4e3a478d31404ad9cd34ff3",
+     "new_state_hash": "4d35961c725822f9bbabf6ebea7b916fa00adc064d57af4be4b85330b9723a65",
+     "state_changed": true
+    },
+    {
+     "step": 23,
+     "observation": "frame_023",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#23 (descending-view-id rotation)",
+     "previous_state_hash": "4d35961c725822f9bbabf6ebea7b916fa00adc064d57af4be4b85330b9723a65",
+     "new_state_hash": "7229d877a3a754ea2c2a4f37aa7f7cc97822b3a1011d0daaddce1b18232b4c37",
+     "state_changed": true
+    },
+    {
+     "step": 24,
+     "observation": "frame_024",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#24 (descending-view-id rotation)",
+     "previous_state_hash": "7229d877a3a754ea2c2a4f37aa7f7cc97822b3a1011d0daaddce1b18232b4c37",
+     "new_state_hash": "0498cc167a622924136e2dce444023fd884543c73ed04cbe5c0d14813d38d9c8",
+     "state_changed": true
+    },
+    {
+     "step": 25,
+     "observation": "frame_025",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#25 (descending-view-id rotation)",
+     "previous_state_hash": "0498cc167a622924136e2dce444023fd884543c73ed04cbe5c0d14813d38d9c8",
+     "new_state_hash": "7229d877a3a754ea2c2a4f37aa7f7cc97822b3a1011d0daaddce1b18232b4c37",
+     "state_changed": true
+    },
+    {
+     "step": 26,
+     "observation": "frame_026",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#26 (descending-view-id rotation)",
+     "previous_state_hash": "7229d877a3a754ea2c2a4f37aa7f7cc97822b3a1011d0daaddce1b18232b4c37",
+     "new_state_hash": "18f348d969f26f077f7b4f8f5c61f615021ccaca7b7be6dabe6485034c7c8b44",
+     "state_changed": true
+    },
+    {
+     "step": 27,
+     "observation": "frame_027",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#27 (descending-view-id rotation)",
+     "previous_state_hash": "18f348d969f26f077f7b4f8f5c61f615021ccaca7b7be6dabe6485034c7c8b44",
+     "new_state_hash": "f6a89bb23aa4e11980f54c183c9eceb644b9ac65227d5824fbcf04306d444282",
+     "state_changed": true
+    },
+    {
+     "step": 28,
+     "observation": "frame_028",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#28 (descending-view-id rotation)",
+     "previous_state_hash": "f6a89bb23aa4e11980f54c183c9eceb644b9ac65227d5824fbcf04306d444282",
+     "new_state_hash": "18f348d969f26f077f7b4f8f5c61f615021ccaca7b7be6dabe6485034c7c8b44",
+     "state_changed": true
+    },
+    {
+     "step": 29,
+     "observation": "frame_029",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#29 (descending-view-id rotation)",
+     "previous_state_hash": "18f348d969f26f077f7b4f8f5c61f615021ccaca7b7be6dabe6485034c7c8b44",
+     "new_state_hash": "70d7f107ee7b1ccceef3aa47baec7be1b874f348353242fd02dfb975782e95aa",
+     "state_changed": true
+    },
+    {
+     "step": 30,
+     "observation": "frame_030",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#30 (descending-view-id rotation)",
+     "previous_state_hash": "70d7f107ee7b1ccceef3aa47baec7be1b874f348353242fd02dfb975782e95aa",
+     "new_state_hash": "5d6e766b6c3ed156b89195f9712da9b0ddd19b19f111233a9fd313ffe5386165",
+     "state_changed": true
+    },
+    {
+     "step": 31,
+     "observation": "frame_031",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#31 (descending-view-id rotation)",
+     "previous_state_hash": "5d6e766b6c3ed156b89195f9712da9b0ddd19b19f111233a9fd313ffe5386165",
+     "new_state_hash": "70d7f107ee7b1ccceef3aa47baec7be1b874f348353242fd02dfb975782e95aa",
+     "state_changed": true
+    },
+    {
+     "step": 32,
+     "observation": "frame_032",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#32 (descending-view-id rotation)",
+     "previous_state_hash": "70d7f107ee7b1ccceef3aa47baec7be1b874f348353242fd02dfb975782e95aa",
+     "new_state_hash": "8c351963f93ef2717bea8e7a60ab51128d176fa0eecc4e0237f661e8f441ae92",
+     "state_changed": true
+    },
+    {
+     "step": 33,
+     "observation": "frame_033",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "LEFT",
+     "input_coordinates": "click#33 (descending-view-id rotation)",
+     "previous_state_hash": "8c351963f93ef2717bea8e7a60ab51128d176fa0eecc4e0237f661e8f441ae92",
+     "new_state_hash": "9cc52cccf54664b2cff2ef37e6d5b8a390a8260730087fc55cf23d41fc03f8ef",
+     "state_changed": true
+    },
+    {
+     "step": 34,
+     "observation": "frame_034",
+     "detected_state": "GOAL 2/3",
+     "chosen_action": "RIGHT",
+     "input_coordinates": "click#34 (descending-view-id rotation)",
+     "previous_state_hash": "9cc52cccf54664b2cff2ef37e6d5b8a390a8260730087fc55cf23d41fc03f8ef",
+     "new_state_hash": "8c351963f93ef2717bea8e7a60ab51128d176fa0eecc4e0237f661e8f441ae92",
+     "state_changed": true
+    },
+    {
+     "step": 35,
+     "observation": "frame_035",
+     "detected_state": "GOAL 3/3 WIN",
+     "chosen_action": "STEP",
+     "input_coordinates": "click#35 (descending-view-id rotation)",
+     "previous_state_hash": "8c351963f93ef2717bea8e7a60ab51128d176fa0eecc4e0237f661e8f441ae92",
+     "new_state_hash": "eb507c42db2546f60381ec81ea7886e4e1dff233a1f51415e6355f6c75517c4a",
+     "state_changed": true
+    }
+   ],
+   "hash_chain_continuous": true,
+   "state_changing_steps": "35/35",
+   "final_state": "GOAL 3/3 WIN"
+  },
+  "minesweep": {
+   "game": "minesweep",
+   "schema": "S51-AGENT-v1",
+   "steps": [
+    {
+     "step": 0,
+     "observation": "frame_000",
+     "detected_state": "MINES 10 SAFE 0/71 (initial)",
+     "chosen_action": "OBSERVE_INITIAL",
+     "input_coordinates": "click#0 (descending-view-id rotation)",
+     "previous_state_hash": null,
+     "new_state_hash": "ee1066fea1c604696a969449e75e073e06e54d988c0d37e041271594b06485d3",
+     "state_changed": false
+    },
+    {
+     "step": 1,
+     "observation": "frame_001",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c8",
+     "input_coordinates": "click#1 (descending-view-id rotation)",
+     "previous_state_hash": "ee1066fea1c604696a969449e75e073e06e54d988c0d37e041271594b06485d3",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": true
+    },
+    {
+     "step": 2,
+     "observation": "frame_002",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c7",
+     "input_coordinates": "click#2 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 3,
+     "observation": "frame_003",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c6",
+     "input_coordinates": "click#3 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 4,
+     "observation": "frame_004",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c5",
+     "input_coordinates": "click#4 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 5,
+     "observation": "frame_005",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c4",
+     "input_coordinates": "click#5 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 6,
+     "observation": "frame_006",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c3",
+     "input_coordinates": "click#6 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 7,
+     "observation": "frame_007",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c2",
+     "input_coordinates": "click#7 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 8,
+     "observation": "frame_008",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c1",
+     "input_coordinates": "click#8 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 9,
+     "observation": "frame_009",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r8c0",
+     "input_coordinates": "click#9 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 10,
+     "observation": "frame_010",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c8",
+     "input_coordinates": "click#10 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 11,
+     "observation": "frame_011",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c7",
+     "input_coordinates": "click#11 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 12,
+     "observation": "frame_012",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c6",
+     "input_coordinates": "click#12 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 13,
+     "observation": "frame_013",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c5",
+     "input_coordinates": "click#13 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 14,
+     "observation": "frame_014",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c4",
+     "input_coordinates": "click#14 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 15,
+     "observation": "frame_015",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c3",
+     "input_coordinates": "click#15 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 16,
+     "observation": "frame_016",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c2",
+     "input_coordinates": "click#16 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 17,
+     "observation": "frame_017",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c1",
+     "input_coordinates": "click#17 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 18,
+     "observation": "frame_018",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r7c0",
+     "input_coordinates": "click#18 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 19,
+     "observation": "frame_019",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c8",
+     "input_coordinates": "click#19 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 20,
+     "observation": "frame_020",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c7",
+     "input_coordinates": "click#20 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 21,
+     "observation": "frame_021",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c6",
+     "input_coordinates": "click#21 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 22,
+     "observation": "frame_022",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c5",
+     "input_coordinates": "click#22 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 23,
+     "observation": "frame_023",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c4",
+     "input_coordinates": "click#23 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 24,
+     "observation": "frame_024",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c3",
+     "input_coordinates": "click#24 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 25,
+     "observation": "frame_025",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c2",
+     "input_coordinates": "click#25 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 26,
+     "observation": "frame_026",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c1",
+     "input_coordinates": "click#26 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 27,
+     "observation": "frame_027",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r6c0",
+     "input_coordinates": "click#27 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 28,
+     "observation": "frame_028",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c8",
+     "input_coordinates": "click#28 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 29,
+     "observation": "frame_029",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c7",
+     "input_coordinates": "click#29 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 30,
+     "observation": "frame_030",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c6",
+     "input_coordinates": "click#30 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 31,
+     "observation": "frame_031",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c5",
+     "input_coordinates": "click#31 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 32,
+     "observation": "frame_032",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c4",
+     "input_coordinates": "click#32 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 33,
+     "observation": "frame_033",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c3",
+     "input_coordinates": "click#33 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 34,
+     "observation": "frame_034",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c2",
+     "input_coordinates": "click#34 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 35,
+     "observation": "frame_035",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c1",
+     "input_coordinates": "click#35 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 36,
+     "observation": "frame_036",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r5c0",
+     "input_coordinates": "click#36 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 37,
+     "observation": "frame_037",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c8",
+     "input_coordinates": "click#37 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 38,
+     "observation": "frame_038",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c7",
+     "input_coordinates": "click#38 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 39,
+     "observation": "frame_039",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c6",
+     "input_coordinates": "click#39 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 40,
+     "observation": "frame_040",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c5",
+     "input_coordinates": "click#40 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 41,
+     "observation": "frame_041",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c4",
+     "input_coordinates": "click#41 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 42,
+     "observation": "frame_042",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c3",
+     "input_coordinates": "click#42 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 43,
+     "observation": "frame_043",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c2",
+     "input_coordinates": "click#43 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 44,
+     "observation": "frame_044",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c1",
+     "input_coordinates": "click#44 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 45,
+     "observation": "frame_045",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r4c0",
+     "input_coordinates": "click#45 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 46,
+     "observation": "frame_046",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c8",
+     "input_coordinates": "click#46 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 47,
+     "observation": "frame_047",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c7",
+     "input_coordinates": "click#47 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 48,
+     "observation": "frame_048",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c6",
+     "input_coordinates": "click#48 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 49,
+     "observation": "frame_049",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c5",
+     "input_coordinates": "click#49 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 50,
+     "observation": "frame_050",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c4",
+     "input_coordinates": "click#50 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 51,
+     "observation": "frame_051",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c3",
+     "input_coordinates": "click#51 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 52,
+     "observation": "frame_052",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c2",
+     "input_coordinates": "click#52 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 53,
+     "observation": "frame_053",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c1",
+     "input_coordinates": "click#53 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 54,
+     "observation": "frame_054",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r3c0",
+     "input_coordinates": "click#54 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 55,
+     "observation": "frame_055",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c8",
+     "input_coordinates": "click#55 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 56,
+     "observation": "frame_056",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c7",
+     "input_coordinates": "click#56 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 57,
+     "observation": "frame_057",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c6",
+     "input_coordinates": "click#57 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 58,
+     "observation": "frame_058",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c5",
+     "input_coordinates": "click#58 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 59,
+     "observation": "frame_059",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c4",
+     "input_coordinates": "click#59 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 60,
+     "observation": "frame_060",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c3",
+     "input_coordinates": "click#60 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 61,
+     "observation": "frame_061",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c2",
+     "input_coordinates": "click#61 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 62,
+     "observation": "frame_062",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c1",
+     "input_coordinates": "click#62 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 63,
+     "observation": "frame_063",
+     "detected_state": "MINES 10 SAFE 70/71",
+     "chosen_action": "REVEAL_r2c0",
+     "input_coordinates": "click#63 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "state_changed": false
+    },
+    {
+     "step": 64,
+     "observation": "frame_064",
+     "detected_state": "MINES 10 SAFE 71/71 WIN",
+     "chosen_action": "REVEAL_r1c8",
+     "input_coordinates": "click#64 (descending-view-id rotation)",
+     "previous_state_hash": "a5dbc7b207ad150dd524acf40072340aad5b10e667358e2a03b5b484679976d8",
+     "new_state_hash": "ef9d34588f00072ba60c88c8a133b26ef4a45e2dfdb19b1f25c1876f5b8be871",
+     "state_changed": true
+    }
+   ],
+   "hash_chain_continuous": true,
+   "state_changing_steps": "2/64",
+   "final_state": "MINES 10 SAFE 71/71 WIN"
+  }
+ }
+}

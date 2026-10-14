@@ -1,0 +1,8 @@
+{
+ "manifest_path": "/home/z/my-project/research/external-root-kb/current/MANIFEST.md",
+ "state": "PRESENT",
+ "sha256": "829aee64ac7bfd1fd43a5acc5bb4233f11880c2234262d9257a1609ed27ad4af",
+ "canonical_expect": "d717e9c745609fdf3ca11eb5d60649910089c9e2ca1d2ad942c22f4712ad7931 (2026-10-05 FINAL v3)",
+ "bulk_import_markers_in_registry": 0,
+ "rule": "KB = SEARCHLIGHT ONLY; finding->source->law->divergence->APK->3-run->registry"
+}

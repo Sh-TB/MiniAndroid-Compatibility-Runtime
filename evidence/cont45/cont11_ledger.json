@@ -1,0 +1,67 @@
+{
+  "wave": "CONT-11 WAVE 7",
+  "date": "2026-10-11",
+  "binary_fixed": "0bb9798addccc548",
+  "binary_baseline_repro": "aed46450c103f2ea",
+  "directive": "user: make Dooz and the calculator(s) PASS their blocking pages, many parallel tasks, better/more precise until complete result; PLUS cross-app impact assessment of any page-passing fix",
+  "honest_baseline_note": "The prior session summary referenced state absent from this repository (HEAD 3355f2f1 / registry 611 / evidence/cont41 / a tananaev calculator). All claims below are grounded in THIS repo's real state: HEAD e99c2fbd at start, registry 566, last completed wave CONT-10 W6.",
+
+  "front_a_dooz_draw_path": {
+    "method": "593k-entry method trace + CL-TRACE + FIELD-TRACE + targeted MINIANDROID_METHOD_TRACE class|method pc walks + new static xref tools",
+    "runtime_proven": [
+      "Ljt1;(AndroidCanvas) has NO <init> in the DEX and ZERO call sites invoke Ljt1;.draw* — R8 rewired all call sites to Landroid/graphics/Canvas; direct calls; 'construct the bridge' is not a missing-ctor law (corrects the recorded CONT-8/9/10 frontier wording)",
+      "draw recursion IS healthy: Lel0;.i(410) -> Lpz0;.L0(862, NodeCoordinator.draw) -> layer==null path translate -> M0(740, drawContainedDrawModifiers) -> T0(4) head lookup -> S0 returns null -> h1(performDraw) -> wrapped.L0 ... down the chain",
+      "the shared DrawScope Lgl0;.c NEVER executes (3 rows = ctor only) and CanvasDrawScope draw entry 0 — NO node's coordinator finds a DrawModifier head at draw time",
+      "the tree materializes (Lv02;.c 138 applier inserts — larger than the CONT-10 '5 nodes' snapshot) but the draw-modifier heads the walk needs are absent/empty at draw time",
+      "upstream 1.11.4 law verified: NodeCoordinator.draw has a layer path (CanvasDrawScope) and a plain path (translate + drawContainedDrawModifiers + translate-back); dooz nodes take the plain path and find no draw heads"
+    ],
+    "verdict": "the single next dooz root sits UPSTREAM of the draw path: draw-modifier chains are empty at draw time (composition/modifier attachment frontier)",
+    "instruments_added": ["scripts/cont11_invoke_xref.py", "scripts/cont11_static_field_xref.py", "scripts/cont11_dex_census.py"]
+  },
+
+  "front_b_calculators": {
+    "acquisitions": {
+      "alexcalc_20.apk": {"sha256": "b1383bc950ce8483602f60ac092a63aaab1b1c739494e1fda9208594654b422a", "pkg": "net.alexbarry.calc_android", "vc": 20, "native": "x86_64 present (LAW-001 ok)", "note": "S64-era DEFERRED pre-build (PreferenceFragmentCompat) — first-ever run this wave"},
+      "bmi_402.apk": {"sha256": "2dbd8ebe2db568014c36445a069298dcbee9b46fda019f008d2ecf2c1da68408", "pkg": "com.zola.bmi", "vc": 402, "native": "pure-java", "note": "S64-era DEFERRED pre-build (support-v4 FragmentManager) — first-ever run this wave"}
+    },
+    "bmi_chain": [
+      "first dive: ISE 'Fragment com.zola.bmi.BMIMain$PlaceholderFragment must be a public static class' at BackStackRecord.doAddOp (getModifiers typed-zero/static-missing) -> NPE 'FragmentTransaction.commit on null' at BMIMain.onCreate pc=31; 2 uncaught; white shell b5a7a35d",
+      "F-NEW-260 fix: ISE gone (inner-class flags 9 = PUBLIC|STATIC read from the SYSTEM InnerClass annotation)",
+      "F-NEW-261 fix: 'Activity has been destroyed' gone (mHost attaches via real FragmentActivity.onCreate -> attachHost -> attachController); uncaught 0",
+      "remaining: fragment never inflates (execPendingActions/moveToState/performCreateView all 0) because mHost.getHandler() answers null (FragmentHostCallback.mHandler stores value=<unset>) — F-NEW-262 manifestation 1"
+    ],
+    "alexcalc_chain": [
+      "first dive: FitWindowsLinearLayout.makeOptionalFitsSystemWindows NoSuchMethod (F-NEW-219 deferred family) + ISE 'Fragment null has not been attached yet' at Le0/t;.h pc=17 (androidx host attach) + CoordinatorLayout anchor message",
+      "state at fixed binary: unchanged (androidx family stays on the S83 bypass by the measured F-NEW-261 scope law); path = F-NEW-262"
+    ]
+  },
+
+  "fixes_landed": [
+    {"id": "F-NEW-260", "files": ["miniandroid/src/dex/dex_parser.cpp", "miniandroid/src/dex/dex_parser.h", "miniandroid/src/dex/dalvik_engine.cpp"], "ab": "BMI uncaught 2->0"},
+    {"id": "F-NEW-261", "files": ["miniandroid/src/dex/dalvik_engine.cpp"], "ab": "BMI 'Activity destroyed' ISE eliminated; scope verified per-family"}
+  ],
+
+  "ab_matrix": {
+    "method": "baseline = git checkout e99c2fbd sources, rebuild reproduced aed46450c103f2ea byte-identically (lineage reproducibility holds); fixed = 0bb9798addccc548",
+    "rows": [
+      {"app": "com.zola.bmi", "baseline": "b5a7a35d/2-uncaught", "fixed": "b5a7a35d/0-uncaught", "delta": "IMPROVED"},
+      {"app": "de.tobiasbielefeld.solitaire", "baseline": "6588621c/28-uncaught", "fixed": "6588621c/28-uncaught", "delta": "NO CHANGE (death predates this session — S83-era REAL record stale; the v7 WindowCallbackWrapper null chain is F-NEW-262 manifestation 2)"},
+      {"app": "org.secuso.privacyfriendlynotes", "baseline": "eb5ebd559cad1028/0", "fixed": "eb5ebd559cad1028/0", "delta": "ZERO DRIFT (androidx fall-through arm measured: re-killed notes -> scope narrowed back; bypass keeps the recorded anchor)"},
+      {"app": "io.github.yamin8000.dooz", "baseline": "d602648e8e401895/6", "fixed": "d602648e8e401895/6", "delta": "ZERO DRIFT"}
+    ]
+  },
+
+  "cross_app_impact_assessment": {
+    "anchors_x3": {"io.github.yamin8000.dooz": "d602648e8e401895 x3", "com.darkempire78.opencalculator": "a976d2f9fb675cb3 x3", "dubrowgn.microtimer": "da73010a37dd0189 x3"},
+    "anchors_x1": {"jwtc.android.chess": "b5a7a35d5fe0564b", "app.varlorg.unote": "4f1a9e4e8f64fae8", "org.secuso.privacyfriendlynotes": "eb5ebd559cad1028"},
+    "verdict": "the two framework-level fixes are generic and produce ZERO anchor drift on the whole canonical set; the only behavioral change is the target app (BMI crash -> clean run). The fixes touch Class.getModifiers (every reflection user — no anchor render changed) and the S83 support-family scope (legacy support apps only — notes androidx unaffected)."
+  },
+
+  "honest_remaining": [
+    "dooz still DEFAULT_BACKGROUND_ONLY (anchor d602648e = determinism anchor, white frame): the draw-modifier attachment frontier is named, no fix attempted this wave",
+    "BMI renders the shell b5a7a35d: fragment inflation blocked by F-NEW-262 (value-loss family)",
+    "AlexCalc unchanged: androidx attach law behind F-NEW-262",
+    "solitaire 6588621c/28-uncaught = session-start truth (measured both arms), NOT a CONT-11 regression; its root is F-NEW-262 manifestation 2",
+    "loading probe / gate A battery not re-run this wave (no engine law touched those surfaces; anchors + target apps measured instead) — record as PENDING for the next wave's full battery"
+  ]
+}

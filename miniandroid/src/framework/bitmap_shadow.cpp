@@ -207,6 +207,20 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
     const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
     BitmapStore::instance().store(obj, decoded.width, decoded.height,
                                   std::move(decoded.rgba), desc);
+    // CONT-65 F-NEW-355: keep the original container bytes for animated
+    // GIFs so the render walk can decode the full frame timeline
+    // (GifDecoder::decode_anim) — static consumers ignore this field.
+    if (bytes.size() >= 6 &&
+        (!memcmp(bytes.data(), "GIF87a", 6) || !memcmp(bytes.data(), "GIF89a", 6))) {
+        if (auto* sb = BitmapStore::instance().get_mut(obj)) {
+            sb->source_gif_bytes = bytes;
+            static thread_local const bool s_gif_stash_diag =
+                std::getenv("MINIANDROID_GIFANIM") != nullptr;
+            if (s_gif_stash_diag)
+                std::cerr << "[GIFANIM] stash obj=" << obj << " bytes="
+                          << bytes.size() << std::endl;
+        }
+    }
     std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj=" << obj
               << " (" << decoded.width << "x" << decoded.height << ")"
               << std::endl;
@@ -539,6 +553,44 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
                 uint8_t* p = &sb->rgba[((size_t)y * sb->width + x) * 4];
                 p[0] = (argb >> 16) & 0xFF; p[1] = (argb >> 8) & 0xFF;
                 p[2] = argb & 0xFF;         p[3] = (argb >> 24) & 0xFF;
+            }
+        }
+        return CallResult::handled_void();
+    }
+    // CONT-64 W2 (F-NEW-352 companion): setPixels — the ARRAY write-back
+    // law. AOSP Bitmap.java: setPixels(int[] pixels, int offset, int stride,
+    // int x, int y, int width, int height) replaces the rect from the array
+    // (ARGB packed ints, row-major with stride). The probe face: a probe
+    // built bitmaps via createBitmap + setPixels and drew them — the absent
+    // law left every created bitmap zero-filled (transparent), the draws
+    // answered nothing, and only the MULTIPLY tint row (opaque-src alpha
+    // law) produced pixels. Same store as setPixel — one identity.
+    if (m == "setPixels") {
+        StoredBitmap* sb = store.get_mut(recv);
+        const uint32_t src = ctx.arg_as_object(0, 0);
+        const int off = ctx.arg_as_int(1, 0);
+        const int stride = ctx.arg_as_int(2, 0);
+        const int x = ctx.arg_as_int(3, 0), y = ctx.arg_as_int(4, 0);
+        const int w = ctx.arg_as_int(5, 0), h = ctx.arg_as_int(6, 0);
+        if (!sb || src == 0 || !heap_ || w <= 0 || h <= 0)
+            return CallResult::handled_void();
+        int32_t alen = 0;
+        heap_->get_object_array_length(src, alen);
+        for (int row = 0; row < h; row++) {
+            for (int col = 0; col < w; col++) {
+                const int dx = x + col, dy = y + row;
+                if (dx < 0 || dy < 0 || dx >= sb->width || dy >= sb->height)
+                    continue;
+                const int idx = off + row * stride + col;
+                int32_t argb = 0;
+                if (idx >= 0 && idx < alen && heap_->get_object_int_field(
+                        src, "array[" + std::to_string(idx) + "]", argb)) {
+                    uint8_t* p = &sb->rgba[((size_t)dy * sb->width + dx) * 4];
+                    p[0] = ((uint32_t)argb >> 16) & 0xFF;
+                    p[1] = ((uint32_t)argb >> 8) & 0xFF;
+                    p[2] = (uint32_t)argb & 0xFF;
+                    p[3] = ((uint32_t)argb >> 24) & 0xFF;
+                }
             }
         }
         return CallResult::handled_void();

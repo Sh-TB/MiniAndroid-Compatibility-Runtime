@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The custom attrs the probe reads: present ONLY in the defStyleRes
+         style — never in the XML tag, never in the theme. -->
+    <attr name="boxMax" format="dimension" />
+    <attr name="boxMin" format="dimension" />
+
+    <declare-styleable name="F327">
+        <attr name="boxMax" />
+        <attr name="boxMin" />
+    </declare-styleable>
+
+    <style name="F327_Theme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <!-- boxMax/boxMin deliberately ABSENT here: the theme stage (5)
+             must NOT be the source — only the defStyleRes style (4). -->
+    </style>
+
+    <!-- The defStyleRes style: the ONLY source of boxMax/boxMin — the
+         Widget.Design.NavigationView android:maxWidth shape. -->
+    <style name="F327_BoxStyle">
+        <item name="boxMax">280dp</item>
+        <item name="boxMin">48dp</item>
+    </style>
+</resources>

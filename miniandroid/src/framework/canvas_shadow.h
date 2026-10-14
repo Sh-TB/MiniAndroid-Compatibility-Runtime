@@ -134,6 +134,22 @@ struct DrawOp {
     // CYCLE-E: Path.FillType recorded at drawPath time.
     // 0 = WINDING (AOSP default), 1 = EVEN_ODD.
     int fill_type = 0;
+    // F-NEW-351: Paint blend mode snapshot at record time (AOSP BlendMode
+    // ordinals; -1 = none recorded → legacy SRC_OVER behavior). 0 = CLEAR —
+    // the replay must ERASE the destination (Skia BlendMode::kClear), never
+    // paint. Compose's DrawCache.clear() = drawRect(Black, BlendMode.Clear)
+    // is the canonical consumer (vector-icon cache reset).
+    int blend_mode = -1;
+    // CONT-64 W2 (F-NEW-352): Paint color-filter (draw-time tint) snapshot
+    // for DRAW_BITMAP. AOSP law: Paint.setColorFilter(cf) applies the filter
+    // to EVERY pixel the paint draws — the canonical consumer is the icon
+    // tint (PorterDuffColorFilter(tint, SRC_IN) over a white glyph shape).
+    // tint_mode = PorterDuff.Mode ordinal (SRC_IN=5, SRC_ATOP=9,
+    // MULTIPLY=14, SCREEN=15, SRC_OVER=3, DST_OVER=4, DST_IN=6, DST_OUT=8,
+    // SRC_ATOP family); -1 = mode unresolved (honest no-tint).
+    bool has_tint = false;
+    uint32_t tint_color = 0;
+    int tint_mode = -1;
 
     // ── S68 §12 additions ────────────────────────────────────────────────
     // DRAW_BITMAP: heap object id of the android.graphics.Bitmap; source
@@ -176,12 +192,25 @@ struct DrawOp {
 class CanvasShadow : public Shadow {
 public:
     std::string name() const override { return "CanvasShadow"; }
+    // F-NEW-345: out-of-line dtor (owns the flush font; software_renderer.h
+    // is already included above so the type is complete).
+    ~CanvasShadow() override;
 
     bool handles_class(const std::string& cls) const override {
+        // F-NEW-297 (CONT-36): the generic "Paint;" suffix row —
+        // Landroid/text/TextPaint; extends android.graphics.Paint and the
+        // dispatch() Paint arm already keys on cls.find("Paint;")
+        // (color/alpha/size state). The old gate matched ONLY
+        // graphics/Paint, so Compose's TextPaint (AndroidParagraph's
+        // textPaint — the color the paragraph paints with) never reached
+        // the shadow: setColor was swallowed and every Layout.draw text op
+        // recorded the default black. Same gate-vs-dispatch alignment law
+        // as F-NEW-285 (RenderNode claim gate).
         return cls == "Landroid/graphics/Canvas;" ||
                cls.find("graphics/Canvas;") != std::string::npos ||
                cls == "Landroid/graphics/Paint;" ||
                cls.find("graphics/Paint;") != std::string::npos ||
+               cls.find("Paint;") != std::string::npos ||
                // FIX-5: android.graphics.Path — real path recording so apps
                // that draw their own glyphs/shapes (simplestopwatch digit
                // fonts, clock hands) execute their REAL onDraw bytecode and
@@ -189,7 +218,22 @@ public:
                cls == "Landroid/graphics/Path;" ||
                cls.find("graphics/Path;") != std::string::npos ||
                // UC009 H-072: Compose draws through RenderNode recording.
+               // F-NEW-285 (CONT-28): the claim gate must match the dispatch
+               // matcher below — dispatch() already implements the law for
+               // ANY "*RenderNode;" class (cls.find("RenderNode;")), but the
+               // gate only claimed Landroid/view/RenderNode;. The real-
+               // Compose oracle (GraphicsLayerV29.record, ui 1.11.4) calls
+               // Landroid/graphics/RenderNode;.beginRecording() (AOSP moved
+               // RenderNode to android.graphics for RecordingCanvas access);
+               // unclaimed, the call answered VOID, GraphicsLayerV29.record
+               // stored the unset value into AndroidCanvas.internalCanvas
+               // (setInternalCanvas), and every recorded draw op died
+               // f141-null-recv — the draw-pipeline APP BOUNDARY. Claim the
+               // family the dispatch already serves; android.graphics.
+               // RenderNode.beginRecording() law is identical (returns the
+               // node's RecordingCanvas).
                cls == "Landroid/view/RenderNode;" ||
+               cls.find("RenderNode;") != std::string::npos ||
                cls.find("graphics/RecordingCanvas;") != std::string::npos;
     }
 
@@ -232,9 +276,19 @@ public:
     // getHeight answer these; was hardcoded 1080x1920).
     void set_canvas_size(int w, int h) { canvas_w_ = w; canvas_h_ = h; }
     // Paint color lookup (0 default opaque black); shared by Canvas dispatch.
+    // F-NEW-351: recorded blend mode for a paint (-1 = none recorded).
+    int paint_blend_mode(uint32_t paint_id) const {
+        auto it = paint_blendmode_.find(paint_id);
+        return it != paint_blendmode_.end() ? it->second : -1;
+    }
     uint32_t paint_color(uint32_t paint_id) const {
         auto it = paint_color_.find(paint_id);
         return it != paint_color_.end() ? it->second : 0xFF000000u;
+    }
+    // CONT-64 W2 (F-NEW-352): the recorded ColorFilter heap object (0 = none).
+    uint32_t paint_colorfilter(uint32_t paint_id) const {
+        auto it = paint_colorfilter_.find(paint_id);
+        return it != paint_colorfilter_.end() ? it->second : 0;
     }
     const std::vector<DrawOp>& ops() const { return ops_; }
 
@@ -301,6 +355,15 @@ private:
     // S68 §12/§14: paint text styling consumed by the Canvas text path.
     std::map<uint32_t, bool> paint_fake_bold_;    // setFakeBoldText
     std::map<uint32_t, bool> paint_filter_bitmap_;// setFilterBitmap
+    // F-NEW-351: Paint blend mode (AOSP BlendMode ordinal; -1 = none).
+    // Consumed at record time (op.blend_mode) and honored at replay
+    // (CLEAR = destination erase).
+    std::map<uint32_t, int> paint_blendmode_;     // setBlendMode
+    // CONT-64 W2 (F-NEW-352): Paint color filter (the draw-time tint law).
+    // setColorFilter(ColorFilter) records the filter heap object id per
+    // paint; drawBitmap reads it at record time (op.tint_*) and the replay
+    // applies the PorterDuff color-filter math per pixel. 0 = none.
+    std::map<uint32_t, uint32_t> paint_colorfilter_;  // setColorFilter
     // S68 §12: canvas dimensions (real framebuffer — was hardcoded 1080x1920).
     int canvas_w_ = 1080, canvas_h_ = 1920;
     // FIX-5: android.graphics.Path recording (per heap object id).
@@ -346,6 +409,23 @@ private:
             }
         }
     }
+
+    // ── F-NEW-345: bitmap-target canvases (AOSP graphics/Canvas.java) ────
+    // `new Canvas(bitmap)` / setBitmap bind the canvas to a BITMAP target:
+    // the canvas carries its OWN matrix/clip/save state (independent from
+    // the view canvas) and every draw op rasterizes eagerly INTO the
+    // bitmap's pixel buffer. Bitmap-target ops are legal OUTSIDE the view
+    // draw capture window too (onCreate-time offscreen rendering is the
+    // AOSP norm). Mechanism: one sub-recorder per bound canvas (same op
+    // laws, isolated state) flushed into BitmapStore after each op.
+    std::map<uint32_t, uint32_t> bitmap_target_;             // canvas → bitmap
+    std::map<uint32_t, std::unique_ptr<CanvasShadow>> bitmap_recorders_;
+    std::unique_ptr<miniandroid::renderer::BitmapFont> flush_font_;  // owned, default law
+    void bind_bitmap_canvas(uint32_t canvas_id, uint32_t bitmap_id);
+    CallResult dispatch_bitmap_op(const CallContext& ctx, uint32_t canvas_id,
+                                  uint32_t bitmap_id);
+    void flush_bitmap_canvas(CanvasShadow& rec, uint32_t bitmap_id);
+    void sync_shared_state(CanvasShadow& rec) const;
 
     // CYCLE-E: resolve an enum-typed argument to its AOSP ordinal. Prefers
     // the synthesized framework enum object's "ordinal" heap field; falls
