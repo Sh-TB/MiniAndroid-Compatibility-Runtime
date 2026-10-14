@@ -9446,3 +9446,21 @@ Work Log:
 Stage Summary:
 - The user's "buttons load correctly" lane advanced from CLASSIFIED-adjacent to a fully evidenced root cause: the empty filter list = the zeroed Placeable.position store, with the exact reset mechanism, the window-order proof, and the next fix lever named. No drift risk taken: zero render-path changes this wave.
 - Next waves own: (a) the F-NEW-267 fix lever (composition-time measure ordering), (b) F-NEW-277 recomposition-delivery (dooz board), (c) OpenCalc display content, (d) BMI row-width clip, (e) tanana main layout, (f) alex blue-bar face, (g) colorFilter-tint-at-drawBitmap, (h) the 2 residual arg_fields=(none) drawBitmap rows.
+
+---
+Task ID: CONT-64-W2
+Agent: Super Z (main)
+Task: CONT-64 Wave 2 — the colorFilter-tint-at-drawBitmap law (the CONT-63 named frontier; the user's priority lane #2 "template color scheme"): F-NEW-352, minimal generic fix + probe + full zero-drift regression + registry/worklog/evidence.
+
+Work Log:
+- FIX (three generic links, zero app knowledge):
+  (1) PorterDuffColorFilter/BlendModeColorFilter <init> law in the engine (dalvik_engine.cpp, beside the R-NEW-393 law): capture __filter_color__/__filter_mode__ (the mode ordinal read from the synthesized enum object's "ordinal" field — the F-NEW-351 enum-synthesis consumer). Before: the framework-owned object allocated EMPTY, the ctor args vanished.
+  (2) CanvasShadow Paint arm: setColorFilter(ColorFilter) records the filter object per paint (null clears — AOSP law); getColorFilter returns it; the F-NEW-345 sub-recorder sync_shared_state parity extended (paint_colorfilter_ map). drawBitmap snapshots op.has_tint/tint_color/tint_mode with the [1..17] PorterDuff ordinal sanity gate (mode 0/CLEAR on a color filter = honest no-tint, never erase; unreadable mode = -1 no-tint).
+  (3) Replay: the per-pixel PorterDuff law on BOTH bitmap paths — the affine inverse-map path tints the sampled pixel pre-blend; the non-affine path materializes a tinted temp region (the draw_image_region fast path stays byte-identical for untinted ops). Modes: SRC=1, SRC_OVER=3, DST_OVER=4, SRC_IN=5, DST_IN=6, DST_OUT=8, SRC_ATOP=9, MULTIPLY=14, SCREEN=15; unknown = honest no-tint.
+- IN-WAVE NEW PROBLEM (the probe exposed it): Bitmap.setPixels(int[],off,stride,x,y,w,h) had NO law — createBitmap'd bitmaps stayed zero-filled (transparent); only the MULTIPLY row's opaque-src alpha law produced pixels. Fixed with the same-store setPixel identity (array read via the array[i] field law, ARGB unpack, rect-clamped write). getPixels existed; setPixels was the gap.
+- PROBE: fixtures/fnew352_probe (real aapt2/ECJ/D8, apk 485d9bccbb98035f), 9 pixel rows — T1 SRC_IN red/white->RED, T2 SRC_IN over transparent->nothing, T3 SRC_ATOP half-alpha, T4 MULTIPLY red*blue->black, T5 no-filter control UNCHANGED, T6 BlendModeColorFilter SRC_IN green, T7 per-paint filter STATE (red vs blue, same wave), T8 getColorFilter round-trip. scripts/cont64_verify_f352.py 9/9 PASS; screenshot f6e3be95506ad8f9 x3 byte-identical. The ctor law trace [F352-FILTER] captured all 6 filters with the right colors/modes (5/9/14).
+- REGRESSION at the F-NEW-352 binary: anchors 36/36 x3 ZERO DRIFT (csw d3c26b73ee21e571, dooz15 31ddd4d5b8e6d18e, flappycow 13cf47464d9787f4, g2048 59ca1526611c4622, gmdice 3891679dff449331, microtimer 55343bbec712618d, opencalc f25b754c4565c38b, simplecalc 341b9cec89d8f182, tanana afe0bd8dd4d09ca6, tttdeluxe af6094295ecb50e3, unote 90a67cc1ddda57b7, all x3; dooz180 c94da5a928ea213b x3) — the tint law is render-neutral for untinted paths, re-verified AFTER the setPixels companion landed.
+- Registry 658->659 (F-NEW-352 ROOT-CAUSED-FIXED; scripts/cont64_w2_registry.py). Evidence: evidence/cont64/{fnew352_evidence.json, f352_probe_face.png}. Mosaic refreshed (14 tiles incl. the probe).
+
+Stage Summary:
+- The user's priority lane #2 (color scheme/tint) advanced: the draw-time color-filter law exists end-to-end (ctor capture -> per-paint state -> drawBitmap snapshot -> per-pixel PorterDuff replay), verified by a 9-row pixel probe and the full anchor wall at zero drift. The named CONT-63 frontier item "colorFilter-tint-at-drawBitmap law" is closed; the 2 residual arg_fields=(none) drawBitmap rows stay named (next waves).
