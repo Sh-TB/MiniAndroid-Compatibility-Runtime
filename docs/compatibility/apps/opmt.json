@@ -1,145 +1,141 @@
 {
- "record_type": "app_dossier",
- "schema_version": 1,
- "package": "one.scarecrow.games.OPMT",
- "status_note": null,
- "source": {
-  "repository": "upstream/corpus (S65 spotlight)",
-  "commit": null,
-  "license": null
- },
- "apk": {},
- "build": null,
- "min_sdk": null,
- "target_sdk": null,
- "manifest_summary": null,
- "lifecycle": {},
- "framework_apis": [],
- "view_hierarchy": null,
- "resources": {},
- "layout": {},
- "rendering": {
-  "meaningful_frame": "DONE",
-  "pixels": "213286 px",
-  "sha256_16": "60e5611daaf01e58"
- },
- "input": {
-  "tap": "OBSERVED (historical S6 chain)"
- },
- "state": {},
- "concurrency": {},
- "storage": {},
- "persistence": {
-  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
-  "probe": "relaunch_same_data_root (s74-ops)",
-  "verdict": "NO_PERSISTENCE_OBSERVED"
- },
- "network": {
-  "requested": [],
-  "observed": [],
-  "apis": [],
-  "status": "NOT_OBSERVED"
- },
- "security": {
-  "permissions_declared": [],
-  "permissions_observed": [],
-  "exported_components": [],
-  "filesystem": "NOT_OBSERVED",
-  "network": "NOT_OBSERVED",
-  "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
-  "launchable_activities": [
-   "one.scarecrow.games.OPMT.MainMenu"
-  ],
-  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
- },
- "evidence": {
-  "primary": [
-   "docs/evidence/S73/S73_REPORT.md"
-  ],
-  "screenshot_sha256_16": "60e5611daaf01e58"
- },
- "regression": {},
- "blocker": "app-own IOOBE (OBJECT-IDENTITY class) stops game progression; S65 root: app-own nextInt(0) stopper",
- "next_task": "OBJECT-IDENTITY root-cause wave (shared with tripeaks R-NEW-388 family)",
- "completion": {
-  "C1_apk_load": "DONE",
-  "C2_manifest_lifecycle": "DONE",
-  "C3_view_framework": "DONE",
-  "C4_measure_layout": "DONE",
-  "C5_render": "DONE",
-  "C6_input": "OBSERVED",
-  "C7_state_change": "OBSERVED",
-  "C8_rerender": "OBSERVED",
-  "C9_persistence": "PENDING",
-  "C10_concurrency": "PENDING",
-  "C11_security_sandbox": "OBSERVED",
-  "C12_determinism": "PENDING",
-  "C13_regression": "DONE",
-  "C14_evidence": "DONE"
- },
- "links": {
-  "issue": null,
-  "laws": [],
-  "capabilities": [
-   "cap-render-software-framebuffer"
-  ],
-  "knowledge": [],
-  "evidence_files": []
- },
- "name": "OPMT (One Plus Minus Three)",
- "status": "PARTIAL",
- "issue": 23,
- "issue_state": "open",
- "app_id": "opmt",
- "visual_evidence": {
-  "status": "HUMAN_VISIBLE",
-  "execution_stage": [
-   "V0 launch",
-   "V1 menu",
-   "V2 interaction (dialog)"
-  ],
-  "note": "'Play with Friend / Play with Computer / How to play?' menu; click round-robin opened the app's REAL AlertDialog 'Who will go first?' (Human/Computer) at HEAD",
-  "representative_frames": [
-   "01_launch.png",
-   "03_final.png",
-   "04_frame_000.png",
-   "05_frame_002.png",
-   "06_frame_004.png"
-  ],
-  "bundle": "docs/evidence/s74_ops/opmt/",
-  "session": "docs/evidence/s74_ops/opmt/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP \u00a74"
- },
- "what_actually_happened": {
-  "PROVEN": [
-   "menu render (213,286 px, byte-matches S73 record) + real AlertDialog render at HEAD"
-  ],
-  "OBSERVED": [
-   "click -> dialog state change (menu -> modal 'Who will go first?')"
-  ],
-  "IMPLEMENTED": [],
-  "RESEARCHED": [
-   "app-own IOOBE (OBJECT-IDENTITY) stops progression past menu/dialog"
-  ],
-  "NOT_OBSERVED": [
-   "game board flow"
-  ],
-  "BLOCKED": [
-   "app-own IOOBE (OBJECT-IDENTITY) for progression beyond menu"
-  ],
-  "SUPERSEDED": []
- },
- "sandbox_profile": {
-  "data_root_probed": true,
-  "observation": "no files created",
-  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
- },
- "ops_wave": {
-  "wave": "S74 FOLLOW-UP (operational base completion)",
-  "runtime_commit": "3505591b",
-  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
-  "evidence_bundle": "docs/evidence/s74_ops/opmt/",
-  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- }
+  "record_type": "app_dossier",
+  "schema_version": 1,
+  "package": "one.scarecrow.games.OPMT",
+  "status_note": null,
+  "source": {
+    "repository": "upstream/corpus (S65 spotlight)",
+    "commit": null,
+    "license": null
+  },
+  "apk": {},
+  "build": null,
+  "min_sdk": null,
+  "target_sdk": null,
+  "manifest_summary": null,
+  "lifecycle": {},
+  "framework_apis": [],
+  "view_hierarchy": null,
+  "resources": {},
+  "layout": {},
+  "rendering": {
+    "meaningful_frame": "DONE",
+    "pixels": "213286 px",
+    "sha256_16": "60e5611daaf01e58"
+  },
+  "input": {
+    "tap": "OBSERVED (historical S6 chain)"
+  },
+  "state": {},
+  "concurrency": {},
+  "storage": {},
+  "persistence": {
+    "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+    "probe": "relaunch_same_data_root (s74-ops)",
+    "verdict": "NO_PERSISTENCE_OBSERVED"
+  },
+  "network": {
+    "requested": [],
+    "observed": [],
+    "apis": [],
+    "status": "NOT_OBSERVED"
+  },
+  "security": {
+    "permissions_declared": [],
+    "permissions_observed": [],
+    "exported_components": [],
+    "filesystem": "NOT_OBSERVED",
+    "network": "NOT_OBSERVED",
+    "sensitive_apis": [],
+    "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+    "launchable_activities": [
+      "one.scarecrow.games.OPMT.MainMenu"
+    ],
+    "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
+  },
+  "evidence": {
+    "primary": [
+      "docs/evidence/S73/S73_REPORT.md"
+    ],
+    "screenshot_sha256_16": "60e5611daaf01e58"
+  },
+  "regression": {},
+  "blocker": "app-own IOOBE (OBJECT-IDENTITY class) stops game progression; S65 root: app-own nextInt(0) stopper",
+  "next_task": "OBJECT-IDENTITY root-cause wave (shared with tripeaks R-NEW-388 family)",
+  "completion": {
+    "C1_apk_load": "DONE",
+    "C2_manifest_lifecycle": "DONE",
+    "C3_view_framework": "DONE",
+    "C4_measure_layout": "DONE",
+    "C5_render": "DONE",
+    "C6_input": "OBSERVED",
+    "C7_state_change": "OBSERVED",
+    "C8_rerender": "OBSERVED",
+    "C9_persistence": "PENDING",
+    "C10_concurrency": "PENDING",
+    "C11_security_sandbox": "OBSERVED",
+    "C12_determinism": "PENDING",
+    "C13_regression": "DONE",
+    "C14_evidence": "DONE"
+  },
+  "links": {
+    "issue": null,
+    "laws": [],
+    "capabilities": [
+      "cap-render-software-framebuffer"
+    ],
+    "knowledge": [],
+    "evidence_files": []
+  },
+  "name": "OPMT (One Plus Minus Three)",
+  "status": "PARTIAL",
+  "issue": 23,
+  "issue_state": "open",
+  "app_id": "opmt",
+  "visual_evidence": {
+    "status": "HUMAN_VISIBLE",
+    "execution_stage": [
+      "V0 launch",
+      "V1 menu",
+      "V2 interaction (dialog)"
+    ],
+    "note": "'Play with Friend / Play with Computer / How to play?' menu; click round-robin opened the app's REAL AlertDialog 'Who will go first?' (Human/Computer) at HEAD [CONT-11 W7: pruned to surviving frames]",
+    "representative_frames": [
+      "05_frame_002.png"
+    ],
+    "bundle": "docs/evidence/s74_ops/opmt/",
+    "session": "docs/evidence/s74_ops/opmt/session.json",
+    "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
+  },
+  "what_actually_happened": {
+    "PROVEN": [
+      "menu render (213,286 px, byte-matches S73 record) + real AlertDialog render at HEAD"
+    ],
+    "OBSERVED": [
+      "click -> dialog state change (menu -> modal 'Who will go first?')"
+    ],
+    "IMPLEMENTED": [],
+    "RESEARCHED": [
+      "app-own IOOBE (OBJECT-IDENTITY) stops progression past menu/dialog"
+    ],
+    "NOT_OBSERVED": [
+      "game board flow"
+    ],
+    "BLOCKED": [
+      "app-own IOOBE (OBJECT-IDENTITY) for progression beyond menu"
+    ],
+    "SUPERSEDED": []
+  },
+  "sandbox_profile": {
+    "data_root_probed": true,
+    "observation": "no files created",
+    "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+  },
+  "ops_wave": {
+    "wave": "S74 FOLLOW-UP (operational base completion)",
+    "runtime_commit": "3505591b",
+    "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+    "evidence_bundle": "docs/evidence/s74_ops/opmt/",
+    "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+  }
 }
