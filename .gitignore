@@ -217,3 +217,4 @@ tmp/gate_dr/
 
 # toolchain repair dir (large binaries — rebuilt via scripts/build/bootstrap_toolchain.sh)
 tools/toolchain/
+tmp/w4_probebuild/

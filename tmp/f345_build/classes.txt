@@ -1,2 +1,0 @@
-tmp/f345_build/obj/com/probe/f345/MainActivity$ProbeView.class
-tmp/f345_build/obj/com/probe/f345/MainActivity.class

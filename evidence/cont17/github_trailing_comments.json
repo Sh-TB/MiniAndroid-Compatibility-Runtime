@@ -1,0 +1,56 @@
+{
+ "375": {
+  "body_head": "COMPLETE FOLLOW-THROUGH REQUEST \u2014 DO NOT LEAVE PRIOR OR NEW GAPS UNRESOLVED\n\nThis is the follow-through request after the latest #371/#372/#373/#374 campaign results. Treat ALL previous requirements, newly discovered roots, partials, blockers, and next steps as one reconciled worklist.\n\n0. PRIMARY RULE\n\nDo NOT stop at the latest reported success.\n\nRe-read and reconcile:\n\n\n- MASTER CONTINUATION \u2014 Independent verification #364\u2013#369 + full execution #370\u00a0#371\n\n- SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT \u2014 330-point black/white/partial/load audit\u00a0#372\n\n- ENV-PREREQUISITES \u2014 Android API / CPU / ABI / ",
+  "num_blocks": 1,
+  "times": [],
+  "authors": [
+   "Sh-TB"
+  ],
+  "comments": []
+ },
+ "376": {
+  "body_head": "EXTERNAL ROOT CENSUS \u2014 Deep multilingual root discovery for MiniAndroid\n\nMission\n\nCreate one authoritative, continuously updated census of generic Android compatibility/runtime root causes that can explain APK failure, white/black/partial screens, wrong UI, missing state, native failures, silent stalls, or false-positive execution.\n\nThis is NOT an APK-by-APK test list. Find root families already discovered by AOSP engineers, emulator projects, Waydroid/Anbox/Redroid/WSA, ART/Dalvik, graphics/runtime projects, AndroidX/Compose/WebView, app/framework issue trackers, academic work, Chinese/Russia",
+  "num_blocks": 1,
+  "times": [],
+  "authors": [
+   "Sh-TB"
+  ],
+  "comments": []
+ },
+ "377": {
+  "body_head": "CONT-6 \u2014 External Root Knowledge Base Forensic Audit + Runtime Fan-out Validation\n\nCanonical external knowledge snapshot\n\nThe latest supplied archive has now been independently inspected.\n\nArchive: MiniAndroid_Root_Audit_Archive (1).zip\n\nArchive SHA-256: d717e9c745609fdf3ca11eb5d60649910089c9e2ca1d2ad942c22f4712ad7931\n\nArchive size: 2,171,810 bytes\n\nAudit date: 2026-10-05\n\nAudited MiniAndroid HEAD inside archive: f8d4088b9384b603ce5a903eefe037412eb104d3\n\nCurrent project HEAD at CONT-6 creation: 1c2ccdfd24957cef8affc4989dd439ccb30d7276\n\nThe latest archive DOES contain the claimed 5,434/5,976 da",
+  "num_blocks": 1,
+  "times": [],
+  "authors": [
+   "Sh-TB"
+  ],
+  "comments": []
+ },
+ "378": {
+  "body_head": "CONT-7 \u2014 CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMPOSE/R8 CLASS-IDENTITY\n\nMission\n\nReconcile the current GitHub state and all recent campaign claims before coding, then expand the real-APK corpus with multiple independent x86/x86_64 or pure-DEX apps and games. Investigate whether R8-renamed Compose class identity is a genuine generic root. Keep the Agent Skill operational and prevent it from being forgotten.\n\n1. LAW-001 FIRST TEST \u2014 ABI SCOPE\n\n\n- PURE_DEX/no native libraries: IN SCOPE.\n\n- x86 native: IN SCOPE.\n\n- x86_64 native: IN SCOPE.\n\n- mixed x86/x86_64 + ARM: IN SCOPE t",
+  "num_blocks": 1,
+  "times": [],
+  "authors": [
+   "Sh-TB"
+  ],
+  "comments": []
+ },
+ "379": {
+  "body_head": "CONT-9 / WAVE 5 \u2014 Compose Continuation Root + External KB Runtime Fan-out\n\n0. START HERE \u2014 DO NOT DECLARE SUCCESS FROM DOOZ FALLBACK\n\nCurrent CONT-8 evidence is accepted only as a refined runtime frontier.\n\nDooz is NOT yet REAL_APP_CONTENT:\n\n\n- F-NEW-260 is a hardcoded/source-grounded visual fallback.\n\n- Its 25 draw ops are injected by C++.\n\n- The fallback MUST be disabled/bypassed for compatibility verdicts.\n\n- Do not use the fallback screenshot as proof of Compose compatibility.\n\n- Keep it only as a SOURCE-GROUNDED VISUAL ORACLE.\n\n\nCurrent refined Dooz frontier from CONT-8:\n\n\n- AndroidCompos",
+  "num_blocks": 1,
+  "times": [],
+  "authors": [
+   "Sh-TB"
+  ],
+  "comments": []
+ },
+ "380": {
+  "body_head": "CONT-11 / WAVE 7 \u2014 Kotlin/stdlib semantic backend investigation + Compose draw frontier\n\n0. PURPOSE\n\nDo NOT assume the remaining Dooz/Compose blocker is \u201cjust another Kotlin root\u201d.\n\nThe latest CONT-10 evidence proves two generic Kotlin/collection semantic failures:\n\n\n- F-NEW-259: Kotlin ArrayDeque inherits Kotlin AbstractList.iterator(); MiniAndroid's host/shadow iterator resolved size()/get() by name only, so R8-renamed overrides were invisible.\n\n- F-NEW-259b: java.util.ArrayList.addAll(Collection) was missing and silently became a no-op.\n\n\nAfter those fixes, real Compose navigation materiali",
+  "num_blocks": 1,
+  "times": [],
+  "authors": [
+   "Sh-TB"
+  ],
+  "comments": []
+ }
+}

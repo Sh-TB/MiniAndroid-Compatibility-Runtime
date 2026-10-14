@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- F-NEW-322 probe layout: a LinearLayout root the DEX code will
+     programmatically setLayoutParams on, plus a plain TextView that is
+     NEVER given params (the ROOT-055 fallback face). -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/plain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="probe"/>
+
+</LinearLayout>

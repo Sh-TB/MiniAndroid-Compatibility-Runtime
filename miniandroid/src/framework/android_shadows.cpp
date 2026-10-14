@@ -6,10 +6,12 @@
 
 // UNIFIED_007: real resource pipeline
 #include "../resources/resource_runtime.h"
+#include "../resources/res_id.h"  // F-NEW-327: complex_unit_to_dimension_pixel_size
 #include "../resources/attribute_set_store.h"  // F-NEW-197: XML AttributeSet law
 #include "../webview/webview_engine.h"
 // ADDITIONAL-AUDIT P1-2: canonical Bitmap pixel store (setImageBitmap law)
 #include "bitmap_shadow.h"
+#include "matrix_shadow.h"  // F-NEW-267: the compose hit-test coordinate laws
 // S133 WEB-001: the S100 NET-001 HTTPS client is the runtime's existing
 // fetch substrate — REUSED for network document loads (no new network code).
 #include "../api/http_client.h"
@@ -30,6 +32,10 @@
 namespace miniandroid { namespace framework {
 
 using json = nlohmann::json;
+
+// F-NEW-267 (CONT-61): the engine sets this while a DEX touch override
+// executes; the CollectionShadow size law probes it for [TOUCHWIN-SIZE].
+std::atomic<bool> g_touch_window_active{false};
 
 // ─────────────────────────────────────────────────────────────────────────
 // ADDITIONAL-AUDIT P0-3 (runtime class-identity law): every View-returning
@@ -285,9 +291,158 @@ static std::string map_key_value_law(const CallContext& ctx, size_t i,
     return ctx.arg_as_string(i);
 }
 
+// ── LAW-D (CONT-18): KIND-AWARE SLOT SERVE (shared deque read law) ────
+// OpenJDK deque read faces (getFirst/getLast/peek/element) return the
+// ELEMENT, not the internal storage slot. MiniAndroid's kind-2/3 slots
+// carry their value in the parallel stores with elements[idx]==0 by
+// design — serving elements[idx] as an object id handed apps a zero-id
+// "object" (fcol K4 getFirst, K5 peek = null faces).
+static CallResult lawa_serve_slot(CollectionShadow::CollectionState& st,
+                                  int32_t idx) {
+    if (idx < 0 || static_cast<size_t>(idx) >= st.elements.size())
+        return CallResult::handled_null();
+    uint8_t k = idx < static_cast<int32_t>(st.elem_kinds.size())
+                    ? st.elem_kinds[idx]
+                    : (st.elements[idx] != 0 ? uint8_t{1} : uint8_t{0});
+    if (k == 4)  // F-NEW-271: null element → typed null
+        return CallResult::handled_null();
+    if (k == 3)
+        return CallResult::handled_int(
+            idx < static_cast<int32_t>(st.elem_ints.size())
+                ? st.elem_ints[idx]
+                : 0);
+    if (k == 2)
+        return CallResult::handled_string(
+            idx < static_cast<int32_t>(st.elem_strings.size())
+                ? st.elem_strings[idx]
+                : std::string());
+    if (st.elements[idx] != 0)
+        return CallResult::handled_object(st.elements[idx],
+                                          "Ljava/lang/Object;");
+    return CallResult::handled_null();
+}
+
+// ── LAW-A (CONT-18): KIND-FAITHFUL REMOVE-BY-INDEX (shared) ─────────────
+// OpenJDK ArrayList.remove(int) fastRemove()s the ONE backing array and
+// returns the removed element. MiniAndroid's CollectionState models that
+// single array as FOUR parallel stores (elements/elem_kinds/elem_strings/
+// elem_ints — the R-NEW-464/F-NEW-238 fidelity laws). Two intercept sites
+// in CollectionShadow::dispatch serve remove(int) (the deque-family early
+// block and the List remove block); BOTH must move all four stores in
+// lockstep and serve the removed element kind-faithfully. Pre-LAW-A the
+// deque-site erased only `elements` — remove(1) on [a,b,c] left
+// strings=["a","B","c"] and kinds=[2,2,2] behind → get(1) served the
+// STALE "B" (fcol probe K1 g2=false; live trace run/cont18/k1trace3).
+static CallResult lawa_remove_index(CollectionShadow::CollectionState& st,
+                                    int32_t idx) {
+    if (idx < 0 || static_cast<size_t>(idx) >= st.elements.size())
+        return CallResult::not_handled();
+    uint32_t removed = st.elements[idx];
+    uint8_t rk = idx < static_cast<int32_t>(st.elem_kinds.size())
+                     ? st.elem_kinds[idx]
+                     : (removed != 0 ? uint8_t{1} : uint8_t{2});
+    std::string rs = idx < static_cast<int32_t>(st.elem_strings.size())
+                         ? st.elem_strings[idx]
+                         : std::string();
+    int32_t ri = idx < static_cast<int32_t>(st.elem_ints.size())
+                     ? st.elem_ints[idx]
+                     : 0;
+    st.elements.erase(st.elements.begin() + idx);
+    if (idx < static_cast<int32_t>(st.elem_kinds.size()))
+        st.elem_kinds.erase(st.elem_kinds.begin() + idx);
+    if (idx < static_cast<int32_t>(st.elem_strings.size()))
+        st.elem_strings.erase(st.elem_strings.begin() + idx);
+    if (idx < static_cast<int32_t>(st.elem_ints.size()))
+        st.elem_ints.erase(st.elem_ints.begin() + idx);
+    // Kind-faithful removed-element serve (OpenJDK returns the element
+    // itself — for a List<String> that is the string, for List<Integer>
+    // the unboxed int law flows through the caller's check-cast).
+    // F-NEW-271: kind 4 = null element → typed null (OpenJDK ArrayList
+    // "permits all elements, including null"; remove(int) returns it AS
+    // null — never the fabricated "" String the kind-2 encoding leaked).
+    if (rk == 4) return CallResult::handled_null();
+    if (rk == 3) return CallResult::handled_int(ri);
+    if (rk == 2) return CallResult::handled_string(rs);
+    if (removed != 0)
+        return CallResult::handled_object(removed, "Ljava/lang/Object;");
+    return CallResult::handled_null();
+}
+
+// ── LAW-B (CONT-18): kind classification shared by the iterator
+// write-back faces — mirrors the add()/set() kind law (R-NEW-464 string
+// fidelity, F-NEW-238 int fidelity): INT/BOOL/LONG arg -> kind 3 with the
+// numeric value; non-zero object ref -> kind 1; STRING arg (or zero-ref
+// fallback) -> kind 2 with the string content; NULL_REF stays kind 2 with
+// an empty value = the documented null-element representation.
+// ── F-NEW-271 NULL-ELEMENT KIND LAW (CONT-20): the kind-2+"" encoding was
+// LOSSY — a genuine empty-string element and a null element stored
+// identically, so every serve path answered a fabricated STRING_REF ""
+// where OpenJDK returns typed null (ArrayList "permits all elements,
+// including null"; remove(int)/get(int) return the stored element). Null
+// elements now carry their own kind 4 (elements[idx]==0, strings[idx]="",
+// ints[idx]=0) and every reader serves kind 4 as typed null. STRING args —
+// INCLUDING the empty string — stay kind 2, so the genuine-""
+// round-trip is preserved bit-for-bit. Generic: no class/package checks;
+// every current and future writer/readers of the four parallel stores
+// obey one law.
+static void lawb_classify_arg(const CallContext::Arg& a, uint32_t item,
+                              uint8_t& kind, int32_t& ival,
+                              std::string& sval) {
+    kind = 2; ival = 0; sval.clear();
+    const bool is_int = a.kind == CallContext::Arg::Kind::INT ||
+                        a.kind == CallContext::Arg::Kind::BOOL ||
+                        a.kind == CallContext::Arg::Kind::LONG;
+    if (is_int) {
+        kind = 3;
+        ival = a.kind == CallContext::Arg::Kind::INT
+                   ? a.int_val
+                   : (a.kind == CallContext::Arg::Kind::BOOL
+                          ? (a.bool_val ? 1 : 0)
+                          : static_cast<int32_t>(a.long_val));
+    } else if (item != 0) {
+        kind = 1;
+    } else if (a.kind == CallContext::Arg::Kind::STRING) {
+        sval = a.string_val;
+    } else {
+        // F-NEW-271: NULL_REF (and the zero-ref object face — ART has no
+        // object 0; a zero ref in a register IS null) → kind 4, the
+        // unambiguous null element. Previously kind 2 + "" — the lossy
+        // encoding that fabricated "" Strings on every serve.
+        kind = 4;
+    }
+}
+
 CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
+
+    // LAW-C/E/F DETERMINATION DIAG (CONT-18, bounded 60/env-gated): does
+    // the collection shadow see the default-method / view / stream faces?
+    // Paired with [LAWCEF-ENG] — if ENG fires but this does not, another
+    // shadow claims the call first; if neither fires, the call dies before
+    // try_shadow_dispatch.
+    {
+        static const bool lawcef_on =
+            std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+        static const char* lawcef_faces[] = {
+            "removeIf", "getOrDefault", "forEach", "merge",
+            "computeIfAbsent", "compute", "sort", "removeAll",
+            "retainAll", "subList", "stream", "streamOf",
+            "remove", "containsKey", "size", "of", "filter", "collect", "toList"};
+        if (lawcef_on) {
+            for (const char* f : lawcef_faces) {
+                if (m == f) {
+                    static thread_local uint64_t lawcef_n = 0;
+                    if (lawcef_n++ < 60)
+                        std::cerr << "[LAWCEF-COL] " << ctx.class_name << "."
+                                  << m << " recv=" << obj_id
+                                  << " rcls=" << ctx.receiver_class
+                                  << " nargs=" << ctx.args.size() << std::endl;
+                    break;
+                }
+            }
+        }
+    }
 
     // ── F-NEW-252 wave-2 (S102 ServiceLoader decline law) ────────────────
     // java.util.ServiceLoader is NOT a collection. The generic iterator
@@ -306,6 +461,116 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 !sld_svc.empty()) {
                 return CallResult::not_handled();
             }
+        }
+    }
+
+    // ── LAW-B (CONT-18): ITERATOR WRITE-BACK LAW ─────────────────────────
+    // OpenJDK AbstractList.Itr / ListItr contracts for the WRITE faces of
+    // an iterator: ListIterator.set(Object) overwrites the lastReturned
+    // slot in the BACKING list; Iterator.remove() removes lastReturned
+    // (IllegalStateException when no element has been returned yet or when
+    // called twice without an intervening next/previous);
+    // ListIterator.add(Object) inserts at the cursor, advances the cursor
+    // past the new element, and invalidates lastReturned.
+    //
+    // The F-NEW-237 real-iterator box carries __iterator_parent__ (source
+    // identity) + __iterator_pos__ (cursor) — the read faces are kind-aware
+    // and real. The write faces had NO handler: ListIterator.set fell into
+    // the LIST set(index,item) arm (args!=2 -> silent handled_void),
+    // Iterator.remove was a silent no-op, ListIterator.add mutated the
+    // BOX's own (wrong) state — the fcol probe rows K2/K11/K12 divergences.
+    // Generic: keyed on the box marker field, never on a class name.
+    //
+    // lastReturned tracking: next()/previous() record the served index in
+    // __iterator_last_ret__ (box int field, -1 = none). Array-backed
+    // parents (Arrays.asList products) are read-only on this channel —
+    // write faces DECLINE for them (loud handled_void → next shadow),
+    // matching the documented read-only layering.
+    if (heap_ && (m == "set" || m == "remove" || m == "add")) {
+        uint32_t lawb_parent = 0;
+        bool lawb_box =
+            heap_->get_object_ref_field(obj_id, "__iterator_parent__",
+                                        lawb_parent) &&
+            lawb_parent != 0;
+        if (lawb_box) {
+            auto* pstate = get_or_create(lawb_parent);
+            if (!pstate->is_view && !pstate->elements.empty()) {
+                int32_t pos = 0;
+                int32_t last = -1;
+                heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
+                heap_->get_object_int_field(obj_id, "__iterator_last_ret__",
+                                            last);
+                if (m == "set") {
+                    if (ctx.args.empty())
+                        return CallResult::handled_void();
+                    if (last < 0 || last >= static_cast<int32_t>(
+                                             pstate->elements.size()))
+                        return CallResult::handled_exception(
+                            "Ljava/lang/IllegalStateException;",
+                            "ListIterator.set: no last returned element");
+                    uint32_t item = ctx.arg_as_object(0, 0);
+                    uint8_t kind = 2;
+                    int32_t ival = 0;
+                    std::string sval;
+                    lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+                    pstate->elements[last] = item;
+                    if (last < static_cast<int32_t>(pstate->elem_kinds.size()))
+                        pstate->elem_kinds[last] = kind;
+                    if (last <
+                        static_cast<int32_t>(pstate->elem_strings.size()))
+                        pstate->elem_strings[last] = sval;
+                    if (last < static_cast<int32_t>(pstate->elem_ints.size()))
+                        pstate->elem_ints[last] = ival;
+                    return CallResult::handled_void();
+                }
+                if (m == "remove") {
+                    if (last < 0 || last >= static_cast<int32_t>(
+                                             pstate->elements.size()))
+                        return CallResult::handled_exception(
+                            "Ljava/lang/IllegalStateException;",
+                            "Iterator.remove: no last returned element "
+                            "(double remove)");
+                    CallResult r = lawa_remove_index(*pstate, last);
+                    // JDK cursor law: cursor = lastRet after removal; the
+                    // next element shifts into that index.
+                    heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                last);
+                    heap_->set_object_int_field(obj_id,
+                                                "__iterator_last_ret__", -1);
+                    if (r.handled) return r;
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IllegalStateException;",
+                        "Iterator.remove: backing store shrank");
+                }
+                // m == "add" — insert at the cursor, all four stores in
+                // lockstep (same as the add(index,item) law).
+                if (!ctx.args.empty()) {
+                    uint32_t item = ctx.arg_as_object(0, 0);
+                    uint8_t kind = 2;
+                    int32_t ival = 0;
+                    std::string sval;
+                    lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+                    if (pos < 0) pos = 0;
+                    if (pos > static_cast<int32_t>(pstate->elements.size()))
+                        pos = static_cast<int32_t>(pstate->elements.size());
+                    pstate->elements.insert(pstate->elements.begin() + pos,
+                                            item);
+                    pstate->elem_kinds.insert(pstate->elem_kinds.begin() + pos,
+                                              kind);
+                    pstate->elem_strings.insert(
+                        pstate->elem_strings.begin() + pos, sval);
+                    pstate->elem_ints.insert(pstate->elem_ints.begin() + pos,
+                                             ival);
+                    heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                                pos + 1);
+                    heap_->set_object_int_field(obj_id,
+                                                "__iterator_last_ret__", -1);
+                    return CallResult::handled_void();
+                }
+                return CallResult::handled_void();
+            }
+            // View-backed or empty-store iterators: DECLINE to the legacy
+            // faces (no behavior change this wave).
         }
     }
 
@@ -514,7 +779,15 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     // fall through to the legacy bridge which returns void/default.
     // Otherwise, isEmpty() returns true on a null list, which causes
     // if-nez to branch incorrectly.
-    if (obj_id == 0 && m != "<init>") {
+    // LAW-F (CONT-18): static stream faces carry NO receiver (obj_id == 0)
+    // — exempt them from the no-receiver decline gate below, or every
+    // Stream.of / Collectors.toList call answers the generic stub null and
+    // the first downstream pipeline op NPEs (fcol probe K15).
+    const bool static_stream_face =
+        (ctx.class_name == "Ljava/util/stream/Stream;" && m == "of") ||
+        (ctx.class_name == "Ljava/util/stream/Collectors;" &&
+         (m == "toList" || m == "toSet"));
+    if (obj_id == 0 && m != "<init>" && !static_stream_face) {
         return CallResult::not_handled();
     }
 
@@ -664,8 +937,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                   : static_cast<int32_t>(a1.long_val));
             } else if (item != 0) {
                 kind = 1;
-            } else {
+            } else if (a1.kind == CallContext::Arg::Kind::STRING) {
+                // F-NEW-271: a genuine empty-string element stays kind 2.
                 sval = ctx.arg_as_string(1);
+            } else {
+                // F-NEW-271: NULL_REF / zero-ref object → kind 4 null
+                // element (typed null on every serve).
+                kind = 4;
             }
             if (idx >= 0 && (size_t)idx <= state->elements.size()) {
                 state->elements.insert(state->elements.begin() + idx, item);
@@ -784,13 +1062,618 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     }
                 }
                 state->elements.push_back(item);
-                state->elem_kinds.push_back(item != 0 ? 1 : 2);
-                state->elem_strings.push_back(
-                    item != 0 ? std::string() : ctx.arg_as_string(0));
+                // F-NEW-271: this branch is reached only for non-string,
+                // non-int args, so item == 0 here IS a null element
+                // (NULL_REF / zero-ref object) → kind 4, not the lossy
+                // kind-2 + "" encoding that fabricated "" Strings.
+                state->elem_kinds.push_back(item != 0 ? 1 : 4);
+                state->elem_strings.push_back(std::string());
                 state->elem_ints.push_back(0);
             }
         }
         return CallResult::handled_bool(true);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // LAW-F (CONT-18): SUBLIST VIEW LAW.
+    // OpenJDK List.subList(fromIdx, toIdx) returns a VIEW: every element
+    // op on the view resolves against the BACKING list at fromIdx + idx
+    // (AbstractList.SubList), and every op on the backing list inside the
+    // window reads back through the view. The pre-law shadow had no
+    // subList handler at all — the call answered null and the consumer's
+    // first element op NPE'd (fcol probe K3 "threw NPE").
+    //
+    // Mint: the view is a heap box carrying __sublist_parent__ (the
+    // backing store's shadow object id) + __sublist_off__ (fromIdx). The
+    // redirect below serves get/set/add/remove/size/isEmpty against the
+    // parent state at the offset. Structural parent mutation OUTSIDE the
+    // view window is the OpenJDK ConcurrentModificationException boundary
+    // — untracked here (documented bound: fail-faithful CoMod detection
+    // DEFERRED; the window math below stays coherent for non-structural
+    // interleavings, which is the OpenJDK contract for read/write faces).
+    // ────────────────────────────────────────────────────────────────────
+    if (m == "subList" && ctx.args.size() >= 2 && obj_id != 0) {
+        auto* parent = get_or_create(obj_id);
+        if (parent->is_map) return CallResult::not_handled();
+        const int32_t from = ctx.arg_as_int(0, -1);
+        const int32_t to = ctx.arg_as_int(1, -1);
+        const int32_t n = static_cast<int32_t>(parent->elements.size());
+        // OpenJDK AbstractList.subList bounds law: outOfRange(from, to, size)
+        // throws IndexOutOfBoundsException (from < 0, to > size, from > to).
+        if (from < 0 || to > n || from > to)
+            return CallResult::handled_exception(
+                "Ljava/lang/IndexOutOfBoundsException;",
+                "subList(" + std::to_string(from) + ", " +
+                    std::to_string(to) + ") with size " + std::to_string(n));
+        uint32_t box = heap_->allocate("Ljava/util/ArrayList;");
+        heap_->set_object_int_field(box, "__sublist_parent__",
+                                    static_cast<int32_t>(obj_id));
+        heap_->set_object_int_field(box, "__sublist_off__", from);
+        return CallResult::handled_object(box, "Ljava/util/List;");
+    }
+
+    // SubList VIEW redirect: the receiver carries the view marker → every
+    // element face resolves against the parent store at __sublist_off__.
+    {
+        int32_t slp = 0, slo = 0;
+        if (heap_ && obj_id != 0 &&
+            heap_->get_object_int_field(obj_id, "__sublist_parent__", slp) &&
+            slp != 0 &&
+            heap_->get_object_int_field(obj_id, "__sublist_off__", slo)) {
+            auto* ps = get_or_create(static_cast<uint32_t>(slp));
+            if (m == "size")
+                return CallResult::handled_int(
+                    static_cast<int32_t>(ps->elements.size()) - slo);
+            if (m == "isEmpty")
+                return CallResult::handled_bool(
+                    static_cast<int32_t>(ps->elements.size()) <= slo);
+            if (m == "get") {
+                int32_t gi = ctx.arg_as_int(0, -1);
+                int32_t ai = slo + gi;
+                if (gi < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "subList.get(" + std::to_string(gi) + ")");
+                return lawa_serve_slot(*ps, ai);
+            }
+            if (m == "set") {
+                int32_t si = ctx.arg_as_int(0, -1);
+                int32_t ai = slo + si;
+                if (si < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "subList.set(" + std::to_string(si) + ", e)");
+                uint32_t prev = ps->elements[ai];
+                uint8_t prev_kind =
+                    ai < static_cast<int32_t>(ps->elem_kinds.size())
+                        ? ps->elem_kinds[ai]
+                        : uint8_t{0};
+                std::string prev_str =
+                    ai < static_cast<int32_t>(ps->elem_strings.size())
+                        ? ps->elem_strings[ai]
+                        : std::string();
+                int32_t prev_int =
+                    ai < static_cast<int32_t>(ps->elem_ints.size())
+                        ? ps->elem_ints[ai]
+                        : 0;
+                uint32_t item = ctx.arg_as_object(1, 0);
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                if (ctx.args.size() >= 2)
+                    lawb_classify_arg(ctx.args[1], item, kind, ival, sval);
+                ps->elements[ai] = item;
+                if (ai < static_cast<int32_t>(ps->elem_kinds.size()))
+                    ps->elem_kinds[ai] = kind;
+                if (ai < static_cast<int32_t>(ps->elem_strings.size()))
+                    ps->elem_strings[ai] = sval;
+                if (ai < static_cast<int32_t>(ps->elem_ints.size()))
+                    ps->elem_ints[ai] = ival;
+                if (prev_kind == 3) return CallResult::handled_int(prev_int);
+                if (prev_kind == 2) return CallResult::handled_string(prev_str);
+                if (prev != 0)
+                    return CallResult::handled_object(prev,
+                                                       "Ljava/lang/Object;");
+                return CallResult::handled_null();
+            }
+            if (m == "add") {
+                // add(e) appends at the window end; add(idx, e) inserts.
+                int32_t at = static_cast<int32_t>(ps->elements.size()) - slo;
+                if (ctx.args.size() >= 2) {
+                    at = ctx.arg_as_int(0, -1);
+                    if (at < 0 || at > static_cast<int32_t>(
+                                           ps->elements.size()) - slo)
+                        return CallResult::handled_exception(
+                            "Ljava/lang/IndexOutOfBoundsException;",
+                            "subList.add(" + std::to_string(at) + ", e)");
+                }
+                int32_t ai = slo + at;
+                uint32_t item = ctx.arg_as_object(
+                    ctx.args.size() >= 2 ? 1 : 0, 0);
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                lawb_classify_arg(ctx.args[ctx.args.size() >= 2 ? 1 : 0],
+                                  item, kind, ival, sval);
+                ps->elements.insert(ps->elements.begin() + ai, item);
+                ps->elem_kinds.insert(ps->elem_kinds.begin() + ai, kind);
+                ps->elem_strings.insert(ps->elem_strings.begin() + ai, sval);
+                ps->elem_ints.insert(ps->elem_ints.begin() + ai, ival);
+                return CallResult::handled_bool(true);
+            }
+            if (m == "remove") {
+                int32_t ri = ctx.arg_as_int(0, -1);
+                int32_t ai = slo + ri;
+                if (ri < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "subList.remove(" + std::to_string(ri) + ")");
+                return lawa_remove_index(*ps, ai);
+            }
+            // Unknown face on a view box: decline loudly — the registry
+            // falls through instead of corrupting the parent store.
+            return CallResult::not_handled();
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // LAW-C/E (CONT-18): JAVA-8 COLLECTION DEFAULT-METHOD FAMILY LAW.
+    // OpenJDK Collection/List/Map Java-8 defaults execute against the REAL
+    // backing store with real semantics: removeIf (conditional bulk remove,
+    // returns changed), sort (merged comparator sort), forEach (element/
+    // entry action), removeAll/retainAll (bulk equality remove), Map.merge
+    // (remapping function), Map.computeIfAbsent (mapping function),
+    // Map.getOrDefault (mapping-or-default). The shadow channel had NO
+    // handlers for any of these faces — the registry declined, the bridge
+    // generic stub answered null/false and every face silently no-op'd
+    // (fcol probe K6 getOrDefault/remOk, K13 removeIf, K14 sort, K16 bulk,
+    // K17 merge/compute, K18 forEach).
+    //
+    // Functional arguments are REAL DEX code (D8-desugared lambda classes):
+    // they run through the engine-installed dex_invoke_slot() (same
+    // channel discipline as app_equals_slot). When the channel cannot
+    // resolve the callee the law DECLINES — loud not-handled, never a
+    // faked result (no suppression discipline).
+    // ────────────────────────────────────────────────────────────────────
+    const auto& dex_invoke = CollectionShadow::dex_invoke_slot();
+
+    // Element-face precondition: non-map element store. Maps take the
+    // Map faces below; element stores never enter them.
+    auto* lstate = (obj_id != 0) ? get_or_create(obj_id) : nullptr;
+    const bool is_list_state = lstate && !lstate->is_map;
+
+    // Convert a stored slot into a CallContext::Arg for the callback.
+    auto slot_to_arg = [](const CollectionState& st,
+                          int32_t i) -> CallContext::Arg {
+        CallContext::Arg a;
+        uint8_t k = i < static_cast<int32_t>(st.elem_kinds.size())
+                        ? st.elem_kinds[i]
+                        : (st.elements[i] != 0 ? uint8_t{1} : uint8_t{0});
+        if (k == 4) {  // F-NEW-271: null element → typed null arg
+            a.kind = CallContext::Arg::Kind::NULL_REF;
+        } else if (k == 3) {
+            a.kind = CallContext::Arg::Kind::INT;
+            a.int_val = i < static_cast<int32_t>(st.elem_ints.size())
+                            ? st.elem_ints[i]
+                            : 0;
+        } else if (k == 2) {
+            a.kind = CallContext::Arg::Kind::STRING;
+            a.string_val =
+                i < static_cast<int32_t>(st.elem_strings.size())
+                    ? st.elem_strings[i]
+                    : std::string();
+        } else if (st.elements[i] != 0) {
+            a.kind = CallContext::Arg::Kind::OBJECT;
+            a.object_id = st.elements[i];
+        } else {
+            a.kind = CallContext::Arg::Kind::NULL_REF;
+        }
+        return a;
+    };
+
+    // ── K13 face: Collection.removeIf(Predicate) ────────────────────────
+    if (m == "removeIf" && ctx.args.size() >= 1 && is_list_state) {
+        if (!dex_invoke) return CallResult::not_handled();
+        uint32_t pred = ctx.arg_as_object(0, 0);
+        if (pred == 0) return CallResult::not_handled();
+        bool changed = false;
+        const int32_t n = static_cast<int32_t>(lstate->elements.size());
+        // Descending pass: OpenJDK removeIf compacts the backing array in
+        // one sweep; descending index keeps every surviving slot stable
+        // while earlier slots are still tested (same visible contract).
+        for (int32_t i = n - 1; i >= 0; --i) {
+            std::vector<CallContext::Arg> cargs;
+            cargs.push_back(slot_to_arg(*lstate, i));
+            DexCallOutcome o = dex_invoke(pred, "test", cargs);
+            if (!o.ok) return CallResult::not_handled();  // loud decline
+            const bool hit = o.kind == 1
+                                 ? (o.bool_val || o.int_val != 0)
+                                 : false;
+            if (hit) {
+                CallResult r = lawa_remove_index(*lstate, i);
+                if (r.handled) changed = true;
+            }
+        }
+        return CallResult::handled_bool(changed);
+    }
+
+    // ── K14 face: List.sort(Comparator) ─────────────────────────────────
+    if (m == "sort" && ctx.args.size() >= 1 && is_list_state) {
+        if (!dex_invoke) return CallResult::not_handled();
+        uint32_t cmp = ctx.arg_as_object(0, 0);
+        if (cmp == 0) return CallResult::not_handled();
+        const int32_t n = static_cast<int32_t>(lstate->elements.size());
+        if (n < 2) return CallResult::handled_void();
+        if (n > 4096) return CallResult::not_handled();  // honesty bound
+        // Stable insertion sort over the four parallel stores moved in
+        // lockstep (TimSort's visible contract for small runs: stable,
+        // total, comparator-driven).
+        for (int32_t i = 1; i < n; ++i) {
+            for (int32_t j = i; j > 0; --j) {
+                DexCallOutcome o = dex_invoke(cmp, "compare",
+                    {slot_to_arg(*lstate, j - 1), slot_to_arg(*lstate, j)});
+                if (!o.ok) return CallResult::not_handled();  // loud decline
+                if (o.kind != 1) return CallResult::not_handled();
+                if (o.int_val <= 0) break;  // in order (stable: <= keeps)
+                // Swap slots j-1 <-> j across all four stores.
+                std::swap(lstate->elements[j - 1], lstate->elements[j]);
+                std::swap(lstate->elem_kinds[j - 1], lstate->elem_kinds[j]);
+                std::swap(lstate->elem_strings[j - 1],
+                          lstate->elem_strings[j]);
+                std::swap(lstate->elem_ints[j - 1], lstate->elem_ints[j]);
+            }
+        }
+        return CallResult::handled_void();
+    }
+
+    // ── K18 face: Iterable.forEach(Consumer) / Map.forEach(BiConsumer) ──
+    if (m == "forEach" && ctx.args.size() >= 1) {
+        if (!dex_invoke) return CallResult::not_handled();
+        uint32_t action = ctx.arg_as_object(0, 0);
+        if (action == 0) return CallResult::not_handled();
+        auto* fstate = (obj_id != 0) ? get_or_create(obj_id) : nullptr;
+        if (!fstate) return CallResult::not_handled();
+        if (fstate->is_map) {
+            // BiConsumer.accept(key, value) — string keys verbatim; object
+            // keys as their derived identity arg (same convention as put).
+            for (const auto& kv : fstate->map_string_entries) {
+                CallContext::Arg ka, va;
+                ka.kind = CallContext::Arg::Kind::STRING;
+                ka.string_val = kv.first;
+                va.kind = CallContext::Arg::Kind::STRING;
+                va.string_val = kv.second;
+                DexCallOutcome o = dex_invoke(action, "accept", {ka, va});
+                if (!o.ok) return CallResult::not_handled();
+            }
+            for (const auto& kv : fstate->map_entries) {
+                CallContext::Arg ka, va;
+                ka.kind = CallContext::Arg::Kind::STRING;
+                ka.string_val = kv.first;
+                va.kind = CallContext::Arg::Kind::OBJECT;
+                va.object_id = kv.second;
+                DexCallOutcome o = dex_invoke(action, "accept", {ka, va});
+                if (!o.ok) return CallResult::not_handled();
+            }
+            return CallResult::handled_void();
+        }
+        const int32_t n = static_cast<int32_t>(fstate->elements.size());
+        for (int32_t i = 0; i < n; ++i) {
+            DexCallOutcome o = dex_invoke(action, "accept",
+                                          {slot_to_arg(*fstate, i)});
+            if (!o.ok) return CallResult::not_handled();  // loud decline
+        }
+        return CallResult::handled_void();
+    }
+
+    // ── K16 faces: Collection.removeAll/retainAll(Collection) ───────────
+    // OpenJDK bulk law: membership by the element's own equality (string
+    // content / numeric value / the app's equals via app_equals_slot);
+    // removeAll erases members, retainAll erases non-members; both return
+    // whether the store changed.
+    if ((m == "removeAll" || m == "retainAll") && ctx.args.size() >= 1 &&
+        is_list_state) {
+        uint32_t other_id = ctx.arg_as_object(0, 0);
+        if (other_id == 0) return CallResult::not_handled();
+        auto* ostate = get_or_create(other_id);
+        const bool want_removed = (m == "removeAll");
+        bool changed = false;
+        const auto& app_eq = CollectionShadow::app_equals_slot();
+        auto member_of_other = [&](int32_t i) -> bool {
+            uint8_t k = i < static_cast<int32_t>(lstate->elem_kinds.size())
+                            ? lstate->elem_kinds[i]
+                            : (lstate->elements[i] != 0 ? uint8_t{1}
+                                                        : uint8_t{0});
+            for (size_t j = 0; j < ostate->elements.size(); ++j) {
+                uint8_t ok2 =
+                    j < ostate->elem_kinds.size()
+                        ? ostate->elem_kinds[j]
+                        : (ostate->elements[j] != 0 ? uint8_t{1}
+                                                    : uint8_t{0});
+                if (k != ok2) continue;
+                if (k == 4) return true;  // F-NEW-271: null == null element
+                if (k == 3) {
+                    if (lstate->elem_ints[i] == ostate->elem_ints[j])
+                        return true;
+                } else if (k == 2) {
+                    if (lstate->elem_strings[i] == ostate->elem_strings[j])
+                        return true;
+                } else if (app_eq &&
+                           app_eq(lstate->elements[i], ostate->elements[j])) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        for (int32_t i = static_cast<int32_t>(lstate->elements.size()) - 1;
+             i >= 0; --i) {
+            const bool hit = member_of_other(i);
+            if (hit == want_removed) {
+                lawa_remove_index(*lstate, i);
+                changed = true;
+            }
+        }
+        return CallResult::handled_bool(changed);
+    }
+
+    // ── Map faces (K17 merge/computeIfAbsent, K6 getOrDefault) ──────────
+    if ((m == "merge" || m == "computeIfAbsent" || m == "getOrDefault") &&
+        obj_id != 0) {
+        auto* mstate = get_or_create(obj_id, true);
+        if (!mstate->is_map) return CallResult::not_handled();
+        std::string key = map_key_value_law(ctx, 0, heap_);
+        // Map value lookup — string entries first (same precedence as get).
+        auto lookup = [&]() -> CallResult {
+            auto sit = mstate->map_string_entries.find(key);
+            if (sit != mstate->map_string_entries.end())
+                return CallResult::handled_string(sit->second);
+            auto it = mstate->map_entries.find(key);
+            if (it != mstate->map_entries.end() && it->second != 0)
+                return CallResult::handled_object(it->second,
+                                                   "Ljava/lang/Object;");
+            return CallResult::not_handled();
+        };
+        // Store a value kind-aware (string verbatim / object id), mirroring
+        // the put law's two-store split.
+        auto store = [&](const CallContext::Arg& va) {
+            if (va.kind == CallContext::Arg::Kind::STRING)
+                mstate->map_string_entries[key] = va.string_val;
+            else if (va.kind == CallContext::Arg::Kind::OBJECT)
+                mstate->map_entries[key] = va.object_id;
+        };
+        if (m == "getOrDefault") {
+            // OpenJDK Map.getOrDefault: mapping present → the mapping,
+            // else the default (the default is returned VERBATIM — same
+            // object identity; never re-boxed).
+            CallResult hit = lookup();
+            if (hit.handled) return hit;
+            if (ctx.args.size() >= 2) {
+                const auto& da = ctx.args[1];
+                if (da.kind == CallContext::Arg::Kind::STRING)
+                    return CallResult::handled_string(da.string_val);
+                if (da.kind == CallContext::Arg::Kind::OBJECT)
+                    return CallResult::handled_object(
+                        da.object_id, da.object_class.empty()
+                                          ? "Ljava/lang/Object;"
+                                          : da.object_class);
+                if (da.kind == CallContext::Arg::Kind::INT)
+                    return CallResult::handled_int(da.int_val);
+            }
+            return CallResult::handled_null();
+        }
+        if (!dex_invoke) return CallResult::not_handled();
+        if (m == "computeIfAbsent") {
+            // OpenJDK: present → the mapping (function NOT invoked);
+            // absent → key = function.apply(key); null result → no
+            // mapping recorded, return null; else record + return.
+            CallResult hit = lookup();
+            if (hit.handled) return hit;
+            uint32_t fn = ctx.args.size() >= 2 ? ctx.arg_as_object(1, 0) : 0;
+            if (fn == 0) return CallResult::not_handled();
+            CallContext::Arg ka;
+            ka.kind = CallContext::Arg::Kind::STRING;
+            ka.string_val = key;
+            DexCallOutcome o = dex_invoke(fn, "apply", {ka});
+            if (!o.ok) return CallResult::not_handled();  // loud decline
+            if (o.kind == 0) return CallResult::handled_null();
+            CallContext::Arg va;
+            if (o.kind == 2) {
+                va.kind = CallContext::Arg::Kind::OBJECT;
+                va.object_id = o.obj_id;
+            } else if (o.kind == 3) {
+                va.kind = CallContext::Arg::Kind::STRING;
+                va.string_val = o.str_val;
+            } else {
+                return CallResult::not_handled();
+            }
+            store(va);
+            if (o.kind == 2)
+                return CallResult::handled_object(o.obj_id, o.obj_class);
+            return CallResult::handled_string(o.str_val);
+        }
+        // merge(key, val, remFunc): absent → put(val); present →
+        // put(remFunc.apply(old, val)); null remap → REMOVE the entry
+        // (OpenJDK merge law) and return null.
+        if (ctx.args.size() < 3) return CallResult::not_handled();
+        uint32_t fn = ctx.arg_as_object(2, 0);
+        CallResult hit = lookup();
+        if (!hit.handled) {
+            // Absent: record the new value verbatim (never invoke the fn).
+            const auto& va = ctx.args[1];
+            store(va);
+            if (va.kind == CallContext::Arg::Kind::STRING)
+                return CallResult::handled_string(va.string_val);
+            if (va.kind == CallContext::Arg::Kind::OBJECT)
+                return CallResult::handled_object(
+                    va.object_id,
+                    va.object_class.empty() ? "Ljava/lang/Object;"
+                                            : va.object_class);
+            return CallResult::handled_int(va.int_val);
+        }
+        if (fn == 0) return CallResult::not_handled();
+        // Present: derive the OLD value arg kind-faithfully.
+        CallContext::Arg old_arg;
+        {
+            auto sit = mstate->map_string_entries.find(key);
+            auto it = mstate->map_entries.find(key);
+            if (sit != mstate->map_string_entries.end()) {
+                old_arg.kind = CallContext::Arg::Kind::STRING;
+                old_arg.string_val = sit->second;
+            } else if (it != mstate->map_entries.end()) {
+                old_arg.kind = CallContext::Arg::Kind::OBJECT;
+                old_arg.object_id = it->second;
+            } else {
+                return CallResult::not_handled();
+            }
+        }
+        DexCallOutcome o = dex_invoke(fn, "apply", {old_arg, ctx.args[1]});
+        if (!o.ok) return CallResult::not_handled();  // loud decline
+        if (o.kind == 0) {
+            // OpenJDK: null remap → remove the mapping, return null.
+            mstate->map_string_entries.erase(key);
+            mstate->map_entries.erase(key);
+            return CallResult::handled_null();
+        }
+        CallContext::Arg va;
+        if (o.kind == 2) {
+            va.kind = CallContext::Arg::Kind::OBJECT;
+            va.object_id = o.obj_id;
+        } else if (o.kind == 3) {
+            va.kind = CallContext::Arg::Kind::STRING;
+            va.string_val = o.str_val;
+        } else {
+            return CallResult::not_handled();
+        }
+        store(va);
+        if (o.kind == 2)
+            return CallResult::handled_object(o.obj_id, o.obj_class);
+        return CallResult::handled_string(o.str_val);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // LAW-F (CONT-18): STREAM PIPELINE LAW (bounded face set).
+    // OpenJDK java.util.stream: a linear of→filter→collect pipeline
+    // materializes a source, applies each predicate stage, and the
+    // terminal collect(toList()) produces a real List whose elements are
+    // the surviving source elements. Faces (all keyed on the stream
+    // FAMILY — no app names):
+    //   Stream.of(T...)            [static]  → source stream box
+    //   Collectors.toList()        [static]  → collector box
+    //   Stream.filter(Predicate)   [virtual] → eager stage evaluation
+    //   Stream.collect(Collector)  [virtual] → materialized ArrayList
+    // EAGER evaluation is the honest bound: laziness is unobservable
+    // within a linear of→filter→collect chain (no short-circuit terminal
+    // in this face set). The rest of the stream family (map/flatMap/
+    // sorted/primitive streams/spliterators) stays DEFERRED — unimplemented
+    // faces decline loudly below.
+    // ────────────────────────────────────────────────────────────────────
+    if (ctx.class_name == "Ljava/util/stream/Collectors;" && m == "toList") {
+        uint32_t cbox = heap_->allocate("Ljava/util/stream/Collector;");
+        heap_->set_object_int_field(cbox, "__collector_kind__", 1);
+        return CallResult::handled_object(cbox,
+                                           "Ljava/util/stream/Collector;");
+    }
+    if (ctx.class_name == "Ljava/util/stream/Stream;" && m == "of") {
+        // Varargs: args[0] is the T[] array box (engine array convention:
+        // __array_length__ + array[i] fields, read through the shadow
+        // heap's array accessors).
+        if (std::getenv("MINIANDROID_LAWCEF_TRACE"))
+            std::cerr << "[LAWCEF-OF] of-law entered nargs=" << ctx.args.size() << std::endl;
+        uint32_t sbox = heap_->allocate("Ljava/util/stream/Stream;");
+        heap_->set_object_int_field(sbox, "__stream_stage__", 0);
+        auto* st2 = get_or_create(sbox, false);
+        if (ctx.args.size() >= 1 &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            uint32_t arr = ctx.args[0].object_id;
+            int32_t alen = 0;
+            heap_->get_object_array_length(arr, alen);
+            if (alen > 4096) return CallResult::not_handled();
+            for (int32_t ai = 0; ai < alen; ++ai) {
+                uint32_t item = 0;
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                if (heap_->get_object_array_string_element(
+                        arr, static_cast<size_t>(ai), sval)) {
+                    kind = 2;
+                } else if (heap_->get_object_array_ref_element(
+                               arr, static_cast<size_t>(ai), item)) {
+                    kind = 1;
+                } else {
+                    // F-NEW-271: unknown/null element representation →
+                    // kind 4 (typed null on serve), not the lossy kind-2
+                    // + "" encoding.
+                    kind = 4;
+                }
+                st2->elements.push_back(item);
+                st2->elem_kinds.push_back(kind);
+                st2->elem_strings.push_back(sval);
+                st2->elem_ints.push_back(ival);
+            }
+        }
+        return CallResult::handled_object(sbox, "Ljava/util/stream/Stream;");
+    }
+    if (ctx.class_name.find("Ljava/util/stream/") == 0 &&
+        (m == "filter" || m == "collect") && obj_id != 0) {
+        int32_t stage = 0;
+        if (!heap_->get_object_int_field(obj_id, "__stream_stage__", stage))
+            return CallResult::not_handled();  // not a stream box
+        auto* st3 = get_or_create(obj_id, false);
+        if (m == "filter") {
+            if (!dex_invoke) return CallResult::not_handled();
+            uint32_t pred = ctx.args.size() >= 1 ? ctx.arg_as_object(0, 0) : 0;
+            if (pred == 0) return CallResult::not_handled();
+            std::vector<uint32_t> ne;
+            std::vector<uint8_t> nk;
+            std::vector<std::string> ns;
+            std::vector<int32_t> ni;
+            const int32_t n = static_cast<int32_t>(st3->elements.size());
+            for (int32_t i = 0; i < n; ++i) {
+                DexCallOutcome o = dex_invoke(pred, "test",
+                                              {slot_to_arg(*st3, i)});
+                if (!o.ok) return CallResult::not_handled();  // loud decline
+                const bool keep =
+                    o.kind == 1 && (o.bool_val || o.int_val != 0);
+                if (keep) {
+                    ne.push_back(st3->elements[i]);
+                    nk.push_back(i < static_cast<int32_t>(st3->elem_kinds.size())
+                                     ? st3->elem_kinds[i]
+                                     : uint8_t{0});
+                    ns.push_back(i < static_cast<int32_t>(st3->elem_strings.size())
+                                     ? st3->elem_strings[i]
+                                     : std::string());
+                    ni.push_back(i < static_cast<int32_t>(st3->elem_ints.size())
+                                     ? st3->elem_ints[i]
+                                     : 0);
+                }
+            }
+            st3->elements = std::move(ne);
+            st3->elem_kinds = std::move(nk);
+            st3->elem_strings = std::move(ns);
+            st3->elem_ints = std::move(ni);
+            heap_->set_object_int_field(obj_id, "__stream_stage__", 1);
+            return CallResult::handled_object(obj_id,
+                                               "Ljava/util/stream/Stream;");
+        }
+        // collect(Collector) — the only supported collector kind is
+        // __collector_kind__=1 (toList): materialize a real ArrayList
+        // whose store carries the surviving elements.
+        if (m == "collect") {
+            int32_t ckind = 0;
+            uint32_t col = ctx.args.size() >= 1 ? ctx.arg_as_object(0, 0) : 0;
+            if (col == 0 ||
+                !heap_->get_object_int_field(col, "__collector_kind__",
+                                             ckind) ||
+                ckind != 1)
+                return CallResult::not_handled();  // unknown collector
+            uint32_t lbox = heap_->allocate("Ljava/util/ArrayList;");
+            auto* lst = get_or_create(lbox, false);
+            lst->elements = st3->elements;
+            lst->elem_kinds = st3->elem_kinds;
+            lst->elem_strings = st3->elem_strings;
+            lst->elem_ints = st3->elem_ints;
+            return CallResult::handled_object(lbox, "Ljava/util/ArrayList;");
+        }
     }
 
     if (m == "get") {
@@ -833,6 +1716,31 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
         // List: get(index) → element (R-NEW-464: kind-2 string fidelity)
         int32_t idx = ctx.arg_as_int(0, -1);
+        // ── F-NEW-259g-a: JDK LIST GET RANGE LAW (CONT-16) ──────────────
+        // OpenJDK ArrayList.get/LinkedList.get → rangeCheck(index):
+        //   index < 0 || index >= size → IndexOutOfBoundsException
+        //   ("Index: N, Size: S"). AbstractList$Itr.next() RELIES on the
+        //   concrete get() to bound the walk (f259g probe row K: size()
+        //   = 4 through the inherited salt field, backing size 2 → the
+        //   extra get(2)/get(3) MUST throw — the old channel answered
+        //   null and the iterator walked 4 iterations, masking the law).
+        // Authoritative size mirrors the size() law: the shadow store
+        // when non-empty, else the engine array-fields store
+        // (__array_length__ — the F-101/Arrays.asList convention).
+        {
+            int32_t eff_size = static_cast<int32_t>(state->elements.size());
+            if (state->elements.empty() && heap_) {
+                int32_t alen = 0;
+                if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
+                    eff_size = alen;
+            }
+            if (idx < 0 || idx >= eff_size) {
+                return CallResult::handled_exception(
+                    "Ljava/lang/IndexOutOfBoundsException;",
+                    "Index: " + std::to_string(idx) +
+                        ", Size: " + std::to_string(eff_size));
+            }
+        }
         // ── F-NEW-237b: engine-array-backed fallback — serve the element
         // from the heap "array[i]" store (Arrays.asList / F-101 products)
         // when the shadow state is empty (see the size() law).
@@ -937,6 +1845,21 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
                 return CallResult::handled_int(alen);
         }
+        // F-NEW-267 (CONT-61): the touch-window size probe — what the
+        // compose pointer-input filter dispatch saw.
+        if (g_touch_window_active.load(std::memory_order_relaxed)) {
+            int32_t sz = static_cast<int32_t>(state->elements.size());
+            if (sz == 0 && heap_) {
+                int32_t alen = -1;
+                if (heap_->get_object_array_length(obj_id, alen))
+                    sz = alen;
+            }
+            static thread_local uint64_t tws_n = 0;
+            if (tws_n++ < 40)
+                std::cerr << "[TOUCHWIN-SIZE] obj#" << obj_id << " -> " << sz
+                          << " caller=" << ctx.class_name << "."
+                          << ctx.method << std::endl;
+        }
         return CallResult::handled_int(static_cast<int32_t>(state->elements.size()));
     }
 
@@ -975,20 +1898,46 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (state->elements.empty()) return CallResult::handled_null();
-        return CallResult::handled_object(state->elements.front(),
-                                          "Ljava/lang/Object;");
+        // LAW-D (CONT-18): kind-aware front serve.
+        return lawa_serve_slot(*state, 0);
     }
     if (m == "getLast" || m == "peekLast") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (state->elements.empty()) return CallResult::handled_null();
-        return CallResult::handled_object(state->elements.back(),
-                                          "Ljava/lang/Object;");
+        // LAW-D (CONT-18): kind-aware back serve.
+        return lawa_serve_slot(*state,
+                               static_cast<int32_t>(state->elements.size()) -
+                                   1);
     }
     if (m == "removeFirst" || m == "remove" || m == "pop" || m == "poll" ||
         m == "pollFirst") {
         auto* state = get_or_create(obj_id);
-        if (state->is_map) return CallResult::not_handled();
+        {
+            static const bool lc = std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+            if (lc && m == "remove") {
+                static thread_local uint64_t n1 = 0;
+                if (n1++ < 40)
+                    std::cerr << "[LAWCEF-DEQUE] remove recv=" << obj_id
+                              << " is_map=" << state->is_map
+                              << " n_elem=" << state->elements.size()
+                              << " n_mentry=" << state->map_entries.size()
+                              << " n_str=" << state->map_string_entries.size()
+                              << std::endl;
+            }
+        }
+        // ── LAW-E FIX A (CONT-18): MAP FALL-THROUGH LAW ─────────────────
+        // The pre-fix shape was `if (state->is_map) return not_handled();`
+        // — but every other path of this block RETURNS, so the decline
+        // terminated the ENTIRE CollectionShadow::dispatch. The real
+        // Map.remove law (F-063 / R-NEW-287) lives BELOW this block and
+        // was unreachable dead code for every remove call since the deque
+        // family landed here: Map.remove silently no-op'd, stale entries
+        // stayed reachable (fcol K6 remOk=false, got=@33) and
+        // getOrDefault-everywhere answered the generic stub. OpenJDK law:
+        // a Map receiver has NO deque faces — route it to the map laws
+        // below by falling through, never by exiting the dispatch.
+        if (!state->is_map) {
         if (m == "remove" && !ctx.args.empty()) {
             // ── #371 PHASE B1 fix (probe-discovered, generic): List.remove
             // has TWO AOSP overloads. With an INT argument this is
@@ -1002,12 +1951,12 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 ctx.class_name != "Ljava/util/HashSet;" &&
                 ctx.class_name != "Ljava/util/LinkedHashSet;") {
                 int32_t idx = ctx.args[0].int_val;
-                if (idx >= 0 && (size_t)idx < state->elements.size()) {
-                    uint32_t removed = state->elements[idx];
-                    state->elements.erase(state->elements.begin() + idx);
-                    return CallResult::handled_object(removed,
-                                                      "Ljava/lang/Object;");
-                }
+                // LAW-A (CONT-18): the shared kind-faithful 4-store
+                // remove — the deque-site pre-LAW-A erase desynced the
+                // parallel stores (fcol K1 g2=false divergence).
+                CallResult r = lawa_remove_index(*state, idx);
+                if (r.handled)
+                    return r;
                 // AOSP: index out of range → IndexOutOfBoundsException;
                 // the shadow channel has no exception kind yet — loud bool
                 // false, never a silent success.
@@ -1025,30 +1974,55 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_bool(false);
         }
         if (state->elements.empty()) return CallResult::handled_null();
-        uint32_t front = state->elements.front();
-        state->elements.erase(state->elements.begin());
-        return CallResult::handled_object(front, "Ljava/lang/Object;");
+        // LAW-A/D (CONT-18): kind-faithful front removal — the four
+        // parallel stores move in lockstep (lawa_remove_index) and the
+        // serve is kind-aware (a deque of strings pops "f", not a zero
+        // object id).
+        return lawa_remove_index(*state, 0);
+        }  // !is_map element path (map receivers fall through above)
     }
     if (m == "removeLast" || m == "pollLast") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
         if (state->elements.empty()) return CallResult::handled_null();
-        uint32_t back = state->elements.back();
-        state->elements.pop_back();
-        return CallResult::handled_object(back, "Ljava/lang/Object;");
+        return lawa_remove_index(*state,
+                                 static_cast<int32_t>(state->elements.size()) -
+                                     1);
     }
     if (m == "addFirst" || m == "push" || m == "offerFirst") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
-        state->elements.insert(state->elements.begin(),
-                               ctx.arg_as_object(0, 0));
+        // LAW-D (CONT-18): kind-aware 4-store front insert — the pre-fix
+        // elements-only insert desynced kinds/strings/ints (fcol K4:
+        // addFirst("f") poisoned slot 0 -> order "mnull").
+        uint32_t item = ctx.arg_as_object(0, 0);
+        uint8_t kind = 2;
+        int32_t ival = 0;
+        std::string sval;
+        if (!ctx.args.empty())
+            lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+        state->elements.insert(state->elements.begin(), item);
+        state->elem_kinds.insert(state->elem_kinds.begin(), kind);
+        state->elem_strings.insert(state->elem_strings.begin(), sval);
+        state->elem_ints.insert(state->elem_ints.begin(), ival);
         return m == "offerFirst" ? CallResult::handled_bool(true)
                                  : CallResult::handled_void();
     }
     if (m == "addLast" || m == "offer" || m == "offerLast") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) return CallResult::not_handled();
-        state->elements.push_back(ctx.arg_as_object(0, 0));
+        // LAW-D (CONT-18): kind-aware 4-store back append (same coherence
+        // law as addFirst).
+        uint32_t item = ctx.arg_as_object(0, 0);
+        uint8_t kind = 2;
+        int32_t ival = 0;
+        std::string sval;
+        if (!ctx.args.empty())
+            lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+        state->elements.push_back(item);
+        state->elem_kinds.push_back(kind);
+        state->elem_strings.push_back(sval);
+        state->elem_ints.push_back(ival);
         return (m == "offer" || m == "offerLast")
                    ? CallResult::handled_bool(true)
                    : CallResult::handled_void();
@@ -1065,6 +2039,38 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "remove") {
         auto* state = get_or_create(obj_id);
+        {
+            static const bool lc = std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+            if (lc) {
+                static thread_local uint64_t n2 = 0;
+                if (n2++ < 40)
+                    std::cerr << "[LAWCEF-REM] handler recv=" << obj_id
+                              << " is_map=" << state->is_map
+                              << " cls=" << ctx.class_name
+                              << std::endl;
+            }
+        }
+        // LAW-E DIAG (CONT-18, bounded): Map.remove dispatch visibility —
+        // fcol K6 face: remove(Object) after put(Object) left the stale
+        // value reachable via get() (got=@33). This shows whether the map
+        // law is reached, with the receiver identity, derived key and
+        // both stores' occupancy at the moment of dispatch.
+        {
+            static thread_local uint64_t lawe_rem = 0;
+            if (state->is_map && lawe_rem < 40) {
+                ++lawe_rem;
+                std::string lawe_key = ctx.args.empty()
+                                           ? std::string()
+                                           : map_key_value_law(ctx, 0, heap_);
+                std::cerr << "[F089-REMOVE] map=" << obj_id
+                          << " cls=" << ctx.class_name
+                          << " key=\"" << lawe_key << "\""
+                          << " obj_entries=" << state->map_entries.size()
+                          << " str_entries=" << state->map_string_entries.size()
+                          << " caller=" << ctx.class_name << "." << ctx.method
+                          << std::endl;
+            }
+        }
         // ── F-063 (R-NEW-287): java.util.Map.remove(Object key) law ────────
         // OpenJDK (java.util.Map#remove): removes the mapping for the key
         // IF PRESENT and returns the previous value (null when absent). A
@@ -1110,16 +2116,23 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // List receiver: remove(int index) → removed element (OpenJDK
         // returns it; previously void was returned — callers that consume
         // the element got garbage). Out-of-range: no mutation.
+        //
+        // ── LAW-A (CONT-18): PARALLEL-STORE COHERENCE LAW ───────────────
+        // OpenJDK ArrayList.remove(int) fastRemove()s the SINGLE backing
+        // array. MiniAndroid's shadow models that one array as FOUR
+        // parallel stores (elements/elem_kinds/elem_strings/elem_ints —
+        // the R-NEW-464/F-NEW-238 fidelity laws). The pre-LAW-A code
+        // erased ONLY elements: after remove(1) on [a,b,c] the kind/
+        // string/int stores kept 3 rows → get(1) served the STALE
+        // strings[1]="B" instead of "c" (fcol probe K1 first divergence,
+        // live trace run/cont18/k1trace). Coherence law: a writer moves
+        // all four stores in lockstep, a reader resolves kind-aware.
         if (ctx.args.size() >= 1) {
             int32_t idx = ctx.arg_as_int(0, -1);
-            if (idx >= 0 && (size_t)idx < state->elements.size()) {
-                uint32_t removed = state->elements[idx];
-                state->elements.erase(state->elements.begin() + idx);
-                if (removed != 0) {
-                    return CallResult::handled_object(removed,
-                                                       "Ljava/lang/Object;");
-                }
-            }
+            // LAW-A (CONT-18): the shared kind-faithful 4-store remove.
+            CallResult r = lawa_remove_index(*state, idx);
+            if (r.handled)
+                return r;
         }
         return CallResult::handled_void();
     }
@@ -1172,9 +2185,50 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         const auto& app_eq = CollectionShadow::app_equals_slot();
         for (size_t ei = 0; ei < state->elements.size(); ++ei) {
             uint32_t e = state->elements[ei];
+            // ── LAW-A (CONT-18): kind-aware slot resolution — kind-2/3
+            // elements carry their value in the PARALLEL stores
+            // (elem_strings/elem_ints) with elements[ei]==0 by design
+            // (R-NEW-464/F-NEW-238). The pre-LAW-A loop compared only the
+            // heap object id, so contains("c") on a List<String> answered
+            // FALSE for content-present lists (fcol K1 divergence).
+            // OpenJDK contains = o.equals(elementData[ei]) regardless of
+            // which store holds the element's value.
+            if (item.kind == CallContext::Arg::Kind::STRING &&
+                ei < state->elem_kinds.size() &&
+                state->elem_kinds[ei] == 2 &&
+                ei < state->elem_strings.size() &&
+                state->elem_strings[ei] == item.string_val)
+                return CallResult::handled_bool(true);
+            if ((item.kind == CallContext::Arg::Kind::INT ||
+                 item.kind == CallContext::Arg::Kind::BOOL ||
+                 item.kind == CallContext::Arg::Kind::LONG) &&
+                ei < state->elem_kinds.size() &&
+                state->elem_kinds[ei] == 3 &&
+                ei < state->elem_ints.size()) {
+                int32_t want =
+                    item.kind == CallContext::Arg::Kind::INT
+                        ? item.int_val
+                        : (item.kind == CallContext::Arg::Kind::BOOL
+                               ? (item.bool_val ? 1 : 0)
+                               : static_cast<int32_t>(item.long_val));
+                if (state->elem_ints[ei] == want)
+                    return CallResult::handled_bool(true);
+            }
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
                 item.object_id != 0 && e == item.object_id)
                 return CallResult::handled_bool(true);
+            // F-NEW-271: contains(null) matches ONLY kind-4 null elements
+            // (OpenJDK indexOf(o): o==null ? e==null : o.equals(e)) — the
+            // identity check below would otherwise match every kind-2/3
+            // slot (their stored id is 0 too).
+            if (item.kind == CallContext::Arg::Kind::NULL_REF &&
+                ei < state->elem_kinds.size() &&
+                state->elem_kinds[ei] == 4)
+                return CallResult::handled_bool(true);
+            if (item.kind == CallContext::Arg::Kind::NULL_REF &&
+                !(ei < state->elem_kinds.size() &&
+                  state->elem_kinds[ei] == 4))
+                continue;
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
                 item.object_id != 0 && e != 0 && e != item.object_id &&
                 app_eq && app_eq(e, item.object_id))
@@ -1190,6 +2244,104 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
         }
         return CallResult::handled_bool(false);
+    }
+
+    // ── LAW-A (CONT-18): indexOf/lastIndexOf REAL HANDLER ────────────────
+    // OpenJDK ArrayList.indexOf(Object o)/lastIndexOf(Object o):
+    //   first/last index i with o.equals(elementData[i]); -1 when absent.
+    // The shadow channel previously had NO handler for either — the
+    // generic-stub answer served a divergence (fcol probe K1:
+    // indexOf("B") on a 3-element list failed the row). Reader side of
+    // the PARALLEL-STORE COHERENCE LAW: kind-aware scan — kind-2 slots
+    // compare string content, kind-3 slots compare int values, kind-1
+    // slots compare object ids (plus the F-NEW-236d app-equals resolver
+    // when installed). NULL_REF arg matches kind-0/zero slots (null
+    // elements). Layering identical to contains/get: the heap "array[i]"
+    // store is consulted when the shadow store is empty (Arrays.asList /
+    // F-101 engine products).
+    if (m == "indexOf" || m == "lastIndexOf") {
+        auto* state = get_or_create(obj_id);
+        if (!state->is_map && !ctx.args.empty()) {
+            const CallContext::Arg& a0 = ctx.args[0];
+            const bool from_back = (m == "lastIndexOf");
+            int32_t n = static_cast<int32_t>(state->elements.size());
+            auto match_at = [&](int32_t i) -> bool {
+                uint8_t k = i < static_cast<int32_t>(state->elem_kinds.size())
+                                ? state->elem_kinds[i]
+                                : (state->elements[i] != 0 ? uint8_t{1}
+                                                           : uint8_t{0});
+                switch (a0.kind) {
+                case CallContext::Arg::Kind::STRING:
+                    if (k == 2 &&
+                        i < static_cast<int32_t>(state->elem_strings.size()) &&
+                        state->elem_strings[i] == a0.string_val)
+                        return true;
+                    if (k == 1 && state->elements[i] != 0 && heap_) {
+                        std::string es;
+                        if (heap_->get_object_string_field(
+                                state->elements[i], "__string_value__", es) &&
+                            es == a0.string_val)
+                            return true;
+                    }
+                    return false;
+                case CallContext::Arg::Kind::INT:
+                case CallContext::Arg::Kind::BOOL:
+                case CallContext::Arg::Kind::LONG: {
+                    if (k != 3)
+                        return false;
+                    int32_t want =
+                        a0.kind == CallContext::Arg::Kind::INT
+                            ? a0.int_val
+                            : (a0.kind == CallContext::Arg::Kind::BOOL
+                                   ? (a0.bool_val ? 1 : 0)
+                                   : static_cast<int32_t>(a0.long_val));
+                    return i < static_cast<int32_t>(state->elem_ints.size()) &&
+                           state->elem_ints[i] == want;
+                }
+                case CallContext::Arg::Kind::OBJECT: {
+                    if (a0.object_id == 0)
+                        return false;
+                    if (state->elements[i] == a0.object_id)
+                        return true;
+                    const auto& app_eq = CollectionShadow::app_equals_slot();
+                    return k == 1 && state->elements[i] != 0 && app_eq &&
+                           app_eq(state->elements[i], a0.object_id);
+                }
+                case CallContext::Arg::Kind::NULL_REF:
+                    return k != 1 && state->elements[i] == 0;
+                default:
+                    return false;
+                }
+            };
+            for (int32_t step = 0; step < n; ++step) {
+                int32_t i = from_back ? (n - 1 - step) : step;
+                if (match_at(i)) return CallResult::handled_int(i);
+            }
+            // Heap array-backed fallback (engine-materialized lists).
+            if (n == 0 && heap_) {
+                int32_t alen = 0;
+                if (heap_->get_object_array_length(obj_id, alen) && alen >= 0) {
+                    for (int32_t step = 0; step < alen; ++step) {
+                        int32_t i = from_back ? (alen - 1 - step) : step;
+                        if (a0.kind == CallContext::Arg::Kind::STRING) {
+                            std::string s;
+                            if (heap_->get_object_array_string_element(
+                                    obj_id, static_cast<size_t>(i), s) &&
+                                s == a0.string_val)
+                                return CallResult::handled_int(i);
+                        } else if (a0.kind == CallContext::Arg::Kind::OBJECT &&
+                                   a0.object_id != 0) {
+                            uint32_t e = 0;
+                            if (heap_->get_object_array_ref_element(
+                                    obj_id, static_cast<size_t>(i), e) &&
+                                e == a0.object_id)
+                                return CallResult::handled_int(i);
+                        }
+                    }
+                }
+            }
+            return CallResult::handled_int(-1);
+        }
     }
 
     if (m == "iterator") {
@@ -1293,6 +2445,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         } else {
             pos = static_cast<int32_t>(state->iterator_position);
         }
+        // LAW-B (CONT-18): lastReturned tracking — a next() that SERVES
+        // (any layer) returns element[pos]; every successful serve below
+        // advances the cursor, so recording pos here is exact for all
+        // serve paths and stale-safe for the null-at-end paths (their
+        // LAW-B remove() then hits the size bound -> ISE, JDK-honest).
+        if (is_box)
+            heap_->set_object_int_field(obj_id, "__iterator_last_ret__", pos);
         if (state->is_view) {
             if (pos < static_cast<int32_t>(state->view_elements.size())) {
                 const auto& el = state->view_elements[pos];
@@ -1382,6 +2541,11 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                             pos + 1);
             } else {
                 state->iterator_position = pos + 1;
+            }
+            // F-NEW-271: kind-4 null elements serve typed null.
+            if (pos < static_cast<int32_t>(state->elem_kinds.size()) &&
+                state->elem_kinds[pos] == 4) {
+                return CallResult::handled_null();
             }
             // R-NEW-464 closeout: kind-2 string elements serve their value.
             if (pos < static_cast<int32_t>(state->elem_kinds.size()) &&
@@ -1491,6 +2655,11 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // shadow channel — the guarded call pattern (hasPrevious first)
         // never reaches it, same honesty law as next() out-of-range.
         if (pos <= 0) return CallResult::handled_null();
+        // LAW-B (CONT-18): lastReturned tracking — previous() serves
+        // element[pos-1] on every successful path below.
+        if (is_box)
+            heap_->set_object_int_field(obj_id, "__iterator_last_ret__",
+                                        pos - 1);
         int32_t idx = pos - 1;
         if (state->is_view) {
             if (idx < static_cast<int32_t>(state->view_elements.size())) {
@@ -1877,8 +3046,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                   : static_cast<int32_t>(a1.long_val));
             } else if (item != 0) {
                 kind = 1;
-            } else {
+            } else if (a1.kind == CallContext::Arg::Kind::STRING) {
+                // F-NEW-271: a genuine empty-string element stays kind 2.
                 sval = ctx.arg_as_string(1);
+            } else {
+                // F-NEW-271: NULL_REF / zero-ref object → kind 4 null
+                // element (typed null on every serve).
+                kind = 4;
             }
             // ── F-NEW-238 DIAG (bounded): silent-write audit. The F-101
             // dual-store law keeps heap array[i] and shadow elements
@@ -1889,9 +3063,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 static thread_local uint64_t f238_set_diag = 0;
                 bool f238_dropped =
                     idx < 0 || (size_t)idx >= state->elements.size();
-                bool f238_poison = (item == 0 && kind != 3) &&
-                    ctx.args[1].kind != CallContext::Arg::Kind::NULL_REF &&
-                    ctx.args[1].kind != CallContext::Arg::Kind::INT;
+                // LAW-A (CONT-18): kind-2 with a STRING arg is the DESIGNED
+                // string-element representation (value lives in
+                // elem_strings; item==0 is correct there). The old
+                // predicate flagged every legal string write as POISON
+                // (fcol K1 live trace: arg_kind=5 POISON on a valid
+                // set(1,"B")). Real poison = a kind-2 slot written from a
+                // non-string, non-null arg — the value silently collapses
+                // to "" (the fairymahjong F-NEW-238 face).
+                bool f238_poison = (item == 0 && kind == 2 && sval.empty()) &&
+                    ctx.args[1].kind != CallContext::Arg::Kind::STRING &&
+                    ctx.args[1].kind != CallContext::Arg::Kind::NULL_REF;
                 if ((f238_dropped || f238_poison) && f238_set_diag < 24) {
                     ++f238_set_diag;
                     int32_t f238_alen = -1;
@@ -2183,19 +3365,40 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
 CallResult FragmentManagerShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     if (ctx.class_name == "Landroid/app/FragmentManager;") {
-        if (m == "findFragmentByTag" || m == "findFragmentById") {
-            // Fragment registry starts empty in this runtime — the honest
-            // answer is null; the androidx LifecycleDispatcher installs the
-            // report fragment on seeing null (install-on-miss contract).
+        if (m == "findFragmentByTag") {
+            // F-NEW-304: answer the ACTIVE fragment record by tag (AOSP
+            // FragmentManagerImpl.findFragmentByTag walks mActive). Null
+            // remains the honest answer before any commit drained.
+            const std::string tag = ctx.arg_as_string(0, "");
+            for (const auto& r : fragments_) {
+                if (!tag.empty() && r.tag == tag && r.frag != 0)
+                    return CallResult::handled_object(
+                        r.frag, "Landroid/app/Fragment;");
+            }
+            return CallResult::handled_null();
+        }
+        if (m == "findFragmentById") {
+            const int32_t id = ctx.arg_as_int(0, 0);
+            for (const auto& r : fragments_) {
+                if (r.frag != 0 && r.container == (uint32_t)id)
+                    return CallResult::handled_object(
+                        r.frag, "Landroid/app/Fragment;");
+            }
             return CallResult::handled_null();
         }
         if (m == "beginTransaction") {
             if (!heap_) return CallResult::not_handled();
             uint32_t tx_id = heap_->allocate("Landroid/app/FragmentTransaction;");
+            // AOSP BackStackRecord starts with an EMPTY op list.
+            heap_->set_object_int_field(tx_id, "__ftx_n__", 0);
             return CallResult::handled_object(tx_id,
                                               "Landroid/app/FragmentTransaction;");
         }
         if (m == "executePendingTransactions") {
+            // AOSP: execPendingActions() runs NOW. The engine consumes the
+            // flag at the next lifecycle boundary (same observable order
+            // for the host-created window this runtime models).
+            set_drain_requested();
             return CallResult::handled_bool(true);
         }
     }
@@ -2204,17 +3407,146 @@ CallResult FragmentManagerShadow::dispatch(const CallContext& ctx) {
             m == "show" || m == "detach" || m == "attach") {
             // BackStackRecord fluent law: every op returns the SAME
             // transaction (this) — object identity is part of the contract.
-            if (ctx.has_receiver && ctx.receiver_id != 0)
+            // F-NEW-304: the op itself is RECORDED on the tx object:
+            //   __ftx_n__                              op count
+            //   __ftx_<i>_type__      int              0=add 1=replace
+            //                         2=remove 3=hide 4=show 5=detach 6=attach
+            //   __ftx_<i>_container__ int              container view id
+            //   __ftx_<i>_frag__      ref              Fragment object
+            //   __ftx_<i>_tag__       string           optional tag
+            // Argument shapes (AOSP BackStackRecord):
+            //   add(int, Fragment) / add(int, Fragment, String)
+            //   add(Fragment, String) / replace(int, Fragment[, String])
+            //   remove/hide/show/detach/attach(Fragment)
+            if (!heap_) return CallResult::not_handled();
+            if (ctx.has_receiver && ctx.receiver_id != 0) {
+                int type = (m == "add") ? 0 : (m == "replace") ? 1
+                         : (m == "remove") ? 2 : (m == "hide") ? 3
+                         : (m == "show") ? 4 : (m == "detach") ? 5 : 6;
+                uint32_t container = 0, frag = 0;
+                std::string tag;
+                for (size_t i = 0; i < ctx.args.size(); ++i) {
+                    const auto& a = ctx.args[i];
+                    if (a.kind == CallContext::Arg::Kind::INT)
+                        container = (uint32_t)a.int_val;
+                    else if (a.kind == CallContext::Arg::Kind::STRING)
+                        tag = a.string_val;
+                    else if (a.kind == CallContext::Arg::Kind::OBJECT &&
+                             a.object_id != 0)
+                        frag = a.object_id;
+                }
+                int n = 0;
+                heap_->get_object_int_field(ctx.receiver_id, "__ftx_n__", n);
+                if (n < 64) {  // AOSP has no hard cap; bounded for safety
+                    const std::string p =
+                        "__ftx_" + std::to_string(n) + "_";
+                    heap_->set_object_int_field(ctx.receiver_id, p + "type__", type);
+                    heap_->set_object_int_field(ctx.receiver_id, p + "container__",
+                                                (int32_t)container);
+                    if (frag != 0)
+                        heap_->set_object_ref_field(ctx.receiver_id, p + "frag__",
+                                                    frag, "Landroid/app/Fragment;",
+                                                    "", false);
+                    if (!tag.empty())
+                        heap_->set_object_string_field(ctx.receiver_id, p + "tag__",
+                                                       tag);
+                    heap_->set_object_int_field(ctx.receiver_id, "__ftx_n__", n + 1);
+                }
                 return CallResult::handled_object(ctx.receiver_id,
                                                   ctx.class_name);
+            }
             return CallResult::handled_void();
         }
-        if (m == "commitNow" || m == "commitNowAllowingStateLoss") {
-            return CallResult::handled_void();
+        if (m == "commitNow" || m == "commitNowAllowingStateLoss" ||
+            m == "commit" || m == "commitAllowingStateLoss") {
+            // F-NEW-304 harvest: the op record moves onto the
+            // FragmentManager queue; commit()/commitNow() answer the
+            // BackStackRecord id (AOSP: mIndex, non-negative).
+            if (!heap_) return CallResult::not_handled();
+            const bool immediate =
+                (m == "commitNow" || m == "commitNowAllowingStateLoss");
+            PendingTx tx;
+            tx.immediate = immediate;
+            tx.id = next_tx_id_++;
+            int n = 0;
+            if (!heap_->get_object_int_field(ctx.receiver_id, "__ftx_n__", n))
+                n = 0;
+            for (int i = 0; i < n && i < 64; ++i) {
+                const std::string p = "__ftx_" + std::to_string(i) + "_";
+                PendingOp op;
+                int t = 0, c = 0;
+                heap_->get_object_int_field(ctx.receiver_id, p + "type__", t);
+                heap_->get_object_int_field(ctx.receiver_id, p + "container__", c);
+                op.type = t;
+                op.container = (uint32_t)c;
+                uint32_t f = 0;
+                heap_->get_object_ref_field(ctx.receiver_id, p + "frag__", f);
+                op.frag = f;
+                heap_->get_object_string_field(ctx.receiver_id, p + "tag__",
+                                               op.tag);
+                tx.ops.push_back(op);
+            }
+            // Fragment records registered at COMMIT time (AOSP: the
+            // fragment becomes active when the op executes; findFragmentByTag
+            // answers after execPendingActions — the engine boundary that
+            // consumes this queue runs within the same host event).
+            for (const auto& op : tx.ops) {
+                if (op.frag != 0 &&
+                    (op.type == 0 || op.type == 1)) {  // add / replace
+                FragmentRec r;
+                r.frag = op.frag;
+                r.container = op.container;
+                r.tag = op.tag;
+                record_fragment(r);
+                // Stage 0 = queued; the engine advances __frag_stage__ as
+                // lifecycle callbacks fire.
+                heap_->set_object_int_field(op.frag, "__frag_stage__", 0);
+                heap_->set_object_int_field(op.frag, "__frag_container__",
+                                            (int32_t)op.container);
+                if (!op.tag.empty())
+                    heap_->set_object_string_field(op.frag, "__frag_tag__",
+                                                   op.tag);
+                }
+            }
+            committed_.push_back(tx);
+            return CallResult::handled_int(tx.id);
         }
-        if (m == "commit" || m == "commitAllowingStateLoss") {
-            // BackStackRecord.commit → int id (non-negative in AOSP).
-            return CallResult::handled_int(0);
+    }
+    if (ctx.class_name == "Landroid/app/Fragment;") {
+        // F-NEW-304 fragment state getters — all answered from the state
+        // fields the commit/drain laws maintain on the fragment object.
+        if (m == "getTag") {
+            std::string tag;
+            if (heap_) heap_->get_object_string_field(ctx.receiver_id,
+                                                      "__frag_tag__", tag);
+            if (tag.empty()) return CallResult::handled_null();
+            return CallResult::handled_string(tag);
+        }
+        if (m == "getId") {
+            int32_t c = 0;
+            if (heap_) heap_->get_object_int_field(ctx.receiver_id,
+                                                   "__frag_container__", c);
+            return CallResult::handled_int(c);
+        }
+        if (m == "getView") {
+            uint32_t v = 0;
+            if (heap_) heap_->get_object_ref_field(ctx.receiver_id,
+                                                   "__frag_view__", v);
+            if (v == 0) return CallResult::handled_null();
+            return CallResult::handled_object(v, "Landroid/view/View;");
+        }
+        if (m == "isAdded" || m == "isVisible") {
+            int s = 0;
+            if (heap_) heap_->get_object_int_field(ctx.receiver_id,
+                                                   "__frag_stage__", s);
+            return CallResult::handled_bool(s >= 1);
+        }
+        if (m == "getArguments") {
+            uint32_t b = 0;
+            if (heap_) heap_->get_object_ref_field(ctx.receiver_id,
+                                                   "__frag_args__", b);
+            if (b == 0) return CallResult::handled_null();
+            return CallResult::handled_object(b, "Landroid/os/Bundle;");
         }
     }
     return CallResult::not_handled();
@@ -3537,9 +4869,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // for an attribute-free lookup and lets appcompat tint paths fall
         // back gracefully instead of dying on a null receiver.
         if (heap_) {
+            const std::vector<resources::XmlAttrRecord>* xml_recs = nullptr;
             uint32_t styleable_id = 0;
             int32_t n = 0;
-            for (const auto& a : ctx.args) {
+            size_t styleable_pos = SIZE_MAX;
+            for (size_t ai = 0; ai < ctx.args.size(); ++ai) {
+                const auto& a = ctx.args[ai];
                 if (a.kind != CallContext::Arg::Kind::OBJECT ||
                     a.object_id == 0)
                     continue;
@@ -3550,20 +4885,93 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (a.object_class == "[I" || (len > 0 && len <= 256)) {
                     styleable_id = a.object_id;
                     n = len;
+                    styleable_pos = ai;
                     break;
                 }
             }
             if (n > 256) n = 256;
+            // ── F-NEW-327 (CONT-55): the def-style chain args ────────────
+            // AOSP AttributeResolution walks the defStyleAttr/defStyleRes
+            // stages between the XML and the plain theme. The overloads
+            // that carry them: (AttributeSet, int[], defStyleAttr,
+            // defStyleRes) — the 4-arg form, and (int[], defStyleAttr,
+            // defStyleRes) — the 3-arg form. The defStyle args are the
+            // INT args immediately after the styleable int[] position.
+            int32_t f327_def_style_attr = 0;
+            int32_t f327_def_style_res = 0;
+            if (styleable_pos != SIZE_MAX) {
+                // Positional extraction (F-NEW-327): the overloads that
+                // carry the def-style pair place them immediately after
+                // the styleable int[]. The bridge maps a literal-0 int to
+                // NULL_REF (kind 7) — accept INT and NULL_REF alike and
+                // read int_val positionally (a2:k7=0 / a3:k0=0x7f100180
+                // live evidence, solitaire NavigationView ctor).
+                size_t nxt = styleable_pos + 1;
+                if (nxt + 1 < ctx.args.size()) {
+                    const auto& a1 = ctx.args[nxt];
+                    const auto& a2 = ctx.args[nxt + 1];
+                    if (a1.kind == CallContext::Arg::Kind::INT ||
+                        a1.kind == CallContext::Arg::Kind::NULL_REF)
+                        f327_def_style_attr = a1.int_val;
+                    if (a2.kind == CallContext::Arg::Kind::INT ||
+                        a2.kind == CallContext::Arg::Kind::NULL_REF)
+                        f327_def_style_res = a2.int_val;
+                }
+            }
+            // ── F-NEW-327: the tag's own XML style= reference (stage 2) ────
+            int32_t f327_xml_style = 0;
+            if (xml_recs) {
+                const auto* sr =
+                    resources::AttributeSetStore::instance().find(
+                        xml_recs, 0x01010000u /* android:style */);
+                if (sr &&
+                    (sr->type == resources::DataType::REFERENCE ||
+                     sr->type == resources::DataType::DYNAMIC_REFERENCE))
+                    f327_xml_style =
+                        (int32_t)(sr->ref_id ? sr->ref_id : sr->data);
+            }
             uint32_t ta_id = heap_->get_or_create(
                 "Landroid/content/res/TypedArray;");
             heap_->set_object_int_field(ta_id, "__array_length__", n);
+            // F-NEW-327 array-content probe: which attr ids this producer
+            // saw (the 116-attr merged-styleable attribution surface).
+            {
+                static const bool f327_diag_cs =
+                    std::getenv("MINIANDROID_F327_DIAG") != nullptr;
+                static thread_local uint64_t f327_cs_n = 0;
+                if (f327_diag_cs && f327_cs_n < 24 && styleable_id != 0) {
+                    ++f327_cs_n;
+                    std::cerr << "[CS-PRODUCER] ta=o" << ta_id << " n=" << n
+                              << " dSA=0x" << std::hex << f327_def_style_attr
+                              << " dSR=0x" << f327_def_style_res << std::dec
+                              << " xmlstyle=0x" << std::hex << f327_xml_style
+                              << std::dec << " argc=" << ctx.args.size();
+                    for (size_t kk = styleable_pos;
+                         kk < ctx.args.size() && kk <= styleable_pos + 2;
+                         ++kk) {
+                        std::cerr << " a" << kk << ":k"
+                                  << static_cast<int>(ctx.args[kk].kind)
+                                  << "=0x" << std::hex
+                                  << ctx.args[kk].int_val << std::dec;
+                    }
+                    std::cerr << " attrs=[";
+                    for (int32_t k = 0; k < n && k < 30; ++k) {
+                        int32_t aid = 0;
+                        heap_->get_object_int_field(
+                            styleable_id, "array[" + std::to_string(k) + "]",
+                            aid);
+                        std::cerr << (k ? "," : "") << "0x" << std::hex
+                                  << aid << std::dec;
+                    }
+                    std::cerr << "]" << std::endl;
+                }
+            }
             auto& rt = resources::ResourceRuntime::instance();
             // ── F-NEW-197 XML-ATTRIBUTESET LAW ──────────────────────────────
             // AOSP AttributeResolution.cpp precedence per styleable slot:
             // (1) XML AttributeSet value (the view-ctor argument), (2) style,
             // (3) theme, (4) absent → caller default. The AttributeSet marker
             // carries the tag's parsed XML attributes in the store below.
-            const std::vector<resources::XmlAttrRecord>* xml_recs = nullptr;
             for (const auto& a : ctx.args) {
                 if (a.kind != CallContext::Arg::Kind::OBJECT ||
                     a.object_id == 0)
@@ -3607,6 +5015,35 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                           ? (int32_t)(r->ref_id ? r->ref_id
                                                                 : r->data)
                                           : r->data;
+                            slot_present = true;
+                        }
+                    }
+                    // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution
+                    // DEF-STYLE stages — (2) the tag XML's style= reference,
+                    // (3) the defStyleAttr (the theme's style reference —
+                    // Widget.Design.NavigationView carries the drawer
+                    // android:maxWidth=320dp law), (4) the explicit
+                    // defStyleRes. AOSP order: XML(1) → xmlStyle(2) →
+                    // defStyleAttr(3) → defStyleRes(4) → theme(5); each
+                    // style stage walks the bag parent chain and derefs the
+                    // terminal REFERENCE. DIMENSION-typed answers decode to
+                    // device px (the AOSP TypedArray getDimensionPixelSize
+                    // contract — the consumer reads px directly from the
+                    // slot; e.g. NavigationView mMaxWidth).
+                    if (!slot_present) {
+                        auto v = rt.resolve_def_style_attr_value(
+                            apk_path_, (uint32_t)attr_id,
+                            f327_def_style_attr, f327_def_style_res,
+                            f327_xml_style);
+                        if (v) {
+                            if (v->type == resources::DataType::DIMENSION) {
+                                decoded =
+                                    resources::complex_unit_to_dimension_pixel_size(
+                                        v->dim_unit, v->dim_value,
+                                        resources::DensityContext{});
+                            } else {
+                                decoded = (int32_t)v->data;
+                            }
                             slot_present = true;
                         }
                     }
@@ -4095,6 +5532,28 @@ CallResult LayoutInflaterShadow::dispatch(const CallContext& ctx) {
         uint32_t id = heap_->get_or_create("Landroid/view/LayoutInflater;");
         return CallResult::handled_object(id, "Landroid/view/LayoutInflater;");
     }
+    if (m == "cloneInContext") {
+        // F-NEW-313 (CONT-47): AOSP LayoutInflater.cloneInContext(Context)
+        // returns a functional inflater bound to the cloned context
+        // (PhoneLayoutInflater returns a new instance of its own class).
+        // Measured gap (BMI, run/cont47/bmi_ft7): the fragment host's
+        // real DEX onGetLayoutInflater ends in cloneInContext — with no
+        // handler the invoke answered null, Fragment.mLayoutInflater went
+        // null, the fragment's onCreateView dispatched inflate on a NULL
+        // receiver ([ROOT-059] null-recv row), the result-slot never
+        // wrote (the F-NEW-262 <unset> signature), and
+        // Fragment.mView=<unset> meant the container addView never ran —
+        // the fragment content could not materialize even with the state
+        // machine live. The runtime's inflater model is the F-021 shared
+        // singleton (same object LayoutInflater.from() and
+        // Activity.getLayoutInflater() answer); the context-clone nuance
+        // is not observable in this model, so the AOSP-observable
+        // contract here is: cloneInContext answers a FUNCTIONAL
+        // inflater — the shared one.
+        if (!heap_) return CallResult::not_handled();
+        uint32_t id = heap_->get_or_create("Landroid/view/LayoutInflater;");
+        return CallResult::handled_object(id, "Landroid/view/LayoutInflater;");
+    }
     if (m == "inflate") {
         if (!registry_ || !heap_) return CallResult::not_handled();
         auto* view_shadow = registry_->find_as<ViewShadow>();
@@ -4387,6 +5846,106 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                                 : n->measured_height)
                                          : 0);
     }
+    // ─────────────────────────────────────────────────────────────────────
+    // F-NEW-267 (CONT-61): the compose hit-test coordinate laws.
+    //
+    // ROOT CAUSE: compose's hit test (dooz v23 measured, [TOUCHWIN-BRIDGE])
+    // computes each LayoutNode's global bounds through the HOST view's
+    // getLocationOnScreen/getLocationInWindow/transformMatrixToGlobal —
+    // all three had NO law (typed-default: the int[] stayed zeros, the
+    // Matrix stayed identity) → every node's bounds math answered garbage
+    // → the pointer missed every node → the hit list EMPTY
+    // ([TOUCHWIN-SIZE] obj#2554 -> 0) → dispatchTouchEvent returned false
+    // → every compose interactive surface tap-dead.
+    //
+    // AOSP laws (View.java):
+    //   getLocationInWindow(int[] outLocation): the view's position in its
+    //     window = the parent-chain sum (each hop mLeft/mTop — the engine's
+    //     ViewShadow (x, y) IS the laid-out position, the same numbers the
+    //     render path paints at).
+    //   getLocationOnScreen(int[] outLocation): inWindow + the window's
+    //     screen origin (fullscreen window → the same values).
+    //   transformMatrixToGlobal(Matrix m): preTranslate the accumulated
+    //     chain translate — m' = T(total) ∘ m (pure-translate composition;
+    //     the engine node chain carries no rotations/scales on this path —
+    //     the render draw walks the same (x,y) chain).
+    //   transformMatrixToLocal(Matrix m): the inverse mapping — m' = m ∘
+    //     T(-total) (post law; maps global→local for the hit-test descent).
+    // ─────────────────────────────────────────────────────────────────────
+    if (m == "getLocationOnScreen" || m == "getLocationInWindow") {
+        const auto* n = find_node(ctx.receiver_id);
+        int ax = 0, ay = 0;
+        if (n) {
+            // Parent-chain sum (AOSP View annals: the position = the laid
+            // out mLeft/mTop of every ancestor hop).
+            for (const auto* cur = n; cur != nullptr;) {
+                ax += cur->x;
+                ay += cur->y;
+                if (g_touch_window_active.load(std::memory_order_relaxed)) {
+                    static thread_local uint64_t lcs_n = 0;
+                    if (lcs_n++ < 40)
+                        std::cerr << "[TOUCHWIN-LOC] hop " << cur->class_desc
+                                  << " id=" << cur->view_id << " ("
+                                  << cur->x << "," << cur->y << " "
+                                  << cur->width << "x" << cur->height
+                                  << ") sum=(" << ax << "," << ay << ")"
+                                  << std::endl;
+                }
+                cur = cur->parent_id
+                          ? find_node(cur->parent_id)
+                          : nullptr;
+                if (cur == n) break;  // cycle guard
+            }
+        }
+        if (ctx.args.size() >= 1) {
+            const uint32_t arr = ctx.arg_as_object(0, 0);
+            if (arr && heap_) {
+                heap_->set_object_int_field(arr, "array[0]", ax);
+                heap_->set_object_int_field(arr, "array[1]", ay);
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "transformMatrixToGlobal" || m == "transformMatrixToLocal") {
+        const auto* n = find_node(ctx.receiver_id);
+        int ax = 0, ay = 0;
+        if (n) {
+            for (const auto* cur = n; cur != nullptr;) {
+                // AOSP: the parent's scroll cancels part of the hop
+                // (preTranslate(-parent.scrollX, -parent.scrollY)); the
+                // node's own scroll applies to its children — the laid-out
+                // (x, y) IS already the scroll-adjusted placement in this
+                // engine (the render walk paints at (x, y)), so the chain
+                // sum is the honest global offset here.
+                ax += cur->x;
+                ay += cur->y;
+                cur = cur->parent_id
+                          ? find_node(cur->parent_id)
+                          : nullptr;
+                if (cur == n) break;  // cycle guard
+            }
+        }
+        if (ctx.args.size() >= 1) {
+            const uint32_t mat = ctx.arg_as_object(0, 0);
+            if (mat && heap_) {
+                MatrixShadow::M33 mtx;
+                MatrixShadow::read_matrix(heap_, mat, mtx);
+                if (m == "transformMatrixToGlobal") {
+                    // m' = T(total) ∘ m  (pre law): x'' = a·x + b·y + c+tx
+                    // (the translate composes AFTER m — pure addition).
+                    mtx.v[2] += ax;
+                    mtx.v[5] += ay;
+                } else {
+                    // m' = m ∘ T(-total)  (post law): c' = a·(-tx) + b·(-ty)
+                    // + c — the translate applies to the point FIRST.
+                    mtx.v[2] -= ax * mtx.v[0] + ay * mtx.v[1];
+                    mtx.v[5] -= ax * mtx.v[3] + ay * mtx.v[4];
+                }
+                MatrixShadow::write_matrix(heap_, mat, mtx);
+            }
+        }
+        return CallResult::handled_void();
+    }
 
     // UC009: AOSP View attach state (mAttachInfo != null). Compose's
     // ensureCompositionCreated path queries isAttachedToWindow; the
@@ -4522,6 +6081,98 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "removeView" || m == "removeViewInLayout") {
+        uint32_t child = ctx.arg_as_object(0, 0);
+        if (child != 0) remove_child(ctx.receiver_id, child);
+        return CallResult::handled_void();
+    }
+    // ── F-NEW-323 (CONT-51): the AOSP ViewGroup detach/attach family ──
+    // RecyclerView's ChildHelper drives this family through REAL DEX
+    // (solitaire ay$5.c = ChildHelper.Callback.detachViewFromParent,
+    // ay.a synthetic accesses → ay.detachViewFromParent(I) /
+    // ay.attachViewToParent(V,I,LP)). The runtime had NO bridge for any
+    // of them — every call was a silent no-op, so after the FIRST
+    // detach the children table stayed at full length and the NEXT
+    // detachAndScrap cycle re-caught the same (FLAG_TMP_DETACHED)
+    // child, tripping the DEX-side defense: IAE "called detach on an
+    // already detached child …" → GameSelector.onCreate died (the
+    // recorded CONT-51 first divergence). AOSP ViewGroup.java laws:
+    //   detachViewFromParent(int|View): child leaves mChildren
+    //     (childCount decrements, array compacts) but child.mParent is
+    //     KEPT — detachment is a transient state inside ONE layout
+    //     traversal; no requestLayout (the caller reattaches or removes
+    //     within the same pass).
+    //   attachViewToParent(View, int, LayoutParams): child.mParent kept,
+    //     child re-inserted at the given index (index<0 → append), and
+    //     child.mLayoutParams = params (AOSP View.mLayoutParams
+    //     single-slot law — F-NEW-322's record keeps getLayoutParams
+    //     identity-faithful afterwards).
+    //   removeDetachedView(View, boolean): the FULL removal — mParent
+    //     cleared (removeView semantics; R-NEW-302 requestLayout too).
+    if (m == "detachViewFromParent") {
+        auto* n = find_node(ctx.receiver_id);
+        if (n != nullptr && !n->children.empty()) {
+            int32_t idx = -1;
+            if (ctx.args.size() >= 1 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                uint32_t child = ctx.arg_as_object(0, 0);
+                for (size_t k = 0; k < n->children.size(); ++k) {
+                    if (n->children[k] == child) { idx = static_cast<int32_t>(k); break; }
+                }
+            } else {
+                idx = ctx.arg_as_int(0, -1);
+            }
+            if (idx >= 0 && static_cast<size_t>(idx) < n->children.size()) {
+                // AOSP: mChildren compaction — the child node itself is
+                // kept alive (the app/DEX still holds it) and parent_id
+                // is NOT cleared (child.mParent survives the detach).
+                const uint32_t detached_child = n->children[static_cast<size_t>(idx)];
+                n->children.erase(n->children.begin() + idx);
+                std::cerr << "[F-NEW-323] detachViewFromParent parent="
+                          << ctx.receiver_id << " idx=" << idx
+                          << " child=" << detached_child
+                          << " left=" << n->children.size()
+                          << std::endl;
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "attachViewToParent") {
+        // AOSP attachViewToParent(View child, int index, LayoutParams
+        // params): mParent kept, mChildren[index] = child (index<0 →
+        // append), mLayoutParams = params.
+        uint32_t child = ctx.arg_as_object(0, 0);
+        if (child != 0) {
+            auto* cn = find_node(child);
+            if (cn != nullptr) {
+                if (cn->parent_id == 0) cn->parent_id = ctx.receiver_id;
+                auto* n = find_node(ctx.receiver_id);
+                if (n != nullptr) {
+                    // no double-add (AOSP asserts the child is detached)
+                    bool present = false;
+                    for (uint32_t c : n->children) if (c == child) { present = true; break; }
+                    if (!present) {
+                        int32_t idx = ctx.arg_as_int(1, -1);
+                        if (idx < 0 || static_cast<size_t>(idx) > n->children.size())
+                            n->children.push_back(child);
+                        else
+                            n->children.insert(n->children.begin() + idx, child);
+                    }
+                    // F-NEW-322 cooperation: the params argument becomes
+                    // the child's mLayoutParams object identity.
+                    if (ctx.args.size() >= 3 && ctx.args[2].kind == CallContext::Arg::Kind::OBJECT) {
+                        uint32_t lp = ctx.arg_as_object(2, 0);
+                        if (lp != 0 && heap_->has_object(lp)) {
+                            std::string lp_cls;
+                            heap_->get_object_class(lp, lp_cls);
+                            cn->layout_params_object = lp;
+                            if (!lp_cls.empty()) cn->layout_params_class = lp_cls;
+                        }
+                    }
+                }
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "removeDetachedView") {
         uint32_t child = ctx.arg_as_object(0, 0);
         if (child != 0) remove_child(ctx.receiver_id, child);
         return CallResult::handled_void();
@@ -5699,6 +7350,41 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    // CONT-39 (F-NEW-301): TextView.getCurrentTextColor() — AOSP returns
+    // mCurTextColor, the color the view's text actually paints with. The
+    // setter law above stores it on the ViewNode (text_color, provenance
+    // tagged); the getter answers the SAME state and mirrors the
+    // renderer's default law EXACTLY (view_renderer draw_text_into:
+    // text_color==0 → opaque black, Button label → white), so a reader
+    // of the getter observes the same color the rasterizer paints —
+    // getter state and rendered pixels cannot diverge. A getter never
+    // creates render nodes (find_node only). The ColorStateList variant's
+    // default-color resolution stays the recorded draw-time gap (the
+    // captured object has no failing consumer; NOT value-guessed here).
+    if (m == "getCurrentTextColor") {
+        static const uint32_t kDefaultBlack = 0xFF000000u;  // renderer default
+        static const uint32_t kButtonWhite  = 0xFFFFFFFFu;  // button label default
+        uint32_t col = kDefaultBlack;
+        const auto* n = find_node(ctx.receiver_id);
+        if (n && n->text_color != 0) {
+            col = n->text_color;
+        } else {
+            const std::string& cls = n ? n->class_desc
+                : (ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+            if (cls.find("Button;") != std::string::npos &&
+                cls.find("ImageButton;") == std::string::npos)
+                col = kButtonWhite;
+        }
+        static const bool s_tc_trace =
+            std::getenv("MINIANDROID_TEXT_COLOR_TRACE") != nullptr;
+        if (s_tc_trace) {
+            std::cerr << "[F301-GETTEXTCOLOR] view_id=" << ctx.receiver_id
+                      << " color=0x" << std::hex << col << std::dec
+                      << " prov=" << (n ? int(n->text_color_provenance) : -1)
+                      << std::endl;
+        }
+        return CallResult::handled_int((int32_t)col);
+    }
     // EXP-065: Capture setHint / setHintText — EditText hint text is
     // important for the Login UI (e.g., "Phone number" appears as a hint).
     // Previously setHintText was stubbed at the engine level; now it's
@@ -5901,9 +7587,25 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // the owning ViewGroup's param class), width/height from the
         // inflate semantic model, anchorId = NO_ID. No package checks —
         // every caller sees the same lawful answer.
+        //
+        // F-NEW-309 precedence: when the inflation generated the parent's
+        // OWN LayoutParams subclass for this child (the real DEX
+        // (Context, AttributeSet) ctor ran through
+        // generate_child_layout_params — solitaire DrawerLayout$g), answer
+        // THAT exact object: it carries the XML-resolved gravity the
+        // app's own container checks read (AOSP generateLayoutParams law).
         auto* lp_node = get_or_create_node(
             ctx.receiver_id,
             ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        if (lp_node != nullptr && lp_node->layout_params_object != 0 &&
+            heap_->has_object(lp_node->layout_params_object)) {
+            std::cerr << "[F-NEW-309/322] getLayoutParams view="
+                      << ctx.receiver_id << " -> layout_params_object "
+                      << lp_node->layout_params_class
+                      << " o" << lp_node->layout_params_object << std::endl;
+            return CallResult::handled_object(
+                lp_node->layout_params_object, lp_node->layout_params_class);
+        }
         std::string parent_cls;
         if (lp_node != nullptr && lp_node->parent_id != 0) {
             const auto* pn = find_node(lp_node->parent_id);
@@ -5960,6 +7662,34 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                                : ctx.receiver_class)) {
                 if (pw != 0) n->width = pw;
                 if (ph != 0) n->height = ph;
+                // ── F-NEW-322 (CONT-51): the AOSP View.mLayoutParams
+                // IDENTITY law. AOSP View.java stores ONE mLayoutParams
+                // reference: setLayoutParams(params) assigns it and
+                // getLayoutParams() returns the SAME object. The runtime
+                // previously recorded only the semantic w/h here, so the
+                // next getLayoutParams fell through to the ROOT-055
+                // by-fiat materialization and handed DEX code a DIFFERENT
+                // object — every field the app attached before the set
+                // (the RecyclerView LayoutParams.mViewHolder law:
+                // solitaire ay$i.c = holder, written in ay$o.a
+                // tryGetViewHolderForPositionByDeadline on obj#1802, read
+                // back null through the fresh fallback obj#1805 in ay.e
+                // getChildViewHolderInt) was silently dropped. Record the
+                // EXACT object identity + heap class; getLayoutParams's
+                // existing first precedence then answers it (AOSP
+                // single-slot law). Overwrite semantics: a later set
+                // replaces the slot, exactly as the field assignment does.
+                if (p != 0 && heap_->has_object(p)) {
+                    std::string lp_cls;
+                    heap_->get_object_class(p, lp_cls);
+                    n->layout_params_object = p;
+                    if (!lp_cls.empty()) n->layout_params_class = lp_cls;
+                    std::cerr << "[F-NEW-322] setLayoutParams view="
+                              << ctx.receiver_id << " lp_obj=" << p
+                              << " class=" << lp_cls
+                              << " (" << pw << "x" << ph << ")"
+                              << std::endl;
+                }
             }
         }
         return CallResult::handled_void();
@@ -6430,6 +8160,14 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "onMeasure" || m == "onLayout" || m == "onDraw" ||
         m == "onTouchEvent" || m == "onAttachedToWindow" ||
         m == "onDetachedFromWindow") {
+        // F-NEW-328 NOTE (CONT-56): the framework LinearLayout.onMeasure
+        // SUPER call from a DEX subclass (the appcompat AppBarLayout
+        // family) is served by the S109 ROOT-042 bridge law in
+        // bridge_to_api (dalvik_engine.cpp), which claims LinearLayout/
+        // FrameLayout/... onMeasure BEFORE any shadow dispatch — the
+        // investigation proved a ViewShadow-level law here is DEAD CODE
+        // for that path. The AOSP-faithful fix lives at the S109 sites
+        // (the lp-aware child_spec + the orientation self-size law).
         return CallResult::handled_void();
     }
     if (m == "toString") {

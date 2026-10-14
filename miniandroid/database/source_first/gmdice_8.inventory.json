@@ -1,0 +1,354 @@
+{
+ "app_id": "gmdice_8",
+ "apk_path": "/tmp/my-project/apk_cache/de.duenndns.gmdice_8.apk",
+ "package": "de.duenndns.gmdice",
+ "versionName": "1.0",
+ "versionCode": "8",
+ "min_sdk": "11",
+ "target_sdk": "27",
+ "components": {
+  "activities": [
+   "de.duenndns.gmdice.GameMasterDice"
+  ],
+  "services": [],
+  "receivers": [],
+  "providers": [],
+  "application": ""
+ },
+ "dependency_versions": {},
+ "classes": [
+  {
+   "name": "Lde/duenndns/gmdice/Coin;",
+   "super": "Lde/duenndns/gmdice/DiceSet;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/DSADiceSet;",
+   "super": "Lde/duenndns/gmdice/DiceSet;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/DiceCache;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 6,
+   "fields": 2,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/DiceSet;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 8,
+   "fields": 3,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/FUDGEDiceSet;",
+   "super": "Lde/duenndns/gmdice/DiceSet;",
+   "interfaces": [],
+   "methods": 5,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$1;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/content/DialogInterface$OnClickListener;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$2;",
+   "super": "Lde/duenndns/gmdice/OnDiceChange;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$3;",
+   "super": "Lde/duenndns/gmdice/OnDiceChange;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$4;",
+   "super": "Lde/duenndns/gmdice/OnDiceChange;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 2,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$5;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/content/DialogInterface$OnClickListener;"
+   ],
+   "methods": 2,
+   "fields": 3,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$6;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/content/DialogInterface$OnClickListener;"
+   ],
+   "methods": 2,
+   "fields": 5,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice$7;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/content/DialogInterface$OnClickListener;"
+   ],
+   "methods": 2,
+   "fields": 4,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/GameMasterDice;",
+   "super": "Landroid/app/ListActivity;",
+   "interfaces": [
+    "Landroid/view/View$OnClickListener;",
+    "Landroid/view/View$OnLongClickListener;"
+   ],
+   "methods": 23,
+   "fields": 14,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/OnDiceChange;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/RollResult;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 2,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/RollResultAdapter;",
+   "super": "Landroid/widget/ArrayAdapter;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/SignedNumberPicker$1;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/widget/NumberPicker$Formatter;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/SignedNumberPicker$2;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/view/View$OnFocusChangeListener;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/SignedNumberPicker$3;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/widget/NumberPicker$OnValueChangeListener;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;",
+   "super": "Landroid/text/method/NumberKeyListener;",
+   "interfaces": [],
+   "methods": 5,
+   "fields": 2,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/SignedNumberPicker$OnTextFocusChangedListener;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/SignedNumberPicker;",
+   "super": "Landroid/widget/NumberPicker;",
+   "interfaces": [],
+   "methods": 19,
+   "fields": 6,
+   "is_app": true
+  },
+  {
+   "name": "Lde/duenndns/gmdice/StandardDiceSet;",
+   "super": "Lde/duenndns/gmdice/DiceSet;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": true
+  }
+ ],
+ "external_apis": {
+  "jdk": {
+   "Ljava/lang/StringBuilder;->append": 47,
+   "Ljava/lang/Integer;->valueOf": 45,
+   "Ljava/lang/StringBuilder;-><init>": 15,
+   "Ljava/lang/StringBuilder;->toString": 15,
+   "Ljava/lang/Object;-><init>": 11,
+   "Ljava/lang/String;->format": 8,
+   "Ljava/util/ArrayList;->add": 7,
+   "Ljava/lang/String;->valueOf": 6,
+   "Ljava/lang/String;->length": 5,
+   "Ljava/lang/String;->equals": 4,
+   "Ljava/lang/Integer;->parseInt": 4,
+   "Ljava/util/Random;->nextInt": 4,
+   "Ljava/lang/CharSequence;->toString": 4,
+   "Ljava/lang/String;->split": 3,
+   "Ljava/util/List;->contains": 3,
+   "Ljava/lang/Object;->getClass": 2,
+   "Ljava/util/ArrayList;-><init>": 2,
+   "Ljava/util/ArrayList;->remove": 2,
+   "Ljava/util/ArrayList;->size": 2,
+   "Ljava/util/Iterator;->hasNext": 2,
+   "Ljava/util/ArrayList;->iterator": 2,
+   "Ljava/util/Iterator;->next": 2,
+   "Ljava/lang/String;->indexOf": 1,
+   "Ljava/util/ArrayList;->get": 1,
+   "Ljava/util/ArrayList;->clear": 1,
+   "Ljava/util/Random;-><init>": 1,
+   "Ljava/lang/Integer;->toString": 1,
+   "Ljava/util/Arrays;->asList": 1,
+   "Ljava/lang/CharSequence;->subSequence": 1,
+   "Ljava/lang/String;->replace": 1,
+   "Ljava/lang/Object;->toString": 1,
+   "Ljava/lang/Integer;->intValue": 1
+  },
+  "framework": {
+   "Landroid/util/Log;->d": 6,
+   "Landroid/widget/ArrayAdapter;->add": 4,
+   "Landroid/app/AlertDialog$Builder;->setTitle": 4,
+   "Landroid/app/AlertDialog$Builder;-><init>": 4,
+   "Landroid/app/AlertDialog$Builder;->create": 4,
+   "Landroid/app/AlertDialog;->show": 4,
+   "Landroid/app/AlertDialog$Builder;->setPositiveButton": 3,
+   "Landroid/content/SharedPreferences;->getBoolean": 3,
+   "Landroid/widget/Button;->getText": 3,
+   "Landroid/widget/ArrayAdapter;-><init>": 3,
+   "Landroid/widget/NumberPicker;-><init>": 3,
+   "Landroid/widget/NumberPicker;->addView": 3,
+   "Landroid/widget/Button;->setText": 2,
+   "Landroid/app/AlertDialog$Builder;->setMessage": 2,
+   "Landroid/app/AlertDialog$Builder;->setNeutralButton": 2,
+   "Landroid/app/AlertDialog$Builder;->setNegativeButton": 2,
+   "Landroid/content/SharedPreferences;->getString": 2,
+   "Landroid/content/res/Resources;->getColor": 2,
+   "Landroid/widget/Button;->setTextColor": 2,
+   "Landroid/widget/Button;->setOnLongClickListener": 2,
+   "Landroid/graphics/drawable/Drawable;->setColorFilter": 2,
+   "Landroid/widget/Button;->setOnClickListener": 2,
+   "Landroid/widget/Button;->getBackground": 2,
+   "Landroid/widget/TextView;->setText": 2,
+   "Landroid/view/View;->findViewById": 2,
+   "Landroid/content/SharedPreferences;->edit": 2,
+   "Landroid/content/SharedPreferences$Editor;->putString": 2,
+   "Landroid/content/SharedPreferences$Editor;->commit": 2,
+   "Landroid/text/Spanned;->subSequence": 2,
+   "Landroid/widget/NumberPicker;->getValue": 2,
+   "Landroid/widget/NumberPicker;->setValue": 2,
+   "Landroid/widget/EditText;->getText": 2,
+   "Landroid/widget/NumberPicker;->setMaxValue": 2,
+   "Landroid/content/Context;->getString": 1,
+   "Landroid/content/Intent;-><init>": 1,
+   "Landroid/net/Uri;->parse": 1,
+   "Landroid/widget/Spinner;->getSelectedItem": 1,
+   "Landroid/widget/ArrayAdapter;->getItem": 1,
+   "Landroid/widget/ArrayAdapter;->getCount": 1,
+   "Landroid/app/ListActivity;-><init>": 1,
+   "Landroid/content/pm/PackageManager;->getPackageInfo": 1,
+   "Landroid/app/AlertDialog$Builder;->setIcon": 1,
+   "Landroid/view/Window;->clearFlags": 1,
+   "Landroid/view/Window;->addFlags": 1,
+   "Landroid/app/AlertDialog$Builder;->setView": 1,
+   "Landroid/view/LayoutInflater;->inflate": 1,
+   "Landroid/widget/ListView;->onRestoreInstanceState": 1,
+   "Landroid/widget/Button;->setTransformationMethod": 1,
+   "Landroid/app/ListActivity;->onCreate": 1,
+   "Landroid/os/Bundle;->getParcelable": 1,
+   "Landroid/preference/PreferenceManager;->getDefaultSharedPreferences": 1,
+   "Landroid/view/MenuInflater;->inflate": 1,
+   "Landroid/view/MenuItem;->getItemId": 1,
+   "Landroid/app/ListActivity;->onPause": 1,
+   "Landroid/view/Menu;->findItem": 1,
+   "Landroid/view/MenuItem;->setIcon": 1,
+   "Landroid/app/ListActivity;->onResume": 1,
+   "Landroid/os/Bundle;->putParcelable": 1,
+   "Landroid/widget/ListView;->onSaveInstanceState": 1,
+   "Landroid/app/ListActivity;->onSaveInstanceState": 1,
+   "Landroid/app/AlertDialog$Builder;->setAdapter": 1,
+   "Landroid/widget/ArrayAdapter;->setDropDownViewResource": 1,
+   "Landroid/widget/Spinner;->setSelection": 1,
+   "Landroid/widget/Spinner;->setAdapter": 1,
+   "Landroid/content/SharedPreferences$Editor;->putBoolean": 1,
+   "Landroid/widget/TextView;->setTextColor": 1,
+   "Landroid/widget/ArrayAdapter;->getView": 1,
+   "Landroid/widget/EditText;->selectAll": 1,
+   "Landroid/widget/NumberPicker$OnValueChangeListener;->onValueChange": 1,
+   "Landroid/text/method/NumberKeyListener;-><init>": 1,
+   "Landroid/text/method/NumberKeyListener;->filter": 1,
+   "Landroid/text/Spanned;->length": 1,
+   "Landroid/widget/EditText;->setOnFocusChangeListener": 1,
+   "Landroid/widget/NumberPicker;->setFormatter": 1,
+   "Landroid/widget/EditText;->setFilters": 1,
+   "Landroid/widget/EditText;->setInputType": 1,
+   "Landroid/text/TextUtils;->isEmpty": 1,
+   "Landroid/widget/EditText;->setText": 1,
+   "Landroid/widget/EditText;->hasFocus": 1,
+   "Landroid/widget/NumberPicker;->getMaxValue": 1,
+   "Landroid/widget/NumberPicker;->setMinValue": 1,
+   "Landroid/widget/NumberPicker;->setOnValueChangedListener": 1
+  }
+ },
+ "field_refs": {},
+ "counts": {
+  "classes": 23,
+  "methods": 104,
+  "fields": 49,
+  "external_call_sites": 114,
+  "external_field_refs": 0,
+  "custom_ui_classes": 2,
+  "class_buckets": {
+   "third_party": 23
+  }
+ }
+}

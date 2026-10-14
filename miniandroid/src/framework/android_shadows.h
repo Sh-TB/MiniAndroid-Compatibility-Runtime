@@ -38,6 +38,11 @@
 
 namespace miniandroid { namespace framework {
 
+// F-NEW-267 (CONT-61): set by the engine while a materialized MotionEvent is
+// being dispatched into a DEX touch override — gates the shadow-side
+// [TOUCHWIN-SIZE] probe (what the compose pointer-input filter dispatch saw).
+extern std::atomic<bool> g_touch_window_active;
+
 // ─────────────────────────────────────────────────────────────────────────
 // ArchTaskExecutorShadow — handles ArchTaskExecutor.isMainThread.
 //
@@ -300,17 +305,86 @@ public:
     void init(HeapAllocator* heap) override { heap_ = heap; }
     bool handles_class(const std::string& class_name) const override {
         return class_name == "Landroid/app/FragmentManager;" ||
-               class_name == "Landroid/app/FragmentTransaction;";
+               class_name == "Landroid/app/FragmentTransaction;" ||
+               class_name == "Landroid/app/Fragment;";
     }
     CallResult dispatch(const CallContext& ctx) override;
     std::vector<std::string> implemented_methods() const override {
         return {"findFragmentByTag", "findFragmentById", "beginTransaction",
                 "add", "replace", "remove", "hide", "show", "detach",
                 "attach", "commit", "commitAllowingStateLoss", "commitNow",
-                "commitNowAllowingStateLoss", "executePendingTransactions"};
+                "commitNowAllowingStateLoss", "executePendingTransactions",
+                "getTag", "getId", "getView", "isAdded", "getArguments",
+                "isVisible"};
     }
+
+    // ── F-NEW-304 (CONT-42): FragmentTransaction pending-op law ─────────
+    // AOSP BackStackRecord records every add/replace/... op; commit()
+    // enqueues the record on the FragmentManager; the host's state
+    // changes (or executePendingTransactions) run execPendingActions.
+    // The old law dropped ops at record time (fluent THIS only) and
+    // commit answered 0 — every platform-Fragment app (tananaev
+    // calculator's PreferenceFragment host, androidx ReportFragment
+    // install) silently contributed NO fragment.
+    //
+    // Recording: ops live on the TRANSACTION heap object as named fields
+    // (__ftx_n__ + per-op __ftx_<i>_{type,container,frag,tag}__), so
+    // identity stays with the object the app manipulates. On commit the
+    // record is harvested into the shadow's committed queue; the ENGINE
+    // consumes it at the host lifecycle boundaries (created/started/
+    // resumed) via take_committed()/has_work() — the shadow holds
+    // DATA, the engine owns the DEX lifecycle dispatch.
+    struct PendingOp {
+        int type = 0;             // 0=add 1=replace 2=remove 3=hide
+                                  // 4=show 5=detach 6=attach
+        uint32_t container = 0;   // android.R.id container (0 = no-id add)
+        uint32_t frag = 0;        // heap oid of the Fragment object
+        std::string tag;          // optional tag
+    };
+    struct PendingTx {
+        std::vector<PendingOp> ops;
+        bool immediate = false;   // commitNow family
+        int32_t id = 0;           // the commit() answer
+    };
+    // Fragment record — one per fragment that entered the queue (AOSP
+    // FragmentManager.mActive analog). Drives findFragmentByTag/Id.
+    struct FragmentRec {
+        uint32_t frag = 0;
+        uint32_t container = 0;
+        std::string tag;
+        uint32_t view = 0;        // onCreateView answer (0 = none yet)
+    };
+    // Engine consumer API (single host runtime — one FragmentManager
+    // singleton; the queue is drained whole at each boundary).
+    bool take_committed(std::vector<PendingTx>& out) {
+        out.swap(committed_);
+        return !out.empty();
+    }
+    // F-NEW-339 (AOSP FragmentLayoutInflaterFactory law): the XML
+    // <fragment> tag path commits a SYNTHETIC add-record through the SAME
+    // queue the DEX commit path uses, so the F-NEW-304 drains own the
+    // lifecycle dispatch for both origins.
+    void enqueue_committed(const PendingTx& tx) { committed_.push_back(tx); }
+    void record_fragment(const FragmentRec& r) {
+        for (auto& e : fragments_)
+            if (e.frag == r.frag) { e = r; return; }
+        fragments_.push_back(r);
+    }
+    std::vector<FragmentRec>& fragments() { return fragments_; }
+    const std::vector<FragmentRec>& fragments() const { return fragments_; }
+    void set_drain_requested() { drain_requested_ = true; }
+    bool take_drain_requested() {
+        bool v = drain_requested_;
+        drain_requested_ = false;
+        return v;
+    }
+
 private:
     HeapAllocator* heap_ = nullptr;
+    std::vector<PendingTx> committed_;
+    std::vector<FragmentRec> fragments_;
+    bool drain_requested_ = false;
+    int32_t next_tx_id_ = 1;
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -1090,6 +1164,13 @@ public:
         std::vector<uint32_t> children;
         int32_t android_view_id = 0;     // View.getId() value
         std::string class_desc;
+        // F-NEW-309: the inflation-time generated LayoutParams — the
+        // parent container's OWN LayoutParams subclass, constructed by its
+        // real DEX (Context, AttributeSet) ctor from this child's XML attrs
+        // (AOSP ViewGroup.generateLayoutParams law). 0 = not generated
+        // (ROOT-055 falls back to the semantic parent-type materialization).
+        uint32_t layout_params_object = 0;
+        std::string layout_params_class;
         // Layout params (semantic only — no real Measure/Layout pass).
         int width  = -1;  // MATCH_PARENT = -1, WRAP_CONTENT = -2
         int height = -1;
@@ -1132,6 +1213,18 @@ public:
         // the touchable gate must include this, else the whole custom-view
         // game family is tap-dead (klondike GameView evidence).
         bool overrides_touch_event = false;
+        // F-NEW-267 (CONT-61): tri-state probe cache for the dispatchTouchEvent
+        // override law. -1 = not probed yet (lazy DEX probe through the
+        // engine's class-chain walk on first touchable query); 0/1 = answer.
+        // AOSP View/ViewGroup law: a view whose class chain OVERRIDES
+        // dispatchTouchEvent IS a touch target — the override IS the input
+        // entry (compose AndroidComposeView.dispatchTouchEvent runs the whole
+        // compose hit-test internally; dooz v23 measured: Lt4; override,
+        // size=249). Programmatic views (compose hosts are created from DEX
+        // code, not inflation) never crossed the run_custom_view_constructor
+        // capture — the lazy probe covers every construction path. mutable:
+        // the touchable gate takes the node by const-ref.
+        mutable int8_t overrides_dispatch_touch_event = -1;
         // S128 (R-NEW-424, CAP-INPUT-100): TRUE when the DEX chain overrides
         // ViewGroup.onInterceptTouchEvent — AOSP ViewGroup.dispatchTouchEvent
         // asks every ViewGroup along the dispatch chain BEFORE the child gets
@@ -1577,6 +1670,13 @@ public:
         int cl_left_edge = 0, cl_right_edge = 0;
         int cl_top_edge = 0, cl_bottom_edge = 0;
         float cl_bias_x = 0.5f, cl_bias_y = 0.5f;
+        // F-NEW-329: Guideline position family (AOSP Guideline.java):
+        // percent/begin/end resolve the guideline's fixed offset inside the
+        // parent ConstraintLayout's content box; orientation 0 = HORIZONTAL
+        // (fixes Y), 1 = VERTICAL (fixes X). INT_MIN = unset for begin/end,
+        // negative percent = unset.
+        float cl_guide_percent = -1.0f;
+        int cl_guide_begin = INT_MIN, cl_guide_end = INT_MIN;
         int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
         // G32: android:fontFamily raw string ("monospace", "sans-serif", ...)
         // resolved to a system face via fonts::TextShaper::resolve_family().
@@ -2443,6 +2543,32 @@ public:
                class_name == "Ljava/util/Collections$SingletonList;" ||
                class_name == "Ljava/util/Iterator;" ||
                class_name == "Ljava/util/ListIterator;" ||
+               // ── F-NEW-259g-b (CONT-16): java.util.Vector claim ───────
+               // `new Vector().iterator()` NPE'd: Vector was claimed by NO
+               // shadow and the F-NEW-246 engine law (bridge_to_api) covers
+               // <init>/addElement/add/size/isEmpty/get/elementAt/elements/
+               // hasMoreElements/nextElement but NOT the iterator() mint —
+               // the call answered null → Iterator.hasNext NPE (f259g probe
+               // row L). Claimed here so the generic F-237 iterator-box law
+               // mints a box over the Vector's engine array-fields store
+               // (__array_length__ + array[i] — the F-NEW-246 convention),
+               // which hasNext/next already read. The F-NEW-246 law keeps
+               // precedence for its own methods (bridge_to_api returns
+               // before the shadow dispatch).
+               class_name == "Ljava/util/Vector;" ||
+               // LAW-D (CONT-18): ArrayDeque routes to the same generic
+               // collection laws (add append / peek / poll front / size /
+               // iterator) — the class was absent from this list entirely,
+               // so every ArrayDeque op REC-MISSed and peek answered null
+               // (fcol probe K5). No app names, pure java.util family.
+               class_name == "Ljava/util/ArrayDeque;" ||
+               // LAW-F (CONT-18): stream-pipeline family claims — the
+               // source/collector boxes minted by the stream law dispatch
+               // through their own class descriptors; without the claims
+               // every of/filter/collect face REC-MISSed to the generic
+               // stub (fcol probe K15 NPE).
+               class_name == "Ljava/util/stream/Stream;" ||
+               class_name == "Ljava/util/stream/Collectors;" ||
                class_name.find("/ArrayList;") != std::string::npos ||
                class_name.find("/HashMap;") != std::string::npos ||
                class_name.find("/HashSet;") != std::string::npos ||
@@ -2465,15 +2591,58 @@ public:
         return fn;
     }
 
+    // ── LAW-C/E/F (CONT-18): DEX CALLABLE INVOCATION CHANNEL ────────────
+    // OpenJDK Java-8 collection default methods (removeIf/sort/forEach/
+    // merge/computeIfAbsent) and the stream pipeline take FUNCTIONAL
+    // INTERFACE arguments whose bodies are real DEX code (D8-desugared
+    // lambda classes). The shadow cannot execute DEX code, so — same
+    // pattern as app_equals_slot — the engine installs an invoker at
+    // set_shadow_registry time: it runs the named method on the callee's
+    // runtime class (try_recursive_invoke, receiver identity preserved)
+    // and converts the result. ok=false = no DEX body resolved: the
+    // shadow law MUST then decline (not_handled) — never fake a result.
+    struct DexCallOutcome {
+        bool ok = false;
+        // Kind tag of the returned value: 0=null, 1=bool/int, 2=object,
+        // 3=string, 4=long, 5=double, 6=float.
+        uint8_t kind = 0;
+        int32_t int_val = 0;
+        int64_t long_val = 0;
+        double  dbl_val = 0.0;
+        float   flt_val = 0.0f;
+        bool    bool_val = false;
+        uint32_t obj_id = 0;
+        std::string obj_class;
+        std::string str_val;
+        static DexCallOutcome fail() { return DexCallOutcome(); }
+        static DexCallOutcome of_null() { DexCallOutcome o; o.ok = true; return o; }
+        static DexCallOutcome of_int(int32_t v) { DexCallOutcome o; o.ok = true; o.kind = 1; o.int_val = v; return o; }
+        static DexCallOutcome of_bool(bool b) { DexCallOutcome o; o.ok = true; o.kind = 1; o.bool_val = b; o.int_val = b ? 1 : 0; return o; }
+        static DexCallOutcome of_obj(uint32_t id, std::string cls) { DexCallOutcome o; o.ok = true; o.kind = 2; o.obj_id = id; o.obj_class = std::move(cls); return o; }
+        static DexCallOutcome of_str(std::string s) { DexCallOutcome o; o.ok = true; o.kind = 3; o.str_val = std::move(s); return o; }
+    };
+    using DexInvokeFn = std::function<DexCallOutcome(
+        uint32_t callee_obj, const std::string& method,
+        const std::vector<CallContext::Arg>& args)>;
+    static DexInvokeFn& dex_invoke_slot() {
+        static DexInvokeFn fn;
+        return fn;
+    }
+
     std::vector<std::string> implemented_methods() const override {
         return {"add", "get", "size", "isEmpty", "clear", "remove",
                 "contains", "iterator", "hasNext", "next", "toArray",
                 "put", "containsKey", "keySet", "values", "entrySet",
                 "putAll", "getKey", "getValue", "singletonMap",
-                "getIndex", "set"};
+                "getIndex", "set",
+                // LAW-C/E/F (CONT-18): Java-8 default-method + view +
+                // stream faces (were STUBBED/absent — silent no-ops).
+                "removeIf", "sort", "forEach", "removeAll", "retainAll",
+                "merge", "computeIfAbsent", "getOrDefault", "subList",
+                "of", "filter", "collect", "toList"};
     }
     std::vector<std::string> stubbed_methods() const override {
-        return {"subList", "listIterator", "sort"};
+        return {"listIterator"};
     }
 
     // Get or create CollectionState for a heap object.

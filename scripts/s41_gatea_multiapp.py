@@ -12,12 +12,13 @@ B = "/home/z/my-project/miniandroid/build/miniandroid"
 BASE = "/home/z/my-project/run/gatea/multiapp"
 OUT = "/home/z/my-project/run/gatea/multiapp_evidence"
 
+# CONT-12: 2 corpus APKs (memory_34, blockblast_43) are ABSENT since the
+# container reset (same BLOCKED-APK-ABSENT family recorded in CONT-11);
+# chess/bouncy re-pointed at the surviving copies. Families run: 3/5.
 APPS = [
     ("simple",         "run/gatea/gate_a_probe.apk"),
-    ("storage-heavy",  "run/diff366/hidden_sources/chess_jwtc_298.apk"),
-    ("game",           "run/diff366/hidden_sources/bouncy.apk"),
-    ("resource-heavy", "run/diff366/hidden_sources/com.sanskritbasics.memory_34.apk"),
-    ("render-FAIL",    "run/diff366/hidden_sources/com.sidhant.blockblast_43.apk"),
+    ("storage-heavy",  "upload/chess_jwtc_298.apk"),
+    ("game",           "upload/canonical_apks/bouncy.apk"),
 ]
 
 SECTIONS_PRE = "identity,manifest,entries,dex,resources,assets,libs,media"

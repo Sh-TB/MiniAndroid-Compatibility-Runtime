@@ -1,0 +1,119 @@
+{
+  "activity": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+  "activity_launch": {
+    "a_class": "Lorg/secuso/privacyfriendlydame/ui/SplashActivity;",
+    "a_view_root": 0,
+    "b_view_root": 272,
+    "callbacks": [
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/SplashActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onPause"
+      },
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+        "dispatched": true,
+        "instructions": 2160,
+        "method": "<init>"
+      },
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+        "dispatched": true,
+        "instructions": 262,
+        "method": "onCreate"
+      },
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onStart"
+      },
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onResume"
+      },
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/SplashActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onStop"
+      }
+    ],
+    "component": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+    "component_descriptor": "Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+    "launched": true,
+    "request_code": -1,
+    "stack_depth_after": 1
+  },
+  "apk": "/tmp/s107_apks/org.secuso.privacyfriendlydame.apk",
+  "final_state": "RESUMED",
+  "finish_cascade": {
+    "callbacks": [
+      {
+        "class": "Lorg/secuso/privacyfriendlydame/ui/SplashActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onDestroy"
+      }
+    ],
+    "final_state": "RESUMED (top untouched — beneath finisher law)",
+    "finish_requested": true,
+    "finisher": "Lorg/secuso/privacyfriendlydame/ui/SplashActivity;",
+    "finisher_beneath": true,
+    "record_erased": true
+  },
+  "transitions": [
+    {
+      "from": "PROCESS_CREATED",
+      "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+      "success": true,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart() dispatched via DEX engine",
+      "success": true,
+      "to": "STARTED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "STARTED",
+      "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "RESUMED",
+      "reason": "switch: A.onPause (TransactionExecutor law: pause is FIRST)",
+      "success": true,
+      "to": "PAUSED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onCreate via DEX (performLaunchActivity law): Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+      "success": false,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onStart via DEX: Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+      "success": false,
+      "to": "STARTED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onResume via DEX (handleResumeActivity law): Lorg/secuso/privacyfriendlydame/ui/TutorialActivity;",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 0
+    }
+  ]
+}

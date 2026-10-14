@@ -28,6 +28,9 @@
 #include "../diagnostics/install_inspection.h"  // GATE A: zip_contains_entry (System.loadLibrary law)
 #include "../jni/jni_bridge.h"
 #include "../jni/dlopen_exec.h"  // #371 CLOSEOUT S-2: real native execution layer
+#include "../fonts/text_shaper.h"  // F-NEW-344: getDesiredWidth via the SAME
+                                   // shaper the drawText replay uses — the
+                                   // single source of truth (box == pixels).
 #include <nlohmann/json.hpp>  // F-NEW-243: org.json real laws (ordered_json)
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
@@ -731,6 +734,28 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         class_info_index_[report.classes[i].name] = i;
     }
     log("Built class→ClassInfo index: " + std::to_string(class_info_index_.size()) + " entries");
+    // F-NEW-271 LAW DIAG (env-gated MINIANDROID_CLASS_FIELD_DUMP=<Ldesc;>,
+    // one-shot, read-only): dump the ENGINE-PARSED declared field table of
+    // one class — the authoritative view resolve_field_declarer and the
+    // collapse-family audit reason over. Answers "does the engine's
+    // class_data walk produce the same field list a spec-faithful walk
+    // produces" without any app knowledge.
+    if (const char* f271_cls = std::getenv("MINIANDROID_CLASS_FIELD_DUMP")) {
+        std::string want(f271_cls);
+        for (size_t i = 0; i < report.classes.size(); i++) {
+            if (report.classes[i].name != want) continue;
+            const auto& ci = report.classes[i];
+            std::cerr << "[F271-CLASS] " << ci.name
+                      << " super=" << ci.superclass_name
+                      << " static=" << ci.static_fields.size()
+                      << " instance=" << ci.instance_fields.size()
+                      << std::endl;
+            for (const auto& f : ci.instance_fields)
+                std::cerr << "[F271-CLASS]   ifield " << f.name << " : "
+                          << f.type << std::endl;
+            break;
+        }
+    }
 }
 
 // EXP-088+ Phase 1.2: Inject ALL classes from secondary DEX files into
@@ -882,6 +907,45 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
         std::cerr << "[S102-IFACE-CLOSURE] declared-interfaces index extended by "
                   << ifaces_added << " secondary-DEX classes (total "
                   << class_to_interfaces_.size() << ")" << std::endl;
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // F-087 MULTIDEX-ANNOTATION-CLOSURE (CONT-26; S102/EXP-095 family).
+    //   Upstream: ART copies runtime-visible class annotations
+    //   (annotations_directory_item, visibility=RUNTIME) into the Class
+    //   object at load time REGARDLESS of which classesN.dex defines the
+    //   class — Class.getAnnotation cannot see a DEX-file boundary
+    //   (libcore Class.java: annotatedClasses resolved per loaded class).
+    //   Root-gap evidence (CONT-26 oracle run, com.probe.oracle12 at
+    //   e980887e39aee977): the F-087 class_annotations index was populated
+    //   ONLY from DEX 0 (dalvik_engine.cpp primary ingestion loop), so
+    //   every class defined in classes2.dex+ answered NULL for its own
+    //   runtime annotations. First hit: navigation-compose
+    //   NavigatorProvider.Companion.getNameForNavigator →
+    //   Class.getAnnotation(@Navigator.Name) on NavGraphNavigator
+    //   (classes2.dex, annotation verified present with vis=1
+    //   value="navigation" by scripts/cont26_dex_ann_scan.py) → IAE
+    //   "No @Navigator.Name annotation found for NavGraphNavigator" →
+    //   rememberNavController dead → NavHost dead → composition never
+    //   completes. Affected surface: EVERY multi-DEX APK's annotations
+    //   (this oracle: all androidx classes live in classes2.dex).
+    //   Fix is the third member of the EXP-095 (superclass) + S102
+    //   (interfaces) closure family: same loop, same dedup law, no
+    //   app/package/R8-name knowledge.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        size_t ann_added = 0;
+        for (const auto& cls : mutable_classes) {
+            if (!cls.class_annotations.empty() &&
+                class_annotations_.find(cls.name) ==
+                    class_annotations_.end()) {
+                class_annotations_[cls.name] = cls.class_annotations;
+                ann_added++;
+            }
+        }
+        std::cerr << "[F087-MD-ANN] class-annotation index extended by "
+                  << ann_added << " secondary-DEX classes (total "
+                  << class_annotations_.size() << ")" << std::endl;
     }
 
     return injected_count;
@@ -1939,8 +2003,52 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 );
 
                                 if (method.name == "onCreate") {
+                                    // ── F-NEW-304 (CONT-42): the CREATED-
+                                    // stage fragment drain. AOSP: a commit()
+                                    // inside onCreate enqueues the op; the
+                                    // fragment reaches CREATED (onAttach →
+                                    // onCreate) at the host's created window.
+                                    // The queue the shadow committed is
+                                    // consumed HERE — before the created
+                                    // fan-out — so fragments that registered
+                                    // preference state are ready before the
+                                    // host reports ACTIVITY_CREATED.
+                                    advance_fragments_to_created(result);
                                     dispatch_activity_lifecycle_callbacks(
                                         "onActivityCreated", result);
+                                    // ── A93 (A1–A104 knowledge transfer,
+                                    // Issue #382 audit): AOSP
+                                    // ActivityThread.performLaunchActivity
+                                    // dispatches Activity.onPostCreate(Bundle)
+                                    // after callActivityOnCreate (+ restore)
+                                    // and BEFORE the record is started
+                                    // (handleStartActivity → onStart). Apps
+                                    // that build content in onPostCreate
+                                    // (e.g. minos GameView) need this hop;
+                                    // non-overriders fall through to the
+                                    // framework Activity stub. Same Bundle
+                                    // shape as onCreate (null on cold launch).
+                                    {
+                                        DalvikValue postcreate_val;
+                                        std::vector<DalvikValue> postcreate_args;
+                                        postcreate_args.push_back(activity_val);  // p0 = this
+                                        postcreate_args.push_back(
+                                            DalvikValue::make_null());  // p1 = Bundle
+                                        bool post_ok = try_recursive_invoke(
+                                            cls.name,
+                                            "onPostCreate",
+                                            postcreate_args,
+                                            postcreate_val,
+                                            result,
+                                            "(Landroid/os/Bundle;)V"
+                                        );
+                                        log(post_ok
+                                                ? "[A93-POSTCREATE] Activity."
+                                                  "onPostCreate dispatched"
+                                                : "[A93-POSTCREATE] onPostCreate "
+                                                  "not overridden (framework "
+                                                  "stub fall-through)");
+                                    }
                                     dispatch_activity_lifecycle_callbacks(
                                         "onActivityPostCreated", result);
                                 }
@@ -2142,6 +2250,35 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 // then onActivityPostCreated (API 29 pre/post pairing).
                 dispatch_activity_lifecycle_callbacks("onActivityCreated",
                                                       result);
+                // ── A93 (A1–A104 knowledge transfer, Issue #382 audit) ──
+                // AOSP ActivityThread.performLaunchActivity: after
+                // callActivityOnCreate (+ onRestoreInstanceState when state
+                // exists), Instrumentation.callActivityOnPostCreate dispatches
+                // Activity.onPostCreate(Bundle) BEFORE the activity record is
+                // started (handleStartActivity → onStart). Apps that build
+                // their content view in onPostCreate (e.g. minos GameView)
+                // never reach content creation without this hop; apps that do
+                // not override it fall through to the framework Activity
+                // stub — the super-class law. Bundle carries the same launch
+                // state argument shape as onCreate (null on a cold launch).
+                {
+                    DalvikValue postcreate_val;
+                    std::vector<DalvikValue> postcreate_args;
+                    postcreate_args.push_back(activity_val);          // p0 = this
+                    postcreate_args.push_back(DalvikValue::make_null());  // p1 = Bundle
+                    bool post_ok = try_recursive_invoke(
+                        result.main_class,
+                        "onPostCreate",
+                        postcreate_args,
+                        postcreate_val,
+                        result,
+                        "(Landroid/os/Bundle;)V"
+                    );
+                    log(post_ok
+                            ? "[A93-POSTCREATE] Activity.onPostCreate dispatched"
+                            : "[A93-POSTCREATE] onPostCreate not overridden "
+                              "(framework stub fall-through)");
+                }
                 dispatch_activity_lifecycle_callbacks("onActivityPostCreated",
                                                       result);
                 goto entry_point_search_done;
@@ -2711,7 +2848,76 @@ bool DalvikExecutionEngine::execute_method_internal(
     size_t tries_data_size
 ) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().invoke_internal, f107_t0);
+
+    // F-NEW-282: CLASS_REF TOKEN MATERIALIZATION AT THE ARGUMENT BOUNDARY.
+    // A CLASS_REF-typed register value (const-class / getOrCreateKotlinClass
+    // token) is NOT a heap reference; the engine's frame machinery only
+    // carries OBJECT_REF values intact across nested DEX calls, so a raw
+    // CLASS_REF argument degrades to REGISTER_UNSET/zero by the time the
+    // callee stores or compares it. Live face (real-Compose oracle):
+    // ClassReference.<init>(Ljava/lang/Class;)V bound the token as
+    // p1={t=CLASS_REF} at frame entry (PARAM-TRACE), yet the body's
+    // iput-object v2, v1, jClass stored <unset> — every later consumer
+    // (getJClass/equals/isInstance/getQualifiedName) then saw null and
+    // ViewModelProvider.get(KClass) could not match its registered
+    // initializer (IAE "No initializer set for given class null" → APP
+    // BOUNDARY). ART law: a class literal IS a java.lang.Class instance —
+    // one identity per (descriptor, loader). The F-103 law already mints
+    // heap-backed Class tokens for const-class; materialize CLASS_REF
+    // arguments to the SAME stable token object at the frame boundary so
+    // the callee handles an ordinary reference. Identity per descriptor is
+    // preserved (F-069 map), no app/package knowledge involved.
+    std::vector<DalvikValue> f282_args = args;
+    {
+        const bool f282_diag = std::getenv("MINIANDROID_F282_TRACE") != nullptr;
+        for (auto& f282_a : f282_args) {
+            if (f282_a.type != DalvikType::CLASS_REF) continue;
+            uint32_t f282_token = 0;
+            auto f282_it = class_token_ids_.find(f282_a.class_desc);
+            if (f282_it != class_token_ids_.end()) {
+                f282_token = f282_it->second;
+            } else {
+                f282_token = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+                heap_.set_object_field(f282_token, "__referent_desc",
+                                       DalvikValue::make_string(f282_a.class_desc, 0));
+                class_token_ids_.emplace(f282_a.class_desc, f282_token);
+            }
+            if (f282_diag) {
+                static std::atomic<uint64_t> f282_n{0};
+                if (f282_n.fetch_add(1, std::memory_order_relaxed) < 24)
+                    std::cerr << "[F282-TOKEN] arg CLASS_REF "
+                              << f282_a.class_desc
+                              << " → heap token obj#" << f282_token
+                              << " (callee " << class_name << "."
+                              << method_name << ")" << std::endl;
+            }
+            f282_a = DalvikValue::make_object(f282_token, "Ljava/lang/Class;");
+        }
+    }
+
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
+    // F-NEW-344 probe (CONT-61): the AndroidParagraph (Lj7;) ctor args —
+    // the zero-width root decode. The obtain width=0 chain ends here:
+    // this ctor receives (delegate, I width, I height?, J constraints?);
+    // printing the raw args answers WHERE the zero entered (the caller's
+    // constraints decode).
+    {
+        static const bool f344_on =
+            std::getenv("MINIANDROID_F344_TRACE") != nullptr;
+        if (f344_on && class_name == "Lj7;" && method_name == "<init>") {
+            std::cerr << "[F344-PCTOR] Lj7.<init> argc=" << f282_args.size();
+            for (size_t f344_i = 0; f344_i < f282_args.size() && f344_i < 6;
+                 ++f344_i) {
+                const DalvikValue& f344_a = f282_args[f344_i];
+                std::cerr << " a" << f344_i << ":t" << (int)f344_a.type;
+                if (f344_a.type == DalvikType::INT32)
+                    std::cerr << "=" << f344_a.int_val;
+                else if (f344_a.type == DalvikType::INT64)
+                    std::cerr << "=" << f344_a.long_val;
+            }
+            std::cerr << std::endl;
+        }
+    }
     uint64_t f107_su0 = 0; phase_clock().enter(phase_clock().em_setup, f107_su0);  // S61 setup
     current_result_ = &result;
     bytecode_ = bytecode;
@@ -3716,6 +3922,30 @@ bool DalvikExecutionEngine::execute_method_internal(
                   << " " << descriptor << std::endl;
         drawwin_count++;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): ATTACH watch. The Compose
+    // text painter (Lte1/Lod1) draw body starts with `if (!this.r) return`
+    // (Lok0.r = the attached flag, written ONLY by Lok0.u0/v0). Dispatch
+    // reaches Lte1.I (UV-DISPATCH ×15) yet no Lg6 call ever runs → r is
+    // false at draw time. Watch the attach/detach pair: receiver object id
+    // + class, correlate with the dispatched painter ids. Env-gated,
+    // bounded — zero behavior change.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool attw_on =
+            std::getenv("MINIANDROID_ATTACH_WATCH") != nullptr;
+        if (attw_on && class_name == "Lok0;" &&
+            (method_name == "u0" || method_name == "v0")) {
+            static thread_local uint64_t attw_n = 0;
+            if (attw_n++ < 400)
+                std::cerr << "[ATTACH-WATCH] "
+                          << (method_name == "u0" ? "u0(attach)" : "v0(detach)")
+                          << " recv=" << (!args.empty() ? args[0].object_id : 0u)
+                          << " cls=" << (!args.empty() ? args[0].class_desc : "?")
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
+    }
     // S33 (R-NEW-332): method entries inside the F-096 lifecycle dispatch
     // window (real-DEX onMeasure/onLayout) — shows the measure/layout
     // traversal the placement pass actually executes.
@@ -3850,13 +4080,13 @@ bool DalvikExecutionEngine::execute_method_internal(
             uint8_t slot = 0;
             if (args.size() == ptypes.size() + 1) {
                 // instance call: the receiver occupies slot 0
-                frame.registers.write_p(0, args[0]);
+                frame.registers.write_p(0, f282_args[0]);
                 ai = 1;
                 slot = 1;
             }
             for (size_t ti = 0; ti < ptypes.size() && ai < args.size();
                  ++ti, ++ai) {
-                frame.registers.write_p(slot, args[ai]);
+                frame.registers.write_p(slot, f282_args[ai]);
                 const std::string& t = ptypes[ti];
                 if (t == "J" || t == "D") {
                     // Fill the shadow slot with the high 32-bit word so
@@ -3881,7 +4111,7 @@ bool DalvikExecutionEngine::execute_method_internal(
         } else {
             // Proto unresolvable → legacy 1:1 fallback layout.
             for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
-                frame.registers.write_p(static_cast<uint8_t>(i), args[i]);
+                frame.registers.write_p(static_cast<uint8_t>(i), f282_args[i]);
             }
         }
     }
@@ -4235,12 +4465,35 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     //   * execution_guard still bounds interpreter steps per method.
     // Need DexReport to find the class.
     if (!dex_report_) {
+        // CONT-38 decode diag (env-gated, bounded): which class got
+        // POISON-marked initialized without its <clinit> running.
+        {
+            static thread_local const bool cpt_on =
+                std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+            static thread_local uint64_t cpt_n = 0;
+            if (cpt_on && cpt_n++ < 40)
+                std::cerr << "[CLINIT-PATH] NO-DEX-REPORT poison class="
+                          << class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+        }
         initialized_classes_.insert(class_descriptor);
         return false;
     }
     // Find the class in the DexReport.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
+        // CONT-38 decode diag: the LOOKUP-MISS poison path.
+        {
+            static thread_local const bool cpt2_on =
+                std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+            static thread_local uint64_t cpt2_n = 0;
+            if (cpt2_on && cpt2_n++ < 40)
+                std::cerr << "[CLINIT-PATH] LOOKUP-MISS poison class="
+                          << class_descriptor << " caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+        }
         // EXP-062: Debug — trace R class lookups
         if (class_descriptor.find("R$") != std::string::npos) {
             std::cerr << "[EXP062-RLOOKUP] " << class_descriptor
@@ -4911,6 +5164,95 @@ void DalvikExecutionEngine::install_collection_equality_law() {
     cs->app_equals_slot() = [this](uint32_t a, uint32_t b) -> bool {
         return this->app_object_equals(a, b);
     };
+    // ── LAW-C/E/F (CONT-18): DEX CALLABLE INVOCATION CHANNEL INSTALL ────
+    // The Java-8 collection default-method law (removeIf/sort/forEach/
+    // merge/computeIfAbsent) and the stream filter stage receive their
+    // functional arguments as D8-desugared lambda objects — real DEX code.
+    // The shadow cannot execute DEX code, so the engine (the only layer
+    // that can) installs this invoker: it resolves the callee's runtime
+    // class from the heap, converts the shadow args to DalvikValues
+    // (receiver = callee identity first), and runs try_recursive_invoke.
+    // ok=false = no DEX body resolved → the shadow law declines loudly
+    // (never a faked result).
+    cs->dex_invoke_slot() =
+        [this](uint32_t callee, const std::string& method,
+               const std::vector<framework::CallContext::Arg>& cargs)
+        -> framework::CollectionShadow::DexCallOutcome {
+        if (callee == 0 || !heap_.has_object(callee))
+            return framework::CollectionShadow::DexCallOutcome::fail();
+        const auto* obj = heap_.get(callee);
+        if (!obj || obj->class_descriptor.empty())
+            return framework::CollectionShadow::DexCallOutcome::fail();
+        const std::string cls = obj->class_descriptor;
+        std::vector<DalvikValue> dargs;
+        dargs.push_back(DalvikValue::make_object(callee, cls));
+        for (const auto& a : cargs) {
+            switch (a.kind) {
+                case framework::CallContext::Arg::Kind::INT:
+                    dargs.push_back(DalvikValue::make_int(a.int_val));
+                    break;
+                case framework::CallContext::Arg::Kind::LONG:
+                    dargs.push_back(DalvikValue::make_long(a.long_val));
+                    break;
+                case framework::CallContext::Arg::Kind::FLOAT:
+                    dargs.push_back(DalvikValue::make_float(a.float_val));
+                    break;
+                case framework::CallContext::Arg::Kind::DOUBLE:
+                    dargs.push_back(DalvikValue::make_double(a.double_val));
+                    break;
+                case framework::CallContext::Arg::Kind::BOOL:
+                    dargs.push_back(DalvikValue::make_bool(a.bool_val));
+                    break;
+                case framework::CallContext::Arg::Kind::STRING:
+                    dargs.push_back(DalvikValue::make_string(a.string_val, 0));
+                    break;
+                case framework::CallContext::Arg::Kind::OBJECT:
+                    dargs.push_back(DalvikValue::make_object(
+                        a.object_id,
+                        a.object_class.empty()
+                            ? (heap_.has_object(a.object_id)
+                                   ? heap_.get(a.object_id)->class_descriptor
+                                   : "Ljava/lang/Object;")
+                            : a.object_class));
+                    break;
+                case framework::CallContext::Arg::Kind::NULL_REF:
+                default:
+                    dargs.push_back(DalvikValue::make_null());
+                    break;
+            }
+        }
+        DalvikValue ret;
+        DalvikExecutionResult sub;
+        if (!try_recursive_invoke(cls, method, dargs, ret, sub)) {
+            if (!try_recursive_invoke_on_super(cls, method, dargs, ret, sub,
+                                               "")) {
+                return framework::CollectionShadow::DexCallOutcome::fail();
+            }
+        }
+        namespace f = framework;
+        using Out = f::CollectionShadow::DexCallOutcome;
+        switch (ret.type) {
+            case DalvikType::BOOLEAN:
+                return Out::of_bool(ret.int_val != 0);
+            case DalvikType::INT32:
+                return Out::of_int(ret.int_val);
+            case DalvikType::INT64:
+                return Out::of_int(static_cast<int32_t>(ret.long_val));
+            case DalvikType::OBJECT_REF:
+                if (ret.object_id == 0) return Out::of_null();
+                return Out::of_obj(
+                    ret.object_id,
+                    heap_.has_object(ret.object_id)
+                        ? heap_.get(ret.object_id)->class_descriptor
+                        : std::string("Ljava/lang/Object;"));
+            case DalvikType::STRING_REF:
+                return Out::of_str(ret.string_val);
+            case DalvikType::FLOAT32:
+            case DalvikType::FLOAT64:
+            default:
+                return Out::of_null();
+        }
+    };
 }
 
 bool DalvikExecutionEngine::app_object_equals(uint32_t a, uint32_t b) {
@@ -5320,6 +5662,413 @@ bool DalvikExecutionEngine::invoke_lifecycle_method(
     return try_recursive_invoke(cls, method, full, ret, tmp, "");
 }
 
+// ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ─────────────
+// AOSP FragmentController/FragmentManagerImpl laws, driven from the HOST
+// lifecycle boundaries. Evidence chain: tananaev calculator v1.10
+// MainActivity.onCreate → getFragmentManager().beginTransaction()
+// .replace(16908290, new PrefsFragment()).commit() — the old law dropped
+// every op (fluent THIS) and commit answered 0, so the platform
+// PreferenceFragment NEVER materialized: ContentFrameLayout stayed at
+// children=0, first_missing_stage=APP_DRAW_OPS, verdict
+// DEFAULT_BACKGROUND_ONLY (the recorded PARTIAL face).
+// Stage model (AOSP Fragment.mState ladder):
+//   0 queued → 1 CREATED (onAttach+onCreate) → 3 STARTED (onCreateView →
+//   onViewCreated → onActivityCreated → onStart) → 4 RESUMED (onResume).
+// (2 = the VIEW_CREATED hop; folded into the started transition — the
+// platform dispatches view creation and start within one host event.)
+// The stage lives on the fragment heap object (__frag_stage__) — the same
+// field the shadow getters (isAdded/getView/getTag) answer from.
+
+static int32_t frag_stage_of(DalvikHeap& heap, uint32_t oid) {
+    auto v = heap.get_object_field(oid, "__frag_stage__");
+    if (v && v->type == DalvikType::INT32) return v->int_val;
+    return 0;
+}
+
+namespace {
+// F-NEW-304 helper: resolve a preference-XML attribute value to text.
+// String literals answer as-is; resource refs resolve through the ARSC
+// string pool (AOSP Resources.getString). Returns "" when unresolvable —
+// the caller records the honest gap instead of inventing text.
+std::string fnew304_resolve_pref_text(const resources::ResValue& val) {
+    if (val.is_string()) return val.string_value;
+    if (val.type == resources::DataType::STRING &&
+        !val.string_value.empty()) {
+        return val.string_value;
+    }
+    if (val.ref_id != 0) {
+        auto& rt = resources::ResourceRuntime::instance();
+        if (rt.arsc().resolve_string(val.ref_id)) {
+            return *rt.arsc().resolve_string(val.ref_id);
+        }
+    }
+    return std::string();
+}
+}  // namespace
+
+bool DalvikExecutionEngine::advance_fragments_to_created(
+    DalvikExecutionResult& result) {
+    (void)result;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    (void)fm->take_drain_requested();  // executePendingTransactions: same window
+    std::vector<framework::FragmentManagerShadow::PendingTx> txs;
+    if (!fm->take_committed(txs)) return false;
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    uint32_t host_id = as ? as->current_activity_id() : 0;
+    static int fnew304_created_diag = 0;
+    bool advanced = false;
+    for (auto& tx : txs) {
+        for (auto& op : tx.ops) {
+            if (op.frag == 0) continue;
+            if (op.type == 0 || op.type == 1) {  // add / replace
+                if (frag_stage_of(heap_, op.frag) >= 1) continue;
+                std::string frag_cls;
+                heap_.get_object_class(op.frag, frag_cls);
+                // AOSP replace: the container's current fragment leaves
+                // before the new one attaches — its view detaches from
+                // the tree (single-active-content law).
+                if (op.type == 1 && op.container != 0) {
+                    if (auto* vs = shadow_registry_
+                                       ? shadow_registry_->find_as<
+                                             framework::ViewShadow>()
+                                       : nullptr) {
+                        for (auto& r : fm->fragments()) {
+                            if (r.frag != op.frag &&
+                                r.container == op.container && r.view != 0) {
+                                vs->detach_from_parent(r.view);
+                            }
+                        }
+                    }
+                }
+                DalvikValue ret;
+                // onAttach(Context) — the host activity IS the Context the
+                // fragment stores (AOSP Fragment.mHost context). Skipped
+                // silently when not overridden (platform default no-op).
+                if (host_id != 0) {
+                    invoke_lifecycle_method(
+                        op.frag, frag_cls, "onAttach",
+                        {DalvikValue::make_object(host_id,
+                                                  "Landroid/app/Activity;")},
+                        ret);
+                }
+                // onCreate(Bundle=null) — the app's addPreferencesFrom-
+                // Resource call fires HERE through the real DEX.
+                invoke_lifecycle_method(op.frag, frag_cls, "onCreate",
+                                        {DalvikValue::make_null()}, ret);
+                heap_.set_object_field(op.frag, "__frag_stage__",
+                                       DalvikValue::make_int(1));
+                heap_.set_object_field(op.frag, "__frag_host__",
+                                       DalvikValue::make_object(
+                                           host_id, "Landroid/app/Activity;"));
+                advanced = true;
+                if (fnew304_created_diag < 24) {
+                    ++fnew304_created_diag;
+                    std::cerr << "[F-NEW-304] created drain: " << frag_cls
+                              << " obj#" << op.frag << " container=0x" << std::hex
+                              << op.container << std::dec
+                              << (op.tag.empty() ? "" : " tag=" + op.tag)
+                              << std::endl;
+                }
+            } else if (op.type == 2) {  // remove
+                if (auto* vs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::ViewShadow>()
+                                   : nullptr) {
+                    uint32_t v = 0;
+                    auto fv = heap_.get_object_field(op.frag, "__frag_view__");
+                    if (fv && fv->type == DalvikType::OBJECT_REF)
+                        v = fv->object_id;
+                    if (v != 0) vs->detach_from_parent(v);
+                }
+                heap_.set_object_field(op.frag, "__frag_stage__",
+                                       DalvikValue::make_int(0));
+            }
+            // hide/show/detach/attach: view-visibility hops — no observable
+            // content change in this runtime's single-window model yet;
+            // recorded as the honest scope boundary (next-wave candidate).
+        }
+    }
+    return advanced;
+}
+
+// ── F-NEW-339 (CONT-59): XML <fragment> tag instantiation law ───────────
+bool DalvikExecutionEngine::instantiate_fragment_tag(
+        uint32_t container_view_id, const std::string& frag_class_desc,
+        const std::string& tag, int32_t xml_id) {
+    (void)container_view_id;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    if (!is_dex_defined_class(frag_class_desc)) {
+        std::cerr << "[F-NEW-339] <fragment> name not in DEX: "
+                  << frag_class_desc << " — honest miss" << std::endl;
+        return false;
+    }
+    // AOSP FragmentFactory.instantiate law: the NO-ARG constructor.
+    uint32_t frag = heap_.allocate(frag_class_desc, 0, 0);
+    DalvikValue ctor_ret;
+    DalvikExecutionResult ctor_result;
+    try_recursive_invoke(frag_class_desc, "<init>", {}, ctor_ret,
+                         ctor_result, "()V");
+    // Host linkage (the F-NEW-304 laws read __frag_host__ at dispatch).
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    uint32_t host_id = as ? as->current_activity_id() : 0;
+    if (host_id != 0)
+        heap_.set_object_field(
+            frag, "__frag_host__",
+            DalvikValue::make_object(host_id, "Landroid/app/Activity;"));
+    // Synthetic BackStackRecord: add(frag, container=xml_id, tag) — the
+    // SAME committed queue the DEX commit path feeds; the F-NEW-304
+    // drains run onAttach/onCreate/onCreateView and attach the fragment
+    // view into the container node (find_by_android_id(xml_id)).
+    framework::FragmentManagerShadow::PendingOp op;
+    op.type = 0;
+    op.container = (uint32_t)xml_id;
+    op.frag = frag;
+    op.tag = tag;
+    framework::FragmentManagerShadow::PendingTx tx;
+    tx.ops.push_back(op);
+    fm->enqueue_committed(tx);
+    fm->record_fragment({frag, (uint32_t)xml_id, tag, 0});
+    std::cerr << "[F-NEW-339] <fragment> " << frag_class_desc << " obj#"
+              << frag << " container=" << xml_id
+              << (tag.empty() ? "" : " tag=" + tag)
+              << " → synthetic add committed" << std::endl;
+    return true;
+}
+
+bool DalvikExecutionEngine::advance_fragments_to_started(
+    DalvikExecutionResult& result) {
+    (void)result;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    auto* vs = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ViewShadow>()
+                   : nullptr;
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    static int fnew304_start_diag = 0;
+    bool advanced = false;
+    for (auto& r : fm->fragments()) {
+        if (r.frag == 0) continue;
+        int32_t stage = frag_stage_of(heap_, r.frag);
+        if (stage < 1 || stage >= 3) continue;
+        std::string frag_cls;
+        heap_.get_object_class(r.frag, frag_cls);
+        // Container node: the transaction's android:id view within the
+        // activity content tree (android.R.id.content may be the root).
+        uint32_t container_node = 0;
+        if (vs && as && as->content_view_id() != 0 && r.container != 0) {
+            container_node = vs->find_by_android_id(as->content_view_id(),
+                                                    (int32_t)r.container);
+            if (container_node == 0 &&
+                as->content_view_id() == r.container) {
+                container_node = as->content_view_id();
+            }
+        }
+        // onCreateView — the app override executes REAL DEX (inflater
+        // contract included); a platform PreferenceFragment subclass
+        // without an override gets the platform list-container law.
+        uint32_t view = 0;
+        {
+            DalvikValue cret;
+            std::vector<DalvikValue> cargs;
+            cargs.push_back(
+                DalvikValue::make_object(r.frag, frag_cls));  // this
+            uint32_t inflater_id = 0;
+            {
+                DalvikValue inflater_val =
+                    get_or_create_singleton("Landroid/view/LayoutInflater;");
+                inflater_id = inflater_val.object_id;
+            }
+            cargs.push_back(DalvikValue::make_object(
+                inflater_id, "Landroid/view/LayoutInflater;"));
+            if (container_node != 0) {
+                cargs.push_back(DalvikValue::make_object(
+                    container_node, "Landroid/view/ViewGroup;"));
+            } else {
+                cargs.push_back(DalvikValue::make_null());
+            }
+            cargs.push_back(DalvikValue::make_null());  // savedInstanceState
+            DalvikExecutionResult ctmp;
+            const std::string cdesc =
+                "(Landroid/view/LayoutInflater;Landroid/view/ViewGroup;"
+                "Landroid/os/Bundle;)Landroid/view/View;";
+            bool ok = try_recursive_invoke(frag_cls, "onCreateView", cargs,
+                                           cret, ctmp, cdesc);
+            if (ok && cret.type == DalvikType::OBJECT_REF &&
+                !cret.is_null && cret.object_id != 0) {
+                view = cret.object_id;
+            } else if (!ok && is_subclass_of(
+                                  frag_cls,
+                                  "Landroid/preference/PreferenceFragment;")) {
+                view = frag_build_preference_list_view(r.frag);
+            }
+        }
+        if (view != 0 && container_node != 0 && vs) {
+            vs->add_child(container_node, view);
+            heap_.set_object_field(
+                r.frag, "__frag_view__",
+                DalvikValue::make_object(view, "Landroid/view/View;"));
+            r.view = view;
+            fm->record_fragment(r);
+        }
+        DalvikValue vret;
+        if (view != 0) {
+            // onViewCreated(View, Bundle) — platform Fragment API 23+;
+            // non-overriders fall through (platform stub is a no-op).
+            invoke_lifecycle_method(
+                r.frag, frag_cls, "onViewCreated",
+                {DalvikValue::make_object(view, "Landroid/view/View;"),
+                 DalvikValue::make_null()},
+                vret);
+        }
+        // onActivityCreated(Bundle) — the AOSP CREATED→VIEW_CREATED hop.
+        invoke_lifecycle_method(r.frag, frag_cls, "onActivityCreated",
+                                {DalvikValue::make_null()}, vret);
+        // onStart() — the fragment reaches STARTED with its host.
+        invoke_lifecycle_method(r.frag, frag_cls, "onStart", {}, vret);
+        heap_.set_object_field(r.frag, "__frag_stage__",
+                               DalvikValue::make_int(3));
+        advanced = true;
+        if (fnew304_start_diag < 24) {
+            ++fnew304_start_diag;
+            std::cerr << "[F-NEW-304] started drain: " << frag_cls
+                      << " obj#" << r.frag << " view#" << view
+                      << " container#" << container_node << std::endl;
+        }
+    }
+    return advanced;
+}
+
+bool DalvikExecutionEngine::advance_fragments_to_resumed(
+    DalvikExecutionResult& result) {
+    (void)result;
+    auto* fm = shadow_registry_
+                   ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
+                   : nullptr;
+    if (!fm) return false;
+    static int fnew304_resume_diag = 0;
+    bool advanced = false;
+    for (auto& r : fm->fragments()) {
+        if (r.frag == 0) continue;
+        if (frag_stage_of(heap_, r.frag) != 3) continue;
+        std::string frag_cls;
+        heap_.get_object_class(r.frag, frag_cls);
+        DalvikValue ret;
+        invoke_lifecycle_method(r.frag, frag_cls, "onResume", {}, ret);
+        heap_.set_object_field(r.frag, "__frag_stage__",
+                               DalvikValue::make_int(4));
+        advanced = true;
+        if (fnew304_resume_diag < 24) {
+            ++fnew304_resume_diag;
+            std::cerr << "[F-NEW-304] resumed: " << frag_cls << " obj#"
+                      << r.frag << std::endl;
+        }
+    }
+    return advanced;
+}
+
+// Platform PreferenceFragment.onCreateView law — the AOSP internal
+// preference_list_fragment contract reduced to this runtime's REAL view
+// semantics: a vertical LinearLayout container whose rows are REAL
+// LinearLayout/TextView nodes (title + optional summary), measured by
+// the canonical measure laws like every XML-inflated tree. NO fixed
+// geometry: widths/heights are MATCH_PARENT/WRAP_CONTENT and the render
+// pass owns every pixel. Rows come from the parsed screen state the
+// addPreferencesFromResource law stored on the fragment object.
+uint32_t DalvikExecutionEngine::frag_build_preference_list_view(
+    uint32_t frag_oid) {
+    auto* vs = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ViewShadow>()
+                   : nullptr;
+    if (!vs) return 0;
+    auto nfield = heap_.get_object_field(frag_oid, "__pref_n__");
+    int n = (nfield && nfield->type == DalvikType::INT32) ? nfield->int_val : 0;
+    if (n <= 0) return 0;
+    uint32_t root = vs->create_view("Landroid/widget/LinearLayout;");
+    auto* rn = vs->get_or_create_node(root, "Landroid/widget/LinearLayout;");
+    if (!rn) return 0;
+    rn->width = -1;   // MATCH_PARENT
+    rn->height = -2;  // WRAP_CONTENT
+    // The measure law derives child specs from lp_width/lp_height (the
+    // layout-params record the inflater fills from XML) — an engine-built
+    // node must fill them too or the spec derivation falls back to the
+    // parent's EXACTLY (live face: every row measured 1080x1920).
+    rn->lp_width = -1;
+    rn->lp_height = -2;
+    // AOSP LinearLayout.java: the orientation field defaults to HORIZONTAL —
+    // the preference list is VERTICAL (the platform
+    // preference_list_fragment ListView law). Without this the rows laid
+    // out at x=i*width, every row off-screen right (live tananaev face:
+    // rows at pos=(1080/2160/3240/4320,0) on a 1080-wide screen).
+    rn->orientation = 1;  // VERTICAL
+    static int fnew304_pref_diag = 0;
+    for (int i = 0; i < n && i < 128; ++i) {
+        const std::string p = "__pref_" + std::to_string(i) + "_";
+        uint32_t row = vs->create_view("Landroid/widget/LinearLayout;");
+        auto* rown = vs->get_or_create_node(row, "Landroid/widget/LinearLayout;");
+        if (!rown) continue;
+        rown->width = -1;
+        rown->height = -2;
+        rown->lp_width = -1;
+        rown->lp_height = -2;
+        rown->orientation = 1;  // VERTICAL (title stacked over summary)
+        vs->add_child(root, row);
+        auto tfield = heap_.get_object_field(frag_oid, p + "title");
+        std::string title =
+            (tfield && tfield->type == DalvikType::STRING_REF && !tfield->is_null)
+                ? tfield->string_val
+                : std::string();
+        auto sfield = heap_.get_object_field(frag_oid, p + "summary");
+        std::string summary =
+            (sfield && sfield->type == DalvikType::STRING_REF && !sfield->is_null)
+                ? sfield->string_val
+                : std::string();
+        if (!title.empty()) {
+            uint32_t tv = vs->create_view("Landroid/widget/TextView;");
+            auto* tvn = vs->get_or_create_node(tv, "Landroid/widget/TextView;");
+            if (tvn) {
+                tvn->text = title;
+                tvn->width = -1;
+                tvn->height = -2;
+                tvn->lp_width = -1;
+                tvn->lp_height = -2;
+                vs->add_child(row, tv);
+            }
+        }
+        if (!summary.empty()) {
+            uint32_t sv = vs->create_view("Landroid/widget/TextView;");
+            auto* svn = vs->get_or_create_node(sv, "Landroid/widget/TextView;");
+            if (svn) {
+                svn->text = summary;
+                svn->width = -1;
+                svn->height = -2;
+                svn->lp_width = -1;
+                svn->lp_height = -2;
+                vs->add_child(row, sv);
+            }
+        }
+        if (fnew304_pref_diag < 12) {
+            ++fnew304_pref_diag;
+            std::cerr << "[F-NEW-304] pref row " << i << " title=\"" << title
+                      << "\" summary=\"" << summary << "\"" << std::endl;
+        }
+    }
+    return root;
+}
+
 //     Lxb0;.d() unwrap → Dagger component — dooz23 Lk2;.b evidence).
 // The runtime hands the manifest android:name class via
 // set_application_class_hint(); self-discovery (single DEX class whose
@@ -5641,6 +6390,136 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
     return false;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CONT-12 F-NEW-266 — invoke-virtual TRANSITIVE INTERFACE-DEFAULT dispatch.
+// ART/JVMS 5.4.5 resolution law: when the receiver's class chain declares no
+// implementation, the resolution continues into every transitively
+// implemented interface; the first code-bearing (default) method with the
+// exact descriptor executes. The invoke-interface path already implements
+// this (F-023, see execute_invoke_interface); invoke-virtual historically
+// fell through to the API bridge, whose stub silently returned NULL — the
+// null then fed the next instruction (dooz-native evidence: none; external
+// un-renamed Compose 1.11.4 oracle: AndroidComposeView$root$1$1.then(other)
+// → interface Modifier.then default body → null receiver → NPE ×172 →
+// setContent dead). Generic: no app, package, or R8-name knowledge.
+// Bounded: 12-hop extends chain, 64-interface closure, memoized results.
+// ─────────────────────────────────────────────────────────────────────────────
+bool DalvikExecutionEngine::try_interface_default_invoke(
+    const std::string& receiver_class,
+    const std::string& method_name,
+    const std::string& method_descriptor,
+    const std::vector<DalvikValue>& args,
+    DalvikValue& return_val,
+    DalvikExecutionResult& result,
+    std::string* dispatched_out) {
+    if (!dex_report_) return false;
+    if (method_descriptor.empty()) return false;
+
+    // ── F-NEW-266a (CONT-16): ART NULL-RECEIVER LAW on the default-method
+    // route. A typed-null receiver must throw NullPointerException AT THE
+    // CALL SITE, before ANY callee body runs (ART interpreter law — the
+    // same F-141 gate the generic invoke-interface path enforces before
+    // its dispatch walk). The default-method route bypassed that gate: the
+    // resolution/memo machinery below is a property of the METHOD REF, so
+    // it dispatched the default body for a null receiver (probe face:
+    // fixtures/f266_probe row D — OtherDefI.other() on a typed null
+    // answered without NPE). The gate must precede the memo lookup: NPE is
+    // a receiver property, not a resolution property.
+    if (!args.empty() && f141_is_null_receiver(args[0])) {
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to invoke interface method '" + receiver_class +
+                           "." + method_name + "' on a null object reference",
+                       "f266a-null-recv");
+        return true;
+    }
+
+    // Memo key: method ref identity (class.name + proto). The receiver's
+    // runtime class does NOT participate: the resolution result is a
+    // property of the method ref and the implementing interface, and the
+    // default body executes with the ORIGINAL receiver either way.
+    const std::string memo_key =
+        receiver_class + "." + method_name + method_descriptor;
+    {
+        auto it = iface_default_memo_.find(memo_key);
+        if (it != iface_default_memo_.end()) {
+            if (it->second.first.empty()) return false;  // negative memo
+            return try_recursive_invoke(it->second.first, it->second.second,
+                                        args, return_val, result,
+                                        method_descriptor);
+        }
+    }
+
+    // Resolution gate: only for app-bundled (DEX-defined) method refs —
+    // framework refs (Landroid/*, Ljava/*) belong to the API bridge and
+    // must not pay the closure scan.
+    if (class_info_index_.find(receiver_class) == class_info_index_.end()) {
+        iface_default_memo_[memo_key] = {"", ""};  // negative memo
+        return false;
+    }
+
+    // 1. Receiver extends chain (bounded, mirrors F-023).
+    std::vector<std::string> cls_chain;
+    std::string cc = receiver_class;
+    for (int hop = 0; hop < 12 && !cc.empty() &&
+                      cc != "Ljava/lang/Object;"; ++hop) {
+        cls_chain.push_back(cc);
+        auto sit = class_to_superclass_.find(cc);
+        if (sit == class_to_superclass_.end()) break;
+        cc = sit->second;
+    }
+
+    // 2. Transitive interface closure (declared interfaces of every class
+    //    in the chain, closed over super-interfaces, bounded at 64).
+    std::vector<std::string> ifq;
+    std::set<std::string> visited;
+    auto enqueue_ifaces = [&](const std::string& cls) {
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.name != cls) continue;
+            for (const auto& ifc : cd.interfaces) {
+                if (!ifc.empty() && visited.insert(ifc).second)
+                    ifq.push_back(ifc);
+            }
+            break;
+        }
+    };
+    for (const auto& k : cls_chain) enqueue_ifaces(k);
+    for (size_t qi = 0; qi < ifq.size() && qi < 64; ++qi)
+        enqueue_ifaces(ifq[qi]);
+
+    // 3. Dispatch the first code-bearing method with the exact descriptor.
+    //    Exact-descriptor match keeps overloaded defaults unambiguous, and
+    //    the class-def linear scan matches the F-023 cost envelope.
+    for (const auto& ifc : ifq) {
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.name != ifc) continue;
+            for (const auto& mi : cd.all_methods()) {
+                if (mi.code_offset == 0 || mi.is_abstract) continue;
+                if (mi.descriptor != method_descriptor) continue;
+                if (mi.name != method_name) continue;
+                if (try_recursive_invoke(ifc, mi.name, args, return_val,
+                                         result, method_descriptor)) {
+                    iface_default_memo_[memo_key] = {ifc, mi.name};
+                    if (dispatched_out)
+                        *dispatched_out = ifc + "." + mi.name;
+                    static std::atomic<uint64_t> f266_n{0};
+                    if (f266_n.fetch_add(1, std::memory_order_relaxed) < 24) {
+                        std::cerr << "[INTERFACE-DEFAULT-V] " << ifc << "."
+                                  << mi.name << method_descriptor
+                                  << " (invoke-virtual default-method dispatch"
+                                  << ", receiver " << receiver_class << ")"
+                                  << std::endl;
+                    }
+                    return true;
+                }
+            }
+            break;
+        }
+    }
+    if (iface_default_memo_.size() < 4096)
+        iface_default_memo_[memo_key] = {"", ""};  // negative memo
+    return false;
+}
+
 bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& declaring_class,
     const std::string& method_name,
@@ -5663,6 +6542,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
          // climb to the depth cap in Dooz v18 Compose init.
          (declaring_class == "Lj/j0;" && method_name == "<init>") ||
          (declaring_class == "Lt0/t;" && method_name == "<init>") ||
+         // CONT-18h F-265 arm-(c): did the invalidation-holder ctor chain
+         // (Lqb0.<init> → Lhv0.<init>) ever reach DEX dispatch? The dooz
+         // composition died on Lnb0.j.e == null even though Lqb0.<init>'s
+         // bytecode unconditionally iputs a fresh Lhv0 before use.
+         (declaring_class == "Lqb0;" && method_name == "<init>") ||
+         (declaring_class == "Lhv0;" && method_name == "<init>") ||
          (declaring_class == "LE0/c;" && method_name == "<init>"))) {
         static thread_local uint64_t tri_f040 = 0;
         if (tri_f040 < 100000) {
@@ -5795,7 +6680,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (trie_trace &&
             (declaring_class.rfind("LK/", 0) == 0 ||
              declaring_class.rfind("LL/", 0) == 0 ||
-             declaring_class.rfind("LN/d", 0) == 0)) {
+             declaring_class.rfind("LN/d", 0) == 0 ||
+             // CONT-38: the composeStopwatch composition-local scope-map
+             // family (Llu0; map, Lku0; context, Lju0; builder, Lch1; trie
+             // node) — the LocalContentColor provider put/get miss face.
+             declaring_class.rfind("Lch1;", 0) == 0 ||
+             declaring_class.rfind("Llu0;", 0) == 0 ||
+             declaring_class.rfind("Lju0;", 0) == 0 ||
+             declaring_class.rfind("Lku0;", 0) == 0)) {
             std::cerr << "[TRIE-TRY] " << declaring_class << "." << method_name
                       << " depth=" << recursion_depth_;
             for (size_t ai = 0; ai < args.size() && ai < 5; ++ai) {
@@ -6006,6 +6898,76 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         declaring_class == "Landroid/support/v4/app/BaseFragmentActivityDonut;" ||
         declaring_class == "Landroid/support/v4/app/BaseFragmentActivityHoneycomb;" ||
         declaring_class == "Landroid/support/v4/app/SupportActivity;") {
+        // F-NEW-261 (CONT-11): DEX-BODY SCOPE GATE. The S83 bypass is the
+        // sanctioned answer ONLY where the engine would otherwise answer a
+        // missing framework class. Every appcompat/support app ships the
+        // REAL library DEX (S83's own comment says so) — when the declaring
+        // class has a body in this APK's DEX, the honest law is to EXECUTE
+        // it: FragmentActivity.onCreate runs attachHost →
+        // FragmentManagerImpl.attachController, which is what makes
+        // getSupportFragmentManager().beginTransaction().commit() lawful
+        // afterward. With the bypass, mHost stayed null forever and every
+        // fragment transaction threw ISE "Activity has been destroyed"
+        // (BMI com.zola.bmi first dive: uncaught at BMIMain.onCreate
+        // pc=31 — the app's ONLY fragment attach is its first launch
+        // path).
+        //
+        // CONT-11 A/B scope evidence (both arms measured at the same
+        // binary):
+        //   * SUPPORT-V4 family: REAL execution SURVIVES end-to-end —
+        //     HostCallbacks/FragmentHostCallback ctors run, attachHost →
+        //     attachController lands mHost, the transaction enqueues (BMI
+        //     uncaught 2→0). Fall-through = proven.
+        //   * ANDROIDX family: real FragmentActivity.onCreate re-exposes
+        //     the S83-era death NPE at invoke_pc=0xc — mFragmentLifecycle
+        //     Registry null: the final-field initializer chain (mFragments
+        //     = FragmentController.createController(new HostCallbacks()))
+        //     still loses its value under the engine (same root family as
+        //     BMI's FragmentHostCallback.mHandler <unset> — F-NEW-262,
+        //     CLASSIFIED, next wave). Fall-through = NOT yet safe; the
+        //     S83 bypass stays until F-NEW-262 closes.
+        bool f261_dex_body = class_info_index_.find(declaring_class) !=
+                             class_info_index_.end();
+        // FAMILY-LEVEL scope law: the legacy support stack is ONE machine —
+        // the v7 AppCompatActivity.onCreate drives the v4
+        // FragmentActivity.onCreate attachHost; falling through per-class
+        // breaks the chain in half (v4 attach never runs because the v7
+        // entry was bypassed — BMI uncaught 3). The gate is the whole
+        // Landroid/support/ family (v4/v7/v13/v9) with a DEX body. The
+        // androidx family stays on the S83 bypass until F-NEW-262 (the
+        // final-field initializer-chain root) closes — measured: androidx
+        // fall-through re-killed notes_secuso (NPE at
+        // FragmentActivity.onCreate pc=0xc, mFragmentLifecycleRegistry
+        // null) while the bypass keeps it byte-identical to the recorded
+        // eb5ebd559cad1028 anchor.
+        bool f261_support_family =
+            declaring_class.rfind("Landroid/support/", 0) == 0;
+        // CONT-47 S83-DIAG (env-gated, evidence-only, no behavior change):
+        // the f261 fall-through provably did not fire for
+        // AppCompatActivity.setContentView while the class IS indexed
+        // (F271 dump) — print the raw gate inputs at dispatch time to
+        // catch the state divergence (index size, membership, family).
+        static thread_local const bool s83_diag_on =
+            std::getenv("MINIANDROID_S83_DIAG") != nullptr;
+        static thread_local uint64_t s83_diag_n = 0;
+        if (s83_diag_on && s83_diag_n < 40 &&
+            (method_name == "setContentView" || method_name == "onCreate")) {
+            ++s83_diag_n;
+            std::cerr << "[S83-DIAG] " << declaring_class << "."
+                      << method_name
+                      << " f261_dex_body=" << (f261_dex_body ? 1 : 0)
+                      << " f261_support_family="
+                      << (f261_support_family ? 1 : 0)
+                      << " idx_size=" << class_info_index_.size()
+                      << " idx_has_class="
+                      << (class_info_index_.count(declaring_class) ? 1 : 0)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        if (f261_dex_body && f261_support_family) {
+            // real DEX body exists in the legacy support family — fall
+            // through to execution
+        } else
         if (method_name == "onCreate") {
             std::cerr << "[S83-APXACT] onCreate semantic shadow: "
                       << declaring_class
@@ -6022,6 +6984,139 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // subsequent frame (setContentView, <init>, onStart/onResume,
             // startActivity) — the engine-default near-blank shell class.
             // A/B: secuso dame/2048, mykanji, no.thanks blank→rendered.
+            //
+            // F-NEW-331 (CONT-56b): the bypassed support onCreate is ALSO
+            // where the fragment-host attach happens — AOSP
+            // FragmentActivity.onCreate first instruction:
+            //     mFragments.attachHost(null)
+            //   → FragmentController.attachHost: mHost.mFragmentManager
+            //     .attachController(mHost, mHost, parent)
+            //   → FragmentManagerImpl.attachController: mHost = host;
+            //     mContainer = container;
+            // The semantic shadow skipped that write, so every app that
+            // actually USES the support FragmentManager died at its first
+            // transaction commit: enqueueAction found mHost == null →
+            // ISE "Activity has been destroyed" → BMIMain.onCreate
+            // [APP-BOUNDARY] → uniform dark frame (measured at the
+            // CONT-56b baseline: bmi_402, alexcalc_20). Repair =
+            // reproduce the OBSERVABLE attach state at the same framework
+            // boundary (same sanctioned semantic-shadow tool class):
+            // walk activity.mFragments → controller.mHost (HostCallbacks)
+            // → hostCallbacks.mFragmentManager (FragmentManagerImpl) →
+            // write mHost AND mContainer = the HostCallbacks object
+            // (attachController law: attachController(mHost, mHost,
+            // parent) sets both). Absent objects (apps that never touch
+            // support fragments) → silent skip, no state invented.
+            {
+                uint32_t act331 = (args[0].type == DalvikType::OBJECT_REF)
+                                      ? args[0].object_id
+                                      : 0;
+                if (act331 != 0 && heap_.has_object(act331)) {
+                    auto fc331 = heap_.get_object_field(
+                        act331,
+                        "Landroid/support/v4/app/FragmentActivity;->"
+                        "mFragments");
+                    if (!fc331)
+                        fc331 = heap_.get_object_field(
+                            act331,
+                            "Landroidx/fragment/app/"
+                            "FragmentActivity;->mFragments");
+                    if (fc331 && fc331->type == DalvikType::OBJECT_REF &&
+                        fc331->object_id != 0 &&
+                        heap_.has_object(fc331->object_id)) {
+                        auto hc331 = heap_.get_object_field(
+                            fc331->object_id,
+                            "Landroid/support/v4/app/FragmentController;->"
+                            "mHost");
+                        if (!hc331)
+                            hc331 = heap_.get_object_field(
+                                fc331->object_id,
+                                "Landroidx/fragment/app/"
+                                "FragmentController;->mHost");
+                        if (hc331 && hc331->type == DalvikType::OBJECT_REF &&
+                            hc331->object_id != 0 &&
+                            heap_.has_object(hc331->object_id)) {
+                            uint32_t host_cb331 = hc331->object_id;
+                            auto fm331 = heap_.get_object_field(
+                                host_cb331,
+                                "Landroid/support/v4/app/"
+                                "FragmentHostCallback;->mFragmentManager");
+                            if (!fm331)
+                                fm331 = heap_.get_object_field(
+                                    host_cb331,
+                                    "Landroidx/fragment/app/"
+                                    "FragmentHostCallback;->mFragmentManager");
+                            if (!fm331)
+                                fm331 = heap_.get_object_field(
+                                    host_cb331,
+                                    "Landroid/support/v4/app/"
+                                    "HostCallbacks;->mFragmentManager");
+                            if (fm331 &&
+                                fm331->type == DalvikType::OBJECT_REF &&
+                                fm331->object_id != 0 &&
+                                heap_.has_object(fm331->object_id)) {
+                                uint32_t fmi331 = fm331->object_id;
+                                std::string fmi_cls =
+                                    heap_.get(fmi331)
+                                        ? heap_.get(fmi331)->class_descriptor
+                                        : std::string();
+                                if (fmi_cls.empty()) fmi_cls =
+                                    "Landroid/support/v4/app/"
+                                    "FragmentManagerImpl;";
+                                DalvikValue cb_val331 =
+                                    DalvikValue::make_object(
+                                        host_cb331,
+                                        "Landroid/support/v4/app/"
+                                        "HostCallbacks;");
+                                heap_.set_object_field(
+                                    fmi331, fmi_cls + "->mHost",
+                                    cb_val331);
+                                heap_.set_object_field(
+                                    fmi331, fmi_cls + "->mContainer",
+                                    cb_val331);
+                                // F-NEW-331b: the same bypassed onCreate
+                                // tail is where the support host ADVANCES
+                                // the fragment manager state:
+                                // FragmentActivity.onCreate →
+                                // mFragments.dispatchCreate() →
+                                // FragmentManagerImpl.dispatchCreate() →
+                                // dispatchStateChange(CREATED=1, false) →
+                                // moveToState(mCurState=1). The Activity
+                                // onStart face (F-NEW-172 shadow) then
+                                // suppresses dispatchStart — so without a
+                                // state reproduction the fragment ladder
+                                // never reaches ACTIVITY_CREATED and
+                                // performCreateView/onCreateView never runs
+                                // (measured: transaction executed green but
+                                // the fragment stayed INITIALIZING →
+                                // container empty → dark frame). The
+                                // honest observable: mCurState =
+                                // ACTIVITY_CREATED (support-28 Fragment
+                                // constants: INITIALIZING=0, CREATED=1,
+                                // ACTIVITY_CREATED=2) — executeOps'
+                                // moveToState(f, mCurState) then walks the
+                                // full ladder incl. view creation.
+                                // Remaining honest gap (recorded): the
+                                // STARTED face (dispatchStart →
+                                // performStart/performResume) is NOT
+                                // reproduced — fragment.onStart/onResume
+                                // overrides do not run.
+                                heap_.set_object_field(
+                                    fmi331, fmi_cls + "->mCurState",
+                                    DalvikValue::make_int(2));
+                                std::cerr << "[F-NEW-331] support fragment"
+                                          << " attach state reproduced at"
+                                          << " the S83 boundary: FM obj#"
+                                          << fmi331
+                                          << " mHost/mContainer = HostCb obj#"
+                                          << host_cb331
+                                          << ", mCurState=ACTIVITY_CREATED"
+                                          << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
             return_val = DalvikValue::make_void();
             last_invoke_return_ = return_val;
             return true;
@@ -6038,17 +7133,60 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // fragment transactions, so the delegate's observable work is
         // no-op at the framework boundary while the APP-level override
         // continues (same sanctioned contract as the onCreate shadow).
-        if (method_name == "onStart" || method_name == "onResume" ||
+        // F-NEW-311 (CONT-47): same else-chain leak class as F-NEW-310 —
+        // this arm fired even when the F-NEW-261 fall-through condition
+        // holds. Measured consequence (BMI, run/cont47/bmi_f310):
+        // BMIMain.onStart dispatched "instructions=0" — the real
+        // FragmentActivity.onStart DEX (the fragment-state driver:
+        // dispatchActivityCreated → mCurState=ACTIVITY_CREATED →
+        // moveToState view creation, noteStateNotSaved, execPendingActions,
+        // dispatchStart) never ran, so the committed PlaceholderFragment
+        // stayed at CREATED and its view was never created (container
+        // FrameLayout stayed children=0). The arm's own premise ("onCreate
+        // was intercepted → fields never initialized") is void on the
+        // support family since F-NEW-261: onCreate's real DEX runs and the
+        // FragmentController/HostCallbacks fields initialize (CONT-46
+        // measured). Androidx keeps the arm (f261_support_family=false →
+        // the negated predicate holds the intercept).
+        if ((method_name == "onStart" || method_name == "onResume" ||
             method_name == "onPause" || method_name == "onStop" ||
             method_name == "onDestroy" ||
             method_name == "onSaveInstanceState" ||
-            method_name == "onBackPressed") {
+            method_name == "onBackPressed") &&
+            !(f261_dex_body && f261_support_family)) {
             return_val = DalvikValue::make_void();
             last_invoke_return_ = return_val;
             return true;
         }
-        if (method_name == "setContentView" && args.size() >= 2) {
+        // F-NEW-310 (CONT-47) — S83 else-chain repair, setContentView arm.
+        // The F-NEW-261 fall-through (`if (f261_dex_body &&
+        // f261_support_family) {} else if (onCreate)`) was written as one
+        // else-chain, but ONLY the onCreate arm sits inside it — the
+        // setContentView arm below is an INDEPENDENT if that fires even when
+        // the fall-through condition holds. Measured: BMI dispatches
+        // AppCompatActivity.setContentView with f261_dex_body=1 AND
+        // f261_support_family=1 (S83-DIAG rows, run/cont47/bmi_diag) yet the
+        // U007 shadow still stole the call — the real delegate DEX
+        // (AppCompatDelegateImpl.setContentView: ensureSubDecor →
+        // mSubDecor.findViewById(android.R.id.content) → removeAllViews →
+        // LayoutInflater.inflate(resId, contentParent)) never ran, so the app
+        // layout root was inflated into the shadow's standalone tree instead
+        // of under the sub-decor's ContentFrameLayout, and the first-traversal
+        // attach wave could never reach it (white content past the action-bar
+        // band). AOSP law: AppCompatActivity.setContentView(int) DELEGATES —
+        // the app layout belongs under the sub-decor's content parent.
+        // Gating the arm's own condition with the negated fall-through
+        // predicate makes the fall-through real for setContentView while
+        // every other arm (onCreate else-chain above; lifecycle-void and
+        // findViewById ifs below) keeps the exact pre-F-NEW-310 dispatch
+        // behavior — each of those needs its own probe + A/B before its
+        // dispatch changes (same minimal-fix discipline as the sibling
+        // EXP-058 stubs in CONT-46).
+        if (method_name == "setContentView" && args.size() >= 2 &&
+            !(f261_dex_body && f261_support_family)) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
             ctx.receiver_id = ctx.has_receiver ? args[0].object_id : 0;
             ctx.receiver_class = ctx.has_receiver ? args[0].class_desc
@@ -6072,6 +7210,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
         if (method_name == "findViewById" && args.size() >= 2) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
             ctx.receiver_id = ctx.has_receiver ? args[0].object_id : 0;
             ctx.receiver_class = ctx.has_receiver ? args[0].class_desc
@@ -7391,6 +8531,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Dispatch to ViewShadow to capture the text on the ViewNode.
         if (shadow_registry_ != nullptr) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
             if (ctx.has_receiver) {
                 ctx.receiver_id = args[0].object_id;
@@ -7816,6 +8958,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // into the bytecode (which would loop).
             if (shadow_registry_ != nullptr) {
                 framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
                 ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
                 if (ctx.has_receiver) {
                     ctx.receiver_id = args[0].object_id;
@@ -7920,15 +9064,32 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-058: Preconditions.checkNotNull loops due to incorrect
-    // overload resolution when the caller has different register layout.
-    if (class_descriptor.find("Preconditions") != std::string::npos &&
-        method_name == "checkNotNull") {
-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
-            " — skipping (overload loop)");
-        recursion_depth_--;
-        return false;
-    }
+    // F-058-R (CONT-46): the Preconditions.checkNotNull stub-only gate is
+    // REMOVED — again. The EXP-058-era name gate refused DEX dispatch for
+    // every class whose descriptor contains "Preconditions" + method
+    // "checkNotNull", so the value-returning identity helper answered via
+    // the shadow walk (not_handled → no result-slot write) and every
+    // caller's move-result-object read <unset>. First-divergence proof on
+    // the current lineage (BMI com.zola.bmi): FragmentHostCallback.<init>
+    // stores value=<unset> into its final mHandler field (FIELD-TRACE
+    // put-obj row) because the 4-arg ctor's move-result-object after the
+    // gated checkNotNull(handler, "handler == null") never received the
+    // reference — mHost.getHandler() answered null and the fragment
+    // transaction never executed (execPendingActions 0, no content).
+    // History: R-NEW-365 (S47) root-caused the same gate and F-058
+    // removed it (docs/evidence/s47/S47_EVIDENCE_MANIFEST.md — "check*
+    // helpers are identity-on-non-null; a stub must never destroy a
+    // checked reference"); the cross-campaign recovery import
+    // (d7427016) resurrected the stub with the old docs, and the code
+    // fix was lost. The original "overload loop" the gate papered over
+    // is handled generically since then: F-056 descriptor-aware cycle
+    // keys + the M3-19/F-017 active-cycle law (receiver-identity keys)
+    // stub ONLY genuine re-entries, and MAX_RECURSION_DEPTH remains the
+    // backstop — no name-based refusal is needed or lawful (a stub must
+    // never break the value-return contract of a whole method family).
+    // Probe: fixtures/fnew262_probe CK-1..CK-3 (identity + negative
+    // throw) — 3/3 FAIL pre-fix at the same binary, the exact PRE/POST
+    // discriminator for this law.
 
     // EXP-058: AppCompatTextViewAutoSizeHelper$Impl constructors loop.
     if (class_descriptor.find("AppCompatTextViewAutoSizeHelper") != std::string::npos &&
@@ -7998,6 +9159,24 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // execute real DEX). MAX_RECURSION_DEPTH remains the backstop for
     // recursion over fresh argument identities.
     static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
+    // F-NEW-286 payload-parts counter: how many IDENTITY parts beyond the
+    // base key (class.method+descriptor+receiver) were appended. The stub
+    // decision consumes this — see the law at the firing site below.
+    int m3_payload_parts = 0;
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-306 (CONT-44) payload-COMPLETENESS tracking: how many argument
+    // identities could NOT be appended to the active key. A key that
+    // dropped any argument identity is NOT same-computation evidence —
+    // see the firing site below for the law.
+    //   obj_dropped   — non-null object args beyond the 8-object cap
+    //   prim_dropped  — primitive args beyond the 2-primitive cap
+    //   class_dropped — CLASS_REF args beyond the 2-class cap
+    //   null_skipped  — null object args (no id exists to append; the
+    //                   positional identity is uncapturable, so two
+    //                   nestings with nulls at different positions collide)
+    // ────────────────────────────────────────────────────────────────────
+    int m3_obj_dropped = 0, m3_prim_dropped = 0, m3_class_dropped = 0,
+        m3_null_skipped = 0;
     std::string m3_active_key = class_descriptor + "." + method_name;
     // S54 FIX (F-081) — overload-distinct identity. JVM/ART method identity
     // is (name, descriptor)-exact; two same-name overloads on the same
@@ -8056,12 +9235,54 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // MAX_RECURSION_DEPTH (80) remains the backstop.
         // ────────────────────────────────────────────────────────────────
         {
+            // F-NEW-297 (CONT-36) — the object-payload cap widens 2 → 8.
+            //
+            // OBSERVATION (composeStopwatch v1.9.1 vc1009011, CONT-36
+            // op-attributed draw window, run/cont36/csw_attr): the R8'd
+            // Compose CanvasDrawScope Loc0;.c(Ltf;JLmo0;Luv;Lt40;)V is a
+            // REUSED dispatcher — ONE instance per view, called once per
+            // SUBTREE with (canvas, packedSize, transform, layoutDir,
+            // drawBlock). decode (androguard, scripts/cont36_disasm_loc0.py):
+            //   pc=100 canvas.save(); pc=106 block.I(this); pc=112 restore()
+            // — the WHOLE subtree draws inside block.I. The 2-object cap
+            // filled on (canvas, transform) — both INVARIANT across
+            // nestings — so the distinguishing payload, the draw block
+            // (args[4]), never entered the key: every nested subtree draw
+            // collided on the same key and the active-cycle stub killed it
+            // mid-dispatch ([M3-19-CYCLE] lifetime_calls=32, depth 109-111).
+            // The outer subtree's roundrects painted (ops=64) and every
+            // nested subtree — including TextPainter Lg6;.d (ZERO executions
+            // in the whole run) → Landroid/text/Layout;.draw — silently
+            // vanished. Same failure shape as F-098 (visitor target payload)
+            // and F-NEW-286 (slot-table-internal state): argument-identity
+            // keys cannot see upstream's structural nesting.
+            //
+            // LAW: object payloads beyond the 2-object cap are STILL
+            // computation identity (a reused dispatcher's nestings differ by
+            // the block/target/visitor arguments, which arrive as further
+            // object args). Widen the appended object identities 2 → 8 —
+            // keys become strictly more specific, the guard only fires LESS
+            // often, genuine same-argument cycles still collide, and
+            // MAX_RECURSION_DEPTH (80) remains the loud backstop. No
+            // name dispatch, no app branches: the cap is universal.
             int appended = 0;
-            for (size_t i = 1; i < args.size() && appended < 2; ++i) {
-                if (args[i].type == DalvikType::OBJECT_REF &&
-                    args[i].object_id != 0 && !args[i].is_null) {
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type != DalvikType::OBJECT_REF) continue;
+                if (args[i].is_null || args[i].object_id == 0) {
+                    // F-NEW-306: a null payload position carries no id to
+                    // append — the key cannot distinguish null-here/obj-there
+                    // nestings from the reverse. Incomplete evidence.
+                    ++m3_null_skipped;
+                    continue;
+                }
+                if (appended < 8) {
                     m3_active_key += "#" + std::to_string(args[i].object_id);
                     ++appended;
+                    ++m3_payload_parts;
+                } else {
+                    // F-NEW-306: the cap dropped a non-null object identity —
+                    // two nestings differing in it collide. Incomplete evidence.
+                    ++m3_obj_dropped;
                 }
             }
             // S122 (R-NEW-412) instance identity refinement: append up to 2
@@ -8093,15 +9314,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // syntax "=<value>" cannot collide with object-id parts "#<id>".
             {
                 int prims = 0;
-                for (size_t i = 1; i < args.size() && prims < 2; ++i) {
+                for (size_t i = 1; i < args.size(); ++i) {
                     switch (args[i].type) {
                         case DalvikType::INT32:
                         case DalvikType::BOOLEAN:
                         case DalvikType::BYTE:
                         case DalvikType::CHAR:
                         case DalvikType::SHORT:
-                            m3_active_key += "=" + std::to_string(args[i].int_val);
-                            ++prims;
+                            if (prims < 2) {
+                                m3_active_key += "=" + std::to_string(args[i].int_val);
+                                ++prims;
+                                ++m3_payload_parts;
+                            } else {
+                                // F-NEW-306: the cap dropped a primitive
+                                // identity — Incomplete evidence.
+                                ++m3_prim_dropped;
+                            }
                             break;
                         default:
                             break;
@@ -8140,11 +9368,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // ────────────────────────────────────────────────────────────
             {
                 int clz = 0;
-                for (size_t i = 1; i < args.size() && clz < 2; ++i) {
+                for (size_t i = 1; i < args.size(); ++i) {
                     if (args[i].type == DalvikType::CLASS_REF &&
                         !args[i].class_desc.empty()) {
-                        m3_active_key += "@" + args[i].class_desc;
-                        ++clz;
+                        if (clz < 2) {
+                            m3_active_key += "@" + args[i].class_desc;
+                            ++clz;
+                            ++m3_payload_parts;
+                        } else {
+                            // F-NEW-306: the cap dropped a class identity —
+                            // Incomplete evidence.
+                            ++m3_class_dropped;
+                        }
                     }
                 }
             }
@@ -8155,11 +9390,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // per-coroutine key; same-object re-entry still collides (guard
         // preserved for genuine cycles).
         int appended = 0;
-        for (size_t i = 0; i < args.size() && appended < 2; ++i) {
-            if (args[i].type == DalvikType::OBJECT_REF && args[i].object_id != 0 &&
-                !args[i].is_null) {
+        for (size_t i = 0; i < args.size(); ++i) {
+            if (args[i].type != DalvikType::OBJECT_REF) continue;
+            if (args[i].is_null || args[i].object_id == 0) {
+                // F-NEW-306: null payload position — identity uncapturable
+                // (see the instance-arm comment). Incomplete evidence.
+                ++m3_null_skipped;
+                continue;
+            }
+            if (appended < 2) {
                 m3_active_key += "#" + std::to_string(args[i].object_id);
                 ++appended;
+                ++m3_payload_parts;
+            } else {
+                // F-NEW-306: the cap dropped a non-null object identity.
+                ++m3_obj_dropped;
             }
         }
         // ────────────────────────────────────────────────────────────────
@@ -8192,15 +9437,25 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // with object-id parts "#<id>".
         // ────────────────────────────────────────────────────────────────
         int prims = 0;
-        for (size_t i = 0; i < args.size() && prims < 2; ++i) {
+        for (size_t i = 0; i < args.size(); ++i) {
             switch (args[i].type) {
                 case DalvikType::INT32:
                 case DalvikType::BOOLEAN:
                 case DalvikType::BYTE:
                 case DalvikType::CHAR:
                 case DalvikType::SHORT:
-                    m3_active_key += "=" + std::to_string(args[i].int_val);
-                    ++prims;
+                    if (prims < 2) {
+                        m3_active_key += "=" + std::to_string(args[i].int_val);
+                        ++prims;
+                        ++m3_payload_parts;
+                    } else {
+                        // F-NEW-306: the cap dropped a primitive identity —
+                        // Incomplete evidence. (The Lch1;.j trie-builder case:
+                        // its 3rd int — the recursion SHIFT — was exactly the
+                        // dropped part, so collision-path nestings with equal
+                        // captured hashes collided and were stubbed.)
+                        ++m3_prim_dropped;
+                    }
                     break;
                 default:
                     break;
@@ -8213,11 +9468,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // dispatch by the Class argument). Key part "@<descriptor>".
         {
             int clz = 0;
-            for (size_t i = 0; i < args.size() && clz < 2; ++i) {
+            for (size_t i = 0; i < args.size(); ++i) {
                 if (args[i].type == DalvikType::CLASS_REF &&
                     !args[i].class_desc.empty()) {
-                    m3_active_key += "@" + args[i].class_desc;
-                    ++clz;
+                    if (clz < 2) {
+                        m3_active_key += "@" + args[i].class_desc;
+                        ++clz;
+                        ++m3_payload_parts;
+                    } else {
+                        // F-NEW-306: the cap dropped a class identity.
+                        ++m3_class_dropped;
+                    }
                 }
             }
         }
@@ -8245,7 +9506,112 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Constructors therefore NEVER hit the active-cycle stub;
         // MAX_RECURSION_DEPTH remains the backstop.
         // ────────────────────────────────────────────────────────────────
-        if (method_name != "<init>") {
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-286 (CONT-30): ZERO-PAYLOAD re-entrant dispatch is upstream
+        // LEGAL — the stub may fire only for PAYLOAD-DISTINCT keys.
+        //
+        // SOURCE (upstream Compose 1.11.4, runtime GapComposer.kt):
+        //   skipToGroupEnd(): if (!inserting) {
+        //       currentRecomposeScope?.scopeSkipped()
+        //       if (invalidations.isEmpty()) skipReaderToGroupEnd()
+        //       else recomposeToGroupEnd() }
+        //   skipCurrentGroup(): ... else {
+        //       startReaderGroup(...); recomposeToGroupEnd(); ... }
+        //   recomposeToGroupEnd(): while (firstInRange != null) {
+        //       ... scope.compose(this) ... }   // ← re-entrancy source
+        //   → every exit path advances the reader to the group end
+        //     (skipToGroupEnd / skipReaderToGroupEnd).
+        //
+        // OBSERVATION (CONT-12 un-renamed oracle, METHOD-IN trace,
+        // run/cont30/trace1): the frame-1 recompose window ran
+        // recomposeToGroupEnd call#1 REAL (from skipCurrentGroup) →
+        // RecomposeScopeImpl.compose(3953) → NavHost re-run → AnimatedContent
+        // scope startSkipped → skipToGroupEnd → invalidations NON-empty →
+        // recomposeToGroupEnd call#2 — STUBBED at depth 18 (lifetime_calls=2):
+        // the nested skip-advance never ran, the reader stayed inside the
+        // group, endRestartGroup → end() hit the "detect removing nodes at
+        // the end" tail loop (while (!reader.isGroupEnd) { recordDelete();
+        // skipGroup(); }) and recorded Operation$RemoveCurrentGroup ×2 for
+        // LIVE destination groups; the apply mass-detached
+        // TextStringSimpleNode ×2 → uniform theme-surface frame (CONT-29's
+        // frame-1 group-deletion root). The same pattern repeated at depth 19
+        // (lifetime_calls=3).
+        //
+        // LAW: for a method whose key carries NO payload identity beyond the
+        // receiver (zero non-receiver object/class args, zero primitive
+        // args), the engine has NO evidence that a re-entrant call is the
+        // SAME computation: upstream distinguishes the nestings by INTERNAL
+        // dispatch state (the slot-table reader position), invisible to any
+        // argument-identity key. Upstream such re-entrancy is structurally
+        // bounded (each nested window consumes its invalidations or
+        // skip-advances). Stubbing it fabricates a void/null mid-dispatch
+        // and desynchronizes the caller's structural accounting — exactly
+        // the F-098/S122/S137 failure shape, with the payload carried by
+        // internal state instead of an argument. LAW: zero-payload keys
+        // NEVER hit the active-cycle stub — real DEX executes; the
+        // [RECURSION-LIMIT] backstop (depth 80, loud, observable) still
+        // bounds any genuine unbounded recursion. Payload-distinct keys
+        // (object #id / primitive =v / class @desc parts present) keep the
+        // stub: same-payload re-entry IS same-computation evidence (S22).
+        //
+        // IMPACT: the whole Compose recompose-window chain — skipped-scope
+        // accounting (keep-vs-delete) in end() — for every Compose app;
+        // generically, any zero-payload re-entrant dispatcher.
+        //
+        // PROOF (this wave): oracle frame-1 window — pre-fix recordDelete ×4
+        // + RemoveCurrentGroup ×2 + mass TextStringSimpleNode detach;
+        // post-fix: nested windows execute, no frame-1 deletion, destination
+        // content materializes. Regression gate: 24/24 anchors byte-exact.
+        // ────────────────────────────────────────────────────────────────
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-306 (CONT-44): an INCOMPLETE-payload key is not
+        // same-computation evidence — the active-cycle stub must not fire
+        // on it; real DEX executes.
+        //
+        // OBSERVATION (composeStopwatch v1009011, CONT-44, run/cont44/
+        // csw_pre): the visible-content regression 3442d9a9dc0fa0f9 ->
+        // 5c4a0172628849ba (sourced to F-NEW-304's drain interleaving)
+        // dies at Lh4;.onMeasure -> catch-all NPE from Lch1;.s pc=4
+        // (getClass on null). Decode (scripts/cont44_a_decode*.py):
+        // Lch1; = TrieNode of the bundled kotlinx.collections.immutable
+        // persistent hash trie; its ONLY allocation in the whole run is
+        // the EMPTY root singleton — every node-building call to the
+        // builder Lch1;.j(I,Object,Object,I,Object,Object,I,Lzv;)Lch1;
+        // was cycle-STUBBED (3x: [M3-19-CYCLE] lifetime_calls=2, depths
+        // 23/28), so the trie never grew and s(i)=nodeAt read a null
+        // cell. The key carried 2 of 4 objects + 2 of 3 ints: the static
+        // arms' 2-object/2-primitive caps dropped args[5] (value obj),
+        // args[7] (the Lzv; owner) and args[6] — the RECURSION SHIFT,
+        // exactly the part that distinguishes the collision-path nesting
+        // levels. A legal, upstream-bounded re-entrancy (each level
+        // recurses with shift+bits, terminating) was fabricated to null.
+        // Zero REC-MISS on the path: no shadow is missing — the stub's
+        // same-computation CLAIM was false.
+        //
+        // LAW: the stub fires only when the key captures EVERY argument
+        // identity (complete evidence). A key that dropped any identity —
+        // non-null objects beyond the cap, primitives beyond the cap,
+        // CLASS_REFs beyond the cap, or null positions (uncapturable
+        // positional identity) — is NOT same-computation evidence:
+        // execute real DEX. This generalizes F-NEW-286 from "no payload
+        // captured" to "payload capture incomplete". Keys are unchanged
+        // for complete captures; the guard only fires LESS often; the
+        // [RECURSION-LIMIT] depth-80 backstop (loud, observable) still
+        // bounds genuine non-termination.
+        //
+        // IMPACT: every method invoked with more than 2 primitives / 2
+        // (static) or 8 (instance) objects / nulls in payload positions —
+        // generically, all under-discriminating re-entrancy keys. The
+        // Compose persistent-map family (PersistentHashMap builders in
+        // snapshot/state machinery) is the observed blast radius.
+        //
+        // PROOF (this wave): csw POST regains 3442d9a9dc0fa0f9 (the
+        // pinned healthy face, x3) with the full gate byte-identical —
+        // recorded in evidence/cont44/.
+        // ────────────────────────────────────────────────────────────────
+        if (method_name != "<init>" && m3_payload_parts > 0 &&
+            m3_obj_dropped == 0 && m3_prim_dropped == 0 &&
+            m3_class_dropped == 0 && m3_null_skipped == 0) {
             std::cerr << "[M3-19-CYCLE] " << m3_active_key
                       << " re-entered while active on the call stack (depth="
                       << recursion_depth_ << ") — active-cycle stub"
@@ -8253,6 +9619,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << std::endl;
             recursion_depth_--;
             return false;
+        }
+        if (method_name != "<init>" && m3_payload_parts > 0) {
+            // The key is active AND carries payload parts BUT is incomplete
+            // (F-NEW-306): no stub — real DEX executes, loudly traced.
+            std::cerr << "[M3-19-OPEN] " << m3_active_key
+                      << " re-entered while active (depth=" << recursion_depth_
+                      << ") — INCOMPLETE payload key (obj_dropped="
+                      << m3_obj_dropped << " prim_dropped=" << m3_prim_dropped
+                      << " class_dropped=" << m3_class_dropped
+                      << " null_skipped=" << m3_null_skipped
+                      << ") — real DEX executes (F-NEW-306 evidence law)"
+                      << std::endl;
         }
     }
     active_invoke_keys_.insert(m3_active_key);
@@ -8299,7 +9677,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // calling getSpecialEffectsControllerFactory for each Fragment state change.
     // Without proper Fragment state, this loop never terminates.
     // Stub to return void (skip Fragment state transitions).
-    if (class_descriptor.find("FragmentManager") != std::string::npos &&
+    // F-NEW-312 (CONT-47): the "FragmentManager" substring over-matched the
+    // LEGACY support FragmentManagerImpl — measured (BMI, run/cont47/bmi_ft2):
+    // FragmentManagerImpl.dispatchStateChange is the mCurState driver
+    // (dispatchCreate → dispatchStateChange(1), dispatchActivityCreated →
+    // dispatchStateChange(2)); with the stub refusing DEX dispatch, mCurState
+    // stayed 0 forever and moveToState never created fragment views (the
+    // committed PlaceholderFragment stayed CREATED; the container under the
+    // sub-decor stayed children=0 — the content gap behind the white screen).
+    // The loop premise is an ANDROIDX SpecialEffectsController property
+    // (getSpecialEffectsControllerFactory does not exist in the support
+    // machine; support dispatchStateChange is a 17-unit try-catch-guarded
+    // move+execPendingActions that terminates — disasm 0x6ee94). Scope
+    // corrected to the androidx family: the guard's original corpus
+    // (Telegram-era androidx) is unchanged, the support machine executes.
+    if (class_descriptor.rfind("Landroidx/fragment/app/FragmentManager", 0) == 0 &&
         method_name == "dispatchStateChange") {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping (Fragment state change loop)");
@@ -8697,6 +10089,75 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // across recursive execution. best_match/fallback_match now hold
     // pointers; selection semantics (F-023 exact-descriptor law, EXP-080
     // lambda-name law, arity fallback) are unchanged.
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-280 (CONT-26; S108 ROOT-019 cross-class extension): the
+    // exact-descriptor overload authority is a HIERARCHY law, not a
+    // per-class law. ART/LVMS resolution (JVMS 5.4.5 / dalvik invoke
+    // resolution): method selection matches the (name, proto) pair; a
+    // same-name method with a DIFFERENT proto is never a candidate, and
+    // when the runtime class itself declares no (name, proto) match the
+    // search CONTINUES into the superclass chain — it never "falls back"
+    // to a differently-shaped same-name method.
+    // Root-gap evidence (CONT-26, com.simplemobiletools.calculator vc8 at
+    // binary 59a6b548): AppCompatActivity.onCreate
+    // (u.onCreate) → invoke-virtual delegate.a(Landroid/os/Bundle;)V —
+    // the runtime class ac (AppCompatDelegateImplN) declares ONLY
+    // a(Landroid/view/Window$Callback;) (wrapWindowCallback); the real
+    // a(Bundle)V override lives in the superclass aa
+    // (AppCompatDelegateImpl). The local scan found no exact match, the
+    // S108 strict skip is default-OFF (recorded bogus-descriptor blocker:
+    // wanted descriptors that exist NOWHERE — hard-filtering selected
+    // nothing and ctors never ran, the v6.q→u.<init> family), and the
+    // lenient arity heuristic accepted the same-name wrong-shape method:
+    // the saved-Bundle null flowed into wrapWindowCallback →
+    // WindowCallbackWrapper.<init> IAE "Window callback may not be null"
+    // → MainActivity.onCreate APP-BOUNDARY death → white screen.
+    // Fix (the blocker-safe middle path): when the call site carries a
+    // concrete descriptor and the runtime class has NO exact (name,
+    // descriptor, non-empty-code) match, run the F-074 super-walk for the
+    // EXACT match FIRST; only when no ancestor declares it either does the
+    // legacy lenient selection run (unchanged). The recorded
+    // bogus-descriptor family keeps its old behavior (bogus descriptors
+    // match locally nowhere AND up-chain nowhere → lenient path identical);
+    // the ac.a family resolves to the true ancestor override.
+    // ────────────────────────────────────────────────────────────────────
+    if (!method_descriptor.empty() && method_descriptor[0] == '(') {
+        bool local_exact = false;
+        for (const auto& mm : cls_ref.direct_methods) {
+            if (mm.name == method_name && mm.descriptor == method_descriptor &&
+                !mm.bytecode.empty()) { local_exact = true; break; }
+        }
+        if (!local_exact) {
+            for (const auto& mm : cls_ref.virtual_methods) {
+                if (mm.name == method_name &&
+                    mm.descriptor == method_descriptor &&
+                    !mm.bytecode.empty()) { local_exact = true; break; }
+            }
+        }
+        if (!local_exact) {
+            {
+                static thread_local uint64_t f280_diag = 0;
+                if (std::getenv("MINIANDROID_F280_TRACE") &&
+                    f280_diag < 40) {
+                    ++f280_diag;
+                    std::cerr << "[F280-SUPERWALK] " << class_descriptor
+                              << "." << method_name
+                              << " want=" << method_descriptor
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+            recursion_depth_--;
+            if (try_recursive_invoke_on_super(class_descriptor, method_name,
+                                             args, return_val, result,
+                                             method_descriptor)) {
+                return true;
+            }
+            recursion_depth_++;
+            // No ancestor declares the exact (name, proto) either — the
+            // legacy lenient selection below keeps its recorded behavior.
+        }
+    }
     std::vector<const dex::MethodInfo*> f107_cands;
     f107_cands.reserve(cls_ref.direct_methods.size() + cls_ref.virtual_methods.size());
     for (const auto& m : cls_ref.direct_methods) f107_cands.push_back(&m);
@@ -9084,6 +10545,60 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     const dex::MethodInfo* selected_ptr = best_match ? best_match : fallback_match;
 
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): the text-painter resolution
+    // watch — try_recursive_invoke("Lte1;","I",…,"(Loc0;)V") returns false
+    // despite an exact (name, proto, non-empty-code) method on the class
+    // (static decode: 101 instructions). Log the candidate pool + the
+    // selection to expose which lookup stage drops it.
+    if (class_descriptor == "Lte1;" && method_name == "I") {
+        static thread_local uint64_t lte1_sel_n = 0;
+        if (lte1_sel_n++ < 40)
+            std::cerr << "[LTE1-SEL] cands=" << f107_cands.size()
+                      << " best="
+                      << (best_match ? best_match->descriptor : "null")
+                      << " fb="
+                      << (fallback_match ? fallback_match->descriptor : "null")
+                      << " want=" << method_descriptor << std::endl;
+    }
+
+    // CONT-28 (generic diagnostic): env-gated overload-selection trace.
+    // MINIANDROID_OVERLOAD_TRACE=<method-name-substr> logs, at every
+    // selection whose requested method name matches the substring, the
+    // requested (name, descriptor), whether the F-023 exact law had a
+    // descriptor to work with, every candidate (name, descriptor, size),
+    // and the picked method. Read-only; bounded 120 rows; zero app
+    // knowledge. Names same-shape overload mispicks (ART JVMS 5.4.5:
+    // selection is (name, descriptor)-based; shape-only selection is a
+    // divergence source).
+    {
+        static thread_local const char* ov_filter =
+            std::getenv("MINIANDROID_OVERLOAD_TRACE");
+        if (ov_filter && *ov_filter &&
+            class_descriptor.find(method_name) == std::string::npos &&
+            method_name.find(ov_filter) != std::string::npos) {
+            static thread_local uint64_t ov_n = 0;
+            if (ov_n < 120) {
+                ++ov_n;
+                fprintf(stderr,
+                        "[OVERLOAD-PICK] %s want=%s%s exact_desc=%s\n",
+                        cls_ref.name.c_str(), method_name.c_str(),
+                        method_descriptor.c_str(),
+                        (!method_descriptor.empty() && best_match) ? "hit"
+                            : (!method_descriptor.empty() ? "missed" : "absent"));
+                for (const dex::MethodInfo* mp : f107_cands) {
+                    fprintf(stderr, "[OVERLOAD-PICK]   cand %s%s bc=%u\n",
+                            mp->name.c_str(), mp->descriptor.c_str(),
+                            (unsigned)mp->bytecode.size());
+                }
+                if (selected_ptr)
+                    fprintf(stderr, "[OVERLOAD-PICK]   picked %s%s bc=%u\n",
+                            selected_ptr->name.c_str(),
+                            selected_ptr->descriptor.c_str(),
+                            (unsigned)selected_ptr->bytecode.size());
+            }
+        }
+    }
+
     if (selected_ptr) {
         const dex::MethodInfo& method = *selected_ptr;  // F-107d: stable pointer into dex_report_
         // Found a method with bytecode — recursively execute!
@@ -9262,9 +10777,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (callee_halted) {
             return_val = DalvikValue::make_null();
             last_invoke_return_ = DalvikValue::make_null();
-            // Deferred variant: this site sits inside the invoke opcode
-            // handler — the wrapper rewrites pc_ after we return, so the
-            // raise must record a post-switch redirect, not write pc_.
+            // ────────────────────────────────────────────────────────────
+            // F-NEW-298 (CONT-37): FRAME-HONESTY SIGNAL (the P1-6
+            // extension recorded PENDING in CONT-36 §6). ANY halt that
+            // unwinds through the draw window — wall-clock budget (F084),
+            // loop-guard spin ([HALT-LOOP]), stack overflow — means the
+            // app's frame NEVER COMPLETED. Under ART/SurfaceFlinger an
+            // unfinished frame is never presented: the display keeps the
+            // LAST COMPLETE frame. The compositor (execution_engine)
+            // consults frame_honesty_keep_prev() at the presentation
+            // point and skips the framebuffer→framebuffer_ copy for that
+            // frame — the theme-background wipe that erased every
+            // late-halting app's first real frame (composeStopwatch
+            // cards+text, dooz boot content) is dead.
+            // ────────────────────────────────────────────────────────────
+            if (draw_window_active_)
+                draw_window_budget_halted_ = true;
             throw_deferred(
                 "Ljava/lang/VirtualMachineError;",
                 "F084 interpreter halt in callee (no return value): " +
@@ -10431,6 +11959,151 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
     return false;
 }
 
+// F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) — see the header
+// declaration for the full law. Structural discovery: the parent's
+// "$"-prefixed inner class whose super is ViewGroup$MarginLayoutParams and
+// which declares a (Context, AttributeSet) direct ctor — the AOSP
+// XML-inflation shape every container's LayoutParams family carries,
+// R8-renamed or not (solitaire DrawerLayout$g evidence). The ctor runs as
+// REAL DEX: super MarginLayoutParams(Context,AttributeSet) bridge +
+// Context.obtainStyledAttributes(attrs, styleable) — the F-NEW-175/197
+// XML-AttributeSet precedence resolves android:layout_gravity (0x010100F3)
+// from the CHILD's XML records, exactly the value the app's own drawer
+// checks (DrawerLayout g/j) read back through getLayoutParams.
+uint32_t DalvikExecutionEngine::generate_child_layout_params(
+    const std::string& parent_class_desc, uint32_t child_view_id,
+    const std::vector<resources::XmlAttrRecord>& xml_attrs) {
+    if (!dex_report_ || !shadow_registry_) return 0;
+    if (child_view_id == 0 || parent_class_desc.size() < 3) return 0;
+
+    // 1) The parent must be an app-DEX class (the same dual authority the
+    //    view-ctor hook uses: the inflater's prefix gate fast-filters, the
+    //    class index is the truth).
+    std::string parent_cls = parent_class_desc;
+    if (!parent_cls.empty() && parent_cls[0] == 'L' &&
+        parent_cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < parent_cls.size(); ++i)
+            norm += (parent_cls[i] == '.') ? '/' : parent_cls[i];
+        parent_cls = norm;
+    }
+    if (!class_info_index_.count(parent_cls)) return 0;
+
+    // 2) Structural discovery of the parent's LayoutParams subclass.
+    //    "<Parent;$" name prefix + super ViewGroup$MarginLayoutParams +
+    //    a (Context, AttributeSet) direct ctor. No name conditions beyond
+    //    the structural shape — R8 renames the class (DrawerLayout$g) and
+    //    the discovery holds.
+    std::string prefix = parent_cls.substr(0, parent_cls.size() - 1) + "$";
+    static const char* kMarginLp =
+        "Landroid/view/ViewGroup$MarginLayoutParams;";
+    const dex::ClassInfo* picked = nullptr;
+    for (const auto& c : dex_report_->classes) {
+        if (c.name.compare(0, prefix.size(), prefix) != 0) continue;
+        if (c.superclass_name != kMarginLp) continue;
+        bool has_ctx_attrs_ctor = false;
+        for (const auto& m : c.direct_methods) {
+            if (m.name != "<init>") continue;
+            if (m.descriptor.find(
+                    "Landroid/content/Context;Landroid/util/AttributeSet;)V") !=
+                std::string::npos) {
+                has_ctx_attrs_ctor = true;
+                break;
+            }
+        }
+        if (!has_ctx_attrs_ctor) continue;
+        // Disambiguation among candidates (rare): prefer one that also
+        // declares the (int,int) ctor (the AOSP LayoutParams shape), then
+        // the first in DEX order — deterministic either way.
+        if (picked != nullptr) {
+            auto has_ii = [](const dex::ClassInfo& k) {
+                for (const auto& m : k.direct_methods)
+                    if (m.name == "<init>" && m.descriptor == "(II)V")
+                        return true;
+                return false;
+            };
+            if (has_ii(c) && !has_ii(*picked)) picked = &c;
+        } else {
+            picked = &c;
+        }
+    }
+    if (picked == nullptr) return 0;   // AOSP ViewGroup default stands
+
+    // 3) The child node must exist (stash target + semantic w/h).
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return 0;
+    auto* node = view_shadow->find_node(child_view_id);
+    if (!node) return 0;
+
+    // 4) Allocate the LP object and run the real DEX ctor.
+    uint32_t lp_obj = heap_.allocate(picked->name, 0, 0);
+    if (lp_obj == 0 || !heap_.has_object(lp_obj)) return 0;
+
+    uint32_t ctx_id = 0;
+    if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+        ctx_id = act->current_activity_id();
+    if (ctx_id == 0)
+        ctx_id = heap_.allocate("Landroid/content/Context;", 0, 0);
+    uint32_t attrs_id = heap_.allocate("Landroid/util/AttributeSet;", 0, 0);
+    if (!xml_attrs.empty()) {
+        resources::AttributeSetStore::instance().install(attrs_id, xml_attrs);
+    }
+
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool ok = try_recursive_invoke(
+        picked->name, "<init>",
+        {DalvikValue::make_object(lp_obj, picked->name),
+         DalvikValue::make_object(ctx_id, "Landroid/content/Context;"),
+         DalvikValue::make_object(attrs_id, "Landroid/util/AttributeSet;")},
+        ret, res);
+    if (!ok) {
+        // Honest fallback: the class exists but its XML ctor did not run —
+        // the AOSP default (plain semantic LP) stands.
+        return 0;
+    }
+    heap_.mark_initialized(lp_obj);
+
+    // 5) Semantic width/height write-back: the runtime's measure truth for
+    //    w/h stays the node's parsed layout_width/height (ROOT-055 law
+    //    preserved verbatim) — the bridge does not read XML w/h, so the
+    //    real ctor leaves them at the heap default.
+    heap_.set_object_field(lp_obj, "width", DalvikValue::make_int(node->width));
+    heap_.set_object_field(lp_obj, "height", DalvikValue::make_int(node->height));
+    // CONT-53 diagnostic (bounded, read-only): the write-back face — the
+    // DrawerLayout child-spec decode needs the node semantic values the
+    // LP object carries (solitaire: NavigationView o409.width read back 0
+    // by the REAL DEX DrawerLayout.onMeasure getChildMeasureSpec chain).
+    std::cerr << "[F-NEW-309-WB] lp=o" << lp_obj << " node_w=" << node->width
+              << " node_h=" << node->height
+              << " margins=(" << node->lp_margin_left << "," << node->lp_margin_top
+              << "," << node->lp_margin_right << "," << node->lp_margin_bottom << ")"
+              << std::endl;
+    //    Margins: the semantic model carries the parsed XML margins —
+    //    write them when the XML declared any (0 stays 0).
+    if (node->lp_margin_left || node->lp_margin_top ||
+        node->lp_margin_right || node->lp_margin_bottom) {
+        heap_.set_object_field(lp_obj, "leftMargin",
+                               DalvikValue::make_int(node->lp_margin_left));
+        heap_.set_object_field(lp_obj, "topMargin",
+                               DalvikValue::make_int(node->lp_margin_top));
+        heap_.set_object_field(lp_obj, "rightMargin",
+                               DalvikValue::make_int(node->lp_margin_right));
+        heap_.set_object_field(lp_obj, "bottomMargin",
+                               DalvikValue::make_int(node->lp_margin_bottom));
+    }
+
+    // 6) Stash on the child node — ROOT-055 answers this exact object.
+    node->layout_params_object = lp_obj;
+    node->layout_params_class = picked->name;
+
+    std::cerr << "[F-NEW-309] generated LP parent=" << parent_cls
+              << " child=o" << child_view_id << " lp=" << picked->name
+              << " o" << lp_obj
+              << " gravity_via_real_ctor" << std::endl;
+    return lp_obj;
+}
+
 // F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):
 // dispatch onMeasure + onLayout as REAL bytecode for a view whose DEX
 // chain defines them — including programmatic views (compose's
@@ -10746,6 +12419,14 @@ static std::string s130_norm_cls(std::string cls) {
 }
 
 // R-NEW-430: ViewRootImpl performTraversals → draw → computeScroll law.
+// F-NEW-320 (CONT-50): the dispatch is an INSTANCE-method invoke — the
+// receiver must be bound as args[0] (the engine-wide try_recursive_invoke
+// convention: onDraw passes {this, canvas}, onSizeChanged passes {this, …}).
+// The empty-args face executed the DEX body with this=<unset>: every iget
+// silently answered null (no trace row — the receiver is not a live heap
+// object) and the first virtual invoke raised f141-null-recv NPE at
+// DrawerLayout.computeScroll pc=35 (solitaire 71, per-frame). Probe
+// fnew320 P4-CS-RECV is the generic gate.
 void DalvikExecutionEngine::call_compute_scroll(uint32_t view_object_id) {
     if (shadow_registry_ == nullptr) return;
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
@@ -10754,6 +12435,7 @@ void DalvikExecutionEngine::call_compute_scroll(uint32_t view_object_id) {
     if (node == nullptr || !node->overrides_compute_scroll) return;
     std::string cls = s130_norm_cls(node->class_desc);
     std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
     DalvikValue ret = DalvikValue::make_void();
     DalvikExecutionResult res;
     try_recursive_invoke(cls, "computeScroll", args, ret, res);
@@ -10773,10 +12455,16 @@ void DalvikExecutionEngine::dispatch_scroll_changed(uint32_t view_object_id,
               << std::endl;
     if (node->overrides_on_scroll_changed) {
         std::string cls = s130_norm_cls(node->class_desc);
-        std::vector<DalvikValue> args{DalvikValue::make_int(l),
-                                      DalvikValue::make_int(t),
-                                      DalvikValue::make_int(oldl),
-                                      DalvikValue::make_int(oldt)};
+        // F-NEW-320 (CONT-50): same-law receiver binding as computeScroll —
+        // onScrollChanged(IIII)V is an instance method (ins=5: this + 4
+        // ints); the ints alone left this=<unset>.
+        std::vector<DalvikValue> args;
+        args.push_back(
+            DalvikValue::make_object(view_object_id, node->class_desc));
+        args.push_back(DalvikValue::make_int(l));
+        args.push_back(DalvikValue::make_int(t));
+        args.push_back(DalvikValue::make_int(oldl));
+        args.push_back(DalvikValue::make_int(oldt));
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
         try_recursive_invoke(cls, "onScrollChanged", args, ret, res);
@@ -10975,8 +12663,16 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
     // flows into onTouchEvent(ACTION_*). Custom game boards (klondike
     // GameView) override onTouchEvent and never register a listener; the
     // old early-return left the whole custom-view game family tap-dead.
+    // F-NEW-267 (CONT-61): the dispatchTouchEvent OVERRIDE arm — AOSP
+    // View/ViewGroup: when the view's class chain OVERRIDES
+    // dispatchTouchEvent, the override IS the input entry (the framework
+    // caller invokes the override; compose's AndroidComposeView runs the
+    // whole compose hit-test + pointer pipeline there). The override wins
+    // over onTouchEvent (which the class may not even define).
     if (node->touch_listener_id == 0) {
-        if (!node->overrides_touch_event) return false;
+        if (!node->overrides_touch_event &&
+            node->overrides_dispatch_touch_event != 1)
+            return false;
         std::string cls = node->class_desc;
         if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
             std::string norm = "L";
@@ -10984,6 +12680,14 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
                 norm += (cls[i] == '.') ? '/' : cls[i];
             cls = norm;
         }
+        // The dispatch arm selects the OVERRIDE the class defines:
+        // dispatchTouchEvent (F-NEW-267) when present, else onTouchEvent
+        // (S122). The tri-state may still be -1 here (the walk answered
+        // touchable through another gate); probe it now.
+        const char* touch_arm = "onTouchEvent";
+        if (node->overrides_dispatch_touch_event == 1 ||
+            class_chain_defines_method(cls, "dispatchTouchEvent"))
+            touch_arm = "dispatchTouchEvent";
         uint32_t ev_id = heap_.allocate("Landroid/view/MotionEvent;", pc_,
                                         call_stack_.empty() ? 0
                                                             : call_stack_.top().frame_id);
@@ -11002,14 +12706,22 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
         std::cerr << "[UI-EVENT] event=TOUCH action=" << action
                   << " view_object=" << view_object_id
                   << " view_class=" << node->class_desc
-                  << " arm=onTouchEvent(override)" << std::endl;
+                  << " arm=" << touch_arm
+                  << " attached=" << (node->attached_to_window ? 1 : 0)
+                  << std::endl;
         std::vector<DalvikValue> args;
         args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
         args.push_back(DalvikValue::make_object(ev_id, "Landroid/view/MotionEvent;"));
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
-        bool dispatched = try_recursive_invoke(cls, "onTouchEvent", args,
+        touch_dispatch_active_ = true;
+        framework::g_touch_window_active.store(true,
+                                               std::memory_order_relaxed);
+        bool dispatched = try_recursive_invoke(cls, touch_arm, args,
                                                ret, res);
+        framework::g_touch_window_active.store(false,
+                                               std::memory_order_relaxed);
+        touch_dispatch_active_ = false;
         if (dispatched && ret.type == DalvikType::BOOLEAN)
             consumed = ret.int_val != 0;
         std::cerr << "[UI-EVENT] event=TOUCH action=" << action << " result="
@@ -11869,6 +13581,8 @@ bool DalvikExecutionEngine::dispatch_text_input(uint32_t view_object_id,
     // Dispatch to ViewShadow.setText — this stores the text on the ViewNode.
     // We use the shadow dispatch path (same as what DEX setText would use).
     framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
     ctx.has_receiver = true;
     ctx.receiver_id = view_object_id;
     ctx.receiver_class = node->class_desc;
@@ -12251,6 +13965,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                       << std::endl;
         }
         
+        // CONT-38 decode diag (env-gated, bounded): the painter body's
+        // instruction stream — where does the black J come from?
+        if (std::getenv("MINIANDROID_PAINTER_TRACE") != nullptr &&
+            ((current_class_ == "Lte1;" && current_method_ == "I") ||
+             (current_class_ == "Lod1;" && current_method_ == "I") ||
+             (current_class_ == "Lg6;" && current_method_ == "e"))) {
+            static thread_local uint64_t pt_n = 0;
+            if (pt_n++ < 20000)
+                std::cerr << "[PAINTER] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc_
+                          << " op=0x" << std::hex << opcode << std::dec
+                          << std::endl;
+        }
         // EXP-042 Phase 1: Per-instruction register snapshots are the #1 OOM
         // offender (5 KB per instruction). Capture them ONLY when explicitly
         // enabled via config_.trace_register_snapshots. Default is false.
@@ -12365,12 +14092,68 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             case Opcode::MOVE_EXCEPTION: {
                 trace.opcode_name = "move-exception";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
-                // Read the pending exception set by THROW.
-                // If no pending exception (shouldn't happen), use null.
+                // F-NEW-264 (CONT-11 W7): EXCEPTION-INTEGRITY DELIVERY LAW.
+                // Upstream law (AOSP ART InterpDoThrow + move-exception /
+                // JVM athrow-catch contract): a catch handler ALWAYS
+                // receives the REAL in-flight java.lang.Throwable object —
+                // never null. ART cannot enter a handler without a
+                // throwable in flight. Runtime face (dooz23, MINIANDROID_
+                // F141_DIAG + EXC-PROPAGATE traces): a deferred engine
+                // throw (f141-null-recv inside Lm7;.<init>) unwound and
+                // was caught by Lto1;.d's catch-all, but by the time the
+                // handler's move-exception executed, pending_exception_
+                // had been cleared by an intervening redirect/clear — the
+                // handler register received NULL and the compose
+                // exception-report helper Lel0;.Y(Throwable) NPE'd on
+                // `t.getClass()` (the R8 kotlin-report idiom), killing
+                // the whole measure/layout pass (Lzs0;.m → Lt4;.onMeasure
+                // cascade, placement never completed, isPlaced stayed
+                // false, the draw walk skipped the entire tree).
+                // Fix: delivery falls back through the engine's exception
+                // slots in authority order (pending → deferred → in-flight
+                // unwind) so the handler ALWAYS gets a real throwable
+                // object; a bounded env-gated diagnostic records every
+                // fallback (each one is itself a state-machine bug worth
+                // a future root — the fallback preserves JVM semantics
+                // without inventing framework state).
                 DalvikValue exc = pending_exception_;
+                bool f264_delivered_pending = true;
+                if (!(exc.type == DalvikType::OBJECT_REF &&
+                      exc.object_id != 0)) {
+                    f264_delivered_pending = false;
+                    exc = deferred_exception_;
+                    if (!(exc.type == DalvikType::OBJECT_REF &&
+                          exc.object_id != 0) &&
+                        frame_unwind_exception_valid_) {
+                        exc = frame_unwind_exception_;
+                    }
+                    if (!(exc.type == DalvikType::OBJECT_REF &&
+                          exc.object_id != 0)) {
+                        exc = DalvikValue::make_null();
+                    }
+                    static thread_local const bool f264_trace =
+                        std::getenv("MINIANDROID_F264_TRACE") != nullptr;
+                    static thread_local uint64_t f264_n = 0;
+                    if (f264_trace && f264_n < 40) {
+                        ++f264_n;
+                        std::cerr << "[F264-MOVE-EXC] null pending at "
+                                  << current_class_ << "." << current_method_
+                                  << " pc=" << pc_ << " → fallback "
+                                  << exc.class_desc
+                                  << (exc.type == DalvikType::OBJECT_REF &&
+                                              exc.object_id != 0
+                                          ? " (delivered)"
+                                          : " (STILL NULL — honesty)")
+                                  << std::endl;
+                    }
+                }
                 set_register(vAA, exc);
                 trace.operands.push_back({"v" + std::to_string(vAA), exc.to_string()});
-                // Clear the pending exception after move.
+                // Clear the pending exception after move (the delivered
+                // object is now owned by the handler register). The
+                // deferred/unwind slots are left INTACT — forensic reads
+                // (S100 last-op ring, crash forensics) and nested-unwind
+                // matching still consult them after the handler runs.
                 pending_exception_ = DalvikValue::make_null();
                 pc_ += 1;
                 break;
@@ -12412,7 +14195,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     std::cerr << "]" << std::endl;
                 }
                 int32_t array_size = dalvik_int_value(size_val);
-                if (array_size < 0) array_size = 0;
+                /* F-NEW-268c (CONT-18g): ART new-array negative-size law — a
+                 * negative size throws NegativeArraySizeException (ART
+                 * art::ThrowNegativeArraySizeException; the old code silently
+                 * CLAMPED to 0, manufacturing an empty array out of UB and
+                 * hiding the first divergence — issue #381 face c). */
+                if (array_size < 0) {
+                    raise_synthetic_exception(
+                        "Ljava/lang/NegativeArraySizeException;",
+                        "size=" + std::to_string(array_size), "new-array-neg");
+                    break;
+                }
 
                 // F-NEW-181 (WAVE C, FINAL CAMPAIGN phase 5/6 law — array
                 // runtime identity): NEW_ARRAY was the ONLY array producer
@@ -12560,23 +14353,47 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue idx_val = get_register(vCC); \
                     int32_t idx = dalvik_int_value(idx_val); \
                     trace.opcode_name = op_name; \
+                    /* F-NEW-268a (CONT-18g): AOSP HandleAGet null-array law — \
+                     * aget on a NULL array reference throws NPE at the access. \
+                     * aput has carried the mirror arm since EXP-038 \
+                     * ("AOSP HandleAPut: null array → NPE"); the aget side \
+                     * silently answered a default value instead, hiding the \
+                     * first divergence (issue #381 claims-audit face a). \
+                     * f141_is_null_receiver = NULL_REF / OBJECT_REF-id-0 / \
+                     * INT32-0 typed null (F-141 + F-266a untyped-register law). */ \
+                    if (f141_is_null_receiver(arr_val)) { \
+                        log("⚠️ AGET from null array (" + std::string(op_name) + \
+                            ") idx=" + std::to_string(idx)); \
+                        raise_synthetic_exception( \
+                            "Ljava/lang/NullPointerException;", \
+                            "Attempt to read from null array", "aget-null"); \
+                        break; \
+                    } \
                     /* EXP-062: Read array length from heap field */ \
                     int32_t arr_len = 0; \
+                    /* F-NEW-268b: a RECORDED length — even 0 — is authoritative. \
+                     * new-array(0) stores __array_length__/__new_array_length__ = 0; \
+                     * the old guard treated 0 as "length unknown" and warn-and- \
+                     * continued, so a confirmed zero-length array answered null \
+                     * instead of AIOOBE (#381 face b). */ \
+                    bool len_recorded = false; \
                     if (arr_val.type == DalvikType::OBJECT_REF && \
                         heap_.has_object(arr_val.object_id)) { \
                         auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
                         if (len_field.has_value() && len_field->type == DalvikType::INT32) { \
                             arr_len = len_field->int_val; \
+                            len_recorded = true; \
                         } \
                         /* Also check if new-array stored a length */ \
                         if (arr_len == 0) { \
                             auto nm_field = heap_.get_object_field(arr_val.object_id, "__new_array_length__"); \
                             if (nm_field.has_value() && nm_field->type == DalvikType::INT32) { \
                                 arr_len = nm_field->int_val; \
+                                len_recorded = true; \
                             } \
                         } \
                     } \
-                    if (arr_len == 0) { \
+                    if (arr_len == 0 && !len_recorded) { \
                         /* Fallback: use int_val from arr_val (old behavior) */ \
                         arr_len = (arr_val.type == DalvikType::OBJECT_REF) ? arr_val.int_val : 0; \
                     } \
@@ -12592,8 +14409,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                          * arr_len == 0 may mean "length unknown" in this engine, so that \
                          * path keeps the legacy warn-and-continue to avoid regressing \
                          * APKs whose array length was never recorded. \
+                         * F-NEW-268b: a RECORDED length (even 0) makes the OOB \
+                         * CONFIRMED — idx>=0 against a recorded 0 is always OOB. \
                          */ \
-                        if (arr_len > 0) { \
+                        if (len_recorded || arr_len > 0) { \
                             /* S36 (R-NEW-335): bounded AOOB evidence probe — \
                              * which array object is indexed OOB (class + id + \
                              * element classes when the store is heap-side). */ \
@@ -12814,23 +14633,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     bool arr_on_heap = (arr_val.type == DalvikType::OBJECT_REF && \
                                         heap_.has_object(arr_val.object_id)); \
                     int32_t arr_len = 0; \
+                    /* F-NEW-268b: a RECORDED length — even 0 — is authoritative \
+                     * (mirror of the aget side): a confirmed zero-length array \
+                     * must AIOOBE on any store, not grow silently. */ \
+                    bool len_recorded = false; \
                     if (arr_on_heap) { \
                         auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
                         if (len_field.has_value() && len_field->type == DalvikType::INT32) { \
                             arr_len = len_field->int_val; \
+                            len_recorded = true; \
                         } \
                         if (arr_len == 0) { \
                             auto nm_field = heap_.get_object_field(arr_val.object_id, "__new_array_length__"); \
                             if (nm_field.has_value() && nm_field->type == DalvikType::INT32) { \
                                 arr_len = nm_field->int_val; \
+                                len_recorded = true; \
                             } \
                         } \
-                        if (arr_len == 0) { \
+                        if (arr_len == 0 && !len_recorded) { \
                             arr_len = arr_val.int_val; \
                         } \
                     } \
                     std::string field = "array[" + std::to_string(idx) + "]"; \
-                    if (arr_on_heap && arr_len > 0) { \
+                    if (arr_on_heap && (len_recorded || arr_len > 0)) { \
                         /* CONFIRMED array: full AOSP semantics. */ \
                         if (idx < 0 || idx >= arr_len) { \
                             { \
@@ -12909,7 +14734,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         } \
                         /* Length immutable — NO auto-grow (AOSP). */ \
                     } else if (arr_on_heap) { \
-                        /* Length unknown (0): legacy path — store + record/grow. \
+                        /* Length unknown (0, never recorded): legacy path — store + record/grow. \
+                         * F-NEW-268b: a RECORDED zero never reaches here (it threw above); \
+                         * this legacy gate is now strictly the unknown-length face. \
                          * Preserves arrays filled aput-by-aput with no recorded \
                          * length (mirrors aget's arr_len==0 legacy gate). */ \
                         heap_.set_object_field(arr_val.object_id, field, src_val); \
@@ -13265,6 +15092,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         try_recursive_invoke(class_name, method_name, args, return_val, result, range_proto)) { last_invoke_return_ = return_val;
                         recursively_invoked = true;
                         status = ApiCallTrace::Status::IMPLEMENTED;
+                    }
+                }
+                // ── CONT-12 F-NEW-266 (3rc) ──────────────────────────────
+                // Same transitive interface-default law as the 35c path:
+                // after runtime-class and declaring-class misses, ART
+                // resolves virtual dispatch into the receiver's transitive
+                // superinterfaces (default methods). Without it the bridge
+                // stub silently returned null (un-renamed Compose 1.11.4
+                // oracle face: Modifier.then default body via 3rc sites).
+                if (!recursively_invoked && config_.enable_api_bridge &&
+                    range_virtual_like && !args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF) {
+                    const std::string& f266_recv =
+                        range_runtime_class.empty() ? class_name
+                                                    : range_runtime_class;
+                    std::string f266_dispatched;
+                    if (try_interface_default_invoke(
+                            f266_recv, method_name, range_proto, args,
+                            return_val, result, &f266_dispatched)) {
+                        last_invoke_return_ = return_val;
+                        recursively_invoked = true;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        trace.invoked_method =
+                            f266_dispatched + " [default-method " +
+                            range_proto + "]";
                     }
                 }
                 if (!recursively_invoked && config_.enable_api_bridge) {
@@ -14642,6 +16494,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "throw";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 DalvikValue exc = get_register(vAA);
+                /* F-NEW-268e (CONT-18g): JLS/ART throw-null law — `throw null`
+                 * throws NullPointerException AT THE THROW SITE (JLS 14.18:
+                 * "If evaluation of the Expression is null, a NullPointerException
+                 * is thrown"). The old path dispatched an exception object whose
+                 * class was "<unknown>" (a null register carries no class); the
+                 * probe face: ECJ folds a provable-null dereference into `athrow`
+                 * of the null register itself (rowC pc=1). */
+                if (f141_is_null_receiver(exc)) {
+                    raise_synthetic_exception(
+                        "Ljava/lang/NullPointerException;",
+                        "throw null", "throw-null");
+                    break;
+                }
                 std::string exc_class = exc.class_desc.empty()
                                       ? "<unknown>" : exc.class_desc;
 
@@ -16598,7 +18463,12 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
          target_type == "Landroid/view/ViewParent;" ||
          // S59 R-NEW-379 follow-up: Lwl0;.containsKey "Key must be a
          // class" at depth 79 — the Class-key guard classification.
-         target_type == "Ljava/lang/Class;")) {
+         target_type == "Ljava/lang/Class;" ||
+         // CONT-38: the composition-local provider-map identity gate
+         // (Lku0;.get instance-of Lky0; — ProvidableCompositionLocal)
+         // — a FALSE here short-circuits every local read to its default
+         // (the LocalContentColor black face) before the trie lookup.
+         target_type == "Lky0;")) {
         static thread_local uint64_t iof_n = 0;
         if (iof_n < 200) {
             ++iof_n;
@@ -16842,6 +18712,42 @@ std::string DalvikExecutionEngine::resolved_field_declarer(
     return ref_cls;  // no DEX declarer found: keep the ref class as-is
 }
 
+// ── F-NEW-325 (CONT-53): the TRUE DEX declarer of an instance field ref.
+// resolved_field_declarer returns ref_cls AS-IS when no DEX body on the
+// chain declares the field — callers cannot distinguish "the ref class
+// itself declares it" from "this field is declared by a FRAMEWORK
+// ancestor" (solitaire: DrawerLayout$g [DEX] reads `width`, declared by
+// the framework ViewGroup$LayoutParams; the DEX chain has NO declarer).
+// Under the S134 law framework-owned fields keep ONE bare slot, but the
+// iget/iput families keyed the read/write with the REF class
+// (is_dex_defined_class(ref_cls)==true → qualified "LDrawerLayout$g;->width")
+// while every non-interpreter writer (F-NEW-309's semantic write-back,
+// the set_field_key_resolver) lands on the BARE slot → the interpreter
+// read missed and answered the fabricated default (width=0 instead of the
+// written WRAP_CONTENT -2 → DrawerLayout measured its drawer at 0x0).
+// ART truth: field resolution walks the receiver's class chain; a field
+// not declared by any DEX class lives in the framework superclass — one
+// bare slot, whoever references it. This helper returns the ACTUAL DEX
+// declarer (walking the chain, verifying the field body) or "" when the
+// field is framework-owned — the key then stays bare.
+std::string DalvikExecutionEngine::true_dex_field_declarer(
+    const std::string& ref_cls, const std::string& name) const {
+    if (ref_cls.empty() || name.empty()) return std::string();
+    std::string walk = ref_cls;
+    for (int hop = 0; hop < 32 && !walk.empty(); ++hop) {
+        if (!is_dex_defined_class(walk)) break;  // framework ancestor: stop
+        auto cit = class_info_index_.find(walk);
+        if (cit != class_info_index_.end() && dex_report_ != nullptr) {
+            const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+            for (const auto& f : ci.instance_fields)
+                if (f.name == name) return walk;  // REAL declarer
+        }
+        auto sit = class_to_superclass_.find(walk);
+        walk = (sit != class_to_superclass_.end()) ? sit->second : std::string();
+    }
+    return std::string();  // framework-owned field: no DEX declarer
+}
+
 static DalvikValue s134_field_default(const std::string& type_desc) {
     if (!type_desc.empty() && (type_desc[0] == 'L' || type_desc[0] == '['))
         return DalvikValue::make_null();
@@ -16873,9 +18779,29 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     
     if (field_res.resolved) {
         DalvikValue obj_ref = get_register(obj_reg);
+        /* F-NEW-268d (CONT-18g): ART iget null-receiver law — iget on a null
+         * receiver throws NullPointerException at the access (ART resolves
+         * the field first, then null-checks — same order here; the silent
+         * default-value answer hid the first divergence, issue #381 face d).
+         * f141_is_null_receiver covers NULL_REF / OBJECT_REF-id-0 / INT32-0
+         * typed null (F-141 + F-266a untyped-register law). */
+        if (f141_is_null_receiver(obj_ref)) {
+            raise_synthetic_exception(
+                "Ljava/lang/NullPointerException;",
+                "Attempt to read from field '" + field_res.class_descriptor +
+                    "." + field_res.field_name +
+                    "' on a null object reference",
+                "iget-null-recv");
+            return true;  /* pc_ set by raise (catch handler) or frame unwind */
+        }
         if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
             // S134 F-NEW-160: qualified field identity (declaring class + name).
-            const std::string s134_decl = resolved_field_declarer(
+            // F-NEW-325: a framework-owned field (no DEX declarer on the
+            // chain — DrawerLayout$g -> width, declared by the framework
+            // MarginLayoutParams) keeps ONE bare slot even when the REF
+            // class is DEX-defined; the ref-class key fabricated a second
+            // identity and the read answered a fabricated default.
+            const std::string s134_decl = true_dex_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
             std::string s134_fkey =
                 s134_dex_field_key(s134_decl, field_res.field_name,
@@ -17091,6 +19017,36 @@ DalvikValue DalvikExecutionEngine::materialize_init_default(
     return v;
 }
 
+// F-NEW-274 (CONT-22) — ART constructor-contract gate for R-NEW-414
+// initializer materialization (see header for the law). Live face (dooz,
+// run/cont21/after/dooz_r3 + fresh CONT-22 runs): Lgf1;.g's initializer is
+// `new Lwg0;(Lrf1;, I)` — an R8 merged-lambda class whose ONLY constructors
+// take captured arguments; R414 fabricated a zero Lwg0; whose capture field
+// .f stayed null, the caller's own `if-eqz` null-guard at the read site
+// (Lg8;.a:  iget g; if-eqz; …invoke .y) then saw a NON-null broken object,
+// invoked the save-lambda body, and died at `iget Lrf1;.f` on the null
+// capture (SavedStateRegistry.performSave neighborhood). ART law: a field
+// never written reads null; an initializer-default object exists only after
+// its constructing <init> ran, so a class with no ()V ctor cannot have a
+// legal zero-state instance. DEX-defined classes are inspected for a ()V
+// <init>; non-DEX classes (framework Rect/Point/TypedValue shells the
+// materializer seeds itself) keep the old behavior.
+bool DalvikExecutionEngine::class_has_no_arg_ctor(const std::string& type_desc) {
+    if (type_desc.empty() || type_desc[0] != 'L') return false;
+    auto cit = class_info_index_.find(type_desc);
+    if (cit == class_info_index_.end() ||
+        cit->second >= dex_report_->classes.size()) {
+        // Framework-owned type: materialize_init_default's seed block
+        // defines its zero-state contract (Rect/Point/PointF/TypedValue).
+        return true;
+    }
+    const auto& cls = dex_report_->classes[cit->second];
+    for (const auto& m : cls.direct_methods) {
+        if (m.name == "<init>" && m.descriptor == "()V") return true;
+    }
+    return false;
+}
+
 bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& trace) {
     // Format: 22c iget-object vA, vB, field@CCCC
     // Read object field from object and place reference in destination register
@@ -17131,6 +19087,19 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     // Get object reference from register
     DalvikValue obj_ref = get_register(obj_reg);
 
+    /* F-NEW-268d (CONT-18g): ART iget-object null-receiver law — mirror of
+     * the iget arm (field resolved first, then the null check; issue #381
+     * face d). The old path answered a silent null default. */
+    if (f141_is_null_receiver(obj_ref)) {
+        raise_synthetic_exception(
+            "Ljava/lang/NullPointerException;",
+            "Attempt to read from field '" + field_res.class_descriptor +
+                "." + field_res.field_name +
+                "' on a null object reference",
+            "iget-null-recv");
+        return true;  /* pc_ set by raise (catch handler) or frame unwind */
+    }
+
     // S88 DIAG (bounded, env-gated): MiniFont$Glyph field reads — tweakWidth
     // NPE "Path.transform on null" while iput traces show the path field
     // stored. This probe exposes resolved/has_object/result for every
@@ -17164,8 +19133,9 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                           << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
                           << std::endl;
             }
+            // F-NEW-325: true-declarer keying (see execute_iget).
             const std::string s134_decl =
-                resolved_field_declarer(field_res.class_descriptor,
+                true_dex_field_declarer(field_res.class_descriptor,
                                         field_res.field_name);
             auto field_val = heap_.get_object_field(obj_ref.object_id,
                 s134_dex_field_key(s134_decl, field_res.field_name,
@@ -17176,7 +19146,14 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                     std::getenv("MINIANDROID_S134_QPROBE") != nullptr;
                 if (s134_qprobe) {
                     static thread_local uint64_t s134_qn = 0;
-                    if (s134_qn < 60) {
+                    // S49 convention: budget env-configurable
+                    // (MINIANDROID_S134_QGET_BUDGET) so deep-boot forensics
+                    // can capture beyond the default 60 rows.
+                    static thread_local uint64_t s134_qcap = [] {
+                        const char* b = std::getenv("MINIANDROID_S134_QGET_BUDGET");
+                        return (b != nullptr) ? static_cast<uint64_t>(atoi(b)) : 60ull;
+                    }();
+                    if (s134_qn < s134_qcap) {
                         ++s134_qn;
                         std::cerr << "[S134-QGET] key="
                                   << s134_dex_field_key(field_res.class_descriptor,
@@ -17273,6 +19250,28 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                             auto ft = fm->second.find(field_res.field_name);
                             if (ft != fm->second.end() && !ft->second.empty() &&
                                 ft->second == field_res.field_type) {
+                                // F-NEW-274 constructor-contract gate: fabricate
+                                // ONLY when the initializer type has a ()V ctor
+                                // (or is framework-owned). Otherwise the honest
+                                // ART default (null) flows and the app's own
+                                // null-handling runs.
+                                if (!class_has_no_arg_ctor(ft->second)) {
+                                    static thread_local uint64_t f274_n = 0;
+                                    if (f274_n < 16) {
+                                        ++f274_n;
+                                        std::cerr << "[F274-CTORGATE] "
+                                                  << walk << "."
+                                                  << field_res.field_name
+                                                  << " initializer type "
+                                                  << ft->second
+                                                  << " has no ()V ctor -> honest null (recv="
+                                                  << r414_cls << " caller="
+                                                  << current_class_ << "."
+                                                  << current_method_
+                                                  << " pc=" << pc << ")"
+                                                  << std::endl;
+                                    }
+                                } else {
                                     DalvikValue dv =
                                         materialize_init_default(ft->second);
                                     if (dv.type == DalvikType::OBJECT_REF &&
@@ -17316,6 +19315,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                                 }
                             }
                         }
+                    }
                     }
                 }
             }
@@ -17401,6 +19401,23 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                 if (fm != init_field_defaults_.end()) {
                     auto ft = fm->second.find(field_res.field_name);
                     if (ft != fm->second.end() && !ft->second.empty()) {
+                        // F-NEW-274 constructor-contract gate (same law as the
+                        // in-heap arm): a class with no ()V constructor has no
+                        // legal zero-state instance — answer the honest ART
+                        // default (null) instead of a fabricated object.
+                        if (!class_has_no_arg_ctor(ft->second)) {
+                            static thread_local uint64_t f274b_n = 0;
+                            if (f274b_n < 16) {
+                                ++f274b_n;
+                                std::cerr << "[F274-CTORGATE-B] field "
+                                          << field_res.class_descriptor << "."
+                                          << field_res.field_name
+                                          << " initializer type " << ft->second
+                                          << " has no ()V ctor -> honest null"
+                                          << std::endl;
+                            }
+                            break;
+                        }
                         DalvikValue dv = materialize_init_default(ft->second);
                         if (dv.type == DalvikType::OBJECT_REF &&
                             dv.object_id != 0) {
@@ -17426,6 +19443,69 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                 auto sit = class_to_superclass_.find(walk);
                 walk = (sit != class_to_superclass_.end()) ? sit->second : "";
             }
+        }
+    }
+    // ── F-NEW-271 LAW DIAG (read-side twin, env-gated MINIANDROID_FIELD_LAW_DIAG,
+    // bounded, read-only). A field read answering a STRING_REF while the
+    // field's declared type (from field_ids) is NOT Ljava/lang/String is an
+    // alien-typed value — the exact face F-271 recorded on Lnb0.j (STRING_REF
+    // in a :Lqb0 slot). Dump the read-key identity (qualified vs bare via the
+    // resolved declarer), the receiver's heap class, and the receiver's FULL
+    // field map (all slots, keys, types, bounded contents) so the polluted
+    // slot and the value's origin are both visible. The write-side twin lives
+    // in execute_iput_object and catches the alien store in the act.
+    if (std::getenv("MINIANDROID_FIELD_LAW_DIAG") &&
+        result_value.type == DalvikType::STRING_REF &&
+        field_res.field_type != "Ljava/lang/String;") {
+        static thread_local uint64_t f271_rn = 0;
+        if (f271_rn < 40) {
+            ++f271_rn;
+            std::cerr << "[F271-READ] " << current_class_ << "."
+                      << current_method_ << " pc=" << pc
+                      << " field=" << field_res.class_descriptor << "."
+                      << field_res.field_name << " : " << field_res.field_type
+                      << " answered STRING_REF len="
+                      << result_value.string_val.size()
+                      << " str=\"" << result_value.string_val.substr(0, 48)
+                      << "\"";
+            if (obj_ref.type == DalvikType::OBJECT_REF) {
+                const std::string f271_decl = resolved_field_declarer(
+                    field_res.class_descriptor, field_res.field_name);
+                std::cerr << " recv#" << obj_ref.object_id
+                          << " recv_reg_cls=" << obj_ref.class_desc
+                          << " declarer=" << f271_decl
+                          << " dex_defined="
+                          << (is_dex_defined_class(f271_decl) ? 1 : 0)
+                          << " readkey="
+                          << s134_dex_field_key(
+                                 f271_decl, field_res.field_name,
+                                 is_dex_defined_class(f271_decl));
+                if (heap_.has_object(obj_ref.object_id)) {
+                    const HeapObject* f271_ho = heap_.get(obj_ref.object_id);
+                    if (f271_ho) {
+                        std::cerr << " heap_cls=" << f271_ho->class_descriptor
+                                  << " fields[" << f271_ho->fields.size()
+                                  << "]:";
+                        int f271_nf = 0;
+                        for (const auto& [fk, fv] : f271_ho->fields) {
+                            if (f271_nf++ >= 20) {
+                                std::cerr << " ...";
+                                break;
+                            }
+                            std::cerr << " " << fk << "=t"
+                                      << static_cast<int>(fv.type) << "/o"
+                                      << fv.object_id;
+                            if (fv.type == DalvikType::STRING_REF)
+                                std::cerr << "(\""
+                                          << fv.string_val.substr(0, 32)
+                                          << "\")";
+                        }
+                    }
+                } else {
+                    std::cerr << " recv-not-in-heap";
+                }
+            }
+            std::cerr << std::endl;
         }
     }
     // EXP-042 Phase 2: if obj_ref is not OBJECT_REF (uninit, null, primitive),
@@ -17520,8 +19600,20 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
         heap_.has_object(obj_ref.object_id)) {
         // S134 F-NEW-160: dual write — qualified primary key (declaring
         // class + name) + bare legacy mirror (C++ shadow readers).
+        // F-NEW-321 (CONT-50): the mirror write is RAW (exact bare key, no
+        // F-NEW-251 redirect) — the redirect re-resolves the bare name
+        // against the receiver's most-derived declarer, so a SUPERCLASS
+        // write's mirror landed in the SUBCLASS's shadowed qualified slot
+        // (solitaire 71: ay$a.<init> mObservable mirror clobbered c$b.a =
+        // the outer presenter; probe fnew320 N2 PRE face). The mirror is a
+        // legacy channel, not a second identity resolution.
         {
-            const std::string s134_decl = resolved_field_declarer(
+            // F-NEW-325: true-declarer keying — a framework-owned field
+            // (no DEX declarer; the bare/raw mirror IS the slot) stays
+            // bare even when the REF class is DEX-defined; a real DEX
+            // declarer keeps the qualified slot + the raw bare mirror
+            // (F-NEW-321 law unchanged).
+            const std::string s134_decl = true_dex_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
             if (!is_dex_defined_class(s134_decl)) {
                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
@@ -17530,8 +19622,8 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                 heap_.set_object_field(obj_ref.object_id,
                     s134_dex_field_key(s134_decl, field_res.field_name, true),
                     src_val);
-                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
-                                       src_val);
+                heap_.set_object_field_raw(obj_ref.object_id,
+                                           field_res.field_name, src_val);
             }
         }
         // M3 FIELD-TRACE (AG diagnostic): env-gated field-store value trace.
@@ -17616,6 +19708,15 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     // EXP-042 Phase 2 FIX: never return false — always advance pc_.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
 
+    // F-NEW-282 (store side): a CLASS_REF source value written through
+    // iput-object must land as its heap-backed Class token (F-103 identity
+    // map), not as a raw class-typed register value — raw CLASS_REF does
+    // not survive the frame machinery (see the F-NEW-282 law comment in
+    // execute_method_internal) and consumers read the field back as
+    // null/unset (oracle: ClassReference.jClass → getJClass/equals/
+    // isInstance/getQualifiedName all null). Same generic law as the
+    // argument-boundary materialization; no app knowledge.
+
     uint16_t instr = bytecode_[pc];
     uint8_t src_reg = (instr >> 8) & 0xF;
     uint8_t obj_reg = (instr >> 12) & 0xF;
@@ -17623,9 +19724,21 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
 
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
+    // F-NEW-282 (store side) — materialize now that src_val is bound.
+    if (src_val.type == DalvikType::CLASS_REF && !src_val.class_desc.empty()) {
+        auto f282_it = class_token_ids_.find(src_val.class_desc);
+        uint32_t f282_token = 0;
+        if (f282_it != class_token_ids_.end()) {
+            f282_token = f282_it->second;
+        } else {
+            f282_token = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+            heap_.set_object_field(f282_token, "__referent_desc",
+                                   DalvikValue::make_string(src_val.class_desc, 0));
+            class_token_ids_.emplace(src_val.class_desc, f282_token);
+        }
+        src_val = DalvikValue::make_object(f282_token, "Ljava/lang/Class;");
+    }
     DalvikValue obj_ref = get_register(obj_reg);
-
-    // EXP-058: Debug — log iput-object for actionBarLayout field.
     if (field_res.resolved && field_res.field_name == "actionBarLayout") {
         std::cerr << "[EXP058-IPUT] iput-object actionBarLayout"
                   << " src_reg=v" << (int)src_reg
@@ -17699,9 +19812,71 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
 
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
+        // ── F-NEW-271 LAW DIAG (write-side twin, env-gated
+        // MINIANDROID_FIELD_LAW_DIAG, bounded, read-only): an iput-object
+        // storing a STRING_REF into a field whose declared type is not
+        // Ljava/lang/String is the alien-typed store family — catch it in
+        // the act with caller identity, both store keys, the receiver's
+        // runtime class, and its pre-store field map.
+        if (std::getenv("MINIANDROID_FIELD_LAW_DIAG") &&
+            src_val.type == DalvikType::STRING_REF &&
+            (field_res.field_type != "Ljava/lang/String;" ||
+             src_val.string_val.empty())) {
+            static thread_local uint64_t f271_wn = 0;
+            if (f271_wn < 40) {
+                ++f271_wn;
+                std::cerr << "[F271-WRITE] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc
+                          << " field=" << field_res.class_descriptor << "."
+                          << field_res.field_name << " : "
+                          << field_res.field_type
+                          << " <- STRING_REF len=" << src_val.string_val.size()
+                          << " str=\"" << src_val.string_val.substr(0, 48)
+                          << "\" recv#" << obj_ref.object_id
+                          << " recv_reg_cls=" << obj_ref.class_desc;
+                {
+                    const std::string f271_wdecl = resolved_field_declarer(
+                        field_res.class_descriptor, field_res.field_name);
+                    std::cerr << " declarer=" << f271_wdecl
+                              << " qkey="
+                              << s134_dex_field_key(
+                                     f271_wdecl, field_res.field_name,
+                                     is_dex_defined_class(f271_wdecl));
+                }
+                const HeapObject* f271_who = heap_.get(obj_ref.object_id);
+                if (f271_who) {
+                    std::cerr << " heap_cls=" << f271_who->class_descriptor
+                              << " pre-fields["
+                              << f271_who->fields.size() << "]:";
+                    int f271_wnf = 0;
+                    for (const auto& [fk, fv] : f271_who->fields) {
+                        if (f271_wnf++ >= 12) {
+                            std::cerr << " ...";
+                            break;
+                        }
+                        std::cerr << " " << fk << "=t"
+                                  << static_cast<int>(fv.type) << "/o"
+                                  << fv.object_id;
+                        if (fv.type == DalvikType::STRING_REF)
+                            std::cerr << "(\""
+                                      << fv.string_val.substr(0, 24)
+                                      << "\")";
+                    }
+                }
+                std::cerr << std::endl;
+            }
+        }
         // S134 F-NEW-160: dual write (qualified primary + bare legacy mirror).
+        // F-NEW-321 (CONT-50): the mirror write is RAW — see the execute_iput
+        // site for the law (a superclass write's mirror must not re-resolve
+        // onto the subclass's shadowed slot; solitaire c$b.a face).
         {
-            const std::string s134_decl = resolved_field_declarer(
+            // F-NEW-325: true-declarer keying — a framework-owned field
+            // (no DEX declarer; the bare/raw mirror IS the slot) stays
+            // bare even when the REF class is DEX-defined; a real DEX
+            // declarer keeps the qualified slot + the raw bare mirror
+            // (F-NEW-321 law unchanged).
+            const std::string s134_decl = true_dex_field_declarer(
                 field_res.class_descriptor, field_res.field_name);
             if (!is_dex_defined_class(s134_decl)) {
                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
@@ -17710,8 +19885,8 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                 heap_.set_object_field(obj_ref.object_id,
                     s134_dex_field_key(s134_decl, field_res.field_name, true),
                     src_val);
-                heap_.set_object_field(obj_ref.object_id, field_res.field_name,
-                                       src_val);
+                heap_.set_object_field_raw(obj_ref.object_id,
+                                           field_res.field_name, src_val);
             }
         }
         if (field_trace_active(field_res.field_name.c_str(),
@@ -17780,6 +19955,17 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     uint16_t field_idx = bytecode_[pc + 1];
 
     FieldResolution field_res = resolve_field(field_idx);
+    // CONT-38 decode diag (env-gated, bounded): UNRESOLVED static-field
+    // reads answer 0 silently — the theme-defaults zero face.
+    if (!field_res.resolved) {
+        static thread_local const bool ufs_on =
+            std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+        static thread_local uint64_t ufs_n = 0;
+        if (ufs_on && ufs_n++ < 40)
+            std::cerr << "[SGET-UNRESOLVED] field_idx=" << field_idx
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << " pc=" << pc << std::endl;
+    }
 
     // EXP-053: Ensure the class is initialized before reading its static field.
     // F-NEW-215: active use (sget) of an ERRONEOUS class raises
@@ -17810,6 +19996,27 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // CONT-38 decode diag (env-gated, bounded): the sget-WIDE color
+        // statics — the actual path the painter takeOrElse chain reads.
+        if (std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr &&
+            (field_res.class_descriptor == "Lzh;" ||
+             field_res.class_descriptor == "Lai;" ||
+             field_res.class_descriptor == "Lts0;" ||
+             field_res.class_descriptor == "Lci;")) {
+            static thread_local uint64_t c38s_n = 0;
+            if (c38s_n++ < 8000)
+                {
+                    auto vit = static_field_storage_.find(static_key);
+                    long long vhex = (vit != static_field_storage_.end() &&
+                                      vit->second.type == DalvikType::INT64)
+                                         ? vit->second.long_val : -1;
+                    std::cerr << "[COLOR-SGET-W] " << static_key
+                              << " hit=" << (vit != static_field_storage_.end())
+                              << " val=0x" << std::hex << vhex << std::dec
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc << std::endl;
+                }
+        }
         if (it != static_field_storage_.end()) {
             result_value = it->second;
         } else if (field_res.class_descriptor ==
@@ -17956,6 +20163,19 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // CONT-38 decode diag (env-gated, bounded): the theme-defaults
+        // color statics — who reads them and what the storage answers.
+        if (std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr &&
+            (field_res.class_descriptor == "Lzh;" ||
+             field_res.class_descriptor == "Lai;" ||
+             field_res.class_descriptor == "Lts0;")) {
+            static thread_local uint64_t c38_n = 0;
+            if (c38_n++ < 300)
+                std::cerr << "[COLOR-SGET] " << static_key
+                          << " hit=" << (it != static_field_storage_.end())
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+        }
         if (it != static_field_storage_.end()) {
             result_value = it->second;
         } else {
@@ -18148,6 +20368,66 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 static_field_storage_[static_key] = result_value;
                 std::cerr << "[R-NEW-397] synthesized Collections."
                           << field_res.field_name << " obj#" << e_id
+                          << std::endl;
+            } else if (field_res.class_descriptor ==
+                           "Landroid/graphics/Typeface;" &&
+                       (field_res.field_name == "DEFAULT" ||
+                        field_res.field_name == "DEFAULT_BOLD" ||
+                        field_res.field_name == "SANS_SERIF" ||
+                        field_res.field_name == "SERIF" ||
+                        field_res.field_name == "MONOSPACE")) {
+                // F-NEW-294 (CONT-35): AOSP Typeface static-constant law.
+                // frameworks/base/graphics/java/android/graphics/Typeface.java
+                // declares the family constants as static finals built by
+                // create() inside <clinit>:
+                //   DEFAULT       = create((String) null, NORMAL)
+                //   DEFAULT_BOLD  = create((String) null, BOLD)
+                //   SANS_SERIF    = create("sans-serif", NORMAL)
+                //   SERIF         = create("serif", NORMAL)
+                //   MONOSPACE     = create("monospace", NORMAL)
+                // A live ART <clinit> ALWAYS completes — the constants are
+                // NEVER null (same platform-constant law family as the
+                // Boolean/Locale/StandardCharsets arms above). The engine
+                // runs no framework <clinit> for the platform class, so the
+                // sget hit [SGET-MISS] and answered NULL; the R8-inlined
+                // Compose font resolver (FontListFontFamilyTypefaceAdapter
+                // .resolve → TypefaceResult(value, immediate)) then handed
+                // the null value to the consumer's Kotlin platform-type
+                // `!!` check — compiled as invoke-virtual getClass() BEFORE
+                // the check-cast — and composeStopwatch's
+                // AndroidParagraphIntrinsics (Lk6;.<init> pc=409) NPE'd
+                // once per run ("getClass on a null object reference"),
+                // aborting the text pass and leaving the Compose stopwatch
+                // view (Lh4;) at onDraw ops=0. Materialize each constant as
+                // a REAL heap Typeface object carrying its family/style
+                // (__typeface_family__/__typeface_style__), cached per
+                // static_key so identity comparisons hold — the same shape
+                // the bridge_to_api create/defaultFromStyle law answers.
+                const char* fam = "sans-serif";
+                int st = 0;
+                if (field_res.field_name == "DEFAULT_BOLD") {
+                    fam = "sans-serif"; st = 1;
+                } else if (field_res.field_name == "SANS_SERIF") {
+                    fam = "sans-serif"; st = 0;
+                } else if (field_res.field_name == "SERIF") {
+                    fam = "serif"; st = 0;
+                } else if (field_res.field_name == "MONOSPACE") {
+                    fam = "monospace"; st = 0;
+                } else {
+                    fam = "sans-serif"; st = 0;   // DEFAULT
+                }
+                uint32_t tf_id = heap_.allocate("Landroid/graphics/Typeface;",
+                                                pc, 0);
+                heap_.set_object_field(tf_id, "__typeface_family__",
+                                       DalvikValue::make_string(fam, 0));
+                heap_.set_object_field(tf_id, "__typeface_style__",
+                                       DalvikValue::make_int(st));
+                result_value = DalvikValue::make_object(
+                    tf_id, "Landroid/graphics/Typeface;");
+                static_field_storage_[static_key] = result_value;
+                std::cerr << "[F-NEW-294] synthesized Typeface."
+                          << field_res.field_name << " family=" << fam
+                          << " style=" << st << " oid=" << tf_id
                           << std::endl;
             } else if (field_res.class_descriptor ==
                            "Landroid/view/View$MeasureSpec;" &&
@@ -18728,9 +21008,20 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // on non-null WindowInsets objects everywhere, and the runtime's
         // platform law provides them. Unclaimed classes keep the
         // ART-faithful throw below.
-        if (shadow_registry_ && shadow_registry_->claims_class(declaring_class)) {
+        // F-NEW-270 (CONT-18h) ROUTE DOMAIN LAW: the route is lawful for
+        // FRAMEWORK classes only. ViewShadow's EXP-060 heuristic claims
+        // every non-framework class ("could be a View subclass"), so an
+        // ungated claims_class() check also captured R8-obfuscated app
+        // classes and let their real DEX bodies run with this=null — the
+        // wrong-site-exception disease F-141 eliminated (live face: dooz
+        // Lhv0;.h→Lhv0;.d iget NPE at pc=17 inside the callee + silent
+        // h() swallow). Non-framework classes keep the ART throw.
+        if (shadow_registry_ && f141_is_framework_class(declaring_class) &&
+            shadow_registry_->claims_class(declaring_class)) {
             std::cerr << "[ROOT-059] null-recv routed to shadow law: " << declaring_class
-                      << "." << method_name_from_dex << std::endl;
+                      << "." << method_name_from_dex
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
             static_type = declaring_class;
             runtime_type = declaring_class;
             resolved_method = declaring_class + "." + method_name_from_dex;
@@ -18989,6 +21280,28 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                 last_invoke_return_ = return_val;
             }
         }
+        // ── CONT-12 F-NEW-266 ─────────────────────────────────────────────
+        // ART/JVMS 5.4.5: after the class chain misses, virtual resolution
+        // continues into the receiver's TRANSITIVELY IMPLEMENTED INTERFACES
+        // (default methods). The pre-266 path fell to the API bridge whose
+        // stub silently returned null — the null fed the next instruction
+        // (un-renamed Compose 1.11.4 oracle face: root$1$1.then(other) →
+        // interface Modifier.then default body → null → chained
+        // invoke-interface receiver NPE ×172 → setContent dead).
+        if (!recursively_invoked && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            !runtime_type.empty() && runtime_type != "<unknown>") {
+            std::string f266_dispatched;
+            if (try_interface_default_invoke(
+                    runtime_type, method_name_from_dex, invoke_descriptor_35c,
+                    args, return_val, result, &f266_dispatched)) {
+                recursively_invoked = true;
+                api_status = ApiCallTrace::Status::IMPLEMENTED;
+                last_invoke_return_ = return_val;
+                trace.invoked_method = f266_dispatched +
+                    " [default-method " + invoke_descriptor_35c + "]";
+            }
+        }
     }
 
     if (declaring_class == "Lh1/t;" && method_name_from_dex == "a") {
@@ -19021,6 +21334,48 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             }
         }
         bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status, method_idx); last_invoke_return_ = return_val;
+        // ── F-NEW-271 LAW DIAG (collection add/remove channel, env-gated
+        // MINIANDROID_F271_COLL_TRACE, bounded, read-only). The F271-WRITE
+        // face (dooz Lnb0.p pc=1553 storing STRING_REF "" into Lnb0.j:Lqb0)
+        // is served by the CollectionShadow remove(int) channel: a slot that
+        // stored a NULL/zero-ref element (kind-2 + "" null-element
+        // representation) is served back as handled_string("") → STRING_REF/0
+        // — an alien type ART would never produce (ArrayList.remove of a null
+        // element returns typed null). This trace records BOTH directions of
+        // the channel with the live arg kinds and the served value so the
+        // first incorrect state (a legal add(null) vs a zero-ref OBJECT arg
+        // fed by an upstream conversion defect) is evidence, not guesswork.
+        if (std::getenv("MINIANDROID_F271_COLL_TRACE") &&
+            (method_name_from_dex == "add" || method_name_from_dex == "remove" ||
+             method_name_from_dex == "removeAt" || method_name_from_dex == "removeFirst" ||
+             method_name_from_dex == "removeLast" || method_name_from_dex == "pop" ||
+             method_name_from_dex == "poll" || method_name_from_dex == "pollLast") &&
+            (api_class.find("Ljava/util/ArrayList;") != std::string::npos ||
+             api_class.find("Ljava/util/ArrayDeque;") != std::string::npos ||
+             api_class.find("Ljava/util/LinkedList;") != std::string::npos)) {
+            static thread_local uint64_t f271_coll_n = 0;
+            if (f271_coll_n < 100) {
+                ++f271_coll_n;
+                std::cerr << "[F271-COLL] " << method_name_from_dex
+                          << " recv=" << api_class
+                          << " recv_id=" << (!args.empty() ? args[0].object_id : 0)
+                          << " argc=" << args.size();
+                for (size_t fci = 1; fci < args.size() && fci <= 3; ++fci) {
+                    std::cerr << " a" << fci << ":t"
+                              << static_cast<int>(args[fci].type) << "/o"
+                              << args[fci].object_id;
+                    if (args[fci].type == DalvikType::STRING_REF)
+                        std::cerr << "(\"" << args[fci].string_val.substr(0, 24) << "\")";
+                }
+                std::cerr << " -> served t"
+                          << static_cast<int>(return_val.type) << "/o"
+                          << return_val.object_id;
+                if (return_val.type == DalvikType::STRING_REF)
+                    std::cerr << "(\"" << return_val.string_val.substr(0, 24) << "\")";
+                std::cerr << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+            }
+        }
     }
 
     // EXP-094 (CM-018): Record the receiver of a successful "setParams" call.
@@ -19139,12 +21494,18 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
 
     // CYCLE-E: signature-aware param conversion for 35c instance calls
     // (super). See execute_invoke_virtual for the full rationale.
+    // F-NEW-284: proto_35c is declared at dispatch scope (not inside the
+    // dex_report_ guard) so the super-dispatch arm can pass it to
+    // try_recursive_invoke as the F-023 exact-descriptor authority. Empty
+    // when the proto is unresolvable — legacy behavior preserved.
+    std::string proto_35c;
     if (dex_report_) {
-        const std::string proto_35c =
-            resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        proto_35c = resolve_method_proto_for_dex(method_idx, current_dex_index_);
         if (proto_35c != "<unknown>") {
             args = build_invoke_args(args, parse_proto_param_types(proto_35c),
                                      /*is_static=*/false);
+        } else {
+            proto_35c.clear();
         }
     }
 
@@ -19206,8 +21567,25 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
 
     // EXP-038 (BLOCKER-034): Try recursive invocation for super calls too.
     bool recursively_invoked = false;
+    // F-NEW-284 (CONT-28): the call-site proto is the F-023 overload law's
+    // AUTHORITY here too — the proto was already resolved above for the
+    // EXP-095 arg conversion but was NOT passed to the dispatcher, so every
+    // super-dispatch selected overloads by SHAPE. Real-Compose oracle proof
+    // (proto-free selection, JVMS 5.4.5): NodeCoordinator declares TWO
+    // same-name 32-unit overloads placeAt-f8xVGno(JF, GraphicsLayer)V and
+    // placeAt-f8xVGno(JF, Function1)V; LayoutModifierNodeCoordinator.
+    // placeAt(JF, Function1)V invoke-super'd without a descriptor, the
+    // loose shape loop hit the GraphicsLayer body first, its `layer` param
+    // register received the Function1 lambda, placeSelf carried the lambda
+    // into the explicitLayer slot, and GraphicsLayerOwnerLayer ended up
+    // with a lambda where its GraphicsLayer belongs — every later
+    // GraphicsLayer.setPosition/record died f141-null-recv on the missing
+    // impl field (the draw-pipeline APP BOUNDARY). The proto restores
+    // exact-descriptor selection; without one the legacy behavior is
+    // byte-identical (descriptor=="" keeps the old path).
     if (config_.enable_api_bridge) {
-        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result,
+                                 proto_35c)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             api_status = ApiCallTrace::Status::IMPLEMENTED;
         }
@@ -19222,7 +21600,34 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
         // ThreadShadow (no worker ever ran: runBlocking/BlockingCoroutine
         // spun forever in joinBlocking). Marker kept in the api_trace log
         // line below only.
-        bridge_to_api(declaring_class, method_name,
+        //
+        // ── F-NEW-324 (CONT-52): the super-dispatch BOUNDARY law. When the
+        // declaring class is a DEX-defined INTERMEDIATE that does not
+        // define the method (NavigationView.onMeasure does invoke-super
+        // f.onMeasure where f = ScrimInsetsFrameLayout is a DEX class with
+        // NO onMeasure whose super is the FrameLayout boundary), ART
+        // resolution continues PAST the DEX chain onto the FIRST framework
+        // ancestor — the bridge must see THAT boundary class, not the DEX
+        // declaring class, or every shadow keyed by a framework name
+        // silently misses: the FrameLayout.onMeasure measure law never
+        // ran, setMeasuredDimension was never reached, and the engine
+        // recorded [DEX-MEASURE] NavigationView.onMeasure
+        // "FAILED(no write-back)" on every pass → the whole drawer menu
+        // measured 0x0 and the NavigationView node never entered the
+        // render tree. Walk the DEX superclass chain up from the declaring
+        // class; the first NON-DEX ancestor is the boundary. Declaring
+        // classes that are already framework classes (the R-NEW-345 case,
+        // e.g. RecyclerView.onMeasure's super → ViewGroup) are untouched —
+        // probe fnew324 P2 pins that control face.
+        std::string bridge_cls = declaring_class;
+        if (dex_report_ && is_dex_defined_class(declaring_class)) {
+            std::string boundary = superclass_of(declaring_class);
+            while (!boundary.empty() && is_dex_defined_class(boundary)) {
+                boundary = superclass_of(boundary);
+            }
+            if (!boundary.empty()) bridge_cls = boundary;
+        }
+        bridge_to_api(bridge_cls, method_name,
                       args, return_val, api_status, method_idx);
         last_invoke_return_ = return_val;
     }
@@ -20147,6 +22552,64 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         // try_shadow_dispatch inside bridge_to_api will see it and correctly
         // treat args[0] as the first parameter (not `this`).
         bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-326 (CONT-54): the framework-boundary static resolution
+        // law. ART invoke-static resolution walks the FULL superclass
+        // chain — INCLUDING past the DEX boundary into the framework — to
+        // the class that actually declares the method (Dalvik spec: the
+        // method must be declared in the referenced class or one of its
+        // superclasses). Byte-level evidence (solitaire classes.dex):
+        // five support-lib classes (DrawerLayout m@5133, NestedScrollView
+        // m@5251, ActionMenuView m@7364, Toolbar m@8216, ar m@8737) carry
+        // method_ids naming THEIR OWN class as the owner of
+        // getChildMeasureSpec(III)I while NO class in the DEX declares it
+        // (DrawerLayout's class_data jumps m@5124 -> m@5143 — the id is
+        // undeclared); on a real device every such invoke resolves to the
+        // framework ViewGroup.getChildMeasureSpec law. try_recursive_invoke
+        // (exact local match + F-074/F-280 super-walk) only walks DEX
+        // ancestors, and the first bridge dispatch keyed on the APP class
+        // identity — a STUBBED typed-default answer with NO handler run.
+        // Law: when (a) the named class IS a DEX class and (b) the first
+        // dispatch ended STUBBED (the typed-default tail — side-effect-
+        // free, so a retry cannot double-fire any handler), walk the
+        // superclass chain past the DEX boundary (nearest framework
+        // ancestor first, bounded 16 hops) and accept the first
+        // IMPLEMENTED framework law. Otherwise the original STUBBED
+        // answer stands — byte-identical to the pre-law behavior.
+        // ────────────────────────────────────────────────────────────────
+        if (status == ApiCallTrace::Status::STUBBED &&
+            class_info_index_.find(class_name) != class_info_index_.end()) {
+            std::string walk = class_name;
+            for (int hop = 0; hop < 16; ++hop) {
+                auto sup_it = class_to_superclass_.find(walk);
+                if (sup_it == class_to_superclass_.end()) break;
+                std::string sup = sup_it->second;
+                if (sup.empty() || sup == "Ljava/lang/Object;") break;
+                walk = sup;
+                // DEX ancestors were already covered by the resolver's
+                // own walk — the retry is for the FRAMEWORK boundary.
+                if (class_info_index_.find(sup) != class_info_index_.end())
+                    continue;
+                ApiCallTrace::Status f326_st = ApiCallTrace::Status::STUBBED;
+                DalvikValue f326_rv = DalvikValue::make_void();
+                bridge_to_api(sup, method_name, args, f326_rv, f326_st,
+                              method_idx);
+                if (f326_st == ApiCallTrace::Status::IMPLEMENTED) {
+                    static thread_local uint64_t f326_redispatch_n = 0;
+                    if (f326_redispatch_n < 40) {
+                        ++f326_redispatch_n;
+                        std::cerr << "[F-NEW-326] static re-dispatch "
+                                  << class_name << "." << method_name
+                                  << " as " << sup
+                                  << " (framework boundary)" << std::endl;
+                    }
+                    return_val = f326_rv;
+                    last_invoke_return_ = f326_rv;
+                    status = f326_st;
+                    break;
+                }
+            }
+        }
     }
 
     ApiCallTrace api_trace;
@@ -20253,6 +22716,53 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
 
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): UV-DISPATCH watch. The Compose
+    // text painter (Lte1/Lod1) reaches the canvas ONLY as a Luv draw block
+    // through Loc0.c — this is the APK's SINGLE Luv;->I dispatch site. Log
+    // the receiver's runtime class per dispatch: answers WHICH draw blocks
+    // actually run per frame (observed: only 20 of 82 D0 walk nodes reach
+    // here; the text painter's I never fires). Env-gated, bounded — zero
+    // behavior change.
+    // ────────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool uvw_on =
+            std::getenv("MINIANDROID_UV_WATCH") != nullptr;
+        if (uvw_on && class_name == "Luv;" && method_name == "I") {
+            static thread_local uint64_t uvw_n = 0;
+            if (uvw_n++ < 400) {
+                const char* uvw_t = "(noargs)";
+                if (!args.empty()) {
+                    if (args[0].type == DalvikType::OBJECT_REF)
+                        uvw_t = args[0].class_desc.c_str();
+                    else if (args[0].type == DalvikType::NULL_REF)
+                        uvw_t = "NULL";
+                    else
+                        uvw_t = "other";
+                }
+                std::cerr << "[UV-DISPATCH] recv-cls=" << uvw_t
+                          << " obj=" << (args.empty() ? 0u : args[0].object_id)
+                          << " caller=" << current_class_ << "."
+                          << current_method_;
+                // CONT-37: dump the receiver's attached flag (Lok0.r) — the
+                // painter body's first gate — plus the coordinator field (l)
+                // identity, to answer whether attach state survived to draw.
+                if (!args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF) {
+                    auto rf = heap_.get_object_field(args[0].object_id, "r");
+                    auto lf = heap_.get_object_field(args[0].object_id, "l");
+                    std::cerr << " r="
+                              << (rf ? std::to_string(rf->bool_val)
+                                     : std::string("?"))
+                              << " l="
+                              << (lf ? std::to_string(lf->object_id)
+                                     : std::string("?"));
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
+
     // ── F-068 (R-NEW-292): RUNTIME-CLASS-FIRST interface dispatch law ─────
     // DEX invoke-interface dispatch: ART resolves the target against the
     // RECEIVER'S RUNTIME CLASS — the most specific implementation among
@@ -20309,6 +22819,66 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // MainActivity.onCreate died at invoke_pc=109 → first frame died.
     if (heap_obj && !heap_obj->class_descriptor.empty() &&
         heap_obj->class_descriptor != class_name) {
+        // F-NEW-281c: EXACT (name, descriptor) gate on the runtime-class-
+        // first arm. JVMS 5.4.3.4: a same-name different-proto method is
+        // NEVER a candidate for an interface invoke. With a concrete call-
+        // site proto, this arm may dispatch via try_recursive_invoke's
+        // legacy lenient (name-only) selection — which let a same-name
+        // WRONG-shape overload win BEFORE the interface-default search
+        // could run. Live face (real-Compose oracle): Factory.create(
+        // KClass, extras) dispatched InitializerViewModelFactory.create(
+        // Class, extras) — the KClass flowed into the Class slot,
+        // getKotlinClass re-wrapped it, and the initializer match failed
+        // with IAE "No initializer set for given class null" → APP
+        // BOUNDARY. Gate: when the proto is resolvable, the runtime class
+        // chain must declare an EXACT (name, proto) non-abstract method
+        // for this arm to fire; otherwise control proceeds to the
+        // declared-interface and interface-hierarchy default search
+        // (F-023 / F-NEW-281), which find the TRUE candidate. Empty proto
+        // keeps the legacy behavior unchanged.
+        bool f281c_exact = false;
+        if (!iface_proto.empty() && dex_report_) {
+            std::string f281c_cls = heap_obj->class_descriptor;
+            for (int f281c_hop = 0;
+                 f281c_hop < 8 && !f281c_cls.empty() && !f281c_exact;
+                 ++f281c_hop) {
+                for (const auto& cls : dex_report_->classes) {
+                    if (cls.name != f281c_cls) continue;
+                    for (const auto& mi : cls.all_methods()) {
+                        if (mi.code_offset == 0 || mi.is_abstract) continue;
+                        if (mi.name != method_name) continue;
+                        if (mi.descriptor == iface_proto) {
+                            f281c_exact = true;
+                            break;
+                        }
+                    }
+                    break;  // found the class def
+                }
+                if (f281c_exact) break;
+                auto f281c_sup = class_to_superclass_.find(f281c_cls);
+                if (f281c_sup == class_to_superclass_.end()) break;
+                f281c_cls = f281c_sup->second;
+                if (f281c_cls == "Ljava/lang/Object;") break;
+            }
+        }
+        // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): log the f281c gate result
+        // for the draw-block dispatch (Luv;.I) — if the exact walk misses a
+        // method that exists, the runtime-first arm is skipped and the
+        // dispatch falls to the deeper fallbacks (observed: painter paint
+        // dispatch never reaches the body).
+        if (std::getenv("MINIANDROID_UV_WATCH") && class_name == "Luv;" &&
+            method_name == "I" &&
+            (heap_obj->class_descriptor == "Lte1;" ||
+             heap_obj->class_descriptor == "Lod1;")) {
+            static thread_local uint64_t uvf_n = 0;
+            if (uvf_n++ < 60)
+                std::cerr << "[UV-F281C] recv=" << heap_obj->class_descriptor
+                          << " obj=" << (args.empty() ? 0u : args[0].object_id)
+                          << " proto=" << iface_proto
+                          << " exact=" << (f281c_exact ? 1 : 0)
+                          << std::endl;
+        }
+        if (f281c_exact || iface_proto.empty())
         // F-090i (R-NEW-322): pass the interface proto as the exact
         // descriptor so the F-023 overload law resolves same-name
         // overloads on the runtime class correctly.
@@ -20394,6 +22964,110 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                 }
             }
             if (f91b_dex_interface) {
+            // F-NEW-281: ART invoke-interface resolution law (JVMS
+            // 5.4.3.4): the candidate must match the (NAME, descriptor)
+            // pair — a same-descriptor different-name method is NEVER a
+            // candidate. The descriptor-only walk below is the R8
+            // independent-rename FALLBACK and must run LAST.
+            // Oracle proof of the gap: CompositionLocalAccessorScope.
+            // getCurrentValue(local) on a PersistentCompositionLocalHashMap
+            // receiver — the class declares no getCurrentValue, so the
+            // descriptor walk picked the FIRST same-shape method, the raw
+            // PersistentMap.get override (invoke-super + check-cast
+            // ValueHolder + return), answering a ValueHolder where the
+            // accessor law demands readValue()'s value; the real
+            // implementation is the inherited interface DEFAULT
+            // PersistentCompositionLocalMap.getCurrentValue = read(this)
+            // (getOrElse(key){defaultValueHolder}.readValue(this)).
+            // Order: (1) exact (name, descriptor) in the receiver's class
+            // chain; (2) exact (name, descriptor) DEFAULT body in the
+            // interface hierarchy (receiver interfaces, transitive,
+            // bounded); (3) legacy descriptor-only walk (unchanged).
+            bool f281_diag = std::getenv("MINIANDROID_F281_TRACE") != nullptr;
+            {
+                std::string f281_walk = heap_obj->class_descriptor;
+                for (int hop = 0; hop < 8 && !f281_walk.empty(); ++hop) {
+                    for (const auto& cls : dex_report_->classes) {
+                        if (cls.name != f281_walk) continue;
+                        for (const auto& mi : cls.all_methods()) {
+                            if (mi.code_offset == 0 || mi.is_abstract) continue;
+                            if (mi.descriptor != iface_proto) continue;
+                            if (mi.name != method_name) continue;
+                            if (try_recursive_invoke(f281_walk, mi.name, args,
+                                                     return_val, result)) {
+                                last_invoke_return_ = return_val;
+                                trace.invoked_method =
+                                    f281_walk + "." + mi.name;
+                                if (f281_diag)
+                                    std::cerr << "[F281-IFACE-NAME] "
+                                              << f281_walk << "." << mi.name
+                                              << iface_proto
+                                              << " (exact name+descriptor, class chain; call-site "
+                                              << class_name << "." << method_name
+                                              << ") → REAL DEX dispatched"
+                                              << std::endl;
+                                pc_ = pc + 3;
+                                return true;
+                            }
+                        }
+                        break;  // found the class def; stop scanning classes
+                    }
+                    auto sup_it = class_to_superclass_.find(f281_walk);
+                    if (sup_it == class_to_superclass_.end()) break;
+                    f281_walk = sup_it->second;
+                    if (f281_walk == "Ljava/lang/Object;") break;
+                }
+            }
+            {
+                // (2) interface-hierarchy DEFAULT bodies, exact
+                // (name, descriptor). BFS from the receiver's direct
+                // interfaces through super-interfaces (bounded 16 levels).
+                std::vector<std::string> f281_q;
+                auto ifc_it = class_to_interfaces_.find(
+                    heap_obj->class_descriptor);
+                if (ifc_it != class_to_interfaces_.end())
+                    f281_q = ifc_it->second;
+                for (int level = 0; level < 16 && !f281_q.empty(); ++level) {
+                    std::vector<std::string> f281_next;
+                    for (const auto& ifc : f281_q) {
+                        bool ifc_has_def = false;
+                        for (const auto& cls : dex_report_->classes) {
+                            if (cls.name != ifc) continue;
+                            for (const auto& mi : cls.all_methods()) {
+                                if (mi.code_offset == 0 || mi.is_abstract)
+                                    continue;
+                                if (mi.descriptor != iface_proto) continue;
+                                if (mi.name != method_name) continue;
+                                ifc_has_def = true;
+                                if (try_recursive_invoke(ifc, mi.name, args,
+                                                         return_val, result)) {
+                                    last_invoke_return_ = return_val;
+                                    trace.invoked_method = ifc + "." + mi.name;
+                                    if (f281_diag)
+                                        std::cerr << "[F281-IFACE-DEFAULT] "
+                                                  << ifc << "." << mi.name
+                                                  << iface_proto
+                                                  << " (interface-hierarchy default; call-site "
+                                                  << class_name << "."
+                                                  << method_name
+                                                  << ") → REAL DEX dispatched"
+                                                  << std::endl;
+                                    pc_ = pc + 3;
+                                    return true;
+                                }
+                            }
+                            break;  // found the interface def
+                        }
+                        if (!ifc_has_def) {
+                            auto sup_ifc = class_to_interfaces_.find(ifc);
+                            if (sup_ifc != class_to_interfaces_.end())
+                                for (const auto& p : sup_ifc->second)
+                                    f281_next.push_back(p);
+                        }
+                    }
+                    f281_q = f281_next;
+                }
+            }
             // Walk the receiver's class + superclass chain (DEX virtual
             // dispatch law: inherited implementations answer interface
             // calls; R8 renames per class, so the signature is the only
@@ -20772,6 +23446,33 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
                       << " obj=" << val.object_id
                       << " int_val=" << val.int_val
                       << std::endl;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): K0-DRAW-FETCH watch. The
+    // Compose LayoutNode.draw dispatch (Lmo0.D0) branches on K0(4): null →
+    // Z0 fallback (observed 0 executions in the draw window — impossible for
+    // a real tree where most nodes have no draw modifier), non-null → block
+    // dispatch (observed only 20 of 82). Watch K0's return value class to
+    // answer WHICH node object the fetch answers per call. Env-gated,
+    // bounded — zero behavior change.
+    // ────────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool k0w_on =
+            std::getenv("MINIANDROID_K0_WATCH") != nullptr;
+        if (k0w_on && current_class_ == "Lmo0;" && current_method_ == "K0") {
+            static thread_local uint64_t k0w_n = 0;
+            if (k0w_n++ < 400) {
+                const char* k0w_t = "other";
+                if (val.type == DalvikType::OBJECT_REF) k0w_t = val.class_desc.c_str();
+                else if (val.type == DalvikType::NULL_REF) k0w_t = "NULL";
+                else if (val.type == DalvikType::REGISTER_UNSET) k0w_t = "UNSET";
+                std::cerr << "[K0-RET] obj=" << val.object_id
+                          << " cls=" << k0w_t
+                          << " null=" << (val.is_null ? 1 : 0)
+                          << std::endl;
+            }
         }
     }
 
@@ -22068,6 +24769,20 @@ static const miniandroid::dalvik::KvInt kOrdinals[] = {
     {"Ljava/lang/Thread$State;.WAITING", 3},
     {"Ljava/lang/Thread$State;.TIMED_WAITING", 4},
     {"Ljava/lang/Thread$State;.TERMINATED", 5},
+    // F-NEW-295 (CONT-35): android.text.Layout$Alignment — AOSP Layout.java
+    // declaration order, decoded instruction-level from the toolchain's
+    // android-34.jar clinit (ALIGN_NORMAL=0, ALIGN_OPPOSITE=1,
+    // ALIGN_CENTER=2; NO ALIGN_LEFT/ALIGN_RIGHT members exist on this API
+    // level). Compose's R8-inlined text-layout alignment resolver
+    // (composeStopwatch Ljd1;.<clinit>) calls Layout.Alignment.values(),
+    // searches the array for the names "ALIGN_LEFT"/"ALIGN_RIGHT" and falls
+    // back to the ALIGN_NORMAL sget when absent — but with no table rows
+    // the 371-CLOSEOUT values() arm found no constants and answered NULL,
+    // so the clinit's array-length (pc=6) NPE'd and the text pass aborted.
+    // Same table drives the sget constant law → identity coherent.
+    {"Landroid/text/Layout$Alignment;.ALIGN_NORMAL", 0},
+    {"Landroid/text/Layout$Alignment;.ALIGN_OPPOSITE", 1},
+    {"Landroid/text/Layout$Alignment;.ALIGN_CENTER", 2},
 };
 static int framework_enum_ordinal(const std::string& class_desc,
                                   const std::string& field_name) {
@@ -22326,6 +25041,91 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+    // F-NEW-267 (CONT-61): TOUCH-WINDOW BRIDGE probe — every bridge call the
+    // dispatched DEX touch override makes (env-gated, bounded). Answers
+    // which framework answers the compose input pipeline asked for and
+    // which silently typed-defaulted (the consumed=false decode).
+    if (touch_dispatch_active_) {
+        static thread_local const bool tw_on =
+            std::getenv("MINIANDROID_TOUCH_WINDOW_TRACE") != nullptr;
+        static thread_local uint64_t tw_n = 0;
+        if (tw_on && tw_n++ < 400)
+            std::cerr << "[TOUCHWIN-BRIDGE] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+    }
+    // F-NEW-344 probe (CONT-61): every Landroid/text/Layout; bridge call —
+    // the compose text intrinsic leg (getDesiredWidth family). Answers
+    // whether the intrinsic path reaches the engine and with what args.
+    if (class_name == "Landroid/text/Layout;") {
+        static thread_local uint64_t lay_n = 0;
+        if (lay_n++ < 40) {
+            std::cerr << "[F344-LAYOUT] " << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
+    // CONT-36 (F-NEW-297 evidence): DRAW-OP ATTRIBUTION — env-gated,
+    // bounded. Every Canvas draw-primitive bridge call INSIDE the
+    // custom-view draw window, with the EXECUTING DEX caller. Answers
+    // which DEX site records the frame canvas ops (the Compose draw walk
+    // stops before the text path — where exactly?).
+    {
+        static thread_local const bool cdw_on =
+            std::getenv("MINIANDROID_CANVAS_DRAW_WIN_TRACE") != nullptr;
+        static const char* cdw_faces[] = {
+            "drawColor", "drawRect", "drawRoundRect", "drawCircle",
+            "drawLine", "drawText", "drawTextRun", "drawPosText",
+            "drawPath", "drawBitmap", "drawArc", "drawOval",
+            "drawPoints", "drawLines", "saveLayer", "clipRect", "clipPath"};
+        if (cdw_on && draw_window_active_) {
+            for (const char* f : cdw_faces) {
+                if (method == f) {
+                    static thread_local uint64_t cdw_n = 0;
+                    if (cdw_n++ < 400)
+                        std::cerr << "[CDW-OP] " << class_name << "."
+                                  << method << " caller=" << current_class_
+                                  << "." << current_method_ << " recv="
+                                  << (!args.empty() ? args[0].object_id : 0u)
+                                  << std::endl;
+                    break;
+                }
+            }
+        }
+    }
+    // LAW-C/E/F DETERMINATION DIAG (CONT-18, bounded 60/env-gated): every
+    // try_shadow_dispatch entry for a Java-8 default-method / view / stream
+    // face — answers which class_name the engine routes, with which
+    // receiver, and (paired with the CollectionShadow entry diag) whether
+    // the collection shadow even sees the call.
+    {
+        static const bool lawcef_on =
+            std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+        static const char* lawcef_faces[] = {
+            "removeIf", "getOrDefault", "forEach", "merge",
+            "computeIfAbsent", "compute", "sort", "removeAll",
+            "retainAll", "subList", "stream", "streamOf",
+            "remove", "containsKey", "size", "of", "filter", "collect", "toList"};
+        if (lawcef_on) {
+            for (const char* f : lawcef_faces) {
+                if (method == f) {
+                    static thread_local uint64_t lawcef_n = 0;
+                    if (lawcef_n++ < 60)
+                        std::cerr << "[LAWCEF-ENG] " << class_name << "."
+                                  << method << " recv="
+                                  << (!args.empty() ? args[0].object_id : 0u)
+                                  << " cls="
+                                  << (!args.empty() ? args[0].class_desc
+                                                    : std::string("-"))
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    break;
+                }
+            }
+        }
+    }
 
     // ────────────────────────────────────────────────────────────────────
     // S81 FIX-1 (VF-DIALOG-ITEMS) — dual-view of the bridge_to_api law:
@@ -22533,6 +25333,8 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     //     for the actual runtime subclass like IntroActivity$4).
     auto build_ctx = [&](const std::string& chosen_class) {
         framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
         ctx.class_name = chosen_class;
         ctx.method = method;
         // EXP-071 Phase 8: For INSTANCE methods, args[0] is `this` (the receiver)
@@ -22565,6 +25367,92 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     };
 
     // Pass 1: try with the declared class_name.
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-21 / #384 (F-NEW-272) — Thread UncaughtExceptionHandler laws.
+    // AOSP Thread law (libcore Thread + AOSP RuntimeInit):
+    //   Thread.getUncaughtExceptionHandler()  → the per-thread handler if
+    //     set, ELSE Thread.defaultUncaughtExceptionHandler — and on a live
+    //     ART runtime the default is NEVER null (RuntimeInit installs
+    //     RuntimeInit$KillApplicationHandler at process start).
+    //   Thread.setDefaultUncaughtExceptionHandler(h) (static) → installs h.
+    //   Thread.getDefaultUncaughtExceptionHandler() (static) → the default.
+    //   KillApplicationHandler.uncaughtException(t, e) → logs FATAL
+    //     EXCEPTION (process-death modeling stays owned by the runtime's
+    //     F-016 exception-honesty machinery — this call itself completes).
+    // Runtime evidence (run/cont21/after/dooz_r2): kotlinx coroutine
+    // machinery (Llo;.K pc=0x52) runs currentThread()
+    // .getUncaughtExceptionHandler().uncaughtException(t,e) whenever a
+    // coroutine scope fails; the prior no-op answered null → interface
+    // invoke NPE → APP BOUNDARY (the registered CONT-20 next root).
+    // Static-vs-instance disambiguation by arg shape (statics carry no
+    // receiver): get = 0 args → static; set = 1 arg → static.
+    // ────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/lang/Thread;" || is_thread_receiver(class_name)) &&
+        (method == "getUncaughtExceptionHandler" ||
+         method == "setUncaughtExceptionHandler")) {
+        auto ensure_default_handler = [&]() -> DalvikValue {
+            if (default_uncaught_handler_.object_id != 0 &&
+                heap_.has_object(default_uncaught_handler_.object_id))
+                return default_uncaught_handler_;
+            uint32_t hid = heap_.allocate(
+                "Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;",
+                pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            default_uncaught_handler_ = DalvikValue::make_object(
+                hid,
+                "Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;");
+            return default_uncaught_handler_;
+        };
+        if (method == "getUncaughtExceptionHandler") {
+            if (args.empty()) {
+                // static Thread.getDefaultUncaughtExceptionHandler()
+                result = ensure_default_handler();
+            } else {
+                // instance: per-thread handler, else the default (AOSP law).
+                uint32_t t_oid = args[0].type == DalvikType::OBJECT_REF
+                                     ? args[0].object_id
+                                     : 0;
+                auto it = thread_uncaught_handlers_.find(t_oid);
+                if (it != thread_uncaught_handlers_.end() &&
+                    it->second.object_id != 0)
+                    result = it->second;
+                else
+                    result = ensure_default_handler();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // setUncaughtExceptionHandler: 1 arg (static handler) vs
+        // 2 args (instance receiver + handler).
+        DalvikValue hv = args.size() >= 2 ? args[1] : args[0];
+        if (hv.type == DalvikType::OBJECT_REF && hv.object_id != 0) {
+            if (args.size() >= 2) {
+                thread_uncaught_handlers_[args[0].object_id] = hv;
+            } else {
+                default_uncaught_handler_ = hv;
+            }
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "uncaughtException" &&
+        class_name.find("KillApplicationHandler") != std::string::npos) {
+        // AOSP RuntimeInit$KillApplicationHandler: log the fatal exception;
+        // the process-death face is modeled by the runtime's existing
+        // exception-honesty machinery, so the call itself completes.
+        static thread_local uint64_t ueh_log = 0;
+        if (ueh_log < 12) {
+            ++ueh_log;
+            std::cerr << "[UEH-DEFAULT] FATAL EXCEPTION (KillApplicationHandler)"
+                      << " thread="
+                      << (args.empty() ? 0 : args[0].object_id)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // ────────────────────────────────────────────────────────────────────
     // F-NEW-166 (S134 wave 3): AOSP ContextWrapper BASE-CONTEXT law —
     // served for EVERY ContextWrapper-family receiver, not only Activities.
@@ -22648,6 +25536,17 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                   << std::endl;
     }
     if (cr.handled) {
+        // ── F-NEW-259g-a: SHADOW EXCEPTION CHANNEL (conversion) ──────────
+        // A shadow-detected JDK/ART contract violation (e.g. ArrayList.get
+        // range law) becomes a deferred throw at THIS call site — the same
+        // semantics as the engine-side F-141/F-036 throw_deferred laws.
+        // ART: the exception surfaces at the invoking frame's call site;
+        // the catch-handler redirect resolves at the interpreter boundary.
+        if (cr.is_exc) {
+            throw_deferred(cr.exc_class, cr.exc_msg, "SHADOW-EXC");
+            result = DalvikValue::make_void();
+            return true;
+        }
         switch (cr.status) {
             case framework::ApiCallStatus::IMPLEMENTED:
                 status = ApiCallTrace::Status::IMPLEMENTED; break;
@@ -22675,6 +25574,12 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         !args[0].class_desc.empty() && args[0].class_desc != class_name) {
         cr = shadow_registry_->dispatch(build_ctx(args[0].class_desc));
         if (cr.handled) {
+            // F-NEW-259g-a: shadow exception channel (pass-2 conversion).
+            if (cr.is_exc) {
+                throw_deferred(cr.exc_class, cr.exc_msg, "SHADOW-EXC");
+                result = DalvikValue::make_void();
+                return true;
+            }
             switch (cr.status) {
                 case framework::ApiCallStatus::IMPLEMENTED:
                     status = ApiCallTrace::Status::IMPLEMENTED; break;
@@ -22735,6 +25640,12 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                              args[0].type == DalvikType::OBJECT_REF
                              ? args[0].class_desc : std::string("-"))
                           << ")" << std::endl;
+                // F-NEW-259g-a: shadow exception channel (hierarchy walk).
+                if (cr3.is_exc) {
+                    throw_deferred(cr3.exc_class, cr3.exc_msg, "SHADOW-EXC");
+                    result = DalvikValue::make_void();
+                    return true;
+                }
                 switch (cr3.status) {
                     case framework::ApiCallStatus::IMPLEMENTED:
                         status = ApiCallTrace::Status::IMPLEMENTED; break;
@@ -23207,13 +26118,43 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
                     DalvikExecutionResult res;
                     std::vector<DalvikValue> run_args{
                         DalvikValue::make_object(rid, rcls)};
+                    // F-NEW-289 (CONT-31) MAIN-QUEUE DELIVERY IDENTITY LAW
+                    // (AOSP Looper/Handler model): code delivered by the
+                    // main MessageQueue ALWAYS executes on the MAIN thread —
+                    // inside every main-queue Runnable,
+                    //   Thread.currentThread() == Looper.getMainLooper().getThread()
+                    // (the DefaultTaskExecutor.isMainThread contract behind
+                    // androidx LiveData.assertMainThread). The deterministic
+                    // park drain runs NESTED inside a worker thread's
+                    // run-to-completion body (F-110d binds the worker
+                    // identity there — correct for the body itself), so
+                    // without this re-bind the delivery INHERITS the worker
+                    // identity and main-thread asserts throw
+                    // (composeStopwatch ground truth: R8-renamed
+                    // DefaultTaskExecutor.isMainThread Lca;.P()Z answered
+                    // false -> Lcm0;.a ISE "Cannot invoke setValue on a
+                    // background thread" -> DEFAULT_BACKGROUND_ONLY frame).
+                    // Save/restore mirrors run_thread_start_body's F-110d
+                    // pattern; 0 = main identity. No-op when already main.
+                    uint32_t saved_mq_identity = 0;
+                    bool bound_mq_identity = false;
+                    if (ts && ts->current_thread_id() !=
+                                  ts->main_thread_id()) {
+                        saved_mq_identity = ts->current_thread_id();
+                        ts->set_active_drained_thread(0);
+                        bound_mq_identity = true;
+                    }
                     try_recursive_invoke(rcls, "run", run_args, ret, res, "()V");
+                    if (bound_mq_identity)
+                        ts->set_active_drained_thread(saved_mq_identity);
                 }
                 work_units += drained.size();
             }
         }
         // 2) Choreographer due frame callbacks (vsync during park — the
-        // withFrameNanos continuation resume path).
+        //    withFrameNanos continuation resume path). F-NEW-289: doFrame
+        //    is a MAIN-looper delivery (AOSP Choreographer rides the main
+        //    thread) — same identity law as arm 1.
         if (cs && cs->has_pending_callbacks()) {
             auto due = cs->take_due_callbacks();
             for (auto& d : due) {
@@ -23223,8 +26164,17 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
                 std::vector<DalvikValue> cb_args{
                     DalvikValue::make_object(d.callback_id, d.callback_class),
                     DalvikValue::make_long(d.frame_time_nanos)};
+                uint32_t saved_frame_identity = 0;
+                bool bound_frame_identity = false;
+                if (ts && ts->current_thread_id() != ts->main_thread_id()) {
+                    saved_frame_identity = ts->current_thread_id();
+                    ts->set_active_drained_thread(0);
+                    bound_frame_identity = true;
+                }
                 try_recursive_invoke(d.callback_class, "doFrame", cb_args, ret,
                                      res);
+                if (bound_frame_identity)
+                    ts->set_active_drained_thread(saved_frame_identity);
             }
             if (!due.empty()) did_work = true;
         }
@@ -23312,6 +26262,14 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
             for (const auto& ifc : ifc_it->second)
                 if (ifc == to_desc) return true;
         }
+        // F-NEW-292: the hop class may itself be a PLATFORM class whose
+        // libcore implements metadata lives in the framework tables
+        // (Ljava/lang/Enum; implements Serializable, Comparable — an
+        // R8-minified app enum carries those edges ONLY through this hop;
+        // its own class_def declares none). Same consult the F-NEW-253
+        // tail performs for from_desc, applied per hop so every
+        // intermediate platform hop sees the same boot-classpath truth.
+        if (framework::framework_implements(walk, to_desc)) return true;
     }
     // Directly-declared interfaces of `from` itself.
     auto ifc_it = class_to_interfaces_.find(from_desc);
@@ -23414,7 +26372,259 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().bridge, f107_t0);
-    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};
+    struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().bridge, f107_t0};    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-333 (CONT-56b) — Preconditions.checkNotNull IDENTITY law.
+    // AOSP support-lib Preconditions.java:
+    //     static <T> T checkNotNull(T reference, Object errorMessage) {
+    //         if (reference == null)
+    //             throw new NullPointerException(String.valueOf(errorMessage));
+    //         return reference;                       ← THE LAW: identity
+    //     }
+    // The EXP-058 STUB-ONLY skip in try_recursive_invoke guards a real
+    // recursion, but it left the bridge with NO law for the call — the
+    // fallback shadow dispatch answered null and the move-result-object
+    // DESTROYED every value passing through checkNotNull. Measured
+    // (bmi_402 at the CONT-56b baseline): FragmentHostCallback.<init>
+    // received the Handler argument (ARG-TRACE p3 obj#29 — the value
+    // survived the field read), the ctor's internal
+    // checkNotNull(handler,"handler == null") returned null → iput stored
+    // mHandler=<unset> → getHandler() answered null → scheduleCommit's
+    // Handler.post ran on a NULL receiver (ROOT-059 null-recv route) → the
+    // fragment transaction runnable was dropped → the fragment never
+    // instantiated → BMI/alex rendered the uniform dark default frame.
+    // The identity law is the generic repair: same contract for the 1-arg
+    // and 2-arg overloads, NPE on null (AOSP).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/support/v4/util/Preconditions;" &&
+        method == "checkNotNull" && !args.empty()) {
+        bool arg_is_null =
+            args[0].is_null ||
+            (args[0].type == DalvikType::OBJECT_REF &&
+             args[0].object_id == 0);
+        if (arg_is_null) {
+            std::string msg333 = "null";
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                msg333 = args[1].string_val;
+            else if (args.size() >= 2 &&
+                     args[1].type == DalvikType::OBJECT_REF &&
+                     args[1].object_id != 0 &&
+                     heap_.has_object(args[1].object_id)) {
+                auto s333 = heap_.get_object_field(args[1].object_id,
+                                                   "__referent_desc");
+                if (s333.has_value())
+                    msg333 = s333->string_val;
+            }
+            throw_deferred("Ljava/lang/NullPointerException;", msg333,
+                           "preconditions-checknotnull");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        result = args[0];
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-334 (CONT-56b) — android.util.SparseArray container law (the
+    // faithful AOSP subset the support FragmentManager bookkeeping needs).
+    // SparseArray had NO law: <init>/put/size/valueAt all REC-MISSed to
+    // silent defaults — FragmentManagerImpl.makeActive put fragments into
+    // mActive (no-op) and moveToState's `for (i < mActive.size())` loop
+    // iterated ZERO entries → the committed fragment never advanced past
+    // INITIALIZING → performCreateView/onCreateView never ran → the
+    // container stayed empty (measured: bmi_402 — transaction executed
+    // green after F-NEW-331/332/333, then the mActive walk found nothing).
+    // AOSP law (android.util.SparseArray): key-sorted int→Object map;
+    // put replaces in place; size counts live entries; valueAt/keyAt
+    // index the ASCENDING-KEY order (binary-search insert law); get(key)
+    // answers null (or the 2-arg default) when absent; delete/remove/
+    // clear maintain the count. Storage: heap fields keyed
+    // "__sa:has:<K>" (presence) + "__sa:val:<K>" (value) + "__sa:size".
+    // Bounded scan (corpus fragment counts are tens).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/util/SparseArray;" &&
+        (method == "<init>" || method == "put" || method == "append" ||
+         method == "size" || method == "get" || method == "valueAt" ||
+         method == "keyAt" || method == "indexOfKey" ||
+         method == "delete" || method == "remove" || method == "clear")) {
+        static thread_local uint64_t f334_arr = 0;
+        if (f334_arr < 16) {
+            ++f334_arr;
+            std::cerr << "[F-NEW-334] SparseArray law: " << method
+                      << " recv="
+                      << ((!args.empty() &&
+                           args[0].type == DalvikType::OBJECT_REF)
+                              ? args[0].object_id
+                              : 0u)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+        uint32_t sa334 = (!args.empty() &&
+                          args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id
+                             : 0;
+        if (sa334 != 0 && heap_.has_object(sa334)) {
+            auto sa_size334 = [&]() -> int32_t {
+                auto v = heap_.get_object_field(sa334, "__sa:size");
+                return (v.has_value() &&
+                        v->type == DalvikType::INT32)
+                           ? v->int_val
+                           : 0;
+            };
+            auto sa_has334 = [&](int32_t k) -> bool {
+                auto v = heap_.get_object_field(
+                    sa334, "__sa:has:" + std::to_string(k));
+                return v.has_value() && v->type == DalvikType::INT32 &&
+                       v->int_val != 0;
+            };
+            if (method == "<init>") {
+                heap_.set_object_field(sa334, "__sa:size",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "put" || method == "append") {
+                if (args.size() >= 3 &&
+                    args[1].type == DalvikType::INT32) {
+                    int32_t k334 = args[1].int_val;
+                    bool present334 = sa_has334(k334);
+                    if (!present334)
+                        heap_.set_object_field(
+                            sa334, "__sa:size",
+                            DalvikValue::make_int(sa_size334() + 1));
+                    heap_.set_object_field(
+                        sa334, "__sa:has:" + std::to_string(k334),
+                        DalvikValue::make_int(1));
+                    heap_.set_object_field(
+                        sa334, "__sa:val:" + std::to_string(k334), args[2]);
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "size") {
+                result = DalvikValue::make_int(sa_size334());
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "get") {
+                if (args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32) {
+                    int32_t k334 = args[1].int_val;
+                    if (sa_has334(k334)) {
+                        auto v = heap_.get_object_field(
+                            sa334, "__sa:val:" + std::to_string(k334));
+                        if (v.has_value()) { result = *v;
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true; }
+                    }
+                    // AOSP: absent → null (2-arg: the default)
+                    if (args.size() >= 3) result = args[2];
+                    else result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            // Ascending-key index law helper: collect present keys.
+            auto sa_keys334 = [&]() {
+                std::vector<int32_t> ks;
+                const auto* hobj334 = heap_.get(sa334);
+                if (hobj334) {
+                    for (const auto& kv : hobj334->fields) {
+                        if (kv.first.rfind("__sa:has:", 0) == 0 &&
+                            kv.second.type == DalvikType::INT32 &&
+                            kv.second.int_val != 0) {
+                            try {
+                                ks.push_back(std::stoi(
+                                    kv.first.substr(9)));
+                            } catch (...) {}
+                            if (ks.size() >= 4096) break;
+                        }
+                    }
+                }
+                std::sort(ks.begin(), ks.end());
+                return ks;
+            };
+            if (method == "valueAt" || method == "keyAt") {
+                int32_t idx334 = (args.size() >= 2 &&
+                                  args[1].type == DalvikType::INT32)
+                                     ? args[1].int_val
+                                     : -1;
+                auto ks334 = sa_keys334();
+                if (idx334 >= 0 &&
+                    idx334 < static_cast<int32_t>(ks334.size())) {
+                    if (method == "keyAt") {
+                        result = DalvikValue::make_int(ks334[idx334]);
+                    } else {
+                        auto v = heap_.get_object_field(
+                            sa334,
+                            "__sa:val:" + std::to_string(ks334[idx334]));
+                        result = v.has_value() ? *v
+                                               : DalvikValue::make_null();
+                    }
+                } else if (method == "keyAt") {
+                    result = DalvikValue::make_int(0);
+                } else {
+                    result = DalvikValue::make_null();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "indexOfKey") {
+                int32_t k334 = (args.size() >= 2 &&
+                                args[1].type == DalvikType::INT32)
+                                   ? args[1].int_val
+                                   : 0;
+                auto ks334 = sa_keys334();
+                int32_t ans334 = -1;
+                for (size_t i334 = 0; i334 < ks334.size(); ++i334)
+                    if (ks334[i334] == k334) {
+                        ans334 = static_cast<int32_t>(i334);
+                        break;
+                    }
+                result = DalvikValue::make_int(ans334);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "delete" || method == "remove") {
+                if (args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32) {
+                    int32_t k334 = args[1].int_val;
+                    if (sa_has334(k334)) {
+                        heap_.set_object_field(
+                            sa334, "__sa:has:" + std::to_string(k334),
+                            DalvikValue::make_int(0));
+                        heap_.set_object_field(
+                            sa334, "__sa:size",
+                            DalvikValue::make_int(sa_size334() - 1));
+                    }
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "clear") {
+                const auto* hobj334 = heap_.get(sa334);
+                if (hobj334) {
+                    for (const auto& kv : hobj334->fields) {
+                        if (kv.first.rfind("__sa:has:", 0) == 0 &&
+                            kv.second.type == DalvikType::INT32 &&
+                            kv.second.int_val != 0)
+                            heap_.set_object_field(
+                                sa334, kv.first,
+                                DalvikValue::make_int(0));
+                    }
+                }
+                heap_.set_object_field(sa334, "__sa:size",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // 371-CLOSEOUT: FRAMEWORK-ENUM STATIC ACCESSOR LAW (values()/valueOf()).
     // Android/ART: every enum class exposes `values()` (constants in
@@ -23557,6 +26767,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             drawwin_miss_count++;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): ATTACH watch placeholder is
+    // at the DEX method-entry site (execute_method_internal) — Lok0.u0/v0
+    // are APP classes executed as DEX, not bridge calls.
+    // ────────────────────────────────────────────────────────────────────
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-400 (S79) — AOSP MediaPlayer object law (F-155 fix).
     // UPSTREAM: android.media.MediaPlayer (frameworks/base/media/java/
@@ -23722,6 +26937,254 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-41 (friend-package audit) — AOSP Notification$Builder
+    // fluent-chain object law (android.app, API 34).
+    // UPSTREAM (frameworks/base/core/java/android/app/Notification.java):
+    // `new Notification.Builder(Context[, String channelId])` constructs a
+    // mutable builder; EVERY public set*() (and addAction/addPerson/
+    // addExtras/extend) returns THIS (@NonNull fluent, API 21+ fluent
+    // convention); build() returns a non-null Notification.
+    // EVIDENCE (CONT-38v recorded frontier, com.tananaev.calculator v1.10
+    // vc11 294a68bd00debbdc): androidx NotificationCompat$Builder.<init>
+    // wraps a framework builder — with no law the fluent setter answered
+    // the STUBBED void → move-result-object wrote NULL →
+    // "Attempt to invoke virtual method 'Notification$Builder;.setSmallIcon'
+    // on a null object reference" at NotificationCompat$Builder.<init>
+    // pc=64 → MainActivity.onCreate died (invoke_pc=29) → the frame was
+    // DEFAULT_BACKGROUND_ONLY (d602648e8e401895 ×3). Same §12 family as
+    // the AudioAttributes$Builder / LineBreakConfig$Builder laws above:
+    // the framework object law must hold so app control flow survives.
+    // The Notification object itself is carried opaquely (a headless
+    // runtime presents no notification UI — the OBJECT law is what app
+    // flow depends on). Generic: keyed on the framework class descriptor,
+    // zero app knowledge; setLatestEventInfo (the one deprecated void
+    // setter) is harmless to answer fluent-this — void methods are never
+    // move-result'd (verifier-illegal).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/app/Notification$Builder;") {
+        if (method == "<init>") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method.rfind("set", 0) == 0 || method == "addAction" ||
+             method == "addPerson" || method == "addExtras" ||
+             method == "extend")) {
+            result = args[0];  // fluent: return THIS (AOSP Builder law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t notif_id = heap_.allocate("Landroid/app/Notification;",
+                                               pc_, 0);
+            heap_.set_object_field(notif_id, "__from_builder__",
+                                   DalvikValue::make_int(1));
+            result = DalvikValue::make_object(notif_id,
+                                              "Landroid/app/Notification;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Landroid/app/Notification;") {
+        if (method == "<init>") {
+            // The deprecated public ctor: the object is already allocated
+            // by new-instance; answer the honest void contract.
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-296 (CONT-35) — AOSP LineBreakConfig$Builder object law
+    // (android.graphics.text, API 33+; Builder API 34).
+    // UPSTREAM (frameworks/base/graphics/java/android/graphics/text/
+    // LineBreakConfig.java): Builder() constructs a mutable builder with
+    // the AOSP defaults (LINE_BREAK_STYLE_NONE, LINE_BREAK_WORD_STYLE_
+    // NONE); setLineBreakStyle(int)/setLineBreakWordStyle(int) are FLUENT
+    // (return this, declared @NonNull); build() returns a non-null
+    // LineBreakConfig. The Compose text pipeline (R8'd into Llw;.i /
+    // Lb1; in composeStopwatch) gates on SDK >= 33 and runs
+    //   new LineBreakConfig$Builder().setLineBreakStyle(s)
+    //       .setLineBreakWordStyle(w).build()
+    // then StaticLayout$Builder.setLineBreakConfig(config) — with no ctor
+    // law the new-instance answered NULL and the first fluent setter NPE'd
+    // at APP BOUNDARY (f141-null-recv "setLineBreakWordStyle on a null
+    // object reference" at Lb1;.n pc=0, one per run, text pass dead →
+    // Lh4; ops=0). Same §12 family as the AudioAttributes$Builder law
+    // below: framework object law must hold so app control flow survives.
+    // The config object itself is carried opaquely (its consumer here is
+    // the StaticLayout builder chain, which stores it the same way).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/text/LineBreakConfig$Builder;") {
+        if (method == "<init>") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+                heap_.set_object_field(args[0].object_id,
+                                       "__lbc_style__",
+                                       DalvikValue::make_int(0));
+                heap_.set_object_field(args[0].object_id,
+                                       "__lbc_word_style__",
+                                       DalvikValue::make_int(0));
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "setLineBreakStyle" ||
+             method == "setLineBreakWordStyle")) {
+            heap_.set_object_field(args[0].object_id,
+                                   method == "setLineBreakStyle"
+                                       ? "__lbc_style__"
+                                       : "__lbc_word_style__",
+                                   args.size() > 1 &&
+                                           args[1].type == DalvikType::INT32
+                                       ? args[1]
+                                       : DalvikValue::make_int(0));
+            result = args[0];  // fluent: return THIS (AOSP Builder law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t lbc_id = heap_.allocate(
+                "Landroid/graphics/text/LineBreakConfig;", pc_, 0);
+            for (const char* f :
+                 {"__lbc_style__", "__lbc_word_style__"}) {
+                auto fv = heap_.get_object_field(args[0].object_id, f);
+                if (fv.has_value())
+                    heap_.set_object_field(lbc_id, f, *fv);
+            }
+            result = DalvikValue::make_object(
+                lbc_id, "Landroid/graphics/text/LineBreakConfig;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-294 (CONT-35) — AOSP Typeface static creation law.
+    // frameworks/base/graphics/java/android/graphics/Typeface.java:
+    //   create(String familyName, int style) — the family-name entry;
+    //     null/empty/UNKNOWN family falls back to the default family and
+    //     the method NEVER returns null (every documented overload is
+    //     declared @NonNull; the DEFAULT constant itself is create(null,0)).
+    //   create(Typeface family, int style) — same never-null contract;
+    //     a null family argument answers the default family.
+    //   create(Typeface family, int weight, boolean italic) — API 28+
+    //     weight-variant entry (androidx Ly0;.b shape), never null.
+    //   defaultFromStyle(int style) — DEFAULT family for the style bits,
+    //     never null.
+    // Pre-fix there was NO Typeface law anywhere in the engine: every
+    // static create/defaultFromStyle fell to the typed-default stub (NULL)
+    // and sget-object Typeface.DEFAULT hit [SGET-MISS] — the Compose font
+    // resolver wrapped the null into TypefaceResult and the consumer's
+    // Kotlin `!!` (getClass before check-cast) NPE'd (composeStopwatch
+    // Lk6;.<init> pc=409, one per run; probe rows TF-* FAIL 10/10).
+    // IMPLEMENTATION: allocate a REAL heap Typeface per request carrying
+    // __typeface_family__/__typeface_style__ (+ weight/italic for the
+    // API 28+ form), cached per request key in static_field_storage_ so
+    // same-request identity holds (AOSP caches created typefaces); the
+    // sget constant law above answers the same object shape. No name
+    // dispatch beyond the class, no app-specific branches.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/Typeface;") {
+        auto tf_read_family = [&](const DalvikValue& v) -> std::string {
+            // null/empty family → the AOSP default family ("sans-serif");
+            // a Typeface receiver carries its family in __typeface_family__.
+            const std::string def = "sans-serif";
+            if (v.type != DalvikType::OBJECT_REF || v.object_id == 0)
+                return def;
+            auto fv = heap_.get_object_field(v.object_id,
+                                             "__typeface_family__");
+            if (fv && fv->type == DalvikType::STRING_REF &&
+                !fv->string_val.empty())
+                return fv->string_val;
+            return def;
+        };
+        auto tf_make = [&](const std::string& fam, int style, int weight,
+                           int italic) -> DalvikValue {
+            uint32_t tf_id = heap_.allocate("Landroid/graphics/Typeface;",
+                                            pc_, 0);
+            heap_.set_object_field(tf_id, "__typeface_family__",
+                                   DalvikValue::make_string(fam, 0));
+            heap_.set_object_field(tf_id, "__typeface_style__",
+                                   DalvikValue::make_int(style));
+            if (weight >= 0)
+                heap_.set_object_field(tf_id, "__typeface_weight__",
+                                       DalvikValue::make_int(weight));
+            if (italic >= 0)
+                heap_.set_object_field(tf_id, "__typeface_italic__",
+                                       DalvikValue::make_int(italic));
+            return DalvikValue::make_object(tf_id,
+                                            "Landroid/graphics/Typeface;");
+        };
+        // create(String, int) / create(Typeface, int)
+        if (method == "create" && args.size() == 2) {
+            std::string fam =
+                args[0].type == DalvikType::STRING_REF
+                    ? (args[0].string_val.empty() ? "sans-serif"
+                                                  : args[0].string_val)
+                    : tf_read_family(args[0]);
+            int style = args[1].type == DalvikType::INT32 ? args[1].int_val
+                                                          : 0;
+            std::string key = "Landroid/graphics/Typeface;.create(" + fam +
+                              "|" + std::to_string(style) + ")";
+            auto it = static_field_storage_.find(key);
+            if (it != static_field_storage_.end()) {
+                result = it->second;
+            } else {
+                result = tf_make(fam, style, -1, -1);
+                static_field_storage_[key] = result;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // create(Typeface, int weight, boolean italic) — API 28+.
+        if (method == "create" && args.size() == 3) {
+            std::string fam = tf_read_family(args[0]);
+            int weight = args[1].type == DalvikType::INT32 ? args[1].int_val
+                                                           : 400;
+            int italic =
+                (args[2].type == DalvikType::BOOLEAN ||
+                 args[2].type == DalvikType::INT32)
+                    ? (args[2].int_val != 0 ? 1 : 0)
+                    : 0;
+            std::string key = "Landroid/graphics/Typeface;.create(" + fam +
+                              "|" + std::to_string(weight) + "|" +
+                              std::to_string(italic) + "w)";
+            auto it = static_field_storage_.find(key);
+            if (it != static_field_storage_.end()) {
+                result = it->second;
+            } else {
+                result = tf_make(fam, -1, weight, italic);
+                static_field_storage_[key] = result;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // defaultFromStyle(int style) — DEFAULT family for the style bits.
+        if (method == "defaultFromStyle" && args.size() >= 1) {
+            int style = args[0].type == DalvikType::INT32 ? args[0].int_val
+                                                          : 0;
+            std::string key = "Landroid/graphics/Typeface;.defaultFromStyle(" +
+                              std::to_string(style) + ")";
+            auto it = static_field_storage_.find(key);
+            if (it != static_field_storage_.end()) {
+                result = it->second;
+            } else {
+                result = tf_make("sans-serif", style, -1, -1);
+                static_field_storage_[key] = result;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // M3 FINDING-011 diagnostics (bounded): function-entry probe.
     if ((method == "setTag" || method == "getTag")) {
         static thread_local uint64_t tag_probe = 0;
@@ -23731,6 +27194,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << "." << method << " argc=" << args.size() << std::endl;
         }
     }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-318: android.view.Gravity.getAbsoluteGravity — REAL law.
+    // AOSP Gravity.java: RELATIVE_LAYOUT_DIRECTION (0x00800000) marks the
+    // START/END family (START = LEFT|REL = 0x00800003, END = RIGHT|REL =
+    // 0x00800005 — the values solitaire's DrawerLayout.a styleable and the
+    // engine's own kStaticInts table carry). getAbsoluteGravity(gravity,
+    // layoutDirection): gravities WITHOUT the relative bit answer
+    // UNCHANGED (0→0, LEFT→3, RIGHT→5); START resolves to LEFT (3) for
+    // LTR (layoutDirection != VIEW_LAYOUT_DIRECTION_RTL=1) and RIGHT (5)
+    // for RTL; END mirrors; the relative bit is consumed, all other bits
+    // (vertical/clip/fill) preserved. Evidence: solitaire DrawerLayout —
+    // NavigationView layout_gravity=0x00800003; the findDrawerWithGravity
+    // scan (masked & Gravity.HORIZONTAL_GRAVITY_MASK==0x7) matched a
+    // gravity-0 child spuriously without this law and the onMeasure
+    // drawer-leg validation threw ISE "does not have a valid
+    // layout_gravity". Pure static function: args = (gravity, dir).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/view/Gravity;" &&
+        method == "getAbsoluteGravity" && args.size() >= 2) {
+        const int32_t g = args[0].int_val;
+        const int32_t dir = args[1].int_val;   // 0 = LTR, 1 = RTL
+        int32_t out = g;
+        if (g & 0x00800000) {
+            const bool ltr = (dir != 1);
+            const int32_t low = g & 0x7;       // START carries 3, END 5
+            int32_t horiz;
+            if (low == 3)      horiz = ltr ? 3 : 5;
+            else if (low == 5) horiz = ltr ? 5 : 3;
+            else               horiz = low;
+            out = (g & ~0x00800007) | horiz;
+        }
+        result = DalvikValue::make_int(out);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // ────────────────────────────────────────────────────────────────────
     // S67 FOUNDATION (F-122, f08_canvasops fixture 2026-09-19): android
     // .graphics.Color static factories. Upstream law (AOSP Color.java):
@@ -25155,6 +28654,120 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     if (class_name == "Ljava/lang/reflect/Method;" &&
+        (method == "getAnnotations" || method == "getDeclaredAnnotations")) {
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-287 (CONT-30): Method.getAnnotations/getDeclaredAnnotations
+        // — the ART/JLS never-null law.
+        //
+        // SOURCE (OpenJDK/ART AnnotatedElement):
+        //   public Annotation[] getAnnotations() — returns the runtime-
+        //   visible annotations; the array is EMPTY (length 0) when none
+        //   exist. It NEVER returns null on a live Method object.
+        //
+        // OBSERVATION (CONT-12 un-renamed oracle, post-F-NEW-286 run
+        // run/cont30/oracle_post1): the frame-1 initial composition reaches
+        // androidx.savedstate.compose.LocalSavedStateRegistryOwnerKt.<clinit>
+        // — a reflection-based deprecated-API probe:
+        //   loadClass(AndroidCompositionLocals_androidKt)
+        //   .getMethod("getLocalSavedStateRegistryOwner")
+        //   .getAnnotations()  →  Intrinsics.checkNotNullExpressionValue(
+        //                            anns, "getAnnotations(...)")
+        // The engine had NO getAnnotations handler → REC-MISS → the f141
+        // null law answered null → the Intrinsics check threw NPE inside
+        // the <clinit> (caught by the clinit's own catch-all, degrading the
+        // composition-local init — the first uncaught face of the post-fix
+        // run). Real ART answers the empty array; the deprecated-scan loop
+        // then honestly finds no @Deprecated (or the real ones) and the
+        // clinit completes the upstream way.
+        //
+        // LAW: the answer resolves through the parsed
+        // annotations_directory_item method_annotations table (F-NEW-191,
+        // the same authority getAnnotation/isAnnotationPresent consume):
+        // EVERY runtime-visible annotation of the resolved method becomes
+        // a heap proxy (annotation type as class, "element:<name>" fields
+        // — the F-087/F-191 proxy shape). Zero matches → EMPTY array.
+        // NEVER null, both accessors (ART: getAnnotations ==
+        // getDeclaredAnnotations for runtime-visible method annotations).
+        // Generic: no app knowledge; serves every reflective annotation
+        // scan (EventBus @Subscribe, Lifecycling, savedstate deprecated
+        // probes).
+        // ────────────────────────────────────────────────────────────────
+        std::string decl_cls287, meth_name287;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto d = heap_.get_object_field(args[0].object_id,
+                                            "declaring_class");
+            auto n = heap_.get_object_field(args[0].object_id,
+                                            "method_name");
+            if (d.has_value() && d->type == DalvikType::STRING_REF)
+                decl_cls287 = d->string_val;
+            if (n.has_value() && n->type == DalvikType::STRING_REF)
+                meth_name287 = n->string_val;
+            if ((!n.has_value() || n->type != DalvikType::STRING_REF ||
+                 n->string_val.empty())) {
+                auto n2 = heap_.get_object_field(args[0].object_id,
+                                                 "__reflect_name");
+                if (n2.has_value() && n2->type == DalvikType::STRING_REF)
+                    meth_name287 = n2->string_val;
+            }
+        }
+        std::vector<std::pair<
+            std::string,
+            std::vector<std::pair<std::string, std::string>>>>
+            anns287;
+        if (!decl_cls287.empty() && !meth_name287.empty()) {
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != decl_cls287) continue;
+                for (const auto& md : cd.direct_methods) {
+                    if (md.name != meth_name287) continue;
+                    for (const auto& pa : md.method_annotations)
+                        anns287.push_back(pa);
+                }
+                for (const auto& md : cd.virtual_methods) {
+                    if (md.name != meth_name287) continue;
+                    for (const auto& pa : md.method_annotations)
+                        anns287.push_back(pa);
+                }
+                break;
+            }
+        }
+        uint32_t arr287 = heap_.allocate(
+            "[Ljava/lang/annotation/Annotation;", pc_, 0);
+        DalvikValue len287 =
+            DalvikValue::make_int((int32_t)anns287.size());
+        heap_.set_object_field(arr287, "__array_length__", len287);
+        heap_.set_object_field(arr287, "__new_array_length__", len287);
+        heap_.set_object_field(
+            arr287, "__element_type__",
+            DalvikValue::make_string(
+                "[Ljava/lang/annotation/Annotation;", 0));
+        for (size_t i = 0; i < anns287.size(); ++i) {
+            uint32_t proxy287 = heap_.allocate(anns287[i].first, pc_, 0);
+            // F-087c proxy shape: the marker field is what makes the
+            // element-dispatch law recognize this object as an annotation
+            // instance (same contract the F-087 Class.getAnnotation bridge
+            // stamps). Without it the proxy is an anonymous heap object.
+            heap_.set_object_field(
+                proxy287, "__annotation_proxy__",
+                DalvikValue::make_string(anns287[i].first, 0));
+            for (const auto& el : anns287[i].second) {
+                heap_.set_object_field(
+                    proxy287, "element:" + el.first,
+                    DalvikValue::make_string(el.second, 0));
+            }
+            DalvikValue pv287;
+            pv287.type = DalvikType::OBJECT_REF;
+            pv287.object_id = proxy287;
+            pv287.class_desc = anns287[i].first;
+            heap_.set_object_field(
+                arr287, "array[" + std::to_string(i) + "]", pv287);
+        }
+        result = DalvikValue::make_object(
+            arr287, "[Ljava/lang/annotation/Annotation;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" &&
         (method == "getName" || method == "getDeclaringClass" ||
          method == "toGenericString")) {
         // ────────────────────────────────────────────────────────────────
@@ -25698,8 +29311,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto cit366 = is_dex_class ? class_info_index_.find(recv_cls366)
                                     : class_info_index_.end();
         uint32_t flags366 = 0x1;  // PUBLIC default for framework tokens
-        if (is_dex_class && cit366 != class_info_index_.end())
+        if (is_dex_class && cit366 != class_info_index_.end()) {
             flags366 = dex_report_->classes[cit366->second].access_flags;
+            // F-NEW-260 (CONT-11): member (nested) classes report the
+            // Ldalvik/annotation/InnerClass; accessFlags (the JVMS
+            // InnerClasses.attribute law) — class_def flags never carry
+            // ACC_STATIC for DEX member classes, so Modifier.isStatic
+            // mis-answered false and support-v4 BackStackRecord.doAddOp
+            // threw "must be a public static class" for legitimate static
+            // inner fragments (BMI com.zola.bmi first dive). OpenJDK
+            // Class.getModifiers law: nested → InnerClasses-attribute flags.
+            uint32_t icf366 =
+                dex_report_->classes[cit366->second].inner_class_flags;
+            if (icf366 != 0) flags366 = icf366;
+        }
         if (method == "getModifiers") {
             result = DalvikValue::make_int(static_cast<int32_t>(flags366));
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -29802,6 +33427,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
+    // ── F-NEW-343 (CONT-60): SpannableString ctor law ──────────────────
+    // AOSP android.text.SpannableString(CharSequence source): stores the
+    // source as the CharSequence payload. The compose text pipeline wraps
+    // its text in SpannableString BEFORE StaticLayout.Builder.obtain
+    // (measured: dooz v23 obtain a0 = OBJECT_REF Landroid/text/
+    // SpannableString; with NO payload fields). With no law here the ctor
+    // was a silent no-op — the object stayed bare, obtain stored a null
+    // source, build() laid out an EMPTY string (text_len=0 at every
+    // [F298-SLDRAW]) and the whole compose text leg drew nothing.
+    // The payload uses the engine's CharSequence convention ("value",
+    // with the "text" alias for readers).
+    if (class_name == "Landroid/text/SpannableString;") {
+        uint32_t ss_id = (!args.empty() &&
+                          args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id : 0;
+        if (method == "<init>" && ss_id != 0 && args.size() >= 2) {
+            std::string text;
+            const DalvikValue& a = args[1];
+            if (a.type == DalvikType::STRING_REF) {
+                text = a.string_val;
+            } else if (a.type == DalvikType::OBJECT_REF &&
+                       heap_.has_object(a.object_id)) {
+                auto sv = heap_.get_object_field(a.object_id, "value");
+                if (!sv.has_value())
+                    sv = heap_.get_object_field(a.object_id, "sb_value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                    text = sv->string_val;
+            }
+            DalvikValue tv = DalvikValue::make_string(text, 0);
+            heap_.set_object_field(ss_id, "value", tv);
+            heap_.set_object_field(ss_id, "text", tv);
+            if (std::getenv("MINIANDROID_F343_DIAG"))
+                std::cerr << "[F-NEW-343] SpannableString.<init> obj#" << ss_id
+                          << " chars=" << text.size() << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+
     if (class_name == "Ljava/lang/StringBuilder;" ||
         class_name == "Ljava/lang/StringBuffer;") {
         uint32_t sb_id = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
@@ -30029,6 +33694,78 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-344 (CONT-61): Landroid/text/Layout;.getDesiredWidth — the
+    // compose text INTRINSIC leg.
+    //
+    // ROOT CAUSE this fixes: the compose text pipeline (dooz v23, compose
+    // ui 1.11) measures wrap-content text through
+    //   androidx.compose.ui.text.AndroidTextLayoutIntrinsics (R8: Lsk0;.c):
+    //   Layout.getDesiredWidth(text, paint, textDir, firstPassMode)
+    // — the paragraph width for UNBOUNDED (FocusInterceptor: maxWidth bits
+    // all zero) constraints. With NO law the typed-default answered 0 →
+    // TextDelegate width 0 → StaticLayout built with width=0 (measured
+    // [ROOT-063] width=0 at BUILD time) → AndroidParagraph.paint (Lj7.e)
+    // clipRect(0, 0, 0, h) → Canvas.getClipBounds answered the EMPTY clip
+    // (l==r → FALSE, [F298-GCB] clip=540,59,540,108) → the compose paint
+    // cull (`if (!canvas.getClipBounds(r)) return`) skipped Layout.draw —
+    // SLDRAW 0, zero exceptions, zero text pixels corpus-wide.
+    //
+    // AOSP law (android.text.Layout.java): getDesiredWidth returns the
+    // single-line advance width (no wrapping) — TextLine.metrics(null)
+    // .width. Overloads: (CharSequence, TextPaint) and (CharSequence,
+    // TextPaint, TextDirectionHeuristic, float firstPassMode) — dooz v23
+    // measured the 4-arg form (argc=4 from Lsk0;.c).
+    //
+    // FIX (one generic site, zero app knowledge): shape the text with the
+    // SAME pipeline the Canvas drawText replay uses (fonts::TextShaper —
+    // FreeType/HarfBuzz real advances) at the paint's recorded
+    // __text_size_px__ (the F-NEW-226 identity store, the same probe the
+    // StaticLayout build law consumes) — measured geometry and painted
+    // pixels stay one source of truth.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/text/Layout;" && method == "getDesiredWidth") {
+        std::string gdw_text;
+        if (!args.empty()) {
+            if (args[0].type == DalvikType::STRING_REF)
+                gdw_text = args[0].string_val;
+            else if (args[0].type == DalvikType::OBJECT_REF &&
+                     heap_.has_object(args[0].object_id)) {
+                auto sv = heap_.get_object_field(args[0].object_id, "value");
+                if (!sv.has_value())
+                    sv = heap_.get_object_field(args[0].object_id, "sb_value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                    gdw_text = sv->string_val;
+            }
+        }
+        float gdw_size = 42.0f;  // the documented pipeline default (build law)
+        if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0) {
+            auto sz = heap_.get_object_field(args[1].object_id,
+                                             "__text_size_px__");
+            if (sz.has_value() && sz->type == DalvikType::FLOAT32 &&
+                sz->float_val > 0.0f)
+                gdw_size = sz->float_val;
+        }
+        float gdw_w = 0.0f;
+        if (!gdw_text.empty() &&
+            fonts::TextShaper::instance().available()) {
+            const auto& shaped = fonts::TextShaper::instance().shape(
+                gdw_text, gdw_size, /*bold=*/false);
+            gdw_w = shaped.width;
+        }
+        // ASCII-sanitize the diag (the payload may hold arbitrary bytes).
+        std::string gdw_diag;
+        for (char c : gdw_text.substr(0, 24))
+            gdw_diag.push_back((c >= 32 && c < 127) ? c : '?');
+        std::cerr << "[F-NEW-344] getDesiredWidth len=" << gdw_text.size()
+                  << " \"" << gdw_diag << "\" size=" << gdw_size
+                  << " -> " << gdw_w << std::endl;
+        result = DalvikValue::make_float(gdw_w);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;  // pc advance is the invoke-site's contract (bridge_to_api)
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // ROOT-063 (S115): android.text.StaticLayout$Builder / StaticLayout —
     // REAL materialization (never-null fluent builder + measurable layout).
     //
@@ -30083,7 +33820,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // paint's text size: probe the common field names, honest fallback.
         auto paint_size = [&](uint32_t paint_oid) -> float {
             if (paint_oid && heap_.has_object(paint_oid)) {
-                for (const char* f : {"textSize", "mTextSize"}) {
+                // F-NEW-297 (CONT-36): the F-NEW-226 Paint.setTextSize law
+                // records the size under __text_size_px__ (identity state) —
+                // probe it too, else every Compose text layout falls back to
+                // the 42px documented default and the drawn text has the
+                // wrong metrics.
+                for (const char* f : {"textSize", "mTextSize",
+                                      "__text_size_px__"}) {
                     auto fv = heap_.get_object_field(paint_oid, f);
                     if (fv.has_value() && fv->type == DalvikType::FLOAT32 &&
                         fv->float_val > 0)
@@ -30111,6 +33854,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
              method.rfind("setHyphenationFrequency", 0) == 0 ||
              method.rfind("setIndents", 0) == 0 ||
              method.rfind("setUseFallbackLineSpacing", 0) == 0 ||
+             method.rfind("setLineBreakConfig", 0) == 0 ||  // F-NEW-296 (API 33+)
              method.rfind("setWidth", 0) == 0 ||
              method.rfind("setTextLocale", 0) == 0)) {
             uint32_t self = (!args.empty() &&
@@ -30118,15 +33862,105 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 ? args[0].object_id
                                 : 0;
             if (method == "obtain") {
+                // CONT-37 diag (bounded): what the Compose text pipeline
+                // feeds the builder — arg type + payload size.
+                {
+                    static thread_local uint64_t obt_n = 0;
+                    if (obt_n++ < 24) {
+                        std::cerr << "[F298-OBTAIN] a0_type="
+                                  << static_cast<int>(args[0].type)
+                                  << " str_len="
+                                  << (args[0].type == DalvikType::STRING_REF
+                                          ? args[0].string_val.size() : 0)
+                                  << " str=\""
+                                  << (args[0].type == DalvikType::STRING_REF
+                                          ? args[0].string_val.substr(0, 32)
+                                          : std::string())
+                                  << "\" argc=" << args.size();
+                        if (args[0].type == DalvikType::OBJECT_REF &&
+                            heap_.has_object(args[0].object_id)) {
+                            std::string obt_cls;
+                            heap_.get_object_class(args[0].object_id,
+                                                   obt_cls);
+                            std::cerr << " obj_cls=" << obt_cls
+                                      << " value_len=";
+                            auto sv = heap_.get_object_field(
+                                args[0].object_id, "value");
+                            if (!sv.has_value())
+                                sv = heap_.get_object_field(
+                                    args[0].object_id, "sb_value");
+                            std::cerr << (sv.has_value() &&
+                                                  sv->type ==
+                                                      DalvikType::STRING_REF
+                                              ? sv->string_val.size() : -1);
+                            if (sv.has_value() &&
+                                sv->type == DalvikType::STRING_REF)
+                                std::cerr << " value=\""
+                                          << sv->string_val.substr(0, 32)
+                                          << "\"";
+                        }
+                        // F-NEW-344 probe (CONT-61): the OBTAIN WIDTH ARG —
+                        // the paragraph clip cull chain (dooz v23: layout
+                        // width=0 → clipRect w=0 → getClipBounds FALSE →
+                        // compose cull → Layout.draw never dispatched).
+                        // Answers what type/value compose passes as the
+                        // width and WHICH DEX site calls.
+                        std::cerr << " a3_type="
+                                  << (args.size() > 3
+                                          ? (int)args[3].type : -1)
+                                  << " a4_type="
+                                  << (args.size() > 4
+                                          ? (int)args[4].type : -1)
+                                  << " a4_int="
+                                  << (args.size() > 4 &&
+                                              args[4].type == DalvikType::INT32
+                                          ? args[4].int_val : 0)
+                                  << " a4_flt="
+                                  << (args.size() > 4 &&
+                                              args[4].type == DalvikType::FLOAT32
+                                          ? args[4].float_val : 0.f)
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_;
+                        // F-NEW-344 probe: the caller CHAIN above the direct
+                        // caller — where the zero width entered.
+                        {
+                            auto frames = call_stack_.snapshot_top_first();
+                            for (size_t fi = 0;
+                                 fi < frames.size() && fi < 4; ++fi)
+                                std::cerr << " ^" << fi << "<"
+                                          << frames[fi].first << "."
+                                          << frames[fi].second << ">";
+                        }
+                        std::cerr << std::endl;
+                    }
+                }
                 // static: args = [source, start, end, paint, width]
                 self = heap_.allocate("Landroid/text/StaticLayout$Builder;",
                                       pc_, 0);
-                heap_.set_object_field(
-                    self, "source",
-                    args.size() > 0 &&
-                            args[0].type == DalvikType::STRING_REF
-                        ? DalvikValue::make_string(args[0].string_val, 0)
-                        : DalvikValue::make_null());
+                // F-NEW-343: the source store accepts BOTH payload forms —
+                // a STRING_REF immediate AND an OBJECT_REF CharSequence
+                // (the engine's "value"/"sb_value" convention; compose
+                // passes SpannableString objects, dooz v23 measured). The
+                // old law stored NULL for every OBJECT_REF source.
+                {
+                    DalvikValue src = DalvikValue::make_null();
+                    if (args.size() > 0) {
+                        if (args[0].type == DalvikType::STRING_REF) {
+                            src = DalvikValue::make_string(args[0].string_val, 0);
+                        } else if (args[0].type == DalvikType::OBJECT_REF &&
+                                   heap_.has_object(args[0].object_id)) {
+                            auto sv = heap_.get_object_field(
+                                args[0].object_id, "value");
+                            if (!sv.has_value())
+                                sv = heap_.get_object_field(
+                                    args[0].object_id, "sb_value");
+                            if (sv.has_value() &&
+                                sv->type == DalvikType::STRING_REF)
+                                src = DalvikValue::make_string(sv->string_val, 0);
+                        }
+                    }
+                    heap_.set_object_field(self, "source", src);
+                }
                 int32_t start = args.size() > 1 ? sl_int(0, "x", 0) : 0;
                 if (args.size() > 1 && args[1].type == DalvikType::INT32)
                     start = args[1].int_val;
@@ -30172,13 +34006,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             // fluent setters — store and return `this`
             if (self && heap_.has_object(self)) {
+                // CONT-37 diag (bounded): every builder setter — which call
+                // clobbers the stored source (obtain verified text.len=17 at
+                // store time; build() reads source_len=0).
+                {
+                    static thread_local uint64_t stt_n = 0;
+                    if (stt_n++ < 40) {
+                        std::cerr << "[F298-SETTER] " << method
+                                  << " builder=obj#" << self
+                                  << " argc=" << args.size();
+                        if (args.size() >= 2)
+                            std::cerr << " a1_type="
+                                      << static_cast<int>(args[1].type)
+                                      << (args[1].type == DalvikType::STRING_REF
+                                              ? (" len=" + std::to_string(
+                                                     args[1].string_val.size()))
+                                              : "");
+                        // F-NEW-344 probe: setter VALUE (the ellipsized-
+                        // width/width setters carry the real paragraph
+                        // width — compare against the obtain width arg).
+                        if (args.size() >= 2 &&
+                            args[1].type == DalvikType::INT32)
+                            std::cerr << " a1_int=" << args[1].int_val;
+                        if (args.size() >= 2 &&
+                            args[1].type == DalvikType::FLOAT32)
+                            std::cerr << " a1_flt=" << args[1].float_val;
+                        std::cerr << std::endl;
+                    }
+                }
                 DalvikValue v;
-                if (method.rfind("setText", 0) == 0 && args.size() >= 2) {
+                // ────────────────────────────────────────────────────────
+                // F-NEW-298 (CONT-37): the "setText" PREFIX match conflated
+                // AOSP Builder.setText(CharSequence, start, end) with
+                // setTextDirection(TextDirectionHeuristic) — every layout
+                // whose chain calls setTextDirection (Compose does: the
+                // [F298-SETTER] trace) OVERWROTE the obtain-stored source
+                // with the heuristic argument (a null/unreadable constant),
+                // so build() laid out an EMPTY string and the paint-side
+                // text law drew nothing. AOSP: setText and setTextDirection
+                // are distinct setters; the source store keys on the EXACT
+                // name only.
+                // ────────────────────────────────────────────────────────
+                if (method == "setText" && args.size() >= 2) {
                     heap_.set_object_field(self, "source", args[1]);
                     if (args.size() >= 4 && args[2].type == DalvikType::INT32)
                         heap_.set_object_field(self, "start", args[2]);
                     if (args.size() >= 4 && args[3].type == DalvikType::INT32)
                         heap_.set_object_field(self, "end", args[3]);
+                } else if (method == "setTextDirection" && args.size() >= 2) {
+                    // AOSP setTextDirection(TextDirectionHeuristic) — store
+                    // opaque (own field; never the text payload).
+                    heap_.set_object_field(self, "textDir", args[1]);
                 } else if (method == "setMaxLines" && args.size() >= 2) {
                     heap_.set_object_field(self, "maxLines", args[1]);
                 } else if (method == "setWidth" && args.size() >= 2) {
@@ -30195,6 +34073,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 } else if (method == "setIndents" && args.size() >= 2) {
                     // int[] indents — stored opaque
                     heap_.set_object_field(self, "indents", args[1]);
+                } else if (method == "setLineBreakConfig" && args.size() >= 2) {
+                    // F-NEW-296 (CONT-35): API 33+ fluent setter — the
+                    // Compose text pipeline (Lb1;.i in composeStopwatch)
+                    // applies the built LineBreakConfig to the StaticLayout
+                    // Builder. Stored opaque, same law family as the
+                    // builder fields above; build() keeps carrying it.
+                    heap_.set_object_field(self, "lineBreakConfig", args[1]);
                 }
                 DalvikValue r;
                 r.type = DalvikType::OBJECT_REF;
@@ -30215,6 +34100,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                              args[0].type == DalvikType::OBJECT_REF)
                                 ? args[0].object_id
                                 : 0;
+            // CONT-37 diag (bounded): the build law's inputs/outputs.
+            {
+                static thread_local uint64_t bld_n = 0;
+                if (bld_n++ < 16)
+                    std::cerr << "[F298-BUILD] builder=obj#" << self
+                              << " source_len="
+                              << sl_string(self, "source").size()
+                              << " start=" << sl_int(self, "start", -1)
+                              << " end=" << sl_int(self, "end", -1)
+                              << std::endl;
+            }
             std::string text = sl_string(self, "source");
             int32_t start = sl_int(self, "start", 0);
             int32_t end = sl_int(self, "end", 0);
@@ -30265,6 +34161,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             v.float_val = size;    heap_.set_object_field(lay, "textSize", v);
             v.float_val = line_h;  heap_.set_object_field(lay, "lineHeight", v);
             v.float_val = height;  heap_.set_object_field(lay, "height", v);
+            // F-NEW-297 (CONT-36): carry the paint identity on the layout —
+            // the paragraph paint path (Lg6;.d = AndroidParagraph/
+            // TextPainter paint: save/clip/translate/layout.draw/restore)
+            // sets the TextPaint color BEFORE Layout.draw; the draw law
+            // reads the color through CanvasShadow's per-paint state so the
+            // recorded DRAW_TEXT op carries the app's real text color.
+            v.type = DalvikType::INT32;
+            v.int_val = (int32_t)paint_oid;
+            heap_.set_object_field(lay, "paintOid", v);
             DalvikValue r;
             r.type = DalvikType::OBJECT_REF;
             r.object_id = lay;
@@ -30284,7 +34189,137 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                              args[0].type == DalvikType::OBJECT_REF)
                                 ? args[0].object_id
                                 : 0;
+            if (std::getenv("MINIANDROID_F343_DIAG")) {
+                static thread_local uint64_t slm_n = 0;
+                if (slm_n++ < 60)
+                    std::cerr << "[F343-SL] method=" << method
+                              << " recv=" << self
+                              << " argc=" << args.size()
+                              << " a1_type="
+                              << (args.size() > 1
+                                      ? (int)args[1].type : -1)
+                              << std::endl;
+            }
             if (self && heap_.has_object(self)) {
+                // ── F-NEW-297 (CONT-36): LAYOUT.draw(Canvas) TEXT LAW ────
+                // AOSP android.text.Layout.draw(Canvas) is the entry the
+                // Compose paragraph paint path funnels into:
+                //   AndroidParagraph.paint(topOffset, canvas) →
+                //   layout.paint(nativeCanvas) → Layout.draw(Canvas)
+                // (frameworks/base/core/java/android/text/Layout.java)
+                // draws each text line onto the canvas through TextLine.
+                // R8'd caller decoded (composeStopwatch, Lg6;.d): save →
+                // clipRect → getClipBounds cull → translate → layout.draw →
+                // translate back → restore. Pre-fix the engine had NO law —
+                // a silent void — so Compose text NEVER reached the canvas
+                // op stream (0 DRAW_TEXT ops in the whole run; the frame
+                // showed shapes only). The paint-side translate/clip is
+                // ALREADY applied to the CanvasShadow's matrix/clip state
+                // when this arm runs, so the op records at the translated
+                // origin (AOSP coordinate contract preserved). One DRAW_TEXT
+                // op per layout line (AOSP draws line-by-line), baseline
+                // stepping by the layout's line height, first baseline at
+                // the typographic ascent (0.928em — the engine's Paint.
+                // FontMetrics ratio, same model as ROOT-063's metrics).
+                if (method == "draw" && args.size() >= 2 &&
+                    args[1].type == DalvikType::OBJECT_REF &&
+                    args[1].object_id != 0) {
+                    // CONT-37 diag (bounded): the law's inputs — layout
+                    // text payload size, recorded paint, and WHICH canvas
+                    // object the drawText dispatch will target.
+                    {
+                        static thread_local uint64_t sld_n = 0;
+                        std::string dtext = sl_string(self, "text");
+                        if (sld_n++ < 24) {
+                            auto cv = heap_.get_object_field(self, "paintOid");
+                            std::cerr << "[F298-SLDRAW] layout=obj#" << self
+                                      << " text_len=" << dtext.size()
+                                      << " canvas_arg=obj#"
+                                      << args[1].object_id
+                                      << " cls=" << args[1].class_desc
+                                      << " paintOid="
+                                      << (cv.has_value() ? cv->int_val : -1)
+                                      << std::endl;
+                        }
+                    }
+                    std::string text = sl_string(self, "text");
+                    if (!text.empty()) {
+                        float size = sl_float(self, "textSize", 42.0f);
+                        float line_h = sl_float(self, "lineHeight",
+                                                size * 1.168f);
+                        // paint identity: the TextPaint the builder recorded
+                        // (F-NEW-297 build law stores it) — its CanvasShadow
+                        // state (color/size) is the app-set paint state.
+                        uint32_t paint_oid = 0;
+                        {
+                            auto pv = heap_.get_object_field(self, "paintOid");
+                            if (pv.has_value() &&
+                                pv->type == DalvikType::INT32)
+                                paint_oid = (uint32_t)pv->int_val;
+                        }
+                        if (paint_oid == 0) {
+                            paint_oid = heap_.allocate(
+                                "Landroid/graphics/Paint;", pc_, 0);
+                            std::vector<DalvikValue> pargs;
+                            pargs.push_back(DalvikValue::make_object(
+                                paint_oid, "Landroid/graphics/Paint;"));
+                            pargs.push_back(DalvikValue::make_float(size));
+                            DalvikValue vr = DalvikValue::make_void();
+                            ApiCallTrace::Status st2 = status;
+                            try_shadow_dispatch("Landroid/graphics/Paint;",
+                                                "setTextSize", pargs, vr, st2);
+                        }
+                        // line-split (AOSP draws per line; multi-line
+                        // layouts step the baseline by lineHeight).
+                        float y = size * 0.928f;   // first baseline (ascent)
+                        uint32_t canvas_oid = args[1].object_id;
+                        size_t start = 0;
+                        int lines_drawn = 0;
+                        while (start <= text.size() && lines_drawn < 64) {
+                            size_t nl = text.find('\n', start);
+                            std::string line = (nl == std::string::npos)
+                                                   ? text.substr(start)
+                                                   : text.substr(start,
+                                                                 nl - start);
+                            if (!line.empty()) {
+                                std::vector<DalvikValue> cargs;
+                                cargs.push_back(DalvikValue::make_object(
+                                    canvas_oid, "Landroid/graphics/Canvas;"));
+                                cargs.push_back(
+                                    DalvikValue::make_string(line, 0));
+                                cargs.push_back(DalvikValue::make_float(0.f));
+                                cargs.push_back(DalvikValue::make_float(y));
+                                cargs.push_back(DalvikValue::make_object(
+                                    paint_oid, "Landroid/graphics/Paint;"));
+                                DalvikValue vr = DalvikValue::make_void();
+                                ApiCallTrace::Status st2 = status;
+                                try_shadow_dispatch(
+                                    "Landroid/graphics/Canvas;", "drawText",
+                                    cargs, vr, st2);
+                                ++lines_drawn;
+                            }
+                            if (nl == std::string::npos) break;
+                            start = nl + 1;
+                            y += line_h;
+                        }
+                        std::cerr << "[F-NEW-297] Layout.draw -> " << lines_drawn
+                                  << " text op(s) recorded (recv=" << self
+                                  << " canvas=" << canvas_oid
+                                  << " size=" << (int)size
+                                  << " paint=" << paint_oid
+                                  << " text=\"" << text.substr(0, 40)
+                                  << "\")" << std::endl;
+                    } else {
+                        std::cerr << "[F-NEW-297] Layout.draw recv=" << self
+                                  << " carries no text fields (foreign "
+                                     "layout object) — honest no-op"
+                                  << std::endl;
+                    }
+                    // AOSP Layout.draw is void; the law succeeded.
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
                 float size = sl_float(self, "textSize", 42.0f);
                 float line_h = sl_float(self, "lineHeight", size * 1.168f);
                 int line_count = sl_int(self, "lineCount", 1);
@@ -31894,6 +35929,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto proxy = heap_.get_object_field(args[0].object_id,
                                             "__annotation_proxy__");
         if (proxy.has_value() && proxy->type == DalvikType::STRING_REF) {
+            // F-NEW-287 (CONT-30) companion arm — Annotation.annotationType()
+            // (OpenJDK law): returns the Class token of the annotation
+            // interface. The proxy's class IS the annotation type, so the
+            // answer is that token — identity-comparable with the app's
+            // Mark.class / Navigator.Name.class literals. Runtime-visible
+            // annotation consumers (the oracle's savedstate deprecated
+            // probe, EventBus scanners) compare tokens, not element values.
+            if (method == "annotationType") {
+                result = DalvikValue::make_class(proxy->string_val,
+                                                 instruction_sequence_);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             auto elem = heap_.get_object_field(args[0].object_id,
                                                "element:" + method);
             if (elem.has_value()) {
@@ -33573,21 +37621,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (n && !n->text.empty()) {
                 // one Paint per view (AOSP mTextPaint identity)
                 uint32_t paint_oid = 0;
-                {
-                    auto pv = heap_.get_object_field(view_oid, "__tv_paint__");
-                    if (pv.has_value() &&
-                        pv->type == DalvikType::OBJECT_REF &&
-                        pv->object_id != 0) {
-                        paint_oid = pv->object_id;
-                    } else {
-                        paint_oid =
-                            heap_.allocate("Landroid/graphics/Paint;", 0, 0);
-                        heap_.set_object_field(
-                            view_oid, "__tv_paint__",
-                            DalvikValue::make_object(
-                                paint_oid, "Landroid/graphics/Paint;"));
-                    }
-                }
                 float tsize = n->text_size_px > 0 ? n->text_size_px : 42.f;
                 uint32_t tcol = n->text_color ? n->text_color : 0xFF1A1A1A;
                 // record paint state + the drawText op via the shadow layer
@@ -33678,7 +37711,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         return 0x80000000 | (parent_size & 0x3FFFFFFF);
                     return 0x40000000 | (child_dim & 0x3FFFFFFF);
                 };
+                // ── F-NEW-328 (CONT-56): the LP-SOURCE law for the child
+                // spec. The AOSP child-spec source is the child's
+                // LayoutParams. The programmatic addView law
+                // (ViewShadow::set_layout_params — the
+                // [EXP095-ADDVIEW-LP] shape) writes lp_width/lp_height;
+                // XML-inflated nodes carry BOTH lp_* and the legacy
+                // width/height mirrors. The old child_spec read ONLY
+                // width/height — every programmatic child measured
+                // EXACTLY(parent) on both axes regardless of its real lp
+                // (probe fnew328: child lp (MATCH,48) read as (-1,-1) →
+                // child 1080x1920). Law: lp_* is authoritative when set
+                // (not the INT_MIN unset sentinel); the legacy mirrors
+                // keep their role for nodes whose lp was never written.
+                auto child_dim_of = [&](framework::ViewShadow::ViewNode* cn,
+                                        bool width_axis) -> int32_t {
+                    const int32_t lp = width_axis ? cn->lp_width
+                                                  : cn->lp_height;
+                    if (lp != INT_MIN) return lp;
+                    return width_axis ? cn->width : cn->height;
+                };
                 int measured_children = 0;
+                // F-NEW-304 companion coherence (CONT-43): a node measured
+                // by the native class law (measure_view_spec) carries dims
+                // its OWN container law computed COHERENTLY over the whole
+                // subtree (weights, table cells, anchor edges). Re-measuring
+                // that subtree's members at the descent's cruder per-node
+                // spec would split the measure brain (opencalc pad: cell
+                // widths overwritten while the row law's x-pitch survived
+                // → overlapping digit labels). Such subtrees are marked and
+                // the descent defers to the native dims for this pass.
+                std::unordered_set<uint32_t> f304_native_subtree;
+                std::function<void(uint32_t)> f304_mark_subtree;
+                f304_mark_subtree = [&](uint32_t vid) {
+                    f304_native_subtree.insert(vid);
+                    auto* m = vs->find_node(vid);
+                    if (m)
+                        for (uint32_t c : m->children) f304_mark_subtree(c);
+                };
                 // S109 ROOT-045b: recursive descent (same law as the R347
                 // wrapper's ROOT-045) — grandchildren measured with the
                 // child's resolved sizes so deep app trees (ScrollView →
@@ -33695,8 +37765,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (!cn) continue;
                             if (cn->visibility == 4 || cn->visibility == 8)
                                 continue;
-                            int32_t cw2 = child_spec(pw2, cn->width);
-                            int32_t ch2 = child_spec(ph2, cn->height);
+                            if (f304_native_subtree.count(child)) {
+                                // native class-law subtree: dims already
+                                // coherent — defer (no reset, no re-measure).
+                                cn->dex_measure_valid = true;
+                                continue;
+                            }
+                            // F-NEW-328: lp-aware child dims (see the
+                            // child_dim_of law above) — programmatic
+                            // children measured by their REAL lp.
+                            int32_t cw2 = child_spec(
+                                pw2, child_dim_of(cn, true));
+                            int32_t ch2 = child_spec(
+                                ph2, child_dim_of(cn, false));
                             cn->dex_measure_valid = false;
                             DalvikValue cret2 = DalvikValue::make_void();
                             DalvikExecutionResult cres2;
@@ -33720,6 +37801,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                      cn->class_desc.compare(
                                          cn->class_desc.size() - 7, 7,
                                          "/Space;") == 0);
+                                // ── F-NEW-304 companion RE-LANDED (CONT-43):
+                                // no-DEX-override child → the native
+                                // class-measure law (the honest AOSP
+                                // View.measure dispatch through
+                                // measure_view_spec → measure_node_raw:
+                                // TextView shaping, LinearLayout weights,
+                                // FrameLayout max-extent, ...). The old
+                                // default law answered getDefaultSize(spec)
+                                // — AT_MOST → the FULL available size — so
+                                // every wrap-content platform subtree under
+                                // a DEX-measuring parent (the tananaev
+                                // PreferenceFragment list under appcompat's
+                                // ContentFrameLayout) measured full-screen
+                                // and stacked off-screen.
+                                if (!apk_path_.empty() && shadow_registry_) {
+                                    auto& rt =
+                                        resources::ResourceRuntime::instance();
+                                    if (rt.ensure_loaded(apk_path_)) {
+                                        int nw = 0, nh = 0;
+                                        if (rt.inflater().measure_view_spec(
+                                                vs, child, cw2, ch2, nw, nh)) {
+                                            cn->dex_measured_w = nw;
+                                            cn->dex_measured_h = nh;
+                                            cn->dex_measure_valid = true;
+                                            cn->measured_width = nw;
+                                            cn->measured_height = nh;
+                                            f304_mark_subtree(child);
+                                        }
+                                    }
+                                }
+                                if (!cn->dex_measure_valid) {
                                 cn->dex_measured_w =
                                     (sp_is_space && mmw != 1)
                                         ? 0
@@ -33735,6 +37847,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 cn->dex_measure_valid = true;
                                 cn->measured_width = cn->dex_measured_w;
                                 cn->measured_height = cn->dex_measured_h;
+                                }  // F-NEW-304: the native class law won
                             }
                             s109vg_measure_children(
                                 cn, cn->measured_width, cn->measured_height,
@@ -33744,8 +37857,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 for (uint32_t child : n->children) {
                     auto* cn = vs->find_node(child);
                     if (!cn) continue;
-                    int32_t cs_w = child_spec(pw, cn->width);
-                    int32_t cs_h = child_spec(ph, cn->height);
+                    // F-NEW-328: lp-aware child dims (see the child_dim_of
+                    // law above).
+                    int32_t cs_w = child_spec(pw, child_dim_of(cn, true));
+                    int32_t cs_h = child_spec(ph, child_dim_of(cn, false));
                     // dispatch child.measure → the R347 law (DEX onMeasure
                     // chain + default-size fallback) by invoking the child's
                     // onMeasure directly, same as the measure() wrapper.
@@ -33761,6 +37876,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         std::vector<DalvikValue>(cargs, cargs + 3), cret,
                         cres, "(II)V");
                     if (!cn->dex_measure_valid) {
+                        // ── F-NEW-304 companion (CONT-42): the CLASS
+                        // measure law ─────────────────────────────────────
+                        // AOSP View.measure dispatches to the node's CLASS
+                        // onMeasure — for a platform node with no DEX
+                        // override that is LinearLayout/TextView/Frame-
+                        // Layout's own law, which this runtime implements
+                        // NATIVELY (measure_node_raw). The old default-size
+                        // law answered getDefaultSize(spec) — AT_MOST → the
+                        // FULL available size — so every wrap-content
+                        // platform subtree under a DEX-measuring parent
+                        // (the tananaev PreferenceFragment list under
+                        // appcompat's ContentFrameLayout) measured
+                        // full-screen and stacked off-screen.
+                        // ── CONT-42 CLOSEOUT NOTE: a companion law that
+                        // routed no-DEX-override children through the native
+                        // measure_node_raw class laws (the honest AOSP
+                        // View.measure dispatch) was BUILT AND A/B'D HERE:
+                        // it fixed the tananaev preference-list geometry
+                        // (rows 1080x44 at real y-pitch; new frame
+                        // 0f649804d6e0486d; rc=0 SUCCESS) but
+                        // DETERMINISTICALLY moved the opencalc golden
+                        // (a976d2f9… → 0a0b26cf… ×3 — non-CL nodes too, so
+                        // the CL scope-out did not restore it). Zero-drift
+                        // gate: REVERTED in CONT-42; RE-LANDED in CONT-43
+                        // after the opencalc re-baseline decode (this wave's
+                        // A/B pixel-decode owns the verdict).
                         // default View.onMeasure law
                         auto mode = [](int32_t s) -> int32_t {
                             return (int32_t)(((uint32_t)s) >> 30);
@@ -33778,11 +37919,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (is_space) return mm == 1 ? (s & 0x3FFFFFFF) : 0;
                             return (mm == 1 || mm == 2) ? (s & 0x3FFFFFFF) : 0;
                         };
+                        // ── F-NEW-304 companion RE-LANDED (CONT-43): the
+                        // native class-measure law for no-DEX-override
+                        // children (honest AOSP View.measure dispatch).
+                        // Same law as the recursion site above; the
+                        // CONT-42 A/B proved the tananaev fix shape here
+                        // (rows 1080x44 real y-pitch) — the opencalc
+                        // interaction is decoded in this wave's A/B.
+                        if (!apk_path_.empty() && shadow_registry_) {
+                            auto& rt =
+                                resources::ResourceRuntime::instance();
+                            if (rt.ensure_loaded(apk_path_)) {
+                                int nw = 0, nh = 0;
+                                if (rt.inflater().measure_view_spec(
+                                        vs, child, cs_w, cs_h, nw, nh)) {
+                                    cn->dex_measured_w = nw;
+                                    cn->dex_measured_h = nh;
+                                    cn->dex_measure_valid = true;
+                                    cn->measured_width = nw;
+                                    cn->measured_height = nh;
+                                    f304_mark_subtree(child);
+                                }
+                            }
+                        }
+                        if (!cn->dex_measure_valid) {
                         cn->dex_measured_w = dsize(cs_w);
                         cn->dex_measured_h = dsize(cs_h);
                         cn->dex_measure_valid = true;
                         cn->measured_width = cn->dex_measured_w;
                         cn->measured_height = cn->dex_measured_h;
+                        }  // F-NEW-304: the native class law won
                         // ROOT-064 probe: which spec + fallback did the
                         // spacer actually receive?
                         if (std::getenv("MINIANDROID_PROBE") &&
@@ -33803,28 +37969,90 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     (void)cok;
                     ++measured_children;
                 }
-                // container self-size: EXACTLY → spec; AT_MOST → max child
+                // container self-size — the AOSP LinearLayout.onMeasure
+                // law (F-NEW-328). The old answer initialized mw/mh to the
+                // FULL spec size and max()'d children in — every AT_MOST
+                // (wrap-content) container answered the FULL available
+                // size, and the sum law never existed: vertical children
+                // stacked and the container claimed the whole screen (the
+                // appcompat AppBarLayout face — the super pass answers the
+                // spec, the appbar's DEX reshape then reads children that
+                // never got real sizes). Law (LinearLayout receivers;
+                // the other families keep their own self semantics):
+                //   vertical   → want_h = Σ(child + margins), want_w = max
+                //   horizontal → want_w = Σ(child + margins), want_h = max
+                //   EXACTLY → spec; AT_MOST → min(want, spec);
+                //   UNSPECIFIED → want. Padding joins the sums.
                 auto* self = vs->find_node(recv);
                 if (self && !self->dex_measure_valid) {
                     auto mode = [](int32_t s) -> int32_t {
                         return (int32_t)(((uint32_t)s) >> 30);
                     };
-                    int32_t mw = pw, mh = ph;
-                    if (mode(wspec) == 2 || mode(hspec) == 2) {
+                    const bool is_linear =
+                        class_name == "Landroid/widget/LinearLayout;";
+                    if (is_linear) {
+                        // EXP-095 orientation: 0=HORIZONTAL, 1=VERTICAL,
+                        // -1 unset → the AOSP default is HORIZONTAL.
+                        const bool horiz = self->orientation != 1;
+                        int64_t sum_w = 0, sum_h = 0;
+                        int32_t max_w = 0, max_h = 0;
                         for (uint32_t child : self->children) {
                             auto* cn = vs->find_node(child);
                             if (!cn) continue;
-                            if (mode(wspec) == 2)
-                                mw = std::max(mw, cn->measured_width);
-                            if (mode(hspec) == 2)
-                                mh = std::max(mh, cn->measured_height);
+                            if (cn->visibility == 4 || cn->visibility == 8)
+                                continue;
+                            const int32_t cw3 =
+                                cn->measured_width + cn->lp_margin_left +
+                                cn->lp_margin_right;
+                            const int32_t ch3 =
+                                cn->measured_height + cn->lp_margin_top +
+                                cn->lp_margin_bottom;
+                            sum_w += cw3;
+                            sum_h += ch3;
+                            max_w = std::max(max_w, cw3);
+                            max_h = std::max(max_h, ch3);
                         }
+                        const int32_t want_w =
+                            (horiz ? sum_w : max_w) + self->padding_left +
+                            self->padding_right;
+                        const int32_t want_h =
+                            (horiz ? max_h : sum_h) + self->padding_top +
+                            self->padding_bottom;
+                        const int wm = mode(wspec), hm = mode(hspec);
+                        int32_t mw2 = (wm == 1)
+                                          ? pw
+                                          : (wm == 2 ? std::min(want_w, pw)
+                                                     : want_w);
+                        int32_t mh2 = (hm == 1)
+                                          ? ph
+                                          : (hm == 2 ? std::min(want_h, ph)
+                                                     : want_h);
+                        self->dex_measured_w = mw2;
+                        self->dex_measured_h = mh2;
+                        self->dex_measure_valid = true;
+                        self->measured_width = mw2;
+                        self->measured_height = mh2;
+                    } else {
+                        // Non-LinearLayout families keep the legacy answer
+                        // (EXACTLY → spec; AT_MOST → max(spec, child)) —
+                        // their own decode cycles own any change.
+                        int32_t mw = pw, mh = ph;
+                        if (mode(wspec) == 2 || mode(hspec) == 2) {
+                            for (uint32_t child : self->children) {
+                                auto* cn = vs->find_node(child);
+                                if (!cn) continue;
+                                if (mode(wspec) == 2)
+                                    mw = std::max(mw, cn->measured_width);
+                                if (mode(hspec) == 2)
+                                    mh = std::max(mh, cn->measured_height);
+                            }
+                        }
+                        self->dex_measured_w = mw;
+                        self->dex_measured_h = mh;
+                        self->dex_measure_valid = true;
+                        self->measured_width = mw;
+                        self->measured_height = mh;
                     }
-                    self->dex_measured_w = mw;
-                    self->dex_measured_h = mh;
-                    self->dex_measure_valid = true;
-                    self->measured_width = mw;
-                    self->measured_height = mh;
                 }
                 std::cerr << "[S109-VG-MEASURE] " << class_name << " obj#"
                           << recv << " spec=" << pw << "x" << ph
@@ -35877,10 +40105,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // try_recursive_invoke against DEX-defined receivers; F-036 backing store
     // fast path for shadow ArrayLists). No field-layout guessing.
     // ────────────────────────────────────────────────────────────────────
+    // F-NEW-264c (CONT-11 W7): RECEIVER-BASED GATE EXTENSION. The original
+    // gate matched the DECLARING class of the method reference only. A
+    // DEX-defined collection SUBCLASS receiver (guest: `class GuestB
+    // extends ArrayList<String>` in the app's own DEX — any Kotlin/Java app
+    // that subclasses a collection) resolves addAll/<init>(Collection) to
+    // an inherited method whose declaring class IS java/util/ArrayList,
+    // but the engine's runtime dispatch classifies the call by the
+    // RECEIVER's runtime class (GuestB) — the string match missed, the
+    // call fell through to the silent-default dispatch, and the append was
+    // a NO-OP. Runtime face (f259g probe rows R/S): shadow→guest and
+    // guest→guest addAll delivered size=0; [F264-ADDALL-DIAG] shows the
+    // handler never fired for those two rows while every plain-ArrayList
+    // receiver row fired. Fix mirrors the F-097 TreeSet dispatch law:
+    // (b) ANY declaring class when the receiver's runtime class is an
+    // ArrayList-family subclass (heap hierarchy walk via is_subclass_of).
+    // The F-101/F-NEW-259b cascade then reads/writes the SAME stores the
+    // plain path uses — no new state, no app-specific code.
+    // ────────────────────────────────────────────────────────────────────
+    bool f264_recv_is_list = false;
     if ((method == "<init>" || method == "addAll") &&
-        (class_name == "Ljava/util/ArrayList;" ||
-         class_name.find("ArrayList") != std::string::npos ||
-         class_name == "Ljava/util/LinkedList;") &&
+        args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        const auto* f264_ro = heap_.get(args[0].object_id);
+        std::string f264_rcls =
+            f264_ro ? f264_ro->class_descriptor : args[0].class_desc;
+        if (!f264_rcls.empty() && f264_rcls != "Ljava/util/ArrayList;" &&
+            f264_rcls != "Ljava/util/LinkedList;" &&
+            is_subclass_of(f264_rcls, "Ljava/util/ArrayList;"))
+            f264_recv_is_list = true;
+        if (!f264_recv_is_list && !f264_rcls.empty() &&
+            f264_rcls != "Ljava/util/LinkedList;" &&
+            is_subclass_of(f264_rcls, "Ljava/util/LinkedList;"))
+            f264_recv_is_list = true;
+    }
+    if ((method == "<init>" || method == "addAll") &&
+        ((class_name == "Ljava/util/ArrayList;" ||
+          class_name.find("ArrayList") != std::string::npos ||
+          class_name == "Ljava/util/LinkedList;") ||
+         f264_recv_is_list) &&
         args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
         args[1].type == DalvikType::OBJECT_REF &&
         args[1].object_id != 0) {
@@ -35940,6 +40203,60 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // The append base is the receiver's authoritative current count:
         // the F-036 backing store when present, else the registry-side
         // CollectionState (the store shadow-side add() owns), else 0.
+        // F-NEW-264b DIAG (env-gated, bounded): store census at entry —
+        // answers which layer owns the receiver/source elements when an
+        // addAll drops data (f259g probe rows R/S: shadow→guest and
+        // guest→guest append delivered size=0).
+        if (method == "addAll" &&
+            std::getenv("MINIANDROID_F264_ADDALL_DIAG") != nullptr) {
+            static thread_local uint64_t f264_diag_n = 0;
+            if (f264_diag_n < 24) {
+                ++f264_diag_n;
+                auto f264_rlen =
+                    heap_.get_object_field(f101_arr, "__array_length__");
+                auto f264_slen_d =
+                    heap_.get_object_field(f101_src, "__array_length__");
+                int32_t f264_rcnt = -1, f264_scnt = -1;
+                if (shadow_registry_ != nullptr) {
+                    auto* f264_csh = shadow_registry_->find_as<
+                        framework::CollectionShadow>();
+                    if (f264_csh) {
+                        auto* f264_rs = f264_csh->get_or_create(
+                            f101_arr, /*is_map=*/false);
+                        f264_rcnt =
+                            f264_rs ? (int32_t)f264_rs->elements.size() : -2;
+                        auto* f264_ss = f264_csh->get_or_create(
+                            f101_src, /*is_map=*/false);
+                        f264_scnt =
+                            f264_ss ? (int32_t)f264_ss->elements.size() : -2;
+                    }
+                }
+                const auto* f264_ro = heap_.get(f101_arr);
+                const auto* f264_so = heap_.get(f101_src);
+                int f264_ra = 0, f264_sa = 0;
+                if (f264_ro)
+                    for (const auto& f264_kv : f264_ro->fields)
+                        if (f264_kv.first.rfind("array[", 0) == 0) ++f264_ra;
+                if (f264_so)
+                    for (const auto& f264_kv : f264_so->fields)
+                        if (f264_kv.first.rfind("array[", 0) == 0) ++f264_sa;
+                std::cerr << "[F264-ADDALL-DIAG] recv=o" << f101_arr
+                          << " rlen="
+                          << (f264_rlen.has_value()
+                                  ? f264_rlen->int_val : -1)
+                          << " reg=" << f264_rcnt
+                          << " arrfields=" << f264_ra
+                          << " | src=o" << f101_src << " (" << f101_scls
+                          << ") slen="
+                          << (f264_slen_d.has_value()
+                                  ? f264_slen_d->int_val : -1)
+                          << " reg=" << f264_scnt
+                          << " arrfields=" << f264_sa
+                          << " dex_src=" << (f101_dex_src ? 1 : 0)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
         int32_t f101_append_base = 0;
         if (method == "addAll") {
             auto f101_rlen =
@@ -36045,7 +40362,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // even though 5 @Subscribe subscriber methods had just been added.
         // OpenJDK law: ArrayList(Collection c) = c.toArray() — the source's
         // OWN authoritative store must be consumed, whatever layer owns it.
-        if (f101_n < 0 && shadow_registry_ != nullptr) {
+        // F-NEW-264b (CONT-11 W7): the gate broadens from `f101_n < 0` to
+        // `f101_n <= 0`. Upstream law (OpenJDK ArrayList.addAll(Collection):
+        // the source's OWN authoritative store decides the element set).
+        // Runtime face (f259g probe row R, [F235-COPY] copied=0): a shadow
+        // ArrayList source grown via the registry-side shadow add() carries
+        // a STALE/mirrored __array_length__ (2) but NO heap array[i] fields
+        // — the array-field read loop yields 0, the (f101_n != f101_copied)
+        // guard resets copied to 0, and the step-0 registry read (the ONLY
+        // reader that sees the real elements) was skipped because
+        // __array_length__ had already set f101_n=2. A non-negative n with
+        // zero heap-field copies is exactly the "stale mirror" shape, so
+        // the registry read must run whenever the heap mirror has not been
+        // PROVEN consistent (n<0 = unknown, n==0 = unproven-empty). Empty
+        // sources are unaffected: the registry read of an empty state is a
+        // no-op and f101_n stays <= 0.
+        if (f101_n <= 0 && shadow_registry_ != nullptr) {
             auto* f101_csh_src =
                 shadow_registry_->find_as<framework::CollectionShadow>();
             if (f101_csh_src) {
@@ -36128,6 +40460,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (f101_slen.has_value() && f101_n != f101_copied) {
                 f101_copied = 0;
                 f101_elem_ids.clear();
+            }
+            // F-NEW-264b (CONT-11 W7): STALE-MIRROR REGISTRY FALLBACK.
+            // When the __array_length__ mirror promised elements the heap
+            // array[i] fields did not deliver (copied reset to 0 above),
+            // the source's authoritative store is the REGISTRY-side
+            // CollectionState — shadow add() appends there and the heap
+            // mirror is written only by some paths. OpenJDK law
+            // (ArrayList.addAll(Collection) → c.toArray()): the source's
+            // OWN store decides the element set, whatever layer owns it.
+            // Runtime face (f259g probe row R, [F235-COPY] copied=0):
+            // shadow→guest addAll dropped 2 real String elements and the
+            // receiver answered size=0 afterwards (the final mirror below
+            // then stamped the receiver's __array_length__ down to the
+            // dropped count). Bounded by the same store; empty → no-op.
+            if (f101_copied == 0 && shadow_registry_ != nullptr) {
+                auto* f264_csh =
+                    shadow_registry_->find_as<framework::CollectionShadow>();
+                auto* f264_sst =
+                    f264_csh ? f264_csh->get_or_create(f101_src,
+                                                       /*is_map=*/false)
+                             : nullptr;
+                if (f264_sst && !f264_sst->elements.empty()) {
+                    const size_t f264_sn = f264_sst->elements.size();
+                    for (size_t f264_i = 0; f264_i < f264_sn; ++f264_i) {
+                        DalvikValue f264_ev;
+                        uint8_t k = f264_i < f264_sst->elem_kinds.size()
+                                        ? f264_sst->elem_kinds[f264_i]
+                                        : 0;
+                        if (k == 1) {
+                            f264_ev = DalvikValue::make_object(
+                                f264_sst->elements[f264_i],
+                                "Ljava/lang/Object;");
+                        } else if (k == 2) {
+                            f264_ev = DalvikValue::make_string(
+                                f264_i < f264_sst->elem_strings.size()
+                                    ? f264_sst->elem_strings[f264_i]
+                                    : std::string(),
+                                0);
+                        } else if (k == 3) {
+                            f264_ev = DalvikValue::make_int(
+                                f264_i < f264_sst->elem_ints.size()
+                                    ? f264_sst->elem_ints[f264_i]
+                                    : 0);
+                        } else {
+                            continue;
+                        }
+                        heap_.set_object_field(
+                            f101_arr,
+                            "array[" +
+                                std::to_string(f101_append_base + f101_copied) +
+                                "]",
+                            f264_ev);
+                        if (k == 1 && f264_sst->elements[f264_i] != 0)
+                            f101_elem_ids.push_back(
+                                f264_sst->elements[f264_i]);
+                        ++f101_copied;
+                    }
+                    if (f101_copied > 0) {
+                        std::cerr << "[F264-ADDALL] stale-mirror fallback "
+                                  << "src=o" << f101_src << " (" << f101_scls
+                                  << ") elems=" << f101_copied
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                }
             }
         }
         // R-NEW-360 step 3: ITERATOR-DRIVEN copy — the Collection contract
@@ -36865,6 +41262,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             int32_t f93_val = args.size() >= 3 && args[2].type == DalvikType::INT32
                                   ? args[2].int_val
                                   : 0;   // AOSP defValue when unset
+            // F-NEW-327 read probe (bounded, env-gated): which TypedArray
+            // slot the dimension readers consume and whether the producer
+            // marked it present — the mMaxWidth decode surface.
+            static thread_local const bool f327_read =
+                std::getenv("MINIANDROID_F327_READ") != nullptr;
+            static thread_local uint64_t f327_read_n = 0;
+            if (f327_read && f327_read_n < 40) {
+                ++f327_read_n;
+                auto pf0 = heap_.get_object_field(
+                    args[0].object_id,
+                    "array_present[" + std::to_string(f93_idx) + "]");
+                auto vf0 = heap_.get_object_field(
+                    args[0].object_id,
+                    "array[" + std::to_string(f93_idx) + "]");
+                std::cerr << "[F-NEW-327-READ] " << method << " ta=o"
+                          << args[0].object_id << " idx=" << f93_idx
+                          << " present="
+                          << (pf0 && pf0->type == DalvikType::INT32
+                                  ? pf0->int_val
+                                  : -1)
+                          << " val="
+                          << (vf0 && vf0->type == DalvikType::INT32
+                                  ? vf0->int_val
+                                  : 0)
+                          << " def=" << f93_val
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
             if (auto vf = heap_.get_object_field(
                     args[0].object_id, "array[" + std::to_string(f93_idx) + "]");
                 vf && vf->type == DalvikType::INT32) {
@@ -37169,8 +41594,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 if (!cn) continue;
                                 if (cn->visibility == 4 || cn->visibility == 8)
                                     continue;
-                                int32_t cw = cspec(pw, cn->width);
-                                int32_t ch = cspec(ph, cn->height);
+                                // ── F-NEW-328 (CONT-56): the LP-SOURCE law
+                                // (same as the S109-VG site): the child's
+                                // LayoutParams is the spec source. The
+                                // programmatic addView law writes
+                                // lp_width/lp_height; the legacy
+                                // width/height mirrors are the fallback
+                                // for nodes whose lp was never written.
+                                auto lp_dim = [&](bool width_axis) -> int32_t {
+                                    const int32_t lp =
+                                        width_axis ? cn->lp_width
+                                                   : cn->lp_height;
+                                    if (lp != INT_MIN) return lp;
+                                    return width_axis ? cn->width
+                                                      : cn->height;
+                                };
+                                int32_t cw = cspec(pw, lp_dim(true));
+                                int32_t ch = cspec(ph, lp_dim(false));
                                 cn->dex_measure_valid = false;
                                 DalvikValue cret2 = DalvikValue::make_void();
                                 DalvikExecutionResult cres2;
@@ -37646,6 +42086,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // when the View constructor captures the Context arg.
         if (shadow_registry_ != nullptr) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
                 ctx.has_receiver = true;
                 ctx.receiver_id = args[0].object_id;
@@ -38164,7 +42606,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         class_name == "Landroid/content/res/Resources$Theme;") {
         uint32_t styleable_id = 0;
         int32_t n = 0;
-        for (const auto& a : args) {
+        size_t styleable_pos = SIZE_MAX;
+        for (size_t ai = 0; ai < args.size(); ++ai) {
+            const auto& a = args[ai];
             if (a.type != DalvikType::OBJECT_REF || a.object_id == 0)
                 continue;
             if (auto lf = heap_.get_object_field(a.object_id,
@@ -38173,13 +42617,80 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 lf->int_val <= 256) {
                 styleable_id = a.object_id;
                 n = lf->int_val;
+                styleable_pos = ai;
                 break;
             }
+        }
+        // ── F-NEW-327 (CONT-55): the def-style chain args — the same law
+        // the ContextShadow F-093 producer carries. The overloads that
+        // carry them: (AttributeSet, int[], defStyleAttr, defStyleRes)
+        // and (int[], defStyleAttr, defStyleRes) — the INT args right
+        // after the styleable int[] position. Evidence (solitaire): the
+        // NavigationView ctor's TypedArray rides THIS producer (the
+        // appcompat ContextThemeWrapper chain routes
+        // Context.obtainStyledAttributes through the Theme), so without
+        // the defStyle stages the Widget.Design.NavigationView
+        // android:maxWidth=320dp law never resolved → mMaxWidth=0 → the
+        // drawer measured 0 wide (the menu-content frontier).
+        int32_t f327_def_style_attr = 0;
+        int32_t f327_def_style_res = 0;
+        int32_t f327_xml_style = 0;
+        const std::vector<resources::XmlAttrRecord>* f327_xml_recs = nullptr;
+        if (styleable_pos != SIZE_MAX) {
+            // Positional extraction (F-NEW-327; see the ContextShadow
+            // producer for the NULL_REF law — the bridge maps literal-0
+            // ints to NULL_REF, so the kind gate must accept both).
+            size_t nxt = styleable_pos + 1;
+            if (nxt + 1 < args.size()) {
+                f327_def_style_attr = dalvik_int_value(args[nxt]);
+                f327_def_style_res = dalvik_int_value(args[nxt + 1]);
+            }
+        }
+        for (const auto& a : args) {
+            if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
+                a.class_desc == "Landroid/util/AttributeSet;") {
+                f327_xml_recs =
+                    resources::AttributeSetStore::instance().lookup(
+                        a.object_id);
+                break;
+            }
+        }
+        if (f327_xml_recs) {
+            const auto* sr =
+                resources::AttributeSetStore::instance().find(
+                    f327_xml_recs, 0x01010000u /* android:style */);
+            if (sr &&
+                (sr->type == resources::DataType::REFERENCE ||
+                 sr->type == resources::DataType::DYNAMIC_REFERENCE))
+                f327_xml_style =
+                    (int32_t)(sr->ref_id ? sr->ref_id : sr->data);
         }
         uint32_t ta_id = heap_.allocate(
             "Landroid/content/res/TypedArray;", pc_, 0);
         heap_.set_object_field(ta_id, "__array_length__",
                                DalvikValue::make_int(n));
+        // F-NEW-327 array-content probe: which attr ids this producer saw
+        // (the o48/o52 TypedArray attribution surface).
+        static thread_local const bool f327_diag_s101 =
+            std::getenv("MINIANDROID_F327_DIAG") != nullptr;
+        static thread_local uint64_t f327_s101_n = 0;
+        if (f327_diag_s101 && f327_s101_n < 24 && styleable_id != 0) {
+            ++f327_s101_n;
+            std::cerr << "[S101-PRODUCER] ta=o" << ta_id << " n=" << n
+                      << " dSA=0x" << std::hex << f327_def_style_attr
+                      << " dSR=0x" << f327_def_style_res << std::dec
+                      << " attrs=[";
+            for (int32_t k = 0; k < n && k < 30; ++k) {
+                int32_t aid = 0;
+                if (auto af = heap_.get_object_field(
+                        styleable_id, "array[" + std::to_string(k) + "]");
+                    af && af->type == DalvikType::INT32)
+                    aid = af->int_val;
+                std::cerr << (k ? "," : "") << "0x" << std::hex << aid
+                          << std::dec;
+            }
+            std::cerr << "]" << std::endl;
+        }
         auto& rt175 = resources::ResourceRuntime::instance();
         for (int32_t i = 0; i < n; ++i) {
             int32_t attr_id = 0;
@@ -38192,13 +42703,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             int32_t decoded = 0;
             if (attr_id != 0) {
-                auto v = rt175.resolve_theme_attr_typed(
-                    apk_path_, (uint32_t)attr_id);
-                if (v) {
-                    // AOSP TypedValue law: booleans decode as data!=0;
-                    // ints/colors pass data through. Presence recorded
-                    // separately (S99 law: value 0/false is PRESENT).
-                    decoded = (int32_t)v->data;
+                // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution
+                // order for the AttributeSet-bearing overloads — XML(1) →
+                // xmlStyle(2) → defStyleAttr(3) → defStyleRes(4) → theme(5).
+                // The resolver covers stages 2-4; stage 1 reads the raw
+                // XML attrs (the same xml_attr_is_int_family law the
+                // ContextShadow producer uses); stage 5 is the historical
+                // theme path (kept verbatim as the fallback).
+                bool slot_present = false;
+                if (f327_xml_recs) {
+                    const auto* r =
+                        resources::AttributeSetStore::instance().find(
+                            f327_xml_recs, (uint32_t)attr_id);
+                    if (r && resources::xml_attr_is_int_family(r->type)) {
+                        decoded =
+                            (r->type == resources::DataType::REFERENCE ||
+                             r->type ==
+                                 resources::DataType::DYNAMIC_REFERENCE)
+                                ? (int32_t)(r->ref_id ? r->ref_id : r->data)
+                                : r->data;
+                        slot_present = true;
+                    }
+                }
+                if (!slot_present) {
+                    if (auto v = rt175.resolve_def_style_attr_value(
+                            apk_path_, (uint32_t)attr_id,
+                            f327_def_style_attr, f327_def_style_res,
+                            f327_xml_style)) {
+                        if (v->type == resources::DataType::DIMENSION) {
+                            // AOSP TypedArray getDimensionPixelSize
+                            // contract: the slot answers device px.
+                            decoded = resources::complex_unit_to_dimension_pixel_size(
+                                v->dim_unit, v->dim_value,
+                                resources::DensityContext{});
+                        } else {
+                            decoded = (int32_t)v->data;
+                        }
+                        slot_present = true;
+                    }
+                }
+                if (!slot_present) {
+                    auto v = rt175.resolve_theme_attr_typed(
+                        apk_path_, (uint32_t)attr_id);
+                    if (v) {
+                        // AOSP TypedValue law: booleans decode as data!=0;
+                        // ints/colors pass data through. Presence recorded
+                        // separately (S99 law: value 0/false is PRESENT).
+                        decoded = (int32_t)v->data;
+                        slot_present = true;
+                    }
+                }
+                if (slot_present) {
                     heap_.set_object_field(
                         ta_id, "array_present[" + std::to_string(i) + "]",
                         DalvikValue::make_int(1));
@@ -38626,6 +43181,324 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // CONT-21 / #384 (F-NEW-273, producer half) — ComponentName.<init> law.
+    // AOSP ComponentName(String pkg, String cls) / (Context, String cls):
+    // the constructor stores the identity the later PM queries read back
+    // (mPackage/mClass — ComponentName.flattenToString contract). The
+    // runtime evidence (run/cont21/family/dooz): every androidx.startup app
+    // constructs `new ComponentName(context.getPackageName(),
+    // InitializationProvider.class.getName())` at process start and the
+    // REC-MISS'd ctor left the object empty — the consumer half below
+    // (getProviderInfo) would then MISS its manifest lookup. Evidence is
+    // the same 5-target/3-family cluster as the consumer half. Generic:
+    // any app building ComponentName for PM resolution benefits.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "<init>" && class_name == "Landroid/content/ComponentName;" &&
+        args.size() >= 3) {
+        // (String pkg, String cls): args[1]=pkg args[2]=cls
+        // (Context ctx, String cls): args[1]=ctx  args[2]=cls
+        std::string pkg_v, cls_v;
+        if (args[1].type == DalvikType::STRING_REF) pkg_v = args[1].string_val;
+        if (args[2].type == DalvikType::STRING_REF) cls_v = args[2].string_val;
+        if (pkg_v.empty() && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0)
+            pkg_v = package_name_;  // Context-form: the running package.
+        if (!cls_v.empty()) {
+            if (!pkg_v.empty())
+                heap_.set_object_field(args[0].object_id, "mPackage",
+                                       DalvikValue::make_string(pkg_v, 0));
+            heap_.set_object_field(args[0].object_id, "mClass",
+                                   DalvikValue::make_string(cls_v, 0));
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-21 / #384 (F-NEW-273) — PackageManager.getProviderInfo law.
+    // AOSP PackageManager.getProviderInfo(ComponentName, flags): returns the
+    // ProviderInfo of the manifest-declared <provider> for the component —
+    // NEVER null (throws PackageManager.NameNotFoundException when no
+    // provider matches). With GET_META_DATA (0x80) ProviderInfo.metaData is
+    // the Bundle built from the <provider>'s <meta-data> children
+    // (PackageParser.parseProvider → PackageItemInfo.metaData).
+    // Shared-primitive evidence (run/cont21 cluster scan): androidx.startup
+    // InitializationProvider.onCreate / AppInitializer.discoverAndInitialize
+    // runs this exact call at process start in EVERY androidx-startup app —
+    // dooz, opencalc, stopwatch, forkgram, telegram all REC-MISS'd it and
+    // NPE'd at `providerInfo.metaData` (iget on the null answered by the
+    // REC-MISS fallback; stopwatch died at APP BOUNDARY before any UI).
+    // Seed law mirrors the S1-PROVIDER install path (identity + grants +
+    // component meta-data) so the served ProviderInfo equals the installed
+    // provider's identity. Generic across all APKs — zero app checks.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getProviderInfo" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        // Resolve the target provider class from the ComponentName arg
+        // (same arg convention as getActivityInfo above).
+        std::string prov_class;
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            auto cls_f = heap_.get_object_field(args[1].object_id, "mClass");
+            if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
+                prov_class = cls_f->string_val;
+        }
+        // Normalize: ".Foo" → pkg.Foo; "Foo" (no dot) → pkg.Foo.
+        auto normalize_prov = [&](std::string c) {
+            if (c.empty()) return c;
+            if (c[0] == '.') return package_name_ + c;
+            if (c.find('.') == std::string::npos) return package_name_ + "." + c;
+            return c;
+        };
+        std::string norm = normalize_prov(prov_class);
+        // Trim an L...; descriptor to a bare dotted class name.
+        std::string bare = norm;
+        if (!bare.empty() && bare.front() == 'L' && bare.back() == ';')
+            bare = bare.substr(1, bare.size() - 2);
+        for (auto& ch : bare) if (ch == '/') ch = '.';
+        // Manifest <provider> identity lookup: exact → bare → suffix match
+        // (same matching law as getActivityInfo's meta-data lookup).
+        bool found = false;
+        std::string auth;
+        for (const auto& [pname, pauth] : manifest_provider_identity_) {
+            if (pname == norm || pname == bare ||
+                (!pname.empty() &&
+                 (norm.rfind(pname) != std::string::npos ||
+                  bare.rfind(pname) != std::string::npos))) {
+                auth = pauth;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // AOSP contract: absent component → NameNotFoundException, never
+            // a null ProviderInfo.
+            std::cerr << "[F273-PROVINFO] MISS " << bare
+                      << " → PackageManager$NameNotFoundException (AOSP contract)"
+                      << std::endl;
+            throw_deferred(
+                "Landroid/content/pm/PackageManager$NameNotFoundException;",
+                bare, "F273-PROVINFO");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Flags: GET_META_DATA (0x80) gates the metaData Bundle (AOSP
+        // PackageParser law — components carry metaData only when requested).
+        int64_t pi_flags = 0;
+        for (size_t i = 2; i < args.size(); i++) {
+            if (args[i].type == DalvikType::INT32) {
+                pi_flags = args[i].int_val;
+                break;
+            }
+        }
+        uint32_t pi_id = heap_.allocate("Landroid/content/pm/ProviderInfo;",
+                                        pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(pi_id, "name",
+                               DalvikValue::make_string(bare, 1));
+        heap_.set_object_field(pi_id, "packageName",
+                               DalvikValue::make_string(
+                                   package_name_.empty() ? "unknown.package"
+                                                         : package_name_, 1));
+        // AOSP ProviderInfo field is `authority` (singular); seed the legacy
+        // plural alias too — consumers may read either (same law as the
+        // getPackageInfo GET_PROVIDERS path).
+        heap_.set_object_field(pi_id, "authority",
+                               DalvikValue::make_string(auth, 1));
+        heap_.set_object_field(pi_id, "authorities",
+                               DalvikValue::make_string(auth, 1));
+        // #371: grantUriPermissions from the manifest (FileProvider contract).
+        for (const auto& [gname, gval] : manifest_provider_grants_) {
+            if (gname == norm || gname == bare || gname == prov_class) {
+                heap_.set_object_field(pi_id, "grantUriPermissions",
+                                       DalvikValue::make_bool(gval));
+                break;
+            }
+        }
+        if ((pi_flags & 0x80) != 0) {
+            // metaData seeding — identical law to the S1-PROVIDER install
+            // path: component_meta_data_ entries, descriptor→dotted fallback,
+            // resource refs as ints, numeric strings as ints, else String.
+            auto md_it = component_meta_data_.find(norm);
+            if (md_it == component_meta_data_.end())
+                md_it = component_meta_data_.find(bare);
+            if (md_it == component_meta_data_.end() && !prov_class.empty())
+                md_it = component_meta_data_.find(prov_class);
+            if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
+                uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
+                                                    pc_,
+                                                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                static const std::string kDigits = "0123456789";
+                for (const auto& mde : md_it->second) {
+                    if (mde.has_resource && mde.resource_id != 0) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(
+                                static_cast<int32_t>(mde.resource_id)));
+                    } else if (!mde.value.empty() &&
+                               mde.value.find_first_not_of(kDigits) ==
+                                   std::string::npos) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(std::stoi(mde.value)));
+                    } else if (!mde.value.empty()) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_string(mde.value, 0));
+                    }
+                }
+                heap_.set_object_field(
+                    pi_id, "metaData",
+                    DalvikValue::make_object(md_bundle, "Landroid/os/Bundle;"));
+                std::cerr << "[F273-PROVINFO] " << bare
+                          << " metaData entries=" << md_it->second.size()
+                          << std::endl;
+            }
+        }
+        result = DalvikValue::make_object(pi_id, "Landroid/content/pm/ProviderInfo;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-22 (F-NEW-275) — PackageManager.getServiceInfo law.
+    // AOSP PackageManager.getServiceInfo(ComponentName, flags): returns the
+    // ServiceInfo of the manifest-declared <service> for the component —
+    // NEVER null (throws PackageManager.NameNotFoundException when no
+    // service matches). With GET_META_DATA (0x80) ServiceInfo.metaData is
+    // the Bundle built from the <service>'s <meta-data> children
+    // (PackageParser.parseService → PackageItemInfo.metaData).
+    // Shared-primitive evidence (run/cont22/cluster_scan.json, fresh
+    // post-CONT-21 logs): opencalc (F1) AppCompatDelegate locale-service
+    // discovery — Lg/t;.b builds ComponentName(ctx,
+    // AppLocalesMetadataHolderService) with flags 640
+    // (GET_SERVICES|GET_META_DATA), calls getServiceInfo then igets
+    // ServiceInfo.metaData with NO null-check (the app only catches
+    // NameNotFoundException; the engine's REC-MISS null became an NPE and
+    // its uncaught face); telegram (F4) Firebase ComponentDiscovery
+    // Lkg/i;.P calls getServiceInfo(cn, 128) twice and degrades on the
+    // returned null — 2 targets / 2 execution families at the same
+    // primitive. Mirror of the F-NEW-273 getProviderInfo law (same
+    // matching, seeding, and NameNotFoundException contract; the manifest
+    // service table and component_meta_data_ already cover services).
+    // Generic across all APKs — zero app checks.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getServiceInfo" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        // Resolve the target service class from the ComponentName arg
+        // (same arg convention as getProviderInfo above).
+        std::string svc_class;
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            auto cls_f = heap_.get_object_field(args[1].object_id, "mClass");
+            if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
+                svc_class = cls_f->string_val;
+        }
+        // Normalize: ".Foo" → pkg.Foo; "Foo" (no dot) → pkg.Foo.
+        auto normalize_svc = [&](std::string c) {
+            if (c.empty()) return c;
+            if (c[0] == '.') return package_name_ + c;
+            if (c.find('.') == std::string::npos) return package_name_ + "." + c;
+            return c;
+        };
+        std::string norm = normalize_svc(svc_class);
+        // Trim an L...; descriptor to a bare dotted class name.
+        std::string bare = norm;
+        if (!bare.empty() && bare.front() == 'L' && bare.back() == ';')
+            bare = bare.substr(1, bare.size() - 2);
+        for (auto& ch : bare) if (ch == '/') ch = '.';
+        // Manifest <service> identity lookup: exact → bare → suffix match
+        // (same matching law as getProviderInfo's manifest walk).
+        bool found = false;
+        for (const auto& [sname, _acts] : manifest_service_classes_) {
+            if (sname == norm || sname == bare ||
+                (!sname.empty() &&
+                 (norm.rfind(sname) != std::string::npos ||
+                  bare.rfind(sname) != std::string::npos))) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // AOSP contract: absent component → NameNotFoundException, never
+            // a null ServiceInfo.
+            std::cerr << "[F275-SVCINFO] MISS " << bare
+                      << " → PackageManager$NameNotFoundException (AOSP contract)"
+                      << std::endl;
+            throw_deferred(
+                "Landroid/content/pm/PackageManager$NameNotFoundException;",
+                bare, "F275-SVCINFO");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Flags: GET_META_DATA (0x80) gates the metaData Bundle (AOSP
+        // PackageParser law — components carry metaData only when requested).
+        int64_t si_flags = 0;
+        for (size_t i = 2; i < args.size(); i++) {
+            if (args[i].type == DalvikType::INT32) {
+                si_flags = args[i].int_val;
+                break;
+            }
+        }
+        uint32_t sid = heap_.allocate("Landroid/content/pm/ServiceInfo;",
+                                      pc_,
+                                      call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(sid, "name",
+                               DalvikValue::make_string(bare, 1));
+        heap_.set_object_field(sid, "packageName",
+                               DalvikValue::make_string(
+                                   package_name_.empty() ? "unknown.package"
+                                                         : package_name_, 1));
+        if ((si_flags & 0x80) != 0) {
+            // metaData seeding — identical law to the F-273 getProviderInfo
+            // seeding: component_meta_data_ entries, descriptor→dotted
+            // fallback, resource refs as ints, numeric strings as ints, else
+            // String.
+            auto md_it = component_meta_data_.find(norm);
+            if (md_it == component_meta_data_.end())
+                md_it = component_meta_data_.find(bare);
+            if (md_it == component_meta_data_.end() && !svc_class.empty())
+                md_it = component_meta_data_.find(svc_class);
+            if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
+                uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
+                                                    pc_,
+                                                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                static const std::string kDigitsS = "0123456789";
+                for (const auto& mde : md_it->second) {
+                    if (mde.has_resource && mde.resource_id != 0) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(
+                                static_cast<int32_t>(mde.resource_id)));
+                    } else if (!mde.value.empty() &&
+                               mde.value.find_first_not_of(kDigitsS) ==
+                                   std::string::npos) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_int(std::stoi(mde.value)));
+                    } else if (!mde.value.empty()) {
+                        heap_.set_object_field(
+                            md_bundle, "bundle:" + mde.name,
+                            DalvikValue::make_string(mde.value, 0));
+                    }
+                }
+                heap_.set_object_field(
+                    sid, "metaData",
+                    DalvikValue::make_object(md_bundle, "Landroid/os/Bundle;"));
+                std::cerr << "[F275-SVCINFO] " << bare
+                          << " metaData entries=" << md_it->second.size()
+                          << std::endl;
+            }
+        }
+        result = DalvikValue::make_object(sid, "Landroid/content/pm/ServiceInfo;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P0.10 — PackageManager.getPackageInfo → PackageInfo
     // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
     // Telegram values. This is a GENERIC fix — affects ALL APKs.
@@ -38698,6 +43571,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             pav.class_desc = "[Landroid/content/pm/ProviderInfo;";
             pav.int_val = (int64_t)manifest_provider_identity_.size();
             heap_.set_object_field(obj_id, "providers", pav);
+        }
+        // CONT-22 (F-NEW-275) — GET_SERVICES (flags bit 0x20) law. AOSP
+        // PackageManager.getPackageInfo: with GET_SERVICES the returned
+        // PackageInfo.services array lists every manifest <service> as a
+        // ServiceInfo carrying name + packageName. Mirror of the
+        // GET_PROVIDERS law above (same array shape: array[N] fields +
+        // __array_length__). Sibling evidence: opencalc reads the services
+        // family via getServiceInfo(cn, 640) (the ComponentName path is the
+        // getServiceInfo law); this arm covers the PackageInfo.services
+        // iteration path (F-NEW-275's registered face).
+        if ((pm_flags & 0x20) != 0 && !manifest_service_classes_.empty()) {
+            uint32_t sarr_id = heap_.allocate(
+                "[Landroid/content/pm/ServiceInfo;", pc_, 0);
+            heap_.set_object_field(
+                sarr_id, "__array_length__",
+                DalvikValue::make_int((int)manifest_service_classes_.size()));
+            for (size_t i = 0; i < manifest_service_classes_.size(); i++) {
+                uint32_t sid2 = heap_.allocate(
+                    "Landroid/content/pm/ServiceInfo;", pc_, 0);
+                heap_.set_object_field(
+                    sid2, "name",
+                    DalvikValue::make_string(manifest_service_classes_[i].first, 1));
+                heap_.set_object_field(
+                    sid2, "packageName",
+                    DalvikValue::make_string(
+                        package_name_.empty() ? "unknown.package" : package_name_, 1));
+                DalvikValue siv;
+                siv.type = DalvikType::OBJECT_REF;
+                siv.object_id = sid2;
+                siv.class_desc = "Landroid/content/pm/ServiceInfo;";
+                heap_.set_object_field(sarr_id, "array[" + std::to_string(i) + "]",
+                                       siv);
+            }
+            DalvikValue sav;
+            sav.type = DalvikType::OBJECT_REF;
+            sav.object_id = sarr_id;
+            sav.class_desc = "[Landroid/content/pm/ServiceInfo;";
+            sav.int_val = (int64_t)manifest_service_classes_.size();
+            heap_.set_object_field(obj_id, "services", sav);
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -39138,6 +44050,144 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-304 (CONT-42) — platform PreferenceFragment.addPreferencesFrom-
+    // Resource(int) law. AOSP PreferenceFragment.addPreferencesFromResource:
+    // PreferenceManager.inflateFromResource fills the fragment's
+    // PreferenceScreen from a res/xml preferences AXML. The engine records
+    // the REAL entries (kind/title/summary/key) on the fragment object; the
+    // platform onCreateView law (frag_build_preference_list_view) builds the
+    // visible rows from this state through the REAL measure laws — no fixed
+    // geometry. tananaev calculator face: PrefsFragment.onCreate calls this
+    // with 0x7f050000; without the law the call REC-MISSed and the screen
+    // stayed DEFAULT_BACKGROUND_ONLY.
+    // Keying (virtual-dispatch law, F-114c contrast): invoke-STATIC lands
+    // here with the platform declaring class, but a VIRTUAL call arrives
+    // with the RECEIVER's runtime class (bridge api_class = runtime_type —
+    // Lcom/tananaev/calculator/PrefsFragment;). The law therefore answers
+    // the receiver chain (is_subclass_of) when the static name misses —
+    // the DEX superclass edge PrefsFragment →
+    // Landroid/preference/PreferenceFragment; is the AOSP truth.
+    // ────────────────────────────────────────────────────────────────────────
+    bool f304_pref_frag =
+        class_name.find("PreferenceFragment") != std::string::npos;
+    if (!f304_pref_frag && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        std::string f304_recv_cls;
+        if (heap_.get_object_class(args[0].object_id, f304_recv_cls))
+            f304_pref_frag = is_subclass_of(
+                f304_recv_cls, "Landroid/preference/PreferenceFragment;");
+    }
+    if (f304_pref_frag &&
+        method == "addPreferencesFromResource" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        args[1].type == DalvikType::INT32) {
+        uint32_t frag_oid = args[0].object_id;
+        uint32_t pref_resid = (uint32_t)args[1].int_val;
+        auto& rt = resources::ResourceRuntime::instance();
+        std::vector<uint8_t> pref_bytes;
+        std::string pref_entry;
+        if (rt.ensure_loaded(apk_path_)) {
+            std::vector<std::string> pref_paths;
+            for (const auto& ze : rt.apk().list_entries_cached("res/"))
+                pref_paths.push_back(ze.name);
+            auto sel = rt.arsc().select_file(pref_resid, pref_paths,
+                                             resources::device_config());
+            if (sel) pref_entry = sel->path;
+            if (pref_entry.empty()) {
+                auto pp = rt.arsc().apk_path_for(pref_resid, pref_paths);
+                if (pp) pref_entry = *pp;
+            }
+            if (!pref_entry.empty())
+                pref_bytes = rt.apk().extract_entry_cached(pref_entry);
+        }
+        if (!pref_bytes.empty()) {
+            resources::AxmlParser pref_parser;
+            if (pref_parser.parse(pref_bytes)) {
+                int pref_count = 0;
+                std::function<void(const resources::AxmlElement&)> pref_walk =
+                    [&](const resources::AxmlElement& el) {
+                        bool is_pref = el.name == "PreferenceScreen" ||
+                                       el.name == "PreferenceCategory" ||
+                                       el.name == "Preference" ||
+                                       el.name == "CheckBoxPreference" ||
+                                       el.name == "SwitchPreference" ||
+                                       el.name == "ListPreference" ||
+                                       el.name == "EditTextPreference" ||
+                                       el.name == "RingtonePreference" ||
+                                       el.name == "MultiSelectListPreference";
+                        if (is_pref && pref_count < 128) {
+                            const std::string pp =
+                                "__pref_" + std::to_string(pref_count) + "_";
+                            int kind = 0;
+                            if (el.name == "PreferenceCategory") kind = 1;
+                            else if (el.name == "CheckBoxPreference") kind = 2;
+                            else if (el.name == "SwitchPreference") kind = 3;
+                            else if (el.name == "ListPreference") kind = 4;
+                            else if (el.name == "EditTextPreference") kind = 5;
+                            heap_.set_object_field(
+                                frag_oid, pp + "kind",
+                                DalvikValue::make_int(kind));
+                            if (auto* a = el.attr("title")) {
+                                std::string t =
+                                    fnew304_resolve_pref_text(a->value);
+                                if (!t.empty()) {
+                                    DalvikValue tv;
+                                    tv.type = DalvikType::STRING_REF;
+                                    tv.string_val = t;
+                                    tv.ref_id = 0;
+                                    heap_.set_object_field(frag_oid, pp + "title", tv);
+                                }
+                            }
+                            if (auto* a = el.attr("summary")) {
+                                std::string s =
+                                    fnew304_resolve_pref_text(a->value);
+                                if (!s.empty()) {
+                                    DalvikValue sv;
+                                    sv.type = DalvikType::STRING_REF;
+                                    sv.string_val = s;
+                                    sv.ref_id = 0;
+                                    heap_.set_object_field(frag_oid, pp + "summary", sv);
+                                }
+                            }
+                            if (auto* a = el.attr("key")) {
+                                if (a->value.is_string() &&
+                                    !a->value.string_value.empty()) {
+                                    DalvikValue kv;
+                                    kv.type = DalvikType::STRING_REF;
+                                    kv.string_val = a->value.string_value;
+                                    kv.ref_id = 0;
+                                    heap_.set_object_field(frag_oid, pp + "key", kv);
+                                }
+                            }
+                            ++pref_count;
+                        }
+                        for (const auto& c : el.children) pref_walk(c);
+                    };
+                pref_walk(pref_parser.root());
+                heap_.set_object_field(frag_oid, "__pref_n__",
+                                       DalvikValue::make_int(pref_count));
+                std::cerr << "[F-NEW-304] addPreferencesFromResource 0x"
+                          << std::hex << pref_resid << std::dec << " → "
+                          << pref_count << " entries ("
+                          << (pref_entry.empty() ? "?" : pref_entry) << ")"
+                          << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // Honest negative: the resource could not resolve/parse — the call
+        // answers void but is recorded STUBBED, never a fake success.
+        std::cerr << "[F-NEW-304] addPreferencesFromResource 0x" << std::hex
+                  << pref_resid << std::dec
+                  << " resource unresolved (entry="
+                  << (pref_entry.empty() ? "none" : pref_entry) << ")"
+                  << std::endl;
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::STUBBED;
+        return true;
+    }
+
     // F-114b (R-NEW-383 family) — PreferenceManager.setDefaultValues contract.
     // AOSP law (aosp-mirror/platform_frameworks_base
     //  core/java/android/preference/PreferenceManager.java:661-673;
@@ -40175,6 +45225,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-290 (CONT-32, composeStopwatch) — Dialog object law:
+    // Dialog.getWindow() / Dialog.getContext() on a receiver whose class
+    // chain reaches android.app.Dialog.
+    //
+    // AOSP android.app.Dialog.java ctor: mWindow = new PhoneWindow(context)
+    // and mContext are bound BEFORE any subclass ctor body runs —
+    // getWindow()/getContext() NEVER answer null afterwards, for ANY Dialog
+    // receiver, renamed or not. Same receiver-identity principle as
+    // S134-F134A above (dispatch keys on the live object, never on the
+    // reference-class string).
+    //
+    // Runtime evidence (run/cont32/csw_r1): androidx.compose.ui.window
+    // DialogWrapper (Lis; extends Lpj; extends android.app.Dialog) ctor
+    // pc=13 invoke-virtual Dialog.getWindow() reached this bridge with the
+    // RENAMED runtime class (Lis;) — DialogShadow::handles_class gates on
+    // the platform class names, so the shadow was never asked; the S71
+    // ancestry walk then re-dispatched Dialog→Context (kPlatformSuper) and
+    // the stub default answered null → DialogWrapper pc=113-115
+    // error("Dialog has no window") IllegalStateException ×31/run — the
+    // app's whole dialog path died. Dispatch here re-keys on the RECEIVER
+    // chain and hands the call to the DialogShadow under the PLATFORM class
+    // name (the receiver IS a Dialog — the nearest guard-visible ancestor
+    // that owns this method).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "getWindow" || method == "getContext") &&
+        is_subclass_of(class_name, "Landroid/app/Dialog;") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && shadow_registry_ != nullptr) {
+        auto* dsh = shadow_registry_->find_as<framework::DialogShadow>();
+        if (dsh != nullptr) {
+            framework::CallContext dctx;
+            dctx.class_name = "Landroid/app/Dialog;";  // platform gate name
+            dctx.method = method;
+            dctx.has_receiver = true;
+            dctx.receiver_id = args[0].object_id;
+            dctx.receiver_class = args[0].class_desc;
+            framework::CallResult dcr = dsh->dispatch(dctx);
+            if (dcr.handled) {
+                result = call_result_to_dalvik(dcr);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                static thread_local uint64_t f290_n = 0;
+                if (f290_n++ < 16)
+                    std::cerr << "[F290-DIALOG] " << class_name << "."
+                              << method << " recv=" << args[0].object_id
+                              << " answered by DialogShadow" << std::endl;
+                return true;
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // S122 (R-NEW-418) — Activity/Context.getWindowManager → WindowManager
     // singleton (AOSP Activity.java attach law: mWindowManager is assigned
     // during attach() and getWindowManager() NEVER answers null afterwards).
@@ -40267,6 +45368,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-290 companion (CONT-32) — Window attribute law (AOSP
+    // PhoneWindow). The dialog Window object minted by F-NEW-290 is consumed
+    // by androidx DialogWrapper's ctor chain (composeStopwatch Lis;): it
+    // reads getAttributes() and iputs WindowManager.LayoutParams.type
+    // (pc 21-25 — a null answer is an instant NPE), then calls
+    // setAttributes / requestFeature / setBackgroundDrawableResource /
+    // setGravity / addFlags. AOSP law: mWindowAttributes exists from
+    // PhoneWindow construction — getAttributes() NEVER answers null; every
+    // Window carries its OWN LayoutParams (per-receiver, not a global
+    // singleton); requestFeature answers true while no content is installed.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Window;") != std::string::npos &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        if (method == "getAttributes") {
+            uint32_t recv = args[0].object_id;
+            auto it = window_layout_params_.find(recv);
+            if (it != window_layout_params_.end() &&
+                heap_.has_object(it->second)) {
+                result = DalvikValue::make_object(
+                    it->second, "Landroid/view/WindowManager$LayoutParams;");
+            } else {
+                uint32_t lp = heap_.allocate(
+                    "Landroid/view/WindowManager$LayoutParams;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                window_layout_params_[recv] = lp;
+                result = DalvikValue::make_object(
+                    lp, "Landroid/view/WindowManager$LayoutParams;");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setAttributes" || method == "setBackgroundDrawableResource" ||
+            method == "setGravity" || method == "addFlags") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "requestFeature") {
+            // AOSP PhoneWindow.requestFeature: true while content is not
+            // installed (PanelFeatureState mismatch would answer false —
+            // never the ctor-window case).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(true);
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -41157,6 +46306,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // F-NEW-319 (S-cont49): Resources.getStringArray(int) → String[] — REAL
+    // ARSC array resolution. Evidence: solitaire Settings (c/m.a pc=1200)
+    // reads a developer-options string-array; the REC-MISS null answer made
+    // the aget NPE inside the settings singleton b.g construction, which
+    // null-killed b.g for the whole app (GameSelector.onCreate pc=83/87
+    // null-receiver NPE on b.g.aR). AOSP ResourcesImpl.getStringArray →
+    // array bag items; here: rt.arsc().resolve_string_array (canonical
+    // resolver, F-NEW-319 in arsc_parser.cpp) materialized as the F-036
+    // heap-array convention ("[Ljava/lang/String;" + __array_length__ +
+    // array[i] fields — the MatrixCursor.getColumnNames precedent).
+    // GATE-A honesty: an unresolvable id throws the AOSP
+    // Resources.NotFoundException (never a silent null array).
+    if (method == "getStringArray" &&
+        class_name.find("Resources") != std::string::npos) {
+        int32_t resid = 0;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::INT32 || a.type == DalvikType::BOOLEAN ||
+                a.type == DalvikType::CHAR) {
+                resid = a.int_val;
+                break;
+            }
+        }
+        auto& rt = resources::ResourceRuntime::instance();
+        std::vector<std::string> items;
+        bool ok = false;
+        if (rt.loaded()) {
+            auto arr = rt.arsc().resolve_string_array((uint32_t)resid);
+            if (arr) { items = std::move(*arr); ok = true; }
+        }
+        if (!ok) {
+            std::cerr << "[F-NEW-319] getStringArray resid=0x" << std::hex
+                      << resid << std::dec << " → NotFoundException (GATE-A)"
+                      << std::endl;
+            if (resid != 0) {
+                throw_deferred("Landroid/content/res/Resources$NotFoundException;",
+                               "Array resource ID #0x" + ([](uint32_t v) {
+                                   char b[16]; snprintf(b, sizeof(b), "%x", v);
+                                   return std::string(b);
+                               })((uint32_t)resid),
+                               "GATEA-RES-ARRAY-NOTFOUND");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t arr = heap_.allocate("[Ljava/lang/String;", pc_, 0);
+        heap_.set_object_field(
+            arr, "__array_length__", DalvikValue::make_int((int)items.size()));
+        for (size_t i = 0; i < items.size(); ++i)
+            heap_.set_object_field(
+                arr, "array[" + std::to_string(i) + "]",
+                DalvikValue::make_string(items[i], 0));
+        std::cerr << "[F-NEW-319] getStringArray resid=0x" << std::hex
+                  << resid << std::dec << " → String[" << items.size() << "]"
+                  << std::endl;
+        result = DalvikValue::make_object(arr, "[Ljava/lang/String;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // EXP-067: Resources.getColor(int, Theme) → int (real resolution)
     // M3 FIX-M3-007 (§13 ARSC-first law): resolve the color DIRECTLY through
     // the canonical ARSC resolver (any resid, any package, config-selected)
@@ -41195,9 +46404,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         {
             auto& rt = resources::ResourceRuntime::instance();
             if (rt.loaded()) {
-                auto v = rt.arsc().resolve_value((uint32_t)resid);
-                if (v && (v->is_color() || v->is_int())) {
-                    color_val = (int32_t)v->data;
+                // F-NEW-300 (CONT-38): PACKAGE-ROUTED COLOR LAW. AOSP
+                // Resources.getColor resolves through AssetManager2 for
+                // EVERY package — the framework's 0x01-package colors
+                // (android:color/*, including the API-31+ system_*
+                // dynamic-color defaults) resolve from the FRAMEWORK
+                // table, never the app table. The old law consulted the
+                // app table only: every android:color lookup answered the
+                // black fallback, and an app whose MaterialTheme scheme is
+                // built from android:color/system_* materialized an
+                // ALL-BLACK theme — the Compose content color painted
+                // black-on-dark (composeStopwatch: 8 [RES] rows
+                // 0x10600b0-0x10600c0 ALL "(M3-COLOR-UNRESOLVED)"; the
+                // TextPaints carried 0xFF000000 through the
+                // LocalContentColor → TextStyle → TextPaint chain).
+                // resolve_color_reference_argb is the S127
+                // package-routed terminal-value law (framework table +
+                // the resolve_framework_file_color ColorStateList
+                // fallback) — the SAME resolution the theme-attr
+                // machinery already uses. No name matching, no app
+                // branches.
+                auto c = rt.resolve_color_reference_argb((uint32_t)resid);
+                if (c) {
+                    color_val = (int32_t)*c;
                     resolved = true;
                 }
             }
@@ -42066,10 +47295,94 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: Handler.<init>(Looper) → no-op, return void
+    // F-NEW-332 (CONT-56b): post/postDelayed/removeCallbacks can no longer
+    // silently DROP their runnables. Bridge dispatch order means a
+    // framework-Handler post lands HERE (try_recursive_invoke REC-MISSes —
+    // android.os.Handler has no app-DEX body) and EXP-043's void stub ate
+    // the runnable: FragmentManagerImpl.scheduleCommit's
+    // Handler.post(mExecCommit) never executed its transaction (measured:
+    // bmi_402 — enqueueAction green after F-NEW-331, then scheduleCommit
+    // post swallowed → fragment never instantiated → container stayed
+    // empty → uniform dark frame). The framework HandlerShadow owns the
+    // ONE deterministic MessageQueue (FINDING-004 token law, R500
+    // front-of-queue law, F-115 Timer rides the same queue) — route the
+    // queue-shaped methods to it. <init>/sendMessage stay void stubs.
     // ────────────────────────────────────────────────────────────────────────
     if (class_name.find("Handler") != std::string::npos &&
         (method == "<init>" || method == "post" || method == "postDelayed" ||
          method == "removeCallbacks" || method == "sendMessage")) {
+        if (method == "post" || method == "postDelayed" ||
+            method == "removeCallbacks") {
+            if (auto* hs332 = shadow_registry_
+                                  ? shadow_registry_->find_as<
+                                        framework::HandlerShadow>()
+                                  : nullptr) {
+                // Engine-args layout: [0]=receiver Handler, [1]=runnable,
+                // [2]=delay (postDelayed). removeCallbacks: [1]=runnable
+                // (may be null → remove-all contract lives in the shadow).
+                uint32_t runnable332 =
+                    (args.size() >= 2 &&
+                     args[1].type == DalvikType::OBJECT_REF)
+                        ? args[1].object_id
+                        : 0;
+                if (method == "removeCallbacks") {
+                    if (runnable332 != 0) {
+                        size_t removed332 = 0;
+                        if (heap_.has_object(runnable332))
+                            removed332 = hs332->remove_callbacks(runnable332);
+                        static thread_local uint64_t f332_log = 0;
+                        if (f332_log < 12) {
+                            ++f332_log;
+                            std::cerr << "[F-NEW-332] Handler.removeCallbacks"
+                                      << " r=o" << runnable332 << " removed="
+                                      << removed332 << " caller="
+                                      << current_class_ << "."
+                                      << current_method_ << std::endl;
+                        }
+                    }
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (runnable332 != 0 && heap_.has_object(runnable332)) {
+                    int64_t delay332 = 0;
+                    if (method == "postDelayed" && args.size() >= 3) {
+                        if (args[2].type == DalvikType::INT64)
+                            delay332 = args[2].long_val;
+                        else if (args[2].type == DalvikType::INT32)
+                            delay332 = args[2].int_val;
+                    }
+                    hs332->enqueue(runnable332, delay332,
+                                   "Landroid/os/Handler;." + method);
+                    static thread_local uint64_t f332_plog = 0;
+                    if (f332_plog < 12) {
+                        ++f332_plog;
+                        std::cerr << "[F-NEW-332] Handler." << method
+                                  << " r=o" << runnable332 << " delay="
+                                  << delay332 << "ms caller="
+                                  << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                    result = DalvikValue::make_bool(true);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // null runnable: AOSP post(null) → false; loud, honest.
+                static thread_local uint64_t f332_nlog = 0;
+                if (f332_nlog < 8) {
+                    ++f332_nlog;
+                    std::cerr << "[F-NEW-332] Handler." << method
+                              << " null runnable → false (AOSP law) caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
+                }
+                result = DalvikValue::make_bool(false);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // No HandlerShadow registered: preserve the historical void
+            // stub exactly (nothing to enqueue onto).
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         return true;
@@ -42392,6 +47705,84 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-326 (CONT-54): ViewGroup.getChildMeasureSpec(III)I — the AOSP
+    // spec-derivation law (frameworks/base/core/java/android/view/
+    // ViewGroup.java, stable since API 1). Pure static spec math, zero app
+    // knowledge. Reached via the F-NEW-326 framework-boundary re-dispatch
+    // (support-lib R8 artifacts carry child-class-owned method_ids for
+    // getChildMeasureSpec that only resolve to this framework law — see
+    // execute_invoke_static) or a direct framework-owner invoke.
+    // In-place mode representation (the F-096b law this file already uses):
+    //   specMode = spec & 0xC0000000 (EXACTLY=0x40000000, AT_MOST=0x80000000,
+    //   UNSPECIFIED=0); specSize = spec & 0x3FFFFFFF.
+    // AOSP LayoutParams constants: MATCH_PARENT = -1, WRAP_CONTENT = -2.
+    //   EXACTLY parent:  dim>=0 → EXACTLY|dim; MATCH → EXACTLY|size;
+    //                    WRAP → AT_MOST|size
+    //   AT_MOST  parent: dim>=0 → EXACTLY|dim; MATCH/WRAP → AT_MOST|size
+    //   UNSPEC   parent: dim>=0 → EXACTLY|dim; MATCH/WRAP → UNSPEC|size
+    //   size = max(0, specSize - padding); result = (size&~MODE)|mode
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/view/ViewGroup;" &&
+        method == "getChildMeasureSpec" && args.size() >= 3) {
+        auto iv = [](const DalvikValue& v) -> int32_t {
+            switch (v.type) {
+                case DalvikType::INT32: return v.int_val;
+                case DalvikType::FLOAT32: return (int32_t)v.float_val;
+                case DalvikType::INT64: return (int32_t)v.long_val;
+                default: return 0;
+            }
+        };
+        const int32_t spec = iv(args[0]);
+        const int32_t padding = iv(args[1]);
+        const int32_t child_dim = iv(args[2]);
+        const int32_t spec_mode =
+            (int32_t)((uint32_t)spec & 0xC0000000u);
+        const int32_t spec_size = spec & 0x3FFFFFFF;
+        const int32_t size = std::max(0, spec_size - padding);
+        int32_t result_size = 0;
+        int32_t result_mode = 0;
+        const int32_t kExactly = (int32_t)0x40000000u;
+        const int32_t kAtMost = (int32_t)0x80000000u;
+        if (spec_mode == kExactly) {                    // parent EXACTLY
+            if (child_dim >= 0) {
+                result_size = child_dim; result_mode = kExactly;
+            } else if (child_dim == -1) {               // MATCH_PARENT
+                result_size = size; result_mode = kExactly;
+            } else if (child_dim == -2) {               // WRAP_CONTENT
+                result_size = size; result_mode = kAtMost;
+            }
+        } else if (spec_mode == kAtMost) {              // parent AT_MOST
+            if (child_dim >= 0) {
+                result_size = child_dim; result_mode = kExactly;
+            } else {                                    // MATCH or WRAP
+                result_size = size; result_mode = kAtMost;
+            }
+        } else {                                        // parent UNSPECIFIED
+            if (child_dim >= 0) {
+                result_size = child_dim; result_mode = kExactly;
+            } else {                                    // MATCH or WRAP
+                result_size = size; result_mode = 0;
+            }
+        }
+        // Bounded evidence probe (EXP-055 convention): the exact spec math
+        // answers, capped — removes the arg-value guesswork from the A/B.
+        static thread_local uint64_t f326_mspec_n = 0;
+        if (f326_mspec_n < 24) {
+            ++f326_mspec_n;
+            fprintf(stderr,
+                    "[F-NEW-326] getChildMeasureSpec(spec=0x%08x pad=%d "
+                    "dim=%d) -> 0x%08x\n",
+                    (uint32_t)spec, padding, child_dim,
+                    (uint32_t)((result_size & 0x3FFFFFFF) |
+                               (result_mode & (int32_t)0xC0000000u)));
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(
+            (result_size & 0x3FFFFFFF) | (result_mode & (int32_t)0xC0000000u));
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // MASTER CAMPAIGN FIX (F8 default-onMeasure law): View.onMeasure(I, I)V
     // IS the default implementation (AOSP View.java onMeasure →
     // setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), …);
@@ -42522,6 +47913,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             referent_desc = args[0].class_desc;
         else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
             referent_desc = args[0].class_desc;
+        // F-NEW-282b (token-referent law): when the receiver is a HEAP
+        // java.lang.Class TOKEN (the F-103 materialization — also what
+        // F-NEW-282 produces at the argument boundary), the queried class
+        // is the token's REFERENT (__referent_desc), not the token's own
+        // runtime class. ART: every method on a Class object
+        // (getAnnotation/getName/getCanonicalName/isInstance/…) classifies
+        // the REFERRED type; reading the token's own class answered
+        // "java.lang.Class" for every token receiver (live face:
+        // NavigatorProvider.getNameForNavigator received the materialized
+        // NavGraphNavigator token and getAnnotation queried
+        // Ljava/lang/Class; → IAE "No @Navigator.Name annotation found for
+        // Class"). Resolution is read-only; unknown descriptors fall back
+        // to the token's own class unchanged.
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].class_desc == "Ljava/lang/Class;" &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto f282b_tok = heap_.get(args[0].object_id);
+            if (f282b_tok) {
+                auto f282b_ref = heap_.get_object_field(
+                    args[0].object_id, "__referent_desc");
+                if (f282b_ref.has_value() &&
+                    f282b_ref->type == DalvikType::STRING_REF &&
+                    !f282b_ref->string_val.empty() &&
+                    f282b_ref->string_val != "Ljava/lang/Class;") {
+                    referent_desc = f282b_ref->string_val;
+                }
+            }
+        }
         const std::string dotted = dotted_from_desc(referent_desc);
 
         // FIX-M3-012b (static): Class.forName — resolve the named class
@@ -48533,17 +53952,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (cache_it == asset_lines_cache.end()) {
             // Load from APK.
             std::vector<std::string> lines;
+            // A62 LAW (A1–A104 transfer alignment): asset bytes come from the
+            // INSTALLED APK through the in-process ZIP parser ONLY — the same
+            // one-byte-source law as DalvikExecutionEngine::read_asset (the
+            // popen("unzip -p …") host-tool dependency was removed there but
+            // this BufferedReader.readLine lazy path still shelled out with
+            // the APK path interpolated into a shell command: injection-prone,
+            // uncapped, unprovenanced). Found during the Issue #382 audit.
             if (!apk_path_.empty()) {
-                FILE* fp = popen(
-                    ("unzip -p \"" + apk_path_ + "\" assets/" + asset_name + " 2>/dev/null").c_str(),
-                    "r");
-                if (fp) {
-                    char buf[4096];
-                    std::string content;
-                    while (fgets(buf, sizeof(buf), fp)) {
-                        content += buf;
-                    }
-                    pclose(fp);
+                auto bytes = asset_entry_bytes("assets/" + asset_name);
+                if (!bytes.empty()) {
+                    std::string content(bytes.begin(), bytes.end());
                     // Split by lines.
                     std::string current;
                     for (char c : content) {
@@ -48560,8 +53979,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::cerr << "[EXP071-ASSET] Loaded asset \"" << asset_name
                               << "\" — " << lines.size() << " lines" << std::endl;
                 } else {
-                    std::cerr << "[EXP071-ASSET] Failed to open APK for asset \""
-                              << asset_name << "\"" << std::endl;
+                    std::cerr << "[EXP071-ASSET] Asset \"" << asset_name
+                              << "\" not present in APK entry table (empty)"
+                              << std::endl;
                 }
             }
             asset_lines_cache[asset_name] = std::move(lines);
@@ -48673,13 +54093,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             delim = delim.substr(2, delim.size() - 4);
         }
         std::vector<std::string> parts;
-        size_t start = 0;
-        size_t pos;
-        while ((pos = str.find(delim, start)) != std::string::npos) {
-            parts.push_back(str.substr(start, pos - start));
-            start = pos + delim.length();
+        /* F-NEW-269 (CONT-18g): JDK String.split zero-length-match law — an
+         * EMPTY delimiter splits at every char boundary ("ab".split("") →
+         * ["a","b"]). The old loop hung forever here (find("") returns the
+         * current position, start never advanced — issue #381 face). */
+        if (delim.empty()) {
+            for (size_t ci = 0; ci < str.size(); ++ci)
+                parts.push_back(std::string(1, str[ci]));
+        } else {
+            size_t start = 0;
+            size_t pos;
+            while ((pos = str.find(delim, start)) != std::string::npos) {
+                parts.push_back(str.substr(start, pos - start));
+                start = pos + delim.length();
+            }
+            parts.push_back(str.substr(start));
+            /* F-NEW-269: JDK split(String) = split(regex, 0) — TRAILING
+             * empty strings are removed (OpenJDK String.split: "trailing
+             * empty strings are not included in the resulting array"). */
+            while (parts.size() > 1 && parts.back().empty()) parts.pop_back();
         }
-        parts.push_back(str.substr(start));
         {
             static thread_local uint64_t f235_sp = 0;
             static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
@@ -49156,6 +54589,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Try shadow dispatch first
         if (shadow_registry_ != nullptr && !args.empty()) {
             framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
             ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
             if (ctx.has_receiver) {
                 ctx.receiver_id = args[0].object_id;
@@ -49265,6 +54700,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // (line ~17776) already honors: `result = r;`.
         result = r;
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-299 (CONT-38v): STRING COPY-CONSTRUCTOR CONTENT LAW.
+    // OpenJDK String.java: new String() is the empty string and
+    // new String(String) copies the source's characters — the copy is
+    // CONTENT-EQUAL to the source (String.equals is content equality; the
+    // only observable difference is identity, which Map keys must NOT see:
+    // F-NEW-248's map_key_value_law classifies String-object keys by
+    // __string_value__ content). The engine had NO handler for either
+    // form (only the byte[] family below): the new-instance allocation
+    // stayed unmaterialized (no __string_value__), so map_key_value_law
+    // fell back to identity keying ("obj:<id>") and a get with the SAME
+    // text as a const-string missed — probe-proven (fixtures/classkey_probe
+    // row CK-07, PRE FAIL ×3 on a181d7b317e015c8). Materialize onto the
+    // CALLER's heap object register — the same new-instance → <init>
+    // identity convention the byte[] family honors (comment below) — and
+    // answer the content as the STRING_REF result. Discriminators, both
+    // structural: STRING_REF source = the copy form; OBJECT_REF source
+    // accepted ONLY when its heap class is Ljava/lang/String; (a byte[]
+    // source keeps falling through to the byte[] law below). No name
+    // matching, no app branches. new String(char[])/StringBuffer forms
+    // remain honest untested scope (same posture the byte[] entry
+    // originally recorded).
+    if (class_name == "Ljava/lang/String;" && method == "<init>" &&
+        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        std::string f299_content;
+        bool f299_copy_form = false;
+        if (args.size() == 1) {
+            // new String() — the empty string (OpenJDK law).
+            f299_copy_form = true;
+        } else if (args.size() >= 2 &&
+                   args[1].type == DalvikType::STRING_REF) {
+            // new String(<string expression>) — direct content copy.
+            f299_content = args[1].string_val;
+            f299_copy_form = true;
+        } else if (args.size() >= 2 &&
+                   args[1].type == DalvikType::OBJECT_REF &&
+                   args[1].object_id != 0 &&
+                   heap_.has_object(args[1].object_id)) {
+            std::string f299_src_cls;
+            if (heap_.get_object_class(args[1].object_id, f299_src_cls) &&
+                f299_src_cls == "Ljava/lang/String;") {
+                auto f299_sv = heap_.get_object_field(args[1].object_id,
+                                                      "__string_value__");
+                if (f299_sv.has_value() &&
+                    f299_sv->type == DalvikType::STRING_REF) {
+                    f299_content = f299_sv->string_val;
+                    f299_copy_form = true;
+                }
+            }
+        }
+        if (f299_copy_form) {
+            heap_.set_object_field(args[0].object_id, "__string_value__",
+                                   DalvikValue::make_string(f299_content, 0));
+            result = DalvikValue::make_string(f299_content, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -50997,6 +56492,56 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
     }
+    // ── LAW-C (CONT-18): BOXED NUMERIC COMPARISON + SUM LAW ──────────────
+    // OpenJDK X.compareTo(Y) (Integer/Long/Short/Byte/Character — the
+    // Comparable<X> contract: numerically less → negative, equal → 0,
+    // greater → positive) and Integer.sum/Long.sum (binary +). These
+    // framework faces are the comparators/accumulators behind
+    // List.sort(Integer::compareTo) and Map.merge(Integer::sum) — the
+    // D8-desugared lambda bodies unbox through the intValue law above and
+    // then call compareTo/sum. With no law the bridge answered the generic
+    // stub and the comparison result was garbage (K14 sort no-op,
+    // K17 merge n=-1).
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        (class_name == "Ljava/lang/Integer;" ||
+         class_name == "Ljava/lang/Long;" ||
+         class_name == "Ljava/lang/Short;" ||
+         class_name == "Ljava/lang/Byte;" ||
+         class_name == "Ljava/lang/Character;")) {
+        auto unbox_box = [&](uint32_t id, int64_t& out) -> bool {
+            auto* b = heap_.get(id);
+            if (!b) return false;
+            DalvikValue v = b->get_field("value");
+            if (v.type == DalvikType::UNINITIALIZED ||
+                v.type == DalvikType::REGISTER_UNSET)
+                return false;
+            out = v.type == DalvikType::INT64 ? v.long_val
+                                              : static_cast<int64_t>(v.int_val);
+            return true;
+        };
+        if (method == "compareTo" && args.size() >= 2 &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            int64_t a64 = 0, b64 = 0;
+            if (unbox_box(args[0].object_id, a64) &&
+                unbox_box(args[1].object_id, b64)) {
+                result = DalvikValue::make_int(
+                    a64 < b64 ? -1 : (a64 > b64 ? 1 : 0));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    if (class_name == "Ljava/lang/Integer;" && method == "sum" &&
+        args.size() >= 2 && args[0].type == DalvikType::INT32 &&
+        args[1].type == DalvikType::INT32) {
+        // Static Integer.sum(int, int) with raw INT32 params (OpenJDK:
+        // Math.addExact wrapping semantics at int width).
+        result = DalvikValue::make_int(
+            static_cast<int32_t>(static_cast<uint32_t>(args[0].int_val) +
+                                 static_cast<uint32_t>(args[1].int_val)));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (method == "toString" && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && !args.empty() &&
         (class_name == "Ljava/lang/Integer;" || class_name == "Ljava/lang/Long;" ||
@@ -51067,15 +56612,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // 1-char-spec walk returned the LITERAL format for "%02d"-style specs
     // (chessclock's clock read "0:%02d" instead of "0:00").
     if (class_name == "Ljava/lang/String;" && method == "format" && !args.empty()) {
-        // String.format is static: args[0] = format string, args[1+] = format args
-        // In DEX, the varargs array is passed as a single Object[] argument
-        std::string fmt = (args[0].type == DalvikType::STRING_REF) ? args[0].string_val : "";
+        // String.format is static. DEX has TWO overloads, discriminated by arg
+        // SHAPE (no name checks):
+        //   format(String, Object...)         → args = [fmt STRING_REF, Object[]]
+        //   format(Locale, String, Object...) → args = [Locale OBJECT_REF,
+        //                                        fmt STRING_REF, Object[]]
+        // AOSP law: for the Locale overload the format string is args[1] and
+        // the varargs array is args[2]. The previous unconditional args[0]
+        // read consumed the Locale AS the format (fmt=""), pushed the real
+        // "%02d" + the array into fargs, and returned "" (composeStopwatch
+        // Lwv;.p String.format(Locale.US,"%02d",…) → "" → substring(0,2)
+        // SIOOBE length=0 broke the composition text pass).
+        size_t fmt_idx = 0, varargs_idx = 1;
+        if (args.size() >= 3 && args[0].type != DalvikType::STRING_REF &&
+            args[1].type == DalvikType::STRING_REF) {
+            fmt_idx = 1;
+            varargs_idx = 2;
+        }
+        std::string fmt = (args[fmt_idx].type == DalvikType::STRING_REF)
+                              ? args[fmt_idx].string_val : "";
 
         // Fetch varargs from the Object[] on the heap.
         std::vector<DalvikValue> fargs;
-        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
-            heap_.has_object(args[1].object_id)) {
-            uint32_t arr_id = args[1].object_id;
+        if (args.size() > varargs_idx && args[varargs_idx].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[varargs_idx].object_id)) {
+            uint32_t arr_id = args[varargs_idx].object_id;
             int arr_len = 0;
             auto len_field = heap_.get_object_field(arr_id, "__array_length__");
             if (len_field.has_value() && len_field->type == DalvikType::INT32)
@@ -51086,7 +56647,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         } else {
             // Non-array extra args (defensive — DEX varargs are arrays).
-            for (size_t k = 1; k < args.size(); ++k) fargs.push_back(args[k]);
+            for (size_t k = varargs_idx; k < args.size(); ++k) fargs.push_back(args[k]);
         }
 
         // VISUAL-CAMPAIGN (EXT-01 gate G25): the format engine was
@@ -51831,7 +57392,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         uint32_t arr_id = heap_.allocate("Larray;", pc_,
                                           call_stack_.empty() ? 0 : call_stack_.top().frame_id);
         std::vector<std::string> parts;
-        if (!delim.empty()) {
+        /* F-NEW-269 (CONT-18g): LAW PARITY with the invoke-layer split
+         * handler (dalvik_engine.cpp F-NEW-269 site) — the two dispatch
+         * layers must stay semantically identical:
+         *   (1) \\Q...\\E quote wrapper stripped (Pattern.quote literal law),
+         *   (2) EMPTY delimiter = zero-length-match law: per-char split
+         *       ("ab".split("") → ["a","b"]), never whole-string,
+         *   (3) TRAILING empty strings removed (JDK split(String) = limit 0).
+         * The old divergence: this layer lacked (1) and (3) and answered
+         * whole-string for (2) — same API, two laws by dispatch layer. */
+        if (delim.size() >= 4 && delim.rfind("\\Q", 0) == 0 &&
+            delim.compare(delim.size() - 2, 2, "\\E") == 0) {
+            delim = delim.substr(2, delim.size() - 4);
+        }
+        if (delim.empty()) {
+            for (size_t ci = 0; ci < s.size(); ++ci)
+                parts.push_back(std::string(1, s[ci]));
+        } else if (!delim.empty()) {
             size_t start = 0;
             size_t pos;
             while ((pos = s.find(delim, start)) != std::string::npos) {
@@ -51839,8 +57416,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 start = pos + delim.size();
             }
             parts.push_back(s.substr(start));
-        } else {
-            parts.push_back(s);
+            while (parts.size() > 1 && parts.back().empty()) parts.pop_back();
         }
         for (size_t i = 0; i < parts.size(); ++i) {
             std::string fn = "array[" + std::to_string(i) + "]";
@@ -52249,6 +57825,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     if (shadow_registry_ != nullptr) {
         framework::CallContext ctx;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
             ctx.has_receiver = true;
             ctx.receiver_id = args[0].object_id;
@@ -52258,6 +57836,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             ctx.class_name = class_name;
         }
         ctx.method = method;
+        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
+                     std::to_string(pc_);
         // Convert DalvikValue args to CallContext::Arg (skip arg[0] = receiver)
         for (size_t i = 1; i < args.size(); i++) {
             framework::CallContext::Arg arg;
@@ -52327,6 +57907,56 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 heap_.set_object_field(bundle_id, "bundle:" + key, args[2]);
             }
             result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // CONT-21 / #384 (F-NEW-273 chain) — BaseBundle.keySet()/containsKey()
+        // laws. AOSP BaseBundle: keySet() returns the Set of key Strings
+        // (never null; empty when the bundle has no entries); containsKey(k)
+        // answers the mapping existence. Shared-primitive evidence: the
+        // androidx.startup AppInitializer initializer discovery iterates
+        // metadata.keySet() in EVERY androidx-startup app (dooz run log:
+        // [REC-MISS] Landroid/os/Bundle;.keySet caller=Lkc;.c →
+        // Set.iterator on null NPE). Same materialization convention as the
+        // ContentValues keySet law (array + ArrayList) so the generic
+        // iterator protocol consumes it. Generic across all Bundle users.
+        if (method == "keySet" || method == "containsKey" || method == "isEmpty") {
+            std::vector<std::string> keys;
+            if (bundle_id && heap_.has_object(bundle_id)) {
+                auto* bo = heap_.get(bundle_id);
+                if (bo) {
+                    for (const auto& [fname, fval] : bo->fields) {
+                        static const std::string kPrefix = "bundle:";
+                        if (fname.size() > kPrefix.size() &&
+                            fname.compare(0, kPrefix.size(), kPrefix) == 0)
+                            keys.push_back(fname.substr(kPrefix.size()));
+                    }
+                }
+            }
+            if (method == "keySet") {
+                uint32_t arr = heap_.allocate("[Ljava/lang/Object;", pc_, 0);
+                heap_.set_object_field(arr, "__array_length__",
+                                       DalvikValue::make_int((int)keys.size()));
+                for (size_t i = 0; i < keys.size(); ++i)
+                    heap_.set_object_field(
+                        arr, "array[" + std::to_string(i) + "]",
+                        DalvikValue::make_string(keys[i], 0));
+                uint32_t set = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+                heap_.set_object_field(
+                    set, "array",
+                    DalvikValue::make_object(arr, "[Ljava/lang/Object;"));
+                result = DalvikValue::make_object(set, "Ljava/util/ArrayList;");
+            } else if (method == "isEmpty") {
+                result = DalvikValue::make_bool(keys.empty());
+            } else {  // containsKey
+                std::string k = args.size() >= 2 && args[1].type == DalvikType::STRING_REF
+                                    ? args[1].string_val
+                                    : std::string();
+                bool hit = false;
+                for (const auto& kk : keys)
+                    if (kk == k) { hit = true; break; }
+                result = DalvikValue::make_bool(hit);
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -52626,6 +58256,112 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             result = msg.empty() ? DalvikValue::make_null()
                                  : DalvikValue::make_string(msg, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-279: THROWABLE SUPPRESSED-EXCEPTION LAW (OpenJDK
+        // Throwable.java, Java 7+; CONT-26). Contract:
+        //   * getSuppressed() returns the recorded suppressed list — an
+        //     EMPTY array when none were recorded. It NEVER returns null
+        //     (OpenJDK allocates EMPTY_THROWABLE_ARRAY when suppression is
+        //     absent/disabled) — Kotlin's Intrinsics-asserted callers
+        //     (JDK7PlatformImplementations.getSuppressed →
+        //     checkNotNullExpressionValue) rely on that non-null law.
+        //   * addSuppressed(t) appends t to the receiver's suppressed list
+        //     (null receiver arg → NPE upstream; self-suppression is
+        //     silently ignored upstream when suppression is enabled).
+        // Root-gap evidence (CONT-26 oracle run at e980887e39aee977):
+        // compose's GapComposer.doCompose catch-all attaches a compose
+        // stack trace (ComposeStackTraceKt.tryAttachComposeStackTrace →
+        // ExceptionsKt.getSuppressedExceptions → JDK7PlatformImplementations
+        // .getSuppressed). The engine had NO getSuppressed handler → the
+        // generic stub answered null → Intrinsics threw NPE
+        // "getSuppressed(...) must not be null" INSIDE the exception
+        // handler → the original IAE became an uncaught NPE → APP BOUNDARY
+        // death. Every exception-handling path that inspects suppressed
+        // exceptions through Kotlin shares this family.
+        // ────────────────────────────────────────────────────────────────
+        if (is_throwable_family && method == "getSuppressed") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+                auto stored = heap_.get_object_field(args[0].object_id,
+                                                     "__suppressed__");
+                if (stored.has_value() && stored->type == DalvikType::OBJECT_REF &&
+                    stored->object_id != 0 &&
+                    heap_.has_object(stored->object_id)) {
+                    result = *stored;
+                } else {
+                    uint32_t arr = heap_.allocate("[Ljava/lang/Throwable;",
+                                                  pc_, 0);
+                    heap_.set_object_field(arr, "__array_length__",
+                                           DalvikValue::make_int(0));
+                    result = DalvikValue::make_object(arr,
+                                                      "[Ljava/lang/Throwable;");
+                }
+            } else {
+                uint32_t arr = heap_.allocate("[Ljava/lang/Throwable;", pc_, 0);
+                heap_.set_object_field(arr, "__array_length__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_object(arr, "[Ljava/lang/Throwable;");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (is_throwable_family && method == "addSuppressed" &&
+            args.size() >= 2) {
+            uint32_t recv = args[0].type == DalvikType::OBJECT_REF
+                                ? args[0].object_id
+                                : 0;
+            uint32_t sup = args[1].type == DalvikType::OBJECT_REF
+                               ? args[1].object_id
+                               : 0;
+            if (recv != 0 && heap_.has_object(recv)) {
+                // Self-suppression is silently ignored upstream.
+                if (sup != 0 && sup != recv && heap_.has_object(sup)) {
+                    // Read the existing list (array object), append, store.
+                    std::vector<DalvikValue> items;
+                    auto stored = heap_.get_object_field(recv,
+                                                         "__suppressed__");
+                    if (stored.has_value() &&
+                        stored->type == DalvikType::OBJECT_REF &&
+                        stored->object_id != 0 &&
+                        heap_.has_object(stored->object_id)) {
+                        auto len = heap_.get_object_field(stored->object_id,
+                                                          "__array_length__");
+                        int32_t n = len.has_value() &&
+                                            len->type == DalvikType::INT32
+                                        ? len->int_val
+                                        : 0;
+                        for (int32_t i = 0; i < n; ++i) {
+                            auto ev = heap_.get_object_field(
+                                stored->object_id,
+                                "array[" + std::to_string(i) + "]");
+                            if (ev.has_value())
+                                items.push_back(*ev);
+                        }
+                    }
+                    items.push_back(DalvikValue::make_object(
+                        sup, args[1].class_desc.empty()
+                                 ? "Ljava/lang/Throwable;"
+                                 : args[1].class_desc));
+                    uint32_t arr = heap_.allocate("[Ljava/lang/Throwable;",
+                                                  pc_, 0);
+                    heap_.set_object_field(arr, "__array_length__",
+                                           DalvikValue::make_int(
+                                               (int32_t)items.size()));
+                    for (size_t i = 0; i < items.size(); ++i) {
+                        heap_.set_object_field(
+                            arr, "array[" + std::to_string(i) + "]",
+                            items[i]);
+                    }
+                    heap_.set_object_field(
+                        recv, "__suppressed__",
+                        DalvikValue::make_object(arr,
+                                                 "[Ljava/lang/Throwable;"));
+                }
+            }
+            result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }

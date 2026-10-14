@@ -1,0 +1,56 @@
+{
+  "wave": "CONT-11 WAVE 7",
+  "date": "2026-10-07",
+  "head_at_start": "e99c2fbd",
+  "binary_baseline": "aed46450c103f2ea (clean rebuild reproduced byte-identically)",
+  "binary_after_fixes": "d701221b9bb78317",
+  "apk_dooz": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+  "probe_apks": {
+    "fnew259g": "1a41daa1262c3169 (13-row F-259/259b genericity matrix)",
+    "fcol_audit": "d607406c23fb205b (18-row collection semantic-law audit)",
+    "f259_cont10_rebuild": "969b267a1cd232fb (7/7 PASS reproduced)"
+  },
+  "phase1_verification": {
+    "rebuild_byte_identical": true,
+    "dooz_x3": "d602648e8e401895 (matches recorded anchor, fallback-free by construction)",
+    "f259_probe": "7/7 PASS",
+    "negatives": "19/19 PASS",
+    "gate_a": "98 PASS / 0 FAIL / 1 INFO",
+    "skill_selftest": "13/13 PASS",
+    "anchors": {
+      "opencalc": "a976d2f9fb675cb3 x3",
+      "chess": "b5a7a35d5fe0564b x3",
+      "dooz": "d602648e8e401895 x3",
+      "microtimer": "da73010a37dd0189 x3",
+      "unote": "4f1a9e4e8f64fae8 x3"
+    }
+  },
+  "external_runtime_decision": {
+    "verdict": "KEEP MINIANDROID PATH",
+    "table": "evidence/cont11/CONT11_EXECUTION_LEDGER.md section A/E",
+    "key_facts": [
+      "no open-source project runs real Compose APKs on host without Android OS",
+      "westlake prior art: framework bridge = 193K LOC Java / 2,056 classes for View apps, Compose none — independent of VM choice",
+      "ART host = 11 missing layers for real APKs",
+      "root density measured from this registry: ~1 root per 60-100 bridged framework classes — a VM swap eliminates none",
+      "kotlinx.coroutines executes verbatim as DEX inside the APK (Unsafe CAS confirmed in dooz 1.9.0); oracle role only"
+    ]
+  },
+  "fixes": [
+    "F-NEW-264 move-exception integrity (defensive, honest: never fired)",
+    "F-NEW-264b stale-mirror registry fallback (defensive, honest: never fired)",
+    "F-NEW-264c receiver-based gate extension (PROVEN: f259g R/S flipped to PASS)"
+  ],
+  "new_findings": [
+    "F-NEW-265 dooz first divergence re-rooted: measure/layout pass dies on deferred-exception cascade; draw path exonerated",
+    "F-NEW-259g-a get(I) out-of-range no IOOBE",
+    "F-NEW-259g-b java.util.Vector NPE",
+    "F-NEW-264d collection audit: 15/18 FAIL grouped into 6 semantic laws"
+  ],
+  "fanout": {
+    "stopwatch_x3": "31ddd4d5b8e6d18e (deterministic, Kotlin+coroutines)",
+    "sudoku_secuso_x3": "45962e018344e94d REAL_APP_CONTENT (Kotlin-heavy game)",
+    "independent_compose": "BLOCKED-APK-ABSENT (F-Droid fetch stalled; sudokusolver SHA d114d479df66b0f6 + blockblast 64589a3a7e5c0f73 recorded, script in place)"
+  },
+  "registry_after": 573
+}

@@ -1,0 +1,146 @@
+{
+ "g2048": {
+  "apk_sha16": "1b1c602a5f0a2723",
+  "pkg": "com.miniandroid.g2048",
+  "runs": [
+   {
+    "sha16": "59ca1526611c4622",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 28,
+    "px": 1175625
+   },
+   {
+    "sha16": "59ca1526611c4622",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 28,
+    "px": 1175625
+   },
+   {
+    "sha16": "59ca1526611c4622",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 28,
+    "px": 1175625
+   }
+  ]
+ },
+ "tetris": {
+  "apk_sha16": "cb2818dfe6c6cadb",
+  "pkg": "com.miniandroid.tetris",
+  "runs": [
+   {
+    "sha16": "f360daa244cfca8d",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 71,
+    "px": 1144478
+   },
+   {
+    "sha16": "f360daa244cfca8d",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 71,
+    "px": 1144478
+   },
+   {
+    "sha16": "f360daa244cfca8d",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 71,
+    "px": 1144478
+   }
+  ]
+ },
+ "minicraft": {
+  "apk_sha16": "77b9629ee111b968",
+  "pkg": "com.miniandroid.minicraft",
+  "runs": [
+   {
+    "sha16": "b0876952f41e4af2",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 401,
+    "px": 885148
+   },
+   {
+    "sha16": "b0876952f41e4af2",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 401,
+    "px": 885148
+   },
+   {
+    "sha16": "b0876952f41e4af2",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 401,
+    "px": 885148
+   }
+  ]
+ },
+ "snake_deluxe": {
+  "apk_sha16": "551eca798f88c1bb",
+  "pkg": "com.miniandroid.snakedeluxe",
+  "runs": [
+   {
+    "sha16": "34a712689ce66e58",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 263,
+    "px": 1425075
+   },
+   {
+    "sha16": "34a712689ce66e58",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 263,
+    "px": 1425075
+   },
+   {
+    "sha16": "34a712689ce66e58",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 263,
+    "px": 1425075
+   }
+  ]
+ },
+ "snakeneon": {
+  "apk_sha16": "b36885c181a323ab",
+  "pkg": "com.miniandroid.snakeneon",
+  "runs": [
+   {
+    "sha16": "24fb7694eb64634a",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 44,
+    "px": 172635
+   },
+   {
+    "sha16": "24fb7694eb64634a",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 44,
+    "px": 172635
+   },
+   {
+    "sha16": "24fb7694eb64634a",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 44,
+    "px": 172635
+   }
+  ]
+ },
+ "tictactoe_deluxe": {
+  "apk_sha16": "d04d92eab8dbbb11",
+  "pkg": "com.miniandroid.tictactoedeluxe",
+  "runs": [
+   {
+    "sha16": "af6094295ecb50e3",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 35,
+    "px": 1071286
+   },
+   {
+    "sha16": "af6094295ecb50e3",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 35,
+    "px": 1071286
+   },
+   {
+    "sha16": "af6094295ecb50e3",
+    "verdict": "REAL_APP_CONTENT",
+    "ops": 35,
+    "px": 1071286
+   }
+  ]
+ }
+}

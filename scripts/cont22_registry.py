@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""CONT-22 registry update: F-NEW-274 -> ROOT-CAUSED-FIXED (true root:
+R-NEW-414 constructor-contract violation), F-NEW-275 -> ROOT-CAUSED-FIXED
+(getServiceInfo + GET_SERVICES laws)."""
+import json
+
+path = "/home/z/my-project/root_registry.json"
+reg = json.load(open(path))
+rows = reg if isinstance(reg, list) else reg.get("roots", reg.get("rows"))
+
+f274 = {
+    "id": "F-NEW-274",
+    "status": "ROOT-CAUSED-FIXED",
+    "title": "R-NEW-414 INITIALIZER-DEFAULT CONSTRUCTOR-CONTRACT VIOLATION (CONT-22 CLOSED): the R-NEW-414 init-default law fabricated a zero-object for the initializer type of a never-written field WITHOUT running that type's constructor — legal only when the type has a ()V ctor; for R8 merged-lambda/capture classes (every ctor parameterized) the fabricated object violates the class constructor contract, defeated the app's own null-guard, and produced the dooz 'iget Lrf1;.f on null' face (SavedStateRegistry.performSave neighborhood). FIX: constructor-contract gate — materialize only when the type has a ()V <init> or is framework-owned; else the honest ART default (null) flows and the app's null-handling runs.",
+    "priority": "P0",
+    "layer": "dex/fields + heap/object-representation",
+    "root_cause": "R-NEW-414 INITIALIZER-DEFAULT CONSTRUCTOR-CONTRACT VIOLATION — ROOT-CAUSED+FIXED. The S122 R-NEW-414 law scans the declaring class's <init> for `iput of new-instance T` and materializes T as a ZERO-object (no constructor run) for a never-written field. ART law: a field never written reads NULL; an initializer-default object exists only after its constructing <init> RAN, so a zero-object can stand in only when T has a ()V constructor (a legal path yielding the zero-state). Live chain (dooz, fresh CONT-22 runs at 882b7cdf): Lgf1;.g (SavedStateRegistryController's save-lambda field) had NO heap entry (its <init> never ran — the deeper owner-init gap is the pre-existing R414 domain); the initializer is `new Lwg0;(Lrf1;, I)` — an R8 merged-lambda class with NO ()V ctor whose capture .f is written ONLY by that ctor; R414 fabricated a zero Lwg0; with .f=null; the caller (Lg8;.a: iget g; if-eqz v0 — the app's OWN null-guard; …invoke .y) saw a NON-null broken object, skipped its guard, invoked the save-lambda body, and died at `iget Lrf1;.f` on the null capture (Lwg0;.y = SavedStateRegistry.performSave: registry.savedState iget) → uncaught → the dooz F-274 face. opencalc hit the SAME defect at Lm0/i0;.e (RecyclerView.RecyclerViewAccessibilityDelegate; Lm0/h0; has only <init>(Lm0/i0;)V) — the R414b non-heap arm fired there. FIX: class_has_no_arg_ctor() gate in BOTH arms (in-heap R414 + R414b): DEX-defined type must have a ()V <init> or the law answers the honest null (bounded diag [F274-CTORGATE]/[F274-CTORGATE-B]); framework-owned types (Rect/Point/TypedValue — materialize_init_default seeds their zero-state) keep the old behavior, preserving the chess ContentFrameLayout.mDecorPadding evidence. Zero app checks.",
+    "evidence": "SOURCE-FIRST: androguard disasm (scripts/cont22_disasm*.py): Lgf1;.<init> ALWAYS writes .g via real ctors (new Lrf1;(owner, lambda); new Lwg0;(registry, 20); iput g) — so a missing .g proves the owner never ran <init>, and R414's fabrication then violated Lwg0;'s ctor contract; the reader Lg8;.a @920-924 (engine pc 460) carries the app's own `if-eqz` null-guard that the fabricated object defeated. RUNTIME before (882b7cdf, run/cont21/sweep_dooz): [R414-INIT-DEFAULT] Lgf1;.g obj#5359 = new Lwg0; → [SYNTH-EXC] iget-null-recv 'Lrf1;.f on null' method=Lwg0;.y pc=17 → uncaught ×1, 37 log mentions, [UEH-DEFAULT] kill path fired. RUNTIME after (fa88902f, run/cont22/sweep_dooz + after_dooz): [F274-CTORGATE] Lgf1;.g initializer type Lwg0; has no ()V ctor -> honest null; Lrf1;.f mentions 37→0; uncaught 1→0; [UEH-DEFAULT] gone (no fatal exception at all); anchor d602648e8e401895 unchanged ×3. CROSS-TARGET: opencalc (F1) [F274-CTORGATE-B] Lm0/i0;.e initializer type Lm0/h0; (accessibility delegate, only <init>(Lm0/i0;)V) — 2 targets / 2 families (F6+F1) at the same primitive. REGRESSION at fa88902f: anchors 18/18 ×3 byte-identical; fcol 20/20, f259 7/7, f259g 12/13 (same known honest F259-L row), f266 6/6, f268 12/12; g2048 anchor 59ca1526 ×3.",
+    "probe": "[F274-CTORGATE]/[F274-CTORGATE-B] bounded diags (engine); scripts/cont22_disasm*.py DEX law chain; scripts/cont22_cluster_scan.py (wide post-fix clustering); before/after logs run/cont21/sweep_* vs run/cont22/sweep_*.",
+    "verified_current": "CONT-22 at fa88902fdee6e982: dooz uncaught 1→0 (zero uncaught faces for the first time), gate diag fires at the exact site, anchors 18/18 ×3, probe battery equals the recorded green state.",
+    "fanout": "every R8 app whose lambda/capture-typed fields are read before their owner's <init> runs (the R414 domain): the fabricated-capture NPE class — dooz (F6), opencalc (F1) proven; any target with R8 merged-lambda fields benefits.",
+    "date": "2026-10-09",
+    "fix": "miniandroid/src/dex/dalvik_engine.cpp + .h — (1) class_has_no_arg_ctor() helper (DEX direct_methods <init> ()V scan; framework-owned types -> true); (2) gate in the in-heap R414 arm before materialize_init_default (honest null + [F274-CTORGATE] diag when blocked); (3) same gate in the R414b non-heap arm ([F274-CTORGATE-B]). No app checks; no exception suppression (the NameNotFoundException/UEH machinery untouched)."
+}
+
+f275 = {
+    "id": "F-NEW-275",
+    "status": "ROOT-CAUSED-FIXED",
+    "title": "PACKAGEINFO/GET_SERVICES + getServiceInfo LAW GAP (CONT-22 CLOSED): PackageManager.getServiceInfo answered null (REC-MISS) → iget ServiceInfo.metaData NPE, and getPackageInfo never filled PackageInfo.services. FIX: getServiceInfo law (manifest service identity + ServiceInfo seed + NameNotFoundException via throw_deferred) + GET_SERVICES (0x20) services-array law — mirrors of the F-NEW-273 provider laws.",
+    "priority": "P1",
+    "layer": "framework/package-manager",
+    "root_cause": "PACKAGEINFO GET_SERVICES / getServiceInfo LAW GAP — ROOT-CAUSED+FIXED (sibling of F-NEW-273 in the component-identity family; the registry's predicted next arm). The engine had getProviderInfo (F-273) and the GET_PROVIDERS PackageInfo array, but NOTHING for services: getServiceInfo REC-MISS'd → null → iget ServiceInfo.metaData NPE; getPackageInfo(GET_SERVICES) left PackageInfo.services unfilled. AOSP laws: getServiceInfo(ComponentName, flags) returns the manifest-declared ServiceInfo — NEVER null (NameNotFoundException when absent); with GET_META_DATA (0x80) the ServiceInfo carries the <service>'s <meta-data> Bundle; with GET_SERVICES (0x20) PackageInfo.services lists every manifest <service>. DEX law proven live: opencalc Lg/t;.b (androidx AppCompatDelegate AppLocalesMetadataHolderService discovery): flags 640 = GET_SERVICES|GET_META_DATA, getServiceInfo(cn, ctx-class), iget ServiceInfo.metaData with NO null-check — the app catches ONLY NameNotFoundException (engine's null became the uncaught NPE; on real Android opencalc's manifest does NOT declare that service, so the upstream-faithful outcome IS NameNotFoundException → app logs 'Service not found' → FALSE). telegram Lkg/i;.P ×2 (Firebase ComponentDiscovery): getServiceInfo(cn, 128) with graceful degradation on the null answer. Cluster: 2 targets / 2 families (opencalc F1, telegram F4). FIX: (1) getServiceInfo law — manifest_service_classes_ identity walk (exact/bare/suffix, the F-273 matching law), ServiceInfo seed (name/packageName + metaData from component_meta_data_ under 0x80 — the manifest parser already records service meta-data), NameNotFoundException via throw_deferred; (2) GET_SERVICES arm in getPackageInfo filling PackageInfo.services (the GET_PROVIDERS array law mirrored). Zero app checks.",
+    "evidence": "BEFORE (882b7cdf, run/cont21/family/* + sweep_opencalc): opencalc [REC-MISS] getServiceInfo caller=Lg/t;.b → [SYNTH-EXC] iget ServiceInfo.metaData on null pc=36 → uncaught (line 467); telegram [REC-MISS] getServiceInfo caller=Lkg/i;.P ×2 (degraded). AFTER (fa88902f, run/cont22/sweep_opencalc + after_opencalc): [F275-SVCINFO] MISS → NameNotFoundException; app CATCHES it ('deferred handler type=NameNotFoundException') — the upstream-designed path; ServiceInfo.metaData NPE 1→0; opencalc uncaught 5→4, APP BOUNDARY 5→4; opencalc anchor a976d2f9fb675cb3 unchanged ×3. telegram: [F275-SVCINFO] ×2 at Lkg/i;.P pc=39, caught by the app's handler; anchor unchanged. Manifest fidelity check: opencalc's binary manifest declares only MyTileService — AppLocalesMetadataHolderService absent → NameNotFoundException is what real Android returns.",
+    "probe": "[F275-SVCINFO] bounded diag (engine); scripts/cont22_disasm.py opencalc/telegram DEX laws; scripts/cont22_cluster_scan.py; before/after logs run/cont21/sweep_* vs run/cont22/sweep_*.",
+    "verified_current": "CONT-22 at fa88902fdee6e982: opencalc face closed via the AOSP NameNotFoundException contract (app-handled); telegram discovery served ×2; anchors 18/18 ×3 + probe battery green at the same binary.",
+    "fanout": "every app calling getServiceInfo (androidx AppCompatDelegate locale storage, Firebase ComponentDiscovery, MediaBrowserService clients…) or iterating PackageInfo.services under GET_SERVICES.",
+    "date": "2026-10-09",
+    "fix": "miniandroid/src/dex/dalvik_engine.cpp — two laws: (1) PackageManager.getServiceInfo(ComponentName, flags) block after the getProviderInfo law (identity walk + ServiceInfo seed + metaData under 0x80 + NameNotFoundException via throw_deferred); (2) GET_SERVICES (0x20) arm inside getPackageInfo filling PackageInfo.services from manifest_service_classes_ (GET_PROVIDERS array-law mirror). No app checks."
+}
+
+seen274 = seen275 = False
+for i, r in enumerate(rows):
+    if r.get("id") == "F-NEW-274":
+        rows[i] = f274; seen274 = True
+    elif r.get("id") == "F-NEW-275":
+        rows[i] = f275; seen275 = True
+assert seen274 and seen275, (seen274, seen275)
+
+json.dump(reg, open(path, "w"), indent=1, ensure_ascii=False)
+print(f"registry updated: {len(rows)} rows; F-274 + F-275 -> ROOT-CAUSED-FIXED")

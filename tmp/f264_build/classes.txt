@@ -1,2 +1,0 @@
-tmp/f264_build/obj/com/probe/f264/MainActivity$ProbeView.class
-tmp/f264_build/obj/com/probe/f264/MainActivity.class
