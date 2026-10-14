@@ -405,6 +405,30 @@ int LayoutInflater::parse_dim_attr(const AxmlAttribute* attr, InflateStats& stat
         // GOLDEN-03 §9: canonical TypedValue law (raw complex word + context).
         return complex_to_dimension_pixel_size(attr->value.data, density_context());
     }
+    // F-NEW-360 (CONT-66): the TypedValue dimension-REFERENCE law. Aapt2
+    // compiles android:paddingLeft="@dimen/activity_horizontal_margin"
+    // (and every other dimension attribute referencing a dimen entry) as a
+    // typed REFERENCE whose data word is the resource id — NOT as a
+    // dimension and NOT reliably as a raw "@dimen/name" string (the raw
+    // may be empty or the numeric "@ref/0x…" form). The sibling
+    // parse_color_attr already resolves is_reference() values; the
+    // dimension path silently returned 0 — BMI v402's root RelativeLayout
+    // padding (@dimen/activity_horizontal_margin = 16dp) collapsed to 0
+    // and the whole form ran flush to the screen edges (measured: spinner
+    // text x=4, EditText/Button cached right=1080; trace-verified
+    // padding_left=0). AOSP law: Resources/Theme#resolveAttributes yields
+    // TypedValue{type=TYPE_DIMENSION} after typed-value resolution of the
+    // reference; complexToDimensionPixelSize converts it.
+    if (attr->value.is_reference()) {
+        auto val = arsc_.resolve_value(attr->value.ref_id);
+        if (val && val->is_dimension()) {
+            stats.dimens_resolved++;
+            // GOLDEN-03 §9: the ONE canonical conversion path.
+            return complex_to_dimension_pixel_size(val->data, density_context());
+        }
+        stats.unresolved_refs++;
+        return 0;
+    }
     if (attr->value.is_string()) return resolve_dimen_px(attr->value.string_value, stats);
     if (!attr->raw_value.empty()) return resolve_dimen_px(attr->raw_value, stats);
     return 0;
@@ -442,6 +466,18 @@ int LayoutInflater::resolve_size_or_match(const AxmlAttribute* attr, InflateStat
         return v;
     }
     if (attr->value.is_dimension()) return parse_dim_attr(attr, stats);
+    // F-NEW-360 companion: layout_width/height="@dimen/…" arrives typed
+    // REFERENCE (raw often empty) — the old path fell through to the
+    // empty-string sentinel and answered wrap_content (-2). AOSP law:
+    // resolve the TypedValue first; a resolved dimension is a px size.
+    if (attr->value.is_reference()) {
+        auto val = arsc_.resolve_value(attr->value.ref_id);
+        if (val && val->is_dimension())
+            return complex_to_dimension_pixel_size(val->data, density_context());
+        if (val && (val->is_int() || val->type == DataType::INT_DEC ||
+                    val->type == DataType::INT_HEX))
+            return (int)val->data;   // AAPT passes -1/-2 through int entries
+    }
     std::string s = !attr->raw_value.empty() ? attr->raw_value : attr->value.string_value;
     if (s == "match_parent" || s == "fill_parent") return -1;
     if (s == "wrap_content" || s.empty() || s == "@null") return -2;
@@ -1211,6 +1247,18 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         if (n == "layout_width") a.layout_width = resolve_size_or_match(&at, stats), a.width_set = true;
         else if (n == "layout_height") a.layout_height = resolve_size_or_match(&at, stats), a.height_set = true;
         else if (n == "layout_margin") { a.ml = a.mt = a.mr = a.mb = parse_dim_attr(&at, stats); a.margin_set = true; }
+        // F-NEW-361 (CONT-66): the API-26 MarginLayoutParams axis margins.
+        // AOSP ViewGroup.MarginLayoutParams(c, attrs): layout_marginHorizontal
+        // sets leftMargin=rightMargin; layout_marginVertical sets
+        // topMargin=bottomMargin; explicit single-edge margins win over the
+        // axis forms. The attrs were never parsed — microtimer v8's keypad
+        // rows (layout_marginHorizontal=@dimen/button_margin_out=2.5dp)
+        // laid out full-width with buttons 360px instead of the XML-true
+        // 356px inset pair. (Named residual: AOSP resolves the
+        // axis-vs-single precedence by TYPE after reading ALL attrs, not by
+        // XML file order; the corpus has no conflicting single+axis files.)
+        else if (n == "layout_marginHorizontal") { a.ml = a.mr = parse_dim_attr(&at, stats); a.margin_set = true; }
+        else if (n == "layout_marginVertical") { a.mt = a.mb = parse_dim_attr(&at, stats); a.margin_set = true; }
         else if (n == "layout_marginLeft") a.ml = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginTop") a.mt = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginRight") a.mr = parse_dim_attr(&at, stats), a.margin_set = true;
@@ -1287,7 +1335,12 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             } else stats.unresolved_refs++;
         }
         else if (n == "textSize") {
-            if (at.value.is_dimension()) a.text_size_px = parse_dim_attr(&at, stats);
+            // F-NEW-360: textSize referencing @dimen arrives typed REFERENCE
+            // — the is_dimension() gate skipped parse_dim_attr entirely and
+            // the raw-string fallback answered 0 for numeric "@ref/0x…"
+            // raws. The TypedValue law: resolve the reference first.
+            if (at.value.is_dimension() || at.value.is_reference())
+                a.text_size_px = parse_dim_attr(&at, stats);
             else a.text_size_px = (float)resolve_dimen_px(raw, stats);
             node.text_size_sp = a.text_size_px / metrics_.density;
         }
