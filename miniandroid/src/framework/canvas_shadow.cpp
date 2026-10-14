@@ -262,6 +262,116 @@ void CanvasShadow::warn_noop(const std::string& cls, const std::string& op) {
               << " effect=accepted_not_reproduced" << std::endl;
 }
 
+// ── F-NEW-345: bitmap-target canvases (AOSP graphics/Canvas.java law) ─────
+// CanvasShadow owns a fwd-declared BitmapFont for bitmap-canvas flushes; the
+// engine's own replay font is a frame-local stack object (execution_engine
+// render stage), so a stable owned instance with the same default law is the
+// correct standalone equivalent.
+CanvasShadow::~CanvasShadow() = default;
+
+// AOSP Canvas(Bitmap)/setBitmap: bind the canvas object to the bitmap's
+// pixel buffer. The sub-recorder starts with FRESH canvas state (AOSP: a new
+// Canvas has an identity matrix and a full-bitmap clip) sized to the bitmap.
+void CanvasShadow::bind_bitmap_canvas(uint32_t canvas_id, uint32_t bitmap_id) {
+    StoredBitmap* sb = BitmapStore::instance().get_mut(bitmap_id);
+    if (!sb || sb->width <= 0 || sb->height <= 0) {
+        // Honest diagnostic: binding to an unknown/zero-sized bitmap cannot
+        // rasterize (AOSP Canvas(Bitmap) throws on a recycled bitmap).
+        warn_noop("Canvas", "bindBitmap(unresolved-or-empty)");
+        bitmap_target_.erase(canvas_id);
+        bitmap_recorders_.erase(canvas_id);
+        return;
+    }
+    if (!sb->has_pixels) {
+        // createBitmap law (bitmap_shadow.h): zero-filled = transparent black.
+        sb->rgba.assign((size_t)sb->width * sb->height * 4, 0);
+        sb->has_pixels = true;
+    }
+    bitmap_target_[canvas_id] = bitmap_id;
+    auto& rec = bitmap_recorders_[canvas_id];
+    if (!rec) rec = std::make_unique<CanvasShadow>();
+    rec->init(heap_);
+    rec->begin_frame();                       // fresh state; capturing_ = true
+    rec->set_canvas_size(sb->width, sb->height);
+}
+
+// Paint/Path state lives on the singleton shadow (Paint and Path dispatch
+// never route to the sub-recorder — only Canvas methods do). Mirror it into
+// the sub-recorder before each delegated op so bitmap-canvas draws resolve
+// the app's real paint colors/styles and path geometry.
+void CanvasShadow::sync_shared_state(CanvasShadow& rec) const {
+    rec.paint_color_ = paint_color_;
+    rec.paint_stroke_w_ = paint_stroke_w_;
+    rec.paint_style_ = paint_style_;
+    rec.paint_text_size_ = paint_text_size_;
+    rec.paint_fake_bold_ = paint_fake_bold_;
+    rec.paint_filter_bitmap_ = paint_filter_bitmap_;
+    rec.paths_ = paths_;
+}
+
+// Eager rasterization (AOSP law): replay the ops recorded since the last
+// flush into a temp SoftwareCanvas over the bitmap's pixels, then clear the
+// op list while KEEPING the sub-recorder's matrix/clip/save state (the app's
+// canvas state persists across ops on the same Canvas object).
+void CanvasShadow::flush_bitmap_canvas(CanvasShadow& rec, uint32_t bitmap_id) {
+    if (rec.ops_.empty()) return;
+    StoredBitmap* sb = BitmapStore::instance().get_mut(bitmap_id);
+    if (!sb || sb->width <= 0 || sb->height <= 0) return;
+    const int bw = sb->width, bh = sb->height;
+    const size_t n = (size_t)bw * bh;
+    if (sb->rgba.size() < n * 4) sb->rgba.resize(n * 4, 0);
+
+    // Copy-in: StoredBitmap bytes are R,G,B,A (premultiplied OFF) — the same
+    // layout FrameBuffer's RGBA raster holds (see drawBitmap(int[]) variant).
+    renderer::FrameBuffer fb(bw, bh);
+    {
+        auto& px = fb.get_pixels_mut();
+        for (size_t i = 0; i < n; ++i) {
+            const uint8_t* s = &sb->rgba[i * 4];
+            px[i] = renderer::RGBA{s[0], s[1], s[2], s[3]};
+        }
+    }
+    renderer::SoftwareCanvas sc(&fb);
+    if (!flush_font_) flush_font_ = std::make_unique<renderer::BitmapFont>();
+    // Bitmap-target replay: full-bitmap clip baseline (0,0,bw,bh) — the same
+    // CANVAS-GEOMETRY clause the view path applies to its own bounds.
+    rec.replay(sc, *flush_font_, 0.f, 0.f, (float)bw, (float)bh);
+    // replay() ends with capturing_ = false (view-frame lifecycle law: the
+    // capture closes when the frame replays). A bitmap-target canvas is NOT
+    // a frame — it stays live for its whole object lifetime (AOSP Canvas:
+    // usable until release()), so re-arm the sub-recorder after every flush.
+    rec.capturing_ = true;
+    rec.ops_.clear();                         // state persists, ops consumed
+
+    // Copy-out: the bitmap now holds the rasterized result — the next
+    // drawBitmap(view) / getPixel / decode-style read sees real pixels.
+    const std::vector<renderer::RGBA>& out = fb.get_pixels();
+    for (size_t i = 0; i < n; ++i) {
+        uint8_t* d = &sb->rgba[i * 4];
+        d[0] = out[i].r; d[1] = out[i].g; d[2] = out[i].b; d[3] = out[i].a;
+    }
+    sb->has_pixels = true;
+}
+
+// Route one op arriving on a bitmap-target canvas: delegate to the bound
+// sub-recorder (its own matrix/clip/save stack), then flush whatever new
+// drawable ops it recorded. State-only ops (save/translate/clipRect/…)
+// record nothing and keep their effect in the sub-recorder's state.
+CallResult CanvasShadow::dispatch_bitmap_op(const CallContext& ctx,
+                                            uint32_t canvas_id,
+                                            uint32_t bitmap_id) {
+    const auto rec_it = bitmap_recorders_.find(canvas_id);
+    if (rec_it == bitmap_recorders_.end() || !rec_it->second)
+        return CallResult::not_handled();
+    CanvasShadow& rec = *rec_it->second;
+    sync_shared_state(rec);
+    const size_t before = rec.ops_.size();
+    const CallResult r = rec.dispatch(ctx);
+    if (rec.ops_.size() != before)
+        flush_bitmap_canvas(rec, bitmap_id);
+    return r;
+}
+
 size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                             renderer::BitmapFont& font,
                             float left, float top, float w, float h) {
@@ -1338,6 +1448,38 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
 
     // ── Canvas ─────────────────────────────────────────────────────────
+    // F-NEW-345 (AOSP graphics/Canvas.java law): `new Canvas(bitmap)` /
+    // setBitmap bind the canvas to a BITMAP target with its OWN matrix/clip
+    // state; every op rasterizes eagerly INTO that bitmap (BitmapStore).
+    // Previously such ops were silently dropped whenever the canvas was used
+    // outside the view-draw capture window (capturing_ == false) — in-memory
+    // bitmaps stayed transparent (W4 ladder: drawBitmap RECORDED but 0
+    // app-owned pixels) — and polluted the VIEW op list when used inside it.
+    if (cls.find("graphics/Canvas;") != std::string::npos ||
+        cls.find("graphics/RecordingCanvas;") != std::string::npos) {
+        const uint32_t recv = ctx.receiver_id;
+        if (m == "<init>" || m == "setBitmap") {
+            const uint32_t bmp = ctx.arg_as_object(0, 0);
+            if (bmp != 0) {
+                bind_bitmap_canvas(recv, bmp);
+                return CallResult::handled_void();
+            }
+            // Unbound canvas()/setBitmap(null): preserve the historical
+            // behavior (fall through / not_handled).
+            if (m == "setBitmap") return CallResult::handled_void();
+        } else {
+            const auto bt = bitmap_target_.find(recv);
+            if (bt != bitmap_target_.end()) {
+                if (m == "getWidth" || m == "getHeight") {
+                    const StoredBitmap* sb = BitmapStore::instance().get(bt->second);
+                    return CallResult::handled_int(
+                        sb ? (m == "getWidth" ? sb->width : sb->height) : 0);
+                }
+                return dispatch_bitmap_op(ctx, bt->first, bt->second);
+            }
+        }
+        // Unbound canvas object → fall through to the view-recording path.
+    }
     if (!capturing_) return CallResult::not_handled();  // outside draw dispatch
 
     const uint32_t recv = ctx.receiver_id;
