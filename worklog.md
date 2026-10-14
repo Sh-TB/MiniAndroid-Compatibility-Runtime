@@ -9519,3 +9519,99 @@ Stage Summary:
 - The user's "基础初始结构" (base canonical structure) priority advanced with TWO landed generic laws: the TypedValue dimension-reference resolution law (every @dimen-referenced padding/margin/textSize/width in the corpus now resolves — 3 apps pixel-proven) and the API-26 axis-margin law. The anchor wall is green at the new pins with the two changed faces adjudicated XML-true line-for-line against their APKs.
 - The calculator-typing frontier now has a complete 5-hop evidence map and a precisely named next decode hop (the calculator-core state reset).
 - Next waves own: (a) F-NEW-362 lever — the b.b VI state-reset decode (calculator typing end-to-end), (b) F-NEW-267 lever #2 (CMT at invoke-direct/static + constraints FIELD-TRACE), (c) tanana main layout + alex content face, (d) rotation-about-pivot + scaled-container subtree, (e) the 2 residual drawBitmap arg_fields=(none) rows.
+
+---
+Task ID: CONT-67
+Agent: Super Z (main)
+Task: The user's generality directive ("check the optimizations were truly
+general — try 3 random COMPLETELY DIFFERENT apps, then continue; improve the
+audit list; if dooz loads completely, can you play it?"): 3-random-app live
+verification (chessclock / klondike / notes_secuso), the capaudit 22-row
+re-verification, on-the-spot fixes for the two new roots the random apps
+exposed (F-NEW-363, F-NEW-364), the dooz playability live test, full wall +
+registry/evidence/mosaic + push.
+
+Work Log:
+- TRUTH RE-ESTABLISHMENT: HEAD == origin/main == ef6f8ffe (CONT-66); registry
+  669; binary b3e221442920f7da reproduced. Wave binary after fixes:
+  5038bb6e74a883c2.
+- GENERALITY LEG 1 (the capability audit list): the capaudit 22-row pixel
+  battery re-run at the wave binary — 22/22 PASS (PNG RGBA/palette, JPEG,
+  WebP, animated GIF, bg stripes, vector curves, rounded shape, sentinels,
+  weight boundary, statelist, bold/italic/BI, Arabic/Persian/CJK, base red,
+  scale, audio; screenshot cb6373f68fabd702). The numbered audit matrix stands.
+- GENERALITY LEG 2 (3 random COMPLETELY different apps, never measured):
+  * com.chessclock.android (Simple Chess Clock 2.11.2, platform-23 utility):
+    BEFORE 2a3e70bafce0878a — action-bar-only face + NPE; the DEX decode
+    (fixed cont67_disasm.py: per-list method-idx diff bases) located
+    ChessClock.setUpGame pc=321 invoke Uri.toString on a NULL receiver fed
+    by sget Settings$System.DEFAULT_RINGTONE_URI (typed-null). FIX
+    (F-NEW-363): seed_framework_device_statics seeds the three AOSP
+    Settings default-sound URIs as REAL heap Uri objects (uri_raw =
+    content://settings/system/{ringtone|notification_sound|alarm_alert}).
+    AFTER: rc=0, ZERO uncaught, face fe3ae1167c9e968c — REAL chess clock
+    (settings gear + reset vector icons + two 10:00 panels, dark theme).
+  * eu.veldsoft.free.klondike (Klondike Solitaire 2.0.1, card game):
+    BEFORE 31ddd4d5b8e6d18e honest empty face — deferred-UI pending
+    ready_at=5000ms; adjudicated a MEASUREMENT-BUDGET artifact (default
+    frame_delay 300ms x --frames 8 = 2400ms virtual < 5000ms splash), NOT an
+    engine gap. With --frames 20 (6000ms virtual) the SplashActivity
+    postDelayed fires: startActivity -> MenuActivity (a77038da303ed1b4 REAL
+    menu: New Game / View Help / About Game / Check for Updates / Exit);
+    --tap 540,104@19 drives MenuActivity$1.onClick -> Intent(GameActivity) ->
+    REAL GAME FACE 310b27515efb8acc (green felt, 8 card slots, four ace
+    bitmaps, card-back pile, veldsoft watermark). Full input leg + two
+    activities + bitmap card art — the optimization fan-out is REAL on a
+    never-touched app.
+  * org.secuso.privacyfriendlynotes (2.2.2, productivity): BEFORE eb5ebd559cad1028
+    — ISE "You need to use a Theme.AppCompat theme" at createSubDecor pc=404
+    (F-093 diagnostic: 125/127 AppCompatTheme attrs MISS). DECODE: the
+    appcompat attachBaseContext2 chain applies Theme_AppCompat_Empty through
+    ContextThemeWrapper.onApplyThemeResource -> Resources$Theme.applyStyle,
+    which had NO law. FIX (F-NEW-364): the applyStyle bridge law records
+    0x7f-pkg styles onto a per-apk applied-styles record; resolve_theme_attr_typed
+    consults the record on the base-theme miss path (force=false merge
+    subset). MEASURED: [F364-APPLYSTYLE] resid=0x7f120252 records; the chain
+    reaches NEW territory (NameNotFoundException properly CAUGHT;
+    TutorialActivity code runs). HONEST RESIDUAL: the gate ISE remains —
+    Theme.AppCompat.Empty is a SIZE-0 bag in this app's arsc; the
+    AppCompatTheme attr-default source for framework-parented themes is the
+    named next decode (bytecode-decoded the real attachBaseContext2 tail:
+    ContextThemeWrapper(Empty) + rebase + super).
+- DOOZ PLAYABILITY LIVE TEST (the user's direct question): 180s run + real
+  tap 820,1837 at the wave binary: the tap pipeline EXECUTES (UI-EVENT
+  TOUCH -> dispatchTouchEvent arm, attached=1) but the hit-test consumes the
+  ZEROED bounds (TOUCHWIN-LOC -1x-1 placeholder hop, TOUCHWIN-SIZE 0) —
+  face byte-identical c94da5a928ea213b. VERDICT: NOT PLAYABLE YET (honest);
+  F-NEW-267 lever #2 (the R8-inlined zero-constraint measure) is the named
+  fix — the board also sits behind AnimatedVisibility(isGameStarted=false),
+  reachable only through that tap.
+- GATE (cont67_gate.sh, clean rewrite — cont66_gate.sh row 18 was corrupted
+  'APKicrotimer]'): 12 rows x3 = 36/36 byte-identical ZERO DRIFT (csw
+  d3c26b73, dooz15 31ddd4d5, flappy 13cf4746, g2048 59ca1526, gmdice
+  3891679d, microtimer bbd350b6, opencalc f25b754c, simplecalc 2ac5d8d0,
+  tanana afe0bd8d, tttdeluxe af609429, unote 90a67cc1, dooz180 c94da5a9).
+- Registry 669 -> 671 (F-NEW-363 ROOT-CAUSED-FIXED, F-NEW-364
+  ROOT-CAUSED-PARTIAL; scripts/cont67_evidence.py). Evidence:
+  evidence/cont67/{cont67_evidence.json, chessclock_face_fixed.png,
+  klondike_menu_face.png, klondike_game_face.png, notes_face.png,
+  capaudit_face.png, dooz_play_face.png, cont67_mosaic.png}.
+- Mosaic 16 tiles refreshed; uploaded: https://n.uguu.se/uqNllNZB.png
+  (byte-verified 6988910e909d921a) + tmpfiles mirror
+  https://tmpfiles.org/wiA2ZElOjgXn/cont67_mosaic.png (60min TTL).
+- Tooling: scripts/cont67_disasm.py (parametric DEX disassembler; two real
+  bugs fixed in-wave: per-entry field ulebs, per-list method-idx diff bases
+  — empirically adjudicated D0=70->clinit / V-accum=117->onCreate),
+  scripts/cont67_notes_theme.py, scripts/cont67_gate.sh.
+
+Stage Summary:
+- The user's generality question has a measured answer: the landed laws FAN
+  OUT — one never-touched utility went blank-NPE -> real face (F-NEW-363),
+  one never-touched game went empty -> menu -> REAL GAME via the input leg
+  (fair virtual-clock budget), and the 36-row wall holds zero drift — while
+  the random sweep ALSO exposed two honest new frontiers (F-NEW-364 residual
+  theme-gate defaults; the dooz tap-dead lever #2).
+- Next waves own: (a) the AppCompatTheme attr-default source decode
+  (completes F-NEW-364), (b) F-NEW-267 lever #2 (dooz playability), (c)
+  F-NEW-362 b.b state-reset decode (calculator typing), (d) tanana layout +
+  alex content faces, (e) rotation-about-pivot + scaled-container subtree.

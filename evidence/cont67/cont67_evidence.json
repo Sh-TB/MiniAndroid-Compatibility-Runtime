@@ -1,0 +1,43 @@
+{
+ "wave": "CONT-67 (3-random-app generality + F-NEW-363/364)",
+ "binary_sha16": "5038bb6e74a883c2",
+ "generality_verdict": {
+  "capaudit_22_rows_at_wave_binary": "22/22 PASS (cb6373f68fabd702)",
+  "anchor_wall": "36/36 byte-identical x3 ZERO DRIFT (cont67_gate.sh)",
+  "random_apps": [
+   {
+    "app": "com.chessclock.android (Simple Chess Clock 2.11.2)",
+    "before": "2a3e70bafce0878a \u2014 action-bar-only face, NPE at ChessClock.setUpGame pc=321 (Settings$System.DEFAULT_RINGTONE_URI typed-null -> Uri.toString APP-BOUNDARY unwind)",
+    "after": "fe3ae1167c9e968c rc=0 ZERO uncaught \u2014 real chess clock face: settings gear + reset vector icons, two 10:00 panels, dark theme",
+    "law": "F-NEW-363"
+   },
+   {
+    "app": "eu.veldsoft.free.klondike (Klondike Solitaire 2.0.1)",
+    "before": "31ddd4d5b8e6d18e honest empty face (deferred-UI pending at ready_at=5000ms \u2014 measurement-budget, not an engine gap)",
+    "after": "splash fires at 5000ms virtual (MenuActivity a77038da303ed1b4), tap New Game @frame19 drives MenuActivity$1.onClick -> Intent(GameActivity) -> REAL GAME FACE 310b27515efb8acc: green felt, 8 card slots, four ace bitmaps, card-back pile",
+    "law": "F-NEW-314 budget law (fair virtual-clock budget)"
+   },
+   {
+    "app": "org.secuso.privacyfriendlynotes (2.2.2)",
+    "before": "eb5ebd559cad1028 \u2014 ISE \"You need to use a Theme.AppCompat theme\" at createSubDecor pc=404 (F-093 resolved 125/127 AppCompatTheme attrs MISS)",
+    "after": "applyStyle law lands ([F364-APPLYSTYLE] resid=0x7f120252), appcompat chain reaches NEW territory (NameNotFoundException properly caught, TutorialActivity runs), but the gate ISE remains: Theme.AppCompat.Empty is a SIZE-0 bag in this app arsc \u2014 the AppCompatTheme attr-default source for framework-parented themes is the named residual",
+    "law": "F-NEW-364 ROOT-CAUSED-PARTIAL"
+   }
+  ]
+ },
+ "dooz_playability": {
+  "verdict": "NOT PLAYABLE YET (honest)",
+  "test": "180s + real tap 820,1837 (New game label) at the wave binary",
+  "result": "tap pipeline executes (UI-EVENT TOUCH, dispatchTouchEvent arm, attached=1) but the hit-test consumes the zeroed bounds (TOUCHWIN-LOC hop -1x-1 placeholder, TOUCHWIN-SIZE 0) \u2014 face byte-identical c94da5a928ea213b. F-NEW-267 lever #2 (the R8-inlined zero-constraint measure decode) remains the named fix."
+ },
+ "capaudit": {
+  "rows": 22,
+  "pass": 22,
+  "screenshot_sha16": "cb6373f68fabd702"
+ },
+ "gate": {
+  "rows": 12,
+  "runs_each": 3,
+  "verdict": "36/36 MATCH"
+ }
+}

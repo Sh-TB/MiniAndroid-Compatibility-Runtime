@@ -690,6 +690,28 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
         return v;
     }
 
+    // ── F-NEW-364 (CONT-67): the Theme.applyStyle overlay record ──────────
+    // AOSP AssetManager2::Theme::applyStyle(resid, force=false) merge law:
+    // applied styles fill ONLY the values the base theme chain lacks —
+    // consulted here exactly on the miss path (before the framework
+    // defaults, which are the last resort for 0x01 attrs). The appcompat
+    // attachBaseContext2 chain applies Theme_AppCompat_Empty (an APP
+    // package style) carrying the AppCompatTheme attr defaults; without
+    // this walk the createSubDecor gate ISE fires for framework-parented
+    // themes (notes_secuso live evidence).
+    if (!applied_theme_styles_.empty()) {
+        ResTableConfig dev = device_config();
+        for (uint32_t style_resid : applied_theme_styles_) {
+            auto bv = arsc_.bag_value(style_resid, attr_key, dev);
+            if (!bv) continue;
+            if (std::getenv("MINIANDROID_F093_DIAG"))
+                std::cerr << "[F364-APPLIED] style=0x" << std::hex
+                          << style_resid << " attr=0x" << attr_key
+                          << std::dec << " bag=HIT" << std::endl;
+            return *bv;
+        }
+    }
+
     // 2. Framework theme defaults (AOSP law; generated table).
     if ((attr_key >> 24) == 0x01) {
         LaunchTheme lt = resolve_launch_theme(apk_path);
