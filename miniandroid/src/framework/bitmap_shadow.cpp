@@ -207,6 +207,20 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
     const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
     BitmapStore::instance().store(obj, decoded.width, decoded.height,
                                   std::move(decoded.rgba), desc);
+    // CONT-65 F-NEW-355: keep the original container bytes for animated
+    // GIFs so the render walk can decode the full frame timeline
+    // (GifDecoder::decode_anim) — static consumers ignore this field.
+    if (bytes.size() >= 6 &&
+        (!memcmp(bytes.data(), "GIF87a", 6) || !memcmp(bytes.data(), "GIF89a", 6))) {
+        if (auto* sb = BitmapStore::instance().get_mut(obj)) {
+            sb->source_gif_bytes = bytes;
+            static thread_local const bool s_gif_stash_diag =
+                std::getenv("MINIANDROID_GIFANIM") != nullptr;
+            if (s_gif_stash_diag)
+                std::cerr << "[GIFANIM] stash obj=" << obj << " bytes="
+                          << bytes.size() << std::endl;
+        }
+    }
     std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj=" << obj
               << " (" << decoded.width << "x" << decoded.height << ")"
               << std::endl;

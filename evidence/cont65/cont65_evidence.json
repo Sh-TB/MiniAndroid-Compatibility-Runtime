@@ -1,0 +1,139 @@
+{
+ "wave": "CONT-65 (capability audit completion)",
+ "binary_sha16": "745708765c977a94",
+ "probe": "fixtures/capaudit_probe (apk run/cont65/capaudit.apk)",
+ "pixel_battery": {
+  "total": 22,
+  "pass": 22,
+  "rows": [
+   {
+    "row": "R1a_png_rgba_gradient",
+    "ok": true,
+    "detail": "distinct=2822 top=[((32, 32, 32), 26460)]"
+   },
+   {
+    "row": "R1b_png_palette_4quads",
+    "ok": true,
+    "detail": "quads=[True, True, True, True]"
+   },
+   {
+    "row": "R1c_jpeg_gradient",
+    "ok": true,
+    "detail": "distinct=65"
+   },
+   {
+    "row": "R1d_webp_rendered",
+    "ok": true,
+    "detail": "cyan=True magenta=True distinct=675"
+   },
+   {
+    "row": "R2a_gif_frame0_red",
+    "ok": true,
+    "detail": "red=0 green=0 blue=17445"
+   },
+   {
+    "row": "R2b_bg_stripes",
+    "ok": true,
+    "detail": "distinct=2"
+   },
+   {
+    "row": "R2c_vector_curves",
+    "ok": true,
+    "detail": "blue=True yellow=True"
+   },
+   {
+    "row": "R2d_rounded_shape",
+    "ok": true,
+    "detail": "teal=True corner_rgb=(32, 32, 32)"
+   },
+   {
+    "row": "R3a_sentinel_center",
+    "ok": true,
+    "detail": "cyan=True"
+   },
+   {
+    "row": "R3b_sentinel_gravity_margin",
+    "ok": true,
+    "detail": "magenta=True"
+   },
+   {
+    "row": "R3c_weight_1to2_boundary",
+    "ok": true,
+    "detail": "@700=(255, 0, 0) @730=(0, 0, 255)"
+   },
+   {
+    "row": "R3d_statelist_default_red",
+    "ok": true,
+    "detail": "red=True"
+   },
+   {
+    "row": "R4a_text_bold_white",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "row": "R4b_text_italic_white",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "row": "R4c_text_bolditalic_white",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "row": "R4d_text_arabic_red",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "row": "R4e_text_persian_green",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "row": "R4f_text_cjk_orange",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "row": "R4g_italic_not_identical_to_bold",
+    "ok": true,
+    "detail": "darkpx bold=26474 italic=29063"
+   },
+   {
+    "row": "R5a_base_red_100",
+    "ok": true,
+    "detail": "red=True"
+   },
+   {
+    "row": "R5b_scale_applied_200x150",
+    "ok": true,
+    "detail": "bbox=(440, 796, 640, 946) 200x150"
+   },
+   {
+    "row": "R6_audio_text_rendered",
+    "ok": true,
+    "detail": "lit_px=32713"
+   }
+  ]
+ },
+ "anchor_gate": {
+  "apps_x3": [
+   "csw d3c26b73ee21e571",
+   "dooz15 31ddd4d5b8e6d18e",
+   "flappycow 13cf47464d9787f4",
+   "g2048 59ca1526611c4622",
+   "gmdice 3891679dff449331",
+   "microtimer 55343bbec712618d",
+   "opencalc f25b754c4565c38b",
+   "simplecalc 341b9cec89d8f182",
+   "tanana afe0bd8dd4d09ca6",
+   "tttdeluxe af6094295ecb50e3",
+   "unote 90a67cc1ddda57b7"
+  ],
+  "dooz180_x3": "c94da5a928ea213b",
+  "result": "36/36 MATCH zero drift"
+ },
+ "registry": "root_registry.json 659->665 (F-NEW-354..359)"
+}

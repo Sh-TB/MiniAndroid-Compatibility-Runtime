@@ -1,0 +1,32 @@
+{
+ "tiles": [
+  "CAPAUDIT probe: 22/22 capability rows",
+  "SimpleCalc: full pad + display",
+  "OpenCalc: full-width pad",
+  "TananaCalc: preference text",
+  "ComposeStopwatch: title in view",
+  "TicTacToe Deluxe: real board",
+  "FlappyCow: real game frame",
+  "2048: REAL_APP_CONTENT",
+  "GM Dice: game + themed hint",
+  "uNote: real editor UI",
+  "Dooz @180s: Material3 + icons",
+  "F-NEW-352 probe: 9/9 tint laws"
+ ],
+ "sources": [
+  "/home/z/my-project/run/cont65/webpdiag/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/simplecalc_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/opencalc_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/tanana_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/csw_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/tttdeluxe_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/flappycow_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/g2048_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/gmdice_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/unote_r1/screenshot.png",
+  "/home/z/my-project/run/cont65/regression/dooz180_r1/screenshot.png",
+  "/home/z/my-project/run/cont64/f352_det/screenshot.png"
+ ],
+ "gate": "36/36 anchor wall MATCH (11 apps x3 + dooz180 x3) zero drift",
+ "battery": "capaudit 22/22 pixel rows PASS"
+}

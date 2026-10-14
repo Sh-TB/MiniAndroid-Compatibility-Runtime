@@ -6635,6 +6635,12 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "setScaleX") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->scale_x = ctx.arg_as_float(0, 1.0f);
+        static thread_local const bool f359_set_diag =
+            std::getenv("MINIANDROID_STRCTOR") != nullptr;
+        if (f359_set_diag)
+            std::cerr << "[F359-SET] recv=" << ctx.receiver_id
+                      << " node_id=" << n->view_id << " scale_x="
+                      << n->scale_x << std::endl;
         return CallResult::handled_void();
     }
     if (m == "setScaleY") {
@@ -6662,20 +6668,27 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "setPivotX") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->pivot_x = ctx.arg_as_float(0, 0.0f);
+        n->pivot_x_set = true;  // F-NEW-359 AOSP mSetPivotX
         return CallResult::handled_void();
     }
     if (m == "setPivotY") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->pivot_y = ctx.arg_as_float(0, 0.0f);
+        n->pivot_y_set = true;  // F-NEW-359 AOSP mSetPivotY
         return CallResult::handled_void();
     }
     if (m == "getPivotX") {
+        // F-NEW-359: AOSP lazy default — center until explicitly set.
         const auto* n = find_node(ctx.receiver_id);
-        return CallResult::handled_float(n ? n->pivot_x : 0.0f);
+        if (!n) return CallResult::handled_float(0.0f);
+        return CallResult::handled_float(n->pivot_x_set ? n->pivot_x
+                                                        : n->width / 2.0f);
     }
     if (m == "getPivotY") {
         const auto* n = find_node(ctx.receiver_id);
-        return CallResult::handled_float(n ? n->pivot_y : 0.0f);
+        if (!n) return CallResult::handled_float(0.0f);
+        return CallResult::handled_float(n->pivot_y_set ? n->pivot_y
+                                                        : n->height / 2.0f);
     }
     // ── S86 §F-NEW-170: View dimension query laws ─────────────────────────
     // AOSP View.getWidth(): "Returns the width of your view" — the LAYOUT
