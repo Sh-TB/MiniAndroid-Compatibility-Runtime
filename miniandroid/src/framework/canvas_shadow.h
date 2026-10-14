@@ -140,6 +140,16 @@ struct DrawOp {
     // paint. Compose's DrawCache.clear() = drawRect(Black, BlendMode.Clear)
     // is the canonical consumer (vector-icon cache reset).
     int blend_mode = -1;
+    // CONT-64 W2 (F-NEW-352): Paint color-filter (draw-time tint) snapshot
+    // for DRAW_BITMAP. AOSP law: Paint.setColorFilter(cf) applies the filter
+    // to EVERY pixel the paint draws — the canonical consumer is the icon
+    // tint (PorterDuffColorFilter(tint, SRC_IN) over a white glyph shape).
+    // tint_mode = PorterDuff.Mode ordinal (SRC_IN=5, SRC_ATOP=9,
+    // MULTIPLY=14, SCREEN=15, SRC_OVER=3, DST_OVER=4, DST_IN=6, DST_OUT=8,
+    // SRC_ATOP family); -1 = mode unresolved (honest no-tint).
+    bool has_tint = false;
+    uint32_t tint_color = 0;
+    int tint_mode = -1;
 
     // ── S68 §12 additions ────────────────────────────────────────────────
     // DRAW_BITMAP: heap object id of the android.graphics.Bitmap; source
@@ -275,6 +285,11 @@ public:
         auto it = paint_color_.find(paint_id);
         return it != paint_color_.end() ? it->second : 0xFF000000u;
     }
+    // CONT-64 W2 (F-NEW-352): the recorded ColorFilter heap object (0 = none).
+    uint32_t paint_colorfilter(uint32_t paint_id) const {
+        auto it = paint_colorfilter_.find(paint_id);
+        return it != paint_colorfilter_.end() ? it->second : 0;
+    }
     const std::vector<DrawOp>& ops() const { return ops_; }
 
 private:
@@ -344,6 +359,11 @@ private:
     // Consumed at record time (op.blend_mode) and honored at replay
     // (CLEAR = destination erase).
     std::map<uint32_t, int> paint_blendmode_;     // setBlendMode
+    // CONT-64 W2 (F-NEW-352): Paint color filter (the draw-time tint law).
+    // setColorFilter(ColorFilter) records the filter heap object id per
+    // paint; drawBitmap reads it at record time (op.tint_*) and the replay
+    // applies the PorterDuff color-filter math per pixel. 0 = none.
+    std::map<uint32_t, uint32_t> paint_colorfilter_;  // setColorFilter
     // S68 §12: canvas dimensions (real framebuffer — was hardcoded 1080x1920).
     int canvas_w_ = 1080, canvas_h_ = 1920;
     // FIX-5: android.graphics.Path recording (per heap object id).

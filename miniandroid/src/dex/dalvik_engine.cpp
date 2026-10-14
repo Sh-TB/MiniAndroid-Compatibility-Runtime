@@ -52085,6 +52085,55 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // CONT-64 W2 (F-NEW-352): PorterDuffColorFilter / BlendModeColorFilter
+    // ctor law — the draw-time tint capture. AOSP PorterDuffColorFilter.java:
+    // PorterDuffColorFilter(@ColorInt int color, PorterDuff.Mode mode) stores
+    // both; BlendModeColorFilter likewise (BlendMode wraps the same math).
+    // Without this law the framework-owned object was allocated EMPTY (the
+    // ctor args vanished) and Paint.setColorFilter recorded a filter whose
+    // color/mode could never be read back (the tint rendered as no-tint).
+    // The color-filter mode arrives as the SYNTHESIZED Mode/BlendMode enum
+    // object — read its ordinal (the F-NEW-351 enum-synthesis law writes
+    // ordinal on every framework enum instance).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name == "Landroid/graphics/PorterDuffColorFilter;" ||
+         class_name == "Landroid/graphics/BlendModeColorFilter;") &&
+        method == "<init>" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        heap_.has_object(args[0].object_id)) {
+        auto* fobj = heap_.get(args[0].object_id);
+        // args: [0]=this, [1]=color(int), [2]=mode(enum object)
+        if (fobj != nullptr && args.size() >= 3 &&
+            args[1].type == DalvikType::INT32) {
+            fobj->fields["__filter_color__"] =
+                DalvikValue::make_int(args[1].int_val);
+            int32_t mode_ord = -1;
+            if (args[2].type == DalvikType::OBJECT_REF &&
+                heap_.has_object(args[2].object_id) &&
+                heap_.get(args[2].object_id)
+                    ->fields.count("ordinal")) {
+                mode_ord = heap_.get(args[2].object_id)
+                               ->fields["ordinal"].int_val;
+            } else if (args[2].type == DalvikType::INT32) {
+                mode_ord = args[2].int_val;
+            }
+            fobj->fields["__filter_mode__"] =
+                DalvikValue::make_int(mode_ord);
+            static thread_local uint64_t f352_log = 0;
+            if (f352_log < 12) {
+                ++f352_log;
+                std::cerr << "[F352-FILTER] " << class_name
+                          << " obj#" << args[0].object_id
+                          << " color=0x" << std::hex << args[1].int_val
+                          << std::dec << " mode=" << mode_ord << std::endl;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // R-NEW-393 (S76): Drawable.setColorFilter(int, PorterDuff$Mode) —
     // record the tint on the drawable heap object, return void.
     // Oracle: AOSP Drawable.java setColorFilter(int color, Mode mode) —
