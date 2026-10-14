@@ -1,0 +1,147 @@
+{
+ "353": {
+  "body_head": "HTML5 / WebView \u2014 from white screen to real JS execution to FULL-GUI render\n\nKnowledge-transfer report, standard structure: bug-fix methodology \u2192 metric\n\ntables \u2192 rendered images \u2192 help-from-comments. Built on the evidence comments\n\nbelow (document-load verification \u2192 execution proof \u2192 generalization wave \u2192\n\nfull-GUI upgrade \u2192 the ONE-BIG-FIX). All text English; images small.\n\n1. The bug (and the traps that hid it)\n\nHTML5 games are WebView + JS packages. On this runtime they were white\n\nscreens (#94 me.lecaro.breakout, STATE-NOT-LOADED; audit reopen #74/#205\n\n\"requires a WebView\"). Three traps hid the real frontier, each exposed by an\n\nevidence comment: (a) the static-HTML trap \u2014 a header painted from HTML\n\ntext is NOT HTML5 execution (the 1.5 MB JS bundle had never run); (b) the\n\nexecutio",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "354": {
+  "body_head": "Native game family \u2014 gameplay GIFs, 5 engine-bug laws, verified 3-run titles + the honest audit + the S115 sweep\n\nKnowledge-transfer report, standard structure: bug-fix methodology \u2192 metric\n\ntables \u2192 rendered images/GIF \u2192 help-from-comments. Built on the evidence\n\ncomment below. All text English; images/GIFs linked and light.\n\n1. The story arc (S79 \u2192 S115)\n\n\n- S79\u2013S102 \u2014 interaction & media: canonical tap pipeline\n\n(--tap / --click-test: DOWN \u2192 pressed frame \u2192 UP \u2192 PerformClick \u2192 real\n\nDEX onClick), real GIF decode (stb), the Mini Browser, 10-game full-load\n\nwave, autonomous gameplay planners (BFS snake, 2048 25-move ~208 pts,\n\nMinicraft house-building).\n\n- S106 \u2014 the 5 REAL engine bugs (law-test fences, table below).\n\n- S107 \u2014 Compose pixels: dooz renders the real Compose MaterialTheme\n\ns",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "355": {
+  "body_head": "Forkgram (Telegram fork) Classic 12.10.8.0 \u2014 errors 32 \u2192 0, first fully clean execution, real login UI view tree\n\nKnowledge-transfer report, standard structure: bug-fix methodology \u2192 metric\n\ntables \u2192 rendered state (honest) \u2192 help-from-comments. Naming note: the APK\n\nis Forkgram Classic (org.forkgram.classic, vc 709208) \u2014 a community\n\nfork of Telegram (fully-buildable FOSS base); the ticket previously read\n\n\"Telegram\" and has been corrected. Built on the three evidence comments\n\nbelow. All text English.\n\n\n- 5 DEX files, ~41k classes, private JNI natives, private SQLite wrapper,\n\ndesugared coroutine/stream machinery.\n\n- Related: ticket [APP-016] org.forkgram.classic \u2014 compatibility report\u00a0#140 family (S107 measurement), worklog S108\u2013S115.\n\n\n1. Where it started (S107)\n\n44.5k log rows of real",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "356": {
+  "body_head": "Official Telegram on a from-scratch Android engine \u2014 the complete journey changelog (S117 \u2192 S119)\n\n\nWhat is this document? This is the complete first-person record of everything I myself did in this conversation chain \u2014 starting from the first-wave report (environment rebuild, taking official Telegram from its first-ever run to zero errors) all the way to the latest recorded achievement (the first render of the Dialogs main page). Everything you read here is work I performed, discovered, or built with my own hands. Nothing is copied from public GitHub knowledge or anyone else's documentation.\n\nWho is it for? For a programmer who has the repository but not the conversation history (git log cannot tell this story). If you read this file top to bottom you will know exactly: where each problem",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "357": {
+  "body_head": "Knowledge transfer 1/7 \u2014 master index: every claim, the honest white-screen status, and how to verify\n\nThis is issue 1 of 7 in a knowledge-transfer series. It is the complete record of the work I myself performed in one conversation chain on this repository, split into verifiable units so the maintainer can check every single claim against the code. Nothing in this series is copied from public knowledge; every code anchor was re-verified against the working tree on 2026-09-29 before posting.\n\nThe series:\n\n\n\n\nIssue\nTopic\nAttribution\n\n\n\n\n\n1/7 (this)\nMaster index, honest status, verification path\nmy work\n\n\n\n2/7\nWave 1 \u2014 official Telegram from first-ever run (5 errors) to rc=0: four root causes\nmy work\n\n\n\n3/7\nWave 2 \u2014 the G21 autopsy and seven AOSP measure laws (login tree on-screen)\nmy work\n\n",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "358": {
+  "body_head": "Knowledge transfer 2/7 \u2014 wave 1: official Telegram from first-ever run (5 errors) to rc=0\n\nIssue 2 of 7. This wave is my own work, performed in this conversation chain. Every code anchor below was re-verified in the working tree on 2026-09-29; the full diff of the session is in issue 6/7.\n\n\n1. The starting point: a rebuilt environment\n\nThe chain began in a fresh sandbox, so before any claim I rebuilt everything from zero:\n\n\n- Cloned the repository at the previous session's HEAD and installed the project.\n\n- Recompiled the runtime completely (make -j \u2192 success, 107 MB binary). One lesson re-learned here: a half-built object (manifest_reader.o) left over from an earlier interrupted compile was invisible to plain make \u2014 make clean plus a full rebuild solved it. Rule: before claiming \"it doesn",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "359": {
+  "body_head": "Knowledge transfer 3/7 \u2014 wave 2: the G21 autopsy and seven AOSP measure laws (the login tree comes on-screen)\n\nIssue 3 of 7. This wave is my own work. It answers one precise question from the 190-goal ladder (issue 7/7): goal G21 \u2014 the view tree gets built and measured, so why does nothing paint?\n\n\n1. The riddle: a clean run, a blank screen\n\nWith rc=0 and zero errors (end of wave 1, issue 2/7), the login screen was still essentially white. The question was not \"why does it crash\" \u2014 it was \"why does a fully-measured tree produce no visible content\".\n\n2. The autopsy \u2014 I dissected the tree instead of guessing\n\nI took a fresh official-Telegram run and reverse-engineered the emitted view_tree.json. Among hundreds of nodes, one anomaly stood out: the login screen's main content (node k0) was sit",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "360": {
+  "body_head": "Knowledge transfer 4/7 \u2014 the wave-3 record (with attribution) + the fresh-run proof on the current build\n\nIssue 4 of 7. This issue is deliberately split into two parts with different attribution, because the maintainer's trust depends on knowing exactly what is mine and what is recorded from elsewhere.\n\n\nPart A \u2014 the wave-3 five laws: recorded from the session chain, NOT in my working tree\n\nAttribution statement (read first): the wave that first brought up the Dialogs main page was performed in the session chain after my sandbox's last code change. Its record came to me through the session report; its commit d1f57356 is not present in my working tree \u2014 git cat-file -t d1f57356 fails there, and the working tree's diff (issue 6/7) contains none of the five laws below.\n\nCorroborating evidence",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "361": {
+  "body_head": "Knowledge transfer 5/7 \u2014 the tools: full source of all six reproduction scripts\n\nIssue 5 of 7. My own work. The reproduction protocol referenced across this series depends on six tools I built during the conversation chain. Their complete source follows so the maintainer can run every verification command without trusting any binary. All are env-flag driven; none contains Telegram-specific logic \u2014 they are generic engine tooling.\n\nThe forensic probe kit (env-gated, in the engine source)\n\n\n\n\nprobe\nwhat it shows\nwhy it existed\n\n\n\n\n\nmeasure/layout region probes\nwho wrote which value, and why\nexposed the real author of geometry values (the s109 traversal lambda)\n\n\n\nS81-STEP1/2/INK text bisection\nhow far text gets (shaping? layout? ink?)\nseparating shaping/layout/ink failures\n\n\n\nMINIANDROID_BLA",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "362": {
+  "body_head": "Knowledge transfer 6/7 \u2014 the complete engine diff of the session\n\nIssue 6 of 7. My own work. Every code change of my conversation chain, as one unified diff over the three files that actually changed. These are the laws told in issues 2/7 and 3/7: the active-cycle identity with payload ints, the UTF-16 unit counting, the collection-view size truth, the ArrayDeque routing, and the seven AOSP measure laws. Lines starting with a/ are the pre-session state, b/ is the current tree \u2014 every anchor quoted in this series can be found in the b/ side.\n\ndiff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp\nindex 7bc86ee..0650ac2 100755\n--- a/miniandroid/src/dex/dalvik_engine.cpp\n+++ b/miniandroid/src/dex/dalvik_engine.cpp\n@@ -53,6 +53,44 @@\n namespace miniandroid {",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "363": {
+  "body_head": "Knowledge transfer 7/7 \u2014 the 190-goal roadmap, the regression-gate method, and the honest frontier\n\nIssue 7 of 7. My own work. Three closing deliverables: the compass document of the whole chain, the method that kept every fix harmless, and the map of what is honestly not solved.\n\n1. The regression-gate method\n\nThe method repeated at every wave:\n\n\n- Three reference games from F-Droid (fresh fetches, never cached): breakout (HTML5 in WebView), ballbreak, dooz.\n\n- Before each wave: a full run + hashing of outputs (final frame, traces, run summary) = the anchor.\n\n- After each wave: the same run, same conditions, byte-for-byte comparison.\n\n- The honesty rule: a differing hash means either the fix is not generic (go back and fix it right) or a deliberate law change affected that app (as breakou",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "364": {
+  "body_head": "Authoritative execution contract\n\nThis Issue is now the active master request for the MiniAndroid compatibility campaign. All Coders/Agents may contribute here.\n\nMandatory rule\n\nDo not declare this request complete merely because code was changed or tests passed. Completion requires:\n\n\n- execute every applicable requirement below;\n\n- record evidence/results in comments;\n\n- unresolved items remain explicitly OPEN/PARTIAL/BLOCKED/PENDING;\n\n- a final reviewer must verify the evidence before the issue may be closed.\n\n\nWork protocol\n\nRead first: CONSTITUTION_V2.md, current worklog/state/mission/backlog, compatibility campaign docs, previous request ledgers, and relevant upstream/vendor sources.\n\nOperate:\n\nOBSERVE \u2192 MEASURE \u2192 UNDERSTAND \u2192 HYPOTHESIZE \u2192 EXPERIMENT \u2192 IMPLEMENT \u2192 VERIFY \u2192 CONTINUE\n",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "365": {
+  "body_head": "MASTER FORENSIC VERIFICATION \u2014 ALL PRIOR REQUESTS / CLAIMED COMPLETIONS / MISSING EVIDENCE\n\nPurpose\n\nThis Issue is a forensic verification campaign, not another ordinary implementation request.\n\nOver the last several days there have been a very large number of MiniAndroid requests, sub-requests, issues, micro-gap tickets, campaign prompts, Telegram goals, runtime/root-cause tasks, UI/homepage tasks, repository-hygiene tasks, upstream-reuse tasks, storage/loading tasks, graphics/rendering tasks, lifecycle/component tasks, regression tasks, documentation tasks, and evidence tasks.\n\nMany items were reported as DONE / FIXED / COMPLETE / VERIFIED, but the current problem is that the claims are not sufficiently independently auditable.\n\nYour job is therefore to reconstruct the entire recent requ",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "366": {
+  "body_head": "DIFFERENTIAL EXECUTION CAMPAIGN \u2014 WHY 4 APPS WORK AND 5 STAY WHITE\n\nPurpose\n\nThis is the focused continuation of the previous loading/storage campaign. That campaign proved important installed-APK, File/Asset/Stream/FD infrastructure, but it did NOT prove why some APKs reach real UI while others remain white.\n\nMandatory question:\n\nWhy does the same MiniAndroid runtime successfully render some installed APKs while other correctly installed APKs remain white/blank?\n\nLaws\n\nBefore execution read and list: Constitution/current runtime laws; SOURCE \u2192 ALGORITHM \u2192 SEMANTIC LAW \u2192 TEST \u2192 RUNTIME TARGET; no package-specific hacks; installed-APK identity; canonical path/package isolation; provenance; runtime trace + ViewTree + state-change + screenshot evidence; current-HEAD truth; 3-run reproducibili",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "367": {
+  "body_head": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 1/3 \u2014 50 HIGH/HARD CASES\n\nThis is the hardest/highest-risk batch: historical Telegram/login/runtime achievements, genuine gameplay/EXEC cases, crash/Compose/theme frontier, and the first text/layout/storage families.\n\nFrozen membership (50)\n\n\n- EXP-064 \u2014 REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)\u00a0#1\n\n- EXP-065 \u2014 Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)\u00a0#2\n\n- EXP-066 \u2014 Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)\u00a0#3\n\n- EXP-067 \u2014 Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)\u00a0#4\n\n- EXP-068 \u2014 Generic View inheritance + Floating Next button (semantic superclass resolution)\u00a0#5\n\n- EXP-069 \u2014 Generic text input ",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "368": {
+  "body_head": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 2/3 \u2014 50 MEDIUM CASES\n\nThis batch covers the remaining storage/state, animation, network, resource/asset, text/font, layout/geometry, vector/state-list, and graphics cases.\n\nFrozen membership (50)\n\n\n- [MG-173] boolean persistence \u2014 storage/state (PARTIAL)\u00a0#252\n\n- [MG-174] int persistence \u2014 storage/state (PARTIAL)\u00a0#253\n\n- [MG-175] long persistence \u2014 storage/state (PARTIAL)\u00a0#254\n\n- [MG-176] float persistence \u2014 storage/state (PARTIAL)\u00a0#255\n\n- [MG-177] string persistence \u2014 storage/state (PARTIAL)\u00a0#256\n\n- [MG-178] editor apply \u2014 storage/state (PARTIAL)\u00a0#257\n\n- [MG-179] editor commit \u2014 storage/state (PARTIAL)\u00a0#258\n\n- [MG-180] remove \u2014 storage/state (PARTIAL)\u00a0#259\n\n- [MG-181] clear \u2014 storage/state (PARTIAL)\u00a0#260\n\n- [MG-182] contains \u2014 storage/state (PARTIAL)\u00a0",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "369": {
+  "body_head": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 3/3 \u2014 8 FINAL CASES\n\nFinal fixed batch of the currently discovered CLOSED non-PR issues. These are the remaining animation/input/audio/graphics cases after the two larger batches.\n\nFrozen membership (8)\n\n\n- [MG-209] canvas rotation \u2014 graphics/render (PARTIAL)\u00a0#317\n\n- [MG-210] nested transforms \u2014 graphics/render (PARTIAL)\u00a0#318\n\n- [MG-146] event cancellation \u2014 input (PARTIAL)\u00a0#319\n\n- [MG-149] touch outside bounds \u2014 input (PARTIAL)\u00a0#321\n\n- [MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)\u00a0#323\n\n- [MG-231] SoundPool initialization \u2014 audio (PARTIAL)\u00a0#331\n\n- [MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)\u00a0#332\n\n- [MG-233] resource audio loading \u2014 audio (PARTIAL)\u00a0#333\n\n\nPermanent batch rule\n\nThis Issue is one fixed batch in the CLOSED-ISSUE FORE",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "370": {
+  "body_head": "INSTALL-ENVIRONMENT CAPABILITY GATE\n\nMission\n\nComplete and verify the environment an agent needs to inspect an Android APK after installation, as if it had access to the installed Android environment.\n\nThis is GATE A: INSTALL/INSPECTION, not full application execution or visual compatibility.\n\nTarget:\n\nAPK -> INSTALL -> PACKAGE IDENTITY -> SANDBOX -> FILES/RESOURCES/ASSETS/DEX/LIBS/DB/PREFS/MANIFEST/PROVIDERS -> INSPECTION -> PROVENANCE -> EVIDENCE\n\nThe installed-package inspection layer must remain useful even when the application fails during lifecycle, Compose, native, WebView, rendering, or any other later stage.\n\nLaws\n\n\n- Read project laws first and record them.\n\n- Source -> AOSP law -> semantic law -> implementation -> probe -> installed APK proof.\n\n- Generic only; no package-specifi",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "371": {
+  "body_head": "MASTER CONTINUATION \u2014 VERIFY #364\u2013#369 + EXECUTE #370\n\nMission\n\nTreat every prior Coder completion as a CLAIM until independently re-verified at the CURRENT remote HEAD.\n\nCurrent remote tip observed before this request:\n\n820148c340f229854b124f4440eb96656c3c5654\n\nDo NOT assume older reported HEADs (edecae3e, abb57444, 428bc0bc, 9c3dc4d1) are current.\n\nAuthoritative scope:\n\n\n- MASTER EXECUTION REQUEST \u2014 Upstream Reuse + Complete Compatibility Campaign\u00a0#364 Upstream Reuse + Complete Compatibility Campaign\n\n- MASTER FORENSIC VERIFICATION \u2014 ALL PRIOR REQUESTS / CLAIMED COMPLETIONS / MISSING EVIDENCE\u00a0#365 Master Forensic Verification\n\n- DIFFERENTIAL EXECUTION \u2014 Why 4 apps work and 5 installed apps stay white\u00a0#366 Differential Execution\n\n- CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 1/3 \u2014 50 HIGH/HARD ",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "372": {
+  "body_head": "SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT \u2014 BLACK / WHITE / PARTIAL / LOAD FAILURES\n\nMission\n\nThis issue is a supplementary deep root-cause campaign for MiniAndroid Compatibility Runtime.\n\nIt must complement Issue #371 and must NOT become a duplicate of the existing root registry.\n\nThe objective is broader than Telegram, games, WebView, EGL, or any one app:\n\n\nFor any installed Android APK that launches white, black, partially, freezes, loads incorrectly, or fails before meaningful UI, determine the FIRST semantic divergence and fix the GENERIC Android law that caused it.\n\n\nExternal research was cross-checked against MiniAndroid's current root registry/worklist. Only genuinely new or structurally under-covered contracts belong here.\n\nRecent external evidence is especially relevant for:\n\n\n- ABI",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "373": {
+  "body_head": "ANDROID ENVIRONMENT COMPATIBILITY MATRIX \u2014 OS / API / CPU / ABI / HARDWARE / SOFTWARE PREREQUISITES\n\nMission\n\nThis is the generic environment/prerequisite campaign to run with #364\u2013#372.\n\nCentral question:\n\nWhen an APK fails, is MiniAndroid missing an Android semantic/runtime capability, or is the APK asking for an Android OS/API level, ABI/CPU, native library, system service, graphics/media capability, permission, provider, device configuration, or hardware feature that the current environment does not provide?\n\nDo not guess. Build a machine-readable prerequisite model and prove it against real APKs.\n\nDo not use prerequisites as an excuse to declare apps unsupported. First determine whether the capability is already present, can be supplied generically, can be reused from OSS, or is a gen",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "374": {
+  "body_head": "BASE ANDROID FOUNDATION \u2014 COMPLETE PLATFORM CONTRACT AUDIT\n\nPURPOSE\n\nThis is a foundation task, broader than #373. Do NOT keep fixing individual white/black/partial APK failures before the Android base contract is complete enough to understand an unknown APK.\n\nRequired chain: APK -> package -> install -> identity -> permissions -> sandbox -> storage -> Context -> system services -> Binder/IPC -> components -> lifecycle -> Intent resolution -> resources/configuration -> main thread -> window/View -> graphics/surface -> input -> network -> media -> native/ABI -> persistence -> verification.\n\nNON-NEGOTIABLE\n\nDo not make apps run by granting every permission, advertising every ABI, returning every feature as supported, returning fake system services, bypassing SecurityException, giving apps ro",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "375": {
+  "body_head": "COMPLETE FOLLOW-THROUGH REQUEST \u2014 DO NOT LEAVE PRIOR OR NEW GAPS UNRESOLVED\n\nThis is the follow-through request after the latest #371/#372/#373/#374 campaign results. Treat ALL previous requirements, newly discovered roots, partials, blockers, and next steps as one reconciled worklist.\n\n0. PRIMARY RULE\n\nDo NOT stop at the latest reported success.\n\nRe-read and reconcile:\n\n\n- MASTER CONTINUATION \u2014 Independent verification #364\u2013#369 + full execution #370\u00a0#371\n\n- SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT \u2014 330-point black/white/partial/load audit\u00a0#372\n\n- ENV-PREREQUISITES \u2014 Android API / CPU / ABI / hardware / software compatibility matrix\u00a0#373\n\n- BASE-ANDROID \u2014 Complete Android Platform Contract Foundation Audit\u00a0#374\n\n- current constitution/laws\n\n- root_registry.json\n\n- worklog/campaign state\n\n-",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "376": {
+  "body_head": "EXTERNAL ROOT CENSUS \u2014 Deep multilingual root discovery for MiniAndroid\n\nMission\n\nCreate one authoritative, continuously updated census of generic Android compatibility/runtime root causes that can explain APK failure, white/black/partial screens, wrong UI, missing state, native failures, silent stalls, or false-positive execution.\n\nThis is NOT an APK-by-APK test list. Find root families already discovered by AOSP engineers, emulator projects, Waydroid/Anbox/Redroid/WSA, ART/Dalvik, graphics/runtime projects, AndroidX/Compose/WebView, app/framework issue trackers, academic work, Chinese/Russian/English/Japanese/Korean communities, GitHub issues/comments/PRs, source code, and technical forums \u2014 then map them to MiniAndroid.\n\nCRITICAL: Do NOT make thousands of APKs rediscover the same root.\n",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "377": {
+  "body_head": "CONT-6 \u2014 External Root Knowledge Base Forensic Audit + Runtime Fan-out Validation\n\nCanonical external knowledge snapshot\n\nThe latest supplied archive has now been independently inspected.\n\nArchive: MiniAndroid_Root_Audit_Archive (1).zip\n\nArchive SHA-256: d717e9c745609fdf3ca11eb5d60649910089c9e2ca1d2ad942c22f4712ad7931\n\nArchive size: 2,171,810 bytes\n\nAudit date: 2026-10-05\n\nAudited MiniAndroid HEAD inside archive: f8d4088b9384b603ce5a903eefe037412eb104d3\n\nCurrent project HEAD at CONT-6 creation: 1c2ccdfd24957cef8affc4989dd439ccb30d7276\n\nThe latest archive DOES contain the claimed 5,434/5,976 dataset\n\nIndependent count of download/MiniAndroid_Root_Knowledge_Base.jsonl:\n\n\n- 5,976 total records\n\n- 5,434 VERIFIED-NEW\n\n- 274 VERIFIED-EXISTING\n\n- 266 PARTIAL-EXISTING\n\n- 2 REJECTED\n\n- 40 domain JS",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "378": {
+  "body_head": "CONT-7 \u2014 CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMPOSE/R8 CLASS-IDENTITY\n\nMission\n\nReconcile the current GitHub state and all recent campaign claims before coding, then expand the real-APK corpus with multiple independent x86/x86_64 or pure-DEX apps and games. Investigate whether R8-renamed Compose class identity is a genuine generic root. Keep the Agent Skill operational and prevent it from being forgotten.\n\n1. LAW-001 FIRST TEST \u2014 ABI SCOPE\n\n\n- PURE_DEX/no native libraries: IN SCOPE.\n\n- x86 native: IN SCOPE.\n\n- x86_64 native: IN SCOPE.\n\n- mixed x86/x86_64 + ARM: IN SCOPE through the executable x86/x86_64 path.\n\n- ARM-only, ARM64-only, or other-ABI-only: ABI_OUT_OF_SCOPE / SKIP.\n\n- ABI check MUST happen before install/launch.\n\n- ARM translation is deferred and must not ",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "379": {
+  "body_head": "CONT-9 / WAVE 5 \u2014 Compose Continuation Root + External KB Runtime Fan-out\n\n0. START HERE \u2014 DO NOT DECLARE SUCCESS FROM DOOZ FALLBACK\n\nCurrent CONT-8 evidence is accepted only as a refined runtime frontier.\n\nDooz is NOT yet REAL_APP_CONTENT:\n\n\n- F-NEW-260 is a hardcoded/source-grounded visual fallback.\n\n- Its 25 draw ops are injected by C++.\n\n- The fallback MUST be disabled/bypassed for compatibility verdicts.\n\n- Do not use the fallback screenshot as proof of Compose compatibility.\n\n- Keep it only as a SOURCE-GROUNDED VISUAL ORACLE.\n\n\nCurrent refined Dooz frontier from CONT-8:\n\n\n- AndroidComposeView draw path is healthy.\n\n- Native View/ViewGroup ladder is color-exact and framebuffer-proven.\n\n- Exactly one LayoutNode was inserted.\n\n- One Composer + one Applier were created.\n\n- UiApplier inse",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "380": {
+  "body_head": "CONT-11 / WAVE 7 \u2014 Kotlin/stdlib semantic backend investigation + Compose draw frontier\n\n0. PURPOSE\n\nDo NOT assume the remaining Dooz/Compose blocker is \u201cjust another Kotlin root\u201d.\n\nThe latest CONT-10 evidence proves two generic Kotlin/collection semantic failures:\n\n\n- F-NEW-259: Kotlin ArrayDeque inherits Kotlin AbstractList.iterator(); MiniAndroid's host/shadow iterator resolved size()/get() by name only, so R8-renamed overrides were invisible.\n\n- F-NEW-259b: java.util.ArrayList.addAll(Collection) was missing and silently became a no-op.\n\n\nAfter those fixes, real Compose navigation materializes multiple LayoutNodes, but drawing still stops before framebuffer because the AndroidCanvas bridge is never constructed.\n\nThis wave must answer a larger question before adding many more handwritten",
+  "num_blocks": 1,
+  "comments": []
+ },
+ "381": {
+  "body_head": "Unverified Claims \u2014 Complete Runtime Evidence Audit\n\nPurpose\n\nThis issue is the complete evidence audit for every claim made during the blank/white/black-screen investigation.\n\nEvery numbered claim must be independently verified, rejected, or explicitly left pending. A passing unit test is not proof that the real App path is fixed. A hypothesis must not be treated as a fact.\n\nRequired record for EVERY claim\n\nStatus: VERIFIED / REJECTED / PARTIAL / BLOCKED / PENDING / SUPERSEDED\n\nSource: exact file + function/class + exact or approximate line\n\nTest: exact test file/name or runtime reproduction\n\nBefore: observed pre-fix result\n\nAfter: observed post-fix result\n\nEvidence: runtime trace, object ID, screenshot SHA, ViewTree, metrics, or commit\n\nReason: why the evidence proves or disproves the cl",
+  "num_blocks": 1,
+  "comments": []
+ }
+}

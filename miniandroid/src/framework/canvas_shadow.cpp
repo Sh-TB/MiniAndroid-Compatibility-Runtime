@@ -33,6 +33,37 @@ float arg_as_float(const CallContext& ctx, size_t i, float def = 0.f) {
     return def;
 }
 
+// ── F-NEW-351: bitmap-argument resolution with the WRAPPER-UNWRAP law ───
+// AOSP: android.graphics.Bitmap-consuming APIs (Canvas bind + drawBitmap
+// family) take a Bitmap. Compose hands the engine an ImageBitmap WRAPPER
+// (AndroidImageBitmap holds the Bitmap in an instance field), and any
+// future app wrapper class shares the shape. When the arg object does not
+// resolve DIRECTLY in the BitmapStore, scan its heap fields (bounded 2
+// levels) for an object-ref field that does. Generic: no compose class
+// knowledge — BitmapStore membership is the identity law (the R-NEW-360
+// field-probing API, the same mechanism the wrapper-collection laws use).
+static uint32_t resolve_bitmap_arg(HeapAllocator* heap, uint32_t id) {
+    if (id == 0) return 0;
+    if (BitmapStore::instance().get(id) != nullptr) return id;
+    if (heap == nullptr) return 0;
+    uint32_t cur = id;
+    for (int level = 0; level < 2; ++level) {
+        const std::vector<std::string> names =
+            heap->get_object_field_names(cur);
+        uint32_t fallback = 0;   // first non-bitmap object field (chain walk)
+        for (const auto& name : names) {
+            uint32_t ref = 0;
+            if (!heap->get_object_ref_field(cur, name, ref) || ref == 0)
+                continue;
+            if (BitmapStore::instance().get(ref) != nullptr) return ref;
+            if (fallback == 0) fallback = ref;
+        }
+        if (fallback == 0) return 0;
+        cur = fallback;
+    }
+    return 0;
+}
+
 // ── CYCLE-E: Path geometry helpers ──────────────────────────────────────
 using PointList = std::vector<std::pair<float, float>>;
 
@@ -262,6 +293,118 @@ void CanvasShadow::warn_noop(const std::string& cls, const std::string& op) {
               << " effect=accepted_not_reproduced" << std::endl;
 }
 
+// ── F-NEW-345: bitmap-target canvases (AOSP graphics/Canvas.java law) ─────
+// CanvasShadow owns a fwd-declared BitmapFont for bitmap-canvas flushes; the
+// engine's own replay font is a frame-local stack object (execution_engine
+// render stage), so a stable owned instance with the same default law is the
+// correct standalone equivalent.
+CanvasShadow::~CanvasShadow() = default;
+
+// AOSP Canvas(Bitmap)/setBitmap: bind the canvas object to the bitmap's
+// pixel buffer. The sub-recorder starts with FRESH canvas state (AOSP: a new
+// Canvas has an identity matrix and a full-bitmap clip) sized to the bitmap.
+void CanvasShadow::bind_bitmap_canvas(uint32_t canvas_id, uint32_t bitmap_id) {
+    StoredBitmap* sb = BitmapStore::instance().get_mut(bitmap_id);
+    if (!sb || sb->width <= 0 || sb->height <= 0) {
+        // Honest diagnostic: binding to an unknown/zero-sized bitmap cannot
+        // rasterize (AOSP Canvas(Bitmap) throws on a recycled bitmap).
+        warn_noop("Canvas", "bindBitmap(unresolved-or-empty)");
+        bitmap_target_.erase(canvas_id);
+        bitmap_recorders_.erase(canvas_id);
+        return;
+    }
+    if (!sb->has_pixels) {
+        // createBitmap law (bitmap_shadow.h): zero-filled = transparent black.
+        sb->rgba.assign((size_t)sb->width * sb->height * 4, 0);
+        sb->has_pixels = true;
+    }
+    bitmap_target_[canvas_id] = bitmap_id;
+    auto& rec = bitmap_recorders_[canvas_id];
+    if (!rec) rec = std::make_unique<CanvasShadow>();
+    rec->init(heap_);
+    rec->begin_frame();                       // fresh state; capturing_ = true
+    rec->set_canvas_size(sb->width, sb->height);
+}
+
+// Paint/Path state lives on the singleton shadow (Paint and Path dispatch
+// never route to the sub-recorder — only Canvas methods do). Mirror it into
+// the sub-recorder before each delegated op so bitmap-canvas draws resolve
+// the app's real paint colors/styles and path geometry.
+void CanvasShadow::sync_shared_state(CanvasShadow& rec) const {
+    rec.paint_color_ = paint_color_;
+    rec.paint_stroke_w_ = paint_stroke_w_;
+    rec.paint_style_ = paint_style_;
+    rec.paint_text_size_ = paint_text_size_;
+    rec.paint_fake_bold_ = paint_fake_bold_;
+    rec.paint_filter_bitmap_ = paint_filter_bitmap_;
+    rec.paint_blendmode_ = paint_blendmode_;   // F-NEW-351: blend law parity
+    rec.paint_colorfilter_ = paint_colorfilter_;  // F-NEW-352: tint parity
+    rec.paths_ = paths_;
+}
+
+// Eager rasterization (AOSP law): replay the ops recorded since the last
+// flush into a temp SoftwareCanvas over the bitmap's pixels, then clear the
+// op list while KEEPING the sub-recorder's matrix/clip/save state (the app's
+// canvas state persists across ops on the same Canvas object).
+void CanvasShadow::flush_bitmap_canvas(CanvasShadow& rec, uint32_t bitmap_id) {
+    if (rec.ops_.empty()) return;
+    StoredBitmap* sb = BitmapStore::instance().get_mut(bitmap_id);
+    if (!sb || sb->width <= 0 || sb->height <= 0) return;
+    const int bw = sb->width, bh = sb->height;
+    const size_t n = (size_t)bw * bh;
+    if (sb->rgba.size() < n * 4) sb->rgba.resize(n * 4, 0);
+
+    // Copy-in: StoredBitmap bytes are R,G,B,A (premultiplied OFF) — the same
+    // layout FrameBuffer's RGBA raster holds (see drawBitmap(int[]) variant).
+    renderer::FrameBuffer fb(bw, bh);
+    {
+        auto& px = fb.get_pixels_mut();
+        for (size_t i = 0; i < n; ++i) {
+            const uint8_t* s = &sb->rgba[i * 4];
+            px[i] = renderer::RGBA{s[0], s[1], s[2], s[3]};
+        }
+    }
+    renderer::SoftwareCanvas sc(&fb);
+    if (!flush_font_) flush_font_ = std::make_unique<renderer::BitmapFont>();
+    // Bitmap-target replay: full-bitmap clip baseline (0,0,bw,bh) — the same
+    // CANVAS-GEOMETRY clause the view path applies to its own bounds.
+    rec.replay(sc, *flush_font_, 0.f, 0.f, (float)bw, (float)bh);
+    // replay() ends with capturing_ = false (view-frame lifecycle law: the
+    // capture closes when the frame replays). A bitmap-target canvas is NOT
+    // a frame — it stays live for its whole object lifetime (AOSP Canvas:
+    // usable until release()), so re-arm the sub-recorder after every flush.
+    rec.capturing_ = true;
+    rec.ops_.clear();                         // state persists, ops consumed
+
+    // Copy-out: the bitmap now holds the rasterized result — the next
+    // drawBitmap(view) / getPixel / decode-style read sees real pixels.
+    const std::vector<renderer::RGBA>& out = fb.get_pixels();
+    for (size_t i = 0; i < n; ++i) {
+        uint8_t* d = &sb->rgba[i * 4];
+        d[0] = out[i].r; d[1] = out[i].g; d[2] = out[i].b; d[3] = out[i].a;
+    }
+    sb->has_pixels = true;
+}
+
+// Route one op arriving on a bitmap-target canvas: delegate to the bound
+// sub-recorder (its own matrix/clip/save stack), then flush whatever new
+// drawable ops it recorded. State-only ops (save/translate/clipRect/…)
+// record nothing and keep their effect in the sub-recorder's state.
+CallResult CanvasShadow::dispatch_bitmap_op(const CallContext& ctx,
+                                            uint32_t canvas_id,
+                                            uint32_t bitmap_id) {
+    const auto rec_it = bitmap_recorders_.find(canvas_id);
+    if (rec_it == bitmap_recorders_.end() || !rec_it->second)
+        return CallResult::not_handled();
+    CanvasShadow& rec = *rec_it->second;
+    sync_shared_state(rec);
+    const size_t before = rec.ops_.size();
+    const CallResult r = rec.dispatch(ctx);
+    if (rec.ops_.size() != before)
+        flush_bitmap_canvas(rec, bitmap_id);
+    return r;
+}
+
 size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                             renderer::BitmapFont& font,
                             float left, float top, float w, float h) {
@@ -396,6 +539,45 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
             case DrawOp::Kind::DRAW_RECT: {
                 const float x1 = left + op.x, y1 = top + op.y;
                 const float x2 = left + op.w, y2 = top + op.h;
+                // F-NEW-351: BlendMode.CLEAR = destination ERASE (Skia
+                // BlendMode::kClear — dst replaced with transparent; compose
+                // DrawCache.clear() resets the vector cache with this).
+                if (op.blend_mode == 0 && !op.stroke) {
+                    const int ex0 = std::max((int)std::ceil(x1), (int)cl_);
+                    const int ex1 = std::min((int)std::floor(x2), (int)cr_);
+                    const int ey0 = std::max((int)std::ceil(y1), (int)ct_);
+                    const int ey1 = std::min((int)std::floor(y2), (int)cb_);
+                    {
+                        static thread_local uint64_t er_n = 0;
+                        if (er_n++ < 8)
+                            std::cerr << "[F351-ERASE] rect(" << ex0 << ","
+                                      << ey0 << ")-(" << ex1 << "," << ey1
+                                      << ") opclip=" << op.clip_l << ","
+                                      << op.clip_t << "," << op.clip_r << ","
+                                      << op.clip_b << " devclip=" << cl_
+                                      << "," << ct_ << "," << cr_ << "," << cb_
+                                      << std::endl;
+                    }
+                    for (int py = ey0; py < ey1; ++py)
+                        for (int px = ex0; px < ex1; ++px)
+                            canvas.fb().clear_pixel(px, py);
+                    {
+                        static thread_local uint64_t erchk_n = 0;
+                        if (erchk_n++ < 2 && ex1 > ex0 && ey1 > ey0) {
+                            renderer::RGBA chk =
+                                canvas.fb().get_pixel((ex0 + ex1) / 2,
+                                                      (ey0 + ey1) / 2);
+                            std::cerr << "[F351-ERASE-CHK] center=("
+                                      << (ex0 + ex1) / 2 << ","
+                                      << (ey0 + ey1) / 2 << ") readback="
+                                      << (int)chk.r << "," << (int)chk.g
+                                      << "," << (int)chk.b << "," << (int)chk.a
+                                      << " fb=" << (const void*)&canvas.fb()
+                                      << std::endl;
+                        }
+                    }
+                    break;
+                }
                 if (op.stroke) {
                     canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
                     canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
@@ -544,6 +726,24 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 }
                 const int y0 = std::max((int)std::floor(min_y), 0);
                 const int y1 = (int)std::ceil(max_y);
+                // F-NEW-351: BlendMode.CLEAR spans erase the destination
+                // (Skia kClear) — compose DrawCache clears the vector cache
+                // with a full-bounds CLEAR rect; when the vector paths are
+                // themselves recorded with CLEAR the spans erase too.
+                const bool path_erase = (op.blend_mode == 0);
+                auto fill_span = [&](float xa, float ya, float xb, float yb) {
+                    if (!path_erase) {
+                        canvas.draw_rect(xa, ya, xb, yb, c);
+                        return;
+                    }
+                    const int ex0 = std::max((int)std::ceil(xa), (int)cl_);
+                    const int ex1 = std::min((int)std::floor(xb), (int)cr_);
+                    const int ey0 = std::max((int)std::ceil(ya), (int)ct_);
+                    const int ey1 = std::min((int)std::floor(yb), (int)cb_);
+                    for (int py = ey0; py < ey1; ++py)
+                        for (int px = ex0; px < ex1; ++px)
+                            canvas.fb().clear_pixel(px, py);
+                };
                 // CYCLE-E: direction-aware crossings for the winding rule.
                 std::vector<std::pair<float, int>> xs;
                 const bool winding_rule = (op.fill_type == 0);
@@ -579,21 +779,21 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                                 winding += cr.second;
                                 if (winding == 0) {
                                     if (cr.first - span_start >= 0.5f)
-                                        canvas.draw_rect(span_start, (float)y,
-                                                         cr.first, (float)y + 1, c);
+                                        fill_span(span_start, (float)y,
+                                                  cr.first, (float)y + 1);
                                     inside = false;
                                 }
                             }
                         }
                         if (inside && xs.back().first - span_start >= 0.5f)
-                            canvas.draw_rect(span_start, (float)y,
-                                             xs.back().first, (float)y + 1, c);
+                            fill_span(span_start, (float)y,
+                                      xs.back().first, (float)y + 1);
                     } else {
                         // Even-odd: fill between crossing pairs.
                         for (size_t i = 0; i + 1 < xs.size(); i += 2) {
                             float xa = xs[i].first, xb = xs[i + 1].first;
                             if (xb - xa < 0.5f) continue;
-                            canvas.draw_rect(xa, (float)y, xb, (float)y + 1, c);
+                            fill_span(xa, (float)y, xb, (float)y + 1);
                         }
                     }
                 }
@@ -645,6 +845,77 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 int dw = op.has_dst ? (op.w > 0 ? (int)op.w : sw) : sw;
                 int dh = op.has_dst ? (op.h > 0 ? (int)op.h : sh) : sh;
                 if (sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) break;
+                // CONT-64 W2 (F-NEW-352): the PorterDuff color-filter law —
+                // per-pixel tint applied to the SOURCE pixels before the
+                // blend. AOSP PorterDuffColorFilter(color, mode): SRC = the
+                // filter color, DST = the drawn pixel. The canonical
+                // consumer is the icon tint (SRC_IN over a glyph shape: the
+                // tint's RGB replaces the shape's RGB, the shape's alpha
+                // survives). Mode ordinals = AOSP PorterDuff.Mode.values()
+                // order; unknown/unresolved modes = honest no-tint.
+                auto tint_apply = [&](renderer::RGBA dst) -> renderer::RGBA {
+                    const int sr = (op.tint_color >> 16) & 0xFF;
+                    const int sg = (op.tint_color >> 8) & 0xFF;
+                    const int sb = op.tint_color & 0xFF;
+                    const int sa = (op.tint_color >> 24) & 0xFF;
+                    const int dr = dst.r, dg = dst.g, db = dst.b, da = dst.a;
+                    int orr, og, ob, oa;
+                    switch (op.tint_mode) {
+                        case 5:  // SRC_IN: out = src * dst.a
+                            orr = sr * da / 255; og = sg * da / 255;
+                            ob = sb * da / 255; oa = sa * da / 255;
+                            break;
+                        case 9:  // SRC_ATOP: src over dst where dst opaque
+                            orr = (sr * da + dr * (255 - da)) / 255;
+                            og = (sg * da + dg * (255 - da)) / 255;
+                            ob = (sb * da + db * (255 - da)) / 255;
+                            oa = da;
+                            break;
+                        case 14:  // MULTIPLY
+                            orr = sr * dr / 255; og = sg * dg / 255;
+                            ob = sb * db / 255;
+                            oa = sa + da - sa * da / 255;
+                            break;
+                        case 15:  // SCREEN
+                            orr = 255 - (255 - sr) * (255 - dr) / 255;
+                            og = 255 - (255 - sg) * (255 - dg) / 255;
+                            ob = 255 - (255 - sb) * (255 - db) / 255;
+                            oa = sa + da - sa * da / 255;
+                            break;
+                        case 3:  // SRC_OVER (plain tint over the shape)
+                            orr = sr * sa / 255 + dr * (255 - sa) / 255;
+                            og = sg * sa / 255 + dg * (255 - sa) / 255;
+                            ob = sb * sa / 255 + db * (255 - sa) / 255;
+                            oa = sa + da * (255 - sa) / 255;
+                            break;
+                        case 4:  // DST_OVER: the drawn pixel wins where opaque
+                            orr = dr * da / 255 + sr * (255 - da) / 255;
+                            og = dg * da / 255 + sg * (255 - da) / 255;
+                            ob = db * da / 255 + sb * (255 - da) / 255;
+                            oa = da + sa * (255 - da) / 255;
+                            break;
+                        case 6:  // DST_IN: keep dst inside src alpha
+                            orr = dr * sa / 255; og = dg * sa / 255;
+                            ob = db * sa / 255; oa = da * sa / 255;
+                            break;
+                        case 8:  // DST_OUT
+                            orr = dr * (255 - sa) / 255;
+                            og = dg * (255 - sa) / 255;
+                            ob = db * (255 - sa) / 255;
+                            oa = da * (255 - sa) / 255;
+                            break;
+                        case 1:  // SRC: the tint replaces the pixel
+                            orr = sr; og = sg; ob = sb; oa = sa;
+                            break;
+                        default:  // honest no-tint for unimplemented modes
+                            return dst;
+                    }
+                    return renderer::RGBA(
+                        (uint8_t)std::min(255, std::max(0, orr)),
+                        (uint8_t)std::min(255, std::max(0, og)),
+                        (uint8_t)std::min(255, std::max(0, ob)),
+                        (uint8_t)std::min(255, std::max(0, oa)));
+                };
                 if (op.has_affine && (op.affine.b != 0.f || op.affine.c != 0.f ||
                                       op.affine_exact)) {
                     // Rotated/skewed dst: inverse-map per-pixel sampling.
@@ -665,6 +936,10 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                             const uint8_t* p = &sb->rgba[((size_t)spy * sb->width + spx) * 4];
                             renderer::RGBA src(p[0], p[1], p[2],
                                                (uint8_t)std::min(255.f, p[3] * alpha));
+                            // F-NEW-352: the draw-time tint (SRC = the filter
+                            // color, DST = the sampled bitmap pixel).
+                            if (op.has_tint && op.tint_mode >= 1)
+                                src = tint_apply(src);
                             if (!canvas.has_clip() ||
                                 (pxi >= (int)cl_ && pxi < (int)cr_ && pyi >= (int)ct_ && pyi < (int)cb_)) {
                                 renderer::RGBA dstc = canvas.fb().get_pixel(pxi, pyi);
@@ -673,8 +948,27 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                         }
                     }
                 } else {
-                    canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
-                                             sx, sy, sw, sh, dx, dy, dw, dh);
+                    if (op.has_tint && op.tint_mode >= 1) {
+                        // F-NEW-352: tint the source region into a temp
+                        // buffer (the draw_image_region fast path is
+                        // byte-identical for untinted ops).
+                        std::vector<uint8_t> tinted((size_t)sw * sh * 4);
+                        for (int yy = 0; yy < sh; yy++) {
+                            for (int xx = 0; xx < sw; xx++) {
+                                const uint8_t* p = &sb->rgba[
+                                    ((size_t)(sy + yy) * sb->width + (sx + xx)) * 4];
+                                renderer::RGBA px = tint_apply(renderer::RGBA(
+                                    p[0], p[1], p[2], p[3]));
+                                uint8_t* q = &tinted[((size_t)yy * sw + xx) * 4];
+                                q[0] = px.r; q[1] = px.g; q[2] = px.b; q[3] = px.a;
+                            }
+                        }
+                        canvas.draw_image_region(tinted.data(), sw, sh,
+                                                 0, 0, sw, sh, dx, dy, dw, dh);
+                    } else {
+                        canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
+                                                 sx, sy, sw, sh, dx, dy, dw, dh);
+                    }
                 }
                 // S82-GFX §6: bitmap resolved + CANVAS_WRITTEN evidence.
                 if (diagnostics::GfxProvenance::instance().enabled())
@@ -893,6 +1187,19 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         const uint32_t recv = ctx.receiver_id;
         if (m == "setColor") {
             paint_color_[recv] = (uint32_t)ctx.arg_as_int(0, 0xFF000000);
+            // CONT-37 diag (bounded): which objects receive setColor and
+            // with what color — the Layout.draw text law resolves the op
+            // color from THIS map; a missed setColor = black-on-black text.
+            {
+                static thread_local uint64_t sc_n = 0;
+                if (sc_n++ < 60)
+                    std::cerr << "[F298-SETCOLOR] recv=" << recv
+                              << " cls=" << cls
+                              << " color=0x" << std::hex
+                              << paint_color_[recv] << std::dec
+                              << " caller=" << ctx.caller
+                              << std::endl;
+            }
             return CallResult::handled_void();
         }
         if (m == "setARGB") {
@@ -932,6 +1239,28 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             paint_filter_bitmap_[recv] = ctx.arg_as_bool(0, false);
             return CallResult::handled_void();
         }
+        // CONT-64 W2 (F-NEW-352): the Paint color filter law — the draw-time
+        // tint. AOSP Paint.java: setColorFilter(ColorFilter filter) stores
+        // the filter on the paint; every draw with this paint applies it.
+        // The engine records the ColorFilter heap object id (the color +
+        // PorterDuff mode live on the object, captured by the ctor law in
+        // the engine — F-NEW-352); drawBitmap snapshots op.tint_* at record
+        // time and the replay applies the filter per pixel.
+        if (m == "setColorFilter") {
+            const uint32_t cf = ctx.arg_as_object(0, 0);
+            if (cf != 0)
+                paint_colorfilter_[recv] = cf;
+            else
+                paint_colorfilter_.erase(recv);   // AOSP: null clears it.
+            return CallResult::handled_void();
+        }
+        if (m == "getColorFilter") {
+            auto it = paint_colorfilter_.find(recv);
+            if (it != paint_colorfilter_.end() && it->second != 0)
+                return CallResult::handled_object(
+                    it->second, "Landroid/graphics/ColorFilter;");
+            return CallResult::handled_null();
+        }
         if (m == "setStrokeWidth") {
             paint_stroke_w_[recv] = arg_as_float(ctx, 0, 1.f);
             return CallResult::handled_void();
@@ -945,6 +1274,32 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             if (style < 0 || style > 2) style = 0;
             paint_style_[recv] = style;
             return CallResult::handled_void();
+        }
+        if (m == "setBlendMode") {
+            // F-NEW-351 (AOSP Paint.java setBlendMode law): record the
+            // BlendMode ordinal per paint; the replay honors CLEAR as a
+            // destination ERASE (Skia BlendMode::kClear — dst replaced with
+            // transparent, never painted). The canonical consumer is
+            // compose DrawCache.clear() = drawRect(Black, BlendMode.Clear)
+            // — the vector-icon cache reset that previously painted the
+            // cache bitmap SOLID BLACK (the dooz material-icon squares).
+            // Ordinals = AOSP android.graphics.BlendMode decl order:
+            // 0 CLEAR, 1 SRC, 2 DST, 3 SRC_OVER, 4 DST_OVER, 5 SRC_IN,
+            // 6 DST_IN, 7 SRC_OUT, 8 DST_OUT, 9 SRC_ATOP, 10 DST_ATOP,
+            // 11 XOR, 12 DARKEN, 13 LIGHTEN, 14 MULTIPLY, 15 SCREEN,
+            // 16 PLUS, 17 OVERLAY, 18 REDUCE.
+            paint_blendmode_[recv] = enum_arg_ordinal(ctx, 0, -1);
+            {
+                static thread_local uint64_t sbm_n = 0;
+                if (sbm_n++ < 8)
+                    std::cerr << "[F351-SBM] recv=" << recv
+                              << " ordinal=" << paint_blendmode_[recv]
+                              << " caller=" << ctx.caller << std::endl;
+            }
+            return CallResult::handled_void();
+        }
+        if (m == "getBlendMode") {
+            return CallResult::not_handled();
         }
         if (m == "setTextSize") {
             paint_text_size_[recv] = arg_as_float(ctx, 0, 32.f);
@@ -1325,6 +1680,42 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
 
     // ── Canvas ─────────────────────────────────────────────────────────
+    // F-NEW-345 (AOSP graphics/Canvas.java law): `new Canvas(bitmap)` /
+    // setBitmap bind the canvas to a BITMAP target with its OWN matrix/clip
+    // state; every op rasterizes eagerly INTO that bitmap (BitmapStore).
+    // Previously such ops were silently dropped whenever the canvas was used
+    // outside the view-draw capture window (capturing_ == false) — in-memory
+    // bitmaps stayed transparent (W4 ladder: drawBitmap RECORDED but 0
+    // app-owned pixels) — and polluted the VIEW op list when used inside it.
+    if (cls.find("graphics/Canvas;") != std::string::npos ||
+        cls.find("graphics/RecordingCanvas;") != std::string::npos) {
+        const uint32_t recv = ctx.receiver_id;
+        if (m == "<init>" || m == "setBitmap") {
+            // F-NEW-351: resolve the bind arg through the wrapper-unwrap law
+            // (compose ImageBitmap/AndroidImageBitmap wrappers carry the
+            // Bitmap in a field; an unresolved bind left the cache canvas
+            // recording into the WRONG stream).
+            const uint32_t bmp = resolve_bitmap_arg(heap_, ctx.arg_as_object(0, 0));
+            if (bmp != 0) {
+                bind_bitmap_canvas(recv, bmp);
+                return CallResult::handled_void();
+            }
+            // Unbound canvas()/setBitmap(null): preserve the historical
+            // behavior (fall through / not_handled).
+            if (m == "setBitmap") return CallResult::handled_void();
+        } else {
+            const auto bt = bitmap_target_.find(recv);
+            if (bt != bitmap_target_.end()) {
+                if (m == "getWidth" || m == "getHeight") {
+                    const StoredBitmap* sb = BitmapStore::instance().get(bt->second);
+                    return CallResult::handled_int(
+                        sb ? (m == "getWidth" ? sb->width : sb->height) : 0);
+                }
+                return dispatch_bitmap_op(ctx, bt->first, bt->second);
+            }
+        }
+        // Unbound canvas object → fall through to the view-recording path.
+    }
     if (!capturing_) return CallResult::not_handled();  // outside draw dispatch
 
     const uint32_t recv = ctx.receiver_id;
@@ -1347,6 +1738,18 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawRect") {
+        // CONT-48 (F-NEW-314 decode): env-gated caller diagnostic — which DEX
+        // site drives the black 24dp-icon-bounding RECT (EXP-055/S24/F040
+        // diagnostic convention; evidence-only, no behavior change).
+        {
+            static const bool rect_caller_diag = [] {
+                const char* p = std::getenv("MINIANDROID_DRAW_CALLER_TRACE");
+                return p && *p;
+            }();
+            if (rect_caller_diag)
+                std::cerr << "[DRAW-CALLER] drawRect caller=" << ctx.caller
+                          << std::endl;
+        }
         DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
         // ── S86 §F-NEW-169: RectF/Rect-object overloads ──────────────────
         // AOSP Canvas.drawRect has two entry points:
@@ -1371,6 +1774,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // Paint is the 2nd arg in the object overload.
             uint32_t paint_id = ctx.arg_as_object(1);
             op.color = paint_color(paint_id);
+            op.blend_mode = paint_blend_mode(paint_id);   // F-NEW-351
             op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;
             auto sw0 = paint_stroke_w_.find(paint_id);
             op.stroke_w = sw0 != paint_stroke_w_.end() ? sw0->second : 1.f;
@@ -1384,6 +1788,14 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
         uint32_t paint_id = ctx.arg_as_object(4);
         op.color = paint_color(paint_id);
+        op.blend_mode = paint_blend_mode(paint_id);   // F-NEW-351
+        {
+            static thread_local uint64_t drm_n = 0;
+            if (op.blend_mode >= 0 && drm_n++ < 8)
+                std::cerr << "[F351-DRECT] blend=" << op.blend_mode
+                          << " paint=" << paint_id
+                          << " caller=" << ctx.caller << std::endl;
+        }
         op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;  // 1=STROKE, 2=FILL_AND_STROKE (CYCLE-E)
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
@@ -1539,6 +1951,17 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "drawPath") {
+        // CONT-48 (F-NEW-316 decode): env-gated caller diagnostic — the
+        // 1721 empty-PATH ops' DEX producer (EXP-055 diagnostic convention).
+        {
+            static const bool path_caller_diag = [] {
+                const char* p = std::getenv("MINIANDROID_DRAW_CALLER_TRACE");
+                return p && *p;
+            }();
+            if (path_caller_diag)
+                std::cerr << "[DRAW-CALLER] drawPath caller=" << ctx.caller
+                          << std::endl;
+        }
         // FIX-5 + CYCLE-E: real path rasterization — apps that build their own
         // glyphs (stopwatch digits, clock hands) now produce real pixels.
         const uint32_t path_id = ctx.arg_as_object(0, 0);
@@ -1547,6 +1970,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         if (pit != paths_.end() && !pit->second.contours.empty()) {
             DrawOp op; op.kind = DrawOp::Kind::DRAW_PATH;
             op.color = paint_color(paint_id);
+            op.blend_mode = paint_blend_mode(paint_id);   // F-NEW-351
             op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] >= 1;  // 1=STROKE, 2=FILL_AND_STROKE (CYCLE-E)
             op.stroke_w = paint_stroke_w_.count(paint_id) ? paint_stroke_w_[paint_id] : 1.0f;
             op.contours = pit->second.contours;
@@ -1974,6 +2398,62 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_bool(clip_.r > clip_.l && clip_.b > clip_.t);
     }
+    if (m == "getClipBounds") {
+        // CONT-37 diag: bounded visibility for the F-NEW-298 law.
+        {
+            static thread_local uint64_t gcb_n = 0;
+            if (gcb_n++ < 40)
+                std::cerr << "[F298-GCB] clip_active=" << (clip_.active ? 1 : 0)
+                          << " clip=" << clip_.l << "," << clip_.t << ","
+                          << clip_.r << "," << clip_.b
+                          << " canvas=" << canvas_w_ << "x" << canvas_h_
+                          << std::endl;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-298 (CONT-37): AOSP Canvas.getClipBounds — the bounds of
+        // the CURRENT clip in device coordinates; true when non-empty.
+        // UPSTREAM: frameworks/base/graphics/java/android/graphics/Canvas.java
+        //   getClipBounds(Rect bounds): "Returns the bounds of the current
+        //   clip (in device coordinates)... returns true if non-empty".
+        //   nGetClipBounds fills the Rect with the clip; the INITIAL clip
+        //   is the whole device surface — never empty.
+        // Live face (composeStopwatch, CONT-37 trace): the Compose
+        // paragraph paint funnel (R8: Lg6.d — decoded from AOSP
+        // AndroidParagraph.paint → layout.paint(nativeCanvas) →
+        // Layout.draw) gates the ENTIRE Layout.draw on
+        // getClipBounds(Rect): `if (!canvas.getClipBounds(r)) return;`.
+        // The engine had NO getClipBounds handling → the unhandled-bridge
+        // typed-default answered false → every paragraph paint silently
+        // aborted BEFORE Layout.draw (the F-NEW-297 text law never even
+        // reached) — text invisible with zero exceptions.
+        // FIX (generic, no app knowledge): answer the tracked clip when
+        // active (empty → false per AOSP), else the device bounds
+        // (canvas_w_/canvas_h_ — the initial full-surface clip).
+        // ────────────────────────────────────────────────────────────────
+        if (clip_.active) {
+            const bool nonempty = clip_.r > clip_.l && clip_.b > clip_.t;
+            if (ctx.args.size() >= 1) {
+                const uint32_t rid = ctx.arg_as_object(0, 0);
+                if (rid) {
+                    heap_->set_object_int_field(rid, "left", (int)clip_.l);
+                    heap_->set_object_int_field(rid, "top", (int)clip_.t);
+                    heap_->set_object_int_field(rid, "right", (int)clip_.r);
+                    heap_->set_object_int_field(rid, "bottom", (int)clip_.b);
+                }
+            }
+            return CallResult::handled_bool(nonempty);
+        }
+        if (ctx.args.size() >= 1) {
+            const uint32_t rid = ctx.arg_as_object(0, 0);
+            if (rid) {
+                heap_->set_object_int_field(rid, "left", 0);
+                heap_->set_object_int_field(rid, "top", 0);
+                heap_->set_object_int_field(rid, "right", canvas_w_);
+                heap_->set_object_int_field(rid, "bottom", canvas_h_);
+            }
+        }
+        return CallResult::handled_bool(true);
+    }
     if (m == "drawBitmap") {
         // S68 §12 (was accepted_not_reproduced): drawBitmap family.
         //   (Bitmap, float l, float t, Paint)                     args: obj,f,f,obj
@@ -1982,9 +2462,35 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() - 1, 0);
         DrawOp op; op.kind = DrawOp::Kind::DRAW_BITMAP;
         op.color = paint_color(paint_id);
+        op.blend_mode = paint_blend_mode(paint_id);   // F-NEW-351
         bool baked_matrix = false;   // S83: Matrix overload pre-bakes its affine
         auto fb = paint_filter_bitmap_.find(paint_id);
         op.filter_bitmap = fb != paint_filter_bitmap_.end() && fb->second;
+        // CONT-64 W2 (F-NEW-352): the draw-time tint snapshot. The paint's
+        // recorded ColorFilter object carries the tint color + PorterDuff
+        // mode (captured by the ctor law in the engine). Read the fields
+        // with the honest multi-name probe — framework-synthesized objects
+        // may carry either the AOSP or the engine field name.
+        {
+            const uint32_t cf = paint_colorfilter(paint_id);
+            if (cf != 0 && heap_) {
+                int32_t c = 0, mo = -1;
+                bool have_c = heap_->get_object_int_field(cf, "__filter_color__", c);
+                if (!have_c) have_c = heap_->get_object_int_field(cf, "mColor", c);
+                bool have_m = heap_->get_object_int_field(cf, "__filter_mode__", mo);
+                if (!have_m) have_m = heap_->get_object_int_field(cf, "mMode", mo);
+                // PorterDuff.Mode ordinal sanity: the tint family lives in
+                // [SRC=1 .. OVERLAY=17]; mode 0 (CLEAR) on a COLOR filter is
+                // an AOSP nonsensical face and the honest answer for an
+                // unreadable mode is -1 (no tint), never erase.
+                if (have_m && (mo < 1 || mo > 17)) mo = -1;
+                if (have_c) {
+                    op.has_tint = true;
+                    op.tint_color = (uint32_t)c;
+                    op.tint_mode = mo;
+                }
+            }
+        }
         if (ctx.args.size() >= 9 && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
             // int[] variant — materialize pixels into a synthetic Bitmap.
             const uint32_t colors = ctx.arg_as_object(0, 0);
@@ -2022,7 +2528,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         } else if (ctx.args.size() >= 4 &&
                    ctx.args[2].kind == CallContext::Arg::Kind::OBJECT) {
             // (Bitmap, src Rect, dst Rect/RectF, Paint)
-            op.bitmap_id = ctx.arg_as_object(0, 0);
+            op.bitmap_id = resolve_bitmap_arg(heap_, ctx.arg_as_object(0, 0));
             float sl, st, sr, sbl;
             if (read_rectf_fields(heap_, ctx.arg_as_object(1), sl, st, sr, sbl)) {
                 op.has_src = true;
@@ -2042,7 +2548,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // affine; replay inverse-samples per pixel (existing has_affine
             // path). Translate-only composed result folds into op.x/y so the
             // byte-identical fast path stays intact.
-            op.bitmap_id = ctx.arg_as_object(0, 0);
+            op.bitmap_id = resolve_bitmap_arg(heap_, ctx.arg_as_object(0, 0));
             Affine2D arg;
             bool have_arg = false;
             const uint32_t mid = ctx.args[1].object_id;
@@ -2077,7 +2583,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             }
         } else {
             // (Bitmap, float l, float t, Paint) — dst = natural size.
-            op.bitmap_id = ctx.arg_as_object(0, 0);
+            op.bitmap_id = resolve_bitmap_arg(heap_, ctx.arg_as_object(0, 0));
             float l = arg_as_float(ctx, 1), t = arg_as_float(ctx, 2);
             mat_.map(l, t, l, t);
             op.x = l; op.y = t;
@@ -2107,7 +2613,26 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             }
         }
         if (op.bitmap_id != 0) { stamp_clip(op); push_op(std::move(op)); }
-        else warn_noop(cls, "drawBitmap(bitmap-unresolved)");
+        else {
+            // F-NEW-351: bounded evidence for the unresolved arg — answers
+            // WHICH wrapper shape still escapes the unwrap law (field names
+            // only, values never printed).
+            {
+                static thread_local uint64_t bu_n = 0;
+                if (bu_n++ < 20) {
+                    const uint32_t raw = ctx.arg_as_object(0, 0);
+                    std::string names;
+                    if (heap_ && raw != 0) {
+                        for (const auto& n : heap_->get_object_field_names(raw))
+                            names += " " + n;
+                    }
+                    warn_noop(cls, "drawBitmap(bitmap-unresolved arg_fields=" +
+                                       (names.empty() ? std::string("(none)")
+                                                      : names) + ")");
+                }
+            }
+            warn_noop(cls, "drawBitmap(bitmap-unresolved)");
+        }
         return CallResult::handled_void();
     }
     if (m == "drawPoint") {

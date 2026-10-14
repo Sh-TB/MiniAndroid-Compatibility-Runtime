@@ -1,0 +1,2054 @@
+{
+ "app_id": "microtimer_8",
+ "apk_path": "/tmp/my-project/apk_cache/dubrowgn.microtimer_8.apk",
+ "package": "dubrowgn.microtimer",
+ "versionName": "1.8",
+ "versionCode": "8",
+ "min_sdk": "28",
+ "target_sdk": "34",
+ "components": {
+  "activities": [
+   "dubrowgn.microtimer.MainActivity"
+  ],
+  "services": [
+   "androidx.room.MultiInstanceInvalidationService"
+  ],
+  "receivers": [
+   "dubrowgn.microtimer.AlarmReceiver"
+  ],
+  "providers": [],
+  "application": ""
+ },
+ "dependency_versions": {
+  "META-INF/androidx.annotation_annotation-experimental.version": "1.3.0",
+  "META-INF/androidx.arch.core_core-runtime.version": "task ':arch:core:core-runtime:writeVersionFile' property 'version'",
+  "META-INF/androidx.core_core-ktx.version": "1.12.0",
+  "META-INF/androidx.core_core.version": "1.12.0",
+  "META-INF/androidx.interpolator_interpolator.version": "1.0.0",
+  "META-INF/androidx.lifecycle_lifecycle-runtime.version": "2.3.1",
+  "META-INF/androidx.room_room-runtime.version": "2.6.1",
+  "META-INF/androidx.sqlite_sqlite-framework.version": "2.4.0",
+  "META-INF/androidx.sqlite_sqlite.version": "2.4.0",
+  "META-INF/androidx.versionedparcelable_versionedparcelable.version": "1.1.1"
+ },
+ "classes": [
+  {
+   "name": "La/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/concurrent/Executor;"
+   ],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "La/b;",
+   "super": "La/e;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "La/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/concurrent/ThreadFactory;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "La/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "La/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 17,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "La/f;",
+   "super": "La/e;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Landroid/support/v4/app/RemoteActionCompatParcelizer;",
+   "super": "Landroidx/core/app/RemoteActionCompatParcelizer;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroid/support/v4/graphics/drawable/IconCompatParcelizer;",
+   "super": "Landroidx/core/graphics/drawable/IconCompatParcelizer;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/annotation/Keep;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/annotation/Annotation;"
+   ],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/core/app/CoreComponentFactory;",
+   "super": "Landroid/app/AppComponentFactory;",
+   "interfaces": [],
+   "methods": 6,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/core/app/RemoteActionCompat;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lj/d;"
+   ],
+   "methods": 1,
+   "fields": 6,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/core/app/RemoteActionCompatParcelizer;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/core/graphics/drawable/IconCompat;",
+   "super": "Landroidx/versionedparcelable/CustomVersionedParcelable;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 11,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/core/graphics/drawable/IconCompatParcelizer;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/lifecycle/CompositeGeneratedAdaptersObserver;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/lifecycle/FullLifecycleObserverAdapter;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/lifecycle/Lifecycling$1;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/lifecycle/ReflectiveGenericLifecycleObserver;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/lifecycle/SingleGeneratedAdapterObserver;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/room/MultiInstanceInvalidationService;",
+   "super": "Landroid/app/Service;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/versionedparcelable/CustomVersionedParcelable;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lj/d;"
+   ],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Landroidx/versionedparcelable/ParcelImpl;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/os/Parcelable;"
+   ],
+   "methods": 4,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lb/a;",
+   "super": "Lb/c;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lb/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Map$Entry;"
+   ],
+   "methods": 7,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lb/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Iterator;"
+   ],
+   "methods": 3,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lb/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Iterable;"
+   ],
+   "methods": 6,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lc/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 5,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lc/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Map;"
+   ],
+   "methods": 34,
+   "fields": 8,
+   "is_app": false
+  },
+  {
+   "name": "Lc/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Iterator;"
+   ],
+   "methods": 4,
+   "fields": 5,
+   "is_app": false
+  },
+  {
+   "name": "Lc/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Set;"
+   ],
+   "methods": 16,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lc/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Iterator;",
+    "Ljava/util/Map$Entry;"
+   ],
+   "methods": 10,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lc/f;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Collection;"
+   ],
+   "methods": 14,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Ld/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ldubrowgn/microtimer/AlarmReceiver;",
+   "super": "Landroid/content/BroadcastReceiver;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 0,
+   "is_app": true
+  },
+  {
+   "name": "Ldubrowgn/microtimer/MainActivity;",
+   "super": "Landroid/app/Activity;",
+   "interfaces": [],
+   "methods": 10,
+   "fields": 7,
+   "is_app": true
+  },
+  {
+   "name": "Ldubrowgn/microtimer/RoTimeControl;",
+   "super": "Landroid/widget/FrameLayout;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Ldubrowgn/microtimer/db/Database;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 16,
+   "fields": 10,
+   "is_app": true
+  },
+  {
+   "name": "Ldubrowgn/microtimer/db/Database_Impl;",
+   "super": "Ldubrowgn/microtimer/db/Database;",
+   "interfaces": [],
+   "methods": 7,
+   "fields": 1,
+   "is_app": true
+  },
+  {
+   "name": "Le/a0;",
+   "super": "Lg/c;",
+   "interfaces": [],
+   "methods": 7,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Le/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/d;"
+   ],
+   "methods": 5,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/b0;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/g;",
+    "Lg/f;"
+   ],
+   "methods": 9,
+   "fields": 9,
+   "is_app": false
+  },
+  {
+   "name": "Le/b;",
+   "super": "Ls/a;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Le/c0;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/e;",
+    "Le/e;"
+   ],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Le/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/e;",
+    "Le/e;"
+   ],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Le/d0;",
+   "super": "Ls/a;",
+   "interfaces": [
+    "Lr/a;"
+   ],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Le/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 15,
+   "is_app": false
+  },
+  {
+   "name": "Le/e0;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "Le/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Le/f;",
+   "super": "Le/e0;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Le/g;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Le/h;"
+   ],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/h;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/os/IInterface;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/i;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Le/j;"
+   ],
+   "methods": 4,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/j;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/os/IInterface;"
+   ],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/k;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Le/l;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Le/m;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Le/n;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Runnable;"
+   ],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/o;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 6,
+   "fields": 14,
+   "is_app": false
+  },
+  {
+   "name": "Le/p;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Runnable;"
+   ],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Le/q;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Le/r;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Runnable;"
+   ],
+   "methods": 2,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "Le/s;",
+   "super": "Landroid/os/Binder;",
+   "interfaces": [
+    "Le/h;"
+   ],
+   "methods": 5,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/t;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/content/ServiceConnection;"
+   ],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/u;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 10,
+   "is_app": false
+  },
+  {
+   "name": "Le/v;",
+   "super": "Landroid/os/Binder;",
+   "interfaces": [
+    "Le/j;"
+   ],
+   "methods": 6,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Le/w;",
+   "super": "Landroid/os/RemoteCallbackList;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/x;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/f;"
+   ],
+   "methods": 8,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Le/y;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Le/z;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lf/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 7,
+   "is_app": false
+  },
+  {
+   "name": "Lf/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 5,
+   "is_app": false
+  },
+  {
+   "name": "Lf/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Comparable;"
+   ],
+   "methods": 2,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lf/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lf/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lg/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/g;"
+   ],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lg/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/io/Closeable;"
+   ],
+   "methods": 13,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lg/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 7,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lg/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lg/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/io/Closeable;"
+   ],
+   "methods": 2,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lg/f;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/io/Closeable;"
+   ],
+   "methods": 2,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lg/g;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lg/h;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/f;"
+   ],
+   "methods": 2,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lh/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/database/sqlite/SQLiteDatabase$CursorFactory;"
+   ],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lh/b;",
+   "super": "Ls/a;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lh/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/b;"
+   ],
+   "methods": 17,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lh/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/database/DatabaseErrorHandler;"
+   ],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lh/e;",
+   "super": "Ljava/lang/RuntimeException;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lh/f;",
+   "super": "Landroid/database/sqlite/SQLiteOpenHelper;",
+   "interfaces": [],
+   "methods": 11,
+   "fields": 8,
+   "is_app": false
+  },
+  {
+   "name": "Lh/g;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Lg/e;"
+   ],
+   "methods": 5,
+   "fields": 7,
+   "is_app": false
+  },
+  {
+   "name": "Lh/h;",
+   "super": "Le/x;",
+   "interfaces": [
+    "Lg/h;"
+   ],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Li/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 4,
+   "fields": 5,
+   "is_app": false
+  },
+  {
+   "name": "Lj/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/os/Parcelable$Creator;"
+   ],
+   "methods": 2,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lj/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 11,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "Lj/c;",
+   "super": "Lj/b;",
+   "interfaces": [],
+   "methods": 5,
+   "fields": 8,
+   "is_app": false
+  },
+  {
+   "name": "Lj/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lk/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lk/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lk/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Runnable;"
+   ],
+   "methods": 2,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "Lk/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/view/View$OnClickListener;"
+   ],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lk/e;",
+   "super": "Ls/a;",
+   "interfaces": [
+    "Lr/a;"
+   ],
+   "methods": 3,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lk/f;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Landroid/view/View$OnClickListener;"
+   ],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lk/g;",
+   "super": "Landroid/widget/LinearLayout;",
+   "interfaces": [],
+   "methods": 9,
+   "fields": 8,
+   "is_app": false
+  },
+  {
+   "name": "Lk/h;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Ll/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 5,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Ll/b;",
+   "super": "Le/e0;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Ll/c;",
+   "super": "Le/f;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Ll/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 5,
+   "is_app": false
+  },
+  {
+   "name": "Ll/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lm/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 3,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "Lm/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Comparable;"
+   ],
+   "methods": 5,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lm/c;",
+   "super": "Ljava/lang/RuntimeException;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lm/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Ln/a;",
+   "super": "Ljava/util/AbstractList;",
+   "interfaces": [
+    "Ljava/util/List;"
+   ],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ln/b;",
+   "super": "Ljava/util/AbstractSet;",
+   "interfaces": [
+    "Ljava/util/Set;"
+   ],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ln/c;",
+   "super": "La/e;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ln/d;",
+   "super": "Ln/c;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ln/e;",
+   "super": "Ln/d;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ln/f;",
+   "super": "Ln/e;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ln/g;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/ListIterator;"
+   ],
+   "methods": 10,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Ln/h;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/List;",
+    "Ljava/io/Serializable;",
+    "Ljava/util/RandomAccess;"
+   ],
+   "methods": 27,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Ln/i;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Map;",
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 16,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Ln/j;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Set;",
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 17,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lo/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/ListIterator;"
+   ],
+   "methods": 11,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lo/b;",
+   "super": "Ln/a;",
+   "interfaces": [
+    "Ljava/util/RandomAccess;",
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 35,
+   "fields": 7,
+   "is_app": false
+  },
+  {
+   "name": "Lo/c;",
+   "super": "Lo/e;",
+   "interfaces": [
+    "Ljava/util/Iterator;"
+   ],
+   "methods": 2,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lo/d;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Map$Entry;"
+   ],
+   "methods": 7,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lo/e;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 5,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lo/f;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Map;",
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 27,
+   "fields": 14,
+   "is_app": false
+  },
+  {
+   "name": "Lo/g;",
+   "super": "Ln/b;",
+   "interfaces": [],
+   "methods": 14,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lo/h;",
+   "super": "Ljava/util/AbstractCollection;",
+   "interfaces": [
+    "Ljava/util/Collection;"
+   ],
+   "methods": 11,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lo/i;",
+   "super": "Ln/b;",
+   "interfaces": [
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 13,
+   "fields": 2,
+   "is_app": false
+  },
+  {
+   "name": "Lp/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lq/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Lr/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ls/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/io/Serializable;"
+   ],
+   "methods": 1,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Ls/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 1,
+   "fields": 1,
+   "is_app": false
+  },
+  {
+   "name": "Ls/c;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lt/a;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/lang/Iterable;"
+   ],
+   "methods": 2,
+   "fields": 3,
+   "is_app": false
+  },
+  {
+   "name": "Lt/b;",
+   "super": "Ljava/lang/Object;",
+   "interfaces": [
+    "Ljava/util/Iterator;"
+   ],
+   "methods": 7,
+   "fields": 4,
+   "is_app": false
+  },
+  {
+   "name": "Lt/c;",
+   "super": "Lt/a;",
+   "interfaces": [],
+   "methods": 6,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lu/a;",
+   "super": "Ln/c;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lu/b;",
+   "super": "Lu/a;",
+   "interfaces": [],
+   "methods": 0,
+   "fields": 0,
+   "is_app": false
+  },
+  {
+   "name": "Lu/c;",
+   "super": "Lu/b;",
+   "interfaces": [],
+   "methods": 3,
+   "fields": 0,
+   "is_app": false
+  }
+ ],
+ "external_apis": {
+  "jdk": {
+   "Ljava/lang/StringBuilder;->append": 241,
+   "Ljava/lang/StringBuilder;-><init>": 68,
+   "Ljava/lang/StringBuilder;->toString": 67,
+   "Ljava/lang/Object;-><init>": 65,
+   "Ljava/lang/Object;->getClass": 47,
+   "Ljava/lang/UnsupportedOperationException;-><init>": 43,
+   "Ljava/util/Iterator;->hasNext": 32,
+   "Ljava/util/Iterator;->next": 31,
+   "Ljava/lang/IllegalStateException;-><init>": 25,
+   "Ljava/lang/Integer;->valueOf": 25,
+   "Ljava/lang/Object;->toString": 23,
+   "Ljava/lang/Object;->hashCode": 23,
+   "Ljava/lang/IllegalArgumentException;-><init>": 17,
+   "Ljava/lang/Class;->getName": 16,
+   "Ljava/util/Map$Entry;->getValue": 15,
+   "Ljava/util/NoSuchElementException;-><init>": 15,
+   "Ljava/lang/Object;->equals": 14,
+   "Ljava/lang/System;->arraycopy": 13,
+   "Ljava/lang/String;->length": 13,
+   "Ljava/util/ArrayList;-><init>": 13,
+   "Ljava/lang/RuntimeException;-><init>": 13,
+   "Ljava/lang/IndexOutOfBoundsException;-><init>": 13,
+   "Ljava/util/Map$Entry;->getKey": 12,
+   "Ljava/lang/Long;->longValue": 12,
+   "Ljava/lang/Integer;->remainderUnsigned": 12,
+   "Ljava/lang/Integer;->intValue": 11,
+   "Ljava/util/Arrays;->copyOf": 11,
+   "Ljava/util/Collection;->iterator": 10,
+   "Ljava/util/ConcurrentModificationException;-><init>": 10,
+   "Ljava/lang/Integer;->divideUnsigned": 9,
+   "Ljava/lang/Long;->valueOf": 8,
+   "Ljava/util/List;->size": 8,
+   "Ljava/util/ArrayList;->add": 8,
+   "Ljava/lang/StackTraceElement;->getClassName": 7,
+   "Ljava/lang/String;->concat": 7,
+   "Ljava/util/Collection;->size": 7,
+   "Ljava/lang/String;->valueOf": 7,
+   "Ljava/util/List;->get": 7,
+   "Ljava/util/Collection;->isEmpty": 7,
+   "Ljava/util/Map;->put": 7,
+   "Ljava/util/concurrent/locks/Lock;->unlock": 7,
+   "Ljava/lang/String;->toLowerCase": 7,
+   "Ljava/util/LinkedHashMap;-><init>": 6,
+   "Ljava/util/Set;->iterator": 6,
+   "Ljava/lang/Class;->getCanonicalName": 6,
+   "Ljava/lang/String;->hashCode": 6,
+   "Ljava/util/concurrent/Executor;->execute": 5,
+   "Ljava/lang/NullPointerException;-><init>": 5,
+   "Ljava/lang/String;->equals": 5,
+   "Ljava/util/Map;->entrySet": 5,
+   "Ljava/lang/Class;->forName": 5,
+   "Ljava/util/List;->iterator": 5,
+   "Ljava/lang/Iterable;->iterator": 5,
+   "Ljava/util/HashMap;-><init>": 5,
+   "Ljava/util/HashMap;->put": 5,
+   "Ljava/lang/OutOfMemoryError;-><init>": 4,
+   "Ljava/util/Map;->containsKey": 4,
+   "Ljava/util/Map;->get": 4,
+   "Ljava/util/Collection;->contains": 4,
+   "Ljava/lang/Class;->getClassLoader": 4,
+   "Ljava/lang/String;->charAt": 4,
+   "Ljava/util/concurrent/atomic/AtomicBoolean;->compareAndSet": 4,
+   "Ljava/util/LinkedHashMap;->get": 4,
+   "Ljava/lang/reflect/InvocationTargetException;->getCause": 4,
+   "Ljava/util/AbstractCollection;->removeAll": 4,
+   "Ljava/util/AbstractCollection;->retainAll": 4,
+   "Ljava/lang/Thread;->currentThread": 3,
+   "Ljava/lang/reflect/Method;->invoke": 3,
+   "Ljava/util/Arrays;->copyOfRange": 3,
+   "Ljava/nio/charset/Charset;->forName": 3,
+   "Ljava/util/Map;->size": 3,
+   "Ljava/lang/Integer;->compareUnsigned": 3,
+   "Ljava/lang/String;->replace": 3,
+   "Ljava/util/ArrayList;->iterator": 3,
+   "Ljava/lang/String;->substring": 3,
+   "Ljava/util/Set;->contains": 3,
+   "Ljava/util/concurrent/atomic/AtomicBoolean;-><init>": 3,
+   "Ljava/util/concurrent/locks/Lock;->lock": 3,
+   "Ljava/io/File;-><init>": 3,
+   "Ljava/lang/String;->subSequence": 3,
+   "Ljava/util/HashSet;-><init>": 3,
+   "Ljava/util/TreeMap;-><init>": 3,
+   "Ljava/lang/String;->startsWith": 3,
+   "Ljava/lang/StackTraceElement;->getMethodName": 2,
+   "Ljava/lang/Thread;->getStackTrace": 2,
+   "Ljava/io/Closeable;->close": 2,
+   "Ljava/lang/reflect/Array;->newInstance": 2,
+   "Ljava/lang/Class;->getComponentType": 2,
+   "Ljava/lang/String;->getBytes": 2,
+   "Ljava/util/Set;->size": 2,
+   "Ljava/util/Iterator;->remove": 2,
+   "Ljava/lang/Class;->isAssignableFrom": 2,
+   "Ljava/util/BitSet;->get": 2,
+   "Ljava/util/BitSet;-><init>": 2,
+   "Ljava/util/BitSet;->set": 2,
+   "Ljava/lang/Class;->getPackage": 2,
+   "Ljava/lang/Package;->getName": 2,
+   "Ljava/util/concurrent/locks/ReentrantReadWriteLock;->readLock": 2,
+   "Ljava/lang/Number;->intValue": 2,
+   "Ljava/util/Collection;->toArray": 2,
+   "Ljava/util/Map;->remove": 2,
+   "Ljava/io/File;->getParentFile": 2,
+   "Ljava/io/File;->mkdirs": 2,
+   "Ljava/lang/Class;->getSimpleName": 2,
+   "Ljava/lang/String;->format": 2,
+   "Ljava/lang/Class;->getDeclaredMethod": 2,
+   "Ljava/lang/System;->currentTimeMillis": 2,
+   "Ljava/util/TreeMap;->values": 2,
+   "Ljava/util/TreeMap;->put": 2,
+   "Ljava/lang/Integer;->highestOneBit": 2,
+   "Ljava/lang/Integer;->numberOfLeadingZeros": 2,
+   "Ljava/lang/reflect/Method;->getName": 2,
+   "Ljava/util/TreeMap;->descendingKeySet": 2,
+   "Ljava/util/TreeMap;->size": 2,
+   "Ljava/util/concurrent/atomic/AtomicInteger;-><init>": 1,
+   "Ljava/util/concurrent/atomic/AtomicInteger;->getAndIncrement": 1,
+   "Ljava/lang/Thread;-><init>": 1,
+   "Ljava/lang/Thread;->setName": 1,
+   "Ljava/lang/Throwable;->addSuppressed": 1,
+   "Ljava/lang/Character;->isSpaceChar": 1,
+   "Ljava/lang/Character;->isWhitespace": 1,
+   "Ljava/lang/Throwable;->getStackTrace": 1,
+   "Ljava/lang/Throwable;->setStackTrace": 1,
+   "Ljava/lang/String;->split": 1,
+   "Ljava/lang/String;-><init>": 1,
+   "Ljava/lang/Enum;->name": 1,
+   "Ljava/util/WeakHashMap;-><init>": 1,
+   "Ljava/util/WeakHashMap;->keySet": 1,
+   "Ljava/util/WeakHashMap;->isEmpty": 1,
+   "Ljava/util/Map$Entry;->equals": 1,
+   "Ljava/util/Map$Entry;->hashCode": 1,
+   "Ljava/util/WeakHashMap;->put": 1,
+   "Ljava/util/Set;->containsAll": 1,
+   "Ljava/lang/Double;->isNaN": 1,
+   "Ljava/lang/Math;->ceil": 1,
+   "Ljava/lang/Class;->getDeclaredConstructor": 1,
+   "Ljava/util/TreeMap;->ceilingEntry": 1,
+   "Ljava/util/TreeMap;->remove": 1,
+   "Ljava/util/LinkedHashSet;-><init>": 1,
+   "Ljava/lang/reflect/Constructor;->newInstance": 1,
+   "Ljava/util/ArrayDeque;-><init>": 1,
+   "Ljava/util/Collections;->synchronizedMap": 1,
+   "Ljava/util/concurrent/locks/ReentrantReadWriteLock;-><init>": 1,
+   "Ljava/lang/ThreadLocal;-><init>": 1,
+   "Ljava/lang/Class;->isInstance": 1,
+   "Ljava/lang/ThreadLocal;->get": 1,
+   "Ljava/util/concurrent/atomic/AtomicBoolean;->set": 1,
+   "Ljava/lang/ClassCastException;-><init>": 1,
+   "Ljava/lang/Object;->clone": 1,
+   "Ljava/util/Collections;->singleton": 1,
+   "Ljava/util/Collections;->newSetFromMap": 1,
+   "Ljava/util/IdentityHashMap;-><init>": 1,
+   "Ljava/util/ArrayList;->size": 1,
+   "Ljava/util/AbstractCollection;->toArray": 1,
+   "Ljava/util/concurrent/atomic/AtomicBoolean;->get": 1,
+   "Ljava/util/LinkedHashMap;->keySet": 1,
+   "Ljava/lang/String;->toUpperCase": 1,
+   "Ljava/util/UUID;->randomUUID": 1,
+   "Ljava/util/UUID;->toString": 1,
+   "Ljava/io/File;->isDirectory": 1,
+   "Ljava/lang/Thread;->sleep": 1,
+   "Ljava/util/concurrent/locks/ReentrantLock;-><init>": 1,
+   "Ljava/util/HashMap;->get": 1,
+   "Ljava/io/IOException;-><init>": 1,
+   "Ljava/io/FileOutputStream;-><init>": 1,
+   "Ljava/nio/channels/FileChannel;->lock": 1,
+   "Ljava/io/FileOutputStream;->getChannel": 1,
+   "Ljava/nio/channels/spi/AbstractInterruptibleChannel;->close": 1,
+   "Ljava/util/Arrays;->asList": 1,
+   "Ljava/util/Arrays;->sort": 1,
+   "Ljava/lang/Integer;->hashCode": 1,
+   "Ljava/util/AbstractList;-><init>": 1,
+   "Ljava/util/AbstractSet;-><init>": 1,
+   "Ljava/util/List;->isEmpty": 1,
+   "Ljava/util/Map;->isEmpty": 1,
+   "Ljava/util/Set;->isEmpty": 1,
+   "Ljava/util/Arrays;->fill": 1,
+   "Ljava/util/AbstractCollection;-><init>": 1,
+   "Ljava/lang/Class;->getMethods": 1,
+   "Ljava/lang/reflect/Method;->getParameterTypes": 1,
+   "Ljava/lang/reflect/Field;->get": 1,
+   "Ljava/lang/Class;->getField": 1,
+   "Ljava/lang/Class;->getGenericInterfaces": 1,
+   "Ljava/lang/Class;->newInstance": 1,
+   "Ljava/util/concurrent/Executors;->newFixedThreadPool": 1,
+   "Ljava/util/Collections;->emptyList": 1,
+   "Ljava/util/TreeMap;->keySet": 1,
+   "Ljava/util/TreeMap;->get": 1,
+   "Ljava/util/NavigableSet;->iterator": 1,
+   "Ljava/lang/Boolean;->valueOf": 1,
+   "Ljava/lang/Integer;->toUnsignedString": 1,
+   "Ljava/io/File;->getAbsolutePath": 1,
+   "Ljava/lang/Double;->valueOf": 1,
+   "Ljava/util/List;->add": 1,
+   "Ljava/util/List;->set": 1,
+   "Ljava/lang/String;->compareTo": 1,
+   "Ljava/lang/Number;->longValue": 1,
+   "Ljava/lang/Character;->charValue": 1,
+   "Ljava/util/AbstractCollection;->containsAll": 1,
+   "Ljava/util/AbstractCollection;->addAll": 1,
+   "Ljava/util/Collections;->singletonList": 1,
+   "Ljava/lang/String;->indexOf": 1,
+   "Ljava/lang/String;->equalsIgnoreCase": 1
+  },
+  "other": {
+   "La/e;->h": 161,
+   "La/e;->g": 72,
+   "La/e;->a": 36,
+   "La/e;->n": 24,
+   "Lo/f;->b": 22,
+   "La/e;->e": 21,
+   "Lo/b;->d": 21,
+   "La/e;->i": 20,
+   "La/e;->f": 17,
+   "Lc/a;->a": 16,
+   "Lg/e;->e": 16,
+   "Lj/b;->i": 14,
+   "Lk/g;->getAlarm": 14,
+   "Lk/d;-><init>": 14,
+   "Lh/c;->c": 13,
+   "Lo/b;->e": 11,
+   "Lj/b;->e": 10,
+   "Lg/f;->h": 10,
+   "Lg/f;->l": 10,
+   "Lb/c;->hasNext": 9,
+   "Lu/c;->t": 8,
+   "Lo/i;-><init>": 7,
+   "Lh/c;->q": 7,
+   "Lo/f;->f": 7,
+   "La/e;->m": 6,
+   "Lb/d;->iterator": 6,
+   "Lb/c;->next": 6,
+   "Lc/b;->k": 6,
+   "Lc/b;->o": 6,
+   "Lc/a;->b": 6,
+   "Le/k;->a": 6,
+   "Lg/b;->k": 6,
+   "Lh/f;->s": 6,
+   "Lo/b;-><init>": 6,
+   "Lo/e;->b": 6,
+   "Lo/f;->i": 6,
+   "La/e;->l": 6,
+   "Lo/c;-><init>": 6,
+   "Lc/b;->h": 5,
+   "Lk/a;->a": 5,
+   "Lg/b;->d": 5,
+   "Lm/a;->a": 5,
+   "Lo/i;->add": 5,
+   "La/e;->d": 5,
+   "Li/a;->b": 5,
+   "Lh/e;-><init>": 5,
+   "Lf/a;-><init>": 5,
+   "Lo/a;->a": 5,
+   "La/e;->b": 5,
+   "Le/x;->v": 5,
+   "Ln/c;->r": 5,
+   "Lj/c;-><init>": 4,
+   "Lc/b;->g": 4,
+   "Lc/b;->c": 4,
+   "Lk/a;-><init>": 4,
+   "La/e;->j": 4,
+   "Le/a;-><init>": 4,
+   "Lt/c;-><init>": 4,
+   "Lg/b;->m": 4,
+   "Le/o;->d": 4,
+   "Lg/c;->a": 4,
+   "Le/e0;->c": 4,
+   "Lr/a;->a": 4,
+   "Lo/f;-><init>": 4,
+   "Lo/b;->a": 4,
+   "Lo/e;->a": 4,
+   "Lo/f;->g": 4,
+   "Lo/f;->clear": 4,
+   "Lo/f;->isEmpty": 4,
+   "Ls/a;-><init>": 4,
+   "Lj/b;->g": 3,
+   "Lj/b;->f": 3,
+   "Lc/b;->d": 3,
+   "Lc/b;->m": 3,
+   "Lc/a;-><init>": 3,
+   "Lc/b;->a": 3,
+   "Lk/e;-><init>": 3,
+   "Lk/g;->a": 3,
+   "Le/y;-><init>": 3,
+   "Lg/b;->b": 3,
+   "Lg/b;->t": 3,
+   "Lg/a;-><init>": 3,
+   "Lg/h;->p": 3,
+   "Lg/b;->n": 3,
+   "Lg/b;->c": 3,
+   "Le/a;->a": 3,
+   "Lu/c;->v": 3,
+   "Le/x;-><init>": 3,
+   "Lh/c;->i": 3,
+   "Lh/f;->u": 3,
+   "Lm/b;-><init>": 3,
+   "Le/b;->b": 3,
+   "Le/e0;->a": 3,
+   "Lk/f;-><init>": 3,
+   "Ln/f;->t": 3,
+   "Lo/b;->add": 3,
+   "Lo/d;->getValue": 3,
+   "Lo/d;->getKey": 3,
+   "Lo/f;->h": 3,
+   "Lo/f;->a": 3,
+   "Le/a0;->g": 3,
+   "Ll/e;->a": 3,
+   "Lo/b;->listIterator": 3,
+   "Le/e0;-><init>": 3,
+   "Lh/g;->q": 3,
+   "Lc/b;-><init>": 3,
+   "Lk/e;->b": 3,
+   "Le/f;->d": 3,
+   "Lo/b;->c": 3,
+   "Lo/b;->b": 3,
+   "Lo/b;->i": 3,
+   "Lo/e;-><init>": 3,
+   "Ln/b;-><init>": 3,
+   "Lt/c;->isEmpty": 3,
+   "Lj/b;->h": 2,
+   "Lj/b;->j": 2,
+   "Lc/b;->q": 2,
+   "Lc/d;-><init>": 2,
+   "Lc/b;->n": 2,
+   "Lc/b;->b": 2,
+   "Lc/b;->l": 2,
+   "Lc/b;->j": 2,
+   "Lc/b;->p": 2,
+   "Lc/a;->c": 2,
+   "Lc/c;-><init>": 2,
+   "Lc/a;->d": 2,
+   "Lk/h;->a": 2,
+   "Lk/a;->toString": 2,
+   "Lk/c;-><init>": 2,
+   "Le/b0;->u": 2,
+   "Le/b0;->v": 2,
+   "Lt/b;->b": 2,
+   "Ll/a;-><init>": 2,
+   "Le/a;->b": 2,
+   "La/e;->k": 2,
+   "Lg/b;->f": 2,
+   "La/d;->a": 2,
+   "Le/d0;-><init>": 2,
+   "Lm/a;-><init>": 2,
+   "Le/a;->c": 2,
+   "Le/p;-><init>": 2,
+   "Lg/g;->s": 2,
+   "Le/a;->d": 2,
+   "Li/a;->a": 2,
+   "Lh/f;->close": 2,
+   "Lh/f;->q": 2,
+   "Lj/b;->b": 2,
+   "Lj/b;->a": 2,
+   "Lg/h;->g": 2,
+   "Ll/a;->a": 2,
+   "Ll/b;-><init>": 2,
+   "Ll/c;-><init>": 2,
+   "Le/z;-><init>": 2,
+   "Lf/e;-><init>": 2,
+   "La/e;->c": 2,
+   "Lo/b;->g": 2,
+   "La/e;->o": 2,
+   "La/e;->p": 2,
+   "Ln/a;->remove": 2,
+   "Lo/f;->e": 2,
+   "Lo/f;->d": 2,
+   "Lo/g;-><init>": 2,
+   "Lo/f;->c": 2,
+   "Lo/e;->hasNext": 2,
+   "La/e;-><init>": 2,
+   "Lh/c;->j": 2,
+   "Lh/f;-><init>": 2,
+   "Ll/c;->e": 2,
+   "Le/g;-><init>": 2,
+   "Lh/a;-><init>": 2,
+   "Lg/g;->q": 2,
+   "Lo/b;->f": 2,
+   "Lo/b;->h": 2,
+   "Lo/f;->containsKey": 2,
+   "La/b;-><init>": 1,
+   "Ln/c;->s": 1,
+   "Lm/c;-><init>": 1,
+   "Le/v;-><init>": 1,
+   "Le/w;-><init>": 1,
+   "Lj/a;-><init>": 1,
+   "Lb/a;-><init>": 1,
+   "Lc/b;->e": 1,
+   "Lc/b;->f": 1,
+   "Lc/b;->i": 1,
+   "Lc/b;->r": 1,
+   "Lc/f;-><init>": 1,
+   "Lc/c;->hasNext": 1,
+   "Lc/d;->contains": 1,
+   "Lc/e;-><init>": 1,
+   "Lc/d;->iterator": 1,
+   "Lc/b;->keySet": 1,
+   "Lc/e;->hasNext": 1,
+   "Lc/e;->getValue": 1,
+   "Lc/e;->getKey": 1,
+   "Lc/f;->contains": 1,
+   "Lk/g;->setOnPause": 1,
+   "Lk/g;->setOnResume": 1,
+   "Lk/g;-><init>": 1,
+   "Lk/g;->setOnDelete": 1,
+   "Le/b0;-><init>": 1,
+   "Lg/e;->setWriteAheadLoggingEnabled": 1,
+   "Ln/c;->q": 1,
+   "Lt/b;->hasNext": 1,
+   "Lt/a;->iterator": 1,
+   "Lk/b;->a": 1,
+   "Le/u;-><init>": 1,
+   "Le/d;-><init>": 1,
+   "Le/e;->q": 1,
+   "Lg/b;->a": 1,
+   "Lg/b;->j": 1,
+   "Lg/b;->r": 1,
+   "Le/e0;->b": 1,
+   "Le/q;->a": 1,
+   "Lo/i;->isEmpty": 1,
+   "Le/m;->a": 1,
+   "Le/n;->a": 1,
+   "Le/o;->b": 1,
+   "Le/n;-><init>": 1,
+   "Lb/d;-><init>": 1,
+   "Le/l;-><init>": 1,
+   "Lo/i;->addAll": 1,
+   "Le/m;-><init>": 1,
+   "Lb/b;-><init>": 1,
+   "Le/l;->a": 1,
+   "Le/o;->c": 1,
+   "Lb/d;->a": 1,
+   "Le/j;->b": 1,
+   "Le/o;->a": 1,
+   "Le/j;->a": 1,
+   "Le/i;-><init>": 1,
+   "Le/q;-><init>": 1,
+   "Le/t;-><init>": 1,
+   "Le/s;-><init>": 1,
+   "Lu/c;->u": 1,
+   "Lh/c;->close": 1,
+   "Lh/c;->o": 1,
+   "Lh/c;->n": 1,
+   "Li/a;-><init>": 1,
+   "Lh/d;-><init>": 1,
+   "Lg/c;->b": 1,
+   "Lg/c;->c": 1,
+   "Lg/c;->d": 1,
+   "Lg/c;->e": 1,
+   "Lg/c;->f": 1,
+   "Lh/f;->v": 1,
+   "Le/k;->b": 1,
+   "Lj/b;->c": 1,
+   "Lj/b;->d": 1,
+   "Ll/b;->d": 1,
+   "Ln/a;->size": 1,
+   "Lf/c;-><init>": 1,
+   "Lo/b;->toArray": 1,
+   "Lf/b;-><init>": 1,
+   "Lf/e;->equals": 1,
+   "Lf/d;-><init>": 1,
+   "Lo/f;->put": 1,
+   "Lm/d;-><init>": 1,
+   "Ln/b;->a": 1,
+   "Ln/g;-><init>": 1,
+   "Ln/h;-><init>": 1,
+   "Ln/i;-><init>": 1,
+   "Ln/j;-><init>": 1,
+   "Lo/b;->set": 1,
+   "Lo/h;-><init>": 1,
+   "Lo/f;->containsValue": 1,
+   "Ls/c;-><init>": 1,
+   "Lt/b;-><init>": 1,
+   "Lt/b;->a": 1,
+   "Lt/b;->c": 1,
+   "La/a;-><init>": 1,
+   "La/f;-><init>": 1,
+   "La/c;-><init>": 1,
+   "Ll/d;-><init>": 1,
+   "Le/o;-><init>": 1,
+   "Lh/g;-><init>": 1,
+   "Ll/e;-><init>": 1,
+   "Le/a0;-><init>": 1,
+   "Lg/c;-><init>": 1,
+   "Le/a0;->f": 1,
+   "Lh/c;->r": 1,
+   "Le/d;->a": 1,
+   "Lo/a;->hasNext": 1,
+   "Lo/a;->next": 1,
+   "Lh/c;-><init>": 1,
+   "Le/x;->s": 1,
+   "Le/x;->u": 1,
+   "Le/x;->q": 1,
+   "Le/x;->l": 1,
+   "Le/x;->h": 1,
+   "Le/b;-><init>": 1,
+   "Lg/b;->o": 1,
+   "Lg/b;->i": 1,
+   "Le/r;-><init>": 1,
+   "Le/s;->c": 1,
+   "Le/s;->d": 1,
+   "Le/h;->c": 1,
+   "Le/v;->a": 1,
+   "Le/v;->b": 1,
+   "Le/v;->d": 1,
+   "Lh/b;-><init>": 1,
+   "Lh/h;-><init>": 1,
+   "Lj/b;-><init>": 1,
+   "Ln/a;-><init>": 1,
+   "Lo/a;-><init>": 1,
+   "Lo/b;->indexOf": 1,
+   "Lo/d;-><init>": 1,
+   "Lo/g;->b": 1,
+   "Lo/g;->c": 1,
+   "Lt/a;-><init>": 1,
+   "Ld/a;->a": 1,
+   "Le/f;-><init>": 1
+  },
+  "framework": {
+   "Landroid/database/Cursor;->getColumnIndex": 23,
+   "Landroid/view/View;->setOnClickListener": 17,
+   "Landroid/app/Activity;->findViewById": 16,
+   "Landroid/database/Cursor;->getInt": 15,
+   "Landroid/content/Context;->getSystemService": 13,
+   "Landroid/database/Cursor;->getString": 13,
+   "Landroid/os/Parcel;->writeInt": 12,
+   "Landroid/os/Parcel;->readInt": 9,
+   "Landroid/util/Log;->e": 9,
+   "Landroid/database/Cursor;->moveToNext": 8,
+   "Landroid/util/Log;->w": 8,
+   "Landroid/os/Parcel;->recycle": 8,
+   "Landroid/os/Parcel;->writeString": 7,
+   "Landroid/view/ViewGroup;->addView": 7,
+   "Landroid/view/View;->setLayoutParams": 7,
+   "Landroid/widget/LinearLayout$LayoutParams;-><init>": 7,
+   "Landroid/content/res/ColorStateList;->valueOf": 7,
+   "Landroid/util/Log;->d": 6,
+   "Landroid/content/Intent;-><init>": 5,
+   "Landroid/os/Parcel;->setDataPosition": 5,
+   "Landroid/os/Parcel;->dataPosition": 5,
+   "Landroid/os/Parcel;->readString": 4,
+   "Landroid/os/SystemClock;->elapsedRealtime": 4,
+   "Landroid/database/Cursor;->isNull": 4,
+   "Landroid/view/View;->setBackgroundTintList": 4,
+   "Landroid/os/Parcel;->obtain": 4,
+   "Landroid/os/Parcel;->writeParcelable": 3,
+   "Landroid/content/Context;->startActivity": 3,
+   "Landroid/os/Handler;->removeCallbacksAndMessages": 3,
+   "Landroid/os/IBinder;->queryLocalInterface": 3,
+   "Landroid/database/sqlite/SQLiteOpenHelper;->close": 3,
+   "Landroid/widget/Button;-><init>": 3,
+   "Landroid/view/View;->setForegroundGravity": 3,
+   "Landroid/graphics/Color;->rgb": 3,
+   "Landroid/view/View;->setForegroundTintList": 3,
+   "Landroid/content/Context;->getDrawable": 3,
+   "Landroid/view/View;->setForeground": 3,
+   "Landroid/view/ViewGroup;->removeView": 3,
+   "Landroid/database/Cursor;->moveToFirst": 3,
+   "Landroid/os/Parcel;->writeInterfaceToken": 3,
+   "Landroid/os/IBinder;->transact": 3,
+   "Landroid/os/Parcelable$Creator;->createFromParcel": 2,
+   "Landroid/text/TextUtils;->writeToParcel": 2,
+   "Landroid/content/Intent;->setFlags": 2,
+   "Landroid/os/Looper;->getMainLooper": 2,
+   "Landroid/content/Intent;->putExtra": 2,
+   "Landroid/os/Handler;->postDelayed": 2,
+   "Landroid/content/Context;->getPackageName": 2,
+   "Landroid/database/Cursor;->getLong": 2,
+   "Landroid/database/Cursor;->close": 2,
+   "Landroid/content/Context;->getApplicationContext": 2,
+   "Landroid/view/ViewGroup;->getChildCount": 2,
+   "Landroid/view/ViewGroup;->getChildAt": 2,
+   "Landroid/os/Vibrator;->cancel": 2,
+   "Landroid/widget/FrameLayout;-><init>": 2,
+   "Landroid/database/sqlite/SQLiteCursor;-><init>": 2,
+   "Landroid/database/sqlite/SQLiteOpenHelper;->getDatabaseName": 2,
+   "Landroid/util/SparseIntArray;->get": 2,
+   "Landroid/database/sqlite/SQLiteOpenHelper;->setWriteAheadLoggingEnabled": 2,
+   "Landroid/os/Parcel;->writeStringArray": 2,
+   "Landroid/os/Binder;-><init>": 2,
+   "Landroid/os/Binder;->attachInterface": 2,
+   "Landroid/os/Binder;->onTransact": 2,
+   "Landroid/os/Parcel;->enforceInterface": 2,
+   "Landroid/os/Parcel;->createStringArray": 2,
+   "Landroid/os/RemoteCallbackList;->finishBroadcast": 2,
+   "Landroid/os/Parcel;->readStrongBinder": 2,
+   "Landroid/os/Parcel;->writeNoException": 2,
+   "Landroid/database/sqlite/SQLiteClosable;->close": 2,
+   "Landroid/database/sqlite/SQLiteDatabase;->rawQueryWithFactory": 2,
+   "Landroid/database/Cursor;->getColumnNames": 1,
+   "Landroid/app/AppComponentFactory;-><init>": 1,
+   "Landroid/app/AppComponentFactory;->instantiateActivity": 1,
+   "Landroid/app/AppComponentFactory;->instantiateApplication": 1,
+   "Landroid/app/AppComponentFactory;->instantiateProvider": 1,
+   "Landroid/app/AppComponentFactory;->instantiateReceiver": 1,
+   "Landroid/app/AppComponentFactory;->instantiateService": 1,
+   "Landroid/os/Parcel;->readByteArray": 1,
+   "Landroid/graphics/PorterDuff$Mode;->valueOf": 1,
+   "Landroid/os/Parcel;->writeByteArray": 1,
+   "Landroid/app/Service;-><init>": 1,
+   "Landroid/graphics/drawable/Icon;->getResId": 1,
+   "Landroid/graphics/drawable/Icon;->getResPackage": 1,
+   "Landroid/graphics/drawable/Icon;->getType": 1,
+   "Landroid/graphics/drawable/Icon;->getUri": 1,
+   "Landroid/content/BroadcastReceiver;-><init>": 1,
+   "Landroid/app/Notification$Builder;->setColor": 1,
+   "Landroid/app/NotificationManager;->notify": 1,
+   "Landroid/content/Context;->getString": 1,
+   "Landroid/app/PendingIntent;->getActivity": 1,
+   "Landroid/app/Notification$Builder;->setContentText": 1,
+   "Landroid/app/Notification$Builder;->setContentTitle": 1,
+   "Landroid/content/Intent;->getLongExtra": 1,
+   "Landroid/app/Notification$Builder;->setSmallIcon": 1,
+   "Landroid/app/Notification$Builder;-><init>": 1,
+   "Landroid/app/Notification$Builder;->setFullScreenIntent": 1,
+   "Landroid/app/Notification$Builder;->setVisibility": 1,
+   "Landroid/app/Notification$Builder;->setCategory": 1,
+   "Landroid/app/Notification$Builder;->build": 1,
+   "Landroid/app/Notification$Builder;->setAutoCancel": 1,
+   "Landroid/content/Intent;->getStringExtra": 1,
+   "Landroid/os/Handler;-><init>": 1,
+   "Landroid/app/Activity;-><init>": 1,
+   "Landroid/content/Intent;->setAction": 1,
+   "Landroid/app/PendingIntent;->getBroadcast": 1,
+   "Landroid/net/Uri;->parse": 1,
+   "Landroid/app/NotificationManager;->createNotificationChannel": 1,
+   "Landroid/app/Activity;->setTurnScreenOn": 1,
+   "Landroid/app/ActivityManager;->isLowRamDevice": 1,
+   "Landroid/app/Activity;->requestPermissions": 1,
+   "Landroid/database/Cursor;->getCount": 1,
+   "Landroid/app/KeyguardManager;->requestDismissKeyguard": 1,
+   "Landroid/app/NotificationChannel;->setDescription": 1,
+   "Landroid/app/Activity;->setShowWhenLocked": 1,
+   "Landroid/app/NotificationManager;->canUseFullScreenIntent": 1,
+   "Landroid/app/NotificationChannel;-><init>": 1,
+   "Landroid/app/Activity;->onCreate": 1,
+   "Landroid/app/Activity;->setContentView": 1,
+   "Landroid/os/PowerManager;->isIgnoringBatteryOptimizations": 1,
+   "Landroid/content/Context;->checkSelfPermission": 1,
+   "Landroid/app/Activity;->onDestroy": 1,
+   "Landroid/app/Activity;->onPause": 1,
+   "Landroid/app/AlarmManager;->setExactAndAllowWhileIdle": 1,
+   "Landroid/app/AlarmManager;->cancel": 1,
+   "Landroid/app/Activity;->onResume": 1,
+   "Landroid/view/View;->getContext": 1,
+   "Landroid/widget/TextView;->setHint": 1,
+   "Landroid/view/View;->setTextAlignment": 1,
+   "Landroid/widget/TextView;->setTextSize": 1,
+   "Landroid/widget/TextView;-><init>": 1,
+   "Landroid/widget/TextView;->setTypeface": 1,
+   "Landroid/widget/TextView;->setText": 1,
+   "Landroid/os/Looper;->getThread": 1,
+   "Landroid/content/Context;->bindService": 1,
+   "Landroid/os/RemoteCallbackList;-><init>": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->deleteDatabase": 1,
+   "Landroid/content/Context;->getCacheDir": 1,
+   "Landroid/database/sqlite/SQLiteOpenHelper;-><init>": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->setMaxSqlCacheSize": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->getVersion": 1,
+   "Landroid/database/sqlite/SQLiteOpenHelper;->getWritableDatabase": 1,
+   "Landroid/database/sqlite/SQLiteOpenHelper;->getReadableDatabase": 1,
+   "Landroid/content/Context;->deleteDatabase": 1,
+   "Landroid/content/Context;->getDatabasePath": 1,
+   "Landroid/os/Parcel;->readParcelable": 1,
+   "Landroid/app/AlarmManager;->canScheduleExactAlarms": 1,
+   "Landroid/widget/LinearLayout;-><init>": 1,
+   "Landroid/widget/LinearLayout;->setOrientation": 1,
+   "Landroid/widget/TextView;->setTextColor": 1,
+   "Landroid/view/View;->setEnabled": 1,
+   "Landroid/media/AudioAttributes$Builder;->build": 1,
+   "Landroid/os/Vibrator;->vibrate": 1,
+   "Landroid/media/AudioAttributes$Builder;-><init>": 1,
+   "Landroid/media/AudioAttributes$Builder;->setUsage": 1,
+   "Landroid/os/VibrationEffect;->createWaveform": 1,
+   "Landroid/database/Cursor;->moveToPosition": 1,
+   "Landroid/database/Cursor;->getColumnCount": 1,
+   "Landroid/content/Context;->getNoBackupFilesDir": 1,
+   "Landroid/os/Parcel;->readException": 1,
+   "Landroid/os/Parcel;->writeStrongInterface": 1,
+   "Landroid/os/RemoteCallbackList;->getBroadcastCookie": 1,
+   "Landroid/os/RemoteCallbackList;->beginBroadcast": 1,
+   "Landroid/os/RemoteCallbackList;->getBroadcastItem": 1,
+   "Landroid/os/RemoteCallbackList;->register": 1,
+   "Landroid/os/RemoteCallbackList;->unregister": 1,
+   "Landroid/database/sqlite/SQLiteProgram;->bindLong": 1,
+   "Landroid/database/sqlite/SQLiteProgram;->bindNull": 1,
+   "Landroid/database/sqlite/SQLiteProgram;->bindBlob": 1,
+   "Landroid/database/sqlite/SQLiteProgram;->bindDouble": 1,
+   "Landroid/database/sqlite/SQLiteProgram;->bindString": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->beginTransactionNonExclusive": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->execSQL": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->endTransaction": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->beginTransaction": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->getPath": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->inTransaction": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->isOpen": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->getAttachedDbs": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->compileStatement": 1,
+   "Landroid/database/sqlite/SQLiteDatabase;->isWriteAheadLoggingEnabled": 1,
+   "Landroid/os/Parcel;->dataSize": 1,
+   "Landroid/util/SparseIntArray;-><init>": 1,
+   "Landroid/util/SparseIntArray;->put": 1,
+   "Landroid/app/NotificationManager;->cancel": 1,
+   "Landroid/graphics/Bitmap;->getHeight": 1,
+   "Landroid/graphics/Bitmap;->getWidth": 1,
+   "Landroid/database/sqlite/SQLiteStatement;->executeInsert": 1,
+   "Landroid/database/sqlite/SQLiteStatement;->executeUpdateDelete": 1
+  },
+  "androidx": {
+   "Landroidx/core/app/RemoteActionCompat;-><init>": 1,
+   "Landroidx/core/graphics/drawable/IconCompat;-><init>": 1,
+   "Landroidx/versionedparcelable/ParcelImpl;-><init>": 1,
+   "Landroidx/core/app/RemoteActionCompatParcelizer;-><init>": 1,
+   "Landroidx/core/app/RemoteActionCompatParcelizer;->read": 1,
+   "Landroidx/core/app/RemoteActionCompatParcelizer;->write": 1,
+   "Landroidx/core/graphics/drawable/IconCompatParcelizer;-><init>": 1,
+   "Landroidx/core/graphics/drawable/IconCompatParcelizer;->read": 1,
+   "Landroidx/core/graphics/drawable/IconCompatParcelizer;->write": 1,
+   "Landroidx/versionedparcelable/CustomVersionedParcelable;-><init>": 1
+  }
+ },
+ "field_refs": {},
+ "counts": {
+  "classes": 143,
+  "methods": 682,
+  "fields": 332,
+  "external_call_sites": 713,
+  "external_field_refs": 0,
+  "custom_ui_classes": 1,
+  "class_buckets": {
+   "other": 127,
+   "androidx": 16
+  }
+ }
+}

@@ -1,0 +1,90 @@
+{
+ "generated": "2026-10-08",
+ "method": "mapping derived from RUNTIME traces + APK structure at HEAD; upstream git sources NOT fetched this wave (honest provenance: source-op families inferred from executed framework APIs in traces + skill/OP evidence)",
+ "titles": {
+  "dubrowgn.microtimer": {
+   "source_ops": [
+    "XML hierarchy",
+    "programmatic View updates",
+    "Handler.postDelayed timing"
+   ],
+   "miniandroid_laws": [
+    "F-067 ViewModelStore chain",
+    "R-NEW-001 MessageQueue/Handler law",
+    "CLASSIC_CANVAS walk"
+   ],
+   "evidence": "run/cont16/reg/dubrowgn.microtimer_* x3 byte-identical REAL_APP_CONTENT"
+  },
+  "app.varlorg.unote": {
+   "source_ops": [
+    "XML hierarchy",
+    "SQLite persistence",
+    "Activity transition"
+   ],
+   "miniandroid_laws": [
+    "C013-HIER superclass dispatch (SQLiteOpenHelper)",
+    "SQLITE-SHADOW real db",
+    "S79 click-test: Add note -> real editor screen (13,032 sampled px delta)"
+   ],
+   "evidence": "anchor 4f1a9e4e x3 + docs/evidence/s79/reproofs"
+  },
+  "com.darkempire78.opencalculator": {
+   "source_ops": [
+    "XML widgets",
+    "custom Canvas button rendering",
+    "text"
+   ],
+   "miniandroid_laws": [
+    "app_draw_ops bg law (drew_bg :3942)",
+    "CLASSIC_CANVAS text ops"
+   ],
+   "evidence": "anchor a976d2f9 x3 REAL_APP_CONTENT"
+  },
+  "de.duenndns.gmdice": {
+   "source_ops": [
+    "Compose UI",
+    "Drawable/vector dice faces"
+   ],
+   "miniandroid_laws": [
+    "F-NEW-266 interface-default dispatch",
+    "COMPOSE renderer family"
+   ],
+   "evidence": "anchor f3b483fe x3 REAL_APP_CONTENT"
+  },
+  "jwtc.android.chess": {
+   "source_ops": [
+    "custom View.onDraw board",
+    "SurfaceView family"
+   ],
+   "miniandroid_laws": [
+    "onDraw op accounting",
+    "CLASSIC_CANVAS"
+   ],
+   "evidence": "anchor b5a7a35d x3 REAL_APP_CONTENT (package law: jwtc.android.chess)"
+  },
+  "six-game family (g2048/tetris/minicraft/snake-deluxe/snakeneon/tictactoe-deluxe)": {
+   "source_ops": [
+    "game-loop SurfaceView/Canvas",
+    "custom draw families"
+   ],
+   "miniandroid_laws": [
+    "GL/Surface + game-loop pump laws",
+    "six-game 6/6 x3 claim"
+   ],
+   "evidence": "evidence/cont15/sixgame_validation.json"
+  },
+  "rk.android.app.forkgram (Telegram)": {
+   "source_ops": [
+    "heavy Compose",
+    "recycler lists",
+    "fragments"
+   ],
+   "miniandroid_laws": [
+    "ROOT-062/063 generic fixes (errors 32->0 lineage)",
+    "F-NEW-193 frame-truth census"
+   ],
+   "evidence": "cf4c41e6 x3 REAL_APP_CONTENT (CONT-15) \u2014 31 nodes, 11 ops, 117,133 in-bounds px"
+  }
+ },
+ "common_minimum_render_contract": "Activity has Window -> real Decor/content root -> attached -> measure -> layout -> View.draw -> >=1 app-owned visual primitive in the authoritative buffer -> that buffer captured -> no synthetic pixels; any earlier failure = NOT_RENDERED"
+}

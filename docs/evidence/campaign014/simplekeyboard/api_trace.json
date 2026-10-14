@@ -1,0 +1,1271 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260902-050355-1379",
+      "method": "start_session",
+      "timestamp": 1788325435552
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/apk_cache/corpus/simplekeyboard.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1788325435552
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: rkr.simplekeyboard.inputmethod, Main Activity: rkr.simplekeyboard.inputmethod.latin.settings.SettingsActivity",
+      "method": "stage_load_apk",
+      "timestamp": 1788325435553
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325435553
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 122 classes, 1187 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325435569
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325435569
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lz; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: La0; extends Lz; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: La1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: La2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lb3; extends Lorg/xmlpull/v1/XmlPullParserException; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: La3; extends Lb3; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: La; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lb0; extends Lz; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lb1; extends Landroid/preference/Preference; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lb2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lb; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lc0; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lc1; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lc2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lc; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ld0; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ld1; extends Landroid/content/BroadcastReceiver; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ld2; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ld; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lf0; extends Ljava/lang/Object; (11 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ln1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Le0; extends Ljava/lang/Object; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lf1; extends Landroid/os/Handler; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Le1; extends Lf1; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Le2; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Le; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lf2; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lf; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lg0; extends Ljava/lang/Object; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lg1; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lg2; extends Landroid/content/BroadcastReceiver; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lg; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lh0; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lh1; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lh2; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lh; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Li0; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Li1; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Li2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Li; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lj0; extends Ljava/lang/Object; (10 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lk; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lj1; extends Lk; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lj2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lj; extends Landroid/widget/RelativeLayout; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lk0; extends Ljava/lang/Object; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lk1; extends Lg0; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lk2; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ll0; extends Ljava/lang/Object; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lp0; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ll1; extends Lp0; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ll2; extends La; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ll; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lm0; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lm1; extends Ld0; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lm2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lm; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ln0; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ln2; extends Landroid/preference/SwitchPreference; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ln; extends Ljava/lang/Object; (10 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lo0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lo1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lo2; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lo; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lp1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lp2; extends Ljava/lang/Object; (23 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lp; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lq0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lq1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lq2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lq; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lr0; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lr1; extends Ljava/lang/Object; (20 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lr2; extends Landroid/preference/PreferenceFragment; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ls; extends Ljava/lang/Object; (17 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lr; extends Ls; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/R; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lw0; extends Landroid/view/View; (13 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/keyboard/MainKeyboardView; extends Lw0; (14 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/keyboard/MoreKeysKeyboardView; extends Lw0; (11 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/InputView; extends Landroid/widget/FrameLayout; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/LatinIME; extends Landroid/inputmethodservice/InputMethodService; (40 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/SystemBroadcastReceiver; extends Landroid/content/BroadcastReceiver; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/AppearanceSettingsFragment; extends Lr2; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/ColorDialogPreference; extends Landroid/preference/DialogPreference; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/KeyPressSettingsFragment; extends Lr2; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/LanguagesSettingsFragment; extends Landroid/preference/PreferenceFragment; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/PreferencesSettingsFragment; extends Lr2; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/SeekBarDialogPreference; extends Landroid/preference/DialogPreference; (9 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/SettingsActivity; extends Landroid/preference/PreferenceActivity; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/SettingsFragment; extends Landroid/preference/PreferenceFragment; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/SingleLanguageSettingsFragment; extends Landroid/preference/PreferenceFragment; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lrkr/simplekeyboard/inputmethod/latin/settings/ThemeSettingsFragment; extends Lr2; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ls0; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ls1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ls2; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lt0; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lt1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lt2; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lt; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lu0; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lu1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lu2; extends Landroid/preference/Preference; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lu; extends Landroid/animation/AnimatorListenerAdapter; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lv0; extends Ljava/lang/Object; (7 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lv1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lv2; extends Lf1; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lv; extends Landroid/animation/AnimatorListenerAdapter; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lw1; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lw2; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lw; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lx0; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lx1; extends Ljava/lang/Object; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lz2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lx2; extends Lz2; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lx; extends Landroid/widget/TextView; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ly0; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ly1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ly2; extends Lz2; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Ly; extends Ljava/lang/RuntimeException; (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lz0; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lz1; extends Ljava/lang/Object; (12 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325435589
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 49",
+      "method": "execute_apk",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 19",
+      "method": "execute_apk",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 8",
+      "method": "execute_apk",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 49 opcodes executed",
+      "method": "validation",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Lifecycle method 'Landroid/preference/PreferenceActivity;<super>.onCreate' from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_source",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_verified",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: /home/z/my-project/miniandroid_ws/triage014/after/simplekeyboard/exp031_5/traces/rkr.simplekeyboard.inputmethod",
+      "method": "trace_export",
+      "timestamp": 1788325435593
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Found 2 views with click listeners",
+      "method": "phase_b_click",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(700003) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "dispatch_click(700002) → OK",
+      "method": "phase_b_click",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325435594
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Frame rendered successfully",
+      "method": "stage_render_frame",
+      "timestamp": 1788325435640
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1788325435640
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/miniandroid_ws/triage014/after/simplekeyboard/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1788325435710
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/miniandroid_ws/triage014/after/simplekeyboard/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1788325435710
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1788325435752
+    }
+  ],
+  "generated_at": "2026-09-02 05:03:55 UTC",
+  "session_id": "EXP-001-20260902-050355-1379",
+  "total_calls": 158
+}

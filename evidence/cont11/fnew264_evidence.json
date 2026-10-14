@@ -1,0 +1,41 @@
+{
+  "artifact": "fnew264_evidence.json — CONT-11 WAVE 7: F-NEW-264 bitmap-target Canvas (AOSP Canvas(Bitmap) law) ROOT-CAUSED-FIXED. User-priority lane: PNG/bitmap loading fidelity.",
+  "head": "e99c2fbd (wave start; local unpushed cleanup commit on top of remote main 6a66806a = CONT-10 W6)",
+  "binary_before": "aed46450c103f2ea (fresh clean rebuild reproduced the CONT-10 lineage byte-exactly; anchors 5/5 x3 zero-drift pre-fix)",
+  "binary_after": "5142558602153c32",
+  "root": {
+    "id": "F-NEW-264",
+    "symptom": "W4 ladder OBSERVED: Canvas.drawBitmap of an IN-MEMORY bitmap (Bitmap.createBitmap + Canvas(bitmap).drawColor) RECORDED the op but produced 0 app-owned pixels; resource-drawable bitmaps composited fine (FishRings provenance).",
+    "first_divergence": "canvas_shadow.cpp Canvas section: `if (!capturing_) return not_handled()` — ALL Canvas ops on a Canvas(Bitmap) target outside the view-draw capture window (the AOSP norm: onCreate-time offscreen rendering) were silently dropped; inside the window they polluted the VIEW op list.",
+    "law": "AOSP graphics/Canvas.java: Canvas(Bitmap) / setBitmap bind the canvas to a bitmap target with its OWN matrix/clip/save state; every op rasterizes eagerly INTO that bitmap; the canvas stays live until release().",
+    "fix": "per-canvas sub-recorder (same op laws, isolated matrix/clip/save state) + eager flush into BitmapStore after each op (replay over a temp SoftwareCanvas wrapping the bitmap pixels, copy-in/copy-out); sync_shared_state mirrors Paint/Path state (Paint/Path dispatch never routes to the sub-recorder); re-arm capturing_ after each flush (replay() closes the VIEW capture, but a bitmap canvas is not a frame); getWidth/getHeight answer bitmap dims; bindBitmap of unknown/empty bitmap = honest warn_noop (AOSP would throw).",
+    "second_root_found_and_fixed_same_wave": "flush_bitmap_canvas originally left the sub-recorder dead: replay() ends with capturing_=false (view-frame lifecycle law) so every op after the first flush hit not_handled (probe row R2 proved it: save/translate/drawRect dropped). Fix: re-arm capturing_=true after every flush — a bitmap canvas stays live for its object lifetime (AOSP Canvas lifetime law)."
+  },
+  "probe": {
+    "apk": "fixtures/fnew264_probe (real toolchain: aapt2 link, ECJ 1.8, D8 release)",
+    "apk_sha16": "c924c75ff6a042f0",
+    "rows": {
+      "R1_createBitmap_drawColor_composites": "PASS — fb(110,130)=(204,34,34) EXACT, fb(105,125)=(204,34,34) EXACT (pre-fix: 0 app-owned pixels)",
+      "R2_state_persistence_translate_rect": "PASS — fb(135,145)=(34,170,68) EXACT at bitmap(30..40,20..30); negative fb(105,125) stays red (rect NOT misplaced)",
+      "R3_getPixel_readback": "PASS — on-screen readback text F264Rffcc2222 / F264Gff22aa44 (BitmapStore pixels real)",
+      "R4_no_view_pollution": "PASS — fb(600,900)=(48,48,48) background exact; bitmap-canvas ops never leak into the view op list"
+    },
+    "determinism": "screenshot afbbf73642515131 x3 byte-identical at the final binary",
+    "pixel_verify": "scripts/cont11_verify_f264.py — 6/6 PASS"
+  },
+  "regression": {
+    "anchors_x3": {
+      "opencalc": "a976d2f9fb675cb3 x3 (matches recorded)",
+      "chess": "b5a7a35d5fe0564b x3 (matches recorded)",
+      "dooz": "d602648e8e401895 x3 (matches recorded)",
+      "microtimer": "da73010a37dd0189 x3 (matches recorded)",
+      "unote": "4f1a9e4e8f64fae8 x3 (matches recorded)"
+    },
+    "result": "5/5 x3 byte-identical — ZERO DRIFT",
+    "skill_selftest": "13/13 PASS (gate_a_probe.apk rebuilt via scripts/cont9_rebuild_gate_a_probe.sh sha256 ba580fe2604c84826f237d5d3b7e9cca after the reset-lost artifact was discovered as OP-1 FAIL; new problem solved in-wave per directive)",
+    "negatives": "19/19 PASS (first run 9/19 was a stale-artifact sequence error — probe results file absent before the probe run; re-run after install+run of the probe = 19/19; NOT a runtime regression, rows N-08-*/N-12/N-18/N-19 are identity/provider/PendingIntent, none canvas)",
+    "gate_a": "98 PASS / 0 FAIL / 1 INFO (99 GATEA rows in run/gatea/probe_store/.../gate_a_results.jsonl; matches recorded W6 state)"
+  },
+  "no_app_specific_or_r8_specific_patch": "The fix keys on the AOSP Canvas(Bitmap)/setBitmap contract and the BitmapStore — receiver-generic, no class allow-lists, no app names.",
+  "honest_limits": "Bilinear/affine bitmap-canvas ops inherit the existing replay laws (nearest-neighbour, per-pixel affine); flush is eager copy-in/copy-out (correctness-first; large-bitmap perf unmeasured); drawText on bitmap canvases uses the engine's default BitmapFont law (same as view replay)."
+}

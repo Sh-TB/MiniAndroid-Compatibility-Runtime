@@ -1,0 +1,2287 @@
+{
+ "fetched_at": "2026-10-08",
+ "repo": "Sh-TB/MiniAndroid-Compatibility-Runtime",
+ "count": 380,
+ "issues": [
+  {
+   "number": 1,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-064 \u2014 REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)",
+   "comments": 3
+  },
+  {
+   "number": 2,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-065 \u2014 Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)",
+   "comments": 3
+  },
+  {
+   "number": 3,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-066 \u2014 Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)",
+   "comments": 3
+  },
+  {
+   "number": 4,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-067 \u2014 Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)",
+   "comments": 3
+  },
+  {
+   "number": 5,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-068 \u2014 Generic View inheritance + Floating Next button (semantic superclass resolution)",
+   "comments": 3
+  },
+  {
+   "number": 6,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-069 \u2014 Generic text input + click dispatch: phone number injected + Next button clicked",
+   "comments": 3
+  },
+  {
+   "number": 7,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "EXP-071 \u2014 Telegram Login \u2192 SMS Code Page Transition (CHECKPOINT_M PROVEN)",
+   "comments": 15
+  },
+  {
+   "number": 8,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "MiniAndroid campaign evidence \u2014 verified achievements (REUSE-FIRST campaign, 2026-09-05)",
+   "comments": 55
+  },
+  {
+   "number": 9,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "MASTER-ROADMAP v3 \u2014 MiniAndroid Compatibility Runtime \u2014 100% Base Execution Closure System (living document)",
+   "comments": 9
+  },
+  {
+   "number": 10,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+   "comments": 3
+  },
+  {
+   "number": 11,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+   "comments": 3
+  },
+  {
+   "number": 12,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+   "comments": 3
+  },
+  {
+   "number": 13,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+   "comments": 4
+  },
+  {
+   "number": 14,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] Dooz \u2014 Runtime/UI Completion",
+   "comments": 4
+  },
+  {
+   "number": 15,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] Unote \u2014 Runtime/UI Completion",
+   "comments": 4
+  },
+  {
+   "number": 16,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] Telegram \u2014 Runtime Compatibility",
+   "comments": 5
+  },
+  {
+   "number": 17,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+   "comments": 4
+  },
+  {
+   "number": 18,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+   "comments": 4
+  },
+  {
+   "number": 19,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] FishRings \u2014 APK Execution & Gameplay Proof",
+   "comments": 4
+  },
+  {
+   "number": 20,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] TriPeaks \u2014 APK Execution & Visual Proof",
+   "comments": 4
+  },
+  {
+   "number": 21,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] Bouncy \u2014 APK Execution & Visual Proof",
+   "comments": 4
+  },
+  {
+   "number": 22,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] Stopwatch \u2014 Service-Launch Family",
+   "comments": 4
+  },
+  {
+   "number": 23,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[EXEC] OPMT \u2014 APK Execution & Visual Proof",
+   "comments": 4
+  },
+  {
+   "number": 24,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "S81 \u2014 REAL APP VISUAL COMPATIBILITY: audit ladder, VF fixes, 200-item F-Droid corpus + BATCH-01",
+   "comments": 3
+  },
+  {
+   "number": 25,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-001] com.qwde.ccm \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 26,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-002] com.astroloop.game \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 27,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-003] app.halma \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 28,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-004] com.jeffliu.balancetheball \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 29,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-005] crypto.o0o0o0o0o.games.blackjack \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 30,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-006] eu.veldsoft.no.thanks \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 31,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-007] com.simondalvai.ball2box \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 32,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-008] si.palcka.tarok \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 33,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-009] cos.premy.mines \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 34,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-010] com.sidhant.puzzle \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 35,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-011] com.ivylopez.authsrng \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 36,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-012] io.github.hathibelagal.mykanji \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 37,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-013] io.github.ebraminio.bouncy \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 38,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-014] de.tobiasbielefeld.solitaire \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 39,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-015] eu.quelltext.memory \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 40,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-016] com.sidhant.queens \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 41,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-017] page.codeberg.lanticy.guandan \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 42,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-018] xyz.deepdaikon.quinb \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 43,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-019] com.vayunmathur.games.solitaire \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 44,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-020] bim.app \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 45,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-021] de.schwarz.boardgamepal \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 46,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-022] com.dash1971.maia_chess \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 47,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-023] org.secuso.privacyfriendlybattleship \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 48,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-024] com.kingalex.kingpong \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 49,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-025] com.vovagorodok.blichess \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 50,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-026] io.itch.pirate_solitaire \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 51,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-027] com.dozingcatsoftware.dodge \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 52,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-028] com.helddertierwelt.mentalmath \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 53,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-029] com.sidhant.bubbleshooter \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 54,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-030] net.tigr.navyfleetbattle \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 55,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-031] com.hazelhope.dubster.hamtest \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 56,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-032] ca.rmen.nounours \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 57,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-033] com.nima.triviaapp \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 58,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-034] ru.wohlsoft.thextech.fdroid \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 59,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-035] com.willie.mancala \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 60,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-036] org.lichess.mobileV2 \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 61,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-037] de.georgsieber.ballbreak \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 62,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-038] com.quietgrid.app \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 63,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-039] com.octbit.rutmath \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 64,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-040] com.galaxyrio.sudokusolver \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 65,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-041] org.lufebe16.pysolfc \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 66,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-042] com.kaeruct.raumballer \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 67,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-043] com.sanskritbasics.memory \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 68,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAME-044] com.smorgasbork.hotdeath \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 69,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-045] com.serwylo.retrowars \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 70,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-046] org.opensurge2d.surgeengine \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 71,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-047] com.eightsines.firestrike.opensource \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 72,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-048] com.clavierhaus.gnubg \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 73,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-049] com.sidhant.arrowescape \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 74,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-050] com.vovagorodok.blidraughts \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 75,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-051] com.yepgoryo.EggReturnsHome \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 76,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-052] com.rocket9labs.boxcars \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 77,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-053] io.github.johnathan.minesweeper \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 78,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-054] org.piepmeyer.gauguin \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 79,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-055] jwtc.android.chess \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 80,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-056] org.pipoypipagames.cowsrevenge \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 81,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAME-057] org.bobstuff.bobball \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 82,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-058] com.vayunmathur.games.alchemist \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 83,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-059] ru.hyst329.openfool \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 84,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-060] org.codeberg.scovillo.bubble \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 85,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-061] com.towerillusion.abdal \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 86,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-062] com.sidhant.blockblast \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 87,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-063] org.quentin_bettoum.librememorygame \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 88,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-064] com.fairytrick.fairymahjong \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 89,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-065] com.tacticmaster \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 90,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-066] com.joeld.minesweeper \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 91,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-067] com.adilhanney.ricochlime \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 92,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-068] com.dozingcatsoftware.cardswithcats \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 93,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-069] eu.veldsoft.scribe4 \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 94,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-070] me.lecaro.breakout \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 95,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-071] cube.run \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 96,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-072] fr.arnaudguyon.spacevertex \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 97,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-073] de.saschahlusiak.freebloks \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 98,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-074] org.secuso.privacyfriendlymemory \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 99,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-075] paper.loop \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 100,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-076] dev.serwin.AnarchRE \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 101,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-077] com.dozingcatsoftware.mouse_pounce \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 102,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-078] com.sidhant.shikaku \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 103,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-079] eve.game.tracker \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 104,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-080] com.sanskritbasics \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 105,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-081] eu.veldsoft.vitosha.blackjack \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 106,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-082] com.mostafa.brickblast \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 107,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-083] com.fr.laboussole.track \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 108,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-084] eu.mokrzycki.learndigits \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 109,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-085] com.game.asteroids_revenge \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 110,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-086] paper.loop2 \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 111,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-087] org.pgnapps.pk2 \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 112,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-088] org.secuso.privacyfriendlydame \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 113,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-089] com.itsfrz.tictactoe \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 114,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-090] nodomain.playmaker \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 115,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-091] com.chenyifaer.fafarunner \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 116,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-092] org.secuso.privacyfriendlysolitaire \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 117,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-093] com.movietrivia.filmfacts \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 118,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-094] com.attenomy.janken \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 119,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-095] com.sidhant.nonogram \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 120,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-096] garden.lina.oblique_strategies \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 121,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAME-097] com.dozingcatsoftware.bouncy \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 122,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-098] com.sidhant.triplematch \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 123,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-099] net.sourceforge.solitaire_cg \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 124,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAME-100] eu.veldsoft.tuty.fruty.slot \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 125,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-001] com.hfut.schedule \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 126,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-002] foehnix.widget \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 127,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-003] de.seemoo.at_tracking_detection \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 128,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-004] org.nitri.opentopo \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 129,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-005] com.newsblur \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 130,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-006] de.taz.android.app.free \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 131,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-007] com.bupkis.tirailleur \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 132,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-008] io.github.aoc_normal \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 133,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-009] fr.shiningcat.binclockwidget \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 134,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-010] net.diffengine.romandigitalclock \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 135,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-011] eu.weblibre.gecko \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 136,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-012] com.jherkenhoff.qalculate \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 137,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-013] site.leos.apps.lespas \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 138,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-014] me.river.nightbell \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 139,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-015] com.madlonkay.orgro \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 140,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-016] org.forkgram.classic \u2014 compatibility report",
+   "comments": 1
+  },
+  {
+   "number": 141,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-017] com.kompact \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 142,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-018] com.ma.tehro \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 143,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-019] net.bible.android.activity \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 144,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-020] net.osmand.plus \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 145,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-021] com.tutpro.baresip.plus \u2014 compatibility report",
+   "comments": 5
+  },
+  {
+   "number": 146,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-022] it.fast4x.riplay \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 147,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-023] org.stingle.photos \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 148,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-024] com.forrestguice.suntimeswidget \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 149,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-025] com.vayunmathur.clock \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 150,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-026] com.luc4n3x.levyra \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 151,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-027] com.firebirdberlin.nightdream.noGms \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 152,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-028] com.vagujhelyigergely.calculatorm3 \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 153,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-029] com.hegocre.nextcloudpasswords \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 154,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-030] com.chmouel.liseur \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 155,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-031] protectedwp.safespace \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 156,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-032] dev.gpxit.app \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 157,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-033] com.srkovnar.legacyphotoframe \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 158,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-034] com.nfcarchiver.nfc_archiver \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 159,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-035] org.ojrandom.paiesque \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 160,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-036] com.greenart7c3.nostrsigner \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 161,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-037] com.divinelink.scenepeek \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 162,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-038] app.fedilab.castlab \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 163,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-039] de.schliweb.makeacopy \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 164,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-040] fr.corenting.convertisseureurofranc \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 165,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-041] io.paperterm.app \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 166,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 167,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-043] com.kolakek.pimiwidget \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 168,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-044] is.xyz.mpv \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 169,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-045] orinasa.njarasoa.maripanatokana \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 170,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-046] tibarj.tranquilstopwatch \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 171,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-047] com.davidtakac.bura \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 172,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-048] m.co.rh.id.a_news_provider \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 173,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-049] de.quaddyservices.dynamicnightlight \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 174,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-050] com.ominous.quickweather \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 175,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-051] cn.rbc.termuc \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 176,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-052] com.kaii.photos \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 177,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-053] com.co3 \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 178,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-054] com.crome.forecastpoint \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 179,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-055] com.metromusic \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 180,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-056] com.bbzone.isitprime \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 181,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-057] com.vsmartcard.acardemulator \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 182,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-058] com.iris.gallery \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 183,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-059] com.adeeteya.digital_calculator \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 184,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-060] lab.rreedd.oriens \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 185,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-061] org.godotengine.editor.v4 \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 186,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-062] foss.cnugteren.nlweer \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 187,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-063] com.axiel7.anihyou \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 188,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-064] joshuatee.wx \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 189,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-065] net.aliasvault.app \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 190,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-066] uk.org.boddie.android.weatherforecast \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 191,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-067] de.phasenrauscher.bicyweather \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 192,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-068] com.fixupxer \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 193,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-069] com.github.vauvenal5.yaga \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 194,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-070] fr.ign.geoportail \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 195,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-071] com.kylecorry.trail_sense \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 196,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-072] de.kaffeemitkoffein.tinyweatherforecastgermany \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 197,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-073] dudeofx.eval \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 198,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-074] it.rignanese.leo.slimfacebook \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 199,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-075] org.fossify.gallery \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 200,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-076] deckers.thibault.aves.libre \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 201,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-077] io.github.lordofpolls.shellwave \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 202,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-078] org.fossify.clock \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 203,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-079] com.justdeax.composeStopwatch \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 204,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-080] yetzio.yetcalc \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 205,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-081] trailence.org \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 206,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-082] com.barghest.mesh \u2014 compatibility report",
+   "comments": 4
+  },
+  {
+   "number": 207,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-083] dev.otaj.zelp \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 208,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-084] takagi.ru.monica.fdroid \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 209,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-085] org.fossify.math \u2014 compatibility report",
+   "comments": 0
+  },
+  {
+   "number": 210,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-086] com.vicolo.chrono \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 211,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-087] com.freetime.geoweather \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 212,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-088] com.foxdebug.acode \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 213,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-089] me.timeto.app \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 214,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-090] org.sherpr.app \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 215,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-091] org.y20k.transistor \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 216,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-092] org.asafonov.weather \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 217,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-093] com.agatamessina.webinspector \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 218,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-094] com.fpf.smartscan \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 219,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-095] org.billthefarmer.buses \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 220,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-096] dev.cipher.notes \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 221,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-097] io.github.x0b.rcx \u2014 compatibility report",
+   "comments": 2
+  },
+  {
+   "number": 222,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-098] com.google.android.stardroid \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 223,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-099] duress.ultimate \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 224,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[APP-100] com.artifex.mupdf.viewer.app \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 225,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MAND-001] se.tube42.p9.android \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 226,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MAND-002] io.timelimit.android.aosp.direct \u2014 compatibility report",
+   "comments": 3
+  },
+  {
+   "number": 227,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-156] onCreate APP-BOUNDARY-UNWIND family \u2014 root cause (common runtime)",
+   "comments": 4
+  },
+  {
+   "number": 228,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-157] libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier) \u2014 root cause (common runtime)",
+   "comments": 0
+  },
+  {
+   "number": 229,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[VF-NEW-003] IMAGE_DECODED_VS_RENDERED_GAP chain \u2014 root cause (common runtime, visual)",
+   "comments": 1
+  },
+  {
+   "number": 230,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-161] Compose UI runtime internals \u2014 deferred-exception family (S84 NEW-50 fan-out, ~24 titles)",
+   "comments": 0
+  },
+  {
+   "number": 231,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-162] androidx savedstate generated-adapter family \u2014 deferred CNFE unwind (S84, 12-title fan-out)",
+   "comments": 0
+  },
+  {
+   "number": 232,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[S84] Canonical achievements + 50 NEW titles + README landing page \u2014 wave report",
+   "comments": 0
+  },
+  {
+   "number": 233,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[S97/S98] MICRO-GAP SWEEP master wave \u2014 100 probable-bug tickets + games/demo wave (issue-per-problem law)",
+   "comments": 5
+  },
+  {
+   "number": 234,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-051] Font fallback selection \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 235,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-073] ellipsize \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 236,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-080] Unicode combining marks \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 237,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-081] RTL basic shaping \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 238,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-082] Arabic joining \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 239,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-083] emoji fallback \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 240,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-084] surrogate pairs \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 241,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-085] UTF-8/UTF-16 boundary \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 242,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-115] requestLayout propagation \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 243,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-123] scroll offset \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 244,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-124] translationX \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 245,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-125] translationY \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 246,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-126] scaleX \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 247,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-127] scaleY \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 248,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-128] rotation \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 249,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-129] pivot \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 250,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-171] SharedPreferences default file \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 251,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-172] custom file \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 252,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-173] boolean persistence \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 253,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-174] int persistence \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 254,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-175] long persistence \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 255,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-176] float persistence \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 256,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-177] string persistence \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 257,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-178] editor apply \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 258,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-179] editor commit \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 259,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-180] remove \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 260,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-181] clear \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 261,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-182] contains \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 262,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-183] preference process persistence \u2014 storage/state (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 263,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-214] GIF disposal NONE \u2014 animation (OBSERVED)",
+   "comments": 1
+  },
+  {
+   "number": 264,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-215] GIF disposal BACKGROUND \u2014 animation (OBSERVED)",
+   "comments": 1
+  },
+  {
+   "number": 265,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-216] GIF disposal PREVIOUS \u2014 animation (OBSERVED)",
+   "comments": 1
+  },
+  {
+   "number": 266,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-248] HTTP GET \u2014 network (PENDING)",
+   "comments": 1
+  },
+  {
+   "number": 267,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-047] adaptive icon foreground \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 268,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-048] adaptive icon background \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 269,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-052] Missing glyph detection \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 270,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-053] tofu detection \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 271,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-058] Typeface inheritance \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 272,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-060] letterSpacing \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 273,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-061] lineSpacing \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 274,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-062] includeFontPadding \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 275,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-067] font ascent \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 276,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-068] font descent \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 277,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-071] whitespace handling \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 278,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-072] tab handling \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 279,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-074] maxLines \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 280,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-075] singleLine \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 281,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-076] textColor alpha \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 282,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-077] Spannable basic spans \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 283,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-078] foreground color span \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 284,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-079] style span \u2014 text/font (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 285,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-086] font file loading failure semantics \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 286,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-087] Android resource font family \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 287,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-088] downloadable-font failure fallback \u2014 text/font (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 288,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-116] invalidate propagation \u2014 layout/geometry (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 289,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-130] ViewGroup child ordering \u2014 layout/geometry (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 290,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-001] Drawable XML parsing edge cases \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 291,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-002] Vector viewportWidth/viewportHeight \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 292,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-003] Vector path fillType \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 293,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-004] Vector path winding \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 294,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-005] Vector path strokeWidth \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 295,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-006] Vector path strokeLineCap \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 296,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-007] Vector path strokeLineJoin \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 297,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-008] Vector path trimPath \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 298,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-009] Vector group pivotX/pivotY \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 299,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-010] Vector group rotation \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 300,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-011] Vector group scale \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 301,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-012] Vector group translation \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 302,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-013] Vector nested group transforms \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 303,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-014] Vector alpha inheritance \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 304,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-015] Drawable alpha inheritance \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 305,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-016] Layer-list ordering \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 306,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-017] Layer-list inset \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 307,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-020] State-list selected state \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 308,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-021] State-list disabled state \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 309,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-022] State-list checked state \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 310,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-023] State-list state fallback \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 311,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-024] NinePatch basic padding \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 312,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-025] NinePatch stretch region \u2014 resource/asset (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 313,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-046] mipmap XML indirection \u2014 resource/asset (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 314,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-204] scaling filter quality classes \u2014 graphics/render (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 315,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-207] canvas translation \u2014 graphics/render (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 316,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-208] canvas scale \u2014 graphics/render (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 317,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-209] canvas rotation \u2014 graphics/render (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 318,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-210] nested transforms \u2014 graphics/render (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 319,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-146] event cancellation \u2014 input (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 320,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-147] multiple pointer IDs \u2014 input (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 321,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-149] touch outside bounds \u2014 input (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 322,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-150] translated view hit testing \u2014 input (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 323,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 324,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-228] wrong-order frame detection \u2014 animation (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 325,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-229] disappearing-object detection \u2014 animation (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 326,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-298] timezone \u2014 system/edge (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 327,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-299] locale \u2014 system/edge (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 328,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-310] class initialization ordering \u2014 system/edge (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 329,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-169] saved instance state \u2014 lifecycle (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 330,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[MG-170] Bundle persistence \u2014 lifecycle (PARTIAL)",
+   "comments": 0
+  },
+  {
+   "number": 331,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-231] SoundPool initialization \u2014 audio (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 332,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 333,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[MG-233] resource audio loading \u2014 audio (PARTIAL)",
+   "comments": 1
+  },
+  {
+   "number": 334,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-1] Full-load 5-10 games end-to-end (launch + render + interaction evidence)",
+   "comments": 1
+  },
+  {
+   "number": 335,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-2] Autonomous Snake Deluxe play (self-play, no game-memory cheating)",
+   "comments": 1
+  },
+  {
+   "number": 336,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-3] House-building autonomous play (Minicraft)",
+   "comments": 1
+  },
+  {
+   "number": 337,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-4] NEW snake variant \u2014 build, load, autonomous play",
+   "comments": 1
+  },
+  {
+   "number": 338,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-5] Autonomous 2048 play",
+   "comments": 1
+  },
+  {
+   "number": 339,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAMES-6] Autonomous Mini Tetris play",
+   "comments": 1
+  },
+  {
+   "number": 340,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-7] Autonomous TicTacToe Deluxe play",
+   "comments": 1
+  },
+  {
+   "number": 341,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[GAMES-8] Wave evidence package + gh-pages gameplay GIFs",
+   "comments": 1
+  },
+  {
+   "number": 342,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier \u2014 theme attr resolution gap for non-AppCompat-ancestor themes (mykanji family)",
+   "comments": 1
+  },
+  {
+   "number": 343,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-166] androidx ConstraintLayout core interpreter frontier \u2014 ConstraintWidgetContainer solve never populates core widgets (no.thanks onLayout NPE family)",
+   "comments": 0
+  },
+  {
+   "number": 344,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-167] blank-render L0 family \u2014 rc=0 games that never draw (klondike/tripeaks/memory/blackjack/counting/accelerace/kingpong/bouncy)",
+   "comments": 1
+  },
+  {
+   "number": 345,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[F-NEW-168] crash-on-launch family \u2014 rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-death",
+   "comments": 1
+  },
+  {
+   "number": 346,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-169] SpeedDialView (leinardi) library frontier \u2014 babydots cascade: FAB inflate + FabWithLabelView.init setFocusable NPE",
+   "comments": 0
+  },
+  {
+   "number": 347,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[F-NEW-169] dooz compose-navigation NPE chain \u2014 3 roots after rc=-11 fix",
+   "comments": 1
+  },
+  {
+   "number": 348,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[F-NEW-170] appcompat decor-toolbar construction family (mykanji, post theme-gate fix)",
+   "comments": 1
+  },
+  {
+   "number": 349,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[S102-A] solitaire: R8-merged SavedStateRegistryController \u2014 getSavedStateProvider invoked on null registry receiver inside ComponentActivity.<init>",
+   "comments": 1
+  },
+  {
+   "number": 350,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' \u2014 WindowRecomposer host wiring (solitaire, the real compose-runtime root)",
+   "comments": 1
+  },
+  {
+   "number": 351,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[S102-C] mentalmath: Hilt DI 'ApplicationContextModule must be set' ISE in DaggerMentalMath_HiltComponents_SingletonC$Builder.build",
+   "comments": 0
+  },
+  {
+   "number": 352,
+   "state": "REPO_ISSUE_STATE_CLOSED",
+   "title": "[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking semantics)",
+   "comments": 1
+  },
+  {
+   "number": 353,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[HTML5-APPS] WebView: white screen \u2192 REAL JS execution \u2014 Breakout 71 runs its game loop (#94)",
+   "comments": 14
+  },
+  {
+   "number": 354,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[GAMES] Native game family \u2014 gameplay GIFs, 5 engine-bug laws, verified 3-run titles + the honest 124-reopen audit",
+   "comments": 37
+  },
+  {
+   "number": 355,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Forkgram 12.10.8.0 \u2014 errors 32 \u2192 0, first fully clean run (rc=0, 0 uncaught), real login UI tree; pixels = the frontier",
+   "comments": 5
+  },
+  {
+   "number": 356,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Official Telegram S117\u2192S119 \u2014 the complete first-person journey changelog: first-ever run (5 errors) \u2192 rc=0 \u2192 first login pixels \u2192 first Dialogs-page render",
+   "comments": 3
+  },
+  {
+   "number": 357,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 1/7 \u2014 master index: every claim, the honest white-screen status, and how to verify",
+   "comments": 0
+  },
+  {
+   "number": 358,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 2/7 \u2014 wave 1: official Telegram from first-ever run (5 errors) to rc=0 \u2014 four root causes, forensics, code anchors",
+   "comments": 0
+  },
+  {
+   "number": 359,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 3/7 \u2014 wave 2: the G21 autopsy and seven AOSP measure laws \u2014 the login tree comes on-screen",
+   "comments": 0
+  },
+  {
+   "number": 360,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 4/7 \u2014 the wave-3 record with attribution + the fresh-run proof on the current build",
+   "comments": 0
+  },
+  {
+   "number": 361,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 5/7 \u2014 the tools: full source of all six reproduction scripts + the forensic probe kit",
+   "comments": 0
+  },
+  {
+   "number": 362,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 6/7 \u2014 the complete engine diff of the session (every law change, unified)",
+   "comments": 0
+  },
+  {
+   "number": 363,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "[TELEGRAM] Knowledge transfer 7/7 \u2014 the 190-goal roadmap, the regression-gate method, and the honest frontier",
+   "comments": 0
+  },
+  {
+   "number": 364,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "MASTER EXECUTION REQUEST \u2014 Upstream Reuse + Complete Compatibility Campaign",
+   "comments": 3
+  },
+  {
+   "number": 365,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "MASTER FORENSIC VERIFICATION \u2014 ALL PRIOR REQUESTS / CLAIMED COMPLETIONS / MISSING EVIDENCE",
+   "comments": 2
+  },
+  {
+   "number": 366,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "DIFFERENTIAL EXECUTION \u2014 Why 4 apps work and 5 installed apps stay white",
+   "comments": 3
+  },
+  {
+   "number": 367,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 1/3 \u2014 50 HIGH/HARD CASES",
+   "comments": 1
+  },
+  {
+   "number": 368,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 2/3 \u2014 50 MEDIUM CASES",
+   "comments": 1
+  },
+  {
+   "number": 369,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 3/3 \u2014 8 FINAL CASES",
+   "comments": 1
+  },
+  {
+   "number": 370,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "INSTALL-ENVIRONMENT CAPABILITY GATE \u2014 Complete post-install Android inspection surface for agents",
+   "comments": 2
+  },
+  {
+   "number": 371,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "MASTER CONTINUATION \u2014 Independent verification #364\u2013#369 + full execution #370",
+   "comments": 7
+  },
+  {
+   "number": 372,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT \u2014 330-point black/white/partial/load audit",
+   "comments": 1
+  },
+  {
+   "number": 373,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "ENV-PREREQUISITES \u2014 Android API / CPU / ABI / hardware / software compatibility matrix",
+   "comments": 2
+  },
+  {
+   "number": 374,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "BASE-ANDROID \u2014 Complete Android Platform Contract Foundation Audit",
+   "comments": 1
+  },
+  {
+   "number": 375,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "BASE + CAMPAIGN COMPLETION \u2014 Execute all prior/next missing foundation work and close every evidenced gap",
+   "comments": 10
+  },
+  {
+   "number": 376,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "EXTERNAL ROOT CENSUS \u2014 Deep multilingual root discovery and MiniAndroid cross-match",
+   "comments": 9
+  },
+  {
+   "number": 377,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CONT-6 \u2014 External Root KB Forensic Audit + Runtime Fan-out Validation",
+   "comments": 2
+  },
+  {
+   "number": 378,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CONT-7 \u2014 CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMPOSE/R8 CLASS-IDENTITY",
+   "comments": 1
+  },
+  {
+   "number": 379,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CONT-9 / WAVE 5 \u2014 Compose Continuation Root + External KB Runtime Fan-out",
+   "comments": 1
+  },
+  {
+   "number": 380,
+   "state": "REPO_ISSUE_STATE_OPEN",
+   "title": "CONT-11 / WAVE 7 \u2014 Kotlin stdlib semantic backend investigation + Compose draw frontier",
+   "comments": 1
+  }
+ ]
+}

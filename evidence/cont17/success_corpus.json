@@ -1,0 +1,366 @@
+{
+ "generated": "2026-10-08",
+ "binary": "a8761a482a186eac",
+ "law": "never count a frame as success merely because a PNG exists \u2014 verdict from F-NEW-233 frame truth only",
+ "titles": {
+  "app.varlorg.unote": {
+   "runs": [
+    {
+     "dir": "run/cont16/reg/app.varlorg.unote_1",
+     "screenshot_sha16": "4f1a9e4e8f64fae8",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 7,
+     "app_owned_pixels": 302400,
+     "activity": "app.varlorg.unote.NoteMain",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/app.varlorg.unote_2",
+     "screenshot_sha16": "4f1a9e4e8f64fae8",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 7,
+     "app_owned_pixels": 302400,
+     "activity": "app.varlorg.unote.NoteMain",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/app.varlorg.unote_3",
+     "screenshot_sha16": "4f1a9e4e8f64fae8",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 7,
+     "app_owned_pixels": 302400,
+     "activity": "app.varlorg.unote.NoteMain",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    }
+   ],
+   "provenance": "RUN-FRESH-CONT17",
+   "apk_sha16": "be91103f0e7db443",
+   "apk_path": "upload/canonical_apks/app.varlorg.unote_30.apk",
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "com.darkempire78.opencalculator": {
+   "runs": [
+    {
+     "dir": "run/cont16/reg/com.darkempire78.opencalculator_1",
+     "screenshot_sha16": "a976d2f9fb675cb3",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 35,
+     "app_owned_pixels": 1052351,
+     "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/com.darkempire78.opencalculator_2",
+     "screenshot_sha16": "a976d2f9fb675cb3",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 35,
+     "app_owned_pixels": 1052351,
+     "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/com.darkempire78.opencalculator_3",
+     "screenshot_sha16": "a976d2f9fb675cb3",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 35,
+     "app_owned_pixels": 1052351,
+     "activity": "com.darkempire78.opencalculator.activities.MainActivity",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    }
+   ],
+   "provenance": "RUN-FRESH-CONT17",
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "de.duenndns.gmdice": {
+   "runs": [
+    {
+     "dir": "run/cont16/reg/de.duenndns.gmdice_1",
+     "screenshot_sha16": "f3b483fe7b7cf51b",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 6,
+     "app_owned_pixels": 163612,
+     "activity": "de.duenndns.gmdice.GameMasterDice",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/de.duenndns.gmdice_2",
+     "screenshot_sha16": "f3b483fe7b7cf51b",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 6,
+     "app_owned_pixels": 163612,
+     "activity": "de.duenndns.gmdice.GameMasterDice",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/de.duenndns.gmdice_3",
+     "screenshot_sha16": "f3b483fe7b7cf51b",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 6,
+     "app_owned_pixels": 163612,
+     "activity": "de.duenndns.gmdice.GameMasterDice",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    }
+   ],
+   "provenance": "RUN-FRESH-CONT17",
+   "apk_sha16": "1621eda11b5dbc0c",
+   "apk_path": "upload/canonical_apks/de.duenndns.gmdice_8.apk",
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "dubrowgn.microtimer": {
+   "runs": [
+    {
+     "dir": "run/cont16/reg/dubrowgn.microtimer_1",
+     "screenshot_sha16": "da73010a37dd0189",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 22,
+     "app_owned_pixels": 1029909,
+     "activity": "dubrowgn.microtimer.MainActivity",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/dubrowgn.microtimer_2",
+     "screenshot_sha16": "da73010a37dd0189",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 22,
+     "app_owned_pixels": 1029909,
+     "activity": "dubrowgn.microtimer.MainActivity",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    },
+    {
+     "dir": "run/cont16/reg/dubrowgn.microtimer_3",
+     "screenshot_sha16": "da73010a37dd0189",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 22,
+     "app_owned_pixels": 1029909,
+     "activity": "dubrowgn.microtimer.MainActivity",
+     "renderer_family": "CLASSIC_CANVAS",
+     "auth_root_valid": true
+    }
+   ],
+   "provenance": "RUN-FRESH-CONT17",
+   "apk_sha16": "79c6f730f64886e7",
+   "apk_path": "upload/canonical_apks/dubrowgn.microtimer_8.apk",
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "io.github.yamin8000.dooz": {
+   "provenance": "RUN-FRESH-CONT17 (traced, F-265 frontier row \u2014 NOT a success row)",
+   "apk_sha16": "299eab21ac8b3c61",
+   "apk_path": "upload/canonical_apks/dooz_23_toplevel.apk",
+   "runs": [
+    {
+     "dir": "run/cont17/dooz_traced",
+     "screenshot_sha16": "d602648e8e401895",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "app_draw_ops": 0,
+     "app_owned_pixels": 0,
+     "activity": "io.github.yamin8000.dooz.ui.MainActivity",
+     "renderer_family": "COMPOSE",
+     "auth_root_valid": true
+    }
+   ],
+   "n_runs": 1,
+   "three_run_byte_identical": false,
+   "success_class": "DEFAULT_BACKGROUND_ONLY"
+  },
+  "com.miniandroid.g2048": {
+   "provenance": "RECORDED-CONT15 (six-game claim 6/6 x3)",
+   "apk_sha16": "1b1c602a5f0a2723",
+   "runs": [
+    {
+     "screenshot_sha16": "59ca1526611c4622",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 28,
+     "app_owned_pixels": 1175625
+    },
+    {
+     "screenshot_sha16": "59ca1526611c4622",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 28,
+     "app_owned_pixels": 1175625
+    },
+    {
+     "screenshot_sha16": "59ca1526611c4622",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 28,
+     "app_owned_pixels": 1175625
+    }
+   ],
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "com.miniandroid.tetris": {
+   "provenance": "RECORDED-CONT15 (six-game claim 6/6 x3)",
+   "apk_sha16": "cb2818dfe6c6cadb",
+   "runs": [
+    {
+     "screenshot_sha16": "f360daa244cfca8d",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 71,
+     "app_owned_pixels": 1144478
+    },
+    {
+     "screenshot_sha16": "f360daa244cfca8d",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 71,
+     "app_owned_pixels": 1144478
+    },
+    {
+     "screenshot_sha16": "f360daa244cfca8d",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 71,
+     "app_owned_pixels": 1144478
+    }
+   ],
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "com.miniandroid.minicraft": {
+   "provenance": "RECORDED-CONT15 (six-game claim 6/6 x3)",
+   "apk_sha16": "77b9629ee111b968",
+   "runs": [
+    {
+     "screenshot_sha16": "b0876952f41e4af2",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 401,
+     "app_owned_pixels": 885148
+    },
+    {
+     "screenshot_sha16": "b0876952f41e4af2",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 401,
+     "app_owned_pixels": 885148
+    },
+    {
+     "screenshot_sha16": "b0876952f41e4af2",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 401,
+     "app_owned_pixels": 885148
+    }
+   ],
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "com.miniandroid.snakedeluxe": {
+   "provenance": "RECORDED-CONT15 (six-game claim 6/6 x3)",
+   "apk_sha16": "551eca798f88c1bb",
+   "runs": [
+    {
+     "screenshot_sha16": "34a712689ce66e58",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 263,
+     "app_owned_pixels": 1425075
+    },
+    {
+     "screenshot_sha16": "34a712689ce66e58",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 263,
+     "app_owned_pixels": 1425075
+    },
+    {
+     "screenshot_sha16": "34a712689ce66e58",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 263,
+     "app_owned_pixels": 1425075
+    }
+   ],
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "com.miniandroid.snakeneon": {
+   "provenance": "RECORDED-CONT15 (six-game claim 6/6 x3)",
+   "apk_sha16": "b36885c181a323ab",
+   "runs": [
+    {
+     "screenshot_sha16": "24fb7694eb64634a",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 44,
+     "app_owned_pixels": 172635
+    },
+    {
+     "screenshot_sha16": "24fb7694eb64634a",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 44,
+     "app_owned_pixels": 172635
+    },
+    {
+     "screenshot_sha16": "24fb7694eb64634a",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 44,
+     "app_owned_pixels": 172635
+    }
+   ],
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "com.miniandroid.tictactoedeluxe": {
+   "provenance": "RECORDED-CONT15 (six-game claim 6/6 x3)",
+   "apk_sha16": "d04d92eab8dbbb11",
+   "runs": [
+    {
+     "screenshot_sha16": "af6094295ecb50e3",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 35,
+     "app_owned_pixels": 1071286
+    },
+    {
+     "screenshot_sha16": "af6094295ecb50e3",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 35,
+     "app_owned_pixels": 1071286
+    },
+    {
+     "screenshot_sha16": "af6094295ecb50e3",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 35,
+     "app_owned_pixels": 1071286
+    }
+   ],
+   "n_runs": 3,
+   "three_run_byte_identical": true,
+   "success_class": "REAL_APP_CONTENT"
+  },
+  "rk.android.app.forkgram": {
+   "provenance": "RECORDED-CONT15 (telegram REAL_APP_CONTENT cf4c41e6 x3, canonical-lineage causal chain)",
+   "apk_sha16": "cf4c41e62ceb6557",
+   "runs": [
+    {
+     "screenshot_sha16": "cf4c41e62ceb6557",
+     "verdict": "REAL_APP_CONTENT",
+     "app_draw_ops": 11,
+     "app_owned_pixels": 117133
+    }
+   ],
+   "n_runs": 1,
+   "three_run_byte_identical": false,
+   "success_class": "REAL_APP_CONTENT"
+  }
+ },
+ "summary": {
+  "n_titles": 12,
+  "n_real_app_content": 11
+ }
+}

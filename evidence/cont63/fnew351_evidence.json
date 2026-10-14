@@ -1,0 +1,32 @@
+{
+  "artifact": "fnew351_evidence.json — CONT-63 WAVE 1: F-NEW-351 compose DrawCache vector-icon face ROOT-CAUSED-FIXED. User-priority lane: image/vector loading fidelity (the material-icon black-square face).",
+  "lineage": "local base 63b2075d (the CONT-63-RECOVERY commit: the destructive UUID auto-commit c73c7e6c reverted, worklog history CONT-12..62 + evidence/scripts/fixtures restored, junk cleanup kept) + fix -> binary a00f331a07dfa961",
+  "binary": "a00f331a07dfa961",
+  "root": {
+    "id": "F-NEW-351",
+    "symptom": "dooz v23 180s face: all four material icons (top-bar settings/about, bottom-bar undo, FAB games) rendered as SOLID BLACK 63x63 squares with zero anti-aliasing (pixel census: 3969/4096 pure black in the settings box).",
+    "first_divergence": "op-trace per icon: [ROUNDRECT container transparent][RECT 63x63 ff000000][PATH tone 4d000000][PATH main ff000000] + RecordingCanvas.drawBitmap(bitmap-unresolved) accepted_not_reproduced — the compose DrawCache.clear() drawRect(Black, BlendMode.Clear) painted the cache bitmap SOLID BLACK and the rendered cache never composited (bitmap arg unresolved).",
+    "law": "upstream/s43 ui_android vector/DrawCache.kt:104 (clear() = drawRect(Color.Black, blendMode = BlendMode.Clear)) + Vector.kt:163 (drawCachedImage -> ImageBitmap + Canvas(cacheImage) -> clear(); scale(rootScale) draw() -> prepareToDraw -> drawInto -> drawImage(cacheImage, alpha, colorFilter)); Skia BlendMode::kClear = dst replaced with transparent; AOSP android.graphics.BlendMode = 19-member enum (API 29).",
+    "fix": "generic: DrawOp.blend_mode + Paint.setBlendMode handler + the full BlendMode ordinal table (19 rows) + Bitmap$Config RGBA_F16/HARDWARE + resolve_bitmap_arg wrapper-unwrap (bind + 3 drawBitmap arms, R-NEW-360 field-probe law, bounded 2 levels) + DRAW_RECT/DRAW_PATH replay ERASE via the new FrameBuffer.clear_pixel REPLACE primitive (src-over set_pixel can never express kClear) + sync_shared_state blend parity for bitmap-target sub-recorders. Zero app/R8-specific code.",
+    "second_law_same_wave": "the wrapper-unwrap law resolved the Canvas(cacheImage) bind for compose ImageBitmap wrappers — the cache bitmap now RECEIVES the vector pixels and drawImage composites them (the glyphs, not just the absence of squares)."
+  },
+  "probe": {
+    "apk": "fixtures/fnew351_probe (real aapt2/ECJ/D8; package com.probe.f351)",
+    "apk_sha16": "c6d93226107c081c",
+    "determinism": "screenshot b235bb24717cedae x3 byte-identical (det1/det2/det3)",
+    "battery": "scripts/cont63_verify_f351.py — 14/14 PASS x3: R1 triangle; R2 anti-square circle; R3 tone-alpha; R4 BlendMode.SRC_OVER no-corruption; R5 two-contour single drawPath; R6 path rewind reuse; R7 compose transform pattern (translate+scale 2.75+24-unit disc); R8 paint color-switch; R9 quadTo circle; RA addPath winding; RB interface-wrapper scale replica; RC direct-scale control (documented RD overlay); RD BlendMode.CLEAR view erase; RE bitmap-target CLEAR + getPixel + alpha-faithful composite",
+    "pre_fix_rasterizer_control": "rows R1-RA ran GREEN at the PRE-FIX binary too — the path rasterizer was never the defect; the defect was the blend/enum/wrapper law stack above it"
+  },
+  "regression": {
+    "anchors": "33/33 MATCH x3 ZERO DRIFT (csw d3c26b73ee21e571, dooz15 31ddd4d5b8e6d18e, flappycow 13cf47464d9787f4, g2048 59ca1526611c4622, gmdice 3891679dff449331, microtimer 55343bbec712618d, opencalc f25b754c4565c38b, simplecalc 341b9cec89d8f182, tanana afe0bd8dd4d09ca6, tttdeluxe af6094295ecb50e3, unote 90a67cc1ddda57b7)",
+    "dooz180_repin": "INTENTIONAL: 4f32f50fd55ccf90 -> c94da5a928ea213b x3 byte-identical — the icons now render (settings gear, undo arrow, games glyph, info disc); settings-box census pre 3969-black/4096 vs post 2262-white+1707-black glyph pixels; the ONLY delta band = the icon boxes (per the F-NEW-344 re-pin discipline)",
+    "skill_selftest": "13/13 PASS",
+    "negatives": "19/19 PASS",
+    "reinstall": "8/8 PASS",
+    "multiapp": "ALL PASS (gatea multiapp proof harness: gate_a_probe + chess + bouncy)",
+    "validator": "ALL PASS (V6 reconciliation count 658, V8 legacy counters synced, V9 open_frontiers cleaned — all three PRE-EXISTING staleness faces repaired in-wave per the fix-new-problems-immediately directive)"
+  },
+  "no_app_specific_or_r8_specific_patch": "grep audit on the diff: no package names, no R8 short names, no compose class names in code (the upstream file/line citations live in comments only); the enum table + blend law + wrapper-unwrap are framework-universal.",
+  "honest_limits": "colorFilter TINT at drawBitmap not modeled (icons render with intrinsic vector paint colors — correct for the monochrome material family); the Info icon = full disc (two-tone split renders; the 'i' counter contrast depends on the tone blend — recorded); 2 residual dooz15 drawBitmap-unresolved rows carry arg_fields=(none) — a NULL/never-materialized bitmap producer named by the new diagnostic (follow-up decode, not a regression); the dooz GAME BOARD remains behind AnimatedVisibility(isGameStarted=false) — that is the app's real first-launch behavior, not a rendering gap.",
+  "user_lane_status": "priority 1 (PNG/image loading): vector-icon rendering lane CLOSED for the compose family; bitmap decode (FishRings provenance) + Canvas(Bitmap) (F-NEW-345) + adaptive-icon launcher decode (A7b honest miss) remain the named next surfaces."
+}

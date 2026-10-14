@@ -300,6 +300,16 @@ public:
                                       // headroom over every observed aapt2-merged chain.
                                       uint32_t max_parent_hops = 32) const;
 
+    // F-NEW-319 (AOSP Resources.getStringArray law): resolve an
+    // ARRAY-type entry (res/array or res/string-array) to its string items.
+    // AOSP ResourceTypes: an array entry is a COMPLEX entry whose
+    // ResTable_map items are keyed 0x02000000|index in index order; STRING
+    // items carry their pool string, REFERENCE items dereference through
+    // the canonical resolver (typed arrays mix strings and references).
+    // nullopt = the resid is absent or not an array entry (honest miss).
+    std::optional<std::vector<std::string>> resolve_string_array(
+        uint32_t resource_id) const;
+
     // --- Stats / evidence ----------------------------------------------------
     struct Stats {
         uint32_t package_count = 0;

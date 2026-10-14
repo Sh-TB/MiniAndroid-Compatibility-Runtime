@@ -1,0 +1,35 @@
+{
+ "artifact": "fnew345_evidence.json — CONT-62 WAVE 1: F-NEW-345 bitmap-target Canvas (AOSP Canvas(Bitmap) law) ROOT-CAUSED-FIXED. User-priority lane: PNG/bitmap loading fidelity. (Root was provisionally numbered F-NEW-264 locally; renumbered F-NEW-345 after the post-wave rebase revealed the remote line had taken 260-269 — renumber only, zero content change.)",
+ "lineage": "local base e99c2fbd (cleanup over 6a66806a=CONT-10 W6) + fix -> rebase onto origin/main 0b268d45 (CONT-61 W2: F-NEW-344 compose-text intrinsics + F-NEW-267 tap legs) -> merged binary 5112377f8eadb09a (remote fixes + F-NEW-345)",
+ "binary_before_local_fix": "aed46450c103f2ea (clean rebuild of the CONT-10 lineage; anchors 5/5 x3 zero-drift pre-fix)",
+ "binary_after_merged": "5112377f8eadb09a",
+ "root": {
+  "id": "F-NEW-345",
+  "symptom": "W4 ladder OBSERVED: Canvas.drawBitmap of an IN-MEMORY bitmap (Bitmap.createBitmap + Canvas(bitmap).drawColor) RECORDED the op but produced 0 app-owned pixels; resource-drawable bitmaps composited fine (FishRings provenance).",
+  "first_divergence": "canvas_shadow.cpp Canvas section: `if (!capturing_) return not_handled()` — ALL Canvas ops on a Canvas(Bitmap) target outside the view-draw capture window (the AOSP norm: onCreate-time offscreen rendering) were silently dropped; inside the window they polluted the VIEW op list.",
+  "law": "AOSP graphics/Canvas.java: Canvas(Bitmap)/setBitmap bind the canvas to a bitmap target with its OWN matrix/clip/save state; every op rasterizes eagerly INTO that bitmap; the canvas stays live until release().",
+  "fix": "per-canvas sub-recorder (same op laws, isolated matrix/clip/save state) + eager flush into BitmapStore after each op (replay over a temp SoftwareCanvas wrapping the bitmap pixels, copy-in/copy-out); sync_shared_state mirrors Paint/Path state; re-arm capturing_ after each flush; getWidth/getHeight answer bitmap dims; bind of unknown/empty bitmap = honest warn_noop.",
+  "second_root_same_wave": "flush originally left the sub-recorder dead: replay() ends with capturing_=false (view-frame lifecycle law) so ops after the first flush were dropped (probe row R2 exposed it). Fix: re-arm capturing_=true after every flush (a bitmap canvas is not a frame)."
+ },
+ "probe": {
+  "apk": "fixtures/fnew345_probe (real aapt2/ECJ/D8; package com.probe.f345)",
+  "apk_sha16": "55d270f82b91caeb",
+  "rows": {
+   "R1_createBitmap_drawColor_composites": "PASS — fb(110,130)=(204,34,34) EXACT; fb(105,125)=(204,34,34) EXACT",
+   "R2_state_persistence_translate_rect": "PASS — fb(135,145)=(34,170,68) EXACT at bitmap(30..40,20..30); negative fb(105,125) stays red",
+   "R3_getPixel_readback": "PASS — on-screen readback ffcc2222/ff22aa44",
+   "R4_no_view_pollution": "PASS — fb(600,900)=(48,48,48) EXACT"
+  },
+  "determinism": "screenshot afbbf73642515131 x3 byte-identical (IDENTICAL to the pre-rebase f264-package probe — the rendered pixels are package-name-independent, an extra determinism cross-check)",
+  "pixel_verify": "scripts/cont62_verify_f345.py — 6/6 PASS"
+ },
+ "regression": {
+  "anchors": "33/33 MATCH (11 rows x3: dooz 31ddd4d5b8e6d18e, microtimer 55343bbec712618d, unote 90a67cc1ddda57b7, gmdice 3891679dff449331, opencalc f25b754c4565c38b, tttdeluxe af6094295ecb50e3, flappycow 13cf47464d9787f4, g2048 59ca1526611c4622, tanana afe0bd8dd4d09ca6, csw d3c26b73ee21e571, simplecalc 341b9cec89d8f182) — ZERO DRIFT at the merged binary; tanana/csw/simplecalc rows ran from upload/cont54_refetch/ substitutes (tmp/ originals reset-lost) and matched byte-exactly, transitively proving APK identity",
+  "skill_selftest": "13/13 PASS",
+  "gate_a": "98 PASS / 0 FAIL / 1 INFO",
+  "negatives": "19/19 PASS",
+  "note": "cont37 probe batteries (f259g/fnew298/f286) not re-run this wave: the F-NEW-345 change surface (bitmap-target canvas routing) is disjoint from those laws' surfaces; the 33/33 anchor wall + gate A + negatives cover the merged binary."
+ },
+ "no_app_specific_or_r8_specific_patch": "The fix keys on the AOSP Canvas(Bitmap)/setBitmap contract and the BitmapStore — receiver-generic.",
+ "honest_limits": "nearest-neighbour/affine per existing replay laws; eager copy-in/copy-out flush (large-bitmap perf unmeasured); bitmap-canvas drawText uses the engine default BitmapFont law."
+}

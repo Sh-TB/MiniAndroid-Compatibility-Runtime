@@ -1,0 +1,54 @@
+{
+ "wave": "CONT-66",
+ "head": "6bf640b9",
+ "binary_fixed": "b3e221442920f7da",
+ "laws": [
+  "F-NEW-360",
+  "F-NEW-361",
+  "F-NEW-362"
+ ],
+ "gate": {
+  "wall": {
+   "MATCH": [
+    "csw",
+    "dooz",
+    "flappycow",
+    "g2048",
+    "gmdice",
+    "opencalc",
+    "tanana",
+    "tttdeluxe",
+    "unote"
+   ],
+   "REPIN_XML_TRUE": {
+    "microtimer": [
+     "55343bbec712618d",
+     "bbd350b6c14fbd52"
+    ],
+    "simplecalc": [
+     "341b9cec89d8f182",
+     "2ac5d8d0cbf9552a"
+    ]
+   }
+  },
+  "dooz180": "c94da5a928ea213b x3 MATCH",
+  "runs": "36 (33 wall + 3 dooz180), all deterministic"
+ },
+ "bmi": {
+  "before": "fb7c45d12014e366",
+  "after": "f45d6c6603e93fc5",
+  "rightmost_ink": [
+   1079,
+   1037
+  ],
+  "glyph_x": [
+   4,
+   46
+  ]
+ },
+ "input_chain": {
+  "tap": "135,1061@3 / 149,1037@3",
+  "click_audit": "dispatch_ok=true ins=53",
+  "throw": "NumberFormatException For input string \"\" at calculator/d;.a pc=8"
+ }
+}

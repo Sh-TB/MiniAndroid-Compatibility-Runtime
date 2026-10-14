@@ -1,0 +1,1 @@
+dooz v23 post-fix: 0 AIOOBE, 0 HALT-LOOP

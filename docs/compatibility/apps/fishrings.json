@@ -1,153 +1,151 @@
 {
- "record_type": "app_dossier",
- "schema_version": 1,
- "package": "eu.veldsoft.fish.rings",
- "status_note": null,
- "source": {
-  "repository": "https://bitbucket.org/gnastler/Fish-Rings-for-Android (vendored)",
-  "commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
-  "license": null,
-  "note": "upstream clone vendored at upstream/corpus/eu.veldsoft.fish.rings with PROVENANCE.json"
- },
- "apk": {},
- "build": null,
- "min_sdk": null,
- "target_sdk": null,
- "manifest_summary": null,
- "lifecycle": {},
- "framework_apis": [],
- "view_hierarchy": null,
- "resources": {},
- "layout": {},
- "rendering": {
-  "meaningful_frame": "DONE",
-  "pixels": "board 2073360 px (frames 4-8; splash 0 px frames 0-3)",
-  "sha256_16": "19af37b69965fc48"
- },
- "input": {
-  "tap": "OBSERVED (historical: S65 S10 PROVEN 3 input->state->changed-frame interactions det x3; F-142 board fix)"
- },
- "state": {
-  "transitions": "S65: 3 input->state->changed-frame interactions, deterministic x3 (S10)"
- },
- "concurrency": {},
- "storage": {},
- "persistence": {
-  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
-  "probe": "relaunch_same_data_root (s74-ops)",
-  "verdict": "NO_PERSISTENCE_OBSERVED"
- },
- "network": {
-  "requested": [],
-  "observed": [],
-  "apis": [],
-  "status": "NOT_OBSERVED"
- },
- "security": {
-  "permissions_declared": [
-   "android.permission.INTERNET"
-  ],
-  "permissions_observed": [],
-  "exported_components": [],
-  "filesystem": "NOT_OBSERVED",
-  "network": "NOT_OBSERVED",
-  "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
-  "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
-  "launchable_activities": [
-   "eu.veldsoft.fish.rings.SplashActivity"
-  ],
-  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
- },
- "evidence": {
-  "primary": [
-   "docs/evidence/S73/S73_REPORT.md",
-   "docs/evidence/s65_spotlight/S65_REPORT.md"
-  ],
-  "screenshot_sha256_16": "19af37b69965fc48",
-  "determinism": "S65 det x3"
- },
- "regression": "battery 26/26 + verifier 26/26 + fidelity 90/90 + det x2 board states (cb9ef295be/fd3319ff72/0c74b09a8b)",
- "blocker": "game-logic depth (real ring rotation rules) unexercised at HEAD; input legs historical",
- "next_task": "tap-based rotation interaction probe at HEAD (completes V2/V3 stages)",
- "completion": {
-  "C1_apk_load": "DONE",
-  "C2_manifest_lifecycle": "DONE",
-  "C3_view_framework": "DONE",
-  "C4_measure_layout": "DONE",
-  "C5_render": "DONE",
-  "C6_input": "OBSERVED",
-  "C7_state_change": "OBSERVED",
-  "C8_rerender": "OBSERVED",
-  "C9_persistence": "PENDING",
-  "C10_concurrency": "PENDING",
-  "C11_security_sandbox": "OBSERVED",
-  "C12_determinism": "DONE",
-  "C13_regression": "DONE",
-  "C14_evidence": "DONE"
- },
- "links": {
-  "issue": null,
-  "laws": [
-   "LAW-F142"
-  ],
-  "capabilities": [
-   "cap-view-inflate-layout",
-   "cap-state-change-observability"
-  ],
-  "knowledge": [],
-  "evidence_files": []
- },
- "name": "FishRings",
- "status": "PARTIAL",
- "issue": 19,
- "issue_state": "open (S10 interaction chain CLOSED at HEAD; game-end loop open)",
- "app_id": "fishrings",
- "visual_evidence": {
-  "status": "HUMAN_VISIBLE",
-  "execution_stage": [
-   "V0 launch (splash 0 px)",
-   "V1 board"
-  ],
-  "note": "full colored ball board + rotation arrows + ebinqo logo at HEAD (frames 4+; splash frames 0-3 are 0 px by app design)",
-  "representative_frames": [
-   "01_launch.png",
-   "02_mid_maxdiff.png",
-   "03_final.png"
-  ],
-  "bundle": "docs/evidence/s74_ops/fishrings/",
-  "session": "docs/evidence/s74_ops/fishrings/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
- },
- "what_actually_happened": {
-  "PROVEN": [
-   "board render at HEAD (frame family matching S73 2073360 px record)"
-  ],
-  "OBSERVED": [],
-  "IMPLEMENTED": [],
-  "RESEARCHED": [],
-  "NOT_OBSERVED": [
-   "input interaction at HEAD (S65 historical: fr_board_after_taps; this wave ran launch-only)",
-   "game-logic depth (rotation/capture chain)"
-  ],
-  "BLOCKED": [],
-  "SUPERSEDED": []
- },
- "sandbox_profile": {
-  "data_root_probed": true,
-  "observation": "no files created",
-  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
- },
- "ops_wave": {
-  "wave": "S74 FOLLOW-UP (operational base completion)",
-  "runtime_commit": "3505591b",
-  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
-  "evidence_bundle": "docs/evidence/s74_ops/fishrings/",
-  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- },
- "last_error": "S79: taps dispatched but board static — GameActivity.sound() NPE on null MediaPlayer (F-155, create REC-MISS stub)",
- "root_cause": "F-155 ROOT-CAUSED (MediaPlayer object law gap) — FIXED R-NEW-400",
- "last_fix": "R-NEW-400: create → non-null PREPARED player; state table enforced; 0 NPEs post-fix",
- "next_probe": "catch-the-fish full gameplay loop to game end (win/completion condition) — interaction chain now open at HEAD",
- "session": "S79 (run/s79_reproofs/fishrings_r400{,_run2})"
+  "record_type": "app_dossier",
+  "schema_version": 1,
+  "package": "eu.veldsoft.fish.rings",
+  "status_note": null,
+  "source": {
+    "repository": "https://bitbucket.org/gnastler/Fish-Rings-for-Android (vendored)",
+    "commit": "dc3807e7d405843453afc798c6cc02205b65e1fb",
+    "license": null,
+    "note": "upstream clone vendored at upstream/corpus/eu.veldsoft.fish.rings with PROVENANCE.json"
+  },
+  "apk": {},
+  "build": null,
+  "min_sdk": null,
+  "target_sdk": null,
+  "manifest_summary": null,
+  "lifecycle": {},
+  "framework_apis": [],
+  "view_hierarchy": null,
+  "resources": {},
+  "layout": {},
+  "rendering": {
+    "meaningful_frame": "DONE",
+    "pixels": "board 2073360 px (frames 4-8; splash 0 px frames 0-3)",
+    "sha256_16": "19af37b69965fc48"
+  },
+  "input": {
+    "tap": "OBSERVED (historical: S65 S10 PROVEN 3 input->state->changed-frame interactions det x3; F-142 board fix)"
+  },
+  "state": {
+    "transitions": "S65: 3 input->state->changed-frame interactions, deterministic x3 (S10)"
+  },
+  "concurrency": {},
+  "storage": {},
+  "persistence": {
+    "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+    "probe": "relaunch_same_data_root (s74-ops)",
+    "verdict": "NO_PERSISTENCE_OBSERVED"
+  },
+  "network": {
+    "requested": [],
+    "observed": [],
+    "apis": [],
+    "status": "NOT_OBSERVED"
+  },
+  "security": {
+    "permissions_declared": [
+      "android.permission.INTERNET"
+    ],
+    "permissions_observed": [],
+    "exported_components": [],
+    "filesystem": "NOT_OBSERVED",
+    "network": "NOT_OBSERVED",
+    "sensitive_apis": [],
+    "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+    "permissions_declared_source": "aapt2 dump badging at s74-ops HEAD",
+    "launchable_activities": [
+      "eu.veldsoft.fish.rings.SplashActivity"
+    ],
+    "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
+  },
+  "evidence": {
+    "primary": [
+      "docs/evidence/S73/S73_REPORT.md",
+      "docs/evidence/s65_spotlight/S65_REPORT.md"
+    ],
+    "screenshot_sha256_16": "19af37b69965fc48",
+    "determinism": "S65 det x3"
+  },
+  "regression": "battery 26/26 + verifier 26/26 + fidelity 90/90 + det x2 board states (cb9ef295be/fd3319ff72/0c74b09a8b)",
+  "blocker": "game-logic depth (real ring rotation rules) unexercised at HEAD; input legs historical",
+  "next_task": "tap-based rotation interaction probe at HEAD (completes V2/V3 stages)",
+  "completion": {
+    "C1_apk_load": "DONE",
+    "C2_manifest_lifecycle": "DONE",
+    "C3_view_framework": "DONE",
+    "C4_measure_layout": "DONE",
+    "C5_render": "DONE",
+    "C6_input": "OBSERVED",
+    "C7_state_change": "OBSERVED",
+    "C8_rerender": "OBSERVED",
+    "C9_persistence": "PENDING",
+    "C10_concurrency": "PENDING",
+    "C11_security_sandbox": "OBSERVED",
+    "C12_determinism": "DONE",
+    "C13_regression": "DONE",
+    "C14_evidence": "DONE"
+  },
+  "links": {
+    "issue": null,
+    "laws": [
+      "LAW-F142"
+    ],
+    "capabilities": [
+      "cap-view-inflate-layout",
+      "cap-state-change-observability"
+    ],
+    "knowledge": [],
+    "evidence_files": []
+  },
+  "name": "FishRings",
+  "status": "PARTIAL",
+  "issue": 19,
+  "issue_state": "open (S10 interaction chain CLOSED at HEAD; game-end loop open)",
+  "app_id": "fishrings",
+  "visual_evidence": {
+    "status": "HUMAN_VISIBLE",
+    "execution_stage": [
+      "V0 launch (splash 0 px)",
+      "V1 board"
+    ],
+    "note": "full colored ball board + rotation arrows + ebinqo logo at HEAD (frames 4+; splash frames 0-3 are 0 px by app design) [CONT-11 W7: pruned to surviving frames]",
+    "representative_frames": [
+      "02_mid_maxdiff.png"
+    ],
+    "bundle": "docs/evidence/s74_ops/fishrings/",
+    "session": "docs/evidence/s74_ops/fishrings/session.json",
+    "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
+  },
+  "what_actually_happened": {
+    "PROVEN": [
+      "board render at HEAD (frame family matching S73 2073360 px record)"
+    ],
+    "OBSERVED": [],
+    "IMPLEMENTED": [],
+    "RESEARCHED": [],
+    "NOT_OBSERVED": [
+      "input interaction at HEAD (S65 historical: fr_board_after_taps; this wave ran launch-only)",
+      "game-logic depth (rotation/capture chain)"
+    ],
+    "BLOCKED": [],
+    "SUPERSEDED": []
+  },
+  "sandbox_profile": {
+    "data_root_probed": true,
+    "observation": "no files created",
+    "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+  },
+  "ops_wave": {
+    "wave": "S74 FOLLOW-UP (operational base completion)",
+    "runtime_commit": "3505591b",
+    "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+    "evidence_bundle": "docs/evidence/s74_ops/fishrings/",
+    "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+  },
+  "last_error": "S79: taps dispatched but board static — GameActivity.sound() NPE on null MediaPlayer (F-155, create REC-MISS stub)",
+  "root_cause": "F-155 ROOT-CAUSED (MediaPlayer object law gap) — FIXED R-NEW-400",
+  "last_fix": "R-NEW-400: create → non-null PREPARED player; state table enforced; 0 NPEs post-fix",
+  "next_probe": "catch-the-fish full gameplay loop to game end (win/completion condition) — interaction chain now open at HEAD",
+  "session": "S79 (run/s79_reproofs/fishrings_r400{,_run2})"
 }

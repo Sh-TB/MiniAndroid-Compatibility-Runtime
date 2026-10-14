@@ -1,0 +1,70 @@
+{
+ "generated": "2026-10-08 (CONT-18g final review)",
+ "binary": {
+  "sha16": "be95a47f797d3d99",
+  "prior_recorded": "8ee839e718877216",
+  "note": "engine source changed by F-NEW-268/269 fix family; clean rebuild then fix"
+ },
+ "f268_probe": {
+  "apk_sha16": "089eea98dbe6dee2",
+  "PASS": 12,
+  "FAIL": 0,
+  "rows": [
+   "A nase",
+   "B zero-len aget AIOOBE",
+   "C aget null NPE",
+   "D zero-len aput AIOOBE",
+   "E iget null NPE",
+   "F aget in-bounds",
+   "G aput in-bounds",
+   "H split trailing",
+   "I split empty-delim",
+   "J split quote",
+   "K split control",
+   "L throw-null NPE"
+  ],
+  "fixture": "fixtures/f268_exception_probe"
+ },
+ "legacy_probes": {
+  "f259": {
+   "PASS": 7,
+   "FAIL": 0
+  },
+  "f259g": {
+   "PASS": 12,
+   "FAIL": 1
+  },
+  "f266": {
+   "PASS": 6,
+   "FAIL": 0
+  },
+  "fcol": {
+   "PASS": 18,
+   "FAIL": 0
+  },
+  "f268": {
+   "PASS": 12,
+   "FAIL": 0
+  }
+ },
+ "anchors": "18/18 MATCH byte-identical x3 (part1+part2 at be95a47f797d3d99)",
+ "negatives": "19/19 PASS (after gate_a probe-run stage executed in-container)",
+ "reinstall": "8/8 PASS",
+ "skill": "13/13 PASS",
+ "registry": {
+  "before": 576,
+  "after": 578,
+  "new": [
+   "F-NEW-268 ROOT-CAUSED-FIXED",
+   "F-NEW-269 ROOT-CAUSED-FIXED"
+  ]
+ },
+ "refuted_claims": [
+  "class_to_superclass_.find unguarded — all 32 sites end()-checked"
+ ],
+ "documented_design": [
+  "write_v OOB silent discard",
+  "monitor no-op single-threaded"
+ ],
+ "disasm_tool": "scripts/cont18g_f268_disasm.py (correct DEX sizes, engine-pc units)"
+}

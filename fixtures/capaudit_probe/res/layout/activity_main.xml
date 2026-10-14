@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#FF202020">
+
+    <!-- Row1 y=0..200: PNG-RGBA | PNG-palette | JPEG | WebP -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="200px"
+        android:orientation="horizontal">
+        <ImageView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:src="@drawable/png_rgba"/>
+        <ImageView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:src="@drawable/png_palette"/>
+        <ImageView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:src="@drawable/img_jpg"/>
+        <ImageView android:id="@+id/iv_webp" android:layout_width="0px"
+            android:layout_height="match_parent" android:layout_weight="1"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="4px"
+        android:background="#FF000000"/>
+    <!-- Row2 y=204..404: GIF | stripes-bg | curved vector | rounded shape -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="200px"
+        android:orientation="horizontal">
+        <ImageView android:id="@+id/iv_gif" android:layout_width="0px"
+            android:layout_height="match_parent" android:layout_weight="1"/>
+        <View android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:background="@drawable/bg"/>
+        <ImageView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:src="@drawable/vector_icon"/>
+        <View android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:background="@drawable/rounded_shape"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="4px"
+        android:background="#FF000000"/>
+    <!-- Row3 y=408..608: sentinels | weight 1:2 + state-list -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="200px"
+        android:orientation="horizontal">
+        <FrameLayout android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1">
+            <View android:layout_width="60px" android:layout_height="60px"
+                android:layout_gravity="bottom|end" android:layout_marginRight="20px"
+                android:layout_marginBottom="10px" android:background="#FFFF00FF"/>
+            <View android:layout_width="80px" android:layout_height="80px"
+                android:layout_gravity="center" android:background="#FF00FFFF"/>
+        </FrameLayout>
+        <LinearLayout android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:orientation="vertical">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="98px"
+                android:orientation="horizontal">
+                <View android:layout_width="0px" android:layout_height="match_parent"
+                    android:layout_weight="1" android:background="#FFFF0000"/>
+                <View android:layout_width="0px" android:layout_height="match_parent"
+                    android:layout_weight="2" android:background="#FF0000FF"/>
+            </LinearLayout>
+            <Button android:layout_width="match_parent" android:layout_height="98px"
+                android:background="@drawable/statelist" android:text="BTN"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="4px"
+        android:background="#FF000000"/>
+    <!-- Row4 y=612..782: bold | italic | bold-italic | Arabic red | Persian green | CJK orange -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="170px"
+        android:orientation="horizontal">
+        <TextView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="Bb" android:textStyle="bold"
+            android:textSize="40sp" android:textColor="#FFFFFFFF"/>
+        <TextView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="Ii" android:textStyle="italic"
+            android:textSize="40sp" android:textColor="#FFFFFFFF"/>
+        <TextView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="BI" android:textStyle="bold|italic"
+            android:textSize="40sp" android:textColor="#FFFFFFFF"/>
+        <TextView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="مرحبا"
+            android:textSize="34sp" android:textColor="#FFFF2020"/>
+        <TextView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="سلام"
+            android:textSize="34sp" android:textColor="#FF20FF20"/>
+        <TextView android:layout_width="0px" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="你好"
+            android:textSize="34sp" android:textColor="#FFFF8800"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="4px"
+        android:background="#FF000000"/>
+    <!-- Row5 y=786..956: base red 100x100 | blue scaled x2 / y1.5 (code) -->
+    <FrameLayout android:layout_width="match_parent" android:layout_height="170px">
+        <View android:id="@+id/view_base" android:layout_width="100px"
+            android:layout_height="100px" android:layout_gravity="top|start"
+            android:layout_marginLeft="20px" android:layout_marginTop="20px"
+            android:background="#FFFF0000"/>
+        <View android:id="@+id/view_scale" android:layout_width="100px"
+            android:layout_height="100px" android:layout_gravity="center"
+            android:background="#FF0000FF"/>
+    </FrameLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="4px"
+        android:background="#FF000000"/>
+    <!-- Row6 y=960..1080: audio verdict | Row7 y=1080..1200: sandbox verdict -->
+    <TextView android:id="@+id/tv_audio" android:layout_width="match_parent"
+        android:layout_height="120px" android:textSize="30sp"
+        android:textColor="#FFFFF880" android:text="AUDIO PENDING"/>
+    <TextView android:id="@+id/tv_sandbox" android:layout_width="match_parent"
+        android:layout_height="120px" android:textSize="30sp"
+        android:textColor="#FF80FF80" android:text="SBX PENDING"/>
+
+    <!-- Row8 fill: metrics -->
+    <TextView android:id="@+id/tv_metrics" android:layout_width="match_parent"
+        android:layout_height="0px" android:layout_weight="1" android:textSize="30sp"
+        android:textColor="#FF80C0FF" android:text="METRICS PENDING"/>
+</LinearLayout>

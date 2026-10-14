@@ -843,6 +843,28 @@ public:
     uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
         HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
         objects_[obj.object_id] = obj;
+        // CONT-28 (generic diagnostic): env-gated allocation trace. When
+        // MINIANDROID_ALLOC_TRACE names a class-descriptor substring, every
+        // heap allocation whose class matches logs object_id + class + pc +
+        // frame_id to stderr (bounded 200). Read-only, zero app knowledge —
+        // names the ENGINE allocation site for ctor-skip faces (AOSP law:
+        // an object whose <init> never ran must be identifiable).
+        {
+            static thread_local const char* alloc_trace_env =
+                getenv("MINIANDROID_ALLOC_TRACE");
+            if (alloc_trace_env && *alloc_trace_env &&
+                !class_desc.empty() &&
+                class_desc.find(alloc_trace_env) != std::string::npos) {
+                static thread_local uint64_t alloc_trace_n = 0;
+                if (alloc_trace_n < 200) {
+                    fprintf(stderr,
+                            "[ALLOC-TRACE] obj#%u %s pc=%u frame=%u seq=%llu\n",
+                            obj.object_id, class_desc.c_str(), pc, frame_id,
+                            (unsigned long long)(alloc_sequence_ - 1));
+                    ++alloc_trace_n;
+                }
+            }
+        }
         
         // EXP-042 Phase 1: ring-buffer the allocation log. Each json entry is
         // ~256 B; uncapped, 10 M allocations would consume 2.5 GB. With cap=1000
@@ -913,22 +935,38 @@ public:
         if (it == objects_.end()) {
             return std::nullopt;
         }
-        
+
         DalvikValue val = it->second.get_field(field_name);
-        if (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) {
-            // F-NEW-251: a bare-name miss on a DEX-declared field falls back
-            // to the interpreter's qualified slot — one logical field, one
-            // storage identity, regardless of which layer reads it.
-            if (field_key_resolver_ && is_resolvable_bare_name(field_name)) {
-                const std::string qualified =
-                    field_key_resolver_(it->second.class_descriptor, field_name);
-                if (!qualified.empty() && qualified != field_name) {
-                    val = it->second.get_field(qualified);
-                    if (val.type != DalvikType::UNINITIALIZED &&
-                        val.type != DalvikType::REGISTER_UNSET)
-                        return val;
-                }
+        // F-NEW-321 (CONT-50): QUALIFIED-FIRST read for resolvable bare
+        // names on DEX-defined objects. The S134 dual-write's legacy
+        // mirror now lands in the plain slot RAW (superclass writes must
+        // not re-resolve onto a subclass's shadowed slot), so BOTH slots
+        // can be populated and the plain slot can be STALE (the
+        // Atomic*FieldUpdater face: interpreter set→qualified, bare
+        // get→plain hit = the F-NEW-251 split-brain reborn). One logical
+        // field, one storage identity: for a DEX-declared field the
+        // QUALIFIED slot is authoritative; the plain slot is the legacy
+        // compatibility channel only (C++ writers that predate the
+        // resolver). Framework-owned objects keep bare keys end to end.
+        if (field_key_resolver_ && is_resolvable_bare_name(field_name)) {
+            const std::string qualified =
+                field_key_resolver_(it->second.class_descriptor, field_name);
+            if (!qualified.empty() && qualified != field_name) {
+                const DalvikValue qv = it->second.get_field(qualified);
+                const bool q_missing =
+                    qv.type == DalvikType::UNINITIALIZED ||
+                    qv.type == DalvikType::REGISTER_UNSET;
+                if (!q_missing) return qv;
+                // qualified never written: the bare value (if any) is the
+                // only writer's truth (legacy C++ authorship).
+                if (val.type != DalvikType::UNINITIALIZED &&
+                    val.type != DalvikType::REGISTER_UNSET)
+                    return val;
+                return std::nullopt;
             }
+        }
+        if (val.type == DalvikType::UNINITIALIZED ||
+            val.type == DalvikType::REGISTER_UNSET) {
             return std::nullopt;
         }
         return val;
@@ -949,6 +987,28 @@ public:
                 field_key_resolver_(it->second.class_descriptor, field_name);
             if (!qualified.empty() && qualified != field_name)
                 key = qualified;
+        }
+        it->second.set_field(key, value);
+        return true;
+    }
+
+    // F-NEW-321 (CONT-50): RAW exact-key write — no F-NEW-251 bare-name
+    // redirect. The interpreter's S134 dual-write legacy mirror is the one
+    // caller that already KNOWS the field identity (it computed the
+    // qualified primary itself); routing its mirror through the
+    // runtime-class resolver re-resolves the bare name against the
+    // receiver's most-derived declarer, so a SUPERCLASS field write's
+    // mirror lands in the SUBCLASS's shadowed qualified slot (solitaire 71:
+    // ay$a.<init>'s mObservable mirror clobbered c$b.a = the outer
+    // presenter; probe fnew320 N2/PRE face). ART law: a field of a
+    // superclass occupies a distinct slot from a subclass field of the
+    // same name; the mirror is a legacy compatibility channel, not a
+    // second identity resolution.
+    bool set_object_field_raw(uint32_t object_id, const std::string& key,
+                              const DalvikValue& value) {
+        auto it = objects_.find(object_id);
+        if (it == objects_.end()) {
+            return false;
         }
         it->second.set_field(key, value);
         return true;
@@ -1548,6 +1608,26 @@ public:
     // method-entry log gates on this to attribute method entries to the
     // draw phase — evidence for the R-NEW-328 compose draw frontier.
     bool draw_window_active_ = false;
+    // F-NEW-267 (CONT-61): true while a materialized MotionEvent is being
+    // dispatched into a DEX touch override (dispatchTouchEvent/onTouchEvent)
+    // — gates the [TOUCHWIN-BRIDGE] probe (every bridge call the override
+    // makes: which framework answers the compose input pipeline asked for).
+    bool touch_dispatch_active_ = false;
+
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-298 (CONT-37) FRAME-HONESTY: set when an in-draw F084 budget
+    // halt unwound through the draw window — the app's frame NEVER
+    // completed. ART/SurfaceFlinger contract: an unfinished frame is never
+    // presented; the display keeps the last complete frame. The compositor
+    // resets this at the start of each render pass (frame_honesty_begin)
+    // and consults it at the presentation point (frame_honesty_keep_prev).
+    // P1-6 extension recorded PENDING in CONT-36 §6.
+    // ────────────────────────────────────────────────────────────────────
+    bool draw_window_budget_halted_ = false;
+    void frame_honesty_begin() { draw_window_budget_halted_ = false; }
+    bool frame_honesty_keep_prev() const {
+        return draw_window_budget_halted_;
+    }
 
     // S33 diagnostic (env-gated, read-only): TRUE while the F-096 real-DEX
     // onMeasure/onLayout lifecycle dispatch window is open. Method-entry
@@ -1593,6 +1673,25 @@ public:
     bool run_custom_view_constructor(uint32_t view_object_id,
                                      const std::string& class_desc_slashed,
                                      const std::vector<resources::XmlAttrRecord>& xml_attrs = {});
+
+    // F-NEW-309 (AOSP ViewGroup.generateLayoutParams law): the child of a
+    // DEX-defined container carries the CONTAINER'S OWN LayoutParams
+    // subclass, constructed by its real DEX (Context, AttributeSet) ctor
+    // from the child's XML attrs (android:layout_gravity among them —
+    // solitaire's DrawerLayout$g reads it via
+    // obtainStyledAttributes(attrs, {0x010100F3}).getInt(0,0)). Structural
+    // discovery (no name conditions): the parent's "$"-prefixed inner class
+    // whose super is ViewGroup$MarginLayoutParams and which declares the
+    // (Context, AttributeSet) ctor. The generated object is stashed on the
+    // child node (layout_params_object) — ROOT-055 answers it; width/
+    // height write back from the semantic node (the bridge does not read
+    // XML w/h — the runtime's own measure truth, unchanged from ROOT-055).
+    // Returns the heap object id, 0 when the law does not apply (parent
+    // has no discoverable LayoutParams subclass — the AOSP ViewGroup
+    // default then stands, ROOT-055's existing behavior).
+    uint32_t generate_child_layout_params(
+        const std::string& parent_class_desc, uint32_t child_view_id,
+        const std::vector<resources::XmlAttrRecord>& xml_attrs);
 
     // EXP-060: Convenience wrapper — find a View by class descriptor
     // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
@@ -1917,6 +2016,12 @@ public:
     // Built from dex_report_->classes[i].superclass_name.
     // Used by is_subclass_of() for semantic View inheritance resolution.
     std::map<std::string, std::string> class_to_superclass_;
+    // CONT-12 F-NEW-266: memo for the invoke-virtual interface-default
+    // dispatch (key = method-ref class.name + descriptor; value = resolved
+    // interface + method name, or empty on negative resolution). Keeps the
+    // transitive-closure scan off the hot path after first resolution.
+    std::map<std::string, std::pair<std::string, std::string>>
+        iface_default_memo_;
     // S122 (R-NEW-414): DEX class descriptor → (field name → inline
     // initializer type descriptor). Built lazily by scanning each DEX class's
     // <init> bytecode for the javac field-initializer pattern
@@ -2024,6 +2129,30 @@ public:
         DalvikValue& return_val,
         DalvikExecutionResult& result,
         const std::string& method_descriptor
+    );
+
+    // CONT-12 F-NEW-266 (oracle-found law, ART/JVMS 5.4.5 virtual
+    // resolution): an invoke-virtual whose class-hierarchy walk finds no
+    // implementation must CONTINUE the search into the receiver's
+    // transitively implemented interfaces and dispatch the first
+    // code-bearing (default) method with the exact descriptor. The
+    // invoke-interface path already implements this (F-023); invoke-virtual
+    // fell through to the API bridge and silently returned null.
+    // Real-APK face (external-Compose 1.11.4 oracle, no R8):
+    // AndroidComposeView$root$1$1.then(other) → Modifier.then default body
+    // (interface Modifier, transitive via Modifier$Element) returned null →
+    // the chained invoke-interface receiver was null → NPE ×172 →
+    // setContent dead → composition never created.
+    // Bounded: 12 superclass hops, 64-interface closure, memoized positive
+    // and negative results keyed by (method ref, proto).
+    bool try_interface_default_invoke(
+        const std::string& receiver_class,
+        const std::string& method_name,
+        const std::string& method_descriptor,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result,
+        std::string* dispatched_out = nullptr
     );
 
     // AOSP ActivityThread.performLaunchActivity fidelity: after allocating
@@ -2148,7 +2277,58 @@ public:
     // ────────────────────────────────────────────────────────────────────
     static bool f141_is_null_receiver(const DalvikValue& v) {
         return v.type == DalvikType::NULL_REF ||
-               (v.type == DalvikType::OBJECT_REF && v.object_id == 0);
+               (v.type == DalvikType::OBJECT_REF && v.object_id == 0) ||
+               // ── F-NEW-266a CONT-16: DALVIK UNTYPED-REGISTER NULL LAW ──
+               // DEX registers are UNTYPED; `const/4 vN, 0` (the universal
+               // javac/D8 null materialization — const-string/const-class
+               // never emit 0) leaves the register as DalvikValue INT32 0
+               // in this engine. On every instance invoke form the FIRST
+               // register is the receiver and the verifier guarantees it
+               // is the callee class or null — an INT32 0 in that slot is
+               // therefore a typed null (probe face: f266 row D
+               // `OtherDefI o = null; o.other()` — the gate saw INT32 and
+               // the call fell through to a silent stub answer, no NPE).
+               (v.type == DalvikType::INT32 && v.int_val == 0);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-270 (CONT-18h): ROOT-059 ROUTE DOMAIN LAW — framework classes
+    // only. The S113 ROOT-059 null-receiver routing (invoke on a null
+    // receiver of a shadow-claimed class → the shadow's materialization
+    // law instead of the ART NPE) was built for PLATFORM classes (the
+    // androidx WindowInsets chain: Builder→Impl30→consume*). But
+    // ViewShadow's EXP-060 claim heuristic accepts ANY class that is not
+    // framework-prefixed ("user-defined class … could be a View subclass;
+    // let dispatch() decide by method name") — so claims_class() answers
+    // true for every R8-obfuscated Compose-internal class (dooz Lhv0; = a
+    // LongSet, Lvx1;, Lnb0; = CompositionImpl …). Routing THEIR null
+    // receivers past the ART NPE law re-created the exact wrong-site
+    // exception disease F-141 was built to kill: the callee's real DEX
+    // body executed with this=null (live face at be95a47f797d3d99: dooz
+    // Lhv0;.h self-calls Lhv0;.d → iget NPE at pc=17 INSIDE the callee
+    // instead of the ART NPE at the invoke site; the multi-NPE cascade
+    // killed CompositionImpl.composeContent → Lzs.m measure unwind →
+    // blank frame), and the paired silent-swallow face dropped a
+    // null-receiver h() put on the floor with no exception at all.
+    // Law (AOSP-faithful): ART never routes — the interpreter throws NPE
+    // at the invoke site for EVERY null receiver. Shadow materialization
+    // for null platform receivers is a MiniAndroid runtime law that only
+    // makes sense where the runtime IS the platform: framework packages
+    // only. The prefix set mirrors the ViewShadow heuristic's own
+    // framework allowlist plus the kotlinx/xmlpull/json runtime families
+    // the engine serves. Non-framework (user/obfuscated) classes keep
+    // the ART-faithful throw at every invoke format.
+    // ────────────────────────────────────────────────────────────────────
+    static bool f141_is_framework_class(const std::string& cls) {
+        return cls.rfind("Landroid/", 0) == 0 ||
+               cls.rfind("Landroidx/", 0) == 0 ||
+               cls.rfind("Ljava/", 0) == 0 ||
+               cls.rfind("Ljavax/", 0) == 0 ||
+               cls.rfind("Lkotlin/", 0) == 0 ||
+               cls.rfind("Lkotlinx/", 0) == 0 ||
+               cls.rfind("Lcom/google/", 0) == 0 ||
+               cls.rfind("Lorg/xmlpull/", 0) == 0 ||
+               cls.rfind("Lorg/json/", 0) == 0;
     }
 
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): REAL XmlPullParser
@@ -2283,6 +2463,15 @@ public:
     // two ref classes). Returns ref_cls when no DEX declarer exists.
     std::string resolved_field_declarer(const std::string& ref_cls,
                                         const std::string& name) const;
+    // F-NEW-325 (CONT-53): the TRUE DEX declarer — "" when the field is
+    // declared by a FRAMEWORK ancestor (framework-owned, ONE bare slot),
+    // the real DEX declarer class otherwise. resolved_field_declarer
+    // cannot distinguish "the ref class declares it" from "no DEX body on
+    // the chain declares it" (it returns ref_cls for both); the iget/iput
+    // families must key framework-owned fields BARE even when the REF
+    // class is DEX-defined (solitaire: DrawerLayout$g -> width).
+    std::string true_dex_field_declarer(const std::string& ref_cls,
+                                        const std::string& name) const;
     // S122 (R-NEW-414): lazily scan a DEX class's <init> methods for the
     // javac inline field-initializer pattern (new-instance T vN; … ;
     // iput-object vN → F) and record field F → T in init_field_defaults_.
@@ -2293,6 +2482,17 @@ public:
     // coordinate/int fields zeroed; other DEX classes get an empty shell).
     // Returns a null value when the type is not materializable.
     DalvikValue materialize_init_default(const std::string& type_desc);
+    // F-NEW-274 (CONT-22): ART constructor-contract gate for R-NEW-414
+    // initializer materialization. A zero-object may stand in for a real
+    // instance ONLY when the class exposes a ()V constructor — i.e. a legal
+    // construction path exists that yields the zero-state. Classes whose
+    // every <init> takes arguments (R8 merged-lambda classes, capture
+    // holders) write their identity/capture fields ONLY inside those ctors;
+    // fabricating them produces objects that cannot exist on ART and turns
+    // the app's own null-guards into deeper NPEs. Not-DEX-defined classes
+    // (framework types like Rect) keep the old behavior (return true —
+    // materialize_init_default seeds their zero-state itself).
+    bool class_has_no_arg_ctor(const std::string& type_desc);
     
     // Opcode implementations — Invokes
     bool execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
@@ -2492,6 +2692,10 @@ public:
     // the later activity's F-023 links. Keyed by the ActivityShadow
     // current-activity view id.
     std::map<uint32_t, uint32_t> window_decor_for_activity_;
+    // F-NEW-290: Window receiver oid → its WindowManager$LayoutParams
+    // object (AOSP PhoneWindow: mWindowAttributes exists from construction;
+    // getAttributes() NEVER answers null). One LayoutParams per Window.
+    std::map<uint32_t, uint32_t> window_layout_params_;
     // S88 F-NEW-179: path → File object id (distinct dir File per path).
     std::map<std::string, uint32_t> dir_files_;
     // S88 F-NEW-181: code point → boxed Character id (valueOf cache 0..127).
@@ -2824,6 +3028,12 @@ public:
         std::vector<std::tuple<std::string, std::string, int>> rules;
     };
     std::map<uint32_t, UriMatcherState> uri_matchers_;
+    // ── F-NEW-272 (CONT-21/#384): Thread UncaughtExceptionHandler state ──
+    // AOSP Thread law: per-thread handler map + the process default
+    // (RuntimeInit$KillApplicationHandler — never null on a live ART
+    // runtime; materialized lazily on first read).
+    DalvikValue default_uncaught_handler_;
+    std::map<uint32_t, DalvikValue> thread_uncaught_handlers_;
     // IntentFilter state (heap oid → declared actions). AOSP IntentFilter:
     // <init>(String... actions) / addAction(String); match by exact action.
     std::map<uint32_t, std::vector<std::string>> intent_filters_;
@@ -2895,6 +3105,40 @@ public:
                                  const std::string& method,
                                  std::vector<DalvikValue> args,
                                  DalvikValue& ret);
+    // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ──────────
+    // AOSP FragmentController/FragmentManagerImpl stage laws, driven from
+    // the HOST lifecycle boundaries (ExecutionEngine dispatch sites):
+    //   * to_created()  — runs the committed pending-op queue (onAttach →
+    //     onCreate per fragment; AOSP moveToState(CREATED) at the host's
+    //     dispatchActivityCreated window).
+    //   * to_started()  — onCreateView → onViewCreated → onActivityCreated
+    //     → onStart per stage-1 fragment (AOSP CREATED→VIEW_CREATED→STARTED
+    //     on the host's performStart); the returned view attaches into the
+    //     transaction's container node (real measure laws own the geometry).
+    //   * to_resumed()  — onResume per stage-3 fragment.
+    // Each stage skips fragments already at/past it (__frag_stage__ on the
+    // fragment heap object is the single truth) and answers false when no
+    // fragment advanced (bounded [F-NEW-304] diag, never silent).
+    bool advance_fragments_to_created(DalvikExecutionResult& result);
+    bool advance_fragments_to_started(DalvikExecutionResult& result);
+    bool advance_fragments_to_resumed(DalvikExecutionResult& result);
+    // ── F-NEW-339 (CONT-59): XML <fragment> tag instantiation law ────────
+    // AOSP FragmentLayoutInflaterFactory: a <fragment android:name="…">
+    // tag instantiates the named fragment through the FragmentFactory
+    // (no-arg ctor), attaches it to the FragmentManager with the XML
+    // id + tag, and uses the tag's view node as the fragment container
+    // (the F-NEW-304 to_started drain attaches onCreateView's view into
+    // it). The synthetic add-record rides the SAME committed-queue the
+    // DEX commit path uses — one lifecycle owner, no parallel ladder.
+    bool instantiate_fragment_tag(uint32_t container_view_id,
+                                  const std::string& frag_class_desc,
+                                  const std::string& tag, int32_t xml_id);
+    // Platform PreferenceFragment.onCreateView law (AOSP internal
+    // preference_list_fragment contract): builds the real list container
+    // rows for the fragment's parsed preference screen through the
+    // ViewShadow tree (no fixed-geometry hacks — the measure laws size
+    // every row). Returns 0 when the fragment has no parsed screen.
+    uint32_t frag_build_preference_list_view(uint32_t frag_oid);
     // S-1 FIX: the provider install stage (runs at bind entry, every path).
     void install_content_providers(DalvikExecutionResult& result);
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes

@@ -1,0 +1,503 @@
+{
+ "artifacts": [
+  {
+   "artifact": "runtime-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "18fd863f42c06100",
+   "classes_jar_sha16": "57a4a22728458b47",
+   "classes": 764
+  },
+  {
+   "artifact": "runtime-saveable-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "75acd64c040fc768",
+   "classes_jar_sha16": "d67ea117111a273d",
+   "classes": 22
+  },
+  {
+   "artifact": "runtime-retain-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "48d960544c81e82b",
+   "classes_jar_sha16": "371131b73a22168c",
+   "classes": 24
+  },
+  {
+   "artifact": "ui-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "893c3b0a4f90631b",
+   "classes_jar_sha16": "82fa4d600cdbffdb",
+   "classes": 1696
+  },
+  {
+   "artifact": "ui-geometry-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "393066ecd102f8cd",
+   "classes_jar_sha16": "046abc42369640d5",
+   "classes": 19
+  },
+  {
+   "artifact": "ui-graphics-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "4ccaf8e169c158f7",
+   "classes_jar_sha16": "e603bb9757cc3b91",
+   "classes": 314
+  },
+  {
+   "artifact": "ui-text-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "01284212abb9ab6b",
+   "classes_jar_sha16": "59ea065159afc40a",
+   "classes": 427
+  },
+  {
+   "artifact": "ui-unit-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "8b778afa16102b89",
+   "classes_jar_sha16": "8174d77f5b03ef00",
+   "classes": 50
+  },
+  {
+   "artifact": "ui-util-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "d6ca2aaed3f71455",
+   "classes_jar_sha16": "f3906c54d3fc415d",
+   "classes": 9
+  },
+  {
+   "artifact": "foundation-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "a6aac6be46b77569",
+   "classes_jar_sha16": "d046555d433f34de",
+   "classes": 1899
+  },
+  {
+   "artifact": "foundation-layout-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "23ff32f548deccf4",
+   "classes_jar_sha16": "d2bb00a148d27c1e",
+   "classes": 335
+  },
+  {
+   "artifact": "animation-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "4a9534afa595551d",
+   "classes_jar_sha16": "17c18f1e179e7e91",
+   "classes": 297
+  },
+  {
+   "artifact": "animation-core-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "66d489454bfcb123",
+   "classes_jar_sha16": "96c268be093e2590",
+   "classes": 174
+  },
+  {
+   "artifact": "material-ripple-android",
+   "version": "1.11.4",
+   "repo": "google-maven",
+   "apk_version_file": "1.11.4",
+   "sha16": "38bd10db57ffd6f8",
+   "classes_jar_sha16": "afc96b3ea0b5a697",
+   "classes": 40
+  },
+  {
+   "artifact": "material-icons-core-android",
+   "version": "1.7.8",
+   "repo": "google-maven",
+   "apk_version_file": "1.7.8",
+   "sha16": "332c06b25e662cc4",
+   "classes_jar_sha16": "e433f64a31563fa6",
+   "classes": 293
+  },
+  {
+   "artifact": "material3-android",
+   "version": "1.4.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.0",
+   "sha16": "3a37e8b36df3822f",
+   "classes_jar_sha16": "5293787ad0dcb97d",
+   "classes": 1367
+  },
+  {
+   "artifact": "material3-window-size-class-android",
+   "version": "1.4.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.0",
+   "sha16": "97b32a3a7d09c68c",
+   "classes_jar_sha16": "88545fa1283d7db3",
+   "classes": 9
+  },
+  {
+   "artifact": "activity",
+   "version": "1.13.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.13.0",
+   "sha16": "b5541dc5f74e3538",
+   "classes_jar_sha16": "10b1ce80d96f5eba",
+   "classes": 127
+  },
+  {
+   "artifact": "activity-compose",
+   "version": "1.13.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.13.0",
+   "sha16": "ab9dbab873fff677",
+   "classes_jar_sha16": "a72c61c30f76a71e",
+   "classes": 35
+  },
+  {
+   "artifact": "activity-ktx",
+   "version": "1.13.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.13.0",
+   "sha16": "b5541dc5f74e3538",
+   "classes_jar_sha16": "27f9d13cbb14946f",
+   "classes": 0
+  },
+  {
+   "artifact": "lifecycle-runtime-android",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "8711865f8d3603bc",
+   "classes_jar_sha16": "d50215d553b73d1f",
+   "classes": 33
+  },
+  {
+   "artifact": "lifecycle-runtime-ktx-android",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "1fead96607f8b4eb",
+   "classes_jar_sha16": "24bd2f0eeebee7b4",
+   "classes": 0
+  },
+  {
+   "artifact": "lifecycle-runtime-compose-android",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "7b31489e6e162143",
+   "classes_jar_sha16": "044f3cd446c452ba",
+   "classes": 24
+  },
+  {
+   "artifact": "lifecycle-viewmodel-android",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "509aa5c0711e61a1",
+   "classes_jar_sha16": "13467966db82d4e0",
+   "classes": 48
+  },
+  {
+   "artifact": "lifecycle-viewmodel-compose-android",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "2bafd402807bd4af",
+   "classes_jar_sha16": "d6b195a58347b617",
+   "classes": 15
+  },
+  {
+   "artifact": "lifecycle-viewmodel-savedstate-android",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "1761707c1ddee002",
+   "classes_jar_sha16": "7fb42d10ceee4b1d",
+   "classes": 34
+  },
+  {
+   "artifact": "lifecycle-livedata",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "ab9dbab873fff677",
+   "classes_jar_sha16": "9127ae7b51b3335e",
+   "classes": 30
+  },
+  {
+   "artifact": "lifecycle-livedata-core",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "ab9dbab873fff677",
+   "classes_jar_sha16": "6664ca188b60a6b4",
+   "classes": 9
+  },
+  {
+   "artifact": "lifecycle-common (jvm coordinate)",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "n/a",
+   "sha16": "e6a66e67b9f63a0f",
+   "classes_jar_sha16": "e6a66e67b9f63a0f",
+   "classes": 42
+  },
+  {
+   "artifact": "lifecycle-process",
+   "version": "2.11.0",
+   "repo": "google-maven",
+   "apk_version_file": "2.11.0",
+   "sha16": "ab9dbab873fff677",
+   "classes_jar_sha16": "326c81a17a0d2def",
+   "classes": 10
+  },
+  {
+   "artifact": "navigation-compose-android",
+   "version": "2.9.8",
+   "repo": "google-maven",
+   "apk_version_file": "2.9.8",
+   "sha16": "53dccc442276cde3",
+   "classes_jar_sha16": "cde8b0eaa877eb04",
+   "classes": 43
+  },
+  {
+   "artifact": "navigation-runtime-android",
+   "version": "2.9.8",
+   "repo": "google-maven",
+   "apk_version_file": "2.9.8",
+   "sha16": "7d741a3b0a299a8c",
+   "classes_jar_sha16": "c34dc5c90b50e38e",
+   "classes": 50
+  },
+  {
+   "artifact": "navigation-common-android",
+   "version": "2.9.8",
+   "repo": "google-maven",
+   "apk_version_file": "2.9.8",
+   "sha16": "d43832772012afa0",
+   "classes_jar_sha16": "30fe4b66ece1e33f",
+   "classes": 140
+  },
+  {
+   "artifact": "navigationevent-android",
+   "version": "1.0.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.0.0",
+   "sha16": "cda4bb83d1c892a2",
+   "classes_jar_sha16": "525d5f988236caa7",
+   "classes": 29
+  },
+  {
+   "artifact": "navigationevent-compose-android",
+   "version": "1.0.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.0.0",
+   "sha16": "5cee018dbe130b53",
+   "classes_jar_sha16": "d87acddf8384f1c6",
+   "classes": 11
+  },
+  {
+   "artifact": "core",
+   "version": "1.19.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.19.0",
+   "sha16": "dc1b678d58ebcf2b",
+   "classes_jar_sha16": "9c84bdd11f6dcb98",
+   "classes": 1048
+  },
+  {
+   "artifact": "core-ktx",
+   "version": "1.19.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.19.0",
+   "sha16": "db1ae24b15c36358",
+   "classes_jar_sha16": "b08e0f7c85e373d3",
+   "classes": 0
+  },
+  {
+   "artifact": "core-viewtree",
+   "version": "1.0.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.0.0",
+   "sha16": "dc1b678d58ebcf2b",
+   "classes_jar_sha16": "0979a3d91da3a70d",
+   "classes": 1
+  },
+  {
+   "artifact": "savedstate-android",
+   "version": "1.4.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.0",
+   "sha16": "1656ce62cd233d48",
+   "classes_jar_sha16": "70e718fd5b47a440",
+   "classes": 70
+  },
+  {
+   "artifact": "savedstate-compose-android",
+   "version": "1.4.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.0",
+   "sha16": "0f0ae3032d6c6eea",
+   "classes_jar_sha16": "7dee122992fb8de2",
+   "classes": 7
+  },
+  {
+   "artifact": "annotation-experimental",
+   "version": "1.4.1",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.1",
+   "sha16": "6bd4c7c7476f8260",
+   "classes_jar_sha16": "f97daae3e5fa1231",
+   "classes": 6
+  },
+  {
+   "artifact": "customview-poolingcontainer",
+   "version": "1.0.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.0.0",
+   "sha16": "3584102fc49bf399",
+   "classes_jar_sha16": "0690e2d3b17755c3",
+   "classes": 3
+  },
+  {
+   "artifact": "emoji2",
+   "version": "1.4.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.0",
+   "sha16": "433febd3434a4566",
+   "classes_jar_sha16": "3754ea9040ac7b65",
+   "classes": 63
+  },
+  {
+   "artifact": "startup-runtime",
+   "version": "1.1.1",
+   "repo": "google-maven",
+   "apk_version_file": "1.1.1",
+   "sha16": "e0a6329a371262fe",
+   "classes_jar_sha16": "7f90b874051d50d5",
+   "classes": 5
+  },
+  {
+   "artifact": "tracing",
+   "version": "1.2.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.2.0",
+   "sha16": "ab9dbab873fff677",
+   "classes_jar_sha16": "ba2884d7e9f4e315",
+   "classes": 3
+  },
+  {
+   "artifact": "profileinstaller",
+   "version": "1.4.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.4.0",
+   "sha16": "d502141fcce90243",
+   "classes_jar_sha16": "4f5b02cc0ad1d103",
+   "classes": 26
+  },
+  {
+   "artifact": "autofill",
+   "version": "1.0.0",
+   "repo": "google-maven",
+   "apk_version_file": "1.0.0",
+   "sha16": "c9468f56e05006ea",
+   "classes_jar_sha16": "88d069672dd02b16",
+   "classes": 1
+  },
+  {
+   "artifact": "core-runtime",
+   "version": "2.2.0",
+   "repo": "google-maven",
+   "apk_version_file": "task ':arch:core:core-runtime:writeVersi",
+   "sha16": "a1be5e0caa2b0762",
+   "classes_jar_sha16": "c57bea6797743219",
+   "classes": 5
+  },
+  {
+   "artifact": "core-common",
+   "version": "2.2.0",
+   "repo": "google-maven",
+   "apk_version_file": "n/a",
+   "sha16": "65308a06b1c00ee1",
+   "classes_jar_sha16": "65308a06b1c00ee1",
+   "classes": 9
+  },
+  {
+   "artifact": "kotlinx-coroutines-core-jvm",
+   "version": "1.9.0",
+   "repo": "maven-central",
+   "apk_version_file": "1.9.0",
+   "sha16": "ad89c2892235e670",
+   "classes_jar_sha16": "ad89c2892235e670",
+   "classes": 826
+  },
+  {
+   "artifact": "kotlinx-coroutines-android",
+   "version": "1.9.0",
+   "repo": "maven-central",
+   "apk_version_file": "1.9.0",
+   "sha16": "bd783acd2f973884",
+   "classes_jar_sha16": "bd783acd2f973884",
+   "classes": 8
+  },
+  {
+   "artifact": "atomicfu-jvm",
+   "version": "0.23.2",
+   "repo": "maven-central",
+   "apk_version_file": "n/a",
+   "sha16": "101ff43ff563fca1",
+   "classes_jar_sha16": "101ff43ff563fca1",
+   "classes": 26
+  },
+  {
+   "artifact": "kotlinx-collections-immutable-jvm",
+   "version": "0.3.7",
+   "repo": "maven-central",
+   "apk_version_file": "n/a",
+   "sha16": "0c461865231ff825",
+   "classes_jar_sha16": "0c461865231ff825",
+   "classes": 128
+  },
+  {
+   "artifact": "collection-jvm",
+   "version": "1.5.0",
+   "repo": "google-maven",
+   "apk_version_file": "n/a",
+   "sha16": "70b35924e4babcdf",
+   "classes_jar_sha16": "70b35924e4babcdf",
+   "classes": 162
+  },
+  {
+   "artifact": "kotlin-stdlib",
+   "version": "2.1.20",
+   "repo": "maven-central",
+   "apk_version_file": "n/a",
+   "sha16": "65d12d85a3b865c1",
+   "classes_jar_sha16": "1bcc74e8ce84e2c2",
+   "classes": 951
+  }
+ ],
+ "total_classes": 11767,
+ "excluded": [
+  "androidx.annotation:annotation (compile-time only, unpublished binary)"
+ ]
+}

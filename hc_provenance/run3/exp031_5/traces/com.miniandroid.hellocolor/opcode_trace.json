@@ -1,0 +1,377 @@
+{
+  "apk_name": "hello_color.apk",
+  "execution_source": "REAL_DALVIK_INTERPRETER",
+  "timestamp": "2026-09-11T20:11:34Z",
+  "total_instructions": 30,
+  "traces": [
+    {
+      "execution_us": 78.87,
+      "invoked_method": "Landroid/app/Activity;.<init>",
+      "opcode": "invoke-direct",
+      "opcode_hex": "0x1070",
+      "pc": "0x0000",
+      "pc_after": "0x0003",
+      "pc_decimal": 0,
+      "sequence": 0,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 2.006,
+      "opcode": "return-void",
+      "opcode_hex": "0x000e",
+      "pc": "0x0003",
+      "pc_after": "0x0004",
+      "pc_decimal": 3,
+      "return_value": {
+        "type": "void",
+        "value": null
+      },
+      "sequence": 1,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "RETURN"
+    },
+    {
+      "execution_us": 37.459,
+      "invoked_method": "Landroid/app/Activity;.onCreate (super)",
+      "opcode": "invoke-super",
+      "opcode_hex": "0x206f",
+      "pc": "0x0000",
+      "pc_after": "0x0003",
+      "pc_decimal": 0,
+      "sequence": 0,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.491,
+      "opcode": "const/high16",
+      "opcode_hex": "0x0215",
+      "pc": "0x0003",
+      "pc_after": "0x0005",
+      "pc_decimal": 3,
+      "sequence": 1,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 987.449,
+      "invoked_method": "Lcom/miniandroid/hellocolor/MainActivity;.setContentView",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0005",
+      "pc_after": "0x0008",
+      "pc_decimal": 5,
+      "sequence": 2,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 1.918,
+      "opcode": "const",
+      "opcode_hex": "0x0214",
+      "pc": "0x0008",
+      "pc_after": "0x000b",
+      "pc_decimal": 8,
+      "sequence": 3,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 41.517,
+      "invoked_method": "Lcom/miniandroid/hellocolor/MainActivity;.findViewById",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x000b",
+      "pc_after": "0x000e",
+      "pc_decimal": 11,
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 1.588,
+      "opcode": "move-result-object",
+      "opcode_hex": "0x020c",
+      "pc": "0x000e",
+      "pc_after": "0x000f",
+      "pc_decimal": 14,
+      "return_value": {
+        "class": "Landroid/view/View;",
+        "object_id": 8,
+        "type": "object"
+      },
+      "sequence": 5,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 1.131,
+      "opcode": "check-cast",
+      "opcode_hex": "0x021f",
+      "pc": "0x000f",
+      "pc_after": "0x0011",
+      "pc_decimal": 15,
+      "sequence": 6,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.48,
+      "opcode": "const",
+      "opcode_hex": "0x0014",
+      "pc": "0x0011",
+      "pc_after": "0x0014",
+      "pc_decimal": 17,
+      "sequence": 7,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 25.91,
+      "invoked_method": "Landroid/widget/LinearLayout;.setBackgroundColor",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0014",
+      "pc_after": "0x0017",
+      "pc_decimal": 20,
+      "sequence": 8,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.202,
+      "opcode": "const",
+      "opcode_hex": "0x0214",
+      "pc": "0x0017",
+      "pc_after": "0x001a",
+      "pc_decimal": 23,
+      "sequence": 9,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 37.128,
+      "invoked_method": "Lcom/miniandroid/hellocolor/MainActivity;.findViewById",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x001a",
+      "pc_after": "0x001d",
+      "pc_decimal": 26,
+      "sequence": 10,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.416,
+      "opcode": "move-result-object",
+      "opcode_hex": "0x020c",
+      "pc": "0x001d",
+      "pc_after": "0x001e",
+      "pc_decimal": 29,
+      "return_value": {
+        "class": "Landroid/view/View;",
+        "object_id": 10,
+        "type": "object"
+      },
+      "sequence": 11,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.497,
+      "opcode": "check-cast",
+      "opcode_hex": "0x021f",
+      "pc": "0x001e",
+      "pc_after": "0x0020",
+      "pc_decimal": 30,
+      "sequence": 12,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.192,
+      "opcode": "const",
+      "opcode_hex": "0x0014",
+      "pc": "0x0020",
+      "pc_after": "0x0023",
+      "pc_decimal": 32,
+      "sequence": 13,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 15.325,
+      "invoked_method": "Landroid/widget/TextView;.setTextColor",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0023",
+      "pc_after": "0x0026",
+      "pc_decimal": 35,
+      "sequence": 14,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.157,
+      "opcode": "const",
+      "opcode_hex": "0x0214",
+      "pc": "0x0026",
+      "pc_after": "0x0029",
+      "pc_decimal": 38,
+      "sequence": 15,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 24.327,
+      "invoked_method": "Lcom/miniandroid/hellocolor/MainActivity;.findViewById",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0029",
+      "pc_after": "0x002c",
+      "pc_decimal": 41,
+      "sequence": 16,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.291,
+      "opcode": "move-result-object",
+      "opcode_hex": "0x020c",
+      "pc": "0x002c",
+      "pc_after": "0x002d",
+      "pc_decimal": 44,
+      "return_value": {
+        "class": "Landroid/view/View;",
+        "object_id": 11,
+        "type": "object"
+      },
+      "sequence": 17,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.442,
+      "opcode": "check-cast",
+      "opcode_hex": "0x021f",
+      "pc": "0x002d",
+      "pc_after": "0x002f",
+      "pc_decimal": 45,
+      "sequence": 18,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.147,
+      "opcode": "const",
+      "opcode_hex": "0x0014",
+      "pc": "0x002f",
+      "pc_after": "0x0032",
+      "pc_decimal": 47,
+      "sequence": 19,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 17.215,
+      "invoked_method": "Landroid/widget/TextView;.setTextColor",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0032",
+      "pc_after": "0x0035",
+      "pc_decimal": 50,
+      "sequence": 20,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.149,
+      "opcode": "const",
+      "opcode_hex": "0x0214",
+      "pc": "0x0035",
+      "pc_after": "0x0038",
+      "pc_decimal": 53,
+      "sequence": 21,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 22.881,
+      "invoked_method": "Lcom/miniandroid/hellocolor/MainActivity;.findViewById",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0038",
+      "pc_after": "0x003b",
+      "pc_decimal": 56,
+      "sequence": 22,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.229,
+      "opcode": "move-result-object",
+      "opcode_hex": "0x020c",
+      "pc": "0x003b",
+      "pc_after": "0x003c",
+      "pc_decimal": 59,
+      "return_value": {
+        "class": "Landroid/view/View;",
+        "object_id": 14,
+        "type": "object"
+      },
+      "sequence": 23,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.362,
+      "opcode": "check-cast",
+      "opcode_hex": "0x021f",
+      "pc": "0x003c",
+      "pc_after": "0x003e",
+      "pc_decimal": 60,
+      "sequence": 24,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 0.167,
+      "opcode": "const",
+      "opcode_hex": "0x0014",
+      "pc": "0x003e",
+      "pc_after": "0x0041",
+      "pc_decimal": 62,
+      "sequence": 25,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 12.792,
+      "invoked_method": "Landroid/widget/TextView;.setTextColor",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0041",
+      "pc_after": "0x0044",
+      "pc_decimal": 65,
+      "sequence": 26,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 5.383,
+      "opcode": "return-void",
+      "opcode_hex": "0x000e",
+      "pc": "0x0044",
+      "pc_after": "0x0045",
+      "pc_decimal": 68,
+      "return_value": {
+        "type": "void",
+        "value": null
+      },
+      "sequence": 27,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "RETURN"
+    }
+  ]
+}

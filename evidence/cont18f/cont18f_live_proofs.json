@@ -1,0 +1,182 @@
+{
+ "generated": "2026-10-08 (CONT-18f)",
+ "binary": {
+  "path": "miniandroid/build/miniandroid",
+  "sha16": "8ee839e718877216",
+  "recorded_cont18_binary": "8ee839e718877216",
+  "byte_identical_reproduction": true,
+  "build_cmd": "timeout 570 make -j1 BUILD_DIR=build (in miniandroid/); -j2 OOM in this container, -j1 = standing discipline"
+ },
+ "anchors": {
+  "all_match": true,
+  "results": {
+   "io.github.yamin8000.dooz": {
+    "want": "d602648e8e401895",
+    "runs": [
+     "d602648e8e401895",
+     "d602648e8e401895",
+     "d602648e8e401895"
+    ],
+    "match": true
+   },
+   "dubrowgn.microtimer": {
+    "want": "da73010a37dd0189",
+    "runs": [
+     "da73010a37dd0189",
+     "da73010a37dd0189",
+     "da73010a37dd0189"
+    ],
+    "match": true
+   },
+   "app.varlorg.unote": {
+    "want": "4f1a9e4e8f64fae8",
+    "runs": [
+     "4f1a9e4e8f64fae8",
+     "4f1a9e4e8f64fae8",
+     "4f1a9e4e8f64fae8"
+    ],
+    "match": true
+   },
+   "de.duenndns.gmdice": {
+    "want": "f3b483fe7b7cf51b",
+    "runs": [
+     "f3b483fe7b7cf51b",
+     "f3b483fe7b7cf51b",
+     "f3b483fe7b7cf51b"
+    ],
+    "match": true
+   },
+   "com.darkempire78.opencalculator": {
+    "want": "a976d2f9fb675cb3",
+    "runs": [
+     "a976d2f9fb675cb3",
+     "a976d2f9fb675cb3",
+     "a976d2f9fb675cb3"
+    ],
+    "match": true
+   },
+   "jwtc.android.chess": {
+    "want": "b5a7a35d5fe0564b",
+    "runs": [
+     "b5a7a35d5fe0564b",
+     "b5a7a35d5fe0564b",
+     "b5a7a35d5fe0564b"
+    ],
+    "match": true
+   }
+  },
+  "cmd": "bash scripts/cont18_anchors.sh part1 / part2"
+ },
+ "fcol_probe": {
+  "apk_sha16": "d03cc97f82f47c55",
+  "build_script": "scripts/cont11_build_fcol.sh (fixture committed)",
+  "PASS": 18,
+  "FAIL": 0,
+  "rows": {
+   "K1": {
+    "verdict": "PASS",
+    "detail": "g1=true ix=1 cx=true nemp=true sz=3 g2=true sz2=2"
+   },
+   "K2": {
+    "verdict": "PASS",
+    "detail": "prev=x nix=0 g0=X"
+   },
+   "K3": {
+    "verdict": "PASS",
+    "detail": "subList view ok=true"
+   },
+   "K4": {
+    "verdict": "PASS",
+    "detail": "deque ops ok=true order=mz"
+   },
+   "K5": {
+    "verdict": "PASS",
+    "detail": "arraydeque peek=2 ok=true"
+   },
+   "K6": {
+    "verdict": "PASS",
+    "detail": "g=true ck=true sz=2 remOk=true defOk=true def=42 got=null sz2=1"
+   },
+   "K7": {
+    "verdict": "PASS",
+    "detail": "entries=2 sum=30 keys=2"
+   },
+   "K8": {
+    "verdict": "PASS",
+    "detail": "order=first,second,third,"
+   },
+   "K9": {
+    "verdict": "PASS",
+    "detail": "add1=true add2=false size=1"
+   },
+   "K10": {
+    "verdict": "PASS",
+    "detail": "order=o1,o2,o3,"
+   },
+   "K11": {
+    "verdict": "PASS",
+    "detail": "remove law ok=true threw2nd=true"
+   },
+   "K12": {
+    "verdict": "PASS",
+    "detail": "add law ok=true size=3 g1=b pidx=1"
+   },
+   "K13": {
+    "verdict": "PASS",
+    "detail": "removeIf ok=true size=2"
+   },
+   "K14": {
+    "verdict": "PASS",
+    "detail": "sorted [1,2,3] got Ljava/util/ArrayList;@79"
+   },
+   "K15": {
+    "verdict": "PASS",
+    "detail": "stream size=2"
+   },
+   "K16": {
+    "verdict": "PASS",
+    "detail": "bulk ok=true"
+   },
+   "K17": {
+    "verdict": "PASS",
+    "detail": "merge n=3 compute c=9"
+   },
+   "K18": {
+    "verdict": "PASS",
+    "detail": "forEach list=f1;f2; map=mf"
+   }
+  },
+  "baseline_was": "3/18 at CONT-18 T-01 baseline; 18/18 after LAW-A..F (75dae014)",
+  "cmd": "python3 scripts/cont16_probe_run.py run/cont18f/probes fcol"
+ },
+ "tap_frontier": {
+  "apk": "upload/canonical_apks/dooz_23_toplevel.apk",
+  "trace_lines": [
+   "[F117-TAP] frame 15 DOWN (540,960) target=0"
+  ],
+  "post_tap_screenshot_sha16": "d602648e8e401895",
+  "dooz_anchor_sha16": "d602648e8e401895",
+  "byte_identical_pre_post_tap": true,
+  "registered": "F-NEW-267 CLASSIFIED (registry 576 rows)",
+  "cmd": "miniandroid/build/miniandroid run --package io.github.yamin8000.dooz --data-root <store> --trace --max-seconds 120 --frames 30 --tap \"540,960@15\" -o run/cont18f/tap1"
+ },
+ "guard_fix": {
+  "file": "scripts/security/check_secrets.sh",
+  "defect": "GNU grep -r with NO path operands recurses into CWD (verified live); empty --staged list => repo-root scan => .git/config remote PAT false-block",
+  "fix": "empty scan set = NO-OP in scan_one_pattern (fail-closed unchanged)",
+  "selftest": "bash scripts/security/check_secrets.sh --selftest => 7 detection rows PASS + 5 FP rows PASS + empty-list NO-OP law PASS"
+ },
+ "queue_tool": {
+  "file": "scripts/findings_queue.py",
+  "output": [
+   "evidence/cont18f/findings_queue.json",
+   "evidence/cont18f/findings_queue.md"
+  ],
+  "counts": {
+   "total": 576,
+   "queued": 255,
+   "terminal": 321
+  }
+ },
+ "audit_doc": "evidence/cont18f/ORPHAN_FINDINGS_AUDIT.md"
+}

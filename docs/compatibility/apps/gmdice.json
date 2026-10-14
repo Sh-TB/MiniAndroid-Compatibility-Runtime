@@ -1,152 +1,154 @@
 {
- "record_type": "app_dossier",
- "schema_version": 1,
- "package": "de.duenndns.gmdice",
- "status_note": null,
- "source": {
-  "repository": "https://github.com/ge0rg/gamemasterdice",
-  "commit": "6353926f067bd41dd914ec7f530771a586125eb6",
-  "license": "GPLv2",
-  "note": "S63 SOURCE-first spotlight: cloned, built, executed (v1.3 line)"
- },
- "apk": {
-  "sha256_16": "ee9f7396"
- },
- "build": null,
- "min_sdk": null,
- "target_sdk": null,
- "manifest_summary": null,
- "lifecycle": {},
- "framework_apis": [],
- "view_hierarchy": null,
- "resources": {},
- "layout": {},
- "rendering": {
-  "meaningful_frame": "DONE",
-  "pixels": "182628 px",
-  "sha256_16": "a011e9e9eee2cb42"
- },
- "input": {
-  "tap": "OBSERVED (S63: 5/5 clicks -> real handler; historical at S73 recipe)"
- },
- "state": {
-  "transitions": "S63 L7: dice rolled by the APP (6/5/3/2) -> changed frame, diff confined to result band (SHA 5312266e->fa1d8612); SecureRandom IS-A Random bridge F-113 was the root"
- },
- "concurrency": {},
- "storage": {},
- "persistence": {
-  "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
-  "probe": "relaunch_same_data_root (s74-ops)",
-  "verdict": "NO_PERSISTENCE_OBSERVED"
- },
- "network": {
-  "requested": [],
-  "observed": [],
-  "apis": [],
-  "status": "NOT_OBSERVED"
- },
- "security": {
-  "permissions_declared": [],
-  "permissions_observed": [],
-  "exported_components": [],
-  "filesystem": "NOT_OBSERVED",
-  "network": "NOT_OBSERVED",
-  "sensitive_apis": [],
-  "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
-  "launchable_activities": [
-   "de.duenndns.gmdice.GameMasterDice"
-  ],
-  "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
- },
- "evidence": "run/s78_gmdice/clicktest engine.log + frames + manifest.json",
- "regression": "battery 26/26; click-test 5/5 dispatched + results rendered (SETTEXT view_37) on the S79 binary",
- "blocker": "ladder open: input/state legs proven at S63, not re-run at current HEAD (historical)",
- "next_task": "re-pin canonical gmdice APK (source-first rebuild or verified download), then re-prove visible roll chain at HEAD",
- "completion": {
-  "C1_apk_load": "DONE",
-  "C2_manifest_lifecycle": "DONE",
-  "C3_view_framework": "DONE",
-  "C4_measure_layout": "DONE",
-  "C5_render": "DONE",
-  "C6_input": "OBSERVED",
-  "C7_state_change": "OBSERVED",
-  "C8_rerender": "OBSERVED",
-  "C9_persistence": "PENDING",
-  "C10_concurrency": "PENDING",
-  "C11_security_sandbox": "OBSERVED",
-  "C12_determinism": "DONE",
-  "C13_regression": "DONE",
-  "C14_evidence": "DONE"
- },
- "links": {
-  "issue": null,
-  "laws": [
-   "LAW-F113",
-   "LAW-F137",
-   "LAW-F136"
-  ],
-  "capabilities": [
-   "cap-secure-random",
-   "cap-ancestor-dispatch",
-   "cap-state-change-observability"
-  ],
-  "knowledge": [],
-  "evidence_files": []
- },
- "name": "GM Dice",
- "status": "PARTIAL",
- "issue": 17,
- "issue_state": "closed (ladder complete at HEAD)",
- "app_id": "gmdice",
- "visual_evidence": {
-  "status": "HUMAN_VISIBLE",
-  "execution_stage": [
-   "V0 launch",
-   "V1 main UI"
-  ],
-  "note": "dice list + bottom action bar renders; roll result NOT visible at HEAD (S63 roll evidence is historical, older binary)",
-  "representative_frames": [
-   "01_launch.png",
-   "03_final.png"
-  ],
-  "bundle": "docs/evidence/s74_ops/gmdice/",
-  "session": "docs/evidence/s74_ops/gmdice/session.json",
-  "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
- },
- "what_actually_happened": {
-  "PROVEN": [
-   "launch render at HEAD (181,495 px family, consistent with S73 182,628 px record)",
-   "F-113 SecureRandom law record (S63: roll chain SecureRandom.nextInt -> setText, 1,584-px result band) — VERIFIED law, test battery committed"
-  ],
-  "OBSERVED": [
-   "click dispatched to real GameMasterDice listener (view 39 '3D20') — handler executed, no pixel change at HEAD",
-   "tap 348,1848 / 116,1848 hit roll buttons (target 40/39); CLICK result=DISPATCHED"
-  ],
-  "IMPLEMENTED": [],
-  "RESEARCHED": [],
-  "NOT_OBSERVED": [
-   "visible roll result at HEAD (S63 evidence was on an older binary/older local APK copy)",
-   "selectDice() AlertDialog this wave (S63 proved it historically)"
-  ],
-  "BLOCKED": [],
-  "SUPERSEDED": [],
-  "IDENTITY_FLAG": "local APK sha256_16 1621eda11b5dbc0c differs from dossier-recorded ee9f7396 (F-Droid re-download replaced the local cache file at some session); recorded honestly — re-pin canonical APK at next source-first rebuild"
- },
- "sandbox_profile": {
-  "data_root_probed": true,
-  "observation": "no files created",
-  "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
- },
- "ops_wave": {
-  "wave": "S74 FOLLOW-UP (operational base completion)",
-  "runtime_commit": "3505591b",
-  "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
-  "evidence_bundle": "docs/evidence/s74_ops/gmdice/",
-  "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
- },
- "last_error": "S78: multi-roll taps at (540,1714) → target=0 (STALE coordinates — button row is y=1776..1920; NOT a decor law)",
- "root_cause": "refuted S78 decor-offset hypothesis: hit-test works on the row; the tap y was above the buttons",
- "last_fix": "S79: taps at real button center (580,1848) → target=41 → results '6' then '5' across frames (multi-roll closed)",
- "next_probe": "Random.nextInt REC-MISS (F-114 family) — result distribution honesty frontier",
- "session": "S79 (run/s79_reproofs/gmdice_multiroll{,2})"
+  "record_type": "app_dossier",
+  "schema_version": 1,
+  "package": "de.duenndns.gmdice",
+  "status_note": null,
+  "source": {
+    "repository": "https://github.com/ge0rg/gamemasterdice",
+    "commit": "6353926f067bd41dd914ec7f530771a586125eb6",
+    "license": "GPLv2",
+    "note": "S63 SOURCE-first spotlight: cloned, built, executed (v1.3 line)"
+  },
+  "apk": {
+    "sha256_16": "ee9f7396"
+  },
+  "build": null,
+  "min_sdk": null,
+  "target_sdk": null,
+  "manifest_summary": null,
+  "lifecycle": {},
+  "framework_apis": [],
+  "view_hierarchy": null,
+  "resources": {},
+  "layout": {},
+  "rendering": {
+    "meaningful_frame": "DONE",
+    "pixels": "182628 px",
+    "sha256_16": "a011e9e9eee2cb42"
+  },
+  "input": {
+    "tap": "OBSERVED (S63: 5/5 clicks -> real handler; historical at S73 recipe)"
+  },
+  "state": {
+    "transitions": "S63 L7: dice rolled by the APP (6/5/3/2) -> changed frame, diff confined to result band (SHA 5312266e->fa1d8612); SecureRandom IS-A Random bridge F-113 was the root"
+  },
+  "concurrency": {},
+  "storage": {},
+  "persistence": {
+    "status_note": "NO_PERSISTENCE_OBSERVED (no files in data root)",
+    "probe": "relaunch_same_data_root (s74-ops)",
+    "verdict": "NO_PERSISTENCE_OBSERVED"
+  },
+  "network": {
+    "requested": [],
+    "observed": [],
+    "apis": [],
+    "status": "NOT_OBSERVED"
+  },
+  "security": {
+    "permissions_declared": [],
+    "permissions_observed": [],
+    "exported_components": [],
+    "filesystem": "NOT_OBSERVED",
+    "network": "NOT_OBSERVED",
+    "sensitive_apis": [],
+    "status_model": "DECLARED/OBSERVED/ALLOWED/BLOCKED/NOT_OBSERVED/UNKNOWN (never declared->used)",
+    "launchable_activities": [
+      "de.duenndns.gmdice.GameMasterDice"
+    ],
+    "network_observed": "NOT_OBSERVED (runtime has no real network stack; no egress possible)"
+  },
+  "evidence": {
+    "primary": [],
+    "note": "CONT-11 W7: paths re-based to surviving artifacts"
+  },
+  "regression": "battery 26/26; click-test 5/5 dispatched + results rendered (SETTEXT view_37) on the S79 binary",
+  "blocker": "ladder open: input/state legs proven at S63, not re-run at current HEAD (historical)",
+  "next_task": "re-pin canonical gmdice APK (source-first rebuild or verified download), then re-prove visible roll chain at HEAD",
+  "completion": {
+    "C1_apk_load": "DONE",
+    "C2_manifest_lifecycle": "DONE",
+    "C3_view_framework": "DONE",
+    "C4_measure_layout": "DONE",
+    "C5_render": "DONE",
+    "C6_input": "OBSERVED",
+    "C7_state_change": "OBSERVED",
+    "C8_rerender": "OBSERVED",
+    "C9_persistence": "PENDING",
+    "C10_concurrency": "PENDING",
+    "C11_security_sandbox": "OBSERVED",
+    "C12_determinism": "DONE",
+    "C13_regression": "DONE",
+    "C14_evidence": "DONE"
+  },
+  "links": {
+    "issue": null,
+    "laws": [
+      "LAW-F113",
+      "LAW-F137",
+      "LAW-F136"
+    ],
+    "capabilities": [
+      "cap-secure-random",
+      "cap-ancestor-dispatch",
+      "cap-state-change-observability"
+    ],
+    "knowledge": [],
+    "evidence_files": []
+  },
+  "name": "GM Dice",
+  "status": "PARTIAL",
+  "issue": 17,
+  "issue_state": "closed (ladder complete at HEAD)",
+  "app_id": "gmdice",
+  "visual_evidence": {
+    "status": "HUMAN_VISIBLE",
+    "execution_stage": [
+      "V0 launch",
+      "V1 main UI"
+    ],
+    "note": "dice list + bottom action bar renders; roll result NOT visible at HEAD (S63 roll evidence is historical, older binary) [CONT-11 W7: pruned to surviving frames]",
+    "representative_frames": [
+      "01_launch.png"
+    ],
+    "bundle": "docs/evidence/s74_ops/gmdice/",
+    "session": "docs/evidence/s74_ops/gmdice/session.json",
+    "model": "AGENT_OBSERVED vs HUMAN_VISIBLE distinguished per S74-FOLLOW-UP §4"
+  },
+  "what_actually_happened": {
+    "PROVEN": [
+      "launch render at HEAD (181,495 px family, consistent with S73 182,628 px record)",
+      "F-113 SecureRandom law record (S63: roll chain SecureRandom.nextInt -> setText, 1,584-px result band) — VERIFIED law, test battery committed"
+    ],
+    "OBSERVED": [
+      "click dispatched to real GameMasterDice listener (view 39 '3D20') — handler executed, no pixel change at HEAD",
+      "tap 348,1848 / 116,1848 hit roll buttons (target 40/39); CLICK result=DISPATCHED"
+    ],
+    "IMPLEMENTED": [],
+    "RESEARCHED": [],
+    "NOT_OBSERVED": [
+      "visible roll result at HEAD (S63 evidence was on an older binary/older local APK copy)",
+      "selectDice() AlertDialog this wave (S63 proved it historically)"
+    ],
+    "BLOCKED": [],
+    "SUPERSEDED": [],
+    "IDENTITY_FLAG": "local APK sha256_16 1621eda11b5dbc0c differs from dossier-recorded ee9f7396 (F-Droid re-download replaced the local cache file at some session); recorded honestly — re-pin canonical APK at next source-first rebuild"
+  },
+  "sandbox_profile": {
+    "data_root_probed": true,
+    "observation": "no files created",
+    "boundary_note": "sandbox treated as execution boundary: files under app package dir only; no external paths touched"
+  },
+  "ops_wave": {
+    "wave": "S74 FOLLOW-UP (operational base completion)",
+    "runtime_commit": "3505591b",
+    "binary": "miniandroid/build/miniandroid built at HEAD (zero runtime changes this wave)",
+    "evidence_bundle": "docs/evidence/s74_ops/gmdice/",
+    "human_review": "representative frames individually opened and reviewed by the executing agent before status assignment"
+  },
+  "last_error": "S78: multi-roll taps at (540,1714) → target=0 (STALE coordinates — button row is y=1776..1920; NOT a decor law)",
+  "root_cause": "refuted S78 decor-offset hypothesis: hit-test works on the row; the tap y was above the buttons",
+  "last_fix": "S79: taps at real button center (580,1848) → target=41 → results '6' then '5' across frames (multi-roll closed)",
+  "next_probe": "Random.nextInt REC-MISS (F-114 family) — result distribution honesty frontier",
+  "session": "S79 (run/s79_reproofs/gmdice_multiroll{,2})"
 }
