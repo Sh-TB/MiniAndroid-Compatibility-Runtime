@@ -90,15 +90,6 @@ public:
     void set_click_dispatch(ClickFn fn) { click_fn_ = std::move(fn); }
     void set_long_click_dispatch(LongClickFn fn) { long_click_fn_ = std::move(fn); }
     void set_touch_dispatch(TouchFn fn) { touch_fn_ = std::move(fn); }
-    // F-NEW-267 (CONT-61): the lazy DEX override probe — answers whether a
-    // view's class chain defines a method (the touchable gate asks for
-    // dispatchTouchEvent). The dispatcher has no DEX access; the engine
-    // binds the probe where it binds the other bridges.
-    using DexOverrideFn =
-        std::function<bool(const std::string& cls, const std::string& method)>;
-    void set_dex_override_probe(DexOverrideFn fn) {
-        dex_override_probe_ = std::move(fn);
-    }
     void set_intercept_dispatch(InterceptFn fn) {
         intercept_fn_ = std::move(fn);
     }
@@ -186,7 +177,6 @@ private:
     ClickFn click_fn_;
     LongClickFn long_click_fn_;
     TouchFn touch_fn_;               // F-110e
-    DexOverrideFn dex_override_probe_;  // F-NEW-267 (CONT-61)
     InterceptFn intercept_fn_;       // S128 CAP-INPUT-100
     bool touch_listener_owns_ = false;  // F-110e: listener consumed DOWN
 

@@ -846,10 +846,9 @@ void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
                       const renderer::RGBA& color, bool bold, int face_idx) {
     const ShapedText& st = shape(utf8, size_px, bold, face_idx);
     if (getenv("MINIANDROID_S109_BITMAP")) {
-        std::fprintf(stderr, "[S109-SHAPE] draw '%s' glyphs=%zu avail=%d at (%f,%f) size=%f color=(%d,%d,%d,%d)\n",
+        std::fprintf(stderr, "[S109-SHAPE] draw '%s' glyphs=%zu avail=%d at (%f,%f) size=%f\n",
                      utf8.substr(0, 24).c_str(), st.glyphs.size(), (int)available_,
-                     (double)x, (double)y_baseline, (double)size_px,
-                     color.r, color.g, color.b, color.a);
+                     (double)x, (double)y_baseline, (double)size_px);
     }
     if (!available_ || st.glyphs.empty()) return;
 
