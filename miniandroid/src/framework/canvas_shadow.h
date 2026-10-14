@@ -176,6 +176,9 @@ struct DrawOp {
 class CanvasShadow : public Shadow {
 public:
     std::string name() const override { return "CanvasShadow"; }
+    // F-NEW-345: out-of-line dtor (owns the flush font; software_renderer.h
+    // is already included above so the type is complete).
+    ~CanvasShadow() override;
 
     bool handles_class(const std::string& cls) const override {
         // F-NEW-297 (CONT-36): the generic "Paint;" suffix row —
@@ -371,6 +374,23 @@ private:
             }
         }
     }
+
+    // ── F-NEW-345: bitmap-target canvases (AOSP graphics/Canvas.java) ────
+    // `new Canvas(bitmap)` / setBitmap bind the canvas to a BITMAP target:
+    // the canvas carries its OWN matrix/clip/save state (independent from
+    // the view canvas) and every draw op rasterizes eagerly INTO the
+    // bitmap's pixel buffer. Bitmap-target ops are legal OUTSIDE the view
+    // draw capture window too (onCreate-time offscreen rendering is the
+    // AOSP norm). Mechanism: one sub-recorder per bound canvas (same op
+    // laws, isolated state) flushed into BitmapStore after each op.
+    std::map<uint32_t, uint32_t> bitmap_target_;             // canvas → bitmap
+    std::map<uint32_t, std::unique_ptr<CanvasShadow>> bitmap_recorders_;
+    std::unique_ptr<miniandroid::renderer::BitmapFont> flush_font_;  // owned, default law
+    void bind_bitmap_canvas(uint32_t canvas_id, uint32_t bitmap_id);
+    CallResult dispatch_bitmap_op(const CallContext& ctx, uint32_t canvas_id,
+                                  uint32_t bitmap_id);
+    void flush_bitmap_canvas(CanvasShadow& rec, uint32_t bitmap_id);
+    void sync_shared_state(CanvasShadow& rec) const;
 
     // CYCLE-E: resolve an enum-typed argument to its AOSP ordinal. Prefers
     // the synthesized framework enum object's "ordinal" heap field; falls
