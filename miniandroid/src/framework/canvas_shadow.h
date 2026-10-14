@@ -134,6 +134,12 @@ struct DrawOp {
     // CYCLE-E: Path.FillType recorded at drawPath time.
     // 0 = WINDING (AOSP default), 1 = EVEN_ODD.
     int fill_type = 0;
+    // F-NEW-351: Paint blend mode snapshot at record time (AOSP BlendMode
+    // ordinals; -1 = none recorded → legacy SRC_OVER behavior). 0 = CLEAR —
+    // the replay must ERASE the destination (Skia BlendMode::kClear), never
+    // paint. Compose's DrawCache.clear() = drawRect(Black, BlendMode.Clear)
+    // is the canonical consumer (vector-icon cache reset).
+    int blend_mode = -1;
 
     // ── S68 §12 additions ────────────────────────────────────────────────
     // DRAW_BITMAP: heap object id of the android.graphics.Bitmap; source
@@ -260,6 +266,11 @@ public:
     // getHeight answer these; was hardcoded 1080x1920).
     void set_canvas_size(int w, int h) { canvas_w_ = w; canvas_h_ = h; }
     // Paint color lookup (0 default opaque black); shared by Canvas dispatch.
+    // F-NEW-351: recorded blend mode for a paint (-1 = none recorded).
+    int paint_blend_mode(uint32_t paint_id) const {
+        auto it = paint_blendmode_.find(paint_id);
+        return it != paint_blendmode_.end() ? it->second : -1;
+    }
     uint32_t paint_color(uint32_t paint_id) const {
         auto it = paint_color_.find(paint_id);
         return it != paint_color_.end() ? it->second : 0xFF000000u;
@@ -329,6 +340,10 @@ private:
     // S68 §12/§14: paint text styling consumed by the Canvas text path.
     std::map<uint32_t, bool> paint_fake_bold_;    // setFakeBoldText
     std::map<uint32_t, bool> paint_filter_bitmap_;// setFilterBitmap
+    // F-NEW-351: Paint blend mode (AOSP BlendMode ordinal; -1 = none).
+    // Consumed at record time (op.blend_mode) and honored at replay
+    // (CLEAR = destination erase).
+    std::map<uint32_t, int> paint_blendmode_;     // setBlendMode
     // S68 §12: canvas dimensions (real framebuffer — was hardcoded 1080x1920).
     int canvas_w_ = 1080, canvas_h_ = 1920;
     // FIX-5: android.graphics.Path recording (per heap object id).
