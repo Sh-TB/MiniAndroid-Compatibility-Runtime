@@ -5885,6 +5885,48 @@
    "layer": "framework/paint-colorfilter + renderer/porterduff-tint + framework/bitmap-setpixels",
    "title": "PAINT COLOR-FILTER (draw-time tint) GAP + Bitmap.setPixels gap: Paint.setColorFilter(ColorFilter) had NO handler (the filter was swallowed — every tinted drawBitmap rendered as no-tint), PorterDuffColorFilter/BlendModeColorFilter ctors stored NOTHING (the framework-owned object allocated EMPTY, the color+mode args vanished), and Bitmap.setPixels(int[],off,stride,x,y,w,h) was absent (createBitmap'd bitmaps stayed zero-filled — only the MULTIPLY row's opaque-src alpha law produced pixels in the probe). Three generic links closed: (1) the ctor law captures __filter_color__/__filter_mode__ (the mode ordinal read from the synthesized enum object's ordinal field); (2) Paint.setColorFilter/getColorFilter record + return the filter object per paint (sync_shared_state parity for the F-NEW-345 sub-recorder); drawBitmap snapshots op.has_tint/tint_color/tint_mode with the [1..17] ordinal sanity gate (mode 0 CLEAR on a color filter = the honest no-tint, never erase); (3) the replay applies the per-pixel PorterDuff law on BOTH bitmap paths (affine inverse-map + the temp-buffer non-affine) — SRC=1, SRC_OVER=3, DST_OVER=4, SRC_IN=5, DST_IN=6, DST_OUT=8, SRC_ATOP=9, MULTIPLY=14, SCREEN=15 implemented; unknown modes = honest no-tint. Probe: fixtures/fnew352_probe (real aapt2/ECJ/D8, apk 485d9bccbb98035f) 9 pixel rows — T1 SRC_IN red/white->RED, T2 transparent->nothing, T3 SRC_ATOP half-alpha, T4 MULTIPLY red*blue->black, T5 no-filter control UNCHANGED, T6 BlendModeColorFilter green, T7 per-paint filter STATE (red vs blue in the same wave), T8 getColorFilter round-trip — 9/9 PASS, screenshot f6e3be95506ad8f9 x3 byte-identical. Regression: anchors 36/36 x3 ZERO DRIFT (11 rows x3 + dooz180 c94da5a928ea213b x3 — the tint law is render-neutral for untinted paths).",
    "last_updated": "CONT-64 W2"
+  },
+  {
+   "id": "F-NEW-354",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "renderer/imageview-bitmap-object + framework/bitmap-store",
+   "title": "DIRECT-PIXEL IMAGE PATH (setImageBitmap with store pixels, no APK-path provenance): the ADDITIONAL-AUDIT P1-2 law recorded 'stored bitmap pixels without APK-path provenance — direct-pixel draw is a recorded frontier' and dropped the node blank. Fix: the ImageView image leg draws the BitmapStore raster 1:1 through the SAME g04 fit-rect + draw_image pipeline (decodeStream already applied density; no second rescale), with the image-bitmap-object-empty honest diag when the store is empty. Probe: capaudit R1d WebP (decodeStream asset -> setImageBitmap) renders 11264 cyan + 8068 magenta px; 22/22 pixel battery PASS."
+  },
+  {
+   "id": "F-NEW-355",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "renderer/gif-anim-timeline + framework/choreographer-clock",
+   "title": "ANIMATED GIF RENDER LAW + vsync display-tick clock: AOSP decodes the full AnimatedImageDrawable timeline and invalidates per frame-delay; the runtime renders every choreographer frame, so the faithful equivalent samples the SAME timeline by the deterministic virtual clock (last_frame_time_nanos % total_duration mapped through cumulative per-frame delays), decode-once cached per bitmap heap id. Probe: capaudit anim.gif 3-frame cycle — blue@f8, green@f30, red@f55 (gifanim7 runs; full-cycle progression evidence), [GIFANIM] decode ok frames=3."
+  },
+  {
+   "id": "F-NEW-356",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "dex/media-mediaplayer + audio/real-decode-engine + sandbox",
+   "title": "REAL-DECODE MEDIA LAW (closes 'audio_engine real but unwired'): the audio::MediaPlayer decoder (mp3 via mpg123, wav/ogg/flac via sndfile) was compiled in with ZERO callers. Every DEX MediaPlayer heap object now lazily attaches one engine; setDataSource resolves through the ONE canonical sandbox law (Storage::resolve_android_path — DENIED = AOSP ERROR state, never a crash), prepare()/start() run the REAL decode; getDuration/getCurrentPosition answer from the decoder; output stays an honest no-op (no speaker). Probe: capaudit tone.wav — setDataSource OK, prepare OK dur=500ms playing=true; SoundPool load id=1. [MP-DECODE] traces committed."
+  },
+  {
+   "id": "F-NEW-357",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "layer": "dex/fill-array-data-byte-law",
+   "title": "FILL-ARRAY-DATA 1-byte-element law corrupted byte[] into boolean[]: the elem_width==1 branch stored EVERY element as make_bool(byte!=0) — 'new byte[]{'A','B','C'}' became (true,true,true); crypto keys, encodings, any byte[] literal were garbage. Fix: same AOSP FillArrayData law the elem_width==4 branch already implements — interpretation comes from the ARRAY element type; [B stores the raw byte (make_byte), [Z keeps the bool. Probe-proven via the F-NEW-358 chain: 'ABC' literal decodes to s=[ABC] len=3."
+  },
+  {
+   "id": "F-NEW-358",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P0",
+   "layer": "dex/string-object-materialization-consumer-law",
+   "title": "STRING-OBJECT MATERIALIZATION CONSUMER LAW (five generic links): the String(byte[]) decode wrote decoded content to __string_value__ but consumers never read it, and the getBytes result array carried the synthetic 'Larray;' class breaking every [B-classifying consumer. Links: (1) String.getBytes allocates its result with the AOSP [B descriptor (the array compat shim treats both; [B is strictly more correct); (2) String.length on an unmaterialized String object answers the __string_value__ content length (was stub 0); (3) String.equals OBJECT-vs-OBJECT branch — identity first, else content compare (the sandbox roundtrip pair are two unmaterialized objects); (4) StringBuilder.append/Object-concat stringify reads __string_value__ after sb_value/value (was Class@oid garbage print); (5) String.valueOf OBJECT branch same fallback + the 2-arg new String(byte[]) form enters the decode law ([B class-contract gate keeps String/CharSequence copy forms in Handler A). Probe: capaudit sandbox ROUNDTRIP_OK 22B (was MISMATCH), strctor s1=[ABC] len=3 s2=[ABC] len2=3 (was unmaterialized [Ljava/lang/String;@N len=0)."
+  },
+  {
+   "id": "F-NEW-359",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "layer": "renderer/view-scale-render-law + framework/pivot-lazy-default",
+   "title": "VIEW-SCALE RENDER LAW (the recorded 'scale/rotation MATRIX application' frontier): setScaleX/setScaleY stored property state with getters but the draw walk never consumed it — the rendered face ignored view scale entirely. Fix: AOSP View.java mTransformationInfo law in BOTH draw paths (the classic execution_engine walk geometry + view_renderer draw_view guard-restored): scaleX/Y scale the drawn geometry about (pivotX,pivotY); pivot defaults to the view CENTER until setPivotX/Y overrides (mSetPivotX/Y flags added — the AOSP lazy default without which a stored 0 is ambiguous); the applied rect is what hit-testing records. Children keep laid-out absolute positions (recorded approximation: scaled-container subtree re-transform is the named frontier; rotation-about-pivot stays the rotation frontier). Probe: capaudit view_scale setScaleX(2.0)/setScaleY(1.5) renders bbox 200x150 exactly (was 100x100 unscaled). 36/36 anchor wall zero drift."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",

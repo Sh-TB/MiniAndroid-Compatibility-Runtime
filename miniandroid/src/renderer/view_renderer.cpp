@@ -479,6 +479,46 @@ void ViewRenderer::draw_text_into(ViewShadow::ViewNode& n, FrameBuffer& fb,
 void ViewRenderer::draw_view(ViewShadow::ViewNode& n, FrameBuffer& fb,
                              const RGBA& window_bg) {
     if (n.visibility != 0) return;  // INVISIBLE(4)/GONE(8) skipped
+    // F-NEW-359: AOSP view-scale render law (View.java mTransformationInfo):
+    // scaleX/Y scale the rendered view about (pivotX,pivotY); the pivot
+    // defaults to the view CENTER until setPivotX/Y overrides (mSetPivotX/Y).
+    // The walk is an axis-aligned software raster: the scale applies to THIS
+    // view's drawn geometry (background/stroke/gradient/content box) for the
+    // duration of the draw only (guard-restored — never compounds across
+    // frames). Children keep their laid-out absolute positions (recorded
+    // approximation: a scaled container's subtree re-transform is the named
+    // frontier; rotation-about-pivot stays the recorded rotation frontier).
+    struct GeoGuard {
+        ViewShadow::ViewNode& n;
+        bool on;
+        int x, y, w, h;
+        GeoGuard(ViewShadow::ViewNode& nn) : n(nn), on(false), x(0), y(0),
+                                             w(0), h(0) {
+            on = (n.width > 0 && n.height > 0) &&
+                 (n.scale_x != 1.0f || n.scale_y != 1.0f);
+            static thread_local const bool f359_diag =
+                std::getenv("MINIANDROID_STRCTOR") != nullptr;
+            if (f359_diag && (n.scale_x != 1.0f || n.scale_y != 1.0f))
+                std::cerr << "[F359] node id=" << n.view_id << " "
+                          << n.class_desc << " scale=" << n.scale_x << "/"
+                          << n.scale_y << " wh=" << n.width << "x" << n.height
+                          << " applied=" << (on ? 1 : 0) << std::endl;
+            if (!on) return;
+            x = n.x; y = n.y; w = n.width; h = n.height;
+            float px = n.pivot_x_set ? n.pivot_x : w / 2.0f;
+            float py = n.pivot_y_set ? n.pivot_y : h / 2.0f;
+            int nw = std::max(0, int(std::lround(w * n.scale_x)));
+            int nh = std::max(0, int(std::lround(h * n.scale_y)));
+            n.x += int(std::lround(px * (1.0f - n.scale_x)));
+            n.y += int(std::lround(py * (1.0f - n.scale_y)));
+            n.width = nw;
+            n.height = nh;
+        }
+        ~GeoGuard() {
+            if (!on) return;
+            n.x = x; n.y = y; n.width = w; n.height = h;
+        }
+    } f359_guard(n);
     int w = std::max(0, n.width), h = std::max(0, n.height);
 
     bool have_bg = false;

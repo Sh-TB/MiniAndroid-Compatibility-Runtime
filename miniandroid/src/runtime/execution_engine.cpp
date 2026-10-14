@@ -14,6 +14,7 @@
 #include "../diagnostics/trace_overlay.h"   // S135: visual runtime boot/trace logger
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
+#include "../renderer/gif_decoder.h"
 #include "../fonts/text_shaper.h"
 #include "../resources/resource_runtime.h"
 #include "../resources/res_id.h"  // S67 A2: canonical complexToDimensionPixelSize law
@@ -3006,6 +3007,20 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
 bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
+    // ── CONT-65 F-NEW-355: vsync display-tick law. One vsync per RENDERED
+    // frame when no Choreographer callbacks are pending (with pending
+    // callbacks take_due_callbacks owns this vsync's tick — no double
+    // advance). This is what keeps animation timelines (animated GIF
+    // sampling) advancing for apps that never post doFrame callbacks.
+    if (auto* cs = shadow_registry_
+                       ? shadow_registry_->find_as<
+                             framework::ChoreographerShadow>()
+                       : nullptr) {
+        if (cs->pending_empty()) cs->advance_vsync_tick();
+    }
+    // 21-P0-2/P0-6: the frame-truth census resets at EVERY frame entry so
+    // every downstream path (no shadows, no root, exception, legacy) reports
+    // its own honest state — never a stale ledger from a previous frame.
     // 21-P0-2/P0-6: the frame-truth census resets at EVERY frame entry so
     // every downstream path (no shadows, no root, exception, legacy) reports
     // its own honest state — never a stale ledger from a previous frame.
@@ -3465,6 +3480,39 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             // (AOSP View.java mTransformationInfo).
                             left += (int)std::lround(node->translation_x);
                             top += (int)std::lround(node->translation_y);
+                            // F-NEW-359: AOSP view-scale render law
+                            // (View.java mTransformationInfo): scaleX/Y scale
+                            // the rendered view about (pivotX,pivotY); the
+                            // pivot defaults to the view CENTER until
+                            // setPivotX/Y overrides (mSetPivotX/Y). The
+                            // axis-aligned software walk applies the scale to
+                            // THIS view's drawn geometry (background/stroke/
+                            // content box) and its recorded rect; children
+                            // keep their laid-out absolute positions (recorded
+                            // approximation: a scaled container's subtree
+                            // re-transform is the named frontier;
+                            // rotation-about-pivot stays the rotation
+                            // frontier).
+                            if ((node->scale_x != 1.0f ||
+                                 node->scale_y != 1.0f) &&
+                                w > 0 && h > 0) {
+                                float f359_px = node->pivot_x_set
+                                                    ? node->pivot_x
+                                                    : w / 2.0f;
+                                float f359_py = node->pivot_y_set
+                                                    ? node->pivot_y
+                                                    : h / 2.0f;
+                                int f359_sw = std::max(
+                                    0, (int)std::lround(w * node->scale_x));
+                                int f359_sh = std::max(
+                                    0, (int)std::lround(h * node->scale_y));
+                                left += (int)std::lround(
+                                    f359_px * (1.0f - node->scale_x));
+                                top += (int)std::lround(
+                                    f359_py * (1.0f - node->scale_y));
+                                w = f359_sw;
+                                h = f359_sh;
+                            }
                             int right = left + w;
                             int bottom = top + h;
                             visited_rects[task.view_id] = {{left, top}, {w, h}};
@@ -4487,7 +4535,8 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             }
                             if (is_image_view && node->image_drawable_path.empty() && !node_invisible &&
                                 (node->image_resource_id != 0 ||
-                                 !node->src_drawable_path.empty())) {
+                                 !node->src_drawable_path.empty() ||
+                                 node->image_bitmap_object != 0)) {
                                 // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14): replace the
                                 // "IMG" placeholder with REAL decoded pixels when the
                                 // resource chain can be completed:
@@ -4510,7 +4559,176 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     resolved_img_density = node->src_density;
                                 }
 
-                                if (!resolved_img_path.empty()) {
+                                // ── CONT-65 F-NEW-354: DIRECT-PIXEL IMAGE
+                                // PATH (closes the "stored bitmap pixels
+                                // without APK-path provenance" frontier). A
+                                // programmatic bitmap (BitmapFactory.
+                                // decodeStream/decodeByteArray/createBitmap
+                                // + setImageBitmap) carries REAL pixels in
+                                // the canonical BitmapStore but no APK-entry
+                                // path — AOSP ImageView draws exactly these
+                                // pixels (bitmap.draw(canvas) semantics).
+                                // Density: decodeStream already applied
+                                // inTargetDensity scaling, so the stored
+                                // raster is in device pixels — draw 1:1
+                                // through the SAME g04 fit-rect + draw_image
+                                // pipeline as every other image (scaleType
+                                // honored; no second density rescale).
+                                if (resolved_img_path.empty() &&
+                                    node->image_bitmap_object != 0) {
+                                    const auto* sb =
+                                        framework::BitmapStore::instance().get(
+                                            node->image_bitmap_object);
+                                    if (sb && sb->has_pixels &&
+                                        sb->width > 0 && sb->height > 0 &&
+                                        (int)sb->rgba.size() >=
+                                            sb->width * sb->height * 4) {
+                                        const uint8_t* frame_data =
+                                            sb->rgba.data();
+                                        const int fw = sb->width;
+                                        const int fh = sb->height;
+                                        // ── CONT-65 F-NEW-355: ANIMATED GIF
+                                        // RENDER LAW. AOSP decodes the full
+                                        // AnimatedImageDrawable timeline and
+                                        // invalidates per-frame-delay; the
+                                        // software runtime renders every
+                                        // choreographer frame anyway, so the
+                                        // faithful equivalent samples the SAME
+                                        // timeline by the deterministic virtual
+                                        // clock (now % total_duration mapped
+                                        // through cumulative per-frame delays).
+                                        // Decode-once per bitmap (cache keyed
+                                        // by the bitmap heap id).
+                                        static thread_local const bool s_gat =
+                                            std::getenv("MINIANDROID_GIFANIM") != nullptr;
+                                        if (s_gat)
+                                            std::cerr << "[GIFANIM] render obj="
+                                                      << node->image_bitmap_object
+                                                      << " stash=" << sb->source_gif_bytes.size()
+                                                      << std::endl;
+                                        if (!sb->source_gif_bytes.empty()) {
+                                            auto it = gif_anim_cache_.find(
+                                                node->image_bitmap_object);
+                                            if (it == gif_anim_cache_.end()) {
+                                                renderer::DecodedGif g;
+                                                const bool gok =
+                                                    renderer::GifDecoder::
+                                                        decode_anim(
+                                                            sb->source_gif_bytes,
+                                                            0, &g);
+                                                if (s_gat)
+                                                    std::cerr << "[GIFANIM] decode_anim ok="
+                                                              << gok << " g.ok=" << g.ok
+                                                              << " frames=" << g.total_frames
+                                                              << " bytes=" << g.frames_rgba.size()
+                                                              << " need=" << (g.width * g.height * 4 * g.total_frames)
+                                                              << " err=" << g.error
+                                                              << std::endl;
+                                                if (gok &&
+                                                    g.ok && g.total_frames > 0 &&
+                                                    (int)g.frames_rgba.size() >=
+                                                        g.width * g.height *
+                                                            g.total_frames)
+                                                    it = gif_anim_cache_
+                                                             .emplace(
+                                                                 node->image_bitmap_object,
+                                                                 std::move(g))
+                                                             .first;
+                                            }
+                                            if (s_gat)
+                                                std::cerr << "[GIFANIM] cache="
+                                                          << (it != gif_anim_cache_.end() ? it->second.total_frames : -1)
+                                                          << std::endl;
+                                            if (it != gif_anim_cache_.end() &&
+                                                it->second.total_frames > 1) {
+                                                const auto& g = it->second;
+                                                // F-NEW-355 clock law: the
+                                                // animation timeline samples
+                                                // the CHOREOGRAPHER's vsync
+                                                // frame time (AOSP animators
+                                                // use frameTimeNanos), NOT
+                                                // the Handler queue clock
+                                                // (which freezes when no
+                                                // entries are queued).
+                                                int64_t now_ms_anim = 0;
+                                                if (auto* registry =
+                                                        dalvik_engine_.get_shadow_registry())
+                                                    if (auto* cs =
+                                                            registry->find_as<
+                                                                framework::ChoreographerShadow>())
+                                                        now_ms_anim =
+                                                            cs->last_frame_time_nanos() /
+                                                            1000000LL;
+                                                int total = 0;
+                                                for (int d : g.delays_ms)
+                                                    total += d > 0 ? d : 100;
+                                                if (total <= 0)
+                                                    total = g.total_frames * 100;
+                                                int64_t t =
+                                                    now_ms_anim % total;
+                                                int idx = 0;
+                                                int64_t acc = 0;
+                                                for (int f = 0;
+                                                     f < g.total_frames; ++f) {
+                                                    acc += (f <
+                                                                (int)g.delays_ms
+                                                                    .size() &&
+                                                            g.delays_ms[f] > 0)
+                                                               ? g.delays_ms[f]
+                                                               : 100;
+                                                    idx = f;
+                                                    if (t < acc) break;
+                                                }
+                                                frame_data =
+                                                    reinterpret_cast<
+                                                        const uint8_t *>(
+                                                        g.frames_rgba.data()) +
+                                                    (size_t)idx * fw * fh * 4;
+                                                if (s_gat)
+                                                    std::cerr << "[GIFANIM] picked idx="
+                                                              << idx << " of " << g.total_frames << std::endl;
+                                            }
+                                        }
+                                        int pl = node->padding_left,
+                                            pt = node->padding_top;
+                                        int pr = node->padding_right,
+                                            pb = node->padding_bottom;
+                                        renderer::FitRect fr =
+                                            g04_image_draw_rect(
+                                                fw, fh,
+                                                resources::device_config()
+                                                    .density,
+                                                left + pl, top + pt,
+                                                std::max(1, w - pl - pr),
+                                                std::max(1, h - pt - pb),
+                                                node->scale_type);
+                                        canvas.draw_image(
+                                            frame_data, fw, fh, fr.x, fr.y,
+                                            fr.w, fr.h);
+                                        frame_census_.app_draw_ops++;
+                                        if (diagnostics::GfxProvenance::instance()
+                                                .enabled())
+                                            diagnostics::GfxProvenance::instance()
+                                                .record_image(
+                                                    "imageview-bitmap-object",
+                                                    node->image_resource_id,
+                                                    "bitmap-obj#" +
+                                                        std::to_string(
+                                                            node->image_bitmap_object),
+                                                    true, true, fw, fh, "rgba",
+                                                    resources::device_config()
+                                                        .density,
+                                                    (float)fr.x, (float)fr.y,
+                                                    (float)fr.w, (float)fr.h,
+                                                    true, "");
+                                    } else {
+                                        frame_census_.diag_regions.push_back(
+                                            {left, top, right, bottom,
+                                             "image-bitmap-object-empty",
+                                             "bitmap-obj#" + std::to_string(
+                                                                 node->image_bitmap_object)});
+                                    }
+                                } else if (!resolved_img_path.empty()) {
                                     auto img_data = apk_parser_.extract_entry_cached(resolved_img_path);
                                     // S68 §13 (A3 fix): shared decoder (dedup law) —
                                     // format named on failure, never silent.
