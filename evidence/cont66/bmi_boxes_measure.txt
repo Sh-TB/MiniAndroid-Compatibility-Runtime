@@ -1,0 +1,16 @@
+CONT-66 W1 — BMI v402 geometry, measured (screen 1080x1920, density 2.625)
+
+XML ground truth (aapt2 xmltree fragment_bmimain.xml):
+  root RelativeLayout padding L/R = @dimen/activity_horizontal_margin = 16dp = 42px
+                                  T/B = @dimen/activity_vertical_margin   = 16dp = 42px
+
+BEFORE F-NEW-360 (face fb7c45d12014e366, binary 6aa564676ee687f9):
+  RL-TRACE cached edges: EditText r1080, Button r1080, Spinner l0, TextView l0
+  pixels: blue button col-run 726..1078 (flush right), spinner glyphs start x=4
+  rightmost non-bg column: 1079 of 1080
+
+AFTER F-NEW-360 (face f45d6c6603e93fc5, binary 461925acd98f6232):
+  RL-TRACE cached edges: EditText l775 r1038, Button l683 r1038,
+                         Spinner l42, TextView l42 (t84 -> t126 = padding_top+margin)
+  pixels: blue button col-run 684..1036, spinner glyphs start x=46,
+  rightmost non-bg column: 1037 of 1080  (= 1080 - 42 + 1 antialiasing)
