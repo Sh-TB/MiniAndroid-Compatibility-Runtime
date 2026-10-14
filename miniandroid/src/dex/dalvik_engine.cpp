@@ -26050,6 +26050,45 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
         wi.class_desc = "Landroid/view/WindowInsets;";
         seed("Landroid/view/WindowInsets;.CONSUMED", wi);
     }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-363 (CONT-67 W1, chessclock 29 first divergence —
+    // runtime-proven): Settings.System.DEFAULT_RINGTONE_URI /
+    // DEFAULT_NOTIFICATION_URI / DEFAULT_ALARM_ALERT_URI are FRAMEWORK
+    // statics — AOSP Settings.java mints them in static init
+    // (Uri.withAppendedPath(CONTENT_URI, "ringtone"|"notification_sound"|
+    //  "alarm_alert") = content://settings/system/{...}) and they are
+    // NEVER null on any device. Evidence: ChessClock.setUpGame reads
+    //   sget-object Settings$System.DEFAULT_RINGTONE_URI
+    //   invoke-virtual Uri.toString   (pc=321)
+    // → engine typed-null → f141 NPE "invoke Uri.toString on a null
+    // object reference" → APP-BOUNDARY unwind → the app's entire content
+    // never inflates (blank face + 1 uncaught exception).
+    // Seed: REAL heap Uri objects carrying uri_raw (the Uri.parse/toString
+    // law's canonical field — toString then answers the true URI string,
+    // and the SharedPreferences prefAlertSound roundtrip stores a real
+    // string, not "null").
+    // ────────────────────────────────────────────────────────────────────
+    {
+        auto seed_uri = [this, &seed](const std::string& key,
+                                      const char* raw) {
+            uint32_t uri_id = heap_.allocate("Landroid/net/Uri;", 0, 0);
+            heap_.set_object_field(uri_id, "uri_raw",
+                                   DalvikValue::make_string(raw, 0));
+            DalvikValue uv;
+            uv.type = DalvikType::OBJECT_REF;
+            uv.object_id = uri_id;
+            uv.class_desc = "Landroid/net/Uri;";
+            seed(key, uv);
+        };
+        seed_uri("Landroid/provider/Settings$System;.DEFAULT_RINGTONE_URI",
+                 "content://settings/system/ringtone");
+        seed_uri(
+            "Landroid/provider/Settings$System;.DEFAULT_NOTIFICATION_URI",
+            "content://settings/system/notification_sound");
+        seed_uri(
+            "Landroid/provider/Settings$System;.DEFAULT_ALARM_ALERT_URI",
+            "content://settings/system/alarm_alert");
+    }
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -42726,6 +42765,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Landroid/content/res/Resources;" &&
         method == "getSystem") {
         result = get_or_create_singleton("Landroid/content/res/Resources;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── F-NEW-364 (CONT-67): Resources.Theme.applyStyle(resid, force) ─────
+    // AOSP Resources.Theme law: applyStyle applies the style's attribute
+    // bag onto the theme state (force=false fills only missing values).
+    // The appcompat attachBaseContext2 chain applies Theme_AppCompat_Empty
+    // through ContextThemeWrapper.onApplyThemeResource → this method; with
+    // no law the style application no-op'd and every AppCompatTheme attr
+    // stayed unresolved (125/127 MISS) → the createSubDecor theme gate
+    // ISE'd notes_secuso at APP BOUNDARY. The style record is consulted by
+    // resolve_theme_attr_typed on the base-theme miss path (the exact
+    // force=false merge subset).
+    if (class_name == "Landroid/content/res/Resources$Theme;" &&
+        method == "applyStyle" && args.size() >= 2 &&
+        args[1].type == DalvikType::INT32) {
+        uint32_t style_resid = (uint32_t)args[1].int_val;
+        if ((style_resid >> 24) == 0x7f) {
+            resources::ResourceRuntime::instance().record_applied_theme_style(
+                style_resid);
+        }
+        static thread_local uint64_t f364_log = 0;
+        if (f364_log < 8) {
+            ++f364_log;
+            std::cerr << "[F364-APPLYSTYLE] resid=0x" << std::hex
+                      << style_resid << std::dec << " force="
+                      << (args.size() >= 3 && args[2].type == DalvikType::INT32
+                              ? args[2].int_val
+                              : -1)
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
