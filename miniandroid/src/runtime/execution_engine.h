@@ -21,6 +21,7 @@
 #include "api/android_stubs.h"
 #include "diagnostics/trace_engine.h"
 #include "renderer/software_renderer.h"  // S95: VectorRefResolver for image_ref_resolver()
+#include "renderer/gif_decoder.h"  // CONT-65 F-NEW-355: animated-GIF timeline cache
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry for Handler/Looper dispatch
 #include "framework/shadow_registry.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
@@ -345,6 +346,10 @@ private:
     std::map<uint32_t,
              std::pair<bool, std::vector<framework::ViewShadow::ViewNode::BgStateItem>>>
         state_list_cache_;
+    // CONT-65 F-NEW-355: per-view animated-GIF decode cache (decode-once,
+    // frame-pick per render by the deterministic virtual clock). Keyed by
+    // the ImageView heap object id; empty map = no animated GIF seen.
+    std::map<uint32_t, renderer::DecodedGif> gif_anim_cache_;
     // G07 §7/§10: runtime lifecycle state machine (real transitions only).
     framework::LifecycleController lifecycle_;
     

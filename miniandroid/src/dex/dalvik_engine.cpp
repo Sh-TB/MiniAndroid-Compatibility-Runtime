@@ -18,6 +18,7 @@
 #include "../api/android_stubs.h"
 #include "../api/http_client.h"  // S100 NET-001 (MG-247/248): real HTTP(S)
 #include "../storage/data_root.h"
+#include "../audio/audio_engine.h"  // CONT-65 F-NEW-356: real-decode media law
 #include <filesystem>
 #include <cstring>  // F-109c: strcmp arith dispatch (S62)
 #include "../diagnostics/mem_probe.h"
@@ -16572,12 +16573,28 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                 }
                             } else if (elem_width == 1) {
                                 // boolean or byte (1 byte, packed 2 per code unit)
+                                // CONT-65 F-NEW-357 ROOT CAUSE FIX: the old
+                                // law stored EVERY 1-byte element as
+                                // make_bool(byte_val != 0) — byte[] literals
+                                // (crypto keys, encodings, `new byte[]{'A',
+                                // 'B','C'}`) were corrupted into booleans
+                                // ('A'→true). Same AOSP FillArrayData law the
+                                // elem_width==4 branch already implements:
+                                // interpretation comes from the ARRAY element
+                                // type — [B stores the raw byte, [Z the bool.
                                 if (data_start + i / 2 < bytecode_.size()) {
                                     uint16_t word = bytecode_[data_start + i / 2];
                                     uint8_t byte_val = (i % 2 == 0) ? (word & 0xFF) : ((word >> 8) & 0xFF);
-                                    heap_.set_object_field(array_val.object_id,
-                                        "array[" + std::to_string(i) + "]",
-                                        DalvikValue::make_bool(byte_val != 0));
+                                    if (array_val.class_desc == "[B") {
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_byte(
+                                                static_cast<int8_t>(byte_val)));
+                                    } else {
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_bool(byte_val != 0));
+                                    }
                                 }
                             } else if (elem_width == 2) {
                                 // short or char (1 code unit)
@@ -27019,6 +27036,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // remains a no-op — the software runtime has no speaker — same law
     // boundary as MediaPlayer above).
     // ────────────────────────────────────────────────────────────────────
+    // CONT-65 F-NEW-356 helper: one audio::MediaPlayer engine per DEX
+    // MediaPlayer heap object (lazy attach; single shared map — the engine
+    // carries the decoded source between setDataSource and prepare).
+    static auto f356_mp_engine_for = [](uint32_t oid) -> audio::MediaPlayer* {
+        static std::map<uint32_t, std::unique_ptr<audio::MediaPlayer>> m;
+        auto it = m.find(oid);
+        if (it == m.end())
+            it = m.emplace(oid, std::make_unique<audio::MediaPlayer>()).first;
+        return it->second.get();
+    };
     if (class_name == "Landroid/media/AudioAttributes$Builder;") {
         if (method == "<init>") {
             if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
@@ -27138,6 +27165,85 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             if (method == "isPlaying") {
                 result = DalvikValue::make_int(st == 3 ? 1 : 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // ── CONT-65 F-NEW-356: REAL-DECODE MEDIA LAW (closes the
+            // "audio_engine real but unwired" audit frontier). AOSP
+            // MediaPlayer: setDataSource(path) resolves the source and
+            // reads the container header; prepare() demuxes+decodes and
+            // learns the duration; getDuration()/getCurrentPosition answer
+            // from the decoder. MiniAndroid owns a REAL decoder
+            // (audio::MediaPlayer — mp3 via mpg123, wav/ogg/flac via
+            // sndfile) that was compiled in but had ZERO callers. Every
+            // DEX MediaPlayer object now lazily attaches one engine
+            // instance (map keyed by heap id); setDataSource resolves the
+            // path through the ONE canonical sandbox law
+            // (Storage::resolve_android_path — DENIED paths take the AOSP
+            // ERROR state, never a crash) and prepare()/start() run the
+            // REAL decode. Output remains a no-op (no speaker) — the
+            // decode, duration and state machine are the observable
+            // contract, and they are now real.
+            if (method == "setDataSource" && args.size() >= 2) {
+                audio::MediaPlayer* eng = f356_mp_engine_for(mp_id);
+                std::string fpath =
+                    args[1].type == DalvikType::STRING_REF && !args[1].is_null
+                        ? args[1].string_val
+                        : std::string();
+                Storage::PathResolution pr =
+                    Storage::resolve_android_path(fpath);
+                if (!pr.allowed) {
+                    heap_.set_object_field(mp_id, "__mp_state__",
+                                           DalvikValue::make_int(8 /*ERROR*/));
+                    std::cerr << "[MP-DECODE] setDataSource DENIED \""
+                              << fpath << "\" (outside app namespace)"
+                              << std::endl;
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                const bool ok_ds = eng->set_data_source(pr.host_path.string());
+                heap_.set_object_field(
+                    mp_id, "__mp_state__",
+                    DalvikValue::make_int(ok_ds ? 1 /*INITIALIZED*/
+                                                : 8 /*ERROR*/));
+                std::cerr << "[MP-DECODE] setDataSource \"" << fpath
+                          << "\" -> " << (ok_ds ? "OK" : "DECODE-FAIL")
+                          << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "prepare" || method == "prepareAsync") {
+                audio::MediaPlayer* eng = f356_mp_engine_for(mp_id);
+                const bool ok_p = eng->prepare();
+                if (ok_p) {
+                    heap_.set_object_field(mp_id, "__mp_state__",
+                                           DalvikValue::make_int(2));
+                    heap_.set_object_field(
+                        mp_id, "__mp_duration_ms__",
+                        DalvikValue::make_int((int)eng->duration_msec()));
+                    std::cerr << "[MP-DECODE] prepare OK dur="
+                              << eng->duration_msec() << "ms" << std::endl;
+                } else {
+                    heap_.set_object_field(mp_id, "__mp_state__",
+                                           DalvikValue::make_int(8));
+                    std::cerr << "[MP-DECODE] prepare FAILED (no/invalid source)"
+                              << std::endl;
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getDuration") {
+                auto v = heap_.get_object_field(mp_id, "__mp_duration_ms__");
+                result = DalvikValue::make_int(
+                    (v && v->type == DalvikType::INT32) ? v->int_val : -1);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getCurrentPosition") {
+                result = DalvikValue::make_int(0);
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
@@ -29916,6 +30022,66 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // newline; write(int b) writes one byte; flush/close no-op the
     // console stream. No app keying — any PrintStream receiver with the
     // engine's __fd__ field (1=out, 2=err) answers here.
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-65 CAPAUDIT F-NEW-353 — android.util.Log law (base-kernel gap:
+    // Log.i/d/w/e/v/wtf were silently dropped — real apps' logging vanished,
+    // and crash-diagnosis lines never surfaced). AOSP android.util.Log:
+    //   static int println(int priority, String tag, String msg) and the
+    //   thin wrappers i/d/w/e/v/wtf(String tag, String msg) — all emit the
+    //   formatted line to the platform log sink. Software-runtime sink =
+    //   stdout ("LOG/<prio>/<tag>: msg"), return = msg length in bytes
+    //   (AOSP returns the byte count; callers only assert >= 0). No-op on
+    //   null msg (AOSP would NPE at println — the framework object law for
+    //   diagnostics must stay non-fatal, same family as F-155).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/util/Log;") {
+        static const char* kLogPrios[] = {
+            "v", "d", "i", "w", "e", "wtf"};
+        auto log_emit = [&](const char* prio, const DalvikValue& tag,
+                            const DalvikValue& msg) {
+            std::string t = (tag.type == DalvikType::STRING_REF && !tag.is_null)
+                                ? tag.string_val : "";
+            std::string m = (msg.type == DalvikType::STRING_REF && !msg.is_null)
+                                ? msg.string_val : "";
+            std::cout << "LOG/" << prio << "/" << t << ": " << m << "\n";
+            std::cout.flush();
+        };
+        bool matched = false;
+        for (int p = 0; p < 6; ++p) {
+            if (method == kLogPrios[p] && args.size() >= 2) {
+                log_emit(kLogPrios[p], args[0], args[1]);
+                result = DalvikValue::make_int(
+                    (args[1].type == DalvikType::STRING_REF && !args[1].is_null)
+                        ? (int)args[1].string_val.size() : 4);
+                matched = true;
+                break;
+            }
+        }
+        if (matched) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "println" && args.size() >= 3) {
+            // println(int priority, String tag, String msg)
+            static const char* kPrioNames[] = {"?", "v", "d", "i", "w", "e"};
+            int prio = (args[0].type == DalvikType::INT32) ? args[0].int_val : 3;
+            const char* pn = (prio >= 2 && prio <= 6) ? kPrioNames[prio - 1] : "?";
+            log_emit(pn, args[1], args[2]);
+            result = DalvikValue::make_int(
+                (args[2].type == DalvikType::STRING_REF && !args[2].is_null)
+                    ? (int)args[2].string_val.size() : 4);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getStackTraceString" ||
+            (method == "isLoggable" && args.size() >= 2)) {
+            result = method == "isLoggable"
+                         ? DalvikValue::make_bool(false)
+                         : DalvikValue::make_string("", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (class_name == "Ljava/io/PrintStream;" &&
         args.size() >= 1 &&
         args[0].type == DalvikType::OBJECT_REF) {
@@ -33726,6 +33892,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         auto sv = heap_.get_object_field(a.object_id, "sb_value");
                         if (!sv.has_value()) {
                             sv = heap_.get_object_field(a.object_id, "value");
+                        }
+                        if (!sv.has_value()) {
+                            // F-NEW-358: unmaterialized String objects (the
+                            // new String(byte[]) decode form) carry content
+                            // in the canonical __string_value__ field — not
+                            // sb_value/value. Without this the concat fell
+                            // to the Class@oid identity print and every
+                            // decoded string rendered as garbage in messages.
+                            sv = heap_.get_object_field(a.object_id,
+                                                        "__string_value__");
                         }
                         if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
                             return sv->string_val;
@@ -43068,6 +43244,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::getenv("MINIANDROID_F069_DIAG") != nullptr;
         const DalvikValue& x = args[0];
         const DalvikValue& y = args[1];
+        // F-NEW-358: OBJECT_REF vs OBJECT_REF — both heap-backed String
+        // objects (the new String(byte[]) decode form produces exactly
+        // this pair). OpenJDK String.equals compares CONTENT; the engine
+        // convention stores decoded content in __string_value__. Identity
+        // (same oid) is true; two objects both carrying a decoded string
+        // compare byte-wise; any other object pair keeps the identity law
+        // below (this branch must sit OUTSIDE the STRING_REF guard — two
+        // unmaterialized Strings have no STRING_REF register at all).
+        if (x.type == DalvikType::OBJECT_REF &&
+            y.type == DalvikType::OBJECT_REF && x.object_id != 0 &&
+            y.object_id != 0) {
+            bool eq = (x.object_id == y.object_id);
+            if (!eq && heap_.has_object(x.object_id) &&
+                heap_.has_object(y.object_id)) {
+                auto xv = heap_.get_object_field(x.object_id,
+                                                 "__string_value__");
+                auto yv = heap_.get_object_field(y.object_id,
+                                                 "__string_value__");
+                if (xv.has_value() && yv.has_value() &&
+                    xv->type == DalvikType::STRING_REF &&
+                    yv->type == DalvikType::STRING_REF)
+                    eq = (xv->string_val == yv->string_val);
+                if (f069d)
+                    std::cerr << "[EQ-OBJ] #" << x.object_id
+                              << "(sv=" << (xv.has_value() ? "y" : "n")
+                              << ") vs #" << y.object_id
+                              << "(sv=" << (yv.has_value() ? "y" : "n")
+                              << ") -> " << eq << std::endl;
+            }
+            if (eq || (heap_.has_object(x.object_id) &&
+                       heap_.has_object(y.object_id) &&
+                       heap_.get_object_field(x.object_id,
+                                              "__string_value__").has_value() &&
+                       heap_.get_object_field(y.object_id,
+                                              "__string_value__").has_value())) {
+                result = DalvikValue::make_bool(eq);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // neither side is an engine String object: fall through to the
+            // generic identity law below (regular objects keep semantics).
+        }
         // F-083 (R-NEW-309): String receiver law for Object.equals dispatch.
         // OpenJDK String.equals(String.java): true iff the argument is a
         // String with the SAME CHARACTER SEQUENCE. The areEqual intrinsic
@@ -43095,6 +43313,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 auto xv = heap_.get_object_field(x.object_id, "__string_value__");
                 eq = xv.has_value() && xv->type == DalvikType::STRING_REF &&
                      (y.string_val == xv->string_val);
+            }
+            // F-NEW-358: OBJECT_REF vs OBJECT_REF — both heap-backed String
+            // objects (the new String(byte[]) decode form produces these).
+            // OpenJDK String.equals compares CONTENT; the engine convention
+            // stores decoded content in __string_value__. Identity (same
+            // oid) is true; two objects both carrying a decoded string
+            // compare byte-wise; anything else keeps the Object identity
+            // law (different oids, no content → false).
+            if (x.type == DalvikType::OBJECT_REF &&
+                y.type == DalvikType::OBJECT_REF && x.object_id != 0 &&
+                y.object_id != 0) {
+                bool eq = (x.object_id == y.object_id);
+                if (!eq && heap_.has_object(x.object_id) &&
+                    heap_.has_object(y.object_id)) {
+                    auto xv = heap_.get_object_field(x.object_id,
+                                                     "__string_value__");
+                    auto yv = heap_.get_object_field(y.object_id,
+                                                     "__string_value__");
+                    if (xv.has_value() && yv.has_value() &&
+                        xv->type == DalvikType::STRING_REF &&
+                        yv->type == DalvikType::STRING_REF)
+                        eq = (xv->string_val == yv->string_val);
+                }
+                result = DalvikValue::make_bool(eq);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
             }
             // STRING_REF vs NULL_REF → false (OpenJDK law); verbatim.
             result = DalvikValue::make_bool(eq);
@@ -45984,6 +46228,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Landroid/media/SoundPool;") {
         if (method == "<init>") {
             result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── CONT-65 F-NEW-356: REAL SoundPool.load DECODE LAW. AOSP
+        // SoundPool.load(String path, int priority) samples the container
+        // into the pool. The engine's audio::SoundPool runs the REAL
+        // decoder (mpg123/sndfile); load now decodes the file through the
+        // canonical sandbox path law and returns the REAL sample id.
+        // play() keeps the honest stream-id contract (output no-op — no
+        // speaker), with play() state carried by the engine when the id
+        // resolves. load(String,int): args = (recv, path, priority);
+        // load(AssetFileDescriptor,int): args[1] object — not resolvable
+        // as a path here, keeps the prior honest id contract.
+        if (method == "load" && args.size() >= 3 &&
+            args[1].type == DalvikType::STRING_REF && !args[1].is_null) {
+            static std::map<uint32_t,
+                            std::unique_ptr<audio::SoundPool>>
+                sp_engines;
+            auto it = sp_engines.find(args[0].object_id);
+            if (it == sp_engines.end())
+                it = sp_engines
+                         .emplace(args[0].object_id,
+                                  std::make_unique<audio::SoundPool>())
+                         .first;
+            Storage::PathResolution pr =
+                Storage::resolve_android_path(args[1].string_val);
+            if (!pr.allowed) {
+                std::cerr << "[SP-DECODE] load DENIED \""
+                          << args[1].string_val << "\"" << std::endl;
+                result = DalvikValue::make_int(0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            const int sid = it->second->load(pr.host_path.string());
+            std::cerr << "[SP-DECODE] load \""
+                      << args[1].string_val << "\" -> sample id=" << sid
+                      << std::endl;
+            result = DalvikValue::make_int(sid);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -54308,6 +54590,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     auto sv = heap_.get_object_field(a.object_id, "value");
                     if (!sv.has_value() || sv->type != DalvikType::STRING_REF)
                         sv = heap_.get_object_field(a.object_id, "sb_value");
+                    if (!sv.has_value() || sv->type != DalvikType::STRING_REF)
+                        sv = heap_.get_object_field(a.object_id,
+                                                    "__string_value__");
                     if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
                         out = sv->string_val;
                         break;
@@ -54882,6 +55167,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Try to get the actual string from args[0] (the String object itself)
         if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
             result = DalvikValue::make_int(static_cast<int32_t>(args[0].string_val.size()));
+        } else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                   args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            // F-NEW-358: unmaterialized String objects (new-instance +
+            // <init>) carry their decoded content in the engine's canonical
+            // __string_value__ heap field (const-string bridge convention;
+            // the String(byte[]) decode law writes it). OpenJDK length()
+            // answers the content length, not a stub zero. The engine's
+            // string convention is UTF-8 host bytes (same basis the
+            // STRING_REF branch above uses).
+            auto sv = heap_.get_object_field(args[0].object_id,
+                                             "__string_value__");
+            if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(sv->string_val.size()));
+            else
+                result = DalvikValue::make_int(0);
         } else {
             result = DalvikValue::make_int(0);
         }
@@ -54982,6 +55283,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Ljava/lang/String;" && method == "<init>" &&
         args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
         args[0].object_id != 0) {
+        static thread_local const bool s_str_ctor_diag =
+            std::getenv("MINIANDROID_STRCTOR") != nullptr;
+        if (s_str_ctor_diag) {
+            std::cerr << "[STRCTOR] argc=" << args.size();
+            for (size_t si = 0; si < args.size() && si < 4; ++si) {
+                std::cerr << " a" << si << ":t" << (int)args[si].type;
+                if (args[si].type == DalvikType::OBJECT_REF)
+                    std::cerr << "#" << args[si].object_id;
+                if (args[si].type == DalvikType::STRING_REF)
+                    std::cerr << "=\"" << args[si].string_val << "\"";
+            }
+            if (args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                std::string cls2;
+                bool has2 = heap_.has_object(args[1].object_id);
+                if (has2) heap_.get_object_class(args[1].object_id, cls2);
+                auto lf2 = heap_.get_object_field(args[1].object_id,
+                                                  "__array_length__");
+                auto nf2 = heap_.get_object_field(args[1].object_id,
+                                                  "__new_array_length__");
+                auto e0 = heap_.get_object_field(args[1].object_id, "array[0]");
+                std::cerr << " [arr has=" << has2 << " cls=" << cls2
+                          << " len=" << (lf2.has_value() ? lf2->int_val : -1)
+                          << " nlen=" << (nf2.has_value() ? nf2->int_val : -1)
+                          << " e0.t=" << (e0.has_value() ? (int)e0->type : -1)
+                          << " e0.v=" << (e0.has_value() ? e0->int_val : -1)
+                          << "]";
+            }
+            std::cerr << std::endl;
+        }
         std::string f299_content;
         bool f299_copy_form = false;
         if (args.size() == 1) {
@@ -55039,8 +55371,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // read-back via new String(bytes, "UTF-8") produced unmaterialized
     // objects (Ljava/lang/String;@N) and String.equals answered false.
     if (class_name == "Ljava/lang/String;" && method == "<init>" &&
-        args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+        args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
         args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+        // F-NEW-358: the byte[] source is the [B class contract — the
+        // String(String)/String(CharSequence) copy forms stay in Handler A
+        // above (a StringBuffer/StringBuilder source never enters here).
+        std::string f358_src_cls;
+        bool f358_is_bytes =
+            heap_.get_object_class(args[1].object_id, f358_src_cls) &&
+            f358_src_cls == "[B";
+        static thread_local const bool s_f358_diag =
+            std::getenv("MINIANDROID_STRCTOR") != nullptr;
+        if (s_f358_diag)
+            std::cerr << "[STRCTOR-B] enter argc=" << args.size()
+                      << " arr#" << args[1].object_id
+                      << " bytes=" << f358_is_bytes << std::endl;
+        if (!f358_is_bytes) {
+            // not a byte[] source: leave to the generic paths
+        } else {
         const auto* arr = heap_.get(args[1].object_id);
         int64_t arr_len = 0;
         auto lf = arr->get_field("__array_length__");
@@ -55069,9 +55417,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0)
             heap_.set_object_field(args[0].object_id, "__string_value__",
                                    DalvikValue::make_string(s, 0));
+        if (s_f358_diag)
+            std::cerr << "[STRCTOR-B] decoded len=" << s.size()
+                      << " val=[" << s.substr(0, 32) << "] this#"
+                      << (args[0].type == DalvikType::OBJECT_REF
+                              ? args[0].object_id : 0) << std::endl;
         result = DalvikValue::make_string(s, 0);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+        }
     }
     if (class_name == "Ljava/lang/String;" && method == "getBytes") {
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -55169,11 +55523,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             push_encoded(cp);
         }
         int32_t n = static_cast<int32_t>(bytes.size());
-        uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+        // F-NEW-358: the result IS a byte[] — AOSP String.getBytes contract.
+        // The legacy synthetic "Larray;" marker broke every [B-classifying
+        // consumer (the String(byte[]) decode law reads the source's heap
+        // class; aget/fill-array family checks the descriptor too). The
+        // engine's array-compat shim (is_array law) already treats both
+        // "[B" and "Larray;" as arrays, so "[B" is the strictly more
+        // correct stamp.
+        uint32_t arr_id = heap_.allocate("[B", pc_, 0);
         DalvikValue arr;
         arr.type = DalvikType::OBJECT_REF;
         arr.object_id = arr_id;
-        arr.class_desc = "Larray;";
+        arr.class_desc = "[B";
         arr.int_val = n;
         heap_.set_object_field(arr_id, "__array_length__",
                                DalvikValue::make_int(n));

@@ -1,0 +1,5 @@
+tmp/capaudit_build/obj/com/probe/capaudit/R$id.class
+tmp/capaudit_build/obj/com/probe/capaudit/R$drawable.class
+tmp/capaudit_build/obj/com/probe/capaudit/MainActivity.class
+tmp/capaudit_build/obj/com/probe/capaudit/R.class
+tmp/capaudit_build/obj/com/probe/capaudit/R$layout.class

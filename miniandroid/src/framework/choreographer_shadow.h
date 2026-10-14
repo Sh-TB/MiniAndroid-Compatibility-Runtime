@@ -109,6 +109,17 @@ public:
     // Last delivered frame time (deterministic virtual clock).
     int64_t last_frame_time_nanos() const { return frame_time_nanos_; }
 
+    // CONT-65 F-NEW-355: vsync belongs to the DISPLAY, not to apps — a real
+    // device ticks vsync every frame whether or not anyone posted callbacks.
+    // take_due_callbacks() advances the clock only when callbacks exist
+    // (that path owns the tick); the frame pump calls advance_vsync_tick()
+    // once per rendered frame when nothing is pending, so animation clocks
+    // (AnimatedImageDrawable / animator sampling) advance for apps that
+    // never post Choreographer callbacks. With pending callbacks the pump
+    // must NOT tick (take_due_callbacks owns this vsync — no double tick).
+    bool pending_empty() const { return pending_.empty(); }
+    void advance_vsync_tick() { frame_time_nanos_ += kFrameIntervalNanos; }
+
     // True when the engine is inside a doFrame dispatch (getFrameTime law).
     bool in_do_frame() const { return in_do_frame_; }
     void set_in_do_frame(bool v) { in_do_frame_ = v; }

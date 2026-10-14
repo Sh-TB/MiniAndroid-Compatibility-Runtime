@@ -44,6 +44,11 @@ struct StoredBitmap {
     std::vector<uint8_t> rgba;        // width*height*4, premultiplied OFF
     bool has_pixels = false;          // false = allocated-but-never-filled
     std::string source_desc;          // provenance (resource path / "createBitmap")
+    // CONT-65 F-NEW-355: original container bytes for ANIMATED formats
+    // (GIF89a/GIF87a only — stb_image first-frame decode can't recover
+    // delays). Populated by decode_and_register on GIF magic; empty for
+    // every other format (bounded by asset size, one copy per bitmap).
+    std::vector<uint8_t> source_gif_bytes;
 };
 
 class BitmapStore {

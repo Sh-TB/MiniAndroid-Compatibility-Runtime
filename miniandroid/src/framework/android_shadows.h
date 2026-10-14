@@ -1472,6 +1472,10 @@ public:
         float translation_x = 0, translation_y = 0;
         float scale_x = 1.0f, scale_y = 1.0f;
         float rotation_deg = 0.0f, pivot_x = 0.0f, pivot_y = 0.0f;
+        // F-NEW-359: AOSP lazy-pivot contract (View.java mSetPivotX/Y) —
+        // pivot defaults to the view CENTER until setPivotX/Y overrides;
+        // without the flag a stored 0 cannot be told apart from unset.
+        bool pivot_x_set = false, pivot_y_set = false;
         // EXP-098 (CM-027): RLottie animation frame RGBA buffer (rendered
         // by RLottieDecoder when setAnimation(R.raw.X, w, h) is called on
         // an RLottieImageView subclass). Stored as anim_w*anim_h*4 bytes
