@@ -338,6 +338,7 @@ void CanvasShadow::sync_shared_state(CanvasShadow& rec) const {
     rec.paint_fake_bold_ = paint_fake_bold_;
     rec.paint_filter_bitmap_ = paint_filter_bitmap_;
     rec.paint_blendmode_ = paint_blendmode_;   // F-NEW-351: blend law parity
+    rec.paint_colorfilter_ = paint_colorfilter_;  // F-NEW-352: tint parity
     rec.paths_ = paths_;
 }
 
@@ -844,6 +845,77 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 int dw = op.has_dst ? (op.w > 0 ? (int)op.w : sw) : sw;
                 int dh = op.has_dst ? (op.h > 0 ? (int)op.h : sh) : sh;
                 if (sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) break;
+                // CONT-64 W2 (F-NEW-352): the PorterDuff color-filter law —
+                // per-pixel tint applied to the SOURCE pixels before the
+                // blend. AOSP PorterDuffColorFilter(color, mode): SRC = the
+                // filter color, DST = the drawn pixel. The canonical
+                // consumer is the icon tint (SRC_IN over a glyph shape: the
+                // tint's RGB replaces the shape's RGB, the shape's alpha
+                // survives). Mode ordinals = AOSP PorterDuff.Mode.values()
+                // order; unknown/unresolved modes = honest no-tint.
+                auto tint_apply = [&](renderer::RGBA dst) -> renderer::RGBA {
+                    const int sr = (op.tint_color >> 16) & 0xFF;
+                    const int sg = (op.tint_color >> 8) & 0xFF;
+                    const int sb = op.tint_color & 0xFF;
+                    const int sa = (op.tint_color >> 24) & 0xFF;
+                    const int dr = dst.r, dg = dst.g, db = dst.b, da = dst.a;
+                    int orr, og, ob, oa;
+                    switch (op.tint_mode) {
+                        case 5:  // SRC_IN: out = src * dst.a
+                            orr = sr * da / 255; og = sg * da / 255;
+                            ob = sb * da / 255; oa = sa * da / 255;
+                            break;
+                        case 9:  // SRC_ATOP: src over dst where dst opaque
+                            orr = (sr * da + dr * (255 - da)) / 255;
+                            og = (sg * da + dg * (255 - da)) / 255;
+                            ob = (sb * da + db * (255 - da)) / 255;
+                            oa = da;
+                            break;
+                        case 14:  // MULTIPLY
+                            orr = sr * dr / 255; og = sg * dg / 255;
+                            ob = sb * db / 255;
+                            oa = sa + da - sa * da / 255;
+                            break;
+                        case 15:  // SCREEN
+                            orr = 255 - (255 - sr) * (255 - dr) / 255;
+                            og = 255 - (255 - sg) * (255 - dg) / 255;
+                            ob = 255 - (255 - sb) * (255 - db) / 255;
+                            oa = sa + da - sa * da / 255;
+                            break;
+                        case 3:  // SRC_OVER (plain tint over the shape)
+                            orr = sr * sa / 255 + dr * (255 - sa) / 255;
+                            og = sg * sa / 255 + dg * (255 - sa) / 255;
+                            ob = sb * sa / 255 + db * (255 - sa) / 255;
+                            oa = sa + da * (255 - sa) / 255;
+                            break;
+                        case 4:  // DST_OVER: the drawn pixel wins where opaque
+                            orr = dr * da / 255 + sr * (255 - da) / 255;
+                            og = dg * da / 255 + sg * (255 - da) / 255;
+                            ob = db * da / 255 + sb * (255 - da) / 255;
+                            oa = da + sa * (255 - da) / 255;
+                            break;
+                        case 6:  // DST_IN: keep dst inside src alpha
+                            orr = dr * sa / 255; og = dg * sa / 255;
+                            ob = db * sa / 255; oa = da * sa / 255;
+                            break;
+                        case 8:  // DST_OUT
+                            orr = dr * (255 - sa) / 255;
+                            og = dg * (255 - sa) / 255;
+                            ob = db * (255 - sa) / 255;
+                            oa = da * (255 - sa) / 255;
+                            break;
+                        case 1:  // SRC: the tint replaces the pixel
+                            orr = sr; og = sg; ob = sb; oa = sa;
+                            break;
+                        default:  // honest no-tint for unimplemented modes
+                            return dst;
+                    }
+                    return renderer::RGBA(
+                        (uint8_t)std::min(255, std::max(0, orr)),
+                        (uint8_t)std::min(255, std::max(0, og)),
+                        (uint8_t)std::min(255, std::max(0, ob)),
+                        (uint8_t)std::min(255, std::max(0, oa)));
+                };
                 if (op.has_affine && (op.affine.b != 0.f || op.affine.c != 0.f ||
                                       op.affine_exact)) {
                     // Rotated/skewed dst: inverse-map per-pixel sampling.
@@ -864,6 +936,10 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                             const uint8_t* p = &sb->rgba[((size_t)spy * sb->width + spx) * 4];
                             renderer::RGBA src(p[0], p[1], p[2],
                                                (uint8_t)std::min(255.f, p[3] * alpha));
+                            // F-NEW-352: the draw-time tint (SRC = the filter
+                            // color, DST = the sampled bitmap pixel).
+                            if (op.has_tint && op.tint_mode >= 1)
+                                src = tint_apply(src);
                             if (!canvas.has_clip() ||
                                 (pxi >= (int)cl_ && pxi < (int)cr_ && pyi >= (int)ct_ && pyi < (int)cb_)) {
                                 renderer::RGBA dstc = canvas.fb().get_pixel(pxi, pyi);
@@ -872,8 +948,27 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                         }
                     }
                 } else {
-                    canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
-                                             sx, sy, sw, sh, dx, dy, dw, dh);
+                    if (op.has_tint && op.tint_mode >= 1) {
+                        // F-NEW-352: tint the source region into a temp
+                        // buffer (the draw_image_region fast path is
+                        // byte-identical for untinted ops).
+                        std::vector<uint8_t> tinted((size_t)sw * sh * 4);
+                        for (int yy = 0; yy < sh; yy++) {
+                            for (int xx = 0; xx < sw; xx++) {
+                                const uint8_t* p = &sb->rgba[
+                                    ((size_t)(sy + yy) * sb->width + (sx + xx)) * 4];
+                                renderer::RGBA px = tint_apply(renderer::RGBA(
+                                    p[0], p[1], p[2], p[3]));
+                                uint8_t* q = &tinted[((size_t)yy * sw + xx) * 4];
+                                q[0] = px.r; q[1] = px.g; q[2] = px.b; q[3] = px.a;
+                            }
+                        }
+                        canvas.draw_image_region(tinted.data(), sw, sh,
+                                                 0, 0, sw, sh, dx, dy, dw, dh);
+                    } else {
+                        canvas.draw_image_region(sb->rgba.data(), sb->width, sb->height,
+                                                 sx, sy, sw, sh, dx, dy, dw, dh);
+                    }
                 }
                 // S82-GFX §6: bitmap resolved + CANVAS_WRITTEN evidence.
                 if (diagnostics::GfxProvenance::instance().enabled())
@@ -1143,6 +1238,28 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // S68 §12: consumed by Canvas.drawBitmap (nearest vs bilinear).
             paint_filter_bitmap_[recv] = ctx.arg_as_bool(0, false);
             return CallResult::handled_void();
+        }
+        // CONT-64 W2 (F-NEW-352): the Paint color filter law — the draw-time
+        // tint. AOSP Paint.java: setColorFilter(ColorFilter filter) stores
+        // the filter on the paint; every draw with this paint applies it.
+        // The engine records the ColorFilter heap object id (the color +
+        // PorterDuff mode live on the object, captured by the ctor law in
+        // the engine — F-NEW-352); drawBitmap snapshots op.tint_* at record
+        // time and the replay applies the filter per pixel.
+        if (m == "setColorFilter") {
+            const uint32_t cf = ctx.arg_as_object(0, 0);
+            if (cf != 0)
+                paint_colorfilter_[recv] = cf;
+            else
+                paint_colorfilter_.erase(recv);   // AOSP: null clears it.
+            return CallResult::handled_void();
+        }
+        if (m == "getColorFilter") {
+            auto it = paint_colorfilter_.find(recv);
+            if (it != paint_colorfilter_.end() && it->second != 0)
+                return CallResult::handled_object(
+                    it->second, "Landroid/graphics/ColorFilter;");
+            return CallResult::handled_null();
         }
         if (m == "setStrokeWidth") {
             paint_stroke_w_[recv] = arg_as_float(ctx, 0, 1.f);
@@ -2349,6 +2466,31 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         bool baked_matrix = false;   // S83: Matrix overload pre-bakes its affine
         auto fb = paint_filter_bitmap_.find(paint_id);
         op.filter_bitmap = fb != paint_filter_bitmap_.end() && fb->second;
+        // CONT-64 W2 (F-NEW-352): the draw-time tint snapshot. The paint's
+        // recorded ColorFilter object carries the tint color + PorterDuff
+        // mode (captured by the ctor law in the engine). Read the fields
+        // with the honest multi-name probe — framework-synthesized objects
+        // may carry either the AOSP or the engine field name.
+        {
+            const uint32_t cf = paint_colorfilter(paint_id);
+            if (cf != 0 && heap_) {
+                int32_t c = 0, mo = -1;
+                bool have_c = heap_->get_object_int_field(cf, "__filter_color__", c);
+                if (!have_c) have_c = heap_->get_object_int_field(cf, "mColor", c);
+                bool have_m = heap_->get_object_int_field(cf, "__filter_mode__", mo);
+                if (!have_m) have_m = heap_->get_object_int_field(cf, "mMode", mo);
+                // PorterDuff.Mode ordinal sanity: the tint family lives in
+                // [SRC=1 .. OVERLAY=17]; mode 0 (CLEAR) on a COLOR filter is
+                // an AOSP nonsensical face and the honest answer for an
+                // unreadable mode is -1 (no tint), never erase.
+                if (have_m && (mo < 1 || mo > 17)) mo = -1;
+                if (have_c) {
+                    op.has_tint = true;
+                    op.tint_color = (uint32_t)c;
+                    op.tint_mode = mo;
+                }
+            }
+        }
         if (ctx.args.size() >= 9 && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
             // int[] variant — materialize pixels into a synthetic Bitmap.
             const uint32_t colors = ctx.arg_as_object(0, 0);
