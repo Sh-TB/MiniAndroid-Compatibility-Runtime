@@ -6530,6 +6530,41 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 ) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().recursive_invoke, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().recursive_invoke, f107_t0};
+    // F-NEW-267 (CONT-64 W1) COMPOSE-MEASURE TRACE — env-gated
+    // MINIANDROID_COMPOSE_MEASURE_TRACE=1, bounded. Every entry of the
+    // compose measure/layout delegate entry points (the R8 names decoded on
+    // dooz v23: Lzs0;.s = setRootConstraints, .m = measureAndLayout,
+    // .k = performMeasureAndLayout; Lt4;.o = the degenerate root measure,
+    // .onMeasure = the view measure) with the raw args. Answers WHO ran the
+    // zero-constraints composition-time measure and whether the real specs
+    // ever reached the delegate.
+    {
+        static thread_local const bool cmt_on =
+            std::getenv("MINIANDROID_COMPOSE_MEASURE_TRACE") != nullptr;
+        if (cmt_on) {
+            const bool is_delegate = (declaring_class == "Lzs0;" &&
+                (method_name == "s" || method_name == "m" || method_name == "k"));
+            const bool is_host = (declaring_class == "Lt4;" &&
+                (method_name == "o" || method_name == "onMeasure"));
+            if (is_delegate || is_host) {
+                static thread_local uint64_t cmt_n = 0;
+                if (cmt_n++ < 120) {
+                    std::cerr << "[CMT] " << declaring_class << "."
+                              << method_name << " argc=" << args.size();
+                    for (size_t ci = 1; ci < args.size() && ci <= 3; ++ci) {
+                        if (args[ci].type == DalvikType::INT32)
+                            std::cerr << " p" << ci << "=" << args[ci].int_val;
+                        else if (args[ci].type == DalvikType::INT64)
+                            std::cerr << " p" << ci << "=" << args[ci].long_val;
+                        else if (args[ci].type == DalvikType::OBJECT_REF)
+                            std::cerr << " p" << ci << "=o" << args[ci].object_id;
+                    }
+                    std::cerr << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+        }
+    }
     uint64_t f107_r0 = 0; phase_clock().enter(phase_clock().invoke_resolve, f107_r0);  // resolve begins
     // S55 R-NEW-361 dispatch trace (env-gated): every entry for the Kotlin
     // LongArray-fill helper and the Arrays.fill bridge target — catches a
@@ -12727,6 +12762,90 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
         std::cerr << "[UI-EVENT] event=TOUCH action=" << action << " result="
                   << (dispatched ? "DISPATCHED" : "FAILED")
                   << " consumed=" << (consumed ? "true" : "false") << std::endl;
+        // F-NEW-267 (CONT-64 W1) LAYOUTNODE-TREE DUMP probe — env-gated
+        // MINIANDROID_LAYOUTNODE_DUMP=<Ldesc;>, read-only, bounded. After a
+        // dispatched touch override returns, dump every heap object of the
+        // named class (default the compose LayoutNode Lel0;) with its
+        // primitive fields + object-field class descriptors. Answers THE
+        // residual-leg decode: did the on-demand measure/layout pass
+        // (Lzs0;.k performMeasureAndLayout -> Las0;.w) materialize real
+        // bounds, or do the nodes the pure-DEX hit-test walk consumes still
+        // hold zero/unset geometry?
+        if (const char* lnd = std::getenv("MINIANDROID_LAYOUTNODE_DUMP")) {
+            std::string want = lnd;
+            if (want.empty() || want == "1" || want == "true") want = "Lel0;";
+            uint64_t dumped = 0;
+            for (uint32_t oid : heap_.get_all_ids()) {
+                const auto* obj = heap_.get(oid);
+                if (!obj || obj->class_descriptor != want) continue;
+                if (dumped++ >= 48) {
+                    std::cerr << "[LN-DUMP] ... (bounded at 48 nodes)"
+                              << std::endl;
+                    break;
+                }
+                std::cerr << "[LN-DUMP] obj#" << oid << " " << want;
+                bool first = true;
+                for (const auto& [fname, fval] : obj->fields) {
+                    if (fname.find("array[") == 0) continue;
+                    std::string piece;
+                    switch (fval.type) {
+                        case DalvikType::INT32:
+                            piece = fname + "=" +
+                                    std::to_string(fval.int_val); break;
+                        case DalvikType::INT64:
+                            piece = fname + "=" +
+                                    std::to_string(fval.long_val); break;
+                        case DalvikType::FLOAT32:
+                            piece = fname + "=" +
+                                    std::to_string(fval.float_val); break;
+                        case DalvikType::BOOLEAN:
+                            piece = fname + "=" +
+                                    (fval.int_val ? "T" : "F"); break;
+                        case DalvikType::OBJECT_REF: {
+                            piece = fname + "->o" +
+                                    std::to_string(fval.object_id);
+                            // CONT-64 W1: also name the referenced object's
+                            // class + its primitive fields (one hop) — the
+                            // coordinator graph decode needs the class
+                            // identity of b/c/d/e/f/g/i objects.
+                            const auto* ref = heap_.get(fval.object_id);
+                            if (ref && dumped < 8) {
+                                piece += "(" + ref->class_descriptor;
+                                bool rfirst = true;
+                                for (const auto& [rf, rv] : ref->fields) {
+                                    if (rf.find("array[") == 0) continue;
+                                    std::string rp;
+                                    if (rv.type == DalvikType::INT32)
+                                        rp = rf + "=" + std::to_string(rv.int_val);
+                                    else if (rv.type == DalvikType::INT64)
+                                        rp = rf + "=" + std::to_string(rv.long_val);
+                                    else if (rv.type == DalvikType::BOOLEAN)
+                                        rp = rf + "=" + (rv.int_val ? "T" : "F");
+                                    else if (rv.type == DalvikType::OBJECT_REF)
+                                        rp = rf + "->o" + std::to_string(rv.object_id);
+                                    if (!rp.empty()) {
+                                        piece += (rfirst ? ":" : ",");
+                                        piece += rp;
+                                        rfirst = false;
+                                    }
+                                }
+                                piece += ")";
+                            }
+                            break;
+                        }
+                        default: break;  // skip uninit/meta noise
+                    }
+                    if (!piece.empty()) {
+                        std::cerr << (first ? " {" : ", ") << piece;
+                        first = false;
+                    }
+                }
+                if (!first) std::cerr << "}";
+                std::cerr << std::endl;
+            }
+            std::cerr << "[LN-DUMP] total " << want << " objects: "
+                      << dumped << std::endl;
+        }
         return dispatched;
     }
     if (node->touch_listener_id == 0) return false;
@@ -18854,6 +18973,37 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                       << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
                       << " value=" << dalvik_value_to_string(result_value)
                       << std::endl;
+        }
+        // F-NEW-267 (CONT-64 W1) HIT-TEST WIDE-READ probe — env-gated
+        // MINIANDROID_TOUCH_FIELD_TRACE=1, bounded, ACTIVE ONLY during the
+        // touch dispatch. Logs every iget-wide (64-bit = the packed
+        // IntOffset/IntSize/Constraints value-class reads) on the compose
+        // node-tree classes so the decode sees EXACTLY what bounds the
+        // pure-DEX hit-test walk consumes.
+        static thread_local const bool htft_on =
+            std::getenv("MINIANDROID_TOUCH_FIELD_TRACE") != nullptr;
+        if (htft_on && touch_dispatch_active_ &&
+            result_value.type == DalvikType::INT64) {
+            static const char* htft_classes[] = {
+                "Lel0;", "Lkz0;", "Lug0;", "Lpz0;", "Lil0;", "Lzs0;",
+                "Lbt0;", "Ld61;", "Las0;", "Lkc;", "Loh;", "Lg5;"};
+            const std::string& cd = field_res.class_descriptor;
+            for (const char* hc : htft_classes) {
+                if (cd == hc) {
+                    static thread_local uint64_t htft_n = 0;
+                    if (htft_n++ < 240) {
+                        DalvikValue tgt2 = get_register(obj_reg);
+                        std::cerr << "[HT-WIDE] " << cd << "."
+                                  << field_res.field_name
+                                  << " obj#" << (tgt2.type == DalvikType::OBJECT_REF
+                                                     ? tgt2.object_id : 0)
+                                  << " = " << result_value.long_val
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                    break;
+                }
+            }
         }
     }
     // EXP-042 Phase 2: on any failure path, fall through with default 0 and
@@ -25541,6 +25691,30 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     }
 
     auto cr = shadow_registry_->dispatch(build_ctx(class_name));
+    // F-NEW-267 (CONT-64 W1) ANSWER-VALUE probe — env-gated, bounded. The
+    // compose relayout reads the view geometry through this bridge during
+    // the tap dispatch; the decode needs the ANSWERED VALUES (the walk
+    // consumes them for the root measure constraints). Print the geometry
+    // getters' int answers when MINIANDROID_TOUCH_WINDOW_TRACE is on.
+    if (touch_dispatch_active_ && cr.handled &&
+        (class_name == "Landroid/view/View;" || class_name == "Lt4;" ||
+         class_name == "Landroid/view/ViewGroup;")) {
+        static thread_local uint64_t av_n = 0;
+        if (av_n++ < 120 &&
+            (method == "getWidth" || method == "getHeight" ||
+             method == "getMeasuredWidth" || method == "getMeasuredHeight" ||
+             method == "getLeft" || method == "getTop" ||
+             method == "getRight" || method == "getBottom" ||
+             method == "isLaidOut" || method == "isAttachedToWindow"))
+            std::cerr << "[TOUCHWIN-ANSWER] " << class_name << "." << method
+                      << " -> "
+                      << (method == "isLaidOut" ||
+                          method == "isAttachedToWindow"
+                              ? std::to_string(cr.bool_val ? 1 : 0)
+                              : std::to_string(cr.int_val))
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+    }
     // M3-DIAG (temporary): why do tick-path setText calls miss the shadow?
     static const bool m3sd = std::getenv("MINIANDROID_M3_SHADOW_DIAG") != nullptr;
     if (m3sd && method.find("setText") != std::string::npos) {
