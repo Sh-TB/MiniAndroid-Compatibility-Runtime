@@ -1,3 +1,0 @@
-fixtures/fnew322_probe/src/com/probe/f322/LpTag.java
-fixtures/fnew322_probe/src/com/probe/f322/MainActivity.java
-tmp/cont51_f322_build/gen/com/probe/f322/R.java

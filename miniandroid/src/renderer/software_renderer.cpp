@@ -186,27 +186,6 @@ void SoftwareCanvas::draw_rect(float left, float top, float right, float bottom,
     int y1 = static_cast<int>(std::round(top));
     int x2 = static_cast<int>(std::round(right));
     int y2 = static_cast<int>(std::round(bottom));
-
-    // CONT-58 decode diagnostic (generic, env-gated, read-only): print every
-    // draw_rect whose rect CONTAINS the probe point "X,Y" (MINIANDROID_RECT_TRACE).
-    // Root-cause provenance for painted-over content; no behavior change.
-    {
-        static const char* rt = std::getenv("MINIANDROID_RECT_TRACE");
-        if (rt && rt[0]) {
-            static const int px_ = std::atoi(rt);
-            static const int py_ = []{
-                const char* c = std::getenv("MINIANDROID_RECT_TRACE");
-                const char* comma = c ? std::strchr(c, ',') : nullptr;
-                return comma ? std::atoi(comma + 1) : 0;
-            }();
-            if (px_ >= x1 && px_ < x2 && py_ >= y1 && py_ < y2) {
-                std::fprintf(stderr,
-                             "[RECT-TRACE] rect=(%d,%d,%d,%d) color=(%d,%d,%d,%d) covers (%d,%d)\n",
-                             x1, y1, x2, y2, color.r, color.g, color.b, color.a, px_, py_);
-            }
-        }
-    }
-
     
     for (int y = y1; y < y2 && y < framebuffer_->get_height(); y++) {
         for (int x = x1; x < x2 && x < framebuffer_->get_width(); x++) {

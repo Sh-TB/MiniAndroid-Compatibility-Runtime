@@ -109,38 +109,6 @@ renderer::VectorRefResolver ExecutionEngine::image_ref_resolver() {
     return [this, &rt, names, cache](uint32_t resid,
                                      renderer::VectorImageRef* out) -> bool {
         if (!out) return false;
-        // F-NEW-341 (the vector-tint theme-attr law): an ATTR id must
-        // resolve through the THEME SERVICE, never the resource table —
-        // the table deref answers the attr-DEFINITION row (a format-flag
-        // INT) and attr_color paints its data as ARGB (alpha-0); the
-        // AOSP VectorDrawable tint composes SRC_IN (output alpha =
-        // fill.a × tint.a), so an alpha-0 tint ERASED every tinted icon
-        // (OpenCalc v53: all five ImageButton vector icons decoded opaque
-        // white yet painted zero pixels; tint = app attr 0x7f0404b8).
-        // Reuses the F-NEW-337b/336 law: color/int accepted; a res/color
-        // file value recurses through the app-package file law; anything
-        // else = honest no-tint (the drawable's own fillColor paints —
-        // the AOSP fallback), never a fabricated color.
-        if ((resid >> 24) == 0x7f && ((resid >> 16) & 0xff) == 0x04) {
-            auto tv = rt.resolve_theme_attr_typed(apk_path_, resid, -1);
-            if (tv && (tv->is_color() || tv->is_int())) {
-                out->resolved = true;
-                out->is_color = true;
-                out->argb = tv->data;
-                return true;
-            }
-            if (tv && tv->is_string() &&
-                tv->string_value.rfind("res/", 0) == 0) {
-                auto c = rt.resolve_apk_file_color(tv->string_value);
-                if (c) {
-                    out->resolved = true;
-                    out->is_color = true;
-                    out->argb = *c;
-                    return true;
-                }
-            }
-            return false;
-        }
         // Colors first (ARSC typed value; framework package handled in the
         // decoder's own table).
         auto val = rt.arsc().resolve_value(resid);
@@ -441,7 +409,6 @@ bool ExecutionEngine::stage_load_apk(const std::string& path, ExecutionResult& r
     apk_parser_.set_verbose(parse_verbose);
     
     result.apk_info = apk_parser_.parse(path);
-    apk_path_ = path;  // F-NEW-341: theme-attr resolution needs the path
     
     if (!result.apk_info.is_valid) {
         set_error("APK parsing failed: " + result.apk_info.validation_error);
@@ -731,21 +698,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // back to the system chain when the app ships none. No package or
         // filename special-casing beyond the "bold in the file name picks
         // the bold face of the family" rule.
-        // F-NEW-315 (CONT-48): AOSP "Fonts in XML" (API 26+) ships app
-        // fonts as FILE-BACKED font resources under res/font/ — aapt2 keeps
-        // them as res/*.ttf|otf entries (R8/obfuscation renames the file
-        // names arbitrarily, e.g. res/UJ.ttf), and ResourcesCompat.getFont
-        // surfaces them through the same Typeface family model. The FIX-4
-        // scan only covered assets/, so any res/font/-shipped family was
-        // silently unregistered (Dooz v23: res/UJ.ttf present, FONT_SOURCE
-        // font_files=0). The res/ scan applies the SAME law — extension
-        // match only, no package/name special-casing — so the negative
-        // space (apps with no .ttf/.otf entries anywhere) is provably
-        // unchanged (their font_files stays 0).
         {
             auto entries = apk_parser_.list_entries_cached("assets/");
-            auto res_entries = apk_parser_.list_entries_cached("res/");
-            entries.insert(entries.end(), res_entries.begin(), res_entries.end());
             int reg = 0, scanned = 0;
             std::string first_path;
             for (const auto& e : entries) {
@@ -783,7 +737,7 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             if (reg > 0)
                 trace_engine_.info("ExecutionEngine", "app_fonts",
                                    "registered " + std::to_string(reg) +
-                                   " app font face(s) from APK assets/res");
+                                   " app font face(s) from APK assets");
         }
         dalvik_engine_.build_class_dex_index(result.dex_report);
         // EXP-088+ Phase 1.2: inject_secondary_dex_classes() is called
@@ -835,32 +789,6 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.run_custom_view_constructor(
                             view_id, class_desc, recs);
                     });
-                // F-NEW-309: the generateLayoutParams hook — the child of
-                // a DEX-defined container gets the parent's OWN LayoutParams
-                // subclass constructed by its real DEX (Context,
-                // AttributeSet) ctor from the child's XML attrs (AOSP
-                // ViewGroup.generateLayoutParams law; android:
-                // layout_gravity resolution — solitaire DrawerLayout$g).
-                rt.set_generate_child_lp_hook(
-                    [this](uint32_t child_id,
-                           const std::string& parent_class_desc,
-                           const std::vector<resources::AxmlAttribute>&
-                               xml_attrs) -> uint32_t {
-                        std::vector<resources::XmlAttrRecord> recs;
-                        recs.reserve(xml_attrs.size());
-                        for (const auto& a : xml_attrs) {
-                            if (a.attr_resid == 0) continue;
-                            resources::XmlAttrRecord r;
-                            r.resid = a.attr_resid;
-                            r.type = a.value.type;
-                            r.data = (int32_t)a.value.data;
-                            r.ref_id = a.value.ref_id;
-                            r.str = a.value.string_value;
-                            recs.push_back(std::move(r));
-                        }
-                        return dalvik_engine_.generate_child_layout_params(
-                            parent_class_desc, child_id, recs);
-                    });
                 // G12 FIX-G12-002 (completes G10 FIX-G10-002's intent): the
                 // DEX superclass classifier must be wired for EVERY inflate/
                 // measure/layout path — window setContentView, constructor
@@ -891,19 +819,6 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 rt.set_dex_class_exists_hook(
                     [this](const std::string& desc) -> bool {
                         return dalvik_engine_.is_dex_defined_class(desc);
-                    });
-                // ── F-NEW-339: the XML <fragment> tag law — the inflater
-                // reports the tag element (view container, fragment class,
-                // tag, xml id); the engine instantiates the fragment through
-                // the FragmentFactory law and synthetic-commits it onto the
-                // SAME queue the DEX commit path uses (F-NEW-304 drains own
-                // the lifecycle).
-                rt.set_fragment_tag_hook(
-                    [this](uint32_t view_id,
-                           const std::string& frag_class_desc,
-                           const std::string& tag, int32_t xml_id) {
-                        dalvik_engine_.instantiate_fragment_tag(
-                            view_id, frag_class_desc, tag, xml_id);
                     });
             }
             // G06 §4: canonical input pipeline. The dispatcher shares the
@@ -958,14 +873,6 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                            bool& consumed) -> bool {
                         return dalvik_engine_.dispatch_touch_listener(
                             view_id, action, x, y, consumed);
-                    });
-                // F-NEW-267 (CONT-61): the lazy DEX override probe for the
-                // dispatchTouchEvent touchable law (compose hosts).
-                touch_dispatcher_->set_dex_override_probe(
-                    [this](const std::string& cls,
-                           const std::string& method) -> bool {
-                        return dalvik_engine_.class_chain_defines_method(
-                            cls, method);
                     });
                 // S128 (R-NEW-424, CAP-INPUT-100): ViewGroup
                 // onInterceptTouchEvent bridge — the intercept pass asks the
@@ -1623,14 +1530,6 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityPreStarted", dalvik_result);
                 bool start_ok = dispatch_app_lifecycle("onStart", &rec);
-                // ── F-NEW-304 (CONT-42): the STARTED-stage fragment drain.
-                // AOSP FragmentActivity.onStart → mFragments.dispatchStart:
-                // fragments move CREATED→VIEW_CREATED→STARTED inside the
-                // host's start window (onCreateView → onViewCreated →
-                // onActivityCreated → onStart). The fragment's view lands in
-                // its transaction container here — the frame render's
-                // canonical measure/draw owns it from the next traversal.
-                dalvik_engine_.advance_fragments_to_started(dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityStarted", dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
@@ -1653,9 +1552,6 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityPreResumed", dalvik_result);
                 bool resume_ok = dispatch_app_lifecycle("onResume", &rec);
-                // ── F-NEW-304 (CONT-42): the RESUMED-stage fragment drain
-                // (fragments reach RESUMED with their host).
-                dalvik_engine_.advance_fragments_to_resumed(dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
                     "onActivityResumed", dalvik_result);
                 dalvik_engine_.dispatch_activity_lifecycle_callbacks(
@@ -3011,9 +2907,6 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     // its own honest state — never a stale ledger from a previous frame.
     frame_census_.reset();
     frame_baseline_ = framebuffer_;
-    // F-NEW-298 (CONT-37) FRAME-HONESTY: re-arm the in-draw budget-halt
-    // signal for THIS frame's render pass (P1-6 extension, CONT-36 §6).
-    dalvik_engine_.frame_honesty_begin();
     // S135 §3: render-pass frontier — MEASURE/LAYOUT/DRAW are now formally
     // STARTED (PENDING) until the composed frame confirms them.
     {
@@ -3740,21 +3633,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     aid = an->parent_id;
                                 }
                                 if (is_container && !is_full_screen && !ancestor_has_bg) {
-                                    // F-NEW-338 (AOSP View.draw law, completing
-                                    // R-NEW-336): a background-less container is
-                                    // TRANSPARENT — the WINDOW background (the
-                                    // theme windowBackground, already on the
-                                    // framebuffer via the EXT01 law) shows
-                                    // through. The old EXP-092 GREY_200
-                                    // visibility fill painted a light surface
-                                    // over dark-theme windows: BMI's themed
-                                    // WHITE spinner text (F-NEW-337/337b chain)
-                                    // sat on the light fill and was invisible;
-                                    // the dark face was the AOSP truth. The
-                                    // fill's visibility purpose is retained for
-                                    // LEAF views by the C013 diagnostic law —
-                                    // containers are honest windows now.
-                                    drew_bg = false;
+                                    canvas.draw_rect(left, top, right, bottom,
+                                                   renderer::Colors::GREY_200);
+                                    drew_bg = true;
                                 } else if (is_container && ancestor_has_bg) {
                                     // AOSP transparent container: nothing to
                                     // paint here; the ancestor's background
@@ -3920,22 +3801,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 -1);
                                         tcp_probed = true;
                                     }
-                                    if (tcp_cached.has_value() &&
-                                        // CONT-58 (F-NEW-336) TYPE LAW: a
-                                        // theme COLOR attr answers as INT_HEX
-                                        // (S127/framework table paths) or a
-                                        // COLOR_* literal. Any other type
-                                        // (STRING — an unresolved file-backed
-                                        // ColorStateList — REFERENCE, …) is
-                                        // NOT a color: casting its data painted
-                                        // the string-pool INDEX as ARGB
-                                        // (alpha-0 → invisible text). AOSP
-                                        // ResourcesImpl.loadColorStateList
-                                        // never hands a string to a color
-                                        // consumer — the honest fallback is
-                                        // the legacy default below.
-                                        (tcp_cached->is_int() ||
-                                         tcp_cached->is_color())) {
+                                    if (tcp_cached.has_value()) {
                                         uint32_t c =
                                             (uint32_t)tcp_cached->data;
                                         tcol = renderer::RGBA{
@@ -5132,52 +4998,8 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 });
                         }
 
-                        // ────────────────────────────────────────────
-                        // F-NEW-298 (CONT-37) FRAME-HONESTY: an in-draw F084
-                        // budget halt means this frame NEVER COMPLETED —
-                        // under ART/SurfaceFlinger an unfinished frame is
-                        // never presented; the display keeps the LAST
-                        // COMPLETE frame. Skip the fb→framebuffer_
-                        // presentation so the theme-background wipe that
-                        // erased every late-halting app's first real frame
-                        // (composeStopwatch cards+text, dooz boot content)
-                        // is dead. The P1-6 law covered render FAILURES;
-                        // this extends the same contract to in-draw halts.
-                        // ────────────────────────────────────────────
-                        // F-NEW-298 hoisted state (visible to the RENDER_OK
-                        // law below in both branches).
-                        int fb_non_white = 0;
-                        size_t fb_pixels_total = 0;
-                        // ────────────────────────────────────────────
-                        // F-NEW-298 (CONT-37) FRAME-HONESTY: an in-draw F084
-                        // budget halt means this frame NEVER COMPLETED —
-                        // under ART/SurfaceFlinger an unfinished frame is
-                        // never presented; the display keeps the LAST
-                        // COMPLETE frame. Skip the fb→framebuffer_
-                        // presentation so the theme-background wipe that
-                        // erased every late-halting app's first real frame
-                        // (composeStopwatch cards+text, dooz boot content)
-                        // is dead. The P1-6 law covered render FAILURES;
-                        // this extends the same contract to in-draw halts.
-                        // ────────────────────────────────────────────
-                        if (dalvik_engine_.frame_honesty_keep_prev()) {
-                            std::cerr << "[F298-KEEP] in-draw F084 budget halt"
-                                      << " this frame — presentation SKIPPED,"
-                                      << " keeping the last complete frame"
-                                      << " (P1-6 extension)" << std::endl;
-                            fb_non_white = -1;   // honest signal: not presented
-                            fb_pixels_total = framebuffer_.size() / 4;
-                            // F-NEW-307: kept-frame attribution — the PNG the
-                            // capture will hash holds the LAST COMPLETE frame;
-                            // this frame's ledger describes the aborted walk.
-                            frame_census_.draw_budget_halt = true;
-                            frame_census_.kept_prior_frame = true;
-                            frame_census_.kept_prior_app_draw_ops =
-                                last_presented_app_draw_ops_;
-                        } else {
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
                         const auto& pixels = fb.get_pixels();
-                        fb_pixels_total = pixels.size();
                         // EXP-092: Debug — check if any non-white pixels exist in fb
                         int non_white = 0;
                         for (size_t i = 0; i < pixels.size(); i++) {
@@ -5194,13 +5016,13 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             framebuffer_[i * 4 + 3] = pixels[i].a;
                         }
                         std::cerr << "[EXP092-COPY] framebuffer_ updated, checking..." << std::endl;
+                        int fb_non_white = 0;
                         for (size_t i = 0; i < framebuffer_.size(); i += 4) {
                             if (framebuffer_[i] != 255 || framebuffer_[i+1] != 255 || framebuffer_[i+2] != 255) {
                                 fb_non_white++;
                             }
                         }
                         std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
-                        }
                         // S135 §3: DRAW/MEASURE/LAYOUT confirmation — the
                         // composed frame IS the evidence the pipeline
                         // reached the end of the draw walk.
@@ -5220,14 +5042,11 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                  : diagnostics::EventSev::PENDING,
                                 "render",
                                 "nonwhite=" + std::to_string(fb_non_white) +
-                                " total=" + std::to_string(fb_pixels_total) +
+                                " total=" + std::to_string(pixels.size()) +
                                 " app_ops=" + std::to_string(frame_census_.app_draw_ops) +
                                 " diag_regions=" + std::to_string(frame_census_.diag_regions.size()),
                                 app_content_drew ? "OK" : "NO_APP_OPS"));
                         }
-                        // F-NEW-307: this frame was PRESENTED — remember its
-                        // app-op ledger for the kept-frame attribution.
-                        last_presented_app_draw_ops_ = frame_census_.app_draw_ops;
                         // S82-GFX §6: SURFACE evidence — composed-frame census.
                         if (diagnostics::GfxProvenance::instance().enabled()) {
                             std::map<uint32_t, size_t> color_hist;
@@ -5642,20 +5461,7 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                 first_missing = "LAYOUT";
             else if (!frame_census_.draw_walk_ran)
                 first_missing = "DRAW";
-            // F-NEW-307 (CONT-44): the APP_DRAW_OPS missing-stage is gated on
-            // PIXEL EVIDENCE too. The op ledger counts the per-ViewShadow
-            // paint sites; the Compose paint path reaches the framebuffer
-            // through dispatch_custom_view_draw / the CDW recorder, which
-            // the ledger attribution does not cover (and a F084-halted walk
-            // presents the KEPT prior frame's pixels — the new census fields
-            // carry that provenance). When the ledger says 0 but the
-            // presented frame carries app-owned pixels, the pixels are REAL
-            // app content and the gap is the ledger's — the census reports
-            // it via kept_prior_frame/draw_budget_halt instead of a false
-            // missing-stage (dooz180 flipped honestly to REAL_APP_CONTENT;
-            // the 15s honest-white face has no app pixels and is unchanged).
             else if (frame_census_.app_draw_ops == 0 &&
-                     app_owned_px == 0 &&
                      !frame_census_.dialog_content_rendered)
                 first_missing = "APP_DRAW_OPS";
             else if (app_owned_px == 0)
@@ -5724,12 +5530,6 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
                     {"synthetic_suppressed", frame_census_.synthetic_suppressed},
                     {"render_exception", frame_census_.render_exception},
                     {"budget_exhausted", frame_census_.budget_exhausted},
-                    {"draw_budget_halt", frame_census_.draw_budget_halt},
-                    {"presentation", frame_census_.kept_prior_frame
-                                          ? "kept_prior_frame"
-                                          : "this_frame"},
-                    {"kept_prior_app_draw_ops",
-                     frame_census_.kept_prior_app_draw_ops},
                     {"nodes_visited", frame_census_.nodes_visited},
                     {"nodes_skipped_depth", frame_census_.nodes_skipped_depth},
                     {"depth_max", frame_census_.depth_max},
@@ -6310,25 +6110,7 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
         miniandroid::dalvik::DalvikExecutionResult drain_result;
         std::vector<miniandroid::dalvik::DalvikValue> args;
         args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
-        // F-NEW-289 (CONT-31) MAIN-QUEUE DELIVERY IDENTITY LAW (AOSP
-        // Looper/Handler model): code delivered by the main MessageQueue
-        // ALWAYS executes on the MAIN thread. No-op when the identity is
-        // already main (the proven case at this entry — fnew289 v1);
-        // binds main when a future call path drains nested inside a worker
-        // body (same root as the park-drain arm).
-        auto* ts289 = shadow_registry_
-                          ? shadow_registry_->find_as<
-                                framework::ThreadShadow>()
-                          : nullptr;
-        uint32_t saved289 = 0;
-        bool bound289 = false;
-        if (ts289 && ts289->current_thread_id() != ts289->main_thread_id()) {
-            saved289 = ts289->current_thread_id();
-            ts289->set_active_drained_thread(0);
-            bound289 = true;
-        }
         dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
-        if (bound289) ts289->set_active_drained_thread(saved289);
         // F-115 (R-NEW-384) java.util.Timer periodic re-enqueue law: a
         // TimerTask enqueued with period>0 re-posts itself after every
         // run (OpenJDK Timer.sched → mainLoop fixed-delay repeat). The
@@ -6381,22 +6163,7 @@ void ExecutionEngine::invoke_choreographer_do_frame(uint32_t callback_id,
         std::vector<miniandroid::dalvik::DalvikValue> args;
         args.push_back(miniandroid::dalvik::DalvikValue::make_object(callback_id, callback_class));
         args.push_back(miniandroid::dalvik::DalvikValue::make_long(frame_time_nanos));
-        // F-NEW-289: doFrame is a MAIN-looper delivery (AOSP Choreographer
-        // rides the main thread) — same identity law as the park-drain arm.
-        auto* ts289f = shadow_registry_
-                           ? shadow_registry_->find_as<
-                                 framework::ThreadShadow>()
-                           : nullptr;
-        uint32_t saved289f = 0;
-        bool bound289f = false;
-        if (ts289f && ts289f->current_thread_id() !=
-                          ts289f->main_thread_id()) {
-            saved289f = ts289f->current_thread_id();
-            ts289f->set_active_drained_thread(0);
-            bound289f = true;
-        }
         dalvik_engine_.try_recursive_invoke(callback_class, "doFrame", args, ret, frame_result);
-        if (bound289f) ts289f->set_active_drained_thread(saved289f);
         if (cs) cs->set_in_do_frame(false);
         std::cerr << "[CHOREO-DISPATCH] doFrame cb=" << callback_id << " invoked" << std::endl;
     } catch (const std::exception& e) {
@@ -6473,40 +6240,6 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
             did_work = true;  // an rAF loop keeps the pump alive until the bound
         }
         pump_ms += 16.6;
-        if (!did_work) {
-            // F-NEW-277 (CONT-25): POLL-TIMEOUT PARITY with drain_quiescent
-            // (M3 FINDING-009) — quiescence is an EMPTY queue, not a
-            // future-dated head. AOSP law (MessageQueue.next): the main
-            // Looper never exits while messages are pending; when the head
-            // is future-dated it sleeps nativePollOnce(head.when - now) and
-            // dispatches when the clock reaches `when`. The compose pump's
-            // old `break` treated "nothing due NOW" as quiescence and
-            // stranded every future-scheduled dispatcher resumption — the
-            // Recomposer runner's wake-up work (Recomposer.kt
-            // awaitWorkAvailable/workContinuation, AndroidUiDispatcher.dispatch
-            // handler post) is exactly such future-due queue work, so the
-            // runner slept forever and recomposition #2 never ran (dooz:
-            // 3 frames, then 0 app draw ops for the rest of the run).
-            //
-            // Scope guard (no app/package checks): the parity law arms only
-            // when THIS pump call actually entered the compose frame family
-            // (fired_frames > 0 — a Choreographer frame callback was served).
-            // Apps that never post a frame callback keep the F-115b frozen
-            // launch-frame law byte-exactly (their launch frame remains the
-            // Looper-time≈0 state; GATE H/G07 goldens unaffected).
-            if (fired_frames > 0 && hs && hs->queue_size() > 0) {
-                int64_t next_ready = hs->next_ready_ms();
-                int64_t now_ms = hs->virtual_now_ms();
-                if (next_ready > now_ms) {
-                    hs->advance_virtual(next_ready - now_ms);
-                    did_work = true;  // keep ticking; the next tick drains
-                    std::cerr << "[F277-POLL] quiescence poll-timeout"
-                              << " fast-forward to virtual_ms=" << next_ready
-                              << " (delta=" << (next_ready - now_ms)
-                              << "ms)" << std::endl;
-                }
-            }
-        }
         if (!did_work) {
             // F-115b REVISED (R-NEW-384 family): the LAUNCH-frame quiescence
             // does NOT advance the virtual clock. Contract: the launch frame

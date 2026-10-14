@@ -80,23 +80,6 @@ bool TouchDispatcher::view_touchable(const ViewShadow::ViewNode& n) const {
     // the custom board view had no listener, so the touchable gate answered
     // false and every board tap resolved target=0).
     if (n.overrides_touch_event) return true;
-    // F-NEW-267 (CONT-61): the dispatchTouchEvent override law. AOSP
-    // View/ViewGroup: a view whose class chain OVERRIDES dispatchTouchEvent
-    // IS a touch target — the override IS the input entry (the framework
-    // caller invokes the override; it consumes the whole sequence
-    // internally). Compose host evidence (dooz v23): AndroidComposeView
-    // (Lt4;) overrides dispatchTouchEvent(MotionEvent)Z and runs the
-    // compose hit-test + pointer pipeline internally; the walk previously
-    // answered touchable=false for it (the capture only covered inflated
-    // custom views) → target=0 → every compose interactive surface
-    // tap-dead. Lazy tri-state probe: the dispatcher has no DEX access —
-    // the engine-bound probe answers on first query and caches in the
-    // node (covers programmatic AND inflated construction paths).
-    if (n.overrides_dispatch_touch_event < 0 && dex_override_probe_) {
-        n.overrides_dispatch_touch_event =
-            dex_override_probe_(n.class_desc, "dispatchTouchEvent") ? 1 : 0;
-    }
-    if (n.overrides_dispatch_touch_event == 1) return true;
     // F-110e (S62+): a view with an OnTouchListener IS a touch target.
     // AOSP View.dispatchTouchEvent (View.java L16741+): the mOnTouchListener
     // gate runs BEFORE clickability matters — `li.mOnTouchListener != null &&
@@ -180,11 +163,7 @@ void TouchDispatcher::apply_down_response_(uint32_t target, int x, int y,
     // View.dispatchTouchEvent: no listener OR listener returning
     // false falls into onTouchEvent(ACTION_DOWN); a custom board
     // view (klondike GameView) handles the gesture there.
-    // F-NEW-267 (CONT-61): extended to the dispatchTouchEvent override —
-    // the compose host gate (the tri-state was probed during the claim).
-    if ((n->touch_listener_id != 0 || n->overrides_touch_event ||
-         n->overrides_dispatch_touch_event == 1) &&
-        touch_fn_) {
+    if ((n->touch_listener_id != 0 || n->overrides_touch_event) && touch_fn_) {
         bool consumed_by_listener = false;
         const bool dispatched = touch_fn_(target, 0 /*ACTION_DOWN*/,
                                           float(x), float(y),

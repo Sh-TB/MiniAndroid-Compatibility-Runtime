@@ -1,5 +1,0 @@
-tmp/cont51_f322_build/obj/com/probe/f322/R$layout.class
-tmp/cont51_f322_build/obj/com/probe/f322/R.class
-tmp/cont51_f322_build/obj/com/probe/f322/MainActivity.class
-tmp/cont51_f322_build/obj/com/probe/f322/R$id.class
-tmp/cont51_f322_build/obj/com/probe/f322/LpTag.class

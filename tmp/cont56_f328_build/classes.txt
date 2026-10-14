@@ -1,4 +1,0 @@
-tmp/cont56_f328_build/obj/com/probe/f328/MainActivity.class
-tmp/cont56_f328_build/obj/com/probe/f328/MyRow.class
-tmp/cont56_f328_build/obj/com/probe/f328/R.class
-tmp/cont56_f328_build/obj/com/probe/f328/MyBar.class

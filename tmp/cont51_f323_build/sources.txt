@@ -1,3 +1,0 @@
-fixtures/fnew323_probe/src/com/probe/f323/Detacher.java
-fixtures/fnew323_probe/src/com/probe/f323/MainActivity.java
-tmp/cont51_f323_build/gen/com/probe/f323/R.java

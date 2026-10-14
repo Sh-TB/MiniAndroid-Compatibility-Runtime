@@ -241,16 +241,9 @@ struct ClassInfo {
     std::string name;             // e.g., "Lcom/example/MainActivity;"
     std::string source_file;
     std::string superclass_name;
-
+    
     uint32_t access_flags = 0;
-
-    // F-NEW-260 (CONT-11): SYSTEM visibility (2) Ldalvik/annotation/InnerClass;
-    // accessFlags element — the DEX mirror of the JVMS InnerClasses.attribute
-    // access_flags. For member (nested) classes OpenJDK Class.getModifiers
-    // returns THESE flags (they carry ACC_STATIC, which the class_def
-    // access_flags of a DEX member class never do). 0 = absent / top-level.
-    uint32_t inner_class_flags = 0;
-
+    
     // Contents
     std::vector<FieldInfo> static_fields;
     std::vector<FieldInfo> instance_fields;

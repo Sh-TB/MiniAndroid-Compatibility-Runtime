@@ -1,3 +1,0 @@
-fixtures/fnew326_probe/src/com/probe/f326/MyBox.java
-fixtures/fnew326_probe/src/com/probe/f326/MainActivity.java
-tmp/cont54_f326_build/gen/com/probe/f326/R.java

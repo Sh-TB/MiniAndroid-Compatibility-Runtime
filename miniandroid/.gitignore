@@ -1,5 +1,4 @@
-runtime/data/*
-!runtime/data/fonts/
+runtime/data/
 run/f023_repro/
 core
 
@@ -27,4 +26,3 @@ run/s24_addall*
 run/s24_elist*
 run/s24_navprobe*
 run/s24_det_run*
-!runtime/data/fonts/
