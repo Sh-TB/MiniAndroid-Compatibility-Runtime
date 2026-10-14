@@ -1,0 +1,22 @@
+{
+ "schema": "solved_card_proof/v1",
+ "id": "R-NEW-369",
+ "status": "VERIFIED-FIXED",
+ "fix_commit": "c1f4d81c",
+ "session": "S50 canonical cleanup + runtime certification",
+ "evidence": {
+  "protocol": "scripts/cleanup/s50_sandbox_test.sh",
+  "protocol_result": "ALL PASS (20/20 assertions, 4 runs)",
+  "protocol_evidence_json": "evidence/cleanup/S50_SANDBOX_EVIDENCE.json",
+  "protocol_evidence_json_sha256": "e871df64648dd92809df7e281933257d1194b98a6ccda6784716c69844af8e6f",
+  "run_screenshots_sha256": {
+   "run1_fresh_rootA": "e6031d6a5f8a95d11c3853866ea384954d494f7703af2d63f9a416f1c3ee58dd",
+   "run2_reopen_rootA": "f62ccb9265388a83fc65b8bbc540d306a7dd280bee6eac667c4f9c15c33a6ecb",
+   "run3_reopen_rootA": "ba0598d6b1e134d3b11ac4f03a890a013c720b0e364dd2106c04a3b7a5c8c803",
+   "run4_fresh_rootB": "e6031d6a5f8a95d11c3853866ea384954d494f7703af2d63f9a416f1c3ee58dd"
+  },
+  "battery_gate": "ALL PASS (94 stages) at fixes-included build",
+  "registry": "root_registry.json entry R-NEW-369"
+ },
+ "note": "screenshots byte-identical run1==run4 (fresh-state determinism across data roots); run1!=run2 (state transition visible)"
+}

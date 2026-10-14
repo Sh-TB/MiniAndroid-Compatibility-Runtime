@@ -169,6 +169,17 @@ public:
     // S83-GFX-BASE: layer mode — set_pixel accumulates alpha (see above).
     void set_alpha_preserve(bool on) { alpha_preserve_ = on; }
     bool alpha_preserve() const { return alpha_preserve_; }
+
+    // F-NEW-351: REPLACE-mode pixel write (NO blend) — the destination-
+    // erase primitive of the BlendMode.CLEAR law (Skia BlendMode::kClear:
+    // dst = transparent, the composite result does NOT depend on dst).
+    // set_pixel's src-over law can never express this (a fully transparent
+    // source is a no-op by construction).
+    void clear_pixel(int x, int y) {
+        if (x < 0 || x >= width_ || y < 0 || y >= height_) return;
+        pixels_[(size_t)y * width_ + x] = RGBA{0, 0, 0, 0};
+        draw_count_++;
+    }
     
     RGBA get_pixel(int x, int y) const {
         if (x < 0 || x >= width_ || y < 0 || y >= height_) {

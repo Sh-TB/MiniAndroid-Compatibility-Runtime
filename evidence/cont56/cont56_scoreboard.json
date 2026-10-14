@@ -1,0 +1,85 @@
+{
+ "wave": "CONT-56 Phase B (S56-CONT)",
+ "binary": "27f168451818b771 lineage; final rebuild after F-NEW-331b/273",
+ "anchor_gate": {
+  "opencalc": "a976d2f9fb675cb3 x3 MATCH",
+  "chess": "b5a7a35d5fe0564b x3 MATCH (recorded prefix b5a7a35d)",
+  "dooz": "d602648e8e401895 x3 MATCH",
+  "microtimer": "da73010a37dd0189 x3 MATCH",
+  "unote": "4f1a9e4e8f64fae8 x3 MATCH",
+  "verdict": "ZERO DRIFT 5/5 x3"
+ },
+ "six_app_scoreboard_x3": {
+  "simplecalc": {
+   "sha16": "7960bce447ac6d8f",
+   "state": "PARTIAL \u2014 full pad, display text empty"
+  },
+  "tanana": {
+   "sha16": "31ddd4d5b8e6d18e",
+   "state": "WHITE (0 errors; root NOT yet decoded)"
+  },
+  "bmi": {
+   "sha16": "56c177db7a04c054",
+   "state": "REAL-CONTENT \u2014 2 fields + blue Calculate button (right-squeezed; row-weight gap next). NEW: was uniform dark at HEAD pre-wave"
+  },
+  "alex": {
+   "sha16": "b5a7a35d5fe0564b",
+   "state": "DARK \u2014 androidx navigation/material chain (ISE 'Fragment null has not been attached yet' at Le0/t;.h + CoordinatorLayout anchor id null) \u2014 next wave"
+  },
+  "dooz180": {
+   "sha16": "d602648e8e401895",
+   "state": "WHITE \u2014 F-NEW-256 compose draw path frontier unchanged"
+  }
+ },
+ "pixel_truth": {
+  "bmi_fix8": {
+   "bg": [
+    48,
+    48,
+    48
+   ],
+   "nonbg_pct": 2.3,
+   "distinct_buckets": 3,
+   "button_like": 1
+  },
+  "simplecalc": {
+   "bg": [
+    112,
+    176,
+    208
+   ],
+   "nonbg_pct": 32.6,
+   "distinct_buckets": 12
+  },
+  "opencalc": {
+   "bg": [
+    48,
+    48,
+    48
+   ],
+   "nonbg_pct": 50.8,
+   "distinct_buckets": 19
+  }
+ },
+ "mosaic": "evidence/cont56/cont56_mosaic.png (uploaded: https://d.uguu.se/OqGgeERr.png + tmpfiles https://tmpfiles.org/wVALKccsbwZH/cont56_mosaic.png)",
+ "honesty": "BMI improved DARK\u2192REAL-CONTENT via 6 generic roots (no app hacks). All claims are 3-run byte-identical screenshot SHAs + pixel census; anchors prove zero drift.",
+ "merged_gate": {
+  "binary": "c8b078ba88ca255d (rebase of CONT-56b onto origin/main da28ea32: F-NEW-328/329 layout laws + F-NEW-260 + all parallel waves)",
+  "standing_gate": "scripts/cont37_regression.sh \u2014 13 anchors x3 = 39/39 MATCH (dooz 31ddd4d5, microtimer da73010a, unote 4f1a9e4e, gmdice f3b483fe, opencalc 0ae271c4 [F-NEW-329 re-pin], tttdeluxe af609429, flappycow 13cf4746, g2048 59ca1526, tanana 5f7e0114, csw 3442d9a9, dooz180 6841d52a)",
+  "bmi_merged_face": {
+   "sha16": "b52252c2de19b03a",
+   "state": "REAL FORM on light theme surface + action bar (2 fields + Calculate button; row-weight squeeze remains \u2014 next wave)",
+   "pixel": {
+    "bg": [
+     240,
+     240,
+     240
+    ],
+    "nonbg_pct": 10.0,
+    "dark_glyph_pct": 7.71,
+    "button_like": 1
+   }
+  },
+  "duplicate_discovery": "F-NEW-330 duplicate of parallel F-NEW-260 (InnerClass modifiers); F-NEW-335 duplicate of F-021+F-NEW-313 (inflater identity) \u2014 both marked DUPLICATE-SUPERSEDED; only setFactory2 rider kept additively."
+ }
+}

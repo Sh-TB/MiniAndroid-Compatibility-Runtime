@@ -136,6 +136,15 @@ CallResult CallResult::handled_void() {
     CallResult r; r.handled = true; r.status = ApiCallStatus::IMPLEMENTED;
     r.ret_kind = RetKind::VOID; return r;
 }
+// F-NEW-259g-a: shadow exception channel — see shadow_registry.h. A real
+// JDK/ART contract violation detected in a shadow (range checks, format
+// laws) is surfaced as a THROWABLE, never as a silent null/bool answer.
+CallResult CallResult::handled_exception(const std::string& cls,
+                                         const std::string& msg) {
+    CallResult r; r.handled = true; r.status = ApiCallStatus::IMPLEMENTED;
+    r.is_exc = true; r.exc_class = cls; r.exc_msg = msg;
+    r.ret_kind = RetKind::VOID; return r;
+}
 CallResult CallResult::not_handled() {
     CallResult r; r.handled = false; r.status = ApiCallStatus::UNHANDLED; return r;
 }

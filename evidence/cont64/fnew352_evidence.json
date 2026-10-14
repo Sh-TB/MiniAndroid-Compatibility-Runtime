@@ -1,0 +1,16 @@
+{
+ "root": "F-NEW-352",
+ "wave": "CONT-64 W2",
+ "probe_apk_sha16": "485d9bccbb98035f",
+ "probe_screenshot_sha16": "f6e3be95506ad8f9",
+ "verify": "scripts/cont64_verify_f352.py 9/9 pixel rows PASS x3",
+ "regression": "anchors 36/36 x3 ZERO DRIFT (scripts/cont64_regression.sh)",
+ "laws": [
+  "PorterDuffColorFilter/BlendModeColorFilter ctor capture (__filter_color__/__filter_mode__)",
+  "Paint.setColorFilter/getColorFilter per-paint record + return",
+  "drawBitmap tint snapshot with [1..17] ordinal gate",
+  "per-pixel PorterDuff replay: SRC=1 SRC_OVER=3 DST_OVER=4 SRC_IN=5 DST_IN=6 DST_OUT=8 SRC_ATOP=9 MULTIPLY=14 SCREEN=15",
+  "Bitmap.setPixels(int[],off,stride,x,y,w,h) companion law"
+ ],
+ "evidence_png": "evidence/cont64/f352_probe_face.png"
+}

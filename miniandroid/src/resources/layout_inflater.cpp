@@ -405,6 +405,30 @@ int LayoutInflater::parse_dim_attr(const AxmlAttribute* attr, InflateStats& stat
         // GOLDEN-03 §9: canonical TypedValue law (raw complex word + context).
         return complex_to_dimension_pixel_size(attr->value.data, density_context());
     }
+    // F-NEW-360 (CONT-66): the TypedValue dimension-REFERENCE law. Aapt2
+    // compiles android:paddingLeft="@dimen/activity_horizontal_margin"
+    // (and every other dimension attribute referencing a dimen entry) as a
+    // typed REFERENCE whose data word is the resource id — NOT as a
+    // dimension and NOT reliably as a raw "@dimen/name" string (the raw
+    // may be empty or the numeric "@ref/0x…" form). The sibling
+    // parse_color_attr already resolves is_reference() values; the
+    // dimension path silently returned 0 — BMI v402's root RelativeLayout
+    // padding (@dimen/activity_horizontal_margin = 16dp) collapsed to 0
+    // and the whole form ran flush to the screen edges (measured: spinner
+    // text x=4, EditText/Button cached right=1080; trace-verified
+    // padding_left=0). AOSP law: Resources/Theme#resolveAttributes yields
+    // TypedValue{type=TYPE_DIMENSION} after typed-value resolution of the
+    // reference; complexToDimensionPixelSize converts it.
+    if (attr->value.is_reference()) {
+        auto val = arsc_.resolve_value(attr->value.ref_id);
+        if (val && val->is_dimension()) {
+            stats.dimens_resolved++;
+            // GOLDEN-03 §9: the ONE canonical conversion path.
+            return complex_to_dimension_pixel_size(val->data, density_context());
+        }
+        stats.unresolved_refs++;
+        return 0;
+    }
     if (attr->value.is_string()) return resolve_dimen_px(attr->value.string_value, stats);
     if (!attr->raw_value.empty()) return resolve_dimen_px(attr->raw_value, stats);
     return 0;
@@ -442,6 +466,18 @@ int LayoutInflater::resolve_size_or_match(const AxmlAttribute* attr, InflateStat
         return v;
     }
     if (attr->value.is_dimension()) return parse_dim_attr(attr, stats);
+    // F-NEW-360 companion: layout_width/height="@dimen/…" arrives typed
+    // REFERENCE (raw often empty) — the old path fell through to the
+    // empty-string sentinel and answered wrap_content (-2). AOSP law:
+    // resolve the TypedValue first; a resolved dimension is a px size.
+    if (attr->value.is_reference()) {
+        auto val = arsc_.resolve_value(attr->value.ref_id);
+        if (val && val->is_dimension())
+            return complex_to_dimension_pixel_size(val->data, density_context());
+        if (val && (val->is_int() || val->type == DataType::INT_DEC ||
+                    val->type == DataType::INT_HEX))
+            return (int)val->data;   // AAPT passes -1/-2 through int entries
+    }
     std::string s = !attr->raw_value.empty() ? attr->raw_value : attr->value.string_value;
     if (s == "match_parent" || s == "fill_parent") return -1;
     if (s == "wrap_content" || s.empty() || s == "@null") return -2;
@@ -987,6 +1023,35 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
             if (it != id_names_.end()) node->android_id_name = it->second;
         }
     }
+    // ── F-NEW-339 (AOSP FragmentLayoutInflaterFactory law) ──────────────
+    // A <fragment> short tag instantiates the fragment named in
+    // android:name (or class=) through the FragmentFactory and attaches
+    // it with the XML id + tag; the tag's view node is the fragment's
+    // CONTAINER (the engine's to_started drain attaches onCreateView's
+    // view inside it). Reported AFTER the element attrs (id included)
+    // were applied so findFragmentById/find_by_android_id both resolve.
+    static const bool f339_dbg = std::getenv("MINIANDROID_F339_DIAG") != nullptr;
+    if (f339_dbg && el.name == "fragment")
+        std::cerr << "[F339-DBG] fragment tag at view=" << view_id
+                  << " hook=" << (fragment_tag_hook_ ? "SET" : "EMPTY")
+                  << std::endl;
+    if (el.name == "fragment" && fragment_tag_hook_) {
+        const AxmlAttribute* na = el.attr("name", "android");
+        if (!na) na = class_attr;   // AOSP law: the class= fallback form
+        std::string fname = na ? (!na->raw_value.empty()
+                                      ? na->raw_value
+                                      : na->value.string_value)
+                               : "";
+        const AxmlAttribute* ta = el.attr("tag", "android");
+        std::string ftag = ta ? (!ta->raw_value.empty()
+                                     ? ta->raw_value
+                                     : ta->value.string_value)
+                              : "";
+        if (!fname.empty()) {
+            fragment_tag_hook_(view_id, class_to_descriptor(fname), ftag,
+                               node->android_view_id);
+        }
+    }
 
     // G11 FIX-G11-001 (AOSP LayoutInflater.createView law): a fully-qualified
     // app-class tag is an INSTANTIATION. Execute the class's real DEX
@@ -995,7 +1060,31 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     // calculator_display.xml into itself via LayoutInflater.inflate(res, this)).
     // App-class test is a pure descriptor gate (framework prefixes excluded);
     // the hook re-verifies the class actually exists in the app DEX.
-    if (custom_view_ctor_hook_ && is_app_class_descriptor(node->class_desc)) {
+    //
+    // F-NEW-283: DEX-EXISTENCE CONSTRUCTOR AUTHORITY. The AOSP authority the
+    // ADDITIONAL-AUDIT P1-3 note states is "does the class exist in the APK
+    // DEX" — NOT the package prefix. The prefix gate above predates that law
+    // and blanket-suppresses the whole Landroid/ tree — including
+    // support-v7/androidx classes that ARE shipped in the app DEX. Live face
+    // (Simple Calculator com.simplemobiletools.calculator vc8):
+    // Landroid/support/v7/widget/Toolbar; is a real DEX class, but the prefix
+    // gate skipped its <init>, so the ctor-initialized measure-scratch int[]
+    // fields stayed null and Toolbar.onMeasure pc=152 died with aput-null NPE
+    // (→ APP BOUNDARY → white screen). Gate = prefix rule OR DEX existence
+    // (probe result cached per descriptor — classes cannot disappear).
+    bool f283_in_dex = false;
+    if (dex_class_exists_hook_) {
+        static thread_local std::unordered_map<std::string, bool> f283_cache;
+        auto f283_it = f283_cache.find(node->class_desc);
+        if (f283_it != f283_cache.end()) {
+            f283_in_dex = f283_it->second;
+        } else {
+            f283_in_dex = dex_class_exists_hook_(node->class_desc);
+            f283_cache.emplace(node->class_desc, f283_in_dex);
+        }
+    }
+    if (custom_view_ctor_hook_ &&
+        (is_app_class_descriptor(node->class_desc) || f283_in_dex)) {
         // F-NEW-197 XML-AttributeSet law: the constructor receives the SAME
         // XML attribute set AOSP passes (AttributeSet argument) — the parsed
         // attrs travel with the call so obtainStyledAttributes can resolve
@@ -1032,6 +1121,39 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     // S124 THEME-OVERLAY: the subtree scope ends here (AOSP ContextThemeWrapper
     // is scoped to the themed view and its descendants).
     if (overlay_cookie) resources::ThemeEngine::instance().pop_overlay(overlay_cookie);
+
+    // ── F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) ────────────
+    // AOSP LayoutInflater.inflate → root.generateLayoutParams(childAttrs)
+    // for EVERY child: the generated LayoutParams is the PARENT's own
+    // subclass, constructed from THIS child's attrs — android:
+    // layout_gravity among them (solitaire DrawerLayout → NavigationView:
+    // 0x00800003). For a DEX-defined parent the generation executes the
+    // parent's real DEX (Context, AttributeSet) LayoutParams ctor via the
+    // executor hook (same dual gate as the view-ctor hook: prefix filter
+    // OR DEX existence — DrawerLayout lives under Landroid/support/ AND in
+    // the APK DEX). 0 = law not applicable → ROOT-055's semantic
+    // materialization stands (AOSP ViewGroup default).
+    if (generate_child_lp_hook_ && parent_view_id != 0) {
+        if (const auto* pnode = views->find_node(parent_view_id)) {
+            const std::string pcls = pnode->class_desc;
+            bool parent_in_dex = false;
+            if (!pcls.empty() && dex_class_exists_hook_) {
+                static thread_local std::unordered_map<std::string, bool>
+                    f309_cache;
+                auto it = f309_cache.find(pcls);
+                if (it != f309_cache.end()) {
+                    parent_in_dex = it->second;
+                } else {
+                    parent_in_dex = dex_class_exists_hook_(pcls);
+                    f309_cache.emplace(pcls, parent_in_dex);
+                }
+            }
+            if (!pcls.empty() &&
+                (is_app_class_descriptor(pcls) || parent_in_dex)) {
+                generate_child_lp_hook_(view_id, pcls, el.attributes);
+            }
+        }
+    }
     return view_id;
 }
 
@@ -1125,6 +1247,18 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         if (n == "layout_width") a.layout_width = resolve_size_or_match(&at, stats), a.width_set = true;
         else if (n == "layout_height") a.layout_height = resolve_size_or_match(&at, stats), a.height_set = true;
         else if (n == "layout_margin") { a.ml = a.mt = a.mr = a.mb = parse_dim_attr(&at, stats); a.margin_set = true; }
+        // F-NEW-361 (CONT-66): the API-26 MarginLayoutParams axis margins.
+        // AOSP ViewGroup.MarginLayoutParams(c, attrs): layout_marginHorizontal
+        // sets leftMargin=rightMargin; layout_marginVertical sets
+        // topMargin=bottomMargin; explicit single-edge margins win over the
+        // axis forms. The attrs were never parsed — microtimer v8's keypad
+        // rows (layout_marginHorizontal=@dimen/button_margin_out=2.5dp)
+        // laid out full-width with buttons 360px instead of the XML-true
+        // 356px inset pair. (Named residual: AOSP resolves the
+        // axis-vs-single precedence by TYPE after reading ALL attrs, not by
+        // XML file order; the corpus has no conflicting single+axis files.)
+        else if (n == "layout_marginHorizontal") { a.ml = a.mr = parse_dim_attr(&at, stats); a.margin_set = true; }
+        else if (n == "layout_marginVertical") { a.mt = a.mb = parse_dim_attr(&at, stats); a.margin_set = true; }
         else if (n == "layout_marginLeft") a.ml = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginTop") a.mt = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginRight") a.mr = parse_dim_attr(&at, stats), a.margin_set = true;
@@ -1185,8 +1319,28 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
                 if (val && val->is_string()) { a.hint = val->string_value; stats.strings_resolved++; }
             } else a.hint = raw;
         }
+        else if (n == "entries") {
+            // F-NEW-337 (AOSP AbsSpinner constructor law): android:entries
+            // names an array resource; the Spinner builds an ArrayAdapter
+            // from it (setAdapter inside the widget ctor — no DEX call) and
+            // the widget's visible content is the SELECTED item, default
+            // index 0. Resolution is the canonical getStringArray law
+            // (F-NEW-319). A Spinner never carries android:text, so writing
+            // the selected item into a.text is unambiguous and flows through
+            // the generic text pipeline (layout + paint) unchanged.
+            if (at.value.is_reference()) {
+                auto items = arsc_.resolve_string_array(at.value.ref_id);
+                if (items && !items->empty()) a.text = (*items)[0];
+                else stats.unresolved_refs++;
+            } else stats.unresolved_refs++;
+        }
         else if (n == "textSize") {
-            if (at.value.is_dimension()) a.text_size_px = parse_dim_attr(&at, stats);
+            // F-NEW-360: textSize referencing @dimen arrives typed REFERENCE
+            // — the is_dimension() gate skipped parse_dim_attr entirely and
+            // the raw-string fallback answered 0 for numeric "@ref/0x…"
+            // raws. The TypedValue law: resolve the reference first.
+            if (at.value.is_dimension() || at.value.is_reference())
+                a.text_size_px = parse_dim_attr(&at, stats);
             else a.text_size_px = (float)resolve_dimen_px(raw, stats);
             node.text_size_sp = a.text_size_px / metrics_.density;
         }
@@ -1496,8 +1650,45 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             else if (n == "layout_constraintTop_toBottomOf")  { cl_anchor(); a.cl_top_to = nm;   a.cl_top_edge = 2; }
             else if (n == "layout_constraintBottom_toBottomOf"){ cl_anchor(); a.cl_bottom_to = nm; a.cl_bottom_edge = 2; }
             else if (n == "layout_constraintBottom_toTopOf")  { cl_anchor(); a.cl_bottom_to = nm; a.cl_bottom_edge = 1; }
-            else if (n == "layout_constraintHorizontal_bias") a.cl_bias_x = atof(raw.c_str());
-            else if (n == "layout_constraintVertical_bias")   a.cl_bias_y = atof(raw.c_str());
+            // F-NEW-329: Guideline position family (AOSP Guideline.java).
+            // A Guideline is an invisible constraint LINE: it is never
+            // measured and never drawn, but it fully participates as an
+            // anchor TARGET. position = percent x content span, or an
+            // absolute begin/end offset (negative = from the far edge).
+            // Evidence: opencalculator v53 activity_main — every display
+            // member (inputHorizontalScrollView / resultDisplay... /
+            // sliding_layout) chains its top/bottom through guideline1/
+            // guideline2 (percents 0.18/0.24); the pre-fix law skipped
+            // GONE targets entirely, so those spans collapsed.
+            // TYPED-FLOAT LAW: aapt2 compiles percent/bias as typed FLOAT
+            // (0x04) with NO raw string — atof("") answered 0 and pinned
+            // both guidelines at Y=0 (inputHSV/resultHSV measured 1080x0).
+            // FRACTION (0x06) is the percent-by-complex form (data/2^24).
+            else if (n == "layout_constraintGuide_percent") {
+                if (at.value.type == DataType::FLOAT)
+                    std::memcpy(&a.cl_guide_percent, &at.value.data, 4);
+                else if (at.value.is_fraction())
+                    a.cl_guide_percent = (float)((double)at.value.data
+                                                 / (double)(1 << 24));
+                else if (!raw.empty())
+                    a.cl_guide_percent = (float)atof(raw.c_str());
+            }
+            else if (n == "layout_constraintGuide_begin")
+                a.cl_guide_begin = parse_dim_attr(&at, stats);
+            else if (n == "layout_constraintGuide_end")
+                a.cl_guide_end = parse_dim_attr(&at, stats);
+            // F-NEW-329 (same typed-FLOAT family): XML-set bias — an empty
+            // raw must NOT reset the AOSP default 0.5 to 0.
+            else if (n == "layout_constraintHorizontal_bias") {
+                if (at.value.type == DataType::FLOAT)
+                    std::memcpy(&a.cl_bias_x, &at.value.data, 4);
+                else if (!raw.empty()) a.cl_bias_x = (float)atof(raw.c_str());
+            }
+            else if (n == "layout_constraintVertical_bias") {
+                if (at.value.type == DataType::FLOAT)
+                    std::memcpy(&a.cl_bias_y, &at.value.data, 4);
+                else if (!raw.empty()) a.cl_bias_y = (float)atof(raw.c_str());
+            }
         }
     }
 
@@ -1637,6 +1828,10 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.cl_top_to = a.cl_top_to; node.cl_top_edge = a.cl_top_edge;
     node.cl_bottom_to = a.cl_bottom_to; node.cl_bottom_edge = a.cl_bottom_edge;
     node.cl_bias_x = a.cl_bias_x; node.cl_bias_y = a.cl_bias_y;
+    // F-NEW-329: guideline position family onto the node.
+    node.cl_guide_percent = a.cl_guide_percent;
+    node.cl_guide_begin = a.cl_guide_begin;
+    node.cl_guide_end = a.cl_guide_end;
     if (a.bg_color != 0) { node.bg_color = a.bg_color; node.bg_from_xml = true; }
     if (!a.bg_drawable.empty()) {
         node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true;
@@ -2469,6 +2664,8 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             container && n->class_desc.find("ConstraintLayout") != std::string::npos;
         int content_w = 0, content_h = 0;
         bool rl_edges_aggregated = false;
+        static const bool rl_trace =
+            std::getenv("MINIANDROID_RL_TRACE") != nullptr;
         if (is_rl_container) {
             const int NOT_SET = INT_MIN;
             struct Edge { int l = NOT_SET, r = NOT_SET, t = NOT_SET, b = NOT_SET; };
@@ -2694,6 +2891,19 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 // FIX-MEASURE-002e: cache for the onLayout replay.
                 cn->rl_cached_top = e.t;
                 cn->rl_cached_bottom = e.b;
+                if (rl_trace) {
+                    fprintf(stderr,
+                            "[RL-TRACE-M] child=%u %s above='%s' below='%s'"
+                            " alignTop='%s' alignBottom='%s' mt=%d mb=%d"
+                            " -> t=%d b=%d sz=%dx%d\n",
+                            kids[i], cn->class_desc.c_str(),
+                            cn->rel_above_name.c_str(),
+                            cn->rel_below_name.c_str(),
+                            cn->rel_align_top_name.c_str(),
+                            cn->rel_align_bottom_name.c_str(),
+                            cn->lp_margin_top, cn->lp_margin_bottom,
+                            e.t, e.b, sz.first, sz.second);
+                }
             }
 
             // AOSP wrap-RL content: max extents over resolved EDGES (not
@@ -2750,7 +2960,12 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             if (nm.empty() || nm == "parent") return 0;
             for (uint32_t cid : n->children) {
                 auto* cn = views->find_node(cid);
-                if (cn && cn->visibility != 8 && cn->android_id_name == nm)
+                // F-NEW-329: GONE nodes REMAIN legal anchor targets (AOSP
+                // ConstraintLayout: constraints may bind to a GONE widget —
+                // it collapses to a point but its resolved edges still
+                // anchor dependents; Guideline children are ALWAYS flagged
+                // GONE-for-draw). Only the id NAME matters here.
+                if (cn && cn->android_id_name == nm)
                     return cid;
             }
             return 0;
@@ -2799,7 +3014,35 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                          cl_name_to_id(cn->cl_right_to)};
              })) {
             auto* cn = views->find_node(kids[i]);
-            if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+            if (!cn) { child_sizes[i] = {0, 0}; continue; }
+            // F-NEW-329: Guideline law (AOSP Guideline.java). A guideline is
+            // an invisible constraint LINE — never measured, never drawn,
+            // but its resolved edge anchors dependents. orientation 0 =
+            // HORIZONTAL (fixes Y — resolved in the vertical pass),
+            // 1 = VERTICAL (fixes X — resolved HERE against the container
+            // content width). Evidence: opencalculator v53 guideline1/2.
+            if (cn->class_desc.find("Guideline") != std::string::npos) {
+                child_sizes[i] = {0, 0};
+                if (cn->orientation == 1) {
+                    CEdge& ge = cedges[kids[i]];
+                    const int cw = std::max(0, myWidth - n->padding_left
+                                            - n->padding_right);
+                    int pos = INT_MIN;
+                    if (cn->cl_guide_begin != INT_MIN)
+                        pos = n->padding_left + (cn->cl_guide_begin >= 0
+                                 ? cn->cl_guide_begin : cw + cn->cl_guide_begin);
+                    else if (cn->cl_guide_end != INT_MIN)
+                        pos = (myWidth - n->padding_right)
+                              - (cn->cl_guide_end >= 0
+                                 ? cn->cl_guide_end : cw + cn->cl_guide_end);
+                    else if (cn->cl_guide_percent >= 0.0f)
+                        pos = n->padding_left + (int)std::lround(
+                                  cn->cl_guide_percent * (float)cw);
+                    if (pos != INT_MIN) { ge.l = pos; ge.r = pos; }
+                }
+                continue;
+            }
+            if (cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
             CEdge& e = cedges[kids[i]];
             if (cn->cl_left_edge) {
                 if (cn->cl_left_to == "parent")
@@ -2824,19 +3067,30 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             const bool h_both = e.l != NOT_SET && e.r != NOT_SET;
             if (h_both) {
                 const int span = std::max(0, e.r - e.l);
-                if (cn->lp_width == 0)            wspec = {span, M_EXACTLY};
+                // F-NEW-329 dimension law (AOSP ConstraintLayout): a child
+                // anchored on BOTH edges fills the span — MATCH_CONSTRAINT
+                // (0) spans it and MATCH_PARENT (-1) is FIXED to it. The
+                // pre-fix AT_MOST law let content-sized subtrees shrink
+                // inside their span (sliding_layout measured 579/1080).
+                if (cn->lp_width == 0 || cn->lp_width == -1)
+                    wspec = {span, M_EXACTLY};
                 else if (cn->lp_width >= 0)       wspec = {std::min(cn->lp_width, span), M_EXACTLY};
                 else                              wspec = {span, M_AT_MOST};
-            } else if (cn->lp_width >= 0) {
+            } else if (cn->lp_width >= 1) {
                 wspec = {cn->lp_width, M_EXACTLY};
             } else {
+                // F-NEW-329: MATCH_CONSTRAINT with an unresolved anchor on
+                // this axis degrades to WRAP (AOSP solver: a one-anchor 0dp
+                // widget wraps its content). The old child_spec(...,0) path
+                // answered EXACTLY(0) and collapsed whole families
+                // (opencalc inputHSV/resultHSV measured 52x0).
                 wspec = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right,
-                                   cn->lp_width);
+                                   cn->lp_width == 0 ? -2 : cn->lp_width);
             }
             // height spec: resolved in the vertical pass; fixed stays exact.
-            Spec hspec = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
+            Spec hspec = cn->lp_height > 0 ? Spec{cn->lp_height, M_EXACTLY}
                                             : child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
-                                                         cn->lp_height);
+                                                         cn->lp_height == 0 ? -2 : cn->lp_height);
             auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
             if (h_both) {
@@ -2866,7 +3120,32 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                          cl_name_to_id(cn->cl_bottom_to)};
              })) {
             auto* cn = views->find_node(kids[i]);
-            if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+            if (!cn) { child_sizes[i] = {0, 0}; continue; }
+            // F-NEW-329: Guideline law — HORIZONTAL guideline (orientation 0)
+            // fixes its Y against the container content height; VERTICAL
+            // guidelines fixed their X in the horizontal pass.
+            if (cn->class_desc.find("Guideline") != std::string::npos) {
+                child_sizes[i] = {0, 0};
+                if (cn->orientation == 0) {
+                    CEdge& ge = cedges[kids[i]];
+                    const int chh = std::max(0, myHeight - n->padding_top
+                                             - n->padding_bottom);
+                    int pos = INT_MIN;
+                    if (cn->cl_guide_begin != INT_MIN)
+                        pos = n->padding_top + (cn->cl_guide_begin >= 0
+                                 ? cn->cl_guide_begin : chh + cn->cl_guide_begin);
+                    else if (cn->cl_guide_end != INT_MIN)
+                        pos = (myHeight - n->padding_bottom)
+                              - (cn->cl_guide_end >= 0
+                                 ? cn->cl_guide_end : chh + cn->cl_guide_end);
+                    else if (cn->cl_guide_percent >= 0.0f)
+                        pos = n->padding_top + (int)std::lround(
+                                  cn->cl_guide_percent * (float)chh);
+                    if (pos != INT_MIN) { ge.t = pos; ge.b = pos; }
+                }
+                continue;
+            }
+            if (cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
             CEdge& e = cedges[kids[i]];
             if (cn->cl_top_edge) {
                 if (cn->cl_top_to == "parent")
@@ -2891,27 +3170,39 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             Spec wspec;
             if (w_both) {
                 const int span = std::max(0, e.r - e.l);
-                if (cn->lp_width == 0)            wspec = {span, M_EXACTLY};
+                // F-NEW-329 dimension law: both anchors — 0dp and match_parent
+                // both FILL the span (AOSP ConstraintLayout).
+                if (cn->lp_width == 0 || cn->lp_width == -1)
+                    wspec = {span, M_EXACTLY};
                 else if (cn->lp_width >= 0)       wspec = {std::min(cn->lp_width, span), M_EXACTLY};
                 else                              wspec = {span, M_AT_MOST};
-            } else if (cn->lp_width >= 0) {
+            } else if (cn->lp_width >= 1) {
                 wspec = {cn->lp_width, M_EXACTLY};
             } else {
+                // F-NEW-329: unresolved-anchor MATCH_CONSTRAINT degrades to
+                // WRAP (never EXACTLY(0)).
                 wspec = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right,
-                                   cn->lp_width);
+                                   cn->lp_width == 0 ? -2 : cn->lp_width);
             }
             Spec hspec;
             const bool v_both = e.t != NOT_SET && e.b != NOT_SET;
             if (v_both) {
                 const int span = std::max(0, e.b - e.t);
-                if (cn->lp_height == 0)            hspec = {span, M_EXACTLY};
+                // F-NEW-329 dimension law (vertical axis): 0dp spans, and
+                // MATCH_PARENT (-1) is FIXED to the span. Evidence:
+                // opencalc sliding_layout lp=-1/0 — the pre-fix law measured
+                // it AT_MOST and its content-sized subtree shrank to 579.
+                if (cn->lp_height == 0 || cn->lp_height == -1)
+                    hspec = {span, M_EXACTLY};
                 else if (cn->lp_height >= 0)       hspec = {std::min(cn->lp_height, span), M_EXACTLY};
                 else                               hspec = {span, M_AT_MOST};
-            } else if (cn->lp_height >= 0) {
+            } else if (cn->lp_height >= 1) {
                 hspec = {cn->lp_height, M_EXACTLY};
             } else {
+                // F-NEW-329: unresolved-anchor MATCH_CONSTRAINT degrades to
+                // WRAP (never EXACTLY(0)).
                 hspec = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom,
-                                   cn->lp_height);
+                                   cn->lp_height == 0 ? -2 : cn->lp_height);
             }
             auto sz = measure_node(views, kids[i], wspec, hspec, depth + 1);
             child_sizes[i] = sz;
@@ -2939,11 +3230,14 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
         }
 
         // AOSP wrap-CL content: max extents over resolved EDGES, margins
-        // included (same law as the RL aggregation above).
+        // included (same law as the RL aggregation above). F-NEW-329:
+        // guidelines NEVER contribute to the wrap content (they are
+        // constraint lines, not widgets).
         content_w = 0; content_h = 0;
         for (size_t i = 0; i < kids.size(); i++) {
             auto* cn = views->find_node(kids[i]);
             if (!cn || cn->visibility == 8) continue;
+            if (cn->class_desc.find("Guideline") != std::string::npos) continue;
             const CEdge& e = cedges[kids[i]];
             if (e.r != INT_MIN) content_w = std::max(content_w, e.r + cn->lp_margin_right);
             if (e.b != INT_MIN) content_h = std::max(content_h, e.b + cn->lp_margin_bottom);
@@ -3651,6 +3945,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         bool is_cl = n->class_desc.find("ConstraintLayout") != std::string::npos;
         bool is_scroll = n->class_desc.find("ScrollView") != std::string::npos &&
                          n->class_desc.find("Horizontal") == std::string::npos;
+        // F-NEW-305 (CONT-44): appcompat ActionBarOverlayLayout — the inset
+        // dispatch host (see the layout branch below for the law).
+        bool is_abol = n->class_desc.find("ActionBarOverlayLayout") !=
+                       std::string::npos;
         bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
         // G12 FIX-G12-001: TableLayout stacks rows VERTICALLY (see measure).
         if (is_ll && is_a(n->class_desc, "Landroid/widget/TableLayout;"))
@@ -3965,6 +4263,8 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             }
         } else if (is_fl || is_rl || is_scroll) {
             if (is_rl) {
+                static const bool rl_trace =
+                    std::getenv("MINIANDROID_RL_TRACE") != nullptr;
                 // FIX-2c: RelativeLayout with REAL dependency rules (AOSP
                 // applyVerticalSizeRules/applyHorizontalSizeRules, simplified
                 // to the common subset). Fixed-point over children: a child
@@ -3978,7 +4278,19 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     }
                     return 0;
                 };
-                struct Box { int x, y, w, h; bool done; };
+                // F-NEW-340: a box resolved from the measure-time edge
+                // replay (rl_edges_valid) is FINAL — the AOSP onLayout
+                // replay law (RelativeLayout.onLayout reuses the edges
+                // cached by applyVerticalSizeRules/
+                // applyHorizontalSizeRules at measure; it never re-derives
+                // positions from the rule set). The fixed-point loop below
+                // must therefore skip replay boxes, or its simplified
+                // else-if chain overwrites them (BMI v402 weightSpinner:
+                // replay box y=231 (alignTop=weightNum) was clobbered by
+                // the chain's above-law answer y=315 — the 84px top-margin
+                // anchor-gap law missing from the chain made the spinner
+                // row staggered against its EditText).
+                struct Box { int x, y, w, h; bool done; bool replay; };
                 std::map<uint32_t, Box> boxes;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
@@ -3994,15 +4306,29 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const int by = ct + cn->rl_cached_top - n->padding_top;
                         const int bw = std::max(0, cn->rl_cached_right - cn->rl_cached_left);
                         const int bh = std::max(0, cn->rl_cached_bottom - cn->rl_cached_top);
-                        boxes[cid] = {bx, by, bw, bh, true};
+                        if (rl_trace) {
+                            fprintf(stderr,
+                                    "[RL-TRACE-L] child=%u %s FAST-PATH box=(%d,%d)"
+                                    " %dx%d cached=(l%d r%d t%d b%d)\n",
+                                    cid, cn->class_desc.c_str(), bx, by, bw, bh,
+                                    cn->rl_cached_left, cn->rl_cached_right,
+                                    cn->rl_cached_top, cn->rl_cached_bottom);
+                        }
+                        boxes[cid] = {bx, by, bw, bh, true, true};
                         continue;
+                    }
+                    if (rl_trace) {
+                        fprintf(stderr, "[RL-TRACE-L] child=%u %s FALLBACK"
+                                        " (rl_edges_valid=%d)\n",
+                                cid, cn ? cn->class_desc.c_str() : "?",
+                                cn ? (int)cn->rl_edges_valid : -1);
                     }
                     int w = cn->lp_width >= 0 ? cn->lp_width
                           : (cn->lp_width == -1 ? cw : cn->measured_width);
                     int h = cn->lp_height >= 0 ? cn->lp_height
                           : (cn->lp_height == -1 ? ch : cn->measured_height);
                     w = std::min(w, cw); h = std::min(h, ch > 0 ? ch : h);
-                    boxes[cid] = {cl, ct, std::max(0, w), std::max(0, h), false};
+                    boxes[cid] = {cl, ct, std::max(0, w), std::max(0, h), false, false};
                 }
                 // heights first (layout_below chains), then widths, 3 passes.
                 for (int pass = 0; pass < 3; ++pass) {
@@ -4010,6 +4336,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     for (uint32_t cid : kids) {
                         auto* cn = views->find_node(cid);
                         Box& b = boxes[cid];
+                        // F-NEW-340: measure-time replay boxes are final —
+                        // the fixed-point chain exists for the FALLBACK
+                        // children only (programmatic addView paths).
+                        if (b.replay) continue;
                         int vg = cn->child_gravity >= 0 ? cn->child_gravity
                                                        : n->container_gravity;
                         (void)vg;
@@ -4149,6 +4479,109 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
                     stack.push_back({cid, x, y, w, h});
                 }
+            }
+        } else if (is_abol) {
+            // ── F-NEW-305 (CONT-44): AOSP ActionBarOverlayLayout inset law ──
+            // (ActionBarOverlayLayout.java @android-34, non-overlay measure
+            // path: mContentInsets.top += mActionBarTop.getMeasuredHeight();
+            // applyInsets() writes content lp.topMargin; onLayout places the
+            // bar at (paddingLeft, paddingTop) and the content BELOW it.)
+            //
+            // WHY HERE: the appcompat DEX onMeasure runs but degenerates —
+            // ViewGroup.measureChildWithMargins has no engine shadow yet, so
+            // the bar measures 0 inside the DEX body and the R-NEW-438
+            // incomplete-emulation guard demotes to the native laws, which
+            // had no ActionBarOverlayLayout branch: the content landed at
+            // y=0 and the bar parked offscreen at y=1920 (tananaev: the
+            // preference rows rendered UNDER the bar band).
+            //
+            // LAW (generic, class-dispatched, zero app knowledge): the
+            // ActionBarContainer child lays out at (paddingLeft, paddingTop)
+            // with its REAL measured size; every other visible child (the
+            // content — ContentFrameLayout family) lays out at
+            //   top    = paddingTop + bar.measured_height + lp.topMargin
+            //   height = ch − bar.measured_height − margins
+            // and is RE-MEASURED with EXACTLY(ch − bar_h) first (the AOSP
+            // second-pass law — first-pass specs resolved against the full
+            // container size are stale).
+            //
+            // SCOPE: the non-overlay path (the AOSP default when the theme
+            // requests a normal action bar). An overlay-mode window would
+            // keep the content at paddingTop — the overlay theme attr is not
+            // yet read by the engine; recorded as the law's scope boundary
+            // in the registry (no byte-exact anchor uses ActionBarOverlay
+            // Layout at all — the branch is a structural no-op for them).
+            // NoActionBar themes measure the bar at 0 height → content top
+            // = paddingTop → also a structural no-op.
+            uint32_t bar_id = 0;
+            int bar_h = 0, bar_w = 0;
+            for (uint32_t cid : kids) {
+                auto* cn = views->find_node(cid);
+                if (cn && cn->class_desc.find("ActionBarContainer") !=
+                              std::string::npos) {
+                    bar_id = cid;
+                    bar_h = cn->measured_height;
+                    bar_w = cn->measured_width;
+                    break;
+                }
+            }
+            // ── F-NEW-305 companion: the AOSP bar-height floor from the THEME ──
+            // The engine's DEX measure chain degenerates for the decor action
+            // bar (ViewGroup.measureChildWithMargins has no shadow yet): the
+            // ActionBarContainer measures 0 where AOSP measures the theme's
+            // actionBarSize (appcompat's ToolbarWidgetWrapper applies the
+            // action-bar size as the decor toolbar's minimum height — the
+            // exact attr the appcompat DEX reads in ActionBarOverlayLayout
+            // .<init>: R.attr.actionBarSize). Resolve it from the APP THEME
+            // (never a constant): the app-package attr/actionBarSize first
+            // (the appcompat attr — every appcompat app carries it), then
+            // the framework android:actionBarSize (the platform bridge
+            // theme), then NO floor — the branch stays a no-op (honest
+            // absence, not a fabricated bar).
+            int bar_h_eff = bar_h;
+            if (bar_h <= 0) {
+                std::optional<uint32_t> attr_id =
+                    arsc_.find_id("", "attr", "actionBarSize");
+                if (!attr_id) attr_id = 0x010102EBu;  // android:actionBarSize
+                if (attr_id) {
+                    auto tv = resources::ResourceRuntime::instance()
+                                  .resolve_theme_attr_typed(apk_path_, *attr_id);
+                    if (tv && tv->is_reference()) {
+                        auto rv = arsc_.resolve_value(tv->ref_id);
+                        if (rv) tv = *rv;
+                    }
+                    if (tv && (tv->is_dimension() || tv->is_int())) {
+                        bar_h_eff = std::max(0, complex_to_dimension_pixel_size(
+                                                     tv->data, density_context()));
+                    }
+                }
+            }
+            for (uint32_t cid : kids) {
+                if (cid == bar_id) continue;
+                auto* cn = views->find_node(cid);
+                int w = cn->lp_width >= 0 ? cn->lp_width : cw;
+                // AOSP applyInsets offsets the content top; a fixed-height
+                // content keeps its own measured height (only match_parent
+                // shrinks by the inset).
+                int h = cn->lp_height >= 0
+                          ? cn->lp_height
+                          : std::max(0, ch - bar_h_eff - cn->lp_margin_top -
+                                             cn->lp_margin_bottom);
+                // AOSP second pass: re-measure the content subtree with the
+                // EXACTLY inset height (first-pass specs are stale).
+                measure_node(views, cid, Spec{std::min(w, cw), M_EXACTLY},
+                             Spec{h, M_EXACTLY}, 0);
+                stack.push_back({cid, cl + cn->lp_margin_left,
+                                 ct + bar_h_eff + cn->lp_margin_top,
+                                 std::min(w, cw), h});
+            }
+            if (bar_id) {
+                // The bar's own rect uses the same effective height (its
+                // measured height is the degenerate 0; the theme floor is
+                // the honest AOSP answer the toolbar would have measured).
+                stack.push_back(
+                    {bar_id, cl, ct, std::min(bar_w, cw),
+                     bar_h > 0 ? bar_h : bar_h_eff});
             }
         } else {
             // generic ViewGroup: stack children vertically top-down

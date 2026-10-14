@@ -1,0 +1,23 @@
+{
+ "source": "engine --agent-play runtime frames (see frames/manifest.json)",
+ "frame_count": 10,
+ "dimensions": "270x480 (downscaled from 1080x1920)",
+ "frame_png_sha256": [
+  "613cfccc0f27b5bf8c0eb88bcb34221305c25a5d4b77d675849575be5e36cb47",
+  "2f7ae2198e2c166618796817d2f836d0d7adcc829276623e637161e248935433",
+  "6ef95c5a0882b859feaa51a32063ea4d8d3202d11e13c5c7eca108e6abbac480",
+  "d97ebe04c09fe4fb057e9abc71888254dcfabdc84331d9d16e009aff4d068274",
+  "9ca3a913ff4fa743421cced6175d7663e87f82933daf96069a08548df8d0bdd9",
+  "21b92bba336a1ebad824469710931085afcb7fb58710b45532c1481f15b7faee",
+  "676f9ca372aacb9285a3e3c0120d78618b0edf08c24ad9ef56a0f7afc713601e",
+  "5c833e91893e566c686999a2f3f22a943f9d9c4173ee6efd0c77fb91bc50ed55",
+  "33048194e19cebcac266523edbd274dac29665dd902e559f0486ca77b74e4766",
+  "cb4fddb3f48928f84d7a3627c55497a49918c87977e0d7ea846d3fcd43fb47c0"
+ ],
+ "gif_sha256": "c98214d3870e536eecea6274acd3d7d0419f23529569163aba2b7f2a237f3ab7",
+ "gif_bytes": 8279,
+ "agent_moves_made": 9,
+ "agent_final_status": "DRAW",
+ "dynamic_selection": true,
+ "policy": "win:complete-line > block:opponent-line > take-center > take-corner > first-empty"
+}

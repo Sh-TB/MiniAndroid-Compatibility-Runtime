@@ -45,6 +45,9 @@ public:
             inflater_ = std::make_unique<LayoutInflater>(arsc_, apk_, apk_path_, metrics_);
             apply_custom_view_ctor_hook();
             apply_is_a();
+            apply_dex_class_exists_hook();
+            apply_generate_child_lp_hook();
+            apply_fragment_tag_hook();
         }
         return *inflater_;
     }
@@ -87,6 +90,20 @@ public:
         if (inflater_) inflater_->set_dex_class_exists_hook(dex_class_exists_hook_);
     }
 
+    // F-NEW-309: same Factory law for the generateLayoutParams hook (the
+    // child-of-DEX-container LayoutParams generation — see LayoutInflater).
+    void set_generate_child_lp_hook(LayoutInflater::GenerateChildLpHook fn) {
+        generate_child_lp_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_generate_child_lp_hook(generate_child_lp_hook_);
+    }
+
+    // F-NEW-339: same Factory law for the <fragment> tag hook — the
+    // inflater reports the tag element; the engine owns the DEX lifecycle.
+    void set_fragment_tag_hook(LayoutInflater::FragmentTagHook fn) {
+        fragment_tag_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_fragment_tag_hook(fragment_tag_hook_);
+    }
+
 private:
     void apply_custom_view_ctor_hook() {
         if (inflater_ && custom_view_ctor_hook_)
@@ -103,6 +120,14 @@ private:
     void apply_dex_class_exists_hook() {
         if (inflater_ && dex_class_exists_hook_)
             inflater_->set_dex_class_exists_hook(dex_class_exists_hook_);
+    }
+    void apply_generate_child_lp_hook() {
+        if (inflater_ && generate_child_lp_hook_)
+            inflater_->set_generate_child_lp_hook(generate_child_lp_hook_);
+    }
+    void apply_fragment_tag_hook() {
+        if (inflater_ && fragment_tag_hook_)
+            inflater_->set_fragment_tag_hook(fragment_tag_hook_);
     }
 
 public:
@@ -128,6 +153,20 @@ public:
     // @color reference through the framework table. No invented colors,
     // no package-name checks (the 0x01 test IS the AOSP package router).
     std::optional<uint32_t> resolve_framework_file_color(uint32_t resid);
+
+    // CONT-58 (F-NEW-336) APP-PACKAGE FILE-COLOR LAW: library ColorStateList
+    // files (appcompat abc_* / Material mtrl_* — e.g.
+    // res/color/abc_primary_text_material_light.xml) are file-backed entries
+    // of the APP package, NOT the framework table. A theme attr whose value
+    // is a STRING "res/color/…" (the aapt2 file-reference form) resolves by
+    // extracting that entry from the APK itself and applying the same
+    // ColorStateList default-state law as resolve_framework_file_color
+    // (tri-state first match: window_focused=true, enabled=true, everything
+    // else false). In-item @color/… references deref through the APP table
+    // (bounded depth). Returns the default-state ARGB, or nullopt (honest
+    // miss — the caller keeps its existing fallback).
+    std::optional<uint32_t> resolve_apk_file_color(const std::string& res_path,
+                                                   int depth = 0);
 
     // S127 (R-NEW-423 follow-up, AOSP AssetManager2 ResolveAttributeReference
     // law): a REFERENCE whose target is a COLOR resolves package-routed —
@@ -170,6 +209,51 @@ public:
     std::optional<ResValue> resolve_theme_attr_typed(const std::string& apk_path,
                                                      uint32_t attr_key,
                                                      int flavor_hint = -1);
+    // ── F-NEW-364 (CONT-67): AOSP Resources.Theme.applyStyle ─────────────
+    // AOSP Theme.java: applyStyle(resid, force) applies the style's
+    // attribute bag onto the theme state — with force=false the style
+    // fills ONLY values the base theme lacks (AssetManager2::Theme::applyStyle
+    // merge semantics). The appcompat 1.4+ attachBaseContext2 chain applies
+    // R.style.Theme_AppCompat_Empty (which defines the FULL AppCompatTheme
+    // attr family with default values) onto EVERY AppCompatActivity
+    // context — on real devices this is why a non-AppCompat-descendant
+    // activity theme still passes the createSubDecor theme gate
+    // (hasValue(windowActionBar) answers true via the Empty-theme bag).
+    // Evidence: notes_secuso 105 — ContextThemeWrapper
+    // .onApplyThemeResource → Resources$Theme.applyStyle had NO law (the
+    // style application no-op'd) → F-093 resolved 125/127 AppCompatTheme
+    // attrs as MISS → the ISE gate fired → SplashActivity APP-BOUNDARY
+    // unwind, blank face.
+    // LAW: the applied styles record (in apply order) is consulted when
+    // the base theme chain MISSES an attr — the exact force=false merge
+    // subset. Deterministic per-apk (single-activity subset documented).
+    void record_applied_theme_style(uint32_t style_resid) {
+        for (uint32_t r : applied_theme_styles_)
+            if (r == style_resid) return;
+        applied_theme_styles_.push_back(style_resid);
+    }
+    const std::vector<uint32_t>& applied_theme_styles() const {
+        return applied_theme_styles_;
+    }
+    // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution DEF-STYLE stages ──
+    // The F-093 producer's chain had only XML (stage 1) + theme (stage 5);
+    // the AOSP law (frameworks/base/libs/androidfw/AttributeResolution.cpp
+    // ApplyStyle) walks, BETWEEN them: (2) the tag XML's own style=
+    // reference, (3) the defStyleAttr (the theme's style reference — e.g.
+    // navigationViewStyle → Widget.Design.NavigationView, the ONLY source
+    // of the drawer android:maxWidth=320dp law), (4) the explicit
+    // defStyleRes. Each style stage walks the style's bag INCLUDING the
+    // ResTable_map_entry parent chain (bag_value law) and derefs the
+    // REFERENCE-typed result to the referenced entry's table value
+    // (AOSP ResolveAttributeReference; package-routed app → framework).
+    // Evidence (solitaire): NavigationView.<init> mMaxWidth =
+    // getDimensionPixelSize(android:maxWidth, 0) — the style-stage miss
+    // answered 0 → onMeasure AT_MOST → min(912, 0) = 0 → the drawer
+    // measured 0 wide → the menu content never rendered.
+    std::optional<ResValue> resolve_def_style_attr_value(
+        const std::string& apk_path, uint32_t attr_id,
+        int32_t def_style_attr, int32_t def_style_res,
+        int32_t xml_style_resid = 0);
     // S124 THEME-BASE: the AOSP-law Theme object for the launch theme
     // (activity > application), built ONCE per APK with Theme::apply_style
     // overlay semantics (AssetManager2.cpp Theme::ApplyStyle law). The
@@ -210,6 +294,8 @@ private:
     bool loaded_ = false;
     std::string apk_path_;
     std::string load_error_;
+    // F-NEW-364: the Theme.applyStyle record (apply order; deduped).
+    std::vector<uint32_t> applied_theme_styles_;
     // G11 FIX-G11-001: process-wide custom-view constructor hook (Factory
     // law — survives LayoutInflater recreation in ensure_loaded()).
     LayoutInflater::CustomViewCtorHook custom_view_ctor_hook_;
@@ -217,6 +303,9 @@ private:
     // (same Factory law).
     LayoutInflater::CustomViewMeasureHook custom_view_measure_hook_;
     LayoutInflater::DexClassExistsHook dex_class_exists_hook_;
+    // F-NEW-309: process-wide generateLayoutParams hook (same Factory law).
+    LayoutInflater::GenerateChildLpHook generate_child_lp_hook_;
+    LayoutInflater::FragmentTagHook fragment_tag_hook_;
     // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
     std::function<bool(const std::string&, const std::string&)> is_a_;
     // S124 THEME-BASE: cached AOSP-law Theme for the loaded APK.
