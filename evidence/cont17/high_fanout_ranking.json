@@ -1,0 +1,141 @@
+{
+ "generated": "2026-10-08",
+ "law": "rank by fan-out x evidence x proximity-to-draw (SP-11)",
+ "open_row_total": 208,
+ "ranking": [
+  {
+   "subsystem": "UNSET",
+   "open_rows": 188,
+   "samples": [
+    "R-NEW-001",
+    "R-NEW-002",
+    "R-NEW-004",
+    "R-NEW-005",
+    "R-NEW-006",
+    "R-NEW-015"
+   ]
+  },
+  {
+   "subsystem": "campaign/success-path",
+   "open_rows": 5,
+   "samples": [
+    "F-NEW-208",
+    "F-NEW-211",
+    "F-NEW-212",
+    "F-NEW-213",
+    "F-NEW-214"
+   ]
+  },
+  {
+   "subsystem": "renderer/framework",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-162"
+   ]
+  },
+  {
+   "subsystem": "DEX interpreter / array + loop semantics",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-172"
+   ]
+  },
+  {
+   "subsystem": "white-screen family",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-197"
+   ]
+  },
+  {
+   "subsystem": "layout/traversal",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-206"
+   ]
+  },
+  {
+   "subsystem": "evidence/golden-provenance",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-230"
+   ]
+  },
+  {
+   "subsystem": "diagnostics/logging",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-204"
+   ]
+  },
+  {
+   "subsystem": "gate/visual-truth",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-207"
+   ]
+  },
+  {
+   "subsystem": "runtime/virtual-concurrency",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-217"
+   ]
+  },
+  {
+   "subsystem": "dex/api",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-161"
+   ]
+  },
+  {
+   "subsystem": "renderer/z-order",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-192"
+   ]
+  },
+  {
+   "subsystem": "framework/collections",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-264d"
+   ]
+  },
+  {
+   "subsystem": "dex/r8-merged-class-identity",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-221"
+   ]
+  },
+  {
+   "subsystem": "layout/constraintlayout-match-parent-spec",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-229"
+   ]
+  },
+  {
+   "subsystem": "framework/serialization-reflective",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-250"
+   ]
+  },
+  {
+   "subsystem": "dex/exceptions + compose/measure",
+   "open_rows": 1,
+   "samples": [
+    "F-NEW-265"
+   ]
+  }
+ ],
+ "top_generic_law_queues": [
+  "F-NEW-264d six collection laws (one law = one fix; unblocks every Kotlin/stdlib-heavy app)",
+  "F-NEW-265 measure-death (every-Compose-family content pixels)",
+  "JNI family (F-NEW-219 + SharedLibraryLoader; libgdx/native-load\u65cf)",
+  "MessageQueue/Handler deep ordering edges (R-NEW-001 family)"
+ ]
+}

@@ -1,0 +1,84 @@
+{
+ "generated": "2026-10-08",
+ "binary": "a8761a482a186eac",
+ "task_23_SP4_8_renderer_authority": {
+  "selection_law": "S135 \u00a714 \u2014 runtime semantics ONLY",
+  "sites": [
+   {
+    "family": "OPENGL_GLES",
+    "trigger": "GL frame actually presented (surface created)",
+    "site": "src/runtime/execution_engine.cpp:5221-5228"
+   },
+   {
+    "family": "COMPOSE",
+    "trigger": "choreographer composition pump has pending callbacks (recomposition pump active)",
+    "site": "src/runtime/execution_engine.cpp:6195-6198"
+   },
+   {
+    "family": "CLASSIC_CANVAS",
+    "trigger": "default view walk when no authoritative family has claimed (guarded by current_renderer_family().empty() \u2014 first claim wins, never downgrades)",
+    "site": "src/runtime/execution_engine.cpp:2925-2929"
+   },
+   {
+    "family": "WEBVIEW",
+    "trigger": "live WebView engine (S135 \u00a714 comment at :2921)"
+   }
+  ],
+  "forbidden_heuristics_census": {
+   "package_or_app_names": "NOT USED at any selection site (audited :2925/:5221/:6195)",
+   "class_name_guesses": "NOT USED \u2014 GL/Compose/WebView triggers are runtime state, not names",
+   "newest_object_id_or_last_setParams": "NOT USED",
+   "diagnostic_placeholder_or_demo_renderer": "diag_owned_pixels counted SEPARATELY from app_owned_pixels; diagnostic pixels can never satisfy the verdict"
+  },
+  "authority_accounting": {
+   "app_draw_ops_increment_sites": [
+    "execution_engine.cpp:3942 (drew_bg \u2014 AOSP View.draw drawBackground law)",
+    ":4010 (SurfaceView ops)",
+    ":4054/:4319/:4431/:4509/:4591 (onDraw/text/image family)",
+    ":4127 (custom-view text routing)"
+   ],
+   "verdict_law": "21-P0-6 pixel ownership + correlated proof; app_content_proof() = auth_root_valid && draw_walk_ran && app_draw_ops>0 (execution_engine.h:411)",
+   "masquerade_guard": "pre-walk framebuffer snapshot frame_baseline_ (execution_engine.h:413-416) \u2014 pipeline fills can never count as app content",
+   "verdict": "PASS \u2014 only app-owned ops increment; framework/background/fallback cannot satisfy the gate"
+  }
+ },
+ "task_24_deep_audit_legacy_reachability": {
+  "authoritative_binary": "build/miniandroid <- src/main.cpp (Makefile default target)",
+  "classification": [
+   {
+    "path": "ApplicationRuntime + RenderPipeline (src/runtime/application_runtime.*, src/renderer/software_renderer.h:422)",
+    "class": "LEGACY/TEST-ONLY \u2014 reachable ONLY via the experimental megabatch target (exp007_012_megabatch_main.cpp, Makefile:145-146), NOT the authoritative binary; 11 RenderPipeline refs confined to application_runtime.cpp"
+   },
+   {
+    "path": "software_renderer primitives (raster backend used by the engine draw walk)",
+    "class": "AUTHORITATIVE \u2014 included by execution_engine.cpp:16; the ONE framebuffer owner is ExecutionEngine::framebuffer_ with the census + snapshot laws"
+   },
+   {
+    "path": "synthetic api::View",
+    "class": "DEAD \u2014 no such class in the authoritative path; src/api/android_stubs.h is forward-declarations only"
+   }
+  ],
+  "exactly_one_authoritative_owner": true,
+  "verdict": "PASS \u2014 legacy paths are DEAD/TEST-ONLY in build/miniandroid; zero dual-owner risk"
+ },
+ "task_25_view_tree_lifecycle_owner_crosscheck": {
+  "engine_law": "src/framework/android_shadows.cpp:3095-3125",
+  "crosscheck_vs_lifecycle_2.11.0": [
+   "set(decor, owner) BEFORE any content attaches \u2014 MATCHES ViewTreeLifecycleOwner.set contract",
+   "walk climbs view->parent reading getTag(key) with checkNotNull ISE \"ViewTreeLifecycleOwner not found\" \u2014 ISE face REPRODUCED historically (R-NEW-379 dooz v23 ComposeView.onAttachedToWindow)",
+   "key name-resolved from the app's OWN resources.arsc \u2014 no hardcoded id, no package name (law-consistent)",
+   "owner stored = the engine Activity object implementing the app-DEX LifecycleOwner interface \u2014 the walk's terminal hop"
+  ],
+  "verdict": "LAW CONSISTENT \u2014 window-canonical: one set on the decor counterpart before content; runtime proof = every Compose title executes past onAttachedToWindow at HEAD (dooz/gmdice anchors x3)"
+ },
+ "task_26_traversal_order_crosscheck_vs_viewrootimpl": {
+  "engine_laws": [
+   "R-NEW-302: addView/removeView/removeAllViews -> requestLayout (android_shadows.cpp:3933/:3947/:4562) \u2014 tree change raises relayout for the next stage",
+   "S67 F-NEW-198: view-tree dump runs TWICE by law \u2014 early pass + end-of-window pass, second overwrites (execution_engine.cpp:5250-5262)"
+  ],
+  "aosp_law": "ViewRootImpl.requestLayoutDuringLayout: a requestLayout DURING the layout traversal re-runs layout in the same frame (mLayoutRequested stays true through performTraversals)",
+  "known_bounded_divergence": "the engine honors requestLayout at STAGE granularity (next frame stage), not intra-traversal \u2014 a child raising requestLayout mid-layout gets its relayout next stage, not a same-traversal second pass",
+  "fan_out_observed": "no corpus face attributed to this divergence at HEAD (all anchors green); recorded honestly, not fixed",
+  "verdict": "PARTIAL \u2014 cross-check done, one bounded divergence documented"
+ }
+}

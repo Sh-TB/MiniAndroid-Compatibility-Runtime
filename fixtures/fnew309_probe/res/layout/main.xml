@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- F-NEW-309 probe layout: a DEX-defined container (DrawerBox, the
+     DrawerLayout shape) with three children:
+       drawer_left  — android:layout_gravity="start" (0x00800003, the exact
+                      raw AXML int solitaire's NavigationView carries)
+       drawer_right — android:layout_gravity="end"   (0x00800005)
+       plain_child  — NO layout_gravity (the AppBarLayout shape: gravity 0
+                      is the honest AOSP face, not a defect) -->
+<com.probe.f309.DrawerBox
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/drawer_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"/>
+
+    <ImageView
+        android:id="@+id/drawer_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"/>
+
+    <ImageView
+        android:id="@+id/plain_child"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</com.probe.f309.DrawerBox>

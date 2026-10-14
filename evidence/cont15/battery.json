@@ -1,0 +1,158 @@
+{
+ "dooz_x3": [
+  {
+   "label": "dooz_run1",
+   "rc": 1,
+   "sha16": "d602648e8e401895",
+   "uncaught": 6,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "app_draw_ops": 0,
+   "app_px": 0
+  },
+  {
+   "label": "dooz_run2",
+   "rc": 1,
+   "sha16": "d602648e8e401895",
+   "uncaught": 6,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "app_draw_ops": 0,
+   "app_px": 0
+  },
+  {
+   "label": "dooz_run3",
+   "rc": 1,
+   "sha16": "d602648e8e401895",
+   "uncaught": 6,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "app_draw_ops": 0,
+   "app_px": 0
+  }
+ ],
+ "f259": {
+  "label": "f259_probe",
+  "install": "FAIL"
+ },
+ "f259g": {
+  "label": "f259g_probe",
+  "pkg": "com.probe.f259g",
+  "PASS": 462,
+  "FAIL": 84,
+  "rc": 0,
+  "sha16": "538344debb376357"
+ },
+ "f266": {
+  "label": "f266_probe",
+  "pkg": "com.probe.f266",
+  "PASS": 210,
+  "FAIL": 42,
+  "rc": 0,
+  "sha16": "5d18f642e797427a"
+ },
+ "anchors": {
+  "microtimer": [
+   {
+    "label": "microtimer_run1",
+    "rc": 0,
+    "sha16": "da73010a37dd0189",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 22,
+    "app_px": 1029909
+   },
+   {
+    "label": "microtimer_run2",
+    "rc": 0,
+    "sha16": "da73010a37dd0189",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 22,
+    "app_px": 1029909
+   },
+   {
+    "label": "microtimer_run3",
+    "rc": 0,
+    "sha16": "da73010a37dd0189",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 22,
+    "app_px": 1029909
+   }
+  ],
+  "unote": [
+   {
+    "label": "unote_run1",
+    "rc": 0,
+    "sha16": "4f1a9e4e8f64fae8",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 7,
+    "app_px": 302400
+   },
+   {
+    "label": "unote_run2",
+    "rc": 0,
+    "sha16": "4f1a9e4e8f64fae8",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 7,
+    "app_px": 302400
+   },
+   {
+    "label": "unote_run3",
+    "rc": 0,
+    "sha16": "4f1a9e4e8f64fae8",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 7,
+    "app_px": 302400
+   }
+  ],
+  "gmdice": [
+   {
+    "label": "gmdice_run1",
+    "rc": 0,
+    "sha16": "f3b483fe7b7cf51b",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 6,
+    "app_px": 163612
+   },
+   {
+    "label": "gmdice_run2",
+    "rc": 0,
+    "sha16": "f3b483fe7b7cf51b",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 6,
+    "app_px": 163612
+   },
+   {
+    "label": "gmdice_run3",
+    "rc": 0,
+    "sha16": "f3b483fe7b7cf51b",
+    "uncaught": 0,
+    "verdict": "REAL_APP_CONTENT",
+    "app_draw_ops": 6,
+    "app_px": 163612
+   }
+  ]
+ },
+ "telegram_forkgram": {
+  "label": "telegram_forkgram",
+  "rc": 1,
+  "sha16": "cf4c41e62ceb6557",
+  "uncaught": 6,
+  "verdict": "REAL_APP_CONTENT",
+  "app_draw_ops": 11,
+  "app_px": 117133
+ },
+ "tictactoe_emmanuel": {
+  "label": "tictactoe_emmanuel",
+  "rc": 1,
+  "sha16": "b5a7a35d5fe0564b",
+  "uncaught": 9,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_draw_ops": 0,
+  "app_px": 0
+ }
+}

@@ -296,7 +296,24 @@ std::string logical_android_path(const fs::path& host_path) {
     std::error_code ec;
     std::string h = fs::absolute(host_path, ec).string();
     if (ec) h = host_path.string();
-    const std::string& root = g_app_data_root;
+    // F-NEW-293: canonicalize the ANCHOR exactly like the host side. The
+    // default app-data root is the RELATIVE literal "runtime/data" (M3
+    // FINDING-012 back-compat; set_app_data_root absolutizes only when an
+    // explicit override was applied). A relative prefix table can NEVER
+    // match the absolute host side, so the reverse mapping silently no-oped
+    // and every Context dir getter minted its File with the HOST spelling
+    // ("runtime/data/data/data/<pkg>/files"). Downstream, each consumer
+    // re-anchored that relative spelling by its OWN law — resolve_android_
+    // path under package_data_dir(), getAbsolutePath/getAbsoluteFile (R-NEW-
+    // 390) under app_data_root() — multiplying the prefix
+    // (runtime/data/data/data/<pkg>/runtime/data/… DataStore ENOENT face,
+    // probe-proven fnew293_pre). AOSP law (ContextImpl): the application
+    // NEVER sees a host path. One law: both sides of the comparison resolve
+    // against the SAME process anchor (CWD at first use — the same anchor
+    // create_directories/materialize already resolved the relative root
+    // against). No name dispatch, no per-app branches.
+    fs::path anchor = fs::absolute(fs::path(g_app_data_root), ec);
+    const std::string root = ec ? g_app_data_root : anchor.string();
     auto map_prefix = [&](const std::string& host_prefix,
                           const char* logical_prefix) -> std::string {
         if (h == host_prefix) return logical_prefix;
