@@ -24731,6 +24731,38 @@ static const miniandroid::dalvik::KvInt kOrdinals[] = {
     {"Landroid/graphics/Bitmap$Config;.RGB_565", 1},
     {"Landroid/graphics/Bitmap$Config;.ARGB_4444", 2},
     {"Landroid/graphics/Bitmap$Config;.ARGB_8888", 3},
+    // F-NEW-351: the full AOSP Bitmap.Config family (Bitmap.java decl
+    // order; API 26+ adds RGBA_F16, API 26 adds HARDWARE). The compose
+    // ImageBitmap config converter consults these by name — the two
+    // missing members answered null in the dooz v23 icon draw.
+    {"Landroid/graphics/Bitmap$Config;.RGBA_F16", 4},
+    {"Landroid/graphics/Bitmap$Config;.HARDWARE", 5},
+    // F-NEW-351: the FULL AOSP android.graphics.BlendMode family
+    // (BlendMode.java declaration order — API 29). Paint.setBlendMode
+    // consumers (compose DrawCache.clear = drawRect(Black, BlendMode
+    // .Clear) — the vector-icon cache reset) previously sget NULL: the
+    // blend mode never recorded and the cache reset painted SOLID BLACK
+    // (the dooz material-icon black squares). Same table drives the sget
+    // constant law → identity coherent with enum_arg_ordinal.
+    {"Landroid/graphics/BlendMode;.CLEAR", 0},
+    {"Landroid/graphics/BlendMode;.SRC", 1},
+    {"Landroid/graphics/BlendMode;.DST", 2},
+    {"Landroid/graphics/BlendMode;.SRC_OVER", 3},
+    {"Landroid/graphics/BlendMode;.DST_OVER", 4},
+    {"Landroid/graphics/BlendMode;.SRC_IN", 5},
+    {"Landroid/graphics/BlendMode;.DST_IN", 6},
+    {"Landroid/graphics/BlendMode;.SRC_OUT", 7},
+    {"Landroid/graphics/BlendMode;.DST_OUT", 8},
+    {"Landroid/graphics/BlendMode;.SRC_ATOP", 9},
+    {"Landroid/graphics/BlendMode;.DST_ATOP", 10},
+    {"Landroid/graphics/BlendMode;.XOR", 11},
+    {"Landroid/graphics/BlendMode;.DARKEN", 12},
+    {"Landroid/graphics/BlendMode;.LIGHTEN", 13},
+    {"Landroid/graphics/BlendMode;.MULTIPLY", 14},
+    {"Landroid/graphics/BlendMode;.SCREEN", 15},
+    {"Landroid/graphics/BlendMode;.PLUS", 16},
+    {"Landroid/graphics/BlendMode;.OVERLAY", 17},
+    {"Landroid/graphics/BlendMode;.REDUCE", 18},
     {"Landroid/view/View$Visibility;.VISIBLE", 0},
     {"Landroid/view/View$Visibility;.INVISIBLE", 1},
     {"Landroid/view/View$Visibility;.GONE", 2},
