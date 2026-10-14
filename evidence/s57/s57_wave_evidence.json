@@ -1,0 +1,65 @@
+{
+  "wave": "S57 (CONT-11 equivalent) — dooz real-content frontier: null-law closure + generalization proof",
+  "date": "2026-10-14",
+  "binary": {
+    "sha16": "62f651ba6accded3",
+    "rebuilt_from": "e99c2fbd (clean tree; tmp/flappycow only dirt)",
+    "lineage_note": "clean-rebuild cb1d33e62ad18fe0 differs from recorded ea8827584f191dfa (toolchain + dalvik_engine.o -g0); adjudicated by 5/5 anchors x3 byte-identical MATCH BEFORE fixes (baseline freeze), and 5/5 x3 MATCH AGAIN after fixes"
+  },
+  "baseline_freeze": {
+    "method": "scripts/s57_anchor_check.sh (canonical harness, install+run --trace --max-seconds 90 --frames 40, x3 each)",
+    "anchors_x3": {
+      "opencalc": "a976d2f9fb675cb3 x3 MATCH",
+      "chess": "b5a7a35d5fe0564b x3 MATCH",
+      "dooz": "d602648e8e401895 x3 MATCH (blank retained honestly)",
+      "microtimer": "da73010a37dd0189 x3 MATCH",
+      "unote": "4f1a9e4e8f64fae8 x3 MATCH"
+    }
+  },
+  "root_decode": {
+    "F-NEW-365": {
+      "what": "iget/iget-object/iget-wide/iget-boolean/byte/char/short and iput/iput-object on a NULL receiver answered a manufactured default (EXP-042 legacy 'just return null') instead of the ART NullPointerException at the field-access site.",
+      "proof_chain": [
+        "[F266/F141] dooz composition (Lnb0;.n doCompose pass) invokes Lrh0;.b(I) (R8-minified kotlinx.collections.immutable PersistentHashMap TrieNode.get: Integer.hashCode + fmix32 const 3432918353 + 0x0101010101010101 spread + Long.numberOfTrailingZeros) with a NULL receiver",
+        "[ROOT-059] the null invoke was routed to 'shadow law' because ViewShadow::handles_class claims EVERY unknown short descriptor (EXP-060 user-View catch-all) -> not_handled for b(I) -> the DEX body EXECUTED with this=NULL",
+        "[SILENT WRONGNESS] iget on this=null answered defaults; the trie scan loop (PC 25..93) never advanced -> 100,000,000 instructions -> F084-HALT-RETURN VirtualMachineError -> killed Lj9;.doFrame -> composition never completed -> LayoutNode isPlaced (Lel0;.I) FALSE for all nodes -> draw walk translates only (Canvas.translate x164 via Ly3;.f) and draws NOTHING -> 0 canvas ops -> blank screen",
+        "[PROGRESS] run/s57/dooz_dwtrace: DRAWWIN-IN shows Lpz0;.M0/L0/T0 (layer drawContent x42) + translate x164 + ZERO drawRect/drawText/drawColor and ZERO Ljt1; entries — consistent with isPlaced=FALSE gate, NOT a canvas-bridge failure (W6 frontier refined: the bridge is never reached because placement never happened)"
+      ],
+      "fix": "execute_iget / execute_iget_object / execute_iput / execute_iput_object: when f141_is_null_receiver(recv) and field_res.resolved -> throw_deferred NPE 'Attempt to read/write from field <class>.<name>:<type> on a null object reference' (f141-null-iget / f141-null-iput), pc += 2, catch-redirect overrides. True-null only (NULL_REF or oid==0); view-node/shadow receivers with nonzero ids and the R414B no-heap law untouched.",
+      "effect": "F084-HALT count in dooz run: 4+ (pre-fix, ~100M instructions each, RSS 79MB stuck in Lrh0;.b) -> 0 (post-fix). NPE now thrown at the honest site and caught by the compose chain's own catch-alls."
+    },
+    "F-NEW-366": {
+      "what": "S113 ROOT-059 null-receiver shadow routing applies to ANY claimed class; ViewShadow's user-class catch-all claims R8-minified app classes (Lrh0; etc.), routing null app invokes into shadow not_handled then DEX-with-this=NULL.",
+      "fix": "PLATFORM-CLAIM GATE in the invoke-virtual null-receiver path: the ROOT-059 routing only applies when the declaring class is a platform prefix (Landroid/ Ljava/ Lkotlin/ Landroidx/ Lcom/google/ Ljavax/ Lorg/xmlpull/ Lorg/json/); app-defined classes keep the ART-faithful NPE at the invoke site (f141-null-recv). Env-gated bounded [F266-GATE] diagnostic.",
+      "effect": "dooz: [F266-GATE] null-recv on app class keeps ART NPE: Lrh0;.b -> NPE caught at Lnb0;.n catch-all -> composition continues (no halt). All S113 consumers cited are platform classes (androidx WindowInsets family) — preserved."
+    }
+  },
+  "regression_after_fixes": {
+    "binary": "62f651ba6accded3",
+    "anchors": "5/5 x3 byte-identical MATCH (opencalc a976d2f9, chess b5a7a35d, dooz d602648e, microtimer da73010a, unote 4f1a9e4e)",
+    "negatives": "19/19 PASS (scripts/s41_gatea_negative.py; gate_a_probe.apk rebuilt via scripts/cont9_rebuild_gate_a_probe.sh, sha16 62c10a59c1bd43d3, probe_store prerequisite re-created)",
+    "skill": "13/13 PASS",
+    "reinstall_goldens": "ALL PASS (5/5 identity src==install==pkgaudit)",
+    "dooz_visual": "UNCHANGED blank d602648e8e401895 — honest DEFAULT_BACKGROUND_ONLY; remaining frontier: M3-19-CYCLE re-entry stubs in doCompose (Lnb0;.H) + null TrieNode root upstream of the slot-table read"
+  },
+  "generalization_test": {
+    "method": "3 apps NOT in the anchor set, canonical harness x3 each + 24-bucket pixel census",
+    "apps": {
+      "fishrings (eu.veldsoft.fish.rings)": "a341e3ad9092f640 x3 — EXACT match to the recorded W4 REAL_APP_CONTENT anchor: real game board (fish pieces) renders byte-identically with the new null laws in effect — the fixes did not disturb real-DEX draw + resources + scheduling",
+      "notes_secuso (org.secuso.privacyfriendlynotes)": "eb5ebd559cad1028 x3 deterministic; pixel census bg=dark, nonbg=2.8% with a distinct blue UI block (FAB/bar)",
+      "klondike (eu.veldsoft.free.klondike)": "1dd1c4350fed5f24 x3 deterministic; pixel census nonbg=26.3% — substantial real UI rendered"
+    },
+    "verdict": "OPTIMIZATIONS GENERALIZED: zero drift on every previously-anchored app (5/5) + byte-exact preservation of a recorded REAL-content render (fishrings) + deterministic real-content renders on 2 fresh apps"
+  },
+  "dooz_interaction": {
+    "probe": "--tap 540,960 canonical DOWN/UP law pipeline",
+    "result": "[F117-TAP] frame 1 DOWN (540,960) target=0 — hit test found NO target (Compose tree owns its own hit-testing; classic dispatcher has no target; F-NEW-267 Compose tap bridge remains the named frontier)",
+    "verdict": "PLAYABILITY BLOCKED (honest): (a) game UI not visible (blank), (b) no hit target, (c) tap bridge absent. Cannot claim playing the game at this binary."
+  },
+  "mosaic": {
+    "file": "evidence/s57/s57_mosaic.png",
+    "sha16": "624bf7aa6f34aa5b",
+    "urls": ["https://n.uguu.se/dZZmbGhW.png (verified byte-exact download)", "https://tmpfiles.org/wkAmZa6jWAVk/s57_mosaic.png (60-min mirror)"]
+  },
+  "registry": "root_registry.json 566 -> 568 (F-NEW-365, F-NEW-366 ROOT-CAUSED-FIXED; no inflation)"
+}

@@ -27,7 +27,7 @@
   "op": "OP-3",
   "name": "install + installed identity = source identity",
   "pass": true,
-  "detail": "installed sha16=33ebb0b7cb1eeb7e"
+  "detail": "installed sha16=62c10a59c1bd43d3"
  },
  {
   "op": "OP-4",

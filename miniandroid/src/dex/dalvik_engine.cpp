@@ -16873,6 +16873,40 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     
     if (field_res.resolved) {
         DalvikValue obj_ref = get_register(obj_reg);
+        // S135 F-NEW-365 (dooz draw-path wave): ART null-receiver FIELD law.
+        // ART's interpreter throws NullPointerException at the field-access
+        // site when iget*'s receiver is null ("Attempt to read from field
+        // '<class>.<name>:<type>' on a null object reference") — BEFORE any
+        // default-answer. The engine previously answered a manufactured
+        // default (EXP-042 legacy), which let real-DEX bodies run with
+        // this=NULL: dooz's PersistentHashMap TrieNode lookup (Lrh0;.b,
+        // R8-minified kotlinx-immutable) spun 100,000,000 instructions on
+        // null-derived state and F084-halted the whole doFrame — the blank
+        // Compose screen. Null here means TRUE null (NULL_REF or oid==0);
+        // view-node/shadow receivers (nonzero id, maybe not in heap) keep
+        // the R414B no-heap law untouched.
+        if (f141_is_null_receiver(obj_ref)) {
+            if (std::getenv("MINIANDROID_F141_DIAG")) {
+                static thread_local uint64_t f265_iget_n = 0;
+                if (f265_iget_n < 40) {
+                    ++f265_iget_n;
+                    std::cerr << "[F141-IGET-NPE] " << current_class_ << "."
+                              << current_method_ << " pc=" << pc
+                              << " field=" << field_res.class_descriptor
+                              << "." << field_res.field_name << ":"
+                              << field_res.field_type << std::endl;
+                }
+            }
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "Attempt to read from field '" +
+                               field_res.class_descriptor + "." +
+                               field_res.field_name + ":" +
+                               field_res.field_type +
+                               "' on a null object reference",
+                           "f141-null-iget");
+            pc_ = pc + 2;  // 22c; a catch handler redirect overrides pc
+            return true;
+        }
         if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
             // S134 F-NEW-160: qualified field identity (declaring class + name).
             const std::string s134_decl = resolved_field_declarer(
@@ -17130,6 +17164,33 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     
     // Get object reference from register
     DalvikValue obj_ref = get_register(obj_reg);
+
+    // S135 F-NEW-365: ART null-receiver FIELD law (iget-object form).
+    // Same law as execute_iget above — true-null receivers throw the ART
+    // NPE at the access site instead of answering a manufactured null that
+    // lets this=NULL bodies run on (dooz Lrh0;.b trie spin → F084 halt).
+    if (f141_is_null_receiver(obj_ref)) {
+        if (std::getenv("MINIANDROID_F141_DIAG")) {
+            static thread_local uint64_t f265_igeto_n = 0;
+            if (f265_igeto_n < 40) {
+                ++f265_igeto_n;
+                std::cerr << "[F141-IGETO-NPE] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc
+                          << " field=" << field_res.class_descriptor
+                          << "." << field_res.field_name << ":"
+                          << field_res.field_type << std::endl;
+            }
+        }
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to read from field '" +
+                           field_res.class_descriptor + "." +
+                           field_res.field_name + ":" +
+                           field_res.field_type +
+                           "' on a null object reference",
+                       "f141-null-iget");
+        pc_ = pc + 2;  // 22c; a catch handler redirect overrides pc
+        return true;
+    }
 
     // S88 DIAG (bounded, env-gated): MiniFont$Glyph field reads — tweakWidth
     // NPE "Path.transform on null" while iput traces show the path field
@@ -17516,6 +17577,33 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     DalvikValue src_val = get_register(src_reg);
     DalvikValue obj_ref = get_register(obj_reg);
 
+    // S135 F-NEW-365: ART null-receiver FIELD law (iput primitive form).
+    // ART throws NPE at the write site ("Attempt to write to field ...");
+    // the old silent-drop let this=NULL bodies keep running (same family
+    // as the iget law above).
+    if (field_res.resolved && f141_is_null_receiver(obj_ref)) {
+        if (std::getenv("MINIANDROID_F141_DIAG")) {
+            static thread_local uint64_t f265_iput_n = 0;
+            if (f265_iput_n < 40) {
+                ++f265_iput_n;
+                std::cerr << "[F141-IPUT-NPE] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc
+                          << " field=" << field_res.class_descriptor
+                          << "." << field_res.field_name << ":"
+                          << field_res.field_type << std::endl;
+            }
+        }
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to write to field '" +
+                           field_res.class_descriptor + "." +
+                           field_res.field_name + ":" +
+                           field_res.field_type +
+                           "' on a null object reference",
+                       "f141-null-iput");
+        pc_ = pc + 2;  // 22c; a catch handler redirect overrides pc
+        return true;
+    }
+
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         // S134 F-NEW-160: dual write — qualified primary key (declaring
@@ -17624,6 +17712,31 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
     DalvikValue obj_ref = get_register(obj_reg);
+
+    // S135 F-NEW-365: ART null-receiver FIELD law (iput-object form).
+    // Same law as execute_iput above.
+    if (field_res.resolved && f141_is_null_receiver(obj_ref)) {
+        if (std::getenv("MINIANDROID_F141_DIAG")) {
+            static thread_local uint64_t f265_iputo_n = 0;
+            if (f265_iputo_n < 40) {
+                ++f265_iputo_n;
+                std::cerr << "[F141-IPUTO-NPE] " << current_class_ << "."
+                          << current_method_ << " pc=" << pc
+                          << " field=" << field_res.class_descriptor
+                          << "." << field_res.field_name << ":"
+                          << field_res.field_type << std::endl;
+            }
+        }
+        throw_deferred("Ljava/lang/NullPointerException;",
+                       "Attempt to write to field '" +
+                           field_res.class_descriptor + "." +
+                           field_res.field_name + ":" +
+                           field_res.field_type +
+                           "' on a null object reference",
+                       "f141-null-iput");
+        pc_ = pc + 2;  // 22c; a catch handler redirect overrides pc
+        return true;
+    }
 
     // EXP-058: Debug — log iput-object for actionBarLayout field.
     if (field_res.resolved && field_res.field_name == "actionBarLayout") {
@@ -18728,6 +18841,45 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // on non-null WindowInsets objects everywhere, and the runtime's
         // platform law provides them. Unclaimed classes keep the
         // ART-faithful throw below.
+        // S135 F-NEW-366 (dooz draw-path wave): PLATFORM-CLAIM GATE.
+        // The routing is written for PLATFORM classes (the law's own words);
+        // ViewShadow's user-class catch-all (EXP-060) claims EVERY unknown
+        // descriptor — including R8-minified app classes like dooz's
+        // Lrh0; (kotlinx.collections.immutable PersistentHashMap TrieNode).
+        // A null TrieNode.get invoke was thereby routed to "shadow law",
+        // fell through ViewShadow dispatch (not_handled for b(I)), and the
+        // DEX body executed with this=NULL — the 100M-instruction F084
+        // spin that killed the doFrame. Platform prefixes keep every
+        // S113 consumer working (all cited cases are platform classes);
+        // app-defined classes get the ART-faithful NPE at the invoke site.
+        {
+            static const char* kPlatformPrefixes[] = {
+                "Landroid/", "Ljava/", "Lkotlin/", "Landroidx/",
+                "Lcom/google/", "Ljavax/", "Lorg/xmlpull/", "Lorg/json/"};
+            bool platform_claimed = false;
+            for (const char* pfx : kPlatformPrefixes) {
+                if (declaring_class.rfind(pfx, 0) == 0) {
+                    platform_claimed = true;
+                    break;
+                }
+            }
+            if (!platform_claimed) {
+                static thread_local uint64_t f266_gate_n = 0;
+                if (f266_gate_n < 24) {
+                    ++f266_gate_n;
+                    std::cerr << "[F266-GATE] null-recv on app class keeps ART NPE: "
+                              << declaring_class << "." << method_name_from_dex
+                              << std::endl;
+                }
+                throw_deferred("Ljava/lang/NullPointerException;",
+                               "Attempt to invoke virtual method '" +
+                                   declaring_class + "." + method_name_from_dex +
+                                   "' on a null object reference",
+                               "f141-null-recv");
+                pc_ += 3;  // 35c length; a catch handler redirect overrides pc
+                return true;
+            }
+        }
         if (shadow_registry_ && shadow_registry_->claims_class(declaring_class)) {
             std::cerr << "[ROOT-059] null-recv routed to shadow law: " << declaring_class
                       << "." << method_name_from_dex << std::endl;
