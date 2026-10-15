@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TspTest">
+        <attr name="tspInherited" format="color"/>
+        <attr name="tspOverlayOnly" format="color"/>
+        <attr name="tspPresentFalse" format="boolean"/>
+        <attr name="tspForcedValue" format="integer"/>
+        <attr name="tspDeepAttr" format="integer"/>
+    </declare-styleable>
+
+    <!-- F1 chain: attr defined ONLY at the root, 3 hops down -->
+    <style name="TspRootC">
+        <item name="tspInherited">#FF112233</item>
+        <item name="tspDeepAttr">77</item>
+    </style>
+    <style name="TspMidB" parent="TspRootC">
+        <item name="tspInherited">#FF445566</item>
+    </style>
+    <style name="TspThemeA" parent="TspMidB">
+        <!-- CHILD PRECEDENCE: tspInherited stays the MID value (FF445566),
+             NOT the root value (FF112233) — the CONT-68 apply_style law -->
+        <item name="tspPresentFalse">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- F7 second activity theme: DIFFERENT values, no overlay applied -->
+    <style name="TspThemeB" parent="TspRootC">
+        <item name="tspInherited">#FFAABBCC</item>
+    </style>
+
+    <!-- F5 overlay styles: force + ordering -->
+    <style name="TspOverlayOne">
+        <item name="tspOverlayOnly">#FF000001</item>
+        <item name="tspForcedValue">1</item>
+    </style>
+    <style name="TspOverlayTwo">
+        <item name="tspOverlayOnly">#FF000002</item>
+        <item name="tspForcedValue">2</item>
+    </style>
+    <style name="TspOverlayThree">
+        <item name="tspForcedValue">3</item>
+    </style>
+
+    <!-- F6 edge chain: parent points at a nonexistent style (aapt2 hard-fails
+         unresolved parents, so the engine-level law is exercised via the
+         deep 24-hop-safe chain + the Empty-style equivalent instead) -->
+    <style name="TspEmpty">
+        <!-- intentional size-0 parentless style: the Theme.AppCompat.Empty twin -->
+    </style>
+    <style name="TspDeepChain1" parent="TspDeepChain2">
+        <item name="tspDeepAttr">1</item>
+    </style>
+    <style name="TspDeepChain2" parent="TspDeepChain3"/>
+    <style name="TspDeepChain3" parent="TspDeepChain4"/>
+    <style name="TspDeepChain4" parent="TspDeepChain5"/>
+    <style name="TspDeepChain5" parent="TspDeepChain6"/>
+    <style name="TspDeepChain6" parent="TspDeepChain7"/>
+    <style name="TspDeepChain7" parent="TspDeepChain8"/>
+    <style name="TspDeepChain8" parent="TspDeepChain9"/>
+    <style name="TspDeepChain9" parent="TspDeepChain10"/>
+    <style name="TspDeepChain10" parent="TspEmpty">
+        <item name="tspDeepAttr">10</item>
+    </style>
+</resources>

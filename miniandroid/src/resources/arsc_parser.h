@@ -310,6 +310,16 @@ public:
     std::optional<std::vector<std::string>> resolve_string_array(
         uint32_t resource_id) const;
 
+    // CONT-68 (AOSP Resources.getIntArray law): resolve an ARRAY-type
+    // entry to its INTEGER items (same ResTable_map 0x02000000|index key
+    // law as resolve_string_array). INT32/INT_HEX/INT_BOOLEAN/... items
+    // answer their data word; REFERENCE items dereference to the target
+    // entry's integer data (aapt2 compiles @integer/@color refs inside
+    // int arrays); non-integer non-reference items are skipped honestly.
+    // nullopt = the resid is absent or not an array entry.
+    std::optional<std::vector<int32_t>> resolve_int_array(
+        uint32_t resource_id) const;
+
     // --- Stats / evidence ----------------------------------------------------
     struct Stats {
         uint32_t package_count = 0;

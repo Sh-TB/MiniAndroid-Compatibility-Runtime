@@ -1958,6 +1958,20 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 log("🎯 CALLING execute_method_internal() for " + method.name +
                                     " with " + std::to_string(method.bytecode.size()) + " instructions");
 
+                                // ── CONT-68 (F-NEW-366): bind the effective
+                                // ACTIVITY theme before onCreate (AOSP law: the
+                                // theme is bound at Activity attach — before any
+                                // content or AppCompat subdecor decision;
+                                // ActivityInfo.getThemeResource: activity theme >
+                                // application theme).
+                                {
+                                    uint32_t eff_theme =
+                                        resources::ResourceRuntime::instance()
+                                            .resolve_activity_theme(apk_path_, cls.name);
+                                    resources::ResourceRuntime::instance()
+                                        .set_activity_theme(eff_theme);
+                                }
+
                                 // EXP-043 Phase 4: Pass `this` (Activity) and Bundle
                                 // as args. onCreate(Bundle) has ins=2: p0=this, p1=Bundle.
                                 // The Bundle can be null (real Android passes null on
@@ -2029,7 +2043,45 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                     // non-overriders fall through to the
                                     // framework Activity stub. Same Bundle
                                     // shape as onCreate (null on cold launch).
+                                    //
+                                    // ── CONT-68 (F-NEW-366): the AOSP
+                                    // handleStartActivity FINISH GATE —
+                                    // `if (r.activity.mFinished) return;`
+                                    // (fetched ActivityThread.java): an
+                                    // activity that called finish() inside
+                                    // onCreate is NEVER started — no
+                                    // onPostCreate, no onStart, no onResume
+                                    // (performResumeActivity carries the same
+                                    // gate). Splash-style apps (Privacy
+                                    // Friendly Memory/Notes: startActivity +
+                                    // finish in onCreate, no setContentView)
+                                    // hit this gate on every real device;
+                                    // without it the engine drove
+                                    // AppCompatDelegateImpl.onPostCreate →
+                                    // ensureSubDecor → createSubDecor with the
+                                    // platform SplashTheme and the REAL
+                                    // appcompat DEX threw the
+                                    // "Theme.AppCompat" ISE the device never
+                                    // reaches. The shadow's pending_finish
+                                    // flag IS the mFinished state at this
+                                    // point (finish() recorded it during
+                                    // onCreate; the G07 cascade consumes it
+                                    // later, at the frame boundary).
+                                    bool f366_finished_in_create = false;
                                     {
+                                        auto* as_fin =
+                                            shadow_registry_
+                                                ? shadow_registry_->find_as<
+                                                      framework::ActivityShadow>()
+                                                : nullptr;
+                                        f366_finished_in_create =
+                                            as_fin && as_fin->pending_finish();
+                                    }
+                                    if (f366_finished_in_create) {
+                                        log("[A93-POSTCREATE] skipped: activity "
+                                            "finished during onCreate (AOSP "
+                                            "handleStartActivity mFinished gate)");
+                                    } else {
                                         DalvikValue postcreate_val;
                                         std::vector<DalvikValue> postcreate_args;
                                         postcreate_args.push_back(activity_val);  // p0 = this
@@ -2225,6 +2277,17 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 // never runs (0-pixel first frame).
                 dispatch_activity_lifecycle_callbacks("onActivityPreCreated",
                                                       result);
+                // ── CONT-68 (F-NEW-366): bind the effective ACTIVITY theme
+                // before onCreate (same law as the manifest path above:
+                // ActivityInfo.getThemeResource; theme bound at attach).
+                {
+                    uint32_t eff_theme =
+                        resources::ResourceRuntime::instance()
+                            .resolve_activity_theme(apk_path_,
+                                                    result.main_class);
+                    resources::ResourceRuntime::instance().set_activity_theme(
+                        eff_theme);
+                }
                 DalvikValue return_val;  // onCreate returns void
                 try {
                     log("🎯 Invoking onCreate via try_recursive_invoke (manifest class)");
@@ -2262,6 +2325,25 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 // not override it fall through to the framework Activity
                 // stub — the super-class law. Bundle carries the same launch
                 // state argument shape as onCreate (null on a cold launch).
+                //
+                // ── CONT-68 (F-NEW-366): the AOSP handleStartActivity
+                // FINISH GATE — see the manifest-path dispatch above for the
+                // full law citation (ActivityThread.java: `if
+                // (r.activity.mFinished) return;`). Same skip here.
+                bool f366_finished_in_create = false;
+                {
+                    auto* as_fin =
+                        shadow_registry_
+                            ? shadow_registry_->find_as<
+                                  framework::ActivityShadow>()
+                            : nullptr;
+                    f366_finished_in_create =
+                        as_fin && as_fin->pending_finish();
+                }
+                if (f366_finished_in_create) {
+                    log("[A93-POSTCREATE] skipped: activity finished during "
+                        "onCreate (AOSP handleStartActivity mFinished gate)");
+                } else
                 {
                     DalvikValue postcreate_val;
                     std::vector<DalvikValue> postcreate_args;
@@ -28383,6 +28465,50 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     // ────────────────────────────────────────────────────────────────────
+    // CONT-68 — Resources.getIntArray(int) (AOSP Resources.java law):
+    // integer-array resources resolve through the ARSC table (complex bag
+    // keyed 0x02000000|index — the F-NEW-319 string-array law's integer
+    // twin, ArscParser::resolve_int_array) and materialize as the F-036
+    // heap int[] convention (__array_length__ + array[i]). The engine had
+    // NO handler: TutorialActivity.addBottomDots (notes_secuso 105, REAL
+    // onboarding code — reached only after the F-NEW-366 theme laws) read
+    // the slide-color arrays → REC-MISS null → aget-null NPE at the first
+    // dot color → onCreate unwound. AOSP: getIntArray NEVER returns null
+    // for a live Resources; an absent bag answers an EMPTY array (the
+    // honest deterministic degrade — callers loop zero times).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "getIntArray" && args.size() >= 2 &&
+        args[1].type == DalvikType::INT32) {
+        uint32_t ia_resid = (uint32_t)args[1].int_val;
+        std::vector<int32_t> items;
+        bool ia_resolved = false;
+        auto& ia_rt = resources::ResourceRuntime::instance();
+        if (ia_rt.loaded() || ia_rt.ensure_loaded(apk_path_)) {
+            if (auto arr = ia_rt.arsc().resolve_int_array(ia_resid)) {
+                items = *arr;
+                ia_resolved = true;
+            }
+        }
+        uint32_t ia_id = heap_.allocate("[I", pc_,
+                                        call_stack_.empty()
+                                            ? 0
+                                            : call_stack_.top().frame_id);
+        heap_.set_object_field(ia_id, "__array_length__",
+                               DalvikValue::make_int((int32_t)items.size()));
+        for (size_t i = 0; i < items.size(); ++i) {
+            heap_.set_object_field(ia_id, "array[" + std::to_string(i) + "]",
+                                   DalvikValue::make_int(items[i]));
+        }
+        std::cerr << "[RES] getIntArray resid=0x" << std::hex << ia_resid
+                  << std::dec << " -> len=" << items.size()
+                  << (ia_resolved ? "" : " (UNRESOLVED — empty array)")
+                  << std::endl;
+        result = DalvikValue::make_object(ia_id, "[I");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
     // S123 (R-NEW-422) — AOSP android.util.Pair law.
     // UPSTREAM: frameworks/base/core/java/android/util/Pair.java:
     //   public class Pair<F, S> {
@@ -42811,16 +42937,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         method == "applyStyle" && args.size() >= 2 &&
         args[1].type == DalvikType::INT32) {
         uint32_t style_resid = (uint32_t)args[1].int_val;
+        // CONT-68 (probe F5): the AOSP force flag rides the record —
+        // force=true entries overwrite earlier writers, force=false fill
+        // only (ResourceRuntime::resolve_theme_attr_typed consult law).
+        bool f366_force = args.size() >= 3 &&
+                          (args[2].type == DalvikType::INT32 ||
+                           args[2].type == DalvikType::BOOLEAN) &&
+                          args[2].int_val != 0;
         if ((style_resid >> 24) == 0x7f) {
             resources::ResourceRuntime::instance().record_applied_theme_style(
-                style_resid);
+                style_resid, f366_force);
         }
         static thread_local uint64_t f364_log = 0;
         if (f364_log < 8) {
             ++f364_log;
             std::cerr << "[F364-APPLYSTYLE] resid=0x" << std::hex
                       << style_resid << std::dec << " force="
-                      << (args.size() >= 3 && args[2].type == DalvikType::INT32
+                      << (args.size() >= 3 &&
+                                  (args[2].type == DalvikType::INT32 ||
+                                   args[2].type == DalvikType::BOOLEAN)
                               ? args[2].int_val
                               : -1)
                       << " caller=" << current_class_ << "."
@@ -43299,13 +43434,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     if (method == "resolveAttribute" &&
         class_name == "Landroid/content/res/Resources$Theme;" &&
-        args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
-        args[1].object_id != 0) {
-        int32_t resid141 = dalvik_int_value(args[0]);
+        args.size() >= 3 &&
+        ((args[0].type == DalvikType::OBJECT_REF &&
+          args[1].type == DalvikType::INT32 &&
+          args[2].type == DalvikType::OBJECT_REF) ||
+         (args[1].type == DalvikType::OBJECT_REF &&
+          args[1].object_id != 0))) {
+        // CONT-68 (probe F4): BOTH live conventions must resolve.
+        //   * receiver-first (instance invoke-virtual on the Theme):
+        //     args[0]=Theme receiver, args[1]=resid int, args[2]=TypedValue
+        //     — BUT the legacy guard below expects args[1] to be the
+        //     TypedValue object, which only fits the receiver-dropped
+        //     convention (args[0]=resid int, args[1]=TypedValue). A real
+        //     DEX caller delivers receiver-first, so the legacy path read
+        //     the resid from the RECEIVER slot (garbage → attr 0x0 →
+        //     MISS for every framework attr — TspProbe F4
+        //     android:windowNoTitle=MISS). Detect the convention by the
+        //     arg shape and decode resid/outValue accordingly.
+        int32_t resid141 = 0;
+        uint32_t tv_id = 0;
+        bool receiver_first = args[0].type == DalvikType::OBJECT_REF;
+        if (receiver_first) {
+            // receiver-first: Theme, resid, TypedValue[, resolveRefs]
+            if (args.size() >= 4 && args[1].type == DalvikType::INT32 &&
+                args[2].type == DalvikType::OBJECT_REF) {
+                resid141 = dalvik_int_value(args[1]);
+                tv_id = args[2].object_id;
+            }
+        } else {
+            resid141 = dalvik_int_value(args[0]);
+            tv_id = args[1].object_id;
+        }
+        if (tv_id == 0) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(false);
+            return true;
+        }
         // Subset boundary (documented): the engine resolves the theme
         // parent chain fully, so resolveRefs=false collapses to true —
         // same authority the F-093 TypedArray law uses.
-        uint32_t tv_id = args[1].object_id;
         auto& rt141 = resources::ResourceRuntime::instance();
         auto v141 = rt141.resolve_theme_attr_typed(apk_path_,
                                                    (uint32_t)resid141);
@@ -46297,6 +46464,63 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     cv = act2->content_view_id();
                 if (cv != 0)
                     wf_found = vs->find_by_android_id(cv, wf_target);
+            }
+            // ── CONT-68 (F-NEW-366): the android.R.id.content IDENTITY law
+            // (AOSP PhoneWindow.installContent): the decor ALWAYS carries
+            // DecorView → mContentParent (android.R.id.content) → app
+            // content, and AppCompatDelegateImpl.createSubDecor's tail
+            // migrates the window content's children into the subdecor's
+            // ContentFrameLayout THROUGH this lookup (androidx appcompat
+            // 1.4.2 sources.jar: `final ViewGroup windowContentView =
+            // (ViewGroup) mWindow.findViewById(android.R.id.content);
+            // while (windowContentView.getChildCount() > 0) {...}`). The
+            // engine's S83/U007 path anchors the app tree directly under
+            // the activity (no wrapper) — the lookup answered 0, the real
+            // DEX migration silently skipped (windowContentView == null is
+            // a LAWFUL branch), and the app tree stayed outside the
+            // subdecor: every later activity findViewById from the
+            // subdecor-rooted content parent missed (Privacy Friendly
+            // Memory menu_drawer → DrawerLayout null → addDrawerListener
+            // NPE). Law: materialize the mContentParent wrapper LAZILY on
+            // the first content-id lookup — a FrameLayout under the decor
+            // carrying android.R.id.content with the current content anchor
+            // moved inside as its single child (the exact
+            // PhoneWindow.installContent shape) — then answer it. The real
+            // DEX migration tail then executes verbatim: it moves the app
+            // root (ONE child) under the subdecor's ContentFrameLayout and
+            // NO_IDs the wrapper; the F-NEW-220 id-swap keeps later lookups
+            // inside the screen tree. Idempotent: an existing wrapper wins.
+            if (wf_found == 0 && wf_target == 0x01020002u && wf_root != 0 &&
+                wf_act != 0) {
+                auto* act2 =
+                    shadow_registry_->find_as<framework::ActivityShadow>();
+                uint32_t wf_cv = act2 ? act2->content_view_id() : 0;
+                auto* vs2 = shadow_registry_->find_as<framework::ViewShadow>();
+                if (wf_cv != 0 && wf_cv != wf_root && vs2) {
+                    uint32_t wrap = vs2->find_by_android_id(wf_root,
+                                                            0x01020002u);
+                    if (wrap == 0) {
+                        wrap = heap_.allocate(
+                            "Landroid/widget/FrameLayout;", pc_,
+                            call_stack_.empty() ? 0
+                                                : call_stack_.top().frame_id);
+                        if (auto* wn = vs2->get_or_create_node(
+                                wrap, "Landroid/widget/FrameLayout;"))
+                            wn->android_view_id = 0x01020002u;
+                        vs2->add_child(wf_root, wrap);
+                        if (auto* cn = vs2->find_node(wf_cv)) {
+                            // Only re-parent a STANDALONE anchor (the S83
+                            // tree); an anchor already inside a tree stays.
+                            if (cn->parent_id == 0)
+                                vs2->add_child(wrap, wf_cv);
+                        }
+                        std::cerr << "[CONT68-CONTENT] android.R.id.content "
+                                  << "wrapper=" << wrap << " under decor="
+                                  << wf_root << " content=" << wf_cv
+                                  << " (AOSP installContent law)" << std::endl;
+                    }
+                    wf_found = wrap;
+                }
             }
         }
         std::cerr << "[R416-WINDOW-FVBI] target=0x" << std::hex << wf_target

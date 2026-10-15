@@ -830,6 +830,43 @@ std::optional<std::vector<std::string>> ArscParser::resolve_string_array(
     return out;
 }
 
+std::optional<std::vector<int32_t>> ArscParser::resolve_int_array(
+    uint32_t resource_id) const {
+    auto r = resolve(resource_id);
+    if (!r) return std::nullopt;
+    if (r->type_name != "array" && r->type_name != "string-array" &&
+        r->type_name != "integer-array")
+        return std::nullopt;
+    const ArscEntry* e = r->best_for(device_config());
+    if (!e || !e->is_complex) return std::nullopt;
+    std::vector<std::pair<uint32_t, int32_t>> items;
+    for (size_t i = 0; i < e->complex_items.size(); ++i) {
+        const uint32_t key = i < e->complex_keys.size() ? e->complex_keys[i] : (uint32_t)i;
+        const ResValue& v = e->complex_items[i];
+        if (v.is_reference()) {
+            // aapt2 compiles @integer/@color references inside int arrays;
+            // AOSP ResolveAttributeReference dereferences to the target's
+            // integer data (honest skip when the target is not a bag value).
+            auto rr = resolve(v.ref_id);
+            if (rr) {
+                const ArscEntry* re = rr->best_for(device_config());
+                if (re && !re->is_complex) {
+                    items.push_back({key, (int32_t)re->value.data});
+                    continue;
+                }
+            }
+            continue;
+        }
+        if (v.is_string()) continue;   // not an integer item (honest skip)
+        items.push_back({key, (int32_t)v.data});
+    }
+    std::sort(items.begin(), items.end());
+    std::vector<int32_t> out;
+    out.reserve(items.size());
+    for (const auto& it : items) out.push_back(it.second);
+    return out;
+}
+
 std::vector<std::pair<uint32_t, std::string>> ArscParser::list_type(
         const std::string& package, const std::string& type) const {
     std::vector<std::pair<uint32_t, std::string>> out;
