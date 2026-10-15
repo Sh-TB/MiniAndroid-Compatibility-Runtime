@@ -1,0 +1,64 @@
+{
+  "wave": "CONT-69",
+  "date": "2026-10-15",
+  "mission": "F-NEW-369 — memory cold-first-launch white face resolved at the generic collection-law layer; user directive: test the app for improvement + build the refreshed mosaic.",
+  "starting_head": "3577625a75d73a5129c3234b3759e0dc3bd796c8 (== origin/main; workspace had been reverted again — re-fetched, ff-only, no resets)",
+  "binary": {
+    "before": "a20998cf4d8a19cd (byte-identical CONT-68 acceptance rebuild)",
+    "after": "6e4758543e15996a (CONT-69 final: 2 TUs — android_shadows.cpp + dalvik_engine.cpp — + relink)"
+  },
+  "root_decode": {
+    "method": "live-APP-DEX disassembly (scripts/cont69_disasm.py, androguard 4.x) + LAWCEF/F235/F237 engine traces on a purpose-built probe",
+    "chain": [
+      "MemoGameDefaultImages.getResIDs: the fresh LinkedList is DEAD CODE — the switch overwrites it with the STATIC images1/images2 (built in <clinit> via invoke-interface List.add — the registry-mode shadow store)",
+      "MemoGameDefaultImages.reduce(difficulty, list): deckSize/2 bounds check then return list.subList(0, n) — the subList product is what the caller iterates",
+      "ResIdAdapter.getResourceName for-eaches the subList → List.iterator on the VIEW BOX answered NULL (the view redirect declined every unlisted face) → Iterator.hasNext f141-null-recv NPE → SplashActivity.onCreate APP BOUNDARY unwind → white 31ddd4d5b8e6d18e",
+      "probe discoveries in the same law family: copy-ctor element carry dropped string/int registry elements (kind degradation to object-0, P3); exhausted next() answered handled_null instead of NoSuchElementException (P6); nested subList(subList) threw bogus IOOBE 'size 0' (P8)"
+    ]
+  },
+  "fixes": [
+    {"id": "CONT-69 subList nested-view", "law": "AOSP AbstractList.subList: new SubList(this, offset+from, offset+to) — nested views resolve against the receiver's OWN window; the exclusive end is stored (__sublist_to__)", "site": "android_shadows.cpp CollectionShadow::dispatch subList law"},
+    {"id": "CONT-69 view redirect window + iterator", "law": "SubList faces resolve the WINDOW [off,to) on size/isEmpty/get/set/add/remove; iterator() mints the F-237 box bound to the view (THE app root — was declined → null)", "site": "android_shadows.cpp view redirect block"},
+    {"id": "CONT-69 iterator window resolution", "law": "hasNext/next resolve the box's parent through the subList markers; the cursor counts INSIDE the window; the served slot is off+cursor", "site": "android_shadows.cpp hasNext/next laws"},
+    {"id": "CONT-69 NSEE", "law": "OpenJDK Itr.next(): next() past the end throws NoSuchElementException (view and plain paths)", "site": "android_shadows.cpp next law"},
+    {"id": "CONT-69 kind-faithful copy", "law": "ArrayList(Collection) = c.toArray() verbatim: the cascade's registry-read stage now writes string/int elements in their own kinds (was make_object(0) = null)", "site": "dalvik_engine.cpp F101 cascade stage-0"}
+  ],
+  "probe": {
+    "fixture": "fixtures/linkedlist_probe (aapt2 link + ECJ 1.8 + D8; apk sha16 1a1c2998bd788b75; scripts/cont69_build_llk.sh)",
+    "families": [
+      "P1 zero-add LinkedList for-each (the root shape, AOSP empty contract)",
+      "P2 add+iterate order fidelity",
+      "P3 LinkedList(Collection) copy-ctor element carry (kind fidelity)",
+      "P4 zero-add ArrayList for-each (family-wide control)",
+      "P5 fresh size()==0 && isEmpty()",
+      "P6 explicit iterator(): hasNext=false, next() throws NoSuchElementException",
+      "P7 ArrayList.subList(1,3) view + iterate (THE app root)",
+      "P8 subList-of-subList chain (nested-view law)"
+    ],
+    "pre_fix": "P1/P2/P4/P5 PASS; P3 element-null; P6 no-NSEE; P7 hasNext NPE (root reproduced); P8 bogus IOOBE",
+    "post_fix": "8/8 PASS; screenshot sha16 b75a1e7693ab8950 x3 byte-deterministic; results file run/s69/llk_store4/data/data/com.probe.llk/files/linkedlist_results.jsonl"
+  },
+  "acceptance": {
+    "memory_cold": {"runs": 4, "fresh_sandbox_each": true, "screenshot_sha16": "3a3ba8734b662e55 x4 byte-identical", "nonbg_pct": 21.4, "buckets": 160, "content": "REAL app face (dark 78.6% + blue accent 10.9% + white text — the warm face family); ResIdAdapter.getResourceName completes (getResourceEntryName flows); DrawerArrowDrawable+setupNavigationView reached x17; 0 theme ISE; 0 hasNext NPE", "pre_fix": "white 31ddd4d5b8e6d18e (0 buckets of content)"},
+    "memory_warm": {"runs": 3, "screenshot_sha16": "c559b630dd8f0f0f x3 (the recorded CONT-68 acceptance face — UNCHANGED)", "cold_warm_split_note": "the accent shade differs (66,100,132 cold vs 111,168,220 warm — the app's first-run state before prefs are written; same UI family, both real content)"},
+    "notes": {"runs": 3, "screenshot_sha16": "d0a409043ffc83a7 x3 (record intact)"}
+  },
+  "regression": {
+    "wall": "36/36 x3 MATCH at binary 6e4758543e15996a (12 rows: csw d3c26b73, dooz 31ddd4d5, flappycow 13cf4746, g2048 59ca1526, gmdice 3891679d, microtimer bbd350b6, opencalc f25b754c, simplecalc 2ac5d8d0, tanana afe0bd8d, tttdeluxe af609429, unote 90a67cc1, dooz180 c94da5a9)",
+    "tsp_probe": "7/7 families, record values (F4 data=-1 = the AOSP INT_BOOLEAN true encoding)",
+    "gate_a": "98 PASS / 1 INFO / 0 FAIL (probe apk 0d9f612fbc3beea1 container rebuild; lib ad413625925ed8e5)",
+    "negatives": "19/19 PASS",
+    "reinstall": "8/8 PASS",
+    "goldens": "4/4 PASS",
+    "skill_selftest": "13/13 PASS",
+    "controls": "BMI f45d6c6603e93fc5 (record), bouncy dd0c14257fa1f2af (record), klondike20 a77038da303ed1b4 (record, --frames 20)",
+    "registry_validator": "PASS (676 roots, F-NEW-369 ROOT-CAUSED-FIXED)"
+  },
+  "mosaic": {
+    "path": "evidence/cont69/cont69_mosaic.png",
+    "sha16": "3ef9443010366c76",
+    "tiles": 20,
+    "uploaded": "https://tmpfiles.org/w1AEZ3j74lJV/cont69_mosaic.png",
+    "story": "row1: memory cold BEFORE(white)→AFTER(real)/WARM(record)/notes; row2: llk probe/TSP/gate A/BMI; rows3-5: the 12-row wall + bouncy/klondike controls"
+  }
+}
