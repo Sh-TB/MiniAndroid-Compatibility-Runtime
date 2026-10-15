@@ -2429,9 +2429,18 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
     using Spec = MeasureSpec2;
     const MeasureMode M_UNSPEC = MS_UNSPEC, M_EXACTLY = MS_EXACTLY,
                       M_AT_MOST = MS_AT_MOST;
+    // F-NEW-370 (CONT-71) opt-in spec-plumbing diagnostic: the exact
+    // (view, spec) chain the canonical walk feeds the DEX measure bridge.
     auto& m3_measure_memo = m3_measure_memo_;
     auto* n = views->find_node(vid);
     if (!n) return {0, 0};
+    static const bool m71_trace = std::getenv("MINIANDROID_M71_TRACE") != nullptr;
+    if (m71_trace) {
+        static const char* mn[3] = {"UNSPEC", "EXACTLY", "AT_MOST"};
+        fprintf(stderr, "[M71-MEAS] view=%u %s spec=%d/%s x %d/%s depth=%d\n",
+                vid, n->class_desc.c_str(), sw.size, mn[(int)sw.mode],
+                sh.size, mn[(int)sh.mode], depth);
+    }
     auto child_spec = [](const Spec& p, int padding, int child_dim) -> Spec {
         const int avail = std::max(0, p.size - padding);
         if (child_dim >= 0)  return {child_dim, M_EXACTLY};
@@ -2539,7 +2548,12 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 return (mode_bits << 30) | (s.size & 0x3FFFFFFF);
             };
             int ow = 0, oh = 0;
-            if (custom_view_measure_hook_(vid, encode(sw), encode(sh), ow, oh)) {
+            bool m71_hook_ok = custom_view_measure_hook_(vid, encode(sw), encode(sh), ow, oh);
+            if (m71_trace)
+                fprintf(stderr, "[M71-DISP] view=%u %s hook_ok=%d out=%dx%d spec=%d/%d\n",
+                        vid, n->class_desc.c_str(), (int)m71_hook_ok, ow, oh,
+                        (int)((encode(sw) & 0x3FFFFFFF) | 0), (int)(encode(sh) & 0x3FFFFFFF));
+            if (m71_hook_ok) {
                 // R-NEW-438 (S132): INCOMPLETE-EMULATION LAW. A DEX
                 // onMeasure override whose result is degenerate (both axes
                 // 0) while the incoming specs demand non-zero size

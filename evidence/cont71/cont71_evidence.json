@@ -1,0 +1,57 @@
+{
+  "wave": "CONT-71",
+  "date": "2026-10-16",
+  "head_at_start": "913bc044da4d9a4294a02717fb4122a67add7eaa",
+  "binary_default": "86e4ebd4a2c30592",
+  "build": "make -j2 (foreground chunks)",
+  "objective": "#364 master loop: F-NEW-368 (deferred-exception same-frame delivery) + F-NEW-370 (CoordinatorLayout DEX-measure chain) pair — decode vs fetched upstream sources, laws implemented, activation proof, honest blocker named",
+  "decode": {
+    "law_a_exception_table": "is_exception_subtype's builtin parent table lacked the reflective family (NoSuchMethodException et al had NO chain to Exception) — the typed catch(Exception) at CoordinatorLayout.getResolvedLayoutParams pc=67 never matched; the delivery mechanism itself (throw_deferred post-switch redirect) was already correct",
+    "law_b_measure_chain": "ViewGroup.measureChildWithMargins and View.resolveSizeAndState had NO engine shadows: the child-negotiation call inside every real DEX container onMeasure silently no-op'd (children never measured) and the answer law collapsed to 0 under EXACTLY specs (CoordinatorLayout answered 0x0 under EXACTLY(1080)xEXACTLY(1920))",
+    "upstream_fetch": "androidx CoordinatorLayout.java fetched (androidx-main mirror, 148913 bytes, run/s71/upstream_CoordinatorLayout.java); onMeasure/onMeasureChild read at source"
+  },
+  "laws_implemented": {
+    "MINIANDROID_F368_LAW": "kF368ExcParent extension table (18 rows: reflective + java.net + java.util.concurrent + android families; OpenJDK/AOSP documented parents) consulted by is_exception_subtype when the flag is set",
+    "MINIANDROID_MCM_LAW": "ViewGroup.measureChildWithMargins negotiation shadow (AOSP-verbatim; F-NEW-328 LP-SOURCE dims; F-NEW-326 spec math; R-NEW-440 canonical child measure; ViewRootImpl spec-bounds gate) + View.resolveSizeAndState/resolveSize/getMeasuredState/combineMeasuredStates answer family (same gate)",
+    "default": "ALL laws OFF by default — byte-equivalent default behavior, wall-proven"
+  },
+  "activation_evidence": {
+    "f368_only": {
+      "dir": "run/s71/activation_f368only",
+      "face": "6da289aab14d2256",
+      "delivery_row": "deferred handler @0x0x53 type=Ljava/lang/Exception; (count=1)",
+      "app_own_catch_proof": "LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated (the app's own catch block ran)",
+      "reading": "the honest Law-A-only status: the completed onMeasure's children are unmeasured -> accepted 0x0 -> blank"
+    },
+    "full_pair": {
+      "dir": "run/s71/activation_full",
+      "memory_face": "c559b630dd8f0f0f (== record)",
+      "coordinator_answer": "1080x1920 (was 0x0)",
+      "opencalc_face": "3e73a5ad1ab7379d (the honest divergence — F-NEW-374)"
+    }
+  },
+  "opencalc_decode": {
+    "divergence": "SlidingUpPanelLayout DEX onMeasure (R-NEW-441 family) reads its children's NEW measured sizes and derives in-bounds-but-wrong EXACTLY(105) specs + a garbage OOB spec EXACTLY(1073740479); the resolve law faithfully echoed the OOB size (16766719 = 0x3FFFD6FF & 0xFFFFFF) until the spec-bounds gates declined it",
+    "pixel_metrics": "record 321287 sampled non-bg vs collapsed 3096",
+    "resolution": "laws gated OFF; per-container trust law registered as F-NEW-374 P1"
+  },
+  "gates_default_binary_86e4ebd4a2c30592": {
+    "wall": "13 rows x 3 = 39/39 MATCH (scripts/cont71_gate.sh; microtimer row REPAIRED — the pushed cont70_gate.sh line 'APKicrotimer]' was an invalid bash identifier and silently skipped the row since CONT-70 batch 1)",
+    "gate_a_probe": "MULTI-APP ALL PASS (simple/storage-heavy/game; scripts/s41_gatea_multiapp.py)",
+    "negatives": "19/19",
+    "reinstall": "8/8",
+    "goldens": "4/4",
+    "skill_selftest": "13/13",
+    "tsp": "14/14 verdict rows byte-identical vs run/cont70/tsp_probe2.out",
+    "llk": "56/56 rows byte-identical vs run/cont70/llk_v2.err",
+    "validator": "PASS",
+    "records": "memory warm c559b630 x3, memory TRUE-COLD 3a3ba873 (fresh sandbox), unote 90a67cc1, dooz 31ddd4d5 + c94da5a9"
+  },
+  "registry_delta": "679 -> 680 roots; F-NEW-368 CLASSIFIED->PARTIAL, F-NEW-370 CLASSIFIED->PARTIAL (laws implemented, decode complete), F-NEW-374 added (CLASSIFIED P1, per-container DEX-measure trust); projection regenerated id-for-id; validator PASS",
+  "mining_deliverables": "docs/UPSTREAM_SOURCE_MINING.jsonl (7 audited rows U-01..U-07) + docs/UPSTREAM_SOURCE_MINING_REPORT.md (wave 1 of the #364 master mining card)",
+  "honest_notes": [
+    "The pair's ACTIVATION is NOT the default: the laws ship env-gated OFF because the same activation that fixes memory deterministically diverges opencalc — the per-container DEX-measure trust law (F-NEW-374) is the named lever, not a per-app hack (the gates are global opt-ins)",
+    "The #364 mining quota (30-50 candidates) is NOT met this wave: 7 audited rows recorded, marked SEMANTIC_REFERENCE/ADAPTED/PENDING honestly",
+    "The microtimer wall-row defect in the pushed cont70_gate.sh is disclosed and repaired in cont71_gate.sh"
+  ]
+}
