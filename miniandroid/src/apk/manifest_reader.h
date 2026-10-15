@@ -94,6 +94,21 @@ struct ManifestInfo {
         // keeps the full filter set per activity; the runtime needs the
         // action→activity map to resolve implicit/action-string Intents).
         std::vector<std::string> actions;
+        // CONT-68 (F-NEW-366): per-activity android:theme (AOSP
+        // ActivityInfo.theme — the raw @resid from the AXML REFERENCE;
+        // 0 = unset). The effective activity theme follows the
+        // ActivityInfo.getThemeResource law: activity theme, else the
+        // <application android:theme>. Previously only the MAIN
+        // activity's theme was kept (S68 W2), so second activities and
+        // splash-style launchers resolved against the wrong theme bag
+        // (Privacy Friendly Memory/Notes: platform SplashTheme seeds the
+        // launch base theme while MainActivity's AppCompat theme is the
+        // one createSubDecor must see).
+        uint32_t theme_resid = 0;
+        // F-094 companion: plain-text manifests carry android:theme as a
+        // reference string ("@style/AppTheme.NoActionBar") — resolved via
+        // ARSC find_id at use time (no ARSC access inside the parser).
+        std::string theme_ref;
     };
     std::vector<ActivityInfo> activities;
     
@@ -413,6 +428,7 @@ private:
     std::string current_service_name_;
     std::string current_receiver_name_;
     uint32_t activity_theme_resid_pending_ = 0;   // S68 W2: android:theme of the element being parsed
+    std::string activity_theme_ref_pending_;      // CONT-68: plain-text theme ref of the element being parsed
     std::string current_activity_name_;
     std::string current_activity_target_;  // EXP-038: targetActivity for activity-alias
     bool activity_has_main_action_ = false;

@@ -205,6 +205,41 @@ public:
         bool valid = false;
     };
     LaunchTheme resolve_launch_theme(const std::string& apk_path);
+    // ── CONT-68 (F-NEW-366): the ACTIVE ACTIVITY theme ───────────────────
+    // AOSP ActivityInfo.getThemeResource(): an activity's effective theme
+    // is its own android:theme, else the <application android:theme>. On a
+    // real device every Activity is a ContextThemeWrapper over its base:
+    // framework ContextThemeWrapper.initializeTheme() builds a FRESH theme
+    // (newTheme + setTo(base theme if any) + applyStyle(resid, force=true)),
+    // so the activity theme's own parent-chain bag IS the theme state.
+    // AppCompat 1.4.2 attachBaseContext2 wraps the activity in a
+    // ContextThemeWrapper(R.style.Theme_AppCompat_Empty) whose
+    // initializeTheme CLONES the base activity theme via Theme.setTo and
+    // then applies the Empty style on top — and Theme.AppCompat.Empty is a
+    // SIZE-0 PARENTLESS style (verified in the app arsc + appcompat 1.4.2
+    // sources.jar), contributing nothing. createSubDecor's
+    // obtainStyledAttributes(AppCompatTheme) therefore resolves through the
+    // ACTIVITY's theme bag — never through Empty, never through the
+    // launcher's theme. The engine models this with one active-activity
+    // theme: set at activity onCreate dispatch (main launch driver + G08
+    // second-activity law), consulted FIRST by resolve_theme_attr_typed;
+    // the launch/base theme stays the fallback authority (anchor stability
+    // + non-activity contexts).
+    void set_activity_theme(uint32_t resid);   // 0 = clear the override
+    // AOSP ActivityInfo.getThemeResource law (activity theme > application
+    // theme; F-094 reference-string fallback) for one activity class.
+    // Returns 0 when nothing is declared.
+    uint32_t resolve_activity_theme(const std::string& apk_path,
+                                    const std::string& activity_class);
+    const Theme* active_activity_theme() const {
+        return activity_theme_valid_ ? &activity_theme_ : nullptr;
+    }
+    // Shared post-hit conversion (CONT-58 ATTRRAW diag + S127 CSL/drawable
+    // file laws) for BOTH theme authorities — extracted verbatim from the
+    // base-theme branch so the activity-theme path converts identically.
+    std::optional<ResValue> finish_theme_attr_value(const std::string& apk_path,
+                                                    uint32_t attr_key,
+                                                    const ResValue& raw);
     // flavor_hint: 0 dark / 1 light; -1 = detect from the theme chain.
     std::optional<ResValue> resolve_theme_attr_typed(const std::string& apk_path,
                                                      uint32_t attr_key,
@@ -227,10 +262,26 @@ public:
     // LAW: the applied styles record (in apply order) is consulted when
     // the base theme chain MISSES an attr — the exact force=false merge
     // subset. Deterministic per-apk (single-activity subset documented).
-    void record_applied_theme_style(uint32_t style_resid) {
-        for (uint32_t r : applied_theme_styles_)
-            if (r == style_resid) return;
-        applied_theme_styles_.push_back(style_resid);
+    // CONT-68 (probe F5): the record now carries the AOSP force flag per
+    // entry. AOSP Theme.applyStyle(resid, force) merge law over the
+    // ORDERED record: a force=true entry OVERWRITES values written by
+    // earlier entries; force=false fills only what is absent at its point
+    // in the order. Equivalent resolution rule: an attr's effective
+    // writer = the NEWEST force=true entry carrying the attr, else the
+    // OLDEST entry carrying the attr (it wrote first and took). Dedup:
+    // re-applying the same (resid, force) is a no-op; re-applying with a
+    // different force re-records (the force state changes).
+    struct AppliedThemeStyle {
+        uint32_t resid;
+        bool force;
+    };
+    void record_applied_theme_style(uint32_t style_resid, bool force = false) {
+        for (auto& e : applied_theme_style_records_)
+            if (e.resid == style_resid && e.force == force) return;
+        applied_theme_style_records_.push_back({style_resid, force});
+    }
+    const std::vector<AppliedThemeStyle>& applied_theme_style_records() const {
+        return applied_theme_style_records_;
     }
     const std::vector<uint32_t>& applied_theme_styles() const {
         return applied_theme_styles_;
@@ -296,6 +347,7 @@ private:
     std::string load_error_;
     // F-NEW-364: the Theme.applyStyle record (apply order; deduped).
     std::vector<uint32_t> applied_theme_styles_;
+    std::vector<AppliedThemeStyle> applied_theme_style_records_;
     // G11 FIX-G11-001: process-wide custom-view constructor hook (Factory
     // law — survives LayoutInflater recreation in ensure_loaded()).
     LayoutInflater::CustomViewCtorHook custom_view_ctor_hook_;
@@ -310,6 +362,11 @@ private:
     std::function<bool(const std::string&, const std::string&)> is_a_;
     // S124 THEME-BASE: cached AOSP-law Theme for the loaded APK.
     Theme base_theme_;
+    // CONT-68: the ACTIVE ACTIVITY theme (fresh Theme per activity — the
+    // AOSP ContextThemeWrapper.initializeTheme clone law, see above).
+    Theme activity_theme_;
+    uint32_t activity_theme_resid_ = 0;
+    bool activity_theme_valid_ = false;
     bool base_theme_valid_ = false;
     bool base_theme_built_ = false;
     // S124 FW-PACKAGE: the ORIGINAL framework resource table (package 0x01).
