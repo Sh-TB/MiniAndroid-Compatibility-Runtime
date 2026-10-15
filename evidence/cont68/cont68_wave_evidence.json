@@ -1,0 +1,52 @@
+{
+  "wave": "CONT-68",
+  "date": "2026-10-15",
+  "mission": "F-NEW-366 AppCompat theme-gate family resolution (Issues #375 comment 6188329303, #98 comment 6188329841)",
+  "starting_head": "e26a2b654c3ed7f8637a81d10981dd7b61af8ced (uuid auto-commit on top of origin/main cb73aa26549ba5194c688eb489599dffb8b745fd; no resets)",
+  "binary": {
+    "before": "7d8aa389ba6945c0 (HEAD rebuild, byte-identical to the S59 record)",
+    "after": "a20998cf4d8a19cd"
+  },
+  "apk_identity": {
+    "memory": {"path": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk", "bytes": 8638470, "sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6"},
+    "notes": {"path": "upload/notes_secuso_105.apk", "bytes": 8483558, "sha256": "71e874f45fa4655f14296fce13791a82f994ea9bc26699f433383f0b4d334037"}
+  },
+  "phase0_reproduction": {
+    "memory_before": "ISE 'You need to use a Theme.AppCompat theme (or descendant) with this activity.' at AppCompatDelegateImpl.createSubDecor pc=426; stack createSubDecor<-ensureSubDecor<-delegate.onPostCreate<-AppCompatActivity.onPostCreate; uncaught at SplashActivity.onCreate invoke_pc=17 APP BOUNDARY; screenshot 31ddd4d5b8e6d18e (uniform)",
+    "notes_before": "same guard at pc=404, same 4-frame stack; screenshot eb5ebd559cad1028 (the recorded notes anchor face)"
+  },
+  "provenance_laws": [
+    "appcompat 1.4.2 (META-INF/androidx.appcompat_appcompat.version=1.4.2 in the memory APK; sources.jar fetched from maven.google.com and read): attachBaseContext2 wraps the activity in androidx.appcompat.view.ContextThemeWrapper(R.style.Theme_AppCompat_Empty) whose initializeTheme CLONES the base activity theme via Theme.setTo and applies the Empty style (theme.applyStyle(resid, force=true)); the source comment states 'calling getTheme() will clone the base context's theme into the wrapped context's theme'",
+    "Theme.AppCompat.Empty is a SIZE-0 PARENTLESS style (aapt2 dump of the memory arsc: 'style/Theme.AppCompat.Empty ... size=0' with no parent) — it contributes NO attrs; the CONT-67 'Empty carries the AppCompatTheme defaults' premise is DISPROVEN",
+    "createSubDecor guard (appcompat 1.4.2 source L847-856): obtainStyledAttributes(R.styleable.AppCompatTheme) -> !hasValue(windowActionBar) -> ISE",
+    "SplashActivity (both apps) extends AppCompatActivity and its onCreate is startActivity+finish ONLY (disassembled: no setContentView); AOSP ActivityThread.handleStartActivity has `if (r.activity.mFinished) return;` at the top (fetched source), so on a device onPostCreate NEVER runs for the splash and the theme guard is never reached",
+    "onPostCreate dispatches ensureSubDecor (appcompat 1.4.2 AppCompatDelegateImpl.onPostCreate) — the only pre-setContentView path to the guard",
+    "createSubDecor tail (1.4.2 source L986-1000): migrates window-content children into the subdecor's ContentFrameLayout through Window.findViewById(android.R.id.content), then windowContentView.setId(NO_ID) + contentView.setId(android.R.id.content)"
+  ],
+  "fixes": [
+    {"id": "CONT-68 lifecycle", "law": "AOSP handleStartActivity mFinished gate", "site": "dalvik_engine.cpp A93 onPostCreate dispatch (both launch paths) + execution_engine.cpp G08 B.onStart/onResume", "effect": "an activity that called finish() during onCreate skips onPostCreate/onStart/onResume (the splash no longer drives the theme guard)"},
+    {"id": "CONT-68 per-activity theme", "law": "ActivityInfo.getThemeResource (activity theme > application theme) + ContextThemeWrapper.initializeTheme fresh-theme-object", "site": "manifest_reader.h/.cpp per-ActivityInfo theme_resid/theme_ref; resource_runtime.h/.cpp set_activity_theme/resolve_activity_theme; launch driver + G08 bind before onCreate", "effect": "createSubDecor resolves the ACTIVITY theme bag (AppTheme.NoActionBar chain: windowActionBar PRESENT-false) — the guard passes for the correct semantic reason"},
+    {"id": "CONT-68 apply_style child precedence", "law": "androidfw ResolvedBag: within one style the parent chain flattens with ABSOLUTE child precedence; force governs only the merge into the theme state", "site": "theme_engine.h Theme::apply_style two-stage rework", "effect": "windowActionBar=false/windowNoTitle=true survive the Base.V7.Theme.AppCompat ancestors (the per-hop-force bug let parents overwrite children)"},
+    {"id": "CONT-68 android.R.id.content identity", "law": "PhoneWindow.installContent: DecorView -> mContentParent(0x01020002) -> app content; the appcompat migration tail consumes it", "site": "dalvik_engine.cpp R416 Window.findViewById lazy wrapper materialization", "effect": "the real createSubDecor migration moves the app tree under the subdecor; activity findViewById from the subdecor-rooted content parent finds app views (menu_drawer NPE gone)"},
+    {"id": "CONT-68 Resources.getIntArray", "law": "AOSP Resources.getIntArray resolves the ARSC integer-array complex bag (0x02000000|index keys) into the F-036 int[] convention; never null (absent bag -> empty)", "site": "arsc_parser.h/.cpp resolve_int_array + dalvik_engine.cpp Resources.getIntArray law", "effect": "notes TutorialActivity.addBottomDots color arrays resolve (len=3 each); the aget-null NPE is gone"},
+    {"id": "CONT-68 applyStyle force semantics", "law": "AOSP Theme.applyStyle(resid, force): force=true overwrites earlier writers (including theme-bag values); force=false fills only; the newest force=true writer wins, else the oldest writer", "site": "resource_runtime record (AppliedThemeStyle force flag) + resolve_theme_attr_typed precedence + dalvik_engine applyStyle law arg decode", "effect": "TSP probe F5/F5b/F6c pass"},
+    {"id": "CONT-68 resolveAttribute arg conventions", "law": "both receiver-first (Theme,resid,TypedValue,refs) and receiver-dropped (resid,TypedValue,refs) arg shapes decode", "site": "dalvik_engine.cpp Resources$Theme.resolveAttribute guard", "effect": "framework attr 0x01010056 resolves through the theme (TSP probe F4: ok type=18 INT_BOOLEAN data=-1 = the AOSP boolean-true encoding)"},
+    {"id": "CONT-68 per-activity theme isolation", "law": "every activity owns a FRESH Theme object; the applied-styles record is per-theme state", "site": "ResourceRuntime::set_activity_theme resets the record on every bind", "effect": "TSP probe F7: the second activity sees none of the first activity's applyStyle overlays"}
+  ],
+  "probe": {
+    "fixture": "fixtures/theme_semantics_probe (aapt2 link + ECJ 1.8 + D8; apk sha16 8a4110b2346a94b6)",
+    "families": ["F1 child precedence through multi-parent chain", "F2 applyStyle-only attr", "F3 PRESENT-false vs truly absent", "F4 framework attr id through resolveAttribute", "F5 force=true overwrite + force=false ordering", "F6 10-hop deep chain + empty style + cycle-safe walk", "F7 sequential-activity theme isolation"],
+    "result": "ALL PASS — evidence/cont68/tsp_probe_rows.log (F4 data=-1 is the AOSP INT_BOOLEAN true encoding; F7c 77 is TspThemeB's own chain value)"
+  },
+  "acceptance": {
+    "memory": {"runs": 3, "screenshot_sha16": "c559b630dd8f0f0f x3 byte-identical", "nonbg_pct": 19.1, "buckets": 236, "theme_ise_count": 0, "chain": "MainActivity.onCreate 1802 instructions real DEX; G08 launch; DrawerArrowDrawable + setupNavigationView reached", "residual": "5 in-flight F106 NoSuchMethodException rows — CoordinatorLayout.getResolvedLayoutParams Behavior resolution: the engine's deferred-exception path does not deliver to the same-frame catch(Exception); the app flow CONTINUES (deferred semantics) and renders real content; NAMED residual frontier, not a theme-family defect"},
+    "notes": {"runs": 3, "screenshot_sha16": "d0a409043ffc83a7 x3 byte-identical", "nonbg_pct": 2.8, "buckets": 210, "uncaught": 0, "chain": "TutorialActivity launched via G08; addBottomDots arrays resolved (len=3); real app-owned UI: Skip (21,1794 231x126) + Next (828,1794 231x126) buttons + tutorial image block (blue 111,168,220)"}
+  },
+  "regression": {
+    "wall": "36/36 x3 byte-identical (dooz 31ddd4d5, dooz180 c94da5a9, microtimer bbd350b6, opencalc f25b754c, unote 90a67cc1, simplecalc 2ac5d8d0, tanana afe0bd8d, gmdice 3891679d, g2048 59ca1526, tttdeluxe af609429, csw d3c26b73, flappycow 13cf4746)",
+    "negatives": "19/19 PASS",
+    "skill": "13/13 PASS",
+    "goldens": "4/4 PASS (user_golden_gate) + reinstall-identity 5/5 ALL PASS",
+    "gate_a_probe": "rebuilt (sha16 ad413625925ed8e5 lib; apk 8930846a0ae26779) — 98 PASS / 1 INFO / 0 FAIL"
+  }
+}
