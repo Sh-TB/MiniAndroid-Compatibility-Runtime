@@ -219,3 +219,14 @@ tmp/gate_dr/
 tools/toolchain/
 tmp/w4_probebuild/
 tmp/f351_build/
+
+# S59 (#386 C14): python bytecode + probe build work dirs are never tracked.
+# Ignore rules do not untrack existing files — the tracked copies were removed
+# in commit 8b8e6f17 (REGENERATE dispositions, zero input-consumers verified).
+__pycache__/
+*.pyc
+tmp/capaudit_build/
+tmp/cont46_probebuild/
+tmp/f352_build/
+tmp/gatea_rebuild/
+fixtures/fnew253_probe/build/

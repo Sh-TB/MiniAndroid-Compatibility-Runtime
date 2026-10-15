@@ -8,9 +8,20 @@ Fails (exit>0) when forbidden artifacts appear in the TRACKED tree:
   - oversized tracked files (>5MB hard limit without explicit allowlist)
   - obvious secret/token patterns in non-doc files
   - new archive blobs (.zip/.7z/.tar.gz) — handoff zips are forbidden in Git
-Also runs tools/artifact_classifier.py logic classes for RAW_LOG/BUILD check.
+  - Python bytecode / __pycache__ paths (regenerated on import; S59 law)
+  - generated .class files outside the two documented evidence/upstream
+    allowances (S59 law — intentional fixtures ship as source + DEX)
 
 This is intentionally SMALL: one file, stdlib only, deterministic output.
+
+Policy agreement with the tracked tree (S59, #386 C22/C28):
+  - The three tracked res.zip build intermediates and the redundant
+    kotlinc-2.1.20.zip were removed from the tree (REGENERATE/DEDUPLICATE);
+    ARCHIVE_WHITELIST stays EMPTY on purpose.
+  - Pinned build-critical toolchain / compiler-distribution files are
+    allowlisted below WITH provenance; their externalization is PENDING a
+    clean-room bootstrap proof (#386 rule 5) and is tracked in
+    docs/REPOSITORY_HYGIENE.md + the dependency manifest.
 """
 import os
 import re
@@ -39,6 +50,31 @@ OVERSIZE_ALLOWLIST = {
         "pinned upstream R8/D8 dex compiler build tool (Google, Apache-2.0) — "
         "required for canonical fixture builds; external-cache refetch recipe "
         "documented in ledger docs/history/final_campaign_phase1/"),
+    # --- S59 additions: pinned build toolchain (provenance per entry; the
+    # externalization decision is PENDING clean-bootstrap proof, #386 rule 5) ---
+    "tools/toolchain/aapt2": (
+        "pinned AOSP build-tools aapt2 binary (Google, Apache-2.0) — consumed by "
+        "8+ probe-fixture build scripts (cont11/12/18/53/56/62/65, closeout); "
+        "bootstrap recipe scripts/build/bootstrap_toolchain.sh"),
+    "tools/toolchain/android-34.jar": (
+        "pinned android-34 platform stubs jar (Google, Apache-2.0) — compile "
+        "classpath for every probe fixture; byte-identical duplicate of "
+        "tools/android-34/android-34.jar (same blob, deduplicated by Git)"),
+    "tools/android-34/android-34.jar": (
+        "pinned android-34 platform stubs jar (Google, Apache-2.0) — canonical "
+        "location; duplicate path kept until consumers are re-pointed and a "
+        "clean bootstrap is proven (#386 C24)"),
+    "tools/toolchain/r8.jar": (
+        "pinned R8/D8 dex compiler (Google, Apache-2.0) — d8/dex conversion for "
+        "probe fixtures; refetch recipe in bootstrap_toolchain.sh"),
+    "upstream/cont12_maven/kotlinc-dist/kotlinc/lib/kotlin-annotation-processing.jar": (
+        "kotlinc 2.1.20 distribution jar (JetBrains, Apache-2.0) — extracted "
+        "compiler distribution consumed by scripts/cont12_build_oracle.sh; "
+        "original archive removed S59 (zero consumers)"),
+    "upstream/cont12_maven/kotlinc-dist/kotlinc/lib/kotlin-compiler.jar": (
+        "kotlinc 2.1.20 compiler jar (JetBrains, Apache-2.0) — same provenance"),
+    "upstream/cont12_maven/kotlinc-dist/kotlinc/lib/kotlin-main-kts.jar": (
+        "kotlinc 2.1.20 main-kts jar (JetBrains, Apache-2.0) — same provenance"),
 }
 
 LOG_WHITELIST = (
@@ -48,6 +84,13 @@ LOG_WHITELIST = (
     "docs/evidence/s60_r380/pre_f106_face.log",
 )
 ARCHIVE_WHITELIST = tuple()  # handoff/backup zips are never committed
+
+# S59: generated .class files are forbidden outside these two documented
+# allowances (forensic evidence blob record + upstream reference snapshot).
+CLASS_ALLOWLIST_PREFIXES = (
+    "docs/research/source-forensics/evidence/",
+    "upstream/s44/",
+)
 
 SECRET_PATTERNS = [
     re.compile(p) for p in (
@@ -65,8 +108,12 @@ def git(*args):
     return r.stdout
 
 
-def main():
-    files = git("ls-files").decode().splitlines()
+def check(files, repo_root):
+    """Check a list of tracked paths; returns list of failure strings.
+
+    Split out of main() so tools/test_check_repo_hygiene.py can drive
+    positive/negative cases against synthetic file lists without touching
+    the real index (C28 checker self-test law)."""
     failures = []
     for f in files:
         low = f.lower()
@@ -78,7 +125,11 @@ def main():
             failures.append(f"raw log tracked: {f}")
         if low.endswith((".zip", ".7z", ".tar.gz")) and f not in ARCHIVE_WHITELIST:
             failures.append(f"archive blob tracked: {f}")
-        fp = os.path.join(REPO, f)
+        if "__pycache__/" in f or low.endswith(".pyc"):
+            failures.append(f"python bytecode tracked: {f}")
+        if low.endswith(".class") and not f.startswith(CLASS_ALLOWLIST_PREFIXES):
+            failures.append(f"generated class tracked: {f}")
+        fp = os.path.join(repo_root, f)
         if os.path.isfile(fp):
             if os.path.getsize(fp) > SIZE_LIMIT and f not in OVERSIZE_ALLOWLIST:
                 failures.append(f"oversize >{SIZE_LIMIT>>20}MB: {f} "
@@ -93,6 +144,12 @@ def main():
                     if pat.search(head):
                         failures.append(f"secret pattern: {f}")
                         break
+    return failures
+
+
+def main():
+    files = git("ls-files").decode().splitlines()
+    failures = check(files, REPO)
     print(f"REPO HYGIENE GATE: {len(files)} tracked files checked")
     if failures:
         print(f"FAIL ({len(failures)}):")
@@ -100,7 +157,9 @@ def main():
             print(f"  {x}")
         return 1
     print("PASS — zero APK/so, zero build dirs, zero raw logs (outside whitelist),"
-          " zero archive blobs, zero oversize, zero secrets")
+          " zero archive blobs, zero oversize (outside provenanced allowlist),"
+          " zero python bytecode, zero generated classes (outside evidence"
+          " allowance), zero secrets")
     return 0
 
 
