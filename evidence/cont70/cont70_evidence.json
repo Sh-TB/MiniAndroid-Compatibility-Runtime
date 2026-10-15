@@ -1,101 +1,125 @@
 {
-  "wave": "CONT-70-ANT-ARMY",
-  "date": "2026-10-15/16",
-  "directive": "ادامه تسک های تعداد زیاد — many small fixes, ant-army style (small size, high count)",
-  "head_before": "789bff856968a2ccbafa05feb72202e53081367d",
-  "binary": {
-    "sha16": "ab3978b794c8fb6e",
-    "note": "wave binary after ANT-3/5/6 laws; the ANT-1 subtype-table activation was REVERTED (F-NEW-370 blocker) — the wave binary excludes it"
+ "wave": "CONT-70-ANT-ARMY",
+ "date": "2026-10-15/16",
+ "directive": "ادامه تسک های تعداد زیاد — many small fixes, ant-army style (small size, high count)",
+ "head_before": "789bff856968a2ccbafa05feb72202e53081367d",
+ "binary": {
+  "sha16": "ab3978b794c8fb6e",
+  "note": "wave binary after ANT-3/5/6 laws; the ANT-1 subtype-table activation was REVERTED (F-NEW-370 blocker) — the wave binary excludes it"
+ },
+ "recovery": {
+  "workspace": "uuid auto-commit a25eb9de (tmp build artifacts + probe_store deletion) preserved on branch cont70-uuid-snapshot; main ff-reset to origin/main 789bff85; binary rebuilt byte-exact 6e4758543e15996a before the wave edits"
+ },
+ "ants": [
+  {
+   "id": "ANT-1",
+   "target": "F-NEW-368 deferred-exception in-frame delivery",
+   "decode": "is_exception_subtype builtin parent table lacked the reflective family (NoSuchMethodException et al. -> ReflectiveOperationException -> Exception); DEX try-table decode CONFIRMED the typed catch(Exception) covers pc=67 (try [0x3c..0x52)); with the table the row reads 'deferred handler @0x53 type=Ljava/lang/Exception;' and rows 42->2",
+   "verdict": "LAW PROVEN, ACTIVATION REVERTED",
+   "reason": "in-frame delivery lets the DEX CoordinatorLayout.onMeasure complete; its MATCH_PARENT child measure answers 105px (AppBar height) -> zero-height chain -> memory face regresses to blank (6da289aab14d2256); registered as F-NEW-370; the pair must land together; memory record face c559b630dd8f0f0f restored (x2) after revert"
   },
-  "recovery": {
-    "workspace": "uuid auto-commit a25eb9de (tmp build artifacts + probe_store deletion) preserved on branch cont70-uuid-snapshot; main ff-reset to origin/main 789bff85; binary rebuilt byte-exact 6e4758543e15996a before the wave edits"
+  {
+   "id": "ANT-2",
+   "target": "F-NEW-276 data-path duplication",
+   "decode": "doubled prefixes GONE at HEAD (dooz 90s cold + warm: 0 hits, was x15); residual single-anchor ENOENT = honest first-run DataStore read, app-caught (deferred handler @0x54)",
+   "verdict": "SUPERSEDED-BY-EVIDENCE (zero engine change)"
   },
-  "ants": [
-    {
-      "id": "ANT-1",
-      "target": "F-NEW-368 deferred-exception in-frame delivery",
-      "decode": "is_exception_subtype builtin parent table lacked the reflective family (NoSuchMethodException et al. -> ReflectiveOperationException -> Exception); DEX try-table decode CONFIRMED the typed catch(Exception) covers pc=67 (try [0x3c..0x52)); with the table the row reads 'deferred handler @0x53 type=Ljava/lang/Exception;' and rows 42->2",
-      "verdict": "LAW PROVEN, ACTIVATION REVERTED",
-      "reason": "in-frame delivery lets the DEX CoordinatorLayout.onMeasure complete; its MATCH_PARENT child measure answers 105px (AppBar height) -> zero-height chain -> memory face regresses to blank (6da289aab14d2256); registered as F-NEW-370; the pair must land together; memory record face c559b630dd8f0f0f restored (x2) after revert"
-    },
-    {
-      "id": "ANT-2",
-      "target": "F-NEW-276 data-path duplication",
-      "decode": "doubled prefixes GONE at HEAD (dooz 90s cold + warm: 0 hits, was x15); residual single-anchor ENOENT = honest first-run DataStore read, app-caught (deferred handler @0x54)",
-      "verdict": "SUPERSEDED-BY-EVIDENCE (zero engine change)"
-    },
-    {
-      "id": "ANT-3",
-      "target": "bouncy gameplay JSONUtils NPE (org.json keys)",
-      "decode": "JSONObject.keys() unimplemented -> null iterator -> hasNext NPE at mapFromJSONObject pc=9 -> field layout never loaded",
-      "fix": "AOSP keys() law: insertion-ordered Iterator<String> via the F-237 legacy box",
-      "verdict": "ROOT-CAUSED-FIXED (folded into F-NEW-372)",
-      "app_delta": "bouncy dd0c14257fa1f2af -> 1b87e9efa9c32198 COMPLETE menu (top 'Touch to start' bar renders; uncaught rows 11->3; deterministic x3; before face preserved)"
-    },
-    {
-      "id": "ANT-4",
-      "target": "F-NEW-161 chessclock null Uri",
-      "decode": "already closed by F-NEW-363's Settings static law (CONT-67); live re-proof: 0 SGET-MISS, face fe3ae1167c9e968c == CONT-67 record",
-      "verdict": "ledger ant: SUPERSEDED-BY-EVIDENCE"
-    },
-    {
-      "id": "ANT-5",
-      "target": "R-NEW-228 Window.setDecorFitsSystemWindows",
-      "fix": "AOSP API 30 law as accept+record in the Window attribute family; the residual REC-MISS row is standard framework-class diagnostic noise (F023 sibling-law proof)",
-      "verdict": "ROOT-CAUSED-FIXED; dooz face unchanged 31ddd4d5 x3"
-    },
-    {
-      "id": "ANT-6",
-      "target": "TTF-from-assets capability (audit item 24) + canvas text size",
-      "fix": "Typeface.createFromAsset/createFromFile law (resolve startup-registered face by APK entry name; AOSP failure law RuntimeException 'Font asset not found') + Paint.setTypeface face carry + Canvas drawText reads the F-NEW-226 __text_size_px__ heap state (the size was being swallowed by the F-NEW-226 interception, so ALL canvas text fell to the tiny legacy bitmap font)",
-      "verdict": "ROOT-CAUSED-FIXED (folded into F-NEW-372)",
-      "probe": "fixtures/font_probe (same-string two-face draw: ink geometries 336x58 vs 412x62 = two faces proven; NOFACE absent = factory live; tiny-text before face preserved)"
-    },
-    {
-      "id": "ANT-7",
-      "target": "opencalc display gap (S58 note)",
-      "decode": "display = EditText WRAP_CONTENT in ConstraintLayout with EMPTY text at launch; renders 52x199 at the right edge — no provable divergence from real-device behavior without a reference capture",
-      "verdict": "DECODE-ONLY, no fix (honest no-bug-found)"
-    }
+  {
+   "id": "ANT-3",
+   "target": "bouncy gameplay JSONUtils NPE (org.json keys)",
+   "decode": "JSONObject.keys() unimplemented -> null iterator -> hasNext NPE at mapFromJSONObject pc=9 -> field layout never loaded",
+   "fix": "AOSP keys() law: insertion-ordered Iterator<String> via the F-237 legacy box",
+   "verdict": "ROOT-CAUSED-FIXED (folded into F-NEW-372)",
+   "app_delta": "bouncy dd0c14257fa1f2af -> 1b87e9efa9c32198 COMPLETE menu (top 'Touch to start' bar renders; uncaught rows 11->3; deterministic x3; before face preserved)"
+  },
+  {
+   "id": "ANT-4",
+   "target": "F-NEW-161 chessclock null Uri",
+   "decode": "already closed by F-NEW-363's Settings static law (CONT-67); live re-proof: 0 SGET-MISS, face fe3ae1167c9e968c == CONT-67 record",
+   "verdict": "ledger ant: SUPERSEDED-BY-EVIDENCE"
+  },
+  {
+   "id": "ANT-5",
+   "target": "R-NEW-228 Window.setDecorFitsSystemWindows",
+   "fix": "AOSP API 30 law as accept+record in the Window attribute family; the residual REC-MISS row is standard framework-class diagnostic noise (F023 sibling-law proof)",
+   "verdict": "ROOT-CAUSED-FIXED; dooz face unchanged 31ddd4d5 x3"
+  },
+  {
+   "id": "ANT-6",
+   "target": "TTF-from-assets capability (audit item 24) + canvas text size",
+   "fix": "Typeface.createFromAsset/createFromFile law (resolve startup-registered face by APK entry name; AOSP failure law RuntimeException 'Font asset not found') + Paint.setTypeface face carry + Canvas drawText reads the F-NEW-226 __text_size_px__ heap state (the size was being swallowed by the F-NEW-226 interception, so ALL canvas text fell to the tiny legacy bitmap font)",
+   "verdict": "ROOT-CAUSED-FIXED (folded into F-NEW-372)",
+   "probe": "fixtures/font_probe (same-string two-face draw: ink geometries 336x58 vs 412x62 = two faces proven; NOFACE absent = factory live; tiny-text before face preserved)"
+  },
+  {
+   "id": "ANT-7",
+   "target": "opencalc display gap (S58 note)",
+   "decode": "display = EditText WRAP_CONTENT in ConstraintLayout with EMPTY text at launch; renders 52x199 at the right edge — no provable divergence from real-device behavior without a reference capture",
+   "verdict": "DECODE-ONLY, no fix (honest no-bug-found)"
+  }
+ ],
+ "registry_delta": {
+  "roots": "676 -> 678 (F-NEW-370 CLASSIFIED P1, F-NEW-372 ROOT-CAUSED-FIXED P2)",
+  "status_changes": [
+   "F-NEW-276 CLASSIFIED -> SUPERSEDED-BY-EVIDENCE",
+   "F-NEW-161 OBSERVED-FAIL -> SUPERSEDED-BY-EVIDENCE",
+   "R-NEW-228 OBSERVED-FAIL -> ROOT-CAUSED-FIXED",
+   "F-NEW-368 CLASSIFIED (decode completed, activation blocked by F-NEW-370)"
   ],
-  "registry_delta": {
-    "roots": "676 -> 678 (F-NEW-370 CLASSIFIED P1, F-NEW-372 ROOT-CAUSED-FIXED P2)",
-    "status_changes": [
-      "F-NEW-276 CLASSIFIED -> SUPERSEDED-BY-EVIDENCE",
-      "F-NEW-161 OBSERVED-FAIL -> SUPERSEDED-BY-EVIDENCE",
-      "R-NEW-228 OBSERVED-FAIL -> ROOT-CAUSED-FIXED",
-      "F-NEW-368 CLASSIFIED (decode completed, activation blocked by F-NEW-370)"
-    ],
-    "projection": "regenerated 678, identity-verified id-for-id; validator PASS"
-  },
-  "gates": {
-    "wall": "36/36 MATCH x3 (scripts/cont70_gate.sh; WANT updates g2048 59ca1526->f43face0, tttdeluxe af609429->db1d633d — justified canvas-text improvements, deterministic x3 each, before faces preserved in evidence/cont70/before/)",
-    "gate_a_probe": "98 PASS / 1 INFO / 0 FAIL (install+run canonical procedure; lib ad413625925ed8e5 byte-identical)",
-    "negatives": "19/19 PASS",
-    "reinstall": "8/8 PASS",
-    "goldens": "4/4 PASS",
-    "skill_selftest": "13/13 PASS",
-    "tsp": "7/7 families, record values (F4 data=-1 = the AOSP INT_BOOLEAN true encoding)",
-    "linkedlist_probe": "8/8 PASS (P1..P8)",
-    "font_probe": "accepted (two-face pixel proof)",
-    "validator": "PASS"
-  },
-  "records_intact": {
-    "memory_warm": "c559b630dd8f0f0f",
-    "notes": "(wall row unote 90a67cc1ddda57b7 MATCH x3)",
-    "dooz15": "31ddd4d5b8e6d18e x3",
-    "dooz180": "c94da5a928ea213b x3",
-    "chessclock": "fe3ae1167c9e968c == CONT-67 record"
-  },
-  "mosaic": {
-    "path": "evidence/cont70/cont70_mosaic.png",
-    "sha16": "3c1ad9a7db418422",
-    "tiles": 20
-  },
-  "honest_notes": [
-    "ANT-1 was implemented, proven at the delivery level, then REVERTED because its activation regresses the recorded memory face via the newly-exposed F-NEW-370 chain — no app-specific gating, no suppressed exceptions; the decode is fully recorded in both registry entries",
-    "ANT-7 found no provable divergence; the S58 'empty display' note stands as launch-correct behavior pending a real-device reference",
-    "emoji rendering (audit item 25) remains NOT TESTED — no corpus app draws emoji and the probe was not built this wave",
-    "the two wall WANT updates are justified app improvements with deterministic x3 evidence and preserved before faces, not drift"
-  ]
+  "projection": "regenerated 678, identity-verified id-for-id; validator PASS"
+ },
+ "gates": {
+  "wall": "36/36 MATCH x3 (scripts/cont70_gate.sh; WANT updates g2048 59ca1526->f43face0, tttdeluxe af609429->db1d633d — justified canvas-text improvements, deterministic x3 each, before faces preserved in evidence/cont70/before/)",
+  "gate_a_probe": "98 PASS / 1 INFO / 0 FAIL (install+run canonical procedure; lib ad413625925ed8e5 byte-identical)",
+  "negatives": "19/19 PASS",
+  "reinstall": "8/8 PASS",
+  "goldens": "4/4 PASS",
+  "skill_selftest": "13/13 PASS",
+  "tsp": "7/7 families, record values (F4 data=-1 = the AOSP INT_BOOLEAN true encoding)",
+  "linkedlist_probe": "8/8 PASS (P1..P8)",
+  "font_probe": "accepted (two-face pixel proof)",
+  "validator": "PASS"
+ },
+ "records_intact": {
+  "memory_warm": "c559b630dd8f0f0f",
+  "notes": "(wall row unote 90a67cc1ddda57b7 MATCH x3)",
+  "dooz15": "31ddd4d5b8e6d18e x3",
+  "dooz180": "c94da5a928ea213b x3",
+  "chessclock": "fe3ae1167c9e968c == CONT-67 record"
+ },
+ "mosaic": {
+  "path": "evidence/cont70/cont70_mosaic.png",
+  "sha16": "3c1ad9a7db418422",
+  "tiles": 20
+ },
+ "honest_notes": [
+  "ANT-1 was implemented, proven at the delivery level, then REVERTED because its activation regresses the recorded memory face via the newly-exposed F-NEW-370 chain — no app-specific gating, no suppressed exceptions; the decode is fully recorded in both registry entries",
+  "ANT-7 found no provable divergence; the S58 'empty display' note stands as launch-correct behavior pending a real-device reference",
+  "emoji rendering (audit item 25) remains NOT TESTED — no corpus app draws emoji and the probe was not built this wave",
+  "the two wall WANT updates are justified app improvements with deterministic x3 evidence and preserved before faces, not drift"
+ ],
+ "batch2": {
+  "scope": "evidence-only ants (zero engine changes, zero drift by construction)",
+  "ants": [
+   {
+    "id": "ANT-9",
+    "target": "F-138 ScoreView hint HUD",
+    "verdict": "ROOT-CAUSED-FIXED via the F-NEW-372 canvas-text law; bouncy before dd0c1425 (no visible hint) vs after 1b87e9ef ('Touch to start' real size)"
+   },
+   {
+    "id": "ANT-10/11",
+    "target": "memory + notes tap interaction",
+    "verdict": "ALL taps target=0 (memory toolbar/Easy/New Game; notes Next) — faces byte-unchanged at records; registered F-NEW-373 CLASSIFIED P2 (view-lane hit-test gap for the DrawerLayout/Toolbar/AppBar/ViewPager tree; contrast CONT-66 simplecalc target=176)"
+   }
+  ],
+  "registry_delta": "678 -> 679 (F-138 fixed; F-NEW-373 new); projection identity-verified; validator PASS",
+  "tap_rows": {
+   "memory": [
+    "run/cont70/accept/mem_tap1..3.err"
+   ],
+   "notes": [
+    "run/cont70/accept/notes_tap1.err"
+   ]
+  }
+ }
 }

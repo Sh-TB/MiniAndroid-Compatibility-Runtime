@@ -1,9 +1,9 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-10-15T19:49:50Z",
- "total": 678,
- "total_roots": 678,
+ "generated": "2026-10-15T19:52:48Z",
+ "total": 679,
+ "total_roots": 679,
  "status_counts": {
   "PARTIAL": 110,
   "VERIFIED-CORRECT": 56,
@@ -12,18 +12,18 @@
   "SUPERSEDED-BY-EVIDENCE": 14,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "ROOT-CAUSED-FIXED": 193,
+  "ROOT-CAUSED-FIXED": 194,
   "IMPLEMENTED": 37,
   "IMPLEMENTED+TESTED": 24,
-  "REGISTERED": 2,
   "OPEN": 4,
   "USED_BY_EXECUTION": 7,
   "OBSERVED-FAIL": 3,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
   "BLOCKED": 2,
+  "REGISTERED": 1,
   "PENDING": 2,
-  "CLASSIFIED": 10,
+  "CLASSIFIED": 11,
   "OBSERVED": 2,
   "TESTED": 1,
   "ROOT-CAUSED-PARTIAL": 4,
@@ -2729,8 +2729,8 @@
   },
   {
    "id": "F-138",
-   "title": "ScoreView hint HUD geometry \u2014 bitmap-font text drawn at (0,0) (legacy text path, text_size=0)",
-   "status": "REGISTERED",
+   "title": "ScoreView hint HUD text \u2014 ROOT-CAUSED-FIXED via the F-NEW-372 canvas-text real-size law (cont70): the 'Touch to start' hint (ScoreView.java:226 getString) previously fell to the tiny legacy bitmap path (text_size=0 shape); with the F-NEW-226 state read live the hint renders at real size in the bouncy top bar (before dd0c1425 no visible hint text; after 1b87e9ef the yellow 'Touch to start' bar renders, deterministic x3).",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": null
   },
@@ -4777,6 +4777,13 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
    "layer": "graphics/canvas-text + fonts/Typeface family"
+  },
+  {
+   "id": "F-NEW-373",
+   "title": "VIEW-LANE TAP HIT-TEST DEAD FOR THE SECUSO TREE SHAPE (cont70, evidence-only): every --tap on the memory app answers target=0 (toolbar (980,80), 'Easy' row (540,1405), 'New Game' (540,1868)) and every --tap on notes_secuso answers target=0 ('Next' (828,1794)); faces byte-unchanged (c559b630 / d0a40904 records). Contrast: the CONT-66 calculator lane hit target=176 ('7' Button) \u2014 the walk works for the shallow FrameLayout/GridLayout tree but loses the DrawerLayout+Toolbar+AppBarLayout+ViewPager(+fragment children) shape. Named lever: F117 walk decode on the Secuso tree \u2014 which hop drops it (decor/content-root attach chain, fragment-hosted children, transform/visibility gates, or the position store for non-compose deep nesting). Sibling of F-NEW-267 (compose lane store disconnect).",
+   "status": "CLASSIFIED",
+   "priority": "P2",
+   "layer": "input/touch-target (view lane, F117 dispatcher walk)"
   }
  ]
 }
