@@ -815,7 +815,7 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                     }
                     fonts::TextShaper::instance().draw(
                         canvas.fb(), op.text, left + op.x, top + op.y,
-                        op.text_size_px, c, op.text_bold);
+                        op.text_size_px, c, op.text_bold, op.text_face);
                 } else {
                     canvas.draw_text(op.text, left + op.x, top + op.y, c, &font);
                 }
@@ -1035,7 +1035,7 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                         fonts::TextShaper::instance().draw(
                             canvas.fb(), glyph, left + pos[i].first,
                             top + pos[i].second, op.text_size_px, tc,
-                            op.text_bold);
+                            op.text_bold, op.text_face);
                     } else {
                         canvas.draw_text(glyph, left + pos[i].first,
                                          top + pos[i].second, tc, &font);
@@ -1305,7 +1305,31 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             paint_text_size_[recv] = arg_as_float(ctx, 0, 32.f);
             return CallResult::handled_void();
         }
-        if (m == "setTextAlign" || m == "setTypeface" || m == "setShadowLayer") {
+        if (m == "setTypeface") {
+            // cont70 ANT-6: carry the app face (__font_face_idx__ on the
+            // Typeface object minted by the ANT-6 factory law) into the
+            // paint state; the drawText family passes it to TextShaper.draw.
+            // Null arg or absent field = system face (legacy behavior).
+            const uint32_t tf = ctx.arg_as_object(0, 0);
+            int fidx = -1;
+            if (tf != 0 && heap_ &&
+                heap_->get_object_int_field(tf, "__font_face_idx__", fidx) &&
+                fidx >= 0) {
+                paint_face_idx_[recv] = fidx;
+            } else {
+                paint_face_idx_.erase(recv);
+            }
+            {
+                static thread_local uint64_t ant6_stf = 0;
+                if (ant6_stf++ < 12)
+                    std::cerr << "[ANT6-STF] recv=" << recv
+                              << " tf=" << tf
+                              << " face=" << fidx
+                              << " caller=" << ctx.caller << std::endl;
+            }
+            return CallResult::handled_void();
+        }
+        if (m == "setTextAlign" || m == "setShadowLayer") {
             return CallResult::handled_void();
         }
         if (m == "<init>") {
@@ -1944,7 +1968,30 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         // were 0-px on this path under the ASCII bitmap font).
         auto ts = paint_text_size_.find(paint_id);
         op.text_size_px = ts != paint_text_size_.end() ? ts->second : 0.f;
+        if (op.text_size_px <= 0.f && heap_ && paint_id != 0) {
+            // cont70 ANT-6 decode fix: the engine's F-NEW-226 law handles
+            // Paint.setTextSize BEFORE the shadow layer and stores the px
+            // size as the heap field __text_size_px__ — the paint map stays
+            // empty, so the op fell back to the legacy bitmap font (tiny
+            // text + no app face). Read the F-NEW-226 state first-class.
+            float f226 = 0.f;
+            if (heap_->get_object_float_field(paint_id, "__text_size_px__",
+                                              f226) &&
+                f226 > 0.f)
+                op.text_size_px = f226;
+        }
         op.text_bold = paint_fake_bold_.count(paint_id) && paint_fake_bold_[paint_id];
+        // cont70 ANT-6: paint-carried app face (createFromAsset product).
+        auto pfi = paint_face_idx_.find(paint_id);
+        op.text_face = pfi != paint_face_idx_.end() ? pfi->second : -1;
+        {
+            static thread_local uint64_t ant6_dt = 0;
+            if (ant6_dt++ < 12)
+                std::cerr << "[ANT6-DT] paint=" << paint_id
+                          << " size=" << op.text_size_px
+                          << " face=" << op.text_face
+                          << " caller=" << ctx.caller << std::endl;
+        }
         mat_.map(op.x, op.y, op.x, op.y);
         stamp_clip(op);
         push_op(std::move(op));
