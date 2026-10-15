@@ -9717,3 +9717,22 @@ Work Log:
 Stage Summary:
 - The CONT-68 wave's claims are now independently re-proven at HEAD from a cold workspace: byte-identical binary, reproduced 3-run acceptance faces for both apps, and every gate green (36/36 wall, 98/1/0 probe, 19/19, 8/8, 4/4, 13/13).
 - One honest delta surfaced and registered: F-NEW-369 (memory cold-first-launch init NPE) — CLASSIFIED, warm-launch acceptance unaffected; the stale root-cause projection was also caught up (535->676, id-for-id verified).
+
+---
+Task ID: CONT-69 (F-NEW-369 cold-first-launch collection-law family)
+Agent: Super Z (main)
+Task: User directive (ادامه و برنامه رو هم تست بکن ببین بهتر شدن؛ اون موزایکی رو هم بساز) — resolve the F-NEW-369 cold-first-launch white face at the generic collection layer, prove app improvement, and build the refreshed evidence mosaic.
+
+Work Log:
+- RECOVERY: workspace reverted again (e99c2fbd) — re-fetched, ff-only to 3577625a, binary rebuilt byte-identical a20998cf4d8a19cd (clean 550s chunk).
+- DECODE (live DEX + traces, no guessing): scripts/cont69_disasm.py (androguard 4.x installed into the venv) read MemoGameDefaultImages.getResIDs/<clinit>, reduce, ResIdAdapter.getResourceName from the memory APK. Law chain: getResIDs serves the STATIC images1 list; reduce returns list.subList(0, deckSize/2); the subList VIEW BOX's redirect declined `iterator` → NULL iterator → hasNext NPE → Splash unwind → white. LAWCEF/F235 traces on a purpose-built probe confirmed the routing (the shadow's iterator handler never saw the view box).
+- PROBE-FIRST: fixtures/linkedlist_probe (real toolchain; apk 1a1c2998bd788b75; scripts/cont69_build_llk.sh; D8 needs the com.android.tools.r8.D8 entrypoint — `java -jar r8.jar` is the silent R8 main). Pre-fix rows: P3 copy-ctor element-null, P6 no-NSEE, P7 the EXACT app-root NPE, P8 bogus nested-IOOBE (P1/P2/P4/P5 already pass — the fresh-collection store was never the bug).
+- FIVE GENERIC LAWS (zero app-specific code): (1) subList nested-view resolution + __sublist_to__ exclusive bound (AOSP SubList(offset+from, offset+to)); (2) the view redirect serves the WINDOW on size/isEmpty/get/set/add/remove AND mints the F-237 iterator box (the root); (3) hasNext/next resolve through the subList window (cursor counts inside it); (4) NoSuchElementException on exhausted next() (OpenJDK Itr.next()); (5) the engine copy cascade's registry stage is KIND-FAITHFUL (string/int elements no longer degrade to object-0).
+- ACCEPTANCE at binary 6e4758543e15996a: probe 8/8 PASS x3 byte-deterministic b75a1e7693ab8950; memory COLD x4 (fresh sandbox each) 3a3ba8734b662e55 REAL CONTENT (21.4% non-bg, 160 buckets, the warm face family; ResIdAdapter completes; DrawerArrowDrawable+setupNavigationView; 0 NPE, 0 theme ISE) — was white 31ddd4d5; memory WARM x3 c559b630 (record UNCHANGED); notes x3 d0a40904 (record UNCHANGED).
+- REGRESSION: wall 36/36 x3 MATCH (12 rows at the new binary); TSP 7/7 (record values); gate A 98/1/0; negatives 19/19; reinstall 8/8; goldens 4/4; skill 13/13; controls BMI/Bouncy/Klondike20 all == records; validator PASS.
+- LEDGER: F-NEW-369 CLASSIFIED -> ROOT-CAUSED-FIXED (registry 676 roots; projection regenerated id-for-id); evidence/cont69/cont69_evidence.json.
+- MOSAIC (user demand): evidence/cont69/cont69_mosaic.png sha16 3ef9443010366c76 — 20 tiles (memory cold BEFORE/AFTER + warm + notes + probes + the full wall + controls), uploaded https://tmpfiles.org/w1AEZ3j74lJV/cont69_mosaic.png. Closeout comments posted to #98/#375 with the commit/binary/faces.
+
+Stage Summary:
+- The cold/warm split for memory is CLOSED for the correct semantic reason: the app's first-launch path now renders its real deck-picker face byte-deterministically (x4), and every recorded face is intact — zero drift across the whole wall at the new binary.
+- The collection view law family (subList/iterator/NSEE/copy fidelity) is probed 8/8 and generalized; the mosaic shows the before/after story in one image.
