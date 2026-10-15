@@ -2829,10 +2829,11 @@
   },
   {
    "id": "F-143",
-   "title": "Service launch/lifecycle family: Service.onCreate/onStartCommand/startForegroundService (stopwatch = service-only manifest, no activity)",
-   "status": "OPEN",
+   "title": "SUPERSEDED-BY-EVIDENCE (cont70 staleness sweep): the Service launch/lifecycle family is IMPLEMENTED and PROVEN LIVE — the engine carries the full startService/startForegroundService/stopService/bindService/unbindService law (manifest service classes, live_services_ tracking, onCreate/onStartCommand/onDestroy dispatch with startId accounting) and the gate-A probe (which ships a real service + receiver) passes SVC-01..04 in the cont70 probe run: \"startx2 -> onCreate=1 onStartCommand=2 startId=2\", \"bindService -> onServiceConnected binder=live\", \"unbind -> service STAYS (started-by-startService)\", \"stopService -> onDestroy\". The stopwatch service-only-manifest face predates this family.",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": "run/gatea/negative/gatea_run0 harvest (GATEA|SVC-01..04 PASS, probe verdicts at run/cont70/gatea_probe_ds); miniandroid/src/dex/dalvik_engine.cpp:31782 Service block"
   },
   {
    "id": "F-144",
@@ -6049,12 +6050,13 @@
   },
   {
    "id": "F-NEW-373",
-   "status": "CLASSIFIED",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
    "layer": "input/touch-target (view lane, F117 dispatcher walk)",
-   "title": "VIEW-LANE TAP HIT-TEST DEAD FOR THE SECUSO TREE SHAPE (cont70, evidence-only): every --tap on the memory app answers target=0 (toolbar (980,80), 'Easy' row (540,1405), 'New Game' (540,1868)) and every --tap on notes_secuso answers target=0 ('Next' (828,1794)); faces byte-unchanged (c559b630 / d0a40904 records). Contrast: the CONT-66 calculator lane hit target=176 ('7' Button) — the walk works for the shallow FrameLayout/GridLayout tree but loses the DrawerLayout+Toolbar+AppBarLayout+ViewPager(+fragment children) shape. Named lever: F117 walk decode on the Secuso tree — which hop drops it (decor/content-root attach chain, fragment-hosted children, transform/visibility gates, or the position store for non-compose deep nesting). Sibling of F-NEW-267 (compose lane store disconnect).",
-   "evidence": "run/cont70/accept/mem_tap1..3.err (three target=0 rows); run/cont70/accept/notes_tap1.err (target=0, face record intact)",
-   "date": "2026-10-16"
+   "title": "F-NEW-373 FIXED (cont70 batch-4): the view-lane tap hit-test was dead for the appcompat wrapper chain — HITPROBE decode: the subdecor wrappers (FitWindowsLinearLayout -> ContentFrameLayout -> DrawerLayout) never run the engine's layout pass (the render walk draws the app tree by its own absolute boxes), so they carry the MATCH_PARENT sentinel (-1x-1) box and the containment test rejected the whole subtree (memory 3 taps + notes 1 tap all target=0). TWO generic laws: (1) tap-root box materialization (the dispatch root fills the window — AOSP decor law); (2) the node_at MATCH_PARENT fill law — an un-measured wrapper fills its nearest MATERIALIZED ancestor (recursive climb; the chain root fills the window). PROOF x3 deterministic (cold->warm->tap cycles): memory target=453 (the 'New Game' Button) with the app's own XML_CLICK onClick DISPATCHED; notes target=980 with the tutorial ADVANCING (post-tutorial face b5a7a35d5fe0564b x3 — the CONT-68 'notes main-list frontier' is now interaction-reachable). Controls: the full wall byte-identical x3 (no-tap runs never enter the dispatcher); the post-tutorial blank-dark face decode is the named next lever.",
+   "evidence": "run/cont70/accept/mem_tap6..9.err (HITPROBE walk decode); run/cont70/accept/mem_cyc1..3.err (target=453 + XML_CLICK x3); run/cont70/accept/notes_cyc1..3.err (target=980 x3, face b5a7a35d x3); wall re-run 36/36 MATCH x3 at binary f396fdd2126e9201",
+   "date": "2026-10-16",
+   "verified_current": true
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
@@ -6070,13 +6072,13 @@
   "VERIFIED-CORRECT": 56,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 49,
-  "SUPERSEDED-BY-EVIDENCE": 15,
+  "SUPERSEDED-BY-EVIDENCE": 16,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "ROOT-CAUSED-FIXED": 194,
+  "ROOT-CAUSED-FIXED": 195,
   "IMPLEMENTED": 37,
   "IMPLEMENTED+TESTED": 24,
-  "OPEN": 3,
+  "OPEN": 2,
   "USED_BY_EXECUTION": 7,
   "OBSERVED-FAIL": 3,
   "ROOT-CAUSED-CLOSED": 3,
@@ -6084,7 +6086,7 @@
   "BLOCKED": 2,
   "REGISTERED": 1,
   "PENDING": 2,
-  "CLASSIFIED": 11,
+  "CLASSIFIED": 10,
   "OBSERVED": 2,
   "TESTED": 1,
   "ROOT-CAUSED-PARTIAL": 4,

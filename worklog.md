@@ -9783,3 +9783,18 @@ Work Log:
 
 Stage Summary:
 - Batch 3: one more stale root cleared with live evidence, and the emoji capability is now pixel-proven rather than untested. The audit addendum records items 24/25/24b at the wave binary.
+
+---
+Task ID: CONT-70-BATCH4 (F-NEW-373 root-cause + fix + full gate re-run)
+Agent: Super Z (main)
+Task: decode and fix the view-lane tap dead zone named in batch 2 (F-NEW-373), full gates at the new binary.
+
+Work Log:
+- DECODE (HITPROBE + ECR diagnostics): the tap ROOT was healthy (scalar content_view_id=511 live — the ECR diag ruled out the stale-root hypothesis); the walk died at the appcompat WRAPPER CHAIN — FitWindowsLinearLayout(-1x-1) -> ContentFrameLayout(-1x-1) -> DrawerLayout(0,0 -1x-1) REJECT. These wrappers never run the engine's layout pass (the render walk draws the app tree by its own absolute boxes), so they carry the MATCH_PARENT sentinel box and the containment test rejected the whole subtree at the first un-measured hop.
+- FIX (two generic laws, zero app-specific code): (1) tap-root window-box materialization at dispatch time (render-neutral); (2) the node_at MATCH_PARENT fill law — an un-measured wrapper fills its nearest MATERIALIZED ancestor (recursive climb; chain root = the window); plus the full walk-REJECT diagnostic on the HITPROBE path.
+- PROOF (cold->warm->tap cycles, fresh sandbox each cycle): memory target=453 ('New Game' Button) with the app's OWN XML_CLICK onClick DISPATCHED, x3; notes target=980 with the tutorial ADVANCING — post-tutorial face b5a7a35d5fe0564b x3 (the CONT-68 notes main-list frontier is now interaction-reachable). State-persistence control: same-sandbox repeat taps answer differently (the app kept the click's effect) — independent proof the click ran.
+- BATCH-3 leds folded in: F-143 OPEN -> SUPERSEDED-BY-EVIDENCE (the Service family is implemented; the gate-A probe passes SVC-01..04 LIVE: "startx2 -> onCreate=1 onStartCommand=2 startId=2", bind/unbind/stopService contracts). F-147 OPEN -> SUPERSEDED-BY-EVIDENCE (v10-era dooz NPE gone, 0 rows). F-145 stays OPEN honestly (TSP SecondActivity has no content view — the blank capture is correct there; no cheap proof).
+- GATES at the final binary f396fdd2126e9201: wall 36/36 MATCH x3 (12/12 byte-identical incl. the two justified batch-1 updates); gate A probe 98/1/0; negatives 19/19; reinstall 8/8; goldens 4/4; skill 13/13; TSP 7/7 (14 verdict rows byte == record text); llk 56/56; font probe real-size two-face (ink 156..412); emoji probe (batch 3); validator PASS. Registry F-NEW-373 -> ROOT-CAUSED-FIXED; projection identity-verified; roots 679.
+
+Stage Summary:
+- The batch-2 frontier closed the same night it was named: from "every tap lands nowhere" to "the app's own click handlers run and the apps advance state" with deterministic x3 cycles. The SECUSO tap lane (memory/notes) is alive; the next named lever is the notes post-tutorial face content decode.

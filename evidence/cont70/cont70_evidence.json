@@ -121,5 +121,33 @@
     "run/cont70/accept/notes_tap1.err"
    ]
   }
+ },
+ "batch4": {
+  "binary": "f396fdd2126e9201 (adds the F-NEW-373 tap-lane laws to the batch-1..3 state)",
+  "scope": "F-NEW-373 root-cause + fix (engine change; full gate re-run)",
+  "decode": "HITPROBE walk: FitWindowsLinearLayout(-1x-1) -> ContentFrameLayout(-1x-1) -> DrawerLayout(0,0 -1x-1) REJECT — the appcompat wrapper chain never runs the engine layout pass; sentinel boxes kill node_at at the first un-measured hop (the earlier ECR diag ruled OUT a wrong tap root: scalar content_view_id=511 live)",
+  "laws": [
+   "tap-root window-box materialization at dispatch time (render-neutral; the wrapper paints nothing)",
+   "node_at MATCH_PARENT fill law: an un-measured wrapper fills its nearest MATERIALIZED ancestor (recursive climb); plus the full walk-REJECT diagnostic in the HITPROBE path"
+  ],
+  "proof": {
+   "memory": "cold->warm->tap cycles x3: target=453 ('New Game' Button) + the app's own XML_CLICK onClick DISPATCHED (mem_cyc1..3)",
+   "notes": "cold->warm->tap cycles x3: target=980, tutorial ADVANCES (post-tutorial face b5a7a35d5fe0564b x3; notes_cyc1..3)",
+   "state_persistence_control": "repeat taps on the SAME sandbox answer differently (state advanced) — itself proof the click really ran"
+  },
+  "gates_at_f396fdd2126e9201": {
+   "wall": "36/36 MATCH x3 (12/12 byte-identical to the batch-1 state incl. the two justified updates)",
+   "gate_a_probe": "98 PASS / 1 INFO / 0 FAIL",
+   "negatives": "19/19",
+   "reinstall": "8/8",
+   "goldens": "4/4",
+   "skill": "13/13",
+   "tsp": "7/7 record values (14 verdict rows, byte == record text)",
+   "llk": "56/56 P1..P8 x7 frames",
+   "font_probe": "real-size two-face render (ink rows 156..412)",
+   "validator": "PASS"
+  },
+  "ledger": "registry F-NEW-373 CLASSIFIED -> ROOT-CAUSED-FIXED; F-143 OPEN -> SUPERSEDED-BY-EVIDENCE (Service family implemented + SVC-01..04 PASS live); F-147 OPEN -> SUPERSEDED-BY-EVIDENCE (v10-era NPE gone); audit item 25 emoji OBSERVED-PASS (11,120 yellow px); item 24 IMPLEMENTED (font probe); F-138 REGISTERED -> ROOT-CAUSED-FIXED (ScoreView hint). roots 676->679; projection identity-verified each batch.",
+  "next_lever": "the notes post-tutorial face renders uniformly dark (b5a7a35d) — the CONT-68 'notes main-list frontier', now interaction-reachable; decode owed for that face's own content law"
  }
 }

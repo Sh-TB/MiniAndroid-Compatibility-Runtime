@@ -6999,6 +6999,30 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                               << std::endl;
                 }
             }
+            // F-NEW-373 lever (AOSP window law): the decor content wrapper
+            // fills the window. The appcompat subdecor migration lands the
+            // app tree under the FitWindowsLinearLayout wrapper WITHOUT
+            // re-measuring the wrapper, leaving the sentinel (-1x-1) box;
+            // the hit-test node_at then rejects the whole tree at the root
+            // (memory/notes tap-dead evidence, cont70 batch-2). Materialize
+            // the root's window box before the walk — render-neutral (the
+            // render path draws children by their own absolute boxes; the
+            // wrapper paints nothing).
+            if (auto* vs_f373 =
+                    shadow_registry_->find_as<framework::ViewShadow>()) {
+                if (const auto* rn = vs_f373->find_node(tap_root);
+                    rn && rn->width < 0 && rn->height < 0) {
+                    auto* mutable_root = vs_f373->find_node(tap_root);
+                    mutable_root->x = 0;
+                    mutable_root->y = 0;
+                    mutable_root->width = config.screen_width;
+                    mutable_root->height = config.screen_height;
+                    std::cerr << "[F373-ROOTBOX] tap root " << tap_root
+                              << " sentinel box materialized to "
+                              << config.screen_width << "x"
+                              << config.screen_height << std::endl;
+                }
+            }
             auto down_rec = touch_dispatcher_->dispatch(
                 tap_root, {framework::TouchAction::DOWN, tpx, tpy});
             const uint32_t tap_target = down_rec.value("target_view_id", 0u);
@@ -8174,13 +8198,28 @@ uint32_t ExecutionEngine::effective_content_root_() const {
     auto* vs_ = shadow_registry_->find_as<framework::ViewShadow>();
     if (!as_ || !vs_) return 0;
     uint32_t root_id = as_->content_view_id();
-    if (root_id != 0 && vs_->find_node(root_id)) return root_id;
+    if (root_id != 0 && vs_->find_node(root_id)) {
+        static thread_local uint64_t ecr_diag = 0;
+        if (ecr_diag++ < 6)
+            std::cerr << "[ECR-ROOT] scalar content_view_id root=" << root_id
+                      << std::endl;
+        return root_id;
+    }
+    size_t candidates = 0;
+    uint32_t first_match = 0;
     for (const auto& [id, node_ptr] : vs_->all_nodes()) {
         if (node_ptr && node_ptr->android_view_id == 0x01020002) {
-            return id;
+            candidates++;
+            if (first_match == 0) first_match = id;
         }
     }
-    return 0;
+    static thread_local uint64_t ecr_diag2 = 0;
+    if (ecr_diag2++ < 6)
+        std::cerr << "[ECR-ROOT] scan root=" << first_match
+                  << " candidates=" << candidates
+                  << " cur_act=" << as_->current_activity_id()
+                  << std::endl;
+    return first_match;
 }
 
 bool ExecutionEngine::stage_tap(ExecutionResult& result,
