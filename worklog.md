@@ -9770,3 +9770,16 @@ Work Log:
 
 Stage Summary:
 - Batch 2 closes F-138 with live proof and names the interaction frontier F-NEW-373 with clean contrasts — the tap lane for deep view trees is the next named lever.
+
+---
+Task ID: CONT-70-BATCH3 (evidence-only ants, continued)
+Agent: Super Z (main)
+Task: continue the ant army — staleness sweep + capability-audit items.
+
+Work Log:
+- ANT-12 (F-147 staleness): the v10-era dooz getChildAt-null NPE no longer reproduces (0 rows at the wave binary; dooz renders its wall face x3) — the named findViewById/content-view gap was closed by later laws. OPEN -> SUPERSEDED-BY-EVIDENCE.
+- ANT-13 (audit item 25 emoji): probe fixtures/emoji_probe (aapt2+ECJ+D8, apk 8250ea69df1c55a6) draws U+1F600 at 128px — the emoji band carries 11,120 YELLOW pixels (the CBDT glyph face color; 13,826 non-white) vs 0 in the CJK control band. NotoColorEmoji strike=109 loads ([TEXTSHAPER] READY). Audit item 25 NOT TESTED -> OBSERVED-PASS. Addendum: evidence/cont70/capability_audit_addendum.md (items 24+25+24b re-measured).
+- LEDGER: registry unchanged in count (679), F-147 -> SUPERSEDED-BY-EVIDENCE; projection identity-verified; validator PASS. Zero engine changes.
+
+Stage Summary:
+- Batch 3: one more stale root cleared with live evidence, and the emoji capability is now pixel-proven rather than untested. The audit addendum records items 24/25/24b at the wave binary.
