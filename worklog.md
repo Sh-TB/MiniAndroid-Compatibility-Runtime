@@ -9819,3 +9819,16 @@ Work Log:
 
 Stage Summary:
 - The F-NEW-368 delivery law is now IMPLEMENTED and PROVEN (the app's own catch runs; the pair renders memory's record face) and the F-NEW-370 measure-chain decode is complete to the two missing shared primitives, implemented AOSP-verbatim with spec-bounds gates. The honest frontier is named (F-NEW-374 per-container DEX-measure trust) with the exact divergence mechanism recorded. Default binary zero-drift across the full gate battery; the #364 mining ledger is open with 7 audited rows.
+
+---
+Task ID: CONT-71-ANT2 (evidence-only ant: F-NEW-204 census)
+Agent: Super Z (main)
+Task: ant-colony order — the F-NEW-204 (P2) log-noise audit as a bounded evidence-only census.
+
+Work Log:
+- CENSUS at binary 86e4ebd4a2c30592: 2,616 std::cerr/std::cout sites across src; top files dalvik_engine.cpp 1258 (189 env-gated sites), main.cpp 219, execution_engine.cpp 158, android_shadows.cpp 145 (28 gated), application_runtime.cpp 137, webview_engine.cpp 74.
+- READING: the log-as-data law (S100 crash forensics) intentionally keeps bounded stderr records; the audit lever is classifying keep/gate/remove per site — recorded as the pending bounded experiment, status PENDING -> OBSERVED (census proven, no code changed).
+- LEDGER: F-NEW-204 -> OBSERVED with the census; projection id-verified; validator PASS.
+
+Stage Summary:
+- One more ant landed: the log-noise frontier now has a measured census instead of an unbounded "audit sometime" — the classification experiment is the named next step.
