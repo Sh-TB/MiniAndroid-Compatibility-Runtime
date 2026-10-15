@@ -9698,3 +9698,22 @@ Work Log:
 Stage Summary:
 - The AppCompat theme-gate family is closed for the CORRECT semantic reason: the guard reads the ACTIVITY theme bag (proven against appcompat 1.4.2 sources + the APK arsc), the splash never drives it (proven against AOSP ActivityThread), and both target apps now reach their REAL app code with real rendered content and byte-deterministic 3-run evidence. The probe exists and passes; the regression wall is untouched (36/36 zero drift).
 - Next wave owns: F-NEW-368 (in-frame delivery of synthesized exceptions), memory's gameplay field (JSONUtils.mapFromJSONString NPE — the S59-named gameplay gap beyond the menu), and the notes main-list frontier beyond the tutorial.
+
+---
+Task ID: CONT-68-REVAL (closeout revalidation + #98/#375 closeout)
+Agent: Super Z (main)
+Task: Revalidate the already-pushed CONT-68 wave (fc54e55b + fbdfc54f) at HEAD fbdfc54f after the workspace was reverted to an older checkpoint, then deliver the missing #98/#375 closeout comments (the wave's code+ledger were pushed but the issue comments were never posted).
+
+Work Log:
+- RECOVERY: workspace restart had rolled the tree back to 6a66806a+uuid (no binary, no run/s60, no sandboxes). Re-fetched: origin/main = fbdfc54f (already carries the CONT-68 six-law fix + ledger). ff-only aligned; nothing reset.
+- REBUILD: clean-build-dir foreground chunk (timeout 550 make -j2, 71 TUs + link) -> binary a20998cf4d8a19cd — BYTE-IDENTICAL to the recorded CONT-68 acceptance binary.
+- APP REVALIDATION: memory x5 warm runs c559b630dd8f0f0f byte-identical (19.1% non-bg, 236 buckets, 0 theme ISE; == recorded); notes x3 d0a409043ffc83a7 byte-identical (2.8% non-bg, 210 buckets; cold sandbox from scratch, no cold/warm split).
+- NEW FRONTIER REGISTERED: memory COLD first launch (wiped data root) deterministically diverges — ResIdAdapter.getResourceName LinkedList.<init> REC-MISS NPE uncaught at SplashActivity.onCreate -> white 31ddd4d5b8e6d18e (reproduced twice); warm launches deterministic real content. F-NEW-369 CLASSIFIED (registry 675->676, validator PASS, projection regenerated — it was 141 roots stale at 535/2026-10-03, identity-verified sync). The recorded CONT-68 acceptance x3 was taken on the S59-warm sandbox; the split is now documented, not hidden.
+- GATES at the reval binary: wall 36/36 x3 MATCH via scripts/cont68_reval_gate.sh (12 rows; the freshly-built gate_a_probe lib ad413625925ed8e5 byte-identical to recorded; probe 98 PASS/1 INFO/0 FAIL); negatives 19/19; reinstall 8/8 (exceeds the recorded 5/5 identity set); goldens 4/4; skill selftest 13/13; validator PASS.
+- CONTROLS (directive-named): BMI f45d6c6603e93fc5 x3 rc=0; bouncy dd0c14257fa1f2af x3 (== S59 recorded menu face); klondike default-frames 31ddd4d5 x3 (recorded honest empty face) AND --frames 20 a77038da303ed1b4 x3 (== recorded REAL menu face).
+- EVIDENCE: evidence/cont68/cont68_reval_evidence.json (all commands, hashes, honest notes).
+- CLOSEOUT: #98 and #375 closeout comments posted with the exact commit/binary/APK identities, 3-run screenshot hashes, gate results and the F-NEW-369 disclosure.
+
+Stage Summary:
+- The CONT-68 wave's claims are now independently re-proven at HEAD from a cold workspace: byte-identical binary, reproduced 3-run acceptance faces for both apps, and every gate green (36/36 wall, 98/1/0 probe, 19/19, 8/8, 4/4, 13/13).
+- One honest delta surfaced and registered: F-NEW-369 (memory cold-first-launch init NPE) — CLASSIFIED, warm-launch acceptance unaffected; the stale root-cause projection was also caught up (535->676, id-for-id verified).
