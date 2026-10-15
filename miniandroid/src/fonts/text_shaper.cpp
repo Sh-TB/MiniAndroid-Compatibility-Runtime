@@ -752,6 +752,25 @@ int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
     return idx;
 }
 
+int TextShaper::app_face_index_for_name(const std::string& name) const {
+    if (name.empty()) return -1;
+    // Exact entry-name match first (the registration scan keyed faces by
+    // the APK entry: "assets/fonts/x.ttf", "res/UJ.ttf").
+    for (size_t i = 0; i < app_faces_.size(); i++) {
+        if (app_faces_[i].path == name)
+            return kBaseFaceCount + (int)i;
+    }
+    // Suffix match ("fonts/x.ttf" against "assets/fonts/x.ttf").
+    for (size_t i = 0; i < app_faces_.size(); i++) {
+        const std::string& p = app_faces_[i].path;
+        if (p.size() > name.size() &&
+            p.compare(p.size() - name.size(), name.size(), name) == 0 &&
+            p[p.size() - name.size() - 1] == '/')
+            return kBaseFaceCount + (int)i;
+    }
+    return -1;
+}
+
 int TextShaper::register_app_font(const std::string& font_path, bool is_bold) {
     if (!available_) return -1;
     std::FILE* fp = std::fopen(font_path.c_str(), "rb");

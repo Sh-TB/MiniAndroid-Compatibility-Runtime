@@ -33900,6 +33900,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        // cont70 ANT-3 (bouncy JSONUtils.mapFromJSONObject face): AOSP
+        // org.json JSONObject.keys() — java.util.Iterator<String> over the
+        // key strings in INSERTION ORDER (libcore JSONObject keeps a
+        // LinkedHashMap; nlohmann ordered_json preserves it here). The
+        // engine minted no handler, keys() answered null and the caller's
+        // first Iterator.hasNext NPE'd (f141-null-recv, deferred unwind).
+        // Mint the F-237-legacy iterator box: class Ljava/util/Iterator;,
+        // keys ride array[i] + __array_length__ ON THE BOX (no
+        // __iterator_parent__ — the F-036 gate opens because the box
+        // carries __array_length__, and hasNext/next consume the legacy
+        // self shape). Zero JSON-value interference: all other F-243
+        // paths read only the json_value field.
+        if (f243_is_obj && method == "keys") {
+            nlohmann::ordered_json j;
+            f243_read(j);
+            uint32_t kit = heap_.allocate("Ljava/util/Iterator;", pc_, 0);
+            int32_t kn = 0;
+            if (j.is_object()) {
+                for (auto it = j.begin(); it != j.end(); ++it) {
+                    heap_.set_object_field(
+                        kit, "array[" + std::to_string(kn) + "]",
+                        DalvikValue::make_string(it.key(), 0));
+                    kn++;
+                }
+            }
+            heap_.set_object_field(kit, "__array_length__",
+                                   DalvikValue::make_int(kn));
+            heap_.set_object_field(kit, "__iterator_pos__",
+                                   DalvikValue::make_int(0));
+            result = DalvikValue::make_object(kit, "Ljava/util/Iterator;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (!f243_is_obj && method == "put") {
             // JSONArray.put(Object)/put(int, Object) — appends.
             nlohmann::ordered_json j;
@@ -46214,6 +46247,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_void();
             return true;
         }
+        // cont70 ANT-5 (R-NEW-228): Window.setDecorFitsSystemWindows(boolean)
+        // — AOSP API 30 PhoneWindow law: stores mDecorFitsSystemWindows on
+        // the window; the flag is consumed by the decor insets dispatch.
+        // This runtime has no system-bar inset dispatch (the window IS the
+        // whole display surface), so the honest generic implementation is
+        // accept + record — the same contract as the setAttributes family
+        // above. Removes the Lj1;.d (WindowCompat) REC-MISS face on dooz.
+        if (method == "setDecorFitsSystemWindows") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
         if (method == "requestFeature") {
             // AOSP PhoneWindow.requestFeature: true while content is not
             // installed (PanelFeatureState mismatch would answer false —
@@ -46222,6 +46267,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_bool(true);
             return true;
         }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // cont70 ANT-6: Typeface.createFromAsset / createFromFile law (AOSP
+    // Typeface.java). The runtime pre-registers EVERY app-shipped TTF/OTF
+    // at startup (FIX-4 + F-NEW-315 scan: assets/ + res/), so the factory
+    // resolves the face by APK-entry name and returns a REAL Typeface heap
+    // object carrying __font_face_idx__ (consumed by Paint.setTypeface →
+    // Canvas.drawText). AOSP failure law: a missing asset throws
+    // RuntimeException("Font asset not found <path>") — never a silent
+    // null. createFromFile: a missing file answers null (AOSP: the
+    // FileInputStream opens before any throw — absent file = null).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/graphics/Typeface;" &&
+        (method == "createFromAsset" || method == "createFromFile")) {
+        std::string want;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::STRING_REF && !a.string_val.empty()) {
+                want = a.string_val;
+                break;
+            }
+        }
+        int face = fonts::TextShaper::instance().app_face_index_for_name(want);
+        if (face >= 0) {
+            uint32_t tf = heap_.allocate("Landroid/graphics/Typeface;", pc_,
+                                         call_stack_.empty() ? 0
+                                                             : call_stack_.top().frame_id);
+            heap_.set_object_field(tf, "__font_face_idx__",
+                                   DalvikValue::make_int(face));
+            result = DalvikValue::make_object(tf, "Landroid/graphics/Typeface;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "createFromAsset") {
+            throw_deferred("Ljava/lang/RuntimeException;",
+                           "Font asset not found " + want, "cont70-ANT6");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
 
     // ────────────────────────────────────────────────────────────────────────

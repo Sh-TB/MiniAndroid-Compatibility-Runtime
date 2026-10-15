@@ -198,6 +198,13 @@ public:
     int register_app_font_memory(const std::vector<uint8_t>& bytes,
                                  const std::string& debug_name, bool is_bold);
     int register_app_font(const std::string& font_path, bool is_bold);
+    // cont70 ANT-6: resolve a registered app face by its APK-entry name.
+    // AOSP Typeface.createFromAsset needs the face for an asset path; the
+    // startup scan (FIX-4 + F-NEW-315) registers under the full entry name
+    // ("assets/fonts/x.ttf", "res/UJ.ttf") — match exact first, then by
+    // "/<name>" suffix (callers pass "fonts/x.ttf"). Deterministic: first
+    // registration-order match. Returns -1 when absent.
+    int app_face_index_for_name(const std::string& name) const;
     bool has_app_font() const { return app_regular_idx_ >= 0 || app_bold_idx_ >= 0; }
     int app_regular_idx() const { return app_regular_idx_; }
     int app_bold_idx() const { return app_bold_idx_; }

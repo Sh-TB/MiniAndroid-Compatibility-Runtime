@@ -164,6 +164,9 @@ struct DrawOp {
     // text scale from the record-time matrix (origin/advance transform).
     float text_size_px = 0;
     bool text_bold = false;
+    // cont70 ANT-6: paint-carried app face index (Typeface.createFromAsset
+    // → Paint.setTypeface). -1 = system face (legacy behavior).
+    int text_face = -1;
     // Record-time affine SNAPSHOT for ops replayed per-pixel (bitmap):
     // lets rotated/scaled destinations sample correctly.
     bool has_affine = false;
@@ -352,6 +355,7 @@ private:
     std::map<uint32_t, float> paint_stroke_w_;    // paint obj -> width
     std::map<uint32_t, int> paint_style_;         // paint obj -> 0 fill / 1 stroke
     std::map<uint32_t, float> paint_text_size_;   // paint obj -> text size
+    std::map<uint32_t, int> paint_face_idx_;      // cont70 ANT-6: paint obj -> app face idx
     // S68 §12/§14: paint text styling consumed by the Canvas text path.
     std::map<uint32_t, bool> paint_fake_bold_;    // setFakeBoldText
     std::map<uint32_t, bool> paint_filter_bitmap_;// setFilterBitmap
