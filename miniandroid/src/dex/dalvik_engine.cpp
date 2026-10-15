@@ -41015,14 +41015,55 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         // F-NEW-259b: addAll appends — the heap-store write
                         // must honor the append base (never clobber the
                         // receiver's pre-existing slots).
-                        heap_.set_object_field(
-                            f101_arr,
-                            "array[" +
-                                std::to_string(f101_append_base + f101_i) +
-                                "]",
-                            DalvikValue::make_object(
-                                f101_elem_ids[f101_i],
-                                "Ljava/lang/Object;"));
+                        // ── CONT-69: KIND-FAITHFUL element carry ────────
+                        // The registry state is the kind-parallel store
+                        // (R-NEW-464: kind 1 = object id, kind 2 = string,
+                        // kind 3 = int). The pre-fix loop wrote
+                        // make_object(elem_ids[i]) for EVERY slot, so a
+                        // string/int source element degraded to object 0 =
+                        // null on the copy (`new LinkedList<String>(src)`
+                        // after src.add("x") carried size=1 but a null
+                        // slot — llk probe P3: cp.get0=null). OpenJDK
+                        // ArrayList(Collection) = c.toArray() verbatim: the
+                        // element VALUE crosses, whatever its kind.
+                        uint8_t f101_k =
+                            f101_i < f101_sst->elem_kinds.size()
+                                ? f101_sst->elem_kinds[f101_i]
+                                : uint8_t{0};
+                        if (f101_k == 2) {
+                            heap_.set_object_field(
+                                f101_arr,
+                                "array[" +
+                                    std::to_string(f101_append_base +
+                                                   f101_i) +
+                                    "]",
+                                DalvikValue::make_string(
+                                    f101_i < f101_sst->elem_strings.size()
+                                        ? f101_sst->elem_strings[f101_i]
+                                        : std::string(),
+                                    0));
+                        } else if (f101_k == 3) {
+                            heap_.set_object_field(
+                                f101_arr,
+                                "array[" +
+                                    std::to_string(f101_append_base +
+                                                   f101_i) +
+                                    "]",
+                                DalvikValue::make_int(
+                                    f101_i < f101_sst->elem_ints.size()
+                                        ? f101_sst->elem_ints[f101_i]
+                                        : 0));
+                        } else {
+                            heap_.set_object_field(
+                                f101_arr,
+                                "array[" +
+                                    std::to_string(f101_append_base +
+                                                   f101_i) +
+                                    "]",
+                                DalvikValue::make_object(
+                                    f101_elem_ids[f101_i],
+                                    "Ljava/lang/Object;"));
+                        }
                     }
                 }
             }
