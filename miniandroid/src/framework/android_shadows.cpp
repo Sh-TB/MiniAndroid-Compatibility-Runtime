@@ -1093,11 +1093,40 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     // interleavings, which is the OpenJDK contract for read/write faces).
     // ────────────────────────────────────────────────────────────────────
     if (m == "subList" && ctx.args.size() >= 2 && obj_id != 0) {
-        auto* parent = get_or_create(obj_id);
+        // ── CONT-69 (F-NEW-369 root family): NESTED-VIEW resolution law ──
+        // OpenJDK AbstractList.subList: `new SubList(this, from, to)` — a
+        // subList of a subList nests: the window resolves against the
+        // receiver's OWN window (offset + bounds), and the product binds to
+        // the ROOT backing list. Pre-fix: a view receiver entered
+        // get_or_create(view_box) → a FRESH EMPTY state → n=0 → every
+        // nested subList(from>0) threw the bogus
+        // IndexOutOfBoundsException("... with size 0") (llk probe P8).
+        int32_t root_parent = static_cast<int32_t>(obj_id);
+        int32_t win_off = 0, win_to = -1;
+        int32_t up_parent = 0, up_off = 0, up_to = 0;
+        if (heap_ &&
+            heap_->get_object_int_field(obj_id, "__sublist_parent__",
+                                        up_parent) &&
+            up_parent != 0 &&
+            heap_->get_object_int_field(obj_id, "__sublist_off__", up_off)) {
+            int32_t up_to = -1;
+            heap_->get_object_int_field(obj_id, "__sublist_to__", up_to);
+            auto* up_state = get_or_create(static_cast<uint32_t>(up_parent));
+            if (up_to < 0)
+                up_to = static_cast<int32_t>(up_state->elements.size());
+            root_parent = up_parent;
+            win_off = up_off;
+            win_to = up_to;
+        }
+        auto* parent = get_or_create(static_cast<uint32_t>(root_parent));
         if (parent->is_map) return CallResult::not_handled();
         const int32_t from = ctx.arg_as_int(0, -1);
         const int32_t to = ctx.arg_as_int(1, -1);
-        const int32_t n = static_cast<int32_t>(parent->elements.size());
+        // The bounds check runs against the RECEIVER's own window size
+        // (AOSP: SubList.size() == to - off of the receiver's window).
+        const int32_t n = (win_to >= 0)
+                              ? (win_to - win_off)
+                              : static_cast<int32_t>(parent->elements.size());
         // OpenJDK AbstractList.subList bounds law: outOfRange(from, to, size)
         // throws IndexOutOfBoundsException (from < 0, to > size, from > to).
         if (from < 0 || to > n || from > to)
@@ -1106,14 +1135,22 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 "subList(" + std::to_string(from) + ", " +
                     std::to_string(to) + ") with size " + std::to_string(n));
         uint32_t box = heap_->allocate("Ljava/util/ArrayList;");
-        heap_->set_object_int_field(box, "__sublist_parent__",
-                                    static_cast<int32_t>(obj_id));
-        heap_->set_object_int_field(box, "__sublist_off__", from);
+        heap_->set_object_int_field(box, "__sublist_parent__", root_parent);
+        // The window is [win_off + from, win_off + to) on the ROOT state —
+        // the AOSP SubList(offset + fromIndex, offset + toIndex) law. The
+        // exclusive end is stored too: size()/get()/add() bounds must use
+        // the window, not parent.size() - off (which is only correct when
+        // to == parent.size()).
+        heap_->set_object_int_field(box, "__sublist_off__", win_off + from);
+        heap_->set_object_int_field(box, "__sublist_to__", win_off + to);
         return CallResult::handled_object(box, "Ljava/util/List;");
     }
 
     // SubList VIEW redirect: the receiver carries the view marker → every
-    // element face resolves against the parent store at __sublist_off__.
+    // element face resolves against the parent store window
+    // [__sublist_off__, __sublist_to__) (AOSP SubList law; the exclusive
+    // end defaults to the parent size for markers minted before the
+    // __sublist_to__ field existed).
     {
         int32_t slp = 0, slo = 0;
         if (heap_ && obj_id != 0 &&
@@ -1121,16 +1158,39 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             slp != 0 &&
             heap_->get_object_int_field(obj_id, "__sublist_off__", slo)) {
             auto* ps = get_or_create(static_cast<uint32_t>(slp));
+            int32_t sto = -1;
+            heap_->get_object_int_field(obj_id, "__sublist_to__", sto);
+            if (sto < 0 ||
+                sto > static_cast<int32_t>(ps->elements.size()))
+                sto = static_cast<int32_t>(ps->elements.size());
             if (m == "size")
-                return CallResult::handled_int(
-                    static_cast<int32_t>(ps->elements.size()) - slo);
+                return CallResult::handled_int(sto - slo);
             if (m == "isEmpty")
-                return CallResult::handled_bool(
-                    static_cast<int32_t>(ps->elements.size()) <= slo);
+                return CallResult::handled_bool(sto <= slo);
+            // ── CONT-69 (F-NEW-369 ROOT): iterator on a view box ─────────
+            // The redirect previously declined every face it did not list
+            // ("Unknown face on a view box: decline loudly") — iterator()
+            // answered NULL and the app's first for-each over the subList
+            // NPE'd at hasNext (memory cold path: reduce() returns
+            // list.subList(0,n) → ResIdAdapter.getResourceName for-each →
+            // SplashActivity.onCreate unwind → white face). AOSP law:
+            // SubList.iterator() = the parent list's iterator restricted
+            // to the window [off, to). The box binds to the VIEW object;
+            // hasNext/next resolve the window through the same markers.
+            if (m == "iterator") {
+                if (!heap_) return CallResult::not_handled();
+                uint32_t it_id = heap_->allocate("Ljava/util/Iterator;");
+                heap_->set_object_ref_field(it_id, "__iterator_parent__",
+                                            obj_id, ctx.class_name, "",
+                                            false);
+                heap_->set_object_int_field(it_id, "__iterator_pos__", 0);
+                return CallResult::handled_object(it_id,
+                                                  "Ljava/util/Iterator;");
+            }
             if (m == "get") {
                 int32_t gi = ctx.arg_as_int(0, -1);
                 int32_t ai = slo + gi;
-                if (gi < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                if (gi < 0 || ai >= sto)
                     return CallResult::handled_exception(
                         "Ljava/lang/IndexOutOfBoundsException;",
                         "subList.get(" + std::to_string(gi) + ")");
@@ -1139,7 +1199,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (m == "set") {
                 int32_t si = ctx.arg_as_int(0, -1);
                 int32_t ai = slo + si;
-                if (si < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                if (si < 0 || ai >= sto)
                     return CallResult::handled_exception(
                         "Ljava/lang/IndexOutOfBoundsException;",
                         "subList.set(" + std::to_string(si) + ", e)");
@@ -1178,11 +1238,12 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
             if (m == "add") {
                 // add(e) appends at the window end; add(idx, e) inserts.
-                int32_t at = static_cast<int32_t>(ps->elements.size()) - slo;
+                // Bounds are the WINDOW [slo, sto) — AOSP SubList.add
+                // inserts inside the view and shifts the parent tail.
+                int32_t at = sto - slo;
                 if (ctx.args.size() >= 2) {
                     at = ctx.arg_as_int(0, -1);
-                    if (at < 0 || at > static_cast<int32_t>(
-                                           ps->elements.size()) - slo)
+                    if (at < 0 || at > sto - slo)
                         return CallResult::handled_exception(
                             "Ljava/lang/IndexOutOfBoundsException;",
                             "subList.add(" + std::to_string(at) + ", e)");
@@ -1204,7 +1265,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (m == "remove") {
                 int32_t ri = ctx.arg_as_int(0, -1);
                 int32_t ai = slo + ri;
-                if (ri < 0 || ai >= static_cast<int32_t>(ps->elements.size()))
+                if (ri < 0 || ai >= sto)
                     return CallResult::handled_exception(
                         "Ljava/lang/IndexOutOfBoundsException;",
                         "subList.remove(" + std::to_string(ri) + ")");
@@ -2403,6 +2464,33 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             parent_id = box_parent;
             is_box = true;
         }
+        // ── CONT-69 (F-NEW-369 root): SUBLIST-WINDOW resolution ─────────
+        // The iterator's parent may be a subList VIEW box (the CONT-69
+        // view-iterator mint binds __iterator_parent__ to the view). The
+        // window [slo, sto) on the ROOT parent state is the iteration
+        // domain; the box cursor counts INSIDE the window (AOSP
+        // SubList.iterator cursor law).
+        int32_t view_off = 0, view_to = -1;
+        {
+            int32_t slp = 0;
+            if (heap_ &&
+                heap_->get_object_int_field(parent_id, "__sublist_parent__",
+                                            slp) &&
+                slp != 0) {
+                int32_t slo = 0, sto = -1;
+                heap_->get_object_int_field(parent_id, "__sublist_off__",
+                                            slo);
+                heap_->get_object_int_field(parent_id, "__sublist_to__",
+                                            sto);
+                auto* root_state = get_or_create(static_cast<uint32_t>(slp));
+                if (sto < 0 ||
+                    sto > static_cast<int32_t>(root_state->elements.size()))
+                    sto = static_cast<int32_t>(root_state->elements.size());
+                parent_id = static_cast<uint32_t>(slp);
+                view_off = slo;
+                view_to = sto;
+            }
+        }
         auto* state = get_or_create(parent_id);
         int32_t pos = 0;
         if (is_box) {
@@ -2410,6 +2498,8 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         } else {
             pos = static_cast<int32_t>(state->iterator_position);
         }
+        if (view_to >= 0)
+            return CallResult::handled_bool(pos < (view_to - view_off));
         // F-NEW-237 array-backed parent fallback: the parent may be an
         // ENGINE-modeled array list (array[i] + __array_length__ fields,
         // F-101 copy products) with an EMPTY shadow state. Read the heap
@@ -2438,12 +2528,54 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             parent_id = box_parent;
             is_box = true;
         }
+        // ── CONT-69 (F-NEW-369 root): SUBLIST-WINDOW resolution ─────────
+        // Same window law as hasNext(): the parent may be a subList view
+        // box; the served slot is view_off + cursor and the window end
+        // bounds the iteration (AOSP SubList.Itr).
+        int32_t view_off = 0, view_to = -1;
+        {
+            int32_t slp = 0;
+            if (heap_ &&
+                heap_->get_object_int_field(parent_id, "__sublist_parent__",
+                                            slp) &&
+                slp != 0) {
+                int32_t slo = 0, sto = -1;
+                heap_->get_object_int_field(parent_id, "__sublist_off__",
+                                            slo);
+                heap_->get_object_int_field(parent_id, "__sublist_to__",
+                                            sto);
+                auto* root_state = get_or_create(static_cast<uint32_t>(slp));
+                if (sto < 0 ||
+                    sto > static_cast<int32_t>(root_state->elements.size()))
+                    sto = static_cast<int32_t>(root_state->elements.size());
+                parent_id = static_cast<uint32_t>(slp);
+                view_off = slo;
+                view_to = sto;
+            }
+        }
         auto* state = get_or_create(parent_id);
         int32_t pos = 0;
         if (is_box) {
             heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
         } else {
             pos = static_cast<int32_t>(state->iterator_position);
+        }
+        if (view_to >= 0) {
+            // AOSP NoSuchElementException law: next() past the window end
+            // throws (the pre-fix law answered handled_null and every
+            // defensive while(it.hasNext()) misuse silently read nulls —
+            // llk probe P6).
+            if (pos >= (view_to - view_off))
+                return CallResult::handled_exception(
+                    "Ljava/util/NoSuchElementException;",
+                    "subList iterator exhausted (pos=" + std::to_string(pos) +
+                        ")");
+            if (is_box)
+                heap_->set_object_int_field(obj_id, "__iterator_pos__",
+                                            pos + 1);
+            else
+                state->iterator_position = pos + 1;
+            return lawa_serve_slot(*state, view_off + pos);
         }
         // LAW-B (CONT-18): lastReturned tracking — a next() that SERVES
         // (any layer) returns element[pos]; every successful serve below
@@ -2578,7 +2710,15 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
             return CallResult::handled_null();
         }
-        return CallResult::handled_null();
+        // ── CONT-69: AOSP NoSuchElementException law (llk probe P6) ──────
+        // OpenJDK ArrayList.Itr.next(): `checkForComodification();
+        // int i = cursor; if (i >= size) throw new NoSuchElementException();
+        // ...` — next() past the end THROWS. The pre-fix law answered
+        // handled_null, so a defensive next() misused beyond hasNext()
+        // silently read nulls instead of failing the JDK-honest way.
+        return CallResult::handled_exception(
+            "Ljava/util/NoSuchElementException;",
+            "iterator exhausted (pos=" + std::to_string(pos) + ")");
     }
 
     // ── F-NEW-255 (CONT-7 W3): GENERIC LISTITERATOR LAW — OpenJDK
