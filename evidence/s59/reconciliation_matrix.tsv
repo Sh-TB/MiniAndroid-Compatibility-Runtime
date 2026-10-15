@@ -1,0 +1,279 @@
+issue	group	package	in_corpus	state_label	executed	verdict	labels	title
+9	work		N		N	PENDING	documentation;campaign	MASTER-ROADMAP v3 — MiniAndroid Compatibility Runtime — 100% Base Execution Closure System
+14	work	io.github.yamin8000.dooz	N		N	PENDING	evidence;execution;runtime;rendering;blocked;p1	[EXEC] Dooz — Runtime/UI Completion
+16	work	org.telegram.messenger	N		N	PENDING	evidence;execution;runtime	[EXEC] Telegram — Runtime Compatibility
+19	work	eu.veldsoft.fish.rings	N		N	PENDING	evidence;execution;gameplay	[EXEC] FishRings — APK Execution & Gameplay Proof
+20	work	eu.veldsoft.tri.peaks	N		N	PENDING	evidence;execution;rendering;blocked	[EXEC] TriPeaks — APK Execution & Visual Proof
+21	work	com.dozingcatsoftware.bouncy	Y		N	PENDING	evidence;execution;gameplay	[EXEC] Bouncy — APK Execution & Visual Proof
+22	work	com.github.muellerma.stopwatch	N		N	PENDING	evidence;execution;blocked	[EXEC] Stopwatch — Service-Launch Family
+23	work	one.scarecrow.games.OPMT	N		N	PENDING	evidence;execution;gameplay	[EXEC] OPMT — APK Execution & Visual Proof
+24	work		N		N	PENDING	wave-report;visual-compatibility	S81 — REAL APP VISUAL COMPATIBILITY: audit ladder, VF fixes, 200-item F-Droid corpus + BAT
+25	per-app	com.qwde.ccm	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-001] com.qwde.ccm — compatibility report
+26	per-app	com.astroloop.game	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-002] com.astroloop.game — compatibility report
+27	per-app	app.halma	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-003] app.halma — compatibility report
+28	per-app	com.jeffliu.balancetheball	N	state-graphics-nontrivial	Y	PENDING	compatibility;game;open-source;fdroid;state-graphics-nontrivial;executed	[GAME-004] com.jeffliu.balancetheball — compatibility report
+29	per-app	crypto.o0o0o0o0o.games.blackjack	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-005] crypto.o0o0o0o0o.games.blackjack — compatibility report
+30	per-app	eu.veldsoft.no.thanks	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-006] eu.veldsoft.no.thanks — compatibility report
+31	per-app	com.simondalvai.ball2box	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-007] com.simondalvai.ball2box — compatibility report
+32	per-app	si.palcka.tarok	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-008] si.palcka.tarok — compatibility report
+33	per-app	cos.premy.mines	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-009] cos.premy.mines — compatibility report
+34	per-app	com.sidhant.puzzle	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-010] com.sidhant.puzzle — compatibility report
+35	per-app	com.ivylopez.authsrng	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-011] com.ivylopez.authsrng — compatibility report
+36	per-app	io.github.hathibelagal.mykanji	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-012] io.github.hathibelagal.mykanji — compatibility report
+37	per-app	io.github.ebraminio.bouncy	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-013] io.github.ebraminio.bouncy — compatibility report
+38	per-app	de.tobiasbielefeld.solitaire	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-014] de.tobiasbielefeld.solitaire — compatibility report
+39	per-app	eu.quelltext.memory	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-015] eu.quelltext.memory — compatibility report
+40	per-app	com.sidhant.queens	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-016] com.sidhant.queens — compatibility report
+41	per-app	page.codeberg.lanticy.guandan	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-017] page.codeberg.lanticy.guandan — compatibility report
+42	per-app	xyz.deepdaikon.quinb	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-018] xyz.deepdaikon.quinb — compatibility report
+43	per-app	com.vayunmathur.games.solitaire	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-019] com.vayunmathur.games.solitaire — compatibility report
+44	per-app	bim.app	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-020] bim.app — compatibility report
+45	per-app	de.schwarz.boardgamepal	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-021] de.schwarz.boardgamepal — compatibility report
+46	per-app	com.dash1971.maia_chess	N	state-not-loaded	N	BLOCKED	blocked;compatibility;game;open-source;fdroid;state-not-loaded	[GAME-022] com.dash1971.maia_chess — compatibility report
+47	per-app	org.secuso.privacyfriendlybattleship	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-023] org.secuso.privacyfriendlybattleship — compatibility report
+48	per-app	com.kingalex.kingpong	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-024] com.kingalex.kingpong — compatibility report
+49	per-app	com.vovagorodok.blichess	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-025] com.vovagorodok.blichess — compatibility report
+50	per-app	io.itch.pirate_solitaire	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-026] io.itch.pirate_solitaire — compatibility report
+51	per-app	com.dozingcatsoftware.dodge	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-027] com.dozingcatsoftware.dodge — compatibility report
+52	per-app	com.helddertierwelt.mentalmath	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-028] com.helddertierwelt.mentalmath — compatibility report
+53	per-app	com.sidhant.bubbleshooter	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-029] com.sidhant.bubbleshooter — compatibility report
+54	per-app	net.tigr.navyfleetbattle	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-030] net.tigr.navyfleetbattle — compatibility report
+55	per-app	com.hazelhope.dubster.hamtest	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-031] com.hazelhope.dubster.hamtest — compatibility report
+56	per-app	ca.rmen.nounours	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-032] ca.rmen.nounours — compatibility report
+57	per-app	com.nima.triviaapp	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-033] com.nima.triviaapp — compatibility report
+58	per-app	ru.wohlsoft.thextech.fdroid	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-034] ru.wohlsoft.thextech.fdroid — compatibility report
+59	per-app	com.willie.mancala	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-035] com.willie.mancala — compatibility report
+60	per-app	org.lichess.mobileV2	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-036] org.lichess.mobileV2 — compatibility report
+61	per-app	de.georgsieber.ballbreak	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-037] de.georgsieber.ballbreak — compatibility report
+62	per-app	com.quietgrid.app	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-038] com.quietgrid.app — compatibility report
+63	per-app	com.octbit.rutmath	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-039] com.octbit.rutmath — compatibility report
+64	per-app	com.galaxyrio.sudokusolver	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-040] com.galaxyrio.sudokusolver — compatibility report
+65	per-app	org.lufebe16.pysolfc	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-041] org.lufebe16.pysolfc — compatibility report
+66	per-app	com.kaeruct.raumballer	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-042] com.kaeruct.raumballer — compatibility report
+67	per-app	com.sanskritbasics.memory	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-043] com.sanskritbasics.memory — compatibility report
+69	per-app	com.serwylo.retrowars	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-045] com.serwylo.retrowars — compatibility report
+70	per-app	org.opensurge2d.surgeengine	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-046] org.opensurge2d.surgeengine — compatibility report
+71	per-app	com.eightsines.firestrike.opensource	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-047] com.eightsines.firestrike.opensource — compatibility report
+72	per-app	com.clavierhaus.gnubg	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-048] com.clavierhaus.gnubg — compatibility report
+73	per-app	com.sidhant.arrowescape	N	state-not-loaded	N	BLOCKED	blocked;compatibility;game;open-source;fdroid;state-not-loaded	[GAME-049] com.sidhant.arrowescape — compatibility report
+74	per-app	com.vovagorodok.blidraughts	N	state-nonblank	Y	OBSERVED	compatibility;game;open-source;fdroid;state-nonblank;executed	[GAME-050] com.vovagorodok.blidraughts — compatibility report
+75	per-app	com.yepgoryo.EggReturnsHome	N	state-not-loaded	N	BLOCKED	blocked;compatibility;game;open-source;fdroid;state-not-loaded	[GAME-051] com.yepgoryo.EggReturnsHome — compatibility report
+76	per-app	com.rocket9labs.boxcars	N	state-rendered	Y	PENDING	compatibility;game;open-source;fdroid;state-rendered;executed	[GAME-052] com.rocket9labs.boxcars — compatibility report
+77	per-app	io.github.johnathan.minesweeper	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-053] io.github.johnathan.minesweeper — compatibility report
+78	per-app	org.piepmeyer.gauguin	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-054] org.piepmeyer.gauguin — compatibility report
+79	per-app	jwtc.android.chess	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-055] jwtc.android.chess — compatibility report
+80	per-app	org.pipoypipagames.cowsrevenge	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-056] org.pipoypipagames.cowsrevenge — compatibility report
+82	per-app	com.vayunmathur.games.alchemist	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-058] com.vayunmathur.games.alchemist — compatibility report
+83	per-app	ru.hyst329.openfool	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-059] ru.hyst329.openfool — compatibility report
+84	per-app	org.codeberg.scovillo.bubble	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-060] org.codeberg.scovillo.bubble — compatibility report
+85	per-app	com.towerillusion.abdal	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-061] com.towerillusion.abdal — compatibility report
+86	per-app	com.sidhant.blockblast	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-062] com.sidhant.blockblast — compatibility report
+87	per-app	org.quentin_bettoum.librememorygame	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-063] org.quentin_bettoum.librememorygame — compatibility report
+88	per-app	com.fairytrick.fairymahjong	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-064] com.fairytrick.fairymahjong — compatibility report
+89	per-app	com.tacticmaster	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-065] com.tacticmaster — compatibility report
+90	per-app	com.joeld.minesweeper	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-066] com.joeld.minesweeper — compatibility report
+91	per-app	com.adilhanney.ricochlime	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-067] com.adilhanney.ricochlime — compatibility report
+92	per-app	com.dozingcatsoftware.cardswithcats	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-068] com.dozingcatsoftware.cardswithcats — compatibility report
+93	per-app	eu.veldsoft.scribe4	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-069] eu.veldsoft.scribe4 — compatibility report
+94	per-app	me.lecaro.breakout	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-070] me.lecaro.breakout — compatibility report
+95	per-app	cube.run	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-071] cube.run — compatibility report
+96	per-app	fr.arnaudguyon.spacevertex	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-072] fr.arnaudguyon.spacevertex — compatibility report
+97	per-app	de.saschahlusiak.freebloks	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-073] de.saschahlusiak.freebloks — compatibility report
+98	per-app	org.secuso.privacyfriendlymemory	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-074] org.secuso.privacyfriendlymemory — compatibility report
+99	per-app	paper.loop	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-075] paper.loop — compatibility report
+100	per-app	dev.serwin.AnarchRE	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-076] dev.serwin.AnarchRE — compatibility report
+101	per-app	com.dozingcatsoftware.mouse_pounce	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-077] com.dozingcatsoftware.mouse_pounce — compatibility report
+102	per-app	com.sidhant.shikaku	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-078] com.sidhant.shikaku — compatibility report
+103	per-app	eve.game.tracker	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-079] eve.game.tracker — compatibility report
+104	per-app	com.sanskritbasics	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-080] com.sanskritbasics — compatibility report
+105	per-app	eu.veldsoft.vitosha.blackjack	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-081] eu.veldsoft.vitosha.blackjack — compatibility report
+106	per-app	com.mostafa.brickblast	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-082] com.mostafa.brickblast — compatibility report
+107	per-app	com.fr.laboussole.track	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-083] com.fr.laboussole.track — compatibility report
+108	per-app	eu.mokrzycki.learndigits	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-084] eu.mokrzycki.learndigits — compatibility report
+109	per-app	com.game.asteroids_revenge	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-085] com.game.asteroids_revenge — compatibility report
+110	per-app	paper.loop2	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-086] paper.loop2 — compatibility report
+111	per-app	org.pgnapps.pk2	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-087] org.pgnapps.pk2 — compatibility report
+112	per-app	org.secuso.privacyfriendlydame	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-088] org.secuso.privacyfriendlydame — compatibility report
+113	per-app	com.itsfrz.tictactoe	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-089] com.itsfrz.tictactoe — compatibility report
+114	per-app	nodomain.playmaker	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-090] nodomain.playmaker — compatibility report
+115	per-app	com.chenyifaer.fafarunner	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-091] com.chenyifaer.fafarunner — compatibility report
+116	per-app	org.secuso.privacyfriendlysolitaire	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-092] org.secuso.privacyfriendlysolitaire — compatibility report
+117	per-app	com.movietrivia.filmfacts	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-093] com.movietrivia.filmfacts — compatibility report
+118	per-app	com.attenomy.janken	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-094] com.attenomy.janken — compatibility report
+119	per-app	com.sidhant.nonogram	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-095] com.sidhant.nonogram — compatibility report
+120	per-app	garden.lina.oblique_strategies	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-096] garden.lina.oblique_strategies — compatibility report
+122	per-app	com.sidhant.triplematch	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-098] com.sidhant.triplematch — compatibility report
+123	per-app	net.sourceforge.solitaire_cg	N	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-099] net.sourceforge.solitaire_cg — compatibility report
+124	per-app	eu.veldsoft.tuty.fruty.slot	Y	state-not-loaded	N	PENDING	compatibility;game;open-source;fdroid;state-not-loaded;not-tested	[GAME-100] eu.veldsoft.tuty.fruty.slot — compatibility report
+125	per-app	com.hfut.schedule	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-001] com.hfut.schedule — compatibility report
+126	per-app	foehnix.widget	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-002] foehnix.widget — compatibility report
+127	per-app	de.seemoo.at_tracking_detection	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-003] de.seemoo.at_tracking_detection — compatibility report
+128	per-app	org.nitri.opentopo	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-004] org.nitri.opentopo — compatibility report
+129	per-app	com.newsblur	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-005] com.newsblur — compatibility report
+130	per-app	de.taz.android.app.free	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-006] de.taz.android.app.free — compatibility report
+131	per-app	com.bupkis.tirailleur	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-007] com.bupkis.tirailleur — compatibility report
+132	per-app	io.github.aoc_normal	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-008] io.github.aoc_normal — compatibility report
+133	per-app	fr.shiningcat.binclockwidget	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-009] fr.shiningcat.binclockwidget — compatibility report
+134	per-app	net.diffengine.romandigitalclock	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-010] net.diffengine.romandigitalclock — compatibility report
+135	per-app	eu.weblibre.gecko	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-011] eu.weblibre.gecko — compatibility report
+136	per-app	com.jherkenhoff.qalculate	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-012] com.jherkenhoff.qalculate — compatibility report
+137	per-app	site.leos.apps.lespas	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-013] site.leos.apps.lespas — compatibility report
+138	per-app	me.river.nightbell	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-014] me.river.nightbell — compatibility report
+139	per-app	com.madlonkay.orgro	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-015] com.madlonkay.orgro — compatibility report
+140	per-app	org.forkgram.classic	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-016] org.forkgram.classic — compatibility report
+141	per-app	com.kompact	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-017] com.kompact — compatibility report
+142	per-app	com.ma.tehro	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-018] com.ma.tehro — compatibility report
+143	per-app	net.bible.android.activity	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-019] net.bible.android.activity — compatibility report
+144	per-app	net.osmand.plus	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-020] net.osmand.plus — compatibility report
+145	per-app	com.tutpro.baresip.plus	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-021] com.tutpro.baresip.plus — compatibility report
+146	per-app	it.fast4x.riplay	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-022] it.fast4x.riplay — compatibility report
+147	per-app	org.stingle.photos	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-023] org.stingle.photos — compatibility report
+148	per-app	com.forrestguice.suntimeswidget	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-024] com.forrestguice.suntimeswidget — compatibility report
+149	per-app	com.vayunmathur.clock	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-025] com.vayunmathur.clock — compatibility report
+150	per-app	com.luc4n3x.levyra	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-026] com.luc4n3x.levyra — compatibility report
+151	per-app	com.firebirdberlin.nightdream.noGms	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-027] com.firebirdberlin.nightdream.noGms — compatibility report
+152	per-app	com.vagujhelyigergely.calculatorm3	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-028] com.vagujhelyigergely.calculatorm3 — compatibility report
+153	per-app	com.hegocre.nextcloudpasswords	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-029] com.hegocre.nextcloudpasswords — compatibility report
+154	per-app	com.chmouel.liseur	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-030] com.chmouel.liseur — compatibility report
+155	per-app	protectedwp.safespace	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-031] protectedwp.safespace — compatibility report
+156	per-app	dev.gpxit.app	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-032] dev.gpxit.app — compatibility report
+157	per-app	com.srkovnar.legacyphotoframe	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-033] com.srkovnar.legacyphotoframe — compatibility report
+158	per-app	com.nfcarchiver.nfc_archiver	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-034] com.nfcarchiver.nfc_archiver — compatibility report
+159	per-app	org.ojrandom.paiesque	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-035] org.ojrandom.paiesque — compatibility report
+160	per-app	com.greenart7c3.nostrsigner	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-036] com.greenart7c3.nostrsigner — compatibility report
+161	per-app	com.divinelink.scenepeek	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-037] com.divinelink.scenepeek — compatibility report
+162	per-app	app.fedilab.castlab	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-038] app.fedilab.castlab — compatibility report
+163	per-app	de.schliweb.makeacopy	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-039] de.schliweb.makeacopy — compatibility report
+164	per-app	fr.corenting.convertisseureurofranc	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-040] fr.corenting.convertisseureurofranc — compatibility report
+165	per-app	io.paperterm.app	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-041] io.paperterm.app — compatibility report
+167	per-app	com.kolakek.pimiwidget	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-043] com.kolakek.pimiwidget — compatibility report
+168	per-app	is.xyz.mpv	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-044] is.xyz.mpv — compatibility report
+169	per-app	orinasa.njarasoa.maripanatokana	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-045] orinasa.njarasoa.maripanatokana — compatibility report
+170	per-app	tibarj.tranquilstopwatch	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-046] tibarj.tranquilstopwatch — compatibility report
+171	per-app	com.davidtakac.bura	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-047] com.davidtakac.bura — compatibility report
+172	per-app	m.co.rh.id.a_news_provider	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-048] m.co.rh.id.a_news_provider — compatibility report
+173	per-app	de.quaddyservices.dynamicnightlight	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-049] de.quaddyservices.dynamicnightlight — compatibility report
+174	per-app	com.ominous.quickweather	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-050] com.ominous.quickweather — compatibility report
+175	per-app	cn.rbc.termuc	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-051] cn.rbc.termuc — compatibility report
+176	per-app	com.kaii.photos	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-052] com.kaii.photos — compatibility report
+177	per-app	com.co3	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-053] com.co3 — compatibility report
+178	per-app	com.crome.forecastpoint	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-054] com.crome.forecastpoint — compatibility report
+179	per-app	com.metromusic	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-055] com.metromusic — compatibility report
+180	per-app	com.bbzone.isitprime	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-056] com.bbzone.isitprime — compatibility report
+181	per-app	com.vsmartcard.acardemulator	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-057] com.vsmartcard.acardemulator — compatibility report
+182	per-app	com.iris.gallery	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-058] com.iris.gallery — compatibility report
+183	per-app	com.adeeteya.digital_calculator	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-059] com.adeeteya.digital_calculator — compatibility report
+184	per-app	lab.rreedd.oriens	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-060] lab.rreedd.oriens — compatibility report
+185	per-app	org.godotengine.editor.v4	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-061] org.godotengine.editor.v4 — compatibility report
+186	per-app	foss.cnugteren.nlweer	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-062] foss.cnugteren.nlweer — compatibility report
+187	per-app	com.axiel7.anihyou	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-063] com.axiel7.anihyou — compatibility report
+188	per-app	joshuatee.wx	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-064] joshuatee.wx — compatibility report
+189	per-app	net.aliasvault.app	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-065] net.aliasvault.app — compatibility report
+190	per-app	uk.org.boddie.android.weatherforecast	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-066] uk.org.boddie.android.weatherforecast — compatibility report
+191	per-app	de.phasenrauscher.bicyweather	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-067] de.phasenrauscher.bicyweather — compatibility report
+192	per-app	com.fixupxer	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-068] com.fixupxer — compatibility report
+193	per-app	com.github.vauvenal5.yaga	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-069] com.github.vauvenal5.yaga — compatibility report
+194	per-app	fr.ign.geoportail	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-070] fr.ign.geoportail — compatibility report
+195	per-app	com.kylecorry.trail_sense	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-071] com.kylecorry.trail_sense — compatibility report
+196	per-app	de.kaffeemitkoffein.tinyweatherforecastgermany	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-072] de.kaffeemitkoffein.tinyweatherforecastgermany — compatibility report
+197	per-app	dudeofx.eval	Y	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-073] dudeofx.eval — compatibility report
+198	per-app	it.rignanese.leo.slimfacebook	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-074] it.rignanese.leo.slimfacebook — compatibility report
+199	per-app	org.fossify.gallery	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-075] org.fossify.gallery — compatibility report
+200	per-app	deckers.thibault.aves.libre	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-076] deckers.thibault.aves.libre — compatibility report
+201	per-app	io.github.lordofpolls.shellwave	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-077] io.github.lordofpolls.shellwave — compatibility report
+202	per-app	org.fossify.clock	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-078] org.fossify.clock — compatibility report
+203	per-app	com.justdeax.composeStopwatch	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-079] com.justdeax.composeStopwatch — compatibility report
+204	per-app	yetzio.yetcalc	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-080] yetzio.yetcalc — compatibility report
+205	per-app	trailence.org	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-081] trailence.org — compatibility report
+206	per-app	com.barghest.mesh	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-082] com.barghest.mesh — compatibility report
+207	per-app	dev.otaj.zelp	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-083] dev.otaj.zelp — compatibility report
+208	per-app	takagi.ru.monica.fdroid	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-084] takagi.ru.monica.fdroid — compatibility report
+209	per-app	org.fossify.math	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-085] org.fossify.math — compatibility report
+210	per-app	com.vicolo.chrono	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-086] com.vicolo.chrono — compatibility report
+211	per-app	com.freetime.geoweather	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-087] com.freetime.geoweather — compatibility report
+212	per-app	com.foxdebug.acode	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-088] com.foxdebug.acode — compatibility report
+213	per-app	me.timeto.app	N	state-nonblank	Y	OBSERVED	compatibility;app;open-source;fdroid;state-nonblank;executed	[APP-089] me.timeto.app — compatibility report
+214	per-app	org.sherpr.app	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-090] org.sherpr.app — compatibility report
+215	per-app	org.y20k.transistor	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-091] org.y20k.transistor — compatibility report
+216	per-app	org.asafonov.weather	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-092] org.asafonov.weather — compatibility report
+217	per-app	com.agatamessina.webinspector	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-093] com.agatamessina.webinspector — compatibility report
+218	per-app	com.fpf.smartscan	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-094] com.fpf.smartscan — compatibility report
+219	per-app	org.billthefarmer.buses	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-095] org.billthefarmer.buses — compatibility report
+220	per-app	dev.cipher.notes	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-096] dev.cipher.notes — compatibility report
+221	per-app	io.github.x0b.rcx	N	state-not-loaded	N	BLOCKED	blocked;compatibility;app;open-source;fdroid;state-not-loaded	[APP-097] io.github.x0b.rcx — compatibility report
+222	per-app	com.google.android.stardroid	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-098] com.google.android.stardroid — compatibility report
+223	per-app	duress.ultimate	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-099] duress.ultimate — compatibility report
+224	per-app	com.artifex.mupdf.viewer.app	N	state-not-loaded	N	PENDING	compatibility;app;open-source;fdroid;state-not-loaded;not-tested	[APP-100] com.artifex.mupdf.viewer.app — compatibility report
+225	per-app	se.tube42.p9.android	N	state-nonblank	Y	OBSERVED	compatibility;mandatory;open-source;fdroid;state-nonblank;executed	[MAND-001] se.tube42.p9.android — compatibility report
+226	per-app	io.timelimit.android.aosp.direct	N	state-nonblank	Y	OBSERVED	compatibility;mandatory;open-source;fdroid;state-nonblank;executed	[MAND-002] io.timelimit.android.aosp.direct — compatibility report
+227	per-app		N		N	PENDING	regression;compatibility;fail-oncreate;root-cause;common-runtime	[F-NEW-156] onCreate APP-BOUNDARY-UNWIND family — root cause (common runtime)
+228	per-app		N		N	PENDING	compatibility;fail-oncreate;root-cause;common-runtime;graphics	[F-NEW-157] libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier) — 
+229	per-app		N		N	PENDING	compatibility;root-cause;common-runtime;image-decoded-vs-rendered-gap;graphics	[VF-NEW-003] IMAGE_DECODED_VS_RENDERED_GAP chain — root cause (common runtime, visual)
+230	work		N		N	PENDING		[F-NEW-161] Compose UI runtime internals — deferred-exception family (S84 NEW-50 fan-out, 
+231	work		N		N	PENDING		[F-NEW-162] androidx savedstate generated-adapter family — deferred CNFE unwind (S84, 12-t
+232	work		N		N	PENDING		[S84] Canonical achievements + 50 NEW titles + README landing page — wave report
+233	work		N		N	PENDING	s97;s98;wave;micro-gap	[S97/S98] MICRO-GAP SWEEP master wave — 100 probable-bug tickets + games/demo wave (issue-
+271	work		N		N	PENDING	bug;s97;micro-gap	[MG-058] Typeface inheritance — text/font (PARTIAL)
+272	work		N		N	PENDING	bug;s97;micro-gap	[MG-060] letterSpacing — text/font (PARTIAL)
+278	work		N		N	PENDING	bug;s97;micro-gap	[MG-072] tab handling — text/font (PARTIAL)
+281	work		N		N	PENDING	bug;s97;micro-gap	[MG-076] textColor alpha — text/font (PARTIAL)
+282	work		N		N	PENDING	bug;s97;micro-gap	[MG-077] Spannable basic spans — text/font (PARTIAL)
+283	work		N		N	PENDING	bug;s97;micro-gap	[MG-078] foreground color span — text/font (PARTIAL)
+284	work		N		N	PENDING	bug;s97;micro-gap	[MG-079] style span — text/font (PARTIAL)
+288	work		N		N	PENDING	bug;s97;micro-gap	[MG-116] invalidate propagation — layout/geometry (PARTIAL)
+290	work		N		N	PENDING	bug;s97;micro-gap	[MG-001] Drawable XML parsing edge cases — resource/asset (PARTIAL)
+295	work		N		N	PENDING	bug;s97;micro-gap	[MG-006] Vector path strokeLineCap — resource/asset (PARTIAL)
+296	work		N		N	PENDING	bug;s97;micro-gap	[MG-007] Vector path strokeLineJoin — resource/asset (PARTIAL)
+297	work		N		N	PENDING	bug;s97;micro-gap	[MG-008] Vector path trimPath — resource/asset (PARTIAL)
+304	work		N		N	PENDING	bug;s97;micro-gap	[MG-015] Drawable alpha inheritance — resource/asset (PARTIAL)
+311	work		N		N	PENDING	bug;s97;micro-gap	[MG-024] NinePatch basic padding — resource/asset (PARTIAL)
+312	work		N		N	PENDING	bug;s97;micro-gap	[MG-025] NinePatch stretch region — resource/asset (PARTIAL)
+320	work		N		N	PENDING	bug;s97;micro-gap	[MG-147] multiple pointer IDs — input (PARTIAL)
+322	work		N		N	PENDING	bug;s97;micro-gap	[MG-150] translated view hit testing — input (PARTIAL)
+324	work		N		N	PENDING	bug;s97;micro-gap	[MG-228] wrong-order frame detection — animation (PARTIAL)
+325	work		N		N	PENDING	bug;s97;micro-gap	[MG-229] disappearing-object detection — animation (PARTIAL)
+326	work		N		N	PENDING	bug;s97;micro-gap	[MG-298] timezone — system/edge (PARTIAL)
+327	work		N		N	PENDING	bug;s97;micro-gap	[MG-299] locale — system/edge (PARTIAL)
+328	work		N		N	PENDING	bug;s97;micro-gap	[MG-310] class initialization ordering — system/edge (PARTIAL)
+329	work		N		N	PENDING	bug;s97;micro-gap	[MG-169] saved instance state — lifecycle (PARTIAL)
+330	work		N		N	PENDING	bug;s97;micro-gap	[MG-170] Bundle persistence — lifecycle (PARTIAL)
+339	work		N		N	PENDING	s98;games	[GAMES-6] Autonomous Mini Tetris play
+343	per-app		N		N	PENDING	bug;compatibility;root-cause;common-runtime;graphics;s99	[F-NEW-166] androidx ConstraintLayout core interpreter frontier — ConstraintWidgetContaine
+344	per-app		N		N	PENDING	bug;compatibility;common-runtime;graphics;s99	[F-NEW-167] blank-render L0 family — rc=0 games that never draw (klondike/tripeaks/memory/
+346	per-app		N		N	PENDING	bug;compatibility;common-runtime;s99	[F-NEW-169] SpeedDialView (leinardi) library frontier — babydots cascade: FAB inflate + Fa
+348	work		N		N	PENDING		[F-NEW-170] appcompat decor-toolbar construction family (mykanji, post theme-gate fix)
+351	work		N		N	PENDING		[S102-C] mentalmath: Hilt DI 'ApplicationContextModule must be set' ISE in DaggerMentalMat
+353	per-app		N		N	PENDING	evidence;rendering;compatibility;game;root-cause	[HTML5-APPS] WebView: white screen → REAL JS execution — Breakout 71 runs its game loop (#
+354	work		N		N	PENDING	evidence;gameplay;autonomous-gameplay;root-cause;games	[GAMES] Native game family — gameplay GIFs, 5 engine-bug laws, verified 3-run titles + the
+355	per-app		N		N	PENDING	evidence;p1;compatibility;app;root-cause	[TELEGRAM] Forkgram 12.10.8.0 — errors 32 → 0, first fully clean run (rc=0, 0 uncaught), r
+356	work		N		N	PENDING		[TELEGRAM] Official Telegram S117→S119 — the complete first-person journey changelog: firs
+357	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 1/7 — master index: every claim, the honest white-screen sta
+358	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 2/7 — wave 1: official Telegram from first-ever run (5 error
+359	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 3/7 — wave 2: the G21 autopsy and seven AOSP measure laws — 
+360	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 4/7 — the wave-3 record with attribution + the fresh-run pro
+361	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 5/7 — the tools: full source of all six reproduction scripts
+362	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 6/7 — the complete engine diff of the session (every law cha
+363	work		N		N	PENDING		[TELEGRAM] Knowledge transfer 7/7 — the 190-goal roadmap, the regression-gate method, and 
+364	work		N		N	PENDING	enhancement	MASTER EXECUTION REQUEST — Upstream Reuse + Complete Compatibility Campaign
+365	work		N		N	PENDING		MASTER FORENSIC VERIFICATION — ALL PRIOR REQUESTS / CLAIMED COMPLETIONS / MISSING EVIDENCE
+366	work		N		N	PENDING		DIFFERENTIAL EXECUTION — Why 4 apps work and 5 installed apps stay white
+367	work		N		N	PENDING		CLOSED ISSUE FORENSIC PROGRAM — BATCH 1/3 — 50 HIGH/HARD CASES
+368	work		N		N	PENDING		CLOSED ISSUE FORENSIC PROGRAM — BATCH 2/3 — 50 MEDIUM CASES
+369	work		N		N	PENDING		CLOSED ISSUE FORENSIC PROGRAM — BATCH 3/3 — 8 FINAL CASES
+370	work		N		N	PENDING		INSTALL-ENVIRONMENT CAPABILITY GATE — Complete post-install Android inspection surface for
+371	work		N		N	PENDING		MASTER CONTINUATION — Independent verification #364–#369 + full execution #370
+372	work		N		N	PENDING		SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT — 330-point black/white/partial/load audit
+373	work		N		N	PENDING		ENV-PREREQUISITES — Android API / CPU / ABI / hardware / software compatibility matrix
+374	work		N		N	PENDING		BASE-ANDROID — Complete Android Platform Contract Foundation Audit
+375	work		N		N	PENDING		BASE + CAMPAIGN COMPLETION — Execute all prior/next missing foundation work and close ever
+376	work		N		N	PENDING		EXTERNAL ROOT CENSUS — Deep multilingual root discovery and MiniAndroid cross-match
+377	work		N		N	PENDING		CONT-6 — External Root KB Forensic Audit + Runtime Fan-out Validation
+378	work		N		N	PENDING		CONT-7 — CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMPOSE/R8 CLASS-IDENTIT
+379	work		N		N	PENDING		CONT-9 / WAVE 5 — Compose Continuation Root + External KB Runtime Fan-out
+380	work		N		N	PENDING		CONT-11 / WAVE 7 — Kotlin stdlib semantic backend investigation + Compose draw frontier
+381	work		N		N	PENDING	investigation	Unverified Claims — Complete Runtime Evidence Audit
+382	work		N		N	PENDING	investigation	A1–A104 Knowledge Transfer — Primary Coder Audit, Exact Fix Locations, and Minimal Tests
+383	work		N		N	PENDING		BASE-FIRST: Establish a Generic Graphical Runtime Baseline
+384	work		N		N	PENDING		ARCH-001: Execution Family Matrix for Generic App/Game Compatibility
+385	work		N		N	PENDING	experiment;measurement-only	[CONT-24 EXPERIMENT — measurement only] Skeleton-Light: one 490-line generic skeleton pain
+386	work		N		N	PENDING		REPO-HYGIENE — Evidence-Driven Repository Cleanup, Artifact Governance, and Canonical Stru

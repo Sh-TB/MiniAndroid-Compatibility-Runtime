@@ -61539,5 +61539,173 @@
   ],
   "own_class_count": 0,
   "rescan": "OK"
+ },
+ "com.dozingcatsoftware.bouncy": {
+  "kind": "game",
+  "why": "user-mandated colorful 2D physics game (2026-10-15); COMPLETE menu face, x3 byte-identical dd0c14257fa1f2af",
+  "version": "1.16.0",
+  "vc": 43,
+  "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+  "size": 3233743,
+  "url": "https://f-droid.org/repo/com.dozingcatsoftware.bouncy_43.apk",
+  "upstream": "https://github.com/dozingcat/Bouncy",
+  "dexes": 2,
+  "top_classes": [
+   [
+    "Ljava/io/Serializable;",
+    2
+   ],
+   [
+    "Ljava/lang/ArrayIndexOutOfBoundsException;",
+    2
+   ],
+   [
+    "Ljava/lang/Boolean;",
+    2
+   ],
+   [
+    "Ljava/lang/Class;",
+    2
+   ],
+   [
+    "Ljava/lang/Comparable;",
+    2
+   ],
+   [
+    "Ljava/lang/Double;",
+    2
+   ],
+   [
+    "Ljava/lang/Enum;",
+    2
+   ],
+   [
+    "Ljava/lang/Exception;",
+    2
+   ]
+  ],
+  "libs": {
+   "libgdx": 1,
+   "glsl-gles": 1,
+   "surfaceview": 1,
+   "desugar-j$": 1
+  }
+ },
+ "org.secuso.privacyfriendlymemory": {
+  "kind": "game",
+  "why": "user-mandated colorful 2D memory game (2026-10-15); AppCompat createSubDecor ISE frontier (F-NEW-366)",
+  "version": "1.1.3-google",
+  "vc": 100,
+  "sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6",
+  "size": 8638470,
+  "url": "https://f-droid.org/repo/org.secuso.privacyfriendlymemory_100.apk",
+  "upstream": "https://github.com/SecUSo/privacy-friendly-memory-game",
+  "dexes": 1,
+  "top_classes": [
+   [
+    "Landroid/accessibilityservice/AccessibilityServiceInfo;",
+    1
+   ],
+   [
+    "Landroid/accounts/AccountManager;",
+    1
+   ],
+   [
+    "Landroid/animation/Animator$AnimatorListener;",
+    1
+   ],
+   [
+    "Landroid/animation/Animator$AnimatorPauseListener;",
+    1
+   ],
+   [
+    "Landroid/animation/Animator;",
+    1
+   ],
+   [
+    "Landroid/animation/AnimatorInflater;",
+    1
+   ],
+   [
+    "Landroid/animation/AnimatorListenerAdapter;",
+    1
+   ],
+   [
+    "Landroid/animation/AnimatorSet$Builder;",
+    1
+   ]
+  ],
+  "libs": {
+   "kotlin": 1,
+   "coroutines": 1,
+   "room": 1,
+   "sqlite": 1,
+   "material": 1,
+   "appcompat": 1,
+   "constraint": 1,
+   "recyclerview": 1,
+   "viewpager": 1,
+   "fragment": 1,
+   "lifecycle": 1,
+   "workmanager": 1,
+   "webkit": 1,
+   "kotlin-reflection": 1
+  }
+ },
+ "stack.tower3d": {
+  "kind": "game",
+  "why": "user-mandated very-small 3D game (2026-10-15, 4.5MB); libGDX native-load prerequisite (F-NEW-367)",
+  "version": "1.0.0",
+  "vc": 1,
+  "sha256": "ba5b0a48d74e33483d9dcb04e2e22ec745ee8e9266188bf9c59f2d2b2883c233",
+  "size": 4461839,
+  "url": "https://f-droid.org/repo/stack.tower3d_1.apk",
+  "upstream": "https://github.com/freshollie/stacktower3d",
+  "dexes": 1,
+  "top_classes": [
+   [
+    "Landroid/accessibilityservice/AccessibilityServiceInfo;",
+    1
+   ],
+   [
+    "Landroid/accounts/AccountManager;",
+    1
+   ],
+   [
+    "Landroid/animation/Animator$AnimatorListener;",
+    1
+   ],
+   [
+    "Landroid/animation/Animator;",
+    1
+   ],
+   [
+    "Landroid/animation/AnimatorListenerAdapter;",
+    1
+   ],
+   [
+    "Landroid/animation/TimeInterpolator;",
+    1
+   ],
+   [
+    "Landroid/animation/ValueAnimator$AnimatorUpdateListener;",
+    1
+   ],
+   [
+    "Landroid/animation/ValueAnimator;",
+    1
+   ]
+  ],
+  "libs": {
+   "libgdx": 1,
+   "kotlin": 1,
+   "coroutines": 1,
+   "sqlite": 1,
+   "fragment": 1,
+   "lifecycle": 1,
+   "glsl-gles": 1,
+   "webkit": 1,
+   "kotlin-reflection": 1
+  }
  }
 }

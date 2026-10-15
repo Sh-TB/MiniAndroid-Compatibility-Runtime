@@ -5983,11 +5983,31 @@
    "evidence": "evidence/s57/s57_wave_evidence.json",
    "probe": "gate battery at the S57 binary: anchors 5/5 x3 MATCH, negatives 19/19, skill 13/13, goldens ALL PASS (independent wave, binary 62f651ba6accded3)",
    "verified_current": "S57 independently re-derived the READ-form law (matching F-NEW-268d) and the ROOT-059 route-domain gate (matching F-NEW-270) before the merge; the write-form law is this entry's novel complement (merged engine carries F-268d/270 + this pair)"
+  },
+  {
+   "id": "F-NEW-366",
+   "status": "ROOT-CAUSED-PARTIAL",
+   "title": "AppCompat createSubDecor theme-guard ISE: the real androidx DEX (AppCompatDelegateImpl.createSubDecor pc=426) throws IllegalStateException 'You need to use a Theme.AppCompat theme (or descendant) with this activity.' when the resolved activity-theme bag lacks windowActionBar — measured on org.secuso.privacyfriendlymemory_100 (SplashActivity.onCreate APP-BOUNDARY; uniform bg after guard, no UI). Same root family as F-NEW-364 (notes_secuso theme-bag attr availability): the runtime's theme attr resolution cannot see the AppCompatTheme styleable attrs (windowActionBar etc.) in the effective theme bag. Named fix lever: consult the appcompat library's own styleable bag (merged APK res) on the resolve_theme_attr miss-path, then re-run memory + notes_secuso appcompat gates.",
+   "priority": "P1",
+   "layer": "framework-res/theme",
+   "evidence": "run/s59/memory_60s.log (THROWABLE-MSG + EXCEPTION no-handler lines); run/s59/memory_60s/report.md; run/s59/memory_15s/; screenshot sha16 uniform bg [48,48,48] 60s / white 15s",
+   "probe": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk",
+   "verified_current": true
+  },
+  {
+   "id": "F-NEW-367",
+   "status": "BLOCKED",
+   "title": "Native shared-library loading prerequisite: libGDX apps throw SharedLibraryLoadRuntimeException (SharedLibraryLoader.loadFile -> System.load of extracted .so) and die at the launcher onCreate before any GL init — measured on stack.tower3d_1 (AndroidLauncher.onCreate APP-BOUNDARY) and com.dozingcatsoftware.bouncy_43 (Box2D <clinit>; app catches and falls back, menu still COMPLETE). APK ships libgdx.so for all 4 ABIs (incl. x86_64) so this is NOT an ABI mismatch: the runtime has no native-library bridge. BLOCKED by design decision: implement a native-lib load bridge (full JNI parity is out of scope) OR document native-dependent games as honest runtime prerequisite. Bouncy proves graceful-degradation apps still reach real content without natives.",
+   "priority": "P2",
+   "layer": "runtime/native-bridge",
+   "evidence": "run/s59/stacktower3d_60s/report.md; run/s59/bouncy_15s/report.md (caught path); unzip -l shows lib/{arm64-v8a,armeabi-v7a,x86,x86_64}/libgdx.so in both APKs; stacktower3d screenshot uniform white 15s/60s",
+   "probe": "upload/canonical_apks/stack.tower3d_1.apk",
+   "verified_current": true
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
  "total": 658,
- "count": 669,
+ "count": 674,
  "meta": {
   "last_update": "CONT-56 session 2026-10-12: the framework LinearLayout.onMeasure SUPER law (F-NEW-328) — the lp-aware child-spec source (lp_width/lp_height authoritative over the legacy mirrors) + the AOSP orientation self-size law (sum/max, AT_MOST clamps) at BOTH S109 sites. Probe fnew328 PRE FAIL x1 (self=1080x1920 child=1080x1920) -> POST 4/0 x3. Solitaire: AppBarLayout 1080x1920 -> 1080x105; visible frame unchanged ba50a4d2. Zero-drift 15 anchors x3 (45/45) + probe battery == records. Registry 638->639.",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
@@ -6020,7 +6040,7 @@
   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1,
   "ROOT-CAUSED-PARTIAL": 1
  },
- "total_roots": 671,
+ "total_roots": 674,
  "generated": "2026-10-13 18:25:26",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
