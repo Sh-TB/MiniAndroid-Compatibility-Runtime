@@ -1,0 +1,52 @@
+{
+  "wave": "CONT-68-REVAL",
+  "date": "2026-10-15",
+  "purpose": "Closeout revalidation of the already-pushed CONT-68 wave (commits fc54e55b + fbdfc54f) at HEAD fbdfc54f, before posting the #98/#375 closeout comments. Every gate re-run from scratch after the workspace was reverted to an older checkpoint (no binary, no sandboxes).",
+  "head": "fbdfc54f57edbfea7dc25ed85c5b2edae35acef6 (== origin/main at reval start)",
+  "binary": {
+    "rebuild": "one foreground chunk (timeout 550 make -j2, 71 TUs + link) from clean build dir",
+    "sha16": "a20998cf4d8a19cd",
+    "recorded_after_binary": "a20998cf4d8a19cd",
+    "verdict": "BYTE-IDENTICAL to the recorded CONT-68 acceptance binary"
+  },
+  "apk_identity": {
+    "memory": {"path": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk", "sha16": "82f83d9ea572240a", "bytes": 8638470},
+    "notes": {"path": "upload/notes_secuso_105.apk", "sha16": "71e874f45fa4655f", "bytes": 8483558}
+  },
+  "app_revalidation": {
+    "memory": {
+      "command": "miniandroid/build/miniandroid run upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk --width 1080 --height 1920 --frames 5 --max-seconds 60 -o run/s60/reval/memory_r<N>",
+      "warm_runs": {"count": 5, "screenshot_sha16": "c559b630dd8f0f0f x5 byte-identical", "nonbg_pct": 19.1, "buckets": 236, "matches_recorded": true, "theme_ise": 0},
+      "cold_first_launch": {"screenshot_sha16": "31ddd4d5b8e6d18e", "deterministic": "reproduced twice (r1 fresh workspace; r7 after rm -rf of the data root)", "cause": "F-NEW-369 (registered CLASSIFIED): ResIdAdapter.getResourceName LinkedList.<init> REC-MISS NPE on the first-run path only; 0 theme ISE — not a theme-family defect", "sandbox": "miniandroid/runtime/data/data/data/org.secuso.privacyfriendlymemory persists across runs; the recorded acceptance x3 was taken on the S59-warm sandbox"}
+    },
+    "notes": {
+      "command": "miniandroid/build/miniandroid run upload/notes_secuso_105.apk --width 1080 --height 1920 --frames 5 --max-seconds 60 -o run/s60/reval/notes_r<N>",
+      "runs": {"count": 3, "screenshot_sha16": "d0a409043ffc83a7 x3 byte-identical", "nonbg_pct": 2.8, "buckets": 210, "matches_recorded": true, "theme_ise": 0, "cold_sandbox": "first run was already cold (no notes sandbox existed) and still produced the recorded face — no cold/warm split for notes"}
+    }
+  },
+  "gates": {
+    "wall": {"rows": 12, "runs_per_row": 3, "verdict": "36/36 MATCH", "runner": "scripts/cont68_reval_gate.sh", "rows": {"csw": "d3c26b73ee21e571", "dooz": "31ddd4d5b8e6d18e", "flappycow": "13cf47464d9787f4", "g2048": "59ca1526611c4622", "gmdice": "3891679dff449331", "microtimer": "bbd350b6c14fbd52", "opencalc": "f25b754c4565c38b", "simplecalc": "2ac5d8d0cbf9552a", "tanana": "afe0bd8dd4d09ca6", "tttdeluxe": "af6094295ecb50e3", "unote": "90a67cc1ddda57b7", "dooz180": "c94da5a928ea213b"}},
+    "gate_a_probe": {"lib_sha16": "ad413625925ed8e5 (byte-identical to recorded)", "result": "98 PASS / 1 INFO / 0 FAIL", "apk_sha16": "9295f376bf89f388 (container rezip; lib + results identical)"},
+    "negatives": "19/19 PASS (scripts/s41_gatea_negative.py)",
+    "reinstall": "8/8 PASS (scripts/s41_gatea_reinstall.py — covers and exceeds the recorded 5/5 identity set)",
+    "goldens": "4/4 PASS (scripts/user_golden_gate.py: 2048/snakedeluxe/minicraft REAL_APP_CONTENT + helloworld canonical sha)",
+    "skill_selftest": "13/13 PASS (scripts/skill_selftest.py; gate_a_probe rebuilt first — OP-1 requires it)",
+    "registry_validator": "VALIDATOR PASS (scripts/s82_validator.py) before and after F-NEW-369"
+  },
+  "controls_directive_named": {
+    "bmi": {"apk": "upload/cont11_apks/bmi_402.apk", "sha16_x3": "f45d6c6603e93fc5", "rc": 0},
+    "bouncy": {"apk": "upload/canonical_apks/bouncy.apk", "sha16_x3": "dd0c14257fa1f2af (== S59 recorded menu face)", "rc": 1},
+    "klondike": {"apk": "upload/klondike_veldsoft_3.apk", "default_frames_x3": "31ddd4d5b8e6d18e (recorded honest empty face; splash 5000ms budget artifact)", "frames20_x3": "a77038da303ed1b4 (== recorded REAL menu face)"},
+    "dooz_opencalc_simplecalc_tanana": "already inside the 12-row wall x3"
+  },
+  "registry_delta": {
+    "appended": "F-NEW-369 CLASSIFIED (memory cold-first-launch ResIdAdapter LinkedList REC-MISS NPE; warm launches byte-deterministic; not a theme defect)",
+    "total_roots": "675 -> 676",
+    "projection_sync": "canonical/root_cause_registry.json was 141 roots stale (535, 2026-10-03) — regenerated from the writable store (identity verified id-for-id by cont_m1_root_projection.py)"
+  },
+  "honest_notes": [
+    "The memory cold/warm split does not invalidate the CONT-68 acceptance (the theme guard passes for the correct semantic reason in BOTH faces; the cold face fails later, in app first-run init, for an unrelated named reason F-NEW-369).",
+    "rc=1 on memory/notes/opencalc/tanana/dooz rows is the recorded rc shape at this binary (in-flight honesty rows), unchanged from the CONT-68 records.",
+    "gate_a_probe.apk container sha differs from the recorded apk sha (zip metadata); the native lib sha and the 98/1/0 results file are the identity that matters and they match."
+  ]
+}
