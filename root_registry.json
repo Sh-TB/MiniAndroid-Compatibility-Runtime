@@ -6011,11 +6011,11 @@
   },
   {
    "id": "F-NEW-368",
-   "status": "CLASSIFIED",
+   "status": "PARTIAL",
    "priority": "P2",
    "layer": "dalvik/deferred-exception delivery",
-   "title": "Deferred synthesized exceptions do not deliver to the SAME-FRAME catch (cont70 decode COMPLETE): the miss was is_exception_subtype's builtin parent table — NoSuchMethodException (and the whole reflective family) was unwalkable, so the typed catch(Ljava/lang/Exception;) at CoordinatorLayout.getResolvedLayoutParams pc=67 (try [0x3c..0x52) CONFIRMED covering the throw pc via DEX try-table decode) never matched and the F106 took the deferred frame unwind. The delivery LAW itself is proven working: with the table entries added, the row reads 'deferred handler @0x53 type=Ljava/lang/Exception;' and the app's own catch runs (rows 42->2, mBehaviorResolved=true path). ACTIVATION BLOCKED by F-NEW-370: with in-frame delivery live, the DEX CoordinatorLayout.onMeasure completes and its MATCH_PARENT child measure answers the AppBar height (105px) -> zero-height ViewPager/rows -> memory face regresses to blank dark. Fix pair owed: subtype table + F-NEW-370; reverted for this wave (zero drift held).",
-   "evidence": "run/cont70/baseline/mem_f106.err (42 uncaught rows, pc=67); run/cont70/accept/mem_1.err (delivery proven: handler @0x53 type=Ljava/lang/Exception;, face 6da289aab14d2256 = the F-NEW-370 face); run/cont70/accept/v2_mem/screenshot.png (record face c559b630dd8f0f0f restored after revert); scripts/cont70_ant1_decode.py + cont70_ant1_decode2.py (DEX try-table decode)",
+   "title": "Deferred synthesized exceptions do not deliver to the SAME-FRAME catch — LAWS IMPLEMENTED (CONT-71, env-gated MINIANDROID_F368_LAW): the subtype-table extension (reflective + java.net + concurrent + android families, OpenJDK/AOSP documented parents) plus the in-frame delivery make the typed catch(Exception) at CoordinatorLayout.getResolvedLayoutParams pc=67 match (row 'deferred handler @0x53 type=Ljava/lang/Exception;'; the app's own 'Default behavior class null could not be instantiated' LOG line proves the app catch RAN). Activation status: F368-only -> memory blank 6da289aa (the completed onMeasure's children are unmeasured); F368+MCM pair -> memory face c559b630 == record (the full chain completes correctly) while opencalc diverges (F-NEW-374). Default binary keeps the law OFF pending the per-container trust lever.",
+   "evidence": "evidence/cont71/cont71_evidence.json; run/s71/activation_f368only (delivery row 'deferred handler @0x53 type=Exception' + the app's own 'Default behavior class null' LOG line = the app catch RAN; face 6da289aa = the honest Law-A-only activation status); run/s71/activation_full (pair active: memory face c559b630 == record, opencalc 3e73a5ad = the honest divergence)",
    "probe": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk",
    "verified_current": true
   },
@@ -6031,11 +6031,11 @@
   },
   {
    "id": "F-NEW-370",
-   "status": "CLASSIFIED",
+   "status": "PARTIAL",
    "priority": "P1",
    "layer": "dex/view-measure (CoordinatorLayout child spec law)",
-   "title": "CoordinatorLayout.onMeasure DEX-COMPLETION measure chain (exposed by the F-NEW-368 in-frame delivery, cont70): when the app's own catch handles the F106 NoSuchMethodException in-frame, the DEX CoordinatorLayout.onMeasure runs to COMPLETION (in the deferred era every F106 aborted it -> [DEX-MEASURE] FAILED(no write-back) -> the engine default measure law produced correct sizes). The completed DEX onMeasure measures its MATCH_PARENT child (LinearLayout) at the AppBarLayout height (105px, not 1920-105) -> RelativeLayout/ViewPager/rows collapse to 0 height -> memory renders a blank dark face (6da289aab14d2256; real face c559b630dd8f0f0f). The child measure-spec law inside the DEX-executed onMeasure (getChildMeasureSpec semantics for MATCH_PARENT under CoordinatorLayout) is the named lever; closing it un-blocks the F-NEW-368 subtype-table activation (the pair must land together).",
-   "evidence": "run/cont70/accept/mem_1.err ([EXP092-RENDER] Toolbar 0x147, ViewPager 1080x0, 'Easy' 0x0, 'New Game' 922x0); run/cont70/baseline/mem_f106.err ([DEX-MEASURE] ... FAILED(no write-back) rows = the deferred-era abort that masked this chain); screenshot hashes in both paths",
+   "title": "CoordinatorLayout.onMeasure DEX-COMPLETION measure chain — LAWS IMPLEMENTED (CONT-71, env-gated MINIANDROID_MCM_LAW) after full first-divergence decode vs the fetched androidx/AOSP sources: (1) ViewGroup.measureChildWithMargins had NO engine shadow — the child-negotiation call inside every real DEX container onMeasure silently no-op'd (children never measured); (2) View.resolveSizeAndState had NO engine shadow — the upstream answer law 'setMeasuredDimension(resolveSizeAndState(...))' answered 0 under EXACTLY specs (CoordinatorLayout 0x0). Both laws implemented (AOSP-verbatim math + F-NEW-328 LP-SOURCE + R-NEW-440 canonical child measure + ViewRootImpl spec-bounds gates); under the activated pair memory renders its record face. ACTIVATION BLOCKED by F-NEW-374 (opencalc SlidingUpPanelLayout incomplete-emulation divergence). Default OFF; the decode trail and the gated laws are the deliverable.",
+   "evidence": "evidence/cont71/cont71_evidence.json; run/s71/lawA_trace + run/s71/lawB_warm (CoordinatorLayout answers 0x0 -> 1080x1920 with the resolve law); docs/UPSTREAM_SOURCE_MINING.jsonl rows U-04..U-06 (androidx CoordinatorLayout.java onMeasure + ViewGroup.java measureChildWithMargins + View.java resolveSizeAndState fetched and cited); run/s71/gate2..gate6 decode trail",
    "probe": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk",
    "date": "2026-10-15"
   },
@@ -6057,18 +6057,27 @@
    "evidence": "run/cont70/accept/mem_tap6..9.err (HITPROBE walk decode); run/cont70/accept/mem_cyc1..3.err (target=453 + XML_CLICK x3); run/cont70/accept/notes_cyc1..3.err (target=980 x3, face b5a7a35d x3); wall re-run 36/36 MATCH x3 at binary f396fdd2126e9201",
    "date": "2026-10-16",
    "verified_current": true
+  },
+  {
+   "id": "F-NEW-374",
+   "status": "CLASSIFIED",
+   "priority": "P1",
+   "layer": "dex/view-measure (per-container DEX-measure trust)",
+   "title": "PER-CONTAINER DEX-MEASURE TRUST LAW (CONT-71 named lever): the F-NEW-368 delivery + the F-NEW-370 measure laws (negotiation measureChildWithMargins + answer resolveSizeAndState family) are IMPLEMENTED behind MINIANDROID_F368_LAW=1 / MINIANDROID_MCM_LAW=1 and proven on the memory app (CoordinatorLayout chain completes, face c559b630 == record under the activated pair), but the SAME activation deterministically diverges opencalculator v53 (3e73a5ad, collapsed): the app's SlidingUpPanelLayout DEX onMeasure is incompletely emulated (R-NEW-441 family) and its child-measure results feed wrong-but-in-bounds specs (EXACTLY(105) from the drag-view read-back) plus a garbage out-of-display spec EXACTLY(1073740479) (spec-bounds gates now decline the OOB shape; the in-bounds wrong-spec shape remains). Decode: the DEX-measured child sizes change the panel's internal offset/measure math -> the panel slides its content off-view. Lever: a per-container DEX-measure trust discipline (which containers' completed DEX onMeasure answers are authoritative vs which fall back to the native law) — e.g. bounded activation proofs per container family with cross-family regression walls; NOT per-app gating. The default binary keeps ALL the CONT-71 laws OFF (byte-equivalent behavior; wall 39/39 MATCH proved)",
+   "evidence": "run/s71/gate4 (738 answers 0x0 again after the OOB gate; EXACTLY(105) in-bounds rows remain); run/s60/regression/opencalc_r1 vs run/s71/regression/opencalc_r1 pixel metrics (321287 vs 3096 sampled non-bg)",
+   "first_observed": "CONT-71"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
  "total": 676,
- "count": 679,
+ "count": 680,
  "meta": {
   "last_update": "CONT-56 session 2026-10-12: the framework LinearLayout.onMeasure SUPER law (F-NEW-328) — the lp-aware child-spec source (lp_width/lp_height authoritative over the legacy mirrors) + the AOSP orientation self-size law (sum/max, AT_MOST clamps) at BOTH S109 sites. Probe fnew328 PRE FAIL x1 (self=1080x1920 child=1080x1920) -> POST 4/0 x3. Solitaire: AppBarLayout 1080x1920 -> 1080x105; visible frame unchanged ba50a4d2. Zero-drift 15 anchors x3 (45/45) + probe battery == records. Registry 638->639.",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
   "last_updated": "2026-10-12 F-NEW-328 ROOT-CAUSED-FIXED at binary 11e5fa2c3b4b5037"
  },
  "status_counts": {
-  "PARTIAL": 110,
+  "PARTIAL": 112,
   "VERIFIED-CORRECT": 56,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 49,
@@ -6086,7 +6095,7 @@
   "BLOCKED": 2,
   "REGISTERED": 1,
   "PENDING": 2,
-  "CLASSIFIED": 10,
+  "CLASSIFIED": 9,
   "OBSERVED": 2,
   "TESTED": 1,
   "ROOT-CAUSED-PARTIAL": 4,
@@ -6094,7 +6103,7 @@
   "DUPLICATE-SUPERSEDED": 3,
   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
  },
- "total_roots": 679,
- "generated": "2026-10-16T00:00:00Z",
+ "total_roots": 680,
+ "generated": "CONT-71 wave (F-NEW-368/370 PARTIAL laws-implemented + F-NEW-374 frontier)",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }

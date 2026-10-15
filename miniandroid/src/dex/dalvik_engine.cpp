@@ -1303,6 +1303,48 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
 };
 static const size_t kBuiltinExcParent_N = sizeof(kBuiltinExcParent) / sizeof(kBuiltinExcParent[0]);
 
+// F-NEW-368 extension table (CONT-71, env-gated MINIANDROID_F368_LAW): the
+// reflective / java.net / java.util.concurrent / android exception families —
+// every row an OpenJDK (java.lang §7) or AOSP libcore documented parent.
+// Without these rows a typed catch(Exception) around getDeclaredField/
+// getDeclaredMethod/getDeclaredConstructor never matches (NoSuch*Exception
+// had NO chain to Exception) and the deferred unwind aborts the whole DEX
+// frame (memory CoordinatorLayout.getResolvedLayoutParams evidence).
+// Gated because the in-frame delivery it unlocks completes container DEX
+// measure chains whose downstream emulation is still incomplete (the
+// F-NEW-370 decode trail) — the default binary keeps the pre-wave
+// behavior byte-for-byte; the flag activates the delivery for the
+// per-container-trust experiment.
+static const miniandroid::dalvik::KvPair kF368ExcParent[] = {
+    {"Ljava/lang/NoSuchMethodException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/NoSuchFieldException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/InstantiationException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/IllegalAccessException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/InvocationTargetException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/net/SocketException;", "Ljava/io/IOException;"},
+    {"Ljava/net/ConnectException;", "Ljava/net/SocketException;"},
+    {"Ljava/net/UnknownHostException;", "Ljava/io/IOException;"},
+    {"Ljava/net/SocketTimeoutException;", "Ljava/io/InterruptedIOException;"},
+    {"Ljava/io/InterruptedIOException;", "Ljava/io/IOException;"},
+    {"Ljava/util/concurrent/ExecutionException;", "Ljava/lang/Exception;"},
+    {"Ljava/util/concurrent/TimeoutException;", "Ljava/lang/Exception;"},
+    {"Ljava/util/concurrent/CancellationException;", "Ljava/lang/IllegalStateException;"},
+    {"Ljava/util/concurrent/RejectedExecutionException;", "Ljava/lang/RuntimeException;"},
+    {"Ljava/util/concurrent/CompletionException;", "Ljava/lang/RuntimeException;"},
+    {"Landroid/os/RemoteException;", "Landroid/os/AndroidException;"},
+    {"Landroid/os/AndroidException;", "Ljava/lang/Exception;"},
+    {"Landroid/util/AndroidException;", "Ljava/lang/Exception;"},
+};
+static const size_t kF368ExcParent_N = sizeof(kF368ExcParent) / sizeof(kF368ExcParent[0]);
+static const bool f368_law_active = std::getenv("MINIANDROID_F368_LAW") != nullptr;
+auto f368_builtin_parent = [&](const std::string& desc) -> const char* {
+    if (f368_law_active) {
+        const char* e = kv_table_find(kF368ExcParent, kF368ExcParent_N, desc);
+        if (e) return e;
+    }
+    return kv_table_find(kBuiltinExcParent, kBuiltinExcParent_N, desc);
+};
+
 
     // Walk both chains simultaneously (merged walk, cycle-safe).
     std::string via_dex = exc_desc;
@@ -1322,12 +1364,12 @@ static const size_t kBuiltinExcParent_N = sizeof(kBuiltinExcParent) / sizeof(kBu
             via_dex = dex_it->second;
         } else {
             // not DEX-defined: fall through to built-in chain for next step
-            const char* b1 = kv_table_find(kBuiltinExcParent, kBuiltinExcParent_N, via_dex);
+            const char* b1 = f368_builtin_parent(via_dex);
             via_dex = b1 ? b1 : "Ljava/lang/Object;";
         }
         // advance built-in chain
         {
-            const char* b2 = kv_table_find(kBuiltinExcParent, kBuiltinExcParent_N, via_builtin);
+            const char* b2 = f368_builtin_parent(via_builtin);
             if (b2) {
                 via_builtin = b2;
             } else {
@@ -48768,6 +48810,295 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(
             (result_size & 0x3FFFFFFF) | (result_mode & (int32_t)0xC0000000u));
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-370 (CONT-71): ViewGroup.measureChildWithMargins(View,II,I,II)V
+    // — the AOSP child-negotiation law (frameworks/base/core/java/android/
+    // view/ViewGroup.java, stable since API 1):
+    //   final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+    //   childWidthMeasureSpec  = getChildMeasureSpec(parentWidthMeasureSpec,
+    //       mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin
+    //       + widthUsed, lp.width);
+    //   childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+    //       mPaddingTop + mPaddingBottom + lp.topMargin + lp.bottomMargin
+    //       + heightUsed, lp.height);
+    //   child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    // This is THE primitive every androidx/app container's real DEX
+    // onMeasure delegates to (CoordinatorLayout.onMeasureChild, DrawerLayout,
+    // LinearLayout.measureChildBeforeLayout, …). With no engine law the
+    // call answered a silent void: the container's child loop measured
+    // NOTHING and the whole DEX measure chain collapsed (memory app:
+    // CoordinatorLayout answered 0x0 under EXACTLY(1080)xEXACTLY(1920),
+    // ViewPager zero-height → blank face — F-NEW-370 decode).
+    // Spec math: the SAME in-place law as F-NEW-326 above. LP source: the
+    // F-NEW-328 LP-SOURCE law — the child's LayoutParams heap object
+    // (F-NEW-309 write-back carries the XML layout_width/height) with the
+    // node semantic mirrors as fallback. Child measure re-enters the ONE
+    // canonical measure law (R-NEW-440 measure_view_spec), which dispatches
+    // the child's own DEX onMeasure through the memo-protected walk.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "measureChildWithMargins" &&
+        args.size() >= 6 && args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::OBJECT_REF &&
+        dex_report_ != nullptr && shadow_registry_ != nullptr) {
+        // CONT-71 ACTIVATION GATE (honest scope decision): the negotiation
+        // law is implemented and proven on the memory app (CoordinatorLayout
+        // chain completes, record face byte-identical) but its activation
+        // deterministically diverges opencalculator v53 (the SlidingUpPanel
+        // Layout DEX onMeasure reads its children's NEW measured sizes and
+        // derives in-bounds-but-wrong EXACTLY(105) specs — the panel's own
+        // emulation is incomplete, R-NEW-438/441 evidence). Default OFF; the
+        // bounded per-container-trust experiment is the named next lever
+        // (registry F-NEW-370 PARTIAL decode trail).
+        static const bool mcm_law_active =
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+        if (!mcm_law_active) return false;
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow && args[0].object_id != 0 && args[1].object_id != 0) {
+            auto* pn = view_shadow->find_node(args[0].object_id);
+            auto* cn = view_shadow->find_node(args[1].object_id);
+            // Receiver must be a View-family node and a ViewGroup subclass
+            // (AOSP receiver domain); the child must be a View node. This
+            // shape (6 args, node receiver + node child) is unique to the
+            // ViewGroup law — the CoordinatorLayout STATIC variant passes
+            // the parent as the FIRST PARAMETER (7 args, static dispatch).
+            if (pn && cn &&
+                is_subclass_of(pn->class_desc, "Landroid/view/ViewGroup;")) {
+                auto iv = [&](size_t i) -> int32_t {
+                    return i < args.size() && args[i].type == DalvikType::INT32
+                               ? args[i].int_val : 0;
+                };
+                const int32_t wspec = iv(2), wused = iv(3);
+                const int32_t hspec = iv(4), hused = iv(5);
+                // F-NEW-370 spec-bounds gate (AOSP ViewRootImpl law): every
+                // measure spec in a real pass derives MONOTONE from the
+                // window frame (ViewRootImpl root specs = the frame;
+                // View.getChildMeasureSpec sizes = max(0, parentSize -
+                // padding) — never growing down the tree). An EXACTLY/
+                // AT_MOST spec whose size exceeds the display max is NOT
+                // producible by a real pass — the calling container's
+                // spec-derivation is incomplete-emulation evidence (opencalc
+                // v53 decode: SlidingUpPanelLayout answered its panel child
+                // EXACTLY(1073740479) from uninitialized-field math; honoring
+                // the negotiation under that spec collapsed the face). The
+                // law declines and the pre-law semantics stand (the runtime's
+                // R-NEW-438 degenerate-answer protections judge the caller).
+                {
+                    const auto& dm = resources::ResourceRuntime::instance()
+                                         .inflater().metrics();
+                    const int32_t disp_max =
+                        std::max(dm.screen_width, dm.screen_height);
+                    auto spec_oob = [&](int32_t s) -> bool {
+                        const int32_t m =
+                            (int32_t)((uint32_t)s & 0xC0000000u);
+                        if (m == 0) return false;  // UNSPEC: no size promise
+                        return (s & 0x3FFFFFFF) > disp_max;
+                    };
+                    if (spec_oob(wspec) || spec_oob(hspec))
+                        goto measure_cm_done;  // honest decline (STUBBED)
+                }
+                // LP dims per the F-NEW-328 LP-SOURCE law.
+                auto lp_dim = [&](uint32_t lp_obj, bool width_axis) -> int32_t {
+                    if (lp_obj != 0 && heap_.has_object(lp_obj)) {
+                        auto fv = heap_.get_object_field(
+                            lp_obj, width_axis ? "width" : "height");
+                        if (fv.has_value() && fv->type == DalvikType::INT32)
+                            return fv->int_val;
+                    }
+                    const int32_t lp = width_axis ? cn->lp_width : cn->lp_height;
+                    if (lp != INT_MIN) return lp;
+                    return width_axis ? cn->width : cn->height;
+                };
+                auto lp_margin = [&](uint32_t lp_obj, const char* name,
+                                     int32_t node_v) -> int32_t {
+                    if (lp_obj != 0 && heap_.has_object(lp_obj)) {
+                        auto fv = heap_.get_object_field(lp_obj, name);
+                        if (fv.has_value() && fv->type == DalvikType::INT32)
+                            return fv->int_val;
+                    }
+                    return node_v;
+                };
+                const int32_t hpad = pn->padding_left + pn->padding_right +
+                    lp_margin(cn->layout_params_object, "leftMargin",
+                              cn->lp_margin_left) +
+                    lp_margin(cn->layout_params_object, "rightMargin",
+                              cn->lp_margin_right) + wused;
+                const int32_t vpad = pn->padding_top + pn->padding_bottom +
+                    lp_margin(cn->layout_params_object, "topMargin",
+                              cn->lp_margin_top) +
+                    lp_margin(cn->layout_params_object, "bottomMargin",
+                              cn->lp_margin_bottom) + hused;
+                // F-NEW-326 spec math (in place).
+                auto child_spec = [](int32_t spec, int32_t padding,
+                                     int32_t dim) -> int32_t {
+                    const int32_t mode = (int32_t)((uint32_t)spec & 0xC0000000u);
+                    const int32_t size = std::max(0, (spec & 0x3FFFFFFF) - padding);
+                    const int32_t kExactly = (int32_t)0x40000000u;
+                    const int32_t kAtMost = (int32_t)0x80000000u;
+                    if (mode == kExactly) {
+                        if (dim >= 0) return (dim & 0x3FFFFFFF) | kExactly;
+                        if (dim == -1) return size | kExactly;
+                        return size | kAtMost;
+                    }
+                    if (mode == kAtMost) {
+                        if (dim >= 0) return (dim & 0x3FFFFFFF) | kExactly;
+                        return size | kAtMost;
+                    }
+                    if (dim >= 0) return (dim & 0x3FFFFFFF) | kExactly;
+                    return size;  // UNSPECIFIED
+                };
+                const int32_t cw = child_spec(
+                    wspec, hpad, lp_dim(cn->layout_params_object, true));
+                const int32_t ch = child_spec(
+                    hspec, vpad, lp_dim(cn->layout_params_object, false));
+                // Canonical child measure (R-NEW-440): one law, DEX
+                // onMeasure dispatched through the memo-protected walk.
+                auto& rt = resources::ResourceRuntime::instance();
+                if (rt.ensure_loaded(apk_path_)) {
+                    int cw2 = 0, ch2 = 0;
+                    if (rt.inflater().measure_view_spec(
+                            view_shadow, cn->view_id, cw, ch, cw2, ch2)) {
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_void();
+                        return true;
+                    }
+                }
+                // Canonical walk unavailable (no runtime/inflater) — keep
+                // the honest STUBBED status; the caller's default law stands.
+            }
+        }
+    }
+measure_cm_done:;
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-370 (CONT-71): View.resolveSizeAndState(II I)I + resolveSize(II)I
+    // + getMeasuredState() + combineMeasuredStates(II)I — the AOSP answer
+    // law (frameworks/base/core/java/android/view/View.java):
+    //   resolveSizeAndState(size, spec, childState):
+    //     AT_MOST:  specSize < size ? specSize|TOO_SMALL : size
+    //     EXACTLY:  specSize
+    //     UNSPEC:   size
+    //     result |= childMeasuredState & MEASURED_STATE_MASK (0xFF000000)
+    //   MEASURED_STATE_TOO_SMALL = 0x01000000; MEASURED_SIZE_MASK = 0x00FFFFFF;
+    //   MEASURED_HEIGHT_STATE_SHIFT = 16.
+    // The upstream CoordinatorLayout.onMeasure ends with
+    //   setMeasuredDimension(resolveSizeAndState(widthUsed, widthSpec, …),
+    //                        resolveSizeAndState(heightUsed, heightSpec, …));
+    // — under EXACTLY specs the answer IS the spec size regardless of the
+    // children. With no engine law the static call answered a typed-default
+    // 0 and the container measured itself 0x0 (memory app face collapse,
+    // F-NEW-370). resolveSize = resolveSizeAndState(size, spec, 0) &
+    // MEASURED_SIZE_MASK; getMeasuredState packs width/height states per
+    // AOSP; combineMeasuredStates = curState | (newState & STATE_MASK).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "resolveSizeAndState" || method == "resolveSize") &&
+        args.size() >= 2 && args[0].type == DalvikType::INT32 &&
+        args[1].type == DalvikType::INT32) {
+        // CONT-71 ACTIVATION GATE (honest scope decision, same doctrine as
+        // the negotiation-law gate): the answer law is correct AOSP math but
+        // its activation converts the record-era degenerate-answer native
+        // fallbacks into spec-faithful acceptances for containers whose own
+        // emulation is incomplete (opencalculator v53 decode). Default OFF.
+        static const bool rsas_law_active =
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+        if (!rsas_law_active) {
+            // pre-law typed-default (int 0) — byte-identical to the tail
+            status = ApiCallTrace::Status::STUBBED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        // Static dispatch: args[0]=size, args[1]=measureSpec,
+        // args[2]=childMeasuredState (resolveSizeAndState only). The INT32
+        // gate above already excludes the virtual (receiver-first) shape.
+        auto iv = [&](size_t i) -> int32_t {
+            return i < args.size() && args[i].type == DalvikType::INT32
+                       ? args[i].int_val : 0;
+        };
+        const int32_t size_arg = iv(0);
+        const int32_t spec_arg = iv(1);
+        // F-NEW-370 spec-bounds gate (same ViewRootImpl monotone-derivation
+        // law as the measureChildWithMargins gate above): an EXACTLY/AT_MOST
+        // spec exceeding the display max is not producible by a real pass —
+        // opencalc v53 decode: SlidingUpPanelLayout's incomplete-emulation
+        // spec EXACTLY(1073740479) was faithfully echoed by this law into
+        // setMeasuredDimension and the face collapsed. The law declines on
+        // such specs (typed-default 0 → the node stays eligible for the
+        // R-NEW-438 native re-measure — the exact record-era behavior).
+        {
+            const auto& dm =
+                resources::ResourceRuntime::instance().inflater().metrics();
+            const int32_t disp_max =
+                std::max(dm.screen_width, dm.screen_height);
+            const int32_t m = (int32_t)((uint32_t)spec_arg & 0xC0000000u);
+            if (m != 0 && (spec_arg & 0x3FFFFFFF) > disp_max)
+                goto resolve_done;  // honest decline (STUBBED)
+        }
+        {
+        const int32_t state_arg =
+            (method == "resolveSizeAndState") ? iv(2) : 0;
+        const int32_t mode = (int32_t)((uint32_t)spec_arg & 0xC0000000u);
+        const int32_t spec_size = spec_arg & 0x3FFFFFFF;
+        const int32_t kExactly = (int32_t)0x40000000u;
+        const int32_t kAtMost = (int32_t)0x80000000u;
+        const int32_t kTooSmall = 0x01000000;
+        const int32_t kStateMask = (int32_t)0xFF000000u;
+        const int32_t kSizeMask = 0x00FFFFFF;
+        int32_t res;
+        if (mode == kExactly) {
+            res = spec_size;
+        } else if (mode == kAtMost) {
+            res = (spec_size < size_arg) ? (spec_size | kTooSmall) : size_arg;
+        } else {
+            res = size_arg;
+        }
+        res = res | (state_arg & kStateMask);
+        if (method == "resolveSize") res = res & kSizeMask;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(res);
+        return true;
+        }
+    resolve_done:;
+    }
+    if (method == "getMeasuredState" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && shadow_registry_) {
+        static const bool gs_law_active =
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+        if (!gs_law_active) {
+            status = ApiCallTrace::Status::STUBBED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+            if (auto* n = vs->find_node(args[0].object_id)) {
+                const int32_t kStateMask = (int32_t)0xFF000000u;
+                // AOSP: (mMeasuredWidth & MEASURED_STATE_MASK)
+                //     | ((mMeasuredHeight >> MEASURED_HEIGHT_STATE_SHIFT)
+                //        & (MEASURED_STATE_MASK >> MEASURED_HEIGHT_STATE_SHIFT))
+                const int32_t state =
+                    (n->measured_width & kStateMask) |
+                    ((n->measured_height >> 16) &
+                     (kStateMask >> 16));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(state);
+                return true;
+            }
+        }
+    }
+    if (method == "combineMeasuredStates" && args.size() >= 2 &&
+        args[0].type == DalvikType::INT32 && args[1].type == DalvikType::INT32) {
+        static const bool cms_law_active =
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+        if (!cms_law_active) {
+            status = ApiCallTrace::Status::STUBBED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        const int32_t kStateMask = (int32_t)0xFF000000u;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(
+            args[0].int_val | (args[1].int_val & kStateMask));
         return true;
     }
 
