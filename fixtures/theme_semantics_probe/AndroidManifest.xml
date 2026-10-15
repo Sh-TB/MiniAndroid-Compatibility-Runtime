@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.probe.tsp" android:versionCode="1" android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34"/>
+    <application android:label="tsp">
+        <!-- F1: deep multi-parent chain: TspThemeA -> TspMidB -> TspRootC -->
+        <activity android:name=".MainActivity" android:exported="true"
+                  android:theme="@style/TspThemeA">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- F7 isolation: a second activity whose theme does NOT include the F5 overlay -->
+        <activity android:name=".SecondActivity" android:exported="false"
+                  android:theme="@style/TspThemeB"/>
+    </application>
+</manifest>

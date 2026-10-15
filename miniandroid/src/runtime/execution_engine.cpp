@@ -7895,15 +7895,47 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
     intent_arg.push_back(
         miniandroid::dalvik::DalvikValue::make_object(intent_obj,
                                                       "Landroid/content/Intent;"));
+    // ── CONT-68 (F-NEW-366): bind B's effective ACTIVITY theme BEFORE its
+    // onCreate (AOSP law: the theme is bound at Activity attach — before
+    // any content or AppCompat subdecor decision;
+    // ActivityInfo.getThemeResource: activity theme > application theme).
+    // The ResourceRuntime is a per-apk singleton keyed like the F-093
+    // family; the app path is the engine's current apk.
+    {
+        uint32_t b_theme = miniandroid::resources::ResourceRuntime::instance()
+                               .resolve_activity_theme(apk_path_, cls);
+        miniandroid::resources::ResourceRuntime::instance().set_activity_theme(
+            b_theme);
+    }
     dispatch_cb("onCreate", b_id, cls, intent_arg, "callbacks");
     rec["b_view_root"] = as->content_view_id();
 
     // ── B.onStart + B.onResume ───────────────────────────────────────────
+    // ── CONT-68 (F-NEW-366): the AOSP handleStartActivity /
+    // performResumeActivity FINISH GATES — an activity that called
+    // finish() inside onCreate is NEVER started or resumed
+    // (ActivityThread.java: `if (r.activity.mFinished) return;` at the top
+    // of handleStartActivity; performResumeActivity returns false). B's
+    // pending_finish state right now IS that mFinished state (the G07
+    // cascade applies at the next frame boundary).
+    bool b_finished_in_create = as->pending_finish() &&
+                                as->pending_finisher_obj_id() == b_id;
+    if (b_finished_in_create) {
+        std::cerr << "[G08-LIFECYCLE] B " << cls
+                  << " finished during onCreate — onStart/onResume skipped "
+                  << "(AOSP handleStartActivity mFinished gate)" << std::endl;
+        nlohmann::json sk;
+        sk["method"] = "onStart/onResume";
+        sk["dispatched"] = false;
+        sk["skipped"] = "mFinished gate (CONT-68)";
+        rec["callbacks"].push_back(sk);
+    } else {
     dispatch_cb("onStart", b_id, cls, {}, "callbacks");
     lifecycle_.transition_to(framework::LifecyclePhase::STARTED,
                              "B.onStart via DEX: " + cls,
                              hs->virtual_now_ms());
     dispatch_cb("onResume", b_id, cls, {}, "callbacks");
+    }
     lifecycle_.transition_to(
         framework::LifecyclePhase::RESUMED,
         "B.onResume via DEX (handleResumeActivity law): " + cls,

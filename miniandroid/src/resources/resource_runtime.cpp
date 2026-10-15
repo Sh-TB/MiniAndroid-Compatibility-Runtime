@@ -601,6 +601,217 @@ ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
     return out;
 }
 
+// ── CONT-68 (F-NEW-366): the ACTIVE ACTIVITY theme state ────────────────
+// AOSP law chain (all verified from exact sources this wave):
+//   * ActivityInfo.getThemeResource() = activity android:theme, else the
+//     <application android:theme> (android.content.pm.ActivityInfo).
+//   * framework ContextThemeWrapper.initializeTheme(): the activity's
+//     theme OBJECT is FRESH per activity — newTheme() + setTo(base theme
+//     when one exists) + onApplyThemeResource → applyStyle(resid,
+//     force=true). The engine has no outer platform theme to clone here
+//     (the activity base is a bare context), so the fresh theme carries
+//     exactly the effective resid's own parent-chain bag — the same state
+//     a real device serves for an activity without an outer themed wrapper.
+//   * AppCompat 1.4.2 attachBaseContext2 then wraps the activity in
+//     ContextThemeWrapper(R.style.Theme_AppCompat_Empty) whose
+//     initializeTheme CLONES the base (activity) theme via Theme.setTo and
+//     applies Empty (size-0, parentless) on top — the activity bag survives
+//     intact (androidx.appcompat.view.ContextThemeWrapper.java +
+//     ResourcesCompat$ThemeCompat.rebase semantics).
+// A fresh Theme per activity (not an overlay on the previous activity's
+// theme) is what makes the appcompat ContextThemeWrapper clone law and the
+// sequential-app isolation requirement hold: nothing from a previous
+// activity's theme leaks into the next one.
+void ResourceRuntime::set_activity_theme(uint32_t resid) {
+    static const bool diag = std::getenv("MINIANDROID_F366_DIAG") != nullptr;
+    // AOSP identity law: EVERY activity owns a FRESH Resources.Theme object
+    // (framework ContextThemeWrapper.initializeTheme: newTheme + setTo) and
+    // a fresh applyStyle state — Theme.applyStyle state is PER-THEME-OBJECT,
+    // never process-wide (TspProbe F7: MainActivity's applyStyle overlays
+    // leaked into SecondActivity through the shared record; on a device the
+    // second activity's theme never saw them). The per-apk applied-styles
+    // record is this engine's model of that per-theme state, so an activity
+    // theme bind resets it — the appcompat Empty apply re-records during the
+    // new activity's own attachBaseContext2 chain. No short-circuit on an
+    // unchanged resid: a new activity instance means a new theme object.
+    activity_theme_ = Theme{};   // AOSP initializeTheme: FRESH theme object
+    activity_theme_resid_ = resid;
+    activity_theme_valid_ = resid != 0;
+    applied_theme_style_records_.clear();
+    applied_theme_styles_.clear();
+    if (activity_theme_valid_) {
+        activity_theme_.apply_style(arsc_router(), device_config(), resid,
+                                    /*force=*/true);
+    }
+    if (diag)
+        std::cerr << "[F366-ACTIVITY-THEME] set resid=0x" << std::hex << resid
+                  << std::dec << " valid=" << activity_theme_valid_
+                  << " keys=" << activity_theme_.size()
+                  << " (record reset — fresh per-activity theme object)"
+                  << std::endl;
+}
+
+// AOSP ActivityInfo.getThemeResource(): the activity's own android:theme
+// wins; without one the <application android:theme> applies. F-094: the
+// plain-text manifest form carries "@style/Name" reference strings —
+// resolved through the ARSC find_id law at use time (the parser has no
+// ARSC access). Matching accepts the descriptor form (Lcom/x/Y;), the
+// dotted full form (com.x.Y) and the short form (.Y) the manifest may
+// store, mirroring the main-activity matching conventions.
+uint32_t ResourceRuntime::resolve_activity_theme(
+        const std::string& apk_path, const std::string& activity_class) {
+    if (!ensure_loaded(apk_path)) return 0;
+    std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
+    if (mf.empty()) return 0;
+    apk::ManifestReader mr;
+    apk::ManifestInfo mi = mr.parse(mf);
+
+    // Normalize the incoming class to its dotted full name.
+    std::string want = activity_class;
+    if (!want.empty() && want[0] == 'L' && want.back() == ';') {
+        want = want.substr(1, want.size() - 2);
+        for (auto& c : want)
+            if (c == '/') c = '.';
+    }
+    // The manifest stores names relative to the package (".MainActivity").
+    std::string want_short;
+    {
+        size_t last_dot = want.rfind('.');
+        want_short = last_dot == std::string::npos ? want
+                                                   : want.substr(last_dot);
+        if (!want_short.empty() && want_short[0] == '.') want_short.erase(0, 1);
+    }
+    const apk::ManifestInfo::ActivityInfo* hit = nullptr;
+    for (const auto& act : mi.activities) {
+        std::string nm = act.name;
+        std::string full = nm;
+        if (!full.empty() && full[0] == '.')
+            full = mi.package_name + full;
+        else if (!full.empty() && full.find('.') == std::string::npos)
+            full = mi.package_name + "." + full;
+        if (full == want || nm == want) {
+            hit = &act;
+            break;
+        }
+    }
+    // activity-alias note: when the launcher is an <activity-alias>, the
+    // launched class IS the alias's targetActivity — the target's own
+    // ActivityInfo record (with its theme) is matched by the loops above.
+    if (!hit) {
+        // Fall back to short-name matching (".MainActivity" vs descriptor).
+        for (const auto& act : mi.activities) {
+            std::string nm = act.name;
+            if (nm.rfind('.') != std::string::npos &&
+                nm.substr(nm.rfind('.') + 1) == want_short) {
+                hit = &act;
+                break;
+            }
+        }
+    }
+    if (!hit) return 0;
+
+    uint32_t resid = hit->theme_resid;
+    if (resid == 0 && !hit->theme_ref.empty()) {
+        // F-094 law: "@style/AppTheme.NoActionBar" → ARSC find_id.
+        std::string ref = hit->theme_ref;
+        if (ref.rfind("@", 0) == 0) ref.erase(0, 1);
+        std::string type = "style", name = ref;
+        size_t slash = ref.find('/');
+        if (slash != std::string::npos) {
+            type = ref.substr(0, slash);
+            name = ref.substr(slash + 1);
+        }
+        if (type.rfind("android:", 0) == 0) type.erase(0, 8);
+        if (auto id = arsc_.find_id(mi.package_name, type, name)) resid = *id;
+    }
+    if (resid == 0) resid = mi.application_theme_resid;
+    return resid;
+}
+
+// CONT-68: shared post-hit conversion for theme attr answers (was inline in
+// resolve_theme_attr_typed's base-theme branch; the active-activity-theme
+// authority #1 path reuses it verbatim so both authorities convert values
+// identically). Contains the CONT-58 ATTRRAW diagnostic and the S127
+// framework + app-package ColorStateList/drawable-file laws.
+std::optional<ResValue> ResourceRuntime::finish_theme_attr_value(
+        const std::string& apk_path, uint32_t attr_key, const ResValue& raw) {
+    ResValue v = raw;
+    // CONT-58 decode diagnostic (generic, env-gated, read-only): the raw
+    // typed attr answer — type/data/string_value — for painted-color
+    // root-cause work (the 0x61 STRING-type textColorPrimary case).
+    if (std::getenv("MINIANDROID_THEME_ATTR_DIAG"))
+        std::cerr << "[S124-ATTRRAW] attr=0x" << std::hex << attr_key
+                  << std::dec << " type=" << (int)(uint8_t)v.type
+                  << " data=0x" << std::hex << (uint32_t)v.data
+                  << std::dec << " str='" << v.string_value << "'"
+                  << std::endl;
+
+    // S127 ColorStateList/DRAWABLE FILE LAW (AOSP ResourcesImpl
+    // .loadColorStateList / loadDrawable): framework color/drawable
+    // entries are FILE-BACKED — the entry value is a STRING carrying
+    // the res/ path (aapt2 file-reference law; e.g. Theme.Light
+    // textColorPrimary = @color/primary_text_light whose table value
+    // is "res/color/primary_text_light.xml"). Consumers need the
+    // COLOR, so the attr service loads the XML from the committed
+    // framework_res/res tree (FILE_MANIFEST.txt, byte-verified from
+    // the same framework-res.apk as the table) and converts it
+    // through the StateListDrawable/ColorStateList default-state law.
+    // Conversion happens ONLY when the file parses and yields a
+    // color; otherwise the raw value returns untouched (honest).
+    if (v.is_string() && v.string_value.rfind("res/", 0) == 0) {
+        static const bool csl_diag = std::getenv("MINIANDROID_CSL_DIAG") != nullptr;
+        if (csl_diag)
+            std::cerr << "[S127-CSL] attr file value '" << v.string_value
+                      << "'" << std::endl;
+        size_t slash = v.string_value.find('/', 4);
+        size_t dot = v.string_value.rfind('.');
+        if (slash != std::string::npos && dot != std::string::npos && dot > slash) {
+            std::string dir = v.string_value.substr(4, slash - 4);   // color | drawable
+            std::string name = v.string_value.substr(slash + 1, dot - slash - 1);
+            ArscRouter rt = arsc_router();
+            if (rt.fw) {
+                auto fid = rt.fw->find_id("", dir, name);
+                if (csl_diag)
+                    std::cerr << "[S127-CSL] find_id " << dir << "/" << name
+                              << " -> " << (fid ? "HIT" : "MISS") << std::endl;
+                if (fid) {
+                    auto col = resolve_framework_file_color(*fid);
+                    if (csl_diag)
+                        std::cerr << "[S127-CSL] file_color="
+                                  << (col ? "HIT" : "MISS") << std::endl;
+                    if (col) {
+                        ResValue out;
+                        out.type = DataType::INT_HEX;
+                        out.data = (int32_t)*col;
+                        return out;
+                    }
+                }
+            }
+            // CONT-58 (F-NEW-336) APP-PACKAGE FILE LAW: library color
+            // files (appcompat abc_* / Material mtrl_*) are entries of
+            // the APP package — the framework router legitimately has
+            // no row for them. When the file value is a res/color/…
+            // path, resolve it FROM THE APK (extract + parse_state_list
+            // + default-state tri-match). AOSP ResourcesImpl
+            // .loadColorStateList is package-routed the same way.
+            if (v.string_value.rfind("res/color/", 0) == 0) {
+                auto col = resolve_apk_file_color(v.string_value);
+                if (csl_diag)
+                    std::cerr << "[S127-CSL] apk_file_color="
+                              << (col ? "HIT" : "MISS") << std::endl;
+                if (col) {
+                    ResValue out;
+                    out.type = DataType::INT_HEX;
+                    out.data = (int32_t)*col;
+                    return out;
+                }
+            }
+        }
+    }
+    (void)apk_path;
+    return v;
+}
+
 std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
         const std::string& apk_path, uint32_t attr_key, int flavor_hint) {
     if (!ensure_loaded(apk_path)) return std::nullopt;
@@ -612,103 +823,81 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
     // + reference deref per Theme::GetAttribute / ResolveAttributeReference,
     // package-routed into framework-res), then (c) the generated framework
     // default table.
+    // CONT-68 (F-NEW-366): the ACTIVE ACTIVITY theme is authority #1 (AOSP
+    // ContextThemeWrapper.initializeTheme + AppCompat 1.4.2 attachBaseContext2
+    // clone law — see the header comment). The launch/base theme remains the
+    // fallback so every pre-existing resolution surface keeps its answers.
+    // CONT-68 (probe F6c): a force=true applied style OVERWRITES the theme
+    // bag (AOSP Theme.applyStyle merges onto the CURRENT state — the theme
+    // bag is the starting state, each force=true apply replaces values it
+    // carries). The appcompat Empty apply (force=true, size-0 bag) is a
+    // no-op by construction, so this precedence never disturbs that chain.
+    if (!applied_theme_style_records_.empty()) {
+        ResTableConfig dev = device_config();
+        for (auto it = applied_theme_style_records_.rbegin();
+             it != applied_theme_style_records_.rend(); ++it) {
+            if (!it->force) continue;
+            if (auto bv = arsc_.bag_value(it->resid, attr_key, dev)) {
+                if (std::getenv("MINIANDROID_F093_DIAG"))
+                    std::cerr << "[F364-APPLIED] style=0x" << std::hex
+                              << it->resid << std::dec << " force=1"
+                              << " attr=0x" << std::hex << attr_key
+                              << std::dec << " bag=HIT(newest-force)"
+                              << std::endl;
+                return finish_theme_attr_value(apk_path, attr_key, *bv);
+            }
+        }
+    }
+    const Theme* theme_ptr = active_activity_theme();
+    if (theme_ptr) {
+        auto av = ThemeEngine::instance().resolve_attr(
+            arsc_router(), device_config(), theme_ptr, attr_key);
+        if (av) {
+            auto v = av;
+            if (std::getenv("MINIANDROID_F366_DIAG"))
+                std::cerr << "[F366-ACTIVITY-THEME] resid=0x" << std::hex
+                          << activity_theme_resid_ << std::dec
+                          << " attr=0x" << std::hex << attr_key << std::dec
+                          << " HIT" << std::endl;
+            // Fall through to the shared post-processing below by executing
+            // the same conversion path as the base-theme hit.
+            return finish_theme_attr_value(apk_path, attr_key, *v);
+        }
+    }
     auto v = ThemeEngine::instance().resolve_attr(arsc_router(), device_config(),
                                                   &base_theme(), attr_key);
     if (v) {
-        // CONT-58 decode diagnostic (generic, env-gated, read-only): the raw
-        // typed attr answer — type/data/string_value — for painted-color
-        // root-cause work (the 0x61 STRING-type textColorPrimary case).
-        if (std::getenv("MINIANDROID_THEME_ATTR_DIAG"))
-            std::cerr << "[S124-ATTRRAW] attr=0x" << std::hex << attr_key
-                      << std::dec << " type=" << (int)(uint8_t)v->type
-                      << " data=0x" << std::hex << (uint32_t)v->data
-                      << std::dec << " str='" << v->string_value << "'"
-                      << std::endl;
-
-        // S127 ColorStateList/DRAWABLE FILE LAW (AOSP ResourcesImpl
-        // .loadColorStateList / loadDrawable): framework color/drawable
-        // entries are FILE-BACKED — the entry value is a STRING carrying
-        // the res/ path (aapt2 file-reference law; e.g. Theme.Light
-        // textColorPrimary = @color/primary_text_light whose table value
-        // is "res/color/primary_text_light.xml"). Consumers need the
-        // COLOR, so the attr service loads the XML from the committed
-        // framework_res/res tree (FILE_MANIFEST.txt, byte-verified from
-        // the same framework-res.apk as the table) and converts it
-        // through the StateListDrawable/ColorStateList default-state law.
-        // Conversion happens ONLY when the file parses and yields a
-        // color; otherwise the raw value returns untouched (honest).
-        if (v->is_string() && v->string_value.rfind("res/", 0) == 0) {
-            static const bool csl_diag = std::getenv("MINIANDROID_CSL_DIAG") != nullptr;
-            if (csl_diag)
-                std::cerr << "[S127-CSL] attr file value '" << v->string_value
-                          << "'" << std::endl;
-            size_t slash = v->string_value.find('/', 4);
-            size_t dot = v->string_value.rfind('.');
-            if (slash != std::string::npos && dot != std::string::npos && dot > slash) {
-                std::string dir = v->string_value.substr(4, slash - 4);   // color | drawable
-                std::string name = v->string_value.substr(slash + 1, dot - slash - 1);
-                ArscRouter rt = arsc_router();
-                if (rt.fw) {
-                    auto fid = rt.fw->find_id("", dir, name);
-                    if (csl_diag)
-                        std::cerr << "[S127-CSL] find_id " << dir << "/" << name
-                                  << " -> " << (fid ? "HIT" : "MISS") << std::endl;
-                    if (fid) {
-                        auto col = resolve_framework_file_color(*fid);
-                        if (csl_diag)
-                            std::cerr << "[S127-CSL] file_color="
-                                      << (col ? "HIT" : "MISS") << std::endl;
-                        if (col) {
-                            ResValue out;
-                            out.type = DataType::INT_HEX;
-                            out.data = (int32_t)*col;
-                            return out;
-                        }
-                    }
-                }
-                // CONT-58 (F-NEW-336) APP-PACKAGE FILE LAW: library color
-                // files (appcompat abc_* / Material mtrl_*) are entries of
-                // the APP package — the framework router legitimately has
-                // no row for them. When the file value is a res/color/…
-                // path, resolve it FROM THE APK (extract + parse_state_list
-                // + default-state tri-match). AOSP ResourcesImpl
-                // .loadColorStateList is package-routed the same way.
-                if (v->string_value.rfind("res/color/", 0) == 0) {
-                    auto col = resolve_apk_file_color(v->string_value);
-                    if (csl_diag)
-                        std::cerr << "[S127-CSL] apk_file_color="
-                                  << (col ? "HIT" : "MISS") << std::endl;
-                    if (col) {
-                        ResValue out;
-                        out.type = DataType::INT_HEX;
-                        out.data = (int32_t)*col;
-                        return out;
-                    }
-                }
-            }
-        }
-        return v;
+        return finish_theme_attr_value(apk_path, attr_key, *v);
     }
 
     // ── F-NEW-364 (CONT-67): the Theme.applyStyle overlay record ──────────
-    // AOSP AssetManager2::Theme::applyStyle(resid, force=false) merge law:
-    // applied styles fill ONLY the values the base theme chain lacks —
-    // consulted here exactly on the miss path (before the framework
-    // defaults, which are the last resort for 0x01 attrs). The appcompat
-    // attachBaseContext2 chain applies Theme_AppCompat_Empty (an APP
-    // package style) carrying the AppCompatTheme attr defaults; without
-    // this walk the createSubDecor gate ISE fires for framework-parented
-    // themes (notes_secuso live evidence).
-    if (!applied_theme_styles_.empty()) {
+    // AOSP AssetManager2::Theme::applyStyle(resid, force) merge law over
+    // the ORDERED record (CONT-68 correction from the F5 probe case):
+    //   * a force=true entry OVERWRITES values written by earlier entries;
+    //   * a force=false entry fills only what is absent at its point in
+    //     the order.
+    // Equivalent single-pass resolution: an attr's effective writer is the
+    // NEWEST force=true record carrying the attr, else the OLDEST record
+    // carrying it (the first writer always took). Consulted after the
+    // base/activity theme (the record supplements the launch/theme-bag
+    // state, exactly the appcompat attachBaseContext2 subset) and before
+    // the framework defaults (the last resort for 0x01 attrs).
+    if (!applied_theme_style_records_.empty()) {
         ResTableConfig dev = device_config();
-        for (uint32_t style_resid : applied_theme_styles_) {
-            auto bv = arsc_.bag_value(style_resid, attr_key, dev);
-            if (!bv) continue;
-            if (std::getenv("MINIANDROID_F093_DIAG"))
-                std::cerr << "[F364-APPLIED] style=0x" << std::hex
-                          << style_resid << " attr=0x" << attr_key
-                          << std::dec << " bag=HIT" << std::endl;
-            return *bv;
+        // Fill law on the miss path: the OLDEST record carrying the attr
+        // answers (it wrote first and took; later force=false entries
+        // cannot overwrite it — the newest-force writers were already
+        // consulted above).
+        for (const auto& e : applied_theme_style_records_) {
+            if (auto bv = arsc_.bag_value(e.resid, attr_key, dev)) {
+                if (std::getenv("MINIANDROID_F093_DIAG"))
+                    std::cerr << "[F364-APPLIED] style=0x" << std::hex
+                              << e.resid << std::dec << " force="
+                              << (e.force ? 1 : 0)
+                              << " attr=0x" << std::hex << attr_key
+                              << std::dec << " bag=HIT(oldest)" << std::endl;
+                return finish_theme_attr_value(apk_path, attr_key, *bv);
+            }
         }
     }
 

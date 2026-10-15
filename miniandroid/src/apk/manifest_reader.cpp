@@ -589,12 +589,18 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     if (name == "activity" || name == "activity-alias") {
         current_activity_name_ = get_attribute_value(attrs, "name");
         // S68 W2 (A1/A10): per-activity android:theme (attr 0x01010000).
-        // Captured when this activity IS the main activity (its theme
-        // governs the launch window per ActivityInfo.theme law).
+        // CONT-68: captured for EVERY activity (was: only the main
+        // activity's value survived). Reset FIRST — a theme-less activity
+        // following a themed one must not inherit the stale pending value.
+        activity_theme_resid_pending_ = 0;
         for (const auto& a : attrs) {
-            if (get_string(a.name_index) == "theme" &&
-                (a.value_data_type == 0x01 || a.value_data_type == 0x02)) {
-                activity_theme_resid_pending_ = a.value_data;
+            if (get_string(a.name_index) == "theme") {
+                if (a.value_data_type == 0x01 || a.value_data_type == 0x02) {
+                    activity_theme_resid_pending_ = a.value_data;
+                } else {
+                    // F-094 family: plain-text/reference-string form.
+                    activity_theme_ref_pending_ = get_attribute_value(attrs, "theme");
+                }
                 break;
             }
         }
@@ -606,6 +612,10 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         
         ManifestInfo::ActivityInfo act_info;
         act_info.name = current_activity_name_;
+        // CONT-68 (F-NEW-366): every activity carries its own theme record
+        // (the main-activity slot keeps the S68 W2 semantics downstream).
+        act_info.theme_resid = activity_theme_resid_pending_;
+        act_info.theme_ref = activity_theme_ref_pending_;
         result_.activities.push_back(act_info);
         
         log("Activity: " + current_activity_name_ + (name == "activity-alias" ? " (alias, target=" + current_activity_target_ + ")" : ""));
@@ -799,6 +809,7 @@ void ManifestReader::process_end_element(const std::string& ns, const std::strin
         
         in_activity_ = false;
         current_activity_name_.clear();
+        activity_theme_ref_pending_.clear();
     }
     // 371-CLOSEOUT: close provider/service/receiver component scopes
     // (meta-data capture keys off these; AOSP PackageParser nests meta-data

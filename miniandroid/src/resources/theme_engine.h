@@ -87,16 +87,43 @@ inline bool theme_value_is_undefined(const ResValue& v) {
 class Theme {
 public:
     // Theme::ApplyStyle (AssetManager2.cpp L1635): merge one style's bag.
-    // The style's OWN keys apply first (nearest), then the parent chain
-    // (bag_parent), bounded + cycle-safe. force=false never overrides an
-    // existing key; force=true overwrites (an undefined value removes the
-    // previous entry — the AOSP "forced undefined removes" branch).
+    // CONT-68 (F-NEW-366) CORRECTION — the AOSP two-stage law:
+    //   Stage 1 (within ONE style): the style's own keys + its parent chain
+    //   flatten into an effective bag with ABSOLUTE CHILD PRECEDENCE — the
+    //   nearest (child) value always beats an ancestor's value for the same
+    //   attr (androidfw ResolvedBag: the parent chain resolves into one
+    //   sorted bag, nearest writer wins). A real device serves
+    //   AppTheme.NoActionBar's windowActionBar=false even though
+    //   Base.V7.Theme.AppCompat (5+ hops up) declares windowActionBar=true.
+    //   Stage 2 (style → theme state): the flattened bag merges into the
+    //   theme honoring `force` — force=false fills only values the theme
+    //   state lacks; force=true overwrites (an undefined value removes the
+    //   previous entry — the AOSP "forced undefined removes" branch).
+    // The previous implementation applied `force` at EVERY chain hop, which
+    // let PARENT hops overwrite CHILD values (windowActionBar=false→true,
+    // windowNoTitle=true→false for Privacy Friendly Memory) — the exact
+    // inversion that drove createSubDecor into the mHasActionBar branch and
+    // killed setSupportActionBar ("already has an action bar supplied by
+    // the window decor"). force=false happened to hide the bug (first
+    // writer = child wins); every force=true caller was silently wrong.
     // S124 FW-PACKAGE: the walk routes each chain hop through the package
     // router — app themes climbing into Theme.Material resolve the REAL
     // framework bags from framework-res.
     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
                      uint32_t style_resid, bool force) {
         static const bool diag = std::getenv("MINIANDROID_THEME_DIAG") != nullptr;
+        // Stage 1: flatten style + parent chain, child precedence absolute.
+        std::vector<std::pair<uint32_t, ResValue>> style_bag;
+        auto style_merge_key = [&](uint32_t key, const ResValue& v) {
+            if (theme_value_is_undefined(v)) return;   // undefined never inserts
+            auto it = std::lower_bound(style_bag.begin(), style_bag.end(), key,
+                [](const std::pair<uint32_t, ResValue>& p, uint32_t k) {
+                    return p.first < k;
+                });
+            const bool found = it != style_bag.end() && it->first == key;
+            if (found) return;                         // CHILD PRECEDENCE: first writer wins
+            style_bag.insert(it, {key, v});
+        };
         uint32_t cur = style_resid;
         int hops = 0;
         std::unordered_set<uint32_t> visited{style_resid};
@@ -119,7 +146,7 @@ public:
                 continue;
             }
             for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
-                merge_key(e->complex_keys[i], e->complex_items[i], force);
+                style_merge_key(e->complex_keys[i], e->complex_items[i]);
             }
             uint32_t parent = e->bag_parent;
             if (parent == 0 || parent == cur || visited.count(parent)) break;
@@ -127,9 +154,16 @@ public:
             cur = parent;
             hops++;
         }
+        // Stage 2: the flattened bag merges into the theme state honoring
+        // the caller's force (force=false fills missing; force=true
+        // overwrites / removes on undefined).
+        for (const auto& kv : style_bag) {
+            merge_key(kv.first, kv.second, force);
+        }
         if (diag)
-            fprintf(stderr, "[S124-THEME] apply_style resid=0x%x force=%d -> keys=%zu\n",
-                    style_resid, force ? 1 : 0, kv_.size());
+            fprintf(stderr, "[S124-THEME] apply_style resid=0x%x force=%d "
+                            "bag=%zu keys=%zu\n",
+                    style_resid, force ? 1 : 0, style_bag.size(), kv_.size());
         keys_applied_ += 1;
     }
 
