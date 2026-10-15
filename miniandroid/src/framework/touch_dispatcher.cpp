@@ -13,10 +13,39 @@ namespace miniandroid {
 namespace framework {
 
 namespace {
-bool node_at(const ViewShadow::ViewNode* n, int x, int y) {
+bool node_at(ViewShadow* views, const ViewShadow::ViewNode* n, int x, int y) {
     if (!n) return false;
-    return x >= n->x && x < n->x + std::max(1, n->width) && y >= n->y &&
-           y < n->y + std::max(1, n->height);
+    // F-NEW-373 lever (AOSP MATCH_PARENT law): the appcompat wrapper chain
+    // (FitWindowsLinearLayout / ContentFrameLayout / subdecor frames) never
+    // runs the engine's layout pass — the render walk draws the app tree by
+    // its own absolute boxes — so un-measured wrappers carry the sentinel
+    // (-1x-1) box and the containment test rejected the whole subtree at
+    // that hop (memory/notes tap-dead, cont70 batch-2 HITPROBE decode).
+    // An un-measured wrapper FILLS ITS PARENT (ViewGroup MATCH_PARENT
+    // semantics); the root's parent is the window itself.
+    int nx = n->x, ny = n->y, nw = n->width, nh = n->height;
+    if (nw < 0 || nh < 0) {
+        // MATCH_PARENT fill law, recursive: climb to the nearest
+        // MATERIALIZED ancestor (the wrapper chain may be several
+        // sentinels deep — FitWindows → ContentFrame → DrawerLayout);
+        // the climb root fills the window.
+        const ViewShadow::ViewNode* p =
+                (n->parent_id && views) ? views->find_node(n->parent_id)
+                                        : nullptr;
+        while (p && (p->width < 0 || p->height < 0)) {
+            p = (p->parent_id && views) ? views->find_node(p->parent_id)
+                                        : nullptr;
+        }
+        if (p && p->width > 0 && p->height > 0) {
+            nx = p->x; ny = p->y; nw = p->width; nh = p->height;
+        } else {
+            nx = 0; ny = 0;
+            nw = (nw < 0) ? 100000 : nw;
+            nh = (nh < 0) ? 100000 : nh;
+        }
+    }
+    return x >= nx && x < nx + std::max(1, nw) && y >= ny &&
+           y < ny + std::max(1, nh);
 }
 constexpr uint32_t kTokenCheckLongPress = HandlerShadow::kFrameworkTokenBase + 1;
 constexpr uint32_t kTokenPerformClick   = HandlerShadow::kFrameworkTokenBase + 2;
@@ -286,7 +315,7 @@ bool TouchDispatcher::consult_fallback_delegates_(uint32_t root_id, int x,
     std::function<void(uint32_t)> walk = [&](uint32_t id) {
         const auto* n = views_->find_node(id);
         if (!n || n->visibility != 0) return;
-        if (node_at(n, x, y)) candidate = id;  // deepest wins
+        if (node_at(views_, n, x, y)) candidate = id;  // deepest wins
         for (auto cit = n->children.rbegin(); cit != n->children.rend();
              ++cit)
             walk(*cit);
@@ -395,18 +424,26 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 for (auto cit = n->children.rbegin();
                      cit != n->children.rend(); ++cit) {
                     const auto* cn = views_->find_node(*cit);
-                    if (!cn || cn->visibility != 0) continue;
-                    if (!node_at(cn, ev.x, ev.y)) continue;
+                    if (!cn) continue;
                     if (hitprobe)
                         std::cerr << "[HITPROBE] d=" << (depth + 1)
                                   << " id=" << *cit << " " << cn->class_desc
                                   << " (" << cn->x << "," << cn->y << " "
                                   << cn->width << "x" << cn->height
-                                  << ") contains → dispatch" << std::endl;
+                                  << ") vis=" << cn->visibility
+                                  << " at="
+                                  << node_at(views_, cn, ev.x, ev.y)
+                                  << (cn->visibility == 0 &&
+                                              node_at(views_, cn, ev.x, ev.y)
+                                          ? " contains → dispatch"
+                                          : " REJECT")
+                                  << std::endl;
+                    if (cn->visibility != 0) continue;
+                    if (!node_at(views_, cn, ev.x, ev.y)) continue;
                     uint32_t t = claim(*cit, depth + 1);
                     if (t != 0) return t;  // first topmost claimant wins
                 }
-                const bool at = node_at(n, ev.x, ev.y);
+                const bool at = node_at(views_, n, ev.x, ev.y);
                 if (hitprobe)
                     std::cerr << "[HITPROBE] d=" << depth << " id=" << id
                               << " " << n->class_desc << " (" << n->x << ","
