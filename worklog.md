@@ -9757,3 +9757,16 @@ Work Log:
 Stage Summary:
 - The ant army delivered: 2 registry-root closures (SUPERSEDED x2) + 1 promotion (R-NEW-228 fixed) + 2 new roots (1 fixed law family F-NEW-372 with three generic laws + app-visible game/menu improvements; 1 precisely-decoded frontier F-NEW-370) + the F-NEW-368 delivery-chain decode completed to the exact missed table and the proven handler, with the honest blocker named.
 - Every gate green at the wave binary; every recorded face intact; the two face changes are deterministic, app-owned improvements with preserved before evidence.
+
+---
+Task ID: CONT-70-BATCH2 (evidence-only ants, same wave)
+Agent: Super Z (main)
+Task: continue the ant army with zero-risk small tasks after the batch-1 push.
+
+Work Log:
+- ANT-9 (F-138 ScoreView hint HUD): the batch-1 canvas-text real-size law ALREADY renders the bouncy "Touch to start" hint (ScoreView.java:226) at real size — before face dd0c1425 (no visible hint) vs after 1b87e9ef (yellow hint bar, deterministic x3). REGISTERED -> ROOT-CAUSED-FIXED (via F-NEW-372 evidence).
+- ANT-10/11 (interaction lane): memory taps (toolbar 980,80; Easy 540,1405; New Game 540,1868) and notes tap (Next 828,1794) ALL answer F117 target=0 with faces byte-unchanged at their records (c559b630 / d0a40904). Contrast: CONT-66's calculator lane hit target=176. Registered F-NEW-373 (CLASSIFIED P2, view-lane hit-test gap for the DrawerLayout/Toolbar/AppBar/ViewPager tree; lever = F117 walk decode; sibling of F-NEW-267).
+- LEDGER: registry 678 -> 679; projection identity-verified; validator PASS. Zero engine changes this batch — gates carry over from the batch-1 run by construction.
+
+Stage Summary:
+- Batch 2 closes F-138 with live proof and names the interaction frontier F-NEW-373 with clean contrasts — the tap lane for deep view trees is the next named lever.

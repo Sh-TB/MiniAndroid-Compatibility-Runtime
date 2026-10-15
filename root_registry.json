@@ -2807,10 +2807,11 @@
   },
   {
    "id": "F-138",
-   "title": "ScoreView hint HUD geometry — bitmap-font text drawn at (0,0) (legacy text path, text_size=0)",
-   "status": "REGISTERED",
+   "title": "ScoreView hint HUD text — ROOT-CAUSED-FIXED via the F-NEW-372 canvas-text real-size law (cont70): the 'Touch to start' hint (ScoreView.java:226 getString) previously fell to the tiny legacy bitmap path (text_size=0 shape); with the F-NEW-226 state read live the hint renders at real size in the bouncy top bar (before dd0c1425 no visible hint text; after 1b87e9ef the yellow 'Touch to start' bar renders, deterministic x3).",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
-   "layer": null
+   "layer": null,
+   "evidence": "evidence/cont70/before/bouncy_old_dd0c14257fa1f2af.png vs run/cont70/accept/v2_bouncy/screenshot.png; worklog R-NEW-389 op-diff line (drawText content '' -> 'Touch to start')"
   },
   {
    "id": "F-141",
@@ -6044,11 +6045,20 @@
    "title": "CANVAS TEXT REAL-SIZE + APP-FACE FAMILY (cont70 ANT-3/6): three generic laws. (1) org.json JSONObject.keys() — AOSP insertion-ordered Iterator<String> via the F-237 legacy box (keys ride array[i] + __array_length__ on the box); was null -> bouncy JSONUtils.mapFromJSONObject hasNext NPE at pc=9 -> field layout never loaded. Post-fix bouncy renders its COMPLETE menu face (1b87e9efa9c32198, was dd0c14257fa1f2af without the top 'Touch to start' bar; uncaught rows 11->3; deterministic x3). (2) Typeface.createFromAsset/createFromFile — resolves the startup-registered app face by APK-entry name (FIX-4/F-NEW-315 scan) into a real Typeface heap object (__font_face_idx__); missing asset throws RuntimeException('Font asset not found') per AOSP. Paint.setTypeface carries the face into the paint state; Canvas replay passes it to TextShaper.draw. (3) Canvas drawText REAL SIZE — the F-NEW-226 law handles Paint.setTextSize BEFORE the shadow layer (heap field __text_size_px__) so paint_text_size_ stayed empty and every canvas-drawn text fell to the tiny legacy bitmap font; the drawText recorder now reads the F-NEW-226 state first-class. App-visible improvements with deterministic x3 before/after: g2048 59ca1526611c4622 -> f43face08299ffc6 (real SCORE header + tile digits + button labels), tttdeluxe af6094295ecb50e3 -> db1d633d77b5819a (real score chips + YOUR MOVE + numpad + buttons). Probe: fixtures/font_probe (aapt2+ECJ+D8; same-string two-face draw: ink geometries differ 336x58 vs 412x62; 'NOFACE' absent = factory law live; tiny-text before-face preserved).",
    "evidence": "evidence/cont70/ (before faces + font probe rows); run/cont70/accept/font_probe5; run/cont70/wall_sweep/{g2048,tttdeluxe}_r1..r3; run/cont70/accept/v2_bouncy; fixtures/font_probe; scripts/cont70_build_font.sh",
    "date": "2026-10-15"
+  },
+  {
+   "id": "F-NEW-373",
+   "status": "CLASSIFIED",
+   "priority": "P2",
+   "layer": "input/touch-target (view lane, F117 dispatcher walk)",
+   "title": "VIEW-LANE TAP HIT-TEST DEAD FOR THE SECUSO TREE SHAPE (cont70, evidence-only): every --tap on the memory app answers target=0 (toolbar (980,80), 'Easy' row (540,1405), 'New Game' (540,1868)) and every --tap on notes_secuso answers target=0 ('Next' (828,1794)); faces byte-unchanged (c559b630 / d0a40904 records). Contrast: the CONT-66 calculator lane hit target=176 ('7' Button) — the walk works for the shallow FrameLayout/GridLayout tree but loses the DrawerLayout+Toolbar+AppBarLayout+ViewPager(+fragment children) shape. Named lever: F117 walk decode on the Secuso tree — which hop drops it (decor/content-root attach chain, fragment-hosted children, transform/visibility gates, or the position store for non-compose deep nesting). Sibling of F-NEW-267 (compose lane store disconnect).",
+   "evidence": "run/cont70/accept/mem_tap1..3.err (three target=0 rows); run/cont70/accept/notes_tap1.err (target=0, face record intact)",
+   "date": "2026-10-16"
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
  "total": 676,
- "count": 678,
+ "count": 679,
  "meta": {
   "last_update": "CONT-56 session 2026-10-12: the framework LinearLayout.onMeasure SUPER law (F-NEW-328) — the lp-aware child-spec source (lp_width/lp_height authoritative over the legacy mirrors) + the AOSP orientation self-size law (sum/max, AT_MOST clamps) at BOTH S109 sites. Probe fnew328 PRE FAIL x1 (self=1080x1920 child=1080x1920) -> POST 4/0 x3. Solitaire: AppBarLayout 1080x1920 -> 1080x105; visible frame unchanged ba50a4d2. Zero-drift 15 anchors x3 (45/45) + probe battery == records. Registry 638->639.",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
@@ -6062,18 +6072,18 @@
   "SUPERSEDED-BY-EVIDENCE": 14,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "ROOT-CAUSED-FIXED": 193,
+  "ROOT-CAUSED-FIXED": 194,
   "IMPLEMENTED": 37,
   "IMPLEMENTED+TESTED": 24,
-  "REGISTERED": 2,
   "OPEN": 4,
   "USED_BY_EXECUTION": 7,
   "OBSERVED-FAIL": 3,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
   "BLOCKED": 2,
+  "REGISTERED": 1,
   "PENDING": 2,
-  "CLASSIFIED": 10,
+  "CLASSIFIED": 11,
   "OBSERVED": 2,
   "TESTED": 1,
   "ROOT-CAUSED-PARTIAL": 4,
@@ -6081,7 +6091,7 @@
   "DUPLICATE-SUPERSEDED": 3,
   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
  },
- "total_roots": 678,
+ "total_roots": 679,
  "generated": "2026-10-16T00:00:00Z",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
