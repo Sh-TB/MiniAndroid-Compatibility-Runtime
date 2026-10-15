@@ -1,24 +1,24 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-10-15T17:18:54Z",
- "total": 676,
- "total_roots": 676,
+ "generated": "2026-10-15T19:49:50Z",
+ "total": 678,
+ "total_roots": 678,
  "status_counts": {
   "PARTIAL": 110,
   "VERIFIED-CORRECT": 56,
   "UNPROVEN": 72,
   "VERIFIED-FIXED": 49,
-  "SUPERSEDED-BY-EVIDENCE": 12,
+  "SUPERSEDED-BY-EVIDENCE": 14,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "OBSERVED-FAIL": 5,
+  "ROOT-CAUSED-FIXED": 193,
   "IMPLEMENTED": 37,
-  "ROOT-CAUSED-FIXED": 191,
   "IMPLEMENTED+TESTED": 24,
   "REGISTERED": 2,
   "OPEN": 4,
   "USED_BY_EXECUTION": 7,
+  "OBSERVED-FAIL": 3,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
   "BLOCKED": 2,
@@ -1623,8 +1623,8 @@
   },
   {
    "id": "R-NEW-228",
-   "title": "R-NEW-228: LIVE: [REC-MISS] Window.setDecorFitsSystemWindows in run/m9_merge_dooz (CMM)",
-   "status": "OBSERVED-FAIL",
+   "title": "R-NEW-228 FIXED (cont70 ANT-5): Window.setDecorFitsSystemWindows(boolean) \u2014 AOSP API 30 PhoneWindow law implemented as accept+record (the runtime has no system-bar inset dispatch; the window IS the whole display surface) in the Window attribute law family (getAttributes/setAttributes/requestFeature block). The residual [REC-MISS] diagnostic row is the standard framework-class DEX-lookup noise \u2014 the law answers beneath it (proven: the sibling getDecorView law prints [F023-PARENTLINK] under the same REC-MISS row shape). dooz face unchanged (31ddd4d5b8e6d18e == record, x3).",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P2",
    "layer": null
   },
@@ -3219,8 +3219,8 @@
   },
   {
    "id": "F-NEW-161",
-   "title": "chessclock_29: NPE \"Uri.toString on null receiver\" at ChessClock.setUpGame pc=321 \u2192 APP-BOUNDARY unwind. getIntPref chain works (prefs shadow OK); the null Uri producer (RingtoneManager.getDefaultUri family or Uri.parse(pref)) is not yet attributed \u2014 disassembler tooling cannot disassemble the 300+ instruction method (dex_method_dump.py buffer mismatch). STATUS: OBSERVED-FAIL, first-divergence producer pending per-instruction proof.",
-   "status": "OBSERVED-FAIL",
+   "title": "SUPERSEDED-BY-EVIDENCE (cont70 ledger ant): the null-Uri producer was Settings$System.DEFAULT_RINGTONE_URI SGET-MISS \u2014 closed by F-NEW-363's Settings default-sound static law (CONT-67). Live re-proof at the cont70 binary: chessclock 0 SGET-MISS, 0 Uri NPE rows, face fe3ae1167c9e968c == the CONT-67 recorded REAL chess-clock face (rc=0, zero uncaught).",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P1",
    "layer": "dex/api"
   },
@@ -4122,8 +4122,8 @@
   },
   {
    "id": "F-NEW-276",
-   "title": "DATA-PATH DUPLICATION IN STREAM RESOLUTION: the <data-root>/data/data/<pkg> prefix doubles across resolution layers (\"runtime/data/data/data/<pkg>/runtime/data/...\"), ENOENT on DataStore files (dooz settings.preferences_pb; non-blocking \u2014 app-caught).",
-   "status": "CLASSIFIED",
+   "title": "SUPERSEDED-BY-EVIDENCE (cont70): the data-path duplication face no longer reproduces at HEAD \u2014 dooz 90s cold + warm runs show ZERO doubled prefixes (was 'runtime/data/data/data/<pkg>/runtime/data/...' x15); the source bug was the F-NEW-293 relative-host-spelling minting (fixed). The residual single-anchored ENOENT on first run (settings.preferences_pb) is the HONEST DataStore first-launch read, app-caught (deferred handler @0x54 FileNotFoundException); the write side is owned by the app's later machinery (F-NEW-277 recomposition-scheduling territory).",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P2",
    "layer": "storage/path resolution"
   },
@@ -4752,7 +4752,7 @@
   },
   {
    "id": "F-NEW-368",
-   "title": "Deferred synthesized exceptions do not deliver to the SAME-FRAME catch: CoordinatorLayout.getResolvedLayoutParams (memory, Privacy Friendly Memory) calls getDeclaredConstructor().newInstance() inside try/catch(Exception); the engine's F106 NoSuchMethodException is thrown DEFERRED (frame-boundary unwind), bypassing the method's own handler \u2014 on ART/AOSP the exception is caught in-frame and only logged (mBehaviorResolved=true, flow continues). Engine flow ALSO continues (deferred semantics) and the app renders real content, but the rows count as uncaught-in-flight (F-016 honesty: 5 rows at the CONT-68 final binary). Named lever: deliver synthesized exceptions through the in-frame handler search before deferring (the throw_deferred find_catch_handler_for_pc already exists \u2014 why it missed this try range is the decode question). Evidence: run/s60/memory_final_run1.log F106-CTOR rows.",
+   "title": "Deferred synthesized exceptions do not deliver to the SAME-FRAME catch (cont70 decode COMPLETE): the miss was is_exception_subtype's builtin parent table \u2014 NoSuchMethodException (and the whole reflective family) was unwalkable, so the typed catch(Ljava/lang/Exception;) at CoordinatorLayout.getResolvedLayoutParams pc=67 (try [0x3c..0x52) CONFIRMED covering the throw pc via DEX try-table decode) never matched and the F106 took the deferred frame unwind. The delivery LAW itself is proven working: with the table entries added, the row reads 'deferred handler @0x53 type=Ljava/lang/Exception;' and the app's own catch runs (rows 42->2, mBehaviorResolved=true path). ACTIVATION BLOCKED by F-NEW-370: with in-frame delivery live, the DEX CoordinatorLayout.onMeasure completes and its MATCH_PARENT child measure answers the AppBar height (105px) -> zero-height ViewPager/rows -> memory face regresses to blank dark. Fix pair owed: subtype table + F-NEW-370; reverted for this wave (zero drift held).",
    "status": "CLASSIFIED",
    "priority": "P2",
    "layer": "dalvik/deferred-exception delivery"
@@ -4763,6 +4763,20 @@
    "status": "ROOT-CAUSED-FIXED",
    "priority": "P1",
    "layer": "dalvik/first-launch init path (cold data sandbox)"
+  },
+  {
+   "id": "F-NEW-370",
+   "title": "CoordinatorLayout.onMeasure DEX-COMPLETION measure chain (exposed by the F-NEW-368 in-frame delivery, cont70): when the app's own catch handles the F106 NoSuchMethodException in-frame, the DEX CoordinatorLayout.onMeasure runs to COMPLETION (in the deferred era every F106 aborted it -> [DEX-MEASURE] FAILED(no write-back) -> the engine default measure law produced correct sizes). The completed DEX onMeasure measures its MATCH_PARENT child (LinearLayout) at the AppBarLayout height (105px, not 1920-105) -> RelativeLayout/ViewPager/rows collapse to 0 height -> memory renders a blank dark face (6da289aab14d2256; real face c559b630dd8f0f0f). The child measure-spec law inside the DEX-executed onMeasure (getChildMeasureSpec semantics for MATCH_PARENT under CoordinatorLayout) is the named lever; closing it un-blocks the F-NEW-368 subtype-table activation (the pair must land together).",
+   "status": "CLASSIFIED",
+   "priority": "P1",
+   "layer": "dex/view-measure (CoordinatorLayout child spec law)"
+  },
+  {
+   "id": "F-NEW-372",
+   "title": "CANVAS TEXT REAL-SIZE + APP-FACE FAMILY (cont70 ANT-3/6): three generic laws. (1) org.json JSONObject.keys() \u2014 AOSP insertion-ordered Iterator<String> via the F-237 legacy box (keys ride array[i] + __array_length__ on the box); was null -> bouncy JSONUtils.mapFromJSONObject hasNext NPE at pc=9 -> field layout never loaded. Post-fix bouncy renders its COMPLETE menu face (1b87e9efa9c32198, was dd0c14257fa1f2af without the top 'Touch to start' bar; uncaught rows 11->3; deterministic x3). (2) Typeface.createFromAsset/createFromFile \u2014 resolves the startup-registered app face by APK-entry name (FIX-4/F-NEW-315 scan) into a real Typeface heap object (__font_face_idx__); missing asset throws RuntimeException('Font asset not found') per AOSP. Paint.setTypeface carries the face into the paint state; Canvas replay passes it to TextShaper.draw. (3) Canvas drawText REAL SIZE \u2014 the F-NEW-226 law handles Paint.setTextSize BEFORE the shadow layer (heap field __text_size_px__) so paint_text_size_ stayed empty and every canvas-drawn text fell to the tiny legacy bitmap font; the drawText recorder now reads the F-NEW-226 state first-class. App-visible improvements with deterministic x3 before/after: g2048 59ca1526611c4622 -> f43face08299ffc6 (real SCORE header + tile digits + button labels), tttdeluxe af6094295ecb50e3 -> db1d633d77b5819a (real score chips + YOUR MOVE + numpad + buttons). Probe: fixtures/font_probe (aapt2+ECJ+D8; same-string two-face draw: ink geometries differ 336x58 vs 412x62; 'NOFACE' absent = factory law live; tiny-text before-face preserved).",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P2",
+   "layer": "graphics/canvas-text + fonts/Typeface family"
   }
  ]
 }
