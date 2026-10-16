@@ -9832,3 +9832,76 @@ Work Log:
 
 Stage Summary:
 - One more ant landed: the log-noise frontier now has a measured census instead of an unbounded "audit sometime" — the classification experiment is the named next step.
+
+---
+Task ID: CONT-72
+Agent: Super Z (main)
+Task: Issue #364 independent review of ChatGPT's three FOUNDATION cards (View
+invalidation / Compose Recomposer wake-up / package identity + canonical path
+contract). Establish current state first; evaluate each card independently;
+run only evidence-driven follow-up tests; post the completion ledger in #364.
+
+Work Log:
+- Synced local checkout (was CONT-10-era) to origin/main 66e30fcf
+  (CONT-71-ANT2). Binary rebuilt byte-identical 86e4ebd4a2c30592 (verified
+  against the CONT-71 record).
+- Current-state facts established: MG-116 PARTIAL (EVIDENCE=''/TEST='') +
+  MG-115 CLOSED verbatim correct in docs/MICRO_GAP_REGISTRY.json; #288 open,
+  #242 closed; registry 680 roots; F-NEW-256 SUPERSEDED-BY-EVIDENCE,
+  F-NEW-277 CLASSIFIED, F-NEW-265 CLASSIFIED, UPP-003 AVAILABLE_NOT_USED,
+  UPP-005 PENDING_RESEARCH.
+- CARD 1 (View invalidation): built fixtures/cont72_draw_probe with the real
+  aapt2/ECJ/D8 toolchain (DrawProbe custom View, phase colors, counters,
+  postDelayed steps vs the +300ms/frame virtual boundaries; res-less variant
+  by stripping resources.arsc). VERDICT: test-gap real, breakage REFUTED —
+  at the UNMODIFIED record binary x3: invDrawDelta=1, rlMeasureDelta=4,
+  coalesceDrawDelta=8, face 6efceae5e82fffb9 x3, 562,500 app-owned px of the
+  final phase color. Engine model decoded: traversal+draw every rendered
+  boundary on both paths (inflater gate rt.loaded()||layout_dirty;
+  programmatic captured-LP path); AOSP damage tracking = documented
+  deviation. A trial invalidate->layout_dirty fix was built, A/B-DISPROVEN
+  (delivery identical without it), REVERTED — binary restored byte-identical;
+  failed experiment preserved. MG-116 PARTIAL -> CLOSED with the fence
+  evidence (registry row + #288 close material).
+- CARD 2 (Compose Recomposer): VERDICT STALE_OR_SUPERSEDED — the card's
+  premise is CONT-23/25-era; the chain has since been proven live
+  (F-NEW-256 superseded: scope re-invocation works, destinations materialize
+  after F-NEW-259/259b at CONT-10 W6; F-NEW-265 re-rooted the divergence to
+  the measure pass; F-NEW-316/317 decode real canvas PATH ops on the dooz
+  face). Current faces re-confirmed: dooz 31ddd4d5 x3 + dooz180 c94da5a9 x2
+  MATCH. The SO deriveStateLocked/workContinuation law remains a valid NEXT
+  lever for F-NEW-277 (recorded, not run — no Compose work this wave).
+- CARD 3 (package identity/paths): built fixtures/cont72_priv_probe V1/V2 +
+  victim canaries in a fresh --data-root.
+  P0-A RUNTIME-PROVEN then FIXED (F-NEW-375, ROOT-CAUSED-FIXED P1):
+  pre-fix package B read victim A's TOPSECRET72 through 4 spellings
+  (absolute, user-0 alias, two relative traversals); fix = caller-identity
+  fence on /data/data|user|user_de branches + lexical containment on the
+  relative branch + volume component boundary; post-fix x3 all four rows
+  DENIED (AOSP FileNotFoundException face), own-CE alias + DE + negatives
+  unchanged, C72 row matrix md5 a18419faa24e x3.
+  P0-B FAULT-INJECTION-PROVEN (F-NEW-376 OBSERVED-FAIL P2, new frontier,
+  NOT fixed): chmod 444 package.json -> install V2 -> true rc=1, base.apk
+  became V2 bytes (d66a3c0e0ef64bf9) under the V1 record (versionCode 1),
+  run --package EXECUTED [C72-VERSION] code=V2 under the V1 record.
+  P0-C same-path cache NOT_APPLICABLE (single-app path per process; install
+  and run are separate processes); split APKs stay UPP-003 AVAILABLE_NOT_USED.
+- Gates at the F-NEW-375 fix binary 19d090e78c5d8e23: wall 13 rows x3 MATCH
+  (memory warm c559b630 x3; r1 = recorded TRUE-COLD 3a3ba873), dooz180 x2
+  MATCH, negatives 19/19 (after the canonical closeout_baseline probe
+  prelude; the 9/19 readings during env restore were pre-existing wiped-state
+  artifacts — A/B-identical on both binaries), reinstall 8/8, goldens 4/4,
+  skill 13/13, validator PASS.
+- Registry 680 -> 682 (F-NEW-375 ROOT-CAUSED-FIXED, F-NEW-376
+  OBSERVED-FAIL); projection id-for-id; MG-116 CLOSED. Evidence:
+  evidence/cont72/cont72_evidence.json. Ledger posted to #364.
+
+Stage Summary:
+- All three cards carry explicit independent verdicts backed by runtime
+  evidence; ChatGPT's Card 3 candidates were the sharpest (P0-A was a real
+  live leak, now fenced); Card 1's missing fence now exists and PASSES;
+  Card 2 was honestly recorded as superseded-with-a-valid-next-lever.
+- One new root fixed (F-NEW-375), one new frontier registered (F-NEW-376),
+  one micro-gap closed with its first dedicated law fence (MG-116).
+- Next: F-NEW-376 staging+atomic-promotion installer law (P2); F-NEW-277
+  continuation handoff using the card's deriveStateLocked mechanism (P0).

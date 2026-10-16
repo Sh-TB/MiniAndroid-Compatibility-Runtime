@@ -1,7 +1,7 @@
 {
  "counts": {
-  "PARTIAL": 27,
-  "CLOSED": 79,
+  "PARTIAL": 26,
+  "CLOSED": 80,
   "OBSERVED": 15,
   "TESTED": 131,
   "PENDING": 59
@@ -1761,14 +1761,14 @@
    "AFTER": "",
    "API": "invalidate propagation",
    "BEFORE": "",
-   "COMMIT": "",
+   "COMMIT": "CONT-72",
    "DOMAIN": "layout/geometry",
-   "EVIDENCE": "",
-   "FANOUT": "not_measured",
+   "EVIDENCE": "CONT-72 dedicated law fence (issue #364 FOUNDATION-1 review): DEX-driven probe fixtures/cont72_draw_probe (aapt2/ECJ/D8; DrawProbe custom View, phase-colored 750x750 region, onDraw/onMeasure/onLayout counters, Handler.postDelayed steps at 650ms against the +300ms/frame virtual boundaries). At the UNMODIFIED record binary 86e4ebd4a2c30592 x3: invDrawDelta=1 (state change + invalidate() -> traversal -> app-owned draw), rlMeasureDelta=4 (MG-115 requestLayout law intact), coalesced invalidate x3 -> latest state drawn, screenshot 6efceae5e82fffb9 x3 with 562,500 px of the app's final-state color (exact app-owned pixel proof); res-less variant (no resources.arsc, 5fd04a96063a032b) identical verdict pre-fix. HONEST MODEL NOTE: delivery holds via per-boundary full-tree traversal+draw on BOTH paths (inflater gate rt.loaded(); programmatic captured-LP path) \u2014 AOSP's dirty-region damage tracking is a documented engine-model deviation, not a correctness gap; over-delivery (a no-invalidate mutation also appears) is benign. A trial invalidate->layout_dirty fix was A/B-tested and REVERTED (delivery identical without it; binary restored byte-identical) \u2014 failed-experiment record kept.",
+   "FANOUT": "fenced_c72 (draw/text/custom-view/drawable-state families)",
    "NOTE": "render-path properties implemented (S94 transform laws); dedicated law tests pending",
    "ROOT_CAUSE": "",
-   "STATUS": "PARTIAL",
-   "TEST": "",
+   "STATUS": "CLOSED",
+   "TEST": "miniandroid run run/cont72/c72draw.apk --width 1080 --height 1920 --frames 20 --max-seconds 25 (x3 byte-identical) + noarsc variant; rows [C72-*] in run/cont72/mg116_fence*.log",
    "UPSTREAM_SOURCE": "frameworks/base/core/java/android/view/View.java (measure/layout)"
   },
   "MG-117": {

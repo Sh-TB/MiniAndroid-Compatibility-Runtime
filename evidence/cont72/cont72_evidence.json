@@ -1,0 +1,78 @@
+{
+  "wave": "CONT-72-ISSUE-364-REVIEW",
+  "date": "2026-10-16",
+  "objective": "Independent review of ChatGPT's three FOUNDATION cards in issue #364 (View invalidation / Compose Recomposer wake-up / package identity+path contract); establish current state; run only evidence-driven follow-up tests; post the completion ledger.",
+  "head_at_start": "66e30fcfe6482dede91eb15cfb9bb274a1ba98dd (== origin/main)",
+  "binary_default": "86e4ebd4a2c30592 (byte-identical rebuild of the CONT-71 record identity, verified)",
+  "binary_after_f375_fix": "19d090e78c5d8e23 (delta = miniandroid/src/storage/data_root.cpp only)",
+  "probe_apks": {
+    "c72draw": "1b0f7e6acb0fc3e1 (arsc variant; also 4dc95ad7fffacc72 earlier schedule, 9821dc50ba80eacf first build)",
+    "c72draw_noarsc": "5fd04a96063a032b",
+    "c72priv_v1": "80e8a3f69255da9e",
+    "c72priv_v2": "d66a3c0e0ef64bf9 (same package, versionCode 2, V2 marker)"
+  },
+  "card1_view_invalidation": {
+    "verdict": "PARTIALLY_CONFIRMED (test-gap real; alleged runtime breakage REFUTED)",
+    "current_state": "MG-116 was PARTIAL with EVIDENCE='' TEST='' (registry quote verbatim correct); MG-115 CLOSED (s106) correct; issue #288 open, #242 closed — all confirmed live at HEAD",
+    "dedicated_fence": "fixtures/cont72_draw_probe — DEX-driven, real engine objects, rows: invalidate delivery / no-spurious-layout check / requestLayout control / coalescing / no-invalidate architecture row",
+    "runs_x3_record_binary": "run/cont72/mg116_fence1..3 — invDrawDelta=1, rlMeasureDelta=4, coalesceDrawDelta=8, law=PASS(delivery+rl), face 6efceae5e82fffb9 x3 byte-identical, rc=0",
+    "pixel_proof": "screenshot 562,500 px of d2d21e (the app's final phase-3 color; exact app-owned region 750x750)",
+    "resless_variant": "c72draw_noarsc 5fd04a96063a032b pre-fix x2: same PASS (programmatic path draws every boundary) — face 6efceae5e82fffb9",
+    "abandoned_fix_record": "invalidate->layout_dirty trial fix built (7f0c9ebd3b3af953 intermediate), A/B-disproven (delivery identical without the fix), REVERTED; binary restored byte-identical 86e4ebd4a2c30592; failed experiment preserved per protocol",
+    "model_note": "traversal+draw runs at every rendered frame boundary on BOTH paths (inflater gate rt.loaded()||layout_dirty; programmatic captured-LP path); AOSP dirty-region damage tracking is a documented engine-model deviation (over-delivery benign, under-delivery impossible under full redraw)",
+    "registry_delta": "MG-116 PARTIAL -> CLOSED (docs/MICRO_GAP_REGISTRY.json), fence recorded"
+  },
+  "card2_compose_recomposer": {
+    "verdict": "STALE_OR_SUPERSEDED (premise evidence is CONT-23/25-era; the frontier has since advanced through CONT-10 W6 / CONT-11 W7)",
+    "current_registry_state": {
+      "F-NEW-277": "CLASSIFIED P0 — recomposition starvation at the frame-pump quiescence boundary; evidence updated through CONT-26 ([F277-POLL] fires; the 16ms View.post strand runs; recomposition #2 still did not start AT THAT POINT)",
+      "F-NEW-256": "SUPERSEDED-BY-EVIDENCE — 'W5 zero reinvocation' corrected; scope re-invocation WORKS; destination content MATERIALIZES (LayoutNodes+inserts) after F-NEW-259/259b (CONT-10 W6)",
+      "F-NEW-259_259b": "ROOT-CAUSED-FIXED — DEX-iterator name-resolution law + ArrayList.addAll no-op; dooz pass#2 materializes destinations",
+      "F-NEW-265": "CLASSIFIED — current dooz first divergence re-rooted: measure pass death (null-text CharSequence); compose DRAW machinery PROVEN correct end-to-end (dispatchDraw/coordinator walk/canvas.translate live)",
+      "F-NEW-316_317": "CLASSIFIED — icon vector PATH ops reach the canvas (1721 ops decoded; zero contours; black-rect slots) — proof that draw ops DO land on the face now",
+      "UPP-005": "PENDING_RESEARCH (row itself stale relative to the above)"
+    },
+    "current_face_confirmation": "dooz 15s row 31ddd4d5b8e6d18e x3 MATCH + dooz180 c94da5a928ea213b x2 MATCH at the review binary — the 180s face is no longer background-only",
+    "card_merit": "the SO deriveStateLocked/workContinuation mechanism and the 10-row proof matrix remain a VALID law source for F-NEW-277's next lever; the diagnosis 'invalidation delivery never happens' is what is stale",
+    "tests_run_here": "wall rows only (no new Compose implementation work — per the review mission)"
+  },
+  "card3_package_identity": {
+    "verdict": "CONFIRMED_OPEN_GAP (P0-A isolation) + OBSERVED (P0-B atomicity) + NOT_APPLICABLE (P0-C same-path cache, unreachable lifecycle) + ALREADY_TRACKED (split = UPP-003 AVAILABLE_NOT_USED)",
+    "p0a_isolation": {
+      "pre_fix": "run/cont72/priv_run1: C72-XPKG-ABS LEAK + C72-XPKG-U0 LEAK + C72-REL-ESC LEAK + C72-REL-ESC2 LEAK (4 spellings read victim TOPSECRET72); NEG-ETC/NEG-PROC/NEG-DLT/MNT rows already honest",
+      "fix": "F-NEW-375 in miniandroid/src/storage/data_root.cpp — caller-identity fence on the three sandbox branches + lexical containment on the relative branch + component boundary on the volume dispatch",
+      "post_fix_x3": "run/cont72/priv_fix1..3 — all four leak rows DENIED (FileNotFoundException), own-CE alias + DE round-trip + negatives unchanged, C72 row matrix md5 a18419faa24e x3"
+    },
+    "p0b_atomicity": {
+      "fault_injection": "chmod 444 package.json -> install V2 -> true rc=1 '[ERROR] package.json write failed'; base.apk sha became V2 d66a3c0e0ef64bf9 while record stayed versionCode 1; run --package executed [C72-VERSION] code=V2 under the V1 record",
+      "classification": "F-NEW-376 OBSERVED-FAIL P2 (new frontier, not fixed this wave); remove_all-on-sha-mismatch removes only the CODE dir (data/data separate) — card wording imprecision noted",
+      "reachability_note": "the failure was injected at the record-write boundary; the sha-mismatch remove_all path stays source-level (not externally triggerable without engine change)"
+    },
+    "p0c_cache_splits": {
+      "same_path_cache": "NOT_APPLICABLE — ensure_loaded(apk_path) sites (android_shadows 4572/4658/8078, webview_engine 464/485) all pass the single running app's path; install and run are separate processes; no in-process reinstall path",
+      "split_apks": "UPP-003 AVAILABLE_NOT_USED confirmed at HEAD (no fixture, splitSourceDirs never read) — matches the card"
+    },
+    "base_apk_identity": "card's own claims confirmed (cmd_install copy+hash+record; installed base.apk after sideload move proven by prior Gate-A evidence — not reopened)"
+  },
+  "gates_at_fix_binary_19d090e78c5d8e23": {
+    "wall_13_rows_x3": "csw d3c26b73 / dooz 31ddd4d5 / flappycow 13cf4746 / g2048 f43face0 / gmdice 3891679d / microtimer bbd350b6 / opencalc f25b754c / simplecalc 2ac5d8d0 / tanana afe0bd8d / tttdeluxe db1d633d / unote 90a67cc1 — ALL MATCH x3; memory warm c559b630 x3 MATCH (r1 = recorded TRUE-COLD 3a3ba873)",
+    "dooz180": "c94da5a928ea213b MATCH x2",
+    "negatives": "19/19 PASS (after canonical closeout_baseline probe prelude; pre-existing env-state failures diagnosed via pre/post-fix A/B — both 9/19 without prelude, 19/19 with)",
+    "reinstall": "8/8 PASS",
+    "goldens": "4/4 PASS",
+    "skill_selftest": "13/13 PASS",
+    "validator": "PASS (projection identity-verified id-for-id, 682 roots)"
+  },
+  "registry_delta": "680 -> 682 roots: F-NEW-375 ROOT-CAUSED-FIXED (P1), F-NEW-376 OBSERVED-FAIL (P2); MG-116 CLOSED",
+  "not_run": [
+    "Compose Recomposer synthetic 10-row proof matrix (Card 2) — the premise was superseded before spending the fixture; the matrix is recorded as F-NEW-277's next lever, not run",
+    "install fault injection at the staging-copy and sha-validation boundaries (not externally injectable without engine change)",
+    "split-APK fixture (UPP-003 stays AVAILABLE_NOT_USED)",
+    "full 99-stage battery re-run (canonical wall + all control gates run instead)"
+  ],
+  "honest_notes": [
+    "The MG-116 fix attempt was made, A/B-tested, found unnecessary, and REVERTED — the shipped binary for Card 1 evidence is the unmodified record identity.",
+    "Negative-gate 9/19 readings during environment restore were an artifact of the wiped run/gatea state (both binaries identical), not a regression; documented to keep the gate log honest.",
+    "One shell $?-eating mistake (pipe before rc capture) was caught and re-verified during the install fault injection — the recorded rc=1 is the true engine exit code."
+  ]
+}

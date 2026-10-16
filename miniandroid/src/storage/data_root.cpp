@@ -17,6 +17,24 @@ std::string g_app_data_root = "runtime/data";
 bool g_explicit = false;
 // F-NEW-234: the running package identity ("" = none bound).
 std::string g_context_package;
+
+// F-NEW-375 (CONT-72, issue #364 FOUNDATION-3 review probe): lexical
+// containment — does `child` stay inside (or equal) `base` after
+// normalization? The relative branch previously concatenated
+// package_data_dir() / logical with NO check, so a DEX-visible
+// "../<other-pkg>/files/x" or "files/../../x" traversal escaped the app
+// namespace (runtime-proven: c72priv probe read another package's
+// TOPSECRET72 bytes through 4 spellings — AOSP kernel-UID fence has no
+// single-process analog, the resolver IS the fence).
+bool path_contained(const fs::path& base, const fs::path& child) {
+    std::string b = base.lexically_normal().string();
+    std::string c = child.lexically_normal().string();
+    if (c == b) return true;
+    if (c.size() > b.size() && c.compare(0, b.size(), b) == 0 &&
+        (b.back() == '/' || c[b.size()] == '/'))
+        return true;
+    return false;
+}
 } // namespace
 
 void set_app_data_root(const std::string& root) {
@@ -127,7 +145,14 @@ PathResolution resolve_android_path(const std::string& logical) {
     // Relative → the running package's data dir (F-NEW-234 sandbox anchor).
     if (logical[0] != '/') {
         r.category = PathCategory::RELATIVE_APP_DATA;
-        r.host_path = package_data_dir() / logical;
+        fs::path base = package_data_dir();
+        fs::path host = (base / logical).lexically_normal();
+        // F-NEW-375: a relative path navigates per declared Android API
+        // semantics but must NEVER escape the app namespace to a sibling
+        // package tree or the store/host root (runtime-proven leak rows
+        // C72-REL-ESC / C72-REL-ESC2 in the c72priv probe).
+        if (!path_contained(base, host)) return r;  // DENY
+        r.host_path = host;
         r.allowed = true;
         return r;
     }
@@ -196,11 +221,18 @@ PathResolution resolve_android_path(const std::string& logical) {
             std::string pkg = (slash == std::string::npos) ? rest : rest.substr(0, slash);
             std::string tail = (slash == std::string::npos) ? "" : rest.substr(slash + 1);
             if (!pkg.empty() && pkg.find('.') != std::string::npos) {
-                r.category = PathCategory::SANDBOX_DATA;
-                fs::path base = fs::path(g_app_data_root) / "data" / "data" / pkg;
-                r.host_path = tail.empty() ? base : base / tail;
-                r.allowed = true;
-                return r;
+            // F-NEW-375 caller-identity law (AOSP ActivityManager UID fence):
+            // a bound package identity may resolve ONLY ITS OWN CE tree.
+            // Empty identity = legacy tool paths (install/analyze — no app
+            // caller to fence). PackageManager/metadata APIs are separate
+            // surfaces, not raw file reads.
+            if (!g_context_package.empty() && pkg != g_context_package)
+                return r;  // DENY foreign package private data
+            r.category = PathCategory::SANDBOX_DATA;
+            fs::path base = fs::path(g_app_data_root) / "data" / "data" / pkg;
+            r.host_path = tail.empty() ? base : base / tail;
+            r.allowed = true;
+            return r;
             }
             return r;
         }
@@ -223,6 +255,13 @@ PathResolution resolve_android_path(const std::string& logical) {
             std::string pkg = (pslash == std::string::npos) ? after : after.substr(0, pslash);
             std::string tail = (pslash == std::string::npos) ? "" : after.substr(pslash + 1);
             if (!pkg.empty() && pkg.find('.') != std::string::npos) {
+                // F-NEW-375 caller-identity law: same fence as the
+                // /data/data branch — the user-0 alias resolves the SAME
+                // bytes, so it MUST enforce the SAME owner check (the
+                // c72priv probe leaked through /data/user/0/<victim> before
+                // this law).
+                if (!g_context_package.empty() && pkg != g_context_package)
+                    return r;  // DENY foreign package private data
                 // User-0 credential-protected alias law: /data/user/0/<pkg>
                 // IS /data/data/<pkg> in AOSP (same inode, two spellings).
                 // G-8 FIX (#371): /data/user_de/0/<pkg> is DISTINCT storage
@@ -251,9 +290,16 @@ PathResolution resolve_android_path(const std::string& logical) {
     }
 
     // ── external volume (F-NEW-223 virtual mount law).
+    // F-NEW-375 component-boundary law: the volume name is ONE path
+    // component — "/storage/emulated/0evil" is a DIFFERENT (nonexistent)
+    // volume, never a sibling-prefix alias of the primary mount. The old
+    // bare-prefix test mapped 0evil/0123… INTO the primary volume.
     if (logical.rfind("/storage/emulated/0", 0) == 0) {
-        std::string rest = logical.size() > strlen("/storage/emulated/0")
-                               ? logical.substr(strlen("/storage/emulated/0"))
+        const size_t kVolLen = 19;  // strlen("/storage/emulated/0")
+        if (logical.size() > kVolLen && logical[kVolLen] != '/')
+            return r;  // sibling volume name (0evil, 0123…) → DENY
+        std::string rest = logical.size() > kVolLen
+                               ? logical.substr(kVolLen)
                                : "";
         r.category = PathCategory::VIRTUAL_EXTERNAL;
         fs::path backing = fs::path(g_app_data_root) / "storage" / "emulated" / "0";
