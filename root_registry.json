@@ -6066,11 +6066,38 @@
    "title": "PER-CONTAINER DEX-MEASURE TRUST LAW (CONT-71 named lever): the F-NEW-368 delivery + the F-NEW-370 measure laws (negotiation measureChildWithMargins + answer resolveSizeAndState family) are IMPLEMENTED behind MINIANDROID_F368_LAW=1 / MINIANDROID_MCM_LAW=1 and proven on the memory app (CoordinatorLayout chain completes, face c559b630 == record under the activated pair), but the SAME activation deterministically diverges opencalculator v53 (3e73a5ad, collapsed): the app's SlidingUpPanelLayout DEX onMeasure is incompletely emulated (R-NEW-441 family) and its child-measure results feed wrong-but-in-bounds specs (EXACTLY(105) from the drag-view read-back) plus a garbage out-of-display spec EXACTLY(1073740479) (spec-bounds gates now decline the OOB shape; the in-bounds wrong-spec shape remains). Decode: the DEX-measured child sizes change the panel's internal offset/measure math -> the panel slides its content off-view. Lever: a per-container DEX-measure trust discipline (which containers' completed DEX onMeasure answers are authoritative vs which fall back to the native law) — e.g. bounded activation proofs per container family with cross-family regression walls; NOT per-app gating. The default binary keeps ALL the CONT-71 laws OFF (byte-equivalent behavior; wall 39/39 MATCH proved)",
    "evidence": "run/s71/gate4 (738 answers 0x0 again after the OOB gate; EXACTLY(105) in-bounds rows remain); run/s60/regression/opencalc_r1 vs run/s71/regression/opencalc_r1 pixel metrics (321287 vs 3096 sampled non-bg)",
    "first_observed": "CONT-71"
+  },
+  {
+   "id": "F-NEW-375",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "title": "PATH-IDENTITY / CONTAINMENT LAW (issue #364 FOUNDATION-3 review, runtime-proven before fix): resolve_android_path enforced namespace SHAPE but not CALLER IDENTITY — the /data/data/<pkg>, /data/user/<id>/<pkg> and /data/user_de/<id>/<pkg> branches allowed ANY dotted package (runtime leak: package com.probe.c72priv read victim com.dubrowgn.microtimer's TOPSECRET72 bytes through 4 spellings: absolute, user-0 alias, and two relative .. traversals); the relative branch concatenated package_data_dir()/logical with NO containment check (OS resolves the .. for the caller); the /storage/emulated/0 dispatch used a bare prefix test so sibling volume names (0evil, 0123) mapped INTO the primary volume. AOSP fences these at the kernel UID boundary (ActivityManager per-package uid + sepolicy appdomain); the single-process runtime must fence at the resolver — the ONE canonical law every consumer shares (FileInputStream/FileOutputStream ctors, BitmapFactory.decodeFile, Context file APIs).",
+   "layer": "storage/path-resolution (resolve_android_path)",
+   "root_cause": "THREE missing laws in data_root.cpp resolve_android_path: (1) caller-identity — sandbox branches never compared the extracted package to g_context_package; (2) relative-branch containment — no lexical normalization check before allow; (3) volume component boundary — prefix test without the end-or-slash check. FIX: identity check on all three sandbox branches (bound identity => own CE/DE tree only; empty identity = legacy tool paths keep the old behavior), lexical path_contained() fence on the relative branch, and the component-boundary check on the external-volume dispatch.",
+   "evidence": "PROBE (real aapt2/ECJ/D8 toolchain): fixtures/cont72_priv_probe -> run/cont72/c72priv_v1.apk 80e8a3f69255da9e, installed as com.probe.c72priv beside victim com.dubrowgn.microtimer in a fresh --data-root with planted canaries. PRE-FIX run/cont72/priv_run1: C72-XPKG-ABS LEAK + C72-XPKG-U0 LEAK + C72-REL-ESC LEAK + C72-REL-ESC2 LEAK (all four read TOPSECRET72, 11 bytes); negative controls already honest (/etc/passwd, /proc/self/status, /data/local/tmp, sibling-volume opens answered FileNotFoundException); own-namespace CE alias + DE round-trip OK. POST-FIX run/cont72/priv_fix1..3: all four leak rows DENIED with the AOSP FileNotFoundException face; ALIAS-SELF/DE-WRITE/NEG rows unchanged; C72 row matrix byte-identical x3 (md5 a18419faa24e). Binary 19d090e78c5d8e23 (delta = data_root.cpp only; prior binary 86e4ebd4a2c30592 was the CONT-71 record identity, verified byte-identical rebuild). MOUNT-ALIAS note: the pre-fix file-OPEN layer already answered absent for /storage/emulated/0evil (defense at a second check), so that row was not a live leak — the resolver mapping is still wrong-shaped and is fixed for every consumer (honest classification: source-level fix, not a runtime-reproducible leak).",
+   "probe": "fixtures/cont72_priv_probe (C72- row matrix, 13 rows); harness run/cont72/droot (victim + canaries planted); rows logged by the code whose contract is asserted.",
+   "fanout": "every app-visible file consumer that resolves a logical path (streams, bitmap decode, prefs/db/DE families) — one fence at the shared primitive instead of per-consumer patches; also protects future multi-package test corpora.",
+   "date": "2026-10-16",
+   "verified_current": "wall 13 rows x3 MATCH at the fix binary (csw/dooz/flappycow/g2048/gmdice/microtimer/opencalc/simplecalc/tanana/tttdeluxe/unote + memory warm x3 == record c559b630dd8f0f0f, memory r1 == recorded TRUE-COLD 3a3ba8734b662e55); dooz180 == record c94da5a928ea213b x2; negatives 19/19 (after the canonical closeout_baseline probe prelude), reinstall 8/8, goldens 4/4, skill 13/13, s82 validator PASS."
+  },
+  {
+   "id": "F-NEW-376",
+   "status": "OBSERVED-FAIL",
+   "priority": "P2",
+   "title": "INSTALL/UPDATE COMMIT IS NOT ATOMIC (issue #364 FOUNDATION-3 review, fault-injection-proven): cmd_install copies the new APK DIRECTLY onto <store>/data/app/<pkg>/base.apk (copy_file overwrite_existing) BEFORE write_record; a record-write failure or process exit between the two leaves V2 code bytes under the V1 committed record, and run --package gates on base.apk existence only — it executes code that disagrees with the committed identity.",
+   "layer": "package-store install commit (main.cpp cmd_install / pkgstore)",
+   "root_cause": "Commit ordering: promote-in-place -> hash-verify -> write record. The hash-verify failure path remove_all()s the code dir (availability loss of the previous working install, but the private data tree <root>/data/data/<pkg> is a SEPARATE tree and survives — the card's 'private data tree removal' wording is imprecise). The record-write failure path has NO rollback of the promoted base.apk. AOSP PMS law: stage first, verify, then atomic promote + record (recovery on restart).",
+   "evidence": "FAULT INJECTION (no engine change; failure injected at the record-write boundary): installed c72priv V1 (80e8a3f69255da9e, record 1.0-v1marker/vc1); chmod 444 package.json; install V2 (d66a3c0e0ef64bf9) -> '[ERROR] package.json write failed', true rc=1 (re-verified without a pipe eating $?) — post state: base.apk sha == V2 d66a3c0e0ef64bf9, package.json still versionCode 1; run --package then EXECUTED V2 code ([C72-VERSION] code=V2) under the V1 record. Repro pair: run/cont72/c72priv_v1.apk / c72priv_v2.apk (same package, distinct versionCode/label/marker).",
+   "probe": "harness-level fault injection (chmod 444 on package.json); V1/V2 fixture pair distinguishes code identity from record identity.",
+   "fanout": "every install/update path; silently-mixed identity would poison per-package evidence (provenance rows recording a version the bytes do not carry).",
+   "date": "2026-10-16",
+   "next_fix_surface": "staging sibling file + validation + atomic rename + record committed before/with promotion + recovery marker; run --package verifies record-sha vs bytes-sha agreement before launch. NOT FIXED this wave — no engine change beyond F-NEW-375 was made for it.",
+   "verified_current": "reproducible at binary 19d090e78c5d8e23; open frontier."
   }
  ],
  "note": "S61: F-107a/b/b2/c/c2/d engine-evidence cost laws (measured via gprof + rdtsc phase timers: __tcf_0 static churn 50% wall, per-instruction trace O(n), interface-closure linear scans, per-invoke method-table copies) + F-108 R8-rename compose identity law (dispatchDraw-override contract). Runtime Spotlight Corpus Phase A: 53 F-Droid apps fetched SHA-verified + 52 executed in the S61 sweep (L5=7, L4=3, L2=39, L1=3) + 9 pre-existing = 61 corpus apps; coverage matrix docs/corpus/SPOTLIGHT_COVERAGE.md. Search ledger: zoekt + codesearch built and benchmarked vs ripgrep (docs/corpus/SEARCH_LEDGER.md). No new roadmap/branch/campaign. | S70: R-NEW-388 + A7 registered from gap-matrix provenance (registry↔docs single-source-of-truth restored); registry 372→374 roots. | S70: F-136 (ARSC-first strings) FIXED, R-NEW-389 registered; registry 376 roots. | S70: S67/S69 F-numbers back-registered (F-121..F-124, A2, A4, C3, F-135); registry 384 roots. | S80: three real games (Snake Deluxe, Mini Tetris, 2048) built + played on the runtime; R-NEW-401 external-cache bridge. | CONT-17 2026-10-08: baseline_head refreshed to merged-HEAD a6028be6 (CONT-15 W9 + CONT-16 fix batch); D-family live re-verify + supersede linkage; F-NEW-256/R-NEW-381 -> SUPERSEDED-BY-EVIDENCE -> F-NEW-265; odd statuses normalized with per-row evidence quotes.",
- "total": 676,
- "count": 680,
+ "total": 682,
+ "count": 682,
  "meta": {
   "last_update": "CONT-56 session 2026-10-12: the framework LinearLayout.onMeasure SUPER law (F-NEW-328) — the lp-aware child-spec source (lp_width/lp_height authoritative over the legacy mirrors) + the AOSP orientation self-size law (sum/max, AT_MOST clamps) at BOTH S109 sites. Probe fnew328 PRE FAIL x1 (self=1080x1920 child=1080x1920) -> POST 4/0 x3. Solitaire: AppBarLayout 1080x1920 -> 1080x105; visible frame unchanged ba50a4d2. Zero-drift 15 anchors x3 (45/45) + probe battery == records. Registry 638->639.",
   "r464_closeout": "2026-10-04 binary 583b3a2a6f3d30c8",
@@ -6084,12 +6111,12 @@
   "SUPERSEDED-BY-EVIDENCE": 16,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "ROOT-CAUSED-FIXED": 195,
+  "ROOT-CAUSED-FIXED": 196,
   "IMPLEMENTED": 37,
   "IMPLEMENTED+TESTED": 24,
   "OPEN": 2,
   "USED_BY_EXECUTION": 7,
-  "OBSERVED-FAIL": 3,
+  "OBSERVED-FAIL": 4,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
   "BLOCKED": 2,
@@ -6103,7 +6130,7 @@
   "DUPLICATE-SUPERSEDED": 3,
   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
  },
- "total_roots": 680,
+ "total_roots": 682,
  "generated": "CONT-71 wave (F-NEW-368/370 PARTIAL laws-implemented + F-NEW-374 frontier)",
  "count_note": "total_roots counter reconciled to actual rows (575) at CONT-15 merge; total field kept as-is"
 }
