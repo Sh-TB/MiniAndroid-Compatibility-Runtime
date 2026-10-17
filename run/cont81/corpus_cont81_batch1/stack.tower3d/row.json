@@ -77,7 +77,7 @@
  },
  "uncaught_n": 2,
  "verdict_v2": "SPLASH_ONLY",
- "notes": "",
+ "notes": "ROOT-CAUSED+FIXED (CONT-81): two generic laws landed \u2014 F-NEW-382 (ART identity props: libGDX mis-classified desktop because java.runtime.name was absent; fix=ART truth table) + F-NEW-382b (lazy G-4 nativeLibraryDir derivation; fix=on-demand install-law). Post-fix the loader classifies Android, reaches the REAL dlopen of the extracted x86_64 libgdx.so; the remaining boundary is the host dlopen of Android DT_NEEDED sonames (libm.so is a GNU ld script here: invalid ELF header) = the F-NEW-157/UPP-001 native-execution domain. Face honestly stays NO_ROOT.",
  "legacy_verdict": "SPLASH_ONLY",
  "repeat_runs": 1,
  "repeat_face_stable": true,
@@ -85,6 +85,6 @@
   "SPLASH_ONLY"
  ],
  "repeat_all_same_verdict": true,
- "root_id": "",
- "next_action": ""
+ "root_id": "F-NEW-382/F-NEW-382b",
+ "next_action": "ELF dependency-shim law (LD_LIBRARY_PATH farm at process start or DT_NEEDED rewrite at extraction) \u2014 F-NEW-157 domain, named not claimed"
 }
