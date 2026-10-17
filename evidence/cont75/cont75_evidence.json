@@ -1,0 +1,43 @@
+{
+  "wave": "CONT-75",
+  "date": "2026-10-17",
+  "objective": "F-NEW-277 P0 lever: re-establish state after container reset, decode dooz's CURRENT first divergence at HEAD aabf7bb9 to the exact throw site, register the decoded roots, land the env-gated throw-provenance diagnostic",
+  "head_at_start": "aabf7bb90a12b8fe (== origin/main; local tree was a stale CONT-10-W6 snapshot e99c2fbd in a reset container — fast-forwarded BEFORE any work, per the CONT-73 precedent)",
+  "binary": "1ef983a6ff71dade (rebuilt from the synced tree + env-gated THROW-SITE diag; behavior-identical: wall dooz 31ddd4d5b8e6d18e x3 + opencalc f25b754c4565c38b x3 MATCH)",
+  "decode": {
+    "first_divergence": "Lt4.onMeasure (AndroidComposeView) answers 0x0 FAILED(no write-back); frame truth DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS; 67 uncaught in-flight exceptions past all app frames",
+    "exception_identity": "La; extends java.util.concurrent.CancellationException (R8 global-synthesis merged name), decoded directly from the dooz dex class_def",
+    "throw_site": "La7;.m pc=32 — cu 0x0427 = throw v4, preceded by const-class/instance-of guard (conditional cancellation); La7 is an R8 synthetic lambda class (2 synthetic fields e:I + f:Object, 1 direct lambda factory 0x11001 + 1 virtual interface impl 0x11) = the JobSupport completion-node invoke shape",
+    "propagation_chain": "La7.m(17) throw -> Lzs.m (compose measure pass, handler=NOT_FOUND) -> Lte1.f(16) -> Lse1.s(15) -> Lg.q(13) -> Lg.h(12) -> Lat.a(10) -> Lse1.m catch-all CAUGHT then re-thrown -> Let.a catch-all CAUGHT then re-thrown -> Llo.B typed catch (type=La;) TERMINAL — coroutine machinery survives, measure pass is dead",
+    "falsified_alternatives": ["Lm7;.<init> null-text ctor (the old F-NEW-265 chain face) — never fires this run", "F-NEW-270 ROOT-059 route — zero routes in the log (fixed)", "F-NEW-271 null-element corruption — zero F271-READ/WRITE rows (fixed)", "the VirtualMachineError F084-HALT rows — wall-clock-budget artifact, separate phenomenon"]
+  },
+  "registered": {
+    "F-NEW-378": "CLASSIFIED P0 — coroutine cancellation naked-unwind kills the measure pass; fix surface NAMED (continuation-boundary cancellation-conversion law) but NOT implemented under the fixture-first discipline: a minimal deterministic CancellableContinuation cancel-during-resume fixture must prove the boundary gap before the fence shape is decided",
+    "F-NEW-379": "CLASSIFIED P2 — R350-FORNAME CNFE kotlin.reflect.jvm.internal.ReflectionFactoryImpl; THIRD app evidence point (dooz Lub1;.<clinit> pc=3, own catch-all) after CONT-73's Guandan + AndStatus2048 shared finding; honest candidate, causality unproven (dooz's content blocker is F-NEW-378, not this)",
+    "F-NEW-277": "evidence updated — the next lever is now concrete (F-NEW-378's continuation-boundary conversion comes FIRST; the deriveStateLocked/workContinuation re-arm note stays valid for the post-fix runner)"
+  },
+  "tooling": {
+    "added": "MINIANDROID_THROW_TRACE=1 — env-gated athrow provenance ([THROW-SITE] rows: exception class, thrower method+pc, depth, engine-decoded bytecode window pc-8..pc+4); kept as a permanent diag",
+    "also_added": "scripts/cont75_dex_dump.py (sequential class_def walker; kept for reference — the ENGINE's decode remains the authority for bytecode windows)"
+  },
+  "regression_gates": {
+    "wall": "dooz 31ddd4d5b8e6d18e x3 MATCH + opencalc f25b754c4565c38b x3 MATCH (zero drift with the diag binary)",
+    "negatives": "19/19 PASS (after the canonical gate-A probe prelude — without it 9/19, the recorded env-state artifact)",
+    "reinstall": "8/8 PASS",
+    "goldens": "4/4 PASS",
+    "validator": "PASS",
+    "registry": "683 -> 685 (F-NEW-378 P0 + F-NEW-379 P2), id-unique, mirrored to canonical/"
+  },
+  "honest_notes": [
+    "NO fix was attempted this wave: the cancellation-conversion law touches the coroutine semantics family, and the fixture-first discipline (established at CONT-73 for the kotlin-reflect candidate) forbids a blind fence — the decode IS the deliverable",
+    "the container reset was caught in phase 0 (stale e99c2fbd tree, missing scripts, empty build dir) and repaired by fast-forward to origin/main BEFORE any work — no evidence was produced against the stale tree",
+    "the gate-A probe + probe_store artifacts lost to the reset were rebuilt with the canonical script (probe lib sha ad413625925ed8e5, apk 459f5c401802d9d24138de65ff33b193) and the prelude dependency of the negatives gate is now documented in the wave record",
+    "an independent DEX walker was attempted and abandoned mid-wave (index_diff running totals broke a naive per-class parse) — the engine's own decode was used instead; the walker is committed as a reference with its limitation documented"
+  ],
+  "artifacts": {
+    "diag": "miniandroid/src/dex/dalvik_engine.cpp THROW-SITE block (env-gated)",
+    "registry_script": "scripts/cont75_registry_update.py",
+    "evidence": "evidence/cont75/cont75_evidence.json",
+    "runs": "run/cont75/dooz_state|dooz_long|dooz_ts2|dooz_f141|dooz_mt (decode chain), run/gatea/probe_prelude (rebuilt prelude)"
+  }
+}
