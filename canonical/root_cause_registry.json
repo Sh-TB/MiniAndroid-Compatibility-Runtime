@@ -1,7 +1,7 @@
 {
  "_projection_of": "root_registry.json",
  "_law": "root_registry.json is the single writable store; this file is a generated read model (ROADMAP SS3: no duplicate canonical registries).",
- "generated": "2026-10-16T04:57:36Z",
+ "generated": "2026-10-17T04:18:00Z",
  "total": 682,
  "total_roots": 682,
  "status_counts": {
@@ -12,12 +12,12 @@
   "SUPERSEDED-BY-EVIDENCE": 16,
   "RESEARCHED-NOT-IMPLEMENTED": 16,
   "NOT-APPLICABLE": 42,
-  "ROOT-CAUSED-FIXED": 196,
+  "ROOT-CAUSED-FIXED": 197,
   "IMPLEMENTED": 37,
   "IMPLEMENTED+TESTED": 24,
   "OPEN": 2,
   "USED_BY_EXECUTION": 7,
-  "OBSERVED-FAIL": 4,
+  "OBSERVED-FAIL": 3,
   "ROOT-CAUSED-CLOSED": 3,
   "VERIFIED": 3,
   "BLOCKED": 2,
@@ -4801,9 +4801,9 @@
   },
   {
    "id": "F-NEW-376",
-   "title": "INSTALL/UPDATE COMMIT IS NOT ATOMIC (issue #364 FOUNDATION-3 review, fault-injection-proven): cmd_install copies the new APK DIRECTLY onto <store>/data/app/<pkg>/base.apk (copy_file overwrite_existing) BEFORE write_record; a record-write failure or process exit between the two leaves V2 code bytes under the V1 committed record, and run --package gates on base.apk existence only \u2014 it executes code that disagrees with the committed identity.",
-   "status": "OBSERVED-FAIL",
-   "priority": "P2",
+   "title": "INSTALL/UPDATE COMMIT IS NOT ATOMIC (issue #364 FOUNDATION-3 review, fault-injection-proven) \u2014 FIXED by the staged-generation promotion law: cmd_install now builds the COMPLETE new generation (base.apk + package.json + lib/<abi> + native_libs.json) under <store>/data/app/.staging/<pkg>.<pid>, verifies staged bytes against the source sha, then commits with a directory-generation switch (fresh: ONE rename; update: park old -> promote new -> drop parked, with rollback to the parked generation on every failure). Code bytes and identity metadata can never be from different generations; readers resolve only committed generations.",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
    "layer": "package-store install commit (main.cpp cmd_install / pkgstore)"
   }
  ]

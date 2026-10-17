@@ -467,22 +467,16 @@ struct PackageRecord {
     std::string target_sdk;
 };
 
-bool write_record(const PackageRecord& rec, const std::string& data_root) {
-    std::error_code ec;
-    auto dir = package_dir(data_root, rec.package);
-    std::filesystem::create_directories(dir, ec);
-    if (ec) return false;
-    // App-private dirs (AOSP /data/data/<pkg> family law; F-NEW-234 aligns
-    // the runtime Context family with this exact layout — code_cache and
-    // no_backup are created at first Context use on AOSP; eager here).
-    for (const char* sub : {"files", "cache", "shared_prefs", "databases",
-                            "code_cache", "no_backup"}) {
-        std::filesystem::create_directories(
-            std::filesystem::path(data_root) / "data" / "data" / rec.package / sub, ec);
-    }
-    std::ofstream out(package_json(data_root, rec.package).string(),
-                      std::ios::binary | std::ios::trunc);
-    if (!out.is_open()) return false;
+// The record body writer shared by the live store and the F-NEW-376 staging
+// generation. Identity fields (codePath/hostCodePath) ALWAYS describe the
+// LIVE package location: a staged record must describe the location it will
+// occupy after promotion (the generation moves as one directory unit, so the
+// embedded identity stays valid after the rename). This is what keeps the
+// staged record byte-identical to the committed record — no post-promotion
+// rewrite, no mixed identity.
+static std::string record_json_body(const std::string& data_root,
+                                    const PackageRecord& rec) {
+    std::ostringstream out;
     out << "{\n";
     out << "  \"package\": \"" << json_escape(rec.package) << "\",\n";
     out << "  \"versionName\": \"" << json_escape(rec.version_name) << "\",\n";
@@ -509,7 +503,36 @@ bool write_record(const PackageRecord& rec, const std::string& data_root) {
     out << "  \"installLayout\": \"MiniAndroid deterministic package store "
            "(F-NEW-231; AOSP /data/app law, deterministic mapping deviation)\"\n";
     out << "}\n";
+    return out.str();
+}
+
+// Write package.json into an arbitrary GENERATION directory (staging or
+// live). F-NEW-376: the staged record is written BEFORE promotion and moves
+// with the directory — a record is never written into a live generation
+// separately from its code bytes.
+bool write_record_to(const std::filesystem::path& gen_dir,
+                     const std::string& data_root, const PackageRecord& rec) {
+    std::error_code ec;
+    std::filesystem::create_directories(gen_dir, ec);
+    if (ec) return false;
+    std::ofstream out((gen_dir / "package.json").string(),
+                      std::ios::binary | std::ios::trunc);
+    if (!out.is_open()) return false;
+    out << record_json_body(data_root, rec);
     return out.good();
+}
+
+bool write_record(const PackageRecord& rec, const std::string& data_root) {
+    // App-private dirs (AOSP /data/data/<pkg> family law; F-NEW-234 aligns
+    // the runtime Context family with this exact layout — code_cache and
+    // no_backup are created at first Context use on AOSP; eager here).
+    std::error_code ec;
+    for (const char* sub : {"files", "cache", "shared_prefs", "databases",
+                            "code_cache", "no_backup"}) {
+        std::filesystem::create_directories(
+            std::filesystem::path(data_root) / "data" / "data" / rec.package / sub, ec);
+    }
+    return write_record_to(package_dir(data_root, rec.package), data_root, rec);
 }
 
 } // namespace pkgstore
@@ -558,43 +581,115 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
     rec.min_sdk = info.min_sdk_version;
     rec.target_sdk = info.target_sdk_version;
 
-    // Commit: copy the APK into the store as base.apk (AOSP commit law),
-    // then write the package record. Copy FIRST, record SECOND — a record
-    // without base.apk must never exist (PMS ordering law).
-    auto dst = pkgstore::package_dir(data_root, rec.package) / "base.apk";
-    std::filesystem::create_directories(pkgstore::package_dir(data_root, rec.package), ec);
-    std::filesystem::copy_file(apk_path, dst,
-                               std::filesystem::copy_options::overwrite_existing, ec);
-    if (ec) {
-        std::cerr << "[ERROR] Copy into package store failed: " << ec.message() << "\n";
+    // ── F-NEW-376 INSTALL ATOMICITY LAW: staging + one-generation promotion.
+    // AOSP PMS law: a package generation (code bytes + identity metadata +
+    // native libs) is BUILT in a staging area and committed as ONE unit.
+    // A failed install leaves the previous committed generation untouched
+    // and usable; a successful install leaves code bytes and identity
+    // metadata from the SAME generation. Two independent file renames are
+    // NOT a transaction — the unit of atomicity is the whole package
+    // DIRECTORY:
+    //   <store>/data/app/<pkg>             committed (live) generation —
+    //                                      the ONLY path readers resolve
+    //   <store>/data/app/.staging/<tag>    generation under construction
+    //   <store>/data/app/.trash/<tag>      parked old generation (update)
+    // Fresh install: ONE rename(staging → live) is the atomic commit point.
+    // Update: park old → promote new → drop parked. Any promotion failure
+    // rolls the parked old generation back to live. POSIX rename cannot
+    // replace an existing non-empty directory (ENOTEMPTY), so the park step
+    // is mandatory on update; the park→promote window is closed by rollback
+    // on every error path (proven by fault injection at each boundary).
+    // Deterministic fault-injection capability (test-only, env-gated,
+    // generic — no package conditionals):
+    //   MINIANDROID_INSTALL_FAULT=stage_copy|stage_hash|record_write|
+    //     lib_extract|promote|promote_mid|cleanup
+    //   (promote = fail BEFORE the commit rename(s); promote_mid = update
+    //    only — fail AFTER park-old, BEFORE promote-new, exercising the
+    //    rollback; cleanup = commit succeeded, parked-trash removal skipped).
+    const char* fault_env = std::getenv("MINIANDROID_INSTALL_FAULT");
+    auto fault_active = [&](const char* name) {
+        return fault_env && std::string(fault_env) == name;
+    };
+    auto store = pkgstore::store_root(data_root);
+    auto live_dir = pkgstore::package_dir(data_root, rec.package);
+    auto staging_root = store / ".staging";
+    auto trash_root = store / ".trash";
+    char stage_tag[48];
+    snprintf(stage_tag, sizeof(stage_tag), "%ld", (long)getpid());
+    auto stage_dir = staging_root / (rec.package + "." + stage_tag);
+    std::error_code sec;
+    std::filesystem::create_directories(staging_root, sec);
+    if (sec) {
+        std::cerr << "[ERROR] staging root create failed: " << sec.message() << "\n";
         return 1;
     }
-    // Integrity: the installed bytes must equal the source bytes.
-    bool dst_ok = false;
-    std::string dst_sha = pkgstore::sha256_file(dst.string(), &dst_ok);
-    if (!dst_ok || dst_sha != sha) {
-        std::cerr << "[ERROR] Installed base.apk integrity check FAILED (sha mismatch)\n";
-        std::filesystem::remove_all(pkgstore::package_dir(data_root, rec.package), ec);
+    std::filesystem::create_directories(stage_dir, sec);
+    if (sec) {
+        std::cerr << "[ERROR] staging dir create failed: " << sec.message() << "\n";
         return 1;
     }
-    if (!pkgstore::write_record(rec, data_root)) {
-        std::cerr << "[ERROR] package.json write failed\n";
+    auto discard_staging = [&](const std::string& why) {
+        std::error_code dec;
+        std::filesystem::remove_all(stage_dir, dec);
+        std::cerr << "[ERROR] " << why << "\n"
+                  << "[ERROR] Staging discarded — committed generation untouched\n";
         return 1;
+    };
+
+    // Stage 1: copy the APK into STAGING (never onto the live generation).
+    if (fault_active("stage_copy"))
+        return discard_staging(
+            "F-NEW-376 fault-injection 'stage_copy' activated (staged copy skipped)");
+    auto staged_apk = stage_dir / "base.apk";
+    std::filesystem::copy_file(apk_path, staged_apk,
+                               std::filesystem::copy_options::overwrite_existing,
+                               sec);
+    if (sec) return discard_staging("Staged APK copy failed: " + sec.message());
+    // Stage 2: staged-bytes integrity — the gate must see the REAL bytes.
+    if (fault_active("stage_hash")) {
+        // Positive control: flip one staged byte so the integrity check
+        // genuinely fails (fault-injected corruption, not a simulated skip).
+        FILE* cf = fopen(staged_apk.string().c_str(), "r+b");
+        if (cf) {
+            fseek(cf, 0, SEEK_END);
+            long sz = ftell(cf);
+            if (sz > 0) {
+                fseek(cf, sz / 2, SEEK_SET);
+                int b = fgetc(cf);
+                fseek(cf, sz / 2, SEEK_SET);
+                fputc(b == EOF ? 0xFF : (b ^ 0xFF), cf);
+            }
+            fclose(cf);
+        }
     }
-    // ── #371 PHASE B2 (G-4 closure): ABI-scoped native library extraction.
-    // AOSP PMS law (PackageManagerService.installNativeLibraries): install
-    // extracts ONE ABI's lib/ tree into the codePath's lib dir
-    // (nativeLibraryDir); the ABI is the device's preferred ABI present in
-    // the APK (Build.SUPPORTED_ABIS order). #371 CLOSEOUT (S-2): this
-    // device profile's SUPPORTED_ABIS = [x86_64 (host-EXECUTABLE),
-    // x86, arm64-v8a, armeabi-v7a (extraction-only — the runtime has no
-    // binary translation, so arm libs are extracted for provenance but a
-    // load attempt reports the REAL dlopen refusal)]. Preferring the
-    // host-executable ABI is what makes native execution REAL for
-    // multi-ABI APKs, matching real x86_64 Android devices. Extracted
-    // bytes are REAL (entry-extracted + SHA-verified); the manifest lives
-    // in native_libs.json beside package.json so pkginspect/pkgrecord can
-    // serve the identity without re-parsing the APK.
+    {
+        bool st_ok = false;
+        std::string st_sha = pkgstore::sha256_file(staged_apk.string(), &st_ok);
+        if (!st_ok || st_sha != sha)
+            return discard_staging(
+                "Staged base.apk integrity check FAILED (sha mismatch)");
+    }
+    // Stage 3: identity record — written INTO STAGING, describing the live
+    // location it will occupy after promotion (shared body writer law).
+    if (fault_active("record_write"))
+        return discard_staging(
+            "F-NEW-376 fault-injection 'record_write' activated (staged record write skipped)");
+    if (!pkgstore::write_record_to(stage_dir, data_root, rec))
+        return discard_staging("Staged package.json write failed");
+    // Stage 4: native library extraction into the STAGED generation — moves
+    // with the directory at promotion; extraction never touches the live
+    // generation (the old gap: a mid-extraction failure left partial live
+    // state; now it discards staging only).
+    if (fault_active("lib_extract"))
+        return discard_staging(
+            "F-NEW-376 fault-injection 'lib_extract' activated (staged code+record complete, before promotion)");
+    // #371 PHASE B2 ABI-scoped extraction law (retained): install extracts
+    // ONE ABI's lib/ tree — the device's preferred ABI present in the APK
+    // (x86_64 host-EXECUTABLE, x86, arm64-v8a/armeabi-v7a extraction-only
+    // for provenance; load attempts report the REAL dlopen refusal).
+    // Extracted bytes are REAL (entry-extracted + verified); the manifest
+    // lives in native_libs.json beside package.json. F-NEW-376: extraction
+    // lands in the STAGED generation and moves with the directory rename.
     std::string primary_abi;
     std::vector<std::pair<std::string, unsigned long long>> extracted;
     {
@@ -614,8 +709,7 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
                 if (l.rfind(prefix, 0) == 0) sel.push_back(l);
             if (sel.empty()) continue;
             primary_abi = abi;
-            auto lib_dir = pkgstore::package_dir(data_root, rec.package) /
-                           "lib" / abi;
+            auto lib_dir = stage_dir / "lib" / abi;
             std::error_code lex;
             std::filesystem::create_directories(lib_dir, lex);
             bool extract_ok = true;
@@ -640,9 +734,9 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
                           << abi << "\n";
             break;  // AOSP: ONE ABI per install
         }
-        // Machine-readable extraction manifest (native_libs.json).
-        auto nl_path = pkgstore::package_dir(data_root, rec.package) /
-                       "native_libs.json";
+        // Machine-readable extraction manifest (native_libs.json) — staged
+        // alongside the code bytes it describes (same-generation law).
+        auto nl_path = stage_dir / "native_libs.json";
         std::ofstream nl(nl_path.string());
         if (nl) {
             nl << "{\n  \"primaryAbi\": \""
@@ -660,6 +754,76 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
             nl << "  ],\n  \"count\": " << extracted.size() << "\n}\n";
         }
     }
+    // ── Stage 5: PROMOTION — the atomic generation switch.
+    bool live_exists = std::filesystem::exists(live_dir, sec);
+    if (!live_exists) {
+        // FRESH install: ONE rename is the whole commit — atomic.
+        if (fault_active("promote") || fault_active("promote_mid"))
+            return discard_staging(
+                "F-NEW-376 fault-injection activated before fresh-install rename (no committed generation existed)");
+        std::filesystem::rename(stage_dir, live_dir, sec);
+        if (sec)
+            return discard_staging("Promotion rename failed: " + sec.message());
+    } else {
+        // UPDATE: park old → promote new → drop parked; ANY failure rolls
+        // the parked old generation back to live.
+        if (fault_active("promote"))
+            return discard_staging(
+                "F-NEW-376 fault-injection 'promote' activated before update commit renames (live generation untouched)");
+        auto trash_dir = trash_root / (rec.package + "." + stage_tag);
+        std::filesystem::create_directories(trash_root, sec);
+        if (sec)
+            return discard_staging("Trash root create failed: " + sec.message());
+        std::filesystem::rename(live_dir, trash_dir, sec);
+        if (sec)
+            return discard_staging("Park-old rename failed: " + sec.message() +
+                                   " (live generation untouched)");
+        if (fault_active("promote_mid")) {
+            // The window state: old parked, new staged. Roll back.
+            std::error_code rrec;
+            std::filesystem::rename(trash_dir, live_dir, rrec);
+            if (rrec) {
+                std::cerr << "[ERROR] ROLLBACK FAILED — previous generation preserved at "
+                          << trash_dir.string() << "\n";
+                std::filesystem::remove_all(stage_dir, rrec);
+                return 1;
+            }
+            return discard_staging(
+                "F-NEW-376 fault-injection 'promote_mid' activated — ROLLED BACK to previous generation");
+        }
+        std::filesystem::rename(stage_dir, live_dir, sec);
+        if (sec) {
+            std::error_code rrec;
+            std::filesystem::rename(trash_dir, live_dir, rrec);
+            if (rrec) {
+                std::cerr << "[ERROR] ROLLBACK FAILED — previous generation preserved at "
+                          << trash_dir.string() << " (live path empty)\n";
+                std::filesystem::remove_all(stage_dir, rrec);
+                return 1;
+            }
+            return discard_staging("Promotion rename failed: " + sec.message() +
+                                   " — ROLLED BACK to previous generation");
+        }
+        if (fault_active("cleanup")) {
+            std::cerr << "[WARN] F-NEW-376 fault-injection 'cleanup' activated — committed generation is the NEW one; parked trash not removed\n";
+        } else {
+            std::error_code cec;
+            std::filesystem::remove_all(trash_dir, cec);
+            if (cec)
+                std::cerr << "[WARN] parked-generation cleanup failed: "
+                          << cec.message() << "\n";
+        }
+    }
+    // Post-commit: app-private data scaffolding (AOSP first-Context law) —
+    // idempotent, package-owned, no identity impact. Moved here from the
+    // record writer: data dirs appear only after the generation commits.
+    for (const char* sub : {"files", "cache", "shared_prefs", "databases",
+                            "code_cache", "no_backup"}) {
+        std::filesystem::create_directories(
+            std::filesystem::path(data_root) / "data" / "data" / rec.package / sub,
+            sec);
+    }
+    auto committed_apk = live_dir / "base.apk";
     std::cout << "\n=== Install Result ===\n\n";
     std::cout << "{\n";
     std::cout << "  \"install\": \"SUCCESS\",\n";
@@ -669,10 +833,11 @@ int cmd_install(const std::string& apk_path, const std::string& data_root,
     std::cout << "  \"versionCode\": " << rec.version_code << ",\n";
     std::cout << "  \"codePath\": \"/data/app/"
               << pkgstore::json_escape(rec.package) << "/base.apk\",\n";
-    std::cout << "  \"hostCodePath\": \"" << pkgstore::json_escape(dst.string()) << "\",\n";
+    std::cout << "  \"hostCodePath\": \"" << pkgstore::json_escape(committed_apk.string()) << "\",\n";
     std::cout << "  \"apkSha256\": \"" << sha << "\",\n";
     std::cout << "  \"apkSize\": " << size << ",\n";
     std::cout << "  \"installedAt\": \"" << ts << "\"\n";
+    std::cout << ", \"installAtomicity\": \"F-NEW-376 staged-generation promotion\"\n";
     std::cout << ", \"nativePrimaryAbi\": \""
               << pkgstore::json_escape(primary_abi) << "\"\n";
     std::cout << ", \"nativeLibsExtracted\": " << extracted.size() << "\n";
@@ -771,7 +936,12 @@ int cmd_list_packages(const std::string& data_root) {
     std::vector<std::string> packages;
     for (auto it = std::filesystem::directory_iterator(root, ec);
          it != std::filesystem::directory_iterator(); ++it) {
-        if (it->is_directory(ec)) packages.push_back(it->path().filename().string());
+        // F-NEW-376: dot-prefixed store internals (.staging/.trash) are
+        // generation machinery, never packages — a package name cannot
+        // start with '.'; readers resolve only committed generations.
+        std::string name = it->path().filename().string();
+        if (it->is_directory(ec) && !name.empty() && name[0] != '.')
+            packages.push_back(name);
     }
     std::sort(packages.begin(), packages.end());
     std::cout << "[\n";
