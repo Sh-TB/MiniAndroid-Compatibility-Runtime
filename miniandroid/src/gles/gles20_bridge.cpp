@@ -128,18 +128,48 @@ bool GLES20Bridge::dispatch(const std::string& method,
         stats_.uniform_ops++;
         return true;
     }
+    if (method == "glUniform1i") {
+        glUniform1i((GLint)I(0), (GLint)I(1));
+        stats_.uniform_ops++;
+        return true;
+    }
+    if (method == "glUniform1f") {
+        glUniform1f((GLint)I(0), fargs[1]);
+        stats_.uniform_ops++;
+        return true;
+    }
+    if (method == "glUniform2f") {
+        glUniform2f((GLint)I(0), fargs[1], fargs[2]);
+        stats_.uniform_ops++;
+        return true;
+    }
+    if (method == "glUniform3f") {
+        glUniform3f((GLint)I(0), fargs[1], fargs[2], fargs[3]);
+        stats_.uniform_ops++;
+        return true;
+    }
     // ---- state ----------------------------------------------------------
     if (method == "glEnable")  { glEnable(I(0));  stats_.state_ops++; return true; }
     if (method == "glDisable") { glDisable(I(0)); stats_.state_ops++; return true; }
     if (method == "glDepthFunc") { glDepthFunc(I(0)); stats_.state_ops++; return true; }
     if (method == "glBlendFunc") { glBlendFunc(I(0), I(1)); stats_.state_ops++; return true; }
+    if (method == "glActiveTexture") { glActiveTexture(I(0)); stats_.state_ops++; return true; }
+    if (method == "glBindTexture") { glBindTexture(I(0), I(1)); stats_.state_ops++; return true; }
+    if (method == "glGenTextures") {
+        glGenTextures((GLsizei)I(0), (GLuint*)P(1));
+        stats_.state_ops++;
+        return true;
+    }
     if (method == "glViewport") {
         glViewport((GLint)I(0), (GLint)I(1), (GLsizei)I(2), (GLsizei)I(3));
         stats_.state_ops++;
         return true;
     }
     if (method == "glClearColor") {
-        glClearColor(fargs[0], fargs[1], fargs[2], fargs[3]);
+        // Marshalling law (CONT-83 F-NEW-388): float args occupy slots 1..
+        // (slot 0 is the reserved placeholder — see gl_surface_shadow.cpp
+        // marshal_gles20).
+        glClearColor(fargs[1], fargs[2], fargs[3], fargs[4]);
         stats_.state_ops++;
         return true;
     }

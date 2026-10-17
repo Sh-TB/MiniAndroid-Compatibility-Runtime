@@ -14,6 +14,7 @@
 #include "matrix_shadow.h"
 #include "locale_insets_shadow.h"
 #include "window_insets_shadow.h"
+#include "display_shadow.h"
 #include "gl_surface_shadow.h"
 #include "surface_view_shadow.h"
 #include "clipboard_shadow.h"
@@ -328,6 +329,7 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // BEFORE ViewShadow; GL-specific methods handled here, View methods
     // fall through to the ViewShadow catch-all (GLSurfaceView IS-A View).
     reg.register_shadow<GLSurfaceViewShadow>();
+    reg.register_shadow<DisplayShadow>();
     // S86 §F-NEW-164: SurfaceView + SurfaceHolder real-surface law —
     // registered BEFORE ViewShadow (SurfaceView IS-A View; View methods
     // fall through). Ground truth: dozingcat Dodge FieldView lockCanvas

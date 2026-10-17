@@ -9,6 +9,7 @@
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
+#include "../diagnostics/gfx_trace.h"  // CONT-83 WS-B: op-level graphics trace
 #include "../diagnostics/file_io_trace.h"   // IAPK: file-IO provenance (F-NEW-234 wave)
 #include "../storage/data_root.h"           // F-NEW-234: per-package context law
 #include "../diagnostics/trace_overlay.h"   // S135: visual runtime boot/trace logger
@@ -5639,6 +5640,9 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
             diagnostics::GfxProvenance::instance().record_gl_presented(
                 vid, gw, gh, first);
         }
+        // CONT-83 WS-B: present row at the real blit site (PGL backbuf →
+        // window framebuffer) — the frame-correlation tail event.
+        gfx::GfxTrace::instance().frame_stage("present", gw, gh, vid);
     }
     if (!any) return true;
     trace_engine_.info("ExecutionEngine", "stage_gl_surfaces",
@@ -6076,6 +6080,9 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
             diagnostics::GfxProvenance::instance().finalize(
                 screenshot_path, png_ok, shot_nonwhite, shot_hist.size());
         }
+        // CONT-83 WS-B: bounded graphics-trace summary next to the run's
+        // other evidence artifacts.
+        gfx::GfxTrace::instance().write_summary(config.output_directory);
         // IAPK: write the file-IO provenance JSONL (op/path/result/caller).
         // LOADING-CAMPAIGN (ST-2 FIX): drain any still-open write streams
         // FIRST (AOSP: process death closes streams — data must persist).

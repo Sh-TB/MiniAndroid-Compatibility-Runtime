@@ -1,0 +1,342 @@
+{
+ "instrument": "CONT-83 WS-D matrix",
+ "binary": "928379d680b7cb74",
+ "rows": [
+  {
+   "game": "dooz",
+   "pkg": "io.github.yamin8000.dooz",
+   "apk_sha16": "299eab21ac8b3c61",
+   "frames": 8,
+   "rc": 1,
+   "face16": "31ddd4d5b8e6d18e",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "first_missing_stage": "APP_DRAW_OPS",
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "g2048",
+   "pkg": "com.miniandroid.g2048",
+   "apk_sha16": "1b1c602a5f0a2723",
+   "frames": 8,
+   "rc": 0,
+   "face16": "f43face08299ffc6",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "tetris",
+   "pkg": "com.miniandroid.tetris",
+   "apk_sha16": "cb2818dfe6c6cadb",
+   "frames": 8,
+   "rc": 0,
+   "face16": "b818a6a7016bea8e",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "tttdeluxe",
+   "pkg": "com.miniandroid.tictactoedeluxe",
+   "apk_sha16": "d04d92eab8dbbb11",
+   "frames": 8,
+   "rc": 0,
+   "face16": "db1d633d77b5819a",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "snakedeluxe",
+   "pkg": "com.miniandroid.snakedeluxe",
+   "apk_sha16": "e399395570c49c65",
+   "frames": 8,
+   "rc": 0,
+   "face16": "5235683fc7b1f04b",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "flappycow",
+   "pkg": "com.quchen.flappycow",
+   "apk_sha16": "bdbd6eb78c711656",
+   "frames": 8,
+   "rc": 0,
+   "face16": "13cf47464d9787f4",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "bouncy",
+   "pkg": "com.dozingcatsoftware.bouncy",
+   "apk_sha16": "ffda0d9cb0b1b2aa",
+   "frames": 8,
+   "rc": 1,
+   "face16": "8a6c24ac8a7d718e",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 6,
+    "events_written": 0,
+    "first_missing_transition": "native lib load failed: gdx-box2d (dlopen failed: /home/z/my-project/run/cont83/matrixstore/data/app/com.dozingcatsoftware.bouncy/lib/x86_64/libgdx-box2d.so: undefined symbol: __cxa_pure_virtual, version LIBC_O)",
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "tower3d",
+   "pkg": "stack.tower3d",
+   "apk_sha16": "ba5b0a48d74e3348",
+   "frames": 8,
+   "rc": 1,
+   "face16": "11a38a5aeeff45a6",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "first_missing_stage": "APP_DRAW_OPS",
+   "gfx_summary": {
+    "events_dropped": 7,
+    "events_written": 25,
+    "first_missing_transition": "GL op unhandled (REC-MISS): EGL.eglGetCurrentContext",
+    "gl_frames": 9,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 3,
+    "GLES20": 0,
+    "EGL": 2
+   },
+   "native_loads": []
+  },
+  {
+   "game": "fishrings",
+   "pkg": "eu.veldsoft.fish.rings",
+   "apk_sha16": "14d7dd80f7563c6a",
+   "frames": 24,
+   "rc": 1,
+   "face16": "a341e3ad9092f640",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "tripeaks",
+   "pkg": "eu.veldsoft.tri.peaks",
+   "apk_sha16": "52272ae619c0fec8",
+   "frames": 24,
+   "rc": 1,
+   "face16": "e2a290ab98762eea",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "klondike",
+   "pkg": "eu.veldsoft.free.klondike",
+   "apk_sha16": "0203c4afd5123f88",
+   "frames": 24,
+   "rc": 1,
+   "face16": "a77038da303ed1b4",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "chess",
+   "pkg": "jwtc.android.chess",
+   "apk_sha16": "3245b9ec35f6c1df",
+   "frames": 8,
+   "rc": 1,
+   "face16": "b270ff040b3601dc",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "first_missing_stage": "APP_DRAW_OPS",
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "gmdice",
+   "pkg": "de.duenndns.gmdice",
+   "apk_sha16": "1621eda11b5dbc0c",
+   "frames": 8,
+   "rc": 0,
+   "face16": "3891679dff449331",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  },
+  {
+   "game": "memory",
+   "pkg": "org.secuso.privacyfriendlymemory",
+   "apk_sha16": "82f83d9ea572240a",
+   "frames": 8,
+   "rc": 1,
+   "face16": "3a3ba8734b662e55",
+   "verdict": null,
+   "first_missing_stage": null,
+   "gfx_summary": {
+    "events_dropped": 0,
+    "events_written": 0,
+    "first_missing_transition": null,
+    "gl_frames": 0,
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": 1
+   },
+   "gl_calls": {
+    "GL10": 0,
+    "GLES20": 0,
+    "EGL": 0
+   },
+   "native_loads": []
+  }
+ ]
+}
