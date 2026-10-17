@@ -1,0 +1,4 @@
+fixtures/cont83_native_probe/src/com/probe/nat1/MainActivity.java
+fixtures/cont83_native_probe/src/com/probe/nat1/NativeProbe.java
+fixtures/cont83_native_probe/src/com/probe/nat1/NativeShadow.java
+tmp/cont83_native/gen/com/probe/nat1/R.java

@@ -1,0 +1,2 @@
+fixtures/fnew382_props_probe/src/com/probe/f382/MainActivity.java
+tmp/f382_build/gen/com/probe/f382/R.java

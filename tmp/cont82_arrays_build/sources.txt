@@ -1,0 +1,2 @@
+fixtures/cont82_arrays_fixture/src/com/probe/a2t/MainActivity.java
+tmp/cont82_arrays_build/gen/com/probe/a2t/R.java
