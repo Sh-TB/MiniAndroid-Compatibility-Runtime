@@ -1,0 +1,614 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=28
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=48
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=50
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=/home/z/my-project/run/cont76/store/data/app/org.andstatus.game2048/base.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 1387 entries (1339 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'org.andstatus.game2048.MyMainActivity'
+[U007-RES] ResourceRuntime loaded: /home/z/my-project/run/cont76/store/data/app/org.andstatus.game2048/base.apk named_ids=124 types=3
+[ARSC-VALUES] apk=/home/z/my-project/run/cont76/store/data/app/org.andstatus.game2048/base.apk strings=2 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "2048 Open Fun Game" (resid @0x7f080008)
+[A7b] icon @0x7f040000 -> res/aH.png (78339 bytes) DECODED 1332x1332 rgba rgba_bytes=7096896 fnv1a=0x504468759f7d560
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=144)
+[S1-PROVIDER] manifest providers transferred: 2
+[S1-PROVIDER]   org.andstatus.game2048.data.FileProvider
+[S1-PROVIDER]   androidx.startup.InitializationProvider
+[TRY-ENTRY] Lorg/andstatus/game2048/data/FileProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Lorg/andstatus/game2048/data/FileProvider;.<init>
+[MEM] method_exit: Lorg/andstatus/game2048/data/FileProvider;.<init> insns=2 RSS=30.1328 MB
+[TRY-ENTRY] Lorg/andstatus/game2048/data/FileProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Lorg/andstatus/game2048/data/FileProvider;.onCreate dex_report=YES
+[S1-PROVIDER] installed org.andstatus.game2048.data.FileProvider obj#14 attachInfo+onCreate OK
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
+[371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=3
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.getContext dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[TRY-ENTRY] Landroid/content/ContentProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[CLASS_INIT] class=Lc3; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Lc3;.<clinit> dex_report=YES
+[CLASS_INIT] class=Lc3; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=24
+[TRY-ENTRY] Lc3;.d dex_report=YES
+[SGET-MISS] key=Lc3;.h storage_size=24 same_class_keys=1 engine=0x7fffbc9a9c68 first=Lc3;.i
+[SGET] class=Lc3; method=d pc=0 field=Lc3;.h obj_id=0
+[SGET] class=Lc3; method=d pc=4 field=Lc3;.i obj_id=20
+[SGET] class=Lc3; method=d pc=7 field=Lc3;.h obj_id=0
+[TRY-ENTRY] Lc3;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Lc3;.<init>
+[TRY-ENTRY] Ljava/util/HashSet;.<init> dex_report=YES
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Lc3;.<init>
+[TRY-ENTRY] Ljava/util/HashMap;.<init> dex_report=YES
+[SGET] class=Lc3; method=d pc=25 field=Lc3;.h obj_id=21
+[CLASS_INIT] class=Lao; method=<clinit> bytecode_size=21
+[TRY-ENTRY] Lao;.<clinit> dex_report=YES
+[TRY-ENTRY] Lf10;.<init> dex_report=YES
+[CLASS_INIT] class=Lao; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=27
+[REC-MISS] Landroid/os/Trace;.beginSection caller=Lao;.c
+[REC-MISS] Landroid/content/Context;.getPackageName caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Ljava/lang/Class;.getName caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Landroid/content/ComponentName;.<init> caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Landroid/content/pm/PackageManager;.getProviderInfo caller=Landroidx/startup/InitializationProvider;.onCreate
+[F273-PROVINFO] androidx.startup.InitializationProvider metaData entries=3
+[REC-MISS] Landroid/content/Context;.getString caller=Lc3;.b
+[EXP093-APPSTR] HIT! class=Landroid/content/Context; args=2 arg0_type=7_obj=16 arg1_type=1_int=2131230727
+[CTX-F136] getString(resid=0x7f080007, fargs=0) → "androidx.startup"
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Lc3;.b
+[REC-MISS] Landroid/os/Bundle;.keySet caller=Lc3;.b
+[REC-MISS] Landroid/os/BaseBundle;.keySet caller=Lc3;.b
+[REC-MISS] Ljava/util/Set;.iterator caller=Lc3;.b
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lc3;.b
+[REC-MISS] Ljava/util/HashSet;.iterator caller=Lc3;.b
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lc3;.b
+[REC-MISS] Landroid/os/Trace;.endSection caller=Landroidx/startup/InitializationProvider;.onCreate
+[S1-PROVIDER] installed androidx.startup.InitializationProvider obj#17 attachInfo+onCreate OK
+[R341-APP] default Application bound: obj#36
+[R341-APP] bound application obj#36 (Landroid/app/Application;)
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Llk;.<init>
+[CLASS_INIT] class=Lv40; method=<clinit> bytecode_size=18
+[CLASS_INIT] class=Lv40; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=30
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Lv40;.<init>
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lorg/andstatus/game2048/MyMainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lorg/andstatus/game2048/MyMainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=37)
+[CLASS_INIT] class=Li5; method=<clinit> bytecode_size=56
+[CLASS_INIT] class=Lg8; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lg8; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=31
+[SGET] class=Lrz; method=<init> pc=0 field=Lg8;.d obj_id=52
+[CLASS_INIT] class=Lk00; method=<clinit> bytecode_size=25
+[R350-FORNAME] "kotlin.reflect.jvm.internal.ReflectionFactoryImpl" → ClassNotFoundException
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lk00;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
+[CLASS_INIT] class=Lk00; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=32
+[SGET] class=Li5; method=<clinit> pc=12 field=Lk00;.a obj_id=54
+[REC-MISS] Ljava/lang/Object;.getClass caller=Li5;.<clinit>
+[SGET] class=Lxt; method=<init> pc=0 field=Lg8;.d obj_id=52
+[CLASS_INIT] class=Lur; method=<clinit> bytecode_size=19
+[CLASS_INIT] class=Ld80; method=<clinit> bytecode_size=168
+[CLASS_INIT] class=Ld80; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=52
+[SGET] class=Lur; method=<clinit> pc=14 field=Ld80;.l obj_id=67
+[CLASS_INIT] class=Lur; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=53
+[SGET] class=Li5; method=<clinit> pc=45 field=Lur;.c obj_id=59
+[CLASS_INIT] class=Ll90; method=<clinit> bytecode_size=114
+[CLASS_INIT] class=Ll90; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=62
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[CLASS_INIT] class=Lr30; method=<clinit> bytecode_size=59
+[CLASS_INIT] class=Lr30; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=69
+[SGET-MISS] key=Lr30;.h storage_size=69 same_class_keys=6 engine=0x7fffbc9a9c68 first=Lr30;.a
+[SGET-MISS]   landed: Lc3;.h
+[SGET-MISS]   landed: Ld80;.h
+[SGET-MISS]   landed: Ll90;.h
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=0
+[CLASS_INIT] class=Low; method=<clinit> bytecode_size=5
+[CLASS_INIT] class=Lnw; method=<clinit> bytecode_size=36
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[CLASS_INIT] class=Lnw; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=73
+[SGET] class=Low; method=<clinit> pc=0 field=Lnw;.b obj_id=94
+[CLASS_INIT] class=Low; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=74
+[SGET] class=Lr30; method=o pc=4 field=Low;.a obj_id=94
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[SGET] class=Lr30; method=o pc=9 field=Lnw;.c obj_id=96
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lt60;.getValue
+[CLASS_INIT] class=Lma0; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lma0; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=75
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[CLASS_INIT] class=Lmb; method=<clinit> bytecode_size=74
+[CLASS_INIT] class=Ljv; method=<clinit> bytecode_size=102
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[CLASS_INIT] class=Ljv; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=81
+[SGET] class=Lmb; method=<clinit> pc=0 field=Ljv;.h obj_id=106
+[CLASS_INIT] class=Lv10; method=<clinit> bytecode_size=62
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[CLASS_INIT] class=Lv10; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=87
+[SGET] class=Lmb; method=<clinit> pc=4 field=Lv10;.f obj_id=116
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lt60;.getValue
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[SGET] class=Lr3; method=a pc=284 field=Landroid/os/Build;.SUPPORTED_ABIS obj_id=7
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.l0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.l0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.l0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[CLASS_INIT] class=Ld3; method=<clinit> bytecode_size=143
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[CLASS_INIT] class=Ld3; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=97
+[SGET] class=Lr3; method=a pc=328 field=Ld3;.i obj_id=126
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[CLASS_INIT] class=Lc8; method=<clinit> bytecode_size=25
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lc8;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lc8;.<clinit>
+[CLASS_INIT] class=Lc8; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=99
+[SGET] class=Lmb; method=<clinit> pc=48 field=Lc8;.d obj_id=138
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/System;.getenv caller=Lmb;.<clinit>
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference) method=Lmb;.<clinit> pc=68 → uncaught (deferred frame unwind + propagate)
+[CLASS_INIT] class=Lmb; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=100
+[SGET-MISS] key=Lmb;.e storage_size=100 same_class_keys=4 engine=0x7fffbc9a9c68 first=Lmb;.a
+[SGET-MISS]   landed: Lc8;.e
+[SGET-MISS]   landed: Ld80;.e
+[SGET-MISS]   landed: Ljv;.e
+[SGET-MISS]   landed: Ll90;.e
+[SGET-MISS]   landed: Lr30;.e
+[SGET-MISS]   landed: Lv10;.e
+[SGET] class=Lr3; method=a pc=128 field=Lmb;.e obj_id=0
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; caught at caller Lt60;.getValue invoke_pc=20 handler=0x0x1f type=<catch-all>
+[EXCEPTION] method=Lt60;.getValue pc=33 exception=Ljava/lang/NullPointerException; msg="Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference" try_range=(no try covering pc) handler=NOT_FOUND msg="Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference"
+[EXCEPTION] no handler for Ljava/lang/NullPointerException; in Lt60;.getValue — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; caught at caller Ll90;.u invoke_pc=50 handler=0x0x5f type=<catch-all>
+[EXCEPTION] method=Ll90;.u pc=160 exception=Ljava/lang/NullPointerException; msg="Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference" try_range=(no try covering pc) handler=NOT_FOUND msg="Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference"
+[EXCEPTION] no handler for Ljava/lang/NullPointerException; in Ll90;.u — unwinding frame (propagate to caller)
+[CLASS_INIT] class=Li5; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=101
+[CLASS_INIT] class=Lek; method=<clinit> bytecode_size=263
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Lks;.N
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#157 val=obj#148
+[F089] shadow put map=174 key="obj:157" arg0_kind=6 arg0_str="" arg0_obj=157 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#159 val=obj#154
+[F089] shadow put map=174 key="obj:159" arg0_kind=6 arg0_str="" arg0_obj=159 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#161 val=obj#150
+[F089] shadow put map=174 key="obj:161" arg0_kind=6 arg0_str="" arg0_obj=161 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#163 val=obj#155
+[F089] shadow put map=174 key="obj:163" arg0_kind=6 arg0_str="" arg0_obj=163 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#165 val=obj#149
+[F089] shadow put map=174 key="obj:165" arg0_kind=6 arg0_str="" arg0_obj=165 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#167 val=obj#153
+[F089] shadow put map=174 key="obj:167" arg0_kind=6 arg0_str="" arg0_obj=167 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#169 val=obj#151
+[F089] shadow put map=174 key="obj:169" arg0_kind=6 arg0_str="" arg0_obj=169 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=174 key=obj#171 val=obj#152
+[F089] shadow put map=174 key="obj:171" arg0_kind=6 arg0_str="" arg0_obj=171 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[CLASS_INIT] class=Lek; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=103
+[SGET] class=Li5; method=<init> pc=11 field=Lek;.d obj_id=142
+[CLASS_INIT] class=Lf40; method=<clinit> bytecode_size=10
+[CLASS_INIT] class=Lf40; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=104
+[CLASS_INIT] class=La; method=<clinit> bytecode_size=11
+[SGET] class=La; method=<clinit> pc=0 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=0
+[SGET] class=Lr30; method=o pc=4 field=Low;.a obj_id=94
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[SGET] class=Lr30; method=o pc=9 field=Lnw;.c obj_id=96
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lt60;.getValue
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[SGET] class=Lr3; method=a pc=128 field=Lmb;.e obj_id=0
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Map;.size' on a null object reference) method=Lr30;.o pc=19 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; caught at caller Ll90;.u invoke_pc=50 handler=0x0x5f type=<catch-all>
+[EXCEPTION] method=Ll90;.u pc=160 exception=Ljava/lang/NullPointerException; msg="Attempt to invoke interface method 'Ljava/util/Map;.size' on a null object reference" try_range=(no try covering pc) handler=NOT_FOUND msg="Attempt to invoke interface method 'Ljava/util/Map;.size' on a null object reference"
+[EXCEPTION] no handler for Ljava/lang/NullPointerException; in Ll90;.u — unwinding frame (propagate to caller)
+[CLASS_INIT] class=La; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=104
+[SGET] class=Ld0; method=<init> pc=3 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=0
+[SGET] class=Lr30; method=o pc=4 field=Low;.a obj_id=94
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[SGET] class=Lr30; method=o pc=9 field=Lnw;.c obj_id=96
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Map;.size' on a null object reference) method=Lr30;.o pc=19 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; caught at caller Ll90;.u invoke_pc=50 handler=0x0x5f type=<catch-all>
+[EXCEPTION] method=Ll90;.u pc=160 exception=Ljava/lang/NullPointerException; msg="Attempt to invoke interface method 'Ljava/util/Map;.size' on a null object reference" try_range=(no try covering pc) handler=NOT_FOUND msg="Attempt to invoke interface method 'Ljava/util/Map;.size' on a null object reference"
+[EXCEPTION] no handler for Ljava/lang/NullPointerException; in Ll90;.u — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller <unknown>.<unknown> invoke_pc=0 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[U0113-ACTIVITY] activity heap object #37 (Lorg/andstatus/game2048/MyMainActivity;) recorded for handler dispatch
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[CLASS_INIT] class=Ldu; method=<clinit> bytecode_size=24
+[CLASS_INIT] class=Lbo; method=<clinit> bytecode_size=18
+[CLASS_INIT] class=Lbo; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=107
+[CLASS_INIT] class=Lb5; method=<clinit> bytecode_size=11
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicIntegerFieldUpdater;.newUpdater caller=Lb5;.<clinit>
+[CLASS_INIT] class=Lb5; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=108
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[CLASS_INIT] class=Lzv; method=<clinit> bytecode_size=8
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lzv;.<clinit>
+[CLASS_INIT] class=Lzv; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=110
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lzv;.a
+[SGET] class=Lzv; method=a pc=5 field=Lzv;.a value=1523863552
+[REC-MISS] Ljava/lang/Double;.valueOf caller=Lr3;.a
+[REC-MISS] Ljava/lang/Double;.doubleValue caller=Lz40;.b
+[REC-MISS] Ljava/lang/Number;.doubleValue caller=Lz40;.b
+[CLASS_INIT] class=Ldu; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=112
+[SGET] class=Ldu; method=a pc=0 field=Ldu;.b obj_id=194
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lzv;.a
+[SGET] class=Lzv; method=a pc=5 field=Lzv;.a value=1523863552
+[REC-MISS] Ljava/lang/Double;.valueOf caller=Lr3;.a
+[REC-MISS] Ljava/lang/Double;.doubleValue caller=Lz40;.a
+[REC-MISS] Ljava/lang/Number;.doubleValue caller=Lz40;.a
+[CLASS_INIT] class=Lae; method=<clinit> bytecode_size=91
+[SGET] class=Lae; method=<clinit> pc=3 field=Ljava/util/concurrent/TimeUnit;.NANOSECONDS obj_id=200
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[SGET] class=Lae; method=<clinit> pc=15 field=Ljava/util/concurrent/TimeUnit;.MICROSECONDS obj_id=202
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[SGET] class=Lae; method=<clinit> pc=27 field=Ljava/util/concurrent/TimeUnit;.MILLISECONDS obj_id=204
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[SGET] class=Lae; method=<clinit> pc=39 field=Ljava/util/concurrent/TimeUnit;.SECONDS obj_id=206
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[SGET] class=Lae; method=<clinit> pc=51 field=Ljava/util/concurrent/TimeUnit;.MINUTES obj_id=208
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[SGET] class=Lae; method=<clinit> pc=63 field=Ljava/util/concurrent/TimeUnit;.HOURS obj_id=210
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[SGET] class=Lae; method=<clinit> pc=75 field=Ljava/util/concurrent/TimeUnit;.DAYS obj_id=212
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lae;.<init>
+[CLASS_INIT] class=Lae; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=127
+[SGET] class=Lz40; method=a pc=22 field=Lae;.e obj_id=199
+[CLASS_INIT] class=Lgc; method=<clinit> bytecode_size=32
+[CLASS_INIT] class=Lgc; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=130
+[SGET] class=Lgc; method=L pc=0 field=Lae;.e obj_id=199
+[REC-MISS] Ljava/util/concurrent/TimeUnit;.convert caller=Lao;.g
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lgc;.L
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lgc;.L
+[REC-MISS] Ljava/lang/Math;.round caller=Lgc;.L
+[CLASS_INIT] class=Lyd; method=<clinit> bytecode_size=25
+[CLASS_INIT] class=Lzd; method=<clinit> bytecode_size=17
+[REC-MISS] Ljava/lang/ThreadLocal;.<init> caller=Lzd;.<clinit>
+[REC-MISS] Ljava/lang/ThreadLocal;.<init> caller=Lzd;.<clinit>
+[REC-MISS] Ljava/lang/ThreadLocal;.<init> caller=Lzd;.<clinit>
+[REC-MISS] Ljava/lang/ThreadLocal;.<init> caller=Lzd;.<clinit>
+[CLASS_INIT] class=Lzd; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=130
+[SGET] class=Lyd; method=<clinit> pc=0 field=Lzd;.a value=0
+[SGET] class=Lgc; method=m pc=5 field=Lyd;.g value=0
+[SGET] class=Lgc; method=m pc=7 field=Lzd;.a value=0
+[SGET] class=Lgc; method=m pc=5 field=Lyd;.g value=0
+[SGET] class=Lgc; method=m pc=7 field=Lzd;.a value=0
+[CLASS_INIT] class=Lyd; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=134
+[SGET] class=Lgc; method=o pc=2 field=Lyd;.g value=0
+[SGET] class=Lgc; method=o pc=4 field=Lzd;.a value=0
+[CLASS_INIT] class=Lg80; method=<clinit> bytecode_size=14
+[SGET] class=Lg80; method=<clinit> pc=5 field=Lae;.e obj_id=199
+[SGET] class=Lgc; method=M pc=7 field=Ljava/util/concurrent/TimeUnit;.NANOSECONDS obj_id=200
+[REC-MISS] Ljava/util/concurrent/TimeUnit;.convert caller=Lgc;.M
+[SGET] class=Lgc; method=M pc=31 field=Ljava/util/concurrent/TimeUnit;.MILLISECONDS obj_id=204
+[REC-MISS] Ljava/util/concurrent/TimeUnit;.convert caller=Lgc;.M
+[SGET] class=Lgc; method=m pc=5 field=Lyd;.g value=0
+[SGET] class=Lgc; method=m pc=7 field=Lzd;.a value=0
+[CLASS_INIT] class=Lg80; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=135
+[SGET] class=Lg80; method=a pc=3 field=Lyd;.g value=0
+[CLASS_INIT] class=Luu; method=<clinit> bytecode_size=31
+[R350-FORNAME] "java.lang.Thread" → ClassNotFoundException
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (java.lang.Thread) method=Luu;.<clinit> pc=2 → uncaught (deferred frame unwind + propagate)
+[CLASS_INIT] class=Luu; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=135
+[SGET] class=Ldu; method=a pc=11 field=Luu;.a value=0
+[EXC-PROPAGATE] Ljava/lang/ClassNotFoundException; uncaught at caller Lorg/andstatus/game2048/MyMainActivity;.onCreate invoke_pc=2 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[CLASS_INIT] class=Llb0; method=<clinit> bytecode_size=14
+[R347-FILE-CTOR] argc=2 path="." caller=Llb0;.<clinit> a1t=5(".")
+[R347-FILE] getAbsolutePath path="." -> "/home/z/my-project/run/cont76/store/data/data/org.andstatus.game2048/."
+[CLASS_INIT] class=Llb0; method=<clinit> result=OK engine=0x7fffbc9a9c68 storage_size=137
+[SGET] class=Lorg/andstatus/game2048/MyMainActivity; method=d pc=3 field=Llb0;.a value=0
+[REC-MISS] Landroid/app/Activity;.getApplicationInfo caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/content/ContextWrapper;.getApplicationInfo caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/content/Context;.getApplicationInfo caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/content/Context;.getApplicationInfo caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationInfo class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationInfo class=Landroid/app/Activity;
+[REC-MISS] Landroid/app/Activity;.getIntent caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/app/Activity;.getIntent caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getIntent class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP057-INTENT] getIntent → intent_id=226 (synthetic)
+[REC-MISS] Landroid/content/Intent;.getExtras caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/app/Activity;.getIntent caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/app/Activity;.getIntent caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getIntent class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP057-INTENT] getIntent → intent_id=226 (synthetic)
+[REC-MISS] Landroid/content/Intent;.getExtras caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/app/Activity;.getIntent caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/app/Activity;.getIntent caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getIntent class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP057-INTENT] getIntent → intent_id=226 (synthetic)
+[REC-MISS] Landroid/content/Intent;.getExtras caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[SGET] class=Lorg/andstatus/game2048/MyMainActivity; method=d pc=171 field=Ljava/lang/System;.out obj_id=228
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[SGET] class=Lorg/andstatus/game2048/MyMainActivity; method=d pc=200 field=Ljava/lang/System;.out obj_id=228
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[REC-MISS] Landroid/util/Log;.e caller=Lorg/andstatus/game2048/MyMainActivity;.d
+[F274-CTORGATE] Lorg/andstatus/game2048/MyMainActivity;.c initializer type Lz1; has no ()V ctor -> honest null (recv=Lorg/andstatus/game2048/MyMainActivity; caller=Lorg/andstatus/game2048/MyMainActivity;.d pc=214)
+[REC-MISS] Landroid/opengl/GLSurfaceView;.<init> caller=Liq;.<init>
+[SGET] class=Liq; method=<init> pc=11 field=Ljava/lang/System;.out obj_id=228
+[REC-MISS] Ljava/io/PrintStream;.println caller=Liq;.<init>
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Liq;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Liq;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Liq;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Liq;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Liq;.<init>
+[SGET] class=Liq; method=<init> pc=63 field=Ljava/lang/System;.out obj_id=228
+[REC-MISS] Ljava/io/PrintStream;.println caller=Liq;.<init>
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lt60;.getValue
+[SGET] class=Leq; method=a pc=2 field=Lma0;.a obj_id=101
+[REC-MISS] Landroid/app/Activity;.getPackageManager caller=Lr30;.d
+[REC-MISS] Landroid/content/ContextWrapper;.getPackageManager caller=Lr30;.d
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Lr30;.d
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Lr30;.d
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/pm/PackageManager;.getSystemAvailableFeatures caller=Lr30;.d
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference) method=Lr30;.d pc=8 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; caught at caller Lt60;.getValue invoke_pc=20 handler=0x0x1f type=<catch-all>
+[EXCEPTION] method=Lt60;.getValue pc=33 exception=Ljava/lang/NullPointerException; msg="Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference" try_range=(no try covering pc) handler=NOT_FOUND msg="Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference"
+[EXCEPTION] no handler for Ljava/lang/NullPointerException; in Lt60;.getValue — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lorg/andstatus/game2048/MyMainActivity;.onCreate invoke_pc=5 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[REC-MISS] Landroid/app/Activity;.getWindow caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.getWindow caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lorg/andstatus/game2048/MyMainActivity; recv_oid=37 act_oid=37)
+[REC-MISS] Landroid/view/Window;.addFlags caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.getSharedPreferences caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.getSharedPreferences caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSharedPreferences caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSharedPreferences caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[REC-MISS] Ljava/lang/Boolean;.parseBoolean caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate
+[F274-CTORGATE] Lorg/andstatus/game2048/MyMainActivity;.c initializer type Lz1; has no ()V ctor -> honest null (recv=Lorg/andstatus/game2048/MyMainActivity; caller=Lorg/andstatus/game2048/MyMainActivity;.onCreate pc=36)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Lz1;.F' on a null object reference) method=Lorg/andstatus/game2048/MyMainActivity;.onCreate pc=38 → uncaught (deferred frame unwind + propagate)
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lorg/andstatus/game2048/MyMainActivity; runtime_class=Lorg/andstatus/game2048/MyMainActivity;
+[G07-LIFECYCLE] Lorg/andstatus/game2048/MyMainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lorg/andstatus/game2048/MyMainActivity; runtime_class=Lorg/andstatus/game2048/MyMainActivity;
+[SGET] class=Lorg/andstatus/game2048/MyMainActivity; method=f pc=2 field=Ljava/lang/System;.out obj_id=228
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lorg/andstatus/game2048/MyMainActivity;.f
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lorg/andstatus/game2048/MyMainActivity;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Lorg/andstatus/game2048/MyMainActivity;.f
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[F274-CTORGATE] Lorg/andstatus/game2048/MyMainActivity;.c initializer type Lz1; has no ()V ctor -> honest null (recv=Lorg/andstatus/game2048/MyMainActivity; caller=Lorg/andstatus/game2048/MyMainActivity;.f pc=17)
+[IGET-MISS-DIAG] asked="Lorg/andstatus/game2048/MyMainActivity;->j" obj#37 cls=Lorg/andstatus/game2048/MyMainActivity; keys: Lorg/andstatus/game2048/MyMainActivity;->a Lorg/andstatus/game2048/MyMainActivity;->b a b caller=Lorg/andstatus/game2048/MyMainActivity;.onResume
+[G07-LIFECYCLE] Lorg/andstatus/game2048/MyMainActivity;.onResume() dispatched via DEX engine (ok=1, instructions=13)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=1339 nodes=4 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/opengl/GLSurfaceView;.onAttachedToWindow caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/opengl/GLSurfaceView;.getContext caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/view/View;.getContext caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Liq;.onAttachedToWindow
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Liq;.onAttachedToWindow)
+[REC-MISS] Landroid/view/WindowManager;.getClass caller=Liq;.onAttachedToWindow
+[REC-MISS] Ljava/lang/Object;.getClass caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/view/Display;.getClass caller=Liq;.onAttachedToWindow
+[REC-MISS] Ljava/lang/Object;.getClass caller=Liq;.onAttachedToWindow
+[REC-MISS] Landroid/view/Display;.getRefreshRate caller=Liq;.onAttachedToWindow
+[REC-MISS] Ljava/lang/Thread;.<init> caller=Lc80;.<init>
+[REC-MISS] Ljava/lang/Thread;.setDaemon caller=Liq;.onAttachedToWindow
+[REC-MISS] Ljava/lang/Thread;.setDaemon caller=Liq;.onAttachedToWindow
+[C013-HIER] setDaemon dispatched via superclass chain: Lc80; -> Ljava/lang/Thread; (declared=Lc80; receiver=Lc80;)
+[REC-MISS] Ljava/lang/Thread;.setName caller=Liq;.onAttachedToWindow
+[REC-MISS] Ljava/lang/Thread;.setName caller=Liq;.onAttachedToWindow
+[C013-HIER] setName dispatched via superclass chain: Lc80; -> Ljava/lang/Thread; (declared=Lc80; receiver=Lc80;)
+[REC-MISS] Ljava/lang/Thread;.start caller=Liq;.onAttachedToWindow
+[REC-MISS] Ljava/lang/Thread;.start caller=Liq;.onAttachedToWindow
+[THREAD-START] thread_oid=250 (subclass self-run law) → pending inline run
+[C013-HIER] start dispatched via superclass chain: Lc80; -> Ljava/lang/Thread; (declared=Lc80; receiver=Lc80;)
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[IGET-MISS-DIAG] asked="Liq;->h" obj#230 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lr;.a
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=250 cls=Lc80; (self-run law) → REAL DEX run() executed
+[UC009-ATTACH] onAttachedToWindow dispatched view=230 class=Liq;
+[UC009-ATTACH] attach dispatch complete ok=true
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=326
+[ECR-ROOT] scan root=0 candidates=0 cur_act=37
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=329
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=462
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[IGET-MISS-DIAG] asked="Liq;->h" obj#230 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lr;.a
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=250 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 1: started=0 resumed=1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=37
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[IGET-MISS-DIAG] asked="Liq;->h" obj#230 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lr;.a
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=250 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 2: started=0 resumed=1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=37
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[IGET-MISS-DIAG] asked="Liq;->h" obj#230 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lr;.a
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=250 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 3: started=0 resumed=1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=37
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[IGET-MISS-DIAG] asked="Liq;->h" obj#230 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[REC-MISS] Landroid/opengl/GLSurfaceView;.requestRender caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lr;.a
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lr;.a
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=250 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 4: started=0 resumed=1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=37
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/cont76/andstatus/frames
+[ECR-ROOT] scan root=0 candidates=0 cur_act=37
