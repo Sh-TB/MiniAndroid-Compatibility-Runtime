@@ -1,0 +1,45 @@
+{
+ "fence": "MG-310 clinit ordering",
+ "probe": "com.probe.mg310",
+ "apk_sha16": "741e3942c2048933",
+ "checks": [
+  {
+   "name": "L1-active-use-init",
+   "ok": true,
+   "detail": "['[MG310-CLINIT] Base #1']"
+  },
+  {
+   "name": "L1-initCount=1",
+   "ok": true,
+   "detail": "Base.ping row present with initCount=1"
+  },
+  {
+   "name": "L2-constant-no-init",
+   "ok": true,
+   "detail": "engine rows=0 app rows=0 value=7"
+  },
+  {
+   "name": "L3-super-first-order",
+   "ok": true,
+   "detail": "Base@4214 < Derived@6027"
+  },
+  {
+   "name": "L3b-engine-row-order",
+   "ok": true,
+   "detail": "engine Base@3229 < Derived@5633"
+  },
+  {
+   "name": "L4-once-only",
+   "ok": true,
+   "detail": "engine Base clinit rows=1, app initCount=1"
+  },
+  {
+   "name": "L5-default-value",
+   "ok": true,
+   "detail": "Forward.s == nullx"
+  }
+ ],
+ "pass": 7,
+ "total": 7,
+ "verdict": "FENCE GREEN"
+}

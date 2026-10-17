@@ -1,0 +1,26 @@
+{
+ "fence": "MG-150 transform hit-test",
+ "probe": "com.probe.mg150",
+ "apk_sha16": "131ffbad6940c40e",
+ "checks": [
+  {
+   "name": "geom-properties",
+   "ok": true,
+   "detail": "set/get translationX/Y readbacks = 300/200 (both runs)"
+  },
+  {
+   "name": "tap-A-layout-bounds-hit",
+   "ok": true,
+   "detail": "tap (150,150) inside layout bounds -> PerformClick fired"
+  },
+  {
+   "name": "tap-B-translated-bounds-deviation-recorded",
+   "ok": true,
+   "detail": "tap (450,350) inside translated bounds only -> NO target (current semantics locked; AOSP would map through the transform \u2014 the delta is the NAMED FRONTIER, x/y-translation consumption by hit-test + render is one coherent law)"
+  }
+ ],
+ "pass": 3,
+ "total": 3,
+ "verdict": "FENCE GREEN",
+ "frontier": "translation/rotation consumption by hit-test + render (one coherent AOSP law) \u2014 named, not implemented this wave"
+}

@@ -1,0 +1,143 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/cont76/store/data/app/com.probe.mg310/base.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 54 entries (6 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.mg310.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/cont76/store/data/app/com.probe.mg310/base.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/cont76/store/data/app/com.probe.mg310/base.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/mg310/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/mg310/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/mg310/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/mg310/MainActivity;.<init> insns=2 RSS=19.2305 MB
+[TRY-ENTRY] Lcom/probe/mg310/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/mg310/MainActivity;) recorded for handler dispatch
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/mg310/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/mg310/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=3 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity;.onCreate
+[MG310-VERSION] code=V1-MG310
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=10 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity;.onCreate
+[MG310-L2] ConstHolder.C=7 (no MG310-CLINIT ConstHolder row must exist)
+[EXP062-INIT] Lcom/probe/mg310/MainActivity$Base; static_fields=1 with_defaults=1
+[CLASS_INIT] class=Lcom/probe/mg310/MainActivity$Base; method=<clinit> bytecode_size=22
+[TRY-ENTRY] Lcom/probe/mg310/MainActivity$Base;.<clinit> dex_report=YES
+[SGET] class=Lcom/probe/mg310/MainActivity$Base; method=<clinit> pc=0 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg310/MainActivity$Base;.<clinit>
+[SGET] class=Lcom/probe/mg310/MainActivity$Base; method=<clinit> pc=9 field=Lcom/probe/mg310/MainActivity$Base;.initCount value=1
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity$Base;.<clinit>
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg310/MainActivity$Base;.<clinit>
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity$Base;.<clinit>
+[MG310-CLINIT] Base #1
+[CLASS_INIT] class=Lcom/probe/mg310/MainActivity$Base; method=<clinit> result=OK engine=0x7ffc0964b198 storage_size=27
+[TRY-ENTRY] Lcom/probe/mg310/MainActivity$Base;.ping dex_report=YES
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=21 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg310/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=38 field=Lcom/probe/mg310/MainActivity$Base;.initCount value=1
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg310/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity;.onCreate
+[MG310-L1] Base.ping=base initCount=1
+[CLASS_INIT] class=Lcom/probe/mg310/MainActivity$Derived; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Lcom/probe/mg310/MainActivity$Derived;.<clinit> dex_report=YES
+[SGET] class=Lcom/probe/mg310/MainActivity$Derived; method=<clinit> pc=0 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity$Derived;.<clinit>
+[MG310-CLINIT] Derived
+[CLASS_INIT] class=Lcom/probe/mg310/MainActivity$Derived; method=<clinit> result=OK engine=0x7ffc0964b198 storage_size=27
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=54 field=Ljava/lang/System;.err obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity;.onCreate
+[MG310-L3] Derived.ping=derived
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=79 field=Ljava/lang/System;.err obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg310/MainActivity;.onCreate
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=88 field=Lcom/probe/mg310/MainActivity$Base;.initCount value=1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity;.onCreate
+[MG310-L4] initCount-after-second-use=1 (expect 1)
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=105 field=Ljava/lang/System;.err obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg310/MainActivity;.onCreate
+[CLASS_INIT] class=Lcom/probe/mg310/MainActivity$Forward; method=<clinit> bytecode_size=23
+[SGET-MISS] key=Lcom/probe/mg310/MainActivity$Forward;.s storage_size=27 same_class_keys=0 engine=0x7ffc0964b198
+[SGET] class=Lcom/probe/mg310/MainActivity$Forward; method=<clinit> pc=0 field=Lcom/probe/mg310/MainActivity$Forward;.s obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg310/MainActivity$Forward;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity$Forward;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg310/MainActivity$Forward;.<clinit>
+[CLASS_INIT] class=Lcom/probe/mg310/MainActivity$Forward; method=<clinit> result=OK engine=0x7ffc0964b198 storage_size=28
+[SGET] class=Lcom/probe/mg310/MainActivity; method=onCreate pc=114 field=Lcom/probe/mg310/MainActivity$Forward;.s obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg310/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg310/MainActivity;.onCreate
+[MG310-L5] Forward.s=nullx (expect nullx)
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/mg310/MainActivity; runtime_class=Lcom/probe/mg310/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/mg310/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/mg310/MainActivity; runtime_class=Lcom/probe/mg310/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/mg310/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=6 nodes=0 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=22
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=25
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=160
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/cont76/mg310_run/frames
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
