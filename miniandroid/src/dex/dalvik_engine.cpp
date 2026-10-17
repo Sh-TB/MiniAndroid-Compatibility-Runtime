@@ -36909,13 +36909,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // S72-W3: table hoisted to this scope so the F-141b boxed-reader family
     // (Long.getLong/Integer.getInteger/Boolean.getBoolean) reads the SAME
     // property authority — one table, one contract.
+    //
+    // F-NEW-382 (CONT-81): the identity set now carries the ART truth.
+    // AOSP/ART answers System.getProperty("java.vm.name") == "Dalvik",
+    // "java.specification.name" == "Dalvik Specification", and
+    // "java.runtime.name" == "Android Runtime" on every device.
+    // The previous self-descriptive "MiniAndroid Compatibility Runtime"
+    // value broke the libGDX platform law — decoded live from
+    // stack.tower3d's dex (scripts/cont81_decode_loader.py): its
+    // SharedLibraryLoader.<clinit> classifies the platform by
+    // java.runtime.name.contains("Android Runtime") (after the
+    // moe.platform.name iOS probe); without that row the loader fell to
+    // the desktop extract path (Class.getResourceAsStream) and every
+    // libGDX game died with SharedLibraryLoadRuntimeException before any
+    // view existed (stack.tower3d live evidence, corpus row stack.tower3d).
     // ────────────────────────────────────────────────────────────────────────
     static const miniandroid::dalvik::KvPair t_kSystemProps[] = {
     {"java.io.tmpdir", "/tmp"},
     {"line.separator", "\n"},
     {"file.separator", "/"},
     {"path.separator", ":"},
-    {"java.vm.name", "MiniAndroid Compatibility Runtime"},
+    {"java.vm.name", "Dalvik"},
+    {"java.specification.name", "Dalvik Specification"},
+    {"java.specification.vendor", "The Android Open Source Project"},
+    {"java.runtime.name", "Android Runtime"},
     {"java.version", "17"},
     {"os.name", "Linux"},
     {"os.arch", "aarch64"},
@@ -58580,6 +58597,44 @@ measure_cm_done:;
         if (method == "loadLibrary") {
             // Extracted-tree check (G-4): the install command materializes
             // lib/<abi>/ under the package codePath in the store.
+            // F-NEW-382b (CONT-81): lazy derivation — the G-4 identity used
+            // to exist only inside the getApplicationInfo seed, so a game
+            // that loads natives BEFORE its first getApplicationInfo call
+            // (libGDX SharedLibraryLoader.load inside onCreate: stack.tower3d
+            // live evidence) saw an empty native_lib_dir_host_ and the load
+            // fell to the "not extracted" branch although the install had
+            // extracted the right ABI. The derivation is the install's own
+            // law (store_root + /data/app/<pkg>/lib/<abi>, x86_64-first —
+            // the host-executable order); running it on demand here is
+            // identical to the seed's result and needs no app cooperation.
+            if (native_lib_dir_host_.empty() && !apk_path_.empty() &&
+                !package_name_.empty()) {
+                const std::string kLibMarker = "/data/app/";
+                size_t lpos = apk_path_.find(kLibMarker);
+                if (lpos != std::string::npos) {
+                    std::string store_root = apk_path_.substr(0, lpos);
+                    std::string lib_base = store_root + kLibMarker +
+                                           package_name_ + "/lib/";
+                    static const char* kAbiOrder2[] = {
+                        "x86_64", "x86", "arm64-v8a", "armeabi-v7a"};
+                    std::error_code lazy_ec;
+                    for (const char* abi : kAbiOrder2) {
+                        std::filesystem::path lc =
+                            std::filesystem::path(lib_base) / abi;
+                        if (std::filesystem::exists(lc, lazy_ec) &&
+                            std::filesystem::is_directory(lc, lazy_ec)) {
+                            native_lib_dir_logical_ =
+                                "/data/app/" + package_name_ + "/lib/" + abi;
+                            native_lib_dir_host_ = lc.string();
+                            native_primary_abi_ = abi;
+                            std::cerr << "[G-4-LAZY] nativeLibraryDir "
+                                         "derived on demand: "
+                                      << native_lib_dir_logical_ << std::endl;
+                            break;
+                        }
+                    }
+                }
+            }
             if (!native_lib_dir_host_.empty()) {
                 std::filesystem::path cand = std::filesystem::path(
                     native_lib_dir_host_) / ("lib" + lib + ".so");

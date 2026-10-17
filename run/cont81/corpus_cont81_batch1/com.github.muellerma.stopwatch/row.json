@@ -61,7 +61,7 @@
   "ts_ms": 1792260400359
  },
  "verdict_v2": "SPLASH_ONLY",
- "notes": "",
+ "notes": "RECLASSIFIED (CONT-81): the uploaded APK (versionCode 6) declares ZERO <activity> elements and its dex contains NO Activity subclass (manifest aapt2 xmltree + dex scan evidence) \u2014 an activity-less package cannot present window content on ANY Android runtime; the NO_ROOT/WINDOW_ROOT face is the honest result, NOT a runtime window-chain defect (the CONT-79 P0-C \"pair\" dissolves: this side is a package artifact).",
  "legacy_verdict": "SPLASH_ONLY",
  "repeat_runs": 1,
  "repeat_face_stable": true,
@@ -70,5 +70,5 @@
  ],
  "repeat_all_same_verdict": true,
  "root_id": "",
- "next_action": ""
+ "next_action": "fetch a complete upstream APK copy if a UI face is wanted; not a MiniAndroid fix target"
 }
