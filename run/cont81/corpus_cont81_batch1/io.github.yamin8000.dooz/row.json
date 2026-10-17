@@ -1,0 +1,72 @@
+{
+ "apk_path": "upload/canonical_apks/dooz_23_toplevel.apk",
+ "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+ "apk_sha16": "299eab21ac8b3c61",
+ "apk_size_bytes": 1840400,
+ "package": "io.github.yamin8000.dooz",
+ "version_code": "23",
+ "version_name": "1.0.23",
+ "min_sdk": "",
+ "target_sdk": "37",
+ "abi_inventory": {
+  "arm64-v8a": 2,
+  "armeabi-v7a": 2,
+  "x86": 2,
+  "x86_64": 2
+ },
+ "arm_only": false,
+ "has_native": true,
+ "binary_sha16": "fc12647ff1a7b13a",
+ "harness_ok": true,
+ "install_cmd": "/home/z/my-project/miniandroid/build/miniandroid install upload/canonical_apks/dooz_23_toplevel.apk --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store",
+ "install_rc": 0,
+ "install_stderr_tail": "",
+ "run_cmd": "/home/z/my-project/miniandroid/build/miniandroid run --package io.github.yamin8000.dooz --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store --width 1080 --height 1920 --frames 5 --max-seconds 90 -o /home/z/my-project/run/cont81/corpus_cont81_batch1/io.github.yamin8000.dooz/r1",
+ "run_termination": "error",
+ "run_rc": 1,
+ "wall_seconds": 93.2,
+ "run_combined_chars": 1381588,
+ "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+ "screenshot_sha16": "31ddd4d5b8e6d18e",
+ "unique_colors": 1,
+ "nonbg_ratio": 0.0,
+ "entropy": -0.0,
+ "dominant_rgb": [
+  255,
+  255,
+  255
+ ],
+ "engine_verdict": "DEFAULT_BACKGROUND_ONLY",
+ "first_missing_stage": "APP_DRAW_OPS",
+ "engine_unique_colors": 1,
+ "first_divergence": null,
+ "last_exception": {
+  "activity": "io.github.yamin8000.dooz.ui.MainActivity",
+  "component": "boot",
+  "event": "RUN_END",
+  "extra": {
+   "status": 1
+  },
+  "package": "io.github.yamin8000.dooz",
+  "renderer_family": "COMPOSE",
+  "result": "FAIL",
+  "run_id": "1792260430752-1",
+  "seq": 43,
+  "sev": "FAILURE",
+  "state": "Partial execution completed [F-016 exception-honesty: 22 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 2843859 IMPLEMENTED, 34999 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS \u2014 SUCCESS requires authoritative app content]",
+  "thread": "main",
+  "ts_ms": 1792260523797
+ },
+ "uncaught_n": 22,
+ "verdict_v2": "SPLASH_ONLY",
+ "notes": "",
+ "legacy_verdict": "SPLASH_ONLY",
+ "repeat_runs": 1,
+ "repeat_face_stable": true,
+ "repeat_verdicts": [
+  "SPLASH_ONLY"
+ ],
+ "repeat_all_same_verdict": true,
+ "root_id": "",
+ "next_action": ""
+}

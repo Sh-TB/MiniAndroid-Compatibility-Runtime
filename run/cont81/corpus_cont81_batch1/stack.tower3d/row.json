@@ -1,0 +1,90 @@
+{
+ "apk_path": "upload/canonical_apks/stack.tower3d_1.apk",
+ "apk_sha256": "ba5b0a48d74e33483d9dcb04e2e22ec745ee8e9266188bf9c59f2d2b2883c233",
+ "apk_sha16": "ba5b0a48d74e3348",
+ "apk_size_bytes": 4461839,
+ "package": "stack.tower3d",
+ "version_code": "1",
+ "version_name": "1.0.0",
+ "min_sdk": "",
+ "target_sdk": "35",
+ "abi_inventory": {
+  "arm64-v8a": 2,
+  "armeabi-v7a": 2,
+  "x86": 2,
+  "x86_64": 2
+ },
+ "arm_only": false,
+ "has_native": true,
+ "binary_sha16": "fc12647ff1a7b13a",
+ "harness_ok": true,
+ "install_cmd": "/home/z/my-project/miniandroid/build/miniandroid install upload/canonical_apks/stack.tower3d_1.apk --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store",
+ "install_rc": 0,
+ "install_stderr_tail": "",
+ "run_cmd": "/home/z/my-project/miniandroid/build/miniandroid run --package stack.tower3d --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store --width 1080 --height 1920 --frames 5 --max-seconds 90 -o /home/z/my-project/run/cont81/corpus_cont81_batch1/stack.tower3d/r1",
+ "run_termination": "error",
+ "run_rc": 1,
+ "wall_seconds": 1.6,
+ "run_combined_chars": 39479,
+ "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+ "screenshot_sha16": "31ddd4d5b8e6d18e",
+ "unique_colors": 1,
+ "nonbg_ratio": 0.0,
+ "entropy": -0.0,
+ "dominant_rgb": [
+  255,
+  255,
+  255
+ ],
+ "engine_verdict": "NO_ROOT",
+ "first_missing_stage": "WINDOW_ROOT",
+ "engine_unique_colors": 1,
+ "first_divergence": {
+  "actual": "no window content root resolved",
+  "evidence": "effective_content_root_() == 0",
+  "expected": "authoritative window content root (AOSP ViewRootImpl)",
+  "first_failure_event": {
+   "cls": "",
+   "event": "EXCEPTION",
+   "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException; escaped the app boundary at Lstack/tower3d/android/AndroidLauncher;.onCreate invoke_pc=0x15 depth=1 [APP-BOUNDARY]",
+   "method": "",
+   "seq": 13,
+   "stage": null,
+   "state": "nonfatal"
+  },
+  "last_successful_stage": "LIFECYCLE",
+  "next_required_stage": "MEASURE",
+  "seq": 16,
+  "source": "explicit-evidence",
+  "stage": "VIEWTREE"
+ },
+ "last_exception": {
+  "activity": "stack.tower3d.android.AndroidLauncher",
+  "component": "boot",
+  "event": "RUN_END",
+  "extra": {
+   "status": 1
+  },
+  "package": "stack.tower3d",
+  "renderer_family": "CLASSIC_CANVAS",
+  "result": "FAIL",
+  "run_id": "1792260382539-1",
+  "seq": 30,
+  "sev": "FAILURE",
+  "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 223 IMPLEMENTED, 7 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT \u2014 SUCCESS requires authoritative app content]",
+  "thread": "main",
+  "ts_ms": 1792260384000
+ },
+ "uncaught_n": 2,
+ "verdict_v2": "SPLASH_ONLY",
+ "notes": "",
+ "legacy_verdict": "SPLASH_ONLY",
+ "repeat_runs": 1,
+ "repeat_face_stable": true,
+ "repeat_verdicts": [
+  "SPLASH_ONLY"
+ ],
+ "repeat_all_same_verdict": true,
+ "root_id": "",
+ "next_action": ""
+}

@@ -1,0 +1,72 @@
+{
+ "apk_path": "upload/telegram_official.apk",
+ "apk_sha256": "e37aced2a49c1dbb414937b521b7a5e795208018e82d526b5ec8e55173acdd4d",
+ "apk_sha16": "e37aced2a49c1dbb",
+ "apk_size_bytes": 64847673,
+ "package": "org.telegram.messenger.web",
+ "version_code": "71059",
+ "version_name": "12.10.5",
+ "min_sdk": "",
+ "target_sdk": "36",
+ "abi_inventory": {
+  "arm64-v8a": 2,
+  "armeabi-v7a": 2,
+  "x86": 2,
+  "x86_64": 2
+ },
+ "arm_only": false,
+ "has_native": true,
+ "binary_sha16": "fc12647ff1a7b13a",
+ "harness_ok": true,
+ "install_cmd": "/home/z/my-project/miniandroid/build/miniandroid install upload/telegram_official.apk --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store",
+ "install_rc": 0,
+ "install_stderr_tail": "",
+ "run_cmd": "/home/z/my-project/miniandroid/build/miniandroid run --package org.telegram.messenger.web --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store --width 1080 --height 1920 --frames 5 --max-seconds 90 -o /home/z/my-project/run/cont81/corpus_cont81_batch1/org.telegram.messenger.web/r1",
+ "run_termination": "error",
+ "run_rc": 1,
+ "wall_seconds": 10.8,
+ "run_combined_chars": 903292,
+ "screenshot_sha256": "c5810e839ee808bd9ec09afbb321fa27d38f74c5b19d540ed63689d23dc55638",
+ "screenshot_sha16": "c5810e839ee808bd",
+ "unique_colors": 103,
+ "nonbg_ratio": 0.0016,
+ "entropy": 0.027,
+ "dominant_rgb": [
+  255,
+  255,
+  255
+ ],
+ "engine_verdict": "REAL_APP_CONTENT",
+ "first_missing_stage": "",
+ "engine_unique_colors": 157,
+ "first_divergence": null,
+ "last_exception": {
+  "activity": "org.telegram.ui.LaunchActivity",
+  "component": "boot",
+  "event": "RUN_END",
+  "extra": {
+   "status": 1
+  },
+  "package": "org.telegram.messenger.web",
+  "renderer_family": "CLASSIC_CANVAS",
+  "result": "FAIL",
+  "run_id": "1792260352407-1",
+  "seq": 68,
+  "sev": "FAILURE",
+  "state": "Execution completed successfully [F-016 exception-honesty: 13 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 56078 IMPLEMENTED, 6403 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json]",
+  "thread": "main",
+  "ts_ms": 1792260362844
+ },
+ "uncaught_n": 13,
+ "verdict_v2": "REAL_APP_CONTENT",
+ "notes": "engine-verdict-only: provenance without rich pixelssparse-content: engine-owned-pixel census authoritative; PIL re-census thin",
+ "legacy_verdict": "REAL_APP_UI",
+ "repeat_runs": 1,
+ "repeat_face_stable": true,
+ "repeat_verdicts": [
+  "PARTIAL_MARGINAL"
+ ],
+ "repeat_all_same_verdict": true,
+ "root_id": "",
+ "next_action": ""
+}
