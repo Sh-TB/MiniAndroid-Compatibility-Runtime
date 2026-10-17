@@ -5831,6 +5831,22 @@ std::string fnew304_resolve_pref_text(const resources::ResValue& val) {
 }
 }  // namespace
 
+// ── F-NEW-383 (CONT-82): ColorStateList wrap helper ─────────────────────
+// AOSP ColorStateList.valueOf(int color): a single default-state spec whose
+// getDefaultColor() answers the color for ANY state set. Heap convention:
+// __default_color__ (INT32 ARGB) + __csl_single__ (INT32 1) — the reader
+// law answers deterministically from these fields; full state-spec arrays
+// remain a named deeper frontier (no state-dependent colors invented).
+static uint32_t csl_wrap_single(DalvikHeap& heap, uint32_t pc, int32_t argb,
+                                uint32_t frame_id = 0) {
+    uint32_t id = heap.allocate("Landroid/content/res/ColorStateList;", pc,
+                                frame_id);
+    heap.set_object_field(id, "__default_color__",
+                          DalvikValue::make_int(argb));
+    heap.set_object_field(id, "__csl_single__", DalvikValue::make_int(1));
+    return id;
+}
+
 bool DalvikExecutionEngine::advance_fragments_to_created(
     DalvikExecutionResult& result) {
     (void)result;
@@ -13706,6 +13722,93 @@ bool DalvikExecutionEngine::dispatch_view_attached() {
     return any_ok;
 }
 
+
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-384 (CONT-82) — implementation. See dalvik_engine.h for the law.
+// Consumed at the frame boundary BEFORE measure (AOSP performTraversals
+// order: insets → measure → layout → draw).
+// ────────────────────────────────────────────────────────────────────────
+bool DalvikExecutionEngine::dispatch_root_window_insets() {
+    auto* view_shadow = shadow_registry_
+                            ? shadow_registry_->find_as<framework::ViewShadow>()
+                            : nullptr;
+    if (!view_shadow || !dex_report_) return false;
+    // Root authority: the ActivityShadow content view id — the SAME root
+    // the census/render walk uses (VIEWTREE_CREATED root_id law). Skeleton
+    // trees (parent_id==0 decor fragments like chess's o232) are NOT the
+    // window content; dispatching into them missed every override.
+    auto* act_shadow = shadow_registry_
+                           ? shadow_registry_->find_as<framework::ActivityShadow>()
+                           : nullptr;
+    uint32_t f384_root = act_shadow ? act_shadow->content_view_id() : 0;
+    std::string f384_root_cls;
+    if (f384_root != 0) {
+        if (const auto* node = view_shadow->find_node(f384_root);
+            node && node->attached_to_window && !node->class_desc.empty()) {
+            f384_root_cls = node->class_desc;
+        } else {
+            f384_root = 0;  // content root not attached yet — try next frame
+        }
+    }
+    static std::set<uint32_t> f384_roots_done;
+    if (f384_root == 0 || f384_root_cls.empty() ||
+        f384_roots_done.count(f384_root))
+        return false;
+    f384_roots_done.insert(f384_root);
+    uint32_t wi = heap_.allocate("Landroid/view/WindowInsets;", 0, 0);
+    heap_.set_object_field(wi, "__root_insets__", DalvikValue::make_int(1));
+    DalvikValue wi_val =
+        DalvikValue::make_object(wi, "Landroid/view/WindowInsets;");
+    // AOSP ViewGroup.dispatchApplyWindowInsets: a node without a DEX-side
+    // override forwards the insets DOWN the tree (children until consumed).
+    // The content wrapper rarely overrides; ActionBarOverlayLayout — a
+    // DESCENDANT — does. Walk: try the node's own override, else recurse
+    // children depth-first (bounded; first consuming override wins).
+    std::function<bool(uint32_t, const std::string&, int)> f384_walk =
+        [&](uint32_t vid, const std::string& vcls, int depth) -> bool {
+            DalvikValue r = DalvikValue::make_object(vid, vcls);
+            DalvikValue ret = DalvikValue::make_void();
+            DalvikExecutionResult res;
+            std::string w = vcls;
+            for (int hop = 0; hop < 8 && !w.empty(); hop++) {
+                // AOSP order: the PUBLIC dispatch entry first — dispatch-
+                // ApplyWindowInsets WRAPPERS (fragment/app/k etc.) cache the
+                // platform insets in their own fields before delegating;
+                // bypassing them left those fields null at measure time
+                // (the second k1.c null source). onApplyWindowInsets is the
+                // fallback for roots without a DEX dispatch entry.
+                if (try_recursive_invoke(w, "dispatchApplyWindowInsets",
+                                         {r, wi_val}, ret, res))
+                    return true;
+                if (try_recursive_invoke(w, "onApplyWindowInsets", {r, wi_val},
+                                         ret, res))
+                    return true;
+                auto cit = class_info_index_.find(w);
+                if (cit == class_info_index_.end()) break;
+                const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+                w = ci.superclass_name;
+                if (w.empty() || w.rfind("Landroid/", 0) == 0 ||
+                    w.rfind("Ljava/", 0) == 0)
+                    break;
+            }
+            if (depth <= 0) return false;
+            const auto* n = view_shadow->find_node(vid);
+            if (!n) return false;
+            for (uint32_t cid : n->children) {
+                const auto* cn = view_shadow->find_node(cid);
+                if (!cn || cn->class_desc.empty()) continue;
+                if (f384_walk(cid, cn->class_desc, depth - 1))
+                    return true;  // first consuming override wins
+            }
+            return false;
+        };
+    bool iok = f384_walk(f384_root, f384_root_cls, 12);
+    std::cerr << "[F384-ROOTINSETS] root=o" << f384_root
+              << " cls=" << f384_root_cls << " insets=o" << wi
+              << " dispatched=" << (iok ? "true" : "false") << std::endl;
+    return iok;
+}
+
 // ---------------------------------------------------------------------------
 // R-NEW-347 (S42) — AOSP attach-on-add law (dispatch side).
 //
@@ -14550,6 +14653,33 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         DalvikValue::make_int(array_size));
                     heap_.set_object_field(obj_id, "__array_length__",
                         DalvikValue::make_int(array_size));
+                    // F-NEW-385 (CONT-82): new-array ZERO-INIT law (AOSP
+                    // HandleNewArray — every element of a fresh array is the
+                    // component default: 0/null/false, never an ABSENT slot).
+                    // The engine left slots unwritten, so Arrays.toString /
+                    // aget on an un-stored index answered null (the CONT-82
+                    // arrays fixture: [Z {true} with an unstored second slot
+                    // rendered "[true, null]" — AOSP answers "[true, false]").
+                    if (na_type_desc.size() >= 2 && na_type_desc[0] == '[') {
+                        DalvikValue na_zero;
+                        switch (na_type_desc[1]) {
+                            case 'Z': na_zero = DalvikValue::make_bool(false); break;
+                            case 'C': na_zero = DalvikValue::make_char(0); break;
+                            case 'B': na_zero = DalvikValue::make_byte(0); break;
+                            case 'S': na_zero = DalvikValue::make_short(0); break;
+                            case 'J': na_zero = DalvikValue::make_long(0); break;
+                            case 'F': na_zero = DalvikValue::make_float(0.f); break;
+                            case 'D': na_zero = DalvikValue::make_double(0.0); break;
+                            case 'L': na_zero = DalvikValue::make_null(); break;
+                            case '[': na_zero = DalvikValue::make_null(); break;
+                            default: na_zero = DalvikValue::make_int(0); break;
+                        }
+                        for (int32_t zi = 0; zi < array_size && zi < 4096; ++zi) {
+                            heap_.set_object_field(
+                                obj_id, "array[" + std::to_string(zi) + "]",
+                                na_zero);
+                        }
+                    }
                     // F-NEW-181: element-type provenance for heap-side
                     // classification (SPIN probes, get_object_class law).
                     if (!na_type_desc.empty())
@@ -14901,6 +15031,41 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         src_val.object_id != 0) { \
                         src_val = DalvikValue::make_object( \
                             src_val.object_id, "Ljava/lang/Class;"); \
+                    } \
+                    /* F-NEW-385 (CONT-82): aput component typing — the APUT \
+                     * OPCODE VARIANT is the component type (AOSP HandleAPut \
+                     * family). The register carries raw INT32 (a zeroed \
+                     * register reads NULL), so the un-typed store lost the \
+                     * element kind for [Z/[C/[B/[S arrays and every typed \
+                     * reader (Arrays.toString per-type rendering, aget- \
+                     * boolean identity) answered the wrong face. Caught by \
+                     * the CONT-82 arrays fixture ([Z {true,false} stored \
+                     * [1, null]). The typed store is identity for [I/[J/ \
+                     * [F/[D/[L (APUT/APUT_WIDE/APUT_OBJECT never reach the \
+                     * primitive re-typing branches). */ \
+                    { \
+                        int aput385_v = (src_val.type == DalvikType::INT32) \
+                                             ? src_val.int_val \
+                                             : ((src_val.type == \
+                                                DalvikType::BOOLEAN) \
+                                                    ? (src_val.bool_val ? 1 \
+                                                                        : 0) \
+                                                : (src_val.type == \
+                                                   DalvikType::CHAR \
+                                                       ? src_val.int_val \
+                                                       : 0)); \
+                        if (strcmp(op_name, "aput-boolean") == 0) { \
+                            src_val = DalvikValue::make_bool(aput385_v != 0); \
+                        } else if (strcmp(op_name, "aput-char") == 0) { \
+                            src_val = DalvikValue::make_char( \
+                                static_cast<char>(aput385_v & 0xFF)); \
+                        } else if (strcmp(op_name, "aput-byte") == 0) { \
+                            src_val = DalvikValue::make_byte( \
+                                static_cast<int8_t>(aput385_v & 0xFF)); \
+                        } else if (strcmp(op_name, "aput-short") == 0) { \
+                            src_val = DalvikValue::make_short( \
+                                static_cast<int16_t>(aput385_v & 0xFFFF)); \
+                        } \
                     } \
                     int32_t idx = dalvik_int_value(idx_val); \
                     /* S60 hygiene (F-074 precedent): the per-op aput trace is \
@@ -16545,6 +16710,42 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             src_val.object_id, "Ljava/lang/Class;");
                     }
                     std::string field_name = "array[" + std::to_string(i) + "]";
+                    // F-NEW-385 (CONT-82): filled-new-array component
+                    // typing. The DEX fill payload is per-component raw
+                    // ints ([Z 0/1, [C UTF-16 code units, [B/[S signed);
+                    // the register only carries INT32 (and a zeroed
+                    // register reads as NULL). The AOSP array law: the
+                    // ARRAY DESCRIPTOR is the component type — store the
+                    // TYPED value so every downstream reader (Arrays.
+                    // toString per-type rendering, aget-boolean/char
+                    // identity) answers the contract. Caught by the
+                    // CONT-82 arrays fixture: [Z {true,false} read back
+                    // "[1, null]", [C {'x','y'} read back "[120, 121]".
+                    if (!type_desc.empty() && type_desc.size() >= 2 &&
+                        type_desc[0] == '[') {
+                        char comp = type_desc[1];
+                        auto as_int385 = [&]() -> int {
+                            if (src_val.type == DalvikType::INT32)
+                                return src_val.int_val;
+                            if (src_val.type == DalvikType::BOOLEAN)
+                                return src_val.bool_val ? 1 : 0;
+                            if (src_val.type == DalvikType::CHAR)
+                                return src_val.int_val;
+                            return 0;  // NULL/zeroed register = 0
+                        };
+                        if (comp == 'Z') {
+                            src_val = DalvikValue::make_bool(as_int385() != 0);
+                        } else if (comp == 'C') {
+                            src_val = DalvikValue::make_char(
+                                static_cast<char>(as_int385() & 0xFF));
+                        } else if (comp == 'B') {
+                            src_val = DalvikValue::make_byte(
+                                static_cast<int8_t>(as_int385() & 0xFF));
+                        } else if (comp == 'S') {
+                            src_val = DalvikValue::make_short(
+                                static_cast<int16_t>(as_int385() & 0xFFFF));
+                        }
+                    }
                     heap_.set_object_field(arr_id, field_name, src_val);
                 }
 
@@ -16781,11 +16982,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                 }
                             } else if (elem_width == 2) {
                                 // short or char (1 code unit)
+                                // F-NEW-385 (CONT-82): component typing —
+                                // [C stores CHAR, [S stores SHORT (the AOSP
+                                // FillArrayData interpretation law the width-1
+                                // branch already implements). The old make_int
+                                // store made char[] literals render as numeric
+                                // codes in Arrays.toString ([C {'x','y'} →
+                                // "[120, 121]" — the CONT-82 fixture catch).
                                 if (data_start + i < bytecode_.size()) {
                                     int16_t val = static_cast<int16_t>(bytecode_[data_start + i]);
-                                    heap_.set_object_field(array_val.object_id,
-                                        "array[" + std::to_string(i) + "]",
-                                        DalvikValue::make_int(val));
+                                    if (array_val.class_desc == "[C") {
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_char(
+                                                static_cast<char>(val & 0xFF)));
+                                    } else if (array_val.class_desc == "[S") {
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_short(val));
+                                    } else {
+                                        heap_.set_object_field(array_val.object_id,
+                                            "array[" + std::to_string(i) + "]",
+                                            DalvikValue::make_int(val));
+                                    }
                                 }
                             } else if (elem_width == 8) {
                                 // long or double (4 code units)
@@ -28564,6 +28783,102 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                   << (gi_resolved ? "" : " (UNRESOLVED)") << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(gi_val);
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-383 (CONT-82) — Resources.getColorStateList(int) (AOSP
+    // Resources.java law): color resources resolve through the ARSC table
+    // (REFERENCE chains deref to the terminal COLOR) and wrap as a
+    // ColorStateList. The engine had NO law: ResourcesCompat.getColor-
+    // StateList (obfuscated Le0/j.b in jwtc chess) answered null → the
+    // Material drawable ctor (Lq/b;.<init>) called getDefaultColor on the
+    // null receiver → NPE → start.onCreate unwound → the app presented
+    // APP_DRAW_OPS white. AOSP: an unresolvable id throws NotFound-
+    // Exception; the honest deterministic degrade here is null + a
+    // recorded row (the null receiver keeps the app-side NPE truth
+    // visible instead of inventing a color).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "getColorStateList" && args.size() >= 2 &&
+        args[1].type == DalvikType::INT32) {
+        uint32_t cs_resid = (uint32_t)args[1].int_val;
+        int32_t cs_argb = 0;
+        bool cs_resolved = false;
+        auto& cs_rt = resources::ResourceRuntime::instance();
+        if (cs_rt.loaded() || cs_rt.ensure_loaded(apk_path_)) {
+            auto v = cs_rt.arsc().resolve_value(cs_resid);
+            for (int hop = 0; v && v->ref_id != 0 && hop < 4; ++hop) {
+                v = cs_rt.arsc().resolve_value(v->ref_id);
+            }
+            if (v && v->is_color()) {
+                cs_argb = (int32_t)v->data;
+                cs_resolved = true;
+            }
+        }
+        std::cerr << "[F383-CSL] Resources.getColorStateList resid=0x"
+                  << std::hex << cs_resid << std::dec << " -> "
+                  << (cs_resolved ? "resolved" : "NULL (unresolved)")
+                  << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (!cs_resolved) {
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t cs_id = csl_wrap_single(
+            heap_, pc_, cs_argb,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        result = DalvikValue::make_object(cs_id,
+                                          "Landroid/content/res/ColorStateList;");
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-383 (CONT-82) — ColorStateList class law (AOSP ColorStateList
+    // .java): valueOf(color) wraps any ARGB as a single default-state spec
+    // (NEVER null); getDefaultColor() answers the default state color;
+    // getColorForState(states, fallback) answers the spec color — the
+    // single-spec law answers the default for ANY state set (full state-
+    // spec matching is the named deeper frontier). Evidence: jwtc chess
+    // Material drawable (Lq/b) calls valueOf + getDefaultColor.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/ColorStateList;" &&
+        method == "valueOf" && !args.empty() &&
+        (args[0].type == DalvikType::INT32 ||
+         args[0].type == DalvikType::INT64)) {
+        int32_t vo_argb = args[0].type == DalvikType::INT32
+                              ? args[0].int_val
+                              : (int32_t)args[0].long_val;
+        uint32_t vo_id = csl_wrap_single(
+            heap_, pc_, vo_argb,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        std::cerr << "[F383-CSL] valueOf color=0x" << std::hex << vo_argb
+                  << std::dec << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(vo_id,
+                                          "Landroid/content/res/ColorStateList;");
+        return true;
+    }
+    if (class_name == "Landroid/content/res/ColorStateList;" &&
+        (method == "getDefaultColor" || method == "getColorForState" ||
+         method == "getChangingConfigurations")) {
+        uint32_t recv = args.empty() ? 0 : args[0].object_id;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "getChangingConfigurations") {
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        if (auto dc = heap_.get_object_field(recv, "__default_color__");
+            dc && dc->type == DalvikType::INT32) {
+            result = DalvikValue::make_int(dc->int_val);
+            return true;
+        }
+        // A foreign ColorStateList object (not produced by our laws) has
+        // no default color — the honest answer is 0 with a bounded row,
+        // never an invented color.
+        static thread_local uint64_t f383_foreign_n = 0;
+        if (f383_foreign_n++ < 12)
+            std::cerr << "[F383-CSL] foreign CSL o" << recv
+                      << " no __default_color__ -> 0" << std::endl;
+        result = DalvikValue::make_int(0);
         return true;
     }
     // ────────────────────────────────────────────────────────────────────
@@ -42069,6 +42384,91 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_int(f175_val);
             return true;
         }
+        // ── F-NEW-383 (CONT-82): TypedArray.getColorStateList(index) ────
+        // AOSP TypedArray.getColorStateList(int): COLOR slot → a Color-
+        // StateList wrapping the ARGB; REFERENCE slot → loadColorStateList
+        // (deref to the terminal color); ABSENT slot → null. Evidence:
+        // jwtc chess Material drawable ctor (Lq/a.<init> → TypedArray.
+        // getColorStateList → Lq/b.<init> → getDefaultColor NPE on the
+        // null). The engine reader had NO getColorStateList → null NPE
+        // family. Two-interpretation law for the legacy (type-less) slot
+        // convention: ARSC resolve first (REFERENCE reading), then the
+        // raw ARGB word (COLOR reading) — each answer carries a bounded
+        // diag row; ambiguous words resolve through the ARSC when the id
+        // exists (documented honesty note).
+        if (method == "getColorStateList" && args.size() >= 2 &&
+            args[1].type == DalvikType::INT32) {
+            int32_t f383_idx = args[1].int_val;
+            auto present = heap_.get_object_field(
+                args[0].object_id,
+                "array_present[" + std::to_string(f383_idx) + "]");
+            int32_t f383_data = 0;
+            if (auto vf = heap_.get_object_field(
+                    args[0].object_id,
+                    "array[" + std::to_string(f383_idx) + "]");
+                vf && vf->type == DalvikType::INT32) {
+                f383_data = vf->int_val;
+            }
+            bool slot_present = present && present->type == DalvikType::INT32
+                                    ? present->int_val != 0
+                                    : f383_data != 0;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (!slot_present || f383_data == 0) {
+                // AOSP law: absent slot → null (no invented color).
+                result = DalvikValue::make_null();
+                return true;
+            }
+            int32_t f383_argb = 0;
+            bool f383_ok = false;
+            const char* f383_how = "raw";
+            {
+                auto& rt = resources::ResourceRuntime::instance();
+                if (rt.loaded() || rt.ensure_loaded(apk_path_)) {
+                    auto v = rt.arsc().resolve_value((uint32_t)f383_data);
+                    for (int hop = 0; v && v->ref_id != 0 && hop < 4; ++hop) {
+                        v = rt.arsc().resolve_value(v->ref_id);
+                    }
+                    if (v && v->is_color()) {
+                        f383_argb = (int32_t)v->data;
+                        f383_ok = true;
+                        f383_how = "ref";
+                    }
+                }
+            }
+            if (!f383_ok) {
+                // The raw word is only a color when it is not an
+                // attr/framework resource id (0x0101xxxx — the android
+                // attr package). Wrapping an attr id as ARGB invented a
+                // false color (caught in the CONT-82 first chess run:
+                // data=0x10104e2 -> 0x10104e2); AOSP answers null for a
+                // non-color slot, so record and answer null.
+                if ((f383_data >> 24) == 0x01) {
+                    static thread_local uint64_t f383_attr_n = 0;
+                    if (f383_attr_n++ < 8)
+                        std::cerr << "[F383-CSL] TypedArray[" << f383_idx
+                                  << "] data=0x" << std::hex << f383_data
+                                  << std::dec
+                                  << " is an attr id, not a color -> null"
+                                  << std::endl;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                f383_argb = f383_data;
+                f383_ok = true;
+            }
+            static thread_local uint64_t f383_ta_n = 0;
+            if (f383_ta_n++ < 16)
+                std::cerr << "[F383-CSL] TypedArray.getColorStateList["
+                          << f383_idx << "] data=0x" << std::hex << f383_data
+                          << " -> 0x" << f383_argb << std::dec << " ("
+                          << f383_how << ")" << std::endl;
+            uint32_t f383_id = csl_wrap_single(
+                heap_, pc_, f383_argb,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            result = DalvikValue::make_object(
+                f383_id, "Landroid/content/res/ColorStateList;");
+            return true;
+        }
         if ((method == "getBoolean" || method == "getInt" ||
              method == "getInteger" || method == "getColor" ||
              method == "getDimensionPixelSize" ||
@@ -43461,7 +43861,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // F-NEW-175 producer (F-036 array fields + presence bits) so the
     // engine-side F-093b/F-NEW-175 TypedArray reader law answers reads.
     if (method == "obtainStyledAttributes" &&
-        class_name == "Landroid/content/res/Resources$Theme;") {
+        (class_name == "Landroid/content/res/Resources$Theme;" ||
+         // F-NEW-383 (CONT-82): Context-family receivers reached NO
+         // producer — the F-093/F-NEW-175 producer only dispatched for
+         // Activity-typed receivers, so the androidx themed-obtain idiom
+         // `new ContextThemeWrapper(ctx, resid).obtainStyledAttributes(
+         // attrs)` (f2/p.a, jwtc chess Material drawable chain) answered
+         // null → TypedArray.getInt null-recv NPE. The materialization
+         // below is receiver-class agnostic (the AOSP ContextImpl law:
+         // EVERY Context/Theme obtain routes through the same
+         // ResourcesImpl.ThemeImpl materialization).
+         class_name.find("ContextThemeWrapper;") != std::string::npos ||
+         class_name == "Landroid/content/Context;" ||
+         class_name == "Landroid/content/ContextWrapper;")) {
         uint32_t styleable_id = 0;
         int32_t n = 0;
         size_t styleable_pos = SIZE_MAX;

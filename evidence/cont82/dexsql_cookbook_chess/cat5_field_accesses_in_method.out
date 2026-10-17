@@ -1,0 +1,21 @@
++------------+----------------------------------+-------------+---------------------------------------------+
+| using_type | field_class                      | field_name  | field_type                                  |
++------------+----------------------------------+-------------+---------------------------------------------+
+| get        | Landroid/os/Build$VERSION;       | SDK_INT     | I                                           |
+| get        | Lq2/a;                           | c           | Z                                           |
+| get        | Lq2/a;                           | c           | Z                                           |
+| get        | Lq2/a;                           | d           | Z                                           |
+| get        | Ljwtc/android/chess/start;       | f           | Landroidx/recyclerview/widget/RecyclerView; |
+| get        | Ljwtc/android/chess/start;       | f           | Landroidx/recyclerview/widget/RecyclerView; |
+| get        | Ljwtc/android/chess/start;       | f           | Landroidx/recyclerview/widget/RecyclerView; |
+| put        | Ljwtc/android/chess/start;       | f           | Landroidx/recyclerview/widget/RecyclerView; |
+| get        | Ljwtc/android/chess/start;       | g           | Lq2/k;                                      |
+| put        | Ljwtc/android/chess/start;       | g           | Lq2/k;                                      |
+| get        | Ljwtc/android/chess/start;       | h           | I                                           |
+| put        | Ljwtc/android/chess/start;       | h           | I                                           |
+| put        | Ljwtc/android/chess/start;       | h           | I                                           |
+| get        | Ljwtc/android/chess/start;       | i           | Z                                           |
+| get        | Ljwtc/android/chess/start;       | i           | Z                                           |
+| put        | Ljwtc/android/chess/start;       | i           | Z                                           |
+| get        | Landroid/content/pm/PackageInfo; | versionName | Ljava/lang/String;                          |
++------------+----------------------------------+-------------+---------------------------------------------+

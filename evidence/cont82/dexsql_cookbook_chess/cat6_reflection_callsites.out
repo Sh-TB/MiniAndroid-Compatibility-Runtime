@@ -1,0 +1,44 @@
++---------------------------------------------------------------------------+-------------+----------------------------+-------------------+
+| method_class                                                              | method_name | callee_class               | callee_name       |
++---------------------------------------------------------------------------+-------------+----------------------------+-------------------+
+| Landroidx/activity/ImmLeaksCleaner;                                       | a           | Ljava/lang/Class;          | getDeclaredField  |
+| Landroidx/activity/ImmLeaksCleaner;                                       | a           | Ljava/lang/Class;          | getDeclaredField  |
+| Landroidx/activity/ImmLeaksCleaner;                                       | a           | Ljava/lang/Class;          | getDeclaredField  |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/constraintlayout/widget/ConstraintLayout;                       | onMeasure   | Ljava/lang/Class;          | getMethod         |
+| Landroidx/core/graphics/drawable/IconCompat;                              | toString    | Ljava/lang/Class;          | getMethod         |
+| Landroidx/core/graphics/drawable/IconCompatParcelizer;                    | read        | Ljava/nio/charset/Charset; | forName           |
+| Landroidx/core/graphics/drawable/IconCompatParcelizer;                    | write       | Ljava/nio/charset/Charset; | forName           |
+| Landroidx/core/graphics/drawable/IconCompatParcelizer;                    | write       | Ljava/nio/charset/Charset; | forName           |
+| Landroidx/emoji2/text/r;                                                  | <init>      | Ljava/lang/Class;          | forName           |
+| Landroidx/fragment/app/r;                                                 | b           | Ljava/lang/Class;          | forName           |
+| Landroidx/lifecycle/w;                                                    | b           | Ljava/lang/Class;          | forName           |
+| Landroidx/recyclerview/widget/RecyclerView;                               | <init>      | Ljava/lang/Class;          | forName           |
+| Landroidx/savedstate/Recreator;                                           | a           | Ljava/lang/Class;          | forName           |
+| Lc0/d;                                                                    | <clinit>    | Ljava/lang/Class;          | forName           |
+| Lc0/d;                                                                    | <clinit>    | Ljava/lang/Class;          | getDeclaredField  |
+| Lc0/d;                                                                    | <clinit>    | Ljava/lang/Class;          | getDeclaredField  |
+| Lc0/d;                                                                    | <clinit>    | Ljava/lang/Class;          | getDeclaredMethod |
+| Lc0/d;                                                                    | <clinit>    | Ljava/lang/Class;          | getDeclaredMethod |
+| Lc0/d;                                                                    | <clinit>    | Ljava/lang/Class;          | getDeclaredMethod |
+| Lcom/google/gson/internal/ReflectionAccessFilterHelper$AccessChecker;     | <clinit>    | Ljava/lang/Class;          | getDeclaredMethod |
+| Lcom/google/gson/internal/UnsafeAllocator;                                | create      | Ljava/lang/Class;          | forName           |
+| Lcom/google/gson/internal/UnsafeAllocator;                                | create      | Ljava/lang/Class;          | getDeclaredField  |
+| Lcom/google/gson/internal/UnsafeAllocator;                                | create      | Ljava/lang/Class;          | getMethod         |
+| Lcom/google/gson/internal/UnsafeAllocator;                                | create      | Ljava/lang/Class;          | getDeclaredMethod |
+| Lcom/google/gson/internal/UnsafeAllocator;                                | create      | Ljava/lang/Class;          | getDeclaredMethod |
+| Lcom/google/gson/internal/UnsafeAllocator;                                | create      | Ljava/lang/Class;          | getDeclaredMethod |
+| Lcom/google/gson/internal/reflect/ReflectionHelper$RecordSupportedHelper; | <init>      | Ljava/lang/Class;          | getMethod         |
+| Lcom/google/gson/internal/reflect/ReflectionHelper$RecordSupportedHelper; | <init>      | Ljava/lang/Class;          | getMethod         |
+| Lcom/google/gson/internal/reflect/ReflectionHelper$RecordSupportedHelper; | <init>      | Ljava/lang/Class;          | forName           |
+| Lcom/google/gson/internal/reflect/ReflectionHelper$RecordSupportedHelper; | <init>      | Ljava/lang/Class;          | getMethod         |
+| Lcom/google/gson/internal/reflect/ReflectionHelper$RecordSupportedHelper; | <init>      | Ljava/lang/Class;          | getMethod         |
+| Lcom/google/gson/internal/reflect/ReflectionHelper$RecordSupportedHelper; | getAccessor | Ljava/lang/Class;          | getMethod         |
+| Lcom/google/gson/internal/sql/SqlTypesSupport;                            | <clinit>    | Ljava/lang/Class;          | forName           |
++---------------------------------------------------------------------------+-------------+----------------------------+-------------------+

@@ -1,0 +1,166 @@
+{
+ "apk": "/home/z/my-project/upload/chess_jwtc_298.apk",
+ "apk_sha256": "3245b9ec35f6c1df771c418ac91ec792b5e056fb37e1d391e607b614f1a283b4",
+ "dexsql_version": "dexsql 0.1.0",
+ "dexsql_binary_sha256": "f9e795e1e33547fdda451f592fe54c85e99c2138575f599540f5a860c1cef00c",
+ "queries": [
+  {
+   "cat": 2,
+   "name": "dex_inventory",
+   "supported": true,
+   "sql": "SELECT f.source_path, f.string_count, f.method_count, f.class_count FROM dex_files f ORDER BY f.file_id",
+   "rc": 0,
+   "wall_seconds": 0.018,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat2_dex_inventory.out",
+   "output_sha256_16": "9c6a196fe2c783c3",
+   "rows_like": -1,
+   "stderr": ""
+  },
+  {
+   "cat": 2,
+   "name": "dup_class_defs",
+   "supported": true,
+   "sql": "SELECT descriptor, COUNT(*) AS defs FROM classes GROUP BY descriptor HAVING COUNT(*) > 1 ORDER BY defs DESC, descriptor LIMIT 30",
+   "rc": 0,
+   "wall_seconds": 0.024,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat2_dup_class_defs.out",
+   "output_sha256_16": "f55cf9eee0da008f",
+   "rows_like": -2,
+   "stderr": ""
+  },
+  {
+   "cat": 3,
+   "name": "string_exception_text",
+   "supported": true,
+   "sql": "SELECT s.string_idx, s.value FROM strings s WHERE s.value LIKE '%was aborted%' OR s.value LIKE '%on a null object%' ORDER BY s.string_idx LIMIT 40",
+   "rc": 0,
+   "wall_seconds": 0.019,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat3_string_exception_text.out",
+   "output_sha256_16": "25ea7653abac17cf",
+   "rows_like": -1,
+   "stderr": ""
+  },
+  {
+   "cat": 3,
+   "name": "string_class_descriptor",
+   "supported": true,
+   "sql": "SELECT s.string_idx, s.value FROM strings s WHERE s.value LIKE 'Landroidx/fragment/app/%' ORDER BY s.string_idx LIMIT 40",
+   "rc": 0,
+   "wall_seconds": 0.019,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat3_string_class_descriptor.out",
+   "output_sha256_16": "5bc8bbfeeb582157",
+   "rows_like": 29,
+   "stderr": ""
+  },
+  {
+   "cat": 4,
+   "name": "callers_of_method",
+   "supported": true,
+   "sql": "SELECT method_class, method_name, callee_class, callee_name FROM method_calls WHERE callee_name = 'postDelayed' ORDER BY method_class LIMIT 40",
+   "rc": 0,
+   "wall_seconds": 0.022,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat4_callers_of_method.out",
+   "output_sha256_16": "4e78a05ed5a61f49",
+   "rows_like": 29,
+   "stderr": ""
+  },
+  {
+   "cat": 4,
+   "name": "two_hop_chain",
+   "supported": true,
+   "sql": "WITH c1 AS (SELECT DISTINCT callee_class, callee_name FROM method_calls WHERE callee_name = 'postDelayed'), c2 AS (SELECT c.method_class, c.method_name, c.callee_class, c.callee_name FROM method_calls c JOIN c1 ON c.callee_class = c1.callee_class AND c.callee_name = c1.callee_name) SELECT c2.method_class, c2.method_name, c2.callee_class, c2.callee_name FROM method_calls c3 JOIN c2 ON c3.callee_class = c2.method_class AND c3.callee_name = c2.method_name LIMIT 30",
+   "rc": 0,
+   "wall_seconds": 0.032,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat4_two_hop_chain.out",
+   "output_sha256_16": "40860dfe69588b2a",
+   "rows_like": 28,
+   "stderr": ""
+  },
+  {
+   "cat": 5,
+   "name": "field_accesses_in_method",
+   "supported": true,
+   "sql": "SELECT f.using_type, f.field_class, f.field_name, f.field_type FROM method_field_accesses f WHERE f.method_class = 'Ljwtc/android/chess/start;' ORDER BY f.field_name LIMIT 60",
+   "rc": 0,
+   "wall_seconds": 0.021,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat5_field_accesses_in_method.out",
+   "output_sha256_16": "dfd9b5ebf3136423",
+   "rows_like": 15,
+   "stderr": ""
+  },
+  {
+   "cat": 5,
+   "name": "try_catch_ranges",
+   "supported": true,
+   "sql": "SELECT t.method_idx, t.start_addr, t.insn_count, h.type_idx, h.addr, h.is_catch_all FROM try_items t JOIN catch_handlers h ON h.method_idx = t.method_idx AND h.handler_off = t.handler_off ORDER BY t.method_idx, t.start_addr LIMIT 40",
+   "rc": 0,
+   "wall_seconds": 0.021,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat5_try_catch_ranges.out",
+   "output_sha256_16": "e03854e0a59b148d",
+   "rows_like": 38,
+   "stderr": ""
+  },
+  {
+   "cat": 6,
+   "name": "reflection_callsites",
+   "supported": true,
+   "sql": "SELECT method_class, method_name, callee_class, callee_name FROM method_calls WHERE callee_name IN ('forName','getDeclaredMethod','getDeclaredField','getMethod') ORDER BY method_class LIMIT 40",
+   "rc": 0,
+   "wall_seconds": 0.023,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat6_reflection_callsites.out",
+   "output_sha256_16": "6aeadcd9ba4eb0c0",
+   "rows_like": 38,
+   "stderr": ""
+  },
+  {
+   "cat": 7,
+   "name": "activity_entry_chain",
+   "supported": true,
+   "sql": "SELECT c.method_class, c.method_name, c.callee_class, c.callee_name FROM method_calls c WHERE c.method_class LIKE '%/start;' AND (c.callee_name = 'setContentView' OR c.callee_name = 'onCreate' OR c.callee_name = 'postDelayed') LIMIT 30",
+   "rc": 0,
+   "wall_seconds": 0.023,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat7_activity_entry_chain.out",
+   "output_sha256_16": "204a5053891d9d3c",
+   "rows_like": 0,
+   "stderr": ""
+  },
+  {
+   "cat": 8,
+   "name": "canvas_overloads",
+   "supported": true,
+   "sql": "SELECT method_class, method_name, callee_class, callee_name FROM method_calls WHERE callee_class = 'Landroid/graphics/Canvas;' AND (callee_name LIKE 'draw%' OR callee_name = 'clipPath') ORDER BY method_class LIMIT 60",
+   "rc": 0,
+   "wall_seconds": 0.033,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat8_canvas_overloads.out",
+   "output_sha256_16": "6ab18409a97d1948",
+   "rows_like": 48,
+   "stderr": ""
+  },
+  {
+   "cat": 11,
+   "name": "missing_callee_classes",
+   "supported": true,
+   "sql": "SELECT DISTINCT c.callee_class FROM method_calls c WHERE c.callee_class LIKE 'Ljwtc/%' AND c.callee_class NOT IN (SELECT descriptor FROM classes) ORDER BY c.callee_class LIMIT 40",
+   "rc": 0,
+   "wall_seconds": 0.024,
+   "output_file": "/home/z/my-project/evidence/cont82/dexsql_cookbook_chess/cat11_missing_callee_classes.out",
+   "output_sha256_16": "cafc362ba99dda3c",
+   "rows_like": -2,
+   "stderr": ""
+  },
+  {
+   "cat": 1,
+   "name": "manifest_components",
+   "supported": false,
+   "baseline_tool": "aapt2 dump xmltree --file AndroidManifest.xml",
+   "note": "DexSQL schema is DEX-only; no manifest/resource table exists (verified via `dexsql tables`). Baseline tool covers this category."
+  },
+  {
+   "cat": 12,
+   "name": "resource_evidence",
+   "supported": false,
+   "baseline_tool": "aapt2 dump resources",
+   "note": "DexSQL schema is DEX-only; no manifest/resource table exists (verified via `dexsql tables`). Baseline tool covers this category."
+  }
+ ]
+}

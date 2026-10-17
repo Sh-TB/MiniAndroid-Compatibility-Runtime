@@ -1,0 +1,35 @@
++--------------------------------------------------------+--------------------+----------------------+-------------+
+| method_class                                           | method_name        | callee_class         | callee_name |
++--------------------------------------------------------+--------------------+----------------------+-------------+
+| Landroidx/activity/i;                                  | run                | Landroid/os/Handler; | postDelayed |
+| Landroidx/activity/i;                                  | run                | Landroid/os/Handler; | postDelayed |
+| Landroidx/activity/i;                                  | run                | Landroid/os/Handler; | postDelayed |
+| Landroidx/appcompat/widget/ActionBarOverlayLayout;     | onStopNestedScroll | Landroid/view/View;  | postDelayed |
+| Landroidx/appcompat/widget/ActionBarOverlayLayout;     | onStopNestedScroll | Landroid/view/View;  | postDelayed |
+| Landroidx/emoji2/text/EmojiCompatInitializer$1;        | b                  | Landroid/os/Handler; | postDelayed |
+| Landroidx/lifecycle/z;                                 | onActivityPaused   | Landroid/os/Handler; | postDelayed |
+| Lc1/g;                                                 | run                | Landroid/os/Handler; | postDelayed |
+| Le1/u;                                                 | e                  | Landroid/view/View;  | postDelayed |
+| Le1/u;                                                 | e                  | Landroid/view/View;  | postDelayed |
+| Lh2/e;                                                 | A                  | Landroid/view/View;  | postDelayed |
+| Ljwtc/android/chess/hotspotboard/HotspotBoardActivity; | b1                 | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/ics/ICSServer;                     | b                  | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/lichess/LichessLobbyActivity;      | C                  | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/lichess/LichessLobbyActivity;      | j                  | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/lichess/LichessLobbyActivity;      | onResume           | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/lichess/LichessSwissActivity;      | onResume           | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/play/PlayActivity;                 | onResume           | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/practice/PracticeActivity;         | O                  | Landroid/os/Handler; | postDelayed |
+| Ljwtc/android/chess/puzzle/PuzzleActivity;             | O                  | Landroid/os/Handler; | postDelayed |
+| Ll/d2;                                                 | onTouch            | Landroid/os/Handler; | postDelayed |
+| Ll/h3;                                                 | b                  | Landroid/view/View;  | postDelayed |
+| Ll/h3;                                                 | c                  | Landroid/view/View;  | postDelayed |
+| Ll/u1;                                                 | onTouch            | Landroid/view/View;  | postDelayed |
+| Ll/u1;                                                 | onTouch            | Landroid/view/View;  | postDelayed |
+| Lm2/v;                                                 | i0                 | Landroid/os/Handler; | postDelayed |
+| Lm2/v;                                                 | i0                 | Landroid/os/Handler; | postDelayed |
+| Lm2/v;                                                 | r0                 | Landroid/os/Handler; | postDelayed |
+| Lm2/v;                                                 | t0                 | Landroid/os/Handler; | postDelayed |
+| Lt2/l;                                                 | F                  | Landroid/os/Handler; | postDelayed |
+| Lu0/a;                                                 | z                  | Landroid/view/View;  | postDelayed |
++--------------------------------------------------------+--------------------+----------------------+-------------+
