@@ -9984,3 +9984,23 @@ Stage Summary:
 - Every open #364 item now carries a terminal, evidence-backed verdict; nothing was closed without a runtime row or a fence, nothing rejected without a reason.
 - The P0 lever is singular and named: F-NEW-277 runner re-arm (now prerequisite-complete thanks to the 378 decode).
 - Zero engine delta this wave — pure decode + fences + tooling; binary hash unchanged through the whole wave.
+
+---
+Task ID: CONT-77
+Agent: Super Z (main)
+Task: #364 continuation (user: "review all #364 items; if not applicable continue on your own") — re-verify the CONT-76 closure in a fresh container, then advance the singular P0 lever (F-NEW-277 domain) with source-first decode + generic fix + full regression.
+
+Work Log:
+- Container recovery: local snapshot was pre-CONT-74 (HEAD 6a66806a, binary gone); git fetch + reset --hard origin/main restored fa97fdd1 (CONT-76). Remote history intact (CONT-74 aabf7bb9, CONT-75 ae558af8, CONT-76 fa97fdd1; #364 comments 6234354571 + 6234924269 verified via API).
+- CONT-76 closure RE-VERIFIED in-container: binary rebuilt byte-identically 1ef983a6ff71dade; MG-310 fence 7/7, MG-150 fence 3/3, c72priv fence 13/13, negatives 19/19 (gate A probe rebuilt: libprobe ad413625925ed8e5 == record; probe-prelude law respected), reinstall 8/8, goldens 4/4.
+- F-NEW-277 domain advanced (dooz): baseline anchor 31ddd4d5b8e6d18e x2 zero-drift. THROW_TRACE re-proved the CONT-75/76 chain (La; at La7.m pc=32 -> contained at Llo.B typed catch). NEW RUNTIME FACTS: the pump DOES re-arm now (F277-POLL parity), recomposition #2 DOES re-invoke the NavHost lambda with real backQueue entries (1024 F259-INS rows), the destination content MATERIALIZES and the draw window replays real content (926-op onDraw row) — yet the presented face stays 31ddd4d5 (F298-KEEP: presentation skipped on every budget-halted frame).
+- ROOT-CAUSED + FIXED F-NEW-380 (P0): CanvasShadow.beginRecording accumulated prior ops instead of starting a FRESH display list (AOSP RecordingCanvas law). Runtime proof: [C77-RECORD] node=9348 prior_ops=1..9 growing within one frame; MINIANDROID_CANVAS_OP_TRACE pre-fix stream = 2471 rows with 1562 identical 'New game' TEXT ops + 189 'Dooz' ops, all from the single paint site Lj7;.e (compose MultiParagraph; chain Lj7.e <- Lj7.f <- Lwu0.i <- Lnt1.Q <- Lgl0.c, depth 157-164; caller attribution via the extended S81 diag). Fix: render_nodes_[recv].clear() at beginRecording — generic, re-recording idempotent. Post-fix stream: 2477 ops, ZERO flood rows.
+- CLASSIFIED F-NEW-381 (P1): the interpreter THROUGHPUT WALL — dooz first composition ~10-12M instructions vs ~310K ins/s sustained (PROGRESS linear scaling 3.1M@10s/6.2M@20s/9.2M@30s; --frames 1 consumes the same budget; opencalc Compose launch <100K instructions = the 100x contrast). Profile FLAT (top leaf 4.7%): structural cause = DalvikValue carries 2x std::string (~112B) in EVERY value -> ~60-90M register-traffic string copies/run. Honest null: hoisting the two per-instruction getenv scans (PERF-1/2) measured no gain. Fix surface = a DalvikValue register-file representation change; own wave.
+- New env-gated diags landed (zero-drift pattern): MINIANDROID_PROGRESS_INTERVAL (sampler; unset = recorded 100000), S81-CANVAS-TEXT caller field (bounded 4000).
+- Regression at the CONT-77 binary fc12647ff1a7b13a (deterministic rebuild verified): wall 9/9 MATCH (dooz 31ddd4d5 x3 + opencalc f25b754c x3 + unote 90a67cc1 x3); chess b270ff040b3601dc + microtimer bbd350b6c14fbd52 A/B byte-identical vs the baseline binary (their hashes differ only from pre-CONT-74-era records — zero drift from this wave); goldens 4/4; negatives 19/19; reinstall 8/8; c72priv 13/13; MG-310 7/7; MG-150 3/3; s82 validator rc=0.
+- Registry 685 -> 687 (F-NEW-380 ROOT-CAUSED-FIXED P0, F-NEW-381 CLASSIFIED P1), id-unique, canonical mirrored (scripts/cont77_registry_update.py). Evidence: evidence/cont77/cont77_evidence.json + run/cont77/{ops.txt,ops_fix.txt} traces.
+
+Stage Summary:
+- The #364 closure verdicts are re-verified in a fresh container and stand: 4 confirmed (50%) / 3 rejected (37.5%) / 1 blocked (12.5%) over the 8 open items; corpus 60% REAL_APP_CONTENT.
+- The dooz draw frontier advanced one full layer: the F-NEW-380 accumulation law (a NEW P0 root found by the wave) is fixed with the AOSP fresh-display-list semantic, and the residual budget face is now precisely decoded as F-NEW-381 (value-copy architecture), with the wrapper-unwrap residual (4 UNSUPPORTED rows) named.
+- Next wave owns: F-NEW-381 register-file representation (or the 4-op wrapper-unwrap residual), then re-measure dooz inside the 30s budget.

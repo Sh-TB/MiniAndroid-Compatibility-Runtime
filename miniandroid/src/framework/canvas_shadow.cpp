@@ -1152,10 +1152,26 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     if (cls == "Landroid/view/RenderNode;" || cls.find("RenderNode;") != std::string::npos) {
         const uint32_t recv = ctx.receiver_id;
         if (m == "beginRecording") {
-            // AOSP: switches this node into recording mode and returns the
-            // node's RecordingCanvas. We route subsequent Canvas ops into
-            // the node's op list; the returned object is a shared
+            // AOSP: switches this node into a FRESH recording mode and
+            // returns the node's RecordingCanvas. We route subsequent Canvas
+            // ops into the node's op list; the returned object is a shared
             // RecordingCanvas receiver (single-threaded draw = safe).
+            //
+            // F-NEW-380 (CONT-77, ROOT-CAUSED-FIXED): AOSP RecordingCanvas
+            // beginRecording law — "The previous recording is discarded":
+            // every beginRecording starts a FRESH display list. The old code
+            // kept appending to the node's prior op list, so every re-record
+            // of a layer ACCUMULATED its previous content (C77-RECORD rows:
+            // node 9348 prior_ops 1→9 growing within one frame; the flooded
+            // op stream carried 1562 identical 'New game' TEXT ops). Replay
+            // (drawRenderNode) then copied the ever-growing list per level —
+            // the compose draw burned the whole wall budget re-recording and
+            // replaying duplicate content, the frame never completed, and
+            // the F-NEW-298 honesty law (correctly) never presented it —
+            // dooz's DEFAULT_BACKGROUND_ONLY face. Clearing on begin is the
+            // faithful AOSP semantic, generic (no app/R8-specific code), and
+            // makes re-recording IDEMPOTENT under any invalidation cadence.
+            render_nodes_[recv].clear();
             recording_node_ = recv;
             uint32_t canvas_id = heap_ ? heap_->get_or_create("Landroid/graphics/RecordingCanvas;") : recv;
             return CallResult::handled_object(canvas_id, "Landroid/graphics/RecordingCanvas;");
@@ -1955,9 +1971,17 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         if (s_ctext_trace) {
             float tx_ = 0.f, ty_ = 0.f;
             mat_.map(op.x, op.y, tx_, ty_);
-            std::cerr << "[S81-CANVAS-TEXT] op=(" << op.x << "," << op.y
-                      << ")->(" << tx_ << "," << ty_ << ") text=\""
-                      << op.text.substr(0, 60) << "\"" << std::endl;
+            // CONT-77: caller attribution on the same env gate (bounded).
+            static thread_local uint64_t ct_n = 0;
+            if (ct_n++ < 4000)
+                std::cerr << "[S81-CANVAS-TEXT] op=(" << op.x << "," << op.y
+                          << ")->(" << tx_ << "," << ty_ << ") text=\""
+                          << op.text.substr(0, 60) << "\" caller="
+                          << ctx.caller << std::endl;
+            else
+                std::cerr << "[S81-CANVAS-TEXT] op=(" << op.x << "," << op.y
+                          << ")->(" << tx_ << "," << ty_ << ") text=\""
+                          << op.text.substr(0, 60) << "\"" << std::endl;
         }
         op.x = arg_as_float(ctx, 1);
         op.y = arg_as_float(ctx, 2);
