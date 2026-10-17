@@ -1,0 +1,66 @@
+{
+  "wave": "CONT-77",
+  "date": "2026-10-17",
+  "head_start": "fa97fdd1 (CONT-76, synced; local container re-synced via fetch+reset after environment reset to a pre-CONT-74 snapshot)",
+  "binary": {
+    "sha16": "fc12647ff1a7b13a",
+    "rebuild_deterministic": true,
+    "baseline_ab_binary": "1ef983a6ff71dade (CONT-76 record, rebuilt byte-identical in-container)",
+    "delta_vs_baseline": [
+      "F-NEW-380 fix: canvas_shadow.cpp beginRecording clears render_nodes_[recv] (AOSP fresh-display-list law)",
+      "PERF-1/2: two raw per-instruction std::getenv scans hoisted to run constants (dalvik_engine.cpp) — measured no throughput gain (honest null)",
+      "diag: MINIANDROID_PROGRESS_INTERVAL env-gated sampler interval (PROGRESS row); S81-CANVAS-TEXT caller attribution field (same env gate, bounded 4000)"
+    ]
+  },
+  "f_new_380": {
+    "title": "RenderNode.beginRecording accumulate-amplification",
+    "verdict": "ROOT-CAUSED-FIXED P0",
+    "evidence": {
+      "re_record_growth_rows": "[C77-RECORD] node=9348 prior_ops=1..9 growing within one frame (run/cont77/dooz_rec.stderr, capped 60 rows, 36 RE-RECORD-ACCUMULATION rows)",
+      "op_flood_pre": "run/cont77/ops.txt: 2471 recorded ops, 1562 identical TEXT 'New game' @ (765,1829.976) + 189 TEXT 'Dooz' @ (488,97.976), all caller=Lj7;.e (1553 S81 rows, MINIANDROID_TEXT_TRACE)",
+      "op_flood_post": "run/cont77/ops_fix.txt: 2477 recorded ops, ZERO 'New game' rows",
+      "paint_chain": "Lj7.e <- Lj7.f <- Lwu0.i <- Lnt1.Q <- Lgl0.c at stack depth 157-164; Lj7 = compose MultiParagraph (Lrw1 = TextLayoutResult, dex-decoded via scripts/cont9_dexdump.py)",
+      "mechanism": "accumulate at beginRecording -> replay (drawRenderNode) copies growing lists per level -> compose draw burns the wall budget -> frame never completes -> F-NEW-298 honesty law keeps the last complete frame (dooz splash)"
+    },
+    "fix": "render_nodes_[recv].clear() in CanvasShadow::beginRecording (generic AOSP semantic; re-recording idempotent)"
+  },
+  "f_new_381": {
+    "title": "Interpreter throughput wall (CLASSIFIED P1)",
+    "verdict": "decode + classification only, no fix attempted",
+    "evidence": {
+      "throughput": "PROGRESS scaling linear: 3.1M@10s, 6.2M@20s, 9.2M@30s = ~310K ins/s sustained (run/cont77/dooz_{10s,20s,perf2}.stderr)",
+      "frames_1_same_budget": "--frames 1 consumes the same full 30s budget (first-time composition volume, not per-frame amplification)",
+      "flat_profile": "MINIANDROID_PROGRESS_INTERVAL=500 sampler (16.5K samples): top leaf Lpv0;.c 4.7%, smeared across thousands of methods — architectural constant, no hotspot",
+      "structural_cause": "DalvikValue = tagged union + 2x std::string (string_val, class_desc) ~112B per value; every register read/write copies them (~60-90M copies/run); DexRegisterFile itself is already vector+bitmap optimized",
+      "perf12_null": "hoisting the two per-instruction getenv scans: 313K vs 310K ins/s — no gain (honest null, kept as hygiene)",
+      "compose_contrast": "opencalc (Compose, Kotlin+R8) completes its full launch in <100K instructions; dooz NavHost/destination materialization is the 100x volume"
+    },
+    "fix_surface": "DalvikValue register-file representation change (tagged-union fast path, strings out-of-band) — own wave, full anchor battery required"
+  },
+  "regression_battery": {
+    "wall": "dooz 31ddd4d5b8e6d18e x3 + opencalc f25b754c4565c38b x3 + unote 90a67cc1ddda57b7 x3 = 9/9 MATCH zero drift",
+    "ab_extra": "chess b270ff040b3601dc + microtimer bbd350b6c14fbd52 byte-identical at baseline binary 1ef983a6ff71dade vs CONT-77 binary (values differ only from pre-CONT-74-era records; zero drift from this wave)",
+    "goldens": "4/4 PASS (helloworld 83720c1028f832d0)",
+    "negatives": "19/19 PASS (gate A probe rebuilt in-container: libprobe sha16 ad413625925ed8e5 == record; probe prelude law respected)",
+    "reinstall": "8/8 PASS",
+    "c72priv_fence": "13/13 rows OK (12 OK rows + VERSION identity row; victim microtimer beside com.probe.c72priv)",
+    "mg310_fence": "7/7 PASS",
+    "mg150_fence": "3/3 PASS",
+    "s82_validator": "rc=0 (cached-gates census consistent)"
+  },
+  "dooz_state_after_wave": {
+    "presented_face": "DEFAULT_BACKGROUND_ONLY (31ddd4d5b8e6d18e) — unchanged, honest",
+    "advanced": [
+      "op accumulation amplification REMOVED (recorded stream now clean, 2477 ops)",
+      "recomposition #2 materializes the destination (1024 F259-INS rows, real NavHost re-execution with backQueue entries)",
+      "draw window reaches real content ops (926-op onDraw replay rows pre-fix; 4 UNSUPPORTED rows = separate wrapper-unwrap roots: RecordingCanvas drawBitmap bitmap-unresolved x2, Path.addRoundRect RectF-unresolved, clipPath path-unresolved)"
+    ],
+    "remaining": "F-NEW-381 throughput wall: first composition ~10-12M ins vs 30s budget at ~310K ins/s"
+  },
+  "honest_notes": [
+    "The F-NEW-298 presentation skip is CORRECT behavior (incomplete frame not presented); no presentation shortcut was attempted.",
+    "The 4 UNSUPPORTED_CANVAS_OPERATION rows are pre-existing (present in the pre-fix run too) — NOT introduced or fixed this wave; they are the F-NEW-351 wrapper-unwrap residual family.",
+    "No app-specific or R8-specific logic was added; both fixes are generic laws (AOSP fresh-display-list; env run-constant hoist).",
+    "Container had been reset to a pre-CONT-74 snapshot; recovered via git fetch + reset --hard origin/main (remote history intact: CONT-74/75/76 all on origin/main)."
+  ]
+}

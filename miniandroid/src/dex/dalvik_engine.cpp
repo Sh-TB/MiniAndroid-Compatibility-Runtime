@@ -14234,7 +14234,14 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         // S55 R-NEW-361 (env-gated): full instruction stream of the Kotlin
         // LongArray-fill helper Ln/a;.r — one frame ran its body without
         // ever dispatching the Arrays.fill call at unit pc=12.
-        if (std::getenv("MINIANDROID_F040_DIAG") &&
+        // CONT-77 PERF-1: the env lookup is a RUN CONSTANT — hoisted out of
+        // the per-instruction path (the raw std::getenv here executed a
+        // linear environ scan on EVERY instruction: ~2x9M scans/run, a
+        // measurable fraction of the 310K-ins/s interpreter wall). Zero
+        // semantic delta: identical rows when the flag is set.
+        static thread_local const bool f040_diag_on =
+            std::getenv("MINIANDROID_F040_DIAG") != nullptr;
+        if (f040_diag_on &&
             current_class_ == "Ln/a;" && current_method_ == "r") {
             static thread_local uint64_t r_insns = 0;
             if (r_insns < 10000) {
@@ -14259,7 +14266,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         
         // CONT-38 decode diag (env-gated, bounded): the painter body's
         // instruction stream — where does the black J come from?
-        if (std::getenv("MINIANDROID_PAINTER_TRACE") != nullptr &&
+        // CONT-77 PERF-2: same run-constant hoist as F040 above (the raw
+        // getenv executed per instruction).
+        static thread_local const bool painter_trace_on =
+            std::getenv("MINIANDROID_PAINTER_TRACE") != nullptr;
+        if (painter_trace_on &&
             ((current_class_ == "Lte1;" && current_method_ == "I") ||
              (current_class_ == "Lod1;" && current_method_ == "I") ||
              (current_class_ == "Lg6;" && current_method_ == "e"))) {
@@ -17403,7 +17414,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         // to track execution speed and progress.
         static thread_local uint64_t global_insn_counter = 0;
         global_insn_counter++;
-        if (global_insn_counter % 100000 == 0) {
+        // CONT-77: env-gated read-only sampler interval (poor-man's profiler;
+        // the "currently in" field is a PC-accurate stack sample). Unset ->
+        // the recorded 100000 interval (byte-identical stderr); set -> any
+        // value >= 100. Diagnostic only: it never alters execution state.
+        static const uint64_t progress_interval_ = [] {
+            if (const char* e = std::getenv("MINIANDROID_PROGRESS_INTERVAL")) {
+                unsigned long long v = strtoull(e, nullptr, 10);
+                if (v >= 100) return (uint64_t)v;
+            }
+            return (uint64_t)100000;
+        }();
+        if (global_insn_counter % progress_interval_ == 0) {
             std::cerr << "[PROGRESS] " << global_insn_counter << " total instructions executed"
                       << " (currently in " << current_class_ << "." << current_method_
                       << " PC=" << pc_ << "/" << bytecode_.size() << ")"
