@@ -1,0 +1,102 @@
+{
+ "eu.quelltext.memory": {
+  "screenshot_sha16": "35295a57f6c898ab",
+  "unique_colors": 204,
+  "nonbg_ratio": 0.1186,
+  "entropy": 0.83,
+  "pixclass": "REAL_APP_UI",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "com.chessclock.android": {
+  "screenshot_sha16": "fe3ae1167c9e968c",
+  "unique_colors": 248,
+  "nonbg_ratio": 0.0878,
+  "entropy": 0.836,
+  "pixclass": "REAL_APP_UI",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "com.simondalvai.ball2box": {
+  "screenshot_sha16": "b5a7a35d5fe0564b",
+  "unique_colors": 1,
+  "nonbg_ratio": 0.0,
+  "entropy": -0.0,
+  "pixclass": "WHITE_BLANK",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "org.opensurge2d.surgeengine": {
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "unique_colors": 1,
+  "nonbg_ratio": 0.0,
+  "entropy": -0.0,
+  "pixclass": "WHITE_BLANK",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "page.codeberg.lanticy.guandan": {
+  "screenshot_sha16": "4e58f3a378891497",
+  "unique_colors": 1,
+  "nonbg_ratio": 0.0,
+  "entropy": -0.0,
+  "pixclass": "WHITE_BLANK",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "org.secuso.privacyfriendlysudoku": {
+  "screenshot_sha16": "be640e39e82901c9",
+  "unique_colors": 183,
+  "nonbg_ratio": 0.0366,
+  "entropy": 0.325,
+  "pixclass": "REAL_APP_UI",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "org.secuso.privacyfriendlymemory": {
+  "screenshot_sha16": "3a3ba8734b662e55",
+  "unique_colors": 239,
+  "nonbg_ratio": 0.2294,
+  "entropy": 1.376,
+  "pixclass": "REAL_APP_UI",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "org.secuso.privacyfriendlydame": {
+  "screenshot_sha16": "70033bc03f0392ed",
+  "unique_colors": 220,
+  "nonbg_ratio": 0.03,
+  "entropy": 0.257,
+  "pixclass": "REAL_APP_UI",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "org.secuso.privacyfriendlysolitaire": {
+  "screenshot_sha16": "aa53f6f172621982",
+  "unique_colors": 222,
+  "nonbg_ratio": 0.03,
+  "entropy": 0.26,
+  "pixclass": "REAL_APP_UI",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ },
+ "org.andstatus.game2048": {
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "unique_colors": 1,
+  "nonbg_ratio": 0.0,
+  "entropy": -0.0,
+  "pixclass": "WHITE_BLANK",
+  "frame_verdict": null,
+  "app_owned_px": null,
+  "app_draw_ops": null
+ }
+}
