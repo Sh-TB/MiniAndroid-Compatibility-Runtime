@@ -305,7 +305,17 @@ PathResolution resolve_android_path(const std::string& logical) {
         fs::path backing = fs::path(g_app_data_root) / "storage" / "emulated" / "0";
         std::error_code mk_ec;
         fs::create_directories(backing, mk_ec);  // mount point exists from boot
-        r.host_path = rest.empty() ? backing : fs::path(backing.string() + rest);
+        // F-NEW-377 (CONT-74, issue #364 FOUNDATION-7 residual): tail-join
+        // containment — the volume component-boundary law above only fences
+        // SIBLING-PREFIX volumes (0evil); a `..` sequence INSIDE the tail
+        // walks the host path out of the backing volume entirely
+        // (runtime-proven: c74esc probe read its own sandbox bytes back
+        // through /storage/emulated/0/../../../data/data/<self>/files/own.txt
+        // — three .. exit the volume because the backing EXISTS, so the
+        // escape is reachable TODAY, not theoretical).
+        fs::path vol_host = rest.empty() ? backing : fs::path(backing.string() + rest);
+        if (!path_contained(backing, vol_host)) return r;  // DENY
+        r.host_path = vol_host;
         r.allowed = true;
         return r;
     }
@@ -315,8 +325,14 @@ PathResolution resolve_android_path(const std::string& logical) {
     // ST-9 namespace). Unknown system files answer ABSENT honestly.
     if (logical.rfind("/system/fonts/", 0) == 0) {
         r.category = PathCategory::SYSTEM_IMAGE;
-        r.host_path = fs::path(g_app_data_root) / "system" / "fonts" /
-                      logical.substr(strlen("/system/fonts/"));
+        // F-NEW-377: same tail-join containment as the volume branch. The
+        // resolve layer previously ALLOWED /system/fonts/../../… spellings
+        // (IO-unreachable only while <store>/system is absent — the virtual
+        // system image must not turn that into a live escape).
+        fs::path font_base = fs::path(g_app_data_root) / "system" / "fonts";
+        fs::path font_host = font_base / logical.substr(strlen("/system/fonts/"));
+        if (!path_contained(font_base, font_host)) return r;  // DENY
+        r.host_path = font_host;
         r.allowed = true;
         return r;
     }

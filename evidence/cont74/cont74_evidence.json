@@ -1,0 +1,91 @@
+{
+  "wave": "CONT-74",
+  "date": "2026-10-17",
+  "objective": "issue #364 FULL sweep (29 comments, oldest->newest) + FOUNDATION-7 residual escape (pre-proven then fixed) + remaining-card classification + #364-ROI verdict",
+  "head_at_start": "3b6430ac20e45395 (== origin/main, synced)",
+  "binary": {
+    "pre_fix": "1ecb1949e5fa59cf",
+    "post_fix": "2b3bf0bab3770c50"
+  },
+  "probe": {
+    "fixture": "fixtures/cont74_escape_probe",
+    "apk": "run/cont74/c74esc.apk",
+    "apk_sha16": "8e528f6aa9b71938",
+    "package": "com.probe.c74esc",
+    "self_contained": "writes own.txt marker in its own sandbox, then re-reads ITS OWN bytes through escape spellings (no other package needed)"
+  },
+  "pre_fix_proof": {
+    "binary": "1ecb1949e5fa59cf",
+    "runs": [
+      {"run": "esc_pre", "spellings_two_dotdot": "VOL-ESC/FONT-ESC all ENOENT-DENY — two .. land in non-existent dirs; NOT yet proof"},
+      {"run": "esc_pre3", "result": "VOL-ESC LEAK len=13 + VOL-ESC2 LEAK len=13 (three .. escape the EXISTING volume backing; read own C74-OWN-BYTES back); FONT-ESC resolve-ALLOWED (no PATH-LAW DENY line) but IO-unreachable (<store>/system absent)"}
+    ],
+    "conclusion": "runtime-proven escape: /storage/emulated/0/../../../data/data/<pkg>/files/x reads private sandbox bytes; resolve layer allowed the spelling (absence of PATH-LAW DENIED line distinguishes resolve-ALLOW from resolve-DENY; /etc/passwd control DID print PATH-LAW DENIED in the same run)"
+  },
+  "fix": {
+    "file": "miniandroid/src/storage/data_root.cpp",
+    "law": "F-NEW-377 tail-join containment (same path_contained helper as F-NEW-375)",
+    "branches": ["VIRTUAL_EXTERNAL: path_contained(backing, vol_host) before allowed=true", "SYSTEM_IMAGE: path_contained(font_base, font_host) before allowed=true"],
+    "delta_scope": "resolver-only; no engine change"
+  },
+  "post_fix_proof": {
+    "binary": "2b3bf0bab3770c50",
+    "runs": "3/3 (esc_post_1..3): all escape spellings DENIED with PATH-LAW DENIED lines; FONT-ESC now resolve-DENIED too",
+    "positive_controls": "VOL-OK volume round-trip intact x3; c72priv fence 13/13 OK (F-NEW-375 behavior unchanged)"
+  },
+  "regression_gates": {
+    "c72priv_fence": "13/13 OK at 2b3bf0bab3770c50",
+    "negatives": "19/19 PASS",
+    "reinstall": "8/8 PASS",
+    "goldens": "4/4 PASS (helloworld canonical 83720c1028f832d0)",
+    "wall_rows": "dooz 31ddd4d5b8e6d18e x3 MATCH + opencalc f25b754c4565c38b x3 MATCH + unote 90a67cc1ddda57b7 x3 MATCH = 9/9 zero drift",
+    "validator": "PASS",
+    "registry": "682 -> 683 (F-NEW-377 ROOT-CAUSED-FIXED P1), id-unique, mirrored to canonical/"
+  },
+  "full_sweep_classification": {
+    "method": "all 29 comments of issue #364 read newest-first; every card classified against CURRENT HEAD (3b6430ac) with the nine-value vocabulary",
+    "already_closed_by_prior_waves": ["5961202333 protocol anchor", "5962053554 UPSTREAM-REUSE 33-row campaign ledger", "5966306728 historical HEAD record", "6201160604 + 6201220386 + 6201265437 + 6201323228 mining quartet (consumed by CONT-71 wave 1: 7 audited rows in docs/UPSTREAM_SOURCE_MINING.jsonl; remaining candidates are a known backlog)", "6201554037 FOUNDATION-1 (CONT-72: alleged breakage REFUTED + MG-116 CLOSED with c72draw fence)", "6201700020 FOUNDATION-2 (CONT-72: STALE_OR_SUPERSEDED, CONT-25-era premise)", "6202665605 FOUNDATION-3 (P0-A -> F-NEW-375, P0-B -> F-NEW-376, P0-C NOT_APPLICABLE)", "6203183051 CONT-71 result", "6208135022 FOUNDATION-11 Memory (CONT-73: 35295a57 REAL_APP_CONTENT — blank-candidate concern disproven)", "6208159991 FOUNDATION-12 Ball2Box (CONT-73: ARM-only Godot PREREQUISITE_MISMATCH = UPP-001 domain)", "6208293717 FOUNDATION-13 ChessClock (CONT-73: fe3ae1167 == record, REAL_APP_CONTENT)", "6208316922 + 6208340668 FOUNDATION-14/15 (CONT-73 ten-app shared-harness triage executed)", "6208446700 CONT-72 result", "6208489127 CONT-73 request (satisfied)", "6218720139 CONT-73 independent audit (all four closeout items satisfied by 6229605065)", "6229605065 CONT-73 result"],
+    "classified_this_wave": {
+      "6207830469 FOUNDATION-4 (DEX clinit state machine)": "CONFIRMED_OPEN_GAP — MG-310 STATUS=PARTIAL, EVIDENCE/TEST empty, 'implemented; dedicated fence pending' is accurate at current HEAD; no runtime failure alleged; fence is a real backlog item (P2), NOT re-registered as a new root",
+      "6207846702 FOUNDATION-5 (native lib + JNI)": "ALREADY_TRACKED_OR_DUPLICATE — UPP-001 PENDING_RESEARCH is the canonical root; card itself says 'reuse existing root'; CONT-73's Ball2Box/OpenSurge ARM-only rows are its app-layer evidence",
+      "6207963395 MG-150/MG-147 addendum": "CONFIRMED_OPEN_GAP — both rows still STATUS=PARTIAL with 'not individually fenced' accurate at current HEAD; transform hit-test fence is a real backlog item (P2), no runtime bug alleged",
+      "6207991401 FOUNDATION-6 (1-2 min first-divergence runner)": "SOURCE_LEVEL_CANDIDATE_ONLY — tooling proposal; existing harness already has resume checkpoints + probe tier; named scripts/test/run_semantic_probe.sh stays a candidate, not built this wave",
+      "6208015426 FOUNDATION-7 (storage escape)": "PARTIALLY_CONFIRMED at wave start -> FIXED this wave — branches 1-4 + volume sibling-prefix were F-NEW-375 (CONT-72); the two residual tail-join branches are REAL: volume .. escape was runtime-REACHABLE (proven LEAK len=13) -> F-NEW-377 ROOT-CAUSED-FIXED; font tail-join was resolve-ALLOWED (now also fenced)",
+      "6208052394 FOUNDATION-8 (2D-game forensic wave)": "ALREADY_TRACKED_OR_DUPLICATE — its batch-triage methodology is exactly what CONT-73 executed (ten-app shared harness); its per-app rows are covered by 9/4/11/4/12/4 rows",
+      "6208094322 FOUNDATION-9 (LibGDX native bootstrap)": "ALREADY_TRACKED_OR_DUPLICATE — no LibGDX APK in the corpus; the blank-candidate class it describes is the UPP-001 native frontier already evidenced by Ball2Box/OpenSurge",
+      "6208114888 FOUNDATION-10 (specific game fix)": "ALREADY_TRACKED_OR_DUPLICATE — same target family as 9/4/12/4; no new root, covered by the ten-app triage rows"
+    }
+  },
+  "roi_verdict": {
+    "question": "user asked: has the #364 method actually helped, or is it wasted time — continue or stop?",
+    "hard_outputs_since_2026-10-15": [
+      "F-NEW-375 P1 ROOT-CAUSED-FIXED (cross-package isolation, 4 leak spellings, runtime-proven then fenced) — directly from FOUNDATION-3's P0-A",
+      "F-NEW-376 P1 ROOT-CAUSED-FIXED (install/update atomicity, 70/70 fault battery) — directly from FOUNDATION-3's P0-B + the independent audit that caught the lost session's uncommitted claims",
+      "F-NEW-377 P1 ROOT-CAUSED-FIXED (volume tail-join escape, runtime-proven LEAK len=13) — from FOUNDATION-7's residual branches, this wave",
+      "MG-116 CLOSED with its first dedicated law fence (c72draw DEX fence, PASS x3) — from FOUNDATION-1 review",
+      "F-NEW-368/370 laws implemented + F-NEW-374 registered — from CONT-71 cards",
+      "ten-app triage: 6 REAL_APP_CONTENT rows (2 recorded faces verified current), 2 honest PREREQUISITE_MISMATCH, 2 named frontiers (kotlin-reflect candidate root)",
+      "one WRONG allegation REFUTED before a bad fix landed (FOUNDATION-1 invalidate->layout_dirty A/B-disproven and reverted) — refutation is a saved-bug, not a wasted test"
+    ],
+    "waste_found": [
+      "6 of the 15 FOUNDATION cards overlap on one native-blank-game family (8/4, 9/4, 10/4, 12/4 + parts of 14/15) — one triage run covered them all",
+      "two methodology cards (6/4) and one reuse-card (5/4) produce no code by design — their value is process, and 6/4's runner remains unbuilt (honest pending)",
+      "FOUNDATION-2 was genuinely stale (CONT-25-era premise) — reviewing it still produced a named next lever, but a source-check before writing would have saved the round-trip"
+    ],
+    "verdict": "NOT wasted time — 3 real P1 fixes + 1 MG closure + 1 refuted bad fix + 1 audit save in 3 waves, every fix runtime-proven with pre/post binaries and negative controls; the method's cost is real but its hit-rate on true-positive roots is 3-for-3 on the cards that alleged runtime-reachable defects. CONTINUE, with two process corrections: (1) collapse overlapping game-family cards into one triage row each; (2) require a source/registry freshness check BEFORE a card is answered (would have prevented the stale FOUNDATION-2 premise)."
+  },
+  "honest_notes": [
+    "the two-.. probe spellings (esc_pre) were NOT evidence of anything — they landed in non-existent directories; the proof needed three .. (esc_pre3); the classification of FONT-ESC as 'resolve-ALLOWED' rests on the ABSENCE of the PATH-LAW DENIED line, cross-checked against /etc/passwd which printed it in the same run",
+    "MG-310 / MG-150 / MG-147 fences remain PENDING — registered gaps, not silently dropped",
+    "screenshot faces of the probe runs are the default splash 31ddd4d5b8e6d18e (the probe has no visual surface — it is a behavior probe); the evidence is the stderr row log, not the PNG",
+    "no diff beyond the demonstrated defect: data_root.cpp two branches only"
+  ],
+  "artifacts": {
+    "probe_fixture": "fixtures/cont74_escape_probe/",
+    "build_script": "scripts/cont74_build_probe.sh",
+    "registry_script": "scripts/cont74_registry_update.py",
+    "evidence": "evidence/cont74/cont74_evidence.json",
+    "mosaic": "evidence/cont74/cont74_mosaic.png",
+    "probe_runs": "run/cont74/esc_pre3 (LEAK proof) + esc_post_1..3 (fix proof) + c72priv_recheck"
+  }
+}

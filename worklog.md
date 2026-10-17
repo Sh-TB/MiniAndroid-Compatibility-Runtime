@@ -9926,3 +9926,21 @@ Stage Summary:
 - The audit's four closeout items are all satisfied: gate finished and recorded at the CURRENT binary (39/39, exact faces, 1ecb1949e5fa59cf), the F-NEW-376 diff is now REALLY on remote with source + fixture + durable evidence only, fault injection is proven at every meaningful commit boundary (fresh + update, rollback path included), and the ten APK rows are posted with exact SHAs/ABI/faces/statuses.
 - Installer atomicity is now a LAW, not a hope: no failure sequence can produce a mixed generation, and the store machinery is invisible to readers.
 - Ten-app scoreboard: 6 REAL_APP_CONTENT (2 == recorded faces — F-NEW-363/F-NEW-369 verified current), 2 honest PREREQUISITE_MISMATCH (native engines), 2 named-frontier blanks sharing one candidate root (kotlin-reflect clinit).
+
+---
+Task ID: CONT-74
+Agent: Super Z (main)
+Task: Issue #364 FULL sweep (29 comments, every card classified vs CURRENT HEAD) + FOUNDATION-7 residual escape (pre-proven then fixed) + #364-ROI verdict.
+
+Work Log:
+- State rebuild: local HEAD == origin/main == 3b6430ac (CONT-73 closeout), binary 1ecb1949e5fa59cf. #364 re-read newest-first: 29 comments total, newest = CONT-73 result 6229605065, nothing newer.
+- Full sweep: all 29 comments classified with the nine-value vocabulary against 3b6430ac source + registry (not card snapshots). Unclassified residue found: FOUNDATION 4/4 (MG-310 clinit fence), 5/4 (UPP-001 reuse), 6/4 (probe-runner tooling), 7/4 (storage escape residual), MG-150/147 addendum, 8/4-10/4 (overlapping game-family cards).
+- F-NEW-377 DISCOVERY→PROOF→FIX: FOUNDATION-7's five risky branches — F-NEW-375 covered four + volume sibling-prefix, but NOT `..` INSIDE the volume/font tail. Probe fixtures/cont74_escape_probe (com.probe.c74esc, self-contained own-bytes round-trip). First probe attempt (two ..) DENIED-ENOENT everywhere = no evidence (two .. land in non-existent dirs — honest null result recorded); three .. (backing EXISTS) = RUNTIME-PROVEN LEAK: VOL-ESC + VOL-ESC2 read own marker back, len=13, no PATH-LAW DENY (resolve-ALLOWED), /etc/passwd control DID print PATH-LAW in the same run. FONT tail-join resolve-ALLOWED but IO-unreachable while <store>/system absent (law hygiene, fenced pre-emptively).
+- FIX (resolver-only): data_root.cpp VIRTUAL_EXTERNAL + SYSTEM_IMAGE branches run the same path_contained helper as F-NEW-375 (tail-join containment law; no new concept). Rebuild 2b3bf0bab3770c50.
+- POST-FIX: 3/3 probe runs all DENIED with PATH-LAW lines; VOL-OK positive control intact x3; c72priv fence 13/13 (F-NEW-375 unchanged); negatives 19/19; reinstall 8/8; goldens 4/4 (helloworld 83720c1028f832d0); wall dooz 31ddd4d5 x3 + opencalc f25b754c x3 + unote 90a67cc1 x3 = 9/9 MATCH zero drift; validator PASS. Registry 682->683 (F-NEW-377 ROOT-CAUSED-FIXED P1) id-unique mirrored; mosaic 380ea4e6c0a743c3.
+- LEDGER posted #364 (6229994936): full 29-row sweep table + mandatory Researcher Review (three cards + 12 later cards + audit) + F-NEW-377 pre/post evidence + ROI verdict (NOT wasted time — CONTINUE, hit-rate 3-for-3 on runtime-reachable claims; process corrections: collapse overlapping game-family cards, freshness-check cards before answering) + honest pendings (MG-310 fence P2, MG-150/147 fence P2, F-NEW-277 lever P0, kotlin-reflect candidate, UPP-001, F-6 runner unbuilt).
+
+Stage Summary:
+- Zero unclassified comments remain in #364; every card carries a current-HEAD verdict.
+- One real P1 closed this wave (F-NEW-377) — the FOUNDATION-7 card's branch enumeration predicted exactly where F-NEW-375 stopped.
+- ROI answer delivered with numbers: 3 real P1 fixes + 1 MG closure + 1 refuted bad fix + 1 audit save in 3 waves; the loop's review discipline caught both wrong claims before they hardened.
