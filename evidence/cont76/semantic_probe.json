@@ -1,0 +1,72 @@
+{
+ "rows": [
+  {
+   "package": "com.emmanuelmess.tictactoe",
+   "apk_sha16": "760fe5acf7b39435",
+   "install_rc": 0,
+   "binary_sha16": "1ef983a6ff71dade",
+   "screenshot_sha16": "b5a7a35d5fe0564b",
+   "unique_colors": 1,
+   "nonbg_ratio": 0.0,
+   "entropy": -0.0,
+   "dominant_rgb": [
+    48,
+    48,
+    48
+   ],
+   "verdict": "DARK_SURFACE_NO_OPS"
+  },
+  {
+   "package": "page.codeberg.lanticy.guandan",
+   "apk_sha16": "ccc74b5948154e7f",
+   "install_rc": 0,
+   "binary_sha16": "1ef983a6ff71dade",
+   "screenshot_sha16": "4e58f3a378891497",
+   "unique_colors": 1,
+   "nonbg_ratio": 0.0,
+   "entropy": -0.0,
+   "dominant_rgb": [
+    8,
+    36,
+    26
+   ],
+   "verdict": "DARK_SURFACE_NO_OPS"
+  },
+  {
+   "package": "org.andstatus.game2048",
+   "apk_sha16": "2d6707624623fe88",
+   "install_rc": 0,
+   "binary_sha16": "1ef983a6ff71dade",
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "SPLASH_ONLY"
+  },
+  {
+   "package": "com.github.muellerma.stopwatch",
+   "apk_sha16": "3b6a10c8dc8ddc72",
+   "install_rc": 0,
+   "binary_sha16": "1ef983a6ff71dade",
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "SPLASH_ONLY"
+  },
+  {
+   "package": "de.duenndns.gmdice",
+   "apk_sha16": "1621eda11b5dbc0c",
+   "install_rc": 0,
+   "binary_sha16": "1ef983a6ff71dade",
+   "screenshot_sha16": "3891679dff449331",
+   "unique_colors": 1085,
+   "nonbg_ratio": 0.1163,
+   "entropy": 1.072,
+   "verdict": "REAL_APP_UI"
+  }
+ ],
+ "scoreboard": {
+  "apps": 5,
+  "tally": {
+   "DARK_SURFACE_NO_OPS": 2,
+   "SPLASH_ONLY": 2,
+   "REAL_APP_UI": 1
+  },
+  "real_app_ui_pct": 20.0
+ }
+}
