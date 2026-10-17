@@ -9944,3 +9944,21 @@ Stage Summary:
 - Zero unclassified comments remain in #364; every card carries a current-HEAD verdict.
 - One real P1 closed this wave (F-NEW-377) — the FOUNDATION-7 card's branch enumeration predicted exactly where F-NEW-375 stopped.
 - ROI answer delivered with numbers: 3 real P1 fixes + 1 MG closure + 1 refuted bad fix + 1 audit save in 3 waves; the loop's review discipline caught both wrong claims before they hardened.
+
+---
+Task ID: CONT-75
+Agent: Super Z (main)
+Task: F-NEW-277 P0 lever — decode dooz's CURRENT first divergence at aabf7bb9 to the exact throw site; register decoded roots; land the env-gated throw-provenance diagnostic.
+
+Work Log:
+- Phase 0 (container reset caught): local tree was the stale CONT-10-W6 snapshot e99c2fbd with missing scripts and an empty build dir — fast-forwarded to origin/main aabf7bb9 BEFORE any work (CONT-73 precedent). Gate-A probe + probe_store rebuilt with the canonical script (lib ad413625925ed8e5).
+- State: rebuilt binary; dooz face = 31ddd4d5 (splash, wall anchor); frame truth DEFAULT_BACKGROUND_ONLY / APP_DRAW_OPS missing; 67 uncaught in-flight exceptions; Lt4.onMeasure (AndroidComposeView) answers 0x0 FAILED(no write-back).
+- DECODE (the deliverable): first in-flight exception = La; unwinding Lzs.m (compose measure pass) at depth 17. Identity decoded from the dooz dex directly: La; extends java.util.concurrent.CancellationException (R8 global-synthesis merge). Throw site pinned with a new env-gated MINIANDROID_THROW_TRACE diag printing the engine-decoded bytecode window: La7;.m pc=32, cu 0x0427 = throw v4 behind a const-class/instance-of guard; La7 = R8 synthetic lambda class (fields e:I + f:Object, 1 direct factory + 1 virtual impl) = the JobSupport completion-node invoke shape. Full chain: La7.m(17) -> Lzs.m handler=NOT_FOUND -> Lte1.f(16) -> Lse1.s(15) -> Lg.q(13) -> Lg.h(12) -> Lat.a(10) -> Lse1.m catch-all rethrow -> Let.a catch-all rethrow -> Llo.B typed catch (La;) TERMINAL. The coroutine machinery survives; the measure pass is already dead. Falsified alternatives: Lm7 null-text (never fires), F-NEW-270/271 (fixed, zero rows), F084-HALT rows (wall-clock artifact).
+- An independent DEX walker was attempted and abandoned (naive per-class parse broke on the dex-wide running idx_diff totals) — the engine's own decode is the authority; walker committed as a reference only.
+- REGISTRY 683->685: F-NEW-378 CLASSIFIED P0 (cancellation naked-unwind kills measure pass; fix surface NAMED — continuation-boundary cancellation-conversion law — NOT implemented, fixture-first) + F-NEW-379 CLASSIFIED P2 (R350-FORNAME kotlin-reflect CNFE, THIRD app evidence point after CONT-73's Guandan+AndStatus2048) + F-NEW-277 lever refined (cancellation conversion comes FIRST, runner re-arm after). Validator PASS.
+- GATES at 1ef983a6ff71dade (diag binary): wall dooz x3 + opencalc x3 MATCH zero drift; negatives 19/19 (after the probe prelude — 9/19 without it, the recorded env-state artifact, now documented); reinstall 8/8; goldens 4/4; validator PASS. Ledger posted #364.
+
+Stage Summary:
+- dooz's current first divergence is now decoded to the exact throw instruction and exception identity — no more guessing at the F-NEW-265-era faces.
+- Two new roots registered (378 P0 decode-complete, 379 P2 three-app candidate); F-NEW-277's lever order corrected.
+- THROW-SITE diag is a permanent env-gated tool; wall-verified zero-drift.
