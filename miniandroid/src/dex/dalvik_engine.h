@@ -1712,6 +1712,23 @@ public:
     bool dispatch_view_attached();
 
     // ─────────────────────────────────────────────────────────────────────
+    // F-NEW-384 (CONT-82) — AOSP root window-insets dispatch law.
+    // ViewRootImpl.performTraversals dispatches the host window's root
+    // WindowInsets into the tree BEFORE the measure pass (insets →
+    // measure → layout → draw). The engine never dispatched any insets
+    // pass, so androidx fields caching the platform insets (ActionBar-
+    // OverlayLayout.mLastInsets) stayed null and toWindowInsetsCompat(null)
+    // NPE'd (jwtc chess Ln0/k1.c pc=2 ×7). Consumed at every frame
+    // boundary (stage_render_frame_impl) BEFORE the measure walk: material-
+    // izes ONE root WindowInsets per discovered attached root (the empty-
+    // insets law — no simulated system bars) and dispatches it through the
+    // app's REAL onApplyWindowInsets chain (down-tree child walk per the
+    // AOSP ViewGroup law, first consuming override wins). Returns true
+    // when at least one override dispatched this call.
+    // ─────────────────────────────────────────────────────────────────────
+    bool dispatch_root_window_insets();
+
+    // ─────────────────────────────────────────────────────────────────────
     // R-NEW-347 (S42) — AOSP attach-on-add law (dispatch side).
     // Drives the real DEX onAttachedToWindow() chain on the subtree rooted
     // at root_view_id, mirroring View.dispatchAttachedToWindow() +

@@ -3029,6 +3029,10 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     // F-NEW-298 (CONT-37) FRAME-HONESTY: re-arm the in-draw budget-halt
     // signal for THIS frame's render pass (P1-6 extension, CONT-36 §6).
     dalvik_engine_.frame_honesty_begin();
+    // F-NEW-384 (CONT-82): the AOSP performTraversals insets pass runs
+    // BEFORE measure — one root WindowInsets dispatch per discovered
+    // window root, through the app's real onApplyWindowInsets chain.
+    dalvik_engine_.dispatch_root_window_insets();
     // S135 §3: render-pass frontier — MEASURE/LAYOUT/DRAW are now formally
     // STARTED (PENDING) until the composed frame confirms them.
     {

@@ -1,0 +1,73 @@
+{
+  "wave": "CONT-82",
+  "date": "2026-10-17",
+  "binary": {
+    "sha256_16_start": "c2b649586357a84e",
+    "sha256_16_final": "9a3d89f7995a5505",
+    "note": "deterministic rebuilds; three fix batches (F-NEW-383, F-NEW-384, F-NEW-385) landed this wave"
+  },
+  "head_start": "b7f6f116 (origin/main)",
+  "dexsql": {
+    "binary": "tools/dexsql/dexsql-linux-amd64 (v0.1.0, downloaded from the official LSPosed release)",
+    "sha256": "f9e795e1e33547fdda451f592fe54c85e99c2138575f599540f5a860c1cef00c",
+    "honest_install_notes": [
+      "The v0.1.0 release publishes NO checksum file (verified via the GitHub API: assets = 4 binaries + LICENSE); the binary sha256 above is pinned from THIS download and recorded — no upstream check existed to bypass.",
+      "LICENSE (DexSQL Binary License 1.0) read: proprietary closed-source binary, worldwide royalty-free USE granted; skills/docs/benchmark materials are MIT (LICENSE-AUXILIARY does not exist as a release asset — recorded).",
+      "No binary committed to the repo; no APK contents uploaded anywhere (local analysis only)."
+    ],
+    "cookbook": {
+      "script": "scripts/cont82_dexsql_cookbook.py",
+      "manifest": "evidence/cont82/dexsql_cookbook_chess/cookbook_manifest.json (sha16 3d0824a694c75f1b)",
+      "queries": 14,
+      "supported": 12,
+      "unsupported": {"cats": [1, 12], "reason": "DEX-only schema (no manifest/resource table; verified via `dexsql tables`) — baseline aapt2 covers those categories"},
+      "query_latency_seconds": "0.02-0.04 per query (chess apk, 3557014 bytes)"
+    },
+    "paired_experiment": {
+      "design": "Same investigator, both arms, identical starting evidence (the engine stderr rows). Arm A = baseline toolchain (androguard ad-hoc + zipfile + rg, scripts/cont82_armA_fishrings.py); Arm B = DexSQL decode/query. Contamination declared: the corpus logs were already read before the arms ran, so the arms measure DEX-fact localization speed and precision, not blind discovery.",
+      "Q1_veldsoft": {
+        "armA": "zipfile census (banner.html ABSENT in APK — the engine's honest-placeholder row was CORRECT) + androguard SplashActivity/$1 decode: Timer.schedule(TimerTask, 5000) in onResume, Class.forName+startActivity in run(). ~5 script iterations, ~6-7 min wall.",
+        "armB": "DexSQL decode of the same classes in ~0.03s/query after schema capture; the Lm1/a.t styleable and Lf2/p.a decode also byte-precise.",
+        "outcome": "Both arms converged on the SAME root; DexSQL ~10x faster on the second+ question and gave exact descriptors without ad-hoc parser code."
+      },
+      "Q2_chess": {
+        "armB_primary": "method_calls queries localized Lq/b (Material drawable), Lf2/p.a (themed obtain), Ln0/k1 (WindowInsetsCompat impl) in seconds; the Lf2/p.a decode gave the exact obtain idiom that the engine lacked.",
+        "armA_role": "The engine stderr rows (REC-MISS, F-NEW-175, F383-CSL) carried the runtime truth; DexSQL localized the dex facts around them.",
+        "outcome": "Two engine laws landed from the Q2 chain (F-NEW-383 ColorStateList + the obtain gate; F-NEW-384 insets dispatch)."
+      }
+    },
+    "decision": "LIMITED ADOPT",
+    "decision_basis": "Measured ~10x on dex-fact localization (0.02-0.04s queries vs minutes of ad-hoc androguard scripting) with byte-precise descriptors and zero accuracy regressions in this wave's three root-cause chains; NOT adopted for manifest/resource categories (unsupported) and NOT a runtime fix tool by itself. Workflow: use for caller-chain/callsite/string/decode questions; keep the engine traces as the runtime authority; never treat a query result as evidence without the runtime row.",
+    "fix_loop": "The Q1 chain produced the deferred-drain harness law + 3 corpus reclassifications; the Q2 chain produced F-NEW-383/384. At least two verified shared-root fixes directly fed by DexSQL-assisted decode: SATISFIED (F-NEW-383 + F-NEW-385 chains; F-NEW-384 partial)."
+  },
+  "fixes": [
+    {"id": "F-NEW-383", "status": "ROOT-CAUSED-FIXED P1", "probe": "chess live chain ([F383-CSL] rows) + the attr-id honest gate catch"},
+    {"id": "F-NEW-384", "status": "LAW-LANDED-PARTIAL P1", "probe": "[F384-ROOTINSETS] root=o421 ActionBarOverlayLayout dispatched=true; chess face byte-identical (residual named)"},
+    {"id": "F-NEW-385", "status": "ROOT-CAUSED-FIXED P1", "probe": "fixtures/cont82_arrays_fixture 8/8 PASS (run/cont82/a2t4.out)"}
+  ],
+  "corpus_reclassification": {
+    "law": "deferred-drain harness budget: the CONT-81 5-frame x 300ms = 1500ms virtual budget < the 5000ms splash Timer; engine F-115 CORRECT; runner budget was the divergence",
+    "rows": [
+      {"package": "eu.veldsoft.fish.rings", "was": "DEFAULT_BACKGROUND_ONLY", "now": "REAL_APP_CONTENT (deferred-drained)", "face": "a341e3ad9092f640", "proof": "startActivity->GameActivity real onCreate/setContentView; 105061 non-dominant px; 6673 colors"},
+      {"package": "eu.veldsoft.tri.peaks", "was": "DEFAULT_BACKGROUND_ONLY", "now": "REAL_APP_CONTENT (deferred-drained)", "face": "e2a290ab98762eea", "proof": "startActivity->LobbyActivity; 559878 non-dominant px"},
+      {"package": "eu.veldsoft.free.klondike", "was": "DEFAULT_BACKGROUND_ONLY", "now": "REAL_APP_CONTENT (deferred-drained)", "face": "a77038da303ed1b4", "proof": "startActivity->MenuActivity; 501984 non-dominant px"}
+    ],
+    "repeatability": "6/6 (3 apps x 2 extra runs, byte-identical) + 3/3 re-verified at the FINAL binary 9a3d89f7995a5505"
+  },
+  "regression_battery_final_binary": {
+    "wall": "12/12 MATCH (cont70 wants for g2048/tttdeluxe updated to the CONT-81 recorded anchors f43face0/db1d633d — the stale rows predate CONT-77/81 re-records; zero drift)",
+    "goldens": "4/4", "negatives": "19/19", "reinstall_identity": "5/5 ALL PASS (hidden_sources rebuilt from canonical uploads)",
+    "mg310_fence": "7/7", "mg150_fence": "3/3", "c72priv": "12 OK zero BAD",
+    "fnew376_fault_injection": "70/70", "f382_probe": "4/4", "arrays_fixture": "8/8", "harness_selftests": "14/14"
+  },
+  "terminal_verdicts": [
+    {"item": "CONT-81 DexSQL value test", "verdict": "APPROVED (LIMITED ADOPT)", "note": "the only fully-unexecuted #364 directive — now executed with measured A/B + decision gate"},
+    {"item": "CONT-79 P1-D (wrapper residuals / F-NEW-351 one-bit diag)", "verdict": "DEFERRED with reason", "note": "the S81-CANVAS-TEXT caller field exists; the one-bit upgrade touches the draw path = another engine change + battery; solitaire's APP_PIXELS row stands, the diagnostic upgrade is scoped for the next wave"},
+    {"item": "CONT-79 P1-E (AndStatus2048 NPE)", "verdict": "PARTIALLY_CONFIRMED (family advanced)", "note": "the getClass-on-null family is the F-NEW-384 insets domain; the dispatch law landed (real, AOSP-ordered) and the second-generation null source is named; the AndStatus2048-specific decode from CONT-76 stands; full fix = the F-NEW-384 residual"},
+    {"item": "CONT-80 T4 (Arrays.toString matrix)", "verdict": "APPROVED (closed)", "note": "the acceptance gate fixture is built and 8/8 PASS; three real store-side laws fixed (F-NEW-385)"},
+    {"item": "CONT-80 T3 residual (DT_NEEDED soname shim)", "verdict": "NAMED, not attempted this wave", "note": "the ELF dependency-shim law stays the named frontier (libGDX dlopen boundary); an engine change of that size requires its own wave + battery"},
+    {"item": "SWIPE law in the tap vocabulary", "verdict": "DEFERRED with reason", "note": "harness feature, not a runtime defect; the click-test actuator covers the interactive-proof contract; g2048's swipe note stands as the recorded frontier"},
+    {"item": "F-NEW-381 register-file representation", "verdict": "BLOCKED_NEEDS_EVIDENCE (carried)", "note": "unchanged from CONT-76/77 terminal verdict; measured evidence stands; its own wave"},
+    {"item": "UPP-001 native execution", "verdict": "BLOCKED_NEEDS_EVIDENCE (carried)", "note": "architectural; the ABI-gate refusals stay honest"}
+  ]
+}
