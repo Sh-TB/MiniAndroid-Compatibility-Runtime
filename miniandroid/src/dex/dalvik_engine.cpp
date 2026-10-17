@@ -16818,6 +16818,44 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 std::string exc_class = exc.class_desc.empty()
                                       ? "<unknown>" : exc.class_desc;
 
+                // CONT-75 (F-NEW-277 lever): env-gated athrow provenance —
+                // where does dooz's R8-merged CancellationException (La;)
+                // come from, and which frame throws it?
+                static const char* throw_trace_env =
+                    std::getenv("MINIANDROID_THROW_TRACE");
+                if (throw_trace_env && *throw_trace_env == '1') {
+                    static thread_local uint64_t thr_n = 0;
+                    if (thr_n < 40) {
+                        ++thr_n;
+                        std::cerr << "[THROW-SITE] #" << thr_n << " "
+                                  << exc_class << " at "
+                                  << current_class_ << "."
+                                  << current_method_ << " pc=" << pc_
+                                  << " depth=" << recursion_depth_;
+                        // CONT-75: print the bytecode window around the
+                        // throw site from the engine's OWN proven decode —
+                        // the pc-8..pc+4 code-unit window (engine parse is
+                        // the authority; no independent DEX walker needed).
+                        {
+                            const uint32_t bsz =
+                                static_cast<uint32_t>(bytecode_.size());
+                            std::cerr << " code[";
+                            for (int32_t u = static_cast<int32_t>(pc_) - 8;
+                                 u <= static_cast<int32_t>(pc_) + 4; ++u) {
+                                if (u < 0 || u >= static_cast<int32_t>(bsz))
+                                    continue;
+                                std::cerr << (u == static_cast<int32_t>(pc_)
+                                                  ? "<" : " ")
+                                          << std::hex
+                                          << bytecode_[static_cast<size_t>(u)]
+                                          << std::dec;
+                            }
+                            std::cerr << " ] sz=" << bsz;
+                        }
+                        std::cerr << std::endl;
+                    }
+                }
+
                 // EXP-052/053: Find try_item covering current PC, then
                 // decode the encoded_catch_handler_list to find the
                 // actual handler address.
