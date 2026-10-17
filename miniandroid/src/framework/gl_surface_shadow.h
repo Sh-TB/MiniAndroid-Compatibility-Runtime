@@ -49,7 +49,11 @@ public:
                cls.find("khronos/egl/EGLSurface") != std::string::npos ||
                cls.find("khronos/egl/EGL10") != std::string::npos ||
                cls.find("opengl/EGL14") != std::string::npos ||
-               cls.find("opengl/EGLExt") != std::string::npos;
+               cls.find("opengl/EGLExt") != std::string::npos ||
+               // CONT-83 F-NEW-388: GLES20/GLES30 statics route here too
+               // (previously fell through every shadow → REC-MISS).
+               cls.find("opengl/GLES20") != std::string::npos ||
+               cls.find("opengl/GLES30") != std::string::npos;
     }
 
     void init(HeapAllocator* heap) override;
@@ -74,9 +78,13 @@ public:
 
 private:
     // GL method routing (shared by GL10/GL11/GLES10/GLES11 receivers).
+    // The public wrapper lands the CONT-83 WS-B trace row; the _body holds
+    // the pre-existing PortableGL mapping unchanged.
     CallResult dispatch_gl(const CallContext& ctx, const std::string& m);
+    CallResult dispatch_gl_body(const CallContext& ctx, const std::string& m);
     // EGL statics/object methods (EGL10/EGL14 + object classes).
     CallResult dispatch_egl(const CallContext& ctx, const std::string& m);
+    CallResult dispatch_egl_body(const CallContext& ctx, const std::string& m);
 };
 
 } } // namespace miniandroid::framework

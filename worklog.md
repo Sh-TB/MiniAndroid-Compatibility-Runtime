@@ -10069,3 +10069,28 @@ Stage Summary:
 - Three shared-law engine fixes landed (ColorStateList family, insets dispatch, array typing) + the harness deferred-drain law flipped 3 corpus rows to REAL.
 - Corpus coverage advanced 73.3% → 83.3%; every remaining non-REAL face carries a named root (dooz budget, chess insets residual, solitaire diag domain, stopwatch package artifact).
 - Zero-drift discipline held: nothing claimed without a post-fix row, chess's white face honestly unchanged, all pendings named with reasons.
+
+---
+Task ID: CONT-83-wave
+Agent: Super Z (main)
+Task: «ادامه تکمیل ۳۶۴» — the three new directives (CONT-83 graphics observability / CONT-84 ten foundational laws / CONT-85 ten overlooked laws) executed to terminal verdicts.
+
+Work Log:
+- Container recovery (3rd time): local snapshot rolled back to the pre-CONT-74 era (HEAD e99c2fbd, binary gone). git fetch + checkout -B main origin/main restored ecdd352f (CONT-82 closeout). Registry 692.
+- Baseline rebuilt byte-identically (9a3d89f7995a5505) and re-gated: wall 12/12, goldens 4/4, negatives 19/19 (probe_store restaged — the first 7/19 read was a staging artifact), reinstall 8/8, MG-310 7/7, MG-150 3/3, c72priv 14 OK/0 BAD.
+- #364 re-read: 44 comments; the three NEW directives after the CONT-82 ledger shown first (CONT-83/84/85), unified task list built and executed.
+- WS-B GFX TRACE: src/diagnostics/gfx_trace.h (schema v1 JSONL: gl.call/gfx.frame/native.load/native.dep/native.verstrip/marshal.fail; per-op budget; first-missing auto-derivation; bounded summary). Hooks: gl_surface_shadow (GL10/EGL/GLES20), frame pump, present site, native loader. A/B: byte-identical faces x3, 0.1% overhead.
+- F-NEW-388: GLES20 statics wired to the real PortableGL bridge (the previously-dead GLES20Bridge) with the bounded marshal law (heap arrays/Buffer chase/uniform-offset family) + the int-return table for empty descriptors. GLSL frontier NAMED (PGL returns 0 shader handles — probe asserts the true values).
+- F-NEW-387: src/jni/native_dep.{h,cpp} — in-process ELF64 DT_NEEDED parse, is_real_elf64_dyn validation (ld-script/archive rejection), classification law (host-native/app-bundled/first-party anchor/missing-honest-block), bionic @LIBC versym strip in the runtime-owned extracted copy (13 entries rewritten in libgdx). Anchor set built by scripts/cont83_build_anchors.sh (liblog.so = real stderr implementation). Fixtures: com.probe.nat1 (real gcc lib linked against the first-party libm.so anchor — add3=9/mathCheck=9 via REAL libm, 3/3; negatives loud).
+- TOWER3D BREAKTHROUGH: stack.tower3d libgdx.so (2e9dc948aab382e5) LOADED — the CONT-61..81 native-bootstrap boundary is open; all five Android sonames served; the app progressed into AndroidGraphics onSurfaceCreated/Changed/DrawFrame with real GL frames presented (verdict NO_ROOT -> DEFAULT_BACKGROUND_ONLY, face 31ddd4d5 -> 11a38a5a). New frontier named: AndroidGraphics object-graph fields (cfg.useGL30 / getWindowManager null receivers) + the GLSL compile frontier.
+- F-NEW-389: DisplayShadow (DisplayManager.getDisplay + Display.getRealMetrics AOSP field law, fixed-portrait model) — surfaced BY the trace, fixed same wave.
+- WS-D matrix: 14 games with per-run gfx traces (evidence/cont83/gfx_matrix.json); all recorded control faces byte-identical (dooz/g2048/tttdeluxe/flappycow/gmdice/fishrings/tripeaks/klondike/chess) — zero drift; the matrix tower3d row's pre-load divergence recorded honestly with the of-record manual run cited.
+- VERDICTS: CONT-84 10/10 (1 ROOT_CAUSED_FIXED, 2 CONFIRMED_ADVANCED, 1 PARTIALLY_CONFIRMED, 3 CONFIRMED_NOT_FIXED, 2 REJECTED_WITH_EVIDENCE, 1 BLOCKED); CONT-85 10/10 (2 CONFIRMED_ADVANCED, 8 REJECTED_WITH_EVIDENCE validated by existing gates); 20/20 tracks terminal.
+- Final gates at 928379d680b7cb74: wall 12/12, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, c72priv 0-BAD, f382 4/4, arrays 8/8, selftests 13/13.
+- Registry 692 -> 696 (F-NEW-387/388/389 ROOT-CAUSED-FIXED + INFRA-GFXTRACE-1; F-NEW-367 -> CONFIRMED_ADVANCED), canonical mirrored. Ledger posted to #364 (comment 6242571404).
+
+Stage Summary:
+- The #364 graphics observability subsystem EXISTS and is honest: first-party trace at the real API boundary (external attach proven impossible BY ARCHITECTURE — in-process CPU GL), capability matrix with BLOCKED statuses named (GLSL/Vulkan), 14-game matrix with zero control drift.
+- Three generic fixes landed with pre-fix reproduction -> law -> fixture -> post-fix proof -> full regression: F-NEW-387 (native deps; first real corpus native lib load), F-NEW-388 (GLES20 dispatch; GLSL frontier named), F-NEW-389 (Display law; trace-surfaced).
+- stack.tower3d moved NO_ROOT -> GL-loop-live (the app's libGDX render lifecycle executes) — the largest single-app progression since the corpus began.
+- Honest pendings: GLSL compile (GLES20 pixels), ES1-FFP translation, AndroidGraphics object-graph fields, SWIPE, AndStatus2048 decode, profile-with-counters, virtual-clock fixture.

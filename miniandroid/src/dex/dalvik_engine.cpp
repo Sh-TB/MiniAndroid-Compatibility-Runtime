@@ -21,6 +21,7 @@
 #include "../audio/audio_engine.h"  // CONT-65 F-NEW-356: real-decode media law
 #include <filesystem>
 #include <cstring>  // F-109c: strcmp arith dispatch (S62)
+#include "../diagnostics/gfx_trace.h"  // CONT-83 WS-B frame correlation
 #include "../diagnostics/mem_probe.h"
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../diagnostics/crash_forensics.h"  // S100 §3: last-op ring (issue #345)
@@ -12482,6 +12483,8 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
         std::vector<DalvikValue> a{self,
             DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;"),
             DalvikValue::make_object(cfg_obj, "Ljavax/microedition/khronos/egl/EGLConfig;")};
+        gfx::GfxTrace::instance().frame_stage("surface-created", w, h,
+                                              view_object_id);
         invoke("onSurfaceCreated", std::move(a));
         heap_.set_object_field(view_object_id, "glSurfaceCreated",
                                DalvikValue::make_int(1));
@@ -12497,6 +12500,8 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
         std::vector<DalvikValue> a{self,
             DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;"),
             DalvikValue::make_int(w), DalvikValue::make_int(h)};
+        gfx::GfxTrace::instance().frame_stage("surface-changed", w, h,
+                                              view_object_id);
         invoke("onSurfaceChanged", std::move(a));
         heap_.set_object_field(view_object_id, "glLastW", DalvikValue::make_int(w));
         heap_.set_object_field(view_object_id, "glLastH", DalvikValue::make_int(h));
@@ -12504,6 +12509,7 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
     // every frame: onDrawFrame(GL10)
     std::vector<DalvikValue> a{self,
         DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;")};
+    gfx::GfxTrace::instance().frame_stage("draw-frame", w, h, view_object_id);
     invoke("onDrawFrame", std::move(a));
     return true;
 }

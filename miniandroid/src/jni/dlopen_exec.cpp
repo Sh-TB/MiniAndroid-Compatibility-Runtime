@@ -18,6 +18,8 @@
  * box representation, so GetStringUTFChars/NewStringUTF round-trip.
  */
 #include "dlopen_exec.h"
+#include "native_dep.h"
+#include "../diagnostics/gfx_trace.h"  // CONT-83 WS-B native.load rows
 
 #include <dlfcn.h>
 #include <cstdint>
@@ -300,6 +302,20 @@ LoadOutcome load_library(const std::string& libname,
         std::lock_guard<std::mutex> lk(g_mu);
         ++g_load_attempts;
     }
+    // ── CONT-83 F-NEW-387: Android DT_NEEDED resolution pre-pass ────────
+    // Android platform sonames (libm.so/liblog.so/libc.so/…) cannot be
+    // resolved by the host loader. The capability-gated law classifies
+    // every entry (app-bundled / validated first-party anchor /
+    // missing-honest-block), pre-loads what it can RTLD_GLOBAL, and lands
+    // a trace row per entry. The REAL dlopen below still fails loudly for
+    // anything unresolvable — never a silent substitution.
+    {
+        const auto slash = host_path.rfind('/');
+        const std::string lib_dir =
+            slash == std::string::npos ? std::string() : host_path.substr(0, slash);
+        for (const auto& row : jni::prepare_dependencies(host_path, lib_dir))
+            (void)row;   // trace rows already landed inside prepare
+    }
     dlerror();
     void* h = dlopen(host_path.c_str(), RTLD_NOW | RTLD_LOCAL);
     if (!h) {
@@ -307,6 +323,8 @@ LoadOutcome load_library(const std::string& libname,
         out.detail = std::string("dlopen failed: ") + (e ? e : "unknown error");
         fprintf(stderr, "[S2-NATIVE] load %s (%s): %s\n", libname.c_str(),
                 host_path.c_str(), out.detail.c_str());
+        gfx::GfxTrace::instance().native_load(libname, host_path, false,
+                                              out.detail);
         return out;
     }
     LoadedLib lib;
@@ -323,6 +341,8 @@ LoadOutcome load_library(const std::string& libname,
             dlclose(h);
             fprintf(stderr, "[S2-NATIVE] %s: %s\n", libname.c_str(),
                     out.detail.c_str());
+            gfx::GfxTrace::instance().native_load(libname, host_path, false,
+                                                  out.detail);
             return out;
         }
         lib.jni_on_load_ran = true;
@@ -344,6 +364,8 @@ LoadOutcome load_library(const std::string& libname,
     }
     fprintf(stderr, "[S2-NATIVE] load %s: dlopen ok (%s)%s\n", libname.c_str(),
             host_path.c_str(), lib.jni_on_load_ran ? " JNI_OnLoad ran" : "");
+    gfx::GfxTrace::instance().native_load(libname, host_path, out.ok,
+                                          out.detail);
     return out;
 }
 

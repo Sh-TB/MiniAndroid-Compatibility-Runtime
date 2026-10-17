@@ -1,0 +1,96 @@
+{
+  "wave": "CONT-83",
+  "date": "2026-10-18",
+  "head": "origin/main @ CONT-82 closeout (ecdd352f) + CONT-83 wave commits",
+  "binary_sha16": "928379d680b7cb74",
+  "baseline": {
+    "binary_rebuilt_byte_identical_at_CONT82_head": "9a3d89f7995a5505",
+    "container_recovery": "local snapshot had rolled back to the pre-CONT-74 era (HEAD e99c2fbd, binary gone); git fetch + checkout -B main origin/main restored ecdd352f; remote history intact",
+    "gates_at_baseline": {
+      "wall": "12/12 MATCH (csw d3c26b73 dooz 31ddd4d5 flappycow 13cf4746 g2048 f43face0 gmdice 3891679d microtimer bbd350b6 opencalc f25b754c simplecalc 2ac5d8d0 tanana afe0bd8d tttdeluxe db1d633d unote 90a67cc1 dooz180 c94da5a9)",
+      "goldens": "4/4 (helloworld 83720c1028f832d0)",
+      "negatives": "19/19 (probe_store staging restored after the container reset — the 7/19 first read was a missing run/gatea/probe_store artifacts issue, not a runtime regression)",
+      "reinstall": "8/8",
+      "mg310": "7/7", "mg150": "3/3",
+      "c72priv": "14 OK rows 0 BAD (VERSION+DONE markers included)"
+    }
+  },
+  "directive_map": {
+    "new_requests_shown_first": [
+      "CONT-83 (6239058223): game-graphics observability subsystem — attach/capture survey, first-party trace, capability ladder, 12-game matrix, two fan-out fixes",
+      "CONT-84 (6239098815): ten foundational laws prioritized by corpus blockers — terminal verdicts",
+      "CONT-85 (6239144581): ten overlooked foundational laws — independent audit verdicts"
+    ]
+  },
+  "ws_a_capability_survey": {
+    "path_a_view_canvas": "REAL (view_renderer + software_renderer + CanvasShadow — the wall anchors' app content)",
+    "path_b_glsurface_egl": "REAL subset: GLSurfaceView lifecycle + frame pump (onSurfaceCreated/Changed/DrawFrame) + ES1 GL10 subset (clear/viewport/enable/blend real via PortableGL; FFP ops honest REC-MISS) + EGL shadow object model; GLES20 statics WIRED this wave (F-NEW-388); GLSL compile = named frontier (PGL returns 0 shader handles)",
+    "path_c_vulkan": "ZERO references in src/ — BLOCKED, honestly classified",
+    "path_d_native_jni": "REAL S-2 layer (dlopen_exec): host dlopen + JNI_OnLoad handshake + Java_ symbol dispatch; THIS WAVE added the DT_NEEDED dependency law (F-NEW-387)",
+    "path_e_webview": "webview engine present (M16 decision), out of this wave's scope",
+    "external_tools": {
+      "renderdoc": "not installed in the container; no GPU; MiniAndroid's GL calls are in-process PortableGL C++ calls, NOT host libGL/EGL — RenderDoc's interception surface does not exist here (precise boundary, not 'tool unsupported')",
+      "apitrace": "same in-process boundary: no host GL dispatch to trace",
+      "gfxreconstruct": "n/a: no Vulkan entry points exist",
+      "swiftshader_mesa": "evaluated as the CPU-backend alternative for the GLSL frontier; PortableGL remains the shipped CPU path; the llvmpipe swap option is on record in F-NEW-388's honest note (not executed this wave — build/RAM constraint recorded)",
+      "conclusion": "first-party tracing (WS-B) is the correct and sufficient observability layer; external attach is impossible BY ARCHITECTURE, with the boundary proven from source"
+    }
+  },
+  "ws_b_graphics_trace": {
+    "instrument": "MINIANDROID_GFX_TRACE",
+    "schema": "v1 JSONL rows {v,type,t_ns,frame,...}: gl.call(api/op/handled/argc/note), gl.const-miss, gfx.frame(surface-created|surface-changed|draw-frame|present), native.load, native.dep, native.verstrip, marshal.fail; per-op budget 256 + drop counters; bounded summary JSON beside the run artifacts",
+    "hooks": "gl_surface_shadow (GL10/EGL/GLES20 arms), dalvik_engine frame pump, execution_engine present site + summary write, dlopen_exec + native_dep",
+    "ab_test": "trace ON faces byte-identical x3 (dooz 31ddd4d5b8e6d18e, gfx1 f41dfdeab5cec584); overhead OFF 17.16s vs ON 17.18s mean of 3 runs each (0.1%, within noise)",
+    "first_missing_auto_derivation": "gfx1 probe: first_missing_transition = 'GL op unhandled (REC-MISS): GL10.glColor4f' (the ES1-FFP frontier) — derived from rows, never hand-claimed"
+  },
+  "ws_c_capability_matrix": {
+    "Canvas": "IMPLEMENTED+TESTED (wall anchors)",
+    "GLSurfaceView_ES1": "OBSERVED (subset real; FFP frontier named)",
+    "GLES20_dispatch": "IMPLEMENTED+TESTED (F-NEW-388; shader-object frontier named)",
+    "GLSL_compile": "BLOCKED (PGL limitation; llvmpipe/GLSL-to-C options on record)",
+    "EGL_model": "OBSERVED (shadow objects + engine present; eglGetCurrentContext honest miss)",
+    "Vulkan": "BLOCKED (zero usage in corpus + zero runtime surface)",
+    "Native_loader": "IMPLEMENTED+TESTED (F-NEW-387: real libgdx.so load)",
+    "JNI_surface": "OBSERVED (JNI_OnLoad handshake 0x10006 + Java_ dispatch proven on probes; full JNI function parity = named frontier)"
+  },
+  "ws_d_matrix": {
+    "rows_file": "evidence/cont83/gfx_matrix.json",
+    "games": 14,
+    "controls_byte_identical": "dooz 31ddd4d5, g2048 f43face0, tttdeluxe db1d633d, flappycow 13cf4746, gmdice 3891679d, fishrings a341e3ad, tripeaks e2a290ab, klondike a77038da, chess b270ff04 — ZERO drift at the CONT-83 binary",
+    "tower3d": {
+      "before_CONT82": "NO_ROOT/WINDOW_ROOT (SharedLibraryLoadRuntimeException, dead in onCreate)",
+      "after_f387": "libgdx.so LOADED (13 @LIBC versym stripped, 5 anchors served) — the load milestone",
+      "after_f389": "getDisplayMode chain completes; AndroidGraphics.onSurfaceCreated/Changed/DrawFrame EXECUTE; GL frames present; face 31ddd4d5 -> 11a38a5a (black, DEFAULT_BACKGROUND_ONLY); frame-truth verdict NO_ROOT -> DEFAULT_BACKGROUND_ONLY",
+      "first_missing_now": "AndroidGraphics object-graph fields (cfg.useGL30 null receiver at setupGL pc=29; AndroidApplicationBase.getWindowManager null receiver at updatePpi pc=7) + the GLSL compile frontier",
+      "matrix_run_divergence_note": "the matrix runner's tower3d row diverged pre-load (no loadLibrary reached — heavy-app budget interleave); the of-record manual run run/cont83/tower_run4.log shows the full chain (native.dep 5 + native.load ok + GL rows); recorded honestly"
+    },
+    "per_game_answers": "the WS-D question list (load/JNI/surface/context/draw/swap/composite/pixels/first-missing) is answered per row by the gfx trace summary + the F-NEW-233 frame-truth verdict in evidence/cont83/gfx_matrix.json"
+  },
+  "ws_e_root_fixes": {
+    "fix_1": "F-NEW-387 (native dependency law) — fan-out: every native-engine APK (libGDX/Unity/Godot family) blocked on Android sonames; proven on stack.tower3d + the nat1 probe; related-APK validation: tower3d (real corpus) + nat1 (synthetic positive/negative) + ld-script masquerade negative",
+    "fix_2": "F-NEW-388 (GLES20 wiring) — fan-out: every GLES20 game; proven on the gfx1 probe with the honest PGL frontier named; related: tower3d's AndroidGraphics GL path reached glGetString through the bridge",
+    "fix_3_bonus": "F-NEW-389 (Display law) — surfaced BY the trace, fixed same-wave; fan-out: every getDisplayMode caller (libGDX family)"
+  },
+  "fixtures": {
+    "gfx1": "fixtures/cont83_gfx_probe com.probe.gfx1 apk run/cont83/gfx1.apk sha16 1be9d4382a1f1c90 (aapt2/ECJ/D8 real toolchain): GL constants + GLSurfaceView lifecycle + GLES20 sequence + GL10 ES1-FFP frontier",
+    "nat1": "fixtures/cont83_native_probe com.probe.nat1 apk run/cont83/nat1.apk sha16 a2153d8b82554411: real gcc .so linked against the FIRST-PARTY libm.so anchor (natural DT_NEEDED, no hex surgery), + the unsatisfiable-lib negative + the forName(initialize) static-init law",
+    "anchors": "miniandroid/build/anchor_libs built by scripts/cont83_build_anchors.sh (sonames: liblog.so aab788042ed75864-like set; each recorded with sha16 at build time)"
+  },
+  "honest_pendings": [
+    "GLSL compilation (PGL) — the GLES20 pixel frontier; options recorded, not executed",
+    "ES1-FFP translation layer (glColor4f/glVertexPointer family) — honest REC-MISS rows",
+    "AndroidGraphics object-graph fields (tower3d cfg/getWindowManager receivers)",
+    "SWIPE gesture (CONT-84 T8) — not started this wave; click-test vocabulary unchanged",
+    "AndStatus2048 decode (CONT-84 T5) — blocked on wave time; anchor recorded",
+    "F-NEW-381 throughput profile-with-counters — the measured baseline stands, no new profile run",
+    "external attach tools — impossible by architecture (in-process CPU GL), proven from source",
+    "the matrix runner's tower3d row divergence — recorded, of-record run cited"
+  ],
+  "regression": {
+    "wall": "12/12 MATCH at the CONT-83 binary 928379d680b7cb74 (zero drift)",
+    "goldens": "4/4", "negatives": "19/19", "reinstall": "8/8",
+    "mg310": "7/7", "mg150": "3/3",
+    "c72priv": "14 OK 0 BAD", "f382_probe": "4/4 rows",
+    "arrays_fixture": "8/8 PASS", "selftests": "13/13"
+  }
+}

@@ -1,6 +1,8 @@
 // gl_surface_shadow.cpp — S83-GFX-BASE §24/§25 implementation.
 #include "gl_surface_shadow.h"
 #include "gles/pgl_backend.h"
+#include "gles/gles20_bridge.h"
+#include "diagnostics/gfx_trace.h"
 
 #include <portablegl.h>
 
@@ -9,6 +11,258 @@
 #include <iostream>
 
 namespace miniandroid { namespace framework {
+
+// ── CONT-83 F-NEW-388: GLES20 static dispatch adapter ───────────────────
+// android.opengl.GLES20 statics previously fell through every shadow and
+// answered REC-MISS (each call returned null/void; GLES20Bridge existed
+// but was never wired). The adapter marshals one CallContext into the
+// bridge (real PortableGL calls) under a bounded, honest law:
+//   INT/LONG/BOOL → integer slot; FLOAT/DOUBLE → float slot; STRING →
+//   pointer slot (NUL-terminated). OBJECT: engine heap arrays ("[F"/"[I"/
+//   "[S"/"[B"/"[C" descriptors with "array[i]" fields) materialize up to
+//   kMaxArrayElems; java.nio Buffer objects are chased ONE ref-field level
+//   to a heap array (generic field-names probe, R-NEW-360 idiom — no
+//   name-based class table); NULL_REF → null pointer. Anything else: an
+//   honest marshal-fail trace row + REC-MISS — never an invented pointer.
+namespace {
+
+constexpr size_t kMaxArrayElems = 65536;
+
+struct GlMarshal {
+    std::vector<uint64_t> ia;
+    std::vector<float> fa;
+    std::vector<const void*> pa;
+    std::vector<std::vector<uint8_t>> hold;   // materialized byte buffers
+    std::vector<std::string> strs;
+    bool ok = true;
+    std::string why;
+};
+
+bool read_array_elems(HeapAllocator* heap, uint32_t arr_id,
+                      const std::string& elem_desc, size_t count,
+                      std::vector<uint8_t>& out) {
+    auto read_i = [&](size_t i, int32_t& v) {
+        return heap->get_object_int_field(
+            arr_id, "array[" + std::to_string(i) + "]", v);
+    };
+    if (elem_desc == "[F") {
+        out.resize(count * 4);
+        for (size_t i = 0; i < count; ++i) {
+            float f = 0.f;
+            if (!heap->get_object_float_field(
+                    arr_id, "array[" + std::to_string(i) + "]", f))
+                return false;
+            std::memcpy(out.data() + i * 4, &f, 4);
+        }
+        return true;
+    }
+    if (elem_desc == "[I") {
+        out.resize(count * 4);
+        for (size_t i = 0; i < count; ++i) {
+            int32_t v;
+            if (!read_i(i, v)) return false;
+            std::memcpy(out.data() + i * 4, &v, 4);
+        }
+        return true;
+    }
+    if (elem_desc == "[S") {
+        out.resize(count * 2);
+        for (size_t i = 0; i < count; ++i) {
+            int32_t v;
+            if (!read_i(i, v)) return false;
+            std::memcpy(out.data() + i * 2, &v, 2);
+        }
+        return true;
+    }
+    if (elem_desc == "[B" || elem_desc == "[C") {
+        out.resize(count);
+        for (size_t i = 0; i < count; ++i) {
+            int32_t v;
+            if (!read_i(i, v)) return false;
+            out[i] = (uint8_t)v;
+        }
+        return true;
+    }
+    return false;   // [J / object arrays: honest frontier, not invented
+}
+
+bool chase_buffer(HeapAllocator* heap, uint32_t obj_id, uint32_t& arr_out,
+                  std::string& elem_desc) {
+    std::string cls;
+    if (!heap->get_object_class(obj_id, cls) || cls.empty()) return false;
+    if (cls[0] == '[') { arr_out = obj_id; elem_desc = cls; return true; }
+    // java.nio Buffer: one ref-field level to a heap array (generic probe).
+    for (const auto& fn : heap->get_object_field_names(obj_id)) {
+        uint32_t ref = 0;
+        if (heap->get_object_ref_field(obj_id, fn, ref) && ref != 0) {
+            std::string rcls;
+            if (heap->get_object_class(ref, rcls) && !rcls.empty() &&
+                rcls[0] == '[') {
+                arr_out = ref;
+                elem_desc = rcls;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// AOSP GLES20 array+offset overloads: glUniform{1,2,3,4}{f,i}v and
+// glUniformMatrix{2,3,4}fv take (…, T[] value, int offset) — the int arg
+// following the array is the ELEMENT offset. Bounded name law (AOSP
+// GLES20.java signature set, not app knowledge).
+bool uniform_offset_family(const std::string& m) {
+    if (m.rfind("glUniformMatrix", 0) == 0) return true;
+    if (m.rfind("glUniform", 0) == 0) {
+        const size_t d = m.find("fv") != std::string::npos
+                             ? m.find("fv") : m.find("iv");
+        return d != std::string::npos && d > 8;
+    }
+    return false;
+}
+
+size_t elem_size(const std::string& ed) {
+    if (ed == "[F" || ed == "[I" || ed == "[J") return 4;
+    if (ed == "[S") return 2;
+    return 1;   // [B / [C
+}
+
+bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
+                    GlMarshal& m) {
+    bool fa_used = false;
+    for (size_t ai = 0; ai < ctx.args.size(); ++ai) {
+        const auto& a = ctx.args[ai];
+        switch (a.kind) {
+        case CallContext::Arg::Kind::INT:
+        case CallContext::Arg::Kind::LONG:
+        case CallContext::Arg::Kind::BOOL:
+            m.ia.push_back((uint64_t)(a.kind == CallContext::Arg::Kind::LONG
+                                          ? (uint64_t)a.long_val
+                                          : (uint64_t)(uint32_t)a.int_val));
+            break;
+        case CallContext::Arg::Kind::FLOAT:
+        case CallContext::Arg::Kind::DOUBLE:
+            if (!fa_used) { m.fa.push_back(0.f); fa_used = true; }  // slot 0 reserved
+            m.fa.push_back(a.kind == CallContext::Arg::Kind::FLOAT
+                               ? a.float_val
+                               : (float)a.double_val);
+            break;
+        case CallContext::Arg::Kind::STRING:
+            m.strs.push_back(a.string_val);
+            m.pa.push_back(m.strs.back().c_str());
+            break;
+        case CallContext::Arg::Kind::NULL_REF:
+            m.pa.push_back(nullptr);
+            break;
+        case CallContext::Arg::Kind::OBJECT: {
+            uint32_t arr = 0;
+            std::string ed;
+            if (!chase_buffer(heap, a.object_id, arr, ed)) {
+                m.ok = false;
+                m.why = "object arg not materializable (o#" +
+                        std::to_string(a.object_id) + " " + a.object_class + ")";
+                gfx::GfxTrace::instance().marshal_fail(
+                    "GLES20", ctx.method, m.why);
+                return false;
+            }
+            int32_t len = 0;
+            if (!heap->get_object_array_length(arr, len) || len < 0) {
+                m.ok = false;
+                m.why = "array length unreadable";
+                gfx::GfxTrace::instance().marshal_fail(
+                    "GLES20", ctx.method, m.why);
+                return false;
+            }
+            size_t n = std::min((size_t)len, kMaxArrayElems);
+            m.hold.emplace_back();
+            if (!read_array_elems(heap, arr, ed, n, m.hold.back())) {
+                m.hold.pop_back();
+                m.ok = false;
+                m.why = "element kind not materializable (" + ed + ")";
+                gfx::GfxTrace::instance().marshal_fail(
+                    "GLES20", ctx.method, m.why);
+                return false;
+            }
+            // AOSP array+offset family: the NEXT int arg is the element
+            // offset — the pointer must start at value[offset], never at
+            // value[0] (invented data is forbidden).
+            const size_t esz = elem_size(ed);
+            if (uniform_offset_family(ctx.method) &&
+                ai + 1 < ctx.args.size() &&
+                ctx.args[ai + 1].kind == CallContext::Arg::Kind::INT) {
+                const int64_t off = ctx.args[ai + 1].int_val;
+                if (off < 0 || (size_t)off * esz > m.hold.back().size()) {
+                    m.ok = false;
+                    m.why = "uniform array offset out of bounds (" +
+                            std::to_string(off) + ")";
+                    gfx::GfxTrace::instance().marshal_fail(
+                        "GLES20", ctx.method, m.why);
+                    return false;
+                }
+                if (off > 0) {
+                    // Slice in place: point at the offset inside the hold.
+                    m.pa.push_back(m.hold.back().data() + (size_t)off * esz);
+                    break;
+                }
+            }
+            m.pa.push_back(m.hold.back().data());
+            break;
+        }
+        default:
+            m.ok = false;
+            m.why = "arg kind unsupported";
+            gfx::GfxTrace::instance().marshal_fail("GLES20", ctx.method, m.why);
+            return false;
+        }
+    }
+    return true;
+}
+
+// Dispatch one GLES20 static through the bridge. Returns the handled flag;
+// ret maps from the DEX prototype's return char (I/Z→int, F→float, V→void).
+CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
+    GlMarshal m;
+    const bool marsh = marshal_gles20(heap, ctx, m);
+    int32_t iret = 0;
+    float fret = 0.f;
+    std::string note;
+    bool handled = false;
+    if (marsh) {
+        handled = gles::GLES20Bridge::instance().dispatch(
+            ctx.method,
+            m.ia.empty() ? nullptr : m.ia.data(), (int)m.ia.size(),
+            m.fa.empty() ? nullptr : m.fa.data(), (int)m.fa.size(),
+            m.pa.empty() ? nullptr : m.pa.data(), (int)m.pa.size(),
+            &iret, &fret, note);
+    }
+    gfx::GfxTrace::instance().gl_call(
+        "GLES20", ctx.method, handled, (int)ctx.args.size(),
+        handled ? (note.empty() ? nullptr : note.c_str())
+                : (marsh ? "op-not-in-bridge" : m.why.c_str()));
+    if (!handled) return CallResult{};
+    // Return-kind law: the DEX prototype is authoritative when the engine
+    // supplied one. The shadow bridge call sites (build_ctx) may leave the
+    // descriptor empty — then the BRIDGE's own int-returning surface
+    // decides (AOSP GLES20.java: these statics return int; every other
+    // dispatched op is void). Never infer from argc.
+    const auto close = ctx.descriptor.find(')');
+    if (close != std::string::npos) {
+        const char rt = ctx.descriptor[close + 1];
+        if (rt == 'I' || rt == 'Z' || rt == 'S' || rt == 'B' || rt == 'C')
+            return CallResult::handled_int(iret);
+        if (rt == 'F') return CallResult::handled_float(fret);
+        return CallResult::handled_void();
+    }
+    static const char* const kIntRets[] = {
+        "glGetError", "glCreateShader", "glCreateProgram",
+        "glGetUniformLocation", "glGetAttribLocation",
+        "glCheckFramebufferStatus"};
+    for (const char* k : kIntRets)
+        if (ctx.method == k) return CallResult::handled_int(iret);
+    return CallResult::handled_void();
+}
+
+}  // namespace
 
 void GLSurfaceViewShadow::init(HeapAllocator* heap) {
     heap_ = heap;
@@ -26,6 +280,12 @@ static float argf(const CallContext& ctx, size_t i, float def = 0.f) {
 CallResult GLSurfaceViewShadow::dispatch(const CallContext& ctx) {
     const std::string& cls = ctx.class_name;
     const std::string& m = ctx.method;
+
+    // ── CONT-83 F-NEW-388: GLES20/GLES30 statics (real PortableGL) ──────
+    if (cls.find("android/opengl/GLES20") != std::string::npos ||
+        cls.find("android/opengl/GLES30") != std::string::npos) {
+        return dispatch_gles20_static(heap_, ctx);
+    }
 
     // ── GLSurfaceView instance methods (GL lifecycle state) ─────────────
     if (cls.find("opengl/GLSurfaceView") != std::string::npos) {
@@ -114,6 +374,16 @@ CallResult GLSurfaceViewShadow::dispatch(const CallContext& ctx) {
 
 CallResult GLSurfaceViewShadow::dispatch_gl(const CallContext& ctx,
                                             const std::string& m) {
+    // CONT-83 WS-B: every GL10/GLES10 op lands one trace row — handled
+    // calls AND the honest REC-MISS frontier (first missing transition).
+    CallResult r = dispatch_gl_body(ctx, m);
+    gfx::GfxTrace::instance().gl_call("GL10", m, r.handled,
+                                      (int)ctx.args.size());
+    return r;
+}
+
+CallResult GLSurfaceViewShadow::dispatch_gl_body(const CallContext& ctx,
+                                                 const std::string& m) {
     // One software context: PortableGL (GL 3.x core semantics — see
     // GLES_BACKEND_COMPARISON_010.md for the ES1-FFP/GLSL frontier law).
     auto f = [&](size_t i) { return argf(ctx, i); };
@@ -175,6 +445,15 @@ CallResult GLSurfaceViewShadow::dispatch_gl(const CallContext& ctx,
 
 CallResult GLSurfaceViewShadow::dispatch_egl(const CallContext& ctx,
                                              const std::string& m) {
+    // CONT-83 WS-B: EGL lifecycle rows (display/config/context/surface).
+    CallResult r = dispatch_egl_body(ctx, m);
+    gfx::GfxTrace::instance().gl_call("EGL", m, r.handled,
+                                      (int)ctx.args.size());
+    return r;
+}
+
+CallResult GLSurfaceViewShadow::dispatch_egl_body(const CallContext& ctx,
+                                                  const std::string& m) {
     if (!heap_) return CallResult{};
     const std::string& cls = ctx.class_name;
     auto obj = [&](const char* c) -> uint32_t {
