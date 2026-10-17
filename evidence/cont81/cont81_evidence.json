@@ -1,0 +1,92 @@
+{
+ "wave": "CONT-81",
+ "start_head": "a005f92a",
+ "end_head": "c3b759b6 (after wave2 push)",
+ "binary_start": "fc12647ff1a7b13a",
+ "binary_end": "c2b649586357a84e",
+ "registry": "687->689 (F-NEW-382, F-NEW-382b ROOT-CAUSED-FIXED P1)",
+ "corpus": {
+  "rows": 31,
+  "distinct_apk_shas": 31,
+  "distinct_packages": 31,
+  "executable_denominator": 30,
+  "tally": {
+   "REAL_APP_CONTENT": 17,
+   "SPLASH_ONLY": 4,
+   "INTERACTIVE_CONTENT_VERIFIED": 5,
+   "DEFAULT_BACKGROUND_ONLY": 3,
+   "WHITE_BLANK": 1,
+   "PREREQUISITE_MISMATCH": 1
+  },
+  "pct_of_executable": {
+   "REAL_APP_CONTENT": 56.7,
+   "SPLASH_ONLY": 13.3,
+   "INTERACTIVE_CONTENT_VERIFIED": 16.7,
+   "DEFAULT_BACKGROUND_ONLY": 10.0,
+   "WHITE_BLANK": 3.3
+  },
+  "real_app_content_pct": 73.3,
+  "interactive_verified": 5,
+  "new_apks_never_triaged_before": 25,
+  "rows_file": "run/cont81/corpus_cont81_batch1/result.json (committed)"
+ },
+ "repeatability": {
+  "claimed": 19,
+  "face_stable_3run": 19
+ },
+ "harness": {
+  "file": "scripts/cont81_corpus_runner.py",
+  "selftests": "14/14",
+  "addendum_gaps_closed": 7,
+  "selftest_cmd": "python3 scripts/cont81_corpus_runner.py --selftest"
+ },
+ "fixes": [
+  {
+   "id": "F-NEW-382",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "law": "ART identity System properties (java.vm.name=Dalvik, java.specification.name=Dalvik Specification, java.runtime.name=Android Runtime); libGDX SharedLibraryLoader classifies by java.runtime.name.contains('Android Runtime') \u2014 decoded from stack.tower3d dex via scripts/cont81_decode_loader.py",
+   "probe": {
+    "fixture": "fixtures/fnew382_props_probe",
+    "apk_sha16": "493d081ce592c8c6",
+    "result": "4/4"
+   }
+  },
+  {
+   "id": "F-NEW-382b",
+   "status": "ROOT-CAUSED-FIXED",
+   "priority": "P1",
+   "law": "lazy G-4 nativeLibraryDir derivation in the loadLibrary branch ([G-4-LAZY]); install law x86_64-first; post-fix the load reaches the REAL dlopen of extracted x86_64 libgdx.so",
+   "remaining_boundary": "Android DT_NEEDED sonames (libm.so/liblog.so/libc.so/libstdc++.so/libdl.so) vs host ld-scripts \u2014 F-NEW-157/UPP-001 native-execution domain; dlopen error 'invalid ELF header' recorded"
+  }
+ ],
+ "package_artifact_reclassification": {
+  "package": "com.github.muellerma.stopwatch v6",
+  "finding": "ZERO <activity> elements (aapt2 xmltree) + NO Activity subclass (dex scan) \u2014 NO_ROOT face is the honest result, not a runtime defect"
+ },
+ "gates_at_c2b649586357a84e": {
+  "wall": "12/12 MATCH zero drift (dooz 31ddd4d5 x3 + opencalc f25b754c x3 + unote 90a67cc1 x3 + microtimer bbd350b6 x3)",
+  "goldens": "4/4 (2048/snakedeluxe/minicraft REAL_APP_CONTENT + helloworld 83720c1028f832d0)",
+  "negatives": "19/19",
+  "reinstall": "8/8",
+  "mg310": "7/7",
+  "mg150": "3/3",
+  "c72priv": "all checks OK zero BAD",
+  "fnew376_fault_injection": "70/70",
+  "s82_validator": "PASS rc=0",
+  "f382_probe": "4/4"
+ },
+ "track_verdicts": {
+  "CONT-79 P0-A F-NEW-277": "CONFIRMED_ADVANCED (re-arm proven CONT-77; residual = F-NEW-381 budget wall)",
+  "CONT-79 P0-B F-NEW-381": "BLOCKED_NEEDS_EVIDENCE (representation change = own wave; measured law stands)",
+  "CONT-79 P0-C WINDOW_ROOT": "RESOLVED honestly: 1 package artifact + 1 fixed libGDX chain + native-execution boundary named",
+  "CONT-79 P1-D wrapper residuals": "CONFIRMED_NOT_FIXED scope-refined (arg_fields=(none) rows; one-bit diagnostic upgrade = next wave)",
+  "CONT-79 P1-E AndStatus2048": "decode-complete, NOT fixed (fixture-first)",
+  "CONT-79 P1-F interaction": "5/6 verified + 1 honest null",
+  "CONT-80 Track1 MessageQueue": "REJECTED as current blocker (no MQ-order hang in 31-row corpus)",
+  "CONT-80 Track2 null receivers": "REJECTED as current blocker (zero failure rows in corpus)",
+  "CONT-80 Track3 GLSurfaceView": "CONFIRMED, boundary advanced + precisely named",
+  "CONT-80 Track4 Arrays.toString": "BLOCKED_NEEDS_EVIDENCE (Asteroids APK not in corpus)",
+  "CONT-80 Track5 drawables": "REJECTED as current blocker at launch-face level (adaptive-icon icon miss recorded)"
+ }
+}
