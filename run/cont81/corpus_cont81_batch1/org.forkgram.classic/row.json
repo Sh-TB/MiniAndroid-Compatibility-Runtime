@@ -1,0 +1,69 @@
+{
+ "apk_path": "upload/tg/forkgram.apk",
+ "apk_sha256": "3baeecb3288577e9548ffeb13a1740ac73963c4c1cfb6b21750916566095f654",
+ "apk_sha16": "3baeecb3288577e9",
+ "apk_size_bytes": 37999976,
+ "package": "org.forkgram.classic",
+ "version_code": "709208",
+ "version_name": "12.10.8.0",
+ "min_sdk": "",
+ "target_sdk": "36",
+ "abi_inventory": {
+  "arm64-v8a": 1
+ },
+ "arm_only": true,
+ "has_native": true,
+ "binary_sha16": "fc12647ff1a7b13a",
+ "harness_ok": true,
+ "install_cmd": "/home/z/my-project/miniandroid/build/miniandroid install upload/tg/forkgram.apk --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store",
+ "install_rc": 0,
+ "install_stderr_tail": "",
+ "run_cmd": "/home/z/my-project/miniandroid/build/miniandroid run --package org.forkgram.classic --data-root /home/z/my-project/run/cont81/corpus_cont81_batch1/store --width 1080 --height 1920 --frames 5 --max-seconds 90 -o /home/z/my-project/run/cont81/corpus_cont81_batch1/org.forkgram.classic/r1",
+ "run_termination": "error",
+ "run_rc": 1,
+ "wall_seconds": 8.4,
+ "run_combined_chars": 1197128,
+ "screenshot_sha256": "43d4482c40a90146694f440d2a6d7698c9fbc511a3c044189e836b90fb8ffb51",
+ "screenshot_sha16": "43d4482c40a90146",
+ "unique_colors": 103,
+ "nonbg_ratio": 0.0016,
+ "entropy": 0.027,
+ "dominant_rgb": [
+  255,
+  255,
+  255
+ ],
+ "engine_verdict": "REAL_APP_CONTENT",
+ "first_missing_stage": "",
+ "engine_unique_colors": 157,
+ "first_divergence": null,
+ "last_exception": {
+  "activity": "org.telegram.ui.LaunchActivity",
+  "component": "boot",
+  "event": "RUN_END",
+  "extra": {
+   "status": 1
+  },
+  "package": "org.forkgram.classic",
+  "renderer_family": "CLASSIC_CANVAS",
+  "result": "FAIL",
+  "run_id": "1792260364026-1",
+  "seq": 42,
+  "sev": "FAILURE",
+  "state": "Execution completed successfully [F-016 exception-honesty: 5 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 53447 IMPLEMENTED, 5981 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json]",
+  "thread": "main",
+  "ts_ms": 1792260371986
+ },
+ "uncaught_n": 5,
+ "verdict_v2": "PREREQUISITE_MISMATCH",
+ "notes": "",
+ "legacy_verdict": "PREREQUISITE_MISMATCH",
+ "repeat_runs": 1,
+ "repeat_face_stable": true,
+ "repeat_verdicts": [
+  "PREREQUISITE_MISMATCH"
+ ],
+ "repeat_all_same_verdict": true,
+ "root_id": "",
+ "next_action": ""
+}

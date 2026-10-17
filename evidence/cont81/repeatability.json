@@ -1,0 +1,253 @@
+{
+ "claimed": 19,
+ "face_stable_3run": 19,
+ "rows": [
+  {
+   "package": "app.varlorg.unote",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "90a67cc1ddda57b7"
+   ]
+  },
+  {
+   "package": "com.chessclock.android",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "fe3ae1167c9e968c"
+   ]
+  },
+  {
+   "package": "com.darkempire78.opencalculator",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "f25b754c4565c38b"
+   ]
+  },
+  {
+   "package": "com.dozingcatsoftware.bouncy",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "dbf478ff820444d1"
+   ]
+  },
+  {
+   "package": "com.miniandroid.g2048",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "f43face08299ffc6"
+   ]
+  },
+  {
+   "package": "com.miniandroid.minicraft",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "e77a073f733255eb"
+   ]
+  },
+  {
+   "package": "com.miniandroid.snakedeluxe",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "5235683fc7b1f04b"
+   ]
+  },
+  {
+   "package": "com.miniandroid.snakeneon",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "4a19b1fe671064b0"
+   ]
+  },
+  {
+   "package": "com.miniandroid.tetris",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "b818a6a7016bea8e"
+   ]
+  },
+  {
+   "package": "com.miniandroid.tictactoedeluxe",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "db1d633d77b5819a"
+   ]
+  },
+  {
+   "package": "com.quchen.flappycow",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "13cf47464d9787f4"
+   ]
+  },
+  {
+   "package": "com.simplemobiletools.calculator",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "2ac5d8d0cbf9552a"
+   ]
+  },
+  {
+   "package": "com.tananaev.calculator",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "afe0bd8dd4d09ca6"
+   ]
+  },
+  {
+   "package": "com.zola.bmi",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "f45d6c6603e93fc5"
+   ]
+  },
+  {
+   "package": "de.duenndns.gmdice",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "3891679dff449331"
+   ]
+  },
+  {
+   "package": "dubrowgn.microtimer",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "bbd350b6c14fbd52"
+   ]
+  },
+  {
+   "package": "one.scarecrow.games.OPMT",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "548a2d91ef9892fb"
+   ]
+  },
+  {
+   "package": "org.secuso.privacyfriendlynotes",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "d0a409043ffc83a7"
+   ]
+  },
+  {
+   "package": "zhangman.github.snake",
+   "verdict_v2": "REAL_APP_CONTENT",
+   "repeat_runs": 3,
+   "repeat_face_stable": true,
+   "repeat_all_same_verdict": true,
+   "repeat_verdicts": [
+    "REAL_APP_CONTENT"
+   ],
+   "faces": [
+    "cfcad9239924cae0"
+   ]
+  }
+ ]
+}
