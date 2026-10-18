@@ -1,0 +1,77 @@
+{
+  "wave": "CONT-95",
+  "date": "2026-10-18",
+  "directive": "«ادامه» (trace 1a14dd41533e98b9) — continue per standing protocol: extract #364 requests, show list, Telegram-first execution, finish 364 items to terminal verdicts.",
+  "baseline": {
+    "head_before": "95dd9bf7 (origin/main; CONT-94 residue housekeeping re-message per CONT-86 precedent)",
+    "binary_before": "7cf6fe7f3d6abb81 (CONT-94 closeout)",
+    "registry_before": 703
+  },
+  "result": {
+    "binary_after": "aa9ade61b147c12b",
+    "registry_after": 704,
+    "new_root": "F-NEW-397 ROOT-CAUSED-FIXED"
+  },
+  "discovery": {
+    "title": "Telegram boot death was STATE-DEPENDENT, not CONT-94-stable",
+    "facts": [
+      "Re-run at unchanged binary 7cf6fe7f3d6abb81: Telegram/Forkgram render only the status bar (1431 px) vs the CONT-94 archived faces (8721/15599 px).",
+      "Fresh data-root AND committed-prefs restore both reproduce the degraded state — not leftover-state, not binary drift.",
+      "Semantic stderr diff found the branch: the committed mainconfig.xml contains theme=Night (written DURING the CONT-94 archived run; 21-entry snapshot = mid-run state), so re-boots take the Night-theme wallpaper path the archived run never booted with.",
+      "Night path: af/u1 runnable -> yc0 (MotionBackgroundDrawable) -> SvgHelper pattern decode -> o6.I wallpaper build -> Bitmap.createBitmap(0,0) IAE at unit 951 -> LaunchActivity.onCreate death -> white."
+    ]
+  },
+  "root_cause": {
+    "id": "F-NEW-397",
+    "layer": "framework/xml-sax",
+    "statement": "XMLReader.parse(InputSource) read document bytes from s109_stream_bytes — a registry with NO write site in the whole engine (rg ground truth: 1 declaration + 2 reads). Every stream-backed SAX parse silently delivered 0 events to the app's own ContentHandler.",
+    "chain": "SvgHelper 0 events -> pattern bitmap degenerate (yc0.u non-null 0x0) -> o6.I unit 951 createBitmap(u.getWidth()=0, u.getHeight()=0) -> S109-CB-IAE (AOSP law CORRECT) -> raw DEX try-table parse (scripts/cont95_raw_try_generic.py): NO try coverage at o6.I unit 951 (8 tries end <= 873) nor LaunchActivity.onCreate unit 1375 (4 tries end <= 1107) -> APP-BOUNDARY boot death. The runtime's exception routing was CORRECT at every step; the upstream zero was the bug.",
+    "key_decode": "o6.I disasm: byte 1810 instance-of yc0 TRUE; byte 1818 iget yc0.u; byte 1822 if-nez (u==null -> displaySize min/max branch = NONZERO; u!=null -> getWidth/getHeight path = the 0x0 face); byte 1902 = unit 951 createBitmap. try[5] units 442..496 = the o6.i1 decode block (catch Exception @497 = byte 994 move-exception -> FileLog.e) — NOT the createBitmap site."
+  },
+  "fix": {
+    "statement": "ONE law, zero app conditionals: XMLReader.parse resolves a stream-backed InputSource through the ONE asset-byte law (resolve_asset_stream -> cached_asset_bytes), the same law InputStream.read serves (GATE A openRawResource registers apk-entry: keys). The existing tokenizer + app-handler dispatch then runs unchanged; the engine adds NO SVG semantics.",
+    "site": "miniandroid/src/dex/dalvik_engine.cpp XMLReader.parse block (F-NEW-397 comment)"
+  },
+  "proof": {
+    "fixture": {
+      "apk": "run/cont95/sax1.apk sha16 2d8c7e72afbb2229 (com.probe.sax1, real aapt2 compile/link+ECJ+D8, res/raw/probe.svg)",
+      "pre": "[SAX1] events=0/0 root=?x? names= err=none verdict=FAIL (binary 7cf6fe7f3d6abb81, run/cont95/sax1_pre)",
+      "post": "[SAX1] events=6/6 root=1080x1920 names=svg,g,path,path,rect,circle err=none verdict=PASS (binary aa9ade61b147c12b, run/cont95/sax1_final2)"
+    },
+    "real_apk": {
+      "telegram": "pre: 'parse: no handler (yes) or bytes (0)' + createBitmap(0,0) IAE -> APP-BOUNDARY death. post (240s): '[S109-SAX] parse OK: 746 elements -> Lorg/telegram/messenger/SvgHelper$SVGHandler; (507258 bytes)', 4.7M API calls of real app DEX work, boot reaches onStart/onResume, 6 uncaught (named billing/native/firebase boundaries), 0 IAE (run/cont95/tg_post_240s, tg_post_s94state).",
+      "forkgram": "same SAX law family (SvgHelper lineage); boot stable post-fix (run/cont95/fk_repro pre-fix face recorded)."
+    }
+  },
+  "regression": {
+    "binary": "aa9ade61b147c12b",
+    "rows": {
+      "wall": "12/12 MATCH (dooz 31ddd4d5b8e6d18e x3, opencalc f25b754c4565c38b x3, unote 90a67cc1ddda57b7 x3, microtimer bbd350b6c14fbd52 x3)",
+      "goldens": "4/4 (2048/snakedeluxe/minicraft REAL_APP_CONTENT; helloworld canonical 83720c1028f832d0)",
+      "negatives": "19/19",
+      "reinstall": "8/8",
+      "mg310": "7/7",
+      "mg150": "3/3",
+      "c72priv": "13 rows 0-BAD",
+      "selftests": "13/13",
+      "f376_fault_injection": "70/70",
+      "c74esc": "containment all OK",
+      "clock1": "PASS 4/4",
+      "swipe1": "setup OK (gesture law untouched)",
+      "as2048_47": "0 uncaught"
+    },
+    "verdict": "ZERO DRIFT"
+  },
+  "honest_residuals": [
+    "THROUGHPUT (CONT-87 Track 3 frontier, concrete face): the 507KB pattern SVG costs the DEX interpreter 12.6M+ instructions (SvgHelper$ParserHelper char loops); the 30s canonical gate cuts it mid-parse with the HONEST F084 wall-stop; boot completes at --max-seconds 240 with 0 WALL-STOP.",
+    "F084 wall-stop re-fires per check during the parse loop (319 VirtualMachineError rows in the 30s run) — recorded, unchanged.",
+    "CONT-88 T3 (login content bounds/offset) and T6 (LOC_ERR string-resource faces) UNCHANGED — open frontiers.",
+    "Engine adds no SVG semantics of its own (AOSP org.xml.sax generic contract)."
+  ],
+  "artifacts": {
+    "fixture": "fixtures/cont95_sax_probe",
+    "scripts": ["scripts/cont95_build_probe.sh", "scripts/cont95_registry_update.py", "scripts/cont95_battery.sh", "scripts/cont95_decode_o6I.py", "scripts/cont95_o6I_disasm.py", "scripts/cont95_decode_o6_full.py", "scripts/cont95_raw_try.py", "scripts/cont95_raw_handlers.py", "scripts/cont95_raw_try_generic.py"],
+    "runs": "run/cont95/* (sax1_pre/final2, tg_fresh, tg_withprefs, tg_post_sax, tg_post_240s, tg_post_fresh240, tg_post_s94state, fk_repro, battery anchors)",
+    "decode_windows": "run/cont95/o6I_disasm.txt"
+  }
+}
