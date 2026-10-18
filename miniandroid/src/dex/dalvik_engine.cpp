@@ -35277,6 +35277,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             }
                         }
                     }
+                    // CONT-99 T3 (F-NEW-413): AOSP Enum.toString() == name()
+                    // — the constant's DECLARED name (OpenJDK Enum.java).
+                    // The engine's enum-minting law (sget-enum object
+                    // materialization) already stores "enum_name" on every
+                    // minted constant; the concat path formatted the
+                    // identity form instead (probe: ScaleType printed as
+                    // "Landroid/widget/ImageView$ScaleType;@30").
+                    if (a.object_id != 0) {
+                        auto en413 = heap_.get_object_field(
+                            a.object_id, "enum_name");
+                        if (en413.has_value() &&
+                            en413->type == DalvikType::STRING_REF &&
+                            !en413->string_val.empty())
+                            return en413->string_val;
+                    }
                     // Per OpenJDK Object.toString: ClassName@hexIdentityHash
                     std::string cn = a.class_desc;
                     return cn + "@" + std::to_string(a.object_id);
@@ -56801,6 +56816,22 @@ measure_cm_done:;
             case DalvikType::FLOAT64: out = std::to_string(a.double_val); break;
             case DalvikType::NULL_REF: out = "null"; break;
             case DalvikType::OBJECT_REF: {
+                // CONT-99 T3 (F-NEW-413): AOSP String.valueOf(Object) →
+                // obj.toString() — for a minted enum constant that is the
+                // DECLARED name (OpenJDK Enum.toString == name). D8 compiles
+                // string concat to valueOf + StringBuilder, so this is the
+                // concat path's enum arm (probe: ScaleType printed as
+                // "Landroid/widget/ImageView$ScaleType;@31").
+                if (a.object_id != 0) {
+                    auto en568 = heap_.get_object_field(a.object_id,
+                                                        "enum_name");
+                    if (en568.has_value() &&
+                        en568->type == DalvikType::STRING_REF &&
+                        !en568->string_val.empty()) {
+                        out = en568->string_val;
+                        break;
+                    }
+                }
                 if (heap_.has_object(a.object_id)) {
                     auto sv = heap_.get_object_field(a.object_id, "value");
                     if (!sv.has_value() || sv->type != DalvikType::STRING_REF)
@@ -58259,11 +58290,29 @@ measure_cm_done:;
             if (!box_str500.empty()) {
                 result = DalvikValue::make_string(box_str500, 0);
             } else {
-                // Object receiver without a DEX body: OpenJDK identity form.
-                result = DalvikValue::make_string(
-                    args[0].class_desc + "@" +
-                        std::to_string(args[0].object_id),
-                    0);
+                // CONT-99 T3 (F-NEW-413): AOSP Enum.toString() == name() —
+                // the minting law stores "enum_name" on every minted enum
+                // constant; answer it before the identity form (probe:
+                // ImageView.ScaleType.FIT_CENTER printed as
+                // "Landroid/widget/ImageView$ScaleType;@30").
+                std::string enum_name500;
+                if (args[0].object_id != 0) {
+                    auto en500 = heap_.get_object_field(args[0].object_id,
+                                                        "enum_name");
+                    if (en500.has_value() &&
+                        en500->type == DalvikType::STRING_REF &&
+                        !en500->string_val.empty())
+                        enum_name500 = en500->string_val;
+                }
+                if (!enum_name500.empty()) {
+                    result = DalvikValue::make_string(enum_name500, 0);
+                } else {
+                    // Object receiver without a DEX body: OpenJDK identity form.
+                    result = DalvikValue::make_string(
+                        args[0].class_desc + "@" +
+                            std::to_string(args[0].object_id),
+                        0);
+                }
             }
         } else {
             result = DalvikValue::make_string("null", 0);

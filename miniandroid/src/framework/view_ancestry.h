@@ -66,6 +66,31 @@ framework_direct_superclass() {
         // image hierarchy
         {"Landroid/widget/ImageView;", "Landroid/view/View;"},
         {"Landroid/widget/ImageButton;", "Landroid/widget/ImageView;"},
+        // ── CONT-99 T3 (F-NEW-414): android.graphics.drawable family —
+        // the ancestry table had ZERO drawable entries, so every
+        // is_subclass_of/instanceof on a Drawable type answered FALSE
+        // (probe: getIntrinsicWidth on the minted BitmapDrawable face
+        // missed the S109 ROOT-033b IS-A gate → generic 0 instead of the
+        // stored intrinsic). AOSP Drawable subclassing law (frameworks/
+        // base/graphics): every concrete drawable IS-A Drawable.
+        {"Landroid/graphics/drawable/BitmapDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/ColorDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/GradientDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/ShapeDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/VectorDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/StateListDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/LayerDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/InsetDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
+        {"Landroid/graphics/drawable/RippleDrawable;",
+         "Landroid/graphics/drawable/Drawable;"},
         // spinner/adapterview (minimal, law-correct)
         {"Landroid/widget/AdapterView;", "Landroid/view/ViewGroup;"},
         {"Landroid/widget/ListView;", "Landroid/widget/AdapterView;"},
