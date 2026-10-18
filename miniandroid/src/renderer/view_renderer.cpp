@@ -28,7 +28,12 @@ ViewRenderer::ViewRenderer(ViewShadow* views, int screen_w, int screen_h)
 bool ViewRenderer::is_linear(const ViewShadow::ViewNode& n) const {
     return n.class_desc.find("LinearLayout;") != std::string::npos ||
            n.class_desc.find("RadioGroup;") != std::string::npos ||
-           n.class_desc.find("TableRow;") != std::string::npos;
+           n.class_desc.find("TableRow;") != std::string::npos ||
+           // ── CONT-102 (F-NEW-432): ListView/GridView children stack
+           // vertically (AOSP AbsListView layout law — children fill the
+           // item-decorated column top-down, no recycler window here).
+           n.class_desc.find("ListView;") != std::string::npos ||
+           n.class_desc.find("GridView;") != std::string::npos;
 }
 bool ViewRenderer::is_relative(const ViewShadow::ViewNode& n) const {
     return n.class_desc.find("RelativeLayout;") != std::string::npos;
@@ -117,7 +122,9 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
         } else {
             // container wrap: sum children (single pass)
             int cw = 0, ch = 0;
-            bool horiz = is_linear(n) && n.orientation != 1;  // FIX-G10-001
+            bool is_list = n.class_desc.find("ListView;") != std::string::npos ||
+                           n.class_desc.find("GridView;") != std::string::npos;
+            bool horiz = is_linear(n) && !is_list && n.orientation != 1;  // FIX-G10-001
             for (uint32_t cid : n.children) {
                 ViewShadow::ViewNode* c = views_->find_node(cid);
                 if (!c || c->visibility == 8) continue;
@@ -153,7 +160,9 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
 // Layout children
 // ---------------------------------------------------------------------------
 void ViewRenderer::layout_children_linear(ViewShadow::ViewNode& n, const Box& b) {
-    bool horiz = n.orientation != 1;  // FIX-G10-001: unset = HORIZONTAL
+    bool is_list = n.class_desc.find("ListView;") != std::string::npos ||
+                   n.class_desc.find("GridView;") != std::string::npos;
+    bool horiz = !is_list && n.orientation != 1;  // FIX-G10-001: unset = HORIZONTAL; lists stack VERTICALLY (F-NEW-432)
     int content_w = b.w - n.padding_l - n.padding_r;
     int content_h = b.h - n.padding_t - n.padding_b;
 

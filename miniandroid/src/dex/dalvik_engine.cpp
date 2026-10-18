@@ -8067,7 +8067,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // F084 forward-progress halt at pc=0x108, deterministic x3). The
     // wrapper chain (BufferedReader.in → InputStreamReader.source →
     // InputStream) is the SAME resolve_asset_stream hop readLine uses.
-    if ((declaring_class.find("BufferedReader") != std::string::npos ||
+    // ── CONT-102 (F-NEW-433): the gate widens to the WHOLE Reader family
+    // (any *Reader* declaring class — FileReader.read(char[]) on a real
+    // file was the c102c GEN2 evidence: ctor registered the stream, read
+    // still answered the stub 0 because FileReader is neither
+    // BufferedReader nor InputStreamReader). Receivers with no registered
+    // stream fall through unchanged (StringReader/CharArrayReader keep
+    // their previous behavior).
+    if ((declaring_class.find("Reader") != std::string::npos ||
          declaring_class.find("InputStreamReader") != std::string::npos) &&
         method_name == "read" && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF) {
@@ -12986,6 +12993,12 @@ bool DalvikExecutionEngine::dispatch_item_click(uint32_t adapter_id,
     if (HeapObject* lo = heap_.get(listener)) lcls = lo->class_descriptor;
     if (lcls.empty()) return false;
     std::vector<DalvikValue> args{
+        // ── CONT-102 (F-NEW-433 companion): args[0] is the RECEIVER slot —
+        // the LISTENER instance (try_recursive_invoke binds `this` from
+        // args[0]; the old vector led with the AdapterView, so every
+        // listener body ran on a null receiver — c102d evidence:
+        // iput-null-recv NPE inside MainActivity$2.onItemClick pc=2).
+        DalvikValue::make_object(listener, lcls),
         DalvikValue::make_object(adapter_id, adapter->class_desc),
         DalvikValue::make_object(view_id, child->class_desc),
         DalvikValue::make_int(position),
@@ -45236,6 +45249,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (method == "getConfiguration" &&
         class_name.find("Resources") != std::string::npos) {
         result = get_or_create_singleton("Landroid/content/res/Configuration;");
+        if (result.type == DalvikType::OBJECT_REF &&
+            heap_.has_object(result.object_id)) {
+            // ── CONT-102 (F-NEW-431): Configuration.densityDpi law (AOSP
+            // ConfigurationCompat). The Configuration answers the SAME
+            // display identity the DisplayMetrics shadow serves
+            // (display_shadow.cpp densityDpi=160 — ONE identity law, no
+            // second value invented). Cold and warm reads answer the same
+            // object (resource-selection coherence).
+            auto cur = heap_.get_object_field(result.object_id, "densityDpi");
+            if (!cur.has_value() || cur->type != DalvikType::INT32 ||
+                cur->int_val == 0)
+                heap_.set_object_field(result.object_id, "densityDpi",
+                                       DalvikValue::make_int(160));
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -45679,6 +45706,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                DalvikValue::make_object(bundle_id, "Landroid/os/Bundle;"));
         heap_.set_object_field(ai_id, "name",
                                DalvikValue::make_string(bare, 0));
+        // ── CONT-102 (F-NEW-425): ActivityInfo exported + launchMode
+        // (AOSP PackageParser.ActivityInfo laws). The declared manifest
+        // value is served verbatim; when the attribute is absent the
+        // AOSP-31+ default (false) applies.
+        for (const auto& aa : manifest_activity_attrs_) {
+            if (std::get<0>(aa) == bare || std::get<0>(aa) == norm) {
+                heap_.set_object_field(ai_id, "exported",
+                                       DalvikValue::make_bool(std::get<1>(aa)));
+                if (std::get<2>(aa))
+                    heap_.set_object_field(ai_id, "launchMode",
+                                           DalvikValue::make_int(std::get<3>(aa)));
+                break;
+            }
+        }
         result = DalvikValue::make_object(ai_id, "Landroid/content/pm/ActivityInfo;");
         std::cerr << "[F116-ACTINFO] " << bare << " metaData="
                   << (md ? std::to_string(md->size()) : std::string("0 (no manifest entries)"))
@@ -45704,9 +45745,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         args.size() >= 3) {
         // (String pkg, String cls): args[1]=pkg args[2]=cls
         // (Context ctx, String cls): args[1]=ctx  args[2]=cls
+        // (Context ctx, Class<?> cls): args[1]=ctx  args[2]=CLASS_REF —
+        // ── CONT-102 (F-NEW-425 companion): the Class form stores the
+        // class DESCRIPTOR flattened to the dotted bare name (AOSP
+        // ComponentName(Context, Class) → mClass = cls.getName()).
         std::string pkg_v, cls_v;
         if (args[1].type == DalvikType::STRING_REF) pkg_v = args[1].string_val;
         if (args[2].type == DalvikType::STRING_REF) cls_v = args[2].string_val;
+        if (cls_v.empty() && args[2].type == DalvikType::CLASS_REF &&
+            !args[2].class_desc.empty()) {
+            cls_v = args[2].class_desc;  // "Lcom/pkg/Cls;"
+            if (cls_v.size() >= 2 && cls_v.front() == 'L' &&
+                cls_v.back() == ';')
+                cls_v = cls_v.substr(1, cls_v.size() - 2);
+            for (auto& ch : cls_v) if (ch == '/') ch = '.';
+        }
         if (pkg_v.empty() && args[1].type == DalvikType::OBJECT_REF &&
             args[1].object_id != 0)
             pkg_v = package_name_;  // Context-form: the running package.
@@ -46118,6 +46171,194 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             sav.int_val = (int64_t)manifest_service_classes_.size();
             heap_.set_object_field(obj_id, "services", sav);
         }
+        // ── CONT-102 (F-NEW-426/427): GET_ACTIVITIES (bit 0x1 — AOSP
+        // PackageManager.GET_ACTIVITIES = 0x00000001; 0x2 is
+        // GET_RECEIVERS) + GET_PERMISSIONS (bit 0x1000) laws (AOSP
+        // PackageParser → PackageInfo). Activities come from the manifest
+        // activity table (name + exported + launchMode per F-NEW-425);
+        // permissions are the uses-permission list verbatim (no invention).
+        if ((pm_flags & 0x1) != 0 && !manifest_activity_attrs_.empty()) {
+            uint32_t aarr_id = heap_.allocate(
+                "[Landroid/content/pm/ActivityInfo;", pc_, 0);
+            heap_.set_object_field(
+                aarr_id, "__array_length__",
+                DalvikValue::make_int((int)manifest_activity_attrs_.size()));
+            for (size_t i = 0; i < manifest_activity_attrs_.size(); i++) {
+                uint32_t aid2 = heap_.allocate(
+                    "Landroid/content/pm/ActivityInfo;", pc_, 0);
+                heap_.set_object_field(
+                    aid2, "name",
+                    DalvikValue::make_string(std::get<0>(manifest_activity_attrs_[i]), 1));
+                heap_.set_object_field(
+                    aid2, "packageName",
+                    DalvikValue::make_string(
+                        package_name_.empty() ? "unknown.package" : package_name_, 1));
+                heap_.set_object_field(
+                    aid2, "exported",
+                    DalvikValue::make_bool(std::get<1>(manifest_activity_attrs_[i])));
+                heap_.set_object_field(
+                    aid2, "launchMode",
+                    DalvikValue::make_int(std::get<3>(manifest_activity_attrs_[i])));
+                DalvikValue aiv;
+                aiv.type = DalvikType::OBJECT_REF;
+                aiv.object_id = aid2;
+                aiv.class_desc = "Landroid/content/pm/ActivityInfo;";
+                heap_.set_object_field(aarr_id, "array[" + std::to_string(i) + "]",
+                                       aiv);
+            }
+            DalvikValue aav;
+            aav.type = DalvikType::OBJECT_REF;
+            aav.object_id = aarr_id;
+            aav.class_desc = "[Landroid/content/pm/ActivityInfo;";
+            aav.int_val = (int64_t)manifest_activity_attrs_.size();
+            heap_.set_object_field(obj_id, "activities", aav);
+        }
+        if ((pm_flags & 0x1000) != 0 && !manifest_requested_permissions_.empty()) {
+            uint32_t parr_id = heap_.allocate(
+                "[Ljava/lang/String;", pc_, 0);
+            heap_.set_object_field(
+                parr_id, "__array_length__",
+                DalvikValue::make_int((int)manifest_requested_permissions_.size()));
+            for (size_t i = 0; i < manifest_requested_permissions_.size(); i++) {
+                DalvikValue pv = DalvikValue::make_string(
+                    manifest_requested_permissions_[i], 1);
+                heap_.set_object_field(parr_id, "array[" + std::to_string(i) + "]",
+                                       pv);
+            }
+            DalvikValue pav2;
+            pav2.type = DalvikType::OBJECT_REF;
+            pav2.object_id = parr_id;
+            pav2.class_desc = "[Ljava/lang/String;";
+            pav2.int_val = (int64_t)manifest_requested_permissions_.size();
+            heap_.set_object_field(obj_id, "requestedPermissions", pav2);
+        }
+        // ── CONT-102 (F-NEW-429): package-not-found law (AOSP
+        // PackageManager.getPackageInfo → NameNotFoundException). A query
+        // for a package that is NOT the running package and NOT the
+        // platform "android" package throws NameNotFoundException.
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF &&
+            !args[1].string_val.empty() &&
+            args[1].string_val != package_name_ &&
+            args[1].string_val != "android") {
+            throw_deferred("Landroid/content/pm/PackageManager$NameNotFoundException;",
+                           args[1].string_val,
+                           "PM-GETPKG");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // ── CONT-102 (F-NEW-432): AdapterView adapter laws ────────────────────
+    // AOSP AdapterView contract:
+    //   setAdapter(Adapter) stores the adapter; getCount() delegates to
+    //   adapter.getCount(); the adapter's getView(position, convertView,
+    //   parent) materializes the visible rows into the ViewGroup child
+    //   array (AOSP does this per layout pass with a recycler window —
+    //   the runtime materializes at setAdapter with a bounded window of
+    //   64 rows, an honest documented simplification until a recycler
+    //   pass exists; child identity and order are AOSP-faithful).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "setAdapter" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        args[1].type == DalvikType::OBJECT_REF && args[1].object_id != 0 &&
+        (class_name.find("ListView") != std::string::npos ||
+         class_name.find("GridView") != std::string::npos ||
+         class_name.find("AbsListView") != std::string::npos ||
+         class_name.find("AdapterView") != std::string::npos ||
+         class_name.find("Spinner") != std::string::npos)) {
+        uint32_t lv_id = args[0].object_id;
+        uint32_t ad_id = args[1].object_id;
+        std::string ad_cls;
+        heap_.get_object_class(ad_id, ad_cls);
+        // 1) store the adapter identity on the shadow node (the same
+        //    identity the R-NEW-433 item-click dispatch reads back).
+        if (shadow_registry_) {
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs) {
+                auto* n = vs->get_or_create_node(lv_id, class_name);
+                if (n) {
+                    n->adapter_id = ad_id;
+                    n->adapter_class = ad_cls;
+                }
+            }
+        }
+        // 2) materialize rows: bounded AOSP-faithful window (documented).
+        int count = 0;
+        if (!ad_cls.empty()) {
+            DalvikValue cret = DalvikValue::make_void();
+            DalvikExecutionResult cres;
+            std::vector<DalvikValue> cargs{
+                DalvikValue::make_object(ad_id, ad_cls)};
+            if (try_recursive_invoke(s130_norm_cls(ad_cls), "getCount",
+                                     cargs, cret, cres) &&
+                (cret.type == DalvikType::INT32 ||
+                 cret.type == DalvikType::BOOLEAN))
+                count = (int)cret.int_val;
+        }
+        int materialized = 0;
+        for (int i = 0; i < count && i < 64; i++) {
+            if (!ad_cls.empty()) {
+                DalvikValue vret = DalvikValue::make_void();
+                DalvikExecutionResult vres;
+                std::vector<DalvikValue> vargs{
+                    DalvikValue::make_object(ad_id, ad_cls),
+                    DalvikValue::make_int(i),
+                    DalvikValue::make_null(),
+                    DalvikValue::make_object(lv_id, class_name)};
+                if (try_recursive_invoke(s130_norm_cls(ad_cls), "getView",
+                                         vargs, vret, vres) &&
+                    vret.type == DalvikType::OBJECT_REF &&
+                    vret.object_id != 0) {
+                    if (shadow_registry_) {
+                        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+                        if (vs) vs->add_child(lv_id, vret.object_id);
+                    }
+                    materialized++;
+                }
+            }
+        }
+        std::cerr << "[C102-ADAPTER] setAdapter count=" << count
+                  << " materialized=" << materialized << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getCount" &&
+        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 &&
+        (class_name.find("ListView") != std::string::npos ||
+         class_name.find("GridView") != std::string::npos ||
+         class_name.find("AbsListView") != std::string::npos ||
+         class_name.find("AdapterView") != std::string::npos ||
+         class_name.find("Spinner") != std::string::npos)) {
+        // AOSP AdapterView.getCount() → adapter.getCount() delegate.
+        uint32_t ad_id = 0;
+        std::string ad_cls;
+        if (shadow_registry_) {
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs) {
+                auto* n = vs->find_node(args[0].object_id);
+                if (n && n->adapter_id != 0) {
+                    ad_id = n->adapter_id;
+                    ad_cls = n->adapter_class;
+                }
+            }
+        }
+        if (ad_id != 0 && !ad_cls.empty()) {
+            DalvikValue cret = DalvikValue::make_void();
+            DalvikExecutionResult cres;
+            std::vector<DalvikValue> cargs{
+                DalvikValue::make_object(ad_id, ad_cls)};
+            if (try_recursive_invoke(s130_norm_cls(ad_cls), "getCount",
+                                     cargs, cret, cres)) {
+                result = DalvikValue::make_int((int)cret.int_val);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        result = DalvikValue::make_int(0);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -46168,6 +46409,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         int result_val;
         if (pit != permission_state_.end()) {
             result_val = pit->second;  // Use stored state
+        } else if (!manifest_requested_permissions_.empty() &&
+                   std::find(manifest_requested_permissions_.begin(),
+                             manifest_requested_permissions_.end(),
+                             perm_name) !=
+                       manifest_requested_permissions_.end()) {
+            // ── CONT-102 (F-NEW-428): install-grant law (AOSP
+            // DefaultPermissionGrantPolicy + PackageParser). A permission
+            // the RUNNING package itself requested in its manifest is
+            // granted at install time when its protectionLevel is normal
+            // or signature (self-signed). Dangerous permissions keep the
+            // runtime-grant law (DENIED until requestPermissions).
+            static const miniandroid::dalvik::KvPair t_dangerous[] = {
+    {"android.permission.CAMERA", ""},
+    {"android.permission.RECORD_AUDIO", ""},
+    {"android.permission.ACCESS_FINE_LOCATION", ""},
+    {"android.permission.ACCESS_COARSE_LOCATION", ""},
+    {"android.permission.ACCESS_BACKGROUND_LOCATION", ""},
+    {"android.permission.READ_CONTACTS", ""},
+    {"android.permission.WRITE_CONTACTS", ""},
+    {"android.permission.GET_ACCOUNTS", ""},
+    {"android.permission.READ_PHONE_STATE", ""},
+    {"android.permission.CALL_PHONE", ""},
+    {"android.permission.SEND_SMS", ""},
+    {"android.permission.RECEIVE_SMS", ""},
+    {"android.permission.READ_SMS", ""},
+    {"android.permission.RECEIVE_MMS", ""},
+    {"android.permission.READ_EXTERNAL_STORAGE", ""},
+    {"android.permission.WRITE_EXTERNAL_STORAGE", ""},
+    {"android.permission.READ_CALENDAR", ""},
+    {"android.permission.WRITE_CALENDAR", ""},
+    {"android.permission.BODY_SENSORS", ""},
+    {"android.permission.ACTIVITY_RECOGNITION", ""},
+};
+            if (kv_table_contains(t_dangerous,
+                    sizeof(t_dangerous) / sizeof(t_dangerous[0]),
+                    perm_name)) {
+                result_val = -1;  // runtime-grant law: DENIED until asked
+            } else {
+                result_val = 0;   // install-grant law: normal → GRANTED
+            }
         } else {
             // Default: normal permissions are granted, dangerous are denied
             // Per AOSP: checkPermission returns GRANTED for normal permissions
@@ -49873,10 +50154,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // (INSTALLED_APK category maps it back). The raw host spelling
             // is kept on the private identity fields below for engine-internal
             // consumers.
+            // ── CONT-102 (F-NEW-430 companion): the GATE-A identity now
+            // OVERWRITES the apk_path_ seed above (the seed_ai guard only
+            // fills ABSENT fields, so the earlier host-string seed used to
+            // silently defeat this documented law — probe rows
+            // I-SOURCEDIR-* c102b: sourceDir answered the relative host
+            // path, which resolve_android_path DENIES → File.exists false).
             if (!package_name_.empty()) {
-                seed_ai("hostSourceDir", apk_path_);
-                seed_ai("sourceDir", "/data/app/" + package_name_ + "/base.apk");
-                seed_ai("publicSourceDir", "/data/app/" + package_name_ + "/base.apk");
+                heap_.set_object_field(result.object_id, "hostSourceDir",
+                                       DalvikValue::make_string(apk_path_, 0));
+                heap_.set_object_field(result.object_id, "sourceDir",
+                    DalvikValue::make_string(
+                        "/data/app/" + package_name_ + "/base.apk", 0));
+                heap_.set_object_field(result.object_id, "publicSourceDir",
+                    DalvikValue::make_string(
+                        "/data/app/" + package_name_ + "/base.apk", 0));
             }
             // #371 PHASE B2 (G-4 closure): ABI-scoped native library
             // extraction identity. AOSP PMS law: install extracts ONE ABI's
@@ -49926,6 +50218,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     nld_logical.rfind('/') + 1);
             }
             seed_ai("primaryCpuAbi", "arm64-v8a");
+            // ── CONT-102 (F-NEW-424): ApplicationInfo manifest truthfulness
+            // family (AOSP PackageParser → PackageItemInfo laws). A real
+            // install answers: packageName (non-null), enabled=true (the
+            // application is enabled unless the manifest disables it),
+            // targetSdkVersion/minSdkVersion (uses-sdk), and the
+            // application-level <meta-data> Bundle.
+            seed_ai("packageName", package_name_);
+            {
+                auto cur_en = heap_.get_object_field(result.object_id, "enabled");
+                if (!cur_en.has_value())
+                    heap_.set_object_field(result.object_id, "enabled",
+                                           DalvikValue::make_bool(true));
+                if (manifest_target_sdk_ > 0)
+                    heap_.set_object_field(result.object_id, "targetSdkVersion",
+                                           DalvikValue::make_int(manifest_target_sdk_));
+                if (manifest_min_sdk_ > 0)
+                    heap_.set_object_field(result.object_id, "minSdkVersion",
+                                           DalvikValue::make_int(manifest_min_sdk_));
+                if (!application_meta_data_.empty()) {
+                    auto cur_md = heap_.get_object_field(result.object_id, "metaData");
+                    if (!cur_md.has_value() ||
+                        cur_md->type != DalvikType::OBJECT_REF) {
+                        uint32_t bundle_id = heap_.allocate(
+                            "Landroid/os/Bundle;", pc_,
+                            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                        for (const auto& [k, v] : application_meta_data_) {
+                            static const std::string digits = "0123456789";
+                            bool numeric = !v.empty() &&
+                                v.find_first_not_of(digits) == std::string::npos;
+                            if (numeric)
+                                heap_.set_object_field(bundle_id, "bundle:" + k,
+                                    DalvikValue::make_int(std::stoi(v)));
+                            else
+                                heap_.set_object_field(bundle_id, "bundle:" + k,
+                                    DalvikValue::make_string(v, 0));
+                        }
+                        heap_.set_object_field(result.object_id, "metaData",
+                            DalvikValue::make_object(bundle_id, "Landroid/os/Bundle;"));
+                    }
+                }
+            }
             // S-7/ST-11 FIX (LOADING-CAMPAIGN): the FULL AOSP ApplicationInfo
             // path-identity family (AOSP frameworks/base
             // core/java/android/content/pm/ApplicationInfo.java). Apps trade
@@ -57878,14 +58211,23 @@ measure_cm_done:;
         bool f358_is_bytes =
             heap_.get_object_class(args[1].object_id, f358_src_cls) &&
             f358_src_cls == "[B";
+        // ── CONT-102 (F-NEW-434): String(char[]) / String(char[], off, len)
+        // — the [C source arm (OpenJDK String.java). FileReader.read into
+        // a char[] then new String(buf, 0, n) is the canonical file-read
+        // idiom (c102c GEN2 evidence: read filled 4 chars, the identity
+        // string fell out of the unimplemented ctor).
+        bool f358_is_chars =
+            heap_.get_object_class(args[1].object_id, f358_src_cls) &&
+            f358_src_cls == "[C";
         static thread_local const bool s_f358_diag =
             std::getenv("MINIANDROID_STRCTOR") != nullptr;
         if (s_f358_diag)
             std::cerr << "[STRCTOR-B] enter argc=" << args.size()
                       << " arr#" << args[1].object_id
-                      << " bytes=" << f358_is_bytes << std::endl;
-        if (!f358_is_bytes) {
-            // not a byte[] source: leave to the generic paths
+                      << " bytes=" << f358_is_bytes
+                      << " chars=" << f358_is_chars << std::endl;
+        if (!f358_is_bytes && !f358_is_chars) {
+            // not a byte[]/char[] source: leave to the generic paths
         } else {
         const auto* arr = heap_.get(args[1].object_id);
         int64_t arr_len = 0;
@@ -57896,7 +58238,7 @@ measure_cm_done:;
             if (lf2.type == DalvikType::INT32) arr_len = lf2.int_val;
         }
         int32_t off = 0, len = static_cast<int32_t>(arr_len);
-        // (byte[], int, int) form: args[2]=off args[3]=len
+        // (byte[]|char[], int, int) form: args[2]=off args[3]=len
         if (args.size() >= 5 && args[2].type == DalvikType::INT32 &&
             args[3].type == DalvikType::INT32) {
             off = args[2].int_val;
@@ -57905,7 +58247,10 @@ measure_cm_done:;
         std::string s;
         for (int32_t k = 0; k < len; ++k) {
             auto b = arr->get_field("array[" + std::to_string(off + k) + "]");
-            if (b.type == DalvikType::BYTE || b.type == DalvikType::INT32)
+            if (f358_is_chars) {
+                if (b.type == DalvikType::CHAR || b.type == DalvikType::INT32)
+                    s += static_cast<char>(b.int_val);
+            } else if (b.type == DalvikType::BYTE || b.type == DalvikType::INT32)
                 s += static_cast<char>(b.int_val);
         }
         // new-instance → <init> identity law: the CALLER keeps the original
