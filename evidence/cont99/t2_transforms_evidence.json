@@ -1,0 +1,66 @@
+{
+  "wave": "CONT-99",
+  "track": "T2 — Parent/child coordinate transforms, density and window insets",
+  "directive_comment": 6248236077,
+  "head_pre": "849e2978 (== origin/main, frozen baseline binary 3b89722589ff5af7)",
+  "binary_pre": "3b89722589ff5af7",
+  "binary_post": "8251d80a117a7afe",
+  "registry": "719 -> 723 roots (sha16 aaa9635bb3ff25bf, mirrored)",
+  "fixture": {
+    "path": "fixtures/cont99_tr_probe",
+    "package": "com.probe.c99tr",
+    "version_tag": "V1-C99TR",
+    "apk": "run/cont99/c99tr.apk",
+    "apk_sha16": "f9ce4ff645d84f69",
+    "toolchain": "aapt2/ECJ/D8 (real)",
+    "tree": "root LinearLayout VERTICAL -> rowA FrameLayout 1080x300 (childB View 100x50 margins 100,50) -> rowC (childD tx=30 ty=20, click->D) -> rowE (childF scale 2, click->F) -> rowG LinearLayout scrollY=150 (childH Button click->H) -> rowI (childI2 rotation 90)",
+    "runs_script": "scripts/cont99_tr_run.sh"
+  },
+  "paired_ab": {
+    "control_150_75": {"law": "B=1 only (pure pipeline control)", "pre": "B=1", "post": "B=1", "verdict": "OK both"},
+    "translation_110_340": {"law": "D=1 (inside TRANSLATED rect 30..130/320..370, outside untranslated 0..100/300..350)", "pre": "D=0 MISSED", "post": "D=1", "verdict": "F-NEW-408 fixed"},
+    "scale_120_650": {"law": "F=1 (inside SCALED rect -50..150/575..675, outside untranslated 0..100/600..650)", "pre": "F=0 MISSED", "post": "F=1", "verdict": "F-NEW-408 fixed"},
+    "scroll_100_930": {"law": "H=0 (930+scrollY(150)=1080 outside laid-out 900..980; control visually scrolled away and clipped)", "pre": "H=1 STALE-REGION HIT", "post": "H=0", "verdict": "F-NEW-408 fixed"},
+    "notap": {"law": "all counts 0", "pre": "all 0", "post": "all 0", "verdict": "OK both"}
+  },
+  "getter_rows": {
+    "childD_getTop": {"law": "0 (AOSP parent-relative)", "pre": "300 (absolute impl)", "post": "0", "verdict": "F-NEW-409 fixed"},
+    "childH_getTop": {"law": "0", "pre": "900", "post": "0", "verdict": "F-NEW-409 fixed"},
+    "childD_onScreen": {"law": "(0,300)", "pre": "(0,600) double-count", "post": "(0,300)", "verdict": "F-NEW-410 fixed"},
+    "childH_onScreen": {"law": "(0,900)", "pre": "(0,1800)", "post": "(0,900)", "verdict": "F-NEW-410 fixed"},
+    "getX_getY": {"law": "30.0/20.0 (parent-relative left + translation)", "pre": "0.0/0.0 (absent)", "post": "30.0/20.0", "verdict": "F-NEW-411 fixed"},
+    "setScrollY": {"law": "scrollY=150 after setScrollY(150)", "pre": "0 (silent no-op)", "post": "150", "verdict": "F-NEW-411 fixed"},
+    "scale_pivot_state": {"law": "scaleX/Y=2, lazy-center pivot 50/25", "pre": "OK", "post": "OK", "verdict": "F-NEW-359 laws hold"},
+    "rotation_state": {"law": "rotation=90 persists", "pre": "OK", "post": "OK", "verdict": "state OK; draw/hit matrix = recorded frontier"},
+    "layout_skeleton": {"law": "translation/scale/rotation/scroll never relayout", "pre": "OK (5 rows)", "post": "OK (5 rows)", "verdict": "law preserved"},
+    "density": {"law": "applyDimension(100dp) == 100*density", "pre": "density=2.625 dpi=420 applyDim=262.5 OK", "post": "same OK", "verdict": "self-consistent default, no violation"},
+    "insets": {"law": "honest report", "pre": "rootWindowInsets=null", "post": "null", "verdict": "report-only residual (fullscreen window, no bars)"}
+  },
+  "regression": {
+    "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e, opencalc f25b754c4565c38b, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52, x3)",
+    "goldens": "4/4 (helloworld 83720c1028f832d0)",
+    "negatives": "19/19 (canonical gate A probe stage re-run: fresh container needed gate_a_probe rebuild + probe_store run first — same known artifact class the CONT-98 ledger documented)",
+    "reinstall": "8/8 identity ALL PASS",
+    "mg310": "7/7",
+    "mg150": "3/3 under the LAW-CORRECT fence (updated honestly — see fence_update)",
+    "selftests": "13/13",
+    "f376": "70/70 (c72priv probes rebuilt in-container: 32d19e054be87826/cd40fd178b236dc6)",
+    "anchors": "c74esc containment rows OK (VOL-ESC2/FONT-ESC denied, VOL-OK round-trip, NEG-ETC denied); clock1 row OK; clinit1 onDraw dispatched YES ops=6 (law-correct); swipe1 onDraw dispatched YES ops=7 (setup OK)",
+    "honest_ab": "sax1/perf1 probe rows SILENT on BOTH binaries — A/B on the pristine 3b89722589ff5af7 rebuilt deterministically in-container (sax1 [SAX1] rows=0 runnables_fired=0; perf1 [PERF1] rows=0) — container runnable-pacing artifact, NOT a regression; recorded as honest null"
+  },
+  "fence_update": {
+    "fence": "MG-150 transform hit-test (scripts/cont76_fence_mg150.py)",
+    "what_happened": "the old fence locked the PRE-FIX hit-test blindness as 'current law' (tap at stale layout position fires; tap at translated position does not) and its battery verdict read STALE 14:42 logs from the previous machine — a false green",
+    "action": "regenerated A/B logs with the POST binary (fresh probe build 6b86899e89221897, same sources); the AOSP law flips BOTH rows: stale-layout tap silent, translated-visual tap fires; fence assertions updated to lock the AOSP law; frontier field: CONSUMED by F-NEW-408",
+    "verdict": "FENCE GREEN 3/3 with fresh logs"
+  },
+  "roots": ["F-NEW-408", "F-NEW-409", "F-NEW-410", "F-NEW-411"],
+  "verdict": "APPROVED — ROOT-CAUSED-FIXED, four generic laws, zero drift",
+  "honest_notes": [
+    "hit == draw holds for the axis-aligned subset only; rotation-about-pivot and scaled-subtree re-transform remain the recorded F-NEW-359 frontier (hit never exceeds what the raster paints)",
+    "the --click-test oracle stage was NOT transformed (out of T2 scope; the --tap pipeline is the real pipeline oracle)",
+    "density reports 2.625/420dpi (self-consistent; applyDimension law holds) — no per-app lie found on this row",
+    "insets stay report-only: getRootWindowInsets()=null is the honest fullscreen-window answer",
+    "the first PRE battery batch had a runner-script bug (tap passed as ONE argv element -> tap silently disabled) — fixed in scripts/cont99_tr_run.sh and re-run; cold-start runnable-pacing flake documented separately"
+  ]
+}
