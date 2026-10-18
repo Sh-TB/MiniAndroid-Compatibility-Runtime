@@ -89,6 +89,15 @@ struct ManifestInfo {
         std::string name;
         bool is_main_activity = false;
         bool is_launcher = false;
+        // CONT-102 (F-NEW-425): per-activity android:exported +
+        // android:launchMode (AOSP PackageParser.ActivityInfo laws).
+        // exported_declared distinguishes "manifest said exported=false"
+        // from "attribute absent" (the AOSP-31+ default is false; the
+        // pre-31 default granted filter-carrying activities true — the
+        // runtime serves the declared value verbatim and defaults false).
+        bool exported = false;
+        bool exported_declared = false;
+        int launch_mode = 0;  // 0 standard, 1 singleTop, 2 singleTask, 3 singleInstance
         // S123 ACTION-RESOLVE law: every <action android:name> declared by
         // this activity's <intent-filter> elements (AOSP PackageParser
         // keeps the full filter set per activity; the runtime needs the

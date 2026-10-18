@@ -1411,6 +1411,12 @@ public:
         std::string scroll_change_listener_class;
         uint32_t item_click_listener_id = 0;       // AdapterView.OnItemClickListener
         std::string item_click_listener_class;
+        // ── CONT-102 (F-NEW-432): AdapterView adapter identity (setAdapter
+        // law). The engine's setAdapter intercept stores the adapter here;
+        // getCount() delegates through it and the item-click dispatch
+        // reads the same identity.
+        uint32_t adapter_id = 0;                   // ListAdapter / SpinnerAdapter
+        std::string adapter_class;
         uint32_t item_long_click_listener_id = 0;  // OnItemLongClickListener
         std::string item_long_click_listener_class;
         uint32_t item_selected_listener_id = 0;    // OnItemSelectedListener

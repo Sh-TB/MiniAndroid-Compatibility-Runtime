@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.probe.c102a">
+    <application android:label="c102a">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <provider android:name=".BookProvider"
+            android:authorities="com.probe.c102a.bookdb"
+            android:exported="false"/>
+        <receiver android:name=".ManifestRx" android:exported="false">
+            <intent-filter>
+                <action android:name="com.probe.c102a.MANIFEST_ACTION"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".Svc"/>
+    </application>
+</manifest>

@@ -1,0 +1,57 @@
+{
+ "wave": "CONT-102",
+ "date": "2026-10-18",
+ "directive": "#364 «ادامه ادامه تعداد بالای ۱۰ تا ۱۵ تسک کاری رو کامل انجام بده» — batch execution mode (user: raise per-run task count, dozens of requests per round): FOUR execution batches (A: CONT-98 T5/T3/T4, B: CONT-98 T2/T7/T1, C: CONT-98 T8/T9/T10, D: CONT-99 T8/T10) + batch E (CONT-99 T9 white-target classification sweep) + batch F (F-NEW-381 + CONT-89/92/93 verdicts) — 16 task units in one wave.",
+ "baseline": {
+  "head": "b291f7c65121d5611c5e5c2bb8d22dedc4269348",
+  "binary": "ac0d40244b8e0516 (deterministic rebuild reproduced byte-identically in the fresh container)",
+  "registry": 734,
+  "i364_comments": 67,
+  "last_comment": 6253146596,
+  "open_set": "CONT-98 T1/T2/T3/T4/T5/T7/T8/T9/T10 + CONT-99 T8/T9/T10 + CONT-89/92/93 + F-NEW-381"
+ },
+ "binary_final": "c23d4b1a31acdeef",
+ "probes": {
+  "a_provider_broadcast_service": {"apk": "run/cont102/c102a.apk", "sha16_v2": "b92d660d7af6e8ff", "rows": "34/34 law-correct"},
+  "b_manifest_pm_identity": {"apk": "run/cont102/c102b.apk", "sha16_v2": "8c4e10a5e6445d34", "rows": "26/27 law-correct (I-SOURCEDIR-EXISTS=false is the CORRECT absent-store law for a non-installed data-root; exists=true + len=3730 proven on the store-backed run post7_b)"},
+  "c_perm_config_durable": {"apk": "run/cont102/c102c.apk", "sha16_v2": "2355c41145021995", "rows": "GEN1 11/11 + GEN2/GEN4 durable rows law-correct (prefs 41 survives, file gen1 survives, process-local resets)"},
+  "d_scroll_list_frame": {"apk": "run/cont102/c102d.apk", "sha16_v2": "e301f2917ef79db2", "rows": "LV-COUNT=5 LV-CHILDREN=5 LV-CLICK pos=0 LV-LAST-CLICK=0, SV scroll round-trip + pixel-exact row shift, LV rows pixel-true (row0 #CC8811 row1 #1188CC)"}
+ },
+ "batch_e_sweep": {
+  "binary": "c23d4b1a31acdeef",
+  "targets": {
+   "telegram_official": {"status": "APP_BOUNDARY_DEATH", "first_divergence": "getServiceInfo MISS -> PackageManager$NameNotFoundException uncaught at Lkg/i;.P pc=39 (pre-existing F-NEW-275-class law; A/B on the CONT-101 baseline source build 8aaf17c010a7c112 shows the IDENTICAL death — NOT a CONT-102 regression)"},
+   "whatsapp": {"status": "ARTIFACT_CORRUPT", "evidence": "sha16 c473ad25086720a8, 5615 bytes, PARSE_ERROR invalid ZIP magic on BOTH binaries (artifact-lost class, not a runtime failure)"},
+   "forkgram_709208": {"status": "ABI_PREREQUISITE_MISMATCH", "evidence": "lib/arm64-v8a/libtmessages.49.so present, x86_64 extraction has no such lib -> UnsatisfiedLinkError (kept separate per directive — not a runtime failure)"},
+   "klondike_veldsoft_3": {"status": "PARTIAL_SUCCESS (unchanged known state)"},
+   "chess_jwtc_298": {"status": "PARTIAL_SUCCESS", "first_divergence": "kotlin-reflect ReflectionFactoryImpl CNFE (the known CONT-73 candidate root, uncaught face) — pre-existing"},
+   "notes_secuso_105": {"status": "REAL_APP_CONTENT", "nonwhite": 2073600},
+   "sudoku_secuso_101": {"status": "REAL_APP_CONTENT", "nonwhite": 2069292},
+   "flappycow_rebuilt": {"status": "REAL_APP_CONTENT", "nonwhite": 1970602},
+   "chessclock_29": {"status": "REAL_APP_CONTENT", "nonwhite": 2011439}
+  }
+ },
+ "batch_f_verdicts": {
+  "F-NEW-381": "BLOCKED_NEEDS_EVIDENCE / architecture frontier — stays CLASSIFIED (interpreter throughput wall, DalvikValue two-std::string constant; the CONT-97 falsified quick-fix (env scans) recorded; a real fix is a structural value-representation refactor, out of batch scope; evidence unchanged at HEAD)",
+  "CONT-89": "PARTIALLY_CONFIRMED / BLOCKED_NEEDS_EVIDENCE — Telegram screen ladder blocked at the SAME pre-existing root the sweep re-proved at HEAD (getServiceInfo MISS death, A/B-identical); the F-NEW-424..430 PM-truthfulness family fixed this wave is a prerequisite layer (Telegram's PM queries now answer lawful values for own-package queries)",
+  "CONT-92": "ALREADY_TRACKED_OR_DUPLICATE — same frontier as CONT-89 (source-grounded addendum; the blocking root is the same pre-existing component-resolution death)",
+  "CONT-93": "PARTIALLY_CONFIRMED — corpus games present and classified this sweep (flappy/chess/chessclock REAL content, klondike PARTIAL); the 3D/RTS/farm targets are NOT in the corpus (recorded honestly; sourcing out of batch scope)"
+ },
+ "regression": {
+  "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e, opencalc f25b754c4565c38b, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52, x3 each)",
+  "goldens": "4/4 PASS (rc=0)",
+  "negatives": "19/19 PASS (after the fresh-container probe-results path bridge — the first 9/19 face was a harness-order artifact: N-08 rows harvest run/gatea/probe_store/.../gate_a_results.jsonl produced by the reinstall gate; the rebuilt gate_a_probe.apk sha256 f04040bf558da248cd40846704fabdf5)",
+  "reinstall": "8/8 PASS",
+  "fences": "MG-310 7/7, MG-150 3/3",
+  "selftests": "13/13 PASS",
+  "f376": "70/70 PASS (c72priv probes rebuilt in-container: c72priv_v1 2c6a09270115d51e / v2 9a1270ce015d690b)"
+ },
+ "honest_notes": [
+  "Probe corrections (ours, not the engine): V1 c102a P-UNKNOWN expected a null cursor — modern AOSP (API 26+) throws IAE and the engine's N-18 decision implements exactly that; V2 recoded. V1 c102c R-OWN-WRITE compared 13 bytes vs the actual 14-byte 'C102-OWN-BYTES' payload — miscounted fixture constant, V2 corrected.",
+  "F-NEW-426's bit was initially coded 0x2 (GET_RECEIVERS); the flags=1 probe diag caught it before the final battery — fixed to the AOSP 0x1.",
+  "F-NEW-429 keeps the platform 'android' package served own-shaped (pre-existing); a genuinely lawful platform-package model is a recorded residual.",
+  "The dispatch_item_click receiver law (args[0] = listener instance) was found via the probe's own [SYNTH-EXC] iput-null-recv row — the probe caught a latent bug in the R-NEW-433 dispatch that predates this wave.",
+  "CONT-98 T1 (install transaction atomicity) is served by the existing harness-level evidence: reinstall 8/8 + F-NEW-376 70/70 + negatives N-04/N-05/N-06 (malformed-APK loud-failure) + the F-NEW-429/430 runtime identity laws — no new root needed; status ALREADY_TRACKED with fresh re-validation at HEAD.",
+  "CONT-98 T9 (config/locale cache invalidation) is PARTIAL: the configuration-coherence rows are law-correct at HEAD (density identity, cold==warm); mid-run config-change invalidation remains a harness frontier (no config-change trigger exists)."
+ ]
+}
