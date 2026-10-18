@@ -1503,34 +1503,17 @@ bool ApplicationRuntime::execute_on_create() {
             std::cerr << "\n[EXP069] === INTERACTION PHASE ===" << std::endl;
 
             // EXP-071: Initialize doneButtonVisible on LoginActivity.
-            // The doneButtonVisible boolean array is normally set in
-            // LoginActivity.setViews() / onShow(), but our runtime doesn't
-            // fully execute those lifecycle methods. When it's null,
-            // aget-boolean returns 0 (false), and if-nez (opcode 0x39)
-            // does NOT branch, causing onDoneButtonPressed to return early
-            // without calling onNextPressed.
-            //
-            // Fix: Create a boolean array [true] and set it as the
-            // doneButtonVisible field on the LoginActivity object.
-            // This is a compatibility approximation for uninitialized state.
-            for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {
-                if (obj.class_descriptor == "Lorg/telegram/ui/LoginActivity;") {
-                    // Create a boolean array on the heap
-                    uint32_t arr_id = dalvik_engine.get_heap().allocate("Larray;", 0, 0);
-                    dalvik_engine.get_heap().set_object_field(arr_id, "__array_length__",
-                        DalvikValue::make_int(1));
-                    dalvik_engine.get_heap().set_object_field(arr_id, "array[0]",
-                        DalvikValue::make_bool(true));
-                    // Set the doneButtonVisible field on LoginActivity
-                    DalvikValue arr_val = DalvikValue::make_object(arr_id, "Larray;");
-                    dalvik_engine.get_heap().set_object_field(oid, "doneButtonVisible", arr_val);
-                    // Also set currentDoneType = 0
-                    dalvik_engine.get_heap().set_object_field(oid, "currentDoneType",
-                        DalvikValue::make_int(0));
-                    std::cerr << "[EXP071] Initialized doneButtonVisible=[true] on LoginActivity id=" << oid << std::endl;
-                    break;
-                }
-            }
+            // CONT-97 T8: the EXP-071 app-specific attach (a boolean array
+            // [true] seeded onto Lorg/telegram/ui/LoginActivity; so the
+            // synthetic-click interaction path could press Next) is REMOVED.
+            // Honest grounds: (1) the block is UNREACHABLE at current head —
+            // zero [EXP071] rows in the CONT-97 Telegram runs (the real boot
+            // path fixed in F-NEW-396/CONT-94 does not route through the
+            // EXP-060 synthetic-click phase), and (2) it was an
+            // app-specific heap transplant ("compatibility approximation"),
+            // the exact pattern the honesty red line forbids keeping. The
+            // AOSP-correct state seeding is the app's own setViews()/onShow
+            // DEX code, which executes on the current boot path.
 
             // EXP-071 Phase 6: Drain the queue BEFORE text injection.
             //
