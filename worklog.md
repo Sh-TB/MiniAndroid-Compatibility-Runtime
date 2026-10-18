@@ -10344,3 +10344,23 @@ Stage Summary:
 - CONT-99 T2 = APPROVED (ROOT-CAUSED-FIXED, 4 generic roots, zero drift).
 - binary 8251d80a117a7afe; probe apk f9ce4ff645d84f69; fence probe 6b86899e89221897.
 - Remaining open: CONT-99 T3/T5..T10, CONT-98 9 tracks, CONT-89/92/93, F-NEW-381.
+
+---
+Task ID: cont100-2 (CONT-99 T3)
+Agent: main (CONT-100 wave)
+Task: CONT-99 T3 — ImageView/Drawable sizing, scaleType and image bounds (ONE separate task, fixture-first)
+
+Work Log:
+- fixture-first: fixtures/cont99_img_probe (com.probe.c99im V1-C99IM, c99im.apk 95d6f88abd7f60b5, real aapt2 compile+link WITH res/) BEFORE engine changes; deterministic zlib PNG assets; 8-box XML layout + 15-point pixel oracle over screenshot.ppm + state rows.
+- HEADLINE (already parity): the scaleType PIXEL RASTER contract is AOSP-correct on current HEAD — 15/15 pixel rows on BOTH binaries (fitCenter letterbox, centerCrop edge, fitXY fill, centerInside no-upscale, center natural, wrap_content==intrinsic, missing-src negative, bounds containment, no stretch-to-fill).
+- State-row divergences found: ScaleType toString = identity form (@31); getDrawable()=null despite drawn src; (drawable accessor attempt reverted, see below).
+- Fixed F-NEW-413 (Enum.toString()==name() at ALL THREE conversion sites: String.valueOf OBJECT_REF, StringBuilder stringify, Object.toString bridge — D8 compiles concat via valueOf, the first patch site was the wrong one, proven by probe and corrected), F-NEW-414 (graphics.drawable family had ZERO ancestry entries — every Drawable IS-A was FALSE; added 9 AOSP edges; found via env-gated S109-DIAG instrumented run: is_drawable=0 on BitmapDrawable), F-NEW-415 (getScaleType minted a per-CLASS singleton overwritten per call — all constants shared ONE object; replaced with per-ordinal constant cache + declared-name table).
+- F-NEW-412 (getDrawable mint) — implemented, proven in-probe (drawable=true + law-correct intrinsics + pixels 15/15), then the CORPUS rejected it: opencalc appcompat path took the previously-dead non-null branch -> unimplemented Drawable methods -> ISE cascade at MainActivity -> white end-state -> wall opencalc DRIFT x3. Bisected A/B/C to isolate. REVERTED honestly; root recorded REJECTED_WITH_REASON with the completion precondition (Drawable method surface). Decode note: dooz's wall anchor PNG is itself an all-white end-state (content lives in frames/) — the identical-bytes DRIFT was a red herring, documented.
+- Final binary 2f5faa881bd055e8: opencalc f25b754c4565c38b MATCH restored; probe state rows law-correct (names + drawable=false honest residual); pixels 15/15.
+- Regression ZERO DRIFT: wall 12/12 byte-identical, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70; T2 probe re-run on the final binary: B=1/D=1/F=1/H=0 (T2 laws intact).
+- registry 723 -> 727 (F-NEW-413/414/415 FIXED + F-NEW-412 REJECTED_WITH_REASON), mirrored. Evidence: evidence/cont99/t3_imageview_evidence.json.
+
+Stage Summary:
+- CONT-99 T3 = APPROVED (raster contract proven at parity + 3 roots fixed) with 1 honestly REJECTED root (F-NEW-412, precondition recorded).
+- CONT-99 progress: 3/10 tracks closed (T1, T2, T3) — T2 and T3 both this wave.
+- Remaining open: CONT-99 T5..T10, CONT-98 9 tracks, CONT-89/92/93, F-NEW-381.

@@ -6946,9 +6946,36 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         const int32_t ord = n ? n->scale_type : 3;
         if (heap_) {
-            const uint32_t obj =
-                heap_->get_or_create("Landroid/widget/ImageView$ScaleType;");
-            heap_->set_object_int_field(obj, "ordinal", ord);
+            // ── CONT-99 T3 (F-NEW-415): AOSP enum-constant identity law
+            // (ImageView.ScaleType — JVMS enum semantics): constants are
+            // SINGLETONS PER CONSTANT — one shared object per ordinal,
+            // each carrying its ordinal AND its declared name (the
+            // Enum.toString()/name() law, F-NEW-413). The old mint was a
+            // per-CLASS singleton (get_or_create) whose ordinal was
+            // overwritten by every getter call — two views with different
+            // scale types compared EQUAL, a view's scale type changed
+            // under every other view's feet, and every toString printed
+            // the identity form ("...ScaleType;@31"). Per-ordinal cache +
+            // name table; ordinal order = the AOSP ScaleType enum order
+            // (ImageView.java: MATRIX, FIT_XY, FIT_START, FIT_CENTER,
+            // FIT_END, CENTER, CENTER_CROP, CENTER_INSIDE).
+            static const char* k_st_names[] = {
+                "MATRIX", "FIT_XY", "FIT_START", "FIT_CENTER",
+                "FIT_END", "CENTER", "CENTER_CROP", "CENTER_INSIDE"};
+            static std::map<int32_t, uint32_t> st_cache;
+            uint32_t obj = 0;
+            auto it = st_cache.find(ord);
+            if (it != st_cache.end() && heap_->has_object(it->second)) {
+                obj = it->second;
+            } else {
+                obj = heap_->allocate(
+                    "Landroid/widget/ImageView$ScaleType;");
+                heap_->set_object_int_field(obj, "ordinal", ord);
+                heap_->set_string_field(
+                    obj, "enum_name",
+                    (ord >= 0 && ord < 8) ? k_st_names[ord] : "FIT_CENTER");
+                st_cache[ord] = obj;
+            }
             return CallResult::handled_object(
                 obj, "Landroid/widget/ImageView$ScaleType;");
         }
