@@ -36548,8 +36548,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             } else {
                 uint32_t pid = heap_.allocate("Landroid/text/TextPaint;", pc_, 0);
                 DalvikValue pv = DalvikValue::make_object(pid, "Landroid/text/TextPaint;");
+                // F-NEW-416b (CONT-101 T5): the minted paint carries the
+                // view's RECORDED text size (AOSP TextView creates its
+                // TextPaint at the current size — measured geometry and
+                // reported metrics stay one source of truth). 42.0f stays
+                // the documented pipeline default when nothing recorded.
+                float mint_size = 42.0f;
+                if (shadow_registry_ != nullptr) {
+                    auto* vsm =
+                        shadow_registry_->find_as<framework::ViewShadow>();
+                    if (vsm != nullptr) {
+                        const auto* vn = vsm->find_node(recv);
+                        if (vn && vn->text_size_px > 0.0f)
+                            mint_size = vn->text_size_px;
+                    }
+                }
                 heap_.set_object_field(pid, "__text_size_px__",
-                                       DalvikValue::make_float(42.0f));
+                                       DalvikValue::make_float(mint_size));
                 heap_.set_object_field(recv, "__view_text_paint__", pv);
                 result = pv;
             }
@@ -36617,6 +36632,243 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_float(width);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-416 (CONT-101 T5) — PAINT METRICS FAMILY (ascent/descent/
+    // getFontMetrics/getFontMetricsInt/getTextSize). AOSP Paint.java/JNI:
+    // metrics come from the SAME font engine that measures and draws —
+    // here fonts::TextShaper::font_metrics (the G36 law: ascent<0<descent,
+    // top<=ascent, bottom>=descent, leading>=0, descent−ascent = the
+    // single-spaced line height), scaled at the paint's recorded
+    // __text_size_px__ (F-NEW-226 identity store; pipeline default 42.0f).
+    // ROOT CAUSE (c99tx PRE probe): getFontMetrics() returned NULL →
+    // "field Landroid/graphics/Paint$FontMetrics;.top on a null object
+    // reference" NPE in MainActivity.onCreate (uncaught, app-boundary
+    // death); ascent()/descent()/getTextSize() fell to generic defaults.
+    // getFontMetrics(fm) fills and returns the RECEIVER object (AOSP
+    // identity contract); getFontMetrics() allocates a new FontMetrics.
+    // getFontMetricsInt: ints CEILed in magnitude (android-14 Paint.cpp
+    // G36 law) into a Paint$FontMetricsInt object. If the shaper is
+    // unavailable the metrics answer ZERO with a LOUD stderr line —
+    // observable, never a silent invented value.
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name.find("Landroid/graphics/Paint;") != std::string::npos ||
+         class_name.find("Landroid/text/TextPaint;") != std::string::npos) &&
+        (method == "ascent" || method == "descent" ||
+         method == "getFontMetrics" || method == "getFontMetricsInt" ||
+         method == "getTextSize")) {
+        float m_size = 42.0f;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            auto sz = heap_.get_object_field(args[0].object_id,
+                                             "__text_size_px__");
+            if (sz.has_value() && sz->type == DalvikType::FLOAT32 &&
+                sz->float_val > 0.0f)
+                m_size = sz->float_val;
+        }
+        if (method == "getTextSize") {
+            result = DalvikValue::make_float(m_size);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        fonts::FontMetrics fm416{};
+        if (fonts::TextShaper::instance().available()) {
+            fm416 = fonts::TextShaper::instance().font_metrics(
+                m_size, /*bold=*/false, 0);
+        } else {
+            std::cerr << "[F-NEW-416] shaper-unavailable metrics=0 size="
+                      << m_size << std::endl;
+        }
+        if (method == "ascent" || method == "descent") {
+            result = DalvikValue::make_float(
+                method == "ascent" ? fm416.ascent : fm416.descent);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getFontMetrics / getFontMetricsInt — fill the receiver overload
+        // in place (args[1]), else allocate (AOSP identity law).
+        const bool int_form = (method == "getFontMetricsInt");
+        uint32_t fm_oid = 0;
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0) {
+            fm_oid = args[1].object_id;
+        } else {
+            fm_oid = heap_.allocate(
+                int_form ? "Landroid/graphics/Paint$FontMetricsInt;"
+                         : "Landroid/graphics/Paint$FontMetrics;",
+                pc_, 0);
+        }
+        if (int_form) {
+            // android-14 Paint.cpp getFontMetricsInt: CEIL in magnitude.
+            auto ceil_mag = [](float v) -> int32_t {
+                return (v < 0.0f) ? -(int32_t)std::ceil(-v)
+                                  : (int32_t)std::ceil(v);
+            };
+            heap_.set_object_field(fm_oid, "top",
+                DalvikValue::make_int(ceil_mag(fm416.top)));
+            heap_.set_object_field(fm_oid, "bottom",
+                DalvikValue::make_int(ceil_mag(fm416.bottom)));
+            heap_.set_object_field(fm_oid, "ascent",
+                DalvikValue::make_int(ceil_mag(fm416.ascent)));
+            heap_.set_object_field(fm_oid, "descent",
+                DalvikValue::make_int(ceil_mag(fm416.descent)));
+            heap_.set_object_field(fm_oid, "leading",
+                DalvikValue::make_int(ceil_mag(fm416.leading)));
+        } else {
+            heap_.set_object_field(fm_oid, "top",
+                DalvikValue::make_float(fm416.top));
+            heap_.set_object_field(fm_oid, "bottom",
+                DalvikValue::make_float(fm416.bottom));
+            heap_.set_object_field(fm_oid, "ascent",
+                DalvikValue::make_float(fm416.ascent));
+            heap_.set_object_field(fm_oid, "descent",
+                DalvikValue::make_float(fm416.descent));
+            heap_.set_object_field(fm_oid, "leading",
+                DalvikValue::make_float(fm416.leading));
+        }
+        result = DalvikValue::make_object(
+            fm_oid, int_form ? "Landroid/graphics/Paint$FontMetricsInt;"
+                             : "Landroid/graphics/Paint$FontMetrics;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-417 (CONT-101 T5) — TEXTVIEW STATE GETTER FAMILY. AOSP
+    // TextView.java laws, state on the view heap object (identity-scoped):
+    //   setMaxLines/getMaxLines  — captured; default 9999 (AOSP mMaxMode=
+    //     LINES, mMaximum=9999 constructor constants).
+    //   setEllipsize/getEllipsize — enum OBJECT identity round-trip; AOSP
+    //     default null (mEllipsize uninitialized).
+    //   setIncludeFontPadding/getIncludeFontPadding — default TRUE.
+    //   getLineHeight — AOSP getPaint().getFontMetricsInt(null) = descent −
+    //     ascent (G36) at the view's recorded text size (EXT-AOSP-002 store;
+    //     pipeline default 42.0f when unset). Same source as the draw
+    //     pipeline — measured and painted stay one source of truth.
+    // ROOT CAUSE (c99tx PRE probe): none of these getters existed — the
+    // rows answered generic stubs; getLineHeight/getIncludeFontPadding/
+    // getEllipsize were REC-MISS.
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name.rfind("Landroid/widget/TextView;", 0) == 0 ||
+         class_name.rfind("Landroid/widget/Button;", 0) == 0 ||
+         class_name.rfind("Landroid/widget/EditText;", 0) == 0 ||
+         is_subclass_of(class_name, "Landroid/widget/TextView;")) &&
+        (method == "setMaxLines" || method == "getMaxLines" ||
+         method == "setEllipsize" || method == "getEllipsize" ||
+         method == "setIncludeFontPadding" ||
+         method == "getIncludeFontPadding" || method == "getLineHeight")) {
+        uint32_t tv_recv = (!args.empty() &&
+                            args[0].type == DalvikType::OBJECT_REF)
+                               ? args[0].object_id
+                               : 0;
+        if (tv_recv != 0) {
+            // F-NEW-417b: the line state is captured on BOTH the heap
+            // object (getter identity scope) and the ViewShadow ViewNode
+            // (the renderer's wrap/ellipsize law, F-NEW-421, consumes the
+            // ViewNode mirror — one source of truth, two consumers).
+            auto tv_node_state = [&]() -> framework::ViewShadow::ViewNode* {
+                if (shadow_registry_ == nullptr) return nullptr;
+                auto* vst =
+                    shadow_registry_->find_as<framework::ViewShadow>();
+                return vst ? vst->find_node(tv_recv) : nullptr;
+            };
+            if (method == "setMaxLines" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                heap_.set_object_field(tv_recv, "__max_lines__", args[1]);
+                if (auto* vn = tv_node_state())
+                    vn->max_lines = dalvik_int_value(args[1]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getMaxLines") {
+                auto v = heap_.get_object_field(tv_recv, "__max_lines__");
+                int32_t ml = (v.has_value() && v->type == DalvikType::INT32)
+                                 ? v->int_val
+                                 : 9999;  // AOSP constructor default
+                result = DalvikValue::make_int(ml);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setEllipsize" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF) {
+                heap_.set_object_field(tv_recv, "__ellipsize__", args[1]);
+                // AOSP TruncateAt ordinals: START=0 MIDDLE=1 END=2
+                // MARQUEE=3 → ViewNode mode bytes 1..4 (the renderer's
+                // F-NEW-421 draw law). Unknown/missing ordinal → 0 (none).
+                uint8_t mode = 0;
+                if (args[1].object_id != 0) {
+                    auto ov = heap_.get_object_field(args[1].object_id,
+                                                     "ordinal");
+                    int ord = (ov.has_value() &&
+                               ov->type == DalvikType::INT32)
+                                  ? ov->int_val : -1;
+                    if (ord >= 0 && ord <= 3) mode = (uint8_t)(ord + 1);
+                }
+                if (auto* vn = tv_node_state())
+                    vn->ellipsize_mode = mode;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getEllipsize") {
+                auto v = heap_.get_object_field(tv_recv, "__ellipsize__");
+                if (v.has_value() && v->type == DalvikType::OBJECT_REF &&
+                    v->object_id != 0)
+                    result = *v;  // enum identity preserved
+                else {
+                    result = DalvikValue::make_object(0, "");
+                    result.object_id = 0;  // AOSP default null
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setIncludeFontPadding" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                heap_.set_object_field(tv_recv, "__include_font_pad__",
+                                       args[1]);
+                if (auto* vn = tv_node_state())
+                    vn->include_font_pad = dalvik_int_value(args[1]) != 0;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getIncludeFontPadding") {
+                auto v = heap_.get_object_field(tv_recv,
+                                                "__include_font_pad__");
+                int32_t ifp = (v.has_value() && v->type == DalvikType::INT32)
+                                  ? v->int_val
+                                  : 1;  // AOSP default TRUE
+                result = DalvikValue::make_int(ifp);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getLineHeight") {
+                float lh_size = 42.0f;
+                if (shadow_registry_ != nullptr) {
+                    auto* vsl =
+                        shadow_registry_->find_as<framework::ViewShadow>();
+                    if (vsl != nullptr) {
+                        const auto* vn = vsl->find_node(tv_recv);
+                        if (vn && vn->text_size_px > 0.0f)
+                            lh_size = vn->text_size_px;
+                    }
+                }
+                int32_t lh = 0;
+                if (fonts::TextShaper::instance().available()) {
+                    auto fml = fonts::TextShaper::instance().font_metrics(
+                        lh_size, /*bold=*/false, 0);
+                    lh = (int32_t)std::lround(fml.descent - fml.ascent);
+                } else {
+                    std::cerr << "[F-NEW-417] shaper-unavailable lineHeight=0"
+                              << std::endl;
+                }
+                result = DalvikValue::make_int(lh);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
     }
 
     // EXP-095 (CM-019): LinearLayout.setOrientation(int) — 0=HORIZONTAL,
