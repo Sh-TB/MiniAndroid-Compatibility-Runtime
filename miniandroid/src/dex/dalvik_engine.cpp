@@ -39513,6 +39513,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 pw2, child_dim_of(cn, true));
                             int32_t ch2 = child_spec(
                                 ph2, child_dim_of(cn, false));
+                            // CONT-97 T4 diag: spec inputs for the
+                            // ActionBarLayout box hunt.
+                            static const bool c97_vgdiag =
+                                std::getenv("MINIANDROID_C97_LAYOUT_DIAG") != nullptr;
+                            if (c97_vgdiag &&
+                                cn->class_desc.find("ActionBarLayout") !=
+                                    std::string::npos) {
+                                std::cerr << "[C97-VGMEASURE] parent="
+                                          << pn->view_id << "(" << pw2 << "x"
+                                          << ph2 << ")"
+                                          << " child=" << child
+                                          << " lp_w=" << child_dim_of(cn, true)
+                                          << " lp_h=" << child_dim_of(cn, false)
+                                          << " spec=0x" << std::hex << cw2
+                                          << ",0x" << ch2 << std::dec
+                                          << std::endl;
+                            }
                             cn->dex_measure_valid = false;
                             DalvikValue cret2 = DalvikValue::make_void();
                             DalvikExecutionResult cres2;
@@ -39767,6 +39784,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         self->dex_measure_valid = true;
                         self->measured_width = mw2;
                         self->measured_height = mh2;
+                        if (std::getenv("MINIANDROID_C97_LAYOUT_DIAG") &&
+                            self->class_desc.find("ActionBarLayout") !=
+                                std::string::npos)
+                            std::cerr << "[C97-SELF-LIN] view=" << self->view_id
+                                      << " spec=0x" << std::hex << wspec
+                                      << ",0x" << hspec << std::dec
+                                      << " want=" << want_w << "x" << want_h
+                                      << " -> " << mw2 << "x" << mh2
+                                      << std::endl;
                     } else {
                         // Non-LinearLayout families keep the legacy answer
                         // (EXACTLY → spec; AT_MOST → max(spec, child)) —
@@ -39782,6 +39808,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                     mh = std::max(mh, cn->measured_height);
                             }
                         }
+                        if (std::getenv("MINIANDROID_C97_LAYOUT_DIAG") &&
+                            self->class_desc.find("ActionBarLayout") !=
+                                std::string::npos)
+                            std::cerr << "[C97-SELF-OTHER] view="
+                                      << self->view_id
+                                      << " spec=0x" << std::hex << wspec
+                                      << ",0x" << hspec << std::dec
+                                      << " -> " << mw << "x" << mh
+                                      << std::endl;
                         self->dex_measured_w = mw;
                         self->dex_measured_h = mh;
                         self->dex_measure_valid = true;
@@ -43315,6 +43350,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow != nullptr && recv != 0) {
             if (auto* n = view_shadow->find_node(recv)) {
+                // CONT-97 T4 diag: DEX-invoked View.measure on the
+                // ActionBarLayout — spec words + the calling DEX frame.
+                static const bool c97_vmdiag =
+                    std::getenv("MINIANDROID_C97_LAYOUT_DIAG") != nullptr;
+                if (c97_vmdiag &&
+                    n->class_desc.find("ActionBarLayout") !=
+                        std::string::npos)
+                    std::cerr << "[C97-VM] view=" << recv
+                              << " spec=0x" << std::hex << args[1].int_val
+                              << ",0x" << args[2].int_val << std::dec
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
                 n->dex_measure_valid = false;
                 DalvikValue ret = DalvikValue::make_void();
                 DalvikExecutionResult res;
@@ -50133,6 +50180,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // Canonical child measure (R-NEW-440): one law, DEX
                 // onMeasure dispatched through the memo-protected walk.
                 auto& rt = resources::ResourceRuntime::instance();
+                // CONT-97 T4 diag (bounded): who measured the content child
+                // and with what spec/lp — names the 295x150 ActionBarLayout
+                // box at the Telegram login face.
+                static const bool c97_mdiag =
+                    diag_env("MINIANDROID_C97_MEASURE_DIAG");
+                if (c97_mdiag &&
+                    (cn->class_desc.find("ActionBarLayout") !=
+                         std::string::npos ||
+                     pn->class_desc.find("FrameLayout") !=
+                         std::string::npos)) {
+                    std::cerr << "[C97-MEASURE] parent=" << pn->view_id
+                              << ":" << pn->class_desc
+                              << " (" << pn->measured_width << "x"
+                              << pn->measured_height << ")"
+                              << " child=" << cn->view_id << ":"
+                              << cn->class_desc
+                              << " wspec=0x" << std::hex << wspec
+                              << " hspec=0x" << hspec << std::dec
+                              << " lp_w=" << lp_dim(cn->layout_params_object, true)
+                              << " lp_h=" << lp_dim(cn->layout_params_object, false)
+                              << " lp_obj=" << cn->layout_params_object
+                              << std::endl;
+                }
                 if (rt.ensure_loaded(apk_path_)) {
                     int cw2 = 0, ch2 = 0;
                     if (rt.inflater().measure_view_spec(

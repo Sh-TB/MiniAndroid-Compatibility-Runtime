@@ -5093,6 +5093,24 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 } else {
                                     cw = cnode->lp_width;
                                 }
+                                // CONT-97 T4 diag: content-child layout
+                                // inputs (names the 295x150 box source).
+                                static const bool c97_ldiag =
+                                    std::getenv("MINIANDROID_C97_LAYOUT_DIAG") != nullptr;
+                                if (c97_ldiag && cnode->class_desc.find("ActionBarLayout") != std::string::npos) {
+                                    std::cerr << "[C97-LAYOUT] parent=" << task.view_id
+                                              << "(" << w << "x" << h << ")"
+                                              << " child=" << child_id
+                                              << ":" << cnode->class_desc
+                                              << " lp_w=" << cnode->lp_width
+                                              << " lp_h=" << cnode->lp_height
+                                              << " heur=" << tw << "x" << th
+                                              << " dex_valid=" << cnode->dex_measure_valid
+                                              << " dex=" << cnode->dex_measured_w
+                                              << "x" << cnode->dex_measured_h
+                                              << " -> " << cw << "x" << ch
+                                              << std::endl;
+                                }
                                 if (cnode->lp_height == INT_MIN || cnode->lp_height == -2) {
                                     ch = std::max(th, 20);
                                 } else if (cnode->lp_height == -1) {
