@@ -1,5 +1,0 @@
-tmp/cont99_build/obj/com/probe/c99lay/MainActivity.class
-tmp/cont99_build/obj/com/probe/c99lay/MainActivity$1.class
-tmp/cont99_build/obj/com/probe/c99lay/R.class
-tmp/cont99_build/obj/com/probe/c99lay/MainActivity$2.class
-tmp/cont99_build/obj/com/probe/c99lay/MainActivity$3.class
