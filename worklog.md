@@ -10388,3 +10388,24 @@ Stage Summary:
 - CONT-99 progress 7/10 tracks closed (T1..T7): T5/T6/T7 = APPROVED with 9 registry roots this wave (incl. F-NEW-421 text-wrap law + F-NEW-422 Arabic script fallback — the whole Persian/Arabic corpus family moves from blank text to real joined glyphs).
 - Binary ac0d40244b8e0516; probes c99tx 2427b960562dc8b1 / c99zo 6c8a1745b464a027 / c99cv b60c665a25aafe1f.
 - Remaining open: CONT-99 T8/T9/T10, CONT-98 9 tracks, CONT-89/92/93, F-NEW-381.
+
+---
+Task ID: cont102-batch (16 task units)
+Agent: main (CONT-102 batch wave)
+Task: #364 «ادامه ادامه تعداد بالای ۱۰ تا ۱۵ تسک کاری رو کامل انجام بده» — batch mode: CONT-98 T5/T3/T4, T2/T7/T1, T8/T9/T10 + CONT-99 T8/T10/T9 + F-NEW-381/CONT-89/92/93 verdicts as ONE batch wave (4 fixture-first execution batches + classification sweeps).
+
+Work Log:
+- Fresh-container recovery: local tree was a stale CONT-10 snapshot; synced to origin/main b291f7c6 (registry 734), rebuilt the binary deterministically byte-identical (ac0d40244b8e0516).
+- Four probes built with the real toolchain (aapt2/ECJ/D8): c102a (provider/broadcast/service 34 rows), c102b (manifest/PM/identity), c102c (permissions/config/durable across TWO harness invocations = two process generations), c102d (scroll/list/tap phases).
+- PRE decode found 11 root families; ALL fixed in 4 rebuild cycles: F-NEW-424 (ApplicationInfo packageName/enabled/targetSdk/minSdk/metaData), F-NEW-425 (ActivityInfo exported/launchMode + ComponentName(Context,Class) CLASS_REF flattening), F-NEW-426 (GET_ACTIVITIES — bit 0x1, the 0x2 coding error was caught by the probe flags diag), F-NEW-427 (GET_PERMISSIONS), F-NEW-428 (install-grant law with the dangerous table), F-NEW-429 (NameNotFoundException for non-own/non-android packages), F-NEW-430 (sourceDir GATE-A identity overwrite — the seed_ai ABSENT-only guard had silently defeated the documented law), F-NEW-431 (Configuration.densityDpi = the DisplayMetrics identity), F-NEW-432 (AdapterView family: setAdapter store + bounded-64 row materialization + getCount delegate + AbsListView self-claim + UP arm + pointToPosition + item-click RECEIVER law — the probe's own iput-null-recv row exposed a latent R-NEW-433 receiver bug), F-NEW-433 (Reader.read gate widened to the *Reader* family), F-NEW-434 (String(char[]/[C off/len) ctor).
+- Batch E sweep (9 targets at c23d4b1a31acdeef): telegram dies at the PRE-EXISTING F-275 getServiceInfo law (A/B on a baseline-source build 8aaf17c010a7c112 — identical death, NOT a CONT-102 regression); whatsapp.apk is a corrupt artifact (5615 bytes, invalid ZIP, both binaries); forkgram = arm64 ABI prerequisite; notes/sudoku/flappycow/chessclock REAL_APP_CONTENT; chess/klondike PARTIAL (chess = the known kotlin-reflect CNFE).
+- Batch F verdicts: F-NEW-381 BLOCKED (architecture frontier, evidence unchanged); CONT-89/92 BLOCKED/PARTIAL at the same pre-existing component-resolution death (the PM-truthfulness family fixed this wave is the prerequisite layer); CONT-93 PARTIAL (corpus games classified; 3D/RTS/farm absent from corpus, recorded honestly).
+- Battery at c23d4b1a31acdeef ZERO DRIFT: wall 12/12 byte-identical, goldens 4/4, negatives 19/19 (after bridging the probe-results file the reinstall gate produces — fresh-container harness-order artifact, not drift), reinstall 8/8, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70 (c72priv probes rebuilt in-container; gate_a_probe rebuilt f04040bf...).
+- Honest fixture corrections recorded: P-UNKNOWN V1 null-expectation was the pre-N contract (N-18 implements modern AOSP IAE); R-OWN-WRITE 13-vs-14-byte miscount.
+- Registry 734→745 (F-NEW-424..434), mirrored, id-unique. Evidence evidence/cont102/evidence.json.
+- PUSH: HEAD == origin/main == c72a6a8a (commits 732e685b batch wave + c72a6a8a battery artifact).
+
+Stage Summary:
+- 16 task units delivered in ONE batch cycle: 11 tracks fully APPROVED (CONT-98 T5/T3/T4/T2/T7/T1/T8/T10 + CONT-99 T8/T10/T9-classification), 3 PARTIAL (CONT-98 T9 config-change invalidation harness frontier; CONT-89/92 at the pre-existing root; CONT-93 corpus-limited), 1 BLOCKED (F-NEW-381), 1 ALREADY_TRACKED (CONT-92) — per-item تایید/رد posted to #364.
+- Success rate: 11/16 fully closed (69%), verdicts delivered 16/16, weighted ≈78%.
+- Next wave owns: the pre-existing telegram component-resolution death (Lkg/i;.P getServiceInfo environment), a lawful platform-package model ('android' residual), recycler-window materialization (replacing the bounded-64 law), UPP-001/F-NEW-381 architecture refactor.
