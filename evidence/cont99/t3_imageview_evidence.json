@@ -1,0 +1,53 @@
+{
+  "wave": "CONT-99",
+  "track": "T3 — ImageView/Drawable sizing, scaleType and image bounds",
+  "directive_comment": 6248236077,
+  "head_pre": "65b2f201 (T2 commit; frozen baseline binary 3b89722589ff5af7)",
+  "binary_pre": "3b89722589ff5af7",
+  "binary_post": "2f5faa881bd055e8",
+  "registry": "723 -> 727 roots (sha16 f0568ecec51bf1a5, mirrored): F-NEW-413/414/415 ROOT-CAUSED-FIXED, F-NEW-412 REJECTED_WITH_REASON",
+  "fixture": {
+    "path": "fixtures/cont99_img_probe",
+    "package": "com.probe.c99im",
+    "version_tag": "V1-C99IM",
+    "apk": "run/cont99/c99im.apk",
+    "apk_sha16": "95d6f88abd7f60b5",
+    "toolchain": "aapt2 compile+link WITH resources, ECJ, D8 (real)",
+    "assets": "deterministic zlib-generated nodpi PNGs: red_land 200x100 #FFCC2222, blue_port 100x200 #FF2222CC, green_sq 100x100 #FF22CC22",
+    "oracle": "8 XML-inflated ImageView boxes (fitCenter/centerCrop/fitXY/centerInside/center/wrap_content/missing-src) + 15-point deterministic pixel sampling of screenshot.ppm + per-view state rows (scaleType/measured/drawable/intrinsic) + programmatic FIT_XY switch",
+    "run_script": "scripts/cont99_img_run.sh + build scripts/cont99_img_build_probe.sh"
+  },
+  "headline": "the scaleType PIXEL RASTER contract is already AOSP parity on current HEAD (S83-GFX-BASE section 19 + G04 density law): 15/15 pixel rows on BOTH binaries — letterbox, crop-to-edge, fitXY fill, no-upscale centerInside, natural center, wrap_content==intrinsic, missing-src negative, images never escape their own bounds, no stretch-to-fill default",
+  "paired_state_rows": {
+    "scaleType_names": {"law": "Enum.toString()==declared name", "pre": "@31 identity form x8", "post": "FIT_CENTER/CENTER_CROP/FIT_XY/CENTER_INSIDE/CENTER (+ FIT_XY programmatic switch)", "verdict": "F-NEW-413+F-NEW-415 fixed"},
+    "drawable_accessor": {"law": "AOSP mDrawable non-null after src", "pre": "null", "post": "null (mint ATTEMPTED, corpus-REVERTED — see F-NEW-412)", "verdict": "REJECTED_WITH_REASON, honest residual"},
+    "measured_sizes": {"law": "boxes 200/200/200/100/200/100 + wrap_content=intrinsic", "pre": "all OK", "post": "all OK", "verdict": "already parity"},
+    "missing_src": {"law": "drawable null, intrinsic -1", "pre": "OK", "post": "OK", "verdict": "law holds"}
+  },
+  "pixels": "15/15 on PRE (3b89722589ff5af7) and on POST (2f5faa881bd055e8) — zero raster drift from the object-model fixes",
+  "f412_rejection": {
+    "what": "ImageView.getDrawable() mint (BitmapDrawable face, cached per receiver, S109 density-law intrinsics) was implemented and proven IN-PROBE (drawable=true, intrinsics 200x100/100x200/100x100)",
+    "corpus_rejection": "opencalc's appcompat path (Lg/F;.w -> Lg/m;.onPostCreate) took the previously-dead non-null branch, hit unimplemented Drawable methods, ISE cascade escaped at MainActivity, end-state framebuffer white, wall opencalc DRIFT 31ddd4d5b8e6d18e (the all-white PNG) x3 vs pristine f25b754c4565c38b MATCH",
+    "bisect": "A: ancestry only -> MATCH; B: shadows+dalvik -> broken; C: getDrawable only -> broken (culprit isolated)",
+    "resolution": "REVERTED; root recorded REJECTED_WITH_REASON with the completion precondition (Drawable method surface: setBounds/getBounds/getColorFilter/setColorFilter/mutate/getConstantState) — the F-NEW-407 lesson applied: an accessor must not expose a half-implemented object model to real app flows",
+    "note": "dooz's wall anchor 31ddd4d5b8e6d18e IS an all-white end-state screenshot.png (the real dooz content lives in frames/) — the identical-bytes DRIFT was a red herring that cost a bisect; documented so the next wave does not repeat the decode"
+  },
+  "regression": {
+    "wall": "12/12 MATCH byte-identical",
+    "goldens": "4/4",
+    "negatives": "19/19",
+    "reinstall": "8/8 identity ALL PASS",
+    "mg310": "7/7",
+    "mg150": "3/3",
+    "selftests": "13/13",
+    "f376": "70/70",
+    "t2_recheck": "T2 probe on the final binary: control B=1, translation D=1, scale F=1, scroll H=0 — F-NEW-408..411 intact"
+  },
+  "roots": ["F-NEW-413", "F-NEW-414", "F-NEW-415", "F-NEW-412 (REJECTED_WITH_REASON)"],
+  "verdict": "APPROVED (raster contract proven at parity; 3 roots fixed) + 1 honestly REJECTED root with recorded precondition",
+  "honest_notes": [
+    "the T3 probe settle dump needed --frames 12 (the 1200ms postDelayed fires later than 5 frames cover on this container — pacing, not a stuck pump; the T2 probe fired within 5 frames)",
+    "drawable accessor stays null by honest decision; the pixel raster is unaffected",
+    "cross-source enum identity (getScaleType() == ScaleType.FIT_CENTER against engine-minted sget constants) is the recorded residual on F-NEW-415"
+  ]
+}
