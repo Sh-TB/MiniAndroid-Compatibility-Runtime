@@ -1,0 +1,49 @@
+{
+  "wave": "CONT-103",
+  "date": "2026-10-18",
+  "issue": 364,
+  "directive": "ادامه ادامه تعداد بالای ۱۰ تا ۱۵ تسک کاری رو کامل انجام بده (trace 1a1508e51babdd81) — batch mode, >=10-15 task units per round, Telegram requests first priority",
+  "baseline": {
+    "entry_head": "6a19535b (CONT-102 worklog)",
+    "entry_binary": "c23d4b1a31acdeef",
+    "cleanup": "local UUID-residue commit a53a5479 (tmp/cont102_* build intermediates only) dropped via reset --hard per the CONT-101 lesson; tmp/flappycow dirty-submodule pointer noise (pointer unchanged)"
+  },
+  "binary_final": "2bb822526e7588a5",
+  "unit_ledger": [
+    {"unit": "U1", "task": "telegram PRE re-run on new HEAD (batch-E state reproduction)", "verdict": "APPROVED", "result": "cascade captured: Lkg/i;.P getServiceInfo MISS-empty → NameNotFoundException uncaught; GATEA-NATIVE UnsatisfiedLinkError; protobuf 'No factory' UnsupportedOperationException uncaught at LaunchActivity.onCreate pc=46"},
+    {"unit": "U2", "task": "c103a fixture-first probe (ComponentName paths × getServiceInfo/getProviderInfo + NameNotFound negative + PI-SVC + flatten)", "verdict": "APPROVED", "result": "apk 20da26989a01f539, real aapt2/ECJ/D8; PRE reproduced the EXACT telegram empty-MISS death at R3 createRelative; 12 rows defined"},
+    {"unit": "U3", "task": "root-cause + fix component-resolution family (F-NEW-435/436/437/438 in one rebuild)", "verdict": "APPROVED", "result": "createRelative static factory + service/provider meta containment fallback + GET_SERVICES bit 0x20→0x4 + flatten/unflatten family"},
+    {"unit": "U4", "task": "c103a POST verify", "verdict": "APPROVED", "result": "12/12 rows green (S-CLS/S-STR/S-REL resolve, S-META=hello, S-NEG CAUGHT, PI-SVC-COUNT=1, A-CLS, P-OK NONNULL, CN-FLAT full flatten, S-REPEAT); re-verified on final binary"},
+    {"unit": "U5", "task": "telegram re-run after component family", "verdict": "APPROVED", "result": "getServiceInfo MISS 2→0; new dominant face = F084 wall-clock budget halts (startup is compute-bound); proved the two remaining deterministic deaths"},
+    {"unit": "U6", "task": "protobuf 'No factory' root decode (androguard disassembly: p3.<clinit> registerDefaultInstance via v1.k; i2.zzb 2-factory combinator; t1.zzc = GeneratedMessageLite.class.isAssignableFrom)", "verdict": "APPROVED", "result": "F-NEW-440 probe-side heap Class-token resolution — 'No factory' count → 0"},
+    {"unit": "U7", "task": "GATEA-NATIVE ABI law decode + F-NEW-441 on-demand extraction", "verdict": "APPROVED", "result": "telegram x86_64 libtmessages.49.so extracted 21084524 bytes → REAL dlopen → REAL dlerror (libjnigraphics.so dependency absent = UPP-001-family frontier, honest shape 3); forkgram arm64 ELF extracted (sha16 6175edf792986029) → real dlopen refusal recorded"},
+    {"unit": "U8", "task": "telegram final re-run (F-NEW-439/440/441)", "verdict": "APPROVED", "result": "3 deterministic startup death families resolved this wave (svcinfo-empty-MISS GONE; protobuf factory GONE; ABI load reaches real dlopen); remaining = F084 budget halts (322, non-deterministic compute pacing) + NEW successor divergence play_billing n2.r pc=692 aget-oob length=11 index=11 (next-wave scope) + libjnigraphics NDK dependency (UPP-001 frontier)"},
+    {"unit": "U9", "task": "CONT-89 re-verdict (Telegram UI forensic screen-by-screen)", "verdict": "PARTIALLY_CONFIRMED", "result": "prerequisite layer (component resolution + PM truthfulness) fixed and proven this wave; first UI frame still blocked by F084 budget + n2.r successor + NDK dependency — recorded honestly, wave continues"},
+    {"unit": "U10", "task": "CONT-92 re-verdict (Telegram source-grounded addendum)", "verdict": "PARTIALLY_CONFIRMED", "result": "same face as U9; the source-grounded component-discovery path (Lkg/i;.P) now executes past its pre-existing death"},
+    {"unit": "U11", "task": "CONT-90 white-recovery batch re-run", "verdict": "PARTIALLY_CONFIRMED", "result": "telegram white (budget+successor roots, advanced 3 death families this wave); chess white (NEW first divergence start;.onCreate pc=9 NPE — the kotlin-reflect CNFE uncaught face is GONE, now caught by kotlin's own fallback); klondike/flappycow/notes/sudoku/chessclock REAL_APP_CONTENT unchanged (battery wall)"},
+    {"unit": "U12", "task": "chess kotlin-reflect ReflectionFactoryImpl terminal verdict", "verdict": "ALREADY_FIXED_AND_TESTED", "result": "R350-FORNAME CNFE now deferred AND caught in n3/g;.<clinit> (deferred handler @0xe) — kotlin's own fallback path works at HEAD 2bb822526e7588a5; the CONT-102-era 'uncaught face' no longer reproduces; chess's blocker is now the NEW start;.onCreate pc=9 NPE (recorded, next wave)"},
+    {"unit": "U13", "task": "CONT-91 WhatsApp family terminal verdict", "verdict": "NOT_APPLICABLE", "result": "whatsapp.apk artifact corrupt (5615 bytes, PARSE_ERROR invalid ZIP magic, crash.log Error #1, re-verified on final binary) — artifact-lost class, no runtime work possible; no valid alternate whatsapp artifact in corpus"},
+    {"unit": "U14", "task": "forkgram arm64 ABI terminal verdict", "verdict": "BLOCKED_NEEDS_EVIDENCE", "result": "F-NEW-441 extracts the arm64 ELF honestly; host dlopen refuses (no arm64 translation on x86_64 host — REAL dlerror recorded); needs ABI translation layer or an x86_64 artifact — UPP-001-class architecture frontier"},
+    {"unit": "U15", "task": "platform-package 'android' residual classification", "verdict": "ALREADY_TRACKED_OR_DUPLICATE", "result": "the PM-truthfulness family (F-NEW-424..429/435..439) now resolves component queries lawfully; no dying consumer of the 'android' platform-package face reproduced on the current corpus at HEAD; tracked via the F-NEW-429 NameNotFoundException law entry"},
+    {"unit": "U16", "task": "FOUNDATION-6 semantic-probe runner terminal verdict", "verdict": "STALE_OR_SUPERSEDED", "result": "open since 2026-10-16 without construction; the fixture-first probe protocol (c74esc/c99x/c102a-d/c103a + gate anchors + the 70/70 fault battery) already delivers the 1-2 minute first-divergence goal with real toolchain artifacts; a separate runner would duplicate the harness"},
+    {"unit": "U17", "task": "battery zero-drift + evidence/registry/worklog + #364 comment + push", "verdict": "APPROVED", "result": "battery below; registry 745→752 mirrored; worklog appended"}
+  ],
+  "battery": {
+    "binary": "2bb822526e7588a5",
+    "wall": "4/4 byte-identical (dooz 31ddd4d5b8e6d18e, opencalc f25b754c4565c38b, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52)",
+    "goldens": "4/4 PASS (helloworld 83720c1028f832d0)",
+    "negatives": "19/19 PASS",
+    "reinstall_fault_f376": "70/70 PASS",
+    "mg310": "7/7 GREEN",
+    "mg150": "3/3 GREEN",
+    "selftests": "13/13 PASS",
+    "anchors": "c74esc containment rows green (VOL-ESC/ESC2/FONT-ESC denied, VOL-OK round-trip, NEG-ETC denied); clinit1 F-NEW-215 erroneous-class law firing; swipe1 188 onDraw/dispatch ops; sax1 stdout verdict rows silent (runnables_fired=0 pacing artifact — same honest null as CONT-99/100/101/102 waves)"
+  },
+  "honest_notes": [
+    "telegram frames remain white at --max-seconds 30: startup is compute-bound (F084 budget halts, 322 non-deterministic) — this is a pacing/budget face, NOT one of the deterministic root deaths; all three deterministic startup death families fixed this wave",
+    "the F084 wall-clock halt lands in whatever callee is executing (SvgHelper.parseFloat, o6.k1, c2.run, androidx fragment onStart...) — each occurrence caught by catch-alls or recorded as budget unwind; no app-specific shortcuts taken",
+    "n2.r aget-oob (length=11 index=11) is the NEW successor divergence inside play_billing schema construction after the factory law was fixed — root-cause honestly deferred to the next wave (needs its own decode)",
+    "forkgram/telegram native loads now reach REAL dlopen with REAL dlerror — no fabricated success; the missing libjnigraphics.so dependency is the NDK-stub frontier (UPP-001 family)",
+    "sax1/perf1 pacing artifact reproduced exactly as documented in prior waves"
+  ]
+}
