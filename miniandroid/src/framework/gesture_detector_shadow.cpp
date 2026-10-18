@@ -4,6 +4,7 @@
 #include "gesture_detector_shadow.h"
 
 #include <cmath>
+#include <atomic>  // CONT-86 F-NEW-390 bounded diag counters
 #include <iostream>
 
 namespace miniandroid { namespace framework {
@@ -87,6 +88,15 @@ bool GdModel::feed(int action, float x, float y, int64_t now) {
         if (!in_tap_region) {
             const float dx = prev_focus_x - focus_x;   // AOSP distanceX law
             const float dy = prev_focus_y - focus_y;
+            // CONT-86 F-NEW-390 diag (bounded): the FSM's own delta values.
+            {
+                static std::atomic<uint64_t> s86_fsm{0};
+                if (s86_fsm.fetch_add(1, std::memory_order_relaxed) < 16)
+                    std::cerr << "[C86-FSM] scroll dx=" << dx << " dy=" << dy
+                              << " prev=" << prev_focus_x << ","
+                              << prev_focus_y << " focus=" << focus_x << ","
+                              << focus_y << std::endl;
+            }
             emit("onScroll", down_x, down_y, dx, dy);
             consumed = true;
         }
