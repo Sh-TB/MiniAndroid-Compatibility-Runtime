@@ -1,0 +1,27 @@
+CONT-94 TELEGRAM-FIRST WAVE evidence — English-only, 460px, <=100KB
+Wave: CONT-94 · Directive: user «ادامه تلگرام رو الویت اول اجرا بزار ۳۶۴ تموم بشه»
+  (Telegram first priority inside master #364; executes CONT-88 Phase 1 +
+   CONT-89 + CONT-92 tracks) · Binary post sha16 7cf6fe7f3d6abb81 (pre
+   caa24290aad77ca9) · HEAD at wave start 9d313976 (origin/main a2f2255b).
+
+s94_telegram1_pre_white_frontier.jpg: Telegram official 12.10.5 pre-fix last
+  frame — 188/2073600 non-white (NOT a render, honest). The H(Z Z Z)V NPE
+  chain killed the login UI construction at three fragment presentations.
+s94_telegram1_post_login_pixels.jpg: same APK, post-fix (F-NEW-396) — REAL
+  app-owned pixels: '+' country-code box, phone-field borders, accent-blue
+  text. 9340 non-white. Top-anchored (bounds/offset frontier named).
+s94_forkgram1_post_login.jpg: Forkgram Classic 12.10.8.0 post-fix — 'Your
+  Number' header, phone field, QRLoginButton, 'Disable' (15599 non-white;
+  was 188 pre-fix). Honest '[resid:0x2131745245]' fallback named.
+s94_c94p_probe_pre.jpg: fixture com.probe.c94p pre-fix — on-screen
+  '[C94-PROBE] identity=OTHER-SAME-CLASS marker=null' (the fabricated
+  same-class object with default fields; exactly the Telegram face).
+s94_c94p_probe_post.jpg: same fixture post-fix — '[C94-PROBE] identity=THIS
+  marker=C94-MARKER-V1' (live activity identity, AOSP law).
+cont94_mosaic.png: five-face strip: TG pre / TG post / Forkgram post /
+  probe pre / probe post.
+
+Machine records: evidence/cont94/evidence.json · runs run/cont94/*
+· registry: canonical/root_cause_registry.json 703 rows F-NEW-396
+  ROOT-CAUSED-FIXED (mirror root_registry.json) · app_registry
+  APP-012/013/014 re-graded.
