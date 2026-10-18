@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- F-NEW-397 probe: tiny SVG pattern with width/height + paths -->
+<svg width="1080" height="1920" viewBox="0 0 1080 1920">
+  <g id="layer1">
+    <path fill="#1a73e8" d="M10,10 L200,10 L200,200 L10,200 Z"/>
+    <path fill="#34a853" d="M220,10 C400,10 400,200 220,200 Z"/>
+    <rect x="420" y="10" width="120" height="90" fill="#ea4335"/>
+    <circle cx="600" cy="100" r="40" fill="#fbbc04"/>
+  </g>
+</svg>
