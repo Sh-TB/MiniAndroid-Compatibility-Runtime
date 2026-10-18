@@ -53,8 +53,12 @@ std::vector<std::string> DatabaseShadow::implemented_methods() const {
         "bindLong", "bindString", "bindNull", "bindDouble",
         "executeInsert", "executeUpdateDelete", "execute",
         "getCount", "getColumnCount", "getColumnIndex", "getColumnNames",
+        "getColumnIndexOrThrow", "getColumnName",
         "moveToFirst", "moveToNext", "moveToPosition",
-        "getInt", "getLong", "getString", "isNull",
+        "moveToLast", "moveToPrevious", "getPosition",
+        "isBeforeFirst", "isAfterLast", "isFirst", "isLast", "isClosed",
+        "getType", "getInt", "getLong", "getShort", "getDouble", "getFloat",
+        "getString", "isNull",
     };
 }
 
@@ -552,6 +556,11 @@ framework::CallResult DatabaseShadow::raw_query_common(
                     const unsigned char* txt = sqlite3_column_text(ps, c);
                     row[c].kind = CursorState::Cell::Kind::STRING;
                     row[c].string_val = txt ? reinterpret_cast<const char*>(txt) : "";
+                } else if (sqlite3_column_type(ps, c) == SQLITE_FLOAT) {
+                    // F-NEW-401: REAL cells keep their exact double value
+                    // (previously folded into int64: 2.5 -> 2).
+                    row[c].kind = CursorState::Cell::Kind::DOUBLE;
+                    row[c].double_val = sqlite3_column_double(ps, c);
                 } else {
                     row[c].kind = CursorState::Cell::Kind::LONG;
                     row[c].long_val = sqlite3_column_int64(ps, c);
@@ -665,12 +674,55 @@ framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallConte
     if (m == "getCount") return framework::CallResult::handled_int((int)c->rows.size());
     if (m == "getColumnCount")
         return framework::CallResult::handled_int((int)c->columns.size());
+    // ── F-NEW-401: AOSP AbstractCursor position predicates ─────────────
+    // isBeforeFirst/isAfterLast are false on an EMPTY cursor (count == 0);
+    // isFirst/isLast require a non-empty window.
+    if (m == "getPosition") return framework::CallResult::handled_int(c->pos);
+    if (m == "isClosed") return framework::CallResult::handled_bool(c->closed);
+    if (m == "isBeforeFirst")
+        return framework::CallResult::handled_bool(
+            !c->rows.empty() && c->pos == -1);
+    if (m == "isAfterLast")
+        return framework::CallResult::handled_bool(
+            !c->rows.empty() && c->pos == (int)c->rows.size());
+    if (m == "isFirst")
+        return framework::CallResult::handled_bool(
+            !c->rows.empty() && c->pos == 0);
+    if (m == "isLast")
+        return framework::CallResult::handled_bool(
+            !c->rows.empty() && c->pos == (int)c->rows.size() - 1);
     if (m == "getColumnIndex" && ctx.args.size() >= 1) {
         for (size_t i = 0; i < c->columns.size(); i++) {
             if (c->columns[i] == ctx.args[0].string_val)
                 return framework::CallResult::handled_int((int)i);
         }
         return framework::CallResult::handled_int(-1);
+    }
+    // F-NEW-401 (AOSP AbstractCursor.getColumnIndexOrThrow): an unknown
+    // column throws IllegalArgumentException — never a silent -1.
+    if (m == "getColumnIndexOrThrow" && ctx.args.size() >= 1) {
+        for (size_t i = 0; i < c->columns.size(); i++) {
+            if (c->columns[i] == ctx.args[0].string_val)
+                return framework::CallResult::handled_int((int)i);
+        }
+        std::cerr << "[SQLITE-SHADOW] getColumnIndexOrThrow: unknown column '"
+                  << ctx.args[0].string_val << "' (caller " << ctx.receiver_class
+                  << ")" << std::endl;
+        return framework::CallResult::handled_exception(
+            "Ljava/lang/IllegalArgumentException;",
+            "Unknown column '" + ctx.args[0].string_val + "'");
+    }
+    // F-NEW-401: getColumnName with the ART ArrayIndexOutOfBoundsException
+    // message format on an out-of-range column (was an unchecked read).
+    if (m == "getColumnName" && ctx.args.size() >= 1) {
+        int i = ctx.args[0].int_val;
+        if (i < 0 || i >= (int)c->columns.size()) {
+            return framework::CallResult::handled_exception(
+                "Ljava/lang/ArrayIndexOutOfBoundsException;",
+                "length=" + std::to_string(c->columns.size()) +
+                    "; index=" + std::to_string(i));
+        }
+        return framework::CallResult::handled_string(c->columns[i]);
     }
     if (m == "getColumnNames") {
         uint32_t arr = heap_->allocate("Larray;");
@@ -693,32 +745,172 @@ framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallConte
         c->pos = (int)c->rows.size();
         return framework::CallResult::handled_bool(false);
     }
+    // ── F-NEW-401: AOSP AbstractCursor.moveToPosition parking law ──────
+    // position < 0 parks at -1 (beforeFirst); position >= count parks at
+    // count (afterLast); both return false. The old law clamped negative
+    // positions to count — the wrong window side, and isBeforeFirst was
+    // unreachable afterwards.
     if (m == "moveToPosition") {
         int p = ctx.args[0].int_val;
-        if (p >= 0 && p < (int)c->rows.size()) {
-            c->pos = p;
-            return framework::CallResult::handled_bool(true);
+        if (p < 0) {
+            c->pos = -1;
+            return framework::CallResult::handled_bool(false);
         }
-        c->pos = (int)c->rows.size();
-        return framework::CallResult::handled_bool(false);
+        if (p >= (int)c->rows.size()) {
+            c->pos = (int)c->rows.size();
+            return framework::CallResult::handled_bool(false);
+        }
+        c->pos = p;
+        return framework::CallResult::handled_bool(true);
     }
+    // F-NEW-401: AOSP AbstractCursor.moveToLast/moveToPrevious.
+    if (m == "moveToLast") {
+        if (c->rows.empty()) {
+            c->pos = -1;
+            return framework::CallResult::handled_bool(false);
+        }
+        c->pos = (int)c->rows.size() - 1;
+        return framework::CallResult::handled_bool(true);
+    }
+    if (m == "moveToPrevious") {
+        if (c->pos <= 0) {
+            c->pos = -1;
+            return framework::CallResult::handled_bool(false);
+        }
+        c->pos--;
+        return framework::CallResult::handled_bool(true);
+    }
+
     bool row_ok = c->pos >= 0 && c->pos < (int)c->rows.size();
-    if (m == "getInt" && row_ok) {
-        const auto& cell = c->rows[c->pos][ctx.args[0].int_val];
-        return framework::CallResult::handled_int((int32_t)cell.long_val);
+
+    // F-NEW-401: AOSP AbstractCursor.checkPosition law — an accessor at
+    // pos == -1 throws CursorIndexOutOfBoundsException("Before first
+    // row."); at pos == count throws ("After last row."). The old law
+    // answered out-of-row getters with the engine default (silent 0/"") —
+    // exactly the invented-value anti-pattern.
+    auto oob = [&]() -> framework::CallResult {
+        const char* msg = c->pos < 0 ? "Before first row." : "After last row.";
+        std::cerr << "[SQLITE-SHADOW] cursor " << m << " at pos=" << c->pos
+                  << " count=" << (int)c->rows.size()
+                  << " -> CursorIndexOutOfBoundsException (" << msg << ")"
+                  << std::endl;
+        return framework::CallResult::handled_exception(
+            "Landroid/database/CursorIndexOutOfBoundsException;", msg);
+    };
+    // Column bound guard (AOSP CursorWindow law): a bad column index is
+    // the same exception family, never an unchecked host read.
+    auto bad_col = [&](int col) -> framework::CallResult {
+        return framework::CallResult::handled_exception(
+            "Landroid/database/CursorIndexOutOfBoundsException;",
+            "Bad column index: " + std::to_string(col));
+    };
+
+    // F-NEW-401: SQLite dynamic-typing conversion laws.
+    // getInt/getLong/getShort: TEXT -> leading-numeric-prefix
+    // (sqlite3Atoi64 semantics: skip ws/sign, parse digit prefix, junk
+    // stops); REAL -> truncate toward zero; NULL -> 0.
+    if (m == "getInt" || m == "getShort") {
+        if (!row_ok) return oob();
+        int col = ctx.args[0].int_val;
+        if (col < 0 || col >= (int)c->rows[c->pos].size()) return bad_col(col);
+        const auto& cell = c->rows[c->pos][col];
+        int32_t v = 0;
+        switch (cell.kind) {
+            case CursorState::Cell::Kind::LONG:
+                v = (int32_t)cell.long_val; break;
+            case CursorState::Cell::Kind::DOUBLE:
+                v = (int32_t)cell.double_val; break;
+            case CursorState::Cell::Kind::STRING:
+                v = (int32_t)strtoll(cell.string_val.c_str(), nullptr, 10); break;
+            default: break;
+        }
+        if (m == "getShort") v = (int16_t)v;
+        return framework::CallResult::handled_int(v);
     }
-    if (m == "getLong" && row_ok) {
-        const auto& cell = c->rows[c->pos][ctx.args[0].int_val];
-        return framework::CallResult::handled_long(cell.long_val);
+    if (m == "getLong") {
+        if (!row_ok) return oob();
+        int col = ctx.args[0].int_val;
+        if (col < 0 || col >= (int)c->rows[c->pos].size()) return bad_col(col);
+        const auto& cell = c->rows[c->pos][col];
+        int64_t v = 0;
+        switch (cell.kind) {
+            case CursorState::Cell::Kind::LONG: v = cell.long_val; break;
+            case CursorState::Cell::Kind::DOUBLE:
+                v = (int64_t)cell.double_val; break;
+            case CursorState::Cell::Kind::STRING:
+                v = strtoll(cell.string_val.c_str(), nullptr, 10); break;
+            default: break;
+        }
+        return framework::CallResult::handled_long(v);
     }
-    if (m == "getString" && row_ok) {
-        const auto& cell = c->rows[c->pos][ctx.args[0].int_val];
-        return framework::CallResult::handled_string(
-            cell.kind == CursorState::Cell::Kind::STRING ? cell.string_val
-                                                         : std::string());
+    if (m == "getDouble" || m == "getFloat") {
+        if (!row_ok) return oob();
+        int col = ctx.args[0].int_val;
+        if (col < 0 || col >= (int)c->rows[c->pos].size()) return bad_col(col);
+        const auto& cell = c->rows[c->pos][col];
+        double v = 0.0;
+        switch (cell.kind) {
+            case CursorState::Cell::Kind::LONG:
+                v = (double)cell.long_val; break;
+            case CursorState::Cell::Kind::DOUBLE: v = cell.double_val; break;
+            case CursorState::Cell::Kind::STRING:
+                v = strtod(cell.string_val.c_str(), nullptr); break;
+            default: break;
+        }
+        if (m == "getFloat") return framework::CallResult::handled_float((float)v);
+        return framework::CallResult::handled_double(v);
     }
-    if (m == "isNull" && row_ok) {
-        const auto& cell = c->rows[c->pos][ctx.args[0].int_val];
+    // getString: TEXT -> as-is; INTEGER -> decimal text; REAL -> SQLite
+    // %!.15g text (integral reals keep a ".0"); NULL -> null (AOSP
+    // CursorWindow.getString), never "".
+    if (m == "getString") {
+        if (!row_ok) return oob();
+        int col = ctx.args[0].int_val;
+        if (col < 0 || col >= (int)c->rows[c->pos].size()) return bad_col(col);
+        const auto& cell = c->rows[c->pos][col];
+        switch (cell.kind) {
+            case CursorState::Cell::Kind::STRING:
+                return framework::CallResult::handled_string(cell.string_val);
+            case CursorState::Cell::Kind::LONG:
+                return framework::CallResult::handled_string(
+                    std::to_string(cell.long_val));
+            case CursorState::Cell::Kind::DOUBLE: {
+                char buf[64];
+                snprintf(buf, sizeof(buf), "%.15g", cell.double_val);
+                std::string s(buf);
+                if (s.find('.') == std::string::npos &&
+                    s.find('e') == std::string::npos &&
+                    s.find('E') == std::string::npos &&
+                    s.find('n') == std::string::npos &&
+                    s.find('i') == std::string::npos)
+                    s += ".0";
+                return framework::CallResult::handled_string(s);
+            }
+            default:
+                return framework::CallResult::handled_null();
+        }
+    }
+    // getType (Cursor.FIELD_TYPE_*): NULL=0, INTEGER=1, FLOAT=2, TEXT=3,
+    // BLOB=4 (no BLOB materialization yet — honest scope note).
+    if (m == "getType") {
+        if (!row_ok) return oob();
+        int col = ctx.args[0].int_val;
+        if (col < 0 || col >= (int)c->rows[c->pos].size()) return bad_col(col);
+        const auto& cell = c->rows[c->pos][col];
+        int t = 0;
+        switch (cell.kind) {
+            case CursorState::Cell::Kind::LONG: t = 1; break;
+            case CursorState::Cell::Kind::DOUBLE: t = 2; break;
+            case CursorState::Cell::Kind::STRING: t = 3; break;
+            default: break;
+        }
+        return framework::CallResult::handled_int(t);
+    }
+    if (m == "isNull") {
+        if (!row_ok) return oob();
+        int col = ctx.args[0].int_val;
+        if (col < 0 || col >= (int)c->rows[c->pos].size()) return bad_col(col);
+        const auto& cell = c->rows[c->pos][col];
         return framework::CallResult::handled_bool(
             cell.kind == CursorState::Cell::Kind::NULLV);
     }

@@ -104,9 +104,12 @@ private:
     struct CursorState {
         std::vector<std::string> columns;
         // Row cell values (variant of the CallContext::Arg kinds we need).
+        // F-NEW-401: DOUBLE kind added — SQLITE_FLOAT previously collapsed
+        // into int64 (2.5 materialized as 2 — silent data corruption).
         struct Cell {
-            enum class Kind { LONG, STRING, NULLV } kind = Kind::NULLV;
+            enum class Kind { LONG, DOUBLE, STRING, NULLV } kind = Kind::NULLV;
             int64_t long_val = 0;
+            double double_val = 0.0;
             std::string string_val;
         };
         std::vector<std::vector<Cell>> rows;
