@@ -1,0 +1,82 @@
+{
+ "wave": "CONT-94",
+ "date": "2026-10-18",
+ "directive": "user: Telegram gets first-priority execution, then finish #364 (executes CONT-88 Phase 1 + CONT-89 + CONT-92 Telegram tracks)",
+ "baseline": {
+  "head_at_wave_start": "9d313976 (origin/main a2f2255b = CONT-87 closeout)",
+  "pre_fix_binary_sha16": "caa24290aad77ca9",
+  "post_fix_binary_sha16": "7cf6fe7f3d6abb81",
+  "registry": "703 rows, sha16 70a7f20478b1af40 (post F-NEW-396)",
+  "apk_identities": {
+   "official_telegram": "upload/telegram_official.apk org.telegram.messenger.web 12.10.5 vc71059 sha16 e37aced2a49c1dbb (aapt2 badging)",
+   "forkgram": "upload/forkgram_709208.apk org.forkgram.classic 12.10.8.0 vc709208 sha16 3baeecb3288577e9",
+   "whatsapp": "upload/whatsapp.apk is 5,615 bytes — NOT a usable artifact; verdict NOT_AVAILABLE (no invented artifact, no private source access claimed)"
+  }
+ },
+ "decode": {
+  "tool": "androguard 3.3.5 (scripts/cont94_decode_launch.py, cont94_decode_h.py, cont94_decode_z0.py, cont94_decode_s2.py, cont94_find_h_callers.py)",
+  "findings": [
+   "LaunchActivity has exactly one H(Z Z Z)V (352 insns); five ActionBarLayout.w() call sites (166/178/198 receiver=getParentLayout() re-fetch; 496/512 receiver=field p0).",
+   "H callers: onCreate@1988, s2.checkSystemBarColors@22, l3.setOverlayNavBarColor@34, l3.setUseLightStatusBar@90, LaunchActivity.G(Z)V@8, didReceivedNotification@2140, e90.run@434/508, x3.i@132/144, vg/d8.o@18, zg/q2.h@18, c90/u0 (anim callbacks), s2.setNavigationBarColor@36 -> z0(I).",
+   "s2.checkSystemBarColors: pc0 getParentActivity() -> pc8 instanceof LaunchActivity -> pc16 check-cast -> pc22 invoke H(Z Z Z)V. onBecomeFullyVisible pc102 -> checkSystemBarColors.",
+   "z0(I)V pc0: iget LaunchActivity.y0 -> pc4 invoke e4.setInternalNavigationBarColor(I).",
+   "getParentLayout() = trivial iget parentLayout; return (s2)."
+  ],
+  "runtime_probes": [
+   "[F141-DIAG] (MINIANDROID_F141_DIAG): H pc=248 recv_oid=0 recv_type=NULL; register window shows p0(this)=o7307, receiver v14 null.",
+   "[C94-SINGLETON] MISS 'Lorg/telegram/ui/LaunchActivity;' (no cache entry) -> allocated obj#7307 — the DEX-0 launch path stored NO singleton despite [U0113-ACTIVITY] #694.",
+   "[R414-INIT-DEFAULT] LaunchActivity.c0 obj#7299 = new ArrayList (recv=LaunchActivity caller=H pc=0) — even the field initializer state was absent on the synthetic."
+  ]
+ },
+ "root": {
+  "id": "F-NEW-396",
+  "one_line": "getParentActivity answered a fabricated uninitialized object of a hard-coded class (right class, wrong instance) because the DEX-0 launch path never stored the activity singleton.",
+  "fix_sites": [
+   "dalvik_engine.cpp DEX-0 launch path: api_singletons_[cls.name] = activity_obj_id (identity law + [C94-SINGLETON] LAUNCH-STORE row)",
+   "dalvik_engine.cpp primary getParentActivity intercept: live activity via ActivityShadow::current_activity_id(), class from heap; null pre-attachment",
+   "dalvik_engine.cpp bridge twin: same live-identity law",
+   "dalvik_engine.cpp shadow-dispatch twin: same live-identity law"
+  ]
+ },
+ "ab": {
+  "fixture": "com.probe.c94p (fixtures/cont94_parent_probe; apk run/cont94/c94parent.apk sha16 a90f3d0eaf113ed0)",
+  "pre": "[C94-PROBE] identity=OTHER-SAME-CLASS marker=null (binary caa24290aad77ca9)",
+  "post": "[C94-PROBE] identity=THIS marker=C94-MARKER-V1 (binary 7cf6fe7f3d6abb81)"
+ },
+ "real_apk_outcomes": [
+  {"app": "Telegram official 12.10.5", "pre": "188/2073600 non-white px; 31 EXC-UNCAUGHT-TOP; 3x f141-null-recv in H; 3x APP-BOUNDARY unwind", "post": "9340 non-white px (real '+' country box, phone field borders, accent text); 15 uncaught (billing/native/firebase boot-init boundaries); 0 f141 rows; 0 EXC-UNWIND rows", "classification": "PIXELS_DEFAULT_ONLY -> REAL_APP_TEXT_PARTIAL (top-anchored bounds frontier named)"},
+  {"app": "Forkgram Classic 12.10.8.0", "pre": "188 px", "post": "15599 px ('Your Number', phone field, QRLoginButton, 'Disable'); 5 uncaught", "classification": "PIXELS_DEFAULT_ONLY -> REAL_APP_TEXT_PARTIAL"}
+ ],
+ "regression_battery": {
+  "binary": "7cf6fe7f3d6abb81",
+  "rows": [
+   {"gate": "wall 12/12 (cont70_wall_sweep)", "result": "PASS — 12/12 faces byte-identical"},
+   {"gate": "goldens 4/4 (user_golden_gate)", "result": "PASS — 2048/snakedeluxe/minicraft REAL_APP_CONTENT + helloworld canonical 83720c1028f832d0"},
+   {"gate": "negatives 19/19 (s41_gatea_negative)", "result": "PASS"},
+   {"gate": "reinstall 8/8 (s41_gatea_reinstall)", "result": "PASS"},
+   {"gate": "MG-310 7/7 (cont76_fence_mg310)", "result": "PASS — FENCE GREEN"},
+   {"gate": "MG-150 3/3 (cont76_fence_mg150)", "result": "PASS — FENCE GREEN"},
+   {"gate": "c72priv 13 rows 0-BAD", "result": "PASS — SELF/ALIAS/XPKG/REL-ESC/MNT/NEG rows all OK"},
+   {"gate": "selftests 13/13 (skill_selftest)", "result": "PASS"},
+   {"gate": "F-NEW-376 fault injection 70/70 (cont73_fault_injection)", "result": "PASS"},
+   {"gate": "c74esc containment fence", "result": "PASS — VOL-ESC/VOL-ESC2/FONT-ESC denied, VOL-OK round-trip"},
+   {"gate": "clock1 virtual clock", "result": "PASS — M3-CLOCK rows OK"},
+   {"gate": "swipe1 gesture law", "result": "PASS — onScroll dx=-16/dy=+25, onFling vx=+1055.77/vy=-1562.49; e2 residual unchanged"},
+   {"gate": "as2048_47 boot (discoverer APK)", "result": "PASS — 0 uncaught"}
+  ],
+  "drift": "zero"
+ },
+ "named_residuals": [
+  "doneButtonVisible[0..9] attach in the getParentActivity intercept is an EXP-071-era APP-SPECIFIC patch (hard-coded Telegram field name) — retained unchanged this wave; fixture-first generalization follow-up registered",
+  "Telegram/Forkgram login form renders top-anchored (fragment view bounds/offset frontier) — next UI frontier (CONT-88 T3/T7)",
+  "Forkgram one string -> honest '[resid:0x2131745245]' fallback (string-resource resolution residual)",
+  "UnsatisfiedLinkError (ApplicationLoader native libs) + play-billing UOE chain + FirebaseInitProvider Ll9/j — unchanged boot-init boundaries",
+  "Three LaunchActivity instances observed historically in logs (#694 live, #7101 login fragment receiver, #7307 pre-fix synthetic) — the pre-fix runs' EXC-PROPAGATE caller-attribution (onCreate invoke_pc=751/994/1011 vs the real call site 1988) is engine frame-bookkeeping noise, not re-attributed this wave"
+ ],
+ "next_frontiers": [
+  "Fragment-view bounds/offset law (content renders top-anchored instead of centered) — CONT-88 T3",
+  "RecyclerView/Dialogs list — CONT-88 T4",
+  "String-resource resolution for the '[resid:...]' fallback face — CONT-88 T6",
+  "native libs boundary (UnsatisfiedLinkError on ApplicationLoader.onCreate) — TG-8"
+ ]
+}

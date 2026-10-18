@@ -1992,6 +1992,28 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                       << ") recorded for handler dispatch" << std::endl;
                         }
                     }
+                    // F-NEW-396 (CONT-94) IDENTITY LAW — the DEX-0 launch path
+                    // must record the activity singleton exactly like the
+                    // multi-DEX and legacy-scan paths already do
+                    // (api_singletons_[<activity descriptor>] = <heap id>).
+                    // Evidence (Telegram official 12.10.5, run
+                    // run/cont94/tg_official_diag3): this path printed
+                    // [U0113-ACTIVITY] #694 but stored NO singleton entry, so
+                    // the later getParentActivity() law's
+                    // get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;")
+                    // cache-MISSED and fabricated a fresh uninitialized
+                    // LaunchActivity (#7307). The app's
+                    // checkSystemBarColors did instanceof-LaunchActivity (TRUE —
+                    // right class, wrong instance), invoked H(Z Z Z)V on the
+                    // empty object, which read field p0 = null and called
+                    // ActionBarLayout.w() on a null receiver — NPE ×3, three
+                    // APP-BOUNDARY unwinds, login UI construction killed, the
+                    // framebuffer stayed at 188/2073600 non-white pixels.
+                    // AOSP law: Fragment.getParentActivity() answers THE
+                    // activity hosting the fragment — one identity per process.
+                    api_singletons_[cls.name] = activity_obj_id;
+                    std::cerr << "[C94-SINGLETON] LAUNCH-STORE key='" << cls.name
+                              << "' id=" << activity_obj_id << std::endl;
 
                     // Find onCreate method
                     for (const auto& method : cls.all_methods()) {
@@ -2305,6 +2327,9 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 // Cache as the Context singleton so getResources() etc. on the
                 // activity return a stable object across the whole run.
                 api_singletons_[result.main_class] = activity_obj_id;
+                // CONT-94 probe: identity of the activity-singleton key.
+                std::cerr << "[C94-SINGLETON] LAUNCH-STORE key='" << result.main_class
+                          << "' id=" << activity_obj_id << std::endl;
 
                 std::vector<DalvikValue> entry_args;
                 entry_args.push_back(activity_val);              // p0 = this (Activity)
@@ -2458,6 +2483,9 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 }
                             }
                             api_singletons_[cls.name] = activity_obj_id;
+                            // CONT-94 probe: identity of the activity-singleton key.
+                            std::cerr << "[C94-SINGLETON] LEGACY-STORE key='" << cls.name
+                                      << "' id=" << activity_obj_id << std::endl;
                             std::vector<DalvikValue> entry_args;
                             if (method.name == "onCreate") {
                                 entry_args.push_back(activity_val);              // p0 = this
@@ -7689,15 +7717,59 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return true;
     }
 
-    // EXP-071: getParentActivity → return LaunchActivity singleton.
-    // The DEX bytecode for getParentActivity calls getView().getContext()
-    // which fails (no real View/Context chain). Return LaunchActivity
-    // singleton directly AND initialize doneButtonVisible[0..9] = true
-    // on the LoginActivity receiver (the one Lambda3 captured at PC=8).
+    // F-NEW-396 (CONT-94): getParentActivity → THE LIVE ACTIVITY INSTANCE.
+    // AOSP law (android.app.Fragment.getParentActivity): "Return the activity
+    // this fragment is currently associated with" — the ONE live Activity
+    // object of the process, never a fresh object and never a hard-coded
+    // class. The previous law (EXP-071) answered
+    // get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;"): a
+    // hard-coded Telegram class key that, when the launch path had not
+    // stored that key (DEX-0 path never stored it — see the F-NEW-396
+    // identity law at the DEX-0 launch site), fabricated an uninitialized
+    // object of that class. Telegram's checkSystemBarColors then passed its
+    // instanceof-LaunchActivity guard (right class, wrong instance) and
+    // invoked LaunchActivity.H(Z Z Z)V on the empty object — p0 read null,
+    // ActionBarLayout.w() on a null receiver, NPE ×3, APP-BOUNDARY unwind
+    // ×3, login UI killed (evidence run/cont94/tg_official_diag3).
+    // Identity source: ActivityShadow::current_activity_id() — the same
+    // identity the [U0113-ACTIVITY] law records at performLaunchActivity.
+    // Not-attached window (no live activity yet): AOSP getParentActivity()
+    // answers null before attachment; every caller in the corpus
+    // null-checks or instanceof-checks the result.
+    // The doneButtonVisible array attach below is a NAMED APP-SPECIFIC
+    // RESIDUAL (EXP-071 era): it is retained unchanged so the login flow
+    // keeps its recorded behavior; it is registered in the residual ledger
+    // for a fixture-first generalization wave.
     if (method_name == "getParentActivity") {
-        // Return the LaunchActivity singleton.
-        DalvikValue launch = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
-        return_val = launch;
+        uint32_t live_activity_id = 0;
+        std::string live_activity_cls;
+        if (shadow_registry_ != nullptr) {
+            if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>()) {
+                live_activity_id = act->current_activity_id();
+            }
+        }
+        if (live_activity_id != 0) {
+            if (auto* heap_obj = heap_.get(live_activity_id)) {
+                live_activity_cls = heap_obj->class_descriptor;
+            }
+        }
+        if (live_activity_id != 0 && !live_activity_cls.empty()) {
+            return_val.type = DalvikType::OBJECT_REF;
+            return_val.object_id = live_activity_id;
+            return_val.class_desc = live_activity_cls;
+            static thread_local uint64_t c94_parent = 0;
+            if (c94_parent < 8) {
+                ++c94_parent;
+                std::cerr << "[C94-PARENT] getParentActivity → LIVE activity obj#"
+                          << live_activity_id << " (" << live_activity_cls << ")"
+                          << std::endl;
+            }
+        } else {
+            // Not attached yet: the AOSP null contract (pre-attachment).
+            return_val = DalvikValue::make_null();
+            std::cerr << "[C94-PARENT] getParentActivity → null (no live activity)"
+                      << std::endl;
+        }
 
         // Initialize doneButtonVisible[0..9] = true on the receiver.
         // The receiver is args[0] (the LoginActivity instance captured by
@@ -7720,12 +7792,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             arr_val.object_id = arr_id;
             arr_val.class_desc = "Larray;";
             heap_.set_object_field(login_id, "doneButtonVisible", arr_val);
-            std::cerr << "[EXP071-PARENT] getParentActivity → LaunchActivity singleton"
+            std::cerr << "[EXP071-PARENT] getParentActivity → live activity identity"
                       << " login_id=" << login_id
                       << " doneButtonVisible[]=" << arr_id
                       << std::endl;
         } else {
-            std::cerr << "[EXP071-PARENT] getParentActivity → LaunchActivity singleton"
+            std::cerr << "[EXP071-PARENT] getParentActivity → live activity identity"
                       << " (no receiver to attach doneButtonVisible)"
                       << std::endl;
         }
@@ -8896,12 +8968,34 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // EXP-071: getParentActivity compatibility — return the Activity directly.
     // The real method does getView().getContext() instanceof Activity, but
     // invoke-interface dispatch for $default methods fails during onNextPressed.
-    // This returns the LaunchActivity singleton so onNextPressed can proceed.
+    // F-NEW-396 (CONT-94): answers the LIVE activity instance (same identity
+    // law as the primary getParentActivity site above) — never a hard-coded
+    // class singleton, which fabricated uninitialized objects for any app
+    // whose activity class differs from the hard-coded key.
     if (method_name == "getParentActivity") {
-        std::cerr << "[EXP071] getParentActivity → LaunchActivity (compatibility intercept)"
+        uint32_t live_id = 0;
+        std::string live_cls;
+        if (shadow_registry_ != nullptr) {
+            if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+                live_id = act->current_activity_id();
+        }
+        if (live_id != 0) {
+            if (auto* heap_obj = heap_.get(live_id)) live_cls = heap_obj->class_descriptor;
+        }
+        if (live_id != 0 && !live_cls.empty()) {
+            return_val.type = DalvikType::OBJECT_REF;
+            return_val.object_id = live_id;
+            return_val.class_desc = live_cls;
+            std::cerr << "[C94-PARENT] getParentActivity (bridge) → LIVE activity obj#"
+                      << live_id << " (" << live_cls << ")" << std::endl;
+        } else {
+            return_val = DalvikValue::make_null();
+            std::cerr << "[C94-PARENT] getParentActivity (bridge) → null"
+                      << std::endl;
+        }
+        std::cerr << "[EXP071] getParentActivity (compatibility intercept)"
                   << " class=" << class_descriptor << std::endl;
         recursion_depth_--;
-        return_val = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
         last_invoke_return_ = return_val;
         return true;
     }
@@ -43496,19 +43590,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-071: BaseFragment.getParentActivity() → returns the Activity.
-    // This is a compatibility handler that returns the LaunchActivity singleton
+    // This is a compatibility handler that returns the live Activity instance
     // when getParentActivity() is called on a Fragment. The real Android method
     // does getView().getContext() instanceof Activity, but our runtime's
     // invoke-interface dispatch for $default methods sometimes fails.
-    // This handler ensures getParentActivity returns a non-null Activity,
-    // allowing PhoneView.onNextPressed to proceed to auth.sendCode.
+    // F-NEW-396 (CONT-94): answers the LIVE activity instance (same identity
+    // law as the primary getParentActivity site) — never a hard-coded class
+    // singleton. Null before attachment (AOSP not-attached contract).
     if (method == "getParentActivity" &&
         (class_name.find("BaseFragment") != std::string::npos ||
          class_name.find("ActionBarLayout") != std::string::npos ||
          class_name.find("Fragment") != std::string::npos)) {
-        result = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
+        uint32_t live_id2 = 0;
+        std::string live_cls2;
+        if (shadow_registry_ != nullptr) {
+            if (auto* act2 = shadow_registry_->find_as<framework::ActivityShadow>())
+                live_id2 = act2->current_activity_id();
+        }
+        if (live_id2 != 0) {
+            if (auto* heap_obj2 = heap_.get(live_id2))
+                live_cls2 = heap_obj2->class_descriptor;
+        }
+        if (live_id2 != 0 && !live_cls2.empty()) {
+            result.type = DalvikType::OBJECT_REF;
+            result.object_id = live_id2;
+            result.class_desc = live_cls2;
+            std::cerr << "[C94-PARENT] getParentActivity (shadow-dispatch) → LIVE activity obj#"
+                      << live_id2 << " (" << live_cls2 << ")" << std::endl;
+        } else {
+            result = DalvikValue::make_null();
+            std::cerr << "[C94-PARENT] getParentActivity (shadow-dispatch) → null"
+                      << std::endl;
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
-        std::cerr << "[EXP071] getParentActivity → LaunchActivity (compatibility)" << std::endl;
         return true;
     }
 
@@ -60782,11 +60896,32 @@ DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& cl
             v.class_desc = class_desc;
             return v;
         }
+        // CONT-94 probe (bounded): a cached singleton whose heap object is
+        // gone is an identity break — log it instead of silently reallocating.
+        static thread_local uint64_t c94_stale = 0;
+        if (class_desc.find("LaunchActivity") != std::string::npos &&
+            c94_stale < 8) {
+            ++c94_stale;
+            std::cerr << "[C94-SINGLETON] STALE cached " << class_desc
+                      << " id=" << it->second << " (heap object missing)"
+                      << std::endl;
+        }
     }
-    // Allocate new singleton
+    // CONT-94 probe (bounded): which key missed, and what we allocate.
+    static thread_local uint64_t c94_miss = 0;
+    bool c94_probe = class_desc.find("LaunchActivity") != std::string::npos;
+    if (c94_probe && c94_miss < 8) {
+        ++c94_miss;
+        std::cerr << "[C94-SINGLETON] MISS " << class_desc
+                  << " (no cache entry) -> allocating new" << std::endl;
+    }
     uint32_t obj_id = heap_.allocate(class_desc, pc_,
                                     call_stack_.empty() ? 0 : call_stack_.top().frame_id);
     api_singletons_[class_desc] = obj_id;
+    if (c94_probe && c94_miss <= 8) {
+        std::cerr << "[C94-SINGLETON] allocated " << class_desc
+                  << " obj#" << obj_id << std::endl;
+    }
     // Pre-populate known fields for some singletons
     if (class_desc == "Landroid/util/DisplayMetrics;") {
         DalvikValue density;
