@@ -6363,6 +6363,29 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
         entry["listener_class"] = listener_class;
         entry["kind"] = "listener";
 
+        // ── F-NEW-407 (CONT-99 T4): AOSP disabled-control law at the
+        // click-probe boundary. View.onTouchEvent checks ENABLED_MASK
+        // FIRST and a disabled view refuses the press (no pressed state,
+        // no performClick, no onClick) — the --tap pipeline already
+        // honors this (c99btn run --tap <disabled-center>: zero rows),
+        // but the --click-test probe bypassed the touch pipeline and
+        // fired the listener of EVERY candidate, disabled views included
+        // (c99btn PRE: the setEnabled(false) button's onClick ran —
+        // DISABLED-LAW-VIOLATION). The probe is a touch-interaction
+        // oracle: it must observe the SAME law the real pipeline
+        // enforces. Skipped candidates stay in the report (honest
+        // evidence, not silent omission).
+        if (node != nullptr && !node->enabled) {
+            entry["click_dispatched"] = false;
+            entry["disabled_skipped"] = true;
+            std::cerr << "[CLICK-TEST] view " << view_id
+                      << " skipped: disabled (AOSP View.onTouchEvent"
+                      << " ENABLED_MASK law — no press, no onClick)"
+                      << std::endl;
+            per_view.push_back(entry);
+            continue;
+        }
+
         dispatched = dalvik_engine_.dispatch_click(view_id);
         entry["click_dispatched"] = dispatched;
         diff_px = probe(dispatched);
@@ -6404,6 +6427,21 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
         entry["class"] = xc.cls;
         entry["kind"] = "xml_onClick";
         entry["handler"] = xc.handler;
+
+        // F-NEW-407: same disabled-control law as the listener path —
+        // android:onClick does not bypass the ENABLED_MASK check in AOSP.
+        {
+            const auto* xnode = view_shadow->find_node(xc.view_id);
+            if (xnode != nullptr && !xnode->enabled) {
+                entry["click_dispatched"] = false;
+                entry["disabled_skipped"] = true;
+                std::cerr << "[CLICK-TEST] xml view " << xc.view_id
+                          << " skipped: disabled (AOSP View.onTouchEvent"
+                          << " ENABLED_MASK law)" << std::endl;
+                per_view.push_back(entry);
+                continue;
+            }
+        }
 
         miniandroid::dalvik::DalvikValue view_arg =
             miniandroid::dalvik::DalvikValue::make_object(xc.view_id, xc.cls);
