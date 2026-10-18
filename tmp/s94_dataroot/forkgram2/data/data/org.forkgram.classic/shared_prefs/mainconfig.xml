@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <float name="autoNightBrighnessThreshold" value="0.25" />
+    <string name="autoNightCityName"></string>
+    <int name="autoNightDayEndTime" value="480" />
+    <int name="autoNightDayStartTime" value="1320" />
+    <int name="autoNightLastSunCheckDay" value="-1" />
+    <long name="autoNightLocationLatitude3" value="4666723172467343360" />
+    <long name="autoNightLocationLongitude3" value="4666723172467343360" />
+    <boolean name="autoNightScheduleByLocation" value="false" />
+    <int name="autoNightSunriseTime" value="480" />
+    <int name="autoNightSunsetTime" value="1320" />
+    <boolean name="floatingDebugActive" value="false" />
+    <boolean name="hasEmailLogin" value="false" />
+    <long name="intro_crashed_time" value="0" />
+    <int name="lastKeepMediaCheckTime" value="1792305481" />
+    <boolean name="newConfig" value="true" />
+    <string name="nighttheme">Dark Blue</string>
+    <boolean name="record_via_sco" value="false" />
+    <int name="selectedAutoNightType" value="0" />
+    <string name="theme">Night</string>
+    <int name="translate_button_restricted_languages_version" value="2" />
+    <string name="translating_dialog_languages2"></string>
+    <boolean name="unifiedPushGatewayMigrated" value="true" />
+</map>
