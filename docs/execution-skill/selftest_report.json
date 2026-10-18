@@ -27,7 +27,7 @@
   "op": "OP-3",
   "name": "install + installed identity = source identity",
   "pass": true,
-  "detail": "installed sha16=467113753e248f2f"
+  "detail": "installed sha16=f04040bf558da248"
  },
  {
   "op": "OP-4",
@@ -39,7 +39,7 @@
   "op": "OP-5",
   "name": "observe (frame verdict + pixel census)",
   "pass": true,
-  "detail": "verdict=REAL_APP_CONTENT owned=398189 ops=0"
+  "detail": "verdict=REAL_APP_CONTENT owned=395690 ops=0"
  },
  {
   "op": "OP-6",
@@ -57,7 +57,7 @@
   "op": "OP-8",
   "name": "3-run determinism law (run1==run2)",
   "pass": true,
-  "detail": "sha16=17459bf4a3c19d4c"
+  "detail": "sha16=bec38a958d8537ca"
  },
  {
   "op": "OP-9",
