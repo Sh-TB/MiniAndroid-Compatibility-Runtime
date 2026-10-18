@@ -3296,6 +3296,76 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 }
                             }
                             if (rt.loaded() || vs_dirty || inflated_attach_consumed) {
+                                // ── F-NEW-403 (CONT-99 T1): AOSP LayoutParams
+                                // LIVE-STATE law. AOSP ViewGroup passes lay out
+                                // from the child's mLayoutParams EVERY
+                                // measure/layout pass — direct public-field
+                                // stores (lp.leftMargin = 20, lp.weight = 1,
+                                // lp.gravity = .., lp.width = ..) are visible
+                                // to the next traversal with NO method bridge.
+                                // The addView/setLayoutParams captures sync at
+                                // ATTACH time only; bridged programmatic LP
+                                // objects carry the lp_bridge stamp (the
+                                // F-NEW-403 authority bit), so their heap state
+                                // is re-read into the node mirror at traversal
+                                // entry. XML-path LP objects (real
+                                // generateLayoutParams DEX, F-NEW-309) are NOT
+                                // stamped — the inflater-written node lp_* stays
+                                // authoritative there.
+                                if (view_shadow != nullptr) {
+                                    auto& lp_heap = dalvik_engine_.get_heap();
+                                    static const bool c99_lptrace =
+                                        std::getenv("MINIANDROID_C99_LPTRACE") != nullptr;
+                                    for (auto& kv : view_shadow->all_nodes()) {
+                                        const uint32_t lpo =
+                                            kv.second->layout_params_object;
+                                        if (lpo == 0 || !lp_heap.has_object(lpo))
+                                            continue;
+                                        auto stampv =
+                                            lp_heap.get_object_field(lpo, "lp_bridge");
+                                        if (!stampv.has_value() ||
+                                            stampv->type != miniandroid::dalvik::DalvikType::INT32 ||
+                                            stampv->int_val != 1)
+                                            continue;
+                                        auto rdi = [&](const char* f, int def) -> int {
+                                            auto fv =
+                                                lp_heap.get_object_field(lpo, f);
+                                            if (fv.has_value() &&
+                                                fv->type == miniandroid::dalvik::DalvikType::INT32)
+                                                return fv->int_val;
+                                            return def;
+                                        };
+                                        float rwt = 0.0f;
+                                        auto wv =
+                                            lp_heap.get_object_field(lpo, "weight");
+                                        if (wv.has_value()) {
+                                            if (wv->type == miniandroid::dalvik::DalvikType::FLOAT32)
+                                                rwt = wv->float_val;
+                                            else if (wv->type == miniandroid::dalvik::DalvikType::INT32)
+                                                rwt = static_cast<float>(wv->int_val);
+                                        }
+                                        if (c99_lptrace)
+                                            std::cerr << "[C99-LPREFRESH] view="
+                                                      << kv.first << " lp=o" << lpo
+                                                      << " w=" << rdi("width", -2)
+                                                      << " h=" << rdi("height", -2)
+                                                      << " g=" << rdi("gravity", 0)
+                                                      << " m=(" << rdi("leftMargin", 0)
+                                                      << "," << rdi("topMargin", 0)
+                                                      << "," << rdi("rightMargin", 0)
+                                                      << "," << rdi("bottomMargin", 0) << ")"
+                                                      << " wt_type="
+                                                      << (wv.has_value() ? (int)wv->type : -1)
+                                                      << " wt=" << rwt << std::endl;
+                                        view_shadow->set_layout_params(
+                                            kv.first, rdi("width", -2),
+                                            rdi("height", -2), rdi("gravity", 0),
+                                            rdi("leftMargin", 0),
+                                            rdi("topMargin", 0),
+                                            rdi("rightMargin", 0),
+                                            rdi("bottomMargin", 0), rwt);
+                                    }
+                                }
                                 // G10 FIX-G10-002 + G12 FIX-G12-002: the
                                 // DEX-backed superclass classifier is owned
                                 // by the ResourceRuntime (Factory law) and

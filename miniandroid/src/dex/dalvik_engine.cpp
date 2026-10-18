@@ -20530,6 +20530,32 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
         return true;  /* pc_ set by raise (catch handler) or frame unwind */
     }
 
+    // ── F-NEW-406 (CONT-99 T1): DEX float-bit register law at the FIELD-
+    // STORE boundary. DEX float registers carry raw IEEE-754 BITS in int
+    // registers — `const/high16 v0, 0x3f800000` IS the literal float 1.0f
+    // and no conversion instruction runs along that path (int-to-float is
+    // only emitted when the source was a genuine int). A store into a
+    // declared-float field must therefore BIT-CAST the register bits into
+    // the FLOAT32 value; the old raw store left the field as INT32 bits,
+    // and every float reader saw the bit pattern VALUE-cast (c99lay probe:
+    // LinearLayout.LayoutParams.weight read 1.06535e9 instead of 1.0f —
+    // the 0px+weight children collapsed to width 0 / full-width garbage).
+    // Symmetric law for declared-double fields (wide register = INT64
+    // bits). Genuine-int stores into float fields do not exist in DEX
+    // (the verifier requires float registers for F fields).
+    if (field_res.resolved && field_res.field_type == "F" &&
+        src_val.type == DalvikType::INT32) {
+        float fbits = 0.0f;
+        std::memcpy(&fbits, &src_val.int_val, sizeof(fbits));
+        src_val.type = DalvikType::FLOAT32;
+        src_val.float_val = fbits;
+    } else if (field_res.resolved && field_res.field_type == "D" &&
+               src_val.type == DalvikType::INT64) {
+        double dbits = 0.0;
+        std::memcpy(&dbits, &src_val.long_val, sizeof(dbits));
+        src_val.type = DalvikType::FLOAT64;
+        src_val.double_val = dbits;
+    }
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         // S134 F-NEW-160: dual write — qualified primary key (declaring
@@ -34087,6 +34113,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else if (args.size() == 2 && args[1].type == DalvikType::OBJECT_REF &&
                    heap_.has_object(args[1].object_id)) {
             // Copy constructor: mirror the source's fields.
+            // NOTE: NOT stamped lp_bridge — this branch also serves the
+            // XML (Context, AttributeSet) ctor of real generateLayoutParams
+            // DEX (F-NEW-309), where the inflater-written node lp_* stays
+            // authoritative (a stamped refresh would clobber it with the
+            // copy defaults).
             uint32_t src = args[1].object_id;
             auto copy_int = [&](const char* name, int def) {
                 auto fv = heap_.get_object_field(src, name);
@@ -34110,6 +34141,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 heap_.set_object_field(recv_id, "weight", val);
             }
         } else if (args.size() >= 3 && args[1].type != DalvikType::OBJECT_REF) {
+            // ENGINE-ARGS CONVENTION: args[0] is the RECEIVER (this) —
+            // a source-level (w, h) ctor arrives as argc=3, (w, h, x) as
+            // argc=4, (w, h, l, t, r, b) as argc=7.
             set_int_f("width", arg_int(1, -2));
             set_int_f("height", arg_int(2, -2));
             if (args.size() >= 7) {
@@ -34118,13 +34152,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 set_int_f("topMargin", arg_int(4, 0));
                 set_int_f("rightMargin", arg_int(5, 0));
                 set_int_f("bottomMargin", arg_int(6, 0));
-            } else if (args.size() >= 4 && args[3].type == DalvikType::FLOAT32) {
-                // LinearLayout.LayoutParams(w, h, weight)
+            } else if (args.size() == 4 && args[3].type == DalvikType::FLOAT32) {
+                // LinearLayout.LayoutParams(w, h, weight) — FLOAT tail
+                // (argc=4 under the receiver-first convention).
                 DalvikValue val;
                 val.type = DalvikType::FLOAT32;
                 val.float_val = args[3].float_val;
                 heap_.set_object_field(recv_id, "weight", val);
+            } else if (args.size() == 4 && args[3].type == DalvikType::INT32) {
+                // ── F-NEW-404 (CONT-99 T1): FrameLayout.LayoutParams(w, h,
+                // gravity) — the 3-INT ctor variant arrives as argc=4 under
+                // the receiver-first convention (AOSP FrameLayout.java
+                // L2417: MarginLayoutParams(width, height) + this.gravity =
+                // gravity). The old code dropped the gravity arg entirely,
+                // so every programmatic FrameLayout child with a gravity
+                // ctor laid out top-left (c99lay probe: the Gravity.CENTER
+                // child sat at the raw content origin instead of the
+                // lawful centered box). The FLOAT-tail weight ctor keeps
+                // its branch above — dispatch is by ARG TYPE, not count.
+                set_int_f("gravity", arg_int(3, 0));
             }
+        }
+        // F-NEW-403 companion: stamp every BRIDGED programmatic LP object.
+        // The stamp is the refresh-law authority bit: a stamped LP heap
+        // object IS the live state its owning ViewNode mirrors, so the
+        // traversal-entry refresh (execution_engine frame stage) re-reads
+        // margins/weight/gravity/width/height from it each pass (AOSP law:
+        // layout reads the live LayoutParams every pass — direct public-
+        // field stores like lp.leftMargin = .. carry no method bridge).
+        // XML-path LP objects (copy branch above) stay unstamped.
+        {
+            DalvikValue stamp;
+            stamp.type = DalvikType::INT32;
+            stamp.int_val = 1;
+            heap_.set_object_field(recv_id, "lp_bridge", stamp);
         }
         std::cerr << "[LP-INIT] bridged " << class_name << ".<init>"
                   << " argc=" << args.size() << std::endl;
@@ -36141,12 +36202,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // ROOT-064c: materialize the weight (AOSP LinearLayout.LayoutParams
         // field) — the addView sync reads it back as FLOAT32/INT32.
         set_f32("weight", weight);
+        // F-NEW-403 companion: the factory result is a bridged live-state
+        // LP object (see the LP <init> bridge stamp law).
+        set_f("lp_bridge", 1);
         status = ApiCallTrace::Status::IMPLEMENTED;
         DalvikValue r;
         r.type = DalvikType::OBJECT_REF;
         r.object_id = lp_id;
         r.class_desc = "Landroid/view/ViewGroup$LayoutParams;";
         result = r;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-405 (CONT-99 T1): MarginLayoutParams.setMargins(l,t,r,b) law.
+    // AOSP MarginLayoutParams.java: setMargins writes leftMargin/topMargin/
+    // rightMargin/bottomMargin — and since the engine's measure/layout laws
+    // consume the ViewNode mirror, the write must reach BOTH the LP heap
+    // object (source of truth for the F-NEW-403 traversal refresh) and the
+    // owning ViewNode (immediate visibility, AOSP layout reads lp live).
+    // The call previously fell to the generic stub — every programmatic
+    // setMargins was silently dropped (c99lay probe: chip margins gone).
+    if (method == "setMargins" &&
+        class_name.find("LayoutParams") != std::string::npos &&
+        args.size() >= 5 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        uint32_t lp_id = args[0].object_id;
+        auto setmi = [&](const char* name, int v) {
+            DalvikValue val;
+            val.type = DalvikType::INT32;
+            val.int_val = v;
+            heap_.set_object_field(lp_id, name, val);
+        };
+        setmi("leftMargin", args[1].type == DalvikType::INT32 ? args[1].int_val : 0);
+        setmi("topMargin", args[2].type == DalvikType::INT32 ? args[2].int_val : 0);
+        setmi("rightMargin", args[3].type == DalvikType::INT32 ? args[3].int_val : 0);
+        setmi("bottomMargin", args[4].type == DalvikType::INT32 ? args[4].int_val : 0);
+        // Stamp: the object now carries engine-materialized state.
+        setmi("lp_bridge", 1);
+        // Immediate node sync: reverse-lookup the owning view by its live
+        // layout_params_object (the same identity the addView enrich
+        // recorded) and re-write the full lp mirror from the heap object.
+        if (shadow_registry_ != nullptr) {
+            if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+                for (auto& kv : vs->all_nodes()) {
+                    if (kv.second->layout_params_object != lp_id) continue;
+                    auto rd = [&](const char* f, int def) -> int {
+                        auto fv = heap_.get_object_field(lp_id, f);
+                        if (fv.has_value() && fv->type == DalvikType::INT32)
+                            return fv->int_val;
+                        return def;
+                    };
+                    float wt = 0.0f;
+                    auto wv = heap_.get_object_field(lp_id, "weight");
+                    if (wv.has_value() && wv->type == DalvikType::FLOAT32)
+                        wt = wv->float_val;
+                    vs->set_layout_params(kv.first, rd("width", -2),
+                                          rd("height", -2), rd("gravity", 0),
+                                          rd("leftMargin", 0), rd("topMargin", 0),
+                                          rd("rightMargin", 0),
+                                          rd("bottomMargin", 0), wt);
+                    break;   // one LP object owns at most one node
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
         return true;
     }
 
@@ -36250,6 +36370,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (vs != nullptr) {
                 vs->set_layout_params(child_id, w, h, gravity, ml, mt, mr, mb,
                                       weight);
+                // ── F-NEW-403 companion (CONT-99 T1): LP IDENTITY law.
+                // AOSP ViewGroup.addView → child.setLayoutParams(params):
+                // the view OWNS this exact params object for its whole
+                // lifetime, and View.getLayoutParams() answers it. Record
+                // the identity so ROOT-055 answers the SAME object (not a
+                // fresh materialization) — post-addView public-field
+                // stores (lp.leftMargin = ..) then land on the tracked,
+                // stamped object and the traversal-entry refresh (and the
+                // setMargins reverse-lookup) see them. The old enrich
+                // synced the VALUES but dropped the identity, so every
+                // post-addView lp mutation silently vanished.
+                if (auto* owner = vs->find_node(child_id))
+                    owner->layout_params_object = lp_id;
                 // R-NEW-409 (S121): transfer programmatic RelativeLayout
                 // rules (rl_rule_<N> fields written by the addRule bridge)
                 // onto the child node — AOSP RelativeLayout reads ONE rule
