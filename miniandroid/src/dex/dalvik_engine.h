@@ -3191,6 +3191,23 @@ private:
                failed_clinit_classes_.end();
     }
 
+    // F-NEW-395 (CONT-87, fixture-first): true when an exception from the
+    // JUST-FAILED clinit is already in flight for THIS active-use site —
+    // armed by the post-invoke EXC-PROPAGATE inside try_recursive_invoke
+    // (handler-found: pending_exception_ + exc_redirect; mid-stack:
+    // frame_unwind_exception_valid_). Raising the erroneous-class NCDFE on
+    // top would double-raise and override the original delivery (live
+    // post-fix evidence run/cont87/clinit_post2.stderr: the NCDFE re-raise
+    // searched the try table at the ADVANCED pc_ and escaped the app's
+    // covering try, killing the boot). The F-NEW-215 NCDFE law therefore
+    // applies only to uses that observe a PREVIOUSLY recorded failure with
+    // no exception in flight; the triggering use delivers the clinit's own
+    // exception at its covering handler.
+    bool clinit_exc_already_in_flight() const {
+        return exc_redirect_pending_ || frame_unwind_exception_valid_ ||
+               pending_exception_.is_null == false;
+    }
+
     // M3 FIX-M3-012 (§14 reflection identity): Package object identity —
     // one heap object per dotted package name, so Class.getPackage() is
     // referentially stable across calls (AOSP packages are classloader-

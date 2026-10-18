@@ -10116,3 +10116,24 @@ Stage Summary:
 - Binary d22b36be55764348; registry 702 roots; #364 comment 6243553102.
 - REMAINING after CONT-86: F-NEW-395 (new, fixture-first next wave) · GLSL compile · ES1-FFP · AndroidGraphics object-graph · F-NEW-381 · F-145 · F-NEW-214 · F-NEW-192 · R-NEW-456 · dooz Compose family · native-parity residual.
 - Next: F-NEW-395 fixture (deferred-raise in clinit + handler-match), then the dooz Compose frontier map.
+
+---
+Task ID: CONT-87
+Agent: Super Z (main)
+Task: #364 new directives CONT-87..93 read + extracted; CONT-87 ten-track execution wave started (Track 1 F-NEW-395 fixture-first).
+
+Work Log:
+- Environment resync: local was stale (CONT-10-era); fast-forwarded to origin/main 5ca26fa3 (CONT-86). Registry 702 roots verified (sha16 87859dcb51d1437f).
+- Fetched all 53 #364 comments; 7 NEW directives after CONT-86 ledger (6243553102): CONT-87 (6245430786), CONT-88 (6245477077), CONT-89 (6245481160), CONT-90 (6245481420), CONT-91 (6245481662), CONT-92 (6245501827), CONT-93 (6245531086). Full bodies archived run/c87/.
+- Binary rebuild started (miniandroid/Makefile; was missing after container resync).
+- Track 1 (F-NEW-395 P0) executed fixture-first:
+  - decode (scripts/cont87_decode_luu.py, androguard): Luu;.<clinit> try = code-units 7..12 ONLY; forName at unit 2 is OUTSIDE — the registered handler-match claim is DISPROVEN (engine's 'uncaught' at pc=2 was correct DEX semantics).
+  - fixture com.probe.clinit1 (run/cont87/clinit1.apk d0de76b819c1f725): in-frame catch works for BOTH deferred origins (CNFE @0x14, ARITH @0x15); the honesty defect REPRODUCED (result=OK despite throw; UT2 re-ran clinit, s=42, erroneous law dead).
+  - fix (generic, 3 sites): unwind marker at execute_method_internal finalization (COMPLETED_PARTIAL + 'unwind <type>'), clinit call-site routing to F-NEW-215 erroneous path, clinit_exc_already_in_flight() double-raise guard at the 6 active-use sites. Honest intermediate failure recorded (attempt 1 double-raised, clinit_post2 rc=1, superseded).
+  - A/B: pre d22b36be55764348 vs post caa24290aad77ca9 — CC/AC/UT rows byte-identical app-visible; UT2 NCDFE + CLASS_INIT FAILED now law-correct; rc=0.
+  - Battery at caa24290aad77ca9 ZERO DRIFT: wall 12/12, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, c72priv 12-OK/0-BAD, selftests 13/13, F-NEW-376 70/70, c74esc 5/5, clock1 4/4, swipe1 law rows OK, as2048_47 0-uncaught.
+  - registry: F-NEW-395 -> ROOT-CAUSED-FIXED (sha16 76e52c8d9d991ad9); validator V1/V7/V8/V9 bookkeeping debts closed (ALL PASS).
+- Remaining CONT-87 tracks 2..10 + CONT-88..93 directives stay on the #364 open list (ledger comment posted).
+
+Stage Summary:
+- CONT-87 Track 1 closed to a terminal verdict with a two-part honest re-grade: the registered handler-match root cause was WRONG (retracted with decode + fixture evidence) and the registered honesty defect was REAL (confirmed + fixed). The clinit state machine now answers JVMS 5.5 truthfully: a clinit that throws leaves the class erroneous; first use delivers the original exception at its covering handler; later uses raise NCDFE. Zero drift across the full gate fleet.

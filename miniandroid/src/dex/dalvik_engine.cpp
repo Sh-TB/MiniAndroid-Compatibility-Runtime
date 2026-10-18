@@ -4424,7 +4424,36 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
     
     if (halted_on_return_) {
-        result.final_status = DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS;
+        // F-NEW-395 UNWIND-HONESTY LAW (CONT-87, fixture-first): halted_on_
+        // return_ is set BOTH by a normal return AND by an exception unwind
+        // out of this frame (throw_deferred no-handler / mid-stack
+        // keep-in-flight). Reporting COMPLETED_SUCCESS for an unwind was the
+        // root of the clinit-result-OK-despite-throw honesty defect (live
+        // pre-fix evidence run/cont87/clinit_pre.stderr: [CLASS_INIT]
+        // result=OK recorded for a clinit whose deferred raise escaped, the
+        // F-NEW-215 erroneous-class law never armed, and the raw exception
+        // teleported to a LATER invoke site). The unwind case now records an
+        // unambiguous marker — COMPLETED_PARTIAL + halt_reason="unwind <type>"
+        // — which the <clinit> call site (ensure_class_initialized) reads to
+        // route the class into the registered F-NEW-215 erroneous state.
+        // Normal returns are byte-identical to before.
+        if (frame_unwind_exception_valid_) {
+            result.final_status =
+                DalvikExecutionResult::FinalStatus::COMPLETED_PARTIAL;
+            result.halt_reason = "unwind " +
+                (frame_unwind_exception_.class_desc.empty()
+                     ? std::string("Ljava/lang/RuntimeException;")
+                     : frame_unwind_exception_.class_desc);
+        } else {
+            result.final_status =
+                DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS;
+            // F-NEW-395: a normal completion must not inherit a stale
+            // "unwind ..." marker written by a nested run whose exception
+            // THIS frame's own handler subsequently caught — the clinit
+            // call site keys the erroneous-class routing on this exact
+            // prefix, so SUCCESS is only SUCCESS with an empty marker.
+            result.halt_reason.clear();
+        }
     } else if (halted_) {
         result.final_status = DalvikExecutionResult::FinalStatus::HALTED_UNIMPLEMENTED_OPCODE;
         result.halt_reason = halt_reason_;
@@ -4762,6 +4791,39 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
                 dummy_return,
                 diag_result
             );
+            // F-NEW-395 CLINIT-UNWIND HONESTY LAW (CONT-87, fixture-first):
+            // try_recursive_invoke's post-invoke EXC-PROPAGATE consumes the
+            // in-flight unwind and dispatches it at the active-use frame, and
+            // its mid-stack propagation returns TRUE — correct for a normal
+            // callee, but the <clinit> consumer must NEVER report success for
+            // a run that ended with an exception unwinding OUT of the clinit
+            // frame. The unwind now leaves an unambiguous diag marker (see
+            // the F-NEW-395 UNWIND-HONESTY LAW at the execute_method_internal
+            // finalization: COMPLETED_PARTIAL + halt_reason="unwind <type>").
+            // Pre-fix live evidence (run/cont87/clinit_pre.stderr, binary
+            // d22b36be55764348): a clinit whose deferred raise escaped
+            // recorded [CLASS_INIT] result=OK, the class stayed poison-marked
+            // initialized, the erroneous-class law (F-NEW-215) never armed,
+            // and the raw exception "teleported" to a LATER invoke site
+            // (AndStatus2048's CNFE surfaced inside MyMainActivity.onCreate
+            // at a confusing pc instead of the class's first active use).
+            // JVMS 5.5: a <clinit> that throws leaves the class ERRONEOUS.
+            // The deferred-raise unwind now flows through the SAME registered
+            // active-use law (F-NEW-215 NCDFE at sget/sput/new-instance/
+            // forName) instead of bypassing it. Named residual (honest):
+            // JVMS 5.5 wraps a non-Error clinit throw in
+            // ExceptionInInitializerError on first use; this engine's
+            // registered active-use answer is NoClassDefFoundError with the
+            // original type preserved in the failure evidence.
+            if (ok_diag &&
+                diag_result.halt_reason.rfind("unwind ", 0) == 0) {
+                std::cerr << "[F-NEW-395] CLINIT-UNWIND class="
+                          << class_descriptor
+                          << " in-flight=" << diag_result.halt_reason
+                          << " → erroneous (F-NEW-215 law)"
+                          << std::endl;
+                ok_diag = false;
+            }
             // S123 CLINIT-DIAG: surface WHY a clinit failed (no silent aborts).
             std::cerr << "[CLASS_INIT] class=" << class_descriptor
                       << " method=<clinit>"
@@ -18803,7 +18865,8 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     ensure_class_initialized(class_desc);
     // F-NEW-215: new-instance on an ERRONEOUS class raises
     // NoClassDefFoundError (JVMS 5.5 new-instance is active use).
-    if (class_clinit_failed(class_desc)) {
+    if (class_clinit_failed(class_desc) &&
+        !clinit_exc_already_in_flight()) {  // F-NEW-395: no double-raise at the triggering use
         static std::atomic<uint64_t> f215_new_n{0};
         if (f215_new_n.fetch_add(1, std::memory_order_relaxed) < 8) {
             std::cerr << "[F-NEW-215] ACTIVE-USE new-instance class="
@@ -20646,7 +20709,8 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     // NoClassDefFoundError instead of silently reading a missing static.
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
-        if (class_clinit_failed(field_res.class_descriptor)) {
+        if (class_clinit_failed(field_res.class_descriptor) &&
+            !clinit_exc_already_in_flight()) {  // F-NEW-395: no double-raise at the triggering use
             static std::atomic<uint64_t> f215_sget_n{0};
             if (f215_sget_n.fetch_add(1, std::memory_order_relaxed) < 8) {
                 std::cerr << "[F-NEW-215] ACTIVE-USE sget class="
@@ -20787,7 +20851,8 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     // raises NoClassDefFoundError instead of answering null.
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
-        if (class_clinit_failed(field_res.class_descriptor)) {
+        if (class_clinit_failed(field_res.class_descriptor) &&
+            !clinit_exc_already_in_flight()) {  // F-NEW-395: no double-raise at the triggering use
             static std::atomic<uint64_t> f215_sgeto_n{0};
             if (f215_sgeto_n.fetch_add(1, std::memory_order_relaxed) < 8) {
                 std::cerr << "[F-NEW-215] ACTIVE-USE sget-object class="
@@ -21400,7 +21465,8 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
     // class's own <clinit> never got to build.
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
-        if (class_clinit_failed(field_res.class_descriptor)) {
+        if (class_clinit_failed(field_res.class_descriptor) &&
+            !clinit_exc_already_in_flight()) {  // F-NEW-395: no double-raise at the triggering use
             static std::atomic<uint64_t> f215_sput_n{0};
             if (f215_sput_n.fetch_add(1, std::memory_order_relaxed) < 8) {
                 std::cerr << "[F-NEW-215] ACTIVE-USE sput class="
@@ -21445,7 +21511,8 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     // trigger + NoClassDefFoundError on an erroneous class).
     if (field_res.resolved) {
         ensure_class_initialized(field_res.class_descriptor);
-        if (class_clinit_failed(field_res.class_descriptor)) {
+        if (class_clinit_failed(field_res.class_descriptor) &&
+            !clinit_exc_already_in_flight()) {  // F-NEW-395: no double-raise at the triggering use
             static std::atomic<uint64_t> f215_sputo_n{0};
             if (f215_sputo_n.fetch_add(1, std::memory_order_relaxed) < 8) {
                 std::cerr << "[F-NEW-215] ACTIVE-USE sput-object class="
@@ -49973,7 +50040,8 @@ measure_cm_done:;
             // F-NEW-215: Class.forName on an ERRONEOUS class throws
             // NoClassDefFoundError (JDK Class.forName semantics; the cause
             // carries the original <clinit> failure).
-            if (class_clinit_failed(desc)) {
+            if (class_clinit_failed(desc) &&
+                !clinit_exc_already_in_flight()) {  // F-NEW-395: no double-raise at the triggering use
                 static std::atomic<uint64_t> f215_fn_n{0};
                 if (f215_fn_n.fetch_add(1, std::memory_order_relaxed) < 8) {
                     std::cerr << "[F-NEW-215] ACTIVE-USE Class.forName class="
