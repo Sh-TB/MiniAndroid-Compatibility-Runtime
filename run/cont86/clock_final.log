@@ -1,0 +1,539 @@
+[*] FRAME-SEQUENCE enabled (4 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (30 s wall-clock soft budget)
+[*] Running APK: run/cont86/clock1.apk
+[*] Output directory: run/cont86/clock_final
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[DATA-ROOT] context package = com.probe.clock1 (data dir runtime/data/data/data/com.probe.clock1)
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/cont86/clock1.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 51 entries (3 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.clock1.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/cont86/clock1.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/cont86/clock1.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/clock1/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/clock1/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/clock1/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/clock1/MainActivity;.<init> insns=2 RSS=19.3359 MB
+[TRY-ENTRY] Lcom/probe/clock1/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/clock1/MainActivity;) recorded for handler dispatch
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/clock1/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/clock1/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[SGET] class=Lcom/probe/clock1/MainActivity; method=onCreate pc=3 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.onCreate
+[CLOCK1-VERSION] pkg=com.probe.clock1 wave=CONT-86
+[EXP062-INIT] Lcom/probe/clock1/MainActivity; static_fields=13 with_defaults=12
+[CLASS_INIT] class=Lcom/probe/clock1/MainActivity; method=<clinit> bytecode_size=1
+[TRY-ENTRY] Lcom/probe/clock1/MainActivity;.<clinit> dex_report=YES
+[MEM] method_exit: Lcom/probe/clock1/MainActivity;.<clinit> insns=1 RSS=19.3359 MB
+[CLASS_INIT] class=Lcom/probe/clock1/MainActivity; method=<clinit> result=OK engine=0x7ffe3a6aec28 storage_size=38
+[TRY-ENTRY] Lcom/probe/clock1/MainActivity;.runChecks dex_report=YES
+[TRY-ENTRY] Landroid/os/SystemClock;.uptimeMillis dex_report=YES
+[REC-MISS] Landroid/os/SystemClock;.uptimeMillis caller=Lcom/probe/clock1/MainActivity;.runChecks
+[M3-CLOCK] SystemClock.uptimeMillis -> 0ms virtual hs=0x7ffe3a6ae0b0
+[TRY-ENTRY] Ljava/lang/Thread;.sleep dex_report=YES
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lcom/probe/clock1/MainActivity;.runChecks
+[TRY-ENTRY] Landroid/os/SystemClock;.uptimeMillis dex_report=YES
+[REC-MISS] Landroid/os/SystemClock;.uptimeMillis caller=Lcom/probe/clock1/MainActivity;.runChecks
+[M3-CLOCK] SystemClock.uptimeMillis -> 120ms virtual hs=0x7ffe3a6ae0b0
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=19 field=Lcom/probe/clock1/MainActivity;.up1 value=0
+[TRY-ENTRY] Lcom/probe/clock1/MainActivity;.chk dex_report=YES
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=0
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=8 field=Lcom/probe/clock1/MainActivity;.checksPassed value=0
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=14 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.chk
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.chk
+[CLOCK1-CHK] uptime-monotonic-sleep-120ms ok=true v=120
+[TRY-ENTRY] Landroid/os/SystemClock;.elapsedRealtime dex_report=YES
+[REC-MISS] Landroid/os/SystemClock;.elapsedRealtime caller=Lcom/probe/clock1/MainActivity;.runChecks
+[M3-CLOCK] SystemClock.elapsedRealtime -> 120ms virtual hs=0x7ffe3a6ae0b0
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=52 field=Lcom/probe/clock1/MainActivity;.up2 value=120
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=1
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=8 field=Lcom/probe/clock1/MainActivity;.checksPassed value=1
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=14 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.chk
+[CLOCK1-CHK] elapsedRealtime>=uptime ok=true v=120
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=2
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=8 field=Lcom/probe/clock1/MainActivity;.checksPassed value=2
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=14 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.chk
+[CLOCK1-CHK] currentTimeMillis-host-window ok=true v=1792281897621
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/Thread;.sleep caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=117 field=Lcom/probe/clock1/MainActivity;.n1 value=-719689517
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=3
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=8 field=Lcom/probe/clock1/MainActivity;.checksPassed value=3
+[SGET] class=Lcom/probe/clock1/MainActivity; method=chk pc=14 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.chk
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.chk
+[CLOCK1-CHK] nanoTime-monotonic-sleep-60ms ok=true v=23161
+[REC-MISS] Landroid/os/SystemClock;.currentThreadTimeMillis caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=141 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=150 field=Lcom/probe/clock1/MainActivity;.threadTime value=180
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.runChecks
+[CLOCK1-THREADTIME] v=180 (recorded honestly; 0 = named residual)
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=167 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=169 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=182 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=190 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=264 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=273 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[SGET] class=Lcom/probe/clock1/MainActivity; method=runChecks pc=283 field=Lcom/probe/clock1/MainActivity;.detail obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.runChecks
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.runChecks
+[CLOCK1-VERDICT] PASS 4/4 dtUp=120 elapsed=120 wall=1792281897621
+[REC-MISS] Landroid/view/View;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lcom/probe/clock1/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lcom/probe/clock1/MainActivity; args=1 arg0_kind=6 arg0_obj=25
+[F023-PARENTLINK] setContentView(View) content view=25 linked under activity view=15
+[F105-OWNER] view_tree_lifecycle_owner id not in app resources — owner install skipped
+[R349-ORDER] setContentView(View) deferred attach+measure root=25 (AOSP first-traversal ordering law)
+[R349-ORDER] setContentView(View) attach wave + measure done, root=25
+[SGET] class=Lcom/probe/clock1/MainActivity; method=onCreate pc=21 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clock1/MainActivity; method=onCreate pc=30 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clock1/MainActivity; method=onCreate pc=40 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clock1/MainActivity; method=onCreate pc=50 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clock1/MainActivity;.onCreate
+[CLOCK1-DONE] checksPassed=4/4 verdict=PASS 4/4
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/clock1/MainActivity; runtime_class=Lcom/probe/clock1/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/clock1/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/clock1/MainActivity; runtime_class=Lcom/probe/clock1/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/clock1/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=3 nodes=2 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lcom/probe/clock1/MainActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=24
+[F384-ROOTINSETS] root=o25 cls=Lcom/probe/clock1/MainActivity$ProbeView; insets=o27 dispatched=false
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Lcom/probe/clock1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[LIFEWIN-OPEN] Lcom/probe/clock1/MainActivity$ProbeView; view=25
+[LIFEWIN-CLOSE] Lcom/probe/clock1/MainActivity$ProbeView; view=25 dispatched=NO
+[F096-LIFECYCLE] Lcom/probe/clock1/MainActivity$ProbeView; view=25 rect=(0,0 1080x1920) dispatched=NO
+[C013-LEAFCHK] Lcom/probe/clock1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=29 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=29 class=Landroid/graphics/Paint; px=73.5
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clock1/MainActivity;.dtUp value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=46
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clock1/MainActivity;.elapsed value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clock1/MainActivity;.up2 value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=81
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clock1/MainActivity;.wall value=1280535189
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=104
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$4 pc=0 field=Lcom/probe/clock1/MainActivity;.dtNano value=23161
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=127
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$5 pc=0 field=Lcom/probe/clock1/MainActivity;.threadTime value=180
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=150
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$6 pc=0 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$7 pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=186
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=29 cls=Landroid/graphics/Paint; color=0xff008000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=215
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=29 class=Landroid/graphics/Paint; px=89.25
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=34 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=229
+[C013-ONDRAW] view=25 class=Lcom/probe/clock1/MainActivity$ProbeView; dispatched=YES ops=8
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[C013-CUSTOMVIEW] onDraw replayed 8 ops (rp=8) for Lcom/probe/clock1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14726 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14726 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=76
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=231
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Lcom/probe/clock1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clock1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=37 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=37 class=Landroid/graphics/Paint; px=73.5
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clock1/MainActivity;.dtUp value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=37 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=46
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clock1/MainActivity;.elapsed value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clock1/MainActivity;.up2 value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=37 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=81
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clock1/MainActivity;.wall value=1280535189
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=37 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=104
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$4 pc=0 field=Lcom/probe/clock1/MainActivity;.dtNano value=23161
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=37 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=127
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$5 pc=0 field=Lcom/probe/clock1/MainActivity;.threadTime value=180
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=37 size=28 face=-1 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=150
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$6 pc=0 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$7 pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=37 cls=Landroid/graphics/Paint; color=0xff008000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=215
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=37 class=Landroid/graphics/Paint; px=89.25
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[C013-ONDRAW] view=25 class=Lcom/probe/clock1/MainActivity$ProbeView; dispatched=YES ops=8
+[C013-CUSTOMVIEW] onDraw replayed 8 ops (rp=8) for Lcom/probe/clock1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14726 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14726 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Lcom/probe/clock1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clock1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=45 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=45 class=Landroid/graphics/Paint; px=73.5
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clock1/MainActivity;.dtUp value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clock1/MainActivity;.elapsed value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clock1/MainActivity;.up2 value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clock1/MainActivity;.wall value=1280535189
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$4 pc=0 field=Lcom/probe/clock1/MainActivity;.dtNano value=23161
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$5 pc=0 field=Lcom/probe/clock1/MainActivity;.threadTime value=180
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$6 pc=0 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$7 pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=45 cls=Landroid/graphics/Paint; color=0xff008000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=215
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=45 class=Landroid/graphics/Paint; px=89.25
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[C013-ONDRAW] view=25 class=Lcom/probe/clock1/MainActivity$ProbeView; dispatched=YES ops=8
+[C013-CUSTOMVIEW] onDraw replayed 8 ops (rp=8) for Lcom/probe/clock1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14726 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14726 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Lcom/probe/clock1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clock1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=53 class=Landroid/graphics/Paint; px=73.5
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clock1/MainActivity;.dtUp value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clock1/MainActivity;.elapsed value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clock1/MainActivity;.up2 value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clock1/MainActivity;.wall value=1280535189
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$4 pc=0 field=Lcom/probe/clock1/MainActivity;.dtNano value=23161
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$5 pc=0 field=Lcom/probe/clock1/MainActivity;.threadTime value=180
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$6 pc=0 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$7 pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xff008000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=215
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=53 class=Landroid/graphics/Paint; px=89.25
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[C013-ONDRAW] view=25 class=Lcom/probe/clock1/MainActivity$ProbeView; dispatched=YES ops=8
+[C013-CUSTOMVIEW] onDraw replayed 8 ops (rp=8) for Lcom/probe/clock1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14726 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14726 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=4 dir=run/cont86/clock_final/frames
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Lcom/probe/clock1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clock1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=61 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=61 class=Landroid/graphics/Paint; px=73.5
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clock1/MainActivity;.dtUp value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clock1/MainActivity;.elapsed value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clock1/MainActivity;.up2 value=120
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clock1/MainActivity;.wall value=1280535189
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$4 pc=0 field=Lcom/probe/clock1/MainActivity;.dtNano value=23161
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$5 pc=0 field=Lcom/probe/clock1/MainActivity;.threadTime value=180
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$6 pc=0 field=Lcom/probe/clock1/MainActivity;.checksPassed value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$7 pc=0 field=Lcom/probe/clock1/MainActivity;.checksTotal value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=61 cls=Landroid/graphics/Paint; color=0xff008000 caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw pc=215
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=61 class=Landroid/graphics/Paint; px=89.25
+[SGET] class=Lcom/probe/clock1/MainActivity; method=access$8 pc=0 field=Lcom/probe/clock1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clock1/MainActivity$ProbeView;.onDraw
+[C013-ONDRAW] view=25 class=Lcom/probe/clock1/MainActivity$ProbeView; dispatched=YES ops=8
+[C013-CUSTOMVIEW] onDraw replayed 8 ops (rp=8) for Lcom/probe/clock1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14726 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14726 non-white pixels
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 5
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/cont86/clock_final/screenshot.png
+Report: run/cont86/clock_final/report.md

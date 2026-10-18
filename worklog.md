@@ -10094,3 +10094,25 @@ Stage Summary:
 - Three generic fixes landed with pre-fix reproduction -> law -> fixture -> post-fix proof -> full regression: F-NEW-387 (native deps; first real corpus native lib load), F-NEW-388 (GLES20 dispatch; GLSL frontier named), F-NEW-389 (Display law; trace-surfaced).
 - stack.tower3d moved NO_ROOT -> GL-loop-live (the app's libGDX render lifecycle executes) — the largest single-app progression since the corpus began.
 - Honest pendings: GLSL compile (GLES20 pixels), ES1-FFP translation, AndroidGraphics object-graph fields, SWIPE, AndStatus2048 decode, profile-with-counters, virtual-clock fixture.
+
+---
+Task ID: CONT-86
+Agent: Super Z (main)
+Task: #364 «لیست رو بخون، باقی‌مانده‌ها اول، لیست کاری بزرگ، تایید/رد تک‌تک تو جواب ۳۶۴» — remaining-first ledger + per-item verdicts + work the attackable backlog.
+
+Work Log:
+- Baseline: HEAD was ahead-1 with a UUID-message residue commit (80 tmp/ build intermediates from prior session) — amended to a descriptive message (f51162e3), pushed, HEAD==origin/main verified. No new #364 comments after the CONT-83 ledger 6242571404 (45 total).
+- Registry census: 696 roots; open-ish set = 2 OPEN + 1 PENDING + 1 REGISTERED + 1 BLOCKED + 16 RESEARCHED-NOT-IMPLEMENTED + 3 OBSERVED-FAIL + 12 CLASSIFIED + the 8 CONT-83 §6 pendings.
+- T8 SWIPE fixture-first: com.probe.swipe1 (GestureDetector onScroll/onFling/onDown + verdict rows). FOUND a real generic bug — F-NEW-390: dispatch_gesture_cb violated the try_recursive_invoke args[0]=receiver contract (touch path passes [view,ev]; gesture path passed [e1,e2,f3,f4]) → every param shifted: e2 read f3's float bits as an object id (0,0), distanceX read f4, distanceY read OOB→NaN. [C86-GCB] C++ diag proved the VelocityTracker CORRECT (f3=+1055.77 x-vel, f4=-1562.49 y-vel; my earlier magnitude math had used the wrong window). Fix: prepend listener object. Post-fix: dx=-16/dy=+25 (AOSP last-curr), vx/vy axes+signs correct, onDown event real. e2 carries down-coords (4-float emit payload) = NAMED RESIDUAL.
+- 85-T10 virtual-clock fixture: com.probe.clock1 PASS 4/4 (uptime+sleep 120ms, elapsedRealtime≥uptime, currentTimeMillis host bridge, nanoTime monotonic; threadTime=180 recorded).
+- T5 AndStatus2048 decode (androguard 4.1.4 installed): Ll90.u = log-tag factory; the NPE chain root-caused link by link and fixed with FOUR generic laws: F-NEW-391 System.getenv() never-null Map (Lmb;.<clinit> pc=136 getenv()!.getClass()), F-NEW-392 getSystemAvailableFeatures FeatureInfo[] never-null (Lr30;.d), F-NEW-393 ByteBuffer wrap/duplicate laws + ByteOrder constants (Lb8;.<init> endian views), F-NEW-394 forName(java.lang.Thread) framework bridge (Luu;.<clinit> spin-hint probe). NPE census 22→5→2→0; clean boot, 0 uncaught. NEW open gap F-NEW-395 registered: deferred exception inside <clinit> misses the in-frame catch-all (Luu; pc=28) + the clinit-result-OK-despite-throw honesty defect (F-NEW-215 state machine) — parked for a dedicated fixture wave (regression risk).
+- F-NEW-156/157 fresh evidence: chessclock (static materializes, no APP-BOUNDARY, face fe3ae1167c9e968c) → ALREADY_FIXED_AND_TESTED; tictactoe_emmanuel (no createGLSurfaceView NPE, libGDX catches its own native probe, face b5a7a35d5fe0564b byte-identical to CONT-17 record) → SUPERSEDED-BY-EVIDENCE.
+- Bulk honest re-grades (18 rows total): F-144 SUPERSEDED (GL law family), F-NEW-169 NOT-APPLICABLE (corrupt input APK), R-NEW-047/048/049/050/064/114..121 (13) SUPERSEDED by F-NEW-387's landed ELF64/DT_NEEDED law, R-NEW-164 SUPERSEDED by INFRA-GFXTRACE-1, R-NEW-165/166 SUPERSEDED by the landed gate family, FOUNDATION-6 REJECTED_WITH_REASON (duplicated by trace+fixtures+goldens).
+- Full gates on the FINAL binary d22b36be55764348 (after all five laws): wall 12/12 MATCH, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, c72priv 12OK/0BAD, selftests 13/13 — zero drift. Anchor re-runs: swipe1 green, clock1 4/4, chess/ttt/andstatus clean.
+- Ledger posted to #364 (comment 6243553102): remaining-first (R1..R11) + big per-item تایید/رد table + 90% approval rate on the 21 processed items.
+- Registry 696→702 (6 new + 17 re-grades incl. typo fix), mirrored to canonical/.
+
+Stage Summary:
+- Binary d22b36be55764348; registry 702 roots; #364 comment 6243553102.
+- REMAINING after CONT-86: F-NEW-395 (new, fixture-first next wave) · GLSL compile · ES1-FFP · AndroidGraphics object-graph · F-NEW-381 · F-145 · F-NEW-214 · F-NEW-192 · R-NEW-456 · dooz Compose family · native-parity residual.
+- Next: F-NEW-395 fixture (deferred-raise in clinit + handler-match), then the dooz Compose frontier map.

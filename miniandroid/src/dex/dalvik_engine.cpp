@@ -15,6 +15,7 @@
 #include "mutf8.h"
 #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
 #include <openssl/evp.h>  // #371 PHASE B2: sha16 file identity for loadLibrary law
+#include <atomic>  // CONT-86 F-NEW-390 bounded diag counters
 #include "../api/android_stubs.h"
 #include "../api/http_client.h"  // S100 NET-001 (MG-247/248): real HTTP(S)
 #include "../storage/data_root.h"
@@ -12860,15 +12861,36 @@ void DalvikExecutionEngine::dispatch_gesture_cb(uint32_t gd_obj,
         return ev;
     };
     uint32_t e1 = make_ev(0, f1, f2);
+    // F-NEW-390 ROOT-CAUSED-FIXED (CONT-86): try_recursive_invoke's binder
+    // contract is args[0] = the RECEIVER (this) — the touch-listener path
+    // passes [view, ev] and the key-listener path [view, keycode, ev]. The
+    // gesture path passed ONLY the callback params [e1, e2, f3, f4], so e1
+    // was consumed as `this` and every declared param shifted one slot:
+    //   e1-param read e2's object, e2-param read f3's float bits as an
+    //   object id (getX/getY → 0), distanceX/vx read f4, distanceY/vy read
+    //   OUT OF BOUNDS → NaN (Float.toString "" / float-to-int 0).
+    // Fixture proof: com.probe.swipe1 [SWIPE1-*] rows + [C86-GCB] rows
+    // (f3=+1055.77=real X velocity, f4=-1562.49=real Y velocity — tracker
+    // correct; the DEX side saw vx=-1562.487427 and dy="").
+    // Fix: prepend the listener object as args[0] (receiver), matching the
+    // AOSP law listener.onScroll(e1, e2, distanceX, distanceY).
     std::vector<DalvikValue> args{
+        DalvikValue::make_object(listener_obj, lcls_raw),
         DalvikValue::make_object(e1, "Landroid/view/MotionEvent;")};
     if (two_events) {
         uint32_t e2 = make_ev(2, f1, f2);
+        {
+            float x2 = 0.f, y2 = 0.f;
+            if (auto fx = heap_.get_object_field(e2, "__x__"))
+                if (fx->type == DalvikType::FLOAT32) x2 = fx->float_val;
+            if (auto fy = heap_.get_object_field(e2, "__y__"))
+                if (fy->type == DalvikType::FLOAT32) y2 = fy->float_val;
+            std::cerr << "[C86-GCB-E2] e2=o" << e2
+                      << " e2xy=" << x2 << "," << y2 << std::endl;
+        }
         args.push_back(DalvikValue::make_object(e2, "Landroid/view/MotionEvent;"));
         args.push_back(DalvikValue::make_float(f3));
         args.push_back(DalvikValue::make_float(f4));
-    } else {
-        args[0] = DalvikValue::make_object(e1, "Landroid/view/MotionEvent;");
     }
     DalvikValue ret = DalvikValue::make_void();
     DalvikExecutionResult res;
@@ -20956,6 +20978,27 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 } else {
                     static_field_storage_[static_key] = result_value;
                 }
+            } else if (field_res.class_descriptor ==
+                           "Ljava/nio/ByteOrder;" &&
+                       (field_res.field_name == "LITTLE_ENDIAN" ||
+                        field_res.field_name == "BIG_ENDIAN")) {
+                // F-NEW-393 (CONT-86): AOSP ByteOrder law — LITTLE_ENDIAN /
+                // BIG_ENDIAN are non-null singletons (OpenJDK ByteOrder.java);
+                // org.andstatus.game2048's Lb8;.<init> reads both to build
+                // its endian views. Materialize with ordinal 0/1 (cached per
+                // static_key; nativeOrder() answers the LITTLE_ENDIAN one on
+                // this aarch64 device model).
+                const int bo_ord =
+                    field_res.field_name == "LITTLE_ENDIAN" ? 0 : 1;
+                uint32_t bo_id = heap_.allocate("Ljava/nio/ByteOrder;", pc, 0);
+                heap_.set_object_field(bo_id, "ordinal",
+                                       DalvikValue::make_int(bo_ord));
+                heap_.set_object_field(bo_id, "__byteorder_name__",
+                                       DalvikValue::make_string(
+                                           field_res.field_name, 0));
+                result_value = DalvikValue::make_object(
+                    bo_id, "Ljava/nio/ByteOrder;");
+                static_field_storage_[static_key] = result_value;
             } else if (field_res.class_descriptor == "Landroid/os/Environment;" &&
                        (field_res.field_name == "MEDIA_MOUNTED" ||
                         field_res.field_name == "MEDIA_MOUNTED_READ_ONLY" ||
@@ -23091,10 +23134,11 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
             // L2→L0 regression), so they STAY on the CNFE path that real
             // app catches handle gracefully. Members later ride the
             // normal shadow / unknown-API paths.
-            static const std::array<const char*, 3> r350_fw_classes = {
+            static const std::array<const char*, 4> r350_fw_classes = {
                 "Landroid/os/Build;",
                 "Landroid/os/Build$VERSION;",
                 "Landroid/os/Build$VERSION_CODES;",
+                "Ljava/lang/Thread;",
             };
             bool r350_is_fw =
                 std::find_if(r350_fw_classes.begin(), r350_fw_classes.end(),
@@ -23110,6 +23154,16 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
             }
             // Real law: unknown class → ClassNotFoundException (deferred —
             // the DEX catch at the call site must observe it).
+            // F-NEW-394 (CONT-86): java.lang.Thread joins the bridge set —
+            // the class is engine-modeled (ThreadShadow: THREAD-START /
+            // SLEEP-YIELD laws) and org.andstatus.game2048's Luu;.<clinit>
+            // probes it via forName("java.lang.Thread").getMethod(
+            // "onSpinWait") inside a catch-all (the Java 9 spin-hint
+            // availability probe; the CNFE answer was the deferred-
+            // exception handler-match gap, not the app's contract). On
+            // device forName NEVER throws for a shipped framework class —
+            // the app-visible outcome after the bridge (getMethod miss →
+            // caught → fallback) matches the API<34 device truth.
             std::cerr << "[R350-FORNAME] \"" << want_name
                       << "\" → ClassNotFoundException" << std::endl;
             throw_deferred("Ljava/lang/ClassNotFoundException;",
@@ -27084,6 +27138,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // CONT-86 F-NEW-393 diag (bounded): does the ByteBuffer static family
+    // reach bridge_to_api at all?
+    if (class_name == "Ljava/nio/ByteBuffer;" ||
+        class_name == "Ljava/nio/ByteOrder;") {
+        static std::atomic<uint64_t> s86_bridge{0};
+        if (s86_bridge.fetch_add(1, std::memory_order_relaxed) < 10)
+            std::cerr << "[C86-BRIDGE] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+    }
     // ── CONT-4 PHASE 1 (bounded, env-gated): poison-source forensics —
     // every ArrayList.set(int, REF) whose REF argument is the EMPTY
     // STRING. The board-builder stores computed face ints through set();
@@ -37324,6 +37389,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // F-NEW-391 (CONT-86) — java.lang.System.getenv() law (AOSP System.java):
+    // getenv() answers the process environment as an UNMODIFIABLE, NEVER-NULL
+    // String→String map (empty when no vars are exported to the sandbox).
+    // The previous REC-MISS null answer killed org.andstatus.game2048's
+    // logging-init chain: Lmb;.<clinit> pc=136 does System.getenv()!.getClass()
+    // (R8 os-detection idiom) — the null receiver threw a deferred NPE, the
+    // clinit state still recorded result=OK (a separate honesty gap, see
+    // registry), the Lmb statics then answered null, and the null statics
+    // NPE'd getClass/Map.size at Ll90;.u pc=160 + Lt60;.getValue pc=33 on
+    // EVERY run (reproduced x2 binaries). Deterministic sandbox law: an
+    // EMPTY map (byte-stable across runs, never null) with __array_length__
+    // = 0 so the F-064 Map-view family answers empty views.
+    if (class_name == "Ljava/lang/System;" && method == "getenv" &&
+        args.empty()) {
+        uint32_t env_id = heap_.allocate("Ljava/util/LinkedHashMap;", 0, 0);
+        heap_.set_object_field(env_id, "__array_length__",
+                               DalvikValue::make_int(0));
+        result = DalvikValue::make_object(env_id, "Ljava/util/LinkedHashMap;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // ────────────────────────────────────────────────────────────────────────
     // S108 ROOT-025 — Telegram NativeByteBuffer natives (DEX-referenced JNI
     // surface, implemented engine-side where the heap lives).
@@ -37528,6 +37614,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             int32_t cap = (args.size() > 1 && args[1].type == DalvikType::INT32)
                               ? args[1].int_val : 0;
             if (cap < 0) cap = 0;
+            // CONT-86 F-NEW-393 diag (bounded): static-arg convention truth —
+            // print which args vector shape reached the allocate family.
+            {
+                static std::atomic<uint64_t> s86_bb{0};
+                if (s86_bb.fetch_add(1, std::memory_order_relaxed) < 8) {
+                    std::cerr << "[C86-BB] method=" << method
+                              << " argc=" << args.size();
+                    for (size_t bi = 0; bi < args.size() && bi < 4; ++bi)
+                        std::cerr << " a" << bi << ":t"
+                                  << static_cast<int>(args[bi].type) << "="
+                                  << (args[bi].type == DalvikType::INT32
+                                          ? args[bi].int_val
+                                          : args[bi].object_id);
+                    std::cerr << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
             uint32_t bid = heap_.allocate("Ljava/nio/ByteBuffer;", 0, 0);
             bb_set(bid, "__bb_cap__", cap);
             bb_set(bid, "__bb_pos__", 0);
@@ -37535,6 +37638,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             bb_set(bid, "__bb_order__", 0);  // BIG_ENDIAN default (OpenJDK)
             // backing store: per-object byte fields are impractical; store
             // as a run of __bb_b<i>__ int fields lazily on write.
+            result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "wrap") {
+            // F-NEW-393 (CONT-86): OpenJDK wrap law — wrap([B), wrap([BII)
+            // (and the buffer variants) answer a NON-NULL ByteBuffer backed
+            // by the array; position 0, limit = length. The previous
+            // REC-MISS null answer NPE'd org.andstatus.game2048's Lb8;.<init>
+            // (its endian-view ctor does wrap([B).order(BO).getClass()).
+            // cap convention: wrap([B) → len; wrap([BII) → off+len.
+            int32_t cap = 0;
+            for (size_t wi = 0; wi < args.size(); ++wi) {
+                if (args[wi].type == DalvikType::OBJECT_REF &&
+                    !args[wi].class_desc.empty() &&
+                    args[wi].class_desc[0] == '[') {
+                    auto al = heap_.get_object_field(args[wi].object_id,
+                                                     "__array_length__");
+                    if (al.has_value() && al->type == DalvikType::INT32)
+                        cap = al->int_val;
+                    break;
+                }
+            }
+            int32_t off = 0, len = cap;
+            if (args.size() >= 3 && args[2].type == DalvikType::INT32)
+                off = args[2].int_val;
+            if (args.size() >= 4 && args[3].type == DalvikType::INT32)
+                len = args[3].int_val;
+            if (cap > 0 && off + len <= cap) cap = off + len;
+            uint32_t bid = heap_.allocate("Ljava/nio/ByteBuffer;", 0, 0);
+            bb_set(bid, "__bb_cap__", cap);
+            bb_set(bid, "__bb_pos__", 0);
+            bb_set(bid, "__bb_lim__", cap);
+            bb_set(bid, "__bb_order__", 0);
             result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
@@ -37550,6 +37687,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 bb_set(args[0].object_id, "__bb_order__", ord);
             }
             result = args[0];  // this
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "duplicate" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            // F-NEW-393 (CONT-86): OpenJDK duplicate() law — answers a view
+            // buffer, NEVER null. Shadow model: this (the receiver) — the
+            // fields (cap/pos/lim/order) are shared state; the separate
+            // position bookkeeping of a true duplicate is a named residual
+            // for consumers that diverge the two cursors.
+            result = args[0];  // receiver
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -44405,6 +44554,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         result = get_or_create_singleton("Landroid/content/pm/PackageManager;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // F-NEW-392 (CONT-86) — PackageManager.getSystemAvailableFeatures law
+    // (AOSP PackageManager.java): answers FeatureInfo[] — NEVER null (an
+    // empty array when no features are declared). The previous REC-MISS
+    // null answer killed org.andstatus.game2048's logging-init chain one
+    // link past F-NEW-391: Lr30;.d (R8 os/feature classifier) does
+    //   context.getPackageManager().getSystemAvailableFeatures().getClass()
+    // — getClass on the null array threw the deferred NPE that propagated
+    // through Lt60;.getValue into MyMainActivity.onCreate (APP BOUNDARY).
+    // Law: materialize a zero-length FeatureInfo[] under the engine's
+    // __array_length__ convention — array-length answers 0 and the app's
+    // `size == 0 → return` guard takes the AOSP-honest early exit.
+    if (method == "getSystemAvailableFeatures") {
+        uint32_t arr_id = heap_.allocate("[Landroid/content/pm/FeatureInfo;",
+                                         pc_, 0);
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(0));
+        heap_.set_object_field(arr_id, "__new_array_length__",
+                               DalvikValue::make_int(0));
+        result = DalvikValue::make_object(arr_id,
+                                          "[Landroid/content/pm/FeatureInfo;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }

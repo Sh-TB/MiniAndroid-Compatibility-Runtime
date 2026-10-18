@@ -1,0 +1,896 @@
+[*] FRAME-SEQUENCE enabled (6 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (30 s wall-clock soft budget)
+[*] SWIPE gesture queued (100,400) -> (300,100) after frame 2 — frames + touch trace saved to <output>/frames/
+[*] Running APK: run/cont86/swipe1.apk
+[*] Output directory: run/cont86/swipe_final
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=19
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=19
+[DATA-ROOT] context package = com.probe.swipe1 (data dir runtime/data/data/data/com.probe.swipe1)
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/cont86/swipe1.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 52 entries (4 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.swipe1.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/cont86/swipe1.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/cont86/swipe1.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/swipe1/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/swipe1/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/swipe1/MainActivity;.<init> insns=2 RSS=19.3945 MB
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/swipe1/MainActivity;) recorded for handler dispatch
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/swipe1/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/swipe1/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=onCreate pc=3 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity;.onCreate
+[SWIPE1-VERSION] pkg=com.probe.swipe1 wave=CONT-86
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity$ProbeView;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/view/View;.<init> dex_report=YES
+[REC-MISS] Landroid/view/View;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.<init>
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/view/GestureDetector$SimpleOnGestureListener;.<init> dex_report=YES
+[REC-MISS] Landroid/view/GestureDetector$SimpleOnGestureListener;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.<init>
+[TRY-ENTRY] Landroid/view/GestureDetector;.<init> dex_report=YES
+[REC-MISS] Landroid/view/GestureDetector;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.<init>
+[GESTURE] ctor obj=18 listener=o19 class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lcom/probe/swipe1/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lcom/probe/swipe1/MainActivity; args=1 arg0_kind=6 arg0_obj=17
+[F023-PARENTLINK] setContentView(View) content view=17 linked under activity view=15
+[F105-OWNER] view_tree_lifecycle_owner id not in app resources — owner install skipped
+[R349-ORDER] setContentView(View) deferred attach+measure root=17 (AOSP first-traversal ordering law)
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity$ProbeView;.onAttachedToWindow dex_report=YES
+[R349-ORDER] setContentView(View) attach wave + measure done, root=17
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=onCreate pc=18 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity;.onCreate
+[SWIPE1-DONE] setup complete
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity;.onPostCreate dex_report=YES
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity;.onStart dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/swipe1/MainActivity; runtime_class=Lcom/probe/swipe1/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/swipe1/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity;.onResume dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/swipe1/MainActivity; runtime_class=Lcom/probe/swipe1/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/swipe1/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=4 nodes=3 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[TRY-ENTRY] Landroid/view/View;.onAttachedToWindow dex_report=YES
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lcom/probe/swipe1/MainActivity;.onCreate
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onAttachedToWindow dex_report=YES
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=22
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity$ProbeView;.dispatchApplyWindowInsets dex_report=YES
+[TRY-ENTRY] Lcom/probe/swipe1/MainActivity$ProbeView;.onApplyWindowInsets dex_report=YES
+[F384-ROOTINSETS] root=o17 cls=Lcom/probe/swipe1/MainActivity$ProbeView; insets=o20 dispatched=false
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[LIFEWIN-OPEN] Lcom/probe/swipe1/MainActivity$ProbeView; view=17
+[LIFEWIN-CLOSE] Lcom/probe/swipe1/MainActivity$ProbeView; view=17 dispatched=NO
+[F096-LIFECYCLE] Lcom/probe/swipe1/MainActivity$ProbeView; view=17 rect=(0,0 1080x1920) dispatched=NO
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=22 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=22 class=Landroid/graphics/Paint; px=78.75
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[EXP062-INIT] Lcom/probe/swipe1/MainActivity; static_fields=13 with_defaults=13
+[CLASS_INIT] class=Lcom/probe/swipe1/MainActivity; method=<clinit> bytecode_size=1
+[MEM] method_exit: Lcom/probe/swipe1/MainActivity;.<clinit> insns=1 RSS=35.8242 MB
+[CLASS_INIT] class=Lcom/probe/swipe1/MainActivity; method=<clinit> result=OK engine=0x7ffcf7eab1e8 storage_size=39
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$11 pc=0 field=Lcom/probe/swipe1/MainActivity;.downs value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$16 pc=0 field=Lcom/probe/swipe1/MainActivity;.ups value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=22 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=65
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$9 pc=0 field=Lcom/probe/swipe1/MainActivity;.taps value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=22 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=112
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$19 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDx value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$20 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDy value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=22 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=147
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$21 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVx value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$22 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVy value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=22 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=182
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$23 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeFirst value=-1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$24 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeLast value=-1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=22 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=217
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=22 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=22 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=255
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14748 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14748 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=70
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=222
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=29 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[EXT-AOSP-002] setTextSize view=29 class=Landroid/graphics/Paint; px=78.75
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$11 pc=0 field=Lcom/probe/swipe1/MainActivity;.downs value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$16 pc=0 field=Lcom/probe/swipe1/MainActivity;.ups value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=65
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$9 pc=0 field=Lcom/probe/swipe1/MainActivity;.taps value=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=112
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$19 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDx value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$20 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDy value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=147
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$21 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVx value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$22 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVy value=2143289344
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=182
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$23 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeFirst value=-1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$24 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeLast value=-1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=217
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[F298-SETCOLOR] recv=29 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw
+[ANT6-DT] paint=29 size=30 face=-1 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=255
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 14748 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 14748 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[S129-SWIPE] frame 2 DOWN (100,400) -> UP (300,100) steps=12
+[UI-EVENT] event=TOUCH action=0 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=0 x=100.000000 y=400.000000 t=600
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$11 pc=0 field=Lcom/probe/swipe1/MainActivity;.downs value=0
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onDown pc=0 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onDown
+[SWIPE1-ONDOWN] x=100.000000 y=400.000000
+[UI-EVENT] event=GESTURE cb=onDown listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=0 handled=true
+[UI-EVENT] event=TOUCH action=0 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=116.000000 y=375.000000 t=616
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=0
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[C86-FSM] scroll dx=-16 dy=25 prev=100,400 focus=116,375
+[C86-GCB-E2] e2=o43 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=0
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SWIPE1-SCROLL] n=1 dx=-16.000000 dy=25.000000 idx=-16 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=133.000000 y=350.000000 t=632
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=1
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[C86-FSM] scroll dx=-17 dy=25 prev=116,375 focus=133,350
+[C86-GCB-E2] e2=o49 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=2
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SWIPE1-SCROLL] n=2 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=150.000000 y=325.000000 t=648
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=2
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[C86-FSM] scroll dx=-17 dy=25 prev=133,350 focus=150,325
+[C86-GCB-E2] e2=o55 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=2
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=3
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SWIPE1-SCROLL] n=3 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=166.000000 y=300.000000 t=664
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=3
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[C86-FSM] scroll dx=-16 dy=25 prev=150,325 focus=166,300
+[C86-GCB-E2] e2=o61 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=3
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=4
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SWIPE1-SCROLL] n=4 dx=-16.000000 dy=25.000000 idx=-16 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=183.000000 y=275.000000 t=680
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=4
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[C86-FSM] scroll dx=-17 dy=25 prev=166,300 focus=183,275
+[C86-GCB-E2] e2=o67 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=4
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=5
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SWIPE1-SCROLL] n=5 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=200.000000 y=250.000000 t=696
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=5
+[REC-MISS] Landroid/view/GestureDetector;.onTouchEvent caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[C86-FSM] scroll dx=-17 dy=25 prev=183,275 focus=200,250
+[C86-GCB-E2] e2=o73 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=5
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=6
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView$Listener;.onScroll
+[SWIPE1-SCROLL] n=6 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[REC-MISS] Landroid/view/MotionEvent;.getAction caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getX caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getY caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Landroid/view/MotionEvent;.getEventTime caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onTouchEvent
+[SWIPE1-EV] action=2 x=216.000000 y=225.000000 t=712
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=6
+[C86-FSM] scroll dx=-16 dy=25 prev=200,250 focus=216,225
+[C86-GCB-E2] e2=o79 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=6
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=7
+[SWIPE1-SCROLL] n=7 dx=-16.000000 dy=25.000000 idx=-16 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-EV] action=2 x=233.000000 y=200.000000 t=728
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=7
+[C86-FSM] scroll dx=-17 dy=25 prev=216,225 focus=233,200
+[C86-GCB-E2] e2=o85 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=7
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=8
+[SWIPE1-SCROLL] n=8 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-EV] action=2 x=250.000000 y=175.000000 t=744
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=8
+[C86-FSM] scroll dx=-17 dy=25 prev=233,200 focus=250,175
+[C86-GCB-E2] e2=o91 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=8
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=9
+[SWIPE1-SCROLL] n=9 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-EV] action=2 x=266.000000 y=150.000000 t=760
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=9
+[C86-FSM] scroll dx=-16 dy=25 prev=250,175 focus=266,150
+[C86-GCB-E2] e2=o97 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=9
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=10
+[SWIPE1-SCROLL] n=10 dx=-16.000000 dy=25.000000 idx=-16 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-EV] action=2 x=283.000000 y=125.000000 t=776
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=10
+[C86-FSM] scroll dx=-17 dy=25 prev=266,150 focus=283,125
+[C86-GCB-E2] e2=o103 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=10
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=11
+[SWIPE1-SCROLL] n=11 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=2 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-EV] action=2 x=300.000000 y=100.000000 t=792
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=11
+[C86-FSM] scroll dx=-17 dy=25 prev=283,125 focus=300,100
+[C86-GCB-E2] e2=o109 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=11
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onScroll pc=17 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=12
+[SWIPE1-SCROLL] n=12 dx=-17.000000 dy=25.000000 idx=-17 idy=25 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onScroll listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=2 handled=true
+[UI-EVENT] event=TOUCH action=2 result=DISPATCHED consumed=true
+[UI-EVENT] event=TOUCH action=1 view_object=17 view_class=Lcom/probe/swipe1/MainActivity$ProbeView; arm=onTouchEvent attached=1
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=16 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-EV] action=1 x=300.000000 y=100.000000 t=842
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$16 pc=0 field=Lcom/probe/swipe1/MainActivity;.ups value=0
+[C86-GCB-E2] e2=o115 e2xy=100,400
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=0
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView$Listener; method=onFling pc=15 field=Ljava/lang/System;.out obj_id=16
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=1
+[SWIPE1-FLING] n=1 vx=1055.770508 vy=-1562.487427 ivx=1055 ivy=-1562 e1=100.000000,400.000000 e2=100.000000,400.000000
+[UI-EVENT] event=GESTURE cb=onFling listener=o19 result=DISPATCHED
+[SGET] class=Lcom/probe/swipe1/MainActivity$ProbeView; method=onTouchEvent pc=103 field=Ljava/lang/System;.out obj_id=16
+[SWIPE1-DET] action=1 handled=true
+[UI-EVENT] event=TOUCH action=1 result=DISPATCHED consumed=true
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[F298-SETCOLOR] recv=119 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[EXT-AOSP-002] setTextSize view=119 class=Landroid/graphics/Paint; px=78.75
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$11 pc=0 field=Lcom/probe/swipe1/MainActivity;.downs value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=12
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$16 pc=0 field=Lcom/probe/swipe1/MainActivity;.ups value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=12
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$9 pc=0 field=Lcom/probe/swipe1/MainActivity;.taps value=0
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$19 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDx value=-1048051712
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$20 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDy value=1103626240
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$21 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVx value=1149499560
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$22 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVy value=-993833063
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$23 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeFirst value=600
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$24 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeLast value=842
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[F298-SETCOLOR] recv=119 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 20670 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20670 non-white pixels
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[F298-SETCOLOR] recv=126 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[EXT-AOSP-002] setTextSize view=126 class=Landroid/graphics/Paint; px=78.75
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$11 pc=0 field=Lcom/probe/swipe1/MainActivity;.downs value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=12
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$16 pc=0 field=Lcom/probe/swipe1/MainActivity;.ups value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=12
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$9 pc=0 field=Lcom/probe/swipe1/MainActivity;.taps value=0
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$19 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDx value=-1048051712
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$20 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDy value=1103626240
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$21 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVx value=1149499560
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$22 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVy value=-993833063
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$23 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeFirst value=600
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$24 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeLast value=842
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[F298-SETCOLOR] recv=126 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 20670 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20670 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=19416
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[F298-SETCOLOR] recv=133 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[EXT-AOSP-002] setTextSize view=133 class=Landroid/graphics/Paint; px=78.75
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$11 pc=0 field=Lcom/probe/swipe1/MainActivity;.downs value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$14 pc=0 field=Lcom/probe/swipe1/MainActivity;.moves value=12
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$16 pc=0 field=Lcom/probe/swipe1/MainActivity;.ups value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$0 pc=0 field=Lcom/probe/swipe1/MainActivity;.scrolls value=12
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$5 pc=0 field=Lcom/probe/swipe1/MainActivity;.flings value=1
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$9 pc=0 field=Lcom/probe/swipe1/MainActivity;.taps value=0
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$19 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDx value=-1048051712
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$20 pc=0 field=Lcom/probe/swipe1/MainActivity;.lastDy value=1103626240
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$21 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVx value=1149499560
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$22 pc=0 field=Lcom/probe/swipe1/MainActivity;.flingVy value=-993833063
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$23 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeFirst value=600
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$24 pc=0 field=Lcom/probe/swipe1/MainActivity;.evTimeLast value=842
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[F298-SETCOLOR] recv=133 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 20670 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20670 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[F298-SETCOLOR] recv=140 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[EXT-AOSP-002] setTextSize view=140 class=Landroid/graphics/Paint; px=78.75
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[F298-SETCOLOR] recv=140 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 20670 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20670 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[F298-SETCOLOR] recv=147 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[EXT-AOSP-002] setTextSize view=147 class=Landroid/graphics/Paint; px=78.75
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[F298-SETCOLOR] recv=147 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 20670 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20670 non-white pixels
+[FRAME-SEQ] frame_5: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=6 dir=run/cont86/swipe_final/frames
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/swipe1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[F298-SETCOLOR] recv=154 cls=Landroid/graphics/Paint; color=0xff000000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=11
+[EXT-AOSP-002] setTextSize view=154 class=Landroid/graphics/Paint; px=78.75
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[F298-SETCOLOR] recv=154 cls=Landroid/graphics/Paint; color=0xffb40000 caller=Lcom/probe/swipe1/MainActivity$ProbeView;.onDraw pc=246
+[SGET] class=Lcom/probe/swipe1/MainActivity; method=access$25 pc=0 field=Lcom/probe/swipe1/MainActivity;.verdict obj_id=0
+[C013-ONDRAW] view=17 class=Lcom/probe/swipe1/MainActivity$ProbeView; dispatched=YES ops=7
+[C013-CUSTOMVIEW] onDraw replayed 7 ops (rp=7) for Lcom/probe/swipe1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 20670 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20670 non-white pixels
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 8
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/cont86/swipe_final/screenshot.png
+Report: run/cont86/swipe_final/report.md
