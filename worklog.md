@@ -10137,3 +10137,29 @@ Work Log:
 
 Stage Summary:
 - CONT-87 Track 1 closed to a terminal verdict with a two-part honest re-grade: the registered handler-match root cause was WRONG (retracted with decode + fixture evidence) and the registered honesty defect was REAL (confirmed + fixed). The clinit state machine now answers JVMS 5.5 truthfully: a clinit that throws leaves the class erroneous; first use delivers the original exception at its covering handler; later uses raise NCDFE. Zero drift across the full gate fleet.
+
+---
+Task ID: CONT-94
+Agent: Super Z (main)
+Task: User directive «ادامه تلگرام رو الویت اول اجرا بزار ۳۶۴ تموم بشه» — Telegram first-priority execution inside #364 (CONT-88 Phase 1 + CONT-89 + CONT-92 tracks), then continue finishing 364. Extract requests, show list, build work list, execute.
+
+Work Log:
+- Environment re-sync detected: git history showed CONT-87 already closed (HEAD 9d313976 over origin/main a2f2255b); UUID-message housekeeping commit on top (un-pushed). Binary rebuilt-state caa24290aad77ca9 confirmed.
+- Re-read all 54 #364 comments; confirmed CONT-87 result ledger (comment 6245976812) as the freshest; the 7 directives CONT-87..93 (comments 6245430786..6245531086) are the open backlog; user pinned Telegram first.
+- APK identity pinning (aapt2 badging): upload/telegram_official.apk = org.telegram.messenger.web 12.10.5 vc71059 sha16 e37aced2a49c1dbb; upload/forkgram_709208.apk = org.forkgram.classic 12.10.8.0 vc709208 sha16 3baeecb3288577e9; upload/whatsapp.apk = 5,615-byte stub (NOT_AVAILABLE verdict for CONT-91 W1).
+- Current-HEAD Telegram run (run/cont94/tg_official_1): LaunchActivity -> RESUMED, deep org/telegram/ui view tree, but framebuffer 188/2073600 non-white; 31 uncaught; crash census: 6x NPE (s2.checkSystemBarColors/onBecomeFullyVisible), 6x UOE (play-billing chain), 1x UnsatisfiedLinkError (ApplicationLoader), 2x Ll9/j (FirebaseInitProvider).
+- DEX decode (androguard 3.3.5; scripts/cont94_decode_*.py): H(Z Z Z)V single overload, w() receivers = getParentLayout() re-fetch or field p0; checkSystemBarColors = getParentActivity -> instanceof -> check-cast -> H; z0 = iget y0 -> e4.setInternalNavigationBarColor; getParentLayout = trivial iget.
+- Runtime probes (MINIANDROID_F141_DIAG; added bounded [C94-SINGLETON] probe): H pc=248 receiver NULL; [C94-SINGLETON] MISS 'Lorg/telegram/ui/LaunchActivity;' (no cache entry) -> allocated obj#7307; [R414-INIT-DEFAULT] proved even <init> field state absent on the synthetic; [U0113-ACTIVITY] #694 was the live activity that ran onCreate.
+- ROOT (F-NEW-396): the DEX-0 launch path allocated the live activity but NEVER stored api_singletons_[cls.name]; the getParentActivity intercept then fabricated a fresh uninitialized hard-coded-class object (right class, wrong instance); app instanceof passed; H ran on the empty object -> p0 null -> ActionBarLayout.w() NPE x3 -> APP-BOUNDARY unwind x3 -> login UI killed.
+- FIX (generic, 4 sites, zero app conditionals): (1) DEX-0 launch path stores the activity singleton (identity law); (2) primary getParentActivity intercept answers the LIVE activity from ActivityShadow::current_activity_id() (null pre-attachment, AOSP contract); (3)+(4) bridge and shadow-dispatch twins same law. doneButtonVisible app-specific attach retained + NAMED residual.
+- Fixture com.probe.c94p (apk run/cont94/c94parent.apk sha16 a90f3d0eaf113ed0): pre '[C94-PROBE] identity=OTHER-SAME-CLASS marker=null' -> post '[C94-PROBE] identity=THIS marker=C94-MARKER-V1'.
+- Real APK A/B: Telegram 188px -> 9340px (real '+' box, phone field borders, accent text), uncaught 31->15, 0 f141, 0 EXC-UNWIND; Forkgram 188px -> 15599px ('Your Number', QRLoginButton), uncaught -> 5.
+- Full battery at 7cf6fe7f3d6abb81: wall 12/12 MATCH, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, c72priv 13 rows 0-BAD, selftests 13/13, F-NEW-376 70/70, c74esc containment OK, clock1 OK, swipe1 law rows OK (e2 residual unchanged), as2048_47 0 uncaught — ZERO DRIFT.
+- Registry 702 -> 703 (F-NEW-396 ROOT-CAUSED-FIXED, sha16 70a7f20478b1af40, mirror synced); app_registry APP-012 PARTIAL (first real render checkpoint L4), APP-013 WhatsApp NOT_AVAILABLE verdict, APP-014 Forkgram PARTIAL.
+- Evidence: evidence/cont94/ (MANIFEST.txt + evidence.json + 5 faces + mosaic); runs run/cont94/*.
+
+Stage Summary:
+- Binary 7cf6fe7f3d6abb81; registry 703 roots; ledger posted to #364.
+- F-NEW-396 ROOT-CAUSED-FIXED — the first REAL Telegram/Forkgram app-owned pixels at current HEAD.
+- NAMED RESIDUALS: doneButtonVisible app-specific attach (fixture-first follow-up); top-anchored login layout (bounds/offset frontier); '[resid:...]' string fallback; billing/native/firebase boot-init boundaries.
+- NEXT: CONT-88 T3 (fragment-view bounds/offset law) -> T4 (RecyclerView) -> T6 (string resources); then CONT-90/91/93 tracks.
