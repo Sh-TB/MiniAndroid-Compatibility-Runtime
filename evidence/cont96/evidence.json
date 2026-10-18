@@ -1,0 +1,30 @@
+{
+  "wave": "CONT-96",
+  "date": "2026-10-18",
+  "binary": {"pre": "aa9ade61b147c12b", "post": "79d93a6ada630e73"},
+  "headline": "F-NEW-398 ROOT-CAUSED-FIXED — F084 false halt on invoke-containing loops; plus interpreter hot-path hygiene (diag_env, diag-find gating, flat F084 state, method-resolve memo). Telegram gate rate 341K -> 423K ins/s.",
+  "fixtures": {
+    "com.probe.perf1": {
+      "apk_sha16": "8cbe1d87b7a68cff",
+      "pre_rows": "charat ms=2563 sum=3688000; chararray ms=491 sum=31744000; virtual NEVER COMPLETED (F084 false halt at 50001 visits); run truncated >120s",
+      "post_rows": "charat ms=2690 sum=3688000; chararray ms=438 sum=31744000; virtual ms=3340 sum=14534196240; total ms=6474; verdict=DONE rows=4; HALT-LOOP 0",
+      "checksums_host_verified": true,
+      "spin_regs_evidence": "v2=50000 (loop counter ADVANCED) while halt claimed 'Infinite loop ... visited 50001 times' op_at_pc=0x34 if-lt v2,v5"
+    }
+  },
+  "phase_clock_30s_telegram": "execute_method_internal 868896 frames; bridge_to_api 702513 calls ~48.6us/call (the NEXT named frontier); insn.sw_non ~0.7us/op; tri.resolve ~4.8K ticks/call after memo",
+  "battery": {
+    "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e x3, opencalc f25b754c4565c38b x3, unote 90a67cc1ddda57b7 x3, microtimer bbd350b6c14fbd52 x3)",
+    "goldens": "4/4",
+    "negatives": "19/19 (gate-A probe 98 PASS / 1 INFO / 0 FAIL — byte-identical to recorded)",
+    "reinstall": "8/8",
+    "mg310": "7/7", "mg150": "3/3", "selftests": "13/13", "f376_incl_c72priv": "70/70",
+    "anchors": "sax1 events=6/6 PASS; clock1 4/4; clinit1 rows law-correct (UT2 NCDFE); swipe1 setup OK; c74esc containment OK; perf1 4/4 checksums identical"
+  },
+  "honest_notes": [
+    "The 30s canonical Telegram gate STILL ends in F084 budget wall-stop (1024 deferred halts): the SVG parse alone is 12.6M+ instructions and the per-invoke bridge dispatch (~48.6us measured by phase clock) plus per-op field resolution (~0.45us) are architecture-level frontiers this wave did NOT claim to close.",
+    "Container resync during the wave: local repo was a CONT-10-era snapshot; hard-reset to origin/main 3f032f46 (CONT-95 closeout) and rebuilt byte-identically (aa9ade61b147c12b) before any change. Probe stores were re-populated per scripts/closeout_baseline.sh (gate_a_probe 98/0/1).",
+    "perf1.apk was rebuilt once during bring-up (iteration counts 400/400/1M -> 100/100/300K; sha 383ac77749f2a235 -> 8cbe1d87b7a68cff) — all A/B rows quote the FINAL apk; the pre-fix run quotes the same final apk rebuilt at the pre-fix binary.",
+    "F084 halt message visit count now reports f084_visit_now (the flat-array local) — text identical in all observed cases (the old map value at the same pc)."
+  ]
+}

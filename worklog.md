@@ -10186,3 +10186,28 @@ Stage Summary:
 - Discovery of wave value: CONT-94's archived Telegram face was a mid-run-state artifact; state-dependence of app boot paths is now a first-class census dimension (theme/pref state → different DEX paths).
 - NAMED RESIDUALS: interpreter throughput on 507KB SVG parse (30s gate honest wall-stop; 240s completes); F084 re-fire per check; T3 bounds/offset + T6 LOC_ERR frontiers unchanged.
 - NEXT: R2 (T4 RecyclerView/Dialogs), R3 (T6 string resources — LOC_ERR faces now have a live repro state), then CONT-90 white-app batch with the new state-census discipline.
+
+---
+Task ID: CONT-96
+Agent: Super Z (main)
+Task: «ادامه اصلا پیشرفتی داشتی تو ۳۶۴ تلگرام چطور ادامه بده تا ۳۶۴ کامل تموم بشه» — progress report on 364/Telegram + continue until 364 complete. Standing protocol: extract → show → Telegram-first work list → execute to terminal verdicts → ledger → sync → push.
+
+Work Log:
+- Environment resync (4th time): local snapshot rolled back to the CONT-10 era (HEAD e99c2fbd, binary gone). Backed the residue commit up to branch backup-local-snapshot, hard-reset to origin/main 3f032f46 (CONT-95 closeout), rebuilt the runtime BYTE-IDENTICALLY (aa9ade61b147c12b), registry 704 verified.
+- #364 re-read: all 56 comments fetched; NO new directives after the CONT-95 ledger 6247425386; the CONT-87..93 set + named residuals remain the open backlog. Telegram-first work list re-affirmed (R1 T3, R2 T4, R3 T6, R4 boot boundaries, R5 pages 2..7, R6 CONT-90, R7 CONT-93, R8 CONT-87 tracks).
+- P0 Telegram item selected: the CONT-95 named THROUGHPUT residual — the 507KB SVG parse (12.6M+ interpreter instructions) cut by the honest F084 budget wall-stop at the 30s canonical gate (measured: 1052 F084 rows, 0 non-white px at gate settings; 341K ins/s).
+- MEASUREMENT FIRST (existing S61/S62 phase clock, env-gated): insn.sw_inv 88% of ticks (1.33M invokes vs 10.5M non-invoke ops at 2.2K ticks each) → method invocation cost dominates. Hot-region census: 60 per-op/per-frame std::getenv sites, ALWAYS-ON string::find debug gates (e.g. current_class_.find("PhoneView") on EVERY invoke-virtual), whole-map save/restore per invoke, per-invoke MUTF-8 re-resolution.
+- FIXTURE FIRST: com.probe.perf1 (fixtures/cont96_perf_probe; real aapt2/ECJ/D8; apk 8cbe1d87b7a68cff) — charAt/charArray/virtual benches with host-verified checksums. Pre-fix: charat 2563ms, chararray 491ms, virtual NEVER COMPLETED — [F084] false halt at 50001 visits with [SPIN-REGS] v2=50000 (the loop counter ADVANCED — the halt was provably wrong).
+- F-NEW-398 (NEW generic root, P0): try_recursive_invoke restored only pc_visit_count_ across the recursive callee; the callee's frame-entry clear left the caller's pc_branch_sig_ EMPTY and frame_progress_epoch_/pc_epoch_checkpoint_ at 0 — every invoke-containing loop froze its epoch at 0 and died at the 50001st visit as a false stall. Fix: save/restore the FULL F084 state set. Post-fix: fixture 4/4 rows verdict=DONE (virtual 3340ms, checksums byte-identical: 3688000 / 31744000 / 14534196240), HALT-LOOP 0.
+- W1 diag_env (INFRA-DIAGENV-1): 60 hot-region getenv presence-checks → process-literal-pointer-identity cache; per-op environ walks gone (ARITH_2ADDR WIDE_DIAG per arithmetic op included). W2 diag-find gating (INFRA-DIAGFIND-1): 10 ALWAYS-ON debug find-prints → cached env flags (EXP058/061/062/079/081/082/088); behavioral find sites untouched. W3-A (flat F084 state): per-pc maps → flat vectors + swap save/restore (was a whole-map COPY per invoke). W3-B (INFRA-METHODRES-MEMO): (dex, method_idx) → name/class/proto/params memo; 35c invoke arms build args from memoized params; uncached originals byte-identical, used only by the fill.
+- Telegram gate A/B: instruction rate 341K → 423K ins/s at the 30s gate (+24%); the SVG parse still exceeds the budget (bridge_to_api measured ~48.6µs/call × 702K calls + ~0.45µs field resolution per op — the architecture-level residual, now with a deterministic fixture harness and a phase-clock face; NAMED, not claimed).
+- Battery resync: fresh-container gaps rebuilt per scripts/closeout_baseline.sh (gate_a_probe rebuilt, probe stores re-populated; probe 98 PASS/1 INFO/0 FAIL — byte-identical verdict set).
+- FULL BATTERY at 79d93a6ada630e73 ZERO DRIFT: wall 12/12 MATCH (anchors byte-identical ×3), goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70 (c72priv rows included), sax1 PASS, clock1 4/4, clinit1 rows law-correct, swipe1 setup OK, c74esc containment OK, perf1 4/4.
+- Registry 704 → 708 (F-NEW-398 ROOT-CAUSED-FIXED P0 + INFRA-DIAGENV-1 + INFRA-DIAGFIND-1 + INFRA-METHODRES-MEMO; mirror synced). Evidence: evidence/cont96/ (evidence.json + A/B logs + phase table + rate lines + gate logs). Ledger posted to #364.
+
+Stage Summary:
+- Binary 79d93a6ada630e73; registry 708 roots.
+- F-NEW-398 ROOT-CAUSED-FIXED — the interpreter no longer false-halts live invoke-containing loops at the 50001st visit; the F084 state is frame-faithful across recursion and O(1) per instruction (flat arrays).
+- Throughput hygiene landed: per-op getenv walks, always-on find prints, per-invoke map copies, per-invoke MUTF-8 re-resolution all eliminated with byte-identical behavior (battery zero drift).
+- NAMED RESIDUALS (next wave face): bridge_to_api dispatch chain (~48.6µs/call measured, 702K calls at the Telegram gate) → dispatch-table/intrinsic fast path (ART-parity law); per-op field resolution ~0.45µs (string-keyed heap field maps); T3 bounds/offset; T6 LOC_ERR; R2/R3/R5..R8 unchanged.
+- NEXT: bridge-dispatch table campaign (fixture perf1 virtual/charat rows are the deterministic harness), then T3/T6 with the state-census discipline.
