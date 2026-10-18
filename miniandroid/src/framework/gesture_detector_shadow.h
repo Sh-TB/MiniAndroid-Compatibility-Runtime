@@ -61,11 +61,24 @@ struct GdModel {
     VelocityTrackerModel tracker;
     std::vector<Pending> pending;
 
-    // Callbacks: cb + up to 4 floats (x, y, distX/distVx, distY/distVy).
-    using Cb = std::function<bool(const char*, float, float, float, float)>;
+    // Callbacks: cb + up to 6 floats. Payload law (F-NEW-400, CONT-97):
+    //   simple callbacks (onDown/onShowPress/onLongPress/onSingleTapUp/
+    //   onDoubleTap): (x, y, 0, 0, 0, 0).
+    //   two-event callbacks — AOSP MotionEvent contract is that the SECOND
+    //   event object carries the CURRENT pointer position, which the old
+    //   4-float payload never carried (the engine built e2 from the DOWN
+    //   coords — every onScroll saw e2 == e1):
+    //     onScroll: (down_x, down_y, cur_x, cur_y, distanceX, distanceY)
+    //     onFling:  (down_x, down_y, up_x,  up_y,  velocityX, velocityY)
+    using Cb = std::function<bool(const char*, float, float, float, float,
+                                  float, float)>;
     Cb cb;
     void emit(const char* name, float a, float b, float c, float d) {
-        if (cb) cb(name, a, b, c, d);
+        if (cb) cb(name, a, b, c, d, 0.f, 0.f);
+    }
+    void emit6(const char* name, float a, float b, float c, float d, float e,
+               float f) {
+        if (cb) cb(name, a, b, c, d, e, f);
     }
 
     // Feed one event; returns true when a callback consumed the gesture.
@@ -88,7 +101,8 @@ public:
     // and invokes the listener class method).
     using DexDispatch = std::function<void(uint32_t gd_obj, uint32_t listener_obj,
                                            const std::string& cb, float f1, float f2,
-                                           float f3, float f4, bool& consumed)>;
+                                           float f3, float f4, float f5, float f6,
+                                           bool& consumed)>;
     void set_now_fn(std::function<int64_t()> fn) { now_fn_ = std::move(fn); }
     void set_dex_dispatch(DexDispatch fn) { dex_dispatch_ = std::move(fn); }
     GdModel* model_for(uint32_t obj) {

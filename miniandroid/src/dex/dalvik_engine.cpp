@@ -13086,7 +13086,8 @@ void DalvikExecutionEngine::dispatch_gesture_cb(uint32_t gd_obj,
                                                 uint32_t listener_obj,
                                                 const std::string& cb,
                                                 float f1, float f2, float f3,
-                                                float f4, bool& consumed) {
+                                                float f4, float f5, float f6,
+                                                bool& consumed) {
     (void)gd_obj;
     consumed = false;
     if (listener_obj == 0) return;
@@ -13094,8 +13095,12 @@ void DalvikExecutionEngine::dispatch_gesture_cb(uint32_t gd_obj,
     if (HeapObject* lo = heap_.get(listener_obj)) lcls_raw = lo->class_descriptor;
     if (lcls_raw.empty()) return;
     std::string lcls = s130_norm_cls(lcls_raw);
-    // e1 = the DOWN event of the current gesture (f1,f2 = down coords);
-    // e2 = the current event. scroll/fling carry the deltas/velocities.
+    // Payload law (F-NEW-400, CONT-97):
+    //   simple callbacks: f1,f2 = (x, y); f3..f6 unused.
+    //   onScroll: f1,f2 = down coords; f3,f4 = the CURRENT move coords
+    //     (e2's getX/getY); f5,f6 = distanceX/distanceY.
+    //   onFling:  f1,f2 = down coords; f3,f4 = the UP coords (e2); f5,f6 =
+    //     velocityX/velocityY.
     const bool two_events = (cb == "onScroll" || cb == "onFling");
     auto make_ev = [&](int action, float x, float y) {
         uint32_t ev = heap_.allocate("Landroid/view/MotionEvent;", pc_,
@@ -13113,36 +13118,33 @@ void DalvikExecutionEngine::dispatch_gesture_cb(uint32_t gd_obj,
         return ev;
     };
     uint32_t e1 = make_ev(0, f1, f2);
-    // F-NEW-390 ROOT-CAUSED-FIXED (CONT-86): try_recursive_invoke's binder
-    // contract is args[0] = the RECEIVER (this) — the touch-listener path
-    // passes [view, ev] and the key-listener path [view, keycode, ev]. The
-    // gesture path passed ONLY the callback params [e1, e2, f3, f4], so e1
-    // was consumed as `this` and every declared param shifted one slot:
-    //   e1-param read e2's object, e2-param read f3's float bits as an
-    //   object id (getX/getY → 0), distanceX/vx read f4, distanceY/vy read
-    //   OUT OF BOUNDS → NaN (Float.toString "" / float-to-int 0).
-    // Fixture proof: com.probe.swipe1 [SWIPE1-*] rows + [C86-GCB] rows
-    // (f3=+1055.77=real X velocity, f4=-1562.49=real Y velocity — tracker
-    // correct; the DEX side saw vx=-1562.487427 and dy="").
-    // Fix: prepend the listener object as args[0] (receiver), matching the
-    // AOSP law listener.onScroll(e1, e2, distanceX, distanceY).
     std::vector<DalvikValue> args{
         DalvikValue::make_object(listener_obj, lcls_raw),
         DalvikValue::make_object(e1, "Landroid/view/MotionEvent;")};
     if (two_events) {
-        uint32_t e2 = make_ev(2, f1, f2);
+        // F-NEW-400: e2 = the CURRENT event (ACTION_MOVE for onScroll,
+        // ACTION_UP for onFling) at (f3, f4) — the AOSP second-event
+        // contract. CONT-86 fixed the ARG-SHIFT (receiver prepended);
+        // this closes the remaining half: e2's coords. PRE evidence
+        // (run/cont86/swipe_final.log): [C86-GCB-E2] e2xy=100,400 on every
+        // scroll step while focus advanced 116,375 → 133,350 → ...
+        uint32_t e2 = make_ev(two_events ? (cb == "onScroll" ? 2 : 1) : 0,
+                              f3, f4);
         {
             float x2 = 0.f, y2 = 0.f;
             if (auto fx = heap_.get_object_field(e2, "__x__"))
                 if (fx->type == DalvikType::FLOAT32) x2 = fx->float_val;
             if (auto fy = heap_.get_object_field(e2, "__y__"))
                 if (fy->type == DalvikType::FLOAT32) y2 = fy->float_val;
-            std::cerr << "[C86-GCB-E2] e2=o" << e2
-                      << " e2xy=" << x2 << "," << y2 << std::endl;
+            static std::atomic<uint64_t> c97_gcb{0};
+            if (c97_gcb.fetch_add(1, std::memory_order_relaxed) < 16)
+                std::cerr << "[C97-GCB-E2] cb=" << cb << " e2=o" << e2
+                          << " e2xy=" << x2 << "," << y2
+                          << " dist/v= " << f5 << "," << f6 << std::endl;
         }
         args.push_back(DalvikValue::make_object(e2, "Landroid/view/MotionEvent;"));
-        args.push_back(DalvikValue::make_float(f3));
-        args.push_back(DalvikValue::make_float(f4));
+        args.push_back(DalvikValue::make_float(f5));
+        args.push_back(DalvikValue::make_float(f6));
     }
     DalvikValue ret = DalvikValue::make_void();
     DalvikExecutionResult res;
