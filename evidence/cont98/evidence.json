@@ -1,51 +1,56 @@
 {
-  "wave": "CONT-98",
-  "date": "2026-10-18",
-  "directive": "#364 «ادامه اول پیشنهادی خودت بعد بررسی کامل ۳۶۴» — own-suggestion first: the two open directives (CONT-98 comment 6248212134, CONT-99 comment 6248236077) were scanned and the highest-confidence P0 execution track (CONT-98 T6 Cursor/database contract) was executed as ONE separate task unit, fixture-first.",
-  "binary": {
-    "wave_start": "d90541058611608c",
-    "post_fix": "e51d7a643e6817ba",
-    "determinism": "fresh-container full rebuild reproduced d90541058611608c byte-identically; stash-rebuild reproduced it AGAIN for the PRE side; pop-rebuild reproduced e51d7a643e6817ba (4 reproduction events total)"
+ "wave": "CONT-98",
+ "date": "2026-10-18",
+ "directive": "#364 «ادامه اول پیشنهادی خودت بعد بررسی کامل ۳۶۴» — own-suggestion first: the two open directives (CONT-98 comment 6248212134, CONT-99 comment 6248236077) were scanned and the highest-confidence P0 execution track (CONT-98 T6 Cursor/database contract) was executed as ONE separate task unit, fixture-first.",
+ "binary": {
+  "wave_start": "d90541058611608c",
+  "post_fix": "e51d7a643e6817ba",
+  "determinism": "fresh-container full rebuild reproduced d90541058611608c byte-identically; stash-rebuild reproduced it AGAIN for the PRE side; pop-rebuild reproduced e51d7a643e6817ba (4 reproduction events total)"
+ },
+ "state_at_start": "62 #364 comments fetched; ZERO new comments after the CONT-97 ledger 6249123968. Open set = CONT-98 (10 law/contract tracks) + CONT-99 (10 visual-correctness tracks), both directive comments without a RESULT ledger. Registry 712 roots.",
+ "task_T6_cursor_contract": {
+  "verdict": "APPROVED (ROOT-CAUSED-FIXED / IMPLEMENTED+TESTED) — registered F-NEW-401, registry 712 -> 713",
+  "fixture_first": "fixtures/cont98_cursor_probe built with the real toolchain (aapt2/ECJ/D8) BEFORE any engine change; probe APK run/cont98/c98cur.apk sha16 5898381c801cf187 (V2-C98, 18 deterministic rows, self-contained private DB)",
+  "pre_fix_binary_d90541058611608c": {
+   "rows": "6/18 PASS",
+   "failures": "getString(INTEGER)='' (should be '1'); getString(NULL)='' (should be null); getType all 0 (missing); getDouble 0.0 (missing + REAL collapsed to int64); getInt(TEXT)=0 both rows (no prefix law); POSITIONS row (moveToLast/moveToPrevious/predicates missing); MOVEPOS row (moveToPosition(-1) clamped to count instead of parking -1; predicates missing); OOB-BEFORE 'no exception' (silent default); OOB-AFTER 'no exception'; IDXORTHROW 'no exception' (missing method); CLOSE isClosed=false (missing method); TRX-COMMIT (getString conversion)"
   },
-  "state_at_start": "62 #364 comments fetched; ZERO new comments after the CONT-97 ledger 6249123968. Open set = CONT-98 (10 law/contract tracks) + CONT-99 (10 visual-correctness tracks), both directive comments without a RESULT ledger. Registry 712 roots.",
-  "task_T6_cursor_contract": {
-    "verdict": "APPROVED (ROOT-CAUSED-FIXED / IMPLEMENTED+TESTED) — registered F-NEW-401, registry 712 -> 713",
-    "fixture_first": "fixtures/cont98_cursor_probe built with the real toolchain (aapt2/ECJ/D8) BEFORE any engine change; probe APK run/cont98/c98cur.apk sha16 5898381c801cf187 (V2-C98, 18 deterministic rows, self-contained private DB)",
-    "pre_fix_binary_d90541058611608c": {
-      "rows": "6/18 PASS",
-      "failures": "getString(INTEGER)='' (should be '1'); getString(NULL)='' (should be null); getType all 0 (missing); getDouble 0.0 (missing + REAL collapsed to int64); getInt(TEXT)=0 both rows (no prefix law); POSITIONS row (moveToLast/moveToPrevious/predicates missing); MOVEPOS row (moveToPosition(-1) clamped to count instead of parking -1; predicates missing); OOB-BEFORE 'no exception' (silent default); OOB-AFTER 'no exception'; IDXORTHROW 'no exception' (missing method); CLOSE isClosed=false (missing method); TRX-COMMIT (getString conversion)"
-    },
-    "post_fix_binary_e51d7a643e6817ba": {
-      "rows": "18/18 PASS",
-      "laws": "REAL cells keep exact double; getString TEXT/INTEGER/REAL/NULL conversion (SQLite %.15g text, integral reals keep .0, NULL->null); getInt/getLong/getShort TEXT leading-prefix (strtoll: '42abc'->42, '  -7xyz'->-7), REAL truncate toward zero, NULL->0; getDouble/getFloat strtod prefix; getType FIELD_TYPE_NULL/INTEGER/FLOAT/TEXT=0/1/2/3; getPosition; moveToPosition AOSP parking (p<0 -> -1; p>=count -> count); moveToLast/moveToPrevious; isBeforeFirst/isAfterLast/isFirst/isLast/isClosed (empty-cursor law); getColumnIndexOrThrow -> IllegalArgumentException(\"Unknown column 'x'\"); getColumnName ART AIOOBE message; AbstractCursor.checkPosition: CursorIndexOutOfBoundsException(\"Before first row.\")/(\"After last row.\") via the F-NEW-259g-a shadow exception channel; bad column indexes guarded (was an unchecked host read)"
-    },
-    "probe_sequencing_honesty": "V1 probe row C98-OOB-BEFORE failed on the POST side with msg=After last row. — a PROBE sequencing bug (MOVEPOS legitimately parked the cursor at afterLast under the AOSP law being tested), fixed in V2 by an explicit moveToPosition(-1) before the row; the ENGINE behavior was correct in both. Paired A/B re-run on the same V2 probe for both binaries.",
-    "regression_zero_drift": {
-      "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e x3, opencalc f25b754c4565c38b x3, unote 90a67cc1ddda57b7 x3, microtimer bbd350b6c14fbd52 x3)",
-      "goldens": "4/4 PASS (helloworld 83720c1028f832d0)",
-      "negatives": "19/19 PASS",
-      "reinstall": "8/8 PASS",
-      "mg310": "7/7 FENCE GREEN",
-      "mg150": "3/3 FENCE GREEN",
-      "selftests": "13/13 PASS",
-      "f376_incl_c72priv": "70/70 PASS (c72 probes rebuilt in-container: c72priv_v1 1e212250c1a8b1ad, c72priv_v2 89af054a64041371, c72draw 57459f2ed748aab9)",
-      "anchors": "sax1 PASS (events=6/6, verdict row on stdout); clock1 4/4 ok; clinit1 [C87-DONE] law-correct (cc=caught ClassNotFoundException, ac=clinit-ok, ut/ut2 uncaught-delivery correct); c74esc containment OK (3 escape rows denied, volume round-trip OK, /etc/passwd absent); perf1 verdict=DONE rows=4 checksums BYTE-IDENTICAL A/B (charat 3688000, chararray 31744000, virtual 14534196240, total 14569628240 on BOTH d90541058611608c and e51d7a643e6817ba)"
-    },
-    "honest_notes": [
-      "negatives interim 9/19 was a container-fresh sequence artifact: run/gatea/gate_a_probe.apk rebuilt (sha c5dd91e799f2b3f9) and the probe RUN step that produces gate_a_results.jsonl was missing; N-08-* rows harvest probe-run verdicts. After the canonical install+run the gate reads 19/19. No runtime regression involved.",
-      "sax1/clinit1/perf1 verdict rows print on STDOUT; the inherited battery script redirects stdout to /dev/null — rows were re-captured with stdout kept. Script gap flagged for the next wave.",
-      "POST harness runs exit rc=1 identical to PRE rc=1 (paired, non-behavioral).",
-      "BLOB (FIELD_TYPE 4) not materialized yet; requery deliberately NOT faked (materialized cursor). Both stay named scope notes on F-NEW-401."
-    ],
-    "files_changed": [
-      "miniandroid/src/storage/sqlite_shadow.h",
-      "miniandroid/src/storage/sqlite_shadow.cpp",
-      "fixtures/cont98_cursor_probe/*",
-      "scripts/cont98_build_probe.sh",
-      "scripts/cont98_battery.sh",
-      "scripts/cont98_registry_update.py",
-      "root_registry.json + canonical/root_cause_registry.json (712 -> 713)"
-    ]
+  "post_fix_binary_e51d7a643e6817ba": {
+   "rows": "18/18 PASS",
+   "laws": "REAL cells keep exact double; getString TEXT/INTEGER/REAL/NULL conversion (SQLite %.15g text, integral reals keep .0, NULL->null); getInt/getLong/getShort TEXT leading-prefix (strtoll: '42abc'->42, '  -7xyz'->-7), REAL truncate toward zero, NULL->0; getDouble/getFloat strtod prefix; getType FIELD_TYPE_NULL/INTEGER/FLOAT/TEXT=0/1/2/3; getPosition; moveToPosition AOSP parking (p<0 -> -1; p>=count -> count); moveToLast/moveToPrevious; isBeforeFirst/isAfterLast/isFirst/isLast/isClosed (empty-cursor law); getColumnIndexOrThrow -> IllegalArgumentException(\"Unknown column 'x'\"); getColumnName ART AIOOBE message; AbstractCursor.checkPosition: CursorIndexOutOfBoundsException(\"Before first row.\")/(\"After last row.\") via the F-NEW-259g-a shadow exception channel; bad column indexes guarded (was an unchecked host read)"
   },
-  "remaining": "CONT-98 T1-T5/T7-T10 and CONT-99 T1-T10 remain open directives (each an independent task unit per the standing directive); F-NEW-381 opcode-core throughput stays the CONT-97 NEXT headline."
+  "probe_sequencing_honesty": "V1 probe row C98-OOB-BEFORE failed on the POST side with msg=After last row. — a PROBE sequencing bug (MOVEPOS legitimately parked the cursor at afterLast under the AOSP law being tested), fixed in V2 by an explicit moveToPosition(-1) before the row; the ENGINE behavior was correct in both. Paired A/B re-run on the same V2 probe for both binaries.",
+  "regression_zero_drift": {
+   "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e x3, opencalc f25b754c4565c38b x3, unote 90a67cc1ddda57b7 x3, microtimer bbd350b6c14fbd52 x3)",
+   "goldens": "4/4 PASS (helloworld 83720c1028f832d0)",
+   "negatives": "19/19 PASS",
+   "reinstall": "8/8 PASS",
+   "mg310": "7/7 FENCE GREEN",
+   "mg150": "3/3 FENCE GREEN",
+   "selftests": "13/13 PASS",
+   "f376_incl_c72priv": "70/70 PASS (c72 probes rebuilt in-container: c72priv_v1 1e212250c1a8b1ad, c72priv_v2 89af054a64041371, c72draw 57459f2ed748aab9)",
+   "anchors": "sax1 PASS (events=6/6, verdict row on stdout); clock1 4/4 ok; clinit1 [C87-DONE] law-correct (cc=caught ClassNotFoundException, ac=clinit-ok, ut/ut2 uncaught-delivery correct); c74esc containment OK (3 escape rows denied, volume round-trip OK, /etc/passwd absent); perf1 verdict=DONE rows=4 checksums BYTE-IDENTICAL A/B (charat 3688000, chararray 31744000, virtual 14534196240, total 14569628240 on BOTH d90541058611608c and e51d7a643e6817ba)"
+  },
+  "honest_notes": [
+   "negatives interim 9/19 was a container-fresh sequence artifact: run/gatea/gate_a_probe.apk rebuilt (sha c5dd91e799f2b3f9) and the probe RUN step that produces gate_a_results.jsonl was missing; N-08-* rows harvest probe-run verdicts. After the canonical install+run the gate reads 19/19. No runtime regression involved.",
+   "sax1/clinit1/perf1 verdict rows print on STDOUT; the inherited battery script redirects stdout to /dev/null — rows were re-captured with stdout kept. Script gap flagged for the next wave.",
+   "POST harness runs exit rc=1 identical to PRE rc=1 (paired, non-behavioral).",
+   "BLOB (FIELD_TYPE 4) not materialized yet; requery deliberately NOT faked (materialized cursor). Both stay named scope notes on F-NEW-401."
+  ],
+  "files_changed": [
+   "miniandroid/src/storage/sqlite_shadow.h",
+   "miniandroid/src/storage/sqlite_shadow.cpp",
+   "fixtures/cont98_cursor_probe/*",
+   "scripts/cont98_build_probe.sh",
+   "scripts/cont98_battery.sh",
+   "scripts/cont98_registry_update.py",
+   "root_registry.json + canonical/root_cause_registry.json (712 -> 713)"
+  ]
+ },
+ "remaining": "CONT-98 T1-T5/T7-T10 and CONT-99 T1-T10 remain open directives (each an independent task unit per the standing directive); F-NEW-381 opcode-core throughput stays the CONT-97 NEXT headline.",
+ "ledger_posted": {
+  "comment_id": 6249783652,
+  "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/364#issuecomment-6249783652",
+  "commit": "20b28d9b"
+ }
 }

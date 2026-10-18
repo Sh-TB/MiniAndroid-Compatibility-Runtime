@@ -10258,3 +10258,4 @@ Stage Summary:
 - CONT-98 T6 = APPROVED: the Cursor contract is now ART-parity across 18 probe rows with zero drift anywhere else; the registry holds 713 roots.
 - The two stdout-vs-stderr battery gaps and the gatea sequence dependency are recorded for the next wave.
 - NEXT: remaining CONT-98 tracks (T1/T2/T5/T7/T8 P0s) + CONT-99 visual-correctness tracks, each as an independent task unit; F-NEW-381 opcode-core throughput stays the headline P0 for Telegram.
+- Ledger as-posted to #364: comment 6249783652 (CONT-98 RESULT + the complete 27-wave directive review with per-wave terminal verdicts + honest success-rate counts 70.4%/75.9% + the exact open set). Push verified: HEAD == origin/main == 20b28d9b.
