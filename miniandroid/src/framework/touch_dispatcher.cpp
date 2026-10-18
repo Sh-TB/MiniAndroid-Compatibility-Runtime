@@ -502,7 +502,25 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                               << n->children.size() << std::endl;
                 // No child claimed the DOWN → the node itself is the touch
                 // target when its own onTouchEvent would handle it.
-                if (at && view_touchable(*n)) return id;
+                // ── CONT-102 (F-NEW-432 companion): the AdapterView
+                // self-target law (AOSP AbsListView.onTouchEvent — a
+                // ListView/GridView IS clickable by contract: it claims
+                // the DOWN itself and resolves the item by position at
+                // UP). Claimable when it carries an item click listener —
+                // the materialized rows are plain non-clickable children,
+                // so without this arm the whole list is tap-dead
+                // (c102d evidence: tap (500,950) target=0).
+                if (at && (view_touchable(*n) ||
+                           ((n->class_desc.find("ListView;") !=
+                                 std::string::npos ||
+                             n->class_desc.find("GridView;") !=
+                                 std::string::npos ||
+                             n->class_desc.find("AbsListView;") !=
+                                 std::string::npos ||
+                             n->class_desc.find("Spinner;") !=
+                                 std::string::npos) &&
+                            n->item_click_listener_id != 0)))
+                    return id;
                 return 0;
             };
             target = claim(root_id, 0, 0, 0);
@@ -630,7 +648,17 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             }
             const auto* n = views_->find_node(gesture_target_);
             const bool touchable = n ? view_touchable(*n) : false;
-            if (!n || !n->enabled || !touchable) {
+            // ── CONT-102 (F-NEW-432 companion): the AdapterView self-target
+            // claim law extends to the UP arm — AbsListView.onTouchEvent
+            // owns the whole gesture (DOWN→UP→item click) even though no
+            // View.OnClickListener exists on the list itself.
+            const bool adapter_self =
+                n && n->item_click_listener_id != 0 &&
+                (n->class_desc.find("ListView;") != std::string::npos ||
+                 n->class_desc.find("GridView;") != std::string::npos ||
+                 n->class_desc.find("AbsListView;") != std::string::npos ||
+                 n->class_desc.find("Spinner;") != std::string::npos);
+            if (!n || !n->enabled || (!touchable && !adapter_self)) {
                 rec["consumed"] = touchable;
                 break;
             }
@@ -704,7 +732,18 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 // the click), so record the arm without altering the law.
                 rec["delegate_up_forwarded"] = true;
             }
-            if (!n || !touchable) {
+            // ── CONT-102 (F-NEW-432 companion): the AdapterView self-target
+            // law extends to the UP arm — AbsListView.onTouchEvent owns the
+            // whole gesture (DOWN→UP→item click) even though no
+            // View.OnClickListener exists on the list itself (c102d
+            // evidence: tap target=46, UP aborted at the touchable gate).
+            const bool adapter_self_up =
+                n && n->item_click_listener_id != 0 &&
+                (n->class_desc.find("ListView;") != std::string::npos ||
+                 n->class_desc.find("GridView;") != std::string::npos ||
+                 n->class_desc.find("AbsListView;") != std::string::npos ||
+                 n->class_desc.find("Spinner;") != std::string::npos);
+            if (!n || (!touchable && !adapter_self_up)) {
                 rec["consumed"] = false;
                 reset_gesture();
                 break;

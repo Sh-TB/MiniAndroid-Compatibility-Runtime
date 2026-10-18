@@ -936,13 +936,39 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                     n->class_desc.find("ListView;") != std::string::npos ||
                                     n->class_desc.find("GridView;") != std::string::npos;
                                 if (is_adapter && n->item_click_listener_id != 0) {
-                                    int pos = 0;
-                                    for (uint32_t cid : n->children) {
-                                        if (cid == view_id) break;
-                                        ++pos;
+                                    int pos = -1;
+                                    if (view_id != n->view_id) {
+                                        // child row target → child index
+                                        pos = 0;
+                                        for (uint32_t cid : n->children) {
+                                            if (cid == view_id) break;
+                                            ++pos;
+                                        }
+                                        if (pos >= (int)n->children.size())
+                                            pos = -1;
+                                    } else {
+                                        // ── CONT-102 (F-NEW-432 companion):
+                                        // the AdapterView ITSELF claimed the
+                                        // DOWN (AbsListView.onTouchEvent law)
+                                        // — resolve the item by the tap
+                                        // point (AOSP pointToPosition):
+                                        // the child whose laid-out box
+                                        // contains (x,y).
+                                        for (size_t ci = n->children.size();
+                                             ci-- > 0;) {
+                                            const auto* cn =
+                                                vs->find_node(n->children[ci]);
+                                            if (!cn) continue;
+                                            if (x >= cn->x && x < cn->x + cn->width &&
+                                                y >= cn->y && y < cn->y + cn->height) {
+                                                pos = (int)ci;
+                                                break;
+                                            }
+                                        }
                                     }
-                                    dalvik_engine_.dispatch_item_click(
-                                        n->view_id, view_id, pos, false);
+                                    if (pos >= 0)
+                                        dalvik_engine_.dispatch_item_click(
+                                            n->view_id, view_id, pos, false);
                                     break;
                                 }
                                 cur = n->parent_id;
@@ -1423,6 +1449,38 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             }
             dalvik_engine_.set_manifest_services(svc_classes);
             dalvik_engine_.set_manifest_receiver_actions(rcv_actions);
+        }
+        // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity
+        // transfer — permissions, per-activity exported/launchMode and the
+        // uses-sdk values (AOSP PackageParser normalized model → PM laws).
+        {
+            std::vector<std::string> req_perms = result.apk_info.permissions;
+            std::vector<std::tuple<std::string, bool, bool, int>> act_attrs;
+            // The normalized activity table lives in ManifestInfo (the
+            // S123 law already re-parses the manifest here for the same
+            // reason — ApkInfo carries no component table).
+            apk::ManifestReader mr_id;
+            apk::ManifestInfo mi_id =
+                mr_id.parse(apk_parser_.extract_entry_cached("AndroidManifest.xml"));
+            for (const auto& act : mi_id.activities) {
+                std::string cls = act.name;
+                if (!cls.empty()) {
+                    if (cls[0] == '.')
+                        cls = result.apk_info.package_name + cls;
+                    else if (cls.find('.') == std::string::npos)
+                        cls = result.apk_info.package_name + "." + cls;
+                }
+                if (cls.empty()) continue;
+                act_attrs.emplace_back(cls, act.exported,
+                                       act.exported_declared, act.launch_mode);
+            }
+            int t_sdk = 0, m_sdk = 0;
+            try { t_sdk = std::stoi(result.apk_info.target_sdk_version); }
+            catch (...) { t_sdk = 0; }
+            try { m_sdk = std::stoi(result.apk_info.min_sdk_version); }
+            catch (...) { m_sdk = 0; }
+            dalvik_engine_.set_manifest_pkg_identity(
+                std::move(req_perms), std::move(act_attrs), t_sdk, m_sdk);
         }
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================

@@ -612,6 +612,36 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         
         ManifestInfo::ActivityInfo act_info;
         act_info.name = current_activity_name_;
+        // CONT-102 (F-NEW-425): parse android:exported + android:launchMode
+        // (AOSP PackageParser laws). AXML booleans arrive as
+        // TYPE_INT_BOOLEAN (0x12) with value_data 0/1; string forms
+        // ("true"/"false") arrive as raw values. launchMode arrives as an
+        // INT (attr enum 0..3) or its string spelling.
+        for (const auto& a : attrs) {
+            const std::string aname = get_string(a.name_index);
+            if (aname == "exported") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    act_info.exported = a.value_data != 0;
+                    act_info.exported_declared = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "exported");
+                    if (es == "true" || es == "false") {
+                        act_info.exported = (es == "true");
+                        act_info.exported_declared = true;
+                    }
+                }
+            } else if (aname == "launchMode") {
+                if ((a.value_data_type & 0xFF) == 0x10) {
+                    act_info.launch_mode = (int)a.value_data & 0x3;
+                } else {
+                    const std::string lm = get_attribute_value(attrs, "launchMode");
+                    if (lm == "standard") act_info.launch_mode = 0;
+                    else if (lm == "singleTop") act_info.launch_mode = 1;
+                    else if (lm == "singleTask") act_info.launch_mode = 2;
+                    else if (lm == "singleInstance") act_info.launch_mode = 3;
+                }
+            }
+        }
         // CONT-68 (F-NEW-366): every activity carries its own theme record
         // (the main-activity slot keeps the S68 W2 semantics downstream).
         act_info.theme_resid = activity_theme_resid_pending_;

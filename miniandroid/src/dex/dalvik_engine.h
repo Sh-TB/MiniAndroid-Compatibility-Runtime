@@ -38,6 +38,7 @@ class HeapAllocator;
 #include <map>
 #include <unordered_map>
 #include <stack>
+#include <tuple>                       // CONT-102: manifest activity attrs
 #include <memory>
 #include <cstdint>
 #include <optional>
@@ -1472,6 +1473,25 @@ public:
         // competing second authority that order-dependently fought the
         // per-package law. REMOVED: no storage consumer may set its own
         // data root; they all obey the one binding stage.
+    }
+
+    // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity
+    // transfer — the PM truthfulness law set. requestedPermissions
+    // (uses-permission list), per-activity (name, exported, declared,
+    // launchMode) and the uses-sdk target/min values feed:
+    //   ApplicationInfo.{packageName,enabled,targetSdkVersion,minSdkVersion},
+    //   ActivityInfo.{exported,launchMode},
+    //   getPackageInfo(GET_ACTIVITIES/GET_PERMISSIONS),
+    //   checkSelfPermission install-grant law.
+    // tuple = (class name, exported, exported_declared, launch_mode).
+    void set_manifest_pkg_identity(
+        std::vector<std::string> requested_permissions,
+        std::vector<std::tuple<std::string, bool, bool, int>> activity_attrs,
+        int target_sdk, int min_sdk) {
+        manifest_requested_permissions_ = std::move(requested_permissions);
+        manifest_activity_attrs_ = std::move(activity_attrs);
+        manifest_target_sdk_ = target_sdk;
+        manifest_min_sdk_ = min_sdk;
     }
 
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
@@ -3046,6 +3066,11 @@ public:
     std::vector<std::string> manifest_providers_;
     // GATE A: manifest <provider> name+authorities identity pairs.
     std::vector<std::pair<std::string, std::string>> manifest_provider_identity_;
+    // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity state.
+    std::vector<std::string> manifest_requested_permissions_;
+    std::vector<std::tuple<std::string, bool, bool, int>> manifest_activity_attrs_;
+    int manifest_target_sdk_ = 0;
+    int manifest_min_sdk_ = 0;
     // #371: manifest <provider> name → grantUriPermissions.
     std::vector<std::pair<std::string, bool>> manifest_provider_grants_;
     // GATE A: provider object → bound context object (attachInfo law).
