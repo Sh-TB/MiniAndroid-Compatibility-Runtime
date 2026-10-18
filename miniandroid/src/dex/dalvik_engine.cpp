@@ -38733,6 +38733,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 auto it = s109_stream_bytes.find(stream_oid);
                 std::string xml =
                     (it != s109_stream_bytes.end()) ? it->second : "";
+                // F-NEW-397 (CONT-95, AOSP SAX law): a stream-backed
+                // InputSource resolves its bytes through the ONE asset-byte
+                // law (resolve_asset_stream → cached_asset_bytes) — the same
+                // law InputStream.read serves. The previous lookup hit
+                // s109_stream_bytes, a registry NO site ever populated, so
+                // every XMLReader.parse over openRawResource/asset streams
+                // saw bytes=0 and the app's own ContentHandler received zero
+                // events. Ground-truth casualty: Telegram SvgHelper
+                // (default wallpaper pattern SVG) → pattern bitmap 0×0 →
+                // Bitmap.createBitmap(0,0) IAE (correct AOSP law) at
+                // LaunchActivity boot Night-theme path — the whole onCreate
+                // died (o6.I unit 951 / onCreate unit 1375: raw DEX try
+                // tables prove NO try coverage at either site) → white
+                // frame. With real bytes the app's own SAX parser builds
+                // real dimensions; the engine adds no SVG semantics of its
+                // own (AOSP: org.xml.sax is a generic contract, not an
+                // app shim).
+                if (xml.empty() && stream_oid != 0) {
+                    std::string sax_res_path;
+                    size_t* sax_pos = nullptr;
+                    if (resolve_asset_stream(stream_oid, sax_res_path,
+                                             sax_pos) &&
+                        !sax_res_path.empty()) {
+                        xml = cached_asset_bytes(sax_res_path);
+                    }
+                }
                 // handler → (class, oid)
                 uint32_t handler_oid = 0;
                 std::string handler_cls;
