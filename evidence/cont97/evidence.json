@@ -1,0 +1,31 @@
+{
+ "wave": "CONT-97",
+ "date": "2026-10-18",
+ "binary": {
+  "pre": "79d93a6ada630e73",
+  "post": "b6073e78a45dc7fa"
+ },
+ "headline": "T1 INFRA-BRIDGEINTR-1 ROOT-CAUSED-FIXED: bridge dispatch census (INFRA-BRIDGECENSUS-1) attributed 96% of bridge time to two keys walking the 33.5K-line law chain; ART-parity intrinsic entry fast path answers them in O(1). Telegram 30s gate 12.7M -> 16.1M insns (+27%); isWhitespace 994K -> 727 cy/call; charAt 20.2K -> 3.8K cy/call. Zero drift battery.",
+ "census": {
+  "pre_tg1_top": "isWhitespace 88001 calls x 994399 cy = 85.4%; String.charAt 535506 x 20164 = 10.5%",
+  "post_tg3_top": "XMLReader|parse 1 call (parse subtree, correct attribution); charAt 3816 cy/call; getLength 48192 cy/call (real walk cost, rank 5)"
+ },
+ "fixture": {
+  "com.probe.perf1": "verdict=DONE rows=4, checksums byte-identical 3688000/31744000/14534196240; charat row 2690ms -> 1580ms"
+ },
+ "battery": {
+  "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e x3, opencalc f25b754c4565c38b x3, unote 90a67cc1ddda57b7 x3, microtimer bbd350b6c14fbd52 x3)",
+  "goldens": "4/4 PASS",
+  "negatives": "19/19 PASS",
+  "reinstall": "8/8 PASS",
+  "mg310_mg150": "rc=0 / rc=0",
+  "selftests": "13/13 PASS",
+  "f376_incl_c72priv": "70/70 PASS",
+  "anchors": "sax1 events=6/6 PASS; clock1 4/4; clinit1 CC/UT2 law-correct; swipe1 setup OK; c74esc containment rows all OK; perf1 4/4"
+ },
+ "honest_notes": [
+  "The 30s canonical Telegram gate STILL ends in F084 wall-stop: the SVG parse subtree is real interpreter work (86G cycles attributed to the single XMLReader.parse bridge call) and still exceeds the budget at the gate; the visual face at canonical settings is UNCHANGED \u2014 this wave claims throughput, not new pixels.",
+  "Census tool bug found and fixed same wave: the first draft shared a thread_local key across nested bridge calls, clobbering subtree attribution (the 14.9M cy/call getLength intermediate reading was this artifact). Clean tg3 census is authoritative.",
+  "Remaining bridge cost after intrinsics: 91G ticks phase total / 86G is the parse subtree (real DEX work), i.e. the chain-walk overhead is now marginal; next throughput levers are resolve_field (~0.45us/op) and class_init (T2 face)."
+ ]
+}

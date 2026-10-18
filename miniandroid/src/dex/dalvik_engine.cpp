@@ -27411,12 +27411,197 @@ static std::string host_path_for_virtual_volume(const std::string& p) {
     return hp;
 }
 
+// ─── CONT-97 T1: bridge dispatch census (env MINIANDROID_BRIDGE_CENSUS=1) ───
+// Answers: which (class,method) keys consume the measured 145.7K cycles/call
+// aggregate? Bounded map keyed on the call's (class,method); RAII record on
+// scope exit so the WHOLE law-chain cost is attributed to the key. Zero cost
+// when disabled (one relaxed load). Prints at atexit, top 48 by ticks.
+namespace {
+struct BridgeCensus {
+    bool on = false;
+    std::unordered_map<std::string, std::pair<uint64_t, uint64_t>> kv; // key -> (calls, ticks)
+};
+inline BridgeCensus& bridge_census() {
+    static BridgeCensus bc;
+    return bc;
+}
+struct BridgeCensusGuard {
+    uint64_t t0 = 0;
+    bool on = false;
+    std::string key; // stack-local per call: nested bridge calls each own
+                     // their frame's key (the first draft shared one
+                     // thread_local and nested subtrees clobbered it).
+    void begin(const std::string& cls, const std::string& mth) {
+        on = true;
+        t0 = __rdtsc();
+        key.assign(cls);
+        key.push_back('|');
+        key.append(mth);
+    }
+    ~BridgeCensusGuard() {
+        BridgeCensus& bc = bridge_census();
+        if (!on || !bc.on) return;
+        auto& slot = bc.kv[key];
+        slot.first += 1;
+        slot.second += __rdtsc() - t0;
+    }
+};
+inline void bridge_census_init() {
+    static const bool c97_once = [] {
+        BridgeCensus& bc = bridge_census();
+        bc.on = std::getenv("MINIANDROID_BRIDGE_CENSUS") != nullptr;
+        if (bc.on) {
+            std::atexit([] {
+            BridgeCensus& bc2 = bridge_census();
+            std::vector<std::pair<std::string, std::pair<uint64_t, uint64_t>>> rows(
+                bc2.kv.begin(), bc2.kv.end());
+            std::sort(rows.begin(), rows.end(),
+                      [](auto& a, auto& b) { return a.second.second > b.second.second; });
+            uint64_t total_ticks = 0, total_calls = 0;
+            for (auto& r : rows) { total_ticks += r.second.second; total_calls += r.second.first; }
+            fprintf(stderr, "[BRIDGE-CENSUS] keys=%zu calls=%llu ticks=%llu\n",
+                    rows.size(), (unsigned long long)total_calls,
+                    (unsigned long long)total_ticks);
+            for (size_t i = 0; i < rows.size() && i < 48; ++i)
+                fprintf(stderr, "[BRIDGE-CENSUS] %-3zu %-70s calls=%-9llu ticks=%-13llu cy/call=%llu\n",
+                        i, rows[i].first.c_str(),
+                        (unsigned long long)rows[i].second.first,
+                        (unsigned long long)rows[i].second.second,
+                        (unsigned long long)(rows[i].second.first
+                            ? rows[i].second.second / rows[i].second.first : 0));
+            fflush(stderr);
+        });
+        }
+        return true;
+    }();
+    (void)c97_once;
+}
+} // namespace
+
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    bridge_census_init();
+    BridgeCensusGuard c97_census_guard;
+    if (bridge_census().on) c97_census_guard.begin(class_name, method);
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-97 T1 (INFRA-BRIDGEINTR-1): BRIDGE INTRINSIC ENTRY FAST PATH —
+    // the ART-parity dispatch law CONT-96 named as the next frontier.
+    //
+    // MEASURED (evidence/cont97/, MINIANDROID_BRIDGE_CENSUS=1 at the 30s
+    // Telegram gate): 694,555 bridge calls burn 102.5G cycles; the census
+    // attributes 96% to exactly two keys walking the ~33.5K-line sequential
+    // law chain to reach their (single, mid/late-chain) sites:
+    //   Ljava/lang/Character;|isWhitespace  88,001 calls  994,399 cy/call (85.4%)
+    //   Ljava/lang/String;|charAt          535,506 calls   20,164 cy/call (10.5%)
+    // The law BODIES are trivial; the walk is the cost. ART answers these
+    // same methods as compiler intrinsics; the parity law here answers them
+    // at bridge ENTRY — one guarded comparison, no walk.
+    //
+    // SOUNDNESS (why entry interception cannot change behavior):
+    //  1. The chain contains EXACTLY ONE match site per key:
+    //     isWhitespace/isSpaceChar at ~59091, String.charAt at ~57089
+    //     (the other "charAt" site at ~35160 sits inside the
+    //     Ljava/lang/StringBuilder; block — a different class guard).
+    //  2. No prefix-match condition (class_name.find/starts_with) in the
+    //     chain mentions "String" or "Character" — no earlier site can
+    //     match these (class,method) pairs, so the prefix the intrinsic
+    //     skips is provably non-matching for them.
+    //  3. Arg-shape guards are IDENTICAL to the deep sites (args.size()>=1
+    //     for isWhitespace; args.size()>=2 && args[1]==INT32 for charAt) —
+    //     calls with other shapes still fall through to the chain exactly
+    //     as before.
+    //  4. Law bodies are copied VERBATIM from the deep sites (same ws/sc
+    //     sets, same UTF-8 decode + surrogate law, same honest-0 OOB rule,
+    //     same R-NEW-353 result-out contract). The only mechanical change:
+    //     charAt reads the receiver through a const reference instead of
+    //     copying it (the deep site's local copy was read-only).
+    // The deep sites remain in place — they are unreachable for these keys
+    // now, but they document the law origin and stay correct if this entry
+    // block is ever removed.
+    if (class_name == "Ljava/lang/Character;" &&
+        (method == "isWhitespace" || method == "isSpaceChar") &&
+        args.size() >= 1) {
+        int32_t c = 0;
+        if (args[0].type == DalvikType::CHAR || args[0].type == DalvikType::INT32)
+            c = args[0].int_val;
+        bool ws = (c == ' ' || c == '\t' || c == '\n' || c == 0x0B ||
+                   c == '\f' || c == '\r' ||
+                   (c >= 0x1C && c <= 0x1F) ||
+                   (c >= 0x1680 && c != 0x00A0 && c != 0x2007 &&
+                    c != 0x202F &&
+                    (c == 0x1680 || (c >= 0x2000 && c <= 0x200A) ||
+                     c == 0x2028 || c == 0x2029 || c == 0x205F ||
+                     c == 0x3000)));
+        bool sc = (c == 0x00A0 || c == 0x1680 ||
+                   (c >= 0x2000 && c <= 0x200A) ||
+                   c == 0x2028 || c == 0x2029 || c == 0x202F ||
+                   c == 0x205F || c == 0x3000);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(method == "isWhitespace" ? ws : sc);
+        return true;
+    }
+    if (class_name == "Ljava/lang/String;" && method == "charAt" &&
+        args.size() >= 2 && args[1].type == DalvikType::INT32) {
+        int32_t idx = args[1].int_val;
+        // Read-only view of the receiver's bytes (deep site copied; the
+        // copy was never mutated — elimination is behavior-identical).
+        static const std::string c97_empty_str;
+        const std::string* sp = &c97_empty_str;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
+            sp = &args[0].string_val;
+        const std::string& s = *sp;
+        // Decode UTF-8 code points into a char list, then index.
+        int32_t codept = 0;
+        int32_t cpi = 0;
+        bool in_range = false;
+        for (size_t i = 0; i < s.size();) {
+            unsigned char b0 = static_cast<unsigned char>(s[i]);
+            size_t len = 1;
+            int32_t cp = b0;
+            if ((b0 & 0xE0) == 0xC0 && i + 1 < s.size()) {
+                len = 2;
+                cp = ((b0 & 0x1F) << 6) |
+                     (static_cast<unsigned char>(s[i + 1]) & 0x3F);
+            } else if ((b0 & 0xF0) == 0xE0 && i + 2 < s.size()) {
+                len = 3;
+                cp = ((b0 & 0x0F) << 12) |
+                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 6) |
+                     (static_cast<unsigned char>(s[i + 2]) & 0x3F);
+            } else if ((b0 & 0xF8) == 0xF0 && i + 3 < s.size()) {
+                len = 4;
+                cp = ((b0 & 0x07) << 18) |
+                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 12) |
+                     ((static_cast<unsigned char>(s[i + 2]) & 0x3F) << 6) |
+                     (static_cast<unsigned char>(s[i + 3]) & 0x3F);
+            }
+            if (cpi == idx) { codept = cp; in_range = true; break; }
+            cpi++;
+            i += len;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // BMP chars answer directly; supplementary code points answer the
+        // high surrogate (the first DEX char of the pair) — index law of a
+        // JVM String, whose charAt addresses UTF-16 code units.
+        DalvikValue r;
+        r.type = DalvikType::CHAR;
+        if (!in_range) {
+            r.int_val = 0;  // StringIndexOutOfBounds territory — honest 0,
+                            // no fake data (the caller's loop bound is
+                            // length(); OOB here means an upstream bug).
+        } else if (codept >= 0x10000) {
+            codept -= 0x10000;
+            r.int_val = 0xD800 + (codept >> 10);
+        } else {
+            r.int_val = codept;
+        }
+        // R-NEW-353 RESULT-OUT CONTRACT: write the answer to `result`.
+        result = r;
+        return true;
+    }
     // CONT-86 F-NEW-393 diag (bounded): does the ByteBuffer static family
     // reach bridge_to_api at all?
     if (class_name == "Ljava/nio/ByteBuffer;" ||
