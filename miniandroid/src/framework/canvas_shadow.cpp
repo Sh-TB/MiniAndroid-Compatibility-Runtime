@@ -2469,6 +2469,54 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_bool(clip_.r > clip_.l && clip_.b > clip_.t);
     }
+    if (m == "quickReject") {
+        // F-NEW-420 (CONT-101 T7): AOSP Canvas.quickReject — true when the
+        // rect does NOT intersect the CURRENT CLIP (empty clip ⇒ everything
+        // is rejected). ROOT CAUSE (c99cv PRE probe): unimplemented →
+        // answered false unconditionally even under an EMPTY clipRect —
+        // app culling logic (onDraw guards, RenderNode rejections) drew
+        // what AOSP would have skipped. Same op-space baking as clipRect.
+        // Boundary (honest): with NO clip active the device rect is not
+        // tracked in op space, so only degenerate rects reject.
+        float l = 0, t = 0, r = 0, b = 0;
+        bool have = false;
+        if (ctx.args.size() >= 4) {
+            l = arg_as_float(ctx, 0, 0.f);
+            t = arg_as_float(ctx, 1, 0.f);
+            r = arg_as_float(ctx, 2, 0.f);
+            b = arg_as_float(ctx, 3, 0.f);
+            have = true;
+        } else if (!ctx.args.empty() &&
+                   read_rectf_fields(heap_, ctx.arg_as_object(0), l, t, r, b)) {
+            have = true;
+        }
+        if (!have) {
+            warn_noop(cls, "quickReject(unresolved)");
+            return CallResult::handled_bool(false);
+        }
+        // Bake with the CURRENT matrix into op space (same as clipRect).
+        float ql, qt, qr, qb;
+        if (mat_.is_translate_only()) {
+            ql = l + mat_.e; qt = t + mat_.f;
+            qr = r + mat_.e; qb = b + mat_.f;
+        } else {
+            const float cx[4] = {l, r, l, r}, cy[4] = {t, t, b, b};
+            ql = qt = 1e30f; qr = qb = -1e30f;
+            for (int i = 0; i < 4; i++) {
+                float px, py; mat_.map(cx[i], cy[i], px, py);
+                ql = std::min(ql, px); qr = std::max(qr, px);
+                qt = std::min(qt, py); qb = std::max(qb, py);
+            }
+        }
+        if (!clip_.active) {
+            bool degenerate = !(qr > ql && qb > qt);
+            return CallResult::handled_bool(degenerate);
+        }
+        float il = std::max(ql, clip_.l), it = std::max(qt, clip_.t);
+        float ir = std::min(qr, clip_.r), ib = std::min(qb, clip_.b);
+        bool rej = !(ir > il && ib > it);
+        return CallResult::handled_bool(rej);
+    }
     if (m == "getClipBounds") {
         // CONT-37 diag: bounded visibility for the F-NEW-298 law.
         {
