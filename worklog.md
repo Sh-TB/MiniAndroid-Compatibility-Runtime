@@ -10236,3 +10236,25 @@ Stage Summary:
 - Binary d90541058611608c; registry 708 -> 712 (INFRA-BRIDGECENSUS-1, INFRA-BRIDGEINTR-1, F-NEW-399, F-NEW-400 + re-grades F-145/F-NEW-214/F-NEW-192/F-NEW-277/F-NEW-381/R-NEW-456).
 - The T1 throughput law is the wave headline: the ART-parity bridge intrinsic fast path removes 96% of bridge dispatch cost with byte-identical behavior; the gate rate is +27% on top of CONT-96's +24%.
 - NEXT: opcode-core throughput campaign (F-NEW-381 — the 295x150 login face and the 30s SVG wall both hang on it); resolve_field/class_init below threshold with numbers recorded; CONT-90 cohort artifact re-acquisition; elevation (F-NEW-192) and Compose continuation (F-NEW-277) stay named.
+
+---
+Task ID: CONT-98
+Agent: Super Z (main)
+Task: #364 «ادامه اول پیشنهادی خودت بعد بررسی کامل ۳۶۴» — own-suggestion first, then the complete #364 review. Fresh container: synced to origin/main 62b2c2b6 (CONT-97 closeout), rebuilt the runtime byte-identically, scanned the two OPEN directives (CONT-98 6248212134, CONT-99 6248236077), executed the highest-confidence P0 track (CONT-98 T6 Cursor contract) as one separate task unit.
+
+Work Log:
+- Container sync: local HEAD was an OLD ancestor (CONT-10 era); fast-forwarded to origin/main 62b2c2b6; registry 712 roots at start.
+- Fresh rebuild reproduced the frozen baseline d90541058611608c byte-identically (determinism re-proven in a new container).
+- #364 re-fetched in full (62 comments): ZERO new comments after the CONT-97 ledger 6249123968; the open set is entirely CONT-98 + CONT-99 (directive comments without RESULT ledgers).
+- OWN SUGGESTION executed (CONT-98 T6, P0, fixture-first): fixtures/cont98_cursor_probe (real aapt2/ECJ/D8; c98cur.apk 5898381c801cf187, V2-C98, 18 deterministic rows).
+- PRE on the frozen binary: 6/18 — REAL cells collapsed to int64 (2.5->2), getString(INTEGER)='', getString(NULL)='' not null, getInt(TEXT)=0 (no prefix law), moveToPosition(-1) clamped to count, out-of-row getters answered with silent engine defaults, 14 cursor methods missing entirely.
+- FIX F-NEW-401 (src/storage/sqlite_shadow.{h,cpp}): DOUBLE cell kind; SQLite dynamic-typing conversion laws (getString/getInt/getLong/getShort/getDouble/getFloat/getType); AOSP AbstractCursor position laws (moveToPosition/moveToLast/moveToPrevious parking + all five predicates + getPosition/isClosed); getColumnIndexOrThrow IAE + getColumnName AIOOBE bounds; AbstractCursor.checkPosition CursorIndexOutOfBoundsException("Before first row."/"After last row.") via the F-NEW-259g-a shadow exception channel; bad-column guards replacing an unchecked host read.
+- POST: 18/18 on the same V2 probe. Paired A/B discipline: stash-rebuild -> PRE sha d90541058611608c reproduced; pop-rebuild -> POST sha e51d7a643e6817ba reproduced. One probe-sequencing bug (V1 OOB-BEFORE tested from the afterLast park) caught honestly and fixed in the fixture, not papered over.
+- Regression ZERO DRIFT: wall 12/12 byte-identical, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70, anchors sax1/clock1/clinit1/c74esc/perf1 all green; perf1 checksums byte-identical A/B (3688000/31744000/14534196240/14569628240 both binaries).
+- Container-fresh sequence repairs (honest): gate_a_probe.apk rebuilt + probe RUN step re-executed for the negatives harvest (interim 9/19 was sequence, not regression); c72 probes rebuilt for the F-NEW-376 battery; sax1/clinit1/perf1 verdict rows print on stdout (inherited battery script discarded stdout — flagged).
+- Registry 712 -> 713 (F-NEW-401 ROOT-CAUSED-FIXED); mirrored to canonical/. Evidence: evidence/cont98/evidence.json. Probe + scripts committed (fixtures/cont98_cursor_probe, scripts/cont98_{build_probe,battery,registry_update}.py/.sh).
+
+Stage Summary:
+- CONT-98 T6 = APPROVED: the Cursor contract is now ART-parity across 18 probe rows with zero drift anywhere else; the registry holds 713 roots.
+- The two stdout-vs-stderr battery gaps and the gatea sequence dependency are recorded for the next wave.
+- NEXT: remaining CONT-98 tracks (T1/T2/T5/T7/T8 P0s) + CONT-99 visual-correctness tracks, each as an independent task unit; F-NEW-381 opcode-core throughput stays the headline P0 for Telegram.
