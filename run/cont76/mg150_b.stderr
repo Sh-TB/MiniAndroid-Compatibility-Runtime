@@ -4,11 +4,11 @@
 [BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
 [BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
 [S123-ACTION-REG] activities=1 action_targets=1
-FONT_SOURCE apk=run/cont76/store/data/app/com.probe.mg150/base.apk font_files=0 registered=0 first=<none>
+FONT_SOURCE apk=run/cont76/mg150_fence.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 51 entries (3 from APK + 48 framework) — LinearLayout present: YES
 [EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.mg150.MainActivity'
-[U007-RES] ResourceRuntime loaded: run/cont76/store/data/app/com.probe.mg150/base.apk named_ids=0 types=0
-[ARSC-VALUES] apk=run/cont76/store/data/app/com.probe.mg150/base.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[U007-RES] ResourceRuntime loaded: run/cont76/mg150_fence.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/cont76/mg150_fence.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
 [EXP093-APP] No custom Application class declared in manifest
 [BMF-RESOLVER] registering resolver EARLY (entries=3)
 [S1-PROVIDER] manifest providers transferred: 0
@@ -22,9 +22,10 @@ FONT_SOURCE apk=run/cont76/store/data/app/com.probe.mg150/base.apk font_files=0 
 [S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
 [F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
-[MEM] method_exit: Lcom/probe/mg150/MainActivity;.<init> insns=2 RSS=19.4102 MB
+[MEM] method_exit: Lcom/probe/mg150/MainActivity;.<init> insns=2 RSS=19.4844 MB
 [TRY-ENTRY] Lcom/probe/mg150/MainActivity;.attachBaseContext dex_report=YES
 [U0113-ACTIVITY] activity heap object #15 (Lcom/probe/mg150/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/probe/mg150/MainActivity;' id=15
 [TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
 [REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/mg150/MainActivity;.onCreate
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
@@ -96,7 +97,12 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=25
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=23
+[REC-MISS] Landroid/widget/FrameLayout;.dispatchApplyWindowInsets caller=Lcom/probe/mg150/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/FrameLayout;.onApplyWindowInsets caller=Lcom/probe/mg150/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lcom/probe/mg150/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lcom/probe/mg150/MainActivity;.onCreate
+[F384-ROOTINSETS] root=o17 cls=Landroid/widget/FrameLayout; insets=o22 dispatched=false
 [ECR-ROOT] scalar content_view_id root=17
 [V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
 [EXP092-RENDER] node=17 class=Landroid/widget/FrameLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
@@ -111,16 +117,52 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] fb has 2073462 non-white pixels out of 2073600 total
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073462 non-white pixels
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=295
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=266
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=440
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=409
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [ECR-ROOT] scalar content_view_id root=17
-[F117-TAP] frame 1 DOWN (450,350) target=0
+[QUEUE] Runnable id=4026531841 enqueued (delay=500ms, ready_at=800ms virtual, queue_depth=1, source=framework:CheckForLongPress)
+[F117-TAP] frame 1 DOWN (450,350) target=18
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/FrameLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/Button; text="T" children=0 depth=1 pos=(100,100) size=(200x100)
+[EXP092-COPY] fb has 2073462 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073462 non-white pixels
+[QUEUE] Runnable id=4026531841 removed (was at depth=0)
+[QUEUE] Runnable id=4026531842 enqueued (delay=0ms, ready_at=350ms virtual, queue_depth=1, source=framework:PerformClick)
+[QUEUE] Runnable id=4026531843 enqueued (delay=64ms, ready_at=414ms virtual, queue_depth=2, source=framework:UnsetPressedState)
+[QUEUE] Runnable id=4026531842 dequeued (ready_at=350ms <= now=350ms virtual)
+[UI-EVENT] event=CLICK view_object=18 view_class=Landroid/widget/Button; listener=20 listener_class=Lcom/probe/mg150/MainActivity$1;
+[EXP062-INIT] Lcom/probe/mg150/MainActivity; static_fields=2 with_defaults=1
+[CLASS_INIT] class=Lcom/probe/mg150/MainActivity; method=<clinit> bytecode_size=1
+[MEM] method_exit: Lcom/probe/mg150/MainActivity;.<clinit> insns=1 RSS=193.703 MB
+[CLASS_INIT] class=Lcom/probe/mg150/MainActivity; method=<clinit> result=OK engine=0x7ffd44fac728 storage_size=27
+[SGET] class=Lcom/probe/mg150/MainActivity; method=access$0 pc=0 field=Lcom/probe/mg150/MainActivity;.clicks value=0
+[SGET] class=Lcom/probe/mg150/MainActivity$1; method=onClick pc=9 field=Ljava/lang/System;.err obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[SGET] class=Lcom/probe/mg150/MainActivity; method=access$0 pc=0 field=Lcom/probe/mg150/MainActivity;.clicks value=1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Landroid/widget/Button;.getClass caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Landroid/widget/TextView;.getClass caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Landroid/view/View;.getClass caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/mg150/MainActivity$1;.onClick
+[MG150-CLICK] count=1 view=Button
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lcom/probe/mg150/MainActivity$1;
+[G06-TOKEN] {"callback":"PerformClick","click_dispatched":true,"target_view_id":18,"virtual_ms":350}
+[QUEUE] Runnable id=4026531843 dequeued (ready_at=414ms <= now=420ms virtual)
+[G06-TOKEN] {"callback":"UnsetPressedState","state_changes":["setPressed(false)"],"target_view_id":18,"virtual_ms":420}
 [ECR-ROOT] scalar content_view_id root=17
 [V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
 [EXP092-RENDER] node=17 class=Landroid/widget/FrameLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
@@ -139,8 +181,26 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073462 non-white pixels
 [FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
-[FRAME-SEQ] done: runnables_fired=0 frames=3 dir=run/cont76/mg150_b/frames
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/FrameLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/Button; text="T" children=0 depth=1 pos=(100,100) size=(200x100)
+[EXP092-COPY] fb has 2073462 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073462 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/FrameLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/Button; text="T" children=0 depth=1 pos=(100,100) size=(200x100)
+[EXP092-COPY] fb has 2073462 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073462 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/cont76/mg150_b_out/frames
 [V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
 [EXP092-RENDER] node=17 class=Landroid/widget/FrameLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
 [EXP092-RENDER] node=18 class=Landroid/widget/Button; text="T" children=0 depth=1 pos=(100,100) size=(200x100)
