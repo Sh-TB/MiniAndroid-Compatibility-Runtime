@@ -1,3 +1,0 @@
-tmp/cont99_btn_build/obj/com/probe/c99btn/MainActivity.class
-tmp/cont99_btn_build/obj/com/probe/c99btn/MainActivity$1.class
-tmp/cont99_btn_build/obj/com/probe/c99btn/R.class
