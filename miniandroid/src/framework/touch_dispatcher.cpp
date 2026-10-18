@@ -13,6 +13,31 @@ namespace miniandroid {
 namespace framework {
 
 namespace {
+// ── CONT-99 T2 (F-NEW-408): AOSP transformed hit-test law. View.java
+// mTransformationInfo + ViewGroup.dispatchTouchEvent: the DOWN point is
+// transformed with the child's matrix BEFORE the containment test —
+// translation shifts the view's hit rect; scaleX/Y scale it about the
+// pivot (lazy center until setPivotX/Y — the F-NEW-359 law). The formula
+// is the SAME one the F-NEW-359 draw GeoGuard applies, so what is painted
+// is what is tappable (hit == raster). Rotation stays the recorded draw
+// frontier: the axis-aligned raster paints an unrotated box, so the hit
+// rect must not rotate either (hit never exceeds draw).
+struct EffRect { int x, y, w, h; };
+inline EffRect eff_rect_of(const ViewShadow::ViewNode* n,
+                           int bx, int by, int bw, int bh) {
+    EffRect r{bx, by, bw, bh};
+    if (r.w <= 0 || r.h <= 0) return r;
+    const float tx = n->translation_x, ty = n->translation_y;
+    const float sx = n->scale_x, sy = n->scale_y;
+    if (tx == 0.0f && ty == 0.0f && sx == 1.0f && sy == 1.0f) return r;
+    const float px = n->pivot_x_set ? n->pivot_x : r.w / 2.0f;
+    const float py = n->pivot_y_set ? n->pivot_y : r.h / 2.0f;
+    r.x += (int)std::lround(tx + px * (1.0f - sx));
+    r.y += (int)std::lround(ty + py * (1.0f - sy));
+    r.w = std::max(0, (int)std::lround(r.w * sx));
+    r.h = std::max(0, (int)std::lround(r.h * sy));
+    return r;
+}
 bool node_at(ViewShadow* views, const ViewShadow::ViewNode* n, int x, int y) {
     if (!n) return false;
     // F-NEW-373 lever (AOSP MATCH_PARENT law): the appcompat wrapper chain
@@ -44,8 +69,12 @@ bool node_at(ViewShadow* views, const ViewShadow::ViewNode* n, int x, int y) {
             nh = (nh < 0) ? 100000 : nh;
         }
     }
-    return x >= nx && x < nx + std::max(1, nw) && y >= ny &&
-           y < ny + std::max(1, nh);
+    // F-NEW-408: the node's own translation + scale-about-pivot move its
+    // hit rect with it (AOSP isTransformedTouchPointInView applies the
+    // child's matrix before the containment test).
+    const EffRect er = eff_rect_of(n, nx, ny, nw, nh);
+    return x >= er.x && x < er.x + std::max(1, er.w) && y >= er.y &&
+           y < er.y + std::max(1, er.h);
 }
 constexpr uint32_t kTokenCheckLongPress = HandlerShadow::kFrameworkTokenBase + 1;
 constexpr uint32_t kTokenPerformClick   = HandlerShadow::kFrameworkTokenBase + 2;
@@ -312,15 +341,21 @@ bool TouchDispatcher::consult_delegate_down_(uint32_t owner, int x, int y,
 bool TouchDispatcher::consult_fallback_delegates_(uint32_t root_id, int x,
                                                   int y, nlohmann::json* rec) {
     uint32_t candidate = 0;
-    std::function<void(uint32_t)> walk = [&](uint32_t id) {
+    // CONT-99 T2 (F-NEW-408): the fallback walk threads the SAME ancestor
+    // scroll(+)/translation(−) offset the claim walk does (the deepest
+    // visible view containing the TRANSFORMED point wins).
+    std::function<void(uint32_t, int, int)> walk = [&](uint32_t id, int ax,
+                                                       int ay) {
         const auto* n = views_->find_node(id);
         if (!n || n->visibility != 0) return;
-        if (node_at(views_, n, x, y)) candidate = id;  // deepest wins
+        if (node_at(views_, n, x + ax, y + ay)) candidate = id;  // deepest wins
         for (auto cit = n->children.rbegin(); cit != n->children.rend();
              ++cit)
-            walk(*cit);
+            walk(*cit,
+                 ax + n->scroll_x - (int)std::lround(n->translation_x),
+                 ay + n->scroll_y - (int)std::lround(n->translation_y));
     };
-    walk(root_id);
+    walk(root_id, 0, 0);
     for (uint32_t cur = candidate; cur != 0;) {
         if (consult_delegate_down_(cur, x, y, root_id, rec)) {
             if (rec) (*rec)["fallback_delegate_law"] = true;
@@ -417,10 +452,19 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // walk handed every bottom-bar tap to the ViewPager (target=
             // pager id, 4×) and the wizard never advanced; the AOSP claim
             // law gives the tap to the topmost claiming view (the button).
-            std::function<uint32_t(uint32_t, int)> claim =
-                [&](uint32_t id, int depth) -> uint32_t {
+            // CONT-99 T2 (F-NEW-408): (ax, ay) maps the window event point
+            // into the CURRENT subtree's laid-out space: descending through
+            // an ancestor ADDS its scroll (AOSP transformMotionEventToLocal
+            // applies the parent's scroll offset) and SUBTRACTS its
+            // translation (the draw walk shifts the subtree by the
+            // ancestor's translation — the point must shift back). Each
+            // node's OWN translation/scale are applied inside node_at via
+            // eff_rect_of (hit rect moves with the view).
+            std::function<uint32_t(uint32_t, int, int, int)> claim =
+                [&](uint32_t id, int depth, int ax, int ay) -> uint32_t {
                 const auto* n = views_->find_node(id);
                 if (!n || n->visibility != 0) return 0;
+                const int px = ev.x + ax, py = ev.y + ay;
                 for (auto cit = n->children.rbegin();
                      cit != n->children.rend(); ++cit) {
                     const auto* cn = views_->find_node(*cit);
@@ -432,18 +476,23 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                                   << cn->width << "x" << cn->height
                                   << ") vis=" << cn->visibility
                                   << " at="
-                                  << node_at(views_, cn, ev.x, ev.y)
+                                  << node_at(views_, cn, px, py)
                                   << (cn->visibility == 0 &&
-                                              node_at(views_, cn, ev.x, ev.y)
+                                              node_at(views_, cn, px, py)
                                           ? " contains → dispatch"
                                           : " REJECT")
                                   << std::endl;
                     if (cn->visibility != 0) continue;
-                    if (!node_at(views_, cn, ev.x, ev.y)) continue;
-                    uint32_t t = claim(*cit, depth + 1);
+                    if (!node_at(views_, cn, px, py)) continue;
+                    uint32_t t = claim(
+                        *cit, depth + 1,
+                        ax + n->scroll_x -
+                            (int)std::lround(n->translation_x),
+                        ay + n->scroll_y -
+                            (int)std::lround(n->translation_y));
                     if (t != 0) return t;  // first topmost claimant wins
                 }
-                const bool at = node_at(views_, n, ev.x, ev.y);
+                const bool at = node_at(views_, n, px, py);
                 if (hitprobe)
                     std::cerr << "[HITPROBE] d=" << depth << " id=" << id
                               << " " << n->class_desc << " (" << n->x << ","
@@ -456,7 +505,7 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
                 if (at && view_touchable(*n)) return id;
                 return 0;
             };
-            target = claim(root_id, 0);
+            target = claim(root_id, 0, 0, 0);
             gesture_target_ = target;
             // S128 (CAP-INPUT-102): capture the TouchTarget chain — the
             // target plus every ancestor up to the dispatch root. AOSP: each
@@ -621,10 +670,14 @@ nlohmann::json TouchDispatcher::dispatch(uint32_t root_id,
             // Lenient move law (View.java L17198-17208): leaving the button
             // bounds beyond touch slop removes the tap + long-press callbacks
             // and clears pressed (AOSP pointInView + mTouchSlop margin).
+            // CONT-99 T2 (F-NEW-408): the slop frame is the node's
+            // TRANSFORMED rect (eff_rect_of — same law as the DOWN claim),
+            // so a translated/scaled target keeps its gesture alive.
             const int slop = cfg_.touch_slop_px;
+            const EffRect ger = eff_rect_of(n, n->x, n->y, n->width, n->height);
             const bool inside =
-                fx >= n->x - slop && fx < n->x + std::max(1, n->width) + slop &&
-                fy >= n->y - slop && fy < n->y + std::max(1, n->height) + slop;
+                fx >= ger.x - slop && fx < ger.x + std::max(1, ger.w) + slop &&
+                fy >= ger.y - slop && fy < ger.y + std::max(1, ger.h) + slop;
             if (!inside) {
                 unschedule(tok_check_long_press_);
                 unpress(gesture_target_, &rec);

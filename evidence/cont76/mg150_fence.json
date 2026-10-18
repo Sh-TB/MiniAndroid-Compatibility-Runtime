@@ -1,7 +1,7 @@
 {
  "fence": "MG-150 transform hit-test",
  "probe": "com.probe.mg150",
- "apk_sha16": "131ffbad6940c40e",
+ "apk_sha16": "6b86899e89221897",
  "checks": [
   {
    "name": "geom-properties",
@@ -9,18 +9,18 @@
    "detail": "set/get translationX/Y readbacks = 300/200 (both runs)"
   },
   {
-   "name": "tap-A-layout-bounds-hit",
+   "name": "tap-A-stale-layout-position-silent",
    "ok": true,
-   "detail": "tap (150,150) inside layout bounds -> PerformClick fired"
+   "detail": "tap (150,150) at the stale layout position -> NO click (AOSP inverse-maps through the translation: the view is visually at (400..600, 300..400) \u2014 the old fence locked the pre-fix blindness here; F-NEW-408 fixed the frame)"
   },
   {
-   "name": "tap-B-translated-bounds-deviation-recorded",
+   "name": "tap-B-translated-visual-bounds-hit",
    "ok": true,
-   "detail": "tap (450,350) inside translated bounds only -> NO target (current semantics locked; AOSP would map through the transform \u2014 the delta is the NAMED FRONTIER, x/y-translation consumption by hit-test + render is one coherent law)"
+   "detail": "tap (450,350) inside the TRANSLATED visual bounds -> click (F-NEW-408 consumed the named frontier: hit-test now maps the point through the view's transform \u2014 hit == raster)"
   }
  ],
  "pass": 3,
  "total": 3,
  "verdict": "FENCE GREEN",
- "frontier": "translation/rotation consumption by hit-test + render (one coherent AOSP law) \u2014 named, not implemented this wave"
+ "frontier": "CONSUMED by F-NEW-408 (CONT-99 T2): translation hit-test mapping now AOSP-law; remaining frontier = rotation-about-pivot + scaled-subtree re-transform (F-NEW-359 draw frontier)"
 }

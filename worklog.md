@@ -10303,3 +10303,44 @@ Stage Summary:
 - CONT-99 T4 = APPROVED: the click oracle observes the same AOSP disabled law as the real touch pipeline; the tap hit-test contract is proven against adjacent different-size controls with a between-buttons negative.
 - Residual named: pressed-state drawable rendering (state_pressed visuals) not audited — the STATE rows prove semantic state.
 - NEXT: CONT-99 T3 (ImageView scaleType), T2 (transforms/density/insets), then the remaining open set — each as an independent task unit.
+
+---
+Task ID: cont100-0
+Agent: main (CONT-100 wave)
+Task: «ادامه ۳۶۴» — Step 0 freeze-baseline + fresh-container recovery, then #364 open-set extraction
+
+Work Log:
+- Fresh container found: local checkout rolled back to CONT-10 era (HEAD e99c2fbd UUID-residue, binary missing).
+- Diagnosed via git fetch: origin/main advanced to 849e2978 (CONT-99 T4 closeout). Reset --hard to origin/main — HEAD restored.
+- Rebuild started (background, deterministic toolchain); corpus APKs verified on disk (upload/ + run/ anchors intact).
+- Fetched all 65 comments of #364 (run/cont75/comments_p1.json). Verified: after CONT-99 T4 RESULT (6250484579) NO new requests.
+- Open set confirmed = CONT-99 remaining tracks T2/T3/T5..T10 (2/10 closed: T1 F-NEW-402..406, T4 F-NEW-407) + CONT-98 9 tracks + CONT-89/92/93 + F-NEW-381.
+- Started CONT-99 T2 as ONE separate task (fixture-first): built fixtures/cont99_tr_probe (com.probe.c99tr, V1-C99TR, c99tr.apk sha16 f9ce4ff645d84f69) + scripts/cont99_tr_run.sh (4 paired tap runs: control 150,75 / translation 110,340 / scale 120,650 / scroll 100,930).
+- Source recon (read-only, pre-PRE): draw walk applies translation (execution_engine 3556) + scale GeoGuard (F-NEW-359) + scroll off_sy/clip; hit-test node_at (touch_dispatcher) is RAW laid-out bounds — ignores translation/scale/scroll; getLeft/getTop answer ABSOLUTE measured_* (R-NEW-441 era) while AOSP law is parent-relative; getLocationOnScreen/InWindow chain-sums absolute x/y (double-counts non-origin ancestors); DisplayMetrics hardcoded density=1.0/160 (consistency row will judge).
+
+Stage Summary:
+- Baseline pending binary rebuild (deterministic, expect sha16 3b89722589ff5af7).
+- PRE runs blocked until binary lands; no fix touched yet (fixture-first discipline held).
+- Registry/evidence untouched in this task so far.
+
+---
+Task ID: cont100-1 (CONT-99 T2)
+Agent: main (CONT-100 wave)
+Task: CONT-99 T2 — Parent/child coordinate transforms, density and window insets (ONE separate task, fixture-first)
+
+Work Log:
+- Deterministic rebuild of frozen baseline verified: 3b89722589ff5af7 (byte-identical, fresh container).
+- fixture-first: built fixtures/cont99_tr_probe (com.probe.c99tr V1-C99TR, c99tr.apk f9ce4ff645d84f69) BEFORE any engine change; scripts/cont99_tr_run.sh 5 paired runs (control/translation/scale/scroll/notap).
+- PRE (3b89722589ff5af7): translation tap D=0 MISSED; scale tap F=0 MISSED; scroll tap H=1 STALE-REGION HIT; childD getTop=300 (absolute); childH onScreen=(0,1800) (double-count); getX/getY=0; setScrollY silent no-op. Control B=1. Density 2.625/420 applyDim consistent OK; insets null (report-only); scale/pivot/rotation state OK; layout skeleton OK.
+- Runner-script bug found+fixed honestly: tap was passed as ONE argv element -> tap silently disabled in the first batch; re-ran with proper argv (control B=1 proven twice standalone too).
+- Fixed four generic roots: F-NEW-408 (eff_rect_of + claim/fallback ancestor offset threading + MOVE slop frame — exact F-NEW-359 GeoGuard formula, hit==raster), F-NEW-409 (getLeft/getTop/getRight/getBottom parent-relative, wrapper-guarded), F-NEW-410 (getLocationOnScreen/InWindow + transformMatrixTo(Global|Local) answer absolute directly), F-NEW-411 (setScrollX/setScrollY single-axis arms + getX/getY law).
+- POST (8251d80a117a7afe): D=1, F=1, H=0, getTop=0, onScreen=(0,900)/(0,300), getX=30/getY=20, scrollY=150 — all AOSP-law matched. Control B=1 unchanged.
+- Regression ZERO DRIFT: wall 12/12 byte-identical (incl. opencalc under the getLeft frame change), goldens 4/4, negatives 19/19 (canonical gate A probe stage rebuilt in-container first), reinstall 8/8, MG-310 7/7, selftests 13/13, F-NEW-376 70/70 (c72priv probes rebuilt), anchors c74esc/clock1/clinit1/swipe1 law rows OK.
+- MG-150 fence: battery verdict was reading STALE pre-fix logs (false green); regenerated A/B logs with POST binary + fresh probe build; the AOSP law flips BOTH old rows (stale-layout tap silent, translated-visual tap fires) — fence updated honestly to lock the AOSP law, frontier CONSUMED by F-NEW-408; FENCE GREEN 3/3 with fresh logs.
+- Honest A/B: sax1/perf1 probe rows silent on BOTH binaries (pristine rebuilt deterministically for the A/B) — container runnable-pacing artifact, not drift; recorded as honest null.
+- registry 719 -> 723 roots (+F-NEW-408..411), mirrored to canonical/. Evidence: evidence/cont99/t2_transforms_evidence.json.
+
+Stage Summary:
+- CONT-99 T2 = APPROVED (ROOT-CAUSED-FIXED, 4 generic roots, zero drift).
+- binary 8251d80a117a7afe; probe apk f9ce4ff645d84f69; fence probe 6b86899e89221897.
+- Remaining open: CONT-99 T3/T5..T10, CONT-98 9 tracks, CONT-89/92/93, F-NEW-381.

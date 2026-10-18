@@ -6014,28 +6014,22 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // ─────────────────────────────────────────────────────────────────────
     if (m == "getLocationOnScreen" || m == "getLocationInWindow") {
         const auto* n = find_node(ctx.receiver_id);
-        int ax = 0, ay = 0;
-        if (n) {
-            // Parent-chain sum (AOSP View annals: the position = the laid
-            // out mLeft/mTop of every ancestor hop).
-            for (const auto* cur = n; cur != nullptr;) {
-                ax += cur->x;
-                ay += cur->y;
-                if (g_touch_window_active.load(std::memory_order_relaxed)) {
-                    static thread_local uint64_t lcs_n = 0;
-                    if (lcs_n++ < 40)
-                        std::cerr << "[TOUCHWIN-LOC] hop " << cur->class_desc
-                                  << " id=" << cur->view_id << " ("
-                                  << cur->x << "," << cur->y << " "
-                                  << cur->width << "x" << cur->height
-                                  << ") sum=(" << ax << "," << ay << ")"
-                                  << std::endl;
-                }
-                cur = cur->parent_id
-                          ? find_node(cur->parent_id)
-                          : nullptr;
-                if (cur == n) break;  // cycle guard
-            }
+        // CONT-99 T2 (F-NEW-410): AOSP View.getLocationInWindow = Σ of the
+        // PARENT-RELATIVE mLeft/mTop hops == the view's ABSOLUTE window
+        // position (View.java). The engine stores absolute laid-out
+        // geometry, so the answer is (x, y) directly. The previous chain
+        // sum added every hop's ABSOLUTE x/y and double-counted each
+        // non-origin ancestor (probe: childH in rowG@(0,900) answered
+        // (0,1800) instead of (0,900)). onScreen adds the window's screen
+        // origin (fullscreen window → the same values).
+        int ax = n ? n->x : 0, ay = n ? n->y : 0;
+        if (n && (g_touch_window_active.load(std::memory_order_relaxed))) {
+            static thread_local uint64_t lcs_n = 0;
+            if (lcs_n++ < 40)
+                std::cerr << "[TOUCHWIN-LOC] " << n->class_desc
+                          << " id=" << n->view_id << " abs=(" << ax << ","
+                          << ay << ") " << n->width << "x" << n->height
+                          << std::endl;
         }
         if (ctx.args.size() >= 1) {
             const uint32_t arr = ctx.arg_as_object(0, 0);
@@ -6048,23 +6042,10 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "transformMatrixToGlobal" || m == "transformMatrixToLocal") {
         const auto* n = find_node(ctx.receiver_id);
-        int ax = 0, ay = 0;
-        if (n) {
-            for (const auto* cur = n; cur != nullptr;) {
-                // AOSP: the parent's scroll cancels part of the hop
-                // (preTranslate(-parent.scrollX, -parent.scrollY)); the
-                // node's own scroll applies to its children — the laid-out
-                // (x, y) IS already the scroll-adjusted placement in this
-                // engine (the render walk paints at (x, y)), so the chain
-                // sum is the honest global offset here.
-                ax += cur->x;
-                ay += cur->y;
-                cur = cur->parent_id
-                          ? find_node(cur->parent_id)
-                          : nullptr;
-                if (cur == n) break;  // cycle guard
-            }
-        }
+        // CONT-99 T2 (F-NEW-410): the accumulated translate IS the view's
+        // absolute window position (Σ parent-relative hops). Direct answer
+        // from the absolute stored geometry — same law as getLocationInWindow.
+        int ax = n ? n->x : 0, ay = n ? n->y : 0;
         if (ctx.args.size() >= 1) {
             const uint32_t mat = ctx.arg_as_object(0, 0);
             if (mat && heap_) {
@@ -6647,6 +6628,20 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                 old_x, old_y);
         return CallResult::handled_void();
     }
+    // ── CONT-99 T2 (F-NEW-411): AOSP View.setScrollX/setScrollY — single-
+    // axis scrollTo arms (View.java: setScrollX(l) → scrollTo(l, mScrollY)).
+    // The generic stub silently dropped these, leaving setScrollY(150) a
+    // no-op while scrollTo worked (probe [C99-SCRLL] scrollY=0 exp=150).
+    if (m == "setScrollX" || m == "setScrollY") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        const int old_x = n->scroll_x, old_y = n->scroll_y;
+        if (m == "setScrollX") n->scroll_x = ctx.arg_as_int(0, 0);
+        else                   n->scroll_y = ctx.arg_as_int(0, 0);
+        if ((old_x != n->scroll_x || old_y != n->scroll_y) && scroll_changed_hook)
+            scroll_changed_hook(ctx.receiver_id, n->scroll_x, n->scroll_y,
+                                old_x, old_y);
+        return CallResult::handled_void();
+    }
     if (m == "getScrollX") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->scroll_x : 0);
@@ -6805,6 +6800,26 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_float(n ? n->rotation_deg : 0.0f);
     }
+    // ── CONT-99 T2 (F-NEW-411): AOSP View.getX()/getY() = mLeft +
+    // mTranslationX (mTop + mTranslationY) — parent-relative left/top plus
+    // the own translation. The engine stores ABSOLUTE laid-out geometry, so
+    // the parent-relative left = measured_left − parent's measured_left
+    // (root answers its absolute position, AOSP mLeft of the root view).
+    if (m == "getX" || m == "getY") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (!n) return CallResult::handled_float(0.0f);
+        int rel = 0;
+        if (n->laid_out) {
+            rel = (m == "getX") ? n->measured_left : n->measured_top;
+            if (n->parent_id) {
+                const auto* p = find_node(n->parent_id);
+                if (p && p->laid_out)
+                    rel -= (m == "getX") ? p->measured_left : p->measured_top;
+            }
+        }
+        const float t = (m == "getX") ? n->translation_x : n->translation_y;
+        return CallResult::handled_float((float)rel + t);
+    }
     if (m == "setPivotX") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->pivot_x = ctx.arg_as_float(0, 0.0f);
@@ -6884,10 +6899,29 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getLeft" || m == "getTop" || m == "getRight" || m == "getBottom") {
         const auto* n = find_node(ctx.receiver_id);
         if (!n) return CallResult::handled_int(0);
-        if (m == "getLeft")   return CallResult::handled_int(n->measured_left);
-        if (m == "getTop")    return CallResult::handled_int(n->measured_top);
-        if (m == "getRight")  return CallResult::handled_int(n->measured_right);
-        return CallResult::handled_int(n->measured_bottom);
+        // CONT-99 T2 (F-NEW-409): AOSP View.getLeft/getTop/getRight/
+        // getBottom are PARENT-RELATIVE (View.java: "Left position of this
+        // view relative to its parent"). The engine stores ABSOLUTE
+        // laid-out geometry, so the parent-relative answer = measured −
+        // parent's measured (root answers its absolute window position —
+        // AOSP mLeft of the root view). R-NEW-441 keeps its identity fix
+        // (the getters answer the REAL layout phase state, not the generic
+        // 0 stub); the frame is corrected to the AOSP parent-relative law.
+        // Guard: an un-materialized parent (appcompat wrapper chain with
+        // sentinel geometry) contributes nothing — the answer stays the
+        // raw laid-out state those wrappers rely on (F-NEW-373 lever).
+        int px = 0, py = 0;
+        if (n->parent_id) {
+            const auto* p = find_node(n->parent_id);
+            if (p && p->laid_out) {
+                px = p->measured_left;
+                py = p->measured_top;
+            }
+        }
+        if (m == "getLeft")   return CallResult::handled_int(n->measured_left - px);
+        if (m == "getTop")    return CallResult::handled_int(n->measured_top - py);
+        if (m == "getRight")  return CallResult::handled_int(n->measured_right - px);
+        return CallResult::handled_int(n->measured_bottom - py);
     }
     // ── S83-GFX-BASE §19: ImageView.setScaleType law ─────────────────────
     // AOSP ImageView.setScaleType(ScaleType) stores the enum; the ordinal
