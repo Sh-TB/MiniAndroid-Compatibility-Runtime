@@ -2765,6 +2765,12 @@ public:
     uint32_t current_dex_index_ = 0;
 
     // EXP-038 (BLOCKER-033): Per-DEX method name resolution using raw DEX bytes.
+    // CONT-96 W3-B: cache-backed — each (dex, method_idx) resolves its
+    // name/class/proto ONCE (MUTF-8 decode + string materialization per
+    // call used to dominate the invoke wall; 1.33M invokes on the Telegram
+    // 30s gate). The DEX tables are immutable after set_per_dex_raw_data_,
+    // so the memo cannot go stale. Out-of-range indexes keep the exact
+    // uncached behavior.
     std::string resolve_method_name_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     std::string resolve_method_class_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     // EXP-071 Phase 8: Resolve the method's proto descriptor, e.g. "(Ljava/lang/Runnable;J)V".
@@ -2772,6 +2778,21 @@ public:
     // when invoking static methods. Without this, runOnUIThread(Runnable, long) would
     // pass 3 args (Runnable, low32, high32) instead of 2 (Runnable, long).
     std::string resolve_method_proto_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    // CONT-96 W3-B: memo entry + fill. The uncached originals keep their
+    // exact bodies and are used only by the fill.
+    struct MethodResolveCacheEntry {
+        std::string name;
+        std::string cls;
+        std::string proto;
+        std::vector<std::string> proto_params;
+        bool filled = false;
+    };
+    MethodResolveCacheEntry& method_resolve_entry(uint32_t dex_index,
+                                                  uint32_t method_idx) const;
+    std::string resolve_method_name_uncached(uint32_t method_idx, uint32_t dex_index) const;
+    std::string resolve_method_class_uncached(uint32_t method_idx, uint32_t dex_index) const;
+    std::string resolve_method_proto_uncached(uint32_t method_idx, uint32_t dex_index) const;
+    mutable std::vector<std::vector<MethodResolveCacheEntry>> method_resolve_cache_;
     // EXP-058: Per-DEX type descriptor resolution.
     // type_idx is relative to the current DEX file's type_ids table,
     // NOT the merged global types vector.
@@ -2815,13 +2836,20 @@ public:
     std::string strict_crash_reason_;
     std::string last_error_;
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
-    std::map<uint32_t, uint32_t> pc_visit_count_;
+    // CONT-96 W3-A: flat per-pc arrays (was std::map) — the map touched a
+    // red-black node per instruction (visit count) and per conditional
+    // branch (signature), a measured fraction of the interpreter wall.
+    // Sized to bytecode_.size() at frame entry; semantics identical.
+    std::vector<uint32_t> pc_visit_count_;
     // F-NEW-084 closeout: per-frame forward-progress signature of the last
     // conditional-branch visit (branch-operand values). Reset alongside
     // pc_visit_count_ at frame entry. A back-edge whose operands CHANGED
     // between visits is making observable progress; only a STALLED branch
     // (identical operands across the whole visit window) is an infinite loop.
-    std::map<uint32_t, uint64_t> pc_branch_sig_;
+    std::vector<uint64_t> pc_branch_sig_;
+    // CONT-96 W3-A: first-visit flag (replicates the map's insert-vs-compare
+    // law: first visit records the baseline without an epoch bump).
+    std::vector<uint8_t> pc_branch_sig_seen_;
     // Frame-level law v2 (cont375): epoch bumped whenever ANY branch's
     // decision inputs change within this frame; pc_epoch_checkpoint_ stores
     // the epoch at the branch's last visit-threshold checkpoint. A branch
