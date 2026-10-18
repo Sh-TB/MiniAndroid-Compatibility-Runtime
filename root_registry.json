@@ -6597,5 +6597,25 @@
    "honest_notes": "reinstall 5/5 needed a container-fresh artifact repair: run/diff366/hidden_sources apks are container-transient and were consumed/wiped by an earlier battery step — repopulated from the canonical upload/ sources (identity shas proven in the PASS lines); the 5-FAIL interim was a sequence artifact, not a runtime regression. sax1/clinit1/swipe1/perf1 verdict rows print on stdout; the inherited battery script discards stdout (flagged at CONT-98) — rows captured via a direct stdout rerun this wave. PRE harness rows exit rc=0 with Status SUCCESS (paired, non-behavioral). scope: instance-field iput law (the static sput face is a named residual if any static float store shows the same bit-carrying pattern; no corpus caller today). perf1 checksums byte-identical proves the hot-path addition is behavior-neutral."
   },
   "issue": "#364 CONT-99 T1"
+ },
+ {
+  "id": "F-NEW-407",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P0",
+  "title": "CONT-99 T4 click-test probe fired the listener of DISABLED controls (AOSP View.onTouchEvent ENABLED_MASK law bypassed by the harness probe)",
+  "layer": "runtime/click-probe",
+  "directive": "#364 CONT-99 T4 (comment 6248236077) — Button/control bounds, background, state and click target",
+  "root_cause": "stage_click_test dispatched dalvik_engine_.dispatch_click on EVERY view with a registered click listener (and every XML android:onClick handler) with no enabled check. AOSP View.onTouchEvent checks ENABLED_MASK FIRST: a disabled view refuses the press (no pressed state, no performClick, no onClick). The --tap pipeline already honored the law (c99btn run --tap 100,190 at the disabled center: A=0 B=0 C=0), but the --click-test oracle fired the disabled button's onClick (c99btn PRE: [C99-COUNT] A=1 B=1 C=1 — DISABLED-LAW-VIOLATION). A diagnostic oracle must observe the same law the real pipeline enforces, else its evidence lies.",
+  "fix": "execution_engine.cpp stage_click_test: both dispatch loops (listener path + XML android:onClick path) check the node's enabled flag before dispatch; disabled candidates are recorded in the per-view report as disabled_skipped=true with click_dispatched=false and a loud [CLICK-TEST] stderr line (honest evidence, not silent omission).",
+  "evidence": {
+   "wave": "CONT-99",
+   "fixture": "fixtures/cont99_btn_probe (real aapt2/ECJ/D8; apk run/cont99/c99btn.apk sha16 bf5c938e7ddc1c6c, V1-C99BTN; 4 deterministic harness runs)",
+   "paired_ab": "PRE binary 4dd92ae1371569e4 --click-test: A=1 B=1 C=1 (violation). POST binary 3b89722589ff5af7 --click-test: '[CLICK-TEST] view 25 skipped: disabled' + A=1 B=1 C=0. --tap rows unchanged and law-correct both binaries: tap 150,50 (btnA center) -> A=1 only; tap 700,60 (between-buttons negative) -> A=0 B=0 C=0; tap 100,190 (disabled center) -> A=0 B=0 C=0.",
+   "bounds_rows": "btnA (0,0,300,100) OK; btnB (300,0,200,80) OK — adjacent different-size controls with non-overlapping hit regions; btnC (0,120,200,80) OK (cross-axis top-aligned per the T1 law)",
+   "state_rows": "A enabled=true clickable=true pressed=false | C enabled=false clickable=true (AOSP: setEnabled does not clear clickable; the gate is at dispatch)",
+   "regression": "wall 12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e, opencalc f25b754c4565c38b, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52, x3); goldens 4/4; negatives 19/19; reinstall 5/5 identity ALL PASS; MG-310 7/7; MG-150 3/3; selftests 13/13; F-NEW-376 70/70; perf1 checksums byte-identical (3688000/31744000/14534196240/14569628240)",
+   "honest_notes": "the change is confined to the opt-in --click-test probe stage (runs only when the flag is set); the battery re-ran anyway and stayed byte-identical. Pressed-state visuals (drawable state_activated/pressed color filter) remain a named T4 residual — the STATE rows prove the semantic state, not the pressed drawable rendering."
+  },
+  "issue": "#364 CONT-99 T4"
  }
 ]
