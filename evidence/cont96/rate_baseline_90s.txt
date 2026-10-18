@@ -1,0 +1,1 @@
+[PROGRESS] 21500000 total instructions executed (currently in Lorg/telegram/messenger/SvgHelper$ParserHelper;.advance PC=6/7) RSS=577 MB
