@@ -64,6 +64,34 @@
 #include <unordered_set>
 #include <set>            // F-023: default-interface-method dispatch visited set
 
+// ────────────────────────────────────────────────────────────────────────
+// CONT-96 W1 (F-074 throughput law): diagnostic env presence-checks used
+// to call std::getenv() on EVERY interpreter instruction / method entry —
+// an environ walk per opcode (measured as a real fraction of the ~310K
+// ins/s interpreter wall on the 30s Telegram gate; see the 14530-site
+// note for the single-site precedent). Diagnostic flags are
+// process-constant: diag_env() caches the first-use answer keyed by the
+// literal POINTER (every diagnostic call site passes a string literal;
+// literals are stable for the process lifetime). Identical answers,
+// identical stderr when a flag is set — only the per-op environ walk is
+// gone. Value-using sites (find(getenv(...)), env[0]=='0') keep their
+// raw getenv by design.
+// ────────────────────────────────────────────────────────────────────────
+static bool diag_env(const char* name) {
+    struct Entry { const char* name; bool value; };
+    static thread_local Entry table[96];
+    static thread_local uint32_t count = 0;
+    for (uint32_t i = 0; i < count; ++i)
+        if (table[i].name == name) return table[i].value;
+    const bool v = std::getenv(name) != nullptr;
+    if (count < 96) {
+        table[count].name = name;
+        table[count].value = v;
+        ++count;
+    }
+    return v;
+}
+
 namespace miniandroid {
 namespace dalvik {
 
@@ -1522,7 +1550,45 @@ static const size_t kContentMeasureClasses1_N = sizeof(kContentMeasureClasses1) 
     return false;
 }
 
+// CONT-96 W3-B: memo fill + public cache-backed resolvers. The *_uncached
+// bodies below are byte-identical to the original resolvers (renamed only).
+DalvikExecutionEngine::MethodResolveCacheEntry&
+DalvikExecutionEngine::method_resolve_entry(uint32_t dex_index,
+                                            uint32_t method_idx) const {
+    // Single-writer law: DEX execution runs on the interpreter thread; the
+    // DEX tables are immutable after set_per_dex_raw_data_, so a filled
+    // entry can never change. Entries fill once on first use.
+    if (dex_index >= method_resolve_cache_.size())
+        method_resolve_cache_.resize(dex_index + 1);
+    auto& per = method_resolve_cache_[dex_index];
+    if (method_idx >= per.size())
+        per.resize(static_cast<size_t>(method_idx) + 1);
+    auto& e = per[method_idx];
+    if (e.filled) return e;
+    e.name = resolve_method_name_uncached(method_idx, dex_index);
+    e.cls = resolve_method_class_uncached(method_idx, dex_index);
+    e.proto = resolve_method_proto_uncached(method_idx, dex_index);
+    e.proto_params = parse_proto_param_types(e.proto);
+    e.filled = true;
+    return e;
+}
+
 std::string DalvikExecutionEngine::resolve_method_name_for_dex(
+    uint32_t method_idx, uint32_t dex_index) const {
+    return method_resolve_entry(dex_index, method_idx).name;
+}
+
+std::string DalvikExecutionEngine::resolve_method_class_for_dex(
+    uint32_t method_idx, uint32_t dex_index) const {
+    return method_resolve_entry(dex_index, method_idx).cls;
+}
+
+std::string DalvikExecutionEngine::resolve_method_proto_for_dex(
+    uint32_t method_idx, uint32_t dex_index) const {
+    return method_resolve_entry(dex_index, method_idx).proto;
+}
+
+std::string DalvikExecutionEngine::resolve_method_name_uncached(
     uint32_t method_idx, uint32_t dex_index) const {
 
     if (dex_index < per_dex_raw_data_.size()) {
@@ -1551,7 +1617,7 @@ fallback:
     return "<bad_method_idx:" + std::to_string(method_idx) + ">";
 }
 
-std::string DalvikExecutionEngine::resolve_method_class_for_dex(
+std::string DalvikExecutionEngine::resolve_method_class_uncached(
     uint32_t method_idx, uint32_t dex_index) const {
 
     if (dex_index < per_dex_raw_data_.size()) {
@@ -1634,7 +1700,7 @@ fallback:
 //   3. proto_ids[proto_idx].return_type_idx → return type descriptor.
 //   4. proto_ids[proto_idx].parameters_off → type_list of parameter types.
 //   5. Assemble "(param_types)return_type" — full descriptor.
-std::string DalvikExecutionEngine::resolve_method_proto_for_dex(
+std::string DalvikExecutionEngine::resolve_method_proto_uncached(
     uint32_t method_idx, uint32_t dex_index) const {
 
     if (dex_index < per_dex_raw_data_.size()) {
@@ -3024,7 +3090,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // preserved (F-069 map), no app/package knowledge involved.
     std::vector<DalvikValue> f282_args = args;
     {
-        const bool f282_diag = std::getenv("MINIANDROID_F282_TRACE") != nullptr;
+        const bool f282_diag = diag_env("MINIANDROID_F282_TRACE");
         for (auto& f282_a : f282_args) {
             if (f282_a.type != DalvikType::CLASS_REF) continue;
             uint32_t f282_token = 0;
@@ -3145,9 +3211,10 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
     // EXP-042 Phase 1: Per-frame loop detection counter. Reset on each new
     // method invocation so recursive calls do not pollute each other.
-    pc_visit_count_.clear();
+    pc_visit_count_.assign(bytecode_.size(), 0u);   // CONT-96 W3-A: flat state
+    pc_branch_sig_seen_.assign(bytecode_.size(), 0u);
     // F-NEW-084 closeout: reset the forward-progress signatures per frame.
-    pc_branch_sig_.clear();
+    pc_branch_sig_.assign(bytecode_.size(), 0ull);
     frame_progress_epoch_ = 0;
     pc_epoch_checkpoint_ = 0;
     // EXP-042 Phase 2: Set current_class_/current_method_ so loop-detector
@@ -3162,7 +3229,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // MonotonicFrameClock withFrameNanos sites (LF/b0.u interface, K.u impl,
     // LF/d0.a accessor). Answers: did the runner body ever start, and did it
     // ever request a frame?
-    if (std::getenv("MINIANDROID_S22_TRACE")) {
+    if (diag_env("MINIANDROID_S22_TRACE")) {
         static thread_local uint64_t s22_n = 0;
         if (s22_n < 200) {
             bool s22_hit = false;
@@ -3259,7 +3326,7 @@ bool DalvikExecutionEngine::execute_method_internal(
         }
     }
     // Env-gated (MINIANDROID_J_ENTRY=1), capped; forensics only.
-    if (std::getenv("MINIANDROID_J_ENTRY") && class_name == "LY1/j;" &&
+    if (diag_env("MINIANDROID_J_ENTRY") && class_name == "LY1/j;" &&
         method_name == "j") {
         static thread_local uint64_t j_entry_n = 0;
         if (j_entry_n < 8) {
@@ -3282,7 +3349,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // <init> store (table object identity + length + element provenance).
     // Evidence law: one instrumented run must NAME the divergence instead
     // of asserting it.
-    if (std::getenv("MINIANDROID_WAVEC_TRACE")) {
+    if (diag_env("MINIANDROID_WAVEC_TRACE")) {
         static thread_local uint64_t wavec_n = 0;
         bool wavec_hit = false;
         const char* wavec_tag = "";
@@ -3375,7 +3442,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // is directly visible in the composition pass.
     {
         static thread_local const bool compwin_on =
-            std::getenv("MINIANDROID_COMPWIN_TRACE") != nullptr;
+            diag_env("MINIANDROID_COMPWIN_TRACE");
         if (compwin_on) {
             static thread_local bool compwin_active = false;
             static thread_local uint64_t compwin_logged = 0;
@@ -3400,7 +3467,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // S34 (R-NEW-333): compose-view pairing trace — same instance law.
     {
         static thread_local const bool cvpari_on =
-            std::getenv("MINIANDROID_CVPARI") != nullptr;
+            diag_env("MINIANDROID_CVPARI");
         if (cvpari_on) {
             const char* cv1_tag = nullptr;
             if (class_name == "Landroidx/compose/ui/platform/ComposeView;" &&
@@ -3457,7 +3524,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // (ComposableLambdaImpl) and the Content() read must hit ONE state.
     {
         static thread_local const bool cvw_on =
-            std::getenv("MINIANDROID_CVPARI") != nullptr;
+            diag_env("MINIANDROID_CVPARI");
         if (cvw_on && class_name == "LF/V0;" &&
             (method_name == "setValue" || method_name == "getValue")) {
             static thread_local uint64_t cvw_n = 0;
@@ -3485,7 +3552,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // created few nodes" from "nodes created but not linked into the tree".
     {
         static thread_local const bool census_on =
-            std::getenv("MINIANDROID_NODE_CENSUS") != nullptr;
+            diag_env("MINIANDROID_NODE_CENSUS");
         if (census_on) {
             static thread_local uint64_t ctor_count = 0;
             static thread_local uint64_t draw_count = 0;
@@ -4059,7 +4126,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // ([EXC-PROPAGATE], [SQLITE-SHADOW]) and slowed every run. Gate:
     // MINIANDROID_METHOD_TRACE=1 restores the old verbosity.
     static thread_local const bool method_trace_on =
-        std::getenv("MINIANDROID_METHOD_TRACE") != nullptr;
+        diag_env("MINIANDROID_METHOD_TRACE");
     static thread_local uint64_t method_entry_count = 0;
     if (method_trace_on && method_entry_count < 100000) {
         std::cerr << "[METHOD-IN] " << class_name << "." << method_name
@@ -4070,7 +4137,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // draw window, env-gated + bounded — shows exactly which methods execute
     // during the compose draw dispatch and where the pipeline stops.
     static thread_local const bool drawwin_on =
-        std::getenv("MINIANDROID_DRAW_WINDOW_TRACE") != nullptr;
+        diag_env("MINIANDROID_DRAW_WINDOW_TRACE");
     static thread_local uint64_t drawwin_count = 0;
     if (drawwin_on && draw_window_active_ && drawwin_count < 3000) {
         std::cerr << "[DRAWWIN-IN] " << class_name << "." << method_name
@@ -4088,7 +4155,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // ────────────────────────────────────────────────────────────────────
     {
         static thread_local const bool attw_on =
-            std::getenv("MINIANDROID_ATTACH_WATCH") != nullptr;
+            diag_env("MINIANDROID_ATTACH_WATCH");
         if (attw_on && class_name == "Lok0;" &&
             (method_name == "u0" || method_name == "v0")) {
             static thread_local uint64_t attw_n = 0;
@@ -4105,7 +4172,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // window (real-DEX onMeasure/onLayout) — shows the measure/layout
     // traversal the placement pass actually executes.
     static thread_local const bool lifewin_on =
-        std::getenv("MINIANDROID_LIFEWIN_TRACE") != nullptr;
+        diag_env("MINIANDROID_LIFEWIN_TRACE");
     static thread_local uint64_t lifewin_count = 0;
     if (lifewin_on && lifecycle_window_active_ && lifewin_count < 4000) {
         std::cerr << "[LIFEWIN-IN] " << class_name << "." << method_name
@@ -4322,7 +4389,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     // EXP-062: Debug — trace parameter loading for PhoneView.<init>
-    if (class_name.find("PhoneView") != std::string::npos &&
+    if (diag_env("MINIANDROID_EXP062_TRACE") && class_name.find("PhoneView") != std::string::npos &&
         method_name == "<init>") {
         std::cerr << "[EXP062-PARAM] PhoneView.<init> entering"
                   << " regs=" << registers_size << " ins=" << ins_size
@@ -4345,7 +4412,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // EXP-063: Trace getString parameter passing (§24: env-gated —
     // MINIANDROID_APP_TRACE=1).
     static thread_local const bool app_trace_on =
-        std::getenv("MINIANDROID_APP_TRACE") != nullptr;
+        diag_env("MINIANDROID_APP_TRACE");
     if (app_trace_on && class_name.find("LocaleController") != std::string::npos &&
         method_name == "getString") {
         std::cerr << "[EXP063-GETSTRING] entering"
@@ -4367,7 +4434,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     // EXP-058: Debug — verify parameter writes for addFragmentToStack.
-    if (current_method_.find("addFragmentToStack") != std::string::npos ||
+    if (diag_env("MINIANDROID_EXP058_TRACE") && current_method_.find("addFragmentToStack") != std::string::npos ||
         method_name.find("addFragmentToStack") != std::string::npos) {
         for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
             auto val = frame.registers.read_v(static_cast<uint8_t>(
@@ -4653,7 +4720,7 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         // POISON-marked initialized without its <clinit> running.
         {
             static thread_local const bool cpt_on =
-                std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+                diag_env("MINIANDROID_CLINIT_PATH_TRACE");
             static thread_local uint64_t cpt_n = 0;
             if (cpt_on && cpt_n++ < 40)
                 std::cerr << "[CLINIT-PATH] NO-DEX-REPORT poison class="
@@ -4670,7 +4737,7 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         // CONT-38 decode diag: the LOOKUP-MISS poison path.
         {
             static thread_local const bool cpt2_on =
-                std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr;
+                diag_env("MINIANDROID_CLINIT_PATH_TRACE");
             static thread_local uint64_t cpt2_n = 0;
             if (cpt2_on && cpt2_n++ < 40)
                 std::cerr << "[CLINIT-PATH] LOOKUP-MISS poison class="
@@ -5560,7 +5627,7 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
             // F-NEW-169 evidence: if the attach override was not reached,
             // dump the DEX superclass chain the climb walked (bounded 16)
             // so the resolution gap is NAMED, not guessed.
-            if (!aok && std::getenv("MINIANDROID_WAVEC_TRACE")) {
+            if (!aok && diag_env("MINIANDROID_WAVEC_TRACE")) {
                 std::cerr << "[WAVEC-ATTACH-CHAIN] " << cls << ":";
                 std::string walk = cls;
                 for (int hop = 0; hop < 16; ++hop) {
@@ -5578,7 +5645,7 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
             // F-NEW-169 decisive evidence: read the DI fields the override
             // must have stored. If A0B is still null after a successful
             // dispatch, the attach died partway (its NPE is deferred).
-            if (std::getenv("MINIANDROID_WAVEC_TRACE")) {
+            if (diag_env("MINIANDROID_WAVEC_TRACE")) {
                 for (const char* fn : {"A0B", "A03", "A05"}) {
                     auto fv = heap_.get_object_field(activity_obj_id, fn);
                     std::cerr << "[WAVEC-ATTACH-FIELD] " << cls << " obj#"
@@ -6585,7 +6652,7 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
                 // The LAW (receiver-identity super dispatch) is the code
                 // below; the TRACE is now env-gated (MINIANDROID_F074_TRACE).
                 static const bool f074_trace =
-                    std::getenv("MINIANDROID_F074_TRACE") != nullptr;
+                    diag_env("MINIANDROID_F074_TRACE");
                 if (!f074_trace) {
                     return try_recursive_invoke(sup, method_name, args,
                                                 return_val, result,
@@ -6773,7 +6840,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // ever reached the delegate.
     {
         static thread_local const bool cmt_on =
-            std::getenv("MINIANDROID_COMPOSE_MEASURE_TRACE") != nullptr;
+            diag_env("MINIANDROID_COMPOSE_MEASURE_TRACE");
         if (cmt_on) {
             const bool is_delegate = (declaring_class == "Lzs0;" &&
                 (method_name == "s" || method_name == "m" || method_name == "k"));
@@ -6803,7 +6870,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // LongArray-fill helper and the Arrays.fill bridge target — catches a
     // dropped dispatch (the o5051 map initialized with a garbage metadata
     // long because Ln/a;->r's fill never executed).
-    if (std::getenv("MINIANDROID_F040_DIAG") &&
+    if (diag_env("MINIANDROID_F040_DIAG") &&
         ((declaring_class == "Ln/a;" && method_name == "r") ||
          (declaring_class == "Ljava/util/Arrays;" && method_name == "fill") ||
          // S55 R-NEW-376 hop-trace: the self-recursive constructors that
@@ -6835,7 +6902,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // S24 probe (env-gated, bounded): the addAll NPE — the callee's
     // elements param read null while the caller passed obj#2831; print
     // every addAll entry to catch the path that mislaid the arg.
-    if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+    if (diag_env("MINIANDROID_S24_TRACE") &&
         declaring_class == "Lz1/i;" &&
         (method_name == "addAll" || method_name == "q" || method_name == "r")) {
         static thread_local uint64_t s24_tri = 0;
@@ -6856,9 +6923,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // §24 diagnostic gates (MASTER-3 session 11): per-function declarations
     // (static thread_local locals are not shared across functions).
     static thread_local const bool app_trace_on =
-        std::getenv("MINIANDROID_APP_TRACE") != nullptr;
+        diag_env("MINIANDROID_APP_TRACE");
     static thread_local const bool method_trace_on =
-        std::getenv("MINIANDROID_METHOD_TRACE") != nullptr;
+        diag_env("MINIANDROID_METHOD_TRACE");
     // M4-F028 diagnostic (env-gated): print the RAW argument values
     // (type tag + bit view + numeric view) for any method whose declaring
     // class contains the MINIANDROID_ARG_TRACE substring. Evidence-only —
@@ -6866,7 +6933,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // packing into androidx TransferFunction-style validators.
     {
         static thread_local const bool arg_trace_on =
-            std::getenv("MINIANDROID_ARG_TRACE") != nullptr;
+            diag_env("MINIANDROID_ARG_TRACE");
         if (arg_trace_on &&
             declaring_class.find(std::getenv("MINIANDROID_ARG_TRACE"))
                 != std::string::npos) {
@@ -6923,7 +6990,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // — the CME "Hash code of an element has changed" chain. Env-gated,
         // read-only: print every engine-level entry with raw arg ids.
         static thread_local const bool trie_trace =
-            std::getenv("MINIANDROID_TRIE_TRACE") != nullptr;
+            diag_env("MINIANDROID_TRIE_TRACE");
         if (tc && (declaring_class.find("ompos") != std::string::npos ||
                    declaring_class.find("oroutin") != std::string::npos ||
                    declaring_class.find("Choreographer") != std::string::npos ||
@@ -6985,7 +7052,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // unattached node's identity and its attach/detach history can be
         // reconstructed. Enable with MINIANDROID_R330_TRACE=1.
         static thread_local const bool r330_trace =
-            std::getenv("MINIANDROID_R330_TRACE") != nullptr;
+            diag_env("MINIANDROID_R330_TRACE");
         static thread_local uint64_t r330_entries = 0;
         if (r330_trace && r330_entries < 400) {
             bool r330_hit = false;
@@ -7116,7 +7183,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         } else if (f267_constraints_ready.find(args[0].object_id) ==
                    f267_constraints_ready.end()) {
             static thread_local const bool f267_diag =
-                std::getenv("MINIANDROID_COMPOSE_MEASURE_TRACE") != nullptr;
+                diag_env("MINIANDROID_COMPOSE_MEASURE_TRACE");
             if (f267_diag)
                 std::cerr << "[F-NEW-267] DEFER Lzs0;." << method_name
                           << " delegate#" << args[0].object_id
@@ -7264,7 +7331,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // (F271 dump) — print the raw gate inputs at dispatch time to
         // catch the state divergence (index size, membership, family).
         static thread_local const bool s83_diag_on =
-            std::getenv("MINIANDROID_S83_DIAG") != nullptr;
+            diag_env("MINIANDROID_S83_DIAG");
         static thread_local uint64_t s83_diag_n = 0;
         if (s83_diag_on && s83_diag_n < 40 &&
             (method_name == "setContentView" || method_name == "onCreate")) {
@@ -11010,7 +11077,31 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // read back null → checkNotNull NPE at the dooz app boundary.
         auto saved_method_descriptor = current_method_descriptor_;
         auto saved_dex_index = current_dex_index_;
-        auto saved_pc_visit_count = pc_visit_count_;
+        // CONT-96 W3-A: swap (was copy) — the copy did node allocations per
+        // invoke (1.33M invokes on the Telegram gate). Post-state identical:
+        // the caller's arrays return intact; the callee's counts are
+        // discarded exactly like the restore-copy discarded them.
+        std::vector<uint32_t> saved_pc_visit_count;
+        pc_visit_count_.swap(saved_pc_visit_count);
+        // F-NEW-398 (CONT-96): the F084 forward-progress state belongs to
+        // the CALLER frame too. execute_method_internal's frame-entry law
+        // clears all four members (pc_visit_count_, pc_branch_sig_,
+        // frame_progress_epoch_, pc_epoch_checkpoint_); the recursive
+        // invoke used to restore only the visit map, leaving the caller's
+        // branch-signature map EMPTY and epoch/checkpoint at 0. Every
+        // invoke-containing loop then re-recorded its branch signature as
+        // a "first visit" after each call — frame_progress_epoch_ frozen
+        // at 0 — and the 50001st visit classified a LIVE loop as a stall.
+        // Fixture evidence (com.probe.perf1 benchVirtual): [SPIN-REGS]
+        // v2=50000 — the loop counter ADVANCED — while the halt claimed
+        // "Infinite loop ... visited 50001 times" (op_at_pc=0x34, if-lt
+        // v2, v5). Save + restore the full F084 state set.
+        std::vector<uint64_t> saved_pc_branch_sig;
+        pc_branch_sig_.swap(saved_pc_branch_sig);
+        std::vector<uint8_t> saved_pc_branch_sig_seen;
+        pc_branch_sig_seen_.swap(saved_pc_branch_sig_seen);
+        auto saved_frame_progress_epoch = frame_progress_epoch_;
+        auto saved_pc_epoch_checkpoint = pc_epoch_checkpoint_;
         // EXP-052: Save tries state so we can restore it after the recursive
         // call returns. Without this, a throw in a callee would leave the
         // engine pointing at the callee's (now-stale) tries data.
@@ -11815,7 +11906,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // F-044: restore the per-frame descriptor (see save-site comment).
         current_method_descriptor_ = saved_method_descriptor;
         current_dex_index_ = saved_dex_index;
-        pc_visit_count_ = saved_pc_visit_count;
+        // CONT-96 W3-A: swap-back (was copy-assign) — zero node copies.
+        pc_visit_count_.swap(saved_pc_visit_count);
+        pc_branch_sig_.swap(saved_pc_branch_sig);               // F-NEW-398
+        pc_branch_sig_seen_.swap(saved_pc_branch_sig_seen);     // F-NEW-398
+        frame_progress_epoch_ = saved_frame_progress_epoch;     // F-NEW-398
+        pc_epoch_checkpoint_ = saved_pc_epoch_checkpoint;       // F-NEW-398
         current_tries_size_ = saved_tries_size;
         current_tries_data_ = saved_tries_data;
         current_tries_data_size_ = saved_tries_data_size;
@@ -14766,7 +14862,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // Get array size from vB
                 DalvikValue size_val = get_register(vB);
                 /* S44/R-NEW-351 probe: schema table allocations */
-                if (std::getenv("MINIANDROID_S44_R351") != nullptr &&
+                if (diag_env("MINIANDROID_S44_R351") &&
                     current_class_ == "Llt0;" && (pc_ == 353 || pc_ == 379)) {
                     DalvikValue mi_str = get_register(1); /* v1 = raw MessageInfo string */
                     std::cerr << "[S44-R351] new-array pc=" << pc_
@@ -15523,7 +15619,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "invoke-direct";
                 break;
             case Opcode::INVOKE_STATIC:
-                if (std::getenv("MINIANDROID_F040_DIAG") &&
+                if (diag_env("MINIANDROID_F040_DIAG") &&
                     current_class_ == "Ln/a;" && current_method_ == "r") {
                     std::cerr << "[R-INVOKE] entering execute_invoke_static pc="
                               << pc_ << std::endl;
@@ -16040,7 +16136,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     else if (op == "shl") result_val.int_val = a_val << (b_val & 0x1f); \
                     else if (op == "shr") result_val.int_val = a_val >> (b_val & 0x1f); \
                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
-                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vA << "=" << a_val \
                                   << " v" << (int)vB << "=" << b_val \
@@ -16139,7 +16235,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue b = get_register(vBB); \
                     /* S44/R-NEW-351 probe: numEntries size math in the protobuf */ \
                     /* MessageSchema ctor — v12 must be a sane small INT32.   */ \
-                    if (std::getenv("MINIANDROID_S44_R351") != nullptr && \
+                    if (diag_env("MINIANDROID_S44_R351") && \
                         current_class_ == "Llt0;" && pc_ == 377) { \
                         std::cerr << "[S44-R351] mul-int/lit8 pc=377 vBB=v" << (int)vBB \
                                   << " type=" << (int)b.type \
@@ -16359,7 +16455,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     /* F-028 law: slot bits reinterpreted AS int32 (source type) */ \
                     int32_t s = static_cast<int32_t>(dalvik_raw_bits32(val)); \
                     STORE_EXPR; \
-                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vB << "(tag=" << (int)val.type \
                                   << " bits=0x" << std::hex << dalvik_raw_bits32(val) << std::dec \
@@ -16382,7 +16478,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                               : (val.type == DalvikType::FLOAT64 ? [&]{ int64_t b; std::memcpy(&b, &val.double_val, 8); return b; }() \
                               : (val.type == DalvikType::INT32 ? static_cast<int64_t>(val.int_val) : 0)); \
                     STORE_EXPR; \
-                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vB << "(J=" << s << ") -> " \
                                   << out.long_val << std::endl; \
@@ -16405,7 +16501,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint32_t f28bits = dalvik_raw_bits32(val); \
                     float s; std::memcpy(&s, &f28bits, sizeof(s)); \
                     STORE_EXPR; \
-                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vB << "(tag=" << (int)val.type \
                                   << " bits=0x" << std::hex << f28bits << std::dec \
@@ -16595,7 +16691,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
                                : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
                     result_val.int_val = (bv < cv) ? -1 : (bv > cv) ? 1 : 0; \
-                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] cmp-long @" << current_class_ << "." \
                                   << current_method_ << " b=(" << (b.type == DalvikType::INT64 ? "J" : "i") \
                                   << (b.type == DalvikType::INT64 ? b.long_val : b.int_val) << ") v" \
@@ -16647,7 +16743,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     } \
                     bool cmp_nan = (bv != bv) || (cv != cv); \
                     result_val.int_val = cmp_nan ? (NAN_RESULT) : ((bv < cv) ? -1 : (bv > cv) ? 1 : 0); \
-                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " b=" << (double)bv << " c=" << (double)cv \
                                   << " -> " << result_val.int_val << std::endl; \
@@ -17637,7 +17733,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         else if (strcmp(op, "shl") == 0) result_val.long_val = av << static_cast<int>(bv & 0x3f); \
                         else if (strcmp(op, "shr") == 0) result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
                         else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
-                        if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        if (diag_env("MINIANDROID_WIDE_DIAG")) { \
                             std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                       << current_method_ << " v" << (int)vA << "(J=" << av << ") v" \
                                       << (int)vB << "(J=" << bv << ") -> " << result_val.long_val << std::endl; \
@@ -17765,7 +17861,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         }
         // S55 R-NEW-361: post-switch observation for the failing r frame —
         // which handler consumed the invoke at pc=12 (or didn't).
-        if (std::getenv("MINIANDROID_F040_DIAG") &&
+        if (diag_env("MINIANDROID_F040_DIAG") &&
             current_class_ == "Ln/a;" && current_method_ == "r") {
             std::cerr << "[R-AFTER] pc=" << pc_ << " op=0x" << std::hex
                       << opcode << std::dec << " handler=\""
@@ -17899,7 +17995,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         // the guard never alters app-visible state except for frames that
         // previously died as false positives.
         // ────────────────────────────────────────────────────────────────
-        pc_visit_count_[pc_]++;   // v3: every pc — branch-free spins too
+        // CONT-96 W3-A: flat-array visit count (was std::map — a red-black
+        // find/insert per instruction). Semantics identical; the local
+        // snapshot feeds the threshold check below.
+        const uint32_t f084_visit_now =
+            (pc_ < pc_visit_count_.size()) ? ++pc_visit_count_[pc_] : 1u;
         uint16_t opb = (pc_ < bytecode_.size()) ? (bytecode_[pc_] & 0xFF) : 0xFFFF;
         const bool cond_branch = opb >= 0x32 && opb <= 0x3d;
         if (cond_branch) {
@@ -17925,27 +18025,36 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     const uint8_t raa = (bytecode_[pc_] >> 8) & 0xFF;
                     mix(current_registers_->read_v(raa));
                 }
-                auto last = pc_branch_sig_.find(pc_);
-                if (last != pc_branch_sig_.end()) {
-                    if (last->second != sig) {
-                        // Observable progress through THIS branch. Frame-level
-                        // law v2: bump the frame epoch (a decision input moved
-                        // somewhere in this frame) instead of resetting only
-                        // this branch's window.
-                        last->second = sig;
-                        ++frame_progress_epoch_;
+                // CONT-96 W3-A: flat-array signature (was std::map). The
+                // seen-flag replicates the map's insert-vs-compare law:
+                // first visit records the baseline (no epoch bump); every
+                // later visit compares. Validity persists across window
+                // resets exactly like the map did (only the visit counts
+                // are cleared on a fresh window).
+                if (pc_ < pc_branch_sig_.size()) {
+                    if (pc_branch_sig_seen_[pc_]) {
+                        if (pc_branch_sig_[pc_] != sig) {
+                            // Observable progress through THIS branch. Frame-level
+                            // law v2: bump the frame epoch (a decision input moved
+                            // somewhere in this frame) instead of resetting only
+                            // this branch's window.
+                            pc_branch_sig_[pc_] = sig;
+                            ++frame_progress_epoch_;
+                        }
+                    } else {
+                        pc_branch_sig_[pc_] = sig;
+                        pc_branch_sig_seen_[pc_] = 1u;
                     }
-                } else {
-                    pc_branch_sig_[pc_] = sig;
                 }
             }
         }
-        if (pc_visit_count_[pc_] > config_.loop_visit_threshold) {
+        if (f084_visit_now > config_.loop_visit_threshold) {
             // Frame-level law v2: halt only if NO decision input in this
             // frame moved since the last threshold checkpoint of this pc.
             if (frame_progress_epoch_ != pc_epoch_checkpoint_) {
                 pc_epoch_checkpoint_ = frame_progress_epoch_;
-                pc_visit_count_.clear();   // fresh window for every branch
+                // CONT-96 W3-A: flat-array fresh window (was map clear).
+                std::fill(pc_visit_count_.begin(), pc_visit_count_.end(), 0u);
             } else {
             // EXP-042 Phase 2: include bytecode size and the actual opcode at
             // the looping PC, so we can diagnose whether the loop is a real
@@ -17953,7 +18062,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             uint16_t op_at_pc = (pc_ < bytecode_.size()) ? (bytecode_[pc_] & 0xFF) : 0xFFFF;
             halt_reason_ = "Infinite loop at PC=" + to_hex(pc_) +
                           " in " + current_class_ + "." + current_method_ +
-                          " (visited " + std::to_string(pc_visit_count_[pc_]) +
+                          " (visited " + std::to_string(f084_visit_now) +
                           " times in this frame, bytecode_size=" +
                           std::to_string(bytecode_.size()) +
                           ", op_at_pc=0x" + to_hex16(op_at_pc) + ").";
@@ -18134,9 +18243,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
                 // FINAL-CAMPAIGN PHASE 3 (F-NEW-172): visit histogram of the
                 // spinning frame — which instructions actually cycle.
+                // CONT-96 W3-A: flat scan (was map iteration).
                 std::vector<std::pair<uint32_t, uint64_t>> top;
-                for (const auto& kv : pc_visit_count_)
-                    top.push_back(kv);
+                for (uint32_t f084_pi = 0; f084_pi < pc_visit_count_.size(); ++f084_pi)
+                    if (pc_visit_count_[f084_pi])
+                        top.push_back({f084_pi, pc_visit_count_[f084_pi]});
                 std::sort(top.begin(), top.end(),
                           [](auto& a, auto& b) { return a.second > b.second; });
                 std::cerr << "[SPIN-HISTO]";
@@ -18227,8 +18338,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         std::cerr << std::endl;
                     }
                     std::vector<std::pair<uint32_t, uint64_t>> wtop;
-                    for (const auto& kv : pc_visit_count_)
-                        wtop.push_back(kv);
+                    // CONT-96 W3-A: flat scan (was map iteration).
+                    for (uint32_t f084_pi = 0; f084_pi < pc_visit_count_.size(); ++f084_pi)
+                        if (pc_visit_count_[f084_pi])
+                            wtop.push_back({f084_pi, pc_visit_count_[f084_pi]});
                     std::sort(wtop.begin(), wtop.end(),
                               [](auto& a, auto& b) { return a.second > b.second; });
                     std::cerr << "[WALL-HISTO]";
@@ -21703,7 +21816,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // (pc ~2546 c.h) did; this reveals the actual pc path.
     {
         static thread_local uint64_t s24_flow = 0;
-        if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+        if (diag_env("MINIANDROID_S24_TRACE") &&
             current_class_ == "Landroidx/navigation/compose/p;" &&
             s24_flow < 120) {
             ++s24_flow;
@@ -21717,7 +21830,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // where each dispatch actually landed.
     {
         static thread_local uint64_t je_flow = 0;
-        if (std::getenv("MINIANDROID_CLASS_LAW_TRACE") != nullptr &&
+        if (diag_env("MINIANDROID_CLASS_LAW_TRACE") &&
             current_class_ == "Lje;" && current_method_ == "<init>" &&
             je_flow < 40) {
             ++je_flow;
@@ -21739,7 +21852,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     current_invoke_is_static_ = false;
 
     // EXP-062: Debug — trace ALL invoke-virtual entry in PhoneView.<init>
-    if (current_class_.find("PhoneView") != std::string::npos &&
+    if (diag_env("MINIANDROID_EXP062_TRACE") && current_class_.find("PhoneView") != std::string::npos &&
         current_method_ == "<init>") {
         auto v1 = get_register(1);
         std::cerr << "[EXP062-ENTRY] invoke-virtual entry pc=" << pc
@@ -21796,10 +21909,11 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // null" → NavHost graph build died → Compose never composed.
     std::string invoke_descriptor_35c;
     if (dex_report_) {
-        invoke_descriptor_35c =
-            resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        // CONT-96 W3-B: memo entry (proto string + parsed params resolve once).
+        const auto& mre = method_resolve_entry(current_dex_index_, method_idx);
+        invoke_descriptor_35c = mre.proto;
         if (invoke_descriptor_35c != "<unknown>") {
-            args = build_invoke_args(args, parse_proto_param_types(invoke_descriptor_35c),
+            args = build_invoke_args(args, mre.proto_params,
                                      /*is_static=*/false);
         } else {
             invoke_descriptor_35c.clear();
@@ -21821,7 +21935,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     }
 
     // S24 probe: c.a's addAll receives a null collection — print the arg.
-    if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+    if (diag_env("MINIANDROID_S24_TRACE") &&
         method_name_from_dex == "addAll" &&
         current_class_ == "Landroidx/navigation/c;") {
         static thread_local uint64_t s24_addall = 0;
@@ -21885,7 +21999,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // F-141 DIAG (env-gated, bounded, remove after root closure §112-114):
         // dump the receiver value identity + current frame register window —
         // answers "which register carried the null receiver".
-        if (std::getenv("MINIANDROID_F141_DIAG") && current_registers_) {
+        if (diag_env("MINIANDROID_F141_DIAG") && current_registers_) {
             std::cerr << "[F141-DIAG] " << current_class_ << "."
                       << current_method_ << " pc=" << pc_
                       << " recv_type=" << static_cast<int>(args[0].type)
@@ -22201,7 +22315,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // the channel with the live arg kinds and the served value so the
         // first incorrect state (a legal add(null) vs a zero-ref OBJECT arg
         // fed by an upstream conversion defect) is evidence, not guesswork.
-        if (std::getenv("MINIANDROID_F271_COLL_TRACE") &&
+        if (diag_env("MINIANDROID_F271_COLL_TRACE") &&
             (method_name_from_dex == "add" || method_name_from_dex == "remove" ||
              method_name_from_dex == "removeAt" || method_name_from_dex == "removeFirst" ||
              method_name_from_dex == "removeLast" || method_name_from_dex == "pop" ||
@@ -22356,9 +22470,11 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     // when the proto is unresolvable — legacy behavior preserved.
     std::string proto_35c;
     if (dex_report_) {
-        proto_35c = resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        // CONT-96 W3-B: memo entry (proto string + parsed params resolve once).
+        const auto& mre = method_resolve_entry(current_dex_index_, method_idx);
+        proto_35c = mre.proto;
         if (proto_35c != "<unknown>") {
-            args = build_invoke_args(args, parse_proto_param_types(proto_35c),
+            args = build_invoke_args(args, mre.proto_params,
                                      /*is_static=*/false);
         } else {
             proto_35c.clear();
@@ -22559,10 +22675,11 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // call with literal floats/wides (e.g. custom View ctors) needs the
     // same proto-guided reinterpretation as virtual calls.
     if (dex_report_) {
-        const std::string proto_35c =
-            resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        // CONT-96 W3-B: memo entry (proto string + parsed params resolve once).
+        const auto& mre = method_resolve_entry(current_dex_index_, method_idx);
+        const std::string& proto_35c = mre.proto;
         if (proto_35c != "<unknown>") {
-            args = build_invoke_args(args, parse_proto_param_types(proto_35c),
+            args = build_invoke_args(args, mre.proto_params,
                                      /*is_static=*/false);
         }
     }
@@ -22581,7 +22698,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         // self-recursion — print EVERY invoke-direct dispatched from a
         // j0/t0/E0 constructor frame with the resolved (class, name, desc).
         static const bool r376_direct =
-            std::getenv("MINIANDROID_F040_DIAG") != nullptr;
+            diag_env("MINIANDROID_F040_DIAG");
         if (r376_direct && current_method_ == "<init>" &&
             (current_class_ == "Lj/j0;" || current_class_ == "Lt0/t;" ||
              current_class_ == "LE0/c;")) {
@@ -22598,7 +22715,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
             }
         }
         // EXP-081: Debug trace
-        if (method_name.find("lambda") != std::string::npos || method_name.find("createView") != std::string::npos) {
+        if (diag_env("MINIANDROID_EXP081_TRACE") && (method_name.find("lambda") != std::string::npos || method_name.find("createView") != std::string::npos)) {
             std::cerr << "[EXP081-DESC] method=" << method_name
                       << " method_idx=" << method_idx
                       << " dex=" << current_dex_index_
@@ -22608,7 +22725,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     }
 
     // EXP-061: Debug — trace invoke-direct inside PhoneView.<init>
-    if (current_class_.find("PhoneView") != std::string::npos &&
+    if (diag_env("MINIANDROID_EXP061_TRACE") && current_class_.find("PhoneView") != std::string::npos &&
         current_method_ == "<init>") {
         std::cerr << "[EXP061-INVOKE-DIRECT] caller=PhoneView.<init>"
                   << " method_idx=" << method_idx
@@ -22696,13 +22813,13 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         // EXP-079: Debug trace for lambda$createView$1 dispatch
         // EXP-089: Also trace lambda$new$0 (ActionBar back button handler)
         // and any method containing "presentFragment" or "swapToFragment"
-        if (method_name.find("createView") != std::string::npos ||
+        if (diag_env("MINIANDROID_EXP079_TRACE") && (method_name.find("createView") != std::string::npos ||
             method_name.find("onDoneButton") != std::string::npos ||
             method_name.find("onNextPressed") != std::string::npos ||
             method_name.find("lambda$new") != std::string::npos ||
             method_name.find("presentFragment") != std::string::npos ||
             method_name.find("swapToFragment") != std::string::npos ||
-            method_name.find("onBackPressed") != std::string::npos) {
+            method_name.find("onBackPressed") != std::string::npos)) {
             std::cerr << "[EXP079-DIRECT] invoke-direct: class=" << class_name
                       << " method=" << method_name
                       << " method_idx=" << method_idx
@@ -22710,7 +22827,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                       << " args=" << args.size()
                       << std::endl;
         }
-        if (class_name == "LE1/c;" && std::getenv("MINIANDROID_E1_DIAG")) {
+        if (class_name == "LE1/c;" && diag_env("MINIANDROID_E1_DIAG")) {
             std::cerr << "[E1-DIAG] inner direct: desc=" << method_desc_081
                       << " args=" << args.size() << std::endl;
         }
@@ -22718,16 +22835,16 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
             // EXP-079: Debug trace
-            if (method_name.find("createView") != std::string::npos ||
+            if (diag_env("MINIANDROID_EXP079_TRACE") && (method_name.find("createView") != std::string::npos ||
                 method_name.find("lambda$new") != std::string::npos ||
-                method_name.find("presentFragment") != std::string::npos) {
+                method_name.find("presentFragment") != std::string::npos)) {
                 std::cerr << "[EXP079-DIRECT] try_recursive_invoke SUCCEEDED for " << method_name << std::endl;
             }
         } else {
             // EXP-079: Debug trace
-            if (method_name.find("createView") != std::string::npos ||
+            if (diag_env("MINIANDROID_EXP079_TRACE") && (method_name.find("createView") != std::string::npos ||
                 method_name.find("lambda$new") != std::string::npos ||
-                method_name.find("presentFragment") != std::string::npos) {
+                method_name.find("presentFragment") != std::string::npos)) {
                 std::cerr << "[EXP079-DIRECT] try_recursive_invoke FAILED for " << method_name << std::endl;
             }
         }
@@ -22804,7 +22921,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // Format similar to invoke-virtual but for static methods
     if (pc + 2 >= bytecode_.size()) return false;
     // S55 R-NEW-361: entry-level probe — was the function even reached?
-    if (std::getenv("MINIANDROID_F040_DIAG")) {
+    if (diag_env("MINIANDROID_F040_DIAG")) {
         static thread_local uint64_t eis_entry = 0;
         if (eis_entry < 200000) {
             eis_entry++;
@@ -22848,7 +22965,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // ────────────────────────────────────────────────────────────────────
     if (dex_report_) {
         static thread_local const bool r350fn2 =
-            std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+            diag_env("MINIANDROID_R350_TRACE");
         if (r350fn2) {
             std::string fn_name =
                 resolve_method_name_for_dex(method_idx, current_dex_index_);
@@ -22919,7 +23036,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         method_proto = resolve_method_proto_for_dex(method_idx, current_dex_index_);
     }
     // EXP-082: Debug trace for $r8$lambda invoke-static
-    if (method_name.find("$r8$lambda") != std::string::npos || method_name.find("createView") != std::string::npos) {
+    if (diag_env("MINIANDROID_EXP082_TRACE") && (method_name.find("$r8$lambda") != std::string::npos || method_name.find("createView") != std::string::npos)) {
         std::cerr << "[EXP082-STATIC] method=" << method_name
                   << " method_idx=" << method_idx
                   << " dex=" << current_dex_index_
@@ -23029,7 +23146,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
 
     // EXP-088+ F4: Trace invoke-static for $default$ methods (desugared interface defaults)
     // to verify overload resolution and arg count correctness.
-    if (method_name.find("$default$") != std::string::npos) {
+    if (diag_env("MINIANDROID_EXP088_TRACE") && method_name.find("$default$") != std::string::npos) {
         std::cerr << "[EXP088-F4-STATIC] method=" << method_name
                   << " class=" << class_name
                   << " proto=" << method_proto
@@ -23239,7 +23356,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         // vector (env-gated) so the shape is on record.
         {
             static thread_local const bool r350shape =
-                std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+                diag_env("MINIANDROID_R350_TRACE");
             static thread_local uint64_t r350shape_n = 0;
             if (r350shape && r350shape_n < 40) {
                 ++r350shape_n;
@@ -23565,10 +23682,11 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // for the F-023 overload law at every DEX dispatch site below.
     std::string iface_proto;
     if (dex_report_) {
-        iface_proto =
-            resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        // CONT-96 W3-B: memo entry (proto string + parsed params resolve once).
+        const auto& mre = method_resolve_entry(current_dex_index_, method_idx);
+        iface_proto = mre.proto;
         if (iface_proto != "<unknown>") {
-            args = build_invoke_args(args, parse_proto_param_types(iface_proto),
+            args = build_invoke_args(args, mre.proto_params,
                                      /*is_static=*/false);
         } else {
             iface_proto.clear();
@@ -23594,7 +23712,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // ────────────────────────────────────────────────────────────────────────
     {
         static thread_local const bool uvw_on =
-            std::getenv("MINIANDROID_UV_WATCH") != nullptr;
+            diag_env("MINIANDROID_UV_WATCH");
         if (uvw_on && class_name == "Luv;" && method_name == "I") {
             static thread_local uint64_t uvw_n = 0;
             if (uvw_n++ < 400) {
@@ -23733,7 +23851,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         // method that exists, the runtime-first arm is skipped and the
         // dispatch falls to the deeper fallbacks (observed: painter paint
         // dispatch never reaches the body).
-        if (std::getenv("MINIANDROID_UV_WATCH") && class_name == "Luv;" &&
+        if (diag_env("MINIANDROID_UV_WATCH") && class_name == "Luv;" &&
             method_name == "I" &&
             (heap_obj->class_descriptor == "Lte1;" ||
              heap_obj->class_descriptor == "Lod1;")) {
@@ -23754,7 +23872,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
             // S59 R-NEW-379 DIAG: the runtime-first dispatch claims success
             // — surface the resolved class/method and the return shape so
             // silent typed-zero/void returns become visible.
-            if (std::getenv("MINIANDROID_IFACE_FAIL_TRACE")) {
+            if (diag_env("MINIANDROID_IFACE_FAIL_TRACE")) {
                 fprintf(stderr,
                         "[IFACE-RT] %s.%s%s via runtime %s (recv obj#%u) "
                         "ret_type=%d ret_id=%u\n",
@@ -23850,7 +23968,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
             // chain; (2) exact (name, descriptor) DEFAULT body in the
             // interface hierarchy (receiver interfaces, transitive,
             // bounded); (3) legacy descriptor-only walk (unchanged).
-            bool f281_diag = std::getenv("MINIANDROID_F281_TRACE") != nullptr;
+            bool f281_diag = diag_env("MINIANDROID_F281_TRACE");
             {
                 std::string f281_walk = heap_obj->class_descriptor;
                 for (int hop = 0; hop < 8 && !f281_walk.empty(); ++hop) {
@@ -24064,7 +24182,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // for every interface call that reached this point without a REAL DEX
     // dispatch (no runtime-class hit, no declared-interface body, no
     // signature/default-method walk success).
-    if (std::getenv("MINIANDROID_IFACE_FAIL_TRACE") &&
+    if (diag_env("MINIANDROID_IFACE_FAIL_TRACE") &&
         !args.empty()) {
         const DalvikValue& r0 = args[0];
         std::string r0_heap = "<none>";
@@ -25946,7 +26064,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // which silently typed-defaulted (the consumed=false decode).
     if (touch_dispatch_active_) {
         static thread_local const bool tw_on =
-            std::getenv("MINIANDROID_TOUCH_WINDOW_TRACE") != nullptr;
+            diag_env("MINIANDROID_TOUCH_WINDOW_TRACE");
         static thread_local uint64_t tw_n = 0;
         if (tw_on && tw_n++ < 400)
             std::cerr << "[TOUCHWIN-BRIDGE] " << class_name << "." << method
@@ -25973,7 +26091,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // stops before the text path — where exactly?).
     {
         static thread_local const bool cdw_on =
-            std::getenv("MINIANDROID_CANVAS_DRAW_WIN_TRACE") != nullptr;
+            diag_env("MINIANDROID_CANVAS_DRAW_WIN_TRACE");
         static const char* cdw_faces[] = {
             "drawColor", "drawRect", "drawRoundRect", "drawCircle",
             "drawLine", "drawText", "drawTextRun", "drawPosText",
@@ -26001,7 +26119,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // the collection shadow even sees the call.
     {
         static const bool lawcef_on =
-            std::getenv("MINIANDROID_LAWCEF_TRACE") != nullptr;
+            diag_env("MINIANDROID_LAWCEF_TRACE");
         static const char* lawcef_faces[] = {
             "removeIf", "getOrDefault", "forEach", "merge",
             "computeIfAbsent", "compute", "sort", "removeAll",

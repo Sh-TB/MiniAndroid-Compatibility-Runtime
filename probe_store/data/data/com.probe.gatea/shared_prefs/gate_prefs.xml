@@ -5,5 +5,5 @@
     <int name="k_int" value="-42" />
     <long name="k_long" value="9876543210" />
     <string name="k_string">gate-&lt;&amp;&gt;-value</string>
-    <int name="restart_counter" value="2" />
+    <int name="restart_counter" value="1" />
 </map>
