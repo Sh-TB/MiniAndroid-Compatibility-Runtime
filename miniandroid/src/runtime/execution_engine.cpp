@@ -1012,10 +1012,10 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     gd->set_dex_dispatch(
                         [this](uint32_t gdo, uint32_t lo, const std::string& cb,
                                float f1, float f2, float f3, float f4,
-                               bool& consumed) {
+                               float f5, float f6, bool& consumed) {
                             dalvik_engine_.dispatch_gesture_cb(gdo, lo, cb, f1,
-                                                               f2, f3, f4,
-                                                               consumed);
+                                                               f2, f3, f4, f5,
+                                                               f6, consumed);
                         });
                 }
             }

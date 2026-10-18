@@ -1560,9 +1560,13 @@ public:
     void dispatch_key_event(uint32_t view_id, int action, int keycode,
                             int repeat, int64_t time_ms, bool& consumed);
     // R-NEW-434: GestureDetector listener callbacks → DEX.
+    // F-NEW-400 (CONT-97): two-event callbacks (onScroll/onFling) carry the
+    // SECOND event's CURRENT coords in f3/f4; the delta/velocity floats
+    // moved to f5/f6. Simple callbacks keep f1/f2 = (x, y), f3..f6 = 0.
     void dispatch_gesture_cb(uint32_t gd_obj, uint32_t listener_obj,
                              const std::string& cb, float f1, float f2,
-                             float f3, float f4, bool& consumed);
+                             float f3, float f4, float f5, float f6,
+                             bool& consumed);
     // GOLDEN-02: AOSP View.performLongClick() law — dispatch to the
     // registered OnLongClickListener.onLongClick(View)Z via
     // try_recursive_invoke, using the REAL listener object stored by

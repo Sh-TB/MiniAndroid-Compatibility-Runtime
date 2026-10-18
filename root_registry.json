@@ -2811,9 +2811,19 @@
  {
   "id": "F-145",
   "title": "Final screenshot capture surface does not follow the top-of-stack window (multi-activity apps capture the splash/first window)",
-  "status": "OPEN",
+  "status": "ALREADY_FIXED_AND_TESTED",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": {
+   "wave": "CONT-97 re-verification at current head",
+   "fixture": {
+    "name": "com.probe.acts2",
+    "apk_sha16": "7c1c21e0ad2d401d",
+    "script": "scripts/cont97_build_acts_probe.sh"
+   },
+   "result": "Two-activity probe (A red full-screen -> startActivity(B) green+F145-TOP-OF-STACK): B onCreate dispatched, B tree rendered (EXP092 node=23 F145-TOP-OF-STACK), FINAL frame sampled RGB=(0,128,0) at center+both corners — the capture surface FOLLOWS the top-of-stack window at current head. The historical splash-capture observation is SUPERSEDED-BY-EVIDENCE.",
+   "logs": "run/cont97/acts2_run1.*"
+  }
  },
  {
   "id": "F-146",
@@ -3270,7 +3280,10 @@
   "status": "BLOCKED",
   "priority": "P2",
   "layer": null,
-  "evidence": " [CONT-17 2026-10-08: BLOCKED note re-verified current — blocker unchanged, row kept BLOCKED]",
+  "evidence": {
+   "wave": "CONT-97 re-affirmation",
+   "result": "BLOCKED re-verified at current head: the blocker is the LIVE z.ai Svelte-5 bundle (external web asset, not engine DEX); the engine boots the shell honestly white. Unchanged from the CONT-17 BLOCKED note; needs an upstream bundle fix or a live-network repro to advance."
+  },
   "date": "2026-10-08"
  },
  {
@@ -3632,7 +3645,10 @@
   "layer": "renderer/z-order",
   "title": "PHASE 10 draw/z-order audit residue: AOSP View.draw order (drawBackground -> onDraw -> dispatchDraw -> decorations) is enforced in the frame walk (21-P0-6 census law; forward child pop; S86 visibility gates; item-21 placeholders out of the authoritative frame) but elevation/translationZ (RenderNode Z ordering, outline shadows) is NOT modeled — sibling overlap order on elevated views may diverge.",
   "law": "AOSP View.draw + RenderNode Z law: children draw in program order; Z-elevated siblings reorder above flat ones with shadow decoration.",
-  "evidence": "scripts/fc_audit_stubs.py census (34 void-answer sites: 12 lawful-void / 21 state-capture verified / 1 silent-void FIXED = setIntent state identity); draw walk audit execution_engine.cpp L3640-4460."
+  "evidence": {
+   "wave": "CONT-97 re-verification",
+   "result": "Enforced part re-verified at current head: the 21-P0-6 draw-order law holds (wall 12/12 byte-identical anchors incl. multi-layer apps; goldens 4/4). The named residue stays: elevation/translationZ (RenderNode Z ordering + outline shadows) is NOT modeled — sibling overlap order on elevated views may diverge. Kept REGISTERED (scope unchanged, no elevation fixture this wave)."
+  }
  },
  {
   "id": "F-NEW-193",
@@ -4017,17 +4033,22 @@
  },
  {
   "id": "F-NEW-214",
-  "status": "PENDING",
+  "status": "ALREADY_FIXED_AND_TESTED",
   "priority": "P2",
   "layer": "campaign/success-path",
   "title": "SUCCESS-PATH SFC-8: logs-as-data law — distill run logs into bounded records (first_divergence, execution_family, API census, ViewTree census, render census, resource census, exception census, REC-MISS census, frame metrics, SHA, state-change evidence); keep raw traces outside the canonical repository unless required as provenance.",
   "law": "No thousands of raw lines stored or manually inspected.",
-  "evidence": "user mandate",
+  "evidence": {
+   "wave": "CONT-97",
+   "result": "evidence/cont96/evidence.json and evidence/cont97/evidence.json are the exercised SFC-8 records; both contain bounded structured censuses + honest pendings."
+  },
   "test": "3-run protocol",
   "source": "user campaign mandate",
   "current": "",
   "risk": "",
-  "fix": "",
+  "fix": [
+   "The logs-as-data law is IMPLEMENTED AS CAMPAIGN PROCESS: every wave since S61 publishes evidence/<wave>/evidence.json (bounded records: first_divergence, censuses, A/B rows, SHAs, honest_notes) + evidence MANIFEST + the #364 ledger comment; raw traces stay in run/ (gitignored) with only bounded artifacts committed. Re-graded from PENDING."
+  ],
   "after": "",
   "before": "",
   "affected_titles": "",
@@ -6441,6 +6462,21 @@
    "post": "direct=RES1-HELLO-STRING-V1; string-then-res=PLAIN-TEXT-LAW -> verdict=PASS both rows (binary b45851882f1d2405)",
    "battery": "unote wall 3/3 MATCH byte-identical; goldens 4/4; Telegram 30s gate zero [resid: occurrences in both streams",
    "logs": "run/cont97/res1_pre.out, run/cont97/res1_post.out, run/cont97/tg_res1.*"
+  }
+ },
+ {
+  "id": "F-NEW-400",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P2",
+  "title": "GestureDetector two-event callbacks built e2 from the DOWN coordinates: onScroll/onFling received e2 == e1 (the 4-float emit payload never carried the current pointer position)",
+  "layer": "framework/input/gesture",
+  "root_cause": "The GdModel FSM emitted 4 floats (down_x, down_y, delta, delta) and dispatch_gesture_cb built BOTH event objects from f1/f2 — e2 = make_ev(2, down_x, down_y). AOSP GestureDetector.java: e2 is the CURRENT move (onScroll) or up (onFling) event; e2.getX()/getY() must track the pointer. CONT-86 fixed the arg-SHIFT (receiver prepended, F-NEW-390); this closes the remaining half (e2 coords).",
+  "fix": "6-float payload: onScroll (down_x, down_y, cur_x, cur_y, distanceX, distanceY); onFling (down_x, down_y, up_x, up_y, velocityX, velocityY); simple callbacks unchanged (x, y, 0...). Engine builds e2 = make_ev(ACTION_MOVE/ACTION_UP, f3, f4) and passes f5/f6 as the float params. Cb/DexDispatch signatures widened; all call sites updated.",
+  "evidence": {
+   "wave": "CONT-97",
+   "pre": "run/cont86/swipe_final.log: [C86-GCB-E2] e2xy=100,400 on every scroll while focus advanced 116,375 -> 133,350 -> 150,325 (e2 frozen at the down point)",
+   "post": "run/cont97/swipe_post.*: [C97-GCB-E2] e2xy=116,375 -> 133,350 -> 150,325 ... dist/v=-16,25; app-visible [SWIPE1-SCROLL] e2=283,125 .. 300,100 (e1 stays 100,400); [SWIPE1-FLING] e2=300,100 (the UP event), vx=1055.77 vy=-1562.49 unchanged",
+   "battery": "MG-310 7/7, MG-150 3/3, swipe1 anchor setup OK (binary efe9ffd03345a0b9)"
   }
  }
 ]
