@@ -10409,3 +10409,26 @@ Stage Summary:
 - 16 task units delivered in ONE batch cycle: 11 tracks fully APPROVED (CONT-98 T5/T3/T4/T2/T7/T1/T8/T10 + CONT-99 T8/T10/T9-classification), 3 PARTIAL (CONT-98 T9 config-change invalidation harness frontier; CONT-89/92 at the pre-existing root; CONT-93 corpus-limited), 1 BLOCKED (F-NEW-381), 1 ALREADY_TRACKED (CONT-92) — per-item تایید/رد posted to #364.
 - Success rate: 11/16 fully closed (69%), verdicts delivered 16/16, weighted ≈78%.
 - Next wave owns: the pre-existing telegram component-resolution death (Lkg/i;.P getServiceInfo environment), a lawful platform-package model ('android' residual), recycler-window materialization (replacing the bounded-64 law), UPP-001/F-NEW-381 architecture refactor.
+
+---
+Task ID: cont103-batch (17 task units)
+Agent: main (CONT-103 batch wave — Telegram-first)
+Task: #364 «ادامه ادامه تعداد بالای ۱۰ تا ۱۵ تسک کاری رو کامل انجام بده» — batch mode ≥10-15 units per round, Telegram requests first (CONT-89/92), then CONT-90/91 + residual verdicts.
+
+Work Log:
+- Step 0: dropped local UUID-residue commit a53a5479 (tmp/cont102_* build intermediates; CONT-101 lesson re-applied); HEAD == origin/main == 6a19535b; entry binary c23d4b1a31acdeef (CONT-102 battery validated, zero drift).
+- #364 re-read: 68 comments (39 wave reports + 29 user cards); latest unresolved user cards = CONT-89/90/91 (10-18 04:05) → Telegram tracks placed first.
+- U1 telegram PRE: cascade = Lkg/i;.P getServiceInfo MISS-EMPTY → NameNotFoundException uncaught; GATEA-NATIVE UnsatisfiedLinkError (x86_64 lib present, extraction absent); protobuf "No factory" UnsupportedOperationException uncaught at LaunchActivity.onCreate pc=46.
+- U2 fixture-first c103a probe (20da26989a01f539): PRE reproduced the EXACT telegram empty-MISS death at R3 ComponentName.createRelative; 12 rows defined.
+- U3 FOUR roots fixed in ONE rebuild: F-NEW-435 (createRelative static factory, leading-dot law + NPE contract), F-NEW-436 (service/provider meta containment fallback for raw-manifest keys), F-NEW-437 (GET_SERVICES bit 0x20→0x4, F-NEW-426 error class), F-NEW-438 (flattenToString/flattenToShortString/unflattenFromString family). POST2: 12/12 rows green.
+- U6 honest decode via androguard disassembly: p3.<clinit> (13 units) registers DEFAULT_INSTANCE via v1.k Map.put(Class,inst); i2.zzb 2-factory combinator; t1.zzc = GeneratedMessageLite.class.isAssignableFrom(p3) → F-NEW-440: the F-103 law resolved the RECEIVER token but took the PROBE arg's class_desc verbatim (heap Class token's class_desc = "Ljava/lang/Class;") → assignable(Class→v1)=false → factory threw. Fix: probe-side __referent_desc resolution. "No factory" 1→0.
+- U7/U8: F-NEW-439 (ComponentName(Context,Class) HEAP Class-token face — forName-sourced Class via Object-field round-trip left mClass empty; telegram MISS 2→0) + F-NEW-441 (direct-run on-demand native extraction, x86_64-first, sandbox-backed store path — telegram 21MB lib dlopen'd REALLY → REAL dlerror libjnigraphics.so dependency (UPP-001 frontier); forkgram arm64 ELF extracted, real refusal recorded).
+- Sweeps: chess kotlin-reflect CNFE now CAUGHT by kotlin's fallback (deferred handler) → NEW first divergence start;.onCreate pc=9 NPE recorded; whatsapp corrupt artifact re-verified (PARSE_ERROR invalid ZIP magic); CONT-89/92 PARTIALLY_CONFIRMED (prerequisite layer fixed, UI frame still budget/NDK-blocked); CONT-90/91/93 verdicts; F-NEW-381 unchanged; FOUNDATION-6 STALE_OR_SUPERSEDED (fixture-first protocol supersedes).
+- Battery at 2bb822526e7588a5 ZERO DRIFT: wall 4/4 byte-identical (dooz 31ddd4d5b8e6d18e / opencalc f25b754c4565c38b / unote 90a67cc1ddda57b7 / microtimer bbd350b6c14fbd52), goldens 4/4 (helloworld 83720c1028f832d0), negatives 19/19, F-NEW-376 fault battery 70/70, MG-310 7/7, MG-150 3/3, selftests 13/13, anchors c74esc containment green / clinit1 F-NEW-215 law firing / swipe1 188 onDraw ops / sax1 silent (known pacing artifact, honest null).
+- Registry 745 → 752 (F-NEW-435..441), mirrored, id-unique. Evidence evidence/cont103/evidence.json.
+
+Stage Summary:
+- 17 task units in ONE batch cycle: 10 APPROVED (4 new roots + 3 probe/verify units + telegram runs + battery), 2 PARTIALLY_CONFIRMED (CONT-89/92 — prerequisite layer fixed, honest blockers recorded), 1 ALREADY_FIXED_AND_TESTED (chess kotlin-reflect), 1 NOT_APPLICABLE (whatsapp artifact), 1 BLOCKED_NEEDS_EVIDENCE (forkgram ABI), 1 ALREADY_TRACKED (android residual), 1 STALE_OR_SUPERSEDED (FOUNDATION-6).
+- Telegram trajectory this wave: 3 deterministic startup death families (svcinfo-empty-MISS NameNotFound; protobuf "No factory"; ABI extraction) ALL RESOLVED with 7 new registry roots; remaining = F084 budget pacing + n2.r successor aget-oob + NDK stub dependency — all honestly recorded.
+- Success rate: 10/17 fully closed (59%), verdicts delivered 17/17, weighted ≈72%.
+- Next wave owns: play_billing n2.r pc=692 aget-oob decode (length=11 index=11), telegram F084 startup budget law ( SvgHelper.parseFloat compute concentration), NDK stub-lib frontier (UPP-001), chess start;.onCreate pc=9 NPE.
