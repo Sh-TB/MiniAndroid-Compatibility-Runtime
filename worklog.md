@@ -10285,3 +10285,21 @@ Stage Summary:
 - CONT-99 T1 = APPROVED: the programmatic measure/layout input-layer contract is now AOSP-parity on 21 probe rows with zero drift anywhere else; the registry holds 718 roots; binary 4dd92ae1371569e4.
 - The F-NEW-406 bit-cast law is the wave headline: EVERY declared-float field store in every app was landing as INT32 bits — the largest silent-corruption surface found since F-NEW-398.
 - NEXT (open set unchanged): CONT-99 T2..T10 (transforms/density/insets, ImageView scaleType, button hitbox, text/z-order/clip, scroll geometry, white-forensic, frame integrity), CONT-98 T1/T2/T3/T4/T5/T7/T8/T9/T10, CONT-89/92/93, F-NEW-381 opcode-core throughput — each as an independent task unit.
+
+---
+Task ID: CONT-99-T4
+Agent: Super Z (main)
+Task: CONT-99 T4 (Button/control bounds, background, state and click target — P0) executed as ONE separate task unit, fixture-first.
+
+Work Log:
+- Fixture: fixtures/cont99_btn_probe (c99btn.apk bf5c938e7ddc1c6c, V1-C99BTN) — btnA 300x100 red + btnB 200x80 green ADJACENT in one 120px row (different sizes, non-overlapping hit regions), btnC 200x80 setEnabled(false), bounds rows + per-button onClick counters + settled state dump.
+- 4 paired harness runs on the PRE binary 4dd92ae1371569e4: --click-test A=1 B=1 C=1 (DISABLED-LAW-VIOLATION: the click-test oracle fired the disabled button's listener); --tap 150,50 (btnA center) A=1 only; --tap 700,60 (between-buttons) A=0 B=0 C=0; --tap 100,190 (disabled center) A=0 B=0 C=0 — the --tap pipeline already hit-tests the real laid-out bounds and honors the enabled law (bounds rows all OK: btnA (0,0,300,100), btnB (300,0,200,80), btnC (0,120,200,80)).
+- FIX F-NEW-407 (execution_engine.cpp stage_click_test): both dispatch loops (listener + XML android:onClick) now check node->enabled; disabled candidates recorded disabled_skipped=true with a loud stderr line (honest evidence, not silent omission) — AOSP View.onTouchEvent ENABLED_MASK law.
+- POST on 3b89722589ff5af7: '[CLICK-TEST] view 25 skipped: disabled' + A=1 B=1 C=0; all 3 --tap rows unchanged law-correct.
+- Full battery at 3b89722589ff5af7 ZERO DRIFT: wall 12/12 MATCH byte-identical, goldens 4/4, negatives 19/19, reinstall 5/5 identity ALL PASS, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70, perf1 checksums byte-identical (3688000/31744000/14534196240/14569628240).
+- Registry 718 -> 719 (F-NEW-407 ROOT-CAUSED-FIXED; mirrored canonical/). Evidence evidence/cont99/evidence.json t4 section.
+
+Stage Summary:
+- CONT-99 T4 = APPROVED: the click oracle observes the same AOSP disabled law as the real touch pipeline; the tap hit-test contract is proven against adjacent different-size controls with a between-buttons negative.
+- Residual named: pressed-state drawable rendering (state_pressed visuals) not audited — the STATE rows prove semantic state.
+- NEXT: CONT-99 T3 (ImageView scaleType), T2 (transforms/density/insets), then the remaining open set — each as an independent task unit.
