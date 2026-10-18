@@ -97,7 +97,9 @@ bool GdModel::feed(int action, float x, float y, int64_t now) {
                               << prev_focus_y << " focus=" << focus_x << ","
                               << focus_y << std::endl;
             }
-            emit("onScroll", down_x, down_y, dx, dy);
+            // F-NEW-400: e2 carries the CURRENT pointer position (AOSP
+            // onScroll(e1, e2, distanceX, distanceY) — e2 = the move event).
+            emit6("onScroll", down_x, down_y, focus_x, focus_y, dx, dy);
             consumed = true;
         }
         prev_focus_x = x; prev_focus_y = y;
@@ -122,7 +124,8 @@ bool GdModel::feed(int action, float x, float y, int64_t now) {
         const float vx = tracker.x_velocity(), vy = tracker.y_velocity();
         if (!was_in_tap_region &&
             std::fabs(vx) > kMinFlingPxPerS || std::fabs(vy) > kMinFlingPxPerS) {
-            emit("onFling", down_x, down_y, vx, vy);
+            // F-NEW-400: e2 = the UP event (current up coords per AOSP).
+            emit6("onFling", down_x, down_y, x, y, vx, vy);
             consumed = true;
         }
         is_double_tapping = false;
@@ -148,12 +151,13 @@ void GestureDetectorShadow::wire_(uint32_t gd_obj, GdState& st) {
                // rehash; per-call lookup keeps the listener fresh after
                // setOnDoubleTapListener swaps it).
     st.model.cb = [this, gd_obj](const char* cb, float f1, float f2,
-                                 float f3, float f4) -> bool {
+                                 float f3, float f4, float f5,
+                                 float f6) -> bool {
         bool consumed = false;
         auto it = states_.find(gd_obj);
         if (dex_dispatch_ && it != states_.end())
             dex_dispatch_(gd_obj, it->second.listener_obj, cb, f1, f2, f3,
-                          f4, consumed);
+                          f4, f5, f6, consumed);
         return consumed;
     };
 }
