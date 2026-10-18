@@ -179,6 +179,11 @@ TextShaper::TextShaper() {
         }
     }
     if (available_) {
+        // F-NEW-422 (CONT-101 T5): the script-fallback arm participates only
+        // when the fallback face is a REAL face (FreeSerif present), not the
+        // regular-face alias the ctor installs when the file is missing.
+        fallback_available_ = faces_[kFaceFallback].ft_face != nullptr &&
+            faces_[kFaceFallback].path != faces_[kFaceRegular].path;
         // R-NEW-398/MG-051 (S98) REAL-BUG FIX: the CJK fallback ROUTING was
         // wired (shape(): remaining .notdef clusters → kFaceCJK lookup) but
         // the FACE WAS NEVER LOADED — cjk_available_ could never become
@@ -484,6 +489,72 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
                 g.use_cjk = true;
                 g.cjk_gid = (uint32_t)cg;
                 result.notdef_count--;
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // F-NEW-422 (CONT-101 T5): GENERAL SCRIPT FALLBACK — the AOSP
+    // fonts.xml chain tail. ROOT CAUSE (c99tx PRE probe): the only script
+    // fallbacks were emoji + CJK; Arabic (and every other script covered
+    // by FreeSerif — Hebrew, extended Cyrillic/Greek/…) stayed .notdef →
+    // blank/tofu text for the whole RTL corpus family (DroidSansMono
+    // carries ZERO Arabic glyphs; FreeSerif carries the joined forms).
+    // For every remaining .notdef cluster, re-shape the VISUAL sequence
+    // with the fallback face's hb_font: clusters that yield real glyphs
+    // are claimed (Arabic init/medi/fina joining comes from the
+    // fallback's GSUB — NOT a plain charmap swap). Same claim pattern as
+    // the emoji arm above.
+    // ------------------------------------------------------------------
+    if (result.notdef_count > 0 && fallback_available_) {
+        FT_Face fface = reinterpret_cast<FT_Face>(
+            faces_[kFaceFallback].ft_face);
+        if (FT_Set_Pixel_Sizes(fface, 0,
+                               (FT_UInt)std::lround(sz)) == 0) {
+            uint32_t fsz26 = (uint32_t)std::lround(size_px * 64.0f);
+            uint64_t fhkey = ((uint64_t)kFaceFallback << 48) ^ fsz26;
+            hb_font_t* fhb = nullptr;
+            auto fit = hb_fonts_.find(fhkey);
+            if (fit != hb_fonts_.end())
+                fhb = reinterpret_cast<hb_font_t*>(fit->second);
+            else {
+                fhb = hb_ft_font_create(fface, nullptr);
+                hb_fonts_[fhkey] = fhb;
+            }
+            if (fhb) {
+                hb_buffer_t* fbuf = hb_buffer_create();
+                // MG-085 law: shape EXACTLY src.size() visual units.
+                hb_buffer_add_utf32(fbuf, vis.data(), (int)src.size(), 0, -1);
+                hb_buffer_guess_segment_properties(fbuf);
+                hb_shape(fhb, fbuf, nullptr, 0);
+                unsigned fn = 0;
+                hb_glyph_info_t* fgi =
+                    hb_buffer_get_glyph_infos(fbuf, &fn);
+                hb_glyph_position_t* fgp =
+                    hb_buffer_get_glyph_positions(fbuf, nullptr);
+                std::unordered_map<uint32_t, uint32_t> cluster_to_fg;
+                std::unordered_map<uint32_t, float> cluster_to_fadv;
+                for (unsigned k = 0; k < fn; ++k) {
+                    if (fgi[k].codepoint != 0) {
+                        cluster_to_fg[fgi[k].cluster] = fgi[k].codepoint;
+                        cluster_to_fadv[fgi[k].cluster] =
+                            (float)(fgp[k].x_advance >> 6);
+                    }
+                }
+                hb_buffer_destroy(fbuf);
+                for (auto& g : result.glyphs) {
+                    if (g.glyph_id != 0 || g.use_emoji || g.use_cjk) continue;
+                    auto git = cluster_to_fg.find(g.cluster);
+                    if (git == cluster_to_fg.end()) continue;
+                    auto ait = cluster_to_fadv.find(g.cluster);
+                    float fadv = ait != cluster_to_fadv.end()
+                                     ? ait->second : g.x_advance;
+                    result.width += fadv - g.x_advance;
+                    g.x_advance = fadv;
+                    g.use_fallback = true;
+                    g.fallback_gid = git->second;
+                    result.notdef_count--;
+                }
             }
         }
     }
@@ -932,6 +1003,13 @@ void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
             use_face = reinterpret_cast<FT_Face>(faces_[kFaceCJK].ft_face);
             use_face_idx = kFaceCJK;
             use_gid = g.cjk_gid;
+        }
+        // F-NEW-422: general script fallback (Arabic/Hebrew/… via FreeSerif).
+        if (g.use_fallback && fallback_available_) {
+            use_face = reinterpret_cast<FT_Face>(
+                faces_[kFaceFallback].ft_face);
+            use_face_idx = kFaceFallback;
+            use_gid = g.fallback_gid;
         }
         uint64_t rk = raster_key(use_face_idx, size_px, use_gid);
         auto rit = rasters_.find(rk);

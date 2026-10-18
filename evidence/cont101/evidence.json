@@ -1,0 +1,121 @@
+{
+ "wave": "CONT-101",
+ "date": "2026-10-18",
+ "directive": "#364 batch-mode continuation (user: triple the per-run task count; dozens of requests reviewed at once). Open set after CONT-100 = CONT-99 T5..T10 + CONT-98 9 tracks + CONT-89/92/93 + F-NEW-381. This wave executed CONT-99 T5+T6+T7 as three separate fixture-first task units in one shared build/battery cycle (batch mode), plus the verdict sweep over the remaining open set.",
+ "baseline": {
+  "head": "fb462550 (== origin/main; UUID-residue commit 2ede48d6 dropped via reset --hard)",
+  "binary_pre": "2f5faa881bd055e8",
+  "registry": 727
+ },
+ "batch_cycle": {
+  "probes_built": [
+   {
+    "apk": "run/cont101/c99tx.apk",
+    "sha16": "2427b960562dc8b1",
+    "fixture": "fixtures/cont99_tx_probe V2-C99TX",
+    "track": "CONT-99 T5"
+   },
+   {
+    "apk": "run/cont101/c99zo.apk",
+    "sha16": "6c8a1745b464a027",
+    "fixture": "fixtures/cont99_zo_probe V1-C99ZO",
+    "track": "CONT-99 T6"
+   },
+   {
+    "apk": "run/cont101/c99cv.apk",
+    "sha16": "b60c665a25aafe1f",
+    "fixture": "fixtures/cont99_cv_probe V1-C99CV",
+    "track": "CONT-99 T7"
+   }
+  ],
+  "pre_binary": "2f5faa881bd055e8",
+  "post_binary": "ac0d40244b8e0516",
+  "single_rebuild": true,
+  "single_battery": true
+ },
+ "t5_text": {
+  "roots": [
+   "F-NEW-416",
+   "F-NEW-416b",
+   "F-NEW-417",
+   "F-NEW-417b",
+   "F-NEW-421",
+   "F-NEW-422"
+  ],
+  "pre_findings": [
+   "Paint.getFontMetrics() returned null -> NPE fm.top in onCreate (app-boundary death, [SYNTH-EXC] iget-null-recv)",
+   "ascent/descent/getTextSize/getLineHeight/getMaxLines/getEllipsize/getIncludeFontPadding missing -> generic stubs",
+   "single-line draw law: no word wrap, no ellipsis marker, no own-bounds clip",
+   "Arabic text = zero ink (no script fallback arm; DroidSansMono cmap has 0 Arabic glyphs of 874; FreeSerif loaded but unconsumed)"
+  ],
+  "post_rows": {
+   "paint_48": "ascent=-45 descent=12 top=-45 bottom=12 leading=0 meas48=216",
+   "paint_24": "ascent=-23 descent=6 meas24=108 (exactly half-size proportional)",
+   "tv3_ellipsis": "ink right=317 <= 318 (U+2026 marker, box 320)",
+   "tv4_wrap": "two lines ink y=245..337 INSIDE the fixed 100px box",
+   "tv5_ifp": "box-relative inkTop 9 == tv1 box-relative 9 (fm.top==fm.ascent font: AOSP predicts equality)",
+   "tv6_rtl": "REAL joined Arabic ink (top486,bot522,left0,right131) via FreeSerif GSUB + hb reshape",
+   "oracle": "21/21 rows OK (0 fails)"
+  },
+  "honest_notes": [
+   "V1 fixture error (ours, not the engine): topMargins were written as absolute offsets; the engine honored the AOSP LinearLayout stacking law, landing boxes at y=20/260/580/1040/1620/2280. V2 = every child topMargin=20. Same honest-correction lesson as the CONT-99 T1 V1 fixture error.",
+   "The first oracle L5 expectation (tv5 inkTop < tv1) was WRONG for this font: fm.top==fm.ascent (-45) means AOSP predicts EQUAL box-relative positions. Oracle corrected to the box-relative equality; the G47 branch is law-implemented and font-dependent.",
+   "Evidence is the stderr row log + PPM pixel/ink-band scans, not PNG hashes."
+  ]
+ },
+ "t6_zorder": {
+  "roots": [
+   "F-NEW-418",
+   "F-NEW-419"
+  ],
+  "pre_findings": [
+   "bringToFront() silent no-op (PHASE2 raster == PHASE1: Q1/Q2 diverged)",
+   "indexOfChild() answered 0 for every child",
+   "setElevation no-op + getElevation 0 (ZOEL row)"
+  ],
+  "post_rows": {
+   "phase1": "order=A,B,C,D idxA=0 idxB=1 idxC=2; raster P1..P5 5/5",
+   "phase2": "order=B,C,D,A idxA=3; raster Q1=(200,200)RED Q2=(300,300)RED Q3=(400,400)BLUE Q4=YELLOW",
+   "elevation": "elevC=20.000000 after setElevation(20)",
+   "oracle": "9/9 rows OK"
+  }
+ },
+ "t7_canvas": {
+  "roots": [
+   "F-NEW-420"
+  ],
+  "pre_findings": [
+   "quickReject=false under an empty clipRect (AOSP: true)",
+   "save/restore counts, underflow no-op safety, saveLayer isolation, sibling no-leak were ALREADY at parity (raster 5/5 on PRE) — proven, not assumed"
+  ],
+  "post_rows": {
+   "emptyclip": "quickReject=true clipBoundsNull=true sc=2 (all frames)",
+   "underflow": "before=1 after=1 (safe no-op)",
+   "trace": "s0=1 s1=2 s2=1 sf=1 (balanced)",
+   "raster": "R1 RED / R2 GREEN / R3 YELLOW(layer) / R4 GREEN(outside layer keeps content) / R5 BLUE sibling no-leak — 5/5"
+  }
+ },
+ "regression": {
+  "battery": "scripts/cont99_battery.sh at ac0d40244b8e0516",
+  "result": {
+   "wall_gate": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e / opencalc f25b754c4565c38b / unote 90a67cc1ddda57b7 / microtimer bbd350b6c14fbd52, x3 each)",
+   "goldens": "4/4 rc=0",
+   "negatives": "19/19 PASS",
+   "reinstall_gatea": "rc=0 ALL PASS",
+   "mg310_fence": "rc=0 (7/7)",
+   "mg150_fence": "rc=0 (3/3)",
+   "selftests": "13/13 PASS",
+   "f376_fault_battery": "70/70 PASS",
+   "anchors": "clock1 ProbeView (0,0 1080x1920) OK; c74esc containment FONT-ESC/VOL-OK/NEG-ETC OK; clinit1/swipe1 onDraw dispatched ops replayed; T2 probe c99tr B=1 D=1 F=1 H=0 (AOSP transform laws intact)",
+   "honest_nulls": [
+    "sax1 [SAX1] verdict rows silent: runnables_fired=0 pending_cb=0 at 3 AND 8 frames — the same container runnable-pacing artifact signature documented in CONT-99/CONT-100 waves (pump starvation, not an engine law change; onDraw dispatched normally)",
+    "perf1 checksum rows silent: same runnables_fired=0 artifact; perf checksums last proven byte-identical at CONT-100 T3 (fb462550); the compute-side probe does not interact with the draw-path law changes"
+   ]
+  }
+ },
+ "open_set_after": {
+  "cont99": "T5/T6/T7 CLOSED this wave (6/10 total: T1,T2,T3,T4 + this batch); remaining T8 (scroll geometry), T9 (white-forensic classification), T10 (frame integrity golden scene)",
+  "cont98": "T1..T5,T7..T10 verdict sweep in the #364 ledger comment (probe-or-classification terminal verdicts)",
+  "others": "CONT-89/92/93 + F-NEW-381 verdicts in the same ledger"
+ }
+}
