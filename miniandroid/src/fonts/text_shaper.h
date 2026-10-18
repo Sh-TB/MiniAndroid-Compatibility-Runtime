@@ -49,6 +49,14 @@ struct ShapedGlyph {
     // complex shaping) is drawn from kFaceCJK instead.
     bool use_cjk = false;
     uint32_t cjk_gid = 0;
+    // F-NEW-422 (CONT-101 T5): general script fallback (AOSP fonts.xml
+    // chain tail). When the emoji and CJK arms did not claim a .notdef
+    // cluster and the wide-coverage fallback face (FreeSerif — Arabic,
+    // Hebrew, extended Cyrillic/Greek, …) shapes a REAL glyph for it, the
+    // glyph is drawn from kFaceFallback. Arabic joining forms come from
+    // the fallback's GSUB via the hb re-shape (not a plain charmap swap).
+    bool use_fallback = false;
+    uint32_t fallback_gid = 0;
 };
 
 struct ShapedText {
@@ -248,6 +256,10 @@ private:
     bool available_ = false;
     bool emoji_available_ = false;
     bool cjk_available_ = false;  // R-NEW-398
+    // F-NEW-422 (CONT-101 T5): TRUE when kFaceFallback loaded a REAL face
+    // (not the regular-face alias the ctor installs when the file is
+    // missing) — the script-fallback reshaping arm then participates.
+    bool fallback_available_ = false;
     int emoji_strike_px_ = 0;   // CBDT fixed strike size (e.g. 128)
 
     void* ft_lib_ = nullptr;      // FT_Library

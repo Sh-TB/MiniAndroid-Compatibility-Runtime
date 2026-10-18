@@ -10364,3 +10364,27 @@ Stage Summary:
 - CONT-99 T3 = APPROVED (raster contract proven at parity + 3 roots fixed) with 1 honestly REJECTED root (F-NEW-412, precondition recorded).
 - CONT-99 progress: 3/10 tracks closed (T1, T2, T3) — T2 and T3 both this wave.
 - Remaining open: CONT-99 T5..T10, CONT-98 9 tracks, CONT-89/92/93, F-NEW-381.
+
+---
+Task ID: cont101-batch (T5+T6+T7)
+Agent: main (CONT-101 batch wave)
+Task: «ادامه ۳۶۴» + user directive "triple the per-run task count — dozens of requests at once": CONT-99 T5 (text metrics/wrap/ellipsis), T6 (z-order/bringToFront/elevation), T7 (canvas save/clip/quickReject) executed as THREE separate fixture-first task units sharing ONE rebuild + ONE battery cycle; plus the open-set verdict sweep.
+
+Work Log:
+- Step 0: fresh-container sync — HEAD was a UUID-residue commit 2ede48d6 (tmp/ intermediates, unpushed) on top of origin/main fb462550; dropped via reset --hard; baseline binary 2f5faa881bd055e8 confirmed.
+- #364 re-fetched in full (66 comments): ZERO new requests after the CONT-100 ledger 6252294570. Open set = CONT-99 T5..T10 + CONT-98 T1..T5/T7..T10 + CONT-89/92/93 + F-NEW-381.
+- BATCH EXECUTION (3x throughput): three probes designed, built, run PRE, decoded, fixed in ONE rebuild, POST-run and verified with ONE shared battery — three separate commits, one per track.
+- T5 fixture-first: fixtures/cont99_tx_probe (c99tx V1 551f191345f8137d → V2 2427b960562dc8b1). PRE findings: Paint.getFontMetrics() NULL → onCreate NPE ([SYNTH-EXC] iget-null-recv, app-boundary death); ascent/descent/getTextSize/getLineHeight/getMaxLines/getEllipsize/getIncludeFontPadding missing; single-line draw (no wrap/ellipsis/clip); Arabic = zero ink (DroidSansMono cmap 0/874 Arabic glyphs; FreeSerif fallback face loaded but unconsumed).
+- T5 fixes: F-NEW-416 Paint metrics family from TextShaper.font_metrics (G36; getFontMetrics receiver-identity law; Int form CEILs magnitude; F-NEW-416b getPaint mint carries the view's RECORDED size); F-NEW-417 TextView line-state get/set family (heap + ViewNode dual write, AOSP defaults 9999/null/true); F-NEW-421 draw_text_into rewritten (greedy word wrap + char hard-break, maxLines cap, ellipsize END/START/MIDDLE with U+2026, per-line gravity, G47 includePad block positioning, per-glyph own-bounds clip); F-NEW-422 general script fallback arm (hb reshape with the fallback face, GSUB joined Arabic, ShapedGlyph.use_fallback, raster path arm).
+- HONEST fixture corrections (ours, not the engine): V1 tx probe wrote topMargins as absolute offsets — the engine honored the AOSP LinearLayout stacking law (boxes at 20/260/580/1040/1620/2280); V2 = every child topMargin=20. Oracle L5 first expectation (tv5 inkTop < tv1) was wrong for this font: fm.top==fm.ascent(-45) ⇒ AOSP predicts EQUAL box-relative tops; oracle corrected.
+- T6 fixture-first: fixtures/cont99_zo_probe (c99zo 6c8a1745b464a027): PRE bringToFront no-op (Q1/Q2 diverged), indexOfChild 0-for-every-child, elevation no round-trip. Fixes F-NEW-418 (bringToFront real reorder to array end + indexOfChild identity scan -1-absent + bringChildToFront) + F-NEW-419 (ViewNode.elevation set/get round-trip). POST: order=B,C,D,A idxA=3, raster Q1/Q2=RED A-on-top, elevC=20 — 9/9.
+- T7 fixture-first: fixtures/cont99_cv_probe (c99cv b60c665a25aafe1f): PRE save/restore counts, underflow no-op, saveLayer isolation, sibling no-leak ALREADY at raster parity (proven, not assumed); the one gap = quickReject false under an empty clip. Fix F-NEW-420 (op-space baked query, clip intersection, degenerate/no-clip boundary documented). POST: quickReject=true under empty clip; raster 5/5 unchanged.
+- POST oracle: 21/21 rows OK across the three probes (0 fails).
+- Battery at ac0d40244b8e0516 ZERO DRIFT: wall 12/12 MATCH byte-identical, goldens 4/4, negatives 19/19, reinstall/gatea rc=0, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70; anchors clock1/c74esc OK, clinit1/swipe1 onDraw dispatched ops replayed, T2 probe c99tr B=1 D=1 F=1 H=0 (transform laws intact). Honest nulls: sax1/perf1 stdout verdict rows silent — runnables_fired=0 pending_cb=0 pacing artifact, same signature as the CONT-99/CONT-100 waves.
+- Registry 727 -> 734 (F-NEW-416/416b/417/417b/418/419/420/421/422; mirrored canonical/). Evidence evidence/cont101/evidence.json.
+- Background-process lesson re-confirmed: nohup battery died between tool calls (S39 lesson) — battery re-run in foreground chunks.
+
+Stage Summary:
+- CONT-99 progress 7/10 tracks closed (T1..T7): T5/T6/T7 = APPROVED with 9 registry roots this wave (incl. F-NEW-421 text-wrap law + F-NEW-422 Arabic script fallback — the whole Persian/Arabic corpus family moves from blank text to real joined glyphs).
+- Binary ac0d40244b8e0516; probes c99tx 2427b960562dc8b1 / c99zo 6c8a1745b464a027 / c99cv b60c665a25aafe1f.
+- Remaining open: CONT-99 T8/T9/T10, CONT-98 9 tracks, CONT-89/92/93, F-NEW-381.

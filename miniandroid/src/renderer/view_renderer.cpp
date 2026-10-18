@@ -421,9 +421,12 @@ void ViewRenderer::draw_text_into(ViewShadow::ViewNode& n, FrameBuffer& fb,
     // S81: opt-in text-draw trace (visual root-cause workflow §43 LOCATE step)
     static const bool s_text_trace = std::getenv("MINIANDROID_TEXT_TRACE") != nullptr;
     if (s_text_trace) {
-        std::cerr << "[S81-TEXT] class=" << n.class_desc << " at(" << left << ","
-                  << top << ") wh(" << w << "," << h << ") text=\"" << t.substr(0, 60)
-                  << "\" vis=" << n.visibility << std::endl;
+        std::cerr << "[S81-TEXT] class=" << n.class_desc << " at(" << left
+                  << "," << top << ") wh(" << w << "," << h << ") text=\""
+                  << t.substr(0, 60) << "\" vis=" << n.visibility
+                  << " maxLines=" << n.max_lines
+                  << " ell=" << (int)n.ellipsize_mode
+                  << " ifp=" << n.include_font_pad << std::endl;
     }
     float ts = n.text_size_px > 0 ? n.text_size_px : 28.f;
     RGBA col{0, 0, 0, 255};
@@ -437,42 +440,204 @@ void ViewRenderer::draw_text_into(ViewShadow::ViewNode& n, FrameBuffer& fb,
     o.size_px = ts;
     o.bold = n.text_style_bold;
     TextShaper::Metrics m = TextShaper::instance().metrics(ts, n.text_style_bold);
-    int pen_y = top + int(std::lround(m.ascent)) + n.padding_t;
-    float tw = TextShaper::instance().measure(t, o);
-    int pen_x = left + n.padding_l;
+    auto& sh = TextShaper::instance();
+
+    // ── F-NEW-421 (CONT-101 T5): AOSP TextView Layout draw law ──────────
+    // Pre-fix: the text was drawn as ONE line (pen_x = left + padL, tail
+    // silently painted past the measured box or clipped only by the walk).
+    // AOSP law (TextView.onDraw → Layout.draw):
+    //   L4  the text WRAPS at the view's content width (word wrap;
+    //       overlong words hard-break);
+    //   L3  maxLines caps the visible lines; ellipsize truncates the
+    //       visible tail with the … marker (TruncateAt END/START/MIDDLE);
+    //   L1  ink never paints outside the view's own bounds (AOSP
+    //       ViewGroup.drawChild clips each child to its bounds — the same
+    //       law S130 implemented for the walk; enforced here per glyph).
+    // G47 includeFontPadding law: first-line above = fm.top when
+    // includeFontPadding else fm.ascent (AOSP-signed FontMetrics; for the
+    // primary face top == ascent, so the default render is unchanged).
+    const int pad_l = n.padding_l, pad_r = n.padding_r;
+    float max_w = (float)(w - pad_l - pad_r);
+    if (max_w < 1.0f) max_w = 1.0f;
+
+    auto width_of = [&](const std::string& s) -> float {
+        return s.empty() ? 0.0f : sh.measure(s, o);
+    };
+    auto pop_cp = [](std::string& s) {
+        if (s.empty()) return;
+        size_t i = s.size() - 1;
+        while (i > 0 && ((unsigned char)s[i] & 0xC0) == 0x80) --i;
+        s.resize(i);
+    };
+    auto erase_first_cp = [](std::string& s) {
+        if (s.empty()) return;
+        size_t i = 1;
+        while (i < s.size() && ((unsigned char)s[i] & 0xC0) == 0x80) ++i;
+        s.erase(0, i);
+    };
+
+    // Build wrapped lines: hard breaks on '\n', greedy word wrap, and a
+    // char-level hard break for words wider than the content box.
+    std::vector<std::string> lines;
+    {
+        size_t base = 0;
+        for (size_t i = 0; i <= t.size(); ++i) {
+            if (i == t.size() || t[i] == '\n') {
+                std::string para = t.substr(base, i - base);
+                base = i + 1;
+                if (para.empty()) { lines.push_back(""); continue; }
+                std::string line, piece;
+                for (size_t j = 0; j <= para.size(); ++j) {
+                    if (j == para.size() || para[j] == ' ') {
+                        if (!piece.empty()) {
+                            float lw = width_of(line);
+                            float ww = width_of(piece);
+                            float sp = line.empty() ? 0.0f : width_of(" ");
+                            if (line.empty() || lw + sp + ww <= max_w) {
+                                if (!line.empty()) line += " ";
+                                line += piece;
+                            } else {
+                                lines.push_back(line);
+                                line = piece;
+                            }
+                            piece.clear();
+                        }
+                        if (j == para.size()) {
+                            // trailing space of the paragraph is dropped
+                            if (!line.empty() || lines.empty())
+                                lines.push_back(line);
+                        }
+                    } else {
+                        piece += para[j];
+                        if (width_of(piece) > max_w && piece.size() > 1) {
+                            // hard break: the piece alone exceeds the box
+                            if (!line.empty()) {
+                                lines.push_back(line);
+                                line.clear();
+                            }
+                            lines.push_back(piece);
+                            piece.clear();
+                        }
+                    }
+                }
+                if (!piece.empty()) {
+                    float lw = width_of(line);
+                    float ww = width_of(piece);
+                    float sp = line.empty() ? 0.0f : width_of(" ");
+                    if (line.empty() || lw + sp + ww <= max_w) {
+                        if (!line.empty()) line += " ";
+                        line += piece;
+                    } else {
+                        lines.push_back(line);
+                        line = piece;
+                    }
+                }
+                if (!line.empty()) lines.push_back(line);
+            }
+        }
+    }
+
+    // maxLines cap + ellipsize (AOSP TruncateAt law).
+    const int max_lines = n.max_lines > 0 ? n.max_lines : 1;
+    bool truncated = (int)lines.size() > max_lines;
+    if (truncated) lines.resize(max_lines);
+    if (truncated && !lines.empty() && n.ellipsize_mode != 0) {
+        const std::string ell = "\xe2\x80\xa6";  // U+2026 HORIZONTAL ELLIPSIS
+        float ew = sh.measure(ell, o);
+        std::string& L = lines.back();
+        if (n.ellipsize_mode == 1) {  // START: keep the tail
+            while (!L.empty() && sh.measure(L, o) + ew > max_w)
+                erase_first_cp(L);
+            L = ell + L;
+        } else if (n.ellipsize_mode == 2) {  // MIDDLE: head … tail
+            float avail = max_w - ew;
+            std::string head, tail;
+            size_t i = 0;
+            while (i < L.size()) {
+                size_t cl = 1;
+                while (i + cl < L.size() &&
+                       ((unsigned char)L[i + cl] & 0xC0) == 0x80) ++cl;
+                if (sh.measure(head + L.substr(i, cl), o) > avail * 0.5f)
+                    break;
+                head += L.substr(i, cl);
+                i += cl;
+            }
+            size_t e = L.size();
+            while (e > i) {
+                size_t cs = e - 1;
+                while (cs > i && ((unsigned char)L[cs] & 0xC0) == 0x80) --cs;
+                std::string cand = L.substr(cs, e - cs) + tail;
+                if (sh.measure(head + cand, o) > avail) break;
+                tail = cand;
+                e = cs;
+            }
+            L = head + ell + tail;
+        } else {  // END (default) and MARQUEE (static first frame boundary)
+            while (!L.empty() && sh.measure(L, o) + ew > max_w) pop_cp(L);
+            L += ell;
+        }
+    }
+
+    if (lines.empty()) lines.push_back("");
+    const int nlines = (int)lines.size();
+
+    // Vertical block positioning (G47 includePad law, AOSP-signed metrics).
+    fonts::FontMetrics fmm = sh.font_metrics(ts, n.text_style_bold, 0);
+    int above = n.include_font_pad ? int(std::lround(-fmm.top))
+                                   : int(std::lround(-fmm.ascent));
+    int below = n.include_font_pad ? int(std::lround(fmm.bottom))
+                                   : int(std::lround(fmm.descent));
+    const int line_h = int(std::lround(m.line_height));
+    const int block_h = (nlines - 1) * line_h + above + below;
+
     int g = n.text_gravity ? n.text_gravity : (n.gravity >= 0 ? n.gravity : 0);
     bool is_btn = n.class_desc.find("Button;") != std::string::npos &&
                   n.class_desc.find("ImageButton;") == std::string::npos;
     if (is_btn && !n.text_gravity && n.gravity < 0)
         g = kGravityCenterH | 0x10;  // Android Button default: center both
-    if (g & kGravityCenterH) pen_x = left + (w - int(tw)) / 2;
-    else if (g & kGravityRight) pen_x = left + w - int(tw) - n.padding_r;
+    int pen_y0;
     if (g & kGravityCenterV || (is_btn && !n.text_gravity && n.gravity < 0))
-        pen_y = top + (h - int(m.line_height)) / 2 + int(m.ascent);
+        pen_y0 = top + (h - block_h) / 2 + above;
+    else
+        pen_y0 = top + n.padding_t + above;
 
-    auto& sh = TextShaper::instance();
-    auto runs = sh.shape(t, o);
-    if (runs.empty()) {
-        stats_.texts_bitmap_fallback++;
-        SoftwareCanvas cv(&fb);
-        cv.draw_text(t, float(pen_x), float(pen_y), col, nullptr);
-        return;
-    }
-    stats_.texts_shaped++;
-    float pen = float(pen_x);
-    for (const auto& gr : runs) {
-        if (!gr.coverage.empty()) {
-            for (unsigned r = 0; r < gr.bmp_h; ++r)
-                for (unsigned c = 0; c < gr.bmp_w; ++c) {
-                    uint8_t a = gr.coverage[size_t(r) * gr.bmp_w + c];
-                    if (!a) continue;
-                    RGBA px = col;
-                    px.a = a;
-                    fb.set_pixel(pen + gr.x_offset + gr.bmp_left + int(c),
-                                 pen_y - gr.bmp_top + int(r), px);
-                }
+    for (int li = 0; li < nlines; ++li) {
+        const std::string& L = lines[li];
+        if (L.empty()) continue;
+        float lw = width_of(L);
+        int pen_x = left + pad_l;
+        if (g & kGravityCenterH) pen_x = left + (w - (int)lw) / 2;
+        else if (g & kGravityRight) pen_x = left + w - (int)lw - pad_r;
+        int pen_y = pen_y0 + li * line_h;
+        auto runs = sh.shape(L, o);
+        if (runs.empty()) {
+            stats_.texts_bitmap_fallback++;
+            SoftwareCanvas cv(&fb);
+            cv.draw_text(L, float(pen_x), float(pen_y), col, nullptr);
+            continue;
         }
-        pen += gr.x_advance;
+        stats_.texts_shaped++;
+        float pen = float(pen_x);
+        for (const auto& gr : runs) {
+            if (!gr.coverage.empty()) {
+                for (unsigned r = 0; r < gr.bmp_h; ++r)
+                    for (unsigned c = 0; c < gr.bmp_w; ++c) {
+                        uint8_t a = gr.coverage[size_t(r) * gr.bmp_w + c];
+                        if (!a) continue;
+                        int px = pen + gr.x_offset + gr.bmp_left + int(c);
+                        int py = pen_y - gr.bmp_top + int(r);
+                        // F-NEW-421 L1: AOSP drawChild child-bounds clip —
+                        // ink never paints outside the view's own box.
+                        if (px < left || px >= left + w ||
+                            py < top || py >= top + h)
+                            continue;
+                        RGBA pxl = col;
+                        pxl.a = a;
+                        fb.set_pixel(px, py, pxl);
+                    }
+            }
+            pen += gr.x_advance;
+        }
     }
 }
 
