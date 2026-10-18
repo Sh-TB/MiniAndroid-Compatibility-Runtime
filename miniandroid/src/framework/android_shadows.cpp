@@ -7684,6 +7684,16 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             n->width = r - l;
             n->height = b - t;
             n->laid_out = true;
+            // CONT-97 T4 diag: who frames the ActionBarLayout (the 295x150
+            // box source hunt at the Telegram login face).
+            static const bool c97_fdiag =
+                std::getenv("MINIANDROID_C97_LAYOUT_DIAG") != nullptr;
+            if (c97_fdiag &&
+                n->class_desc.find("ActionBarLayout") != std::string::npos) {
+                std::cerr << "[C97-FRAME] view=" << ctx.receiver_id
+                          << " layout(" << l << ',' << t << ',' << r << ','
+                          << b << ") caller=" << ctx.caller << std::endl;
+            }
             // AOSP: layout() is void; setFrame() returns "changed".
             return m == "setFrame" ? CallResult::handled_bool(true)
                                    : CallResult::handled_void();
@@ -7724,6 +7734,18 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         };
         n->measured_width = default_size(ctx.arg_as_int(0));
         n->measured_height = default_size(ctx.arg_as_int(1));
+        // CONT-97 T4 diag: View.measure spec answers for the ActionBarLayout.
+        static const bool c97_mdiag2 =
+            std::getenv("MINIANDROID_C97_LAYOUT_DIAG") != nullptr;
+        if (c97_mdiag2 &&
+            n->class_desc.find("ActionBarLayout") != std::string::npos) {
+            std::cerr << "[C97-MEASURESPEC] view=" << ctx.receiver_id
+                      << " spec=0x" << std::hex << ctx.arg_as_int(0)
+                      << ",0x" << ctx.arg_as_int(1) << std::dec
+                      << " -> " << n->measured_width << "x"
+                      << n->measured_height
+                      << " caller=" << ctx.caller << std::endl;
+        }
         return CallResult::handled_void();
     }
     if (m == "setBackgroundColor" || m == "setBackground" ||
