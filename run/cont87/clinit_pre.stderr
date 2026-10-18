@@ -1,0 +1,544 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/cont87/clinit1.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 55 entries (7 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.clinit1.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/cont87/clinit1.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/cont87/clinit1.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/clinit1/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/clinit1/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/clinit1/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/clinit1/MainActivity;.<init> insns=2 RSS=18.6914 MB
+[TRY-ENTRY] Lcom/probe/clinit1/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/clinit1/MainActivity;) recorded for handler dispatch
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/clinit1/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=9 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=16 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[EXP062-INIT] Lcom/probe/clinit1/MainActivity; static_fields=5 with_defaults=5
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity; method=<clinit> bytecode_size=1
+[TRY-ENTRY] Lcom/probe/clinit1/MainActivity;.<clinit> dex_report=YES
+[MEM] method_exit: Lcom/probe/clinit1/MainActivity;.<clinit> insns=1 RSS=18.6914 MB
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity; method=<clinit> result=OK engine=0x7ffde8d5b4e8 storage_size=31
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=23 field=Lcom/probe/clinit1/MainActivity;.rows value=0
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity$ClinitCatch; method=<clinit> bytecode_size=74
+[TRY-ENTRY] Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit> dex_report=YES
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitCatch; method=<clinit> pc=0 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[R350-FORNAME] "probe.does.not.Exist" → ClassNotFoundException
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (probe.does.not.Exist) method=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit> pc=9 → deferred handler @0x0x14 type=<catch-all>
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/lang/ClassNotFoundException;.getClass dex_report=YES
+[REC-MISS] Ljava/lang/ClassNotFoundException;.getClass caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/lang/Object;.getClass dex_report=YES
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/lang/Class;.getName dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getName caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitCatch; method=<clinit> pc=45 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitCatch; method=<clinit> pc=54 field=Lcom/probe/clinit1/MainActivity$ClinitCatch;.result obj_id=0
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitCatch; method=<clinit> pc=66 field=Ljava/lang/System;.out obj_id=16
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitCatch;.<clinit>
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity$ClinitCatch; method=<clinit> result=OK engine=0x7ffde8d5b4e8 storage_size=32
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=29 field=Lcom/probe/clinit1/MainActivity$ClinitCatch;.result obj_id=0
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=37 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=44 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=99 field=Lcom/probe/clinit1/MainActivity;.rows value=1
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=105 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[EXP062-INIT] Lcom/probe/clinit1/MainActivity$ClinitArithCatch; static_fields=1 with_defaults=1
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity$ClinitArithCatch; method=<clinit> bytecode_size=57
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitArithCatch; method=<clinit> pc=0 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[SYNTH-EXC] ARITH-LIT8 (deferred): Ljava/lang/ArithmeticException; (divide by zero) method=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit> pc=9 → deferred handler @0x0x15 type=<catch-all>
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitArithCatch; method=<clinit> pc=22 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[REC-MISS] Ljava/lang/ArithmeticException;.getClass caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[REC-MISS] Ljava/lang/Class;.getName caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitArithCatch; method=<clinit> pc=49 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.<clinit>
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity$ClinitArithCatch; method=<clinit> result=OK engine=0x7ffde8d5b4e8 storage_size=33
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=114 field=Lcom/probe/clinit1/MainActivity$ClinitArithCatch;.v value=7
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=173 field=Lcom/probe/clinit1/MainActivity;.rows value=2
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=179 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[EXP062-INIT] Lcom/probe/clinit1/MainActivity$ClinitThrow; static_fields=1 with_defaults=1
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity$ClinitThrow; method=<clinit> bytecode_size=31
+[SGET] class=Lcom/probe/clinit1/MainActivity$ClinitThrow; method=<clinit> pc=0 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity$ClinitThrow;.<clinit>
+[SYNTH-EXC] ARITH-LIT8 (deferred): Ljava/lang/ArithmeticException; (divide by zero) method=Lcom/probe/clinit1/MainActivity$ClinitThrow;.<clinit> pc=9 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/ArithmeticException; caught at caller Lcom/probe/clinit1/MainActivity;.onCreate invoke_pc=188 handler=0x0xcb type=<catch-all>
+[CLASS_INIT] class=Lcom/probe/clinit1/MainActivity$ClinitThrow; method=<clinit> result=OK engine=0x7ffde8d5b4e8 storage_size=34
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=188 field=Lcom/probe/clinit1/MainActivity$ClinitThrow;.s value=42
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/ArithmeticException;.getClass caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getName caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=226 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=235 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=253 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=327 field=Ljava/lang/System;.out obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=346 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=356 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=366 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=onCreate pc=376 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lcom/probe/clinit1/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lcom/probe/clinit1/MainActivity; args=1 arg0_kind=6 arg0_obj=32
+[F023-PARENTLINK] setContentView(View) content view=32 linked under activity view=15
+[F105-OWNER] view_tree_lifecycle_owner id not in app resources — owner install skipped
+[R349-ORDER] setContentView(View) deferred attach+measure root=32 (AOSP first-traversal ordering law)
+[R349-ORDER] setContentView(View) attach wave + measure done, root=32
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/clinit1/MainActivity; runtime_class=Lcom/probe/clinit1/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/clinit1/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/clinit1/MainActivity; runtime_class=Lcom/probe/clinit1/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/clinit1/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=7 nodes=2 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lcom/probe/clinit1/MainActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=24
+[F384-ROOTINSETS] root=o32 cls=Lcom/probe/clinit1/MainActivity$ProbeView; insets=o33 dispatched=false
+[ECR-ROOT] scalar content_view_id root=32
+[V1-CONTENT-BOUNDS] root=32 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[LIFEWIN-OPEN] Lcom/probe/clinit1/MainActivity$ProbeView; view=32
+[LIFEWIN-CLOSE] Lcom/probe/clinit1/MainActivity$ProbeView; view=32 dispatched=NO
+[F096-LIFECYCLE] Lcom/probe/clinit1/MainActivity$ProbeView; view=32 rect=(0,0 1080x1920) dispatched=NO
+[C013-LEAFCHK] Lcom/probe/clinit1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.draw caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=35 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=23
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=35 class=Landroid/graphics/Paint; px=89.25
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=35 size=34 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=37
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=35 class=Landroid/graphics/Paint; px=68.25
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=35 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=35 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=99
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=35 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=123
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=35 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=146
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=35 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=170
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=35 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=193
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=35 cls=Landroid/graphics/Paint; color=0xffe65a5a caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=215
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=35 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=238
+[C013-ONDRAW] view=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; dispatched=YES ops=6
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/probe/clinit1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 2072384 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2072384 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=76
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=232
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=32
+[V1-CONTENT-BOUNDS] root=32 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clinit1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.draw caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=41 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=23
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=41 class=Landroid/graphics/Paint; px=89.25
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=41 size=34 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=37
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=41 class=Landroid/graphics/Paint; px=68.25
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=41 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=41 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=99
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=41 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=123
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=41 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=146
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=41 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=170
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=41 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=193
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=41 cls=Landroid/graphics/Paint; color=0xffe65a5a caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=215
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=41 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=238
+[C013-ONDRAW] view=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/probe/clinit1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 2072384 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2072384 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=32
+[V1-CONTENT-BOUNDS] root=32 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clinit1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.draw caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=47 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=23
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=47 class=Landroid/graphics/Paint; px=89.25
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=47 size=34 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=37
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=47 class=Landroid/graphics/Paint; px=68.25
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=47 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[ANT6-DT] paint=47 size=26 face=-1 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=99
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=47 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=123
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=47 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=170
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=47 cls=Landroid/graphics/Paint; color=0xffe65a5a caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=215
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[C013-ONDRAW] view=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/probe/clinit1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 2072384 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2072384 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=32
+[V1-CONTENT-BOUNDS] root=32 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clinit1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.draw caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=23
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=53 class=Landroid/graphics/Paint; px=89.25
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=53 class=Landroid/graphics/Paint; px=68.25
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=123
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=170
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=53 cls=Landroid/graphics/Paint; color=0xffe65a5a caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=215
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[C013-ONDRAW] view=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/probe/clinit1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 2072384 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2072384 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=32
+[V1-CONTENT-BOUNDS] root=32 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clinit1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.draw caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=59 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=23
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=59 class=Landroid/graphics/Paint; px=89.25
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=59 class=Landroid/graphics/Paint; px=68.25
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=59 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=59 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=123
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=59 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=170
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=59 cls=Landroid/graphics/Paint; color=0xffe65a5a caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=215
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[C013-ONDRAW] view=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/probe/clinit1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 2072384 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2072384 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/cont87/clinit_pre/frames
+[ECR-ROOT] scalar content_view_id root=32
+[V1-CONTENT-BOUNDS] root=32 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/probe/clinit1/MainActivity$ProbeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.draw caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=65 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=23
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=65 class=Landroid/graphics/Paint; px=89.25
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[EXT-AOSP-002] setTextSize view=65 class=Landroid/graphics/Paint; px=68.25
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=65 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$0 pc=0 field=Lcom/probe/clinit1/MainActivity;.ccState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=65 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=123
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$1 pc=0 field=Lcom/probe/clinit1/MainActivity;.acState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=65 cls=Landroid/graphics/Paint; color=0xff50dc78 caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=170
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$2 pc=0 field=Lcom/probe/clinit1/MainActivity;.utState obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Landroid/graphics/Color;.rgb caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[F298-SETCOLOR] recv=65 cls=Landroid/graphics/Paint; color=0xffe65a5a caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw pc=215
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[SGET] class=Lcom/probe/clinit1/MainActivity; method=access$3 pc=0 field=Lcom/probe/clinit1/MainActivity;.ut2State obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[REC-MISS] Landroid/graphics/Canvas;.drawText caller=Lcom/probe/clinit1/MainActivity$ProbeView;.draw
+[C013-ONDRAW] view=32 class=Lcom/probe/clinit1/MainActivity$ProbeView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/probe/clinit1/MainActivity$ProbeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 2072384 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2072384 non-white pixels

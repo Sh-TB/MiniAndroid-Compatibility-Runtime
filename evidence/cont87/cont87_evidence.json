@@ -1,0 +1,87 @@
+{
+  "wave": "CONT-87",
+  "date": "2026-10-18",
+  "directive": "#364 comment 6245430786 (CONT-87 — ten execution-first fixes from the CONT-86 residual ledger)",
+  "scope": "Track 1 (F-NEW-395, P0) executed fixture-first to terminal verdict; tracks 2-10 remain on the open list (see ledger comment)",
+  "baseline": {
+    "head": "5ca26fa3a8f35120f09796246932cbc6b1845338 (CONT-86)",
+    "pre_fix_binary_sha16": "d22b36be55764348",
+    "post_fix_binary_sha16": "caa24290aad77ca9",
+    "registry": "702 rows, sha16 76e52c8d9d991ad9 (post-reconciliation)",
+    "environment_note": "container resync detected at wave start: local checkout was CONT-10-era; fast-forwarded to origin/main; binary + gate_a_probe + probe_store rebuilt from git-tracked sources before any verdict"
+  },
+  "decode": {
+    "tool": "scripts/cont87_decode_luu.py (androguard 4.1.4, py3.13)",
+    "apk": "upload/cont73_apks/org.andstatus.game2048_47.apk sha16 2d6707624623fe88",
+    "finding": "Luu;.<clinit>: try start=7 count=6 (code units 7..12 = the getMethod(\"onSpinWait\") probe region); the Class.forName invoke sits at unit 2 — OUTSIDE the try. The registered F-NEW-395 handler-match claim ('deferred raise misses the clinit frame's own catch-all') is DISPROVEN: the engine's 'uncaught (deferred frame unwind + propagate)' at pc=2 was correct DEX semantics. The forName-probe try-coverage claim in the CONT-86 decode was a misread.",
+    "on_device_note": "the app never depended on that coverage — forName of a shipped framework class never throws on device (the F-NEW-394 bridge restored that law in CONT-86)."
+  },
+  "fixture": {
+    "apk": "fixtures/cont87_clinit_probe -> run/cont87/clinit1.apk sha16 d0de76b819c1f725 (com.probe.clinit1)",
+    "rows": [
+      "C87-CC: forName(\"probe.does.not.Exist\") inside an in-clinit catch-all (deferred CNFE origin R350-FORNAME)",
+      "C87-AC: 10/0 inside an in-clinit catch-all (deferred ARITH-LIT8 origin)",
+      "C87-UT/UT2: uncaught clinit throw; first use + second use (JVMS 5.5 erroneous law)",
+      "C87-OK: sanity static"
+    ]
+  },
+  "ab": {
+    "pre_fix": {
+      "binary": "d22b36be55764348",
+      "log": "run/cont87/clinit_pre.stderr (+ clinit_pre.stdout)",
+      "results": {
+        "C87-CC": "caught:java.lang.ClassNotFoundException (in-frame handler @0x14 dispatched) — law OK",
+        "C87-AC": "caught:java.lang.ArithmeticException (handler @0x15) — law OK",
+        "C87-UT": "main-caught:java.lang.ArithmeticException (original exception teleported to a LATER invoke site, caught by the covering try)",
+        "C87-UT2": "s=42 — clinit RE-RAN on second use; erroneous-class law dead",
+        "CLASS_INIT ClinitThrow": "result=OK despite the throw (honesty defect)"
+      }
+    },
+    "post_fix": {
+      "binary": "caa24290aad77ca9",
+      "log": "run/cont87/clinit_post3.stderr (+ clinit_post3.stdout)",
+      "results": {
+        "C87-CC": "caught:java.lang.ClassNotFoundException — UNCHANGED",
+        "C87-AC": "caught:java.lang.ArithmeticException — UNCHANGED",
+        "C87-UT": "main-caught:java.lang.ArithmeticException — UNCHANGED app-visible (original exception delivers at its covering handler)",
+        "C87-UT2": "main-caught:java.lang.NoClassDefFoundError — FIXED (JVMS 5.5 erroneous law)",
+        "CLASS_INIT ClinitThrow": "result=FAILED + [F-NEW-395] CLINIT-UNWIND + [F-NEW-215] CLINIT-FAILED evidence='unwind Ljava/lang/ArithmeticException;' — FIXED",
+        "rc": 0
+      }
+    },
+    "intermediate_honest_null": "fix attempt 1 (consume the in-flight unwind at the clinit call site) double-raised: the F-NEW-215 NCDFE re-raise searched the try table at the ADVANCED pc and escaped the app's covering try, killing the boot (run/cont87/clinit_post2.stderr, rc=1). Superseded by the clinit_exc_already_in_flight() guard at the six active-use sites."
+  },
+  "fix_sites": [
+    "miniandroid/src/dex/dalvik_engine.cpp execute_method_internal finalization: unwind => COMPLETED_PARTIAL + halt_reason='unwind <type>'; COMPLETED_SUCCESS clears stale markers (F-NEW-395 UNWIND-HONESTY LAW)",
+    "miniandroid/src/dex/dalvik_engine.cpp ensure_class_initialized clinit call site: reads the marker, routes to the registered F-NEW-215 erroneous path ([CLASS_INIT] FAILED)",
+    "miniandroid/src/dex/dalvik_engine.h + six active-use sites (sget/sget-object/sput/sput-object/new-instance/forName): clinit_exc_already_in_flight() guard — no double-raise at the triggering use; later uses keep NCDFE"
+  ],
+  "regression_battery": {
+    "binary": "caa24290aad77ca9",
+    "rows": [
+      {"gate": "wall 12/12 (cont70_wall_sweep)", "result": "PASS — 12/12 faces byte-identical"},
+      {"gate": "goldens 4/4 (user_golden_gate)", "result": "PASS — 2048/snakedeluxe/minicraft REAL_APP_CONTENT + helloworld canonical 83720c1028f832d0"},
+      {"gate": "negatives 19/19 (s41_gatea_negative)", "result": "PASS — after rebuilding gate_a_probe (27011c4204d7598d) + probe_store (wiped by container resync; initial 9/19 was the missing store, not a behavior change)"},
+      {"gate": "reinstall 8/8 (s41_gatea_reinstall)", "result": "PASS"},
+      {"gate": "MG-310 7/7 (cont76_fence_mg310)", "result": "PASS — FENCE GREEN"},
+      {"gate": "MG-150 3/3 (cont76_fence_mg150)", "result": "PASS — FENCE GREEN"},
+      {"gate": "c72priv 12-OK/0-BAD", "result": "PASS"},
+      {"gate": "selftests 13/13 (skill_selftest)", "result": "PASS"},
+      {"gate": "F-NEW-376 fault injection 70/70 (cont73_fault_injection)", "result": "PASS"},
+      {"gate": "c74esc containment fence", "result": "PASS — VOL-ESC/VOL-ESC2/FONT-ESC/VOL-OK/NEG-ETC all OK"},
+      {"gate": "clock1 virtual clock", "result": "PASS 4/4"},
+      {"gate": "swipe1 gesture law", "result": "PASS — onScroll/onFling axes+signs correct; e2 residual still named"},
+      {"gate": "as2048_47 boot (the F-NEW-395 discoverer)", "result": "PASS — 0 uncaught, face default-splash class unchanged, no erroneous-class rows (F-NEW-394 bridge intact)"}
+    ],
+    "drift": "zero"
+  },
+  "registry": {
+    "F-NEW-395": "CONFIRMED_OPEN_GAP -> ROOT-CAUSED-FIXED (two-part honest re-grade: handler-match claim retracted with decode+fixture evidence; honesty defect confirmed and fixed)",
+    "bookkeeping": "V1/V8 totals reconciled to 702; V9 open_frontiers re-derived from actual statuses (352 open); V7 ENVIRONMENT_PROFILE source_head refreshed. validate_registry_ledger: ALL PASS."
+  },
+  "named_residuals": [
+    "JVMS 5.5 EIIE wrap on first use not modeled (engine delivers the original exception at the covering handler, then NCDFE for later uses — the registered F-NEW-215 law)",
+    "F-NEW-215 re-raise searches the try table at the ADVANCED pc (moot at the triggering use due to the in-flight guard; micro-residual recorded)",
+    "CONT-87 tracks 2..10 (GLSL backend, interpreter throughput profile, Compose first-frame, F-145, F-NEW-192, F-NEW-214, Canvas field-less diag, AndroidGraphics object graph, swipe e2 payload) remain open on the #364 list"
+  ]
+}

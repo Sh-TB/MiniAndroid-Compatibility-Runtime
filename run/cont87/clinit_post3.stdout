@@ -1,0 +1,35 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (30 s wall-clock soft budget)
+[*] Running APK: run/cont87/clinit1.apk
+[*] Output directory: run/cont87/clinit_post3
+[DATA-ROOT] context package = com.probe.clinit1 (data dir runtime/data/data/data/com.probe.clinit1)
+[C87-VERSION] pkg=com.probe.clinit1 wave=CONT-87
+[C87-OK] ok
+[C87-CC-BEGIN]
+[C87-CC-CAUGHT] caught:java.lang.ClassNotFoundException
+[C87-CC-END]
+[C87-CC-STATE] caught:java.lang.ClassNotFoundException
+[C87-AC-BEGIN]
+[C87-AC-CAUGHT] java.lang.ArithmeticException
+[C87-AC-END]
+[C87-AC-STATE] v=7
+[C87-UT-BEGIN]
+[C87-UT-STATE] main-caught:java.lang.ArithmeticException
+[C87-UT2-STATE] main-caught:java.lang.NoClassDefFoundError
+[C87-DONE] rows=5 cc=caught:java.lang.ClassNotFoundException ac=clinit-ok ut=main-caught:java.lang.ArithmeticException ut2=main-caught:java.lang.NoClassDefFoundError
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/cont87/clinit_post3/screenshot.png
+Report: run/cont87/clinit_post3/report.md

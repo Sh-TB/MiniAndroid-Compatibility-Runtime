@@ -1,8 +1,8 @@
 {
  "schema": "MINIANDROID_ENVIRONMENT_PROFILE/1.0",
- "generated_at": "2026-10-04T05:28:28Z",
- "source_head": "59c57519ea376690c4fbe6a688d3a7160d4e3a17",
- "binary_sha16": "4c01757e8f11c8a0",
+ "generated_at": "2026-10-18T05:32:00Z",
+ "source_head": "5ca26fa3a8f35120f09796246932cbc6b1845338",
+ "binary_sha16": "caa24290aad77ca9",
  "ENV-001_api_level": {
   "sdk_int": 34,
   "version_name": "14",
@@ -29,7 +29,7 @@
  "ENV-004_ram_storage": {
   "ram": "host-bound (no ActivityManager memory pressure simulation)",
   "storage": "host-bound data-root tree; internal/external/DE/user_de fences proven",
-  "source": "#370 §B storage probes; DE-01"
+  "source": "#370 \u00a7B storage probes; DE-01"
  },
  "ENV-005_cpu_abi": {
   "host_arch": "x86_64",
@@ -42,14 +42,14 @@
   "native_bridge": false,
   "abi_selection_law": "install prefers lib/x86_64 when present (host-executable); mixed APKs (x86_64 + ARM) stay in scope with the host-executable ABI selected; ARM-only APKs never reach install/launch under LAW-001 (ABI_OUT_OF_SCOPE SKIP recorded first)",
   "s2_native_execution": "dlopen/JNI_OnLoad/dlsym/SystemV-thunk; NATX-01..10 10/10 x3 (fib=610)",
-  "advertised_abis_note": "#375 §5 FA-01 fix (commit post-07cdde2f): Build.SUPPORTED_ABIS previously advertised [arm64-v8a, armeabi-v7a, armeabi] — an arm64 device persona with NO translation. Honest seed = [x86_64] (the host-executable ABI). ARM-only APKs still extract their lib tree (install ABI law, main.cpp kAbiOrder) and honest dlopen refusal on load.",
-  "scope_law": "LAW-001 FIRST TEST LAW (2026-10-06, owner directive): every loaded APK must be host-executable — pure-DEX (no native libs, ABI-neutral) or shipping x86/x86_64 native trees. An APK whose lib/ trees contain no x86/x86_64 ABI (ARM32/ARM64/other only) is OUT OF CURRENT SCOPE: the gate records ABI_OUT_OF_SCOPE (SKIP) BEFORE install/launch and it is NEVER counted as a runtime failure. ARM is deferred, not deleted; ABI translation may become a separate future phase. Law text: CONSTITUTION_V2.md LAW-001; gate: scripts/unknown_apk_preflight.py (16-verdict contract 1.1)."
+  "advertised_abis_note": "#375 \u00a75 FA-01 fix (commit post-07cdde2f): Build.SUPPORTED_ABIS previously advertised [arm64-v8a, armeabi-v7a, armeabi] \u2014 an arm64 device persona with NO translation. Honest seed = [x86_64] (the host-executable ABI). ARM-only APKs still extract their lib tree (install ABI law, main.cpp kAbiOrder) and honest dlopen refusal on load.",
+  "scope_law": "LAW-001 FIRST TEST LAW (2026-10-06, owner directive): every loaded APK must be host-executable \u2014 pure-DEX (no native libs, ABI-neutral) or shipping x86/x86_64 native trees. An APK whose lib/ trees contain no x86/x86_64 ABI (ARM32/ARM64/other only) is OUT OF CURRENT SCOPE: the gate records ABI_OUT_OF_SCOPE (SKIP) BEFORE install/launch and it is NEVER counted as a runtime failure. ARM is deferred, not deleted; ABI translation may become a separate future phase. Law text: CONSTITUTION_V2.md LAW-001; gate: scripts/unknown_apk_preflight.py (16-verdict contract 1.1)."
  },
  "ENV-006_graphics": {
   "backend": "PortableGL (software rasterizer)",
   "gles_max_version": 2,
   "vulkan": false,
-  "egl_facade": "JSR-239 EGL/GLES facade (checkGL20 PASS — tictactoedeluxe evidence)",
+  "egl_facade": "JSR-239 EGL/GLES facade (checkGL20 PASS \u2014 tictactoedeluxe evidence)",
   "framebuffer": "1080x1920 RGBA software framebuffer"
  },
  "ENV-007_media": {

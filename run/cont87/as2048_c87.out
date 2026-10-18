@@ -1,0 +1,1269 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (60 s wall-clock soft budget)
+[*] Running APK: upload/cont73_apks/org.andstatus.game2048_47.apk
+[*] Output directory: run/cont87/as2048_post
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=59
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=91
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=111
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=114
+[DATA-ROOT] context package = org.andstatus.game2048 (data dir runtime/data/data/data/org.andstatus.game2048)
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=upload/cont73_apks/org.andstatus.game2048_47.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 1387 entries (1339 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'org.andstatus.game2048.MyMainActivity'
+[U007-RES] ResourceRuntime loaded: upload/cont73_apks/org.andstatus.game2048_47.apk named_ids=124 types=3
+[ARSC-VALUES] apk=upload/cont73_apks/org.andstatus.game2048_47.apk strings=2 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "2048 Open Fun Game" (resid @0x7f080008)
+[A7b] icon @0x7f040000 -> res/aH.png (78339 bytes) DECODED 1332x1332 rgba rgba_bytes=7096896 fnv1a=0x504468759f7d560
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=144)
+[S1-PROVIDER] manifest providers transferred: 2
+[S1-PROVIDER]   org.andstatus.game2048.data.FileProvider
+[S1-PROVIDER]   androidx.startup.InitializationProvider
+[TRY-ENTRY] Lorg/andstatus/game2048/data/FileProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Lorg/andstatus/game2048/data/FileProvider;.<init>
+[MEM] method_exit: Lorg/andstatus/game2048/data/FileProvider;.<init> insns=2 RSS=30.7539 MB
+[TRY-ENTRY] Lorg/andstatus/game2048/data/FileProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Lorg/andstatus/game2048/data/FileProvider;.onCreate dex_report=YES
+[S1-PROVIDER] installed org.andstatus.game2048.data.FileProvider obj#14 attachInfo+onCreate OK
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
+[371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=3
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.getContext dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[TRY-ENTRY] Landroid/content/ContentProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[CLASS_INIT] class=Lc3; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Lc3;.<clinit> dex_report=YES
+[CLASS_INIT] class=Lc3; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=24
+[TRY-ENTRY] Lc3;.d dex_report=YES
+[SGET-MISS] key=Lc3;.h storage_size=24 same_class_keys=1 engine=0x7ffc2d9ac798 first=Lc3;.i
+[SGET] class=Lc3; method=d pc=0 field=Lc3;.h obj_id=0
+[SGET] class=Lc3; method=d pc=4 field=Lc3;.i obj_id=20
+[SGET] class=Lc3; method=d pc=7 field=Lc3;.h obj_id=0
+[TRY-ENTRY] Lc3;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Lc3;.<init>
+[TRY-ENTRY] Ljava/util/HashSet;.<init> dex_report=YES
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Lc3;.<init>
+[TRY-ENTRY] Ljava/util/HashMap;.<init> dex_report=YES
+[SGET] class=Lc3; method=d pc=25 field=Lc3;.h obj_id=21
+[CLASS_INIT] class=Lao; method=<clinit> bytecode_size=21
+[TRY-ENTRY] Lao;.<clinit> dex_report=YES
+[TRY-ENTRY] Lf10;.<init> dex_report=YES
+[CLASS_INIT] class=Lao; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=27
+[REC-MISS] Landroid/os/Trace;.beginSection caller=Lao;.c
+[REC-MISS] Landroid/content/Context;.getPackageName caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Ljava/lang/Class;.getName caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Landroid/content/ComponentName;.<init> caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Landroidx/startup/InitializationProvider;.onCreate
+[REC-MISS] Landroid/content/pm/PackageManager;.getProviderInfo caller=Landroidx/startup/InitializationProvider;.onCreate
+[F273-PROVINFO] androidx.startup.InitializationProvider metaData entries=3
+[REC-MISS] Landroid/content/Context;.getString caller=Lc3;.b
+[EXP093-APPSTR] HIT! class=Landroid/content/Context; args=2 arg0_type=7_obj=16 arg1_type=1_int=2131230727
+[CTX-F136] getString(resid=0x7f080007, fargs=0) → "androidx.startup"
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Lc3;.b
+[REC-MISS] Landroid/os/Bundle;.keySet caller=Lc3;.b
+[REC-MISS] Landroid/os/BaseBundle;.keySet caller=Lc3;.b
+[REC-MISS] Ljava/util/Set;.iterator caller=Lc3;.b
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lc3;.b
+[REC-MISS] Ljava/util/HashSet;.iterator caller=Lc3;.b
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lc3;.b
+[REC-MISS] Landroid/os/Trace;.endSection caller=Landroidx/startup/InitializationProvider;.onCreate
+[S1-PROVIDER] installed androidx.startup.InitializationProvider obj#17 attachInfo+onCreate OK
+[R341-APP] default Application bound: obj#36
+[R341-APP] bound application obj#36 (Landroid/app/Application;)
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Llk;.<init>
+[CLASS_INIT] class=Lv40; method=<clinit> bytecode_size=18
+[CLASS_INIT] class=Lv40; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=30
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Lv40;.<init>
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lorg/andstatus/game2048/MyMainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lorg/andstatus/game2048/MyMainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=37)
+[CLASS_INIT] class=Li5; method=<clinit> bytecode_size=56
+[CLASS_INIT] class=Lg8; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lg8; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=31
+[SGET] class=Lrz; method=<init> pc=0 field=Lg8;.d obj_id=52
+[CLASS_INIT] class=Lk00; method=<clinit> bytecode_size=25
+[R350-FORNAME] "kotlin.reflect.jvm.internal.ReflectionFactoryImpl" → ClassNotFoundException
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lk00;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
+[CLASS_INIT] class=Lk00; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=32
+[SGET] class=Li5; method=<clinit> pc=12 field=Lk00;.a obj_id=54
+[REC-MISS] Ljava/lang/Object;.getClass caller=Li5;.<clinit>
+[SGET] class=Lxt; method=<init> pc=0 field=Lg8;.d obj_id=52
+[CLASS_INIT] class=Lur; method=<clinit> bytecode_size=19
+[CLASS_INIT] class=Ld80; method=<clinit> bytecode_size=168
+[CLASS_INIT] class=Ld80; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=52
+[SGET] class=Lur; method=<clinit> pc=14 field=Ld80;.l obj_id=67
+[CLASS_INIT] class=Lur; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=53
+[SGET] class=Li5; method=<clinit> pc=45 field=Lur;.c obj_id=59
+[CLASS_INIT] class=Ll90; method=<clinit> bytecode_size=114
+[CLASS_INIT] class=Ll90; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=62
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[CLASS_INIT] class=Lr30; method=<clinit> bytecode_size=59
+[CLASS_INIT] class=Lr30; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=69
+[SGET-MISS] key=Lr30;.h storage_size=69 same_class_keys=6 engine=0x7ffc2d9ac798 first=Lr30;.a
+[SGET-MISS]   landed: Lc3;.h
+[SGET-MISS]   landed: Ld80;.h
+[SGET-MISS]   landed: Ll90;.h
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=0
+[CLASS_INIT] class=Low; method=<clinit> bytecode_size=5
+[CLASS_INIT] class=Lnw; method=<clinit> bytecode_size=36
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[CLASS_INIT] class=Lnw; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=73
+[SGET] class=Low; method=<clinit> pc=0 field=Lnw;.b obj_id=94
+[CLASS_INIT] class=Low; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=74
+[SGET] class=Lr30; method=o pc=4 field=Low;.a obj_id=94
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[SGET] class=Lr30; method=o pc=9 field=Lnw;.c obj_id=96
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lt60;.getValue
+[CLASS_INIT] class=Lma0; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lma0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=75
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[CLASS_INIT] class=Lmb; method=<clinit> bytecode_size=74
+[CLASS_INIT] class=Ljv; method=<clinit> bytecode_size=102
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ljv;.<clinit>
+[CLASS_INIT] class=Ljv; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=81
+[SGET] class=Lmb; method=<clinit> pc=0 field=Ljv;.h obj_id=106
+[CLASS_INIT] class=Lv10; method=<clinit> bytecode_size=62
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lv10;.<clinit>
+[CLASS_INIT] class=Lv10; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=87
+[SGET] class=Lmb; method=<clinit> pc=4 field=Lv10;.f obj_id=116
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[SGET] class=Lt60; method=getValue pc=2 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lt60;.getValue
+[SGET] class=Lr3; method=a pc=6 field=Lma0;.a obj_id=101
+[SGET] class=Lr3; method=a pc=284 field=Landroid/os/Build;.SUPPORTED_ABIS obj_id=7
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.l0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.l0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.l0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lm50;.r0
+[CLASS_INIT] class=Ld3; method=<clinit> bytecode_size=143
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Ld3;.<init>
+[CLASS_INIT] class=Ld3; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=97
+[SGET] class=Lr3; method=a pc=328 field=Ld3;.i obj_id=126
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[CLASS_INIT] class=Lc8; method=<clinit> bytecode_size=25
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lc8;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lc8;.<clinit>
+[CLASS_INIT] class=Lc8; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=99
+[SGET] class=Lmb; method=<clinit> pc=48 field=Lc8;.d obj_id=138
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/System;.getenv caller=Lmb;.<clinit>
+[REC-MISS] Ljava/util/LinkedHashMap;.getClass caller=Lmb;.<clinit>
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lmb;.<clinit>
+[CLASS_INIT] class=Lmb; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=101
+[SGET] class=Lr3; method=a pc=128 field=Lmb;.e obj_id=140
+[REC-MISS] Ljava/util/Map;.size caller=Lr30;.o
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Lr30;.o
+[REC-MISS] Ljava/util/Map;.entrySet caller=Lr30;.o
+[REC-MISS] Ljava/lang/Iterable;.iterator caller=Lr30;.o
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lr30;.o
+[SGET] class=Lr30; method=o pc=75 field=Lr30;.h obj_id=142
+[REC-MISS] Ljava/util/LinkedHashMap;.getClass caller=Lr30;.o
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[STR] concat("LOG_", "GAMEWINDOW")
+[REC-MISS] Ljava/util/LinkedHashMap;.get caller=Ll90;.u
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Ll90;.u pc=60
+[F089-MAP] Ljava/util/LinkedHashMap;.get caller=Ll90;.u pc=60 recv_oid=142 key="LOG_GAMEWINDOW" val=<unset>
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=142
+[SGET] class=Lr30; method=o pc=75 field=Lr30;.h obj_id=142
+[REC-MISS] Ljava/util/LinkedHashMap;.getClass caller=Lr30;.o
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[REC-MISS] Ljava/util/LinkedHashMap;.get caller=Ll90;.u
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Ll90;.u pc=111
+[F089-MAP] Ljava/util/LinkedHashMap;.get caller=Ll90;.u pc=111 recv_oid=142 key="LOG_LEVEL" val=<unset>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Ll90;.u pc=145
+[F089] shadow put map=60 key="GAMEWINDOW" arg0_kind=5 arg0_str="GAMEWINDOW" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=148
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[CLASS_INIT] class=Li5; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=102
+[CLASS_INIT] class=Lek; method=<clinit> bytecode_size=263
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lek;.<clinit>
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Lks;.N
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#162 val=obj#153
+[F089] shadow put map=179 key="obj:162" arg0_kind=6 arg0_str="" arg0_obj=162 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#164 val=obj#159
+[F089] shadow put map=179 key="obj:164" arg0_kind=6 arg0_str="" arg0_obj=164 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#166 val=obj#155
+[F089] shadow put map=179 key="obj:166" arg0_kind=6 arg0_str="" arg0_obj=166 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#168 val=obj#160
+[F089] shadow put map=179 key="obj:168" arg0_kind=6 arg0_str="" arg0_obj=168 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#170 val=obj#154
+[F089] shadow put map=179 key="obj:170" arg0_kind=6 arg0_str="" arg0_obj=170 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#172 val=obj#158
+[F089] shadow put map=179 key="obj:172" arg0_kind=6 arg0_str="" arg0_obj=172 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#174 val=obj#156
+[F089] shadow put map=179 key="obj:174" arg0_kind=6 arg0_str="" arg0_obj=174 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.put caller=Lks;.N
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=179 key=obj#176 val=obj#157
+[F089] shadow put map=179 key="obj:176" arg0_kind=6 arg0_str="" arg0_obj=176 arg0_cls=Li2; nargs=2 recv=Ljava/util/LinkedHashMap;
+[CLASS_INIT] class=Lek; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=104
+[SGET] class=Li5; method=<init> pc=11 field=Lek;.d obj_id=147
+[CLASS_INIT] class=Lf40; method=<clinit> bytecode_size=10
+[CLASS_INIT] class=Lf40; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=105
+[CLASS_INIT] class=La; method=<clinit> bytecode_size=11
+[SGET] class=La; method=<clinit> pc=0 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=142
+[SGET] class=Lr30; method=o pc=75 field=Lr30;.h obj_id=142
+[REC-MISS] Ljava/util/LinkedHashMap;.getClass caller=Lr30;.o
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[STR] concat("LOG_", "AG")
+[REC-MISS] Ljava/util/LinkedHashMap;.get caller=Ll90;.u
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Ll90;.u pc=60
+[F089-MAP] Ljava/util/LinkedHashMap;.get caller=Ll90;.u pc=60 recv_oid=142 key="LOG_AG" val=<unset>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Ll90;.u pc=145
+[F089] shadow put map=60 key="AG" arg0_kind=5 arg0_str="AG" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=148
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[CLASS_INIT] class=La; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=106
+[SGET] class=Ld0; method=<init> pc=3 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=142
+[SGET] class=Lr30; method=o pc=75 field=Lr30;.h obj_id=142
+[REC-MISS] Ljava/util/LinkedHashMap;.getClass caller=Lr30;.o
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[STR] concat("LOG_", "AGTEXTURE")
+[REC-MISS] Ljava/util/LinkedHashMap;.get caller=Ll90;.u
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Ll90;.u pc=60
+[F089-MAP] Ljava/util/LinkedHashMap;.get caller=Ll90;.u pc=60 recv_oid=142 key="LOG_AGTEXTURE" val=<unset>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Ll90;.u pc=145
+[F089] shadow put map=60 key="AGTEXTURE" arg0_kind=5 arg0_str="AGTEXTURE" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=148
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lk;.<init>
+[IGET-MISS-DIAG] asked="Lm;->i" obj#185 cls=Lm; keys: Lm;->d Lm;->e Lm;->f Lm;->g Lm;->h Lm;->k caller=Lm;.b
+[IGET-MISS-DIAG] asked="Lm;->j" obj#185 cls=Lm; keys: Lm;->d Lm;->e Lm;->f Lm;->g Lm;->h Lm;->k caller=Lm;.b
+[CLASS_INIT] class=Lev; method=<clinit> bytecode_size=7
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[CLASS_INIT] class=Lev; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=106
+[SGET] class=Lt60; method=<init> pc=5 field=Ld80;.u obj_id=76
+[REC-MISS] Ljava/util/concurrent/locks/ReentrantLock;.<init> caller=Lo60;.<init>
+[REC-MISS] Ljava/util/concurrent/locks/ReentrantLock;.<init> caller=Lf10;.<init>
+[REC-MISS] Ljava/util/concurrent/locks/ReentrantLock;.<init> caller=Lf10;.<init>
+[CLASS_INIT] class=Lzs; method=<clinit> bytecode_size=7
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lzs;.<clinit>
+[CLASS_INIT] class=Lzs; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=107
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lzs;.a
+[SGET] class=Lzs; method=a pc=4 field=Lzs;.a value=-1271397054
+[M3-LONG-PUT] field=Lo60;.g caller=Lo60;.<init> value=30528
+[CLASS_INIT] class=Lh3; method=<clinit> bytecode_size=6
+[CLASS_INIT] class=Lh3; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=108
+[SGET] class=Lh3; method=<init> pc=3 field=Lh3;.g obj_id=209
+[CLASS_INIT] class=Lab; method=<clinit> bytecode_size=17
+[SGET] class=Lab; method=<clinit> pc=2 field=Ld80;.j obj_id=65
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lza;.<init>
+[CLASS_INIT] class=Lab; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=109
+[SGET] class=Lab; method=<init> pc=0 field=Ld80;.j obj_id=65
+[CLASS_INIT] class=Lkk; method=<clinit> bytecode_size=11
+[SGET] class=Lkk; method=<clinit> pc=0 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=148
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[CLASS_INIT] class=Lkk; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=110
+[SGET] class=Lab; method=<init> pc=0 field=Ld80;.j obj_id=65
+[SGET] class=Lkk; method=<init> pc=48 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=5 field=Lur;.c obj_id=59
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=28 field=Ljava/util/Locale;.ROOT obj_id=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[SGET] class=Ll90; method=u pc=37 field=Lur;.d obj_id=60
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[SGET] class=Lr30; method=o pc=0 field=Lr30;.h obj_id=142
+[SGET] class=Lr30; method=o pc=75 field=Lr30;.h obj_id=142
+[REC-MISS] Ljava/util/LinkedHashMap;.getClass caller=Lr30;.o
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lr30;.o
+[STR] concat("LOG_", "KORGW.GAMEWINDOW.TOOMANYCALLBACK")
+[REC-MISS] Ljava/util/LinkedHashMap;.get caller=Ll90;.u
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Ll90;.u pc=60
+[F089-MAP] Ljava/util/LinkedHashMap;.get caller=Ll90;.u pc=60 recv_oid=142 key="LOG_KORGW.GAMEWINDOW.TOOMANYCALLBACKS" val=<unset>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Ll90;.u pc=145
+[F089] shadow put map=60 key="KORGW.GAMEWINDOW.TOOMANYCALLBACKS" arg0_kind=5 arg0_str="KORGW.GAMEWINDOW.TOOMANYCALLBACKS" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=148
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ll90;.u
+[CLASS_INIT] class=Lyv; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lyv; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=111
+[SGET] class=Li5; method=<init> pc=43 field=Lyv;.f obj_id=231
+[CLASS_INIT] class=Ll10; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Ll10; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=112
+[SGET] class=Li5; method=<init> pc=52 field=Ll10;.f obj_id=233
+[CLASS_INIT] class=Lx40; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lx40; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=113
+[SGET] class=Li5; method=<init> pc=61 field=Lx40;.f obj_id=235
+[CLASS_INIT] class=Lbd; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lbd; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=114
+[SGET] class=Li5; method=<init> pc=70 field=Lbd;.f obj_id=237
+[CLASS_INIT] class=Lv00; method=<clinit> bytecode_size=8
+[SGET-MISS] key=Lv00;.h storage_size=114 same_class_keys=0 engine=0x7ffc2d9ac798
+[SGET-MISS]   landed: Lc3;.h
+[SGET-MISS]   landed: Ld3;.h
+[SGET-MISS]   landed: Ld80;.h
+[SGET-MISS]   landed: Ljv;.h
+[SGET-MISS]   landed: Ll90;.h
+[SGET-MISS]   landed: Lr30;.h
+[SGET-MISS]   landed: Lv10;.h
+[SGET] class=Lv00; method=<init> pc=0 field=Lv00;.h obj_id=0
+[CLASS_INIT] class=Lv00; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=115
+[SGET] class=Lv00; method=<init> pc=0 field=Lv00;.h obj_id=239
+[CLASS_INIT] class=Lin; method=<clinit> bytecode_size=8
+[SGET-MISS] key=Lin;.f storage_size=115 same_class_keys=0 engine=0x7ffc2d9ac798
+[SGET-MISS]   landed: Lbd;.f
+[SGET-MISS]   landed: Ld3;.f
+[SGET-MISS]   landed: Ld80;.f
+[SGET-MISS]   landed: Ljv;.f
+[SGET-MISS]   landed: Ll10;.f
+[SGET-MISS]   landed: Ll90;.f
+[SGET-MISS]   landed: Lr30;.f
+[SGET-MISS]   landed: Lur;.f
+[SGET-MISS]   landed: Lv10;.f
+[SGET-MISS]   landed: Lx40;.f
+[SGET-MISS]   landed: Lyv;.f
+[SGET] class=Lin; method=<init> pc=0 field=Lin;.f obj_id=0
+[CLASS_INIT] class=Lin; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=116
+[SGET] class=Lin; method=<init> pc=0 field=Lin;.f obj_id=241
+[CLASS_INIT] class=La10; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=La10; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=117
+[SGET] class=La10; method=<init> pc=11 field=La10;.j obj_id=243
+[CLASS_INIT] class=Lfp; method=<clinit> bytecode_size=52
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lfp;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lfp;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lfp;.<clinit>
+[SGET] class=Lfp; method=values pc=0 field=Lfp;.i obj_id=248
+[REC-MISS] Ljava/lang/Object;.clone caller=Lfp;.values
+[CLASS_INIT] class=Lfp; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=123
+[SGET] class=Li5; method=<init> pc=103 field=Lfp;.f obj_id=245
+[CLASS_INIT] class=Lep; method=<clinit> bytecode_size=4380
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lep;.<init>
+[SGET] class=Lep; method=a pc=4 field=Lep;.q obj_id=251
+[SGET] class=Lep; method=a pc=9 field=Lep;.r obj_id=252
+[SGET] class=Lep; method=a pc=14 field=Lep;.s obj_id=253
+[SGET] class=Lep; method=a pc=19 field=Lep;.t obj_id=254
+[SGET] class=Lep; method=a pc=24 field=Lep;.u obj_id=255
+[SGET] class=Lep; method=a pc=29 field=Lep;.v obj_id=256
+[SGET] class=Lep; method=a pc=34 field=Lep;.w obj_id=257
+[SGET] class=Lep; method=a pc=39 field=Lep;.x obj_id=258
+[SGET] class=Lep; method=a pc=44 field=Lep;.y obj_id=259
+[SGET] class=Lep; method=a pc=50 field=Lep;.z obj_id=260
+[SGET] class=Lep; method=a pc=56 field=Lep;.A obj_id=261
+[SGET] class=Lep; method=a pc=62 field=Lep;.B obj_id=262
+[SGET] class=Lep; method=a pc=68 field=Lep;.C obj_id=263
+[SGET] class=Lep; method=a pc=74 field=Lep;.D obj_id=264
+[SGET] class=Lep; method=a pc=80 field=Lep;.E obj_id=265
+[SGET] class=Lep; method=a pc=86 field=Lep;.F obj_id=266
+[SGET] class=Lep; method=a pc=92 field=Lep;.G obj_id=267
+[SGET] class=Lep; method=a pc=98 field=Lep;.H obj_id=268
+[SGET] class=Lep; method=a pc=104 field=Lep;.I obj_id=269
+[SGET] class=Lep; method=a pc=110 field=Lep;.J obj_id=270
+[SGET] class=Lep; method=a pc=116 field=Lep;.K obj_id=271
+[SGET] class=Lep; method=a pc=122 field=Lep;.L obj_id=272
+[SGET] class=Lep; method=a pc=128 field=Lep;.M obj_id=273
+[SGET] class=Lep; method=a pc=134 field=Lep;.N obj_id=274
+[SGET] class=Lep; method=a pc=140 field=Lep;.O obj_id=275
+[SGET] class=Lep; method=a pc=146 field=Lep;.P obj_id=276
+[SGET] class=Lep; method=a pc=152 field=Lep;.Q obj_id=277
+[SGET] class=Lep; method=a pc=158 field=Lep;.R obj_id=278
+[CLASS_INIT] class=Lep; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=532
+[CLASS_INIT] class=Lyd; method=<clinit> bytecode_size=25
+[CLASS_INIT] class=Lzd; method=<clinit> bytecode_size=17
+[CLASS_INIT] class=Lzd; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=532
+[SGET] class=Lyd; method=<clinit> pc=0 field=Lzd;.a value=0
+[CLASS_INIT] class=Lgc; method=<clinit> bytecode_size=32
+[CLASS_INIT] class=Lgc; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=536
+[SGET] class=Lgc; method=m pc=5 field=Lyd;.g value=0
+[SGET] class=Lgc; method=m pc=7 field=Lzd;.a value=0
+[SGET] class=Lgc; method=m pc=5 field=Lyd;.g value=0
+[SGET] class=Lgc; method=m pc=7 field=Lzd;.a value=0
+[CLASS_INIT] class=Lyd; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=539
+[SGET] class=Li5; method=<init> pc=126 field=Lyd;.g value=0
+[CLASS_INIT] class=Ljt; method=<clinit> bytecode_size=94
+[CLASS_INIT] class=Ljt; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=546
+[CLASS_INIT] class=Ldt; method=<clinit> bytecode_size=119
+[CLASS_INIT] class=Ldt; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=549
+[CLASS_INIT] class=Lrk; method=<clinit> bytecode_size=54
+[CLASS_INIT] class=Lrk; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=552
+[CLASS_INIT] class=Lud; method=<clinit> bytecode_size=45
+[CLASS_INIT] class=Lud; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=555
+[CLASS_INIT] class=Lae; method=<clinit> bytecode_size=91
+[CLASS_INIT] class=Lae; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=570
+[SGET] class=Lgc; method=o pc=2 field=Lyd;.g value=0
+[SGET] class=Lgc; method=o pc=4 field=Lzd;.a value=0
+[M3-LONG-PUT] field=Lzn;.a caller=Lzn;.<init> value=2000
+[M3-LONG-PUT] field=Lzn;.d caller=Lzn;.<init> value=0
+[CLASS_INIT] class=Lp9; method=<clinit> bytecode_size=3001
+[CLASS_INIT] class=Lbo; method=<clinit> bytecode_size=18
+[CLASS_INIT] class=Lbo; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=573
+[CLASS_INIT] class=Lm90; method=<clinit> bytecode_size=82
+[CLASS_INIT] class=Lm90; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=581
+[CLASS_INIT] class=Luz; method=<clinit> bytecode_size=9
+[CLASS_INIT] class=Luz; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=591
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="black" val=obj#722
+[F089] shadow put map=1014 key="black" arg0_kind=5 arg0_str="black" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="white" val=obj#725
+[F089] shadow put map=1014 key="white" arg0_kind=5 arg0_str="white" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="red" val=obj#727
+[F089] shadow put map=1014 key="red" arg0_kind=5 arg0_str="red" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="green" val=obj#729
+[F089] shadow put map=1014 key="green" arg0_kind=5 arg0_str="green" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="blue" val=obj#731
+[F089] shadow put map=1014 key="blue" arg0_kind=5 arg0_str="blue" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="aliceblue" val=obj#733
+[F089] shadow put map=1014 key="aliceblue" arg0_kind=5 arg0_str="aliceblue" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="antiquewhite" val=obj#735
+[F089] shadow put map=1014 key="antiquewhite" arg0_kind=5 arg0_str="antiquewhite" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="aqua" val=obj#737
+[F089] shadow put map=1014 key="aqua" arg0_kind=5 arg0_str="aqua" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="aquamarine" val=obj#739
+[F089] shadow put map=1014 key="aquamarine" arg0_kind=5 arg0_str="aquamarine" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="azure" val=obj#741
+[F089] shadow put map=1014 key="azure" arg0_kind=5 arg0_str="azure" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="beige" val=obj#743
+[F089] shadow put map=1014 key="beige" arg0_kind=5 arg0_str="beige" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="bisque" val=obj#745
+[F089] shadow put map=1014 key="bisque" arg0_kind=5 arg0_str="bisque" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="blanchedalmond" val=obj#747
+[F089] shadow put map=1014 key="blanchedalmond" arg0_kind=5 arg0_str="blanchedalmond" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="blueviolet" val=obj#749
+[F089] shadow put map=1014 key="blueviolet" arg0_kind=5 arg0_str="blueviolet" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="brown" val=obj#751
+[F089] shadow put map=1014 key="brown" arg0_kind=5 arg0_str="brown" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="burlywood" val=obj#753
+[F089] shadow put map=1014 key="burlywood" arg0_kind=5 arg0_str="burlywood" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="cadetblue" val=obj#755
+[F089] shadow put map=1014 key="cadetblue" arg0_kind=5 arg0_str="cadetblue" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="chartreuse" val=obj#757
+[F089] shadow put map=1014 key="chartreuse" arg0_kind=5 arg0_str="chartreuse" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="chocolate" val=obj#759
+[F089] shadow put map=1014 key="chocolate" arg0_kind=5 arg0_str="chocolate" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="coral" val=obj#761
+[F089] shadow put map=1014 key="coral" arg0_kind=5 arg0_str="coral" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="cornflowerblue" val=obj#763
+[F089] shadow put map=1014 key="cornflowerblue" arg0_kind=5 arg0_str="cornflowerblue" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="cornsilk" val=obj#765
+[F089] shadow put map=1014 key="cornsilk" arg0_kind=5 arg0_str="cornsilk" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="crimson" val=obj#767
+[F089] shadow put map=1014 key="crimson" arg0_kind=5 arg0_str="crimson" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="cyan" val=obj#769
+[F089] shadow put map=1014 key="cyan" arg0_kind=5 arg0_str="cyan" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="darkblue" val=obj#771
+[F089] shadow put map=1014 key="darkblue" arg0_kind=5 arg0_str="darkblue" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="darkcyan" val=obj#773
+[F089] shadow put map=1014 key="darkcyan" arg0_kind=5 arg0_str="darkcyan" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lks;.N pc=23 recv_oid=1014 key="darkgoldenrod" val=obj#775
+[F089] shadow put map=1014 key="darkgoldenrod" arg0_kind=5 arg0_str="darkgoldenrod" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[F089] shadow put map=1014 key="darkgray" arg0_kind=5 arg0_str="darkgray" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lks;.N pc=23
+[CLASS_INIT] class=Lp9; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=592
+[SGET] class=Li5; method=<init> pc=161 field=Lp9;.b value=-16777216
+[SGET] class=Lgc; method=o pc=2 field=Lyd;.g value=0
+[SGET] class=Lgc; method=o pc=4 field=Lzd;.a value=0
+[SGET] class=Lgc; method=o pc=2 field=Lyd;.g value=0
+[SGET] class=Lgc; method=o pc=4 field=Lzd;.a value=0
+[SGET] class=Li5; method=<init> pc=220 field=Lep;.e value=395
+[CLASS_INIT] class=Lzj; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lzj; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=594
+[CLASS_INIT] class=Lxj; method=<clinit> bytecode_size=41
+[CLASS_INIT] class=Lxj; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=599
+[U0113-ACTIVITY] activity heap object #37 (Lorg/andstatus/game2048/MyMainActivity;) recorded for handler dispatch
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[CLASS_INIT] class=Ldu; method=<clinit> bytecode_size=24
+[CLASS_INIT] class=Lb5; method=<clinit> bytecode_size=11
+[CLASS_INIT] class=Lb5; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=600
+[CLASS_INIT] class=Lzv; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lzv; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=602
+[SGET] class=Lzv; method=a pc=5 field=Lzv;.a value=1788878848
+[CLASS_INIT] class=Ldu; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=604
+[SGET] class=Lzv; method=a pc=5 field=Lzv;.a value=1788878848
+[SGET] class=Lgc; method=o pc=2 field=Lyd;.g value=0
+[SGET] class=Lgc; method=o pc=4 field=Lzd;.a value=0
+[CLASS_INIT] class=Lg80; method=<clinit> bytecode_size=14
+[SGET] class=Lgc; method=m pc=5 field=Lyd;.g value=0
+[SGET] class=Lgc; method=m pc=7 field=Lzd;.a value=0
+[CLASS_INIT] class=Lg80; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=605
+[SGET] class=Lg80; method=a pc=3 field=Lyd;.g value=0
+[CLASS_INIT] class=Luu; method=<clinit> bytecode_size=31
+[CLASS_INIT] class=Luu; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=605
+[SGET] class=Ldu; method=a pc=11 field=Luu;.a value=0
+[BRIDGE-TID] Ljava/lang/Thread;.currentThread static=1 shadow=YES
+[THREAD-ID] currentThread -> obj=2 (class=Ljava/lang/Thread;, main identity))
+game2048.log 1 [1] onCreate MainActivity
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[CLASS_INIT] class=Llb0; method=<clinit> bytecode_size=14
+[R347-FILE-CTOR] argc=2 path="." caller=Llb0;.<clinit> a1t=5(".")
+[R347-FILE] getAbsolutePath path="." -> "runtime/data/data/data/org.andstatus.game2048/."
+[CLASS_INIT] class=Llb0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=608
+[SGET] class=Lorg/andstatus/game2048/MyMainActivity; method=d pc=3 field=Llb0;.a value=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationInfo class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationInfo class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getIntent class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP057-INTENT] getIntent → intent_id=1069 (synthetic)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getIntent class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP057-INTENT] getIntent → intent_id=1069 (synthetic)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getIntent class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP057-INTENT] getIntent → intent_id=1069 (synthetic)
+intent.extras: null : null
+---------------- KorgwActivity.onCreate(savedInstanceState=null) -------------- : Llk;@38
+LOG/e/KorgwActivity: onCreate
+!!!!!!!!!!!!! KorgwSurfaceView.created
+KorgwActivity: Created GLSurfaceView Liq;@1072 for Lorg/andstatus/game2048/MyMainActivity;@37
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+OpenGL ES Version (requested): 1, config=Llk;@38
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[C013-HIER] setEGLContextClientVersion dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[C013-HIER] setEGLConfigChooser dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[C013-HIER] setRenderer dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[CLASS_INIT] class=Lt80; method=<clinit> bytecode_size=72
+[CLASS_INIT] class=Lt80; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=617
+[M3-LONG-PUT] field=Lu80;.f caller=Lu80;.<init> value=0
+[CLASS_INIT] class=Ls80; method=<clinit> bytecode_size=7
+[CLASS_INIT] class=Lva0; method=<clinit> bytecode_size=28
+[CLASS_INIT] class=Lva0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=620
+[CLASS_INIT] class=Lr80; method=<clinit> bytecode_size=37
+[CLASS_INIT] class=Lr80; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=624
+[CLASS_INIT] class=Lq80; method=<clinit> bytecode_size=51
+[CLASS_INIT] class=Lq80; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=627
+[CLASS_INIT] class=Ls80; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=627
+[CLASS_INIT] class=Lga; method=<clinit> bytecode_size=22
+[CLASS_INIT] class=Lga; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=628
+[SGET] class=Lvn; method=<init> pc=11 field=Lga;.a value=-17155601
+[SGET] class=Lvn; method=<init> pc=11 field=Lga;.a value=-17155601
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=39
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ll90;.u pc=148
+[CLASS_INIT] class=Lc5; method=<clinit> bytecode_size=11
+[CLASS_INIT] class=Lc5; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=629
+[CLASS_INIT] class=Le5; method=<clinit> bytecode_size=13
+[CLASS_INIT] class=Le5; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=630
+[CLASS_INIT] class=Ld; method=<clinit> bytecode_size=42
+[CLASS_INIT] class=Ld; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=634
+[CLASS_INIT] class=Lb0; method=<clinit> bytecode_size=49
+[CLASS_INIT] class=Lb0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=635
+[SGET] class=Lv; method=<init> pc=44 field=Lb0;.a value=11963240
+[CLASS_INIT] class=Lc0; method=<clinit> bytecode_size=43
+[CLASS_INIT] class=Lc0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=636
+[SGET] class=Lv; method=<init> pc=48 field=Lc0;.b value=0
+[M3-LONG-PUT] field=Lv;.q caller=Lv;.<init> value=-1
+[CLASS_INIT] class=Lh; method=<clinit> bytecode_size=10
+[CLASS_INIT] class=Lh; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=639
+[SGET] class=Lv; method=<init> pc=54 field=Lh;.a value=15
+[CLASS_INIT] class=Lj; method=<clinit> bytecode_size=35
+[CLASS_INIT] class=Lj; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=640
+[CLASS_INIT] class=Le0; method=<clinit> bytecode_size=21
+[CLASS_INIT] class=Le0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=641
+[CLASS_INIT] class=La0; method=<clinit> bytecode_size=36
+[CLASS_INIT] class=La0; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=645
+[CLASS_INIT] class=Lx; method=<clinit> bytecode_size=107
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Lx;.<clinit> pc=48
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Lx;.<clinit> pc=81
+[CLASS_INIT] class=Lx; method=<clinit> result=OK engine=0x7ffc2d9ac798 storage_size=649
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.wrap argc=1 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.getClass argc=1 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.duplicate argc=1 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.duplicate argc=1 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.position argc=1 caller=Lb8;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.limit argc=1 caller=Lb8;.<init>
+[C86-BB] method=allocateDirect argc=1 a0:t1=0 caller=Lv;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=runOnUiThread class=Lorg/andstatus/game2048/MyMainActivity;
+[QUEUE] Runnable id=1248 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=1, source=Activity.runOnUiThread)
+[R359-UI] runOnUiThread runnable=1248 (enqueued on main queue)
+[LP-INIT] bridged Landroid/widget/RelativeLayout$LayoutParams;.<init> argc=3
+[EXP062-ADDVIEW-TRACE] invoke-virtual addView argc=3 this_id=1249 this_class=Landroid/widget/RelativeLayout; child_type=7 child_id=1072 child_class=Liq; a2=t7/v1250 caller=Lorg/andstatus/game2048/MyMainActivity;.d pc=255
+[EXP095-ADDVIEW-LP] child=1072 w=-2 h=-2 gravity=0x0 margins=(0,0,0,0) weight=0 parent_class=Landroid/widget/RelativeLayout; via=addView
+[EXP061-ADDVIEW] parent=1249 parent_class=Landroid/view/ViewGroup; child=1072
+[C013-HIER] addView dispatched via superclass chain: Landroid/widget/RelativeLayout; -> Landroid/view/ViewGroup; (declared=Landroid/widget/RelativeLayout; receiver=Landroid/widget/RelativeLayout;)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lorg/andstatus/game2048/MyMainActivity; args=1 arg0_kind=6 arg0_obj=1249
+[F023-PARENTLINK] setContentView(View) content view=1249 linked under activity view=37
+[R349-ORDER] setContentView(View) deferred attach+measure root=1249 (AOSP first-traversal ordering law)
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Liq;.onAttachedToWindow)
+[C013-HIER] setDaemon dispatched via superclass chain: Lc80; -> Ljava/lang/Thread; (declared=Lc80; receiver=Lc80;)
+[C013-HIER] setName dispatched via superclass chain: Lc80; -> Ljava/lang/Thread; (declared=Lc80; receiver=Lc80;)
+[THREAD-START] thread_oid=1256 (subclass self-run law) → pending inline run
+[C013-HIER] start dispatched via superclass chain: Lc80; -> Ljava/lang/Thread; (declared=Lc80; receiver=Lc80;)
+[IGET-MISS-DIAG] asked="Liq;->h" obj#1072 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=1256 cls=Lc80; (self-run law) → REAL DEX run() executed
+[R347-ATTACH] onAttachedToWindow dispatched view=1072 class=Liq;
+[R349-ORDER] setContentView(View) attach wave + measure done, root=1249
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lorg/andstatus/game2048/MyMainActivity; recv_oid=37 act_oid=37)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=runOnUiThread class=Lorg/andstatus/game2048/MyMainActivity;
+[QUEUE] Runnable id=1263 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=2, source=Activity.runOnUiThread)
+[R359-UI] runOnUiThread runnable=1263 (enqueued on main queue)
+[QUEUE] Runnable id=1248 dequeued (ready_at=0ms <= now=0ms virtual)
+[QUEUE] Runnable id=1263 dequeued (ready_at=0ms <= now=0ms virtual)
+[EXP090-DRAIN] Invoking Runnable id=1248 class=Lfq;
+[SGET] class=Lfq; method=run pc=0 field=Lorg/andstatus/game2048/MyMainActivity;.k value=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lorg/andstatus/game2048/MyMainActivity; recv_oid=37 act_oid=37)
+[F023-PARENTLINK] getDecorView: activity view=37 linked under decor view=1264
+[EXP090-DRAIN] Runnable id=1248 invoked
+[EXP090-DRAIN] Invoking Runnable id=1263 class=Lfq;
+[SGET] class=Lfq; method=run pc=0 field=Lorg/andstatus/game2048/MyMainActivity;.k value=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lorg/andstatus/game2048/MyMainActivity; recv_oid=37 act_oid=37)
+[F023-PARENTLINK] getDecorView: activity view=37 linked under decor view=1264
+[EXP090-DRAIN] Runnable id=1263 invoked
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lorg/andstatus/game2048/MyMainActivity; runtime_class=Lorg/andstatus/game2048/MyMainActivity;
+[G07-LIFECYCLE] Lorg/andstatus/game2048/MyMainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lorg/andstatus/game2048/MyMainActivity; runtime_class=Lorg/andstatus/game2048/MyMainActivity;
+---------------- KorgwActivity.onResume --------------
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lorg/andstatus/game2048/MyMainActivity;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Liq; runtime_class=Liq;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/opengl/GLSurfaceView; runtime_class=Liq;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/opengl/GLSurfaceView; runtime_class=Liq;
+[IGET-MISS-DIAG] asked="Lorg/andstatus/game2048/MyMainActivity;->j" obj#37 cls=Lorg/andstatus/game2048/MyMainActivity; keys: Lorg/andstatus/game2048/MyMainActivity;->a Lorg/andstatus/game2048/MyMainActivity;->b Lorg/andstatus/game2048/MyMainActivity;->c Lorg/andstatus/game2048/MyMainActivity;->d Lorg/andstatus/game2048/MyMainActivity;->e Lorg/andstatus/game2048/MyMainActivity;->f caller=Lorg/andstatus/game2048/MyMainActivity;.onResume
+[G07-LIFECYCLE] Lorg/andstatus/game2048/MyMainActivity;.onResume() dispatched via DEX engine (ok=1, instructions=34)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=1339 nodes=16 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=557
+[F384-ROOTINSETS] root=o1249 cls=Landroid/widget/RelativeLayout; insets=o1267 dispatched=false
+[ECR-ROOT] scalar content_view_id root=1249
+[V1-CONTENT-BOUNDS] root=1249 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=1249 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=1072 class=Liq; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[LIFEWIN-OPEN] Liq; view=1072
+[LIFEWIN-CLOSE] Liq; view=1072 dispatched=NO
+[F096-LIFECYCLE] Liq; view=1072 rect=(0,0 1080x1920) dispatched=NO
+[C013-LEAFCHK] Liq; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=1072 class=Liq; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Liq; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=590
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=722
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[IGET-MISS-DIAG] asked="Liq;->h" obj#1072 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=1256 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 1: started=0 resumed=1
+[ECR-ROOT] scalar content_view_id root=1249
+[V1-CONTENT-BOUNDS] root=1249 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=1249 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=1072 class=Liq; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Liq; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=1072 class=Liq; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Liq; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[IGET-MISS-DIAG] asked="Liq;->h" obj#1072 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=1256 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 2: started=0 resumed=1
+[ECR-ROOT] scalar content_view_id root=1249
+[V1-CONTENT-BOUNDS] root=1249 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=1249 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=1072 class=Liq; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Liq; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=1072 class=Liq; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Liq; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[IGET-MISS-DIAG] asked="Liq;->h" obj#1072 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=1256 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 3: started=0 resumed=1
+[ECR-ROOT] scalar content_view_id root=1249
+[V1-CONTENT-BOUNDS] root=1249 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=1249 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=1072 class=Liq; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Liq; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=1072 class=Liq; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Liq; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[IGET-MISS-DIAG] asked="Liq;->h" obj#1072 cls=Liq; keys: Liq;->a Liq;->b Liq;->c Liq;->d Liq;->e Liq;->f caller=Lr;.a
+[C013-HIER] requestRender dispatched via superclass chain: Liq; -> Landroid/opengl/GLSurfaceView; (declared=Liq; receiver=Liq;)
+[SLEEP-YIELD] thread body suspended at sleep (drain depth=1) at Lr;.a
+[THREAD-START] drained oid=1256 cls=Lc80; (self-run law) → REAL DEX run() executed
+[F150-THREAD] boundary frame 4: started=0 resumed=1
+[ECR-ROOT] scalar content_view_id root=1249
+[V1-CONTENT-BOUNDS] root=1249 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=1249 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=1072 class=Liq; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Liq; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=1072 class=Liq; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Liq; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/cont87/as2048_post/frames
+[ECR-ROOT] scalar content_view_id root=1249
+[V1-CONTENT-BOUNDS] root=1249 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=1249 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=1072 class=Liq; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Liq; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=1072 class=Liq; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Liq; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 3151 IMPLEMENTED, 21 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 1
+
+Screenshot: run/cont87/as2048_post/screenshot.png
+Report: run/cont87/as2048_post/report.md
