@@ -6328,6 +6328,60 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? static_cast<int32_t>(n->children.size()) : 0);
     }
+    // ── CONT-101 T6 (F-NEW-418): AOSP ViewGroup child-order laws ────────
+    // indexOfChild(View): AOSP ViewGroup.indexOfChild — array identity
+    // scan, -1 when the view is not a child of the receiver.
+    // ROOT CAUSE (c99zo PRE probe): unimplemented → answered the generic
+    // 0 for EVERY child ("first child" for all) — app z-order bookkeeping
+    // and adapter code reading indices were silently wrong.
+    if (m == "indexOfChild") {
+        const auto* n = find_node(ctx.receiver_id);
+        uint32_t child = ctx.arg_as_object(0, 0);
+        if (!n || child == 0) return CallResult::handled_int(-1);
+        for (size_t i = 0; i < n->children.size(); ++i)
+            if (n->children[i] == child)
+                return CallResult::handled_int(static_cast<int32_t>(i));
+        return CallResult::handled_int(-1);
+    }
+    // bringToFront(): AOSP View.bringToFront → parent.bringChildToFront:
+    // the child is REMOVED from the parent's children array and RE-ADDED
+    // at the END (paint order = array order → the moved child paints
+    // LAST = on top), then requestLayout+invalidate. ROOT CAUSE (c99zo
+    // PRE probe): silent no-op — PHASE2 raster identical to PHASE1
+    // (Q1/Q2 diverged: B/C stayed on top of the brought-to-front A).
+    if (m == "bringToFront") {
+        auto* n = find_node(ctx.receiver_id);
+        if (n && n->parent_id) {
+            if (auto* p = find_node(n->parent_id)) {
+                for (size_t i = 0; i < p->children.size(); ++i) {
+                    if (p->children[i] == ctx.receiver_id) {
+                        p->children.erase(p->children.begin() + i);
+                        p->children.push_back(ctx.receiver_id);
+                        break;
+                    }
+                }
+                layout_dirty = true;  // requestLayout+invalidate equivalent
+            }
+        }
+        return CallResult::handled_void();
+    }
+    // bringChildToFront(View): the ViewGroup-side AOSP entry point
+    // (View.bringToFront forwards here when the parent is a ViewGroup).
+    if (m == "bringChildToFront") {
+        auto* p = find_node(ctx.receiver_id);
+        uint32_t child = ctx.arg_as_object(0, 0);
+        if (p && child != 0) {
+            for (size_t i = 0; i < p->children.size(); ++i) {
+                if (p->children[i] == child) {
+                    p->children.erase(p->children.begin() + i);
+                    p->children.push_back(child);
+                    break;
+                }
+            }
+            layout_dirty = true;
+        }
+        return CallResult::handled_void();
+    }
     if (m == "findViewById") {
         int32_t target_id = ctx.arg_as_int(0, 0);
         // ── ROOT-056 (S112): AOSP NO_ID lookup law ─────────────────────
@@ -6819,6 +6873,20 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         const float t = (m == "getX") ? n->translation_x : n->translation_y;
         return CallResult::handled_float((float)rel + t);
+    }
+    // ── CONT-101 T6 (F-NEW-419): AOSP View elevation Z-state round-trip.
+    // ROOT CAUSE (c99zo ZOEL row): setElevation was a silent no-op and
+    // getElevation answered 0 unconditionally — app z-state bookkeeping
+    // (ViewCompat Z, CardView shadows, Compose modifiers) never stuck.
+    if (m == "setElevation") {
+        auto* n = get_or_create_node(ctx.receiver_id,
+            ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->elevation = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getElevation") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->elevation : 0.0f);
     }
     if (m == "setPivotX") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);

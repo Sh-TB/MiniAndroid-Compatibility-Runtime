@@ -1470,6 +1470,9 @@ public:
         // live here; the axis-aligned walk applies translation, while the
         // scale/rotation MATRIX application is the recorded frontier.
         float translation_x = 0, translation_y = 0;
+        // F-NEW-419 (CONT-101 T6): AOSP View elevation Z-state —
+        // setElevation records, getElevation answers the SAME value.
+        float elevation = 0;
         float scale_x = 1.0f, scale_y = 1.0f;
         float rotation_deg = 0.0f, pivot_x = 0.0f, pivot_y = 0.0f;
         // F-NEW-359: AOSP lazy-pivot contract (View.java mSetPivotX/Y) —
@@ -1503,6 +1506,14 @@ public:
         // ===================================================================
         int padding_left = 0, padding_top = 0, padding_right = 0, padding_bottom = 0;
         float text_size_px = 0;          // 0 → renderer default
+        // F-NEW-417/421 (CONT-101 T5): TextView line state. Defaults are
+        // the AOSP TextView constructor constants (mMaxMode=LINES,
+        // mMaximum=9999; mEllipsize=null). includeFontPadding already
+        // exists below (G47 block) — the F-NEW-417 capture writes THAT
+        // field. Consumed by the renderer's wrap/ellipsize draw law
+        // (F-NEW-421).
+        int max_lines = 9999;
+        uint8_t ellipsize_mode = 0;  // 0=none 1=START 2=MIDDLE 3=END 4=MARQUEE
         uint32_t text_color = 0;         // 0 → renderer default (near-black)
         // M3 FIX-M3-005b: setTextColor(ColorStateList) heap object id — the
         // CSL default-color law resolves at draw time (0 = none captured).
