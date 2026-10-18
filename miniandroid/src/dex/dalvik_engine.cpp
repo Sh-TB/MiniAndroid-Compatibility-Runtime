@@ -30778,6 +30778,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 probe_desc = probe.class_desc;
             else if (probe.type == DalvikType::STRING_REF)
                 probe_desc = "Ljava/lang/String;";
+            // ── CONT-103 (F-NEW-440): PROBE-SIDE HEAP CLASS-TOKEN LAW —
+            // same resolution the receiver token above already applies.
+            // After an Object-field round-trip (firebase BillingController →
+            // u1/q2/i2.zzb, telegram pc=46 death) the probe Class arrives as
+            // an OBJECT_REF heap token whose class_desc is the TOKEN's own
+            // type ("Ljava/lang/Class;") — using it made EVERY
+            // isAssignableFrom(p3) ask assignable(Class→p3) instead of
+            // assignable(p3→v1) and answer FALSE → t1.zzc false → i2.zzb
+            // threw "No factory is available for message type: …p3"
+            // uncaught at LaunchActivity.onCreate pc=46 → the last
+            // deterministic telegram startup death. Resolve the referent
+            // descriptor from the heap token first; fall back to
+            // class_desc only for non-token objects.
+            if (probe.type == DalvikType::OBJECT_REF &&
+                probe.object_id != 0 && heap_.has_object(probe.object_id)) {
+                auto* probe_obj = heap_.get(probe.object_id);
+                if (probe_obj &&
+                    probe_obj->class_descriptor == "Ljava/lang/Class;") {
+                    auto ref = heap_.get_object_field(probe.object_id,
+                                                      "__referent_desc");
+                    if (ref.has_value() && ref->type == DalvikType::STRING_REF &&
+                        !ref->string_val.empty())
+                        probe_desc = ref->string_val;
+                }
+            }
             if (!probe_desc.empty()) {
                 // isInstance: token.isInstance(value) → assignable(value→token)
                 // isAssignableFrom: token.isAssignableFrom(cls)
@@ -45760,6 +45785,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 cls_v = cls_v.substr(1, cls_v.size() - 2);
             for (auto& ch : cls_v) if (ch == '/') ch = '.';
         }
+        // CONT-103 (F-NEW-439): the HEAP Class-token face — firebase's
+        // MetadataComponentDiscovery (telegram Lkg/i;.P, the "ComponentDiscovery"
+        // log tag) obtains its Class via Class.forName, stores it through an
+        // Object field round-trip (Lv5/i;->b) and hands it to
+        // new ComponentName(Context, Class) as an OBJECT_REF whose heap
+        // record carries the referent descriptor (__referent_desc, the
+        // F-069 class-token law). Resolving that descriptor makes the ctor
+        // set mClass so the getServiceInfo consumer answers instead of
+        // MISSing with an EMPTY name and throwing uncaught NameNotFoundException
+        // (the pre-fix app-boundary death, run/s105/tg_pre_stderr.txt).
+        if (cls_v.empty() && args[2].type == DalvikType::OBJECT_REF &&
+            args[2].object_id != 0 && heap_.has_object(args[2].object_id)) {
+            auto ref_f = heap_.get_object_field(args[2].object_id,
+                                                "__referent_desc");
+            if (ref_f.has_value() && ref_f->type == DalvikType::STRING_REF &&
+                !ref_f->string_val.empty()) {
+                cls_v = ref_f->string_val;  // "Lcom/pkg/Cls;"
+                if (cls_v.size() >= 2 && cls_v.front() == 'L' &&
+                    cls_v.back() == ';')
+                    cls_v = cls_v.substr(1, cls_v.size() - 2);
+                for (auto& ch : cls_v) if (ch == '/') ch = '.';
+            }
+        }
+        // Honest diagnostic: an unresolved Class arg leaves the ComponentName
+        // nameless — the consumer laws then MISS empty. Log once per call so
+        // future waves see the exact arg face instead of a silent empty.
+        if (cls_v.empty() && args.size() >= 3) {
+            std::cerr << "[F-NEW-439] ComponentName.<init> unresolved Class arg: type="
+                      << static_cast<int>(args[2].type)
+                      << " class_desc=" << args[2].class_desc
+                      << " obj=" << args[2].object_id << std::endl;
+        }
         if (pkg_v.empty() && args[1].type == DalvikType::OBJECT_REF &&
             args[1].object_id != 0)
             pkg_v = package_name_;  // Context-form: the running package.
@@ -45771,6 +45828,122 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                    DalvikValue::make_string(cls_v, 0));
         }
         result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-103 (F-NEW-435) — ComponentName.createRelative static factory.
+    // AOSP (API 26+) law: createRelative(pkg, cls) — a leading-dot cls is
+    // RELATIVE to the package (mClass = pkg + cls); any other cls is appended
+    // with a dot separator (mClass = pkg + "." + cls). The (Context, String)
+    // overload delegates with context.getPackageName(). Firebase
+    // ComponentDiscovery (telegram Lkg/i;.P → getServiceInfo at pc=39, and
+    // the whole gms family) builds its ComponentDiscoveryService
+    // ComponentName EXCLUSIVELY through this factory — the REC-MISS'd static
+    // left a null/empty ComponentName, the getServiceInfo consumer law then
+    // MISS'd with an EMPTY name and threw NameNotFoundException uncaught at
+    // the app boundary (probe c103a R3 reproduced the identical empty-name
+    // MISS + probe death; run/cont103/pre_stderr.txt). Empty cls → AOSP NPE
+    // contract. Generic: any app discovering components via createRelative.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "createRelative" &&
+        class_name == "Landroid/content/ComponentName;") {
+        // Arg conventions: static (String pkg, String cls) → args[0]=pkg
+        // args[1]=cls; (Context ctx, String cls) → args[0]=ctx args[1]=cls.
+        std::string pkg_v, cls_v;
+        if (args.size() >= 1 && args[0].type == DalvikType::STRING_REF)
+            pkg_v = args[0].string_val;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+            cls_v = args[1].string_val;
+        if (pkg_v.empty()) pkg_v = package_name_;  // Context form: running pkg.
+        if (cls_v.empty()) {
+            // AOSP: createRelative throws NPE on null/empty class name.
+            std::cerr << "[F-NEW-435] createRelative empty cls → NPE (AOSP contract)"
+                      << std::endl;
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "class name is null or empty", "F-NEW-435");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string full_cls = (cls_v[0] == '.') ? (pkg_v + cls_v)
+                                                 : (pkg_v + "." + cls_v);
+        uint32_t cn_id = heap_.allocate("Landroid/content/ComponentName;", pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(cn_id, "mPackage",
+                               DalvikValue::make_string(pkg_v, 0));
+        heap_.set_object_field(cn_id, "mClass",
+                               DalvikValue::make_string(full_cls, 0));
+        std::cerr << "[F-NEW-435] createRelative " << pkg_v << " + " << cls_v
+                  << " → " << full_cls << std::endl;
+        result = DalvikValue::make_object(cn_id, "Landroid/content/ComponentName;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // CONT-103 (F-NEW-438) — ComponentName string-identity family.
+    // AOSP ComponentName.flattenToString() = mPackage + "/" + mClass
+    // (never null when the name fields are set); flattenToShortString()
+    // collapses a leading "mPackage." class prefix to the relative form
+    // ("pkg/.Cls" — actually "pkg/.Cls" only when mClass begins with
+    // mPackage + "."; the law: mClass = pkg + "." + rest → "pkg/" + rest
+    // — a leading '.' rest keeps the dot: "pkg/.rest"); static
+    // unflattenFromString(str): split at the FIRST '/', expand a leading
+    // '.' class to pkg + cls, null on a malformed string. One identity law
+    // per AOSP ComponentName.java. Probe c103a CN-FLAT = null pre-fix.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/ComponentName;" &&
+        (method == "flattenToString" || method == "flattenToShortString")) {
+        std::string pk, cl;
+        if (args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto pk_f = heap_.get_object_field(args[0].object_id, "mPackage");
+            auto cl_f = heap_.get_object_field(args[0].object_id, "mClass");
+            if (pk_f.has_value() && pk_f->type == DalvikType::STRING_REF)
+                pk = pk_f->string_val;
+            if (cl_f.has_value() && cl_f->type == DalvikType::STRING_REF)
+                cl = cl_f->string_val;
+        }
+        if (pk.empty()) pk = package_name_;
+        if (cl.empty()) {
+            // AOSP: flatten on an empty class throws IllegalStateException;
+            // serve the null face honestly instead of inventing a name.
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string flat = pk + "/" + cl;
+        if (method == "flattenToShortString" &&
+            cl.rfind(pk + ".", 0) == 0)
+            flat = pk + "/" + cl.substr(pk.size());  // keeps the leading '.'
+        result = DalvikValue::make_string(flat, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "unflattenFromString" &&
+        class_name == "Landroid/content/ComponentName;") {
+        std::string str;
+        if (args.size() >= 1 && args[0].type == DalvikType::STRING_REF)
+            str = args[0].string_val;
+        size_t sep = str.find('/');
+        if (sep == std::string::npos || sep + 1 >= str.size()) {
+            // AOSP: malformed → null (no throw).
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string pk = str.substr(0, sep);
+        std::string cl = str.substr(sep + 1);
+        if (!cl.empty() && cl[0] == '.') cl = pk + cl;
+        uint32_t cn_id = heap_.allocate("Landroid/content/ComponentName;", pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(cn_id, "mPackage",
+                               DalvikValue::make_string(pk, 0));
+        heap_.set_object_field(cn_id, "mClass",
+                               DalvikValue::make_string(cl, 0));
+        result = DalvikValue::make_object(cn_id, "Landroid/content/ComponentName;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -45886,6 +46059,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 md_it = component_meta_data_.find(bare);
             if (md_it == component_meta_data_.end() && !prov_class.empty())
                 md_it = component_meta_data_.find(prov_class);
+            // CONT-103 (F-NEW-436 provider face): same containment fallback
+            // as the service law — raw-manifest-name keys (".Foo") must
+            // resolve against the full dotted consumer name.
+            if (md_it == component_meta_data_.end()) {
+                for (const auto& [k, v] : component_meta_data_) {
+                    if (!k.empty() && (norm.rfind(k) != std::string::npos ||
+                                       bare.rfind(k) != std::string::npos)) {
+                        md_it = component_meta_data_.find(k);
+                        break;
+                    }
+                }
+            }
             if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
                 uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
                                                     pc_,
@@ -46022,6 +46207,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 md_it = component_meta_data_.find(bare);
             if (md_it == component_meta_data_.end() && !svc_class.empty())
                 md_it = component_meta_data_.find(svc_class);
+            // CONT-103 (F-NEW-436): containment fallback — the manifest
+            // parser keys component_meta_data_ by the RAW manifest name
+            // (e.g. ".MyService"), the consumer resolves to the full dotted
+            // name. The activity law (getActivityInfo, F-116) already scans
+            // containment; the service law must answer the same normalized
+            // model (probe c103a S-META = NO-META pre-fix, 'hello' post-fix).
+            if (md_it == component_meta_data_.end()) {
+                for (const auto& [k, v] : component_meta_data_) {
+                    if (!k.empty() && (norm.rfind(k) != std::string::npos ||
+                                       bare.rfind(k) != std::string::npos)) {
+                        md_it = component_meta_data_.find(k);
+                        break;
+                    }
+                }
+            }
             if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
                 uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;",
                                                     pc_,
@@ -46132,7 +46332,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             pav.int_val = (int64_t)manifest_provider_identity_.size();
             heap_.set_object_field(obj_id, "providers", pav);
         }
-        // CONT-22 (F-NEW-275) — GET_SERVICES (flags bit 0x20) law. AOSP
+        // CONT-22 (F-NEW-275) — GET_SERVICES (flags bit 0x4) law. AOSP
         // PackageManager.getPackageInfo: with GET_SERVICES the returned
         // PackageInfo.services array lists every manifest <service> as a
         // ServiceInfo carrying name + packageName. Mirror of the
@@ -46141,7 +46341,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // family via getServiceInfo(cn, 640) (the ComponentName path is the
         // getServiceInfo law); this arm covers the PackageInfo.services
         // iteration path (F-NEW-275's registered face).
-        if ((pm_flags & 0x20) != 0 && !manifest_service_classes_.empty()) {
+        // CONT-103 (F-NEW-437): the gate bit was 0x20 — a coding error of
+        // the same class F-NEW-426 caught for GET_ACTIVITIES (0x2); AOSP
+        // PackageManager.GET_SERVICES = 0x00000004 (0x20 is
+        // GET_SHARED_LIBRARY_FILES). Probe c103a PI-SVC-COUNT = -1 pre-fix
+        // (getPackageInfo(pkg, GET_SERVICES=4) → services == null), 1
+        // post-fix.
+        if ((pm_flags & 0x4) != 0 && !manifest_service_classes_.empty()) {
             uint32_t sarr_id = heap_.allocate(
                 "[Landroid/content/pm/ServiceInfo;", pc_, 0);
             heap_.set_object_field(
@@ -60585,6 +60791,56 @@ measure_cm_done:;
                             break;
                         }
                     }
+                }
+            }
+            // ── CONT-103 (F-NEW-441): DIRECT-RUN ON-DEMAND EXTRACTION —
+            // AOSP has no "run an uninstalled APK": a device always installs
+            // first, and the install's ABI-scoped extraction
+            // (NativeLibraryHelper.copyNativeBinaries) is what makes
+            // System.loadLibrary work. Direct harness runs
+            // (miniandroid run <apk>) never install, so the G-4 extracted
+            // tree is absent and every load died with "present in the
+            // installed APK but extracted a different primary ABI" although
+            // the APK carries the host ABI (telegram_official:
+            // lib/x86_64/libtmessages.49.so live evidence,
+            // run/s105/tg_post_stderr.txt). Law: extract ON DEMAND,
+            // x86_64-first (the same order the install law uses — the
+            // host-executable ABI), into the sandbox-backed store path
+            // <data_root>/data/app/<pkg>/lib/<abi>/ — the identical backing
+            // the install law would have created. The REAL dlopen + dlerror
+            // honesty below is unchanged: a refused ELF still reports the
+            // real refusal. Every failure shape stays honest (empty extract
+            // → skip to the ABI-availability branch).
+            if (native_lib_dir_host_.empty() && !apk_path_.empty() &&
+                !package_name_.empty()) {
+                static const char* kAbiOrder3[] = {"x86_64", "x86",
+                                                   "arm64-v8a",
+                                                   "armeabi-v7a"};
+                std::error_code odx_ec;
+                for (const char* abi : kAbiOrder3) {
+                    std::string entry =
+                        std::string("lib/") + abi + "/lib" + lib + ".so";
+                    std::vector<uint8_t> bytes = asset_entry_bytes(entry);
+                    if (bytes.empty()) continue;
+                    std::filesystem::path host_dir =
+                        std::filesystem::path(Storage::app_data_root()) /
+                        "data" / "app" / package_name_ / "lib" / abi;
+                    std::filesystem::create_directories(host_dir, odx_ec);
+                    std::filesystem::path dst = host_dir /
+                                                ("lib" + lib + ".so");
+                    FILE* of = fopen(dst.string().c_str(), "wb");
+                    if (!of) break;
+                    size_t wn = fwrite(bytes.data(), 1, bytes.size(), of);
+                    fclose(of);
+                    if (wn != bytes.size()) break;
+                    native_lib_dir_logical_ =
+                        "/data/app/" + package_name_ + "/lib/" + abi;
+                    native_lib_dir_host_ = host_dir.string();
+                    native_primary_abi_ = abi;
+                    std::cerr << "[F-NEW-441] on-demand extract " << entry
+                              << " → " << native_lib_dir_logical_
+                              << " (" << bytes.size() << " bytes)" << std::endl;
+                    break;
                 }
             }
             if (!native_lib_dir_host_.empty()) {
