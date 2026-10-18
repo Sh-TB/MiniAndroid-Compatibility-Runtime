@@ -7430,8 +7430,32 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // The Python renderer will resolve it via the ARSC string table.
         if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
             n->text_resource_id = ctx.args[0].int_val;
-            // Don't overwrite text if it was already set by a string setText
-            if (n->text.empty()) {
+            // CONT-97 T3 (F-NEW-399): AOSP TextView.setText(@StringRes int)
+            // REPLACES the displayed text with the resolved string now
+            // (Resources.getString law — also the getText() contract: the
+            // framework caches the resolved value, not the id). Resolution
+            // goes through the SAME canonical ARSC single-resolution path
+            // the engine's Context.getString law uses (F-136/M3-007 — no
+            // second table, no name-map shortcut). The "[resid:0x...]"
+            // placeholder remains ONLY when the table cannot answer AND no
+            // prior text exists (honest unknown — no invented content,
+            // same posture as F-104's "[obj:N]" removal).
+            // PRE evidence (fixtures/cont97_res_probe, apk 85079c82b203ee9c
+            // at 79d93a6ada630e73 lineage): direct=[resid:0x2130771969],
+            // string-then-res=STRING-FIRST (the resid setText silently
+            // failed to overwrite) -> verdict=FAIL both rows.
+            std::string res1_resolved;
+            {
+                auto& rt = resources::ResourceRuntime::instance();
+                if (rt.loaded()) {
+                    if (auto s = rt.arsc().resolve_string(
+                            (uint32_t)ctx.args[0].int_val))
+                        res1_resolved = *s;
+                }
+            }
+            if (!res1_resolved.empty()) {
+                n->text = res1_resolved;
+            } else if (n->text.empty()) {
                 n->text = "[resid:0x" + std::to_string(ctx.args[0].int_val) + "]";
             }
         } else if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {

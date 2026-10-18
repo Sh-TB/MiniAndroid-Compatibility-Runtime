@@ -6421,5 +6421,26 @@
    "battery": "wall 12/12 MATCH byte-identical, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 rc=0, MG-150 rc=0, selftests 13/13, F-NEW-376 70/70, sax1 PASS, clock1 4/4, clinit1 law-correct, swipe1 OK, c74esc containment OK, perf1 4/4 checksums byte-identical (3688000/31744000/14534196240) — ZERO DRIFT at b6073e78a45dc7fa",
    "logs": "run/cont97/battery.log, run/cont97/anchor_*.log, evidence/cont97/"
   }
+ },
+ {
+  "id": "F-NEW-399",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "title": "TextView.setText(@StringRes int) leaked a [resid:0x...] placeholder (and skipped the AOSP overwrite law) instead of resolving the string through the canonical ARSC path",
+  "layer": "framework/view/resources",
+  "root_cause": "ViewShadow.setText(int) captured text_resource_id but only assigned a placeholder when node text was empty; it never resolved the id and never replaced prior text. AOSP: setText(int) resolves NOW (Resources.getString) and REPLACES the text; getText() answers the resolved value. Any app calling setText(R.string.x) directly showed raw placeholder text or stale prior text.",
+  "fix": "Resolve through the SAME canonical ARSC single-resolution path the Context.getString law uses (F-136/M3-007, no second table): resolved string REPLACES node text; the [resid:0x...] placeholder remains ONLY when the table cannot answer AND no prior text exists (honest unknown, no invented content).",
+  "evidence": {
+   "wave": "CONT-97",
+   "fixture": {
+    "name": "com.probe.res1",
+    "apk_sha16": "85079c82b203ee9c",
+    "script": "scripts/cont97_build_res_probe.sh"
+   },
+   "pre": "direct=[resid:0x2130771969]; string-then-res=STRING-FIRST (resid setText silently skipped) -> verdict=FAIL both rows (binary 79d93a6ada630e73 lineage)",
+   "post": "direct=RES1-HELLO-STRING-V1; string-then-res=PLAIN-TEXT-LAW -> verdict=PASS both rows (binary b45851882f1d2405)",
+   "battery": "unote wall 3/3 MATCH byte-identical; goldens 4/4; Telegram 30s gate zero [resid: occurrences in both streams",
+   "logs": "run/cont97/res1_pre.out, run/cont97/res1_post.out, run/cont97/tg_res1.*"
+  }
  }
 ]
