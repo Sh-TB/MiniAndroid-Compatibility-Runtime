@@ -2,30 +2,81 @@
  "wave": "CONT-97",
  "date": "2026-10-18",
  "binary": {
-  "pre": "79d93a6ada630e73",
-  "post": "b6073e78a45dc7fa"
+  "wave_start": "79d93a6ada630e73",
+  "final": "d90541058611608c"
  },
- "headline": "T1 INFRA-BRIDGEINTR-1 ROOT-CAUSED-FIXED: bridge dispatch census (INFRA-BRIDGECENSUS-1) attributed 96% of bridge time to two keys walking the 33.5K-line law chain; ART-parity intrinsic entry fast path answers them in O(1). Telegram 30s gate 12.7M -> 16.1M insns (+27%); isWhitespace 994K -> 727 cy/call; charAt 20.2K -> 3.8K cy/call. Zero drift battery.",
- "census": {
-  "pre_tg1_top": "isWhitespace 88001 calls x 994399 cy = 85.4%; String.charAt 535506 x 20164 = 10.5%",
-  "post_tg3_top": "XMLReader|parse 1 call (parse subtree, correct attribution); charAt 3816 cy/call; getLength 48192 cy/call (real walk cost, rank 5)"
+ "directive": "#364 \u00ab\u06f3\u06f6\u06f4 \u0631\u0648 \u06a9\u0627\u0645\u0644 \u0628\u062e\u0648\u0646... \u0647\u0631 \u06a9\u062f\u0627\u0645 \u0631\u0648 \u06cc\u062f\u0648\u0646\u0647 \u062a\u0633\u06a9 \u0645\u062c\u0632\u0627 \u0627\u062c\u0631\u0627 \u0628\u06a9\u0646\u00bb \u2014 every new + incomplete item executed as a SEPARATE task (T1..T13), each to a terminal verdict.",
+ "state_at_start": "61 #364 comments fetched; ZERO new directives after the CONT-96 ledger 6248496433 \u2014 the backlog was entirely previously-incomplete items (registry 708 roots; 1 OPEN, 1 BLOCKED, 1 REGISTERED, 1 PENDING + named residuals).",
+ "tasks": {
+  "T1_INFRA-BRIDGEINTR-1": {
+   "verdict": "APPROVED (ROOT-CAUSED-FIXED / IMPLEMENTED+TESTED)",
+   "detail": "Bridge census (INFRA-BRIDGECENSUS-1) attributed 96% of 102.5G bridge ticks to two keys walking the 33.5K-line law chain (isWhitespace 88K calls x 994K cy = 85.4%; String.charAt 535K x 20K cy = 10.5%). ART-parity intrinsic entry fast path, soundness-proven (single site per key; no prefix preemption; identical guards; verbatim law bodies). isWhitespace -> 727 cy/call, charAt -> 3.8K; Telegram 30s gate 12.7M -> 16.1M insns (+27%)."
+  },
+  "T2_field_resolution": {
+   "verdict": "REJECTED_WITH_MEASUREMENT",
+   "detail": "resolve_field measured 0.6% of gate time at current head (4.8G/851G ticks) \u2014 yield below regression risk; deferred with numbers."
+  },
+  "T3_F-NEW-399": {
+   "verdict": "APPROVED (ROOT-CAUSED-FIXED)",
+   "detail": "setText(@StringRes int) now resolves via the canonical ARSC path and REPLACES text per AOSP. Fixture com.probe.res1 (85079c82b203ee9c): FAIL both rows pre -> PASS both rows post."
+  },
+  "T4_T3-bounds": {
+   "verdict": "PARTIALLY_CONFIRMED \u2014 bounds/offset hypothesis DISPROVEN, true cause measured",
+   "detail": "Env-gated forensics: View.measure receives CORRECT specs AT_MOST(1080)xAT_MOST(1920) for the content child; the app real DEX onMeasure dies at the honest F084 wall-stop (30s budget) with no write-back; fallback cements 295x150. Fix lever = throughput campaign (F-NEW-381 family), not a bounds law."
+  },
+  "T5_F-145": {
+   "verdict": "APPROVED (ALREADY_FIXED_AND_TESTED)",
+   "detail": "Two-activity probe com.probe.acts2 (7c1c21e0ad2d401d): final capture = SecondActivity face (green RGB(0,128,0) at all samples) \u2014 capture follows top-of-stack window at current head; historical splash-capture claim superseded."
+  },
+  "T6_F-NEW-192": {
+   "verdict": "CONFIRMED residue, DEFERRED (stays REGISTERED)",
+   "detail": "Enforced draw-order law re-verified (anchors green); elevation/translationZ remains the named un-modeled residue."
+  },
+  "T7_F-NEW-214": {
+   "verdict": "APPROVED (ALREADY_FIXED_AND_TESTED)",
+   "detail": "SFC-8 logs-as-data law is the per-wave evidence.json process \u2014 exercised CONT-96/97."
+  },
+  "T8_doneButtonVisible": {
+   "verdict": "APPROVED (residual CLOSED by dead-code removal)",
+   "detail": "EXP-071 app-specific heap transplant removed \u2014 provably unreachable at current head (zero [EXP071] rows) and forbidden by the honesty red line; microtimer 3/3 byte-identical after removal."
+  },
+  "T9_F-NEW-400": {
+   "verdict": "APPROVED (ROOT-CAUSED-FIXED)",
+   "detail": "GestureDetector e2 built from DOWN coords (e2 == e1 on every onScroll/onFling). 6-float payload (down, cur, dx/dy | vx/vy); engine builds e2 = ACTION_MOVE/UP at the current coords. PRE e2xy=100,400 frozen; POST e2 tracks 116,375 -> 300,100; app-visible SWIPE1-SCROLL/FLING rows correct; MG-310 7/7, MG-150 3/3."
+  },
+  "T10_F-NEW-277": {
+   "verdict": "RE-GRADED (PARTIALLY_SUPERSEDED-BY-EVIDENCE, stays CLASSIFIED)",
+   "detail": "F-NEW-398 (CONT-96) removed the F084 false-halt contributor to Recomposer starvation; continuation lever stays named for a dedicated Compose wave."
+  },
+  "T11_F-NEW-381": {
+   "verdict": "EVIDENCE-UPDATED (stays CLASSIFIED)",
+   "detail": "Bridge cost eliminated as the dominant per-call sink; remaining gate composition: core ~96%, resolve_field 0.6%, class_init 0.45%. Next levers are opcode-core-level."
+  },
+  "T12_R-NEW-456": {
+   "verdict": "BLOCKED re-affirmed",
+   "detail": "External live z.ai Svelte-5 bundle; unchanged."
+  },
+  "T13_CONT-90": {
+   "verdict": "PARTIAL (honest census)",
+   "detail": "Mandatory cohort (Fossify Clock, BlockBlast, Asteroids Revenge, Space Vertex, Memory) NOT_AVAILABLE in corpus. Available artifacts at current head: flappycow 95% / sudoku 99.8% / chessclock 97% real renders, 0 uncaught; klondike WebView white (frontier); chess_jwtc near-uniform off-white."
+  }
  },
- "fixture": {
-  "com.probe.perf1": "verdict=DONE rows=4, checksums byte-identical 3688000/31744000/14534196240; charat row 2690ms -> 1580ms"
- },
- "battery": {
+ "final_battery_d90541058611608c": {
   "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e x3, opencalc f25b754c4565c38b x3, unote 90a67cc1ddda57b7 x3, microtimer bbd350b6c14fbd52 x3)",
   "goldens": "4/4 PASS",
   "negatives": "19/19 PASS",
   "reinstall": "8/8 PASS",
-  "mg310_mg150": "rc=0 / rc=0",
-  "selftests": "13/13 PASS",
-  "f376_incl_c72priv": "70/70 PASS",
-  "anchors": "sax1 events=6/6 PASS; clock1 4/4; clinit1 CC/UT2 law-correct; swipe1 setup OK; c74esc containment rows all OK; perf1 4/4"
+  "mg310": "7/7",
+  "mg150": "3/3",
+  "selftests": "13/13",
+  "f376_incl_c72priv": "70/70",
+  "anchors": "sax1 PASS; clock1 4/4; clinit1 law-correct; c74esc containment OK; perf1 verdict=DONE rows=4 checksums byte-identical; swipe1 gesture rows F-NEW-400-correct"
  },
+ "registry": "708 -> 712 (+4: INFRA-BRIDGECENSUS-1, INFRA-BRIDGEINTR-1, F-NEW-399, F-NEW-400) + re-grades (F-145, F-NEW-214, F-NEW-192, F-NEW-277, F-NEW-381, R-NEW-456)",
  "honest_notes": [
-  "The 30s canonical Telegram gate STILL ends in F084 wall-stop: the SVG parse subtree is real interpreter work (86G cycles attributed to the single XMLReader.parse bridge call) and still exceeds the budget at the gate; the visual face at canonical settings is UNCHANGED \u2014 this wave claims throughput, not new pixels.",
-  "Census tool bug found and fixed same wave: the first draft shared a thread_local key across nested bridge calls, clobbering subtree attribution (the 14.9M cy/call getLength intermediate reading was this artifact). Clean tg3 census is authoritative.",
-  "Remaining bridge cost after intrinsics: 91G ticks phase total / 86G is the parse subtree (real DEX work), i.e. the chain-walk overhead is now marginal; next throughput levers are resolve_field (~0.45us/op) and class_init (T2 face)."
+  "T1 claims THROUGHPUT not new pixels: the 30s Telegram gate still ends in the honest F084 wall-stop (the SVG parse subtree is real work); the visual face at canonical settings is unchanged.",
+  "T4 is a measurement-level root cause: the 295x150 face is the throughput wall starving the real onMeasure chain \u2014 no bounds law was invented.",
+  "The wave-internal census tool bug (thread_local key clobber under nested bridge calls) was found and fixed the same wave; the intermediate 14.9M cy/call getLength reading was that artifact.",
+  "All 13 tasks received explicit terminal verdicts; 2.5 were honest REJECTED/NOT_AVAILABLE/DEFERRED decisions backed by measurement or artifact availability."
  ]
 }
