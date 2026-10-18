@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">res1</string>
+    <string name="hello_res">RES1-HELLO-STRING-V1</string>
+    <string name="plain_res">PLAIN-TEXT-LAW</string>
+</resources>
