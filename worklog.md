@@ -10259,3 +10259,29 @@ Stage Summary:
 - The two stdout-vs-stderr battery gaps and the gatea sequence dependency are recorded for the next wave.
 - NEXT: remaining CONT-98 tracks (T1/T2/T5/T7/T8 P0s) + CONT-99 visual-correctness tracks, each as an independent task unit; F-NEW-381 opcode-core throughput stays the headline P0 for Telegram.
 - Ledger as-posted to #364: comment 6249783652 (CONT-98 RESULT + the complete 27-wave directive review with per-wave terminal verdicts + honest success-rate counts 70.4%/75.9% + the exact open set). Push verified: HEAD == origin/main == 20b28d9b.
+
+---
+Task ID: CONT-99
+Agent: Super Z (main)
+Task: #364 «ادامه» (trace 1a14f0202ceac7c5) — own-suggestion first (Step 0 freeze-baseline verification), then the complete #364 review; the open set was CONT-99 (0/10) + CONT-98 remaining tracks + CONT-89/92/93 + F-NEW-381. Highest-confidence P0 track executed as ONE separate task unit: CONT-99 T1 (View measurement and layout contract).
+
+Work Log:
+- Step 0 housekeeping: local HEAD was a UUID-message residue commit 9d6faf2b (tmp/ build intermediates only, unpushed) on top of origin/main 0b851125 — dropped via reset --hard; HEAD==origin/main restored; goldens 4/4 + selftests 13/13 re-verified in-container (binary e51d7a643e6817ba).
+- #364 re-fetched in full (63 comments): ZERO new comments after the CONT-98 ledger 6249783652 — the open set is exactly the one recorded in the CONT-98 RESULT §4 (CONT-99 T1..T10 0/10, CONT-98 T1/T2/T3/T4/T5/T7/T8/T9/T10, CONT-89/92/93, F-NEW-381).
+- CONT-99 T1 fixture-first: fixtures/cont99_lay_probe (real aapt2/ECJ/D8; c99lay.apk 80e9399319060b70, V2-C99LAY, 21 deterministic rows + 3 phases). Tree: bar(padding+2 margin chips) / mixed weight row (0px+weight ×3 + match_parent no-weight) / FrameLayout(pad+gravity-ctor child+nested container-gravity leaf) / clean 1:3 weight row / button / image / match_parent child / wrap_content TextView. PHASE1 pre-layout marker (S103 law), PHASE2 settled, PHASE3 post-requestLayout.
+- PRE on the frozen binary: chip1/chip2 margins+padding lost ((0,0)/(50,0) instead of (30,20)/(100,20)); inner FrameLayout gravity-ctor child top-left ((0,250) instead of (480,310)); weights collapsed (LPTRACE pinned wt_type=1 INT32 bits 0x3F800000 read as 1.06535e9). V1 fixture colA..colD "divergences" were FIXTURE-ERROR (AOSP gives the match_parent no-weight child the full row) — honest correction, not an engine claim.
+- Five generic input-layer roots found and fixed (all AOSP-cited):
+  F-NEW-402 View.setPadding/setPaddingRelative + 6 getPadding* getters (was a silent generic-stub no-op; padded containers laid out children at the raw origin) — android_shadows.cpp.
+  F-NEW-403 LayoutParams live-state law: addView/setLayoutParams enrich now records the LP IDENTITY (node->layout_params_object = lp_id; AOSP addView -> setLayoutParams: the view owns that exact object) + traversal-entry refresh of stamped (lp_bridge) LP heap objects into the node mirror each pass; XML-path LP objects (F-NEW-309) deliberately unstamped — inflater lp stays authoritative — execution_engine.cpp.
+  F-NEW-404 LP <init> (w,h,gravity) variant: argc==4 INT32 tail sets the gravity field (the receiver-first convention had left the variant unhandled; first draft misread the (w,h) ctor as argc=3-with-gravity — caught by the POST2 rows and fixed) — dalvik_engine.cpp.
+  F-NEW-405 MarginLayoutParams.setMargins bridge: writes the 4 heap fields + stamps + reverse-lookup sync through the F-NEW-403 identity — dalvik_engine.cpp.
+  F-NEW-406 DEX float-bit register law at iput: declared-F field + INT32 register -> BIT-CAST into FLOAT32 (const/high16 0x3f800000 IS 1.0f; the raw store left bits that float readers VALUE-cast to 1.06535e9); symmetric D+INT64 law — dalvik_engine.cpp execute_iput.
+- POST (binary 4dd92ae1371569e4): 21/21 rows OK (100%) — margins, padding, gravity-ctor centering, container-gravity leaf, AOSP mixed weight row, clean 270/810 1:3 share, requestLayout relayout to 300x80 APPLIED (btn-P3).
+- Full battery at 4dd92ae1371569e4 ZERO DRIFT: wall 12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e / opencalc f25b754c4565c38b / unote 90a67cc1ddda57b7 / microtimer bbd350b6c14fbd52 x3), goldens 4/4, negatives 19/19, reinstall 5/5 identity ALL PASS, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70, anchors sax1 PASS 6/6, clock1, clinit1 law-correct, swipe1 setup OK, c74esc containment OK, perf1 checksums byte-identical A/B (3688000/31744000/14534196240/14569628240).
+- Container-fresh repairs (honest): run/diff366/hidden_sources apks repopulated from the canonical upload/ sources (the 5-FAIL interim was a sequence artifact — identity shas proven in the PASS lines); sax1/clinit1/swipe1/perf1 stdout verdict rows captured via direct reruns (inherited battery stdout gap, flagged since CONT-98).
+- Registry 713 -> 718 (F-NEW-402..406 ROOT-CAUSED-FIXED; mirrored canonical/). Evidence evidence/cont99/evidence.json. Probe + scripts committed (fixtures/cont99_lay_probe, scripts/cont99_{build_probe,battery,registry_update}).
+
+Stage Summary:
+- CONT-99 T1 = APPROVED: the programmatic measure/layout input-layer contract is now AOSP-parity on 21 probe rows with zero drift anywhere else; the registry holds 718 roots; binary 4dd92ae1371569e4.
+- The F-NEW-406 bit-cast law is the wave headline: EVERY declared-float field store in every app was landing as INT32 bits — the largest silent-corruption surface found since F-NEW-398.
+- NEXT (open set unchanged): CONT-99 T2..T10 (transforms/density/insets, ImageView scaleType, button hitbox, text/z-order/clip, scroll geometry, white-forensic, frame integrity), CONT-98 T1/T2/T3/T4/T5/T7/T8/T9/T10, CONT-89/92/93, F-NEW-381 opcode-core throughput — each as an independent task unit.

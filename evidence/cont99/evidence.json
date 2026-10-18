@@ -1,0 +1,66 @@
+{
+ "wave": "CONT-99",
+ "directive": "#364 CONT-99 (comment 6248236077) — white-screen exit + correct spatial UI rendering; this wave executed track T1 (View measurement and layout contract, P0) as ONE separate task unit",
+ "baseline": {
+  "head": "0b8511253ef92e2d843152f9039833fde180a22a",
+  "binary": "e51d7a643e6817ba",
+  "freeze_check": "HEAD==origin/main restored (UUID-message residue commit 9d6faf2b dropped via reset --hard; contents were tmp/ build intermediates only); goldens 4/4 + selftests 13/13 re-verified in-container",
+  "i364_comments": 63,
+  "last_comment": 6249783652,
+  "new_after_last": 0
+ },
+ "fixture": {
+  "path": "fixtures/cont99_lay_probe",
+  "manifest_package": "com.probe.c99lay",
+  "apk": "run/cont99/c99lay.apk",
+  "apk_sha16": "80e9399319060b70",
+  "version_row": "V2-C99LAY",
+  "build_chain": "aapt2 link -> ECJ 3.36.0 -> D8 (scripts/cont99_build_probe.sh)"
+ },
+ "pre": {
+  "binary": "e51d7a643e6817ba",
+  "run": "run/cont99/pre1 (V1 fixture)",
+  "verdict": "V1 rows: chip1 (0,0,50,50) DIVERGE; chip2 (50,0) DIVERGE; colA/colB/colC w=0 (V1 fixture expectations were WRONG for the mixed match_parent row — AOSP gives colD the full row and the weighted siblings 0; the engine answered the AOSP law); inner (0,250) top-left DIVERGE; leaf centered by container gravity (engine AOSP-correct, fixture V1 expectation wrong)",
+  "v2_pre_not_needed": "V2 fixture built after the AOSP-law correction; PRE face re-evidenced via the V1 run + LPTRACE on the post1/post2 binaries"
+ },
+ "mid": {
+  "post2_binary": "8d573fa8df7e83b2",
+  "note": "identity law + argc-convention fix; 19/22 rows OK; colE/colF weights still 0 -> LPTRACE pinned wt_type=1 (INT32 bits 0x3F800000) wt=1.06535e9 -> F-NEW-406 root cause proven empirically"
+ },
+ "post": {
+  "binary": "4dd92ae1371569e4",
+  "run": "run/cont99/post5",
+  "verdict": "21/21 rows OK (100%): chip1 (30,20,50,50); chip2 (100,20,50,50); bar/weightRow/frame/weightRow2 container rows OK; colA..colD AOSP mixed row OK; inner (480,310,120,80) centered; leaf (520,330,40,40); colE (0,450,270,150); colF (270,450,810,150); btn (0,600,200,80); img (0,680,120,90); mpChild (0,770,1080,60); wrapTv (0,830,173,44) soft OK; PHASE3 btn (0,600,300,80) requestLayout relayout APPLIED"
+ },
+ "roots": [
+  "F-NEW-402",
+  "F-NEW-403",
+  "F-NEW-404",
+  "F-NEW-405",
+  "F-NEW-406"
+ ],
+ "regression": {
+  "wall": "12/12 MATCH byte-identical (dooz 31ddd4d5b8e6d18e, opencalc f25b754c4565c38b, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52, x3 each)",
+  "goldens": "4/4 PASS (2048/snakedeluxe/minicraft REAL_APP_CONTENT + helloworld canonical 83720c1028f832d0)",
+  "negatives": "19/19 PASS",
+  "reinstall": "5/5 identity ALL PASS (container-fresh artifact repair: hidden_sources repopulated from canonical upload/ sources)",
+  "fences": "MG-310 7/7, MG-150 3/3",
+  "selftests": "13/13 PASS",
+  "f376": "70/70 PASS",
+  "anchors": "sax1 PASS events=6/6 names=svg,g,path,path,rect,circle; clock1 (0,0 1080x1920); clinit1 rows law-correct (cc=caught CNFE, ac=clinit-ok, ut=AIOBE-caught, ut2=NCDFE-caught); swipe1 setup OK; c74esc containment OK (VOL/FONT ESC denied, VOL-OK round-trip); perf1 sums byte-identical to the CONT-98 A/B (charat 3688000, chararray 31744000, virtual 14534196240, total 14569628240)"
+ },
+ "honest_notes": [
+  "V1 fixture colA..colD expectations were fixture-error, not engine error: AOSP LinearLayout.horizontal gives the match_parent no-weight child EXACTLY(parent) so it consumes the row and the 0px+weight siblings collapse to 0 — the engine answered the AOSP law. The fixture was corrected to encode the AOSP law and a clean 1:3 weight row (colE/colF) was added to prove the positive-space share.",
+  "PHASE1 (Handler.post from onCreate) runs BEFORE the first traversal in this runtime; the all-zero view bounds there are the CORRECT pre-layout semantic (S103 W1 law), not a divergence — the AOSP first traversal is a Choreographer callback, not a plain queue message.",
+  "The argc-convention mistake (F-NEW-404 first draft read the (w,h) ctor's height as gravity) was caught by the POST2 battery-of-rows and fixed before final POST; the interim binary 1b41166003b86c97 was never used for evidence claims.",
+  "reinstall 5/5 needed the hidden_sources repopulation; interim 5-FAIL documented as a sequence artifact.",
+  "perf1 timings are wall-clock (variable); the zero-drift proof is the byte-identical CHECKSUMS.",
+  "static float field stores (sput face) are a named residual of F-NEW-406 (no corpus caller today)."
+ ],
+ "binary_final": "4dd92ae1371569e4",
+ "registry": {
+  "before": 713,
+  "after": 718,
+  "sha16": "600f11af279e77aa"
+ }
+}

@@ -7753,6 +7753,46 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         m == "draw") {
         return CallResult::handled_void();
     }
+    if (m == "setPadding" || m == "setPaddingRelative") {
+        // ── F-NEW-402 (CONT-99 T1): AOSP View.setPadding law ────────────
+        // View.java: setPadding(left, top, right, bottom) writes
+        // mPaddingLeft/mPaddingTop/mPaddingRight/mPaddingBottom and marks
+        // the view for re-layout (the padding feeds EVERY container's
+        // getChildMeasureSpec content box). setPaddingRelative maps
+        // start→left / end→right (LTR resolution, the runtime's only
+        // layout direction). The call previously fell to the generic stub
+        // — programmatic padding silently vanished and every padded
+        // container laid out children at the raw content origin (c99lay
+        // probe: chip1 at (0,0) instead of the lawful (30,20)).
+        if (auto* pn = get_or_create_node(
+                ctx.receiver_id,
+                ctx.receiver_class.empty() ? ctx.class_name
+                                           : ctx.receiver_class)) {
+            pn->padding_left = ctx.arg_as_int(0);
+            pn->padding_top = ctx.arg_as_int(1);
+            pn->padding_right = ctx.arg_as_int(2);
+            pn->padding_bottom = ctx.arg_as_int(3);
+            layout_dirty = true;
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "getPaddingLeft" || m == "getPaddingStart" ||
+        m == "getPaddingTop" || m == "getPaddingRight" ||
+        m == "getPaddingEnd" || m == "getPaddingBottom") {
+        // AOSP getters answer the LIVE node padding (0 pre-set, the AOSP
+        // View default of zero padding). Previously the generic stub
+        // answered 0 even for XML-padded nodes — any DEX layout code that
+        // positions from getPaddingLeft/Top (the standard content-box
+        // math) saw a lying origin.
+        const auto* pn = find_node(ctx.receiver_id);
+        if (pn == nullptr) return CallResult::handled_int(0);
+        if (m == "getPaddingLeft" || m == "getPaddingStart")
+            return CallResult::handled_int(pn->padding_left);
+        if (m == "getPaddingTop") return CallResult::handled_int(pn->padding_top);
+        if (m == "getPaddingRight" || m == "getPaddingEnd")
+            return CallResult::handled_int(pn->padding_right);
+        return CallResult::handled_int(pn->padding_bottom);
+    }
     if (m == "requestLayout") {
         // S106 (MG-115) FIX — AOSP View.requestLayout() law (View.java
         // L20000+: requestLayout -> mPrivateFlags |= PFLAG_FORCE_LAYOUT ->
