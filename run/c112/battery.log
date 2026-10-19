@@ -1,0 +1,117 @@
+== binary ==
+5bfac05272cbeb51
+== c449 probe rows (law family) ==
+C449-FLOOR-MIN] minH=168 expected=168 (style parent chain ?attr -> @dimen)
+C449-FLOOR-MEASURE] measuredH=168 expected=168 (max(content, suggestedMinimum))
+C449-DEREF-REF] val=168 expected=168 (REFERENCE @dimen deref)
+C449-DEREF-ATTR] val=168 expected=168 (ATTRIBUTE ?attr deref)
+== c448 probe rows (CONT-111 regression) ==
+C448-DEFAULT] h=0 w=0
+C448-SETH] suggested=147 get=147 expected=147
+C448-SETW] suggestedW=88 getW=88 expected=88
+C448-INDEP] h=147 w=88 expected=147/88
+C448-OVERWRITE] h=147 expected=147 (last-writer wins)
+C448-NEGATIVE] other=0 expected=0 (per-object, no static bleed)
+C448-MEASURE] measuredH=168 expected=168 (Toolbar-shaped AT_MOST chain)
+== chess toolbar (F-NEW-448 layer-2) ==
+node=477 class=Landroidx/appcompat/widget/Toolbar; text="" children=1 depth=2 pos=(0,0) size=(1080x168)
+node=477 class=Landroidx/appcompat/widget/Toolbar; text="" children=1 depth=2 pos=(0,0) size=(1080x168)
+a0319686d56ff5c0
+== wall gate 4 rows ==
+GATE dooz r1 rc=1 sha=d602648e8e401895 want=d602648e8e401895 MATCH
+GATE dooz r2 rc=1 sha=d602648e8e401895 want=d602648e8e401895 MATCH
+GATE dooz r3 rc=1 sha=d602648e8e401895 want=d602648e8e401895 MATCH
+GATE opencalc r1 rc=1 sha=d5f3c7b5e9936ae6 want=d5f3c7b5e9936ae6 MATCH
+GATE opencalc r2 rc=1 sha=d5f3c7b5e9936ae6 want=d5f3c7b5e9936ae6 MATCH
+GATE opencalc r3 rc=1 sha=d5f3c7b5e9936ae6 want=d5f3c7b5e9936ae6 MATCH
+GATE unote r1 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE unote r2 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE unote r3 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE microtimer r1 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE microtimer r2 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE microtimer r3 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE dooz r1 rc=1 sha=d602648e8e401895 want=d602648e8e401895 MATCH
+GATE dooz r2 rc=1 sha=d602648e8e401895 want=d602648e8e401895 MATCH
+GATE dooz r3 rc=1 sha=d602648e8e401895 want=d602648e8e401895 MATCH
+GATE opencalc r1 rc=1 sha=d5f3c7b5e9936ae6 want=d5f3c7b5e9936ae6 MATCH
+GATE opencalc r2 rc=1 sha=d5f3c7b5e9936ae6 want=d5f3c7b5e9936ae6 MATCH
+GATE opencalc r3 rc=1 sha=d5f3c7b5e9936ae6 want=d5f3c7b5e9936ae6 MATCH
+GATE unote r1 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE unote r2 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE unote r3 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE microtimer r1 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE microtimer r2 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE microtimer r3 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+== goldens ==
+PASS  2048: verdict=REAL_APP_CONTENT pixclass=REAL_APP_UI colors=899 nonbg=0.5961 owned_px=1181083 draw_ops=34
+PASS  snakedeluxe: verdict=REAL_APP_CONTENT pixclass=REAL_APP_UI colors=1550 nonbg=0.7312 owned_px=1432517 draw_ops=262
+PASS  minicraft: verdict=REAL_APP_CONTENT pixclass=REAL_APP_UI colors=2614 nonbg=0.645 owned_px=1215363 draw_ops=735
+PASS  helloworld: canonical artifact sha=83720c1028f832d0 (L6)
+
+USER-GOLDEN-PIXEL-GATE: 4/4 PASS
+goldens rc=0
+== negatives + reinstall ==
+PASS N-01
+PASS N-02
+PASS N-03
+PASS N-04
+PASS N-05
+PASS N-06
+PASS N-08-ISO-02
+PASS N-08-ISO-03
+PASS N-08-ISO-04
+PASS N-08-ASSET-05
+PASS N-08-IO-10
+PASS N-08-RES-04
+PASS N-08-NAT-01
+PASS N-09
+PASS N-10
+PASS N-11
+PASS N-12
+PASS N-18
+PASS N-19
+NEGATIVE TESTS: 19/19 PASS
+gatea rc=0
+== MG-310 / MG-150 fences ==
+  PASS  L1-active-use-init: ['[MG310-CLINIT] Base #1']
+  PASS  L1-initCount=1: Base.ping row present with initCount=1
+  PASS  L2-constant-no-init: engine rows=0 app rows=0 value=7
+  PASS  L3-super-first-order: Base@4214 < Derived@6027
+  PASS  L3b-engine-row-order: engine Base@3229 < Derived@5633
+  PASS  L4-once-only: engine Base clinit rows=1, app initCount=1
+  PASS  L5-default-value: Forward.s == nullx
+FENCE GREEN: 7/7
+mg310 rc=0
+  PASS  geom-properties: set/get translationX/Y readbacks = 300/200 (both runs)
+  PASS  tap-A-stale-layout-position-silent: tap (150,150) at the stale layout position -> NO click (AOSP inverse-maps through the translation: the view is visually at (400..600, 300..400) — the old fence locked the pre-fix blindness here; F-NEW-408 fixed the frame)
+  PASS  tap-B-translated-visual-bounds-hit: tap (450,350) inside the TRANSLATED visual bounds -> click (F-NEW-408 consumed the named frontier: hit-test now maps the point through the view's transform — hit == raster)
+FENCE GREEN: 3/3
+mg150 rc=0
+== selftests ==
+PASS M0 manifest loads + schema — 11 operations
+PASS OP-1 apk_intake — rc=0 package in identity
+PASS OP-2 prerequisites machine-readable schema — minSdk=24 verdict=EXECUTABLE_NATIVE mismatches=0
+PASS N-1 malformed APK → loud failure — rc=1
+PASS OP-3 install + installed identity = source identity — installed sha16=93287ea6da12ecf2
+PASS OP-4 run by installed identity — rc=0 trace=yes
+PASS OP-5 observe (frame verdict + pixel census) — verdict=REAL_APP_CONTENT owned=395690 ops=0
+PASS OP-6 first-divergence/evidence surface — report.md=yes
+PASS OP-7 classify_white_black (3-way cause, deterministic) — prereqs_clean=True verdict=REAL_APP_CONTENT → real content
+PASS OP-8 3-run determinism law (run1==run2) — sha16=bec38a958d8537ca
+PASS OP-9 evidence_bundle (provenance) — rc=0
+PASS OP-10 uninstall + NOT_INSTALLED negative contract — first rc=0, second rc=2
+PASS PORT-1 manifest self-contained (all surfaces documented) — 11 operations all name their surface
+
+SKILL SELFTEST: 13/13 PASS — /home/z/my-project/docs/execution-skill/selftest_report.json
+{"skill_selftest": {"pass": 13, "total": 13, "all_pass": true}}
+selftest rc=0
+== prior probes re-validated at new binary ==
+C74-VERSION] code=V1-ESC pkg=com.probe.c74esc filesDir=/data/data/com.probe.c74esc/files
+C74-SELF] OK wrote own.txt marker
+C74-VOL-ESC] OK denied/absent /storage/emulated/0/../../../data/data/com.probe.c74esc/files/own.txt -> FileNotFoundException
+C74-VOL-ESC2] OK denied/absent /storage/emulated/0/../0/../../../data/data/com.probe.c74esc/files/own.txt -> FileNotFoundException
+C74-FONT-ESC] OK denied/absent /system/fonts/../../data/data/com.probe.c74esc/files/own.txt -> FileNotFoundException
+C74-VOL-OK] OK volume round-trip /storage/emulated/0/probe74.txt
+C74-NEG-ETC] OK denied/absent /etc/passwd -> FileNotFoundException
+C74-DONE] rows complete
+BATTERY DONE

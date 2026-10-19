@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.probe.c449.FloorView
+        android:id="@+id/floor"
+        style="@style/C449ToolbarLike"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <com.probe.c449.DerefView
+        android:id="@+id/deref"
+        style="@style/C449Deref"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

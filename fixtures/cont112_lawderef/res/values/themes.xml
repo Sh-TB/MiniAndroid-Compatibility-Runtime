@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="C449Theme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="c449BarSize">@dimen/c449_bar</item>
+    </style>
+</resources>

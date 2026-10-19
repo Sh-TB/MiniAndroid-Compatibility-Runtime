@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- F-NEW-454 probe attr: the theme-supplied bar size (the
+         actionBarSize role, app-local so the probe is hermetic). -->
+    <attr name="c449BarSize" format="dimension"/>
+    <declare-styleable name="C449">
+        <attr name="c449_deref_height" format="dimension"/>
+        <attr name="c449_deref_attr" format="dimension"/>
+    </declare-styleable>
+</resources>

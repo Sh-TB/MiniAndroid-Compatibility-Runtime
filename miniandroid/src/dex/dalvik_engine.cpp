@@ -12298,6 +12298,20 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
     if (!xml_attrs.empty()) {
         resources::AttributeSetStore::instance().install(attrs_id, xml_attrs);
     }
+    // F-NEW-457 diag (CONT-112, env-gated): the marker install law — the
+    // recs count the ctor actually received vs the store's post-install
+    // readback. The c449 probe run showed the producer's recs scan finding
+    // the marker (oid matches) but an EMPTY record set.
+    static const bool f457_diag =
+        std::getenv("MINIANDROID_F457_DIAG") != nullptr;
+    if (f457_diag) {
+        const std::vector<resources::XmlAttrRecord>* chk =
+            resources::AttributeSetStore::instance().lookup(attrs_id);
+        std::cerr << "[F457-INSTALL] view=" << view_object_id << " class="
+                  << cls << " marker=o" << attrs_id << " recs_in="
+                  << xml_attrs.size() << " recs_store="
+                  << (chk ? chk->size() : -1) << std::endl;
+    }
 
     // 6) Constructor signature probe (AOSP order): (Context, AttributeSet)
     //    is the XML-inflation constructor; fall back to (Context). The
@@ -22391,7 +22405,8 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // android.app.Activity.onCreate to the API stub layer.
         std::string api_class = (runtime_type != "<unknown>") ? runtime_type : declaring_class;
         // M3 FINDING-011 diag (bounded): does the View tag bridge entry fire?
-        if (method_name_from_dex == "setTag" || method_name_from_dex == "getTag") {
+        if (method_name_from_dex == "setTag" || method_name_from_dex == "getTag" ||
+            method_name_from_dex == "obtainStyledAttributes") {
             static thread_local uint64_t tag_entry = 0;
             if (tag_entry < 16) {
                 tag_entry++;
@@ -26761,6 +26776,21 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             !args[0].class_desc.empty()) {
             cur = args[0].class_desc;
+            // F-NEW-456 (CONT-112): ART virtual dispatch resolves on the
+            // receiver's RUNTIME class, not the static type of the reference.
+            // A Context-typed variable holding the Activity (every
+            // (Context, AttributeSet) view ctor passes the activity as
+            // Context — chess appcompat callers passed `this`, so the static
+            // desc was already the runtime class; minimal probes and any
+            // framework code holding Context lose the walk here). The heap
+            // object knows the REAL class — start the walk from it.
+            if (args[0].object_id != 0) {
+                std::string rt_cls;
+                if (heap_.get_object_class(args[0].object_id, rt_cls) &&
+                    !rt_cls.empty()) {
+                    cur = rt_cls;
+                }
+            }
         } else {
             cur = class_name;
         }
@@ -43789,14 +43819,65 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         if (tf->type == DalvikType::INT32)
                             f450_type = tf->int_val;
                     }
-                    if (f450_type == (int32_t)resources::DataType::DIMENSION) {
+                    // ── F-NEW-454c (CONT-112): AOSP TypedArray dimension ───
+                    // deref law. getDimensionPixelSize/getLayoutDimension
+                    // accept a TypedValue that may be a POINTER (TYPE_
+                    // REFERENCE / TYPE_ATTRIBUTE) to the terminal dimension
+                    // (frameworks TypedArray.getDimensionPixelSize →
+                    // getValue → resolveReference chain). The F-NEW-450
+                    // producer stores the RAW typed word; a slot resolved
+                    // through the theme/style stages can therefore carry a
+                    // REFERENCE or ATTRIBUTE word the old reader passed
+                    // through UNRESOLVED. Live evidence (jwtc chess 298):
+                    // ActionBarOverlayLayout$LayoutParams.<init> read
+                    // android:layout_height = ?attr/actionBarSize stored as
+                    // the raw ATTRIBUTE word 0x7f040006 → setLayoutParams
+                    // height=0x7f040006 → EXACTLY(0x3f040006) child spec →
+                    // Toolbar measured 2130968582px. Deref the pointer chain
+                    // (ATTRIBUTE hops through the theme, REFERENCE hops
+                    // through the package-routed ARSC) to the terminal
+                    // typed value, THEN convert.
+                    int32_t f454_raw = vf->int_val;
+                    int32_t f454_type = f450_type;
+                    {
+                        auto& rt454 = resources::ResourceRuntime::instance();
+                        uint32_t deref_hops = 0;
+                        while (deref_hops++ < 8 &&
+                               (f454_type ==
+                                    (int32_t)resources::DataType::ATTRIBUTE ||
+                                f454_type ==
+                                    (int32_t)resources::DataType::REFERENCE ||
+                                f454_type == (int32_t)resources::
+                                                 DataType::DYNAMIC_REFERENCE)) {
+                            if (f454_type ==
+                                (int32_t)resources::DataType::ATTRIBUTE) {
+                                auto tv = rt454.resolve_theme_attr_typed(
+                                    apk_path_, (uint32_t)f454_raw);
+                                if (!tv) break;
+                                f454_raw = tv->data;
+                                f454_type = (int32_t)tv->type;
+                            } else {
+                                auto router = rt454.arsc_router();
+                                const resources::ArscParser* tbl =
+                                    router.for_id((uint32_t)f454_raw);
+                                if (!tbl) break;
+                                auto rr = tbl->resolve((uint32_t)f454_raw);
+                                if (!rr) break;
+                                const resources::ArscEntry* ee = rr->best();
+                                if (!ee || ee->is_complex) break;
+                                f454_raw = ee->value.data;
+                                f454_type = (int32_t)ee->value.type;
+                            }
+                        }
+                    }
+                    if (f454_type == (int32_t)resources::DataType::DIMENSION) {
                         if (method == "getDimensionPixelOffset") {
                             f93_val = (int32_t)resources::complex_to_dimension_px(
-                                (uint32_t)vf->int_val,
+                                (uint32_t)f454_raw,
                                 resources::DensityContext{});
                         } else {
                             f93_val = resources::complex_to_dimension_pixel_size(
-                                (uint32_t)vf->int_val,
+                                (uint32_t)f454_raw,
                                 resources::DensityContext{});
                         }
                     }
