@@ -7261,11 +7261,51 @@
  {
   "id": "F-NEW-445",
   "title": "Telegram o6;.k theme-apply death: static o6.u1 (Lorg/telegram/ui/Components/xj0;) is null at first use — iput-boolean xj0.Y:Z on null → uncaught NPE (stderr pc=46). o6.<clinit> DID run (Paint arms k0/m0 materialized and colored), so u1 is NOT a clinit product; its lazy factory path never executed before first use (issue #364 CONT-105 batch).",
-  "status": "CLASSIFIED",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P1",
   "layer": "framework (dalvik_engine static-init order / lazy-singleton materialization)",
   "evidence": "run/cont105/tg_pre.log (11693 lines, F084-HALT-RETURN x484 pacing + o6;.k face x1) + androguard disasm of Lorg/telegram/ui/ActionBar/o6;.k",
   "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-446",
+  "title": "S123-CLINIT-MAT fired on HEALTHY classes: the shared-geometry static materialization gate (`attempted || stored_null`) invented Paint/RectF/Rect/Point objects for statics that a COMPLETED <clinit> deliberately left null, defeating app null-sentinel guards (issue #364 CONT-106 batch, fixture-first).",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P0",
+  "layer": "framework (dalvik_engine sget static-field materialization law)",
+  "evidence": "run/cont106/{c106a_pre2.stderr,c106a_post.stderr,tg_post.stderr,battery.log} + scripts/cont106_scan_u1.py + scripts/cont106_scan_P.py + scripts/cont106_scan_k.py (androguard xrefs) + fixtures/cont106_clinitsentinel",
+  "registered_wave": "CONT-106",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-447",
+  "title": "ROOT-059 null-recv shadow routing intercepts before the AOSP NPE: unguarded invoke-virtual on a never-assigned static Paint (Never.k0b.setStrokeWidth) returns NO-EXC — a separate pre-existing law routes null receivers of shadow methods to the shadow silently (issue #364 CONT-106 batch; probe row ready).",
+  "status": "CONFIRMED_OPEN_GAP",
+  "priority": "P2",
+  "layer": "framework (invoke null-receiver routing vs AOSP NPE parity)",
+  "evidence": "run/cont106/c106a_post.stderr (ROOT-059 line + INVOKE2 row) + fixtures/cont106_clinitsentinel",
+  "registered_wave": "CONT-106",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-448",
+  "title": "Chess (jwtc 298) boots with f141=0 (CONT-104 family closed) but the appcompat Toolbar measures to height 0: onMeasure reads static I Ll/m3;.a twice and gets 0 — the R8 static that should carry the theme-derived action-bar default height never received its value (issue #364 CONT-106 batch).",
+  "status": "CONFIRMED_OPEN_GAP",
+  "priority": "P1",
+  "layer": "framework (theme dimension resolution → static action-bar height law)",
+  "evidence": "run/cont106/chess_post.stderr (DEFAULT-MEASURE + SGET l/m3.a value=0 + C013-CUSTOMVIEW 1080x0)",
+  "registered_wave": "CONT-106",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-449",
+  "title": "Telegram play_billing n2.r (protobuf-lite MessageSchema builder) aget-oob 'length=11; index=11' boundary decoded: rotated-loop boundary read at 0x568 re-indexes the Field[]/String[] entries array (v24) one past its length after `add-int/lit8 v4, v10, 1` (issue #364 CONT-106 batch; CONT-104 U3 carry).",
+  "status": "CONFIRMED_OPEN_GAP",
+  "priority": "P1",
+  "layer": "framework (reflection metadata array construction vs walk-count agreement)",
+  "evidence": "run/c106/n2r_scan.txt (n2.r 0x4d6..0x570 window + n2.<clinit>) + CONT-104 ledger U3 decode",
+  "registered_wave": "CONT-106",
   "registered_date": "2026-10-19"
  }
 ]
