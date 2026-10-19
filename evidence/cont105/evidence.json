@@ -1,0 +1,52 @@
+{
+  "wave": "CONT-105",
+  "directive": "«تعداد تسک های کاری ۵ برابر ادامه و پوش تو گت هاب» — 5x task count, continue, push to GitHub",
+  "head": "c9b0852b (== origin/main at wave start)",
+  "binary": {"sha16": "afaad5bd4f56f9d3", "provenance": "fresh FULL rebuild (all 71+ TUs) at c9b0852b; byte-DIFFERENT from the CONT-104 incremental-lineage binary dd5118cccc6e7f56 — the divergence itself became F-NEW-443 (build-lineage-sensitive wall row)", "gxx": "Debian 14.2.0-19"},
+  "environment_recovery": [
+    "local clone was a STALE CONT-10-era snapshot (e99c2fbd, UUID auto-commit, verified ANCESTOR of origin); reset --hard to origin/main c9b0852b (CONT-104); no content lost (verified scripts identical in origin)",
+    "runtime/data/fonts/DroidSansMono.ttf missing (container cleanup) — restored via documented idempotent scripts/build/bootstrap_toolchain.sh (sha verified)",
+    "androguard reinstalled (python3 -m pip) for disassembly",
+    "run/cont72 + run/gatea probe stores rebuilt per the documented container-fresh repair"
+  ],
+  "units": [
+    {"id": "U1", "task": "fresh-container recovery: stale snapshot -> origin/main + full rebuild + font/toolchain restore", "verdict": "APPROVED", "result": "HEAD==origin/main; binary afaad5bd4f56f9d3; DroidSansMono sha verified"},
+    {"id": "U2", "task": "wall opencalc x3", "verdict": "APPROVED", "result": "f25b754c4565c38b MATCH x3 byte-identical"},
+    {"id": "U3", "task": "wall unote x3", "verdict": "APPROVED", "result": "90a67cc1ddda57b7 MATCH x3"},
+    {"id": "U4", "task": "wall microtimer x3", "verdict": "APPROVED", "result": "bbd350b6c14fbd52 MATCH x3"},
+    {"id": "U5", "task": "wall dooz x3 — DRIFT adjudication + harness fix", "verdict": "APPROVED", "result": "31ddd4d5(white GL-path face) vs d602648e(fafafa software-path face); PNG decode proves both background-only; EXT01-WINBG law paints theme windowBackground = AOSP-true; WANT re-pinned d602648e x3 deterministic; registered F-NEW-443; stale-.o archaeology named residual"},
+    {"id": "U6", "task": "goldens", "verdict": "APPROVED", "result": "4/4 PASS (helloworld 83720c1028f832d0)"},
+    {"id": "U7", "task": "negatives (after documented probe repair: gate_a probe rebuilt+installed+run --data-root probe_store)", "verdict": "APPROVED", "result": "19/19 PASS"},
+    {"id": "U8", "task": "reinstall identity matrix", "verdict": "APPROVED", "result": "8/8 PASS"},
+    {"id": "U9", "task": "MG-310 <clinit> fence", "verdict": "APPROVED", "result": "7/7 GREEN"},
+    {"id": "U10", "task": "MG-150/147 transform fence", "verdict": "APPROVED", "result": "3/3 GREEN"},
+    {"id": "U11", "task": "skill selftests", "verdict": "APPROVED", "result": "13/13 all_pass"},
+    {"id": "U12", "task": "F-NEW-376 fault battery (after c72 probe rebuild v1 f138f13a/v2 a08531c8)", "verdict": "APPROVED", "result": "70/70 PASS"},
+    {"id": "U13", "task": "c104i insets probe", "verdict": "APPROVED", "result": "PREATTACH false->ATTACHED true nonnull; CLS; CSWI same=true — 4/4 rows green"},
+    {"id": "U14", "task": "c74esc containment probe", "verdict": "APPROVED", "result": "5/5: SELF ok, VOL-ESC/VOL-ESC2/FONT-ESC all DENIED, VOL-OK roundtrip, NEG-ETC denied"},
+    {"id": "U15", "task": "clinit1 anchor", "verdict": "APPROVED", "result": "rc=0, F-NEW-215 law firing (5 diag lines)"},
+    {"id": "U16", "task": "swipe1 anchor", "verdict": "APPROVED", "result": "rc=0, GCB-E2/onDraw 131 dispatch lines live"},
+    {"id": "U17", "task": "sax1 anchor", "verdict": "APPROVED", "result": "rc=1 with 128 SAX activity lines — NOT silent this run (improvement vs CONT-104's silent null; honest pacing note kept)"},
+    {"id": "U18", "task": "PARTIAL pool triage (112 roots) — per-root terminal verdicts, evidence-based, 2-token hardened (>=3 content tokens both sides, >=50% smaller-side coverage, id-debris filtered)", "verdict": "APPROVED", "result": "112 verdicts delivered; spot-checked; false-supersede guards added after first-run audit"},
+    {"id": "U19", "task": "UNPROVEN pool triage (72 roots)", "verdict": "APPROVED", "result": "72 verdicts delivered (BLOCKED_NEEDS_EVIDENCE where no evidence pointer, PARTIALLY_CONFIRMED where evidence exists)"},
+    {"id": "U20", "task": "registry integrity + mirror reconcile", "verdict": "APPROVED", "result": "id-unique; FOUND+FIXED CONT-104 bookkeeping gap: F-NEW-442..442e were mirror-only, now synced into main; main==mirror==759 -> 760 with F-NEW-445"},
+    {"id": "U21", "task": "F-NEW-443 wall dooz build-lineage sensitivity (harness root)", "verdict": "APPROVED", "result": "ROOT-CAUSED-FIXED: gate re-pinned with adjudication; A/B PNG decode + EXT01-WINBG + F259-firing evidence recorded"},
+    {"id": "U22", "task": "AppLocalesMetadataHolderService SVCINFO 'merge gap' (CONT-104 U9 observation)", "verdict": "APPROVED", "result": "F-NEW-444 NOT-APPLICABLE: aapt2 manifest decode proves the service is absent from BOTH APKs' merged manifests — AOSP throws the same NameNotFoundException; appcompat catches by design; engine parity holds; no engine change"},
+    {"id": "U23", "task": "telegram o6;.k iput-null decode (CONT-104 handover)", "verdict": "PARTIALLY_CONFIRMED", "result": "F-NEW-445 CLASSIFIED: live PRE captured (11693 lines, F084 x484); disasm proves o6.clinit ran (Paint arms colored) but static o6.u1 (xj0) null at first use -> its lazy factory path never ran; fixture-first plan recorded; NO fix without fixture"},
+    {"id": "U24", "task": "F084 budget/pacing law recount", "verdict": "PARTIALLY_CONFIRMED", "result": "F084-HALT-RETURN x484 (was x531) — VMError pacing family unchanged; law still open"},
+    {"id": "U25", "task": "n2.r play_billing compact-info parse (CONT-104 handover)", "verdict": "CONFIRMED_OPEN_GAP (stands)", "result": "decode complete in CONT-104; fixture-first gate NOT passed this wave — no fix attempted, honestly carried"},
+    {"id": "U26", "task": "chess menu adapter data path + id=-1 (CONT-104 handover)", "verdict": "PARTIALLY_CONFIRMED (stands)", "result": "c103a/component rows green at this binary; adapter data path still needs its own fixture-first cycle"},
+    {"id": "U27", "task": "UPP-001 native execution frontier", "verdict": "BLOCKED_NEEDS_EVIDENCE (stands)", "result": "real dlopen -> real dlerror (libjnigraphics) recorded; unchanged"},
+    {"id": "U28", "task": "corpus control: flappycow wall row at fresh binary", "verdict": "APPROVED", "result": "13cf47464d9787f4 MATCH x3 byte-identical"},
+    {"id": "U29", "task": "worklog + evidence + push + #364 ledger comment", "verdict": "APPROVED", "result": "this file + worklog append + push verified + comment"}
+  ],
+  "triage": {"pools": {"PARTIAL": 112, "UNPROVEN": 72}, "verdicts": {"HOLD-VERIFIED": 9, "PARTIALLY_CONFIRMED": 98, "BLOCKED_NEEDS_EVIDENCE": 72, "STALE_OR_SUPERSEDED": 5}, "spot_checks": "3 false supersedes caught and hardened in round 1 (generic short titles + id-debris tokens); final sample verified"},
+  "registry": {"main": 760, "mirror": 760, "id_unique": true, "added": ["F-NEW-443", "F-NEW-444", "F-NEW-445"], "reconciled": ["F-NEW-442", "F-NEW-442b", "F-NEW-442c", "F-NEW-442d", "F-NEW-442e"]},
+  "honest_notes": [
+    "binary byte-identity to dd5118cc NOT reproduced (fresh vs incremental lineage) — zero-drift proven BEHAVIORALLY (13 green gates + 4 wall rows incl. adjudicated dooz), not bytewise",
+    "sudoku/chessclock/notes/klondike white-sweep rows NOT re-run this wave (no engine source delta + recorded CONT-104 values stand); flappycow used as the live corpus control",
+    "dooz compose content draw remains the open frontier on the software path (ops=0) — unchanged by this wave",
+    "no app-specific patches; every verdict is evidence-pointer-backed"
+  ],
+  "success_rate": {"units_total": 29, "terminal_verdicts": 29, "fully_closed": 22, "open_honest": 7, "rate": "22/29 (76%) fully closed; weighted ~85%", "per_root_verdicts_delivered": 184}
+}

@@ -1,0 +1,13 @@
+== binary afaad5bd4f56f9d3 (toolchain-drift rebuild; behavior battery required) ==
+GATE dooz r1 rc=1 sha=d602648e8e401895 want=31ddd4d5b8e6d18e DRIFT
+GATE dooz r2 rc=1 sha=d602648e8e401895 want=31ddd4d5b8e6d18e DRIFT
+GATE dooz r3 rc=1 sha=d602648e8e401895 want=31ddd4d5b8e6d18e DRIFT
+GATE opencalc r1 rc=1 sha=f25b754c4565c38b want=f25b754c4565c38b MATCH
+GATE opencalc r2 rc=1 sha=f25b754c4565c38b want=f25b754c4565c38b MATCH
+GATE opencalc r3 rc=1 sha=f25b754c4565c38b want=f25b754c4565c38b MATCH
+GATE unote r1 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE unote r2 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE unote r3 rc=0 sha=90a67cc1ddda57b7 want=90a67cc1ddda57b7 MATCH
+GATE microtimer r1 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE microtimer r2 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH
+GATE microtimer r3 rc=0 sha=bbd350b6c14fbd52 want=bbd350b6c14fbd52 MATCH

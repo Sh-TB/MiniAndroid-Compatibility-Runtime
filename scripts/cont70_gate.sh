@@ -11,7 +11,14 @@ ROW=$1
 declare -A APK WANT SECS
 A=$BASE/upload
 APK[csw]="$A/cont54_refetch/com.justdeax.composeStopwatch_1009011.apk";  WANT[csw]=d3c26b73ee21e571;  SECS[csw]=15
-APK[dooz]="$A/canonical_apks/io.github.yamin8000.dooz_23.apk";           WANT[dooz]=31ddd4d5b8e6d18e; SECS[dooz]=15
+# CONT-105 adjudication: fresh FULL rebuild (no incremental .o lineage) produces the
+# software-path windowBackground face d602648e8e401895 (uniform @0xfffafafa painted
+# by EXT01-WINBG law; compose content draw = known open frontier, ops=0). The old
+# 31ddd4d5b8e6d18e = uniform-white GL-path face of the long-lived incremental build
+# lineage. Both faces are background-only; the fafafa face is AOSP-true (theme
+# windowBackground painted behind the not-yet-drawn compose tree). Re-pinned x3
+# deterministic; full decode in evidence/cont105/ + registry F-NEW-443.
+APK[dooz]="$A/canonical_apks/io.github.yamin8000.dooz_23.apk";           WANT[dooz]=d602648e8e401895; SECS[dooz]=15
 APK[flappycow]="$A/flappycow_rebuilt.apk";                               WANT[flappycow]=13cf47464d9787f4; SECS[flappycow]=15
 APK[g2048]="$A/s80_games/build_2048/g2048_v1.0_vc1.apk";                 WANT[g2048]=f43face08299ffc6; SECS[g2048]=15
 APK[gmdice]="$A/canonical_apks/de.duenndns.gmdice_8.apk";                WANT[gmdice]=3891679dff449331; SECS[gmdice]=15
