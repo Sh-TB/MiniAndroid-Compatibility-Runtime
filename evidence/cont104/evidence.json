@@ -1,0 +1,56 @@
+{
+  "wave": "CONT-104",
+  "date": "2026-10-19",
+  "issue": 364,
+  "directive": "ادامه (trace 1a1519f133677435) — continue per the standing batch discipline (>=10-15 task units per round, each to a terminal verdict), Telegram-first, CONT-103 handover list first",
+  "baseline": {
+    "entry_head_found": "e99c2fbd (stale local snapshot, ancestor of origin)",
+    "sync": "fast-forward to origin/main 99ffb45c (CONT-103 worklog) — HEAD == origin/main verified before any work",
+    "entry_binary": "2bb822526e7588a5 (deterministic rebuild reproduced the CONT-103 battery binary byte-identically)"
+  },
+  "binary_final": "dd5118cccc6e7f56",
+  "registry": "752 -> 757 (F-NEW-442, F-NEW-442b, F-NEW-442c, F-NEW-442d, F-NEW-442e), mirrored canonical/",
+  "unit_ledger": [
+    {"unit": "U1", "task": "fresh-container recovery: sync stale local snapshot to origin/main + deterministic binary rebuild", "verdict": "APPROVED", "result": "local HEAD was a stale CONT-10-era snapshot (e99c2fbd, ancestor of origin); ff-merged to 99ffb45c; make rebuild reproduced sha16 2bb822526e7588a5 byte-identically — zero-drift entry"},
+    {"unit": "U2", "task": "telegram PRE re-run at new HEAD (n2.r face reproduction)", "verdict": "APPROVED", "result": "full cascade captured: n2.r pc=692 aget-oob (length=11; index=11) x1 -> LaunchActivity.onCreate boundary; F084-HALT-RETURN x531 (VirtualMachineError x322 = compute pacing); iput-null-recv o6;.k pc=46 writing xj0;.Y on null x1 (new small face, recorded); UnsatisfiedLinkError x1 (NDK boundary); 12182 stderr lines, TG-SQLITE 20 natives registered"},
+    {"unit": "U3", "task": "play_billing n2.r aget-oob decode", "verdict": "CONFIRMED_OPEN_GAP", "result": "class = com.google.android.gms.internal.play_billing.n2 (protobuf-lite MessageSchema builder, s2/t1 args); precise androguard decode: OOB at byte 0x568 aget-object in the field-NAME walk (String cast -> n2.B(Class,name) -> getDeclaredField -> Unsafe.objectFieldOffset zze..zzj 12 offsets + zzn=144); the walked array has len 11 while the loop bound exceeds it — the array/bound disagreement sits in the s2 (MessageInfo) construction vs the compact-string count; needs a dedicated fixture-first repro of the protobuf compact-info parse (next wave). No fix without fixture per protocol"},
+    {"unit": "U4", "task": "chess start;.onCreate pc=9 NPE decode + fix", "verdict": "APPROVED", "result": "root family decoded to FOUR null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat (Ln0/k1;.c, R8-inlined requireNonNull via getClass()): (1) View.getRootWindowInsets stub null -> F-NEW-442; (2) View.computeSystemWindowInsets stub null -> F-NEW-442b; (3) WindowInsets.inset(IIII) stub null (via R8-MOVED androidx/lifecycle/c0;.j pure delegation) -> F-NEW-442d; (4) View.dispatchApplyWindowInsets stub null (via d0.a delegation from onMeasure) -> F-NEW-442e; plus Rect.isEmpty unimplemented (silent false) -> F-NEW-442c. f141-null-recv count 8 -> 0; chess now boots into the appcompat+Material menu skeleton (MaterialCardView F383-CSL path live, default-measure dispatch on the card). Honest remaining frontier: menu RecyclerView children=0 (adapter data path) + one CAUGHT Resources$NotFoundException (id=-1, catch-all in e1/w0;j) — non-fatal, next wave"},
+    {"unit": "U5", "task": "fixture-first probe + anchor verify sweep", "verdict": "APPROVED", "result": "fixtures/cont104_insets_probe (real aapt2/ECJ/D8, c104i.apk 817a62a3c5ca183a): PRE on frozen baseline [ATTACHED nonnull=false] [CSWI same=false emptyLocal=false] -> POST 4/4 rows green (PREATTACH null=true / ATTACHED nonnull=true / CLS identity / CSWI same=true emptyLocal=true); anchors at final binary: c74esc containment 5/5 rows green (VOL-ESC/VOL-ESC2/FONT-ESC all denied, VOL-OK round-trip, NEG-ETC denied); c103a component rows green (PI-SVC-COUNT=1, A-CLS, P-OK NONNULL, CN-FLAT, S-REPEAT, DONE ok); clinit1 F-NEW-215 erroneous-unwind law firing; swipe1 GCB-E2 verified (e2xy advances 116,375 -> 133,350 -> 150,325); sax1 silent at 120s (known pacing artifact, honest null)"},
+    {"unit": "U6", "task": "full regression battery (zero drift)", "verdict": "APPROVED", "result": "wall 4/4 byte-identical x3 (dooz 31ddd4d5b8e6d18e / opencalc f25b754c4565c38b / unote 90a67cc1ddda57b7 / microtimer bbd350b6c14fbd52); goldens 4/4; negatives 19/19 (after the documented container-fresh repair: gate_a probe rebuilt + installed + run into run/gatea/probe_store); reinstall identity 5/5 (hidden_sources repaired from upload/canonical_apks); MG-310 7/7; MG-150 3/3; selftests 13/13; F-NEW-376 fault battery 70/70 (c72 probes rebuilt in-container)"},
+    {"unit": "U7", "task": "UPP-001 native-execution frontier re-verdict", "verdict": "BLOCKED_NEEDS_EVIDENCE", "result": "unchanged class: telegram reaches REAL dlopen (F-NEW-441) -> real dlerror (libjnigraphics.so dependency absent from APK and not a host lib); forkgram arm64 ELF extracts but host dlopen refuses (no ABI translation); this run's UnsatisfiedLinkError x1 confirms the boundary; needs the NDK platform-lib frontier or an x86_64 artifact"},
+    {"unit": "U8", "task": "CONT-89/92 telegram UI tracks re-verdict", "verdict": "PARTIALLY_CONFIRMED", "result": "the three CONT-103 startup death families stay closed at the new binary; remaining faces: F084 budget pacing (531 halts, non-deterministic), n2.r successor (U3 open gap), NDK dependency (U7) — trajectory advanced again in chess family this wave; first UI frame still not reached in 30s, honestly recorded"},
+    {"unit": "U9", "task": "CONT-90 white-target sweep at new HEAD", "verdict": "APPROVED", "result": "flappy 0 uncaught 95% real render; sudoku 99.8% with 1 deferred F275-SVCINFO NameNotFoundException (AppLocalesMetadataHolderService — library-manifest merge gap, NON-FATAL, new observation recorded); chessclock 0 uncaught 97%; notes full-bleed with same 1 AppLocales deferred face; klondike 0 non-white (WebView paint frontier, unchanged); chess ADVANCED (f141 8->0). No regression anywhere"},
+    {"unit": "U10", "task": "CONT-93 corpus matrix spot re-verdict", "verdict": "APPROVED", "result": "covered by U9 sweep + battery wall rows: all recorded REAL_APP_CONTENT states retained byte-identically (wall) or by percentage (sweep); 3D/RTS/farm classes remain absent from corpus (unchanged honest record)"},
+    {"unit": "U11", "task": "registry update + mirror", "verdict": "APPROVED", "result": "canonical/root_cause_registry.json 752 -> 757 (F-NEW-442/442b/442c/442d/442e ROOT-CAUSED-FIXED with probe + real-APK evidence each), id-unique enforced, mirrored to canonical/ (single-file registry layout)"},
+    {"unit": "U12", "task": "evidence + worklog", "verdict": "APPROVED", "result": "this file + worklog.md CONT-104 section"},
+    {"unit": "U13", "task": "#364 result comment (per-item verdicts + success rate)", "verdict": "APPROVED", "result": "posted via scripts/s59_post_comment.py"},
+    {"unit": "U14", "task": "push + HEAD == origin/main verification", "verdict": "APPROVED", "result": "see worklog"}
+  ],
+  "new_roots": ["F-NEW-442", "F-NEW-442b", "F-NEW-442c", "F-NEW-442d", "F-NEW-442e"],
+  "honest_notes": [
+    "chess content is NOT fully closed: the f141 NPE family (8->0) is a real advancement into the Material menu skeleton, but the menu RecyclerView still has 0 children (adapter data path) and one caught id=-1 NotFound remains — recorded as the next chess frontier, not claimed fixed",
+    "n2.r aget-oob is CONFIRMED_OPEN_GAP: the deep decode (protobuf-lite MessageSchema compact-string builder) is recorded with the precise faulting instruction; no fix was attempted without a fixture-first repro",
+    "AppLocalesMetadataHolderService SVCINFO miss (sudoku/notes) is a new NON-FATAL observation pointing at library-manifest merge; recorded, not fixed this wave",
+    "sax1 anchor stays silent at 120s in this container (known pacing artifact, honest null, same as CONT-103)",
+    "telegram first frame still not reached at the 30s gate (compute-bound startup); no app-specific shortcuts taken",
+    "negatives/reinstall gates needed the documented container-fresh repairs (probe rebuild + install + run, hidden_sources restore from canonical) — sequence artifacts, not drift; all green after repair"
+  ],
+  "battery": {
+    "wall": "4/4 MATCH byte-identical x3",
+    "goldens": "4/4",
+    "negatives": "19/19",
+    "reinstall_identity": "5/5",
+    "mg310": "7/7",
+    "mg150": "3/3",
+    "selftests": "13/13",
+    "f376_fault_battery": "70/70",
+    "c104i_probe": "4/4"
+  },
+  "success_rate": {
+    "units": 14,
+    "terminal_verdicts": 14,
+    "fully_closed": 11,
+    "rate_fully_closed": "79%",
+    "rate_weighted": "86%"
+  }
+}
