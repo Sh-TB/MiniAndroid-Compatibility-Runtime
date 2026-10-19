@@ -10510,3 +10510,25 @@ Stage Summary:
 
 Stage Summary (final):
 - CONT-106 fully closed and pushed: F-NEW-445/446 P1 telegram root fixed end-to-end (fixture PRE/POST + real-app proof + zero-drift battery), F-NEW-447/448/449 registered with ready probe levers, registry 764 mirrored, all three commits secret-guard PASS.
+
+---
+Task ID: CONT-107
+Agent: Super Z (main)
+Task: #364 «ادامه مثل فیل و یوز» — elephant-batch wave: fresh-container recovery + the CONT-106 declared ownership list (F-NEW-447/448/449) + real-app evidence + registry + push.
+
+Work Log:
+- Fresh-container recovery AGAIN: local clone was the stale CONT-10-era snapshot (e99c2fbd, registry 566); reset --hard to origin/main 44bbcb21 (registry 764). Full rebuild reproduced f72413b74525d3b0 byte-identically. #364 re-read via API: 72 comments, ZERO new after the CONT-106 ledger 6261275449 — mission = the declared ownership list.
+- Background-build lesson re-learned: backgrounded makes die between tool calls (house precedent is foreground chunks; one background race also lost a stash pop — recovered via git stash list audit + index.lock cleanup). Baseline binary preserved as miniandroid.pre107 for the wave's A/B pairs.
+- F-NEW-447 ROOT-CAUSED-FIXED: caller-domain gate on the ROOT-059 null-recv shadow route (route only when the current frame is framework-owned; app-DEX callers get the ART-faithful NPE + bounded [F447-NPE] marker). Probe c106a INVOKE2: NO-EXC -> NPE, all other rows stable. opencalc shows ZERO marker rows (proof of zero changed call sites there).
+- F-NEW-450 ROOT-CAUSED-FIXED (new root): TypedArray dimension slots carried the RAW complex word through the dimension readers (theme/XML stages raw, 327 stage was the ONLY converter). Fix: producers record array_type[i] unconditionally (F-NEW-197 staleness law) + store raw in all stages; readers convert (pixel_size / offset truncation / layout pixel-size); legacy untyped slots keep old semantics. Probe c106b2 (new fixture, real aapt2/ECJ/D8): dim 14337 -> 147px = 56dp x 2.625 density = AOSP-true.
+- F-NEW-448 root REFUTED by decode (honest refresh): Toolbar.onMeasure's Ll/m3;->a:Z sget is a DEAD class-init trigger (result register overwritten at pc=1; zero writers APK-wide; only static read in onMeasure) — the CONT-106 'theme-dimension static' theory is wrong. Chess toolbar still 1080x0 on the final binary; real root = content/min-height measure chain; stays CONFIRMED_OPEN_GAP with the corrected decode.
+- F-NEW-449 honest refresh: the new c106b reflection-count probe is GREEN on the engine (count/offsets/order/mods all correct) — registered negative control; n2.r needs a MessageInfo-metadata-side probe; stays CONFIRMED_OPEN_GAP.
+- F-NEW-451 CONFIRMED_OPEN_GAP (new): F-450's correct law changed opencalc's face (umanoPanelHeight 10497 raw -> 108px AOSP-true) — keypad-only face, text/drawables missing. A/B isolated: pre-107 binary reproduces the old face byte-identically; zero [F447-NPE] rows; 17 gated TypedArray reads identical between binaries. WANT re-pinned 13d2d6d836f75e7f x3 with adjudication (dooz F-NEW-443 precedent); downstream decode = next wave.
+- F-NEW-452 ROOT-CAUSED-FIXED (new): telegram exposed — F-447's ART-parity NPE at c41.run pc=66 (Locale.getLanguage on null) traced to Configuration.locale never seeded (AOSP setToDefaults law). getConfiguration singleton now seeds a default Locale. Telegram PNG byte-identical to the pre-107 baseline (20ac8cbbbb692e63), F447-NPE rows 0.
+- Container-fresh probe repair per cont98/105/106 precedent: gate_a_probe rebuilt (lib ad413625 matches the CONT-105 record) + canonical install+run = gate A 98/0/1; c72priv v1/v2 rebuilt; negatives 19/19; selftest 13/13; f376 70/70.
+- Final battery at 1e3efdb4209764a9: wall 12/12 (dooz/opencalc-re-pinned/unote/microtimer x3), goldens 4/4, negatives 19/19, MG-310 7/7, MG-150 3/3, selftest 13/13, F-376 70/70, c104i 4/4, c74esc 5/5, c106a/b2/b all terminal.
+- Registry 764 -> 767 (F-NEW-450/451/452 new; F-NEW-447 closed; F-NEW-448/449 refreshed); main == mirror, id-unique.
+
+Stage Summary:
+- 12 task units to terminal verdicts: 3 roots fixed (F-NEW-447 caller-domain NPE parity; F-NEW-450 TypedArray dimension law; F-NEW-452 Configuration.locale), 1 root refuted-and-refreshed (F-NEW-448), 1 negative-control refresh (F-NEW-449), 1 new honest gap (F-NEW-451 opencalc downstream chain), container recovery + probe repair + re-pin adjudication + full battery + registry + push. Two real-app A/B pairs with byte-identical baselines (telegram) and adjudicated re-pin (opencalc).
+- Next wave owns: F-NEW-451 downstream decode (which view/text law collapses under correct dims — fixture-first), F-NEW-448 toolbar content/min-height chain decode, F-NEW-449 MessageInfo-metadata-side probe, dooz AndroidCanvas bridge, UPP-001.

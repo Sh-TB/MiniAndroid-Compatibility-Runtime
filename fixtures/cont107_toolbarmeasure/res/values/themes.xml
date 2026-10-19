@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ProbeTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="probeBarSize">56dp</item>
+    </style>
+</resources>

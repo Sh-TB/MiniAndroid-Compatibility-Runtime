@@ -23,7 +23,13 @@ APK[flappycow]="$A/flappycow_rebuilt.apk";                               WANT[fl
 APK[g2048]="$A/s80_games/build_2048/g2048_v1.0_vc1.apk";                 WANT[g2048]=f43face08299ffc6; SECS[g2048]=15
 APK[gmdice]="$A/canonical_apks/de.duenndns.gmdice_8.apk";                WANT[gmdice]=3891679dff449331; SECS[gmdice]=15
 APK[microtimer]="$A/canonical_apks/dubrowgn.microtimer_8.apk";           WANT[microtimer]=bbd350b6c14fbd52; SECS[microtimer]=15
-APK[opencalc]="$A/opencalculator_53.apk";                                WANT[opencalc]=f25b754c4565c38b; SECS[opencalc]=15
+# CONT-107 adjudication (F-NEW-450 TypedArray dimension law): the old face
+# f25b754c4565c38b encoded SlidingUpPanelLayout umanoPanelHeight answered as the
+# RAW complex word (10497) — AOSP-true is complexToDimensionPixelSize = 41dp x
+# 2.625 density = 108px. Under the correct law the layout chain diverges (F-NEW-451
+# downstream content gap registered: keypad-only face, text/drawables missing).
+# Both faces deterministic x3; the 13d2d6d8 face is the AOSP-true-dims face.
+APK[opencalc]="$A/opencalculator_53.apk";                                WANT[opencalc]=13d2d6d836f75e7f; SECS[opencalc]=15
 APK[simplecalc]="$A/cont54_refetch/com.simplemobiletools.calculator_8.apk"; WANT[simplecalc]=2ac5d8d0cbf9552a; SECS[simplecalc]=15
 APK[tanana]="$A/cont54_refetch/com.tananaev.calculator_11.apk";          WANT[tanana]=afe0bd8dd4d09ca6; SECS[tanana]=15
 APK[tttdeluxe]="$A/s83_games/build_ttt/tictactoe_deluxe_v1.0_vc1.apk";   WANT[tttdeluxe]=db1d633d77b5819a; SECS[tttdeluxe]=15
