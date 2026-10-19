@@ -10474,3 +10474,35 @@ Stage Summary:
 - Real fixes this wave are HARNESS-level by design: the wave's biggest catch is F-NEW-443 — the wall anchor silently encoded stale incremental-.o state; a fresh FULL build is now the re-pinned truth with the AOSP-true face.
 - Zero engine source changes -> zero behavioral drift on all untouched paths (13 gates + 4 wall rows green at the fresh binary).
 - Next wave owns: F-NEW-445 fixture (static lazy-singleton first-use ordering probe) + fix; n2.r compact-info fixture; chess menu adapter fixture; stale-.o archaeology (which TU flipped GL-path engagement); dooz compose draw frontier (ops=0 on the software path).
+
+---
+Task ID: CONT-106
+Agent: Super Z (main)
+Task: Issue #364 CONT-106 ×5 batch wave — directive 22 (cheetah/elephant pace, time is gold): fresh-container recovery + F-NEW-445 lazy-singleton fixture-first chain + n2.r protobuf decode + chess adapter + battery + registry + push.
+
+Work Log:
+- Fresh container: local main was stale CONT-10-era (e99c2fbd, ancestor of origin/main). Fast-forwarded to origin/main 236df145 (CONT-105). Full rebuild started (make -j2, detached).
+- #364 re-read via gh_api.sh: 71 comments total; ZERO new comments after the CONT-105 baseline 6259475660 — mission = CONT-105's declared next-wave ownership list (F-NEW-445 probe, n2.r, chess adapter, stale-.o archaeology, dooz draw frontier).
+- F-NEW-445 DECODED (androguard, telegram classes3.dex): o6.u1 has exactly ONE writer = static factory o6.P(Context); callers of P = o6.R / r4.<init> / CheckBoxSquare.<init> (none ran pre-crash). o6.k() opens with `sget k0; if-nez k0,+3; return-void` (0x0..0x8) — AOSP-safe early return. PRE root: engine's S123-CLINIT-MAT (dalvik_engine.cpp ~21495) materialized o6.k0/m0 on first sget of a NEVER-assigned static Paint of a HEALTHY (clinit-OK) class (gate `attempted || stored_null` too broad) → guard fell through → iput xj0.Y:Z on null u1 → NPE @pc=46. S123 fires ONLY on failed clinit per original intent (forkgram rectTmp).
+- Fix F-NEW-446 designed: gate S123 on failed_clinit_classes_ (F-NEW-215 map) instead of `attempted || stored_null`. Zero battery-target dependence (S123 absent from all run/ logs except the telegram face).
+- Probe fixtures/cont106_clinitsentinel (c106a, real aapt2/ECJ/D8): built run/cont106/c106a.apk sha16 154d15f04ebc0664 — rows C106-SENTINEL/FACTORY/CLINITFAIL/INVOKE/INVOKE2.
+- n2.r protobuf disasm scan started (cont106_scan_n2r.py, background).
+
+Stage Summary:
+- In progress: full rebuild (dalvik_engine.cpp compiling), n2.r decode, probe PRE run pending binary.
+
+Work Log (CONT-106 continued):
+- Probe c106a PRE on frozen afaad5bd4f56f9d3: [C106-SENTINEL] guardEscaped=true (AOSP false — bug face), [C106-INVOKE2] NO-EXC (AOSP NPE — second face), 3 S123 firings incl. failed-clinit rectTmp (gate was attempted||stored_null).
+- F-NEW-446 fix: dalvik_engine.cpp S123 gate -> failed_clinit_classes_ (F-NEW-215 map). Rebuild = f72413b74525d3b0.
+- POST probe: SENTINEL guardEscaped=false; zero healthy-class firings; failed-clinit materialization RETAINED (Broken.rectTmp clinit_failed=true) — original S123 forkgram purpose preserved. Residual: ROOT-059 null-recv shadow routing intercepts pre-NPE at invoke time -> F-NEW-447 (probe row ready, no conflation).
+- Telegram POST (real app): S123 count 0; o6.k executes with REAL factory Paints (F298-SETCOLOR recv=6740/6747 pc=13/24); xj0.<clinit> OK; xj0.Q invoked; the iput-null NPE @o6.k pc=46 is GONE; terminal = known F084 pacing only (LaunchActivity.onCreate invoke_pc=1375; F084 x599 vs PRE x484).
+- Battery zero-drift at f72413b74525d3b0: wall 12/12 byte-identical (dooz d602648e / opencalc f25b754c / unote 90a67cc1 / microtimer bbd350b6 ×3), goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, skill 13/13, F-NEW-376 70/70, c104i 4/4, c74esc 5/5. Container-fresh probe repair documented (gate_a_probe 628ce8e8 rebuild + canonical install+run; c72priv v1/v2 rebuilt 582d208386451ece/95fdc4e1aa60e43f) — same class as cont98 precedent, no regression hidden.
+- Chess POST: f141=0 holds; NEW face decoded: Toolbar.onMeasure reads Ll/m3;.a == 0 (x2) -> height 0 -> F-NEW-448 CONFIRMED_OPEN_GAP (theme-dimension static law; fixture-first lever named).
+- n2.r (play_billing) decoded: rotated-loop boundary read aget-object @0x568 (v10 == v24.length after add-int/lit8 v4,v10,1); entries-vs-walk count disagreement; n2.<clinit> seeds Unsafe -> F-NEW-449 CONFIRMED_OPEN_GAP (c106b probe lever named). Note: R8 class is Lcom/google/android/gms/internal/play_billing/n2; (ledger shorthand "n2.r").
+- Stale-.o archaeology: REJECTED_WITH_REASON (superseded by F-NEW-443 — full rebuild is byte-deterministic afaad5bd; per-TU bisection of a deleted lineage has no actionable value).
+- dooz draw frontier + UPP-001: honestly carried (BLOCKED_NEEDS_EVIDENCE / BLOCKED).
+- Registry 760 -> 764 (F-NEW-446..449) + F-NEW-445 refresh CLASSIFIED -> ROOT-CAUSED-FIXED; main == mirror == 764, id-unique.
+
+Stage Summary:
+- CONT-106 closed the CONT-105 P1 carry (F-NEW-445) end-to-end: decode -> fixture -> PRE faces -> generic fix -> POST faces -> real-app proof -> full battery zero drift. 15 units to terminal verdicts, 8 fully closed, registry 764, all evidence under evidence/cont106 + run/cont106.
+- Next wave owns: F-NEW-447 (ROOT-059 routing A/B via ready probe row), F-NEW-448 (c106b2 toolbar/theme-dimension probe), F-NEW-449 (c106b reflection-count probe), dooz AndroidCanvas bridge.
