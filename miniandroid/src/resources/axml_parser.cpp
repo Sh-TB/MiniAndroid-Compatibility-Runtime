@@ -133,6 +133,20 @@ bool AxmlParser::parse(const std::vector<uint8_t>& data) {
                 }
                 // attribute resource id via resource map (name index)
                 if (aname < resource_map_.size()) attr.attr_resid = resource_map_[aname];
+                // F-NEW-458 (CONT-112): the android:style attribute law.
+                // aapt2 emits the ns-less style= attribute WITHOUT a
+                // resource-map id (the xmltree shows "A: style=@0x..." with
+                // no id in parens — live: c449 probe + jwtc chess 298
+                // Toolbar/ActionBarContainer tags). AOSP AttributeResolution
+                // identifies it as android:style = 0x01010000
+                // (frameworks/base/core/res/res/values/public-final.xml).
+                // Without the id the rec build's attr_resid==0 gate dropped
+                // the style attr from every AttributeSetStore record set and
+                // the F-NEW-327 stage-2 (tag XML style=) walk never fired for
+                // the 2-arg obtainStyledAttributes form.
+                if (attr.attr_resid == 0 && attr.name == "style" &&
+                    attr.ns != "app")
+                    attr.attr_resid = 0x01010000u;
                 fn.el.attributes.push_back(std::move(attr));
             }
             flat.push_back(std::move(fn));

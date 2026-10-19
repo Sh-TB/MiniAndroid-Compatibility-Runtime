@@ -5013,6 +5013,25 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
             uint32_t styleable_id = 0;
             int32_t n = 0;
             size_t styleable_pos = SIZE_MAX;
+            // ── F-NEW-457 (CONT-112): the recs scan moved ABOVE the xml-style
+            // extraction. The scan previously ran AFTER f327_xml_style was
+            // computed (below the CS diag), so xml_recs was still nullptr at
+            // the extraction point and the F-NEW-327 stage-2 (tag XML
+            // style=) walk NEVER fired from this producer — for ANY APK.
+            // Live evidence (c449 probe): the marker arrived with 4 recs
+            // ([F457-INSTALL] recs_store=4) while xmlstyle stayed 0x0 and
+            // both styleable slots resolved present=0.
+            for (const auto& a : ctx.args) {
+                if (a.kind != CallContext::Arg::Kind::OBJECT ||
+                    a.object_id == 0)
+                    continue;
+                if (a.object_class == "Landroid/util/AttributeSet;") {
+                    xml_recs =
+                        resources::AttributeSetStore::instance().lookup(
+                            a.object_id);
+                    break;
+                }
+            }
             for (size_t ai = 0; ai < ctx.args.size(); ++ai) {
                 const auto& a = ctx.args[ai];
                 if (a.kind != CallContext::Arg::Kind::OBJECT ||
@@ -5086,13 +5105,18 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                               << " dSR=0x" << f327_def_style_res << std::dec
                               << " xmlstyle=0x" << std::hex << f327_xml_style
                               << std::dec << " argc=" << ctx.args.size();
-                    for (size_t kk = styleable_pos;
-                         kk < ctx.args.size() && kk <= styleable_pos + 2;
-                         ++kk) {
-                        std::cerr << " a" << kk << ":k"
-                                  << static_cast<int>(ctx.args[kk].kind)
+                    // F-NEW-457 diag: per-arg identity (the AttributeSet
+                    // marker visibility law — the recs scan needs
+                    // object_class == Landroid/util/AttributeSet;).
+                    for (size_t kk2 = 0;
+                         kk2 < ctx.args.size() && kk2 < 4; ++kk2) {
+                        std::cerr << " a" << kk2 << ":k"
+                                  << static_cast<int>(ctx.args[kk2].kind)
                                   << "=0x" << std::hex
-                                  << ctx.args[kk].int_val << std::dec;
+                                  << ctx.args[kk2].int_val << std::dec
+                                  << " oid=" << ctx.args[kk2].object_id
+                                  << " cls='" << ctx.args[kk2].object_class
+                                  << "'";
                     }
                     std::cerr << " attrs=[";
                     for (int32_t k = 0; k < n && k < 30; ++k) {
@@ -5111,26 +5135,8 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
             // AOSP AttributeResolution.cpp precedence per styleable slot:
             // (1) XML AttributeSet value (the view-ctor argument), (2) style,
             // (3) theme, (4) absent → caller default. The AttributeSet marker
-            // carries the tag's parsed XML attributes in the store below.
-            for (const auto& a : ctx.args) {
-                if (a.kind != CallContext::Arg::Kind::OBJECT ||
-                    a.object_id == 0)
-                    continue;
-                if (a.object_class == "Landroid/util/AttributeSet;") {
-                    xml_recs =
-                        resources::AttributeSetStore::instance().lookup(
-                            a.object_id);
-                    break;
-                }
-            }
-            if (xml_recs && !xml_recs->empty()) {
-                static const bool f197_diag =
-                    std::getenv("MINIANDROID_F093_DIAG") != nullptr;
-                if (f197_diag)
-                    std::cerr << "[F-NEW-197] obtainStyledAttributes XML "
-                              << "AttributeSet values=" << xml_recs->size()
-                              << std::endl;
-            }
+            // carries the tag's parsed XML attributes — the store scan now
+            // runs ABOVE (F-NEW-457 ordering fix).
             for (int32_t i = 0; i < n; ++i) {
                 int32_t attr_id = 0;
                 heap_->get_object_int_field(

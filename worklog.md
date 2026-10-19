@@ -10571,3 +10571,22 @@ Stage Summary:
 - The suggested-minimum family is a real, probed, bracketed generic law (cross-app fan-out: every DEX measure chain that max()es against getSuggestedMinimum*); the chess face honestly did NOT advance — 448's remaining lever is named with exact machinery (DEX-ctor attr seeding).
 - Two registry truths restored (451 sync + 367 supersession); two stale-scan verdicts kept honest (R-NEW-010 ArrayStoreException still log-and-skip = UNPROVEN retained; R-NEW-083 no APK signature verification = retained).
 - Wave score: 5/5 units terminal, 2 fully closed, weighted ~70%; zero unadjudicated drift.
+
+---
+Task ID: CONT-112
+Agent: main (Z.ai CLI)
+Task: «ادامه کل مطالب رو اجرا بکن ۳۶۴ ادامه» — continue executing all #364 materials; train-scale batch; push GitHub every round (standing orders 21/22/23: elephant/cheetah/train throughput).
+
+Work Log:
+- Read #364 fresh (78 comments); last ledger = CONT-111 (6273185386); its next-step lever 1 = F-NEW-448 layer-2 (chess Toolbar seeding).
+- Ground truth: androguard disasm of chess Toolbar.onMeasure (max vs getSuggestedMinimumHeight @1126-1134); aapt2 layout dump (Toolbar tag style=?0x7f040540); theme trace (toolbarStyle -> framework ref 0x106000d = a COLOR, not a style).
+- FIVE stacked roots found and fixed fixture-first: F-NEW-454 (framework-package style routing + style-ref raw law), F-NEW-455 (TypedArray dimension reader deref), F-NEW-456 (runtime-class dispatch start), F-NEW-457 (producer recs-scan ordering — stage-2 dead for every APK), F-NEW-458 (android:minWidth/minHeight TRUE ids 0x0101013F/0x01010140 vs CONT-111's wrong 0x01010150/51; + android:style rec id 0x01010000).
+- Probe fixtures/cont112_lawderef (c449, real toolchain, 90420f5a2d87ba20): 4/4 post vs 0/4 pre (A/B bracket).
+- Chess app bracket: Toolbar 1080x0 face b270ff04 -> 1080x168 with version text face a0319686. F-NEW-448 layer-2 CLOSED.
+- Full battery green: wall 12/12 byte-identical, c448 7/7, c74esc 7/7, c106a/b2 green, goldens/negatives/reinstall/MG-310/MG-150/selftests rc=0.
+- Registry 768 -> 773 id-unique (main == mirror); evidence/cont112/evidence.json; ledger posted to #364 (comment 6275076848).
+
+Stage Summary:
+- Chess toolbar face advanced for the first time since CONT-104 (1080x0 -> 1080x168 with the version text child); every fix probed or bracketed; zero unadjudicated drift.
+- Honest pendings: F-NEW-449 (MessageInfo metadata) and CONT-110 P0 first-divergence report = next-wave levers; chess RecyclerView board list still empty (children=0) — content-layer frontier.
+- Wave score: 10/10 units terminal, 6 fully closed, weighted ~85%.

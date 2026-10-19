@@ -624,8 +624,16 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
     // (actionBarSize → @dimen/m3_appbar_size_compact in jwtc chess 298)
     // lands here as a dimension item and feeds View.mMinHeight, the floor
     // Toolbar.onMeasure max()es against (chess toolbar measured 1080x0).
-    static constexpr uint32_t ATTR_MIN_WIDTH  = 0x01010150u;  // public-final.xml
-    static constexpr uint32_t ATTR_MIN_HEIGHT = 0x01010151u;  // public-final.xml
+    // F-NEW-458 (CONT-112): the TRUE framework attr ids, verified by
+    // compiling <item name="android:minWidth">/<item name="android:minHeight">
+    // with aapt2 -I android-34.jar (the linked public.xml is the authority):
+    // android:minWidth = 0x0101013F, android:minHeight = 0x01010140. The
+    // CONT-111 values (0x01010150/51) matched NO real bag key — every
+    // style/theme-bag android:min* item was silently unconsumed (the chess
+    // Toolbar's Base.Widget.AppCompat.Toolbar ancestor bag carries
+    // android:minHeight=?attr/actionBarSize and the walk never seeded).
+    static constexpr uint32_t ATTR_MIN_WIDTH  = 0x0101013Fu;  // aapt2-verified
+    static constexpr uint32_t ATTR_MIN_HEIGHT = 0x01010140u;  // aapt2-verified
     if (attr_key == ATTR_MIN_HEIGHT || attr_key == ATTR_MIN_WIDTH) {
         const bool h_key = attr_key == ATTR_MIN_HEIGHT;
         int& slot = h_key ? a.style_min_h : a.style_min_w;
@@ -658,8 +666,9 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
     static constexpr uint32_t ATTR_BACKGROUND = 0x010100d4u;  // public-final.xml
     static constexpr uint32_t ATTR_PADDING    = 0x010100d5u;  // public-final.xml
     static constexpr uint32_t ATTR_TEXT_STYLE = 0x01010097u;  // public-final.xml
-    // F-NEW-448 (CONT-111): android:minWidth/minHeight style-bag keys are
-    // declared above (ATTR_MIN_WIDTH/ATTR_MIN_HEIGHT 0x01010150/51).
+    // F-NEW-448 (CONT-111) / F-NEW-458 (CONT-112): android:minWidth/
+    // minHeight style-bag keys are declared above (ATTR_MIN_WIDTH/
+    // ATTR_MIN_HEIGHT 0x0101013F/0x01010140, aapt2-verified).
     if (attr_key == ATTR_BACKGROUND) {
         if (a.from_style_bg) return false;
         if (v.is_color() || v.is_int()) {
@@ -732,57 +741,94 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
 void LayoutInflater::apply_style(framework::ViewShadow::ViewNode& node, Attrs& a,
                                  uint32_t style_resid, InflateStats& stats) {
     (void)node;
-    auto r = arsc_.resolve(style_resid);
-    if (!r) return;
-    const ArscEntry* e = r->best();
-    if (!e || !e->is_complex) return;
-    // name of style for evidence
-    a.style_name = r->name;
-    // GOLDEN-03 §8: attribute-KEY-aware application (AOSP ResTable_map law).
-    // The previous code iterated complex_items POSITIONALLY and applied any
-    // dimension as textSize / any color as textColor regardless of which
-    // attribute they actually carried.
-    for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
-        static const bool m3dbg = std::getenv("MINIANDROID_M3_STYLE_DIAG") != nullptr;
-        if (m3dbg && !e->complex_keys.empty() && i < 12)
-            fprintf(stderr, "[M3-BAG] style=0x%x key[%zu]=0x%x type=%d\n",
-                    style_resid, i, e->complex_keys[i],
-                    (int)e->complex_items[i].type);
-        if (apply_style_item(a, e->complex_keys[i], e->complex_items[i], stats)) {
-            stats.styles_applied++;
-        }
-    }
-    // M3 FIX-M3-002 (AOSP style parent-chain law): attributes resolve
-    // through the style's ResTable_map_entry parent chain — a child style
-    // (keypad_button_digit) inherits its parent's bag (keypad_button:
-    // textColor, layout_width/height/weight/margin). Previously only the
-    // own keys were consulted, so parent-supplied attributes were silently
-    // dropped. Nearest-bag-first (the loop above already consumed the
-    // child's own keys — first-writer-wins inside apply_style_item keeps
-    // child > parent precedence). Bounded + cycle-safe like bag_value.
-    uint32_t cur = style_resid;
-    int hops = 0;
-    std::unordered_set<uint32_t> visited{style_resid};
-    while (hops++ < 8) {
-        auto pr = arsc_.resolve(cur);
-        if (!pr) break;
-        const ArscEntry* pe = pr->best();
-        if (!pe || !pe->is_complex) break;
-        // M3 FIX-M3-003b: parent lives in bag_parent now (entry.value is
-        // overwritten with complex_items[0] for single-value compat).
-        uint32_t parent = pe->bag_parent;
-        if (parent == 0 || parent == cur || visited.count(parent)) break;
-        visited.insert(parent);
-        cur = parent;
-        auto pa = arsc_.resolve(cur);
-        if (!pa) break;
-        const ArscEntry* pae = pa->best();
-        if (!pae || !pae->is_complex) break;
-        for (size_t i = 0; i < pae->complex_keys.size() && i < pae->complex_items.size(); ++i) {
-            if (apply_style_item(a, pae->complex_keys[i], pae->complex_items[i], stats)) {
+    static const bool fw_style_diag =
+        std::getenv("MINIANDROID_FW_STYLE_DIAG") != nullptr;
+    // F-NEW-454 (CONT-112): the bag walk is TABLE-PARAMETRIC. AOSP
+    // AssetManager2 routes a style reference to the package its id names
+    // (app 0x7f → the APK table, android 0x01 → framework-res) — the same
+    // ResTable_map_entry bag law in both. Live evidence (jwtc chess 298
+    // CONT-112): the Toolbar tag carries style=?attr/toolbarStyle; the
+    // active-activity theme resolves the attr to the FRAMEWORK-package
+    // style @0x0106000d; the app-table-only walk silently dropped the bag
+    // and Toolbar.onMeasure's getSuggestedMinimumHeight() floor answered
+    // 0 → Toolbar measured 1080x0 inside its 1080x168 ActionBarContainer.
+    auto walk_style_table = [&](const resources::ArscParser& tbl, uint32_t resid,
+                                const char* tag) -> bool {
+        auto r = tbl.resolve(resid);
+        if (!r) return false;
+        const ArscEntry* e = r->best();
+        if (!e || !e->is_complex) return false;
+        // name of style for evidence
+        a.style_name = r->name;
+        // GOLDEN-03 §8: attribute-KEY-aware application (AOSP ResTable_map law).
+        // The previous code iterated complex_items POSITIONALLY and applied any
+        // dimension as textSize / any color as textColor regardless of which
+        // attribute they actually carried.
+        for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
+            static const bool m3dbg = std::getenv("MINIANDROID_M3_STYLE_DIAG") != nullptr;
+            if (m3dbg && !e->complex_keys.empty() && i < 12)
+                fprintf(stderr, "[M3-BAG] style=0x%x key[%zu]=0x%x type=%d\n",
+                        resid, i, e->complex_keys[i],
+                        (int)e->complex_items[i].type);
+            if (fw_style_diag && i < 16)
+                fprintf(stderr, "[FW-STYLE] %s style=0x%x key[%zu]=0x%x type=%d\n",
+                        tag, resid, i, e->complex_keys[i],
+                        (int)e->complex_items[i].type);
+            if (apply_style_item(a, e->complex_keys[i], e->complex_items[i], stats)) {
                 stats.styles_applied++;
             }
         }
+        // M3 FIX-M3-002 (AOSP style parent-chain law): attributes resolve
+        // through the style's ResTable_map_entry parent chain — a child style
+        // (keypad_button_digit) inherits its parent's bag (keypad_button:
+        // textColor, layout_width/height/weight/margin). Previously only the
+        // own keys were consulted, so parent-supplied attributes were silently
+        // dropped. Nearest-bag-first (the loop above already consumed the
+        // child's own keys — first-writer-wins inside apply_style_item keeps
+        // child > parent precedence). Bounded + cycle-safe like bag_value.
+        uint32_t cur = resid;
+        int hops = 0;
+        std::unordered_set<uint32_t> visited{resid};
+        while (hops++ < 8) {
+            auto pr = tbl.resolve(cur);
+            if (!pr) break;
+            const ArscEntry* pe = pr->best();
+            if (!pe || !pe->is_complex) break;
+            // M3 FIX-M3-003b: parent lives in bag_parent now (entry.value is
+            // overwritten with complex_items[0] for single-value compat).
+            uint32_t parent = pe->bag_parent;
+            if (parent == 0 || parent == cur || visited.count(parent)) break;
+            visited.insert(parent);
+            cur = parent;
+            auto pa = tbl.resolve(cur);
+            if (!pa) break;
+            const ArscEntry* pae = pa->best();
+            if (!pae || !pae->is_complex) break;
+            if (fw_style_diag)
+                fprintf(stderr, "[FW-STYLE] %s parent style=0x%x keys=%zu\n",
+                        tag, cur, pae->complex_keys.size());
+            for (size_t i = 0; i < pae->complex_keys.size() && i < pae->complex_items.size(); ++i) {
+                if (apply_style_item(a, pae->complex_keys[i], pae->complex_items[i], stats)) {
+                    stats.styles_applied++;
+                }
+            }
+        }
+        return true;
+    };
+    if (walk_style_table(arsc_, style_resid, "app")) return;
+    // F-NEW-454: the app table missed — framework-package style ids
+    // (0x01xxxxxx) resolve in the framework-res table (AOSP package routing;
+    // an app style id simply cannot live there, so non-framework misses keep
+    // the honest no-op).
+    if ((style_resid >> 24) == 0x01u) {
+        auto rt = resources::ResourceRuntime::instance().arsc_router();
+        if (rt.fw && walk_style_table(*rt.fw, style_resid, "fw")) {
+            stats.framework_styles_applied++;
+            return;
+        }
+        if (fw_style_diag)
+            fprintf(stderr, "[FW-STYLE] style=0x%x framework table MISS\n",
+                    style_resid);
     }
 }
 

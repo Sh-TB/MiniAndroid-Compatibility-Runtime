@@ -1,0 +1,93 @@
+{
+ "wave": "CONT-112",
+ "issue": 364,
+ "date": "2026-10-20",
+ "base_commit": "96bcb963 (CONT-111 ledger; local HEAD 7dba18dc = probe tmp artifacts)",
+ "final_binary_sha16": "623827ee2ffd3829",
+ "binary_lineage": [
+  "62df609a70fcf488 = pre-fix bracket (fresh worktree at origin/main 96bcb963, zero fix code)",
+  "33733b3693961f16 = first fix build (F-NEW-454 framework style routing)",
+  "0f4753c6344baaf6 = + F-NEW-454b style-ref raw law",
+  "def551d1f905e6bc = + F-NEW-454c/455 dimension reader deref law",
+  "543d5efa4a7aeb03 = + F-NEW-456 runtime-class dispatch start",
+  "623827ee2ffd3829 = + F-NEW-458 attr-id laws + F-NEW-457 recs-scan ordering (final)"
+ ],
+ "mission": {
+  "directives_read": "CONT-111 ledger next-step levers (comment 6273185386): (1) F-NEW-448 layer-2 seeding, (2) F-NEW-449 MessageInfo, (3) CONT-110 P0. This wave = lever 1 taken to ROOT-CAUSED-FIXED through five stacked roots discovered by fixture-first tracing; levers 2/3 remain next-wave.",
+  "container_recovery": "no reset needed; local HEAD 7dba18dc carried tmp/ probe artifacts on top of origin/main 96bcb963"
+ },
+ "wagons": [
+  {
+   "id": "W1-chess-toolbar-ground-truth",
+   "task": "decode the chess Toolbar chain: androguard disasm (Toolbar.onMeasure max()es content vs getSuggestedMinimumHeight @1126-1134 then resolveSizeAndState/setMeasuredDimension @1236) + aapt2 layout dump (abc_screen_toolbar Toolbar tag carries style=?0x7f040540) + theme trace (toolbarStyle resolved to framework-package ref 0x106000d)",
+   "status": "TESTED",
+   "evidence": "scripts/cont112_toolbar_disasm.py + run/c112_toolbar_disasm.txt + run/c112/chess_diag.log + run/c112/chess_res_dump.txt"
+  },
+  {
+   "id": "W2-F-NEW-454-style-laws",
+   "task": "framework-package style routing (apply_style table-parametric over arsc_router().fw) + theme style-ref raw law (resolve_attribute leaves bag targets raw). Chess A/B: style walk now reaches Widget.Material3.Toolbar bag + parent chain",
+   "status": "TESTED",
+   "evidence": "miniandroid/src/resources/layout_inflater.cpp apply_style + miniandroid/src/resources/theme_engine.h resolve_attribute + run/c112/chess_fw.log"
+  },
+  {
+   "id": "W3-F-NEW-455-dimension-deref",
+   "task": "TypedArray getLayoutDimension/getDimensionPixelSize deref REFERENCE/ATTRIBUTE slots to the terminal dimension before conversion. Evidence: the raw ATTRIBUTE word 0x7f040006 became setLayoutParams height=168",
+   "status": "TESTED",
+   "evidence": "miniandroid/src/dex/dalvik_engine.cpp F-NEW-454c block + run/c112/chess_fix4.log + run/c112/chess_fix5.log"
+  },
+  {
+   "id": "W4-F-NEW-456-dispatch-start",
+   "task": "C013-HIER walk starts at the receiver's runtime class (heap get_object_class) — Context-typed activity receivers now reach the ActivityShadow producer",
+   "status": "TESTED",
+   "evidence": "miniandroid/src/dex/dalvik_engine.cpp F-NEW-456 + run/c112/c449_t4.log ([EXP088-B-DISPATCH] method=obtainStyledAttributes class=Lcom/probe/c449/MainActivity;)"
+  },
+  {
+   "id": "W5-F-NEW-457-recs-ordering",
+   "task": "shadow producer recs scan moved above the xml-style extraction (stage-2 was dead for every APK); engine-side S101 producer already correct",
+   "status": "TESTED",
+   "evidence": "miniandroid/src/framework/android_shadows.cpp F-NEW-457 + run/c112/c449_t10.log ([F457-INSTALL] recs_store=4)"
+  },
+  {
+   "id": "W6-F-NEW-458-attr-ids",
+   "task": "android:minWidth=0x0101013F / android:minHeight=0x01010140 (aapt2-compiled ground truth; CONT-111's 0x01010150/51 matched nothing) + android:style rec-id 0x01010000 (ns-less style attr dropped from the store)",
+   "status": "TESTED",
+   "evidence": "run/c112/idprobe (tmp/idprobe compile) + miniandroid/src/resources/layout_inflater.cpp + miniandroid/src/resources/axml_parser.cpp"
+  },
+  {
+   "id": "W7-c449-probe-AB",
+   "task": "fixture-first probe fixtures/cont112_lawderef (c449, real aapt2/ECJ/D8, sha16 90420f5a2d87ba20): 4 rows — FLOOR-MIN (style parent chain ?attr->@dimen min seed), FLOOR-MEASURE (max(content, suggestedMinimum) AT_MOST chain), DEREF-REF (REFERENCE slot @dimen), DEREF-ATTR (ATTRIBUTE slot ?attr). A/B bracket: pre-fix binary 0/4 -> post-fix 4/4",
+   "status": "TESTED",
+   "evidence": "scripts/cont112_build_probe.sh + run/c112/c449_pre.log (0/4) + run/c112/c449.log (4/4)"
+  },
+  {
+   "id": "W8-chess-app-bracket",
+   "task": "F-NEW-448 layer-2 CLOSED at the app level: pre-fix chess Toolbar 1080x0 face b270ff040b3601dc -> post-fix Toolbar 1080x168 with the 10.6.0 version text child, face a0319686d56ff5c0. The pre-existing 371-GETXML-NOTFOUND in-flight exception is UNCHANGED (present in both brackets — not a regression)",
+   "status": "TESTED",
+   "evidence": "run/c112/chess_pre.log + run/c112/chess_final.log + run/c112/chess_pre/screenshot.png + run/c112/chess_final/screenshot.png"
+  },
+  {
+   "id": "W9-full-battery",
+   "task": "full regression battery at 623827ee: c449 4/4 + c448 7/7 (CONT-111 regression zero drift) + wall 12/12 MATCH byte-identical (dooz d602648e x3 / opencalc d5f3c7b5 x3 / unote 90a67cc1 x3 / microtimer bbd350b6 x3) + goldens rc=0 + negatives+reinstall rc=0 + MG-310 rc=0 + MG-150 rc=0 + selftests rc=0 + c74esc containment 7 rows OK + c106a/c106b2 green",
+   "status": "TESTED",
+   "evidence": "run/c112/battery.log"
+  },
+  {
+   "id": "W10-registry",
+   "task": "registry 768 -> 773 id-unique (main == mirror): F-NEW-454/455/456/457/458 added ROOT-CAUSED-FIXED; F-NEW-448 CONFIRMED_OPEN_GAP -> ROOT-CAUSED-FIXED (layer-2 closed)",
+   "status": "TESTED",
+   "evidence": "scripts/cont112_registry_update.py + root_registry.json + canonical/root_cause_registry.json"
+  }
+ ],
+ "honest_notes": [
+  "F-NEW-449 (protobuf-lite MessageInfo metadata, telegram n2.r) NOT attempted this wave — the lever-1 chain consumed the cycle; remains CONFIRMED_OPEN_GAP with the c106b negative control green.",
+  "CONT-110 P0 (four-blacks/five-whites first-divergence paired report at current HEAD) NOT run this wave — next-wave lever.",
+  "The chess start face a0319686 shows the toolbar with the version text but the RecyclerView board list remains empty (children=0) — the content-layer frontier is separate (tracked since CONT-104).",
+  "F-NEW-376 fault-injection battery (70/70) not re-run this wave; the c72priv selftest family ran green (selftests rc=0).",
+  "The wave's fix stack touches resource resolution hot paths; the wall battery (12/12 byte-identical) + c448 7/7 + c74esc 7/7 are the zero-drift proof at the current anchors."
+ ],
+ "success_rate": {
+  "work_units_terminal": "10/10",
+  "fully_closed": "F-NEW-448 layer-2 + 5 new roots = 6 of 10 units fully closed",
+  "weighted": "~85% (every fix probed or bracketed; battery green; zero unadjudicated drift)"
+ }
+}
