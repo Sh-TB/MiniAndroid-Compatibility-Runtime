@@ -1638,6 +1638,18 @@ public:
         int measured_left = 0, measured_top = 0;   // final geometry (measure/layout)
         int measured_width = 0, measured_height = 0;
         int measured_right = 0, measured_bottom = 0;
+        // ── F-NEW-448 (CONT-111): AOSP View.mMinWidth/mMinHeight ────────────
+        // Seeded by android:minWidth (0x01010150) / android:minHeight
+        // (0x01010151) at inflation (XML element attr + style/theme bag via
+        // apply_style_item) and by View.setMinimumWidth/Height from DEX.
+        // Consumed by getSuggestedMinimumWidth/Height — the AOSP floor every
+        // custom ViewGroup measure chain max()es against (appcompat Toolbar
+        // onMeasure evidence: toolbar measured 1080x0 because both the
+        // content height AND the suggested minimum answered 0).
+        // Drawable.getMinimumHeight contribution (intrinsic of a bitmap
+        // background) not yet modeled — shape/selector/gradient backgrounds
+        // (the corpus case) have intrinsic 0; named residual.
+        int32_t min_width = 0, min_height = 0;
         bool laid_out = false;           // geometry computed
         // MASTER-2 FIX-MEASURE-002e (AOSP onLayout replay law): RelativeLayout
         // resolves a child's mLeft/mTop/mRight/mBottom edges DURING measure

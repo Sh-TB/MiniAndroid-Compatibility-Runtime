@@ -618,6 +618,24 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
         a.style_layout_weight = (int)std::lround(f * 1000.0f);
         return true;
     }
+    // F-NEW-448 (CONT-111): android:minWidth/minHeight style-bag keys.
+    // AOSP Base.Widget.AppCompat.ActionBar carries
+    // android:minHeight=?attr/actionBarSize — the theme-attr chain
+    // (actionBarSize → @dimen/m3_appbar_size_compact in jwtc chess 298)
+    // lands here as a dimension item and feeds View.mMinHeight, the floor
+    // Toolbar.onMeasure max()es against (chess toolbar measured 1080x0).
+    static constexpr uint32_t ATTR_MIN_WIDTH  = 0x01010150u;  // public-final.xml
+    static constexpr uint32_t ATTR_MIN_HEIGHT = 0x01010151u;  // public-final.xml
+    if (attr_key == ATTR_MIN_HEIGHT || attr_key == ATTR_MIN_WIDTH) {
+        const bool h_key = attr_key == ATTR_MIN_HEIGHT;
+        int& slot = h_key ? a.style_min_h : a.style_min_w;
+        if (slot != INT_MIN) return false;             // first-writer wins
+        if (!v.is_dimension() && !v.is_int()) return false;
+        slot = v.is_dimension()
+                   ? complex_to_dimension_pixel_size(v.data, density_context())
+                   : (int)v.data;
+        return true;
+    }
     if (attr_key == ATTR_TEXT_SIZE) {
         if (a.from_style_text_size) return false;      // first-writer wins
         if (!v.is_dimension()) return false;
@@ -640,6 +658,8 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
     static constexpr uint32_t ATTR_BACKGROUND = 0x010100d4u;  // public-final.xml
     static constexpr uint32_t ATTR_PADDING    = 0x010100d5u;  // public-final.xml
     static constexpr uint32_t ATTR_TEXT_STYLE = 0x01010097u;  // public-final.xml
+    // F-NEW-448 (CONT-111): android:minWidth/minHeight style-bag keys are
+    // declared above (ATTR_MIN_WIDTH/ATTR_MIN_HEIGHT 0x01010150/51).
     if (attr_key == ATTR_BACKGROUND) {
         if (a.from_style_bg) return false;
         if (v.is_color() || v.is_int()) {
@@ -1271,6 +1291,11 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "layout_marginStart") a.ml = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "layout_marginEnd") a.mr = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "padding") a.padding_all = parse_dim_attr(&at, stats);
+        // F-NEW-448 (CONT-111): the element's own android:minWidth/minHeight
+        // (AOSP View ctor reads them into mMinWidth/mMinHeight; the element
+        // tier outranks the style bag per ApplyStyle precedence).
+        else if (n == "minWidth") a.min_w = parse_dim_attr(&at, stats);
+        else if (n == "minHeight") a.min_h = parse_dim_attr(&at, stats);
         else if (n == "paddingLeft") a.pl = parse_dim_attr(&at, stats);
         else if (n == "paddingTop") a.pt = parse_dim_attr(&at, stats);
         else if (n == "paddingRight") a.pr = parse_dim_attr(&at, stats);
@@ -1740,6 +1765,12 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.padding_top = a.pt + a.padding_all;
     node.padding_right = a.pr + a.padding_all;
     node.padding_bottom = a.pb + a.padding_all;
+    // F-NEW-448 (CONT-111): commit the suggested-minimum seeds — element
+    // attr > style/theme bag (first-writer slots) > 0 (AOSP View ctor law).
+    if (a.min_h != INT_MIN) node.min_height = a.min_h;
+    else if (a.style_min_h != INT_MIN) node.min_height = a.style_min_h;
+    if (a.min_w != INT_MIN) node.min_width = a.min_w;
+    else if (a.style_min_w != INT_MIN) node.min_width = a.style_min_w;
     if (a.orientation >= 0) node.orientation = a.orientation;
     if (a.gravity >= 0) { node.text_gravity = a.gravity; node.container_gravity = a.gravity; node.gravity_set = true; }
     if (a.layout_gravity >= 0) node.child_gravity = a.layout_gravity;

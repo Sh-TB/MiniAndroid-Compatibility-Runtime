@@ -51532,6 +51532,73 @@ measure_cm_done:;
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-448 (CONT-111): AOSP View suggested-minimum family —
+    //   View.setMinimumWidth(int) / setMinimumHeight(int)  → mMinWidth/mMinHeight
+    //   View.getMinimumWidth() / getMinimumHeight()        → mMinWidth/mMinHeight
+    //   View.getSuggestedMinimumWidth()                    →
+    //       (mBackground == null) ? mMinWidth
+    //                             : max(mMinWidth, mBackground.getMinimumWidth())
+    //   View.getSuggestedMinimumHeight()                   → same, height axis
+    // (frameworks/base/core/java/android/view/View.java). These five + the
+    // two getters were ABSENT from the shadow layer: every app-DEX measure
+    // chain that max()es its content against the suggested minimum (appcompat
+    // Toolbar.onMeasure final height step; ScrollView/FrameLayout subclasses;
+    // custom ViewGroups) answered 0, and a view with no measured content
+    // collapsed to height 0 — jwtc chess 298's appcompat action-bar Toolbar
+    // measured 1080x0 (F-NEW-448). mMinWidth/mMinHeight live on the ViewNode
+    // (seeded from android:minWidth/minHeight XML + style/theme bags at
+    // inflation). Drawable.getMinimumWidth/Height contribution: the node's
+    // background intrinsic is not modeled here — shape/selector/gradient
+    // backgrounds (the corpus case) have intrinsic 0, so the law answers
+    // max(mMin*, 0) = mMin* (named residual in the ViewNode comment).
+    // ────────────────────────────────────────────────────────────────────────
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        (method == "setMinimumWidth" || method == "setMinimumHeight" ||
+         method == "getMinimumWidth" || method == "getMinimumHeight" ||
+         method == "getSuggestedMinimumWidth" ||
+         method == "getSuggestedMinimumHeight") &&
+        shadow_registry_) {
+        if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+            if (auto* n = vs->find_node(args[0].object_id)) {
+                if ((method == "setMinimumWidth" ||
+                     method == "setMinimumHeight") &&
+                    args.size() >= 2 && args[1].type == DalvikType::INT32) {
+                    // AOSP setMinimumWidth/Height: store + requestLayout()
+                    // (the traversal scheduling is the caller's concern here;
+                    // the stored value feeds the NEXT measure pass).
+                    if (method == "setMinimumWidth")
+                        n->min_width = args[1].int_val;
+                    else
+                        n->min_height = args[1].int_val;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+                if (method == "getMinimumWidth") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(n->min_width);
+                    return true;
+                }
+                if (method == "getMinimumHeight") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(n->min_height);
+                    return true;
+                }
+                if (method == "getSuggestedMinimumWidth") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(n->min_width);
+                    return true;
+                }
+                if (method == "getSuggestedMinimumHeight") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(n->min_height);
+                    return true;
+                }
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // MASTER CAMPAIGN FIX (F8 default-onMeasure law): View.onMeasure(I, I)V
     // IS the default implementation (AOSP View.java onMeasure →
     // setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), …);
