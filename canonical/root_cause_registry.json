@@ -7184,9 +7184,11 @@
   "priority": "P1",
   "title": "View.getRootWindowInsets() answered null on ATTACHED views — androidx ViewCompat.getRootWindowInsets consumers died in the R8-inlined requireNonNull of WindowInsetsCompat.toWindowInsetsCompat (issue #364 CONT-104 chess batch).",
   "layer": "framework (android_shadows ViewShadow getRootWindowInsets law)",
-  "root_cause": "AOSP View.java: an ATTACHED view (mAttachInfo != null) answers NON-NULL root insets from its ViewRootImpl; the engine had no law at all, the API bridge fell through to a silent stub null, and androidx (chess_jwtc_298: RecyclerView.onAttachedToWindow -> ViewCompat.getRootWindowInsets -> Ln0/k1;.c) hit the R8-inlined Objects.requireNonNull (getClass()) -> NPE x8 -> start.onCreate APP-BOUNDARY unwind -> white frame.",
-  "fix": "ViewShadow dispatch law: attached node -> allocate a REAL Landroid/view/WindowInsets; object marked __root_insets__=1 (the SAME model F-NEW-384 frame-boundary dispatch materializes — one model, two delivery laws: pull at attach-time consumers, push at frame boundary); unattached -> lawful null (AOSP no-AttachInfo face). Probes: fixtures/cont104_insets_probe rows PREATTACH null=true / ATTACHED nonnull=true / CLS identity.",
-  "evidence": "run/cont104/chess_pre (PRE NPE x8), run/cont104/p104i_pre|post (probe 4/4), chess_post5 f141=0"
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_pre (PRE NPE x8), run/cont104/p104i_pre|post (probe 4/4), chess_post5 f141=0",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
  },
  {
   "id": "F-NEW-442b",
@@ -7194,9 +7196,11 @@
   "priority": "P1",
   "title": "View.computeSystemWindowInsets(WindowInsets, Rect) answered null — androidx Api23Impl.computeSystemWindowInsets (Ln0/f0;.b) fed the null straight into WindowInsetsCompat.toWindowInsetsCompat (issue #364 CONT-104 chess batch).",
   "layer": "framework (android_shadows ViewShadow computeSystemWindowInsets law)",
-  "root_cause": "AOSP View.computeSystemWindowInsets NEVER returns null for a non-null insets input (attached path returns the consumed variant after ViewRootImpl dispatch; no-AttachInfo fast path = outLocalInsets.setEmpty() + the SAME insets). The engine bridge was a silent stub returning null; chess androidx ActionBarOverlayLayout.onApplyWindowInsets -> f0.b (k1.b() platform non-null -> view.computeSystemWindowInsets -> k1.c(result, view) with R8-inlined requireNonNull) -> NPE (the SECOND k1.c null source).",
-  "fix": "ViewShadow law: out rect setEmpty() + return the INPUT insets object (the runtime's F-NEW-384 zero-inset window satisfies consumed-of-zero == input, matching BOTH AOSP paths' observable behavior). Probe row C104-CSWI same=true emptyLocal=true.",
-  "evidence": "run/cont104/chess_ct CL-TRACE d=3, p104i_pre2 same=false emptyLocal=false -> post same=true emptyLocal=true"
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_ct CL-TRACE d=3, p104i_pre2 same=false emptyLocal=false -> post same=true emptyLocal=true",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
  },
  {
   "id": "F-NEW-442c",
@@ -7204,9 +7208,11 @@
   "priority": "P2",
   "title": "Rect.isEmpty() had NO implementation — silent stub false for every consumer of computeSystemWindowInsets' out rect (issue #364 CONT-104 chess batch).",
   "layer": "framework (dalvik_engine Rect/RectF isEmpty law)",
-  "root_cause": "AOSP Rect.java: public final boolean isEmpty() { return left >= right && top >= bottom; } — the engine implemented width/height (field-reading) but not isEmpty; every isEmpty answered a silent false (the honesty red line's silent-default class), corrupting insets emptiness checks in androidx insets math.",
-  "fix": "Read the SAME plain int fields the Rect ctor bridge stores (left/top/right/bottom) and answer the AOSP conjunction law for Rect and RectF. Probe row C104-CSWI emptyLocal=true after the fix.",
-  "evidence": "p104i_post2 emptyLocal=false (stub) -> p104i_post3 emptyLocal=true"
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "p104i_post2 emptyLocal=false (stub) -> p104i_post3 emptyLocal=true",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
  },
  {
   "id": "F-NEW-442d",
@@ -7214,9 +7220,11 @@
   "priority": "P1",
   "title": "WindowInsets.inset(IIII) answered null — the R8-MOVED androidx delegate (androidx/lifecycle/c0;.j = pure insets.inset(l,t,r,b) delegation) fed the null into k1.c -> the THIRD requireNonNull NPE source (issue #364 CONT-104 chess batch).",
   "layer": "framework (dalvik_engine WindowInsets.inset law)",
-  "root_cause": "AOSP WindowInsets.inset(IIII) returns a NEW clamped WindowInsets and NEVER null. The engine bridge had no law; the silent stub null propagated through chess androidx g1.l (WindowInsetsCompat impl replace-insets path) -> k1.c(result, view) -> R8-inlined requireNonNull -> NPE x8.",
-  "fix": "Allocate a NEW real Landroid/view/WindowInsets; carrying the receiver's __root_insets__ marker and recording the applied deltas (__inset_l__/t/r/b) — the runtime's zero-inset window model keeps the numeric getters at their lawful 0 while the object identity law (non-null, fresh object) is exact.",
-  "evidence": "run/cont104/chess_ct2 CL-TRACE d=3 (g1.l), tg-independent chess_post4 f141 count 8->7"
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_ct2 CL-TRACE d=3 (g1.l), tg-independent chess_post4 f141 count 8->7",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
  },
  {
   "id": "F-NEW-442e",
@@ -7224,8 +7232,40 @@
   "priority": "P1",
   "title": "View.dispatchApplyWindowInsets(WindowInsets) answered null — androidx d0.a (R8-renamed dispatch wrapper) fed the null into k1.c -> the FOURTH requireNonNull NPE source (issue #364 CONT-104 chess batch).",
   "layer": "framework (android_shadows ViewShadow dispatchApplyWindowInsets law)",
-  "root_cause": "AOSP View.dispatchApplyWindowInsets: the registered OnApplyWindowInsetsListener if present, else onApplyWindowInsets(insets); the platform DEFAULT answers the insets object — NEVER null for a non-null input. The engine's F-NEW-384 walk already dispatches into DEX-level overrides BEFORE this bridge, so the bridge face is the no-listener/no-override pass-through; the silent stub null instead reached chess ActionBarOverlayLayout.onMeasure -> k1.c(stripped, content) -> NPE.",
-  "fix": "ViewShadow pass-through law: return the input insets object (null only for a null input). Chess f141 count after 442/442b/442c/442d/442e: 8 -> 0.",
-  "evidence": "run/cont104/chess_ct3 CL-TRACE d=2 (onMeasure), chess_post5 f141=0"
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_ct3 CL-TRACE d=2 (onMeasure), chess_post5 f141=0",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-443",
+  "title": "Wall dooz row was build-lineage-sensitive: the WANT anchor (31ddd4d5b8e6d18e) was the uniform-white GL-path face of a long-lived INCREMENTAL build, while a fresh FULL rebuild deterministically produces the software-path windowBackground face d602648e8e401895 — a harness measurement root, not an engine regression (issue #364 CONT-105 batch).",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "harness (cont70_gate.sh wall row / measurement law)",
+  "evidence": "evidence/cont105/triage.json + run/cont105/battery.log + run/cont70/regression/dooz_r1..3; binary afaad5bd4f56f9d3 (fresh full build at c9b0852b)",
+  "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-444",
+  "title": "AppLocalesMetadataHolderService SVCINFO 'library-manifest merge gap' (CONT-104 U9 observation in sudoku/notes) is a FALSE-POSITIVE gap: the service is absent from BOTH APKs' merged manifests, so AOSP throws the same NameNotFoundException — engine parity holds (issue #364 CONT-105 batch).",
+  "status": "NOT-APPLICABLE",
+  "priority": "P2",
+  "layer": "framework (PackageManager.getServiceInfo / manifest identity)",
+  "evidence": "aapt2 dump xmltree AndroidManifest.xml of both APKs (services: GeneratorService/PFABackupService etc., no AppLocales); binary-string search of both merged manifests: absent",
+  "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-445",
+  "title": "Telegram o6;.k theme-apply death: static o6.u1 (Lorg/telegram/ui/Components/xj0;) is null at first use — iput-boolean xj0.Y:Z on null → uncaught NPE (stderr pc=46). o6.<clinit> DID run (Paint arms k0/m0 materialized and colored), so u1 is NOT a clinit product; its lazy factory path never executed before first use (issue #364 CONT-105 batch).",
+  "status": "CLASSIFIED",
+  "priority": "P1",
+  "layer": "framework (dalvik_engine static-init order / lazy-singleton materialization)",
+  "evidence": "run/cont105/tg_pre.log (11693 lines, F084-HALT-RETURN x484 pacing + o6;.k face x1) + androguard disasm of Lorg/telegram/ui/ActionBar/o6;.k",
+  "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
  }
 ]

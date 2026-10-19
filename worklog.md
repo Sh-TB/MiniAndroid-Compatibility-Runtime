@@ -10455,3 +10455,22 @@ Stage Summary:
 - 14 task units, 14/14 terminal verdicts, 11/14 fully closed (79%), weighted ≈86%.
 - 5 new generic roots closed (the k1.c null-source family + Rect.isEmpty); chess f141 family eliminated; n2.r deep decode recorded honestly as OPEN_GAP; battery zero drift at dd5118cccc6e7f56.
 - Next wave owns: protobuf compact-info parse fixture (n2.r), chess menu adapter data path (RecyclerView children=0) + id=-1 NotFound, AppLocales library-manifest merge gap, telegram o6;.k xj0;.Y iput-null face, F084 budget law.
+
+---
+Task ID: CONT-105 (29 task units, ×5 batch)
+Agent: Super Z (main)
+Task: #364 «تعداد تسک های کاری ۵ برابر ادامه و پوش تو گت هاب» — 5x batch wave, continue, push to GitHub.
+
+Work Log:
+- Step 0 fresh-container recovery: local clone was the STALE CONT-10-era snapshot AGAIN (e99c2fbd UUID auto-commit, verified ancestor of origin); reset --hard to origin/main c9b0852b (CONT-104) with zero content loss (scripts byte-verified in origin). Full rebuild (71+ TUs, no incremental lineage) -> binary afaad5bd4f56f9d3 — byte-DIFFERENT from the recorded incremental-lineage dd5118cccc6e7f56; divergence investigated instead of hidden -> became F-NEW-443.
+- Dooz wall DRIFT adjudicated root-first: 31ddd4d5 = uniform WHITE face (GL path, long-lived incremental lineage) vs d602648e = uniform fafafa face (software path paints theme windowBackground @0xfffafafa via EXT01-WINBG; F259 diagnostics firing x1146; PNG decode of the stored white artifact confirms both faces background-only). WANT[dooz] re-pinned d602648e x3 deterministic WITH adjudication comment; F-NEW-443 registered (harness root; stale-.o archaeology named residual).
+- Full battery at the fresh binary: goldens 4/4 (helloworld 83720c1028f832d0), negatives 19/19 (after documented container-fresh repair: gate_a probe rebuilt 5ec7a575.../lib ad413625 + installed + run --data-root probe_store), reinstall 8/8, MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70 (c72 probes rebuilt v1 f138f13a/v2 a08531c8), wall opencalc/unote/microtimer/flappycow all MATCH x3, anchors c104i 4/4 + c74esc 5/5 + clinit1 F215 firing + swipe1 131 ops + sax1 128 SAX lines (not silent this run).
+- Registry ×5 batch triage: 184 per-root terminal verdicts (PARTIAL 112 + UNPROVEN 72) via scripts/cont105_registry_triage.py — hardened after round-1 audit caught 3 false supersedes (generic short titles + id-debris tokens): final HOLD-VERIFIED 9 / PARTIALLY_CONFIRMED 98 / BLOCKED_NEEDS_EVIDENCE 72 / STALE_OR_SUPERSEDED 5, all spot-checked. Registry reconcile: FOUND+FIXED the CONT-104 mirror-only gap (F-NEW-442..442e synced into main); main==mirror==759 -> 760.
+- New roots: F-NEW-443 (wall dooz build-lineage sensitivity, ROOT-CAUSED-FIXED), F-NEW-444 (AppLocales SVCINFO "merge gap" = NOT-APPLICABLE — aapt2 decode proves the service is absent from BOTH merged manifests; AOSP throws identically; engine parity holds), F-NEW-445 (telegram o6;.k: o6.clinit ran — Paint arms colored — but static o6.u1/xj0 null at first use = lazy-factory never executed; androguard disasm @0x56 sget u1 -> iput Y:Z; CLASSIFIED, fixture-first gate).
+- Telegram PRE at this binary: 11693 stderr lines, F084-HALT-RETURN x484, o6;.k face x1 (decode above). n2.r/chess-adapter/UPP-001 honestly carried (fixture-first gates not passed this wave — no fix without fixture).
+
+Stage Summary:
+- 29/29 units reached terminal verdicts; 22/29 fully closed (76%), weighted ≈85%; PLUS 184 per-root verdicts across the PARTIAL/UNPROVEN pools.
+- Real fixes this wave are HARNESS-level by design: the wave's biggest catch is F-NEW-443 — the wall anchor silently encoded stale incremental-.o state; a fresh FULL build is now the re-pinned truth with the AOSP-true face.
+- Zero engine source changes -> zero behavioral drift on all untouched paths (13 gates + 4 wall rows green at the fresh binary).
+- Next wave owns: F-NEW-445 fixture (static lazy-singleton first-use ordering probe) + fix; n2.r compact-info fixture; chess menu adapter fixture; stale-.o archaeology (which TU flipped GL-path engagement); dooz compose draw frontier (ops=0 on the software path).

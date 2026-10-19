@@ -7177,5 +7177,101 @@
   },
   "registered_wave": "CONT-103",
   "registered_date": "2026-10-18"
+ },
+ {
+  "id": "F-NEW-443",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "title": "Wall dooz row was build-lineage-sensitive: the WANT anchor (31ddd4d5b8e6d18e) was the uniform-white GL-path face of a long-lived INCREMENTAL build, while a fresh FULL rebuild deterministically produces the software-path windowBackground face d602648e8e401895 — a harness measurement root, not an engine regression (issue #364 CONT-105 batch).",
+  "layer": "harness (cont70_gate.sh wall row / measurement law)",
+  "root_cause": "CONT-104's binary (dd5118cccc6e7f56) came from an incremental build dir whose .o lineage reaches back before the CONT-99..104 source; a container-fresh FULL rebuild of the SAME source compiles every TU and engages the View-tree software path for dooz (EXT01-WINBG paints the resolved theme windowBackground @0xfffafafa behind the not-yet-drawn Compose tree — ops=0, known open frontier). The GL-path white face (31ddd4d5) and the software-path fafafa face (d602648e) are BOTH background-only faces; the fafafa face is AOSP-true. The wall WANT pinned on the incremental lineage silently encoded stale .o state — the exact measurement-harness fragility CONT-78 AUDIT ADDENDUM warned about. Residual honestly open: which TU's staleness flipped the GL-path engagement is NOT yet identified (the CONT-104 binary is deleted; stale-.o archaeology needs a reproducible incremental lineage).",
+  "fix": "Adjudicated A/B: 31ddd4d5 = uniform (255,255,255) vs d602648e = uniform (250,250,250); [EXT01-WINBG] windowBackground=@0xfffafafa live in the current run; F259 diagnostics fire (1146 events) proving the compose machinery active; PNG decode of the stored 31ddd4d5 artifact (docs/evidence/campaign014/dooz/screenshot.png) confirms the white face. WANT[dooz] re-pinned to d602648e8e401895 x3 deterministic with the adjudication comment in scripts/cont70_gate.sh; all other wall rows (opencalc/unote/microtimer/flappycow) byte-identical MATCH x3 on the fresh build.",
+  "evidence": "evidence/cont105/triage.json + run/cont105/battery.log + run/cont70/regression/dooz_r1..3; binary afaad5bd4f56f9d3 (fresh full build at c9b0852b)",
+  "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-444",
+  "status": "NOT-APPLICABLE",
+  "priority": "P2",
+  "title": "AppLocalesMetadataHolderService SVCINFO 'library-manifest merge gap' (CONT-104 U9 observation in sudoku/notes) is a FALSE-POSITIVE gap: the service is absent from BOTH APKs' merged manifests, so AOSP throws the same NameNotFoundException — engine parity holds (issue #364 CONT-105 batch).",
+  "layer": "framework (PackageManager.getServiceInfo / manifest identity)",
+  "root_cause": "androidx.appcompat's AppLocalesMetadataHolderService must be declared by the APP's manifest (library manifests are merged at BUILD time by the upstream manifest merger, not at runtime). aapt2-decode of upload/sudoku_secuso_101.apk and upload/notes_secuso_105.apk proves the merged AndroidManifest.xml contains NO AppLocalesMetadataHolderService entry; a real Android device answers getServiceInfo for it with NameNotFoundException too. The appcompat caller catches NameNotFoundException by design (per-app locales storage falls back). MiniAndroid's SVCINFO miss therefore matches AOSP exactly; the 'library-manifest merge gap' classification in CONT-104 was a false positive.",
+  "fix": "Verdict recorded NOT-APPLICABLE with manifest-level proof; no engine change (an engine 'fix' here would create a service AOSP does not have — a fake-positive).",
+  "evidence": "aapt2 dump xmltree AndroidManifest.xml of both APKs (services: GeneratorService/PFABackupService etc., no AppLocales); binary-string search of both merged manifests: absent",
+  "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-442",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "title": "View.getRootWindowInsets() answered null on ATTACHED views — androidx ViewCompat.getRootWindowInsets consumers died in the R8-inlined requireNonNull of WindowInsetsCompat.toWindowInsetsCompat (issue #364 CONT-104 chess batch).",
+  "layer": "framework (android_shadows ViewShadow getRootWindowInsets law)",
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_pre (PRE NPE x8), run/cont104/p104i_pre|post (probe 4/4), chess_post5 f141=0",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-442b",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "title": "View.computeSystemWindowInsets(WindowInsets, Rect) answered null — androidx Api23Impl.computeSystemWindowInsets (Ln0/f0;.b) fed the null straight into WindowInsetsCompat.toWindowInsetsCompat (issue #364 CONT-104 chess batch).",
+  "layer": "framework (android_shadows ViewShadow computeSystemWindowInsets law)",
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_ct CL-TRACE d=3, p104i_pre2 same=false emptyLocal=false -> post same=true emptyLocal=true",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-442c",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P2",
+  "title": "Rect.isEmpty() had NO implementation — silent stub false for every consumer of computeSystemWindowInsets' out rect (issue #364 CONT-104 chess batch).",
+  "layer": "framework (dalvik_engine Rect/RectF isEmpty law)",
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "p104i_post2 emptyLocal=false (stub) -> p104i_post3 emptyLocal=true",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-442d",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "title": "WindowInsets.inset(IIII) answered null — the R8-MOVED androidx delegate (androidx/lifecycle/c0;.j = pure insets.inset(l,t,r,b) delegation) fed the null into k1.c -> the THIRD requireNonNull NPE source (issue #364 CONT-104 chess batch).",
+  "layer": "framework (dalvik_engine WindowInsets.inset law)",
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_ct2 CL-TRACE d=3 (g1.l), tg-independent chess_post4 f141 count 8->7",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-442e",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "title": "View.dispatchApplyWindowInsets(WindowInsets) answered null — androidx d0.a (R8-renamed dispatch wrapper) fed the null into k1.c -> the FOURTH requireNonNull NPE source (issue #364 CONT-104 chess batch).",
+  "layer": "framework (android_shadows ViewShadow dispatchApplyWindowInsets law)",
+  "root_cause": "(synced from canonical mirror — full decode in evidence/cont104/evidence.json: four null sources feeding androidx WindowInsetsCompat.toWindowInsetsCompat Ln0/k1;.c R8-inlined requireNonNull getClass())",
+  "fix": "F-NEW-442 getRootWindowInsets attach law; 442b computeSystemWindowInsets non-null law; 442c Rect.isEmpty AOSP conjunction; 442d WindowInsets.inset(IIII) non-null law; 442e dispatchApplyWindowInsets pass-through law",
+  "evidence": "run/cont104/chess_ct3 CL-TRACE d=2 (onMeasure), chess_post5 f141=0",
+  "registered_wave": "CONT-104",
+  "registered_date": "2026-10-19"
+ },
+ {
+  "id": "F-NEW-445",
+  "status": "CLASSIFIED",
+  "priority": "P1",
+  "title": "Telegram o6;.k theme-apply death: static o6.u1 (Lorg/telegram/ui/Components/xj0;) is null at first use — iput-boolean xj0.Y:Z on null → uncaught NPE (stderr pc=46). o6.<clinit> DID run (Paint arms k0/m0 materialized and colored), so u1 is NOT a clinit product; its lazy factory path never executed before first use (issue #364 CONT-105 batch).",
+  "layer": "framework (dalvik_engine static-init order / lazy-singleton materialization)",
+  "root_cause": "Live PRE run (11693 stderr lines): [S123-CLINIT-MAT] o6.k0 Paint materialized (clinit attempted=true stored_null=false) → [F298-SETCOLOR] k0 @o6.k pc=13 0xffd9d9d9, m0 @pc=24 0x3362a9e3 BOTH succeed → [SYNTH-EXC] iput-null-recv xj0.Y:Z @o6.k pc=46 uncaught. androguard disasm (scripts/cont104_disasm.py, classes3.dex): o6.k @0x56 sget-object v0, o6->u1 Lxj0; then iput-boolean of Y:Z on v0 — no null guard in the bytecode (AOSP/dalvik would NPE identically IF u1 were null; the divergence is that on ART u1 is NEVER null here because its factory path ran earlier). Root = the engine skipped/deferred whatever earlier path assigns o6.u1 (xj0 instance factory — shared theme-config singleton), i.e. a static-init-order/lazy-factory gap upstream of o6.k.",
+  "fix": "PENDING fixture-first (protocol): (1) xref all iput-object writers of o6->u1 and the xj0 ctor callers; (2) synthetic probe reproducing static-lazy-singleton-first-use ordering; (3) generic fix on the engine's init-order law — no app-specific patch.",
+  "evidence": "run/cont105/tg_pre.log (11693 lines, F084-HALT-RETURN x484 pacing + o6;.k face x1) + androguard disasm of Lorg/telegram/ui/ActionBar/o6;.k",
+  "registered_wave": "CONT-105",
+  "registered_date": "2026-10-19"
  }
 ]
