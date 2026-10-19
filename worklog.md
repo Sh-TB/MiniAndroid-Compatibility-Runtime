@@ -10506,3 +10506,7 @@ Work Log (CONT-106 continued):
 Stage Summary:
 - CONT-106 closed the CONT-105 P1 carry (F-NEW-445) end-to-end: decode -> fixture -> PRE faces -> generic fix -> POST faces -> real-app proof -> full battery zero drift. 15 units to terminal verdicts, 8 fully closed, registry 764, all evidence under evidence/cont106 + run/cont106.
 - Next wave owns: F-NEW-447 (ROOT-059 routing A/B via ready probe row), F-NEW-448 (c106b2 toolbar/theme-dimension probe), F-NEW-449 (c106b reflection-count probe), dooz AndroidCanvas bridge.
+- Ledger posted to #364 as comment 6261275449; push verified HEAD == origin/main == 4ec86e71.
+
+Stage Summary (final):
+- CONT-106 fully closed and pushed: F-NEW-445/446 P1 telegram root fixed end-to-end (fixture PRE/POST + real-app proof + zero-drift battery), F-NEW-447/448/449 registered with ready probe levers, registry 764 mirrored, all three commits secret-guard PASS.
