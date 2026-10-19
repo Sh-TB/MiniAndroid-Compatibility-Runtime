@@ -10432,3 +10432,26 @@ Stage Summary:
 - Telegram trajectory this wave: 3 deterministic startup death families (svcinfo-empty-MISS NameNotFound; protobuf "No factory"; ABI extraction) ALL RESOLVED with 7 new registry roots; remaining = F084 budget pacing + n2.r successor aget-oob + NDK stub dependency — all honestly recorded.
 - Success rate: 10/17 fully closed (59%), verdicts delivered 17/17, weighted ≈72%.
 - Next wave owns: play_billing n2.r pc=692 aget-oob decode (length=11 index=11), telegram F084 startup budget law ( SvgHelper.parseFloat compute concentration), NDK stub-lib frontier (UPP-001), chess start;.onCreate pc=9 NPE.
+
+---
+Task ID: CONT-104 (14 task units)
+Agent: Super Z (main)
+Task: #364 «ادامه» (trace 1a1519f133677435) — batch mode ≥10-15 units per round, Telegram-first, CONT-103 handover (n2.r aget-oob / F084 budget / UPP-001 NDK / chess pc=9 NPE).
+
+Work Log:
+- Step 0 fresh-container recovery: local HEAD was a STALE CONT-10-era snapshot (e99c2fbd, UUID-message auto-commits — both verified ANCESTORS of origin/main); fast-forwarded to origin/main 99ffb45c (CONT-103 worklog); deterministic rebuild reproduced the CONT-103 battery binary 2bb822526e7588a5 byte-identically.
+- #364 re-read: 69 comments; latest = our CONT-103 RESULT (6254741929); NO new user cards since — wave mandate from the standing directive + CONT-103 handover list.
+- U2 telegram PRE (12182 stderr lines): n2.r pc=692 aget-oob (length=11; index=11) CONFIRMED x1 at LaunchActivity.onCreate boundary; F084-HALT-RETURN x531 (VMError x322 = pacing); NEW small face iput-null-recv o6;.k pc=46 (xj0;.Y on null); UnsatisfiedLinkError x1.
+- U3 n2.r decode (androguard installed; scripts/cont104_disasm.py): class = com.google.android.gms.internal.play_billing.n2 (protobuf-lite MessageSchema builder); OOB at byte 0x568 aget-object in the field-NAME walk (n2.B -> getDeclaredField -> Unsafe.objectFieldOffset zze..zzj 12 offsets + zzn=144); walked array len 11 vs loop bound from the s2 MessageInfo construction — CONFIRMED_OPEN_GAP, fixture-first next wave.
+- U4 chess decode+fix: the pc=9 NPE is androidx WindowInsetsCompat.toWindowInsetsCompat (Ln0/k1;.c) requireNonNull via R8-inlined getClass() — FOUR null producers decoded one CL-TRACE at a time: View.getRootWindowInsets (F-NEW-442), View.computeSystemWindowInsets (F-NEW-442b, via f0.b), WindowInsets.inset(IIII) (F-NEW-442d, via R8-MOVED androidx/lifecycle/c0;.j), View.dispatchApplyWindowInsets (F-NEW-442e, via d0.a from onMeasure); plus Rect.isEmpty silent-false (F-NEW-442c). f141 count 8 -> 0; chess boots into the appcompat+Material menu skeleton. Probe fixtures/cont104_insets_probe 4/4 (PRE face captured on frozen baseline first).
+- U5 anchors at final binary: c74esc containment 5/5; c103a component rows green; clinit1 F-NEW-215 firing; swipe1 GCB-E2 verified with --swipe; sax1 silent (known pacing artifact, honest null).
+- U6 battery ZERO DRIFT: wall 4/4 byte-identical x3, goldens 4/4, negatives 19/19 (after documented container-fresh repair: gate_a probe rebuilt+installed+run into run/gatea/probe_store), reinstall identity 5/5 (hidden_sources restored from upload/canonical_apks), MG-310 7/7, MG-150 3/3, selftests 13/13, F-NEW-376 70/70 (c72 probes rebuilt in-container).
+- U7 UPP-001: BLOCKED_NEEDS_EVIDENCE unchanged (real dlopen -> real dlerror libjnigraphics; forkgram arm64 refusal).
+- U8 CONT-89/92: PARTIALLY_CONFIRMED (CONT-103 closures hold; F084 pacing + n2.r + NDK remain).
+- U9/U10 white sweep + corpus matrix at new HEAD: flappy 95% / sudoku 99.8% / chessclock 97% / notes full / klondike WebView-white — NO regression; NEW non-fatal observation: AppLocalesMetadataHolderService SVCINFO miss (library-manifest merge gap) in sudoku/notes.
+- U11 registry 752 -> 757 (F-NEW-442..442e) mirrored; U12 evidence/cont104/evidence.json + this worklog; U13 #364 comment; U14 push + verify.
+
+Stage Summary:
+- 14 task units, 14/14 terminal verdicts, 11/14 fully closed (79%), weighted ≈86%.
+- 5 new generic roots closed (the k1.c null-source family + Rect.isEmpty); chess f141 family eliminated; n2.r deep decode recorded honestly as OPEN_GAP; battery zero drift at dd5118cccc6e7f56.
+- Next wave owns: protobuf compact-info parse fixture (n2.r), chess menu adapter data path (RecyclerView children=0) + id=-1 NotFound, AppLocales library-manifest merge gap, telegram o6;.k xj0;.Y iput-null face, F084 budget law.

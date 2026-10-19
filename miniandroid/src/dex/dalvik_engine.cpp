@@ -39108,6 +39108,72 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // F-NEW-442c (CONT-104) — AOSP Rect.isEmpty law (Rect.java):
+    //   public final boolean isEmpty() { return left >= right && top >= bottom; }
+    // Previously unimplemented → silent stub false for every consumer of
+    // computeSystemWindowInsets' out rect (androidx insets math) — the same
+    // silent-default class the honesty red line forbids. Reads the SAME
+    // plain int fields the Rect ctor bridge stores (F-CTX rect law).
+    if (method == "isEmpty" &&
+        (class_name == "Landroid/graphics/Rect;" ||
+         class_name == "Landroid/graphics/RectF;")) {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        if (recv != 0) {
+            auto rf = [&](const char* f) -> int32_t {
+                auto v = heap_.get_object_field(recv, f);
+                return (v.has_value() && v->type == DalvikType::INT32)
+                           ? v->int_val : 0;
+            };
+            bool empty =
+                rf("left") >= rf("right") && rf("top") >= rf("bottom");
+            result = DalvikValue::make_int(empty ? 1 : 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // F-NEW-442d (CONT-104) — AOSP WindowInsets.inset(IIII) law
+    // (WindowInsets.java): returns a NEW WindowInsets (clamped, NEVER null)
+    // for every receiver. Real-APK oracle: chess androidx g1.l
+    // (WindowInsetsCompat impl replace-insets path — R8 MOVED the delegate
+    // into androidx/lifecycle/c0.j, a pure `insets.inset(l,t,r,b)`
+    // delegation) → k1.c(result, view) with the R8-inlined requireNonNull
+    // getClass() → the silent bridge-stub null was the THIRD k1.c NPE
+    // source ×8 (run/cont104/chess_ct2 CL-TRACE d=3).
+    // Runtime window model (F-NEW-384 zero-inset window): the result
+    // carries the same __root_insets__ marker as the receiver and records
+    // the applied deltas (__inset_l__/t/r/b) for any reader; the numeric
+    // getters stay at the model's lawful 0.
+    if (method == "inset" && class_name == "Landroid/view/WindowInsets;" &&
+        args.size() >= 5) {
+        uint32_t recv =
+            (args[0].type == DalvikType::OBJECT_REF) ? args[0].object_id : 0;
+        if (recv != 0) {
+            uint32_t ni = heap_.allocate("Landroid/view/WindowInsets;", 0, 0);
+            auto recv_flag = heap_.get_object_field(recv, "__root_insets__");
+            if (recv_flag.has_value())
+                heap_.set_object_field(ni, "__root_insets__", *recv_flag);
+            else
+                heap_.set_object_field(ni, "__root_insets__",
+                                       DalvikValue::make_int(1));
+            auto delta = [&](size_t i) -> int32_t {
+                const DalvikValue& v = args[i];
+                return (v.type == DalvikType::INT32) ? v.int_val : 0;
+            };
+            heap_.set_object_field(ni, "__inset_l__",
+                                   DalvikValue::make_int(delta(1)));
+            heap_.set_object_field(ni, "__inset_t__",
+                                   DalvikValue::make_int(delta(2)));
+            heap_.set_object_field(ni, "__inset_r__",
+                                   DalvikValue::make_int(delta(3)));
+            heap_.set_object_field(ni, "__inset_b__",
+                                   DalvikValue::make_int(delta(4)));
+            result = DalvikValue::make_object(ni,
+                                              "Landroid/view/WindowInsets;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // ────────────────────────────────────────────────────────────────────────
     // S109 ROOT-033b — Drawable intrinsic/minimum dims (AOSP law).
     // AOSP Drawable: getIntrinsicWidth/Height answer the intrinsic dims
