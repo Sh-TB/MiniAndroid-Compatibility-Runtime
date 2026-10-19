@@ -1,0 +1,92 @@
+{
+ "wave": "CONT-107",
+ "issue": 364,
+ "date": "2026-10-19",
+ "base_commit": "44bbcb21 (CONT-106 closeout)",
+ "final_binary_sha16": "1e3efdb4209764a9",
+ "binary_lineage": [
+  "f72413b74525d3b0 pre-107 baseline (CONT-106, reproduced byte-identical from fresh container AND from stash-rebuild — two independent reproductions)",
+  "3b5ca178710c171f F-NEW-447 + F-NEW-450 (probe-verified)",
+  "1e3efdb4209764a9 + F-NEW-452 (final; full battery green)"
+ ],
+ "container_recovery": {
+  "stale_snapshot": "e99c2fbd (CONT-10-era, registry 566) — ancestor of origin",
+  "reset_to": "origin/main 44bbcb21",
+  "registry": "566 -> 764 after reset",
+  "binary_rebuild": "fresh full make -j2 -> f72413b74525d3b0 byte-identical",
+  "probe_repair": "gate_a_probe rebuilt (lib ad413625925ed8e5, matches CONT-105 record) + canonical install+run (98/0/1); c72priv v1/v2 rebuilt 3621c8ed9526e094/111ff9fc662704a4 (zip-timestamp shas differ from CONT-106 record; dex logic identical; f376 70/70 on rebuilt probes)"
+ },
+ "task_364_read": {
+  "total_comments": 72,
+  "new_after_6261275449": 0,
+  "mission": "CONT-106 declared next-wave ownership: F-NEW-447 (probe row ready), F-NEW-448 (theme-dimension lever), F-NEW-449 (reflection-count probe), dooz draw frontier"
+ },
+ "fixes": [
+  {
+   "id": "F-NEW-447",
+   "what": "ROOT-059 caller-domain gate: null-recv shadow routing only for framework-owned caller frames; app-DEX callers get the ART-faithful NPE (bounded [F447-NPE] marker)",
+   "probe": "c106a INVOKE2 row: PRE NO-EXC + [ROOT-059] line -> POST NPE + [F447-NPE] line; all other rows unchanged",
+   "real_app": "telegram: the gate EXPOSED Configuration.locale=null (c41.run pc=66) as an ART-faithful NPE (1 marker row) — healed by F-NEW-452; opencalc: ZERO marker rows (proof of zero changed call sites); chess: zero rows"
+  },
+  {
+   "id": "F-NEW-450",
+   "what": "TypedArray dimension law: producers record slot TypedValue type (array_type[i], unconditional per-slot write) and store raw data in ALL stages; the dimension readers convert (getDimensionPixelSize/getLayoutDimension -> pixel_size, getDimensionPixelOffset -> truncation); untyped legacy slots keep old semantics",
+   "probe": "c106b2: PRE dim=14337 (raw 0x3801) -> POST dim=147 = 56dp x 2.625 density = AOSP-true device px; resolve/type/static/measure rows all correct",
+   "real_app": "opencalc umanoPanelHeight 10497 -> 108px (41dp x 2.625 = AOSP-true); wall WANT re-pinned 13d2d6d836f75e7f x3 with adjudication (dooz F-NEW-443 precedent); the exposed downstream chain registered as F-NEW-451"
+  },
+  {
+   "id": "F-NEW-452",
+   "what": "Configuration.locale non-null law: Resources.getConfiguration() singleton seeds locale = default Locale (AOSP setToDefaults), tag identity mirrors Locale.getDefault()",
+   "probe": "androguard decode run/c107/c41_scan.txt: c41.run pc=65 iget-object Configuration;->locale (null) -> pc=66 Locale.getLanguage NPE",
+   "real_app": "telegram: F447-NPE 1 -> 0 rows; telegram PNG byte-identical to pre-107 baseline (20ac8cbbbb692e63)"
+  }
+ ],
+ "decodes": [
+  {
+   "id": "F-NEW-448 refresh",
+   "finding": "REFUTED the CONT-106 static root: Toolbar.onMeasure opens with sget-boolean Ll/m3;->a:Z whose result is immediately overwritten (dead class-init trigger); the field has ZERO writers APK-wide; it is the ONLY static read in onMeasure. Chess toolbar still 1080x0 on the final binary — real root = toolbar content/min-height measure chain (remains CONFIRMED_OPEN_GAP)"
+  },
+  {
+   "id": "F-NEW-449 refresh",
+   "finding": "c106b reflection-count probe GREEN on the engine (count 11/11, Unsafe offsets 11/11 zero throws, order stable, mods 3/8) — registered negative control; n2.r OOB needs a MessageInfo-metadata-side probe (remains CONFIRMED_OPEN_GAP)"
+  },
+  {
+   "id": "F-NEW-451 new",
+   "finding": "opencalc under AOSP-true dims = keypad-only face (3 colors, digits/labels missing); A/B: pre-107 reproduces old face byte-identically; 17 gated reads identical between binaries; first divergence = missing MainActivity.getDrawable(0x7f08007f res/MB.xml) after SlidingUpPanelLayout init; downstream root not yet decoded — CONFIRMED_OPEN_GAP, fixture-first next wave"
+  }
+ ],
+ "battery_final_binary": {
+  "wall": "12/12 MATCH x3 (dooz d602648e / opencalc 13d2d6d8 re-pinned / unote 90a67cc1 / microtimer bbd350b6)",
+  "goldens": "4/4",
+  "negatives_reinstall": "19/19 (after documented gate_a_probe rebuild + canonical install+run, CONT-105/106 precedent)",
+  "mg310": "7/7",
+  "mg150": "3/3",
+  "selftests": "13/13",
+  "f376_fault": "70/70 (incl. c72priv rows on rebuilt probes)",
+  "gate_a": "98/0/1",
+  "probes": "c106a 4 rows + INVOKE2=NPE / c106b2 5 rows dim=147 / c106b 6 rows green / c104i 4/4 / c74esc 5/5"
+ },
+ "registry": {
+  "main": 767,
+  "mirror": 767,
+  "new": [
+   "F-NEW-450",
+   "F-NEW-451",
+   "F-NEW-452"
+  ],
+  "closed": [
+   "F-NEW-447"
+  ],
+  "refreshed": [
+   "F-NEW-448",
+   "F-NEW-449"
+  ]
+ },
+ "honest_notes": [
+  "Probe APK sha16s are zip-timestamp unstable across rebuilds (c106a 381ea05274119c8b vs CONT-106 record 154d15f04ebc0664; c72priv v1/v2 likewise) — source content identical, row behavior identical",
+  "opencalc wall WANT re-pinned under the AOSP-true law; the old face encoded raw-garbage dimension behavior (f25b754c4565c38b); the new face is a content DEGRADATION owned honestly as F-NEW-451 (not AOSP-proven complete — the downstream chain is the next wave's work)",
+  "The telegram 60s-profile face (2161 non-white px, theme frame views) is byte-identical pre/post; the CONT-106 F084 x599 face uses a longer profile and was not re-run this wave",
+  "dooz compose draw frontier + UPP-001 remain BLOCKED_NEEDS_EVIDENCE / BLOCKED (carried honestly, untouched this wave)",
+  "typedValue coerceToString answered null in the c106b2 TYPE row (val=null) — cosmetic shadow gap, not registered as its own root (no consumer observed)"
+ ]
+}
