@@ -1,0 +1,79 @@
+{
+  "wave": "CONT-111",
+  "issue": 364,
+  "date": "2026-10-20",
+  "base_commit": "e1820b8e (CONT-108)",
+  "final_binary_sha16": "edc971f97e0db048",
+  "binary_lineage": [
+    "5fe175d4133562eb = pre-fix bracket (fresh worktree at HEAD e1820b8e, zero fix code)",
+    "edc971f97e0db048 = fix build (working tree with the F-NEW-448 family)"
+  ],
+  "mission": {
+    "directives_read": "CONT-109 (30-track batch) + CONT-110 (50-task white-screen/Telegram repair) consumed from #364 comments 6271436339/6271515303/6271525124; mission = CONT-108 declared next-wave ownership (F-NEW-448/449) + registry reconciliation (CONT-109 'establish truth') + F-NEW-367 refresh.",
+    "container_recovery": "stale CONT-10 snapshot reset to origin/main e1820b8e (224 commits ahead); binary rebuilt from source; registry mirror-vs-main drift (F-NEW-451 status + missing F-NEW-453) reconciled."
+  },
+  "wagons": [
+    {
+      "id": "W1-registry-sync",
+      "task": "root_registry.json reconciled with canonical mirror: F-NEW-451 CONFIRMED_OPEN_GAP->ROOT-CAUSED-FIXED (CONT-108 outcome was never synced) + F-NEW-453 added (767->768, id-unique both ways)",
+      "status": "TESTED",
+      "evidence": "scripts/cont111_registry_sync.py"
+    },
+    {
+      "id": "W2-F-NEW-448-family",
+      "task": "AOSP View suggested-minimum family IMPLEMENTED+TESTED: setMinimumWidth/Height + getMinimumWidth/Height + getSuggestedMinimumWidth/Height shadows (were ABSENT — zero dispatch sites, every DEX measure chain max()ing against the suggested minimum answered 0); ViewNode.min_width/min_height state; android:minWidth 0x01010150 / android:minHeight 0x01010151 seeding (element attrs + style/theme bag via apply_style_item first-writer slots, element>bag>0 precedence)",
+      "status": "TESTED",
+      "probe": "fixtures/cont111_minmeasure (c448.apk sha16 3140c3960229a4e6, real aapt2/ECJ/D8)",
+      "probe_result": "7/7 rows: DEFAULT 0/0, SETH 147/147, SETW 88/88, INDEP 147/88, OVERWRITE 147, NEGATIVE 0, MEASURE Toolbar-shaped AT_MOST chain = 168",
+      "ab_bracket": "pre-fix binary 0/7 rows (setMinimumHeight stored nothing, suggested answered 0, Toolbar-shaped chain measured 0) -> fix binary 7/7 — the law is fix-caused end-to-end",
+      "evidence": "run/c111/c448.log + /tmp/c111_ab_pre.log (bracket) + scripts/cont111_build_probe.sh"
+    },
+    {
+      "id": "W3-F-NEW-448-chess-AB",
+      "task": "chess_jwtc_298 appcompat Toolbar A/B at 1080x1920: render trees BYTE-IDENTICAL pre/post (ActionBarContainer 1080x168 pre-existing via the engine's own actionBarSize chain; Toolbar 1080x0 both) — the DEX-constructed Toolbar never receives a min seed: old appcompat ctor has zero setMinimumHeight callsites (androguard decode) and the DEX view-construction path (run_custom_view_constructor -> AttributeSetStore) has no View-ctor attr seeding",
+      "verdict": "F-NEW-448 stays CONFIRMED_OPEN_GAP; root cause REFINED: layer 1 (shadow family absence) FIXED this wave; layer 2 = View-ctor attr-chain seeding (framework View ctor must read android:minWidth/minHeight from the AttributeSet/style/theme the app passes to super(context, attrs)) — machinery named: AttributeSetStore + ViewShadow node creation",
+      "evidence": "run/c111/chess_post.log + /tmp/c111_chess_pre.log + scripts/c108_render_tree.py + scripts/cont111_scan_toolbar.py"
+    },
+    {
+      "id": "W4-F-NEW-367-refresh",
+      "task": "F-NEW-367 (libGDX native-load BLOCKED premise) SUPERSEDED-BY-EVIDENCE: the native bridge landed as #371 CLOSEOUT S-2 (real dlopen + JNI_OnLoad + symbol resolution), F-NEW-382b (lazy G-4 nativeLibraryDir derivation citing the SAME stack.tower3d evidence), F-NEW-441 (on-demand extraction; System.load absolute-path branch implemented)",
+      "honest_residual": "live libGDX re-run pending APK re-supply (stack.tower3d_1/bouncy_43 lost in a container reset; flappycow_rebuilt carries no native libs)",
+      "status": "SUPERSEDED-BY-EVIDENCE"
+    },
+    {
+      "id": "W5-F-NEW-449-revalidated",
+      "task": "F-NEW-449 revalidated at e1820b8e: negative control (reflection count-agreement, c106b) still green — the OOB needs protobuf-lite MessageInfo metadata, not reflection counts; stays CONFIRMED_OPEN_GAP with the same lever",
+      "status": "CONFIRMED_OPEN_GAP"
+    }
+  ],
+  "battery_final_binary": {
+    "binary": "edc971f97e0db048",
+    "wall": "4 rows x3 = 12/12 MATCH (dooz d602648e8e401895, opencalc d5f3c7b5e9936ae6, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52 — all byte-identical, zero drift from the fix)",
+    "goldens": "4/4 (helloworld canonical 83720c1028f832d0)",
+    "negatives": "19/19 (after canonical install+run; interim 9/19 = cont98-documented sequence artifact, results file regenerated at the fix binary: 99 PASS/INFO rows)",
+    "reinstall": "8/8",
+    "mg310_mg150": "rc=0 / rc=0",
+    "selftests": "13/13 rc=0",
+    "f376_fault": "70/70 (after container-fresh c72priv v1/v2 rebuild: b831bee29d6eb3fb / 8b1a010254dd5c8f)",
+    "prior_probes": "c106a SENTINEL/FACTORY/CLINITFAIL/INVOKE + F447-NPE parity all green; c106b2 dim=147; c74esc VERSION/SELF/VOL-ESC/VOL-ESC2 all green"
+  },
+  "drift_adjudications": [
+    {
+      "row": "chess_jwtc_298",
+      "old": "toolbar face (no wall anchor; CONT-107 recorded toolbar 1080x0)",
+      "new": "byte-identical tree pre/post fix (bracketed with 5fe175d4 fresh-worktree build)",
+      "verdict": "ZERO face delta — honest no-change; the family law has no chess visible effect until the DEX-ctor seeding lands"
+    }
+  ],
+  "honest_notes": [
+    "The wave's code fix (suggested-minimum family) is proven by probe + A/B bracket but the chess app face did not advance — F-NEW-448 remains open with a REFINED two-layer root cause; no fake closure.",
+    "gate_a negatives 9/19 interim was a sequence artifact (cont98 precedent re-confirmed): the canonical install+run regenerates gate_a_results.jsonl; documented, not hidden.",
+    "F-NEW-449 requires protobuf-lite MessageInfo metadata decoding — out of this wave's scope; negative control re-verified green.",
+    "android:minWidth/minHeight style-bag seeding covers the INFLATION path; the DEX-CONSTRUCTED view path (appcompat delegate new Toolbar(context, attrs)) does not consume AttributeSetStore for min seeds — the named next lever."
+  ],
+  "success_rate": {
+    "work_units_terminal": 5,
+    "fully_closed": 2,
+    "note": "W1 registry sync + W4 F-NEW-367 supersession fully closed; W2 family law implemented+tested (not app-face-closed); W3 chess A/B honest zero-delta with refined lever; W5 449 revalidated-open. Weighted ~70% (probe-proven law + full green battery, zero unadjudicated drift)."
+  }
+}

@@ -338,6 +338,14 @@ private:
         bool single_line = false;
         // MG-073 (S98): android:ellipsize — TextUtils.TruncateAt ordinal.
         int  ellipsize = 0;
+        // ── F-NEW-448 (CONT-111): android:minWidth/minHeight ────────────────
+        // INT_MIN = unset sentinel. The element-attr loop writes min_w/min_h
+        // directly; the style/theme bag (apply_style_item, attr keys
+        // 0x01010150/0x01010151) writes the style slots under the
+        // first-writer-wins guard; the commit resolves
+        // element > style-bag > 0 (AOSP ApplyStyle precedence).
+        int  min_w = INT_MIN, min_h = INT_MIN;
+        int  style_min_w = INT_MIN, style_min_h = INT_MIN;
         int  padding_all = 0;
         int  elevation_px = 0;
         bool weight_sum_valid = false;

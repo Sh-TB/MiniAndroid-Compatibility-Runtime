@@ -10549,3 +10549,25 @@ Work Log:
 
 Stage Summary:
 - F-NEW-451 CLOSED (ROOT-CAUSED-FIXED via F-NEW-453); F-NEW-453 new P0 law landed with probe-free final binary cac0ee70d8c951b4; wall 33/33 + full battery green; 2 drifts honestly adjudicated (1 improvement, 1 build-lineage); F-NEW-448/449 remain CONFIRMED_OPEN_GAP (next-wave levers); push verified HEAD==origin/main.
+
+---
+Task ID: CONT-111
+Agent: Super Z (main)
+Task: #364 CONT-111 elephant wave — directives CONT-109/110 consumed; container recovery (stale snapshot -> e1820b8e); registry reconciliation; F-NEW-448 suggested-minimum family fix with A/B bracketing; F-NEW-367 supersession; full battery; push.
+
+Work Log:
+- Container recovery: stale CONT-10 snapshot (HEAD 6a66806a+1) reset to origin/main e1820b8e (224 commits ahead); binary rebuilt from source (edc971f97e0db048).
+- W1: root_registry.json reconciled with canonical mirror — F-NEW-451 status synced (CONT-108 outcome never synced to main), F-NEW-453 added (767->768, id-unique).
+- Directives: CONT-109 (30-track) + CONT-110 (50-task) consumed from comments 6271436339/6271515303/6271525124; mission = CONT-108's declared next-wave ownership.
+- W2 F-NEW-448 layer 1: AOSP View suggested-minimum family ABSENT (zero dispatch sites; android:minWidth 0x01010150/minHeight 0x01010151 parsed nowhere). Implemented: ViewNode.min_width/min_height + setMinimumWidth/Height + getMinimumWidth/Height + getSuggestedMinimumWidth/Height shadows + XML-element/style-theme-bag seeding (apply_style_item first-writer slots, element>bag>0). Probe fixtures/cont111_minmeasure (c448, real aapt2/ECJ/D8, sha16 3140c3960229a4e6): 7/7 rows.
+- A/B BRACKET: pre-fix binary built in a fresh worktree at HEAD (5fe175d4133562eb, zero fix code) — c448 probe 0/7 pre-fix vs 7/7 post-fix; the law is fix-caused end-to-end.
+- W3 chess A/B: chess_jwtc_298 render trees BYTE-IDENTICAL pre/post (Toolbar 1080x0 both; ActionBarContainer 1080x168 pre-existing) — F-NEW-448 stays CONFIRMED_OPEN_GAP with a REFINED two-layer root cause; layer 2 lever = View-ctor attr-chain seeding (run_custom_view_constructor -> AttributeSetStore -> framework View <init> shadow). Old appcompat ctor has zero setMinimumHeight callsites (androguard, scripts/cont111_scan_toolbar.py).
+- W4 F-NEW-367: SUPERSEDED-BY-EVIDENCE — the native bridge landed via #371 S-2 + F-NEW-382b + F-NEW-441 (System.load absolute-path implemented); live re-run pending APK re-supply (stack.tower3d/bouncy lost in reset).
+- W5 F-NEW-449: revalidated; negative control (c106b reflection count-agreement) green; needs MessageInfo metadata — stays CONFIRMED_OPEN_GAP.
+- Battery at edc971f97e0db048: wall 4x3 = 12/12 MATCH (dooz d602648e / opencalc d5f3c7b5 / unote 90a67cc1 / microtimer bbd350b6, byte-identical, zero drift), goldens 4/4, negatives 19/19 (interim 9/19 = cont98-documented sequence artifact; canonical install+run regenerated the results file: 99 PASS/INFO), reinstall 8/8, MG-310 rc=0, MG-150 rc=0, selftest 13/13, F-376 70/70 (after container-fresh c72priv v1/v2 rebuild), prior probes c106a/c106b2/c74esc all green at the new binary.
+- Registry: main == mirror == 768 id-unique. Evidence: evidence/cont111/evidence.json. Probe APKs + probe rebuild scripts committed.
+
+Stage Summary:
+- The suggested-minimum family is a real, probed, bracketed generic law (cross-app fan-out: every DEX measure chain that max()es against getSuggestedMinimum*); the chess face honestly did NOT advance — 448's remaining lever is named with exact machinery (DEX-ctor attr seeding).
+- Two registry truths restored (451 sync + 367 supersession); two stale-scan verdicts kept honest (R-NEW-010 ArrayStoreException still log-and-skip = UNPROVEN retained; R-NEW-083 no APK signature verification = retained).
+- Wave score: 5/5 units terminal, 2 fully closed, weighted ~70%; zero unadjudicated drift.
