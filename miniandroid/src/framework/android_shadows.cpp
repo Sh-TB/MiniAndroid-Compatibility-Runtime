@@ -6076,6 +6076,75 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_bool(n ? n->attached_to_window : false);
     }
+    // ── F-NEW-442 (CONT-104): AOSP View.getRootWindowInsets attach law.
+    // AOSP View.java (API 23+): mAttachInfo != null →
+    // attachInfo.mViewRootImpl.getWindowInsets() — NON-NULL on every attached
+    // view; no AttachInfo yet → null. The null side is already lawful here
+    // (probe row PREATTACH null=true); the missing side is the attached face:
+    // the API bridge fell through to a silent stub null, and androidx's
+    // WindowInsetsCompat.toWindowInsetsCompat (Ln0/k1;.c — R8-inlined
+    // requireNonNull via getClass()) threw NPE x8 → start.onCreate
+    // APP-BOUNDARY unwind → white frame. Real-APK oracle:
+    // chess_jwtc_298 RecyclerView.onAttachedToWindow →
+    // ViewCompat.getRootWindowInsets(view) → null → NPE (run/cont104/chess_pre).
+    // The answer object is the SAME root-insets model the F-NEW-384
+    // frame-boundary dispatch materializes (Landroid/view/WindowInsets;
+    // + __root_insets__=1) — one model, two delivery laws (pull at
+    // attach-time consumers, push at frame boundary). Probes:
+    // fixtures/cont104_insets_probe rows ATTACHED nonnull / PREATTACH null.
+    if (m == "getRootWindowInsets") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (!n || !n->attached_to_window) return CallResult::handled_null();
+        if (!heap_) return CallResult::handled_null();
+        uint32_t wi = heap_->allocate("Landroid/view/WindowInsets;");
+        heap_->set_object_int_field(wi, "__root_insets__", 1);
+        return CallResult::handled_object(wi, "Landroid/view/WindowInsets;");
+    }
+    // ── F-NEW-442b (CONT-104): AOSP View.computeSystemWindowInsets law.
+    // AOSP View.java: NEVER returns null for a non-null insets input —
+    //   attached path: ViewRootImpl dispatch sets outLocalInsets, then the
+    //   CONSUMED variant is returned; no-AttachInfo fast path:
+    //   outLocalInsets.setEmpty() + the SAME insets object.
+    // The runtime's single-window model (F-NEW-384 zero-inset window)
+    // satisfies the consumed-of-zero ≡ input identity, so the lawful answer
+    // here is setEmpty() + the input object — matching BOTH AOSP paths'
+    // observable behavior. Real-APK oracle: chess androidx
+    // ActionBarOverlayLayout.onApplyWindowInsets → ViewCompat
+    // Api23Impl.computeSystemWindowInsets (Ln0/f0;.b: k1.b() platform non-null
+    // → view.computeSystemWindowInsets → k1.c(result, view) with the
+    // R8-inlined requireNonNull getClass()) — the silent stub null was the
+    // second k1.c NPE source ×8 (run/cont104/chess_ct CL-TRACE d=3).
+    if (m == "computeSystemWindowInsets") {
+        const uint32_t insets = ctx.arg_as_object(0, 0);
+        const uint32_t rect = ctx.arg_as_object(1, 0);
+        if (rect != 0 && heap_) {
+            heap_->set_object_int_field(rect, "left", 0);
+            heap_->set_object_int_field(rect, "top", 0);
+            heap_->set_object_int_field(rect, "right", 0);
+            heap_->set_object_int_field(rect, "bottom", 0);
+        }
+        if (insets == 0) return CallResult::handled_null();
+        return CallResult::handled_object(insets, "Landroid/view/WindowInsets;");
+    }
+    // ── F-NEW-442e (CONT-104): AOSP View.dispatchApplyWindowInsets law.
+    // AOSP View.java: dispatchApplyWindowInsets(insets) → the registered
+    // OnApplyWindowInsetsListener if present, else onApplyWindowInsets(insets);
+    // the platform DEFAULT answers the insets object — NEVER null for a
+    // non-null input. The runtime's F-NEW-384 walk already dispatches into
+    // DEX-level overrides (dispatchApplyWindowInsets/onApplyWindowInsets
+    // try_recursive_invoke) BEFORE this bridge is reached, so the lawful
+    // bridge face here is the no-listener/no-override pass-through: return
+    // the input insets. Real-APK oracle: chess androidx d0.a (R8-renamed
+    // ViewCompat Api21 dispatch wrapper — a pure
+    // `view.dispatchApplyWindowInsets(insets)` delegation) called from
+    // ActionBarOverlayLayout.onMeasure → k1.c(stripped, content) with the
+    // silent stub null → the FOURTH k1.c NPE source ×8
+    // (run/cont104/chess_ct3 CL-TRACE d=2).
+    if (m == "dispatchApplyWindowInsets") {
+        const uint32_t insets = ctx.arg_as_object(0, 0);
+        if (insets == 0) return CallResult::handled_null();
+        return CallResult::handled_object(insets, "Landroid/view/WindowInsets;");
+    }
     if (m == "dispatchAttachedToWindow") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->attached_to_window = true;
