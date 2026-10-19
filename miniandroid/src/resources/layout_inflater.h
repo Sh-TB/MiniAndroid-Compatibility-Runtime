@@ -47,6 +47,7 @@ struct InflateStats {
     int dimens_resolved = 0;
     int drawables_resolved = 0;
     int styles_applied = 0;
+    int framework_styles_applied = 0;  // F-NEW-454: fw-package style bags walked
     int includes_expanded = 0;
     int ids_resolved = 0;
     int unresolved_refs = 0;

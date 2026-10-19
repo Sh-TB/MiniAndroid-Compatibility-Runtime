@@ -204,6 +204,21 @@ public:
         if (out.is_reference()) {
             const ArscParser* arsc = rt.for_id(out.ref_id);
             if (arsc) {
+                // F-NEW-454b (CONT-112): a STYLE entry is a BAG, not a value
+                // (the resolve_attr_raw contract above). AOSP Theme.GetAttribute
+                // leaves style references RAW — the caller loads the bag through
+                // the style id (ApplyStyle / obtainStyledAttributes). The
+                // previous unconditional deref returned the style entry's
+                // single-value compat slot (complex_items[0]) — live evidence
+                // (jwtc chess 298): toolbarStyle=?attr resolved to
+                // @style/Widget.Material3.Toolbar then deref'd to that style's
+                // v28 outlineShadowColor item @android:color/0x0106000d, the
+                // style= walk silently missed, and Toolbar.onMeasure's
+                // getSuggestedMinimumHeight() floor answered 0 (Toolbar
+                // 1080x0). Deref VALUE references only.
+                if (auto e = arsc->resolve(out.ref_id);
+                        e && e->best() && e->best()->is_complex)
+                    return out;   // style/attr-bag reference: stay raw
                 ResolutionResult r = arsc->resolve_full(out.ref_id, device);
                 if (r.ok) out = *r.value();
             }

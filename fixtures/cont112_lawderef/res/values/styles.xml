@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="C449Base">
+        <!-- The chess toolbar chain, minimized: the style PARENT chain
+             carries android:minHeight as a THEME-ATTR reference — the
+             exact shape of Base.Widget.AppCompat.ActionBar's
+             android:minHeight=?attr/actionBarSize. -->
+        <item name="android:minHeight">?attr/c449BarSize</item>
+    </style>
+    <style name="C449ToolbarLike" parent="@style/C449Base">
+    </style>
+    <style name="C449Deref">
+        <!-- REFERENCE-typed slot: @dimen pointer to the terminal dimension. -->
+        <item name="c449_deref_height">@dimen/c449_bar</item>
+        <!-- ATTRIBUTE-typed slot: ?attr pointer through the theme chain. -->
+        <item name="c449_deref_attr">?attr/c449BarSize</item>
+    </style>
+</resources>

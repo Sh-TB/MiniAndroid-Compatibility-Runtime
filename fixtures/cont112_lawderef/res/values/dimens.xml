@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 64dp x 2.625 = 168px at the canonical device density. -->
+    <dimen name="c449_bar">64dp</dimen>
+</resources>
