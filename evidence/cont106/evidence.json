@@ -1,0 +1,45 @@
+{
+  "wave": "CONT-106",
+  "issue": 364,
+  "date": "2026-10-19",
+  "directive": "user directive 22 (cheetah/elephant pace, time is gold) + CONT-105 declared next-wave ownership",
+  "baseline": {
+    "recovered_head": "236df145 (CONT-105 worklog; local stale snapshot e99c2fbd was an ANCESTOR - pure fast-forward)",
+    "rebuild_binary": "afaad5bd4f56f9d3 (full rebuild, byte-identical with CONT-105 recorded build)",
+    "comments_after_baseline": 0,
+    "baseline_comment": 6259475660
+  },
+  "units": [
+    {"id": "U1", "name": "container recovery + full rebuild + binary identity", "verdict": "APPROVED", "detail": "ff to origin/main; rebuild reproduced afaad5bd4f56f9d3 byte-identically"},
+    {"id": "U2", "name": "#364 re-read (71 comments; zero new after 6259475660)", "verdict": "APPROVED", "detail": "mission = CONT-105 ownership list"},
+    {"id": "U3", "name": "F-NEW-445 root decode (o6.u1/xj0 lazy factory chain)", "verdict": "APPROVED", "detail": "androguard xref: single u1 writer = o6.P(Context); callers o6.R/r4.<init>/CheckBoxSquare.<init>; o6.k guard law at 0x0..0x8; S123 materialization is the real root -> F-NEW-446"},
+    {"id": "U4", "name": "probe c106a fixture-first (PRE on frozen afaad5bd)", "verdict": "APPROVED", "detail": "fixtures/cont106_clinitsentinel sha16 fe29697e17cbc6c4; PRE faces: SENTINEL guardEscaped=true (AOSP false), INVOKE2=NO-EXC (AOSP NPE), 3 S123 firings"},
+    {"id": "U5", "name": "F-NEW-446 fix (S123 gate -> failed_clinit_classes_)", "verdict": "APPROVED", "detail": "dalvik_engine.cpp ~21515: gate attempted||stored_null -> clinit_failed; log extended"},
+    {"id": "U6", "name": "POST probe at f72413b74525d3b0", "verdict": "APPROVED", "detail": "SENTINEL guardEscaped=false; zero healthy firings; failed-clinit materialization retained (Broken.rectTmp clinit_failed=true); FACTORY unchanged"},
+    {"id": "U7", "name": "telegram POST on real app", "verdict": "APPROVED", "detail": "S123 count 0; o6.k runs with real factory Paints (recv 6740/6747); xj0 clinit OK + Q invoked; iput-null NPE GONE; terminal face = known F084 pacing only (LaunchActivity.onCreate invoke_pc=1375); F084 x599 vs PRE x484 (progress)"},
+    {"id": "U8", "name": "full regression battery zero-drift", "verdict": "APPROVED", "detail": "wall 12/12 byte-identical (dooz d602648e/opencalc f25b754c/unote 90a67cc1/microtimer bbd350b6 x3), goldens 4/4, negatives 19/19 (after documented container-fresh repair: gate_a_probe 628ce8e8 + canonical install+run), reinstall 8/8, MG-310 7/7, MG-150 3/3, skill 13/13, F-NEW-376 70/70, c104i 4/4, c74esc 5/5"},
+    {"id": "U9", "name": "ROOT-059 interaction discovery", "verdict": "REGISTERED", "detail": "F-NEW-447 CONFIRMED_OPEN_GAP: invoke-time null-recv shadow routing intercepts pre-NPE (probe row C106-INVOKE2 ready); not fixed this wave (no variable conflation with F-NEW-446)"},
+    {"id": "U10", "name": "chess re-run + toolbar h=0 decode", "verdict": "REGISTERED", "detail": "f141=0 holds; Toolbar.onMeasure reads Ll/m3;.a == 0 twice -> height 0; F-NEW-448 CONFIRMED_OPEN_GAP with theme-dimension lever"},
+    {"id": "U11", "name": "n2.r protobuf boundary decode", "verdict": "REGISTERED", "detail": "F-NEW-449 CONFIRMED_OPEN_GAP: rotated-loop boundary read at 0x568 (v10 == v24.length after add-int); entries-array-vs-walk-count disagreement; c106b probe lever named"},
+    {"id": "U12", "name": "stale-.o archaeology (CONT-105 carry)", "verdict": "REJECTED_WITH_REASON", "detail": "superseded by F-NEW-443: this wave's full rebuild reproduced the pinned binary byte-identically; per-TU bisection of the deleted incremental lineage has no actionable value; determinism law (full rebuild) is the pinned answer"},
+    {"id": "U13", "name": "dooz compose draw frontier", "verdict": "CARRIED (BLOCKED_NEEDS_EVIDENCE)", "detail": "needs the AndroidCanvas bridge construction law before any code change; materialized-tree evidence exists from CONT-10-W6; no blind fix"},
+    {"id": "U14", "name": "UPP-001 re-check", "verdict": "CARRIED (BLOCKED)", "detail": "unchanged: real dlopen -> real dlerror (libjnigraphics.so); architecture decision required"},
+    {"id": "U15", "name": "registry 760->764 (F-NEW-446..449) + F-NEW-445 refresh + mirror sync", "verdict": "APPROVED", "detail": "main == mirror == 764, id-unique"}
+  ],
+  "success_metrics": {
+    "units_total": 15,
+    "units_terminal": 15,
+    "units_fully_closed": 8,
+    "close_rate": "53%",
+    "weighted_estimate": "~80% (fix unit + 3 decodes with named levers + 2 honest carries + registry/push)",
+    "roots_new": ["F-NEW-446 ROOT-CAUSED-FIXED", "F-NEW-447 CONFIRMED_OPEN_GAP", "F-NEW-448 CONFIRMED_OPEN_GAP", "F-NEW-449 CONFIRMED_OPEN_GAP"],
+    "roots_refreshed": ["F-NEW-445 CLASSIFIED -> ROOT-CAUSED-FIXED"]
+  },
+  "honest_notes": [
+    "probe c106a run exits rc=1 in both PRE and POST (harness shape; row lines are the oracle, same as c104i precedent)",
+    "C106-CLINITFAIL row documents PRE-EXISTING law precedence (deferred-raise re-raised at sget beats the value read; forName answered NO-EXC for an erroneous class) — separate residual, not silently absorbed, not changed this wave",
+    "F084 wall-clock pacing remains the dominant real-app terminal family (pacing, not a new root)",
+    "negatives/f376/skill required the DOCUMENTED container-fresh probe repair (cont98 precedent); no runtime regression was hidden",
+    "telegram POST binary = f72413b74525d3b0 (post-fix); battery run at the same binary"
+  ]
+}
