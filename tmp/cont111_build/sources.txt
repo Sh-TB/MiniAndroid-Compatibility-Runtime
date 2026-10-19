@@ -1,0 +1,2 @@
+fixtures/cont111_minmeasure/src/com/probe/c448/MainActivity.java
+tmp/cont111_build/gen/com/probe/c448/R.java
