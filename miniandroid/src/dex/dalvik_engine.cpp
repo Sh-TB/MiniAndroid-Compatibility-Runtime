@@ -22057,8 +22057,23 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // wrong-site-exception disease F-141 eliminated (live face: dooz
         // Lhv0;.h→Lhv0;.d iget NPE at pc=17 inside the callee + silent
         // h() swallow). Non-framework classes keep the ART throw.
+        // F-NEW-447 (CONT-107): CALLER-DOMAIN GATE on the ROOT-059 route.
+        // The routing crutch exists to bridge engine gaps INSIDE framework
+        // chains (androidx insets: Builder→Impl30→consume*) — those callers
+        // are framework classes. When the CALLER is app DEX code (probe face:
+        // Lcom/probe/c106a/MainActivity;.onCreate invoking
+        // Landroid/graphics/Paint;.setStrokeWidth on a null never-assigned
+        // static Paint), ART throws NPE at the invoke site; the silent
+        // shadow route let app code proceed with the null static
+        // ([C106-INVOKE2] NO-EXC vs ART NPE — F-NEW-447). Law: route only
+        // when the current frame is framework-owned; app-caller sites get
+        // the ART-faithful throw below. Unknown caller frames (engine-
+        // internal invokes) keep the legacy route.
+        const bool f447_caller_is_framework =
+            current_class_.empty() || f141_is_framework_class(current_class_);
         if (shadow_registry_ && f141_is_framework_class(declaring_class) &&
-            shadow_registry_->claims_class(declaring_class)) {
+            shadow_registry_->claims_class(declaring_class) &&
+            f447_caller_is_framework) {
             std::cerr << "[ROOT-059] null-recv routed to shadow law: " << declaring_class
                       << "." << method_name_from_dex
                       << " caller=" << current_class_ << "." << current_method_
@@ -22067,6 +22082,18 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             runtime_type = declaring_class;
             resolved_method = declaring_class + "." + method_name_from_dex;
         } else {
+        // F-NEW-447 bounded marker: this invoke USED to route to the shadow
+        // (ROOT-059); the caller-domain gate keeps ART NPE parity here.
+        if (shadow_registry_ && f141_is_framework_class(declaring_class) &&
+            shadow_registry_->claims_class(declaring_class) &&
+            !f447_caller_is_framework) {
+            static thread_local uint64_t f447_npe_n = 0;
+            if (f447_npe_n++ < 16)
+                std::cerr << "[F447-NPE] app-caller null-recv NPE parity: "
+                          << declaring_class << "." << method_name_from_dex
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
         // F-141 DIAG (env-gated, bounded, remove after root closure §112-114):
         // dump the receiver value identity + current frame register window —
         // answers "which register carried the null receiver".
@@ -43747,6 +43774,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (present) {
                     f93_val = vf->int_val;
                 }
+                // ── F-NEW-450 (CONT-107): AOSP TypedArray dimension law ──
+                // Slots hold the RAW TypedValue (F-NEW-450 producer law);
+                // the dimension readers convert at read time exactly like
+                // AOSP TypedArray.getDimensionPixelSize (complexToDimension-
+                // PixelSize), getDimensionPixelOffset (truncation) and
+                // getLayoutDimension (pixel-size). Slots without a recorded
+                // type (legacy producers) keep the exact old semantics.
+                if (present) {
+                    int32_t f450_type = 0;
+                    if (auto tf = heap_.get_object_field(
+                            args[0].object_id,
+                            "array_type[" + std::to_string(f93_idx) + "]")) {
+                        if (tf->type == DalvikType::INT32)
+                            f450_type = tf->int_val;
+                    }
+                    if (f450_type == (int32_t)resources::DataType::DIMENSION) {
+                        if (method == "getDimensionPixelOffset") {
+                            f93_val = (int32_t)resources::complex_to_dimension_px(
+                                (uint32_t)vf->int_val,
+                                resources::DensityContext{});
+                        } else {
+                            f93_val = resources::complex_to_dimension_pixel_size(
+                                (uint32_t)vf->int_val,
+                                resources::DensityContext{});
+                        }
+                    }
+                }
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
             if (method == "getBoolean") {
@@ -45220,6 +45274,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     attr_id = af->int_val;
             }
             int32_t decoded = 0;
+            // F-NEW-450 (CONT-107): the slot's TypedValue type, recorded at
+            // produce time (0 = unknown/absent — legacy producers keep their
+            // exact old semantics at the reader).
+            int32_t slot_type = 0;
             if (attr_id != 0) {
                 // ── F-NEW-327 (CONT-55): the AOSP AttributeResolution
                 // order for the AttributeSet-bearing overloads — XML(1) →
@@ -45240,6 +45298,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                  resources::DataType::DYNAMIC_REFERENCE)
                                 ? (int32_t)(r->ref_id ? r->ref_id : r->data)
                                 : r->data;
+                        slot_type = (int32_t)r->type;
                         slot_present = true;
                     }
                 }
@@ -45248,15 +45307,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             apk_path_, (uint32_t)attr_id,
                             f327_def_style_attr, f327_def_style_res,
                             f327_xml_style)) {
-                        if (v->type == resources::DataType::DIMENSION) {
-                            // AOSP TypedArray getDimensionPixelSize
-                            // contract: the slot answers device px.
-                            decoded = resources::complex_unit_to_dimension_pixel_size(
-                                v->dim_unit, v->dim_value,
-                                resources::DensityContext{});
-                        } else {
-                            decoded = (int32_t)v->data;
-                        }
+                        // F-NEW-450 (CONT-107): AOSP TypedArray law — the
+                        // slot holds the RAW TypedValue; the dimension
+                        // READERS convert (complexToDimensionPixelSize at
+                        // read time). The produce-time px conversion moved to
+                        // the reader (probe face: c106b2 dim=14337 raw vs
+                        // AOSP 56; XML/theme stages already stored raw — the
+                        // 327 stage was the only converter, an inconsistency
+                        // across stages).
+                        decoded = (int32_t)v->data;
+                        slot_type = (int32_t)v->type;
                         slot_present = true;
                     }
                 }
@@ -45268,6 +45328,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         // ints/colors pass data through. Presence recorded
                         // separately (S99 law: value 0/false is PRESENT).
                         decoded = (int32_t)v->data;
+                        slot_type = (int32_t)v->type;
                         slot_present = true;
                     }
                 }
@@ -45277,6 +45338,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         DalvikValue::make_int(1));
                 }
             }
+            // F-NEW-450: type written UNCONDITIONALLY per slot (F-NEW-197
+            // recycled-singleton staleness law — same reasoning as
+            // array_present).
+            heap_.set_object_field(
+                ta_id, "array_type[" + std::to_string(i) + "]",
+                DalvikValue::make_int(slot_type));
             heap_.set_object_field(ta_id, "array[" + std::to_string(i) + "]",
                                    DalvikValue::make_int(decoded));
         }
@@ -45383,6 +45450,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 cur->int_val == 0)
                 heap_.set_object_field(result.object_id, "densityDpi",
                                        DalvikValue::make_int(160));
+            // ── F-NEW-452 (CONT-107): Configuration.locale non-null law
+            // (AOSP Configuration.setToDefaults: locale = Locale.getDefault()
+            // — Resources.getConfiguration() NEVER answers a Configuration
+            // whose locale is null). Live face (telegram, exposed by the
+            // F-NEW-447 caller-domain NPE parity): Lorg/telegram/ui/c41;.run
+            // pc=65 `iget-object Configuration;->locale` answered null →
+            // ART-faithful NPE at Locale;.getLanguage (the F447 marker)
+            // unwound a chain ROOT-059 previously masked. Seed the
+            // singleton's locale once, mirroring the Locale.getDefault()
+            // law's tag identity ("en_US").
+            auto loc = heap_.get_object_field(result.object_id, "locale");
+            if (!loc.has_value() || loc->type != DalvikType::OBJECT_REF ||
+                loc->object_id == 0) {
+                static uint32_t s107_cfg_locale_id = 0;
+                if (s107_cfg_locale_id == 0 ||
+                    !heap_.has_object(s107_cfg_locale_id)) {
+                    s107_cfg_locale_id =
+                        heap_.allocate("Ljava/util/Locale;", 0, 0);
+                    heap_.set_object_field(s107_cfg_locale_id,
+                                           "__locale_tag__",
+                                           DalvikValue::make_string("en_US", 0));
+                    heap_.set_object_field(s107_cfg_locale_id,
+                                           "__locale_name__",
+                                           DalvikValue::make_string("default", 0));
+                }
+                heap_.set_object_field(result.object_id, "locale",
+                                       DalvikValue::make_object(
+                                           s107_cfg_locale_id,
+                                           "Ljava/util/Locale;"));
+            }
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;

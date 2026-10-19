@@ -1,0 +1,148 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[EXP062-SV] parse_static_values for Lcom/probe/c106b2/R$attr; offset=0xe77 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/probe/c106b2/R$attr; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/probe/c106b2/R$style; offset=0xe7d static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/probe/c106b2/R$style; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/c107/c106b2.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 54 entries (6 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.c106b2.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/c107/c106b2.apk named_ids=2 types=2
+[ARSC-VALUES] apk=run/c107/c106b2.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/c106b2/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/c106b2/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/c106b2/MainActivity;.<init> insns=2 RSS=19.2891 MB
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/c106b2/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/probe/c106b2/MainActivity;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/c106b2/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/util/TypedValue;.<init> dex_report=YES
+[REC-MISS] Landroid/util/TypedValue;.<init> caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity;.getTheme dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Lcom/probe/c106b2/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/content/res/Resources$Theme;.resolveAttribute dex_report=YES
+[REC-MISS] Landroid/content/res/Resources$Theme;.resolveAttribute caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[EXP062-INIT] Lcom/probe/c106b2/MainActivity; static_fields=5 with_defaults=5
+[CLASS_INIT] class=Lcom/probe/c106b2/MainActivity; method=<clinit> bytecode_size=1
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity;.<clinit> dex_report=YES
+[MEM] method_exit: Lcom/probe/c106b2/MainActivity;.<clinit> insns=1 RSS=165.27 MB
+[CLASS_INIT] class=Lcom/probe/c106b2/MainActivity; method=<clinit> result=OK engine=0x7ffe30569968 storage_size=30
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity;.obtainStyledAttributes dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Lcom/probe/c106b2/MainActivity;
+[F-NEW-175] obtainStyledAttributes attrs=1 theme-backed (apk=run/c107/c106b2.apk)
+[TRY-ENTRY] Landroid/content/res/TypedArray;.getDimensionPixelSize dex_report=YES
+[REC-MISS] Landroid/content/res/TypedArray;.getDimensionPixelSize caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[TRY-ENTRY] Landroid/content/res/TypedArray;.recycle dex_report=YES
+[REC-MISS] Landroid/content/res/TypedArray;.recycle caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=43 field=Lcom/probe/c106b2/MainActivity;.sDimVal value=147
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity$BarView;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/view/View;.<init> dex_report=YES
+[REC-MISS] Landroid/view/View;.<init> caller=Lcom/probe/c106b2/MainActivity$BarView;.<init>
+[TRY-ENTRY] Landroid/view/View$MeasureSpec;.makeMeasureSpec dex_report=YES
+[REC-MISS] Landroid/view/View$MeasureSpec;.makeMeasureSpec caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[TRY-ENTRY] Landroid/view/View$MeasureSpec;.makeMeasureSpec dex_report=YES
+[REC-MISS] Landroid/view/View$MeasureSpec;.makeMeasureSpec caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[R347-MPROBE] invoke-virtual measure runtime=Lcom/probe/c106b2/MainActivity$BarView; declaring=Lcom/probe/c106b2/MainActivity$BarView; argc=3 recv=20 a1t=1 a2t=1 caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity$BarView;.measure dex_report=YES
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity$BarView;.onMeasure dex_report=YES
+[SGET] class=Lcom/probe/c106b2/MainActivity$BarView; method=onMeasure pc=0 field=Lcom/probe/c106b2/MainActivity;.sBarHeight value=147
+[TRY-ENTRY] Landroid/view/View$MeasureSpec;.getSize dex_report=YES
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/probe/c106b2/MainActivity$BarView;.onMeasure
+[TRY-ENTRY] Lcom/probe/c106b2/MainActivity$BarView;.setMeasuredDimension dex_report=YES
+[R347-MEASURE] view=20 class=Lcom/probe/c106b2/MainActivity$BarView; dex_onmeasure=YES wspec=0x40000438 hspec=0x0 -> 1080x147
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=67 field=Ljava/lang/System;.err obj_id=21
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=76 field=Lcom/probe/c106b2/MainActivity;.sResolveOk value=1
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[C448-RESOLVE] ok=true
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=88 field=Ljava/lang/System;.err obj_id=21
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=97 field=Lcom/probe/c106b2/MainActivity;.sTvType value=5
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Landroid/util/TypedValue;.coerceToString caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[C448-TYPE] type=5 val=null
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=121 field=Ljava/lang/System;.err obj_id=21
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=130 field=Lcom/probe/c106b2/MainActivity;.sDimVal value=147
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[C448-DIM] dim=147
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=142 field=Ljava/lang/System;.err obj_id=21
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=151 field=Lcom/probe/c106b2/MainActivity;.sBarHeight value=147
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[C448-STATIC] static=147
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=163 field=Ljava/lang/System;.err obj_id=21
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b2/MainActivity; method=onCreate pc=172 field=Lcom/probe/c106b2/MainActivity;.sMeasuredH value=147
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b2/MainActivity;.onCreate
+[C448-MEASURE] measured=147 expected=147
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/c106b2/MainActivity; runtime_class=Lcom/probe/c106b2/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/c106b2/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/c106b2/MainActivity; runtime_class=Lcom/probe/c106b2/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/c106b2/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=6 nodes=1 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=250
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=252
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=396
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=3 dir=run/c107/post/c106b2/frames
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15

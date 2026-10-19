@@ -1,0 +1,143 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/cont106/c106a.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 53 entries (5 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.c106a.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/cont106/c106a.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/cont106/c106a.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/c106a/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/c106a/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/c106a/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/c106a/MainActivity;.<init> insns=2 RSS=19.4141 MB
+[TRY-ENTRY] Lcom/probe/c106a/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/c106a/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/probe/c106a/MainActivity;' id=15
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/c106a/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/c106a/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/probe/c106a/MainActivity$Lazy;.k dex_report=YES
+[SGET] class=Lcom/probe/c106a/MainActivity$Lazy; method=k pc=0 field=Lcom/probe/c106a/MainActivity$Lazy;.k0 obj_id=0
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=10 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106a/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=19 field=Lcom/probe/c106a/MainActivity$Lazy;.guardEscaped value=0
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106a/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106a/MainActivity;.onCreate
+[C106-SENTINEL] guardEscaped=false
+[TRY-ENTRY] Lcom/probe/c106a/MainActivity$Lazy;.P dex_report=YES
+[TRY-ENTRY] Landroid/graphics/Paint;.<init> dex_report=YES
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/probe/c106a/MainActivity$Lazy;.P
+[TRY-ENTRY] Lcom/probe/c106a/MainActivity$Lazy;.k dex_report=YES
+[SGET] class=Lcom/probe/c106a/MainActivity$Lazy; method=k pc=0 field=Lcom/probe/c106a/MainActivity$Lazy;.k0 obj_id=18
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=37 field=Ljava/lang/System;.err obj_id=16
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106a/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=46 field=Lcom/probe/c106a/MainActivity$Lazy;.factoryRan value=1
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=56 field=Lcom/probe/c106a/MainActivity$Lazy;.guardEscaped value=1
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106a/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/io/PrintStream;.println dex_report=YES
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106a/MainActivity;.onCreate
+[C106-FACTORY] factoryRan=true guardEscaped2=true
+[R350-FORNAME] "com.probe.c106a.MainActivity$Broken" -> Lcom/probe/c106a/MainActivity$Broken; (initialized=0)
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106a/MainActivity;.onCreate
+[EXP062-INIT] Lcom/probe/c106a/MainActivity$Broken; static_fields=2 with_defaults=1
+[CLASS_INIT] class=Lcom/probe/c106a/MainActivity$Broken; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Lcom/probe/c106a/MainActivity$Broken;.<clinit> dex_report=YES
+[REC-MISS] Ljava/lang/IllegalStateException;.<init> caller=Lcom/probe/c106a/MainActivity$Broken;.<clinit>
+[THROWABLE-MSG] Ljava/lang/IllegalStateException; msg="c106 mid-clinit abort" caller=Lcom/probe/c106a/MainActivity$Broken;.<clinit> pc=4 depth=2
+[THROWABLE-STACK] #0 Lcom/probe/c106a/MainActivity$Broken;.<clinit>
+[THROWABLE-STACK] #1 Lcom/probe/c106a/MainActivity;.onCreate
+[THROWABLE-STACK-PC] #0 Lcom/probe/c106a/MainActivity$Broken;.<clinit> caller_pc=91
+[THROWABLE-STACK-PC] #1 Lcom/probe/c106a/MainActivity;.onCreate caller_pc=0
+[EXCEPTION] method=Lcom/probe/c106a/MainActivity$Broken;.<clinit> pc=7 exception=Ljava/lang/IllegalStateException; msg="c106 mid-clinit abort" try_range=(none) handler=NOT_FOUND msg="c106 mid-clinit abort"
+[EXCEPTION] no handler for Ljava/lang/IllegalStateException; in Lcom/probe/c106a/MainActivity$Broken;.<clinit> — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalStateException; caught at caller Lcom/probe/c106a/MainActivity;.onCreate invoke_pc=91 handler=0x0x6a type=<catch-all>
+[F-NEW-395] CLINIT-UNWIND class=Lcom/probe/c106a/MainActivity$Broken; in-flight=unwind Ljava/lang/IllegalStateException; → erroneous (F-NEW-215 law)
+[CLASS_INIT] class=Lcom/probe/c106a/MainActivity$Broken; method=<clinit> result=FAILED engine=0x7ffdbd4341b8 storage_size=30 diag_final_status=1 diag_halt_reason=unwind Ljava/lang/IllegalStateException;
+[F-NEW-215] CLINIT-FAILED class=Lcom/probe/c106a/MainActivity$Broken; evidence=unwind Ljava/lang/IllegalStateException;
+[S123-CLINIT-MAT] materialized Lcom/probe/c106a/MainActivity$Broken;.rectTmp type=Landroid/graphics/RectF; oid=22 (clinit_failed=true attempted=true stored_null=false)
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=91 field=Lcom/probe/c106a/MainActivity$Broken;.rectTmp obj_id=22
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/IllegalStateException;.getClass caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106a/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=129 field=Ljava/lang/System;.err obj_id=16
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106a/MainActivity;.onCreate
+[C106-CLINITFAIL] forName=NO-EXC sget-throw=IllegalStateException
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=156 field=Lcom/probe/c106a/MainActivity$Lazy;.k0 obj_id=18
+[REC-MISS] Landroid/graphics/Paint;.setColor caller=Lcom/probe/c106a/MainActivity;.onCreate
+[F298-SETCOLOR] recv=18 cls=Landroid/graphics/Paint; color=0xff00ff00 caller=Lcom/probe/c106a/MainActivity;.onCreate pc=161
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=167 field=Ljava/lang/System;.err obj_id=16
+[STR] concat("[C106-INVOKE] result=", "NO-EXC")
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106a/MainActivity;.onCreate
+[C106-INVOKE] result=NO-EXC
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=178 field=Lcom/probe/c106a/MainActivity$Never;.k0b obj_id=0
+[ROOT-059] null-recv routed to shadow law: Landroid/graphics/Paint;.setStrokeWidth caller=Lcom/probe/c106a/MainActivity;.onCreate
+[REC-MISS] Landroid/graphics/Paint;.setStrokeWidth caller=Lcom/probe/c106a/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106a/MainActivity; method=onCreate pc=186 field=Ljava/lang/System;.err obj_id=16
+[STR] concat("[C106-INVOKE2] result=", "NO-EXC")
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106a/MainActivity;.onCreate
+[C106-INVOKE2] result=NO-EXC
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/c106a/MainActivity; runtime_class=Lcom/probe/c106a/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/c106a/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/c106a/MainActivity; runtime_class=Lcom/probe/c106a/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/c106a/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=5 nodes=0 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=23
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=25
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=161
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=3 dir=run/c107/pre2/c106a/frames
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15

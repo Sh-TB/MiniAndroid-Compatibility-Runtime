@@ -1,0 +1,251 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=20
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=run/c107/c106b.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 51 entries (3 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.probe.c106b.MainActivity'
+[U007-RES] ResourceRuntime loaded: run/c107/c106b.apk named_ids=0 types=0
+[ARSC-VALUES] apk=run/c107/c106b.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/probe/c106b/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/probe/c106b/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/probe/c106b/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/probe/c106b/MainActivity;.<init> insns=2 RSS=19.4023 MB
+[TRY-ENTRY] Lcom/probe/c106b/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/probe/c106b/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/probe/c106b/MainActivity;' id=15
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/probe/c106b/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/probe/c106b/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Ljava/lang/Class;.getDeclaredFields dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getDeclaredFields caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-REFLECT] Class(Lcom/probe/c106b/MainActivity$Schema;).getDeclaredFields() -> 11 fields arr#28
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/reflect/Field;.getName dex_report=YES
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/util/Arrays;.sort dex_report=YES
+[REC-MISS] Ljava/util/Arrays;.sort caller=Lcom/probe/c106b/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b/MainActivity; method=onCreate pc=19 field=Ljava/lang/System;.err obj_id=30
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b/MainActivity;.onCreate
+[C449-COUNT] count=11 expected=11
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b/MainActivity; method=onCreate pc=51 field=Ljava/lang/System;.err obj_id=30
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b/MainActivity;.onCreate
+[C449-NAMES] f0,f1,f2,f3,f4,f5,f6,f7,sA,sB,sC,
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-REFLECT] Class(Lsun/misc/Unsafe;).getDeclaredField("theUnsafe") type=Ljava/lang/Object; instance [synthetic-auto] -> Field obj#35
+[REC-MISS] Ljava/lang/reflect/Field;.setAccessible caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.get caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-REFLECT] Field.get(theUnsafe) -> Unsafe obj#36
+[SGET] class=Lcom/probe/c106b/MainActivity; method=onCreate pc=104 field=Ljava/lang/System;.err obj_id=30
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b/MainActivity;.onCreate
+[C449-UNSAFE] face=NO-EXC unsafe=true
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f0 -> 16 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f1 -> 24 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f2 -> 32 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f3 -> 40 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f4 -> 48 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f5 -> 56 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f6 -> 64 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-UNSAFE] objectFieldOffset Lcom/probe/c106b/MainActivity$Schema;.f7 -> 72 caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.staticFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.staticFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Lsun/misc/Unsafe;.staticFieldOffset caller=Lcom/probe/c106b/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b/MainActivity; method=onCreate pc=144 field=Ljava/lang/System;.err obj_id=30
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b/MainActivity;.onCreate
+[C449-OFFSET] resolved=11 of 11 throws=0
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getModifiers caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Modifier;.isStatic caller=Lcom/probe/c106b/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b/MainActivity; method=onCreate pc=253 field=Ljava/lang/System;.err obj_id=30
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b/MainActivity;.onCreate
+[C449-MODS] statics=3 instances=8
+[REC-MISS] Ljava/lang/Class;.getDeclaredFields caller=Lcom/probe/c106b/MainActivity;.onCreate
+[R337-REFLECT] Class(Lcom/probe/c106b/MainActivity$Schema;).getDeclaredFields() -> 11 fields arr#51
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Field;.getName caller=Lcom/probe/c106b/MainActivity;.onCreate
+[SGET] class=Lcom/probe/c106b/MainActivity; method=onCreate pc=371 field=Ljava/lang/System;.err obj_id=30
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/probe/c106b/MainActivity;.onCreate
+[REC-MISS] Ljava/io/PrintStream;.println caller=Lcom/probe/c106b/MainActivity;.onCreate
+[C449-ORDER] stable=true
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/probe/c106b/MainActivity; runtime_class=Lcom/probe/c106b/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/c106b/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/probe/c106b/MainActivity; runtime_class=Lcom/probe/c106b/MainActivity;
+[G07-LIFECYCLE] Lcom/probe/c106b/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=3 nodes=0 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=26
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=28
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=165
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=3 dir=run/c107/post/c106b/frames
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15

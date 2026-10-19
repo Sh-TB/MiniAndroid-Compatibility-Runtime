@@ -1,0 +1,367 @@
+[m3] fields:
+  a : Z access=0x9
+  b : Ljava/lang/reflect/Method; access=0x9
+  c : Z access=0x19
+[m3] method <clinit> ()V access=0x10008
+  sget             v0, Landroid/os/Build$VERSION;->SDK_INT I
+  const/16         v1, 27
+  if-lt            v0, v1, +004h
+  const/4          v0, 1
+  goto             +2h
+  const/4          v0, 0
+  sput-boolean     v0, Ll/m3;->c Z
+  return-void      
+[onMeasure] (I I)V
+     0 sget-boolean       v1, Ll/m3;->a Z
+     1 invoke-virtual     v14, Landroid/view/View;->getLayoutDirection()I
+     2 move-result        v1
+     3 const/4            v7, 0
+     4 const/4            v2, 1
+     5 if-ne              v1, v2, +005h
+     6 move               v6, v2
+     7 move               v8, v7
+     8 goto               +3h
+     9 move               v8, v2
+    10 move               v6, v7
+    11 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    12 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+    13 move-result        v1
+    14 const/4            v3, 0
+    15 if-eqz             v1, +038h
+    16 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    17 iget               v5, v14, Landroidx/appcompat/widget/Toolbar;->t I
+    18 move-object        v0, v14
+    19 move               v2, v15
+    20 move/from16        v4, v16
+    21 invoke-virtual/range v0 ... v5, Landroidx/appcompat/widget/Toolbar;->s(Landroid/view/View; I I I I)V
+    22 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    23 invoke-virtual     v1, Landroid/view/View;->getMeasuredWidth()I
+    24 move-result        v1
+    25 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    26 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->k(Landroid/view/View;)I
+    27 move-result        v2
+    28 add-int/2addr      v2, v1
+    29 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    30 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+    31 move-result        v1
+    32 iget-object        v4, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    33 invoke-static      v4, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+    34 move-result        v4
+    35 add-int/2addr      v4, v1
+    36 invoke-static      v7, v4, Ljava/lang/Math;->max(I I)I
+    37 move-result        v1
+    38 iget-object        v4, v14, Landroidx/appcompat/widget/Toolbar;->i Ll/x;
+    39 invoke-virtual     v4, Landroid/view/View;->getMeasuredState()I
+    40 move-result        v4
+    41 invoke-static      v7, v4, Landroid/view/View;->combineMeasuredStates(I I)I
+    42 move-result        v4
+    43 move               v9, v1
+    44 move               v10, v4
+    45 goto               +4h
+    46 move               v2, v7
+    47 move               v9, v2
+    48 move               v10, v9
+    49 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    50 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+    51 move-result        v1
+    52 if-eqz             v1, +035h
+    53 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    54 iget               v5, v14, Landroidx/appcompat/widget/Toolbar;->t I
+    55 move-object        v0, v14
+    56 move               v2, v15
+    57 move/from16        v4, v16
+    58 invoke-virtual/range v0 ... v5, Landroidx/appcompat/widget/Toolbar;->s(Landroid/view/View; I I I I)V
+    59 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    60 invoke-virtual     v1, Landroid/view/View;->getMeasuredWidth()I
+    61 move-result        v1
+    62 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    63 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->k(Landroid/view/View;)I
+    64 move-result        v2
+    65 add-int/2addr      v2, v1
+    66 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    67 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+    68 move-result        v1
+    69 iget-object        v3, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    70 invoke-static      v3, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+    71 move-result        v3
+    72 add-int/2addr      v3, v1
+    73 invoke-static      v9, v3, Ljava/lang/Math;->max(I I)I
+    74 move-result        v9
+    75 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->m Ll/x;
+    76 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+    77 move-result        v1
+    78 invoke-static      v10, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+    79 move-result        v10
+    80 invoke-virtual     v14, Landroidx/appcompat/widget/Toolbar;->getCurrentContentInsetStart()I
+    81 move-result        v1
+    82 invoke-static      v1, v2, Ljava/lang/Math;->max(I I)I
+    83 move-result        v3
+    84 sub-int/2addr      v1, v2
+    85 invoke-static      v7, v1, Ljava/lang/Math;->max(I I)I
+    86 move-result        v1
+    87 move               v2, v6
+    88 iget-object        v6, v14, Landroidx/appcompat/widget/Toolbar;->K [I
+    89 aput               v1, v6, v2
+    90 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+    91 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+    92 move-result        v1
+    93 if-eqz             v1, +036h
+    94 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+    95 iget               v5, v14, Landroidx/appcompat/widget/Toolbar;->t I
+    96 move-object        v0, v14
+    97 move               v2, v15
+    98 move/from16        v4, v16
+    99 invoke-virtual/range v0 ... v5, Landroidx/appcompat/widget/Toolbar;->s(Landroid/view/View; I I I I)V
+   100 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+   101 invoke-virtual     v1, Landroid/view/View;->getMeasuredWidth()I
+   102 move-result        v1
+   103 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+   104 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->k(Landroid/view/View;)I
+   105 move-result        v2
+   106 add-int/2addr      v2, v1
+   107 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+   108 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+   109 move-result        v1
+   110 iget-object        v4, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+   111 invoke-static      v4, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+   112 move-result        v4
+   113 add-int/2addr      v4, v1
+   114 invoke-static      v9, v4, Ljava/lang/Math;->max(I I)I
+   115 move-result        v9
+   116 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->f Landroidx/appcompat/widget/ActionMenuView;
+   117 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+   118 move-result        v1
+   119 invoke-static      v10, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+   120 move-result        v10
+   121 goto               +2h
+   122 move               v2, v7
+   123 invoke-virtual     v14, Landroidx/appcompat/widget/Toolbar;->getCurrentContentInsetEnd()I
+   124 move-result        v1
+   125 invoke-static      v1, v2, Ljava/lang/Math;->max(I I)I
+   126 move-result        v4
+   127 add-int/2addr      v3, v4
+   128 sub-int/2addr      v1, v2
+   129 invoke-static      v7, v1, Ljava/lang/Math;->max(I I)I
+   130 move-result        v1
+   131 aput               v1, v6, v8
+   132 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->n Landroid/view/View;
+   133 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+   134 move-result        v1
+   135 if-eqz             v1, +029h
+   136 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->n Landroid/view/View;
+   137 const/4            v5, 0
+   138 move-object        v0, v14
+   139 move               v2, v15
+   140 move/from16        v4, v16
+   141 invoke-virtual/range v0 ... v6, Landroidx/appcompat/widget/Toolbar;->r(Landroid/view/View; I I I I [I)I
+   142 move-result        v1
+   143 add-int/2addr      v3, v1
+   144 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->n Landroid/view/View;
+   145 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+   146 move-result        v1
+   147 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->n Landroid/view/View;
+   148 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+   149 move-result        v2
+   150 add-int/2addr      v2, v1
+   151 invoke-static      v9, v2, Ljava/lang/Math;->max(I I)I
+   152 move-result        v9
+   153 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->n Landroid/view/View;
+   154 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+   155 move-result        v1
+   156 invoke-static      v10, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+   157 move-result        v10
+   158 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->j Ll/y;
+   159 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+   160 move-result        v1
+   161 if-eqz             v1, +029h
+   162 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->j Ll/y;
+   163 const/4            v5, 0
+   164 move-object        v0, v14
+   165 move               v2, v15
+   166 move/from16        v4, v16
+   167 invoke-virtual/range v0 ... v6, Landroidx/appcompat/widget/Toolbar;->r(Landroid/view/View; I I I I [I)I
+   168 move-result        v1
+   169 add-int/2addr      v3, v1
+   170 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->j Ll/y;
+   171 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+   172 move-result        v1
+   173 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->j Ll/y;
+   174 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+   175 move-result        v2
+   176 add-int/2addr      v2, v1
+   177 invoke-static      v9, v2, Ljava/lang/Math;->max(I I)I
+   178 move-result        v9
+   179 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->j Ll/y;
+   180 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+   181 move-result        v1
+   182 invoke-static      v10, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+   183 move-result        v10
+   184 invoke-virtual     v14, Landroid/view/ViewGroup;->getChildCount()I
+   185 move-result        v8
+   186 move               v11, v7
+   187 if-ge              v11, v8, +040h
+   188 invoke-virtual     v14, v11, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+   189 move-result-object v1
+   190 invoke-virtual     v1, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+   191 move-result-object v2
+   192 check-cast         v2, Ll/a3;
+   193 iget               v2, v2, Ll/a3;->b I
+   194 if-nez             v2, +008h
+   195 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+   196 move-result        v2
+   197 if-nez             v2, +004h
+   198 move               v12, v3
+   199 goto               +25h
+   200 const/4            v5, 0
+   201 move-object        v0, v14
+   202 move               v2, v15
+   203 move/from16        v4, v16
+   204 invoke-virtual/range v0 ... v6, Landroidx/appcompat/widget/Toolbar;->r(Landroid/view/View; I I I I [I)I
+   205 move-result        v5
+   206 move               v12, v3
+   207 add-int            v3, v12, v5
+   208 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+   209 move-result        v2
+   210 invoke-static      v1, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+   211 move-result        v4
+   212 add-int/2addr      v4, v2
+   213 invoke-static      v9, v4, Ljava/lang/Math;->max(I I)I
+   214 move-result        v2
+   215 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+   216 move-result        v1
+   217 invoke-static      v10, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+   218 move-result        v1
+   219 move               v10, v1
+   220 move               v9, v2
+   221 goto               +2h
+   222 move               v3, v12
+   223 add-int/lit8       v11, v11, 1
+   224 goto               -3fh
+   225 move               v12, v3
+   226 iget               v1, v14, Landroidx/appcompat/widget/Toolbar;->w I
+   227 iget               v2, v14, Landroidx/appcompat/widget/Toolbar;->x I
+   228 add-int            v5, v1, v2
+   229 iget               v1, v14, Landroidx/appcompat/widget/Toolbar;->u I
+   230 iget               v2, v14, Landroidx/appcompat/widget/Toolbar;->v I
+   231 add-int            v8, v1, v2
+   232 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   233 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+   234 move-result        v1
+   235 if-eqz             v1, +035h
+   236 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   237 add-int            v3, v12, v8
+   238 move-object        v0, v14
+   239 move               v2, v15
+   240 move/from16        v4, v16
+   241 invoke-virtual/range v0 ... v6, Landroidx/appcompat/widget/Toolbar;->r(Landroid/view/View; I I I I [I)I
+   242 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   243 invoke-virtual     v1, Landroid/view/View;->getMeasuredWidth()I
+   244 move-result        v1
+   245 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   246 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->k(Landroid/view/View;)I
+   247 move-result        v2
+   248 add-int/2addr      v2, v1
+   249 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   250 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+   251 move-result        v1
+   252 iget-object        v3, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   253 invoke-static      v3, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+   254 move-result        v3
+   255 add-int/2addr      v3, v1
+   256 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->g Ll/a1;
+   257 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+   258 move-result        v1
+   259 invoke-static      v10, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+   260 move-result        v10
+   261 move               v11, v3
+   262 move               v13, v10
+   263 move               v10, v2
+   264 goto               +4h
+   265 move               v11, v7
+   266 move               v13, v10
+   267 move               v10, v11
+   268 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->h Ll/a1;
+   269 invoke-virtual     v14, v1, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+   270 move-result        v1
+   271 if-eqz             v1, +02bh
+   272 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->h Ll/a1;
+   273 add-int            v3, v12, v8
+   274 add-int/2addr      v5, v11
+   275 move-object        v0, v14
+   276 move               v2, v15
+   277 move/from16        v4, v16
+   278 invoke-virtual/range v0 ... v6, Landroidx/appcompat/widget/Toolbar;->r(Landroid/view/View; I I I I [I)I
+   279 move-result        v1
+   280 invoke-static      v10, v1, Ljava/lang/Math;->max(I I)I
+   281 move-result        v10
+   282 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->h Ll/a1;
+   283 invoke-virtual     v1, Landroid/view/View;->getMeasuredHeight()I
+   284 move-result        v1
+   285 iget-object        v2, v14, Landroidx/appcompat/widget/Toolbar;->h Ll/a1;
+   286 invoke-static      v2, Landroidx/appcompat/widget/Toolbar;->l(Landroid/view/View;)I
+   287 move-result        v2
+   288 add-int/2addr      v2, v1
+   289 add-int/2addr      v11, v2
+   290 iget-object        v1, v14, Landroidx/appcompat/widget/Toolbar;->h Ll/a1;
+   291 invoke-virtual     v1, Landroid/view/View;->getMeasuredState()I
+   292 move-result        v1
+   293 invoke-static      v13, v1, Landroid/view/View;->combineMeasuredStates(I I)I
+   294 move-result        v13
+   295 add-int            v3, v12, v10
+   296 invoke-static      v9, v11, Ljava/lang/Math;->max(I I)I
+   297 move-result        v1
+   298 invoke-virtual     v14, Landroid/view/View;->getPaddingLeft()I
+   299 move-result        v2
+   300 invoke-virtual     v14, Landroid/view/View;->getPaddingRight()I
+   301 move-result        v4
+   302 add-int/2addr      v4, v2
+   303 add-int/2addr      v4, v3
+   304 invoke-virtual     v14, Landroid/view/View;->getPaddingTop()I
+   305 move-result        v2
+   306 invoke-virtual     v14, Landroid/view/View;->getPaddingBottom()I
+   307 move-result        v3
+   308 add-int/2addr      v3, v2
+   309 add-int/2addr      v3, v1
+   310 invoke-virtual     v14, Landroid/view/View;->getSuggestedMinimumWidth()I
+   311 move-result        v1
+   312 invoke-static      v4, v1, Ljava/lang/Math;->max(I I)I
+   313 move-result        v1
+   314 const/high16       v2, -16777216
+   315 and-int/2addr      v2, v13
+   316 invoke-static      v1, v15, v2, Landroid/view/View;->resolveSizeAndState(I I I)I
+   317 move-result        v1
+   318 invoke-virtual     v14, Landroid/view/View;->getSuggestedMinimumHeight()I
+   319 move-result        v2
+   320 invoke-static      v3, v2, Ljava/lang/Math;->max(I I)I
+   321 move-result        v2
+   322 shl-int/lit8       v3, v13, 16
+   323 move/from16        v4, v16
+   324 invoke-static      v2, v4, v3, Landroid/view/View;->resolveSizeAndState(I I I)I
+   325 move-result        v2
+   326 iget-boolean       v3, v14, Landroidx/appcompat/widget/Toolbar;->U Z
+   327 if-nez             v3, +003h
+   328 goto               +1eh
+   329 invoke-virtual     v14, Landroid/view/ViewGroup;->getChildCount()I
+   330 move-result        v3
+   331 move               v4, v7
+   332 if-ge              v4, v3, +01dh
+   333 invoke-virtual     v14, v4, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+   334 move-result-object v5
+   335 invoke-virtual     v14, v5, Landroidx/appcompat/widget/Toolbar;->t(Landroid/view/View;)Z
+   336 move-result        v6
+   337 if-eqz             v6, +010h
+   338 invoke-virtual     v5, Landroid/view/View;->getMeasuredWidth()I
+   339 move-result        v6
+   340 if-lez             v6, +00ah
+   341 invoke-virtual     v5, Landroid/view/View;->getMeasuredHeight()I
+   342 move-result        v5
+   343 if-lez             v5, +004h
+   344 move               v7, v2
+   345 goto               +4h
+   346 add-int/lit8       v4, v4, 1
+   347 goto               -1ch
+   348 invoke-virtual     v14, v1, v7, Landroid/view/View;->setMeasuredDimension(I I)V
+   349 return-void        
+[onMeasure] STATIC READS:
+  v1, Ll/m3;->a Z
+[m3] a:Z WRITERS: []

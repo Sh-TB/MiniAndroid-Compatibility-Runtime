@@ -5137,6 +5137,10 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                     styleable_id, "array[" + std::to_string(i) + "]",
                     attr_id);
                 int32_t decoded = 0;
+                // F-NEW-450 (CONT-107): record the slot's TypedValue type at
+                // produce time (0 = unknown/absent — legacy reader semantics
+                // preserved for untyped slots).
+                int32_t slot_type = 0;
                 bool slot_present = false;
                 if (attr_id != 0) {
                     // (1) XML AttributeSet value — AOSP precedence FIRST.
@@ -5155,6 +5159,7 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                           ? (int32_t)(r->ref_id ? r->ref_id
                                                                 : r->data)
                                           : r->data;
+                            slot_type = (int32_t)r->type;
                             slot_present = true;
                         }
                     }
@@ -5176,14 +5181,15 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                             f327_def_style_attr, f327_def_style_res,
                             f327_xml_style);
                         if (v) {
-                            if (v->type == resources::DataType::DIMENSION) {
-                                decoded =
-                                    resources::complex_unit_to_dimension_pixel_size(
-                                        v->dim_unit, v->dim_value,
-                                        resources::DensityContext{});
-                            } else {
-                                decoded = (int32_t)v->data;
-                            }
+                            // F-NEW-450 (CONT-107): AOSP TypedArray law — the
+                            // slot holds the RAW TypedValue; the dimension
+                            // READERS convert at read time. The produce-time
+                            // px conversion moved to the reader (the XML and
+                            // theme stages already stored raw — the 327 stage
+                            // was the only converter: a cross-stage
+                            // inconsistency the c106b2 probe isolated).
+                            decoded = (int32_t)v->data;
+                            slot_type = (int32_t)v->type;
                             slot_present = true;
                         }
                     }
@@ -5196,6 +5202,7 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                             // AOSP TypedValue law: booleans decode as
                             // data!=0; ints/colors pass data through.
                             decoded = (int32_t)v->data;
+                            slot_type = (int32_t)v->type;
                             // S99 PRESENCE LAW (babydots
                             // AppCompatDelegateImpl.createSubDecor ISE
                             // evidence): a resolved attribute with a ZERO
@@ -5231,6 +5238,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 heap_->set_object_int_field(
                     ta_id, "array_present[" + std::to_string(i) + "]",
                     slot_present ? 1 : 0);
+                // F-NEW-450: type written UNCONDITIONALLY per slot (the
+                // F-NEW-197 recycled-singleton staleness law — value and
+                // type always agree with THIS call).
+                heap_->set_object_int_field(
+                    ta_id, "array_type[" + std::to_string(i) + "]",
+                    slot_type);
                 heap_->set_object_int_field(
                     ta_id, "array[" + std::to_string(i) + "]", decoded);
             }
