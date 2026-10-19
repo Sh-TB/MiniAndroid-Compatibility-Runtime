@@ -1,0 +1,153 @@
+
+#### onMeasure (I I)V
+      0 invoke-static v14, Landroid/view/View$MeasureSpec;->getMode(I)I
+      6 move-result v0
+      8 invoke-static v14, Landroid/view/View$MeasureSpec;->getSize(I)I
+     14 move-result v14
+     16 invoke-static v15, Landroid/view/View$MeasureSpec;->getMode(I)I
+     22 move-result v1
+     24 invoke-static v15, Landroid/view/View$MeasureSpec;->getSize(I)I
+     30 move-result v15
+     32 const/high16 v2, -2147483648
+     36 const/high16 v3, 1073741824
+     40 if-eq v0, v3, +00dh
+     44 if-ne v0, v2, +003h
+     48 goto +9h
+     50 new-instance v14, Ljava/lang/IllegalStateException;
+     54 const-string v15, "Width must have an exact value or MATCH_PARENT"
+     58 invoke-direct v14, v15, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+     64 throw v14
+     66 if-eq v1, v3, +00dh
+     70 if-ne v1, v2, +003h
+     74 goto +9h
+     76 new-instance v14, Ljava/lang/IllegalStateException;
+     80 const-string v15, "Height must have an exact value or MATCH_PARENT"
+     84 invoke-direct v14, v15, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+     90 throw v14
+     92 invoke-virtual v13, Landroid/view/ViewGroup;->getChildCount()I
+     98 move-result v0
+    100 const/4 v1, 2
+    102 if-ne v0, v1, +0d4h
+    106 const/4 v1, 0
+    108 invoke-virtual v13, v1, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    114 move-result-object v4
+    116 iput-object v4, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->q Landroid/view/View;
+    120 const/4 v4, 1
+    122 invoke-virtual v13, v4, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    128 move-result-object v4
+    130 iput-object v4, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    134 iget-object v5, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->k Landroid/view/View;
+    138 if-nez v5, +005h
+    142 invoke-virtual v13, v4, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->setDragView(Landroid/view/View;)V
+    148 iget-object v4, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    152 if-eqz v4, +009h
+    156 invoke-virtual v4, Landroid/view/View;->getVisibility()I
+    162 move-result v4
+    164 if-nez v4, +003h
+    168 goto +5h
+    170 sget-object v4, Ll1/b;->d Ll1/b;
+    174 iput-object v4, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->r Ll1/b;
+    178 invoke-virtual v13, Landroid/view/View;->getPaddingTop()I
+    184 move-result v4
+    186 sub-int v4, v15, v4
+    190 invoke-virtual v13, Landroid/view/View;->getPaddingBottom()I
+    196 move-result v5
+    198 sub-int/2addr v4, v5
+    200 invoke-virtual v13, Landroid/view/View;->getPaddingLeft()I
+    206 move-result v5
+    208 sub-int v5, v14, v5
+    212 invoke-virtual v13, Landroid/view/View;->getPaddingRight()I
+    218 move-result v6
+    220 sub-int/2addr v5, v6
+    222 if-ge v1, v0, +094h
+    226 invoke-virtual v13, v1, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    232 move-result-object v6
+    234 invoke-virtual v6, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+    240 move-result-object v7
+    242 const-string v8, "null cannot be cast to non-null type com.sothree.slidinguppanel.LayoutWeightParams"
+    246 invoke-static v7, v8, Lz1/g;->c(Ljava/lang/Object; Ljava/lang/String;)V
+    252 check-cast v7, Ll1/a;
+    256 invoke-virtual v6, Landroid/view/View;->getVisibility()I
+    262 move-result v8
+    264 const/16 v9, 8
+    268 if-ne v8, v9, +006h
+    272 if-nez v1, +004h
+    276 goto/16 +075h
+    280 iget-object v8, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->q Landroid/view/View;
+    284 if-ne v6, v8, +01ah
+    288 iget-boolean v8, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->i Z
+    292 if-nez v8, +00dh
+    296 iget-object v8, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->r Ll1/b;
+    300 sget-object v9, Ll1/b;->d Ll1/b;
+    304 if-eq v8, v9, +007h
+    308 iget v8, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+    312 sub-int v8, v4, v8
+    316 goto +2h
+    318 move v8, v4
+    320 iget v9, v7, Landroid/view/ViewGroup$MarginLayoutParams;->leftMargin I
+    324 iget v10, v7, Landroid/view/ViewGroup$MarginLayoutParams;->rightMargin I
+    328 add-int/2addr v9, v10
+    330 sub-int v9, v5, v9
+    334 goto +dh
+    336 iget-object v8, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    340 if-ne v6, v8, +008h
+    344 iget v8, v7, Landroid/view/ViewGroup$MarginLayoutParams;->topMargin I
+    348 sub-int v8, v4, v8
+    352 move v9, v5
+    354 goto +3h
+    356 move v8, v4
+    358 goto -3h
+    360 iget v10, v7, Landroid/view/ViewGroup$MarginLayoutParams;->width I
+    364 const/4 v11, -1
+    366 const/4 v12, -2
+    368 if-eq v10, v12, +00eh
+    372 if-eq v10, v11, +007h
+    376 invoke-static v10, v3, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    382 move-result v9
+    384 goto +ah
+    386 invoke-static v9, v3, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    392 move-result v9
+    394 goto +5h
+    396 invoke-static v9, v2, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    402 move-result v9
+    404 iget v10, v7, Landroid/view/ViewGroup$MarginLayoutParams;->height I
+    408 if-ne v10, v12, +007h
+    412 invoke-static v8, v2, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    418 move-result v7
+    420 goto +1ah
+    422 const/4 v12, 0
+    424 iget v7, v7, Ll1/a;->a F
+    428 cmpl-float v12, v7, v12
+    432 if-lez v12, +00dh
+    436 const/high16 v12, 1065353216
+    440 cmpg-float v12, v7, v12
+    444 if-gez v12, +007h
+    448 int-to-float v8, v8
+    450 mul-float v8, v8, v7
+    454 float-to-int v8, v8
+    456 goto +4h
+    458 if-eq v10, v11, +003h
+    462 move v8, v10
+    464 invoke-static v8, v3, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    470 move-result v7
+    472 invoke-virtual v6, v9, v7, Landroid/view/View;->measure(I I)V
+    478 iget-object v7, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    482 if-ne v6, v7, +00eh
+    486 invoke-static v7, Lz1/g;->b(Ljava/lang/Object;)V
+    492 invoke-virtual v7, Landroid/view/View;->getMeasuredHeight()I
+    498 move-result v6
+    500 iget v7, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+    504 sub-int/2addr v6, v7
+    506 iput v6, v13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->u I
+    510 add-int/lit8 v1, v1, 1
+    514 goto/16 -092h
+    518 invoke-virtual v13, v14, v15, Landroid/view/View;->setMeasuredDimension(I I)V
+    524 return-void 
+    526 new-instance v14, Ljava/lang/IllegalStateException;
+    530 const-string v15, "Sliding up panel layout must have exactly 2 children!"
+    534 invoke-direct v14, v15, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+    540 throw v14
+
+#### setPanelHeight (I)V
+      0 iput v1, v0, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+      4 return-void 

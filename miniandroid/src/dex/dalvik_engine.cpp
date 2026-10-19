@@ -43971,7 +43971,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // chain wrote dimensions, the DEFAULT View.onMeasure law
                 // applies — setMeasuredDimension(getDefaultSize(spec)):
                 // EXACTLY/AT_MOST → spec size, UNSPECIFIED → 0.
-                if (!n->dex_measure_valid) {
+                //
+                // ── F-NEW-453 (CONT-108): the DEGENERATE SELF-REPORT gate.
+                // The opencalculator v53 app-bundled androidx
+                // ConstraintLayout solver writes setMeasuredDimension(0,0)
+                // on the engine for EVERY incoming spec (proven by the
+                // [F453-SMD] probe: 20 writes, all 0x0, under EXACTLY
+                // 1080x1421 too — the same DEX on real ART answers
+                // spec-size, opencalc renders its full keypad there). The
+                // SlidingUpPanelLayout fork then lays degenerate zero-size
+                // child rects and its umano coverage law (i(): "hide the
+                // main content when the opaque panel covers it") compares
+                // two IDENTICAL degenerate rects → coverage TRUE → the
+                // keypad goes INVISIBLE → blank face (F-NEW-451). AOSP
+                // View.measure contract (View.java): a MATCH_PARENT view
+                // measured under EXACTLY(w,h) MUST report (w,h); a 0x0
+                // self-report under a positive EXACTLY spec from a VISIBLE
+                // ViewGroup whose DEX chain measured no children is an
+                // ART-impossible write, same family as the silent-void
+                // case above. Law: treat it as "nothing wrote dimensions"
+                // and hand the node to the ONE canonical measure law
+                // (R-NEW-440 bridge below). EXACTLY-only, positive-size
+                // only, VISIBLE only, MATCH_PARENT/unset-lp only — legit
+                // wrap/EXACTLY-0/GONE cases keep their DEX answer.
+                const bool f453_degenerate =
+                    n->dex_measure_valid && n->dex_measured_w == 0 &&
+                    n->dex_measured_h == 0 &&
+                    (((uint32_t)args[1].int_val) >> 30) == 1 &&
+                    (((uint32_t)args[2].int_val) >> 30) == 1 &&
+                    (args[1].int_val & 0x3FFFFFFF) > 0 &&
+                    (args[2].int_val & 0x3FFFFFFF) > 0 && n->visibility == 0 &&
+                    (n->lp_width == INT_MIN || n->lp_width == -1) &&
+                    (n->lp_height == INT_MIN || n->lp_height == -1);
+                if (!n->dex_measure_valid || f453_degenerate) {
                     // ── R-NEW-440 (S132): ONE CANONICAL MEASURE LAW ────────
                     // AOSP View.measure dispatches the node's OWN measure
                     // law; ViewGroup containers run their child negotiation
@@ -43997,11 +44029,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             if (rt.inflater().measure_view_spec(
                                     vs, recv, args[1].int_val, args[2].int_val,
                                     cw2, ch2)) {
-                                n->dex_measured_w = cw2;
-                                n->dex_measured_h = ch2;
-                                n->dex_measure_valid = true;
-                                n->measured_width = cw2;
-                                n->measured_height = ch2;
+                                // F-NEW-453 completion: a canonical answer
+                                // that is ITSELF degenerate (0x0) under a
+                                // demanding spec must not be committed as
+                                // the fresh dex_measured store (the DEX
+                                // readback would consume the poison — same
+                                // family as the stale-solver-write bug).
+                                // EXACTLY falls through to the default law
+                                // (spec size) via the gate below instead.
+                                const bool canon_degenerate =
+                                    cw2 == 0 && ch2 == 0;
+                                if (!canon_degenerate) {
+                                    n->dex_measured_w = cw2;
+                                    n->dex_measured_h = ch2;
+                                    n->dex_measure_valid = true;
+                                    n->measured_width = cw2;
+                                    n->measured_height = ch2;
+                                }
                                 static thread_local uint64_t r440_log = 0;
                                 if (r440_log < 16) {
                                     ++r440_log;
@@ -44014,9 +44058,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                               << std::dec << " -> " << cw2
                                               << "x" << ch2 << std::endl;
                                 }
-                                status = ApiCallTrace::Status::IMPLEMENTED;
-                                result = DalvikValue::make_void();
-                                return true;
+                                if (!canon_degenerate) {
+                                    status = ApiCallTrace::Status::IMPLEMENTED;
+                                    result = DalvikValue::make_void();
+                                    return true;
+                                }
+                                // degenerate canonical answer: fall through
+                                // to the default law (EXACTLY → spec size).
                             }
                         }
                     }

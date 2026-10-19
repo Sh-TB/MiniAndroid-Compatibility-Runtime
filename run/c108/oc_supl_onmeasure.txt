@@ -1,0 +1,252 @@
+
+#### onLayout (Z I I I I)V
+      0 invoke-virtual           5, Landroid/view/View;->getPaddingLeft()I
+      6 move-result              6
+      8 invoke-virtual           5, Landroid/view/View;->getPaddingTop()I
+     14 move-result              7
+     16 invoke-virtual           5, Landroid/view/ViewGroup;->getChildCount()I
+     22 move-result              8
+     24 iget-boolean             9, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->L Z
+     28 <err tuple index out of range>
+     32 iget-object              9, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->r Ll1/b;
+     36 invoke-virtual           9, Ljava/lang/Enum;->ordinal()I
+     42 move-result              9
+     44 <err tuple index out of range>
+     48 <err tuple index out of range>
+     50 <err tuple index out of range>
+     54 <err tuple index out of range>
+     56 <err tuple index out of range>
+     58 <err tuple index out of range>
+     62 <err tuple index out of range>
+     64 invoke-virtual           5, 0, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->d(F)I
+     70 move-result              9
+     72 iget-boolean             10, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->h Z
+     76 <err tuple index out of range>
+     80 iget                     10, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+     84 <err tuple index out of range>
+     86 iget                     10, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+     90 neg-int                  10, 10
+     92 add-int/2addr            9, 10
+     94 invoke-virtual           5, 9, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e(I)F
+    100 move-result              0
+    102 <err tuple index out of range>
+    104 iget                     0, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->w F
+    108 <err tuple index out of range>
+    110 iget                     0, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->v F
+    114 iput                     0, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->t F
+    118 <err tuple index out of range>
+    120 <err tuple index out of range>
+    122 <err tuple index out of range>
+    126 invoke-virtual           5, 10, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    132 move-result-object       0
+    134 invoke-virtual           0, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+    140 move-result-object       1
+    142 const-string             2, null cannot be cast to non-null type com.sothree.slidinguppanel.LayoutWeightParams
+    146 invoke-static            1, 2, Lz1/g;->c(Ljava/lang/Object; Ljava/lang/String;)V
+    152 check-cast               1, Ll1/a;
+    156 invoke-virtual           0, Landroid/view/View;->getVisibility()I
+    162 move-result              2
+    164 <err tuple index out of range>
+    168 <err tuple index out of range>
+    172 <err tuple index out of range>
+    176 iget-boolean             2, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->L Z
+    180 <err tuple index out of range>
+    184 <err tuple index out of range>
+    186 invoke-virtual           0, Landroid/view/View;->getMeasuredHeight()I
+    192 move-result              2
+    194 iget-object              3, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    198 <err tuple index out of range>
+    202 iget                     3, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->t F
+    206 invoke-virtual           5, 3, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->d(F)I
+    212 move-result              3
+    214 <err tuple index out of range>
+    216 move                     3, 7
+    218 iget-boolean             4, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->h Z
+    222 <err tuple index out of range>
+    226 iget-object              4, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->q Landroid/view/View;
+    230 <err tuple index out of range>
+    234 iget-boolean             4, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->i Z
+    238 <err tuple index out of range>
+    242 iget                     3, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->t F
+    246 invoke-virtual           5, 3, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->d(F)I
+    252 move-result              3
+    254 iget-object              4, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    258 invoke-static            4, Lz1/g;->b(Ljava/lang/Object;)V
+    264 invoke-virtual           4, Landroid/view/View;->getMeasuredHeight()I
+    270 move-result              4
+    272 add-int/2addr            3, 4
+    274 add-int/2addr            2, 3
+    276 iget                     1, 1, Landroid/view/ViewGroup$MarginLayoutParams;->leftMargin I
+    280 add-int/2addr            1, 6
+    282 invoke-virtual           0, Landroid/view/View;->getMeasuredWidth()I
+    288 move-result              4
+    290 add-int/2addr            4, 1
+    292 invoke-virtual           0, 1, 3, 4, 2, Landroid/view/View;->layout(I I I I)V
+    298 <err tuple index out of range>
+    302 <err tuple index out of range>
+    304 iget-boolean             6, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->L Z
+    308 <err tuple index out of range>
+    312 invoke-virtual           5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->i()V
+    318 invoke-virtual           5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->c()V
+    324 iput-boolean             9, 5, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->L Z
+    328 return-void              
+
+#### onMeasure (I I)V
+      0 invoke-static            14, Landroid/view/View$MeasureSpec;->getMode(I)I
+      6 move-result              0
+      8 invoke-static            14, Landroid/view/View$MeasureSpec;->getSize(I)I
+     14 move-result              14
+     16 invoke-static            15, Landroid/view/View$MeasureSpec;->getMode(I)I
+     22 move-result              1
+     24 invoke-static            15, Landroid/view/View$MeasureSpec;->getSize(I)I
+     30 move-result              15
+     32 <err tuple index out of range>
+     36 <err tuple index out of range>
+     40 <err tuple index out of range>
+     44 <err tuple index out of range>
+     48 <err tuple index out of range>
+     50 new-instance             14, Ljava/lang/IllegalStateException;
+     54 const-string             15, Width must have an exact value or MATCH_PARENT
+     58 invoke-direct            14, 15, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+     64 throw                    14
+     66 <err tuple index out of range>
+     70 <err tuple index out of range>
+     74 <err tuple index out of range>
+     76 new-instance             14, Ljava/lang/IllegalStateException;
+     80 const-string             15, Height must have an exact value or MATCH_PARENT
+     84 invoke-direct            14, 15, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+     90 throw                    14
+     92 invoke-virtual           13, Landroid/view/ViewGroup;->getChildCount()I
+     98 move-result              0
+    100 <err tuple index out of range>
+    102 <err tuple index out of range>
+    106 <err tuple index out of range>
+    108 invoke-virtual           13, 1, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    114 move-result-object       4
+    116 iput-object              4, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->q Landroid/view/View;
+    120 <err tuple index out of range>
+    122 invoke-virtual           13, 4, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    128 move-result-object       4
+    130 iput-object              4, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    134 iget-object              5, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->k Landroid/view/View;
+    138 <err tuple index out of range>
+    142 invoke-virtual           13, 4, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->setDragView(Landroid/view/View;)V
+    148 iget-object              4, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    152 <err tuple index out of range>
+    156 invoke-virtual           4, Landroid/view/View;->getVisibility()I
+    162 move-result              4
+    164 <err tuple index out of range>
+    168 <err tuple index out of range>
+    170 sget-object              4, Ll1/b;->d Ll1/b;
+    174 iput-object              4, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->r Ll1/b;
+    178 invoke-virtual           13, Landroid/view/View;->getPaddingTop()I
+    184 move-result              4
+    186 sub-int                  4, 15, 4
+    190 invoke-virtual           13, Landroid/view/View;->getPaddingBottom()I
+    196 move-result              5
+    198 sub-int/2addr            4, 5
+    200 invoke-virtual           13, Landroid/view/View;->getPaddingLeft()I
+    206 move-result              5
+    208 sub-int                  5, 14, 5
+    212 invoke-virtual           13, Landroid/view/View;->getPaddingRight()I
+    218 move-result              6
+    220 sub-int/2addr            5, 6
+    222 <err tuple index out of range>
+    226 invoke-virtual           13, 1, Landroid/view/ViewGroup;->getChildAt(I)Landroid/view/View;
+    232 move-result-object       6
+    234 invoke-virtual           6, Landroid/view/View;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;
+    240 move-result-object       7
+    242 const-string             8, null cannot be cast to non-null type com.sothree.slidinguppanel.LayoutWeightParams
+    246 invoke-static            7, 8, Lz1/g;->c(Ljava/lang/Object; Ljava/lang/String;)V
+    252 check-cast               7, Ll1/a;
+    256 invoke-virtual           6, Landroid/view/View;->getVisibility()I
+    262 move-result              8
+    264 <err tuple index out of range>
+    268 <err tuple index out of range>
+    272 <err tuple index out of range>
+    276 <err tuple index out of range>
+    280 iget-object              8, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->q Landroid/view/View;
+    284 <err tuple index out of range>
+    288 iget-boolean             8, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->i Z
+    292 <err tuple index out of range>
+    296 iget-object              8, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->r Ll1/b;
+    300 sget-object              9, Ll1/b;->d Ll1/b;
+    304 <err tuple index out of range>
+    308 iget                     8, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+    312 sub-int                  8, 4, 8
+    316 <err tuple index out of range>
+    318 move                     8, 4
+    320 iget                     9, 7, Landroid/view/ViewGroup$MarginLayoutParams;->leftMargin I
+    324 iget                     10, 7, Landroid/view/ViewGroup$MarginLayoutParams;->rightMargin I
+    328 add-int/2addr            9, 10
+    330 sub-int                  9, 5, 9
+    334 <err tuple index out of range>
+    336 iget-object              8, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    340 <err tuple index out of range>
+    344 iget                     8, 7, Landroid/view/ViewGroup$MarginLayoutParams;->topMargin I
+    348 sub-int                  8, 4, 8
+    352 move                     9, 5
+    354 <err tuple index out of range>
+    356 move                     8, 4
+    358 <err tuple index out of range>
+    360 iget                     10, 7, Landroid/view/ViewGroup$MarginLayoutParams;->width I
+    364 <err tuple index out of range>
+    366 <err tuple index out of range>
+    368 <err tuple index out of range>
+    372 <err tuple index out of range>
+    376 invoke-static            10, 3, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    382 move-result              9
+    384 <err tuple index out of range>
+    386 invoke-static            9, 3, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    392 move-result              9
+    394 <err tuple index out of range>
+    396 invoke-static            9, 2, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    402 move-result              9
+    404 iget                     10, 7, Landroid/view/ViewGroup$MarginLayoutParams;->height I
+    408 <err tuple index out of range>
+    412 invoke-static            8, 2, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    418 move-result              7
+    420 <err tuple index out of range>
+    422 <err tuple index out of range>
+    424 iget                     7, 7, Ll1/a;->a F
+    428 cmpl-float               12, 7, 12
+    432 <err tuple index out of range>
+    436 <err tuple index out of range>
+    440 cmpg-float               12, 7, 12
+    444 <err tuple index out of range>
+    448 int-to-float             8, 8
+    450 mul-float                8, 8, 7
+    454 float-to-int             8, 8
+    456 <err tuple index out of range>
+    458 <err tuple index out of range>
+    462 move                     8, 10
+    464 invoke-static            8, 3, Landroid/view/View$MeasureSpec;->makeMeasureSpec(I I)I
+    470 move-result              7
+    472 invoke-virtual           6, 9, 7, Landroid/view/View;->measure(I I)V
+    478 iget-object              7, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->p Landroid/view/View;
+    482 <err tuple index out of range>
+    486 invoke-static            7, Lz1/g;->b(Ljava/lang/Object;)V
+    492 invoke-virtual           7, Landroid/view/View;->getMeasuredHeight()I
+    498 move-result              6
+    500 iget                     7, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+    504 sub-int/2addr            6, 7
+    506 iput                     6, 13, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->u I
+    510 <err tuple index out of range>
+    514 <err tuple index out of range>
+    518 invoke-virtual           13, 14, 15, Landroid/view/View;->setMeasuredDimension(I I)V
+    524 return-void              
+    526 new-instance             14, Ljava/lang/IllegalStateException;
+    530 const-string             15, Sliding up panel layout must have exactly 2 children!
+    534 invoke-direct            14, 15, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+    540 throw                    14
+
+#### onSizeChanged (I I I I)V
+      0 invoke-super             0, 1, 2, 3, 4, Landroid/view/ViewGroup;->onSizeChanged(I I I I)V
+      6 <err tuple index out of range>
+     10 <err tuple index out of range>
+     12 iput-boolean             1, 0, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->L Z
+     16 return-void              
+
+#### setPanelHeight (I)V
+      0 iput                     1, 0, Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;->e I
+      4 return-void              

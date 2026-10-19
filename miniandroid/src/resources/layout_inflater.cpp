@@ -2614,6 +2614,19 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                     n->measured_height = oh;
                     return {ow, oh};
                 }
+                // F-NEW-453 (CONT-108): the DEX hook already wrote its
+                // degenerate answer through setMeasuredDimension
+                // (dex_measure_valid=true, dex_measured=0x0). The DEX
+                // readback shadow (getMeasuredWidth/Height) prefers that
+                // stale degenerate store over measured_* — the
+                // SlidingUpPanelLayout fork then laid zero-size child rects
+                // and its coverage law hid the keypad (F-NEW-451 blank
+                // face). The native takeover is the authoritative answer:
+                // invalidate the stale degenerate DEX write so readbacks
+                // consume the native result.
+                n->dex_measure_valid = false;
+                n->dex_measured_w = 0;
+                n->dex_measured_h = 0;
                 if (getenv("U007_LAYOUT_DEBUG"))
                     fprintf(stderr, "[U007-LAYOUT] R-NEW-438 degenerate DEX "
                                     "onMeasure (%dx%d) at view %u (%s) — "

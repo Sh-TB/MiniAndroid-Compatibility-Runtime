@@ -1,0 +1,76 @@
+{
+  "wave": "CONT-108",
+  "issue": 364,
+  "date": "2026-10-19",
+  "base_commit": "c1634e10 (CONT-107 + checkpoint)",
+  "final_binary_sha16": "cac0ee70d8c951b4",
+  "binary_lineage": [
+    "1e3efdb4209764a9 (CONT-107 final, incremental lineage)",
+    "probe-bearing decode builds (run/c108/oc_probe/oc_probe2/oc_probe3 + prewt fresh-worktree binaries e419823dc43cd86c/.., decode-only)",
+    "oc_fix1 (gate part 1 only — keypad measured 1080x1313 canonical, layout still consumed stale 0)",
+    "oc_fix2 (gate part 1+2+3 — full keypad face d5f3c7b5e9936ae6)",
+    "cac0ee70d8c951b4 = final probe-free rebuild of the complete F-NEW-453 law (opencalc/tanana/csw spot-checks byte-match the fix2 faces)"
+  ],
+  "mission": {
+    "task364_read": "73 comments; zero new after baseline 6268811285 (CONT-107 ledger). Mission = CONT-107 declared next-wave ownership: F-NEW-451 downstream decode, F-NEW-448 chess toolbar, F-NEW-449 MessageInfo.",
+    "executed": "F-NEW-451 downstream decode + fix (the wave's declared lever); F-NEW-448/449 remain CONFIRMED_OPEN_GAP with refreshed notes."
+  },
+  "decode_chain": [
+    "render-tree diff (scripts/c108_render_tree.py): post-107 final tree drops the 23-node keypad subtree (48->15 nodes); pre-107 keeps 48 nodes with the keypad at 1080x1421",
+    "frame matrix: frame_0 identical e9ea1301; frame_1+ pre=f25b754c4565c38b vs post=13d2d6d836f75e7f — divergence enters at the first virtual timer tick",
+    "normalized stderr diff (scripts/c108_diff_logs.py): first divergence = MainActivity.getDrawable(0x7f08007f below_shadow) not reached post-107; object ids shift by one from that point",
+    "resource decode: 0x7f08007f = drawable/below_shadow (res/MB.xml <shape><gradient startColor/endColor/angle>); SlidingUpPanelLayout attrs = umanoPanelHeight 41dp + umanoShadowHeight 0dp (res/9t.xml)",
+    "androguard disassembly (scripts/c108_scan_supl_v2.py): the Kotlin-rewrite fork's onMeasure computes main-child height = availableHeight - panelHeight (slide-state gated) with LayoutWeightParams scaling; setPanelHeight = plain field write; onLayout lays main child at top=d(t)+panel.measuredHeight with bottom=top+measured",
+    "[F453-MEASURE] uncapped probe: stable passes pass EXACTLY 1080 x 1421 to the keypad in BOTH binaries; all logged results 0x0",
+    "[F453-SMD] probe: the app-bundled androidx ConstraintLayout solver writes setMeasuredDimension(0,0) on EVERY pass (view=738 20 writes, view=850 19 writes) — byte-identical on the pre-107 binary (oc_pre_probe) — the disease predates F-450",
+    "[F453-LAY] probe: the fork lays BOTH children at identical zero-size rects (0,108 0,108) post vs (0,10497 0,10497) pre; bottom=top+measured=0",
+    "[P1-1-VIS]: post-107 fires view=738 (keypad) visibility 0 -> 4 INVISIBLE; pre-107 never does — the fork's i() coverage law ('hide main content when the panel rect covers it') compares two IDENTICAL degenerate rects -> TRUE; the render walk prunes INVISIBLE subtrees (F-NEW-168) -> blank face",
+    "getBackground law: the engine answers null for the panel (no R393-BG row) — the coverage decision consumed the degenerate rects, not the shadow-drawable path; the CONT-107 getDrawable marker is a downstream symptom"
+  ],
+  "fix": {
+    "id": "F-NEW-453",
+    "parts": [
+      "degenerate self-report gate: dex_measure_valid && 0x0 && EXACTLY>0 both axes && VISIBLE && MATCH_PARENT/unset lp -> R-NEW-440 canonical container law (measure_view_spec)",
+      "canonical answers that are themselves 0x0 under a demanding spec are not committed; fall through to the EXACTLY default law (spec size)",
+      "R-NEW-438 native takeover invalidates the stale degenerate dex_measured/valid store so DEX getMeasuredWidth/Height readbacks consume the authoritative native result"
+    ],
+    "ab": "oc_fix1 (part 1 only): keypad canonical 1080x1313 but layout consumed stale 0 -> still 13d2d6d8; oc_fix2 (complete): full keypad face d5f3c7b5e9936ae6; probe-free final cac0ee70d8c951b4 byte-matches"
+  },
+  "battery_final_binary": {
+    "binary": "cac0ee70d8c951b4",
+    "wall": "11 rows x3 = 33/33 MATCH (csw 5c4a0172 re-pinned build-lineage, dooz d602648e, flappycow 13cf4746, g2048 f43face0, gmdice 3891679d, microtimer bbd350b6, opencalc d5f3c7b5 re-pinned FIXED, simplecalc 2ac5d8d0, tanana 10174486 re-pinned IMPROVED, tttdeluxe db1d633d, unote 90a67cc1)",
+    "goldens": "4/4 (helloworld canonical artifact 83720c1028f832d0)",
+    "gatea_negatives_reinstall": "rc=0 (19/19 family)",
+    "mg310": "7/7 rc=0",
+    "mg150": "3/3 rc=0",
+    "selftests": "13/13 rc=0",
+    "f376_fault": "70/70 rc=0",
+    "probes": "c106a [F447-NPE] parity row + c106b2 dim=147 + c106b 11/11 stable + c104i 4/4 + c74esc 5/5 all terminal"
+  },
+  "drift_adjudications": [
+    {
+      "row": "tanana",
+      "old": "afe0bd8dd4d09ca6 (GREY-200 fill face, F-NEW-338 family)",
+      "new": "10174486e7753fb6",
+      "verdict": "IMPROVEMENT — the notification-settings preference text rows (Notification settings / Ongoing notification / Calculator Notification can not be dismissed / Lock screen notification / Show Calculator Notification on lock screen) render as real glyphs under F-NEW-453; re-pinned x3 deterministic"
+    },
+    {
+      "row": "csw",
+      "old": "d3c26b73ee21e571 (GL-path face of the long-lived incremental lineage: compose title+digits)",
+      "new": "5c4a0172628849ba (software-path windowBackground face of the fresh lineage)",
+      "verdict": "BUILD-LINEAGE FLIP, fix-independent — bracketed: the fresh-worktree rebuild prewt@44bbcb21 with decode probes but ZERO CONT-108 fix code reproduces 5c4a0172 byte-identically, and zero [R440-CANONICAL]/R-NEW-438 takeover rows exist in any csw run (the fix never fires for csw). F-NEW-443 (dooz) build-lineage precedent; the compose draw frontier remains the named open gap. Re-pinned x3 deterministic"
+    }
+  ],
+  "honest_notes": [
+    "F-NEW-448 (chess Toolbar 1080x0 content/min-height chain) and F-NEW-449 (n2.r MessageInfo metadata) remain CONFIRMED_OPEN_GAP — not attempted this wave; the wave's declared lever was F-NEW-451 and its decode consumed the budget",
+    "the wall battery at CONT-107's final binary ran only the 4-row subset (cont107_battery.sh) — csw/tanana drifts discovered this wave are therefore attributable to the CONT-106->107 rebuild lineage + this wave's fix respectively, bracketed accordingly",
+    "opencalc new face d5f3c7b5 vs old-good f25b75: the keypad grid starts ~30px lower (the AOSP-true 41dp collapsed panel handle reserves the bottom 108px) — the old f25b75 face encoded the raw-10497 accident, not a fidelity target",
+    "exit codes: opencalc wall rows report rc=1 (harness frame-census quirk, pre-existing on all opencalc rows since CONT-70; the face sha is the verdict)"
+  ],
+  "registry": {
+    "roots": 768,
+    "new": ["F-NEW-453"],
+    "closed": ["F-NEW-451"],
+    "id_unique": true
+  }
+}
