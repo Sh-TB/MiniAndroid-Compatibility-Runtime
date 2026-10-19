@@ -10532,3 +10532,20 @@ Work Log:
 Stage Summary:
 - 12 task units to terminal verdicts: 3 roots fixed (F-NEW-447 caller-domain NPE parity; F-NEW-450 TypedArray dimension law; F-NEW-452 Configuration.locale), 1 root refuted-and-refreshed (F-NEW-448), 1 negative-control refresh (F-NEW-449), 1 new honest gap (F-NEW-451 opencalc downstream chain), container recovery + probe repair + re-pin adjudication + full battery + registry + push. Two real-app A/B pairs with byte-identical baselines (telegram) and adjudicated re-pin (opencalc).
 - Next wave owns: F-NEW-451 downstream decode (which view/text law collapses under correct dims — fixture-first), F-NEW-448 toolbar content/min-height chain decode, F-NEW-449 MessageInfo-metadata-side probe, dooz AndroidCanvas bridge, UPP-001.
+
+---
+Task ID: CONT-108
+Agent: Super Z (main)
+Task: #364 «ادامه و پوش فیل یوز» — elephant-batch wave: F-NEW-451 downstream decode to ROOT-CAUSED-FIXED via the new F-NEW-453 degenerate-self-report law + full battery + registry/evidence/worklog + push.
+
+Work Log:
+- Baseline: #364 re-read — 73 comments, ZERO new after 6268811285 (CONT-107 ledger); mission = the declared next-wave ownership (F-NEW-451 downstream decode first).
+- F-NEW-451 decode chain (run/c108/): render-tree diff (post final tree drops the 23-node keypad subtree, 48->15 nodes); normalized stderr diff (first divergence = MainActivity.getDrawable 0x7f08007f below_shadow not reached); resource decode (0x7f08007f = res/MB.xml gradient shape; layout 9t.xml umanoPanelHeight=41dp); androguard disassembly of the Kotlin SlidingUpPanelLayout fork (onMeasure main-height = available - panelHeight, slide-state gated, LayoutWeightParams; onLayout top=d(t)+panel.measuredHeight; i() coverage law; h() slide-restore law).
+- Three decode probes added then stripped ([F453-MEASURE] uncapped measure log, [F453-SMD] setMeasuredDimension writer, [F453-LAY] layout rects) + a fresh-worktree PRE-107 binary (prewt@44bbcb21) for honest A/B: the app-bundled androidx ConstraintLayout solver writes setMeasuredDimension(0,0) on EVERY pass in BOTH binaries (20 writes view=738, byte-identical pre/post) — the disease predates F-450; the fork then lays both children at identical zero-size rects and its i() coverage law compares two identical degenerate rects -> TRUE -> keypad setVisibility(INVISIBLE) ([P1-1-VIS] view=738 0->4) -> render walk prunes the subtree -> blank face. Pre-107 the raw-10497 d(t) geometry + the EXP-095 render heuristic masked it.
+- F-NEW-453 fix (3 parts): (1) degenerate self-report gate (0x0 write under EXACTLY>0, VISIBLE, MATCH_PARENT lp) routes to the R-NEW-440 canonical container law; (2) canonical answers that are themselves 0x0 under a demanding spec are not committed (fall through to the EXACTLY default law); (3) the R-NEW-438 native takeover invalidates the stale degenerate dex_measured store so DEX readbacks consume the native result. A/B: oc_fix1 (part 1 only — still blank) -> oc_fix2 (full keypad face d5f3c7b5e9936ae6) -> probe-free final cac0ee70d8c951b4 byte-matches.
+- Full battery at cac0ee70d8c951b4 (scripts/cont108_battery.sh): wall 11 rows x3 = 33/33 MATCH; goldens 4/4; gatea negatives+reinstall rc=0; MG-310 7/7; MG-150 3/3; selftest 13/13; F-376 70/70; probes c106a/c106b2/c106b/c104i 4/4/c74esc 5/5 terminal.
+- Drift adjudications: tanana afe0bd8d -> 10174486 IMPROVEMENT (real preference text renders); csw d3c26b73 -> 5c4a0172 BUILD-LINEAGE flip bracketed fix-independent (prewt+probes no-fix reproduces it; zero canonical/takeover rows in any csw run) per the F-NEW-443 precedent. WANT re-pinned x3 in cont70_gate.sh with full rationale comments.
+- Registry 767 -> 768 (F-NEW-453 new ROOT-CAUSED-FIXED; F-NEW-451 closed ROOT-CAUSED-FIXED), id-unique; evidence/cont108/evidence.json; ledger posted to #364.
+
+Stage Summary:
+- F-NEW-451 CLOSED (ROOT-CAUSED-FIXED via F-NEW-453); F-NEW-453 new P0 law landed with probe-free final binary cac0ee70d8c951b4; wall 33/33 + full battery green; 2 drifts honestly adjudicated (1 improvement, 1 build-lineage); F-NEW-448/449 remain CONFIRMED_OPEN_GAP (next-wave levers); push verified HEAD==origin/main.
