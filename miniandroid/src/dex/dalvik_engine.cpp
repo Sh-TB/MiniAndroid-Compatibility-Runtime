@@ -21519,7 +21519,35 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 const bool stored_null =
                     null_probe != static_field_storage_.end() &&
                     null_probe->second.type == DalvikType::NULL_REF;
-                if (attempted || stored_null) {
+                // F-NEW-446 (CONT-106, fixture-first): S123 fires ONLY for a
+                // genuinely FAILED <clinit> (the F-NEW-215 evidence map).
+                // AOSP law: a COMPLETED clinit that leaves a static object
+                // field null means the app's own lazy factory owns the first
+                // assignment — sget MUST return that null faithfully so the
+                // app's null-sentinel guards keep working. The old
+                // `attempted || stored_null` gate materialized Paint/RectF
+                // statics of HEALTHY classes, converting guarded early-return
+                // paths into deep paths that read unrelated lazy singletons.
+                // Live PRE evidence (run/cont105/tg_pre.log + probe
+                // fixtures/cont106_clinitsentinel PRE, binary
+                // afaad5bd4f56f9d3): o6.<clinit> result=OK (1736 sputs, no
+                // k0/m0/u1 assignment — telegram's o6.P(Context) factory owns
+                // them; single u1 writer, callers o6.R / r4.<init> /
+                // CheckBoxSquare.<init>) → [S123-CLINIT-MAT] materialized
+                // o6.k0/m0 on first sget → o6.k's `if-nez k0 → return-void`
+                // guard (classes3.dex 0x0..0x8) fell through → iput-boolean
+                // xj0.Y:Z on the never-factory u1 → uncaught NPE @o6.k pc=46.
+                // Probe faces: [C106-SENTINEL] guardEscaped=true (AOSP false)
+                // and [C106-INVOKE2] result=NO-EXC (AOSP NPE).
+                // The original S123 evidence (forkgram he1$d →
+                // AndroidUtilities.rectTmp, clinit ABORTED mid-way on an
+                // unmodeled API) is exactly a failed_clinit_classes_ member —
+                // preserved by this gate. POST faces: guardEscaped=false,
+                // INVOKE2=NPE, failed-clinit materialization retained.
+                const bool clinit_failed =
+                    failed_clinit_classes_.find(field_res.class_descriptor) !=
+                    failed_clinit_classes_.end();
+                if (clinit_failed) {
                     uint32_t geo_id = heap_.allocate(field_res.field_type,
                                                      pc, 0);
                     // AOSP no-arg ctor state: zero geometry fields.
@@ -21563,7 +21591,9 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                               << field_res.field_name
                               << " type=" << field_res.field_type
                               << " oid=" << geo_id
-                              << " (clinit attempted="
+                              << " (clinit_failed="
+                              << (clinit_failed ? "true" : "false")
+                              << " attempted="
                               << (attempted ? "true" : "false")
                               << " stored_null="
                               << (stored_null ? "true" : "false") << ")"
