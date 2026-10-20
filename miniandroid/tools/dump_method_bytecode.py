@@ -208,10 +208,13 @@ class DexFile:
     def get_string(self, idx):
         sid_off = self.string_ids_off + idx * 4
         data_off = self._u32(sid_off)
-        # First uleb128 = length, then UTF-8 string
-        _, end = self._read_uleb128(data_off)
-        end = self.data.index(0, end)
-        return self.data[end:end].decode("utf-8", errors="replace")
+        # First uleb128 = length, then UTF-8 string bytes up to NUL.
+        # CONT-121 TOOL-BUG fix: previous code sliced data[end:end] (empty) —
+        # every get_string returned '' so all type/method lookups silently
+        # failed on every dex file since the tool was introduced.
+        _, s = self._read_uleb128(data_off)
+        e = self.data.index(0, s)
+        return self.data[s:e].decode("utf-8", errors="replace")
 
     def _parse_string_ids(self):
         pass  # lazy

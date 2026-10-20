@@ -1,0 +1,173 @@
+# Lcom/google/android/gms/internal/play_billing/c3;.<clinit>  registers=17
+0000: const-class v1, Ljava/lang/Class;
+0004: invoke-static Lcom/google/android/gms/internal/play_billing/c3;->i()Lsun/misc/Unsafe;
+000a: move-result-object v0
+000c: sput-object v0, Lcom/google/android/gms/internal/play_billing/c3;->a Lsun/misc/Unsafe;
+0010: sget v2, Lcom/google/android/gms/internal/play_billing/g1;->a I
+0014: const-class v2, Llibcore/io/Memory;
+0018: sput-object v2, Lcom/google/android/gms/internal/play_billing/c3;->b Ljava/lang/Class;
+001c: sget-object v2, Ljava/lang/Long;->TYPE Ljava/lang/Class;
+0020: invoke-static v2, Lcom/google/android/gms/internal/play_billing/c3;->o(Ljava/lang/Class;)Z
+0026: move-result v3
+0028: sget-object v4, Ljava/lang/Integer;->TYPE Ljava/lang/Class;
+002c: invoke-static v4, Lcom/google/android/gms/internal/play_billing/c3;->o(Ljava/lang/Class;)Z
+0032: move-result v5
+0034: const/4 v6, 0
+0036: if-nez v0, +003h
+003a: goto +10h
+003c: if-eqz v3, +008h
+0040: new-instance v6, Lcom/google/android/gms/internal/play_billing/a3;
+0044: invoke-direct v6, v0, Lcom/google/android/gms/internal/play_billing/b3;-><init>(Lsun/misc/Unsafe;)V
+004a: goto +8h
+004c: if-eqz v5, +007h
+0050: new-instance v6, Lcom/google/android/gms/internal/play_billing/z2;
+0054: invoke-direct v6, v0, Lcom/google/android/gms/internal/play_billing/b3;-><init>(Lsun/misc/Unsafe;)V
+005a: sput-object v6, Lcom/google/android/gms/internal/play_billing/c3;->c Lcom/google/android/gms/internal/play_billing/b3;
+005e: const/4 v3, 2
+0060: const-string v5, "logMissingMethod"
+0064: const-string v7, "com.google.protobuf.UnsafeUtil"
+0068: const-string/jumbo v8, platform method missing - proto runtime falling back to safer methods: 
+006e: const-class v9, Lcom/google/android/gms/internal/play_billing/c3;
+0072: const-string v10, "getLong"
+0076: const-class v11, Ljava/lang/reflect/Field;
+007a: const-string v12, "objectFieldOffset"
+007e: const/4 v13, 1
+0080: const/4 v14, 0
+0082: const-class v15, Ljava/lang/Object;
+0086: if-nez v6, +005h
+008a: const/16 v16, 0
+008e: goto +39h
+0090: iget-object v0, v6, Lcom/google/android/gms/internal/play_billing/b3;->a Lsun/misc/Unsafe;
+0094: invoke-virtual v0, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+009a: move-result-object v0
+009c: new-array v6, v13, [Ljava/lang/Class;
+00a0: aput-object v11, v6, v14
+00a4: invoke-virtual v0, v12, v6, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+00aa: new-array v6, v3, [Ljava/lang/Class;
+00ae: aput-object v15, v6, v14
+00b2: aput-object v2, v6, v13
+00b6: invoke-virtual v0, v10, v6, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+00bc: invoke-static Lcom/google/android/gms/internal/play_billing/c3;->b()Ljava/lang/reflect/Field;
+00c2: move-result-object v0
+00c4: if-nez v0, +003h
+00c8: goto -1fh
+00ca: const/4 v14, 1
+00cc: goto -21h
+00ce: move-exception v0
+00d0: invoke-virtual v9, Ljava/lang/Class;->getName()Ljava/lang/String;
+00d6: move-result-object v6
+00d8: invoke-static v6, Ljava/util/logging/Logger;->getLogger(Ljava/lang/String;)Ljava/util/logging/Logger;
+00de: move-result-object v6
+00e0: const/16 v16, 0
+00e4: sget-object v14, Ljava/util/logging/Level;->WARNING Ljava/util/logging/Level;
+00e8: invoke-virtual v0, Ljava/lang/Object;->toString()Ljava/lang/String;
+00ee: move-result-object v0
+00f0: invoke-virtual v8, v0, Ljava/lang/String;->concat(Ljava/lang/String;)Ljava/lang/String;
+00f6: move-result-object v0
+00f8: invoke-virtual v6, v14, v7, v5, v0, Ljava/util/logging/Logger;->logp(Ljava/util/logging/Level; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)V
+00fe: const/4 v14, 0
+0100: sput-boolean v14, Lcom/google/android/gms/internal/play_billing/c3;->d Z
+0104: sget-object v0, Lcom/google/android/gms/internal/play_billing/c3;->c Lcom/google/android/gms/internal/play_billing/b3;
+0108: if-nez v0, +005h
+010c: const/4 v0, 0
+010e: goto/16 +085h
+0112: iget-object v0, v0, Lcom/google/android/gms/internal/play_billing/b3;->a Lsun/misc/Unsafe;
+0116: invoke-virtual v0, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+011c: move-result-object v0
+011e: new-array v6, v13, [Ljava/lang/Class;
+0122: aput-object v11, v6, v16
+0126: invoke-virtual v0, v12, v6, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+012c: const-string v6, "arrayBaseOffset"
+0130: new-array v11, v13, [Ljava/lang/Class;
+0134: aput-object v1, v11, v16
+0138: invoke-virtual v0, v6, v11, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+013e: const-string v6, "arrayIndexScale"
+0142: new-array v11, v13, [Ljava/lang/Class;
+0146: aput-object v1, v11, v16
+014a: invoke-virtual v0, v6, v11, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+0150: const-string v1, "getInt"
+0154: new-array v6, v3, [Ljava/lang/Class;
+0158: aput-object v15, v6, v16
+015c: aput-object v2, v6, v13
+0160: invoke-virtual v0, v1, v6, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+0166: const-string/jumbo v1, putInt
+016c: const/4 v6, 3
+016e: new-array v11, v6, [Ljava/lang/Class;
+0172: aput-object v15, v11, v16
+0176: aput-object v2, v11, v13
+017a: aput-object v4, v11, v3
+017e: invoke-virtual v0, v1, v11, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+0184: new-array v1, v3, [Ljava/lang/Class;
+0188: aput-object v15, v1, v16
+018c: aput-object v2, v1, v13
+0190: invoke-virtual v0, v10, v1, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+0196: const-string/jumbo v1, putLong
+019c: new-array v4, v6, [Ljava/lang/Class;
+01a0: aput-object v15, v4, v16
+01a4: aput-object v2, v4, v13
+01a8: aput-object v2, v4, v3
+01ac: invoke-virtual v0, v1, v4, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+01b2: const-string v1, "getObject"
+01b6: new-array v4, v3, [Ljava/lang/Class;
+01ba: aput-object v15, v4, v16
+01be: aput-object v2, v4, v13
+01c2: invoke-virtual v0, v1, v4, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+01c8: const-string/jumbo v1, putObject
+01ce: new-array v4, v6, [Ljava/lang/Class;
+01d2: aput-object v15, v4, v16
+01d6: aput-object v2, v4, v13
+01da: aput-object v15, v4, v3
+01de: invoke-virtual v0, v1, v4, Ljava/lang/Class;->getMethod(Ljava/lang/String; [Ljava/lang/Class;)Ljava/lang/reflect/Method;
+01e4: const/4 v0, 1
+01e6: goto +19h
+01e8: move-exception v0
+01ea: invoke-virtual v9, Ljava/lang/Class;->getName()Ljava/lang/String;
+01f0: move-result-object v1
+01f2: invoke-static v1, Ljava/util/logging/Logger;->getLogger(Ljava/lang/String;)Ljava/util/logging/Logger;
+01f8: move-result-object v1
+01fa: sget-object v2, Ljava/util/logging/Level;->WARNING Ljava/util/logging/Level;
+01fe: invoke-virtual v0, Ljava/lang/Object;->toString()Ljava/lang/String;
+0204: move-result-object v0
+0206: invoke-virtual v8, v0, Ljava/lang/String;->concat(Ljava/lang/String;)Ljava/lang/String;
+020c: move-result-object v0
+020e: invoke-virtual v1, v2, v7, v5, v0, Ljava/util/logging/Logger;->logp(Ljava/util/logging/Level; Ljava/lang/String; Ljava/lang/String; Ljava/lang/String;)V
+0214: goto/16 -084h
+0218: sput-boolean v0, Lcom/google/android/gms/internal/play_billing/c3;->e Z
+021c: const-class v0, [B
+0220: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0226: move-result v0
+0228: int-to-long v0, v0
+022a: sput-wide v0, Lcom/google/android/gms/internal/play_billing/c3;->f J
+022e: const-class v0, [Z
+0232: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0238: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->a(Ljava/lang/Class;)V
+023e: const-class v0, [I
+0242: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0248: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->a(Ljava/lang/Class;)V
+024e: const-class v0, [J
+0252: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0258: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->a(Ljava/lang/Class;)V
+025e: const-class v0, [F
+0262: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0268: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->a(Ljava/lang/Class;)V
+026e: const-class v0, [D
+0272: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0278: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->a(Ljava/lang/Class;)V
+027e: const-class v0, [Ljava/lang/Object;
+0282: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->p(Ljava/lang/Class;)I
+0288: invoke-static v0, Lcom/google/android/gms/internal/play_billing/c3;->a(Ljava/lang/Class;)V
+028e: invoke-static Lcom/google/android/gms/internal/play_billing/c3;->b()Ljava/lang/reflect/Field;
+0294: move-result-object v0
+0296: if-eqz v0, +00bh
+029a: sget-object v1, Lcom/google/android/gms/internal/play_billing/c3;->c Lcom/google/android/gms/internal/play_billing/b3;
+029e: if-eqz v1, +007h
+02a2: iget-object v1, v1, Lcom/google/android/gms/internal/play_billing/b3;->a Lsun/misc/Unsafe;
+02a6: invoke-virtual v1, v0, Lsun/misc/Unsafe;->objectFieldOffset(Ljava/lang/reflect/Field;)J
+02ac: invoke-static Ljava/nio/ByteOrder;->nativeOrder()Ljava/nio/ByteOrder;
+02b2: move-result-object v0
+02b4: sget-object v1, Ljava/nio/ByteOrder;->BIG_ENDIAN Ljava/nio/ByteOrder;
+02b8: if-ne v0, v1, +003h
+02bc: goto +2h
+02be: const/4 v13, 0
+02c0: sput-boolean v13, Lcom/google/android/gms/internal/play_billing/c3;->g Z
+02c4: return-void 

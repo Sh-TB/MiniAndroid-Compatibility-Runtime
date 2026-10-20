@@ -1,0 +1,598 @@
+# Lcom/google/android/gms/internal/play_billing/n2;.r  registers=38
+0000: move-object/from16 v0, v35
+0004: instance-of v1, v0, Lcom/google/android/gms/internal/play_billing/s2;
+0008: if-eqz v1, +411h
+000c: iget-object v1, v0, Lcom/google/android/gms/internal/play_billing/s2;->b Ljava/lang/String;
+0010: invoke-virtual v1, Ljava/lang/String;->length()I
+0016: move-result v2
+0018: const/4 v3, 0
+001a: invoke-virtual v1, v3, Ljava/lang/String;->charAt(I)C
+0020: move-result v4
+0022: const v5, 55296
+0028: if-lt v4, v5, +00dh
+002c: const/4 v4, 1
+002e: add-int/lit8 v7, v4, 1
+0032: invoke-virtual v1, v4, Ljava/lang/String;->charAt(I)C
+0038: move-result v4
+003a: if-lt v4, v5, +005h
+003e: move v4, v7
+0040: goto -9h
+0042: const/4 v7, 1
+0044: add-int/lit8 v4, v7, 1
+0048: invoke-virtual v1, v7, Ljava/lang/String;->charAt(I)C
+004e: move-result v7
+0050: if-lt v7, v5, +019h
+0054: and-int/lit16 v7, v7, 8191
+0058: const/16 v9, 13
+005c: add-int/lit8 v10, v4, 1
+0060: invoke-virtual v1, v4, Ljava/lang/String;->charAt(I)C
+0066: move-result v4
+0068: if-lt v4, v5, +00ah
+006c: and-int/lit16 v4, v4, 8191
+0070: shl-int/2addr v4, v9
+0072: or-int/2addr v7, v4
+0074: add-int/lit8 v9, v9, 13
+0078: move v4, v10
+007a: goto -fh
+007c: shl-int/2addr v4, v9
+007e: or-int/2addr v7, v4
+0080: move v4, v10
+0082: if-nez v7, +00fh
+0086: sget-object v7, Lcom/google/android/gms/internal/play_billing/n2;->j [I
+008a: move-object v15, v7
+008c: const/4 v7, 0
+008e: const/4 v9, 0
+0090: const/4 v10, 0
+0092: const/4 v11, 0
+0094: const/4 v12, 0
+0096: const/4 v13, 0
+0098: const/16 v16, 0
+009c: goto/16 +116h
+00a0: add-int/lit8 v7, v4, 1
+00a4: invoke-virtual v1, v4, Ljava/lang/String;->charAt(I)C
+00aa: move-result v4
+00ac: if-lt v4, v5, +019h
+00b0: and-int/lit16 v4, v4, 8191
+00b4: const/16 v9, 13
+00b8: add-int/lit8 v10, v7, 1
+00bc: invoke-virtual v1, v7, Ljava/lang/String;->charAt(I)C
+00c2: move-result v7
+00c4: if-lt v7, v5, +00ah
+00c8: and-int/lit16 v7, v7, 8191
+00cc: shl-int/2addr v7, v9
+00ce: or-int/2addr v4, v7
+00d0: add-int/lit8 v9, v9, 13
+00d4: move v7, v10
+00d6: goto -fh
+00d8: shl-int/2addr v7, v9
+00da: or-int/2addr v4, v7
+00dc: move v7, v10
+00de: add-int/lit8 v9, v7, 1
+00e2: invoke-virtual v1, v7, Ljava/lang/String;->charAt(I)C
+00e8: move-result v7
+00ea: if-lt v7, v5, +019h
+00ee: and-int/lit16 v7, v7, 8191
+00f2: const/16 v10, 13
+00f6: add-int/lit8 v11, v9, 1
+00fa: invoke-virtual v1, v9, Ljava/lang/String;->charAt(I)C
+0100: move-result v9
+0102: if-lt v9, v5, +00ah
+0106: and-int/lit16 v9, v9, 8191
+010a: shl-int/2addr v9, v10
+010c: or-int/2addr v7, v9
+010e: add-int/lit8 v10, v10, 13
+0112: move v9, v11
+0114: goto -fh
+0116: shl-int/2addr v9, v10
+0118: or-int/2addr v7, v9
+011a: move v9, v11
+011c: add-int/lit8 v10, v9, 1
+0120: invoke-virtual v1, v9, Ljava/lang/String;->charAt(I)C
+0126: move-result v9
+0128: if-lt v9, v5, +019h
+012c: and-int/lit16 v9, v9, 8191
+0130: const/16 v11, 13
+0134: add-int/lit8 v12, v10, 1
+0138: invoke-virtual v1, v10, Ljava/lang/String;->charAt(I)C
+013e: move-result v10
+0140: if-lt v10, v5, +00ah
+0144: and-int/lit16 v10, v10, 8191
+0148: shl-int/2addr v10, v11
+014a: or-int/2addr v9, v10
+014c: add-int/lit8 v11, v11, 13
+0150: move v10, v12
+0152: goto -fh
+0154: shl-int/2addr v10, v11
+0156: or-int/2addr v9, v10
+0158: move v10, v12
+015a: add-int/lit8 v11, v10, 1
+015e: invoke-virtual v1, v10, Ljava/lang/String;->charAt(I)C
+0164: move-result v10
+0166: if-lt v10, v5, +019h
+016a: and-int/lit16 v10, v10, 8191
+016e: const/16 v12, 13
+0172: add-int/lit8 v13, v11, 1
+0176: invoke-virtual v1, v11, Ljava/lang/String;->charAt(I)C
+017c: move-result v11
+017e: if-lt v11, v5, +00ah
+0182: and-int/lit16 v11, v11, 8191
+0186: shl-int/2addr v11, v12
+0188: or-int/2addr v10, v11
+018a: add-int/lit8 v12, v12, 13
+018e: move v11, v13
+0190: goto -fh
+0192: shl-int/2addr v11, v12
+0194: or-int/2addr v10, v11
+0196: move v11, v13
+0198: add-int/lit8 v12, v11, 1
+019c: invoke-virtual v1, v11, Ljava/lang/String;->charAt(I)C
+01a2: move-result v11
+01a4: if-lt v11, v5, +019h
+01a8: and-int/lit16 v11, v11, 8191
+01ac: const/16 v13, 13
+01b0: add-int/lit8 v14, v12, 1
+01b4: invoke-virtual v1, v12, Ljava/lang/String;->charAt(I)C
+01ba: move-result v12
+01bc: if-lt v12, v5, +00ah
+01c0: and-int/lit16 v12, v12, 8191
+01c4: shl-int/2addr v12, v13
+01c6: or-int/2addr v11, v12
+01c8: add-int/lit8 v13, v13, 13
+01cc: move v12, v14
+01ce: goto -fh
+01d0: shl-int/2addr v12, v13
+01d2: or-int/2addr v11, v12
+01d4: move v12, v14
+01d6: add-int/lit8 v13, v12, 1
+01da: invoke-virtual v1, v12, Ljava/lang/String;->charAt(I)C
+01e0: move-result v12
+01e2: if-lt v12, v5, +019h
+01e6: and-int/lit16 v12, v12, 8191
+01ea: const/16 v14, 13
+01ee: add-int/lit8 v15, v13, 1
+01f2: invoke-virtual v1, v13, Ljava/lang/String;->charAt(I)C
+01f8: move-result v13
+01fa: if-lt v13, v5, +00ah
+01fe: and-int/lit16 v13, v13, 8191
+0202: shl-int/2addr v13, v14
+0204: or-int/2addr v12, v13
+0206: add-int/lit8 v14, v14, 13
+020a: move v13, v15
+020c: goto -fh
+020e: shl-int/2addr v13, v14
+0210: or-int/2addr v12, v13
+0212: move v13, v15
+0214: add-int/lit8 v14, v13, 1
+0218: invoke-virtual v1, v13, Ljava/lang/String;->charAt(I)C
+021e: move-result v13
+0220: if-lt v13, v5, +01bh
+0224: and-int/lit16 v13, v13, 8191
+0228: const/16 v15, 13
+022c: add-int/lit8 v16, v14, 1
+0230: invoke-virtual v1, v14, Ljava/lang/String;->charAt(I)C
+0236: move-result v14
+0238: if-lt v14, v5, +00bh
+023c: and-int/lit16 v14, v14, 8191
+0240: shl-int/2addr v14, v15
+0242: or-int/2addr v13, v14
+0244: add-int/lit8 v15, v15, 13
+0248: move/from16 v14, v16
+024c: goto -10h
+024e: shl-int/2addr v14, v15
+0250: or-int/2addr v13, v14
+0252: move/from16 v14, v16
+0256: add-int/lit8 v15, v14, 1
+025a: invoke-virtual v1, v14, Ljava/lang/String;->charAt(I)C
+0260: move-result v14
+0262: if-lt v14, v5, +01dh
+0266: and-int/lit16 v14, v14, 8191
+026a: const/16 v16, 13
+026e: add-int/lit8 v17, v15, 1
+0272: invoke-virtual v1, v15, Ljava/lang/String;->charAt(I)C
+0278: move-result v15
+027a: if-lt v15, v5, +00ch
+027e: and-int/lit16 v15, v15, 8191
+0282: shl-int v15, v15, v16
+0286: or-int/2addr v14, v15
+0288: add-int/lit8 v16, v16, 13
+028c: move/from16 v15, v17
+0290: goto -11h
+0292: shl-int v15, v15, v16
+0296: or-int/2addr v14, v15
+0298: move/from16 v15, v17
+029c: add-int v16, v14, v12
+02a0: add-int v13, v16, v13
+02a4: add-int v16, v4, v4
+02a8: add-int v16, v16, v7
+02ac: new-array v7, v13, [I
+02b0: move-object v13, v7
+02b2: move v7, v4
+02b4: move v4, v15
+02b6: move-object v15, v13
+02b8: move v13, v12
+02ba: move v12, v9
+02bc: move v9, v13
+02be: move v13, v10
+02c0: move/from16 v10, v16
+02c4: move/from16 v16, v14
+02c8: sget-object v14, Lcom/google/android/gms/internal/play_billing/n2;->k Lsun/misc/Unsafe;
+02cc: iget-object v3, v0, Lcom/google/android/gms/internal/play_billing/s2;->c [Ljava/lang/Object;
+02d0: iget-object v8, v0, Lcom/google/android/gms/internal/play_billing/s2;->a Lcom/google/android/gms/internal/play_billing/e1;
+02d4: invoke-virtual v8, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+02da: move-result-object v8
+02dc: add-int v9, v16, v9
+02e0: add-int v6, v11, v11
+02e4: mul-int/lit8 v11, v11, 3
+02e8: new-array v11, v11, [I
+02ec: new-array v6, v6, [Ljava/lang/Object;
+02f0: move/from16 v23, v9
+02f4: move/from16 v22, v16
+02f8: const/16 v20, 0
+02fc: const/16 v21, 0
+0300: if-ge v4, v2, +281h
+0304: add-int/lit8 v24, v4, 1
+0308: invoke-virtual v1, v4, Ljava/lang/String;->charAt(I)C
+030e: move-result v4
+0310: if-lt v4, v5, +027h
+0314: and-int/lit16 v4, v4, 8191
+0318: move/from16 v5, v24
+031c: const/16 v24, 13
+0320: add-int/lit8 v26, v5, 1
+0324: invoke-virtual v1, v5, Ljava/lang/String;->charAt(I)C
+032a: move-result v5
+032c: move/from16 v27, v2
+0330: const v2, 55296
+0336: if-lt v5, v2, +00eh
+033a: and-int/lit16 v2, v5, 8191
+033e: shl-int v2, v2, v24
+0342: or-int/2addr v4, v2
+0344: add-int/lit8 v24, v24, 13
+0348: move/from16 v5, v26
+034c: move/from16 v2, v27
+0350: goto -18h
+0352: shl-int v2, v5, v24
+0356: or-int/2addr v4, v2
+0358: move/from16 v2, v26
+035c: goto +5h
+035e: move/from16 v27, v2
+0362: move/from16 v2, v24
+0366: add-int/lit8 v5, v2, 1
+036a: invoke-virtual v1, v2, Ljava/lang/String;->charAt(I)C
+0370: move-result v2
+0372: move-object/from16 v24, v3
+0376: const v3, 55296
+037c: if-lt v2, v3, +020h
+0380: and-int/lit16 v2, v2, 8191
+0384: const/16 v26, 13
+0388: add-int/lit8 v28, v5, 1
+038c: invoke-virtual v1, v5, Ljava/lang/String;->charAt(I)C
+0392: move-result v5
+0394: if-lt v5, v3, +00fh
+0398: and-int/lit16 v3, v5, 8191
+039c: shl-int v3, v3, v26
+03a0: or-int/2addr v2, v3
+03a2: add-int/lit8 v26, v26, 13
+03a6: move/from16 v5, v28
+03aa: const v3, 55296
+03b0: goto -14h
+03b2: shl-int v3, v5, v26
+03b6: or-int/2addr v2, v3
+03b8: move/from16 v5, v28
+03bc: and-int/lit16 v3, v2, 1024
+03c0: if-eqz v3, +008h
+03c4: add-int/lit8 v3, v20, 1
+03c8: aput v21, v15, v20
+03cc: move/from16 v20, v3
+03d0: and-int/lit16 v3, v2, 255
+03d4: move/from16 v26, v4
+03d8: and-int/lit16 v4, v2, 2048
+03dc: move/from16 v28, v4
+03e0: const/16 v4, 51
+03e4: if-lt v3, v4, +0c0h
+03e8: add-int/lit8 v4, v5, 1
+03ec: invoke-virtual v1, v5, Ljava/lang/String;->charAt(I)C
+03f2: move-result v5
+03f4: move/from16 v29, v4
+03f8: const v4, 55296
+03fe: if-lt v5, v4, +029h
+0402: and-int/lit16 v5, v5, 8191
+0406: move/from16 v33, v29
+040a: move/from16 v29, v5
+040e: move/from16 v5, v33
+0412: const/16 v33, 13
+0416: add-int/lit8 v34, v5, 1
+041a: invoke-virtual v1, v5, Ljava/lang/String;->charAt(I)C
+0420: move-result v5
+0422: if-lt v5, v4, +010h
+0426: and-int/lit16 v4, v5, 8191
+042a: shl-int v4, v4, v33
+042e: or-int v29, v29, v4
+0432: add-int/lit8 v33, v33, 13
+0436: move/from16 v5, v34
+043a: const v4, 55296
+0440: goto -15h
+0442: shl-int v4, v5, v33
+0446: or-int v5, v29, v4
+044a: move/from16 v4, v34
+044e: goto +3h
+0450: move/from16 v4, v29
+0454: move/from16 v29, v4
+0458: add-int/lit8 v4, v3, -51
+045c: move/from16 v33, v5
+0460: const/16 v5, 9
+0464: if-eq v4, v5, +006h
+0468: const/16 v5, 17
+046c: if-ne v4, v5, +004h
+0470: const/4 v5, 1
+0472: goto +21h
+0474: const/16 v5, 12
+0478: if-ne v4, v5, +01bh
+047c: invoke-virtual v0, Lcom/google/android/gms/internal/play_billing/s2;->a()I
+0482: move-result v4
+0484: const/4 v5, 1
+0486: if-eq v4, v5, +007h
+048a: if-eqz v28, +003h
+048e: goto +3h
+0490: const/4 v4, 0
+0492: goto +1eh
+0494: add-int/lit8 v4, v10, 1
+0498: div-int/lit8 v19, v21, 3
+049c: add-int v19, v19, v19
+04a0: add-int/lit8 v19, v19, 1
+04a4: aget-object v10, v24, v10
+04a8: aput-object v10, v6, v19
+04ac: move v10, v4
+04ae: move/from16 v4, v28
+04b2: goto +eh
+04b4: add-int/lit8 v4, v10, 1
+04b8: div-int/lit8 v19, v21, 3
+04bc: add-int v19, v19, v19
+04c0: add-int/lit8 v30, v19, 1
+04c4: aget-object v5, v24, v10
+04c8: aput-object v5, v6, v30
+04cc: goto -10h
+04ce: add-int v5, v33, v33
+04d2: move/from16 v28, v4
+04d6: aget-object v4, v24, v5
+04da: move/from16 v30, v5
+04de: instance-of v5, v4, Ljava/lang/reflect/Field;
+04e2: if-eqz v5, +005h
+04e6: check-cast v4, Ljava/lang/reflect/Field;
+04ea: goto +9h
+04ec: check-cast v4, Ljava/lang/String;
+04f0: invoke-static v8, v4, Lcom/google/android/gms/internal/play_billing/n2;->B(Ljava/lang/Class; Ljava/lang/String;)Ljava/lang/reflect/Field;
+04f6: move-result-object v4
+04f8: aput-object v4, v24, v30
+04fc: invoke-virtual v14, v4, Lsun/misc/Unsafe;->objectFieldOffset(Ljava/lang/reflect/Field;)J
+0502: move-result-wide v4
+0504: long-to-int v5, v4
+0506: add-int/lit8 v4, v30, 1
+050a: move/from16 v30, v4
+050e: aget-object v4, v24, v30
+0512: move/from16 v31, v5
+0516: instance-of v5, v4, Ljava/lang/reflect/Field;
+051a: if-eqz v5, +005h
+051e: check-cast v4, Ljava/lang/reflect/Field;
+0522: goto +9h
+0524: check-cast v4, Ljava/lang/String;
+0528: invoke-static v8, v4, Lcom/google/android/gms/internal/play_billing/n2;->B(Ljava/lang/Class; Ljava/lang/String;)Ljava/lang/reflect/Field;
+052e: move-result-object v4
+0530: aput-object v4, v24, v30
+0534: invoke-virtual v14, v4, Lsun/misc/Unsafe;->objectFieldOffset(Ljava/lang/reflect/Field;)J
+053a: move-result-wide v4
+053c: long-to-int v5, v4
+053e: move-object v4, v8
+0540: move v8, v5
+0542: move/from16 v5, v31
+0546: move/from16 v31, v29
+054a: move-object/from16 v29, v6
+054e: move-object v6, v4
+0550: move/from16 v30, v7
+0554: move/from16 v4, v28
+0558: const/4 v7, 0
+055a: const v25, 55296
+0560: goto/16 +112h
+0564: add-int/lit8 v4, v10, 1
+0568: aget-object v29, v24, v10
+056c: move/from16 v33, v4
+0570: move-object/from16 v4, v29
+0574: check-cast v4, Ljava/lang/String;
+0578: invoke-static v8, v4, Lcom/google/android/gms/internal/play_billing/n2;->B(Ljava/lang/Class; Ljava/lang/String;)Ljava/lang/reflect/Field;
+057e: move-result-object v4
+0580: move-object/from16 v29, v6
+0584: const/16 v6, 9
+0588: if-eq v3, v6, +006h
+058c: const/16 v6, 17
+0590: if-ne v3, v6, +007h
+0594: move/from16 v30, v7
+0598: const/4 v7, 1
+059a: goto/16 +077h
+059e: const/16 v6, 27
+05a2: if-eq v3, v6, +065h
+05a6: const/16 v6, 49
+05aa: if-ne v3, v6, +009h
+05ae: add-int/lit8 v10, v10, 2
+05b2: move/from16 v30, v7
+05b6: const/4 v7, 1
+05b8: goto/16 +05fh
+05bc: const/16 v6, 12
+05c0: if-eq v3, v6, +038h
+05c4: const/16 v6, 30
+05c8: if-eq v3, v6, +034h
+05cc: const/16 v6, 44
+05d0: if-ne v3, v6, +003h
+05d4: goto +2eh
+05d6: const/16 v6, 50
+05da: if-ne v3, v6, +027h
+05de: add-int/lit8 v6, v10, 2
+05e2: add-int/lit8 v30, v22, 1
+05e6: aput v21, v15, v22
+05ea: div-int/lit8 v22, v21, 3
+05ee: aget-object v31, v24, v33
+05f2: add-int v22, v22, v22
+05f6: aput-object v31, v29, v22
+05fa: if-eqz v28, +010h
+05fe: add-int/lit8 v22, v22, 1
+0602: add-int/lit8 v10, v10, 3
+0606: aget-object v6, v24, v6
+060a: aput-object v6, v29, v22
+060e: move-object v6, v8
+0610: move/from16 v22, v30
+0614: move/from16 v30, v7
+0618: goto +45h
+061a: move v10, v6
+061c: move-object v6, v8
+061e: move/from16 v22, v30
+0622: const/16 v28, 0
+0626: goto -9h
+0628: move/from16 v30, v7
+062c: const/4 v7, 1
+062e: goto +37h
+0630: invoke-virtual v0, Lcom/google/android/gms/internal/play_billing/s2;->a()I
+0636: move-result v6
+0638: move/from16 v30, v7
+063c: const/4 v7, 1
+063e: if-eq v6, v7, +00bh
+0642: if-eqz v28, +003h
+0646: goto +7h
+0648: move-object v6, v8
+064a: move/from16 v10, v33
+064e: const/16 v28, 0
+0652: goto +28h
+0654: add-int/lit8 v10, v10, 2
+0658: div-int/lit8 v6, v21, 3
+065c: add-int/2addr v6, v6
+065e: add-int/2addr v6, v7
+0660: aget-object v19, v24, v33
+0664: aput-object v19, v29, v6
+0668: move-object v6, v8
+066a: goto +1ch
+066c: move/from16 v30, v7
+0670: const/4 v7, 1
+0672: add-int/lit8 v10, v10, 2
+0676: div-int/lit8 v6, v21, 3
+067a: add-int/2addr v6, v6
+067c: add-int/2addr v6, v7
+067e: aget-object v19, v24, v33
+0682: aput-object v19, v29, v6
+0686: goto -fh
+0688: div-int/lit8 v6, v21, 3
+068c: add-int/2addr v6, v6
+068e: add-int/2addr v6, v7
+0690: invoke-virtual v4, Ljava/lang/reflect/Field;->getType()Ljava/lang/Class;
+0696: move-result-object v10
+0698: aput-object v10, v29, v6
+069c: move-object v6, v8
+069e: move/from16 v10, v33
+06a2: invoke-virtual v14, v4, Lsun/misc/Unsafe;->objectFieldOffset(Ljava/lang/reflect/Field;)J
+06a8: move-result-wide v7
+06aa: long-to-int v4, v7
+06ac: and-int/lit16 v7, v2, 4096
+06b0: const v8, 1048575
+06b6: if-eqz v7, +04fh
+06ba: const/16 v7, 17
+06be: if-gt v3, v7, +04bh
+06c2: add-int/lit8 v7, v5, 1
+06c6: invoke-virtual v1, v5, Ljava/lang/String;->charAt(I)C
+06cc: move-result v5
+06ce: const v8, 55296
+06d4: if-lt v5, v8, +01ch
+06d8: and-int/lit16 v5, v5, 8191
+06dc: const/16 v25, 13
+06e0: add-int/lit8 v31, v7, 1
+06e4: invoke-virtual v1, v7, Ljava/lang/String;->charAt(I)C
+06ea: move-result v7
+06ec: if-lt v7, v8, +00ch
+06f0: and-int/lit16 v7, v7, 8191
+06f4: shl-int v7, v7, v25
+06f8: or-int/2addr v5, v7
+06fa: add-int/lit8 v25, v25, 13
+06fe: move/from16 v7, v31
+0702: goto -11h
+0704: shl-int v7, v7, v25
+0708: or-int/2addr v5, v7
+070a: goto +3h
+070c: move/from16 v31, v7
+0710: add-int v7, v30, v30
+0714: div-int/lit8 v25, v5, 32
+0718: add-int v25, v25, v7
+071c: aget-object v7, v24, v25
+0720: instance-of v8, v7, Ljava/lang/reflect/Field;
+0724: if-eqz v8, +005h
+0728: check-cast v7, Ljava/lang/reflect/Field;
+072c: goto +9h
+072e: check-cast v7, Ljava/lang/String;
+0732: invoke-static v6, v7, Lcom/google/android/gms/internal/play_billing/n2;->B(Ljava/lang/Class; Ljava/lang/String;)Ljava/lang/reflect/Field;
+0738: move-result-object v7
+073a: aput-object v7, v24, v25
+073e: invoke-virtual v14, v7, Lsun/misc/Unsafe;->objectFieldOffset(Ljava/lang/reflect/Field;)J
+0744: move-result-wide v7
+0746: long-to-int v8, v7
+0748: rem-int/lit8 v5, v5, 32
+074c: const v25, 55296
+0752: goto +7h
+0754: const v25, 55296
+075a: move/from16 v31, v5
+075e: const/4 v5, 0
+0760: const/16 v7, 18
+0764: if-lt v3, v7, +00ch
+0768: const/16 v7, 49
+076c: if-gt v3, v7, +008h
+0770: add-int/lit8 v7, v23, 1
+0774: aput v4, v15, v23
+0778: move/from16 v23, v7
+077c: move v7, v5
+077e: move v5, v4
+0780: move/from16 v4, v28
+0784: add-int/lit8 v28, v21, 1
+0788: aput v26, v11, v21
+078c: add-int/lit8 v26, v21, 2
+0790: move-object/from16 v32, v1
+0794: and-int/lit16 v1, v2, 512
+0798: if-eqz v1, +005h
+079c: const/high16 v1, 536870912
+07a0: goto +2h
+07a2: const/4 v1, 0
+07a4: and-int/lit16 v2, v2, 256
+07a8: if-eqz v2, +005h
+07ac: const/high16 v2, 268435456
+07b0: goto +2h
+07b2: const/4 v2, 0
+07b4: if-eqz v4, +005h
+07b8: const/high16 v4, -2147483648
+07bc: goto +2h
+07be: const/4 v4, 0
+07c0: shl-int/lit8 v3, v3, 20
+07c4: or-int/2addr v1, v2
+07c6: or-int/2addr v1, v4
+07c8: or-int/2addr v1, v3
+07ca: or-int/2addr v1, v5
+07cc: aput v1, v11, v28
+07d0: add-int/lit8 v21, v21, 3
+07d4: shl-int/lit8 v1, v7, 20
+07d8: or-int/2addr v1, v8
+07da: aput v1, v11, v26
+07de: move-object v8, v6
+07e0: move-object/from16 v3, v24
+07e4: move/from16 v2, v27
+07e8: move-object/from16 v6, v29
+07ec: move/from16 v7, v30
+07f0: move/from16 v4, v31
+07f4: move-object/from16 v1, v32
+07f8: const v5, 55296
+07fe: goto/16 -27fh
+0802: move-object/from16 v29, v6
+0806: new-instance v1, Lcom/google/android/gms/internal/play_billing/n2;
+080a: iget-object v14, v0, Lcom/google/android/gms/internal/play_billing/s2;->a Lcom/google/android/gms/internal/play_billing/e1;
+080e: move-object/from16 v18, v36
+0812: move-object/from16 v19, v37
+0816: move/from16 v17, v9
+081a: move-object v10, v11
+081c: move-object/from16 v11, v29
+0820: move-object v9, v1
+0822: invoke-direct/range v9 ... v19, Lcom/google/android/gms/internal/play_billing/n2;-><init>([I [Ljava/lang/Object; I I Lcom/google/android/gms/internal/play_billing/e1; [I I I Lcom/google/android/gms/internal/play_billing/t1; Lcom/google/android/gms/internal/play_billing/t1;)V
+0828: return-object v9
+082a: invoke-virtual v0, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+0830: new-instance v0, Ljava/lang/ClassCastException;
+0834: invoke-direct v0, Ljava/lang/ClassCastException;-><init>()V
+083a: throw v0
