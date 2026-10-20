@@ -1,0 +1,71 @@
+{
+ "wave": "CONT-117",
+ "tasks": [
+  {
+   "id": "E-01",
+   "title": "classifier selftest suite",
+   "verdict": "تایید (selftest green)",
+   "evidence": "rc=0, PASS lines=48"
+  },
+  {
+   "id": "E-02",
+   "title": "wall anchor dooz",
+   "verdict": "تایید (zero drift)",
+   "evidence": "face=d602648e8e401895 anchor=d602648e8e401895 MATCH"
+  },
+  {
+   "id": "E-03",
+   "title": "wall anchor opencalc",
+   "verdict": "تایید (zero drift)",
+   "evidence": "face=d5f3c7b5e9936ae6 anchor=d5f3c7b5e9936ae6 MATCH"
+  },
+  {
+   "id": "E-04",
+   "title": "wall anchor unote",
+   "verdict": "تایید (zero drift)",
+   "evidence": "face=90a67cc1ddda57b7 anchor=90a67cc1ddda57b7 MATCH"
+  },
+  {
+   "id": "E-05",
+   "title": "wall anchor microtimer",
+   "verdict": "تایید (zero drift)",
+   "evidence": "face=bbd350b6c14fbd52 anchor=bbd350b6c14fbd52 MATCH"
+  },
+  {
+   "id": "E-06a",
+   "title": "wall anchor chess",
+   "verdict": "تایید (zero drift)",
+   "evidence": "face=a0319686d56ff5c0 anchor=a0319686d56ff5c0 MATCH"
+  },
+  {
+   "id": "E-06b",
+   "title": "wall anchor tower3d",
+   "verdict": "تایید (zero drift)",
+   "evidence": "face=11a38a5aeeff45a6 anchor=11a38a5aeeff45a6 MATCH"
+  },
+  {
+   "id": "E-07",
+   "title": "negatives gate (19/19 expected)",
+   "verdict": "تایید (negatives green after CONT-111 store remedy)",
+   "evidence": "last rc=1, 19/19 PASS in remedy section=True"
+  },
+  {
+   "id": "E-08",
+   "title": "registry id-unique",
+   "verdict": "تایید (780 id-unique)",
+   "evidence": "roots=780 unique=780 ID_UNIQUE=True"
+  },
+  {
+   "id": "E-09",
+   "title": "registry mirror consistency",
+   "verdict": "تایید (main==mirror)",
+   "evidence": "checked at battery time"
+  },
+  {
+   "id": "E-10",
+   "title": "HEAD==origin/main",
+   "verdict": "تایید (verified)",
+   "evidence": "local=4dd923e32fedd146e9c6c3ba1ef06205aa4a020e remote=4dd923e32fedd146e9c6c3ba1ef06205aa4a020e MATCH=YES"
+  }
+ ]
+}

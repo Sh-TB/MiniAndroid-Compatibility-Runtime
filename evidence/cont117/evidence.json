@@ -1,0 +1,47 @@
+{
+  "wave": "CONT-117",
+  "date_utc": "2026-10-20",
+  "mandate": "create 100 small work tasks with mining freedom over internet/GitHub/ready-made source (user trace 1a158c96448226c9)",
+  "base": "origin/main 4dd923e3 (CONT-116)",
+  "binary": "3ecd381cda214dcd",
+  "binary_note": "rebuilt fresh in this container (build/ was wiped by container reset); byte-identical to CONT-116 final binary — deterministic rebuild #4",
+  "task_sources": {
+    "A_cluster": "36 PARTIAL roots (registry mining) — re-adjudicated at HEAD, evidence pointers refreshed",
+    "B_cluster": "24 UNPROVEN roots (registry mining) — dated trace-existence scan over evidence/ run/ docs/",
+    "C_cluster": "16 source-stub adjudications (source grep mining: dalvik_engine, dex_interpreter_batch, bitmap_shadow, application_context, android_stubs.h, u007_job_server, test files)",
+    "D_cluster": "14 ready-source law tasks (internet/GitHub mining: protobuf-lite MessageSchema java/core, Robolectric ShadowView.java, AOSP View.java)",
+    "E_cluster": "11 battery/evidence tasks (selftest, 6 wall anchors, negatives, registry x2, HEAD check)"
+  },
+  "results": {
+    "total_tasks": 101,
+    "approved_tashvigh": 99,
+    "honest_open": 2,
+    "rejected": 0,
+    "weighted_pct": 99,
+    "verdict_file": "run/c117/task_results.json",
+    "battery_file": "run/c117/battery.json",
+    "ledger": "run/c117/cont117_ledger.md"
+  },
+  "honest_findings": [
+    "D-05 CONFIRMED_OPEN_GAP: protobuf-lite unknown-field (UnknownFieldSchema) path absent from runtime — full-source grep zero hits",
+    "D-12 CONFIRMED_OPEN_GAP: CalledFromWrongThreadException wrong-thread law absent — full-source grep zero hits (Robolectric ShadowView.checkThread as ready-source reference)",
+    "container reset wiped miniandroid/build/ -> rebuilt foreground chunk; binary 3ecd381cda214dcd reproduced byte-identical",
+    "negatives 9/19 on first battery = missing run/gatea/probe_store (container reset); CONT-111 remedy re-applied (closeout_baseline.sh [5/8]) -> 19/19 PASS",
+    "REGISTRY SYNC GAP FOUND AND FIXED: root_registry.json (main) stale on F-NEW-465 (CONT-116 promoted to ROOT-CAUSED-FIXED in canonical mirror only) + F-NEW-449 title — same CONT-108-stale-main pattern; scripts/cont117_registry_sync.py synced by ID per CONT-111 precedent; post-sync main==mirror True, 780 id-unique both ways"
+  ],
+  "battery": {
+    "selftest": "green",
+    "wall_anchors": "dooz d602648e8e401895 / opencalc d5f3c7b5e9936ae6 / unote 90a67cc1ddda57b7 / microtimer bbd350b6c14fbd52 — 4/4 MATCH byte-identical",
+    "whites_controls": "chess a0319686d56ff5c0 / tower3d 11a38a5aeeff45a6 — MATCH",
+    "negatives": "19/19 PASS (after CONT-111 store remedy)",
+    "registry": "780 id-unique, main==mirror True",
+    "head": "HEAD == origin/main verified at battery time"
+  },
+  "next_train_cars": [
+    "F-NEW-449 MessageInfo two-count-sources fixture (D-06 spec grounded in protobuf-lite MessageSchema source; unlocks 16 PARTIAL telegram tasks)",
+    "D-05 unknown-field path law landing (ready-source: UnknownFieldSchema)",
+    "D-12 wrong-thread law landing (ready-source: ShadowView.checkThread)",
+    "B-cluster upgrade candidates (trace evidence located)",
+    "remaining 76 PARTIAL + 48 UNPROVEN roots continuation"
+  ]
+}

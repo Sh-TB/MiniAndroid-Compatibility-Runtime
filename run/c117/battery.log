@@ -1,0 +1,108 @@
+== binary ==
+3ecd381cda214dcd
+head=4dd923e32fedd146e9c6c3ba1ef06205aa4a020e
+== E-01 selftest ==
+  [PASS] install-failure: INSTALL_FAILURE
+  [PASS] no-screenshot: NO_SCREEN
+  [PASS] splash: SPLASH_ONLY
+  [PASS] white-blank: WHITE_BLANK
+  [PASS] dark-default-bg: DEFAULT_BACKGROUND_ONLY
+  [PASS] rich-no-provenance: PARTIAL_MARGINAL
+  [PASS] rich-no-provenance-note: True
+  [PASS] genuine-content: REAL_APP_CONTENT
+  [PASS] abi-refusal: PREREQUISITE_MISMATCH
+  [PASS] budget-timeout: BUDGET_TIMEOUT
+  [PASS] interactive: INTERACTIVE_CONTENT_VERIFIED
+  [PASS] sparse-content: REAL_APP_CONTENT
+  [PASS] sparse-content-note: True
+  [PASS] harness-failure: HARNESS_ENVIRONMENT_FAILURE
+SELFTEST: 14/14 PASS
+selftest rc=0
+  [PASS] sparse-content-note: True
+  [PASS] harness-failure: HARNESS_ENVIRONMENT_FAILURE
+SELFTEST: 14/14 PASS
+== E: run dooz ==
+rc=1
+face=d602648e8e401895 recorded=d602648e8e401895
+dooz_ANCHOR_MATCH
+== E: run opencalc ==
+rc=1
+face=d5f3c7b5e9936ae6 recorded=d5f3c7b5e9936ae6
+opencalc_ANCHOR_MATCH
+== E: run unote ==
+rc=0
+face=90a67cc1ddda57b7 recorded=90a67cc1ddda57b7
+unote_ANCHOR_MATCH
+== E: run microtimer ==
+rc=0
+face=bbd350b6c14fbd52 recorded=bbd350b6c14fbd52
+microtimer_ANCHOR_MATCH
+== E: run chess ==
+rc=1
+face=a0319686d56ff5c0 recorded=a0319686d56ff5c0
+chess_ANCHOR_MATCH
+== E: run tower3d ==
+rc=1
+face=11a38a5aeeff45a6 recorded=11a38a5aeeff45a6
+tower3d_ANCHOR_MATCH
+== E-07 negatives ==
+PASS N-01
+PASS N-02
+PASS N-03
+PASS N-04
+PASS N-05
+PASS N-06
+FAIL N-08-ISO-02
+FAIL N-08-ISO-03
+FAIL N-08-ISO-04
+FAIL N-08-ASSET-05
+FAIL N-08-IO-10
+FAIL N-08-RES-04
+FAIL N-08-NAT-01
+PASS N-09
+PASS N-10
+PASS N-11
+FAIL N-12
+FAIL N-18
+FAIL N-19
+NEGATIVE TESTS: 9/19 PASS
+negatives rc=1
+== E-08 registry id-unique ==
+roots=780 unique=780 ID_UNIQUE=True
+== E-09 registry main==mirror ==
+mirror file not present (recorded as-is)
+== E-10 HEAD==origin/main ==
+local=4dd923e32fedd146e9c6c3ba1ef06205aa4a020e remote=4dd923e32fedd146e9c6c3ba1ef06205aa4a020e MATCH=YES
+== SUMMARY ==
+
+== E-09 CORRECTION (CONT-117 sync applied) ==
+The first E-09 check used a wrong mirror filename (canonical/root_cause_registry.mirror.json, absent).
+Honest finding: root_registry.json (main) was STALE on 2 IDs vs canonical mirror — F-NEW-465
+(CONT-116 promoted to ROOT-CAUSED-FIXED) and F-NEW-449 (title refresh) — the same CONT-108
+stale-main pattern CONT-111 fixed for F-NEW-451/453. Remedy: scripts/cont117_registry_sync.py
+(CONT-111 precedent, sync-by-ID from authoritative mirror).
+main_roots= 780  mirror_roots= 780  differing_ids= 0
+mirror_identical= True
+
+== E-07 REMEDY RUN (probe store regenerated per CONT-111 remedy, closeout_baseline.sh [5/8]) ==
+install rc=0; run rc=0; gate_a_results.jsonl lines=99
+PASS N-01
+PASS N-02
+PASS N-03
+PASS N-04
+PASS N-05
+PASS N-06
+PASS N-08-ISO-02
+PASS N-08-ISO-03
+PASS N-08-ISO-04
+PASS N-08-ASSET-05
+PASS N-08-IO-10
+PASS N-08-RES-04
+PASS N-08-NAT-01
+PASS N-09
+PASS N-10
+PASS N-11
+PASS N-12
+PASS N-18
+PASS N-19
+NEGATIVE TESTS: 19/19 PASS

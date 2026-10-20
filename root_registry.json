@@ -7320,9 +7320,9 @@
   "priority": "P1",
   "title": "Telegram play_billing n2.r (protobuf-lite MessageSchema builder) aget-oob 'length=11; index=11' boundary decoded: rotated-loop boundary read at 0x568 re-indexes the Field[]/String[] entries array (v24) one past its length after `add-int/lit8 v4, v10, 1` (issue #364 CONT-106 batch; CONT-104 U3 carry).",
   "layer": "framework (reflection metadata array construction vs walk-count agreement)",
-  "root_cause": "REFRESH (CONT-107): the c106b minimization probe (fixtures/cont107_reflectcount — 11 mixed static/instance fields, Unsafe theUnsafe acquisition, objectFieldOffset/staticFieldOffset per field, two-pass order stability) is GREEN on the engine: count=11, offsets 11/11 zero throws, mods 3 statics/8 instances, order stable. The engine reflection-count law is CONSISTENT at this minimization, so the n2.r OOB involves protobuf's compiled MessageInfo metadata vs the walk count (a source the probe does not exercise). Remains CONFIRMED_OPEN_GAP with the probe as the registered negative control; fixture-first continuation needs a MessageInfo-metadata-side probe.",
+  "root_cause": "CONT-116 runtime decode (deepened, still OPEN): the OOB array is o5042 [Ljava/lang/Object; len=11 built by EXACTLY 11 STRING_REF aput stores idx 0..10 (EXP093-APUT trace; no filled-new-array — 98 FNA rows all [I and later; no copyOf in window). The n2.r walk consumed ALL 11 p3 instance fields (Unsafe objectFieldOffset rows: 10 real fields zze/zzg/zzh/zzi/zzf/zzj/zzk/zzl/zzm/zzn + aux zzd read 10x interleaved = 20 R337 rows) and THEN read entries[11] as the post-field terminator entry — the parse of s2.b demands one more entry than the constructed array carries. p3 has exactly 11 instance fields; the c106b reflection-count law stays GREEN (negative control). Residual decode fork (needs the complete disassembly of n2.r or an ART reference run): which 12th store ART executes (unrolled+loop construction shows 11 stores at idx 0..10 in-engine), or whether the walk's terminator demand is string-derived and the string differs. Fixture per CONT-107 plan: MessageInfo-shape probe asserting two count sources agree over the same class.",
   "fix": "PENDING fixture-first (c106b, next wave): probe two count sources over the same class (getDeclaredFields().length vs the count protobuf derives) and assert agreement; then the generic fix targets whichever reflection law disagrees.",
-  "evidence": "run/c107/post/c106b.stderr + fixtures/cont107_reflectcount",
+  "evidence": "run/c116_tg_s36.log [S36-AOOB] arr=o5042 len=11 idx=11; run/c116_tg_aput.log (11 stores idx0..10 + v24 write-back row); run/c116_tg_fna.log (FNA exclusion + 20 R337 walk rows); run/c115/telegram.log (signature rows at CONT-115)",
   "registered_wave": "CONT-106",
   "registered_date": "2026-10-19"
  },
@@ -7490,12 +7490,14 @@
  },
  {
   "id": "F-NEW-465",
-  "title": "Bare-shell ctor-skip face: DEX-defined objects created outside DEX frames (frame=0/pc=0) dispatch methods with zero fields",
-  "status": "CONFIRMED_OPEN_GAP",
+  "title": "Bare-shell ctor-skip face (R-NEW-414/Constructor.newInstance): two dispatch laws fixed — CONT-116: (a) both Constructor.newInstance shims forward the varargs Object[] and dispatch the arity+primitive-shape-matched <init> via its exact descriptor (F-023 authority path; the old no-descriptor heuristic could cross-bind same-arity overloads Array(I) vs Array(Array)); (b) materialize_init_default's F-NEW-464 condition was INVERTED — the ()V body ran only for classes WITHOUT one; fixed to run exactly when it exists. Bracket: tower3d ARR-LEN-NULL death (obj#393 zero-field Array) eliminated, IGET-MISS keys:<none> 2->0; face stays 11a38a5a (draw-op frontier); next layer = attribute copy-ctor getClass-null chain (registered as the continuation fixture target).",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P1-HIGH",
   "layer": "DEX_SHADOW_HEAP",
   "date": "2026-10-20",
   "root_cause": "tower3d post-F-NEW-464: the SECOND DirectionalLightsAttribute instance's lights Array (obj#393) was allocated frame=0 pc=0 seq=392 ([ALLOC-TRACE] — NOT execute_new_instance, NOT materialize_init_default) and dispatched Array.add with ZERO field keys [IGET-MISS-DIAG] -> ARR-LEN-NULL -> onCreate death. Correlated rows: [REC-MISS] java/lang/reflect/Array;.newInstance caller=libGDX ArrayReflection.newInstance; [F106-CTOR] ClassReflection.getConstructor + Constructor.newInstance path creates the attribute copy. The ctor-skip happens on a non-DEX-frame allocation path whose identity is not yet pinned (CONT-28 'an object whose <init> never ran must be identifiable' is the named lever). Next wave: instrument the remaining (0,0) allocate sites, pin the Attribute-copy allocation, and make a DEX-defined <init> dispatch miss LOUD (no silent no-op) — fixture-first.",
-  "evidence": "run/c114/tower3d_diag/stderr2.log rows: ALLOC-TRACE obj#393 pc=0 frame=0 seq=392; IGET-MISS-DIAG obj#393 keys:<none> caller=Array.add"
+  "evidence": "run/c116/t465c{1,2,3}.log (ARR-LEN-NULL absent, keys:<none> 0) vs run/c116/t_diag.log (pre-fix death chain: R414-INIT-DEFAULT -> Array.add pc=4 ARR-LEN-NULL); run/c116/t_diag2.log + run/c116/t_fields2.log (FIELD-TRACE items puts prove ctor now runs); battery: wall 4 MATCH, c448/c449, goldens 4/4, negatives 19/19, reinstall 8/8, MG-310 7/7, MG-150 3/3, selftest 13/13 at binary 3ecd381cda214dcd",
+  "registered_wave": "CONT-114 (open) -> CONT-116 (fixed)",
+  "verified_current": true
  }
 ]
