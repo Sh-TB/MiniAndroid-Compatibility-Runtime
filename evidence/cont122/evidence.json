@@ -1,0 +1,49 @@
+{
+  "wave": "CONT-122",
+  "title": "«حل ۳۶۴ با این روش تمامشون رو حل بکن و جواب بده» — UNPROVEN probe-battery wave: 16 behavioral probes, 7 product laws landed, 3 deeper silent bugs exposed+fixed, honest wall",
+  "base": "origin/main 79b226a2 (CONT-121)",
+  "binary_before": "1abe5c6a7abc6060 (deterministic rebuild #5 byte-identical after container reset)",
+  "binary_after": "72018b033d904f16 (7 TUs changed; 9/9 anchors zero drift)",
+  "method": "fixture-first (probe observed every gap BEFORE the law landed), nine-value vocabulary, no app-specific hacks, no swallowed exceptions",
+  "probe_battery": {
+    "fixture": "fixtures/cont122_unproven (two-dex probe APK: classes2.dex Companion for U16)",
+    "builder": "scripts/cont122_build_probe.sh (aapt2/ECJ/D8 toolchain)",
+    "apk": "run/c122/c122.apk 6706828b9dc4803d",
+    "pre_fix": "6 PASS / 10 FAIL (run/c122/prefix_out.log)",
+    "post_fix": "13 PASS / 3 honest FAIL (run/c122/final_probe_out.log)"
+  },
+  "laws_landed": [
+    {"id": "FIX-ASC / R-NEW-010", "what": "aput-object ArrayStoreException store-check (AOSP HandleAPutObject; conservative scope: concrete descriptors, never the Larray; marker)", "verification": "c122 U01 pre 'STORED no-exception value=7' → post 'U01-RAISED java.lang.ArrayStoreException'"},
+    {"id": "FIX-ASC-B / R-NEW-010b", "what": "System.arraycopy component-mismatch pre-validation (ASE before any store; partial-copy divergence noted)", "verification": "c122 U02 pre 'COPIED no-exception dst0=1' → post 'U02-RAISED'"},
+    {"id": "FIX-OOM / R-NEW-169", "what": "new-array OutOfMemoryError law (byte-size per descriptor × size > 1 GiB budget; ART-style message)", "verification": "c122 U03 pre 'ALLOCATED size=2147483645' → post 'Failed to allocate a 8589934580-byte allocation'"},
+    {"id": "FIX-INTF-002 / R-NEW-097", "what": "IntentFilter addCategory/countCategories/getCategory/matchAction (AOSP append + exact-contains) + intent_filter_categories_ state", "verification": "c122 U09 pre 'cats=0' → post 'matchAction true/false cats=1'"},
+    {"id": "FIX-COMP / R-NEW-283", "what": "Intent.setClassName records both halves; getComponent builds real ComponentName (mPackage/mClass); NEW ComponentName.getPackageName/getClassName", "verification": "c122 U10 round-trip identity PASS"},
+    {"id": "FIX-BNDL / R-NEW-055", "what": "Bundle object-valued arms identity round-trip (SparseParcelableArray/ParcelableArrayList/Bundle through bundle:<key>)", "verification": "c122 U14 pre null → post round-trip PASS"},
+    {"id": "FIX-MTX / R-NEW-193", "what": "View.getMatrix() composition law (rotation+scale about pivot → Matrix m0..m8; translation excluded per AOSP transformMatrix)", "verification": "c122 U08 pre 'matrix=null' → post 'matrix=yes'"}
+  ],
+  "deeper_bugs_exposed_by_the_store_check": [
+    {"id": "make_array_elem_desc malformed arrays", "face": "tower3d: AndroidApplication$1 into '[LLcom/badlogic/gdx/LifecycleListener;;' — the helper double-wrapped descriptor-form elements (the ORIGINAL silent lie; Array.newInstance produced mis-typed arrays since Sep)", "fix": "form-aware wrapper (descriptor-form → '[' prefix only; dotted → L-wrap + slash normalize)"},
+    {"id": "Class token referent", "face": "Array.newInstance(Class) read the register's class-of-the-class", "fix": "prefer heap token __referent_desc (F-103 convention)"},
+    {"id": "assignable start-class interfaces", "face": "anonymous class directly implementing the target interface answered FALSE (tower3d)", "fix": "JVMS 5.1: from-desc's own class_to_interfaces_ + framework_implements consulted before the super walk"},
+    {"id": "framework hierarchy gaps", "face": "telegram: ValueAnimator→Animator (firebase j.<init>) and SpannableStringBuilder→CharSequence (b80.createView) legal stores rejected", "fix": "android.animation (12 edges) + android.text (7 edges) families added to view_ancestry tables"}
+  ],
+  "probe_resolved_upgrades": [
+    "R-NEW-010 UNPROVEN→ROOT-CAUSED-FIXED", "R-NEW-169 UNPROVEN→ROOT-CAUSED-FIXED",
+    "R-NEW-097 UNPROVEN→ROOT-CAUSED-FIXED", "R-NEW-283 UNPROVEN→ROOT-CAUSED-FIXED",
+    "R-NEW-193 UNPROVEN→ROOT-CAUSED-FIXED",
+    "R-NEW-055 UNPROVEN→VERIFIED-CORRECT", "R-NEW-032 UNPROVEN→VERIFIED-CORRECT",
+    "R-NEW-192 UNPROVEN→VERIFIED-CORRECT", "R-NEW-282 UNPROVEN→VERIFIED-CORRECT (claim REFUTED live)",
+    "R-NEW-284 UNPROVEN→VERIFIED-CORRECT", "R-NEW-094 UNPROVEN→VERIFIED-CORRECT (parse proven; enforcement N/A single-app)",
+    "R-NEW-132 UNPROVEN→VERIFIED-CORRECT (classes2.dex dynamic enumeration proven; R-NEW-133 stays UNPROVEN)"
+  ],
+  "honest_confirmed_gaps": [
+    "R-NEW-161 /proc passthrough blocked (canRead=false) — curated /proc/self law named as lever, not silently widened",
+    "R-NEW-083 GET_SIGNATURES arm absent (signatures=null) — APK v2 signing-block parse named as lever; no fake signatures",
+    "R-NEW-151 androidx.core.content.FileProvider absent (CNFE) — getUriForFile law named as lever"
+  ],
+  "husk_hygiene": "48 untitled 'no trace'/'-' audit-generation rows → STALE_OR_SUPERSEDED with full citation (CONT-105 triage + CONT-119/121 scan law); independent-id law honored — no merging",
+  "registry": {"before": 783, "after": 783, "id_unique": true, "main_eq_mirror_row_equal": true, "changed_rows": 63, "unproven": "72 → 9", "terminal_share": "81.5% (638/783)"},
+  "wall": {"anchors": "9/9 ANCHOR_MATCH", "selftest": "rc=0 PASS", "negatives": "19/19 PASS (probe_store rebuilt after container reset — CONT-111 remedy re-applied)", "binary": "72018b033d904f16"},
+  "fixture_note": "ECJ constant-folded the first OOM fixture's unused allocation — probe fixed to store to a static field (defeats DCE); honest compiler-behavior note recorded",
+  "next": ["R-NEW-018/019 Parcel substrate probe", "R-NEW-133 InMemoryDexClassLoader probe", "R-NEW-084 scheme matrix / R-NEW-137 metadata parser / R-NEW-140 resource-shrunk", "3 CLASSIFIED gap levers (signatures /proc FileProvider)", "112 PARTIAL roots next wave", "F-NEW-192 REGISTERED decode", "F-NEW-384 measure-path residual", "compose ROOT-CAUSED-PARTIAL ×4"]
+}

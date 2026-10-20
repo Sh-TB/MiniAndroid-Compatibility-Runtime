@@ -47,16 +47,22 @@
  {
   "id": "R-NEW-007",
   "title": "R-NEW-007: no live trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-008",
   "title": "R-NEW-008: no live trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-009",
@@ -68,9 +74,12 @@
  {
   "id": "R-NEW-010",
   "title": "R-NEW-010: no live ArrayStoreException trace",
-  "status": "UNPROVEN",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "ROOT-CAUSED-FIXED (CONT-122). LIVE probe c122: pre-fix face 'U01-STORED no-exception value=7' — aput-object stored String[]<-Integer silently (no store-check); post-fix 'U01-RAISED java.lang.ArrayStoreException' + typed catch (fixture-first: probe observed the gap BEFORE the law landed). LAWS LANDED: (1) aput-object ArrayStoreException store-check (AOSP HandleAPutObject + art::ThrowArrayStoreException; conservative scope: concrete descriptors both sides, never the synthetic Larray; marker). The check EXPOSED three deeper pre-existing silent bugs, all fixed: (2) reflect Array.newInstance make_array_elem_desc double-wrapped descriptor-form elements into MALFORMED '[LLcom/...;;' arrays (tower3d live face — libGDX Array(Class)→newInstance path); (3) dalvik_class_assignable never consulted the STARTING class's own declared interfaces (anonymous AndroidApplication$1 implements LifecycleListener → false negative); (4) framework hierarchy tables lacked android.animation (ValueAnimator→Animator, telegram face) and android.text (SpannableStringBuilder→CharSequence) chains. VERIFIED: c122 U01/U02 PASS + 9/9 anchors zero drift at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-011",
@@ -222,9 +231,12 @@
  {
   "id": "R-NEW-032",
   "title": "R-NEW-032: no invalidation trace",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122). LIVE probe c122 U06: invalidate + postInvalidate + requestLayout exercised live on a live view tree, no exception, next frames rendered (the invalidation trace the audit demanded now exists). 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-033",
@@ -264,16 +276,22 @@
  {
   "id": "R-NEW-038",
   "title": "R-NEW-038: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-039",
   "title": "R-NEW-039: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-040",
@@ -285,23 +303,32 @@
  {
   "id": "R-NEW-041",
   "title": "R-NEW-041: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-042",
   "title": "R-NEW-042: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-043",
   "title": "R-NEW-043: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-044",
@@ -320,9 +347,12 @@
  {
   "id": "R-NEW-046",
   "title": "R-NEW-046: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-047",
@@ -391,9 +421,12 @@
  {
   "id": "R-NEW-055",
   "title": "R-NEW-055: packed/sparse payload edge shapes RESEARCHED (audit §A gaps)",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122). LIVE probe c122 U14: putSparseParcelableArray→getSparseParcelableArray round-trip of a SparseArray<Bundle> with inner Bundle now byte-identical (pre-fix null). LAW: Bundle object-valued arms (SparseParcelableArray/ParcelableArrayList/Bundle) identity round-trip through the bundle:<key> convention; the SparseArray half rides F-NEW-334. Honest residual: parcel-edge shapes beyond the sparse/arraylist/bundle family remain unprobed (packed primitive arrays named in the original audit stay a named residual). 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-056",
@@ -508,23 +541,32 @@
  {
   "id": "R-NEW-071",
   "title": "R-NEW-071: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-072",
   "title": "R-NEW-072: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-073",
   "title": "R-NEW-073: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-074",
@@ -592,9 +634,12 @@
  {
   "id": "R-NEW-083",
   "title": "R-NEW-083: no signature verification law",
-  "status": "UNPROVEN",
+  "status": "CLASSIFIED",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "CLASSIFIED CONFIRMED_OPEN_GAP (CONT-122). LIVE probe c122 U12: getPackageInfo(pkg, GET_SIGNATURES) → signatures=null (len -1). AOSP contract named: PackageInfo.signatures carries the v2/v3 signing-cert chain ([Landroid/content/pm/Signature; with toCharsString hex DER); landing lever = APK v2 signing-block (id 0x7109871a) parse in apk_parser + Signature shadow. No fake signatures served. Probe face in evidence/cont122/.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-084",
@@ -606,9 +651,12 @@
  {
   "id": "R-NEW-085",
   "title": "R-NEW-085: -",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-086",
@@ -669,9 +717,12 @@
  {
   "id": "R-NEW-094",
   "title": "R-NEW-094: exported parsed, not enforced",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122, parse half). LIVE probe c122 U15: manifest exported flag parsed and surfaced via PackageManager.getActivityInfo (exported=true live). Honest note: 'enforcement' is N/A in a single-app runtime by design (no cross-app IPC surface exists to enforce against); the recorded claim 'exported parsed, not enforced' resolves to parsed=proven, enforcement=not-applicable. 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-095",
@@ -690,9 +741,12 @@
  {
   "id": "R-NEW-097",
   "title": "R-NEW-097: IntentFilter matching RESEARCHED (audit §L)",
-  "status": "UNPROVEN",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "ROOT-CAUSED-FIXED (CONT-122). LIVE probe c122 U09: pre-fix cats=0 (addCategory unhandled) and matchAction unusable; post-fix 'matchAction true/false cats=1'. LAW: IntentFilter.addCategory/countCategories/getCategory/matchAction (AOSP IntentFilter.java — addCategory appends unconditionally, matchAction = exact contains over mActions) riding the #371 B5 intent_filters_ state, with the new intent_filter_categories_ map. 9/9 anchors zero drift at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-098",
@@ -951,9 +1005,12 @@
  {
   "id": "R-NEW-132",
   "title": "R-NEW-132: no dynamic DEX trace",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122). LIVE probe c122 U16: a class living in classes2.dex (two-dex probe APK built by scripts/cont122_build_probe.sh) resolved via Class.forName AND passed an instanceof check against a classes.dex-declared interface — the dynamic multi-dex enumeration trace now exists. Sibling R-NEW-133 (in-memory DEX) stays UNPROVEN (different API, not probed). 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-133",
@@ -1021,16 +1078,22 @@
  {
   "id": "R-NEW-142",
   "title": "R-NEW-142: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-143",
   "title": "R-NEW-143: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-144",
@@ -1084,9 +1147,12 @@
  {
   "id": "R-NEW-151",
   "title": "R-NEW-151: no FileProvider trace",
-  "status": "UNPROVEN",
+  "status": "CLASSIFIED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "CLASSIFIED CONFIRMED_OPEN_GAP (CONT-122). LIVE probe c122 U13: Class.forName('androidx.core.content.FileProvider') → ClassNotFoundException — androidx.core is outside the shadow set. Landing lever: FileProvider.getUriForFile law (device-rooted content:// authority mapping over the file sandbox). Probe face in evidence/cont122/.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-152",
@@ -1112,9 +1178,12 @@
  {
   "id": "R-NEW-155",
   "title": "R-NEW-155: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-156",
@@ -1140,9 +1209,12 @@
  {
   "id": "R-NEW-159",
   "title": "R-NEW-159: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-160",
@@ -1154,9 +1226,12 @@
  {
   "id": "R-NEW-161",
   "title": "R-NEW-161: no /proc passthrough",
-  "status": "UNPROVEN",
+  "status": "CLASSIFIED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "CLASSIFIED CONFIRMED_OPEN_GAP (CONT-122). LIVE probe c122 U11: /proc/self/cmdline canRead=false — the file sandbox blocks /proc passthrough (recorded claim CONFIRMED by live evidence). Named design tension: a raw passthrough would leak HOST identity (runtime cmdline), so the honest terminal shape is a CURATED /proc/self law (app-shaped cmdline/build values) — registered as the landing lever, not silently widened. Probe face + fix lever in evidence/cont122/.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-162",
@@ -1216,9 +1291,12 @@
  {
   "id": "R-NEW-169",
   "title": "R-NEW-169: no OOM trace",
-  "status": "UNPROVEN",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "ROOT-CAUSED-FIXED (CONT-122). LIVE probe c122: pre-fix 'U03-ALLOCATED size=2147483645' (metadata-only allocation 'succeeded'); post-fix 'U03-RAISED java.lang.OutOfMemoryError msg=Failed to allocate a 8589934580-byte allocation' (ART-style message). LAW: new-array byte-size (element size per descriptor [B=1 [Z/[C=2 [S/[I=4 [J/[F/[D/ref=8) > 1 GiB budget → OutOfMemoryError. Fixture note: ECJ constant-folded the first fixture's unused allocation — the fixed fixture stores to a static field to keep the allocation live. 9/9 anchors zero drift at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-170",
@@ -1286,30 +1364,42 @@
  {
   "id": "R-NEW-179",
   "title": "R-NEW-179: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-180",
   "title": "R-NEW-180: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-181",
   "title": "R-NEW-181: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-182",
   "title": "R-NEW-182: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-183",
@@ -1321,16 +1411,22 @@
  {
   "id": "R-NEW-184",
   "title": "R-NEW-184: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-185",
   "title": "R-NEW-185: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-186",
@@ -1377,16 +1473,22 @@
  {
   "id": "R-NEW-192",
   "title": "R-NEW-192: no scroll trace",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122). LIVE probe c122 U07: scrollTo(10,20) → getScrollX/Y == 10/20; scrollBy(5,-5) → 15/15 — the scroll law verified live (the scroll trace the audit demanded now exists). 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-193",
   "title": "R-NEW-193: no transform trace",
-  "status": "UNPROVEN",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "ROOT-CAUSED-FIXED (CONT-122). LIVE probe c122 U08: pre-fix getMatrix() answered null (translation stored, matrix never built); post-fix matrix=yes. LAW: View.getMatrix() composes rotation+scale about the pivot into the Android Matrix m0..m8 convention (AOSP transformMatrix — translationX/Y deliberately NOT part of the matrix; honest note: fresh Matrix object per call, AOSP reuses mMatrix — named residual). 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-194",
@@ -1447,9 +1549,12 @@
  {
   "id": "R-NEW-202",
   "title": "R-NEW-202: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-203",
@@ -1496,37 +1601,52 @@
  {
   "id": "R-NEW-209",
   "title": "R-NEW-209: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-210",
   "title": "R-NEW-210: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-211",
   "title": "R-NEW-211: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-212",
   "title": "R-NEW-212: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-213",
   "title": "R-NEW-213: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-214",
@@ -1538,9 +1658,12 @@
  {
   "id": "R-NEW-215",
   "title": "R-NEW-215: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-216",
@@ -1552,9 +1675,12 @@
  {
   "id": "R-NEW-217",
   "title": "R-NEW-217: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-218",
@@ -1566,9 +1692,12 @@
  {
   "id": "R-NEW-219",
   "title": "R-NEW-219: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-220",
@@ -1615,9 +1744,12 @@
  {
   "id": "R-NEW-226",
   "title": "R-NEW-226: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-227",
@@ -1637,44 +1769,62 @@
  {
   "id": "R-NEW-229",
   "title": "R-NEW-229: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-230",
   "title": "R-NEW-230: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-231",
   "title": "R-NEW-231: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-232",
   "title": "R-NEW-232: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-233",
   "title": "R-NEW-233: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-234",
   "title": "R-NEW-234: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-235",
@@ -1693,23 +1843,32 @@
  {
   "id": "R-NEW-237",
   "title": "R-NEW-237: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-238",
   "title": "R-NEW-238: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-239",
   "title": "R-NEW-239: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-240",
@@ -1738,23 +1897,32 @@
  {
   "id": "R-NEW-243",
   "title": "R-NEW-243: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-244",
   "title": "R-NEW-244: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-245",
   "title": "R-NEW-245: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-246",
@@ -1776,23 +1944,32 @@
  {
   "id": "R-NEW-248",
   "title": "R-NEW-248: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-249",
   "title": "R-NEW-249: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-250",
   "title": "R-NEW-250: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-251",
@@ -1825,9 +2002,12 @@
  {
   "id": "R-NEW-255",
   "title": "R-NEW-255: no trace",
-  "status": "UNPROVEN",
+  "status": "STALE_OR_SUPERSEDED",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": "STALE_OR_SUPERSEDED (CONT-122 registry hygiene): untitled audit-generation residue — no behavioral claim (title is a bare 'no trace'/'-' marker), no evidence pointer (CONT-105 triage: BLOCKED_NEEDS_EVIDENCE 'no evidence pointer'), no referent beyond MASTER_WORKLIST's '(untitled registry entry) MC-126 documentation/registry consistency' stub, and no id-string mention in evidence/run/docs beyond index scans (CONT-119/121 full-scan law). Superseded by the titled rows that carry the actual content; nothing is merged into another root (independent-id law honored — the rows terminate as themselves, not as aliases). Probe battery note: substantive siblings (ArrayStoreException/OOM/scroll/transform/IntentFilter/Parcel/...) were NOT swept by this hygiene pass — 16 probes resolved 11 of them by live behavior.",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-256",
@@ -2023,23 +2203,32 @@
  {
   "id": "R-NEW-282",
   "title": "R-NEW-282: singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122). LIVE probe c122 U04 REFUTES the recorded claim 'singletonMap/unmodifiableMap NOT implemented': Collections.singletonMap + unmodifiableMap round-trip verified live (size/get/containsKey + wrap-read). singletonList/emptyList already covered by F-039 (3ed13292). 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-283",
   "title": "R-NEW-283: FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote",
-  "status": "UNPROVEN",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": "ROOT-CAUSED-FIXED (CONT-122). LIVE probe c122 U10: pre-fix the component round-trip failed — getComponent answered a FRESH EMPTY ComponentName (only the class string was recorded); post-fix full identity round-trip incl. setComponent(ComponentName) field propagation. LAWS: Intent.setClassName(pkg,cls) records BOTH halves; getComponent builds the ComponentName with mPackage/mClass (F-116 convention); NEW ComponentName.getPackageName/getClassName accessors. 9/9 anchors zero drift at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-284",
   "title": "R-NEW-284: execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is prese",
-  "status": "UNPROVEN",
+  "status": "VERIFIED-CORRECT",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": "VERIFIED-CORRECT (CONT-122). LIVE probe c122 U05: check-cast register preservation proven behaviorally — (String)null cast is legal (no NPE at the cast), the cast result received real.length()==3 (register carried the value), null-cast-then-invoke NPEs at the invoke site per AOSP. 9/9 anchors at 72018b033d904f16",
+  "verified_current": true,
+  "date": "2026-10-20"
  },
  {
   "id": "R-NEW-285",

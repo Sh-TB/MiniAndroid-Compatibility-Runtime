@@ -665,6 +665,7 @@ public:
     struct PendingIntent {
         std::string action;            // Intent.getAction()
         std::string component_class;   // setComponent(...).getClassName()
+        std::string component_package; // R-NEW-283 (CONT-122): setClassName(pkg,cls)/setComponent(CN) package half
         std::string package_name;      // setPackage(...)
         // S107 ROOT-015: Intent(String, Uri) data law — the parsed Uri is
         // intent DATA (AOSP Intent.setData), never the activity component.

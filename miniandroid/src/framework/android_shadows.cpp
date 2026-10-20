@@ -4346,24 +4346,61 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setClass" || m == "setClassName" || m == "setComponent") {
         // setClass(Context, Class), setClassName(Context, String),
-        // setComponent(ComponentName). We treat the class-name arg.
+        // setClassName(String pkg, String cls), setComponent(ComponentName).
+        // R-NEW-283 (CONT-122): BOTH halves of the component are recorded
+        // — the old path kept only the class string, so getComponent()
+        // answered a fresh EMPTY ComponentName and the identity round-trip
+        // failed (probe c122 U10 pre-fix face).
         if (m == "setClass") {
             // Arg 1 is a Class object — its heap class_desc is the Activity class.
             if (ctx.args.size() >= 2 && ctx.args[1].kind == CallContext::Arg::Kind::OBJECT) {
                 pi->component_class = ctx.args[1].object_class;
             }
+        } else if (m == "setComponent") {
+            // Arg 0 is a ComponentName heap object carrying mPackage/mClass
+            // (the F-116 field convention).
+            if (heap_ && !ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                ctx.args[0].object_id != 0) {
+                std::string pk, cl;
+                heap_->get_object_string_field(ctx.args[0].object_id,
+                                               "mPackage", pk);
+                heap_->get_object_string_field(ctx.args[0].object_id,
+                                               "mClass", cl);
+                if (!pk.empty()) pi->component_package = pk;
+                if (!cl.empty()) pi->component_class = cl;
+            }
         } else {
-            // setClassName(Context, String) or setComponent(ComponentName).
+            // setClassName(Context, String): (ctx, cls); setClassName(pkg, cls):
+            // (pkg, cls) — arg 1 is the class in both shapes; setClassName(pkg,cls)
+            // additionally records the package from arg 0.
             std::string s = ctx.arg_as_string(ctx.args.size() >= 2 ? 1 : 0);
             if (!s.empty()) pi->component_class = s;
+            if (m == "setClassName" && ctx.args.size() >= 2) {
+                std::string p = ctx.arg_as_string(0);
+                // The (pkg, cls) shape passes the package as arg 0 — a real
+                // package string, not a Context object reference.
+                if (ctx.args[0].kind == CallContext::Arg::Kind::STRING && !p.empty())
+                    pi->component_package = p;
+            }
         }
         return CallResult::handled_object(ctx.receiver_id, "Landroid/content/Intent;");
     }
     if (m == "getComponent") {
         if (pi->component_class.empty()) return CallResult::handled_null();
-        // Return a ComponentName heap object.
+        // Return a ComponentName heap object carrying BOTH halves
+        // (R-NEW-283 identity law; F-116 mPackage/mClass convention).
         if (heap_) {
             uint32_t cn = heap_->get_or_create("Landroid/content/ComponentName;");
+            std::string pk = pi->component_package;
+            if (pk.empty()) {
+                // AOSP Intent.getComponent after setClassName(pkg,cls) answers
+                // ComponentName(pkg, cls); derive the package from the recorded
+                // intent package, else the runtime package.
+                pk = pi->package_name;
+            }
+            if (!pk.empty()) heap_->set_string_field(cn, "mPackage", pk);
+            heap_->set_string_field(cn, "mClass", pi->component_class);
             return CallResult::handled_object(cn, "Landroid/content/ComponentName;");
         }
         return CallResult::handled_null();
@@ -6991,6 +7028,44 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getRotation") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_float(n ? n->rotation_deg : 0.0f);
+    }
+    // ── R-NEW-193 (CONT-122): View.getMatrix() law (AOSP View.java
+    // transformMatrix): the view's transformation matrix composes
+    // rotation then scale about the pivot — m0..m8 (Android Matrix
+    // convention: [MSCALE_X, MSKEW_X, MTRANS_X, MSKEW_Y, MSCALE_Y,
+    // MTRANS_Y, MPERSP_*]); translationX/Y are NOT part of the matrix
+    // (AOSP applies them separately in draw()). The engine keeps no
+    // cached mMatrix identity, so each call materializes a fresh Matrix
+    // heap object (honest note: AOSP reuses mMatrix — mutation identity
+    // across getMatrix() calls is a named residual). pivot defaults are
+    // the view center at layout time (MG-129); without layout, center of
+    // the measured bounds, else 0 (AOSP mPivotX default before layout).
+    if (m == "getMatrix") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (!n) return CallResult::handled_null();
+        float rot = n->rotation_deg;
+        float sx = n->scale_x, sy = n->scale_y;
+        float px = n->pivot_x, py = n->pivot_y;
+        if (!heap_) return CallResult::handled_null();
+        uint32_t mx = heap_->get_or_create("Landroid/graphics/Matrix;");
+        float rad = rot * 3.14159265358979323846f / 180.0f;
+        float c = cosf(rad), s = sinf(rad);
+        // R·S about pivot: [c*sx, -s*sx | s*sy, c*sy]; translation column
+        // positions the pivot compensation.
+        float m00 = c * sx, m01 = -s * sx;
+        float m10 = s * sy, m11 = c * sy;
+        float m02 = px - m00 * px - m01 * py;
+        float m12 = py - m10 * px - m11 * py;
+        heap_->set_object_float_field(mx, "m0", m00);
+        heap_->set_object_float_field(mx, "m1", m01);
+        heap_->set_object_float_field(mx, "m2", m02);
+        heap_->set_object_float_field(mx, "m3", m10);
+        heap_->set_object_float_field(mx, "m4", m11);
+        heap_->set_object_float_field(mx, "m5", m12);
+        heap_->set_object_float_field(mx, "m6", 0.0f);
+        heap_->set_object_float_field(mx, "m7", 0.0f);
+        heap_->set_object_float_field(mx, "m8", 1.0f);
+        return CallResult::handled_object(mx, "Landroid/graphics/Matrix;");
     }
     // ── CONT-99 T2 (F-NEW-411): AOSP View.getX()/getY() = mLeft +
     // mTranslationX (mTop + mTranslationY) — parent-relative left/top plus

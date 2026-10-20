@@ -15062,6 +15062,51 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     break;
                 }
 
+                // Array element-type descriptor: resolved BEFORE the OOM law
+                // (the element size derives from it) and reused by the
+                // F-NEW-181 runtime-identity law below.
+                std::string na_type_desc =
+                    resolve_type_for_dex(type_idx, current_dex_index_);
+
+                // R-NEW-169 (CONT-122) new-array OutOfMemoryError law (ART
+                // Heap::AllocObject with kHeapObjectLimit family): an
+                // allocation request whose BYTE size exceeds the runtime
+                // heap budget throws OutOfMemoryError ("Failed to allocate
+                // a N-byte allocation"). The engine allocates arrays
+                // metadata-only (no per-element backing), so without this
+                // law `new int[Integer.MAX_VALUE-2]` "succeeded" and every
+                // OOM contract was unprovable (probe c122 U03 pre-fix
+                // face: "U03-ALLOCATED size=2147483645"). Element sizes
+                // follow the descriptor: [B=1 [Z/[C=2 (char is 2 bytes in
+                // JVM; boolean 1 — both non-negative-safe here) [S/[I=4,
+                // [J/[F/[D=8, object arrays use the 8-byte reference
+                // convention. Budget 1 GiB — far above every corpus
+                // anchor's working set, far below the probe's 8.6 GiB
+                // request. ART-style message keeps honest diagnostics.
+                {
+                    int64_t na_elem = 1;
+                    const char* na_d = na_type_desc.c_str();
+                    if (na_d[0] == '[') {
+                        if (na_d[1] == 'B') na_elem = 1;
+                        else if (na_d[1] == 'Z' || na_d[1] == 'C') na_elem = 2;
+                        else if (na_d[1] == 'S' || na_d[1] == 'I') na_elem = 4;
+                        else if (na_d[1] == 'J' || na_d[1] == 'F' ||
+                                 na_d[1] == 'D') na_elem = 8;
+                        else na_elem = 8;  // reference arrays: 8-byte ref
+                    }
+                    int64_t na_bytes =
+                        static_cast<int64_t>(array_size) * na_elem;
+                    static const int64_t kHeapBudget = 1LL << 30;  // 1 GiB
+                    if (na_bytes > kHeapBudget) {
+                        raise_synthetic_exception(
+                            "Ljava/lang/OutOfMemoryError;",
+                            "Failed to allocate a " + std::to_string(na_bytes) +
+                                "-byte allocation",
+                            "new-array-oom");
+                        break;
+                    }
+                }
+
                 // F-NEW-181 (WAVE C, FINAL CAMPAIGN phase 5/6 law — array
                 // runtime identity): NEW_ARRAY was the ONLY array producer
                 // that discarded the resolved element-type descriptor and
@@ -15078,8 +15123,6 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // runtime class IS its descriptor ([B, [S, [I,
                 // [Ljava/lang/Object;, ...). Record the real descriptor on
                 // the heap object AND in the register's class_desc.
-                std::string na_type_desc =
-                    resolve_type_for_dex(type_idx, current_dex_index_);
 
                 // Allocate array object on heap (simplified — just store as OBJECT_REF)
                 uint32_t obj_id = heap_.allocate(
@@ -15596,6 +15639,90 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                 "Ljava/lang/ArrayIndexOutOfBoundsException;", \
                                 oob_msg, "aput-oob"); \
                             break; \
+                        } \
+                        /* R-NEW-010 (CONT-122) aput-object ArrayStoreException \
+                         * store-check law (AOSP HandleAPutObject + \
+                         * art::ThrowArrayStoreException): a reference store \
+                         * into an object array ([LX; / [[X;) must verify the \
+                         * VALUE's runtime class is assignable to the array's \
+                         * component type X; otherwise throw \
+                         * ArrayStoreException ("%s cannot be stored in an \
+                         * array of type %s"). The engine stores arrays \
+                         * type-agnostically ("array[N]" fields), so without \
+                         * this check a wrong-typed store silently succeeded \
+                         * (probe c122 U01 pre-fix face: "U01-STORED \
+                         * no-exception value=7"). CONSERVATIVE SCOPE: check \
+                         * ONLY when the array's runtime class is a real \
+                         * array descriptor ("[...") AND the value carries a \
+                         * concrete known descriptor — never the synthetic \
+                         * "Larray;" marker, never empty/unknown. \
+                         * Engine-internal wrappers keep storing exactly as \
+                         * before (F-NEW-181 wrapper precedent); app-level \
+                         * typed stores get the AOSP law. Residual: \
+                         * STRING_REF-typed registers bypass the check \
+                         * (they are String-typed by construction). */ \
+                        if (strcmp(op_name, "aput-object") == 0 && \
+                            src_val.type == DalvikType::OBJECT_REF && \
+                            !src_val.is_null && src_val.object_id != 0) { \
+                            std::string asc_arr_cls; \
+                            heap_.get_object_class(arr_val.object_id, asc_arr_cls); \
+                            if (asc_arr_cls.size() >= 2 && asc_arr_cls[0] == '[') { \
+                                std::string asc_component = asc_arr_cls.substr(1); \
+                                std::string asc_src_cls = src_val.class_desc; \
+                                std::string asc_probe_cls; \
+                                if (heap_.has_object(src_val.object_id)) { \
+                                    std::string asc_heap_cls; \
+                                    heap_.get_object_class(src_val.object_id, asc_heap_cls); \
+                                    if (!asc_heap_cls.empty()) asc_src_cls = asc_heap_cls; \
+                                } \
+                                bool asc_src_known = \
+                                    !asc_src_cls.empty() && asc_src_cls != "Larray;"; \
+                                bool asc_comp_object = \
+                                    !asc_component.empty() && \
+                                    (asc_component[0] == 'L' || asc_component[0] == '['); \
+                                if (asc_src_known && asc_comp_object) { \
+                                    bool asc_ok = \
+                                        dalvik_class_assignable(asc_src_cls, \
+                                                                asc_component); \
+                                    static thread_local const bool asc_trace = \
+                                        std::getenv("MINIANDROID_ASC_TRACE") != nullptr; \
+                                    if (asc_trace && !asc_ok) { \
+                                        std::cerr << "[ASC-REJECT] arr=" \
+                                                  << asc_arr_cls \
+                                                  << " src=" << asc_src_cls \
+                                                  << " src_heap_cls="; \
+                                        std::string asc_dbg; \
+                                        heap_.get_object_class(src_val.object_id, asc_dbg); \
+                                        std::cerr << asc_dbg; \
+                                        auto asc_ifc = class_to_interfaces_.find(asc_src_cls); \
+                                        std::cerr << " ifc_n=" \
+                                                  << (asc_ifc == class_to_interfaces_.end() \
+                                                          ? std::string("MISSING") \
+                                                          : std::to_string(asc_ifc->second.size())); \
+                                        if (asc_ifc != class_to_interfaces_.end() && \
+                                            !asc_ifc->second.empty()) \
+                                            std::cerr << " ifc0=" << asc_ifc->second[0]; \
+                                        std::cerr << " sup="; \
+                                        auto asc_sup = class_to_superclass_.find(asc_src_cls); \
+                                        std::cerr << (asc_sup == class_to_superclass_.end() \
+                                                          ? std::string("MISSING") \
+                                                          : asc_sup->second); \
+                                        std::cerr << " caller=" << current_class_ \
+                                                  << "." << current_method_ \
+                                                  << std::endl; \
+                                    } \
+                                    if (!asc_ok) { \
+                                    std::string asc_msg = asc_src_cls + \
+                                        " cannot be stored in an array of type " + \
+                                        asc_arr_cls; \
+                                    log("⚠️ APUT-OBJECT store-check: " + asc_msg); \
+                                    raise_synthetic_exception( \
+                                        "Ljava/lang/ArrayStoreException;", \
+                                        asc_msg, "aput-object-store-check"); \
+                                    break; \
+                                    } \
+                                } \
+                            } \
                         } \
                         heap_.set_object_field(arr_val.object_id, field, src_val); \
                         /* S56 generalized R-NEW-361/344 metadata-store trace: \
@@ -27623,6 +27750,22 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
     }
     // Primitive descriptors only match by identity (handled above).
     if (from_desc.size() == 1 || to_desc.size() == 1) return false;
+    // R-NEW-010 store-check completion (CONT-122, tower3d live face):
+    // JVMS 5.1 / AOSP Class.isAssignableFrom — the STARTING class's OWN
+    // declared interfaces count. The walk below only inspects interfaces
+    // of the SUPERCLASSES it hops through, so an anonymous class that
+    // DIRECTLY implements the target interface
+    // (Lcom/badlogic/gdx/backends/android/AndroidApplication$1; implements
+    // Lcom/badlogic/gdx/LifecycleListener;) answered FALSE and the
+    // aput-object store-check rejected a legal LifecycleListener[] store.
+    if (to_desc[0] == 'L') {
+        auto own_ifc = class_to_interfaces_.find(from_desc);
+        if (own_ifc != class_to_interfaces_.end()) {
+            for (const auto& ifc : own_ifc->second)
+                if (ifc == to_desc) return true;
+        }
+        if (framework::framework_implements(from_desc, to_desc)) return true;
+    }
     // Superclass walk (bounded, same bound as try_recursive_invoke_on_super).
     static constexpr int kMaxAssignHops = 16;
     std::string walk = from_desc;
@@ -29913,6 +30056,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             comp_desc = args[0].class_desc;
         else if (args[0].type == DalvikType::OBJECT_REF)
             comp_desc = args[0].class_desc;
+        // R-NEW-010 fix-completion (CONT-122): a heap-backed Class token
+        // (const-class/F-282 frame law) carries the REPRESENTED class in
+        // "__referent_desc" (the F-103 token convention) — its register
+        // class_desc is the class-OF-the-class ("Ljava/lang/Class;")
+        // when the value flowed through generic code. Using that produced
+        // "[LLjava/lang/Class;;" arrays that the new aput-object
+        // store-check rightly rejected (tower3d live face:
+        // AndroidApplication$1 into [LLjava/lang/Class;; via libGDX
+        // Array(Class) → ArrayReflection.newInstance). Prefer the
+        // represented descriptor.
+        if (args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto rep = heap_.get_object_field(args[0].object_id,
+                                              "__referent_desc");
+            if (rep.has_value() && rep->type == DalvikType::STRING_REF &&
+                !rep->string_val.empty())
+                comp_desc = rep->string_val;
+        }
         if (!comp_desc.empty()) {
             // F-119 (R-NEW-386): primitive-component descriptor law. DEX/JLS
             // array descriptors for primitives are "[I"-style (no L...;
@@ -29920,6 +30081,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // int[12][3] board = Array.newInstance(Integer.TYPE, [12,3]) —
             // with the L-wrapper the check-cast [[I failed and the board
             // field stayed null.
+            // R-NEW-010 fix-completion (CONT-122, tower3d live face): the
+            // wrapper law is INPUT-FORM-AWARE. The old helper assumed a
+            // bare/dotted element and unconditionally prefixed "[L" +
+            // suffixed ";" — a descriptor-form element
+            // ("Lcom/badlogic/gdx/LifecycleListener;", the __referent_desc
+            // / CLASS_REF convention) double-wrapped into the MALFORMED
+            // "[LLcom/badlogic/gdx/LifecycleListener;;" — the exact array
+            // type the first store-check reject showed. Descriptor-form
+            // elements only need the "[" prefix; bare/dotted names keep
+            // the L...; wrap (dots normalized to slashes per DEX law).
             auto make_array_elem_desc =
                 [](const std::string& elem) -> std::string {
                 if (elem.size() == 1 &&
@@ -29927,7 +30098,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         std::string::npos) {
                     return "[" + elem;
                 }
-                return "[L" + elem + ";";
+                if (elem.size() >= 2 && elem[0] == 'L' &&
+                    elem.back() == ';') {
+                    return "[" + elem;  // already descriptor-form
+                }
+                std::string slashes = elem;
+                std::replace(slashes.begin(), slashes.end(), '.', '/');
+                return "[L" + slashes + ";";
             };
             // 1-D: (Class, int length). n-D: (Class, int[] dimensions).
             std::function<DalvikValue(const std::string&, int)> make_1d =
@@ -32968,7 +33145,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────
     if (class_name == "Landroid/content/IntentFilter;" &&
         (method == "<init>" || method == "addAction" ||
-         method == "countActions" || method == "getAction")) {
+         method == "countActions" || method == "getAction" ||
+         method == "addCategory" || method == "countCategories" ||
+         method == "getCategory" || method == "matchAction")) {
         if (method == "<init>") {
             std::vector<std::string> actions;
             for (size_t i = 1; i < args.size(); ++i) {
@@ -33016,6 +33195,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = (idx >= 0 && idx < (int)acts.size())
                          ? DalvikValue::make_string(acts[idx], 0)
                          : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // R-NEW-097 (CONT-122): the category half of the AOSP
+        // IntentFilter law — addCategory appends unconditionally
+        // (AOSP IntentFilter.addCategory), countCategories/getCategory
+        // read the declared list, and matchAction answers whether the
+        // filter's ACTION list contains the probe action (AOSP
+        // IntentFilter.matchAction → exact contains over mActions).
+        if (method == "addCategory") {
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                intent_filter_categories_[args[0].object_id].push_back(
+                    args[1].string_val);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "countCategories") {
+            result = DalvikValue::make_int(
+                (int)intent_filter_categories_[args[0].object_id].size());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getCategory") {
+            auto& cats = intent_filter_categories_[args[0].object_id];
+            int idx = args.size() > 1 ? dalvik_int_value(args[1]) : 0;
+            result = (idx >= 0 && idx < (int)cats.size())
+                         ? DalvikValue::make_string(cats[idx], 0)
+                         : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "matchAction") {
+            std::string probe;
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                probe = args[1].string_val;
+            bool hit = false;
+            auto& acts = intent_filters_[args[0].object_id];
+            for (const auto& a : acts)
+                if (a == probe) { hit = true; break; }
+            result = DalvikValue::make_bool(hit);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -38438,6 +38658,62 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_null();
             return true;
+        }
+        // (4) R-NEW-010b (CONT-122) component-type mismatch law — AOSP
+        // System.arraycopy throws ArrayStoreException when a source
+        // element's runtime class is not assignable to the destination
+        // array's component type (art::ThrowArrayStoreException from
+        // the element loop). The engine stores arrays
+        // type-agnostically, so the old loop moved Integer elements into
+        // String[] verbatim (probe c122 U02 pre-fix face: "U02-COPIED
+        // no-exception dst0=1"). Engine-scoped law: PRE-VALIDATE every
+        // element in the source range when both runtime classes are
+        // concrete known descriptors (never the synthetic "Larray;"
+        // marker); raise ASE before any store. Noted divergence: real
+        // ART copies element-by-element and may leave a partial prefix
+        // behind before throwing — the engine model has no observable
+        // partial state for the probe family, so validate-first is the
+        // honest engine face.
+        {
+            std::string dst_cls;
+            heap_.get_object_class(dst_id, dst_cls);
+            bool dst_obj_array = dst_cls.size() >= 2 && dst_cls[0] == '[';
+            if (dst_obj_array) {
+                std::string dst_component = dst_cls.substr(1);
+                bool dst_comp_object =
+                    !dst_component.empty() &&
+                    (dst_component[0] == 'L' || dst_component[0] == '[');
+                if (dst_comp_object) {
+                    for (int64_t i = 0; i < length; ++i) {
+                        auto elem = heap_.get_object_field(
+                            src_id, "array[" + std::to_string(src_pos + i) + "]");
+                        if (!elem.has_value()) continue;
+                        const DalvikValue& ev = *elem;
+                        if (ev.type != DalvikType::OBJECT_REF || ev.is_null ||
+                            ev.object_id == 0)
+                            continue;
+                        std::string elem_cls = ev.class_desc;
+                        std::string heap_cls;
+                        if (heap_.has_object(ev.object_id)) {
+                            heap_.get_object_class(ev.object_id, heap_cls);
+                            if (!heap_cls.empty()) elem_cls = heap_cls;
+                        }
+                        if (elem_cls.empty() || elem_cls == "Larray;") continue;
+                        if (!dalvik_class_assignable(elem_cls, dst_component)) {
+                            std::string ase_msg = elem_cls +
+                                " cannot be stored in an array of type " +
+                                dst_cls;
+                            log("⚠️ ARRAYCOPY store-check: " + ase_msg);
+                            throw_deferred(
+                                "Ljava/lang/ArrayStoreException;", ase_msg,
+                                "arraycopy-store-check");
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            result = DalvikValue::make_null();
+                            return true;
+                        }
+                    }
+                }
+            }
         }
         // (3) temp-copy (memmove) law: snapshot the source range BEFORE any
         // store when the arrays are the same object. Distinct arrays may
@@ -46588,6 +46864,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             cl.rfind(pk + ".", 0) == 0)
             flat = pk + "/" + cl.substr(pk.size());  // keeps the leading '.'
         result = DalvikValue::make_string(flat, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // R-NEW-283 (CONT-122): ComponentName accessor laws (AOSP
+    // ComponentName.java): getPackageName() answers mPackage,
+    // getClassName() answers mClass — the F-116 field convention set by
+    // getComponentName()/unflattenFromString()/Intent.getComponent().
+    if (class_name == "Landroid/content/ComponentName;" &&
+        (method == "getPackageName" || method == "getClassName")) {
+        std::string out;
+        if (args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            auto f = heap_.get_object_field(
+                args[0].object_id,
+                (method == "getPackageName") ? "mPackage" : "mClass");
+            if (f.has_value() && f->type == DalvikType::STRING_REF)
+                out = f->string_val;
+        }
+        result = out.empty() ? DalvikValue::make_null()
+                             : DalvikValue::make_string(out, 0);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -62469,6 +62765,47 @@ measure_cm_done:;
     if (class_name.find("BaseBundle") != std::string::npos ||
         class_name.find("Bundle") != std::string::npos) {
         uint32_t bundle_id = args.empty() ? 0 : args[0].object_id;
+        // R-NEW-055 (CONT-122) — object-valued Bundle arms, the identity
+        // round-trip law (AOSP BaseBundle: every put* stores under the key;
+        // the matching get* returns the SAME object, null when absent):
+        // putSparseParcelableArray/getSparseParcelableArray,
+        // putParcelableArrayList/getParcelableArrayList, putBundle/getBundle.
+        // The SparseArray half rides the F-NEW-334 container law, so the
+        // Bundle arm only needs object-identity storage (probe c122 U14:
+        // getSparseParcelableArray answered null pre-fix).
+        if ((method == "putSparseParcelableArray" ||
+             method == "putParcelableArrayList" ||
+             method == "putBundle") && args.size() >= 3) {
+            std::string key = args[1].type == DalvikType::STRING_REF
+                                  ? args[1].string_val
+                                  : "";
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty())
+                heap_.set_object_field(bundle_id, "bundle:" + key, args[2]);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if ((method == "getSparseParcelableArray" ||
+             method == "getParcelableArrayList" ||
+             method == "getBundle") && args.size() >= 2) {
+            std::string key = args[1].type == DalvikType::STRING_REF
+                                  ? args[1].string_val
+                                  : "";
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
+                auto val = heap_.get_object_field(bundle_id, "bundle:" + key);
+                if (val.has_value() && val->type == DalvikType::OBJECT_REF) {
+                    result = *val;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            // AOSP: absent → null (the 2-arg getBundle(key, def) carries the
+            // default — getSparseParcelableArray/ArrayList have no def arm).
+            if (method == "getBundle" && args.size() >= 3) result = args[2];
+            else result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         // putString / putInt / putBoolean / putLong
         if ((method == "putString" || method == "putInt" || method == "putBoolean" || method == "putLong") && args.size() >= 3) {
             std::string key = args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";

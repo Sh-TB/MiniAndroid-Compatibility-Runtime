@@ -10787,3 +10787,22 @@ Work Log:
 Stage Summary:
 - CONT-121 terminal: 4 product laws landed (JVM UTF-16 unit law, CHM method-scoped bypass, Unsafe array-element atomic law, + tool fix), 2 new roots + 1 upgrade, 9/9 wall zero drift, bouncy FIRST FULL-SUCCESS corpus run, FIX-449 (highest-fan-out lever) closed end-to-end.
 - Next: 16 telegram PARTIAL re-adjudication, theme-path NPE decode, j$CHM real-bytecode audit, F-NEW-374 trust decode.
+
+---
+Task ID: CONT-122
+Agent: main (Z.ai)
+Task: «حل ۳۶۴ با این روش تمامشون رو حل بکن و جواب بده» + «ادامه» — UNPROVEN probe-battery wave: 16 behavioral probes against the 72 UNPROVEN audit-era rows, laws landed fixture-first, honest wall.
+
+Work Log:
+- Stale container recovered (reset --hard origin/main 79b226a2); deterministic rebuild #5 → 1abe5c6a byte-identical; baseline wall green.
+- Built the 16-probe fixture (fixtures/cont122_unproven, two-dex APK via aapt2/ECJ/D8; Companion in classes2.dex). Pre-fix faces: 6 PASS / 10 FAIL — ten real gaps observed live, never by inventory mention.
+- Landed 7 laws: aput-object ArrayStoreException store-check (R-NEW-010), arraycopy mismatch pre-validation (R-NEW-010b), new-array OutOfMemoryError (R-NEW-169, ART-style message), IntentFilter categories+matchAction (R-NEW-097), Intent/ComponentName identity round-trip (R-NEW-283), Bundle object arms (R-NEW-055), View.getMatrix composition (R-NEW-193). Post-fix: 13 PASS / 3 honest FAIL.
+- The store-check exposed 4 deeper pre-existing silent bugs — all fixed: make_array_elem_desc malformed [LL...;; arrays (tower3d's real lie), Class token __referent_desc preference, assignable start-class-interfaces law (JVMS 5.1), android.animation + android.text hierarchy chains.
+- Honest FAILs classified with levers: /proc passthrough (R-NEW-161), GET_SIGNATURES (R-NEW-083), FileProvider (R-NEW-151) — no fake signatures, no host-identity leaks.
+- Registry: 12 UNPROVEN upgraded on live evidence, 3 CLASSIFIED, 48 husk rows → STALE_OR_SUPERSEDED (no merging, ids preserved). 783 id-unique main==mirror row-equal; UNPROVEN 72→9; terminal share 81.5%.
+- Wall on final binary 72018b03: 9/9 ANCHOR_MATCH + selftest rc=0 + negatives 19/19 (probe_store rebuilt via CONT-111 remedy after container reset).
+- Fixture note: ECJ constant-folded the first OOM probe's unused allocation — fixture stores to a static field; compiler face recorded.
+
+Stage Summary:
+- CONT-122 terminal: 16 probes → 12 upgrades + 3 honest gaps + 48 hygiene rows; 7 laws + 4 deeper fixes; zero-drift wall intact.
+- Next: Parcel substrate probes (R-NEW-018/019), InMemoryDexClassLoader (R-NEW-133), scheme matrix / metadata parser / resource-shrunk, the 3 gap levers, 112 PARTIAL roots, F-NEW-192 REGISTERED, F-NEW-384 measure residual, compose ×4.
