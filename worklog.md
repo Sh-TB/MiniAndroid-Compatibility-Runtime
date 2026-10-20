@@ -10733,3 +10733,17 @@ Work Log:
 Stage Summary:
 - Zero drift across all 8 recorded anchors at HEAD 560077a9. New evidence: forkgram face, tictactoe SIGSEGV fixture candidate, cross-app frontier-face proof.
 - Next: tictactoe SIGSEGV fixture-first decode; F-NEW-449 MessageInfo fixture remains lead lever; Signal needs artifact.
+
+---
+Task ID: CONT-119
+Agent: main (Z.ai)
+Task: «قانون کلی» — cheetah/owl/elephant/glow-worm/train law: one movement carries dozens of problems to terminal state.
+
+Work Log:
+- 12 decode wagons executed at HEAD bd7e7b97 (binary unchanged 3ecd381c): tictactoe SIGSEGV 3/3 deterministic + frames pinned (FIX-TTT); F-NEW-449 decoded to fixture-spec level (root = missing protobuf-lite RawMessageInfo->MessageSchema walk, two count sources, FIX-449 registered); bouncy = SurfaceHolder null (F-NEW-462 family); memory = typed-catch NoSuchMethodException x24 (unified0113 family, highest fan-out); POSITIVE CONTROLS found (gmdice PARSE-BRIDGE + opencalc F275 correctly caught — catch law works where types match); dooz/forkgram chains recorded; 3 clean-run apps (flappycow/chessclock/opmt).
+- Honest discipline: B-cluster upgrade attempt REFUTED (inventory-index mentions only, no behavioral trace) — statuses stay UNPROVEN.
+- FIX-449/FIX-TTT/FIX-D12/FIX-D05 specs in evidence/cont119/fixture_specs.md.
+
+Stage Summary:
+- 12/12 wagons terminal. Named levers advanced to ready-to-build fixture specs. No code change this wave (decode discipline), no registry inflation.
+- Next: FIX-449 probe build -> RawMessageInfo walk law -> 16 telegram PARTIAL unblock.

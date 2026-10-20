@@ -1,0 +1,20 @@
+{
+ "wave": "CONT-119",
+ "date_utc": "2026-10-20",
+ "base": "origin/main bd7e7b97 (CONT-118)",
+ "binary": "3ecd381cda214dcd",
+ "wagons": 12,
+ "decode_evidence": {
+  "tictactoe_determinism": "3/3 rc=139 run/c119/tictactoe{1,2,3}.log, S100 frames pinned 0x40f26e",
+  "fnew449": "run/c116_tg_s36.log S36-AOOB o5042 len=11 idx=11 n2;.r + 26 R337 rows; root=missing RawMessageInfo->MessageSchema walk; fixture_specs.md FIX-449",
+  "bouncy": "SurfaceHolder.setFormat on null, GL20Renderer.<init> (F-NEW-462 family)",
+  "memory": "F106-CTOR x24 typed-catch NoSuchMethodException (unified0113 family)",
+  "positive_controls": [
+   "gmdice PARSE-BRIDGE NumberFormatException correctly caught x5",
+   "opencalc F275-SVCINFO NameNotFoundException correct AOSP contract + caught"
+  ],
+  "b_refuted": "inventory-index mentions only (evidence/cont18/DISCONNECTED_INVENTORY.json), no behavioral trace -> no status upgrades"
+ },
+ "fixture_specs": "evidence/cont119/fixture_specs.md",
+ "ledger": "run/c119/cont119_ledger.md"
+}
