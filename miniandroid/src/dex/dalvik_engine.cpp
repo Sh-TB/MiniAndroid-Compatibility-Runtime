@@ -43,6 +43,89 @@
 #include "../framework/choreographer_shadow.h"  // R-NEW-345 park-drain: vsync during park
 #include "../framework/dialog_shadow.h"
 #include "../framework/canvas_shadow.h"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONT-121 W-01 (FIX-449 endgame): JVM String UTF-16 UNIT LAW helpers.
+// Shared by both String.length sites and both String.charAt sites (the C97
+// bridge-intrinsic entry and the F-090e deep site).
+//
+// ROOT (issue #364 F-NEW-449, S36-AOOB telegram play_billing n2.r):
+// protobuf-lite's RawMessageInfo info-string decoder walks String.charAt
+// under String.length() — both must address UTF-16 CODE UNITS (JVM/AOSP
+// law). The engine answered length() as UTF-8 BYTE count and charAt by
+// UTF-8 CODE-POINT index. The p3 info string is 40 UTF-16 units but 64
+// UTF-8 bytes (12 chars in the Myanmar block are 3 bytes each, 1 unit),
+// so the walk loop `i < length()` ran 24 phantom iterations past the real
+// data, decoded garbage field descriptors, over-consumed the Object[11]
+// entries array, and died at entries[11] (S36-AOOB len=11 idx=11). ASCII-
+// only strings have bytes == units == code points, which is why every
+// prior anchor stayed byte-identical.
+// ─────────────────────────────────────────────────────────────────────────────
+namespace {
+int32_t str_utf16_unit_count(const std::string& s) {
+    int32_t units = 0;
+    for (size_t i = 0; i < s.size();) {
+        unsigned char b0 = static_cast<unsigned char>(s[i]);
+        size_t len = 1;
+        if ((b0 & 0xE0) == 0xC0 && i + 1 < s.size()) len = 2;
+        else if ((b0 & 0xF0) == 0xE0 && i + 2 < s.size()) len = 3;
+        else if ((b0 & 0xF8) == 0xF0 && i + 3 < s.size()) len = 4;
+        // 4-byte UTF-8 = supplementary code point = 2 UTF-16 units
+        units += (len == 4) ? 2 : 1;
+        i += len;
+    }
+    return units;
+}
+// Walks to UTF-16 unit `idx`; answers the unit's char value. Returns false
+// when idx is outside [0, unit_count) — callers keep the honest-0 OOB rule
+// (R-NEW-353 contract unchanged).
+bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+    if (idx < 0) return false;
+    int32_t unit = 0;
+    for (size_t i = 0; i < s.size();) {
+        unsigned char b0 = static_cast<unsigned char>(s[i]);
+        size_t len = 1;
+        int32_t cp = b0;
+        if ((b0 & 0xE0) == 0xC0 && i + 1 < s.size()) {
+            len = 2;
+            cp = ((b0 & 0x1F) << 6) |
+                 (static_cast<unsigned char>(s[i + 1]) & 0x3F);
+        } else if ((b0 & 0xF0) == 0xE0 && i + 2 < s.size()) {
+            len = 3;
+            cp = ((b0 & 0x0F) << 12) |
+                 ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 6) |
+                 (static_cast<unsigned char>(s[i + 2]) & 0x3F);
+        } else if ((b0 & 0xF8) == 0xF0 && i + 3 < s.size()) {
+            len = 4;
+            cp = ((b0 & 0x07) << 18) |
+                 ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 12) |
+                 ((static_cast<unsigned char>(s[i + 2]) & 0x3F) << 6) |
+                 (static_cast<unsigned char>(s[i + 3]) & 0x3F);
+        }
+        if (cp >= 0x10000) {
+            cp -= 0x10000;
+            if (unit == idx) {
+                out = 0xD800 + (cp >> 10);
+                return true;
+            }
+            if (unit + 1 == idx) {
+                out = 0xDC00 + (cp & 0x3FF);
+                return true;
+            }
+            unit += 2;
+        } else {
+            if (unit == idx) {
+                out = cp;
+                return true;
+            }
+            unit += 1;
+        }
+        i += len;
+    }
+    return false;
+}
+}  // namespace
+
 #include "../framework/heap_adapter.h"
 #include "../framework/bitmap_shadow.h"  // S109 ROOT-033: getDrawable raster decode
 #include "../framework/view_ancestry.h"  // G12 FIX-G12-001: AOSP framework ancestry law
@@ -8532,13 +8615,32 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             declaring_class == "Ljava/util/AbstractMap;" ||
             declaring_class == "Ljava/lang/String;" ||
             declaring_class == "Landroid/text/TextUtils;" ||
-            declaring_class == "Ljava/io/File;" ||
-            // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap
-            // (Lj$/util/concurrent/ConcurrentHashMap;). Its .e/.f methods
-            // (computeIfAbsent, compute) loop forever on hashCode().
-            declaring_class == "Lj$/util/concurrent/ConcurrentHashMap;" ||
-            declaring_class == "Ljava/util/concurrent/ConcurrentHashMap;") {
+            declaring_class == "Ljava/io/File;") {
             should_bypass = true;
+        }
+        // CONT-121 W-02 (F-NEW-467): desugared Java 8 ConcurrentHashMap —
+        // the EXP-088+ Phase 5 bypass was CLASS-SCOPED: it force-bridged
+        // EVERY method to protect the two decoded hang methods (.e/.f =
+        // computeIfAbsent/compute — hashCode-recursion loops on headless
+        // keys). The bridge has no newKeySet handler, so newKeySet() (real
+        // dex bytecode: `new KeySetView(new CHM(), TRUE)`) answered <unset>
+        // → BouncyActivity.requestedThumbnails stored null → f141-null-recv
+        // `Set.add on null` ×9 (issue #364, bouncy). F-NEW-215 precedent:
+        // a bypass owns exactly the methods whose bytecode hangs — the
+        // COMPUTE FAMILY — never the whole class. Everything else (newKeySet,
+        // get/put/size, ...) executes its real dex bytecode; the bridge
+        // handlers below only serve calls the recursive path declines.
+        // Both R8-renamed (.e/.f — telegram era evidence) and real names
+        // (computeIfAbsent/compute/merge/computeIfPresent — bouncy dex has
+        // the unrenamed family) are covered; the <clinit> lift below stands.
+        if (declaring_class == "Lj$/util/concurrent/ConcurrentHashMap;" ||
+            declaring_class == "Ljava/util/concurrent/ConcurrentHashMap;") {
+            should_bypass =
+                (declaring_class == "Lj$/util/concurrent/ConcurrentHashMap;" &&
+                 (method_name == ".e" || method_name == "e" || method_name == ".f" ||
+                  method_name == "f")) ||
+                method_name == "computeIfAbsent" || method_name == "compute" ||
+                method_name == "computeIfPresent" || method_name == "merge";
         }
         // AndroidUtilities.{runOnUIThread,executeOnUIThread,cancelRunOnUIThread}
         // — the DEX bytecode recurses infinitely (each calls the next).
@@ -8807,8 +8909,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // RLottieDrawable construction (w/h args become 0).
         class_descriptor.find("Lorg/telegram/messenger/AndroidUtilities;") == 0 ||
         // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap.
-        class_descriptor.find("Lj$/util/concurrent/ConcurrentHashMap;") == 0 ||
-        class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0) {
+        // CONT-121 W-02 (F-NEW-467): the CHM entries are now METHOD-SCOPED —
+        // the class-level swallow force-bridged newKeySet() to a handlerless
+        // null (bouncy f141-null-recv ×9). The compute family (the decoded
+        // hang methods, same list as the first swallow block) stays bridged;
+        // every other CHM method executes its real dex bytecode.
+        (class_descriptor.find("Lj$/util/concurrent/ConcurrentHashMap;") == 0 &&
+         (method_name == ".e" || method_name == "e" || method_name == ".f" ||
+          method_name == "f" || method_name == "computeIfAbsent" ||
+          method_name == "compute" || method_name == "computeIfPresent" ||
+          method_name == "merge")) ||
+        (class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0 &&
+         (method_name == "computeIfAbsent" || method_name == "compute" ||
+          method_name == "computeIfPresent" || method_name == "merge"))) {
         // F-NEW-215 companion law: <clinit> is the class INITIALIZATION
         // PROTOCOL (JVMS 5.5) — never bridge-bypassed. This is the SECOND
         // independent class-level swallow list that silently dropped the
@@ -27682,7 +27795,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     bridge_census_init();
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
-    // ────────────────────────────────────────────────────────────────────────
     // CONT-97 T1 (INFRA-BRIDGEINTR-1): BRIDGE INTRINSIC ENTRY FAST PATH —
     // the ART-parity dispatch law CONT-96 named as the next frontier.
     //
@@ -27749,50 +27861,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (!args.empty() && args[0].type == DalvikType::STRING_REF)
             sp = &args[0].string_val;
         const std::string& s = *sp;
-        // Decode UTF-8 code points into a char list, then index.
+        // CONT-121 W-01: JVM UTF-16 unit law (str_char_at_unit). BMP-only
+        // strings answer identically to the old code-point walk; supplementary
+        // code points now occupy two unit slots (high then low surrogate) —
+        // the JVM law. Honest-0 OOB rule (R-NEW-353) unchanged.
         int32_t codept = 0;
-        int32_t cpi = 0;
-        bool in_range = false;
-        for (size_t i = 0; i < s.size();) {
-            unsigned char b0 = static_cast<unsigned char>(s[i]);
-            size_t len = 1;
-            int32_t cp = b0;
-            if ((b0 & 0xE0) == 0xC0 && i + 1 < s.size()) {
-                len = 2;
-                cp = ((b0 & 0x1F) << 6) |
-                     (static_cast<unsigned char>(s[i + 1]) & 0x3F);
-            } else if ((b0 & 0xF0) == 0xE0 && i + 2 < s.size()) {
-                len = 3;
-                cp = ((b0 & 0x0F) << 12) |
-                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 6) |
-                     (static_cast<unsigned char>(s[i + 2]) & 0x3F);
-            } else if ((b0 & 0xF8) == 0xF0 && i + 3 < s.size()) {
-                len = 4;
-                cp = ((b0 & 0x07) << 18) |
-                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 12) |
-                     ((static_cast<unsigned char>(s[i + 2]) & 0x3F) << 6) |
-                     (static_cast<unsigned char>(s[i + 3]) & 0x3F);
-            }
-            if (cpi == idx) { codept = cp; in_range = true; break; }
-            cpi++;
-            i += len;
+        {
+            int32_t out = 0;
+            if (str_char_at_unit(s, idx, out)) codept = out;
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
-        // BMP chars answer directly; supplementary code points answer the
-        // high surrogate (the first DEX char of the pair) — index law of a
-        // JVM String, whose charAt addresses UTF-16 code units.
+        // Supplementary code points answer per the unit walk above (high or
+        // low surrogate at their own slot); BMP chars answer directly.
         DalvikValue r;
         r.type = DalvikType::CHAR;
-        if (!in_range) {
-            r.int_val = 0;  // StringIndexOutOfBounds territory — honest 0,
-                            // no fake data (the caller's loop bound is
-                            // length(); OOB here means an upstream bug).
-        } else if (codept >= 0x10000) {
-            codept -= 0x10000;
-            r.int_val = 0xD800 + (codept >> 10);
-        } else {
-            r.int_val = codept;
-        }
+        r.int_val = codept;
         // R-NEW-353 RESULT-OUT CONTRACT: write the answer to `result`.
         result = r;
         return true;
@@ -53757,6 +53840,27 @@ measure_cm_done:;
             return s134_dex_field_key(decl, it->second.second,
                                       is_dex_defined_class(decl));
         };
+        // CONT-121 W-02b (F-NEW-468): casTabAt ARRAY-ELEMENT law. The engine
+        // answers arrayBaseOffset=0 / arrayIndexScale=1 (canonical, below),
+        // so a dex-computed element offset IS the raw element index, and the
+        // heap array box stores elements under "array[i]" keys with
+        // "__array_length__". A target object that is an array box therefore
+        // addresses its ELEMENT table — AOSP Unsafe.array law (CHM
+        // casTabAt/tabAt/putOrderedObject over the table). The object-field
+        // offset registry (F-NEW-160) is only consulted for non-array
+        // targets: array boxes have no declared fields, and a blind registry
+        // hit on a colliding offset would cross-link two different objects'
+        // storage (Constitution §17 silent-wrong class).
+        auto resolve_unsafe_name_for337 = [&](uint32_t obj,
+                                              int64_t off) -> std::string {
+            if (obj != 0) {
+                auto len = heap_.get_object_field(obj, "__array_length__");
+                if (len.has_value() && len->type == DalvikType::INT32 &&
+                    off >= 0 && off < len->int_val)
+                    return "array[" + std::to_string(off) + "]";
+            }
+            return field_name_for337(off);
+        };
         auto get_unsafe337 = [&]() -> DalvikValue {
             if (unsafe_singleton_id_ == 0 ||
                 !heap_.has_object(unsafe_singleton_id_)) {
@@ -54354,7 +54458,8 @@ measure_cm_done:;
             if (method == "getObjectVolatile" || method == "getObject" ||
                 method == "getOrderedObject") {
                 uint32_t obj = target337(1);
-                std::string fname = field_name_for337(offset337(2));
+                std::string fname =
+                    resolve_unsafe_name_for337(obj, offset337(2));
                 if (obj != 0 && !fname.empty()) {
                     auto v = heap_.get_object_field(obj, fname);
                     status = ApiCallTrace::Status::IMPLEMENTED;
@@ -54389,7 +54494,8 @@ measure_cm_done:;
             if (method == "putObjectVolatile" || method == "putObject" ||
                 method == "putOrderedObject") {
                 uint32_t obj = target337(1);
-                std::string fname = field_name_for337(offset337(2));
+                std::string fname =
+                    resolve_unsafe_name_for337(obj, offset337(2));
                 if (obj != 0 && !fname.empty() && args.size() > 3) {
                     heap_.set_object_field(obj, fname, args[3]);
                     if (r337_trace && r337_put_n < 48) {
@@ -54416,7 +54522,8 @@ measure_cm_done:;
             if (method == "compareAndSwapObject") {
                 // args: [this, obj, off, expected, update]
                 uint32_t obj = target337(1);
-                std::string fname = field_name_for337(offset337(2));
+                std::string fname =
+                    resolve_unsafe_name_for337(obj, offset337(2));
                 if (obj == 0 || fname.empty()) {
                     // F-NEW-217 observability: a CAS that cannot resolve its
                     // (object, offset) target silently returns false forever
@@ -54537,7 +54644,8 @@ measure_cm_done:;
             }
             if (method == "compareAndSwapInt") {
                 uint32_t obj = target337(1);
-                std::string fname = field_name_for337(offset337(2));
+                std::string fname =
+                    resolve_unsafe_name_for337(obj, offset337(2));
                 if (obj == 0 || fname.empty()) {
                     // F-NEW-217 observability (same law as CAS-object):
                     static std::atomic<uint64_t> f217_casi_n{0};
@@ -54622,7 +54730,8 @@ measure_cm_done:;
             // frames (dooz r354 evidence: Lqq0;.a / Lvs0;.O @50k iters).
             if (method == "compareAndSwapLong") {
                 uint32_t obj = target337(1);
-                std::string fname = field_name_for337(offset337(2));
+                std::string fname =
+                    resolve_unsafe_name_for337(obj, offset337(2));
                 if (obj == 0 || fname.empty() || args.size() <= 4) {
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     result = DalvikValue::make_bool(false);
@@ -58917,25 +59026,29 @@ measure_cm_done:;
 
     // EXP-043 Phase 3: String.length → int
     // EXP-071: Fixed to return actual string length from the arg.
+    // CONT-121 W-01: JVM UTF-16 UNIT LAW — length() answers the UTF-16 code
+    // unit count (libcore String law), not the UTF-8 byte count. For
+    // ASCII-only strings both agree; for non-ASCII text the old byte count
+    // inflated the answer (a Myanmar-block char = 3 bytes but 1 unit), which
+    // over-ran protobuf-lite's info-string walk (S36-AOOB, F-NEW-449).
     if (class_name == "Ljava/lang/String;" && method == "length") {
         status = ApiCallTrace::Status::IMPLEMENTED;
         // Try to get the actual string from args[0] (the String object itself)
         if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
-            result = DalvikValue::make_int(static_cast<int32_t>(args[0].string_val.size()));
+            result = DalvikValue::make_int(
+                str_utf16_unit_count(args[0].string_val));
         } else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
                    args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
             // F-NEW-358: unmaterialized String objects (new-instance +
             // <init>) carry their decoded content in the engine's canonical
             // __string_value__ heap field (const-string bridge convention;
             // the String(byte[]) decode law writes it). OpenJDK length()
-            // answers the content length, not a stub zero. The engine's
-            // string convention is UTF-8 host bytes (same basis the
-            // STRING_REF branch above uses).
+            // answers the content length, not a stub zero.
             auto sv = heap_.get_object_field(args[0].object_id,
                                              "__string_value__");
             if (sv.has_value() && sv->type == DalvikType::STRING_REF)
                 result = DalvikValue::make_int(
-                    static_cast<int32_t>(sv->string_val.size()));
+                    str_utf16_unit_count(sv->string_val));
             else
                 result = DalvikValue::make_int(0);
         } else {
@@ -58956,50 +59069,21 @@ measure_cm_done:;
         std::string s;
         if (!args.empty() && args[0].type == DalvikType::STRING_REF)
             s = args[0].string_val;
-        // Decode UTF-8 code points into a char list, then index.
+        // CONT-121 W-01: JVM UTF-16 unit law (str_char_at_unit). BMP-only
+        // strings answer identically to the old code-point walk; supplementary
+        // code points now occupy two unit slots (high then low surrogate) —
+        // the JVM law. Honest-0 OOB rule (R-NEW-353) unchanged.
         int32_t codept = 0;
-        int32_t cpi = 0;
-        bool in_range = false;
-        for (size_t i = 0; i < s.size();) {
-            unsigned char b0 = static_cast<unsigned char>(s[i]);
-            size_t len = 1;
-            int32_t cp = b0;
-            if ((b0 & 0xE0) == 0xC0 && i + 1 < s.size()) {
-                len = 2;
-                cp = ((b0 & 0x1F) << 6) |
-                     (static_cast<unsigned char>(s[i + 1]) & 0x3F);
-            } else if ((b0 & 0xF0) == 0xE0 && i + 2 < s.size()) {
-                len = 3;
-                cp = ((b0 & 0x0F) << 12) |
-                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 6) |
-                     (static_cast<unsigned char>(s[i + 2]) & 0x3F);
-            } else if ((b0 & 0xF8) == 0xF0 && i + 3 < s.size()) {
-                len = 4;
-                cp = ((b0 & 0x07) << 18) |
-                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 12) |
-                     ((static_cast<unsigned char>(s[i + 2]) & 0x3F) << 6) |
-                     (static_cast<unsigned char>(s[i + 3]) & 0x3F);
-            }
-            if (cpi == idx) { codept = cp; in_range = true; break; }
-            cpi++;
-            i += len;
+        {
+            int32_t out = 0;
+            if (str_char_at_unit(s, idx, out)) codept = out;
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
-        // BMP chars answer directly; supplementary code points answer the
-        // high surrogate (the first DEX char of the pair) — index law of a
-        // JVM String, whose charAt addresses UTF-16 code units.
+        // Supplementary code points answer per the unit walk above (high or
+        // low surrogate at their own slot); BMP chars answer directly.
         DalvikValue r;
         r.type = DalvikType::CHAR;
-        if (!in_range) {
-            r.int_val = 0;  // StringIndexOutOfBounds territory — honest 0,
-                            // no fake data (the caller's loop bound is
-                            // length(); OOB here means an upstream bug).
-        } else if (codept >= 0x10000) {
-            codept -= 0x10000;
-            r.int_val = 0xD800 + (codept >> 10);
-        } else {
-            r.int_val = codept;
-        }
+        r.int_val = codept;
         // R-NEW-353 (S44): RESULT-OUT CONTRACT LAW — bridge_to_api laws must
         // write their answer to the `result` out-parameter before returning
         // true. F-090e computed the code point into a LOCAL `r` and dropped
@@ -61803,9 +61887,11 @@ measure_cm_done:;
     // String.length → actual length of args[0].string_val.
     // CRITICAL: without this, phone validation always fails with length=0.
     if (class_name == "Ljava/lang/String;" && method == "length") {
+        // CONT-121 W-01: JVM UTF-16 unit law (mirrors the first-site handler
+        // — both must agree or dispatch order decides the answer).
         size_t len = 0;
         if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
-            len = args[0].string_val.size();
+            len = static_cast<size_t>(str_utf16_unit_count(args[0].string_val));
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(static_cast<int32_t>(len));
