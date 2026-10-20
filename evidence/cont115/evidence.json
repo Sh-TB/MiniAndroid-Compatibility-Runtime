@@ -1,0 +1,30 @@
+{
+  "wave": "CONT-115",
+  "date_utc": "2026-10-20",
+  "container_truth": {
+    "restored_from_stale_snapshot": "e99c2fbd (registry 535/566) -> git fetch reset",
+    "base": "origin/main 9d1155d6 (CONT-114 comment-poster commit)",
+    "deterministic_rebuild": "9b5d38f5742eb99c byte-identical to CONT-114 final binary (law re-proven)",
+    "anchors": "miniandroid/build/anchor_libs present (libstdc++.so sha16 7a9b37148a5a1edb, F-NEW-460)",
+    "registry_roots": 780
+  },
+  "task_source": "#364 comment 6271515303 (CONT-110 canonical 50-task plan)",
+  "runtime_runs": {
+    "sudoku_x3": {"apk_sha16": null, "faces": ["be640e39e82901c9", "be640e39e82901c9", "be640e39e82901c9"], "verdict": "REAL_APP_CONTENT (tutorial face: Skip/Next buttons, white text px=4195, theme colors; SplashActivity->TutorialActivity navigation, view_root 336 nodes)", "refutes": "historical WINDOW_ROOT white-screen claim", "honest_subgap": "tutorial illustration area empty (image asset / ViewPager state) - named, PARTIAL"},
+    "whatsapp": {"rc": 1, "boot_stage": "load_apk ok=0 ms=25", "artifact": "5,615-byte non-ZIP stub (zipfile.InvalidFile)", "verdict": "ARTIFACT_DEFECTIVE - matches APP-013 BLOCKED; NOT a renderer bug (task 03 honest-classify requirement met)"},
+    "tower3d_x3": {"faces": ["11a38a5aeeff45a6", "11a38a5aeeff45a6", "11a38a5aeeff45a6"], "recorded": "11a38a5aeeff45a6", "drift": 0, "fnew465_live_rows": ["IGET-MISS-DIAG obj#38 SnapshotArray / obj#347 Array keys=0 caller=Array.add", "REC-MISS Ljava/lang/reflect/Array;.newInstance caller=ArrayReflection", "R358-ANEW newInstance(Class,16) -> obj#40"], "verdict": "DEFAULT_BACKGROUND_ONLY stable; F-NEW-465 CONFIRMED_OPEN_GAP reproduced live"},
+    "chess_x2": {"faces": ["a0319686d56ff5c0", "a0319686d56ff5c0"], "recorded": "a0319686d56ff5c0", "drift": 0, "toolbar": "1080x168 with version text (F-NEW-448 layer-2 held)"},
+    "dooz": {"face": "d602648e8e401895", "recorded": "d602648e8e401895", "drift": 0, "verdict": "anchor MATCH; F-NEW-259/259b fixes held"},
+    "telegram_60s": {"face": "20ac8cbbbb692e63", "recorded_cont107": "20ac8cbbbb692e63", "drift": 0, "nonwhite_px": 2161, "uncaught": 18, "fnew449_live": "SYNTH-EXC aget-oob play_billing n2;.r pc=6 (length=11; index=11) -> LaunchActivity.onCreate APP BOUNDARY", "uncaught_families": ["Ll9/j FirebaseInitProvider", "UnsatisfiedLinkError native-lib boundary (UPP-001)", "play_billing n2.r (F-NEW-449)", "yc0;.j null-array NPE"]},
+    "opencalc": {"face": "d5f3c7b5e9936ae6", "recorded": "d5f3c7b5e9936ae6", "drift": 0},
+    "unote": {"face": "90a67cc1ddda57b7", "recorded": "90a67cc1ddda57b7", "drift": 0},
+    "microtimer": {"face": "bbd350b6c14fbd52", "recorded": "bbd350b6c14fbd52", "drift": 0},
+    "solitaire": {"face": "ba50a4d28ea62fe7", "recorded": "ba50a4d28ea62fe7", "drift": 0},
+    "tripeaks": {"face": "b5a7a35d5fe0564b", "recorded": "b5a7a35d5fe0564b", "drift": 0},
+    "klondike": {"face": "31ddd4d5b8e6d18e", "recorded": "31ddd4d5b8e6d18e", "drift": 0}
+  },
+  "selftest": {"classifier": "14/14 PASS (cont81_corpus_runner --selftest, T04)"},
+  "matrix_summary": "12 targets at binary 9b5d38f5 this container: 11 zero-drift byte-identical + sudoku NEW real-content face + whatsapp honest artifact failure. Zero unadjudicated drift.",
+  "source_audit": "evidence/cont115/source_audit.json (28 task clusters with file:line engine evidence)",
+  "battery_logs": "run/c115/*.log (raw stderr per run, gitignore-overridden into VCS per cont74/107 precedent)"
+}
