@@ -10718,3 +10718,18 @@ Stage Summary:
 - 101/101 tasks terminal: 99 تایید + 2 honest OPEN, weighted ~99%. 0 new root IDs (plan discipline). No registry inflation.
 - Artifacts: scripts/cont117_{executor,ledger,registry_sync,battery_parse}.py, scripts/cont117_battery.sh, run/c117/{task_results,battery}.json, run/c117/cont117_ledger.md, evidence/cont117/evidence.json.
 - Next: F-NEW-449 fixture (MessageInfo two-count-sources), D-05/D-12 law landings, B-cluster upgrades.
+
+---
+Task ID: CONT-118
+Agent: main (Z.ai)
+Task: «چند ده واگن اصلی» — dozens of wagons, one app per wagon (telegram first, whatsapp next, signal, 2D games, sudoku... 20+ wagons). Go forward.
+
+Work Log:
+- State verified: HEAD==origin/main==560077a9, 0 new #364 comments after 6288984085.
+- Corpus inventory: 26 APKs; Signal NOT in corpus (honest BLOCKED for W-23).
+- 23 wagons executed (scripts/cont118_wagons.sh, 5-frame/30s harness; telegram+forkgram 60s): W-01 telegram anchor MATCH 20ac8cbbbb (UPP-001 libjnigraphics dlopen gap, honest APP-BOUNDARY); W-02 whatsapp load_apk honest fail 24ms (5,615B non-ZIP stub, ARTIFACT_DEFECTIVE stands); W-03 forkgram NEW face a4b34d25 (arm64-v8a-only APK on x86_64 runtime); W-04 sudoku anchor MATCH be640e39; W-05 dooz/W-11 chess/W-15 tower3d/W-16 opencalc/W-17 unote/W-20 microtimer anchors ALL MATCH (8/8 zero drift); W-06 tictactoe = FIRST corpus SIGSEGV at this HEAD (S100-CRASH-FORENSICS, libGDX SharedLibraryLoader chain) -> candidate fixture, no false closure; W-12/W-13/W-14/W-19 cross-app identical faces (klondike==stopwatch 31ddd4d5, tripeaks==fishrings b5a7a35d) = app-invariant draw-op frontier faces, consistent with CONT-113 whites.
+- Ledger run/c118/cont118_ledger.md: 23 wagons, 15 تایید (8 stable-face + artifact-honest + frontier-honest), 1 BLOCKED (signal), 1 honest OPEN (tictactoe SIGSEGV), rest partial-honest with faces recorded.
+
+Stage Summary:
+- Zero drift across all 8 recorded anchors at HEAD 560077a9. New evidence: forkgram face, tictactoe SIGSEGV fixture candidate, cross-app frontier-face proof.
+- Next: tictactoe SIGSEGV fixture-first decode; F-NEW-449 MessageInfo fixture remains lead lever; Signal needs artifact.

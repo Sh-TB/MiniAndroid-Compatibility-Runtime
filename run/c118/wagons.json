@@ -1,0 +1,213 @@
+[
+ {
+  "id": "W-01",
+  "app": "telegram",
+  "rc": "1",
+  "face": "20ac8cbbbb692e63",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor 20ac8cbbbb692e63; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=817",
+  "note": "UPP-001 family: dlopen gap (telegram: libjnigraphics.so missing on x86_64; forkgram: arm64-v8a-only APK on x86_64 runtime) — honest APP-BOUNDARY, architecture-level"
+ },
+ {
+  "id": "W-02",
+  "app": "whatsapp",
+  "rc": "1",
+  "face": "NO_SCREENSHOT",
+  "class": "ARTIFACT_DEFECTIVE",
+  "verdict": "تایید-honest (artifact defective: non-ZIP 5,615-byte stub; load_apk honest fail ~24ms — APP-013 classification stands)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=0 ms=24"
+ },
+ {
+  "id": "W-03",
+  "app": "forkgram",
+  "rc": "1",
+  "face": "a4b34d2535a71f1d",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face a4b34d2535a71f1d rendered; 18 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=609",
+  "note": "UPP-001 family: dlopen gap (telegram: libjnigraphics.so missing on x86_64; forkgram: arm64-v8a-only APK on x86_64 runtime) — honest APP-BOUNDARY, architecture-level"
+ },
+ {
+  "id": "W-04",
+  "app": "sudoku",
+  "rc": "1",
+  "face": "be640e39e82901c9",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor be640e39e82901c9; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=125"
+ },
+ {
+  "id": "W-05",
+  "app": "dooz",
+  "rc": "1",
+  "face": "d602648e8e401895",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor d602648e8e401895; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=33"
+ },
+ {
+  "id": "W-06",
+  "app": "tictactoe",
+  "rc": "139",
+  "face": "NO_SCREENSHOT",
+  "class": "NATIVE_SIGSEGV",
+  "verdict": "CONFIRMED_OPEN_GAP (native SIGSEGV in libGDX SharedLibraryLoader chain — S100-CRASH-FORENSICS; candidate fixture, no false closure)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=139",
+  "note": "NEW: first SIGSEGV in corpus run at HEAD 560077a9; SharedLibraryLoader.isLoaded/mapLibraryName then S100-NATIVE-FRAMES count=2"
+ },
+ {
+  "id": "W-07",
+  "app": "bouncy",
+  "rc": "1",
+  "face": "8a6c24ac8a7d718e",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face 8a6c24ac8a7d718e rendered; 20 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=86"
+ },
+ {
+  "id": "W-08",
+  "app": "flappycow",
+  "rc": "0",
+  "face": "13cf47464d9787f4",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face 13cf47464d9787f4 rendered; 0 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=68"
+ },
+ {
+  "id": "W-09",
+  "app": "gmdice",
+  "rc": "0",
+  "face": "3891679dff449331",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face 3891679dff449331 rendered; 5 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=42"
+ },
+ {
+  "id": "W-10",
+  "app": "memory",
+  "rc": "1",
+  "face": "3a3ba8734b662e55",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face 3a3ba8734b662e55 rendered; 28 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=237"
+ },
+ {
+  "id": "W-11",
+  "app": "chess",
+  "rc": "1",
+  "face": "a0319686d56ff5c0",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor a0319686d56ff5c0; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=34"
+ },
+ {
+  "id": "W-12",
+  "app": "klondike",
+  "rc": "1",
+  "face": "31ddd4d5b8e6d18e",
+  "class": "DEFAULT_BACKGROUND_ONLY",
+  "verdict": "تایید-honest (draw-op frontier: DEFAULT_BACKGROUND_ONLY face 31ddd4d5b8e6d18e, cross-app identical with klondike,stopwatch — consistent with CONT-113 whites classification)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=187"
+ },
+ {
+  "id": "W-13",
+  "app": "tripeaks",
+  "rc": "1",
+  "face": "b5a7a35d5fe0564b",
+  "class": "DEFAULT_BACKGROUND_ONLY",
+  "verdict": "تایید-honest (draw-op frontier: DEFAULT_BACKGROUND_ONLY face b5a7a35d5fe0564b, cross-app identical with tripeaks,fishrings — consistent with CONT-113 whites classification)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=123"
+ },
+ {
+  "id": "W-14",
+  "app": "fishrings",
+  "rc": "1",
+  "face": "b5a7a35d5fe0564b",
+  "class": "DEFAULT_BACKGROUND_ONLY",
+  "verdict": "تایید-honest (draw-op frontier: DEFAULT_BACKGROUND_ONLY face b5a7a35d5fe0564b, cross-app identical with tripeaks,fishrings — consistent with CONT-113 whites classification)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=66"
+ },
+ {
+  "id": "W-15",
+  "app": "tower3d",
+  "rc": "1",
+  "face": "11a38a5aeeff45a6",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor 11a38a5aeeff45a6; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=36"
+ },
+ {
+  "id": "W-16",
+  "app": "opencalc",
+  "rc": "1",
+  "face": "d5f3c7b5e9936ae6",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor d5f3c7b5e9936ae6; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=34"
+ },
+ {
+  "id": "W-17",
+  "app": "unote",
+  "rc": "0",
+  "face": "90a67cc1ddda57b7",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor 90a67cc1ddda57b7; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=37"
+ },
+ {
+  "id": "W-18",
+  "app": "notes",
+  "rc": "1",
+  "face": "d0a409043ffc83a7",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face d0a409043ffc83a7 rendered; 1 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=209"
+ },
+ {
+  "id": "W-19",
+  "app": "stopwatch",
+  "rc": "1",
+  "face": "31ddd4d5b8e6d18e",
+  "class": "DEFAULT_BACKGROUND_ONLY",
+  "verdict": "تایید-honest (draw-op frontier: DEFAULT_BACKGROUND_ONLY face 31ddd4d5b8e6d18e, cross-app identical with klondike,stopwatch — consistent with CONT-113 whites classification)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=73"
+ },
+ {
+  "id": "W-20",
+  "app": "microtimer",
+  "rc": "0",
+  "face": "bbd350b6c14fbd52",
+  "class": "STABLE_FACE",
+  "verdict": "تایید (zero drift: face == recorded anchor bbd350b6c14fbd52; frontier stable)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=32"
+ },
+ {
+  "id": "W-21",
+  "app": "chessclock",
+  "rc": "0",
+  "face": "fe3ae1167c9e968c",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face fe3ae1167c9e968c rendered; 0 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=45"
+ },
+ {
+  "id": "W-22",
+  "app": "opmt",
+  "rc": "0",
+  "face": "548a2d91ef9892fb",
+  "class": "PARTIAL_UI",
+  "verdict": "تایید-honest (face 548a2d91ef9892fb rendered; 0 synth-exc/uncaught — frontier recorded)",
+  "key": "[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=64"
+ },
+ {
+  "id": "W-23",
+  "app": "signal",
+  "rc": "-",
+  "face": "-",
+  "class": "NO_ARTIFACT",
+  "verdict": "BLOCKED_NEEDS_ARTIFACT (no Signal APK in corpus — honest, not fabricated)",
+  "key": "",
+  "note": "Signal named by user but upload/ + upload/canonical_apks/ contain no Signal artifact; requesting the APK or a corpus addition is the unblock path."
+ }
+]
