@@ -19987,8 +19987,18 @@ DalvikValue DalvikExecutionEngine::materialize_init_default(
     if (f464_in_flight == type_desc) {
         return DalvikValue::make_object(oid, type_desc);
     }
+    // F-NEW-464/465 (CONT-114 + CONT-116 correction): EXECUTE the ()V
+    // constructor of a DEX-defined initializer type. CONT-116 found the
+    // dispatch condition INVERTED: `!class_has_no_arg_ctor` ran the ()V
+    // body only for classes WITHOUT one (a ctor that does not exist) and
+    // skipped every class that HAS one — libGDX Array's ()V never ran, so
+    // every R-NEW-414-materialized Array stayed a bare shell (tower3d
+    // obj#393: zero fields → Array.add pc=4 ARR-LEN-NULL NPE →
+    // AndroidLauncher.onCreate APP-BOUNDARY death). ART law: run the ()V
+    // ctor exactly when it EXISTS; the F-NEW-274 gate upstream already
+    // refuses fabrication for ctor-less classes (honest null path).
     if (class_info_index_.find(type_desc) != class_info_index_.end() &&
-        dex_report_ && !class_has_no_arg_ctor(type_desc)) {
+        dex_report_ && class_has_no_arg_ctor(type_desc)) {
         f464_in_flight = type_desc;
         DalvikValue recv = DalvikValue::make_object(oid, type_desc);
         DalvikValue ret = DalvikValue::make_void();
@@ -34118,8 +34128,62 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             DalvikValue ctor_result;
             DalvikExecutionResult ctor_exec;
+            // F-NEW-465 (CONT-116): pass the ARITY-MATCHED <init> descriptor
+            // (F-023 authority path). The record stores no descriptor, so
+            // select by unboxed param count + primitive-shape compatibility:
+            // R8'd classes routinely carry same-arity ctor overloads (libGDX
+            // Array: <init>(I)V AND <init>(Lcom/badlogic/gdx/utils/Array;)V)
+            // — the no-descriptor heuristic could bind <init>(Array) for a
+            // newInstance(16) call, execute it with an INT receiver arg,
+            // store nothing, and leave a BARE-SHELL object (tower3d obj#347:
+            // allocated pc=0 frame=453 → Array.add pc=4 ARR-LEN-NULL NPE →
+            // AndroidLauncher.onCreate APP-BOUNDARY death). Primitive-shape
+            // tie-break: an unboxed primitive arg prefers the primitive
+            // parameter candidate.
+            std::string chosen_ctor_desc;
+            {
+                bool want_primitive = false;
+                for (const auto& pv : ctor_args) {
+                    if (pv.type == DalvikType::INT32 ||
+                        pv.type == DalvikType::INT64 ||
+                        pv.type == DalvikType::FLOAT32 ||
+                        pv.type == DalvikType::FLOAT64 ||
+                        pv.type == DalvikType::BOOLEAN ||
+                        pv.type == DalvikType::BYTE ||
+                        pv.type == DalvikType::SHORT ||
+                        pv.type == DalvikType::CHAR) {
+                        want_primitive = true;
+                        break;
+                    }
+                }
+                size_t want_params = ctor_args.size() - 1;
+                for (const auto& m : dex_report_->classes[cit->second].direct_methods) {
+                    if (m.name != "<init>" ||
+                        m.parameters.size() != want_params)
+                        continue;
+                    if (want_primitive && !m.parameters.empty() &&
+                        !m.parameters[0].empty() &&
+                        m.parameters[0][0] != 'L' &&
+                        m.parameters[0][0] != '[') {
+                        chosen_ctor_desc = m.descriptor;
+                        break;
+                    }
+                    if (chosen_ctor_desc.empty()) chosen_ctor_desc = m.descriptor;
+                }
+            }
             try_recursive_invoke(rcls, "<init>", ctor_args,
-                                 ctor_result, ctor_exec);
+                                 ctor_result, ctor_exec, chosen_ctor_desc);
+            if (chosen_ctor_desc.empty() && ctor_args.size() > 1) {
+                // F-NEW-465 LOUD law: DEX-defined <init> dispatch miss is
+                // evidence-grade (pinned allocation site, unboxed arity).
+                std::cerr << "[F465-CTOR-MISS] " << rcls
+                          << " params=" << (ctor_args.size() - 1)
+                          << " alloc=(pc=" << pc_ << ", frame="
+                          << (call_stack_.empty()
+                                  ? 0
+                                  : call_stack_.top().frame_id)
+                          << ")" << std::endl;
+            }
             result = DalvikValue::make_object(obj_id, rcls);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
@@ -54723,14 +54787,79 @@ measure_cm_done:;
                 uint32_t obj_id = heap_.allocate(
                     target, pc_,
                     call_stack_.empty() ? 0 : call_stack_.top().frame_id);
-                // Run the real <init> DEX body when the class defines one.
-                DalvikValue ctor_result;
-                DalvikExecutionResult ctor_exec;
+                // F-NEW-465 (CONT-116): forward the varargs + dispatch the
+                // arity-matched <init> with its EXACT descriptor (F-023
+                // authority path). ART law: Constructor.newInstance(Object...
+                // initargs) allocates through the DECLARED constructor and
+                // passes initargs to it. The old shim dropped initargs
+                // entirely and dispatched "<init>" with NO descriptor, so
+                // the heuristic matcher saw argc=1 (receiver only), looked
+                // for a 0-param overload, and — for classes without ()V —
+                // silently dispatched NOTHING, leaving a bare-shell object
+                // (tower3d: ClassReflection.getConstructor(Array.class,
+                // int.class).newInstance(16) allocated Array obj (frame=0,
+                // pc=0) with ZERO fields → Array.add read size off nothing
+                // → ARR-LEN-NULL NPE → AndroidLauncher.onCreate death).
+                // The (0,0) allocation site is this shim's own
+                // heap_.allocate — pinned by the [F465-CTOR-MISS] line.
                 std::vector<DalvikValue> ctor_args;
                 ctor_args.push_back(
                     DalvikValue::make_object(obj_id, target));
+                std::vector<DalvikValue> ctor_params;
+                if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+                    args[1].object_id != 0) {
+                    auto len_f = heap_.get_object_field(args[1].object_id,
+                                                        "__array_length__");
+                    int n = len_f.has_value() ? len_f->int_val : 0;
+                    for (int i = 0; i < n; i++) {
+                        auto el = heap_.get_object_field(
+                            args[1].object_id,
+                            "array[" + std::to_string(i) + "]");
+                        ctor_params.push_back(
+                            el.has_value() ? *el : DalvikValue::make_null());
+                    }
+                }
+                for (const auto& pv : ctor_params) ctor_args.push_back(pv);
+                // Arity law (getConstructor(Class[]) already arity-verified
+                // upstream, but the record carries no descriptor): select
+                // the <init> whose parameter count equals the unboxed
+                // count; pass its descriptor so the F-023 exact-match path
+                // is authoritative and R8 overloads cannot cross-bind.
+                std::string chosen_ctor_desc;
+                auto cit2 = class_info_index_.find(target);
+                if (cit2 != class_info_index_.end()) {
+                    const dex::ClassInfo& ci465 =
+                        dex_report_->classes[cit2->second];
+                    for (const auto& m : ci465.direct_methods) {
+                        if (m.name == "<init>" &&
+                            m.parameters.size() == ctor_params.size()) {
+                            chosen_ctor_desc = m.descriptor;
+                            break;
+                        }
+                    }
+                }
+                DalvikValue ctor_result;
+                DalvikExecutionResult ctor_exec;
                 try_recursive_invoke(target, "<init>", ctor_args,
-                                     ctor_result, ctor_exec);
+                                     ctor_result, ctor_exec,
+                                     chosen_ctor_desc);
+                // F-NEW-465 LOUD law (CONT-116 named lever): a DEX-defined
+                // <init> dispatch miss is evidence-grade. Pin the
+                // allocation site + the unboxed arity; never fabricate
+                // success. The object still returns (ART: allocation
+                // succeeded; field defaults are the DEX zero-state) — the
+                // miss is OBSERVABLE, not swallowed.
+                if (chosen_ctor_desc.empty() && !ctor_params.empty()) {
+                    std::cerr << "[F465-CTOR-MISS] " << target
+                              << " params=" << ctor_params.size()
+                              << " alloc=(frame="
+                              << (call_stack_.empty()
+                                      ? 0
+                                      : call_stack_.top().frame_id)
+                              << ", pc=" << pc_ << ")"
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
                 status = ApiCallTrace::Status::IMPLEMENTED;
 
                 result = DalvikValue::make_object(obj_id, target);
