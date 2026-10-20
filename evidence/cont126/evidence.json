@@ -1,0 +1,25 @@
+{
+ "wave": "CONT-126 (Train 3 of 5)",
+ "base": {
+  "head": "84a978e1",
+  "binary": "75bf7de9"
+ },
+ "deliverables": [
+  "F-NEW-469 probe LANDED: fixtures/cont124_iface_chain (aapt2+ECJ+D8, apk 196a9594345e5c05) \u2014 4/4 PASS at binary 6b2911e7 (run/c126/probe_run.log): direct-store PASS; transitive-store PASS (THE LAW: Impl->I1[] via I3 extends I2 extends I1); negative-store PASS (array-covariance alias store of unrelated class still raises AIOOBE \u2014 the check keeps its teeth); chain-dispatch PASS (I1 receiver, Impl body, id()=42)",
+  "F-NEW-469 source law (Train 1) now probe-backed per fixture-first discipline",
+  "FIELD-TRACE statics coverage landed (CONT-126): sget/sget-object/sput/sput-object handlers wired to field_trace_active (4 hooks, read-only diagnostics, zero semantic change) \u2014 closes the tool gap that hid Gdx.app from the decode",
+  "immediate payoff: MINIANDROID_FIELD_TRACE=Lcom/badlogic/gdx/Gdx;.app pinned the tictactoe truth \u2014 put-static Gdx.app happens in AndroidApplication.onResume (too late); the null read happens in AndroidGraphics.preserveEGLContextOnPause \u2014 F-NEW-471 (missing AndroidApplication.onCreate dispatch / class_data alignment repair) confirmed with per-access evidence"
+ ],
+ "battery": {
+  "binary": "6b2911e7a2e527dc",
+  "anchors": "9/9 byte-identical",
+  "selftest": "rc=0",
+  "negatives": "19/19",
+  "registry": "785 id-unique main==mirror (probe evidence updated on F-NEW-469 + F-NEW-470 addendum, no inflation)"
+ },
+ "logs": [
+  "run/c126/probe_run.log",
+  "run/c126/ttt_statics2.log",
+  "run/c126/battery.log"
+ ]
+}
