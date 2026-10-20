@@ -21286,6 +21286,19 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     uint16_t field_idx = bytecode_[pc + 1];
 
     FieldResolution field_res = resolve_field(field_idx);
+    // CONT-126: FIELD-TRACE statics coverage (sget family) — the trace tool
+    // previously covered ONLY instance iget/iput, so static-field decode
+    // (e.g. tictactoe's Gdx.app putstatic hunt) had no visibility. Same
+    // env gate + qualified "Lcls;.field" filter semantics as the instance
+    // paths. Read-only diagnostics: zero semantic change by construction.
+    if (field_res.resolved &&
+        field_trace_active(field_res.field_name.c_str(),
+                           (current_class_ + "." + current_method_).c_str(),
+                           field_res.class_descriptor.c_str())) {
+        std::cerr << "[FIELD-TRACE] get-static " << current_class_ << "."
+                  << current_method_ << " " << field_res.class_descriptor
+                  << "." << field_res.field_name << std::endl;
+    }
     // CONT-38 decode diag (env-gated, bounded): UNRESOLVED static-field
     // reads answer 0 silently — the theme-defaults zero face.
     if (!field_res.resolved) {
@@ -21439,6 +21452,17 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     FieldResolution field_res = resolve_field(field_idx);
     phase_clock().exit(phase_clock().sget_resolve_ph, f107_sr0);
     uint64_t f107_si0 = 0; phase_clock().enter(phase_clock().sget_init_ph, f107_si0);
+
+    // CONT-126: FIELD-TRACE statics coverage (sget-object family) — same
+    // law and same env gate as the sget hook; read-only diagnostics.
+    if (field_res.resolved &&
+        field_trace_active(field_res.field_name.c_str(),
+                           (current_class_ + "." + current_method_).c_str(),
+                           field_res.class_descriptor.c_str())) {
+        std::cerr << "[FIELD-TRACE] get-static " << current_class_ << "."
+                  << current_method_ << " " << field_res.class_descriptor
+                  << "." << field_res.field_name << std::endl;
+    }
 
     // EXP-053: Ensure the class is initialized before reading its static field.
     // F-NEW-215: active use (sget-object family) of an ERRONEOUS class
@@ -22082,6 +22106,17 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
     
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
+    // CONT-126: FIELD-TRACE statics coverage (sput family) — same law and
+    // same env gate as the sget hook; read-only diagnostics.
+    if (field_res.resolved &&
+        field_trace_active(field_res.field_name.c_str(),
+                           (current_class_ + "." + current_method_).c_str(),
+                           field_res.class_descriptor.c_str())) {
+        std::cerr << "[FIELD-TRACE] put-static " << current_class_ << "."
+                  << current_method_ << " " << field_res.class_descriptor
+                  << "." << field_res.field_name << " reg=v"
+                  << (int)src_reg << std::endl;
+    }
     
     // F-NEW-215: sput is ACTIVE USE (JVMS 5.5) — the write must trigger
     // class initialization exactly like sget, and an ERRONEOUS class must
@@ -22130,6 +22165,17 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
+    // CONT-126: FIELD-TRACE statics coverage (sput-object family) — same
+    // law and same env gate as the sget hook; read-only diagnostics.
+    if (field_res.resolved &&
+        field_trace_active(field_res.field_name.c_str(),
+                           (current_class_ + "." + current_method_).c_str(),
+                           field_res.class_descriptor.c_str())) {
+        std::cerr << "[FIELD-TRACE] put-static " << current_class_ << "."
+                  << current_method_ << " " << field_res.class_descriptor
+                  << "." << field_res.field_name << " reg=v"
+                  << (int)src_reg << std::endl;
+    }
     
     // F-NEW-215: sput-object is ACTIVE USE — same law as sput (init
     // trigger + NoClassDefFoundError on an erroneous class).
