@@ -10747,3 +10747,23 @@ Work Log:
 Stage Summary:
 - 12/12 wagons terminal. Named levers advanced to ready-to-build fixture specs. No code change this wave (decode discipline), no registry inflation.
 - Next: FIX-449 probe build -> RawMessageInfo walk law -> 16 telegram PARTIAL unblock.
+
+---
+Task ID: CONT-120
+Agent: main (Z.ai)
+Task: «حل ۳۶۴ با این روش تمامشون رو حل بکن» — land the four CONT-119 fixture-specs as product laws, probe-isolate the two named levers, carry everything to terminal state, push.
+
+Work Log:
+- State verified: HEAD==origin/main==07166cce (CONT-119), binary 3ecd381c, 0 new #364 comments after 6289279147 (86 total; last 6 all own ledgers).
+- W-06 FIX-TTT decode→fix: addr2line pinned 0x40f26e = crash_forensics handler (frame #0); op-ring pinned death after mapLibraryName; grep found no System.mapLibraryName/unguarded-native; isolated with a standalone fork-probe (scripts/cont120_ttt_dlopen_probe.c): tictactoe libgdx.so x86_64 FAULTS INSIDE dlopen (ELF constructors) with anchor pre-pass; tower3d libgdx.so (same family, no JNI_OnLoad) loads clean → per-library defect. Landed three-layer guarded-native law (dlopen_exec.cpp): fork dlopen pre-probe (ProbeVerdict SAFE/REFUSED/FAULTED; refused keeps the parent's REAL dlerror) + sigsetjmp guard (SIGSEGV/SIGBUS, forensics handler save/restore) around dlopen/JNI_OnLoad/native_thunk + loader-poison _exit teardown in main.cpp. Verified: rc 139→1, honest UnsatisfiedLinkError → libGDX's own catch-all handler, 5 frames, tower3d anchor unchanged.
+- W-03 memory: F-NEW-368's five reflective rows un-gated into kBuiltinExcParent (unconditional). F106-CTOR now delivers in-frame (deferred handler @0x53 type=Exception; app own-log AOSP-verbatim line ran; uncaught 0 was ×24). Face 6da289aab14d2256 == CONT-71's F368-only activation face byte-for-byte.
+- W-04 bouncy: GLSurfaceView.getHolder holder-per-view law (extends SurfaceView; svHolder/svOwner) → setFormat-null NPE closed (count 0). Set-add root isolated as independent honest OPEN.
+- W-01 FIX-D12: ViewShadow.checkThread law (16 mutators; drained-body identity != main → CalledFromWrongThreadException AOSP message; posted runnables legal) + hierarchy row. MINIANDROID_D12_LAW=0 opt-out.
+- Probes (real ECJ/D8): FIX-449 walk fixture 3/3 (count-token in-bounds; rotated-terminator EXACT S36 signature AOOB length=11 index=11; buffer 3-ints/field → walk ops correct, divergence = c3.<clinit> data construction); FIX-D05 fixture 5/5 (unknown-field byte round-trip OK) + D12 probe PASS raised-and-typed + POSTED legal.
+- Battery (scripts/cont120_battery.sh): 9/9 ANCHOR_MATCH zero drift (added sudoku/klondike/telegram to the CONT-117 six) + negatives PASS + selftest PASS + registry 781 id-unique main==mirror.
+- Registry: F-NEW-466 added (tictactoe SIGSEGV root-caused-fixed, three-layer law); F-NEW-368/F-NEW-449/F-NEW-462 evidence landed by ID; scripts/cont120_registry_update.py; main==mirror row-equal.
+- Secret guard: run/c120/telegram.log carries the known GOOGLE_API_KEY rows — EXCLUDED from the commit (battery.log carries the telegram anchor evidence). Clean commit e38c2135 pushed, HEAD==origin/main verified. Ledger posted as #364 comment 6290232218.
+
+Stage Summary:
+- CONT-120 terminal: 4 product laws landed (guarded-native, wrong-thread, reflective-catch, GL-holder), 2 probe isolations (FIX-449 narrowed to data construction, FIX-D05 substrate verified), 1 new root row, 9/9 wall zero drift, registry 781 synced.
+- Next: c3.<clinit> data-construction bisect (FIX-449 endgame → 16 telegram PARTIAL), bouncy Set-add decode, F-NEW-374 MCM lever, B-cluster 48 UNPROVEN re-scan.
