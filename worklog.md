@@ -10687,3 +10687,16 @@ Work Log:
 Stage Summary:
 - Two real generic fixes landed with A/B brackets; the CONT-114-named F-NEW-465 face is closed with its own allocation-site evidence; F-NEW-449 is now decoded to a single fork with a named fixture.
 - Next wave owns: tower3d copy-ctor layer fixture, F-NEW-449 MessageInfo probe + n2.r disassembler fix, compose AndroidCanvas bridge (F-NEW-256 family).
+
+---
+Task ID: CONT-116-PUSH
+Agent: Super Z (main)
+Task: push record + remote verification.
+
+Work Log:
+- Secret guard clean (app-embedded GOOGLE_API_KEY rows redacted in the 3 committed telegram trace logs, same F136 resource-read precedent as CONT-115).
+- Commit 615db181 pushed: 492df09a..615db181 main -> main; HEAD == origin/main == 615db181664be3ea0b8f32e48ca9cd6b2b3a8d0c verified.
+- Ledger posted to #364 as comment 6288306104.
+
+Stage Summary:
+- CONT-116 terminal: F-NEW-465 ROOT-CAUSED-FIXED (two laws, A/B bracketed), F-NEW-449 decoded to a single fork with named fixture, battery green at 3ecd381c, zero unadjudicated drift.
