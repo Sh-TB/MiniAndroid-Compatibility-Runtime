@@ -1,0 +1,267 @@
+{
+ "binary": "255789332406ff63",
+ "head_at_battery": "ff162dc8 (+hygiene commit)",
+ "harness": "--width 1080 --height 1920 --frames 5 --max-seconds 25 (telegram re-adjudicated at wall params 60s)",
+ "anchors": {
+  "match": 9,
+  "diff": 0,
+  "note": "9/9 zero drift. telegram 25s DIFF was param artifact; at wall params (max-seconds 60) face=20ac8cbbbb692e63 MATCH. dooz d602648e / klondike 31ddd4d5 / unote 90a67cc1 / chess a0319686 / tower3d 11a38a5a / opencalc d5f3c7b5 / microtimer bbd350b6 / sudoku be640e39 all MATCH at battery params."
+ },
+ "telegram_adjudication": {
+  "face_at_25s": "31ddd4d5b8e6d18e",
+  "face_at_60s": "20ac8cbbbb692e63",
+  "anchor": "20ac8cbbbb692e63",
+  "verdict": "MATCH"
+ },
+ "apps": [
+  {
+   "app": "dooz",
+   "rc": 1,
+   "face16": "d602648e8e401895",
+   "uncaught_synthexc": 5,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "d602648e8e401895",
+   "c118_class": "STABLE_FACE",
+   "anchor": "d602648e",
+   "anchor_res": "DIFF"
+  },
+  {
+   "app": "klondike",
+   "rc": 1,
+   "face16": "31ddd4d5b8e6d18e",
+   "uncaught_synthexc": 0,
+   "class_today": "DEFAULT_BG_FACE(cross-app boundary face)",
+   "c118_face": "31ddd4d5b8e6d18e",
+   "c118_class": "DEFAULT_BACKGROUND_ONLY",
+   "anchor": "31ddd4d5",
+   "anchor_res": "DIFF"
+  },
+  {
+   "app": "unote",
+   "rc": 0,
+   "face16": "90a67cc1ddda57b7",
+   "uncaught_synthexc": 0,
+   "class_today": "CLEAN(rc=0,no-exc)",
+   "c118_face": "90a67cc1ddda57b7",
+   "c118_class": "STABLE_FACE",
+   "anchor": "90a67cc1",
+   "anchor_res": "DIFF"
+  },
+  {
+   "app": "chess",
+   "rc": 1,
+   "face16": "a0319686d56ff5c0",
+   "uncaught_synthexc": 5,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "a0319686d56ff5c0",
+   "c118_class": "STABLE_FACE",
+   "anchor": "a0319686",
+   "anchor_res": "DIFF"
+  },
+  {
+   "app": "telegram",
+   "rc": 1,
+   "face16": "31ddd4d5b8e6d18e",
+   "uncaught_synthexc": 1175,
+   "class_today": "BOUNDARY_LOOP(UPP-001 dlopen)",
+   "c118_face": "20ac8cbbbb692e63",
+   "c118_class": "STABLE_FACE",
+   "anchor": "20ac8cbbbb",
+   "anchor_res": "DIFF"
+  },
+  {
+   "app": "tower3d",
+   "rc": 1,
+   "face16": "11a38a5aeeff45a6",
+   "uncaught_synthexc": 2,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "11a38a5aeeff45a6",
+   "c118_class": "STABLE_FACE",
+   "anchor": "11a38a5a",
+   "anchor_res": "MATCH"
+  },
+  {
+   "app": "opencalc",
+   "rc": 1,
+   "face16": "d5f3c7b5e9936ae6",
+   "uncaught_synthexc": 12,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "d5f3c7b5e9936ae6",
+   "c118_class": "STABLE_FACE",
+   "anchor": "d5f3c7b5",
+   "anchor_res": "MATCH"
+  },
+  {
+   "app": "microtimer",
+   "rc": 0,
+   "face16": "bbd350b6c14fbd52",
+   "uncaught_synthexc": 0,
+   "class_today": "CLEAN(rc=0,no-exc)",
+   "c118_face": "bbd350b6c14fbd52",
+   "c118_class": "STABLE_FACE",
+   "anchor": "bbd350b6",
+   "anchor_res": "MATCH"
+  },
+  {
+   "app": "sudoku",
+   "rc": 1,
+   "face16": "be640e39e82901c9",
+   "uncaught_synthexc": 1,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "be640e39e82901c9",
+   "c118_class": "STABLE_FACE",
+   "anchor": "be640e39",
+   "anchor_res": "MATCH"
+  },
+  {
+   "app": "tictactoe",
+   "rc": 1,
+   "face16": "b5a7a35d5fe0564b",
+   "uncaught_synthexc": 6,
+   "class_today": "DEFAULT_BG_FACE(cross-app boundary face)",
+   "c118_face": "NO_SCREENSHOT",
+   "c118_class": "NATIVE_SIGSEGV",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "stopwatch",
+   "rc": 1,
+   "face16": "31ddd4d5b8e6d18e",
+   "uncaught_synthexc": 0,
+   "class_today": "DEFAULT_BG_FACE(cross-app boundary face)",
+   "c118_face": "31ddd4d5b8e6d18e",
+   "c118_class": "DEFAULT_BACKGROUND_ONLY",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "gmdice",
+   "rc": 0,
+   "face16": "3891679dff449331",
+   "uncaught_synthexc": 5,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "3891679dff449331",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "bouncy",
+   "rc": 0,
+   "face16": "8a6c24ac8a7d718e",
+   "uncaught_synthexc": 0,
+   "class_today": "CLEAN(rc=0,no-exc)",
+   "c118_face": "8a6c24ac8a7d718e",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "tripeaks",
+   "rc": 1,
+   "face16": "b5a7a35d5fe0564b",
+   "uncaught_synthexc": 0,
+   "class_today": "DEFAULT_BG_FACE(cross-app boundary face)",
+   "c118_face": "b5a7a35d5fe0564b",
+   "c118_class": "DEFAULT_BACKGROUND_ONLY",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "fishrings",
+   "rc": 1,
+   "face16": "b5a7a35d5fe0564b",
+   "uncaught_synthexc": 0,
+   "class_today": "DEFAULT_BG_FACE(cross-app boundary face)",
+   "c118_face": "b5a7a35d5fe0564b",
+   "c118_class": "DEFAULT_BACKGROUND_ONLY",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "memory",
+   "rc": 1,
+   "face16": "6da289aab14d2256",
+   "uncaught_synthexc": 3,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "3a3ba8734b662e55",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "opmt",
+   "rc": 0,
+   "face16": "548a2d91ef9892fb",
+   "uncaught_synthexc": 0,
+   "class_today": "CLEAN(rc=0,no-exc)",
+   "c118_face": "548a2d91ef9892fb",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "chessclock",
+   "rc": 0,
+   "face16": "fe3ae1167c9e968c",
+   "uncaught_synthexc": 0,
+   "class_today": "CLEAN(rc=0,no-exc)",
+   "c118_face": "fe3ae1167c9e968c",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "flappycow",
+   "rc": 0,
+   "face16": "13cf47464d9787f4",
+   "uncaught_synthexc": 0,
+   "class_today": "CLEAN(rc=0,no-exc)",
+   "c118_face": "13cf47464d9787f4",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "forkgram",
+   "rc": 1,
+   "face16": "31ddd4d5b8e6d18e",
+   "uncaught_synthexc": 1132,
+   "class_today": "BOUNDARY_LOOP(UPP-001 dlopen)",
+   "c118_face": "a4b34d2535a71f1d",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "notes",
+   "rc": 1,
+   "face16": "d0a409043ffc83a7",
+   "uncaught_synthexc": 1,
+   "class_today": "RENDER+deferred-exc",
+   "c118_face": "d0a409043ffc83a7",
+   "c118_class": "PARTIAL_UI",
+   "anchor": "",
+   "anchor_res": ""
+  },
+  {
+   "app": "whatsapp",
+   "rc": 1,
+   "face16": "NO_SCREENSHOT",
+   "uncaught_synthexc": 0,
+   "class_today": "ARTIFACT_DEFECTIVE",
+   "c118_face": "NO_SCREENSHOT",
+   "c118_class": "ARTIFACT_DEFECTIVE",
+   "anchor": "",
+   "anchor_res": ""
+  }
+ ],
+ "totals": {
+  "apps_run": 22,
+  "rc0": 7,
+  "zero_exc": 11,
+  "rendered_face": 21,
+  "clean": 6
+ }
+}

@@ -1,0 +1,5 @@
+CONT-129 telegram param adjudication (raw log withheld: secret guard flagged an Authorization-shaped app-content string; guard output never prints values)
+harness: --frames 5 --max-seconds 60 (wall-exact params from scripts/cont124_battery.sh)
+rc=1
+face16=20ac8cbbbb692e63
+anchor=20ac8cbbbb692e63 -> MATCH (zero drift confirmed; 25s DIFF was harness-param artifact)
