@@ -12742,8 +12742,19 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
     if (cfg_obj == 0 || !heap_.has_object(cfg_obj))
         cfg_obj = heap_.allocate(
             "Ljavax/microedition/khronos/egl/EGLConfig;", 0, 0);
-    DalvikValue self = DalvikValue::make_object(
-        view_object_id, node->class_desc);
+    // F-NEW-462 (CONT-114): RENDERER RECEIVER LAW. AOSP GLSurfaceView's
+    // GLThread.guardedRun invokes the callbacks ON THE RENDERER —
+    // mRenderer.onSurfaceCreated(gl, config) / onDrawFrame(gl) — where
+    // mRenderer is the object installed by setRenderer. This pump used to
+    // pass the VIEW object (self = view_object_id) as args[0] while
+    // dispatching the RENDERER's class methods (rcls), so every
+    // AndroidGraphics `this` store/read landed on the GLSurfaceView20 view
+    // object: tower3d's setupGL read `config` NULL (NPE pc=29), updatePpi
+    // invoked getWindowManager on NULL, and onDrawFrame's
+    // resume/running/pause/destroy/lastFrameTime reads MISSED on obj#138
+    // (IGET-MISS-DIAG, 11 rows). Probe fixtures/c114_f462_probe V2 rows
+    // bracket it: pre-fix ctorStamp/seq read 0 on every callback.
+    DalvikValue self = DalvikValue::make_object(renderer, rcls);
     auto invoke = [&](const char* method, std::vector<DalvikValue> args) {
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
@@ -19957,6 +19968,36 @@ DalvikValue DalvikExecutionEngine::materialize_init_default(
     } else if (type_desc == "Ljava/lang/StringBuilder;" ||
                type_desc == "Ljava/lang/StringBuffer;") {
         // leave empty shell; string methods are shadow-dispatched
+    }
+    // F-NEW-464 (CONT-114): EXECUTE the ()V constructor of a DEX-defined
+    // initializer type. ART law (completed by this change): a field never
+    // written reads null; an initializer-default object exists only after
+    // its constructing <init> ran. F-NEW-274 already gates on the ()V
+    // ctor's EXISTENCE, but the materializer only allocated — every
+    // DEX-defined zero-state stayed a bare shell (tower3d: libGDX
+    // DirectionalLightsAttribute.lights materialized as Array obj#393 with
+    // ZERO fields; Array.add then read size off nothing -> ARR-LEN-NULL NPE
+    // -> AndroidLauncher.onCreate death). Running the real ()V ctor gives
+    // the object its true zero-state (Array: items/ordered/size). Framework
+    // shells (Rect/Point/TypedValue above) keep their seeded zero-state.
+    // Re-entrancy guard: a ctor whose body reads the SAME missing field
+    // must not recurse forever — nested same-type materialization returns
+    // the bare shell (documented honest frontier).
+    static thread_local std::string f464_in_flight;
+    if (f464_in_flight == type_desc) {
+        return DalvikValue::make_object(oid, type_desc);
+    }
+    if (class_info_index_.find(type_desc) != class_info_index_.end() &&
+        dex_report_ && !class_has_no_arg_ctor(type_desc)) {
+        f464_in_flight = type_desc;
+        DalvikValue recv = DalvikValue::make_object(oid, type_desc);
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        bool ran = try_recursive_invoke(type_desc, "<init>", {recv}, ret, res);
+        f464_in_flight.clear();
+        if (ran) heap_.mark_initialized(oid);
+        // ran == false: keep the seeded shell (honest — ctor not found in
+        // the DEX chain after all); the read still answers a valid object.
     }
     DalvikValue v = DalvikValue::make_object(oid, type_desc);
     return v;
@@ -38828,6 +38869,149 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             if (method == "rewind") {
                 bb_set(bb, "__bb_pos__", 0);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-463 (CONT-114) — java.nio VIEW-BUFFER FAMILY (OpenJDK law).
+    //
+    // EVIDENCE (tower3d, post-F-NEW-462 run): libGDX BufferUtils.newIntBuffer
+    // does ByteBuffer.allocateDirect(cap).order(ByteOrder.nativeOrder())
+    // .asIntBuffer(); the asIntBuffer call had NO handler (REC-MISS) → the
+    // IntBuffer field answered null → DefaultTextureBinder.getMaxTextureUnits
+    // NPE'd on IntBuffer.get → AndroidLauncher.onCreate died at the GL init
+    // layer. The S108 ROOT-022 ByteBuffer algebra exists but stopped at the
+    // ByteBuffer class — every TYPED VIEW was still the generic null.
+    //
+    // OPENJDK LAW: asIntBuffer()/asShortBuffer()/asLongBuffer()/asFloatBuffer()
+    // /asDoubleBuffer()/asCharBuffer() answer a typed view of the receiver:
+    // position 0, capacity = remaining()/element_size, shared content. The
+    // view's own get/put/position/limit/capacity/remaining/flip/clear/rewind
+    // follow the same buffer algebra as the byte parent.
+    // SHADOW MODEL: the view object carries the SAME __bb_* fields
+    // (cap/pos/lim) plus __bb_parent__ = the byte receiver; element storage
+    // is the shared lazy per-index field run __bb_b<i>__ so GL/BufferUtils
+    // writes through either side land in one identity. Element sizes:
+    // char 2, short 2, int 4, long 8, float 4, double 8.
+    {
+        struct ViewFam { const char* cls; const char* simple; int esize; };
+        static const ViewFam kViewFam[] = {
+            {"Ljava/nio/CharBuffer;", "Char", 2},
+            {"Ljava/nio/ShortBuffer;", "Short", 2},
+            {"Ljava/nio/IntBuffer;", "Int", 4},
+            {"Ljava/nio/LongBuffer;", "Long", 8},
+            {"Ljava/nio/FloatBuffer;", "Float", 4},
+            {"Ljava/nio/DoubleBuffer;", "Double", 8},
+        };
+        // (a) view creation: ByteBuffer.asXxxBuffer on the byte receiver.
+        if (class_name == "Ljava/nio/ByteBuffer;" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            for (const auto& vf : kViewFam) {
+                if (method != std::string("as") + vf.simple + "Buffer")
+                    continue;
+                uint32_t bb = args[0].object_id;
+                int32_t lim = 0, pos = 0;
+                if (auto v = heap_.get_object_field(bb, "__bb_lim__");
+                        v.has_value() && v->type == DalvikType::INT32)
+                    lim = v->int_val;
+                if (auto v = heap_.get_object_field(bb, "__bb_pos__");
+                        v.has_value() && v->type == DalvikType::INT32)
+                    pos = v->int_val;
+                int32_t cap = (lim - pos) / vf.esize;
+                if (cap < 0) cap = 0;
+                std::string vcls = std::string("Ljava/nio/") + vf.simple + "Buffer;";
+                uint32_t vid = heap_.allocate(vcls, 0, 0);
+                heap_.set_object_field(vid, "__bb_cap__", DalvikValue::make_int(cap));
+                heap_.set_object_field(vid, "__bb_pos__", DalvikValue::make_int(0));
+                heap_.set_object_field(vid, "__bb_lim__", DalvikValue::make_int(cap));
+                heap_.set_object_field(vid, "__bb_parent__",
+                                       DalvikValue::make_object(bb, "Ljava/nio/ByteBuffer;"));
+                result = DalvikValue::make_object(vid, vcls);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // (b) typed-view instance algebra (receiver = args[0]).
+        const ViewFam* vf = nullptr;
+        for (const auto& cand : kViewFam)
+            if (class_name == cand.cls) { vf = &cand; break; }
+        if (vf && !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t vb = args[0].object_id;
+            auto v_field = [&](const char* f) -> int32_t {
+                auto v = heap_.get_object_field(vb, f);
+                return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
+            };
+            auto v_set = [&](const char* f, int32_t val) {
+                heap_.set_object_field(vb, f, DalvikValue::make_int(val));
+            };
+            auto v_elem_get = [&](int32_t i) -> int32_t {
+                auto v = heap_.get_object_field(vb, "__bb_b" + std::to_string(i) + "__");
+                return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
+            };
+            if (method == "get" && args.size() == 1) {
+                int32_t pos = v_field("__bb_pos__");
+                result = DalvikValue::make_int(v_elem_get(pos));
+                if (pos + 1 <= v_field("__bb_lim__")) v_set("__bb_pos__", pos + 1);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "get" && args.size() == 2 && args[1].type == DalvikType::INT32) {
+                result = DalvikValue::make_int(v_elem_get(args[1].int_val));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "put" && args.size() == 2 && args[1].type == DalvikType::INT32) {
+                int32_t pos = v_field("__bb_pos__");
+                v_set(("__bb_b" + std::to_string(pos) + "__").c_str(), args[1].int_val);
+                if (pos + 1 <= v_field("__bb_lim__")) v_set("__bb_pos__", pos + 1);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "put" && args.size() == 3 && args[1].type == DalvikType::INT32 &&
+                args[2].type == DalvikType::INT32) {
+                v_set(("__bb_b" + std::to_string(args[1].int_val) + "__").c_str(),
+                      args[2].int_val);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "position" && args.size() == 1) {
+                result = DalvikValue::make_int(v_field("__bb_pos__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "capacity" && args.size() == 1) {
+                result = DalvikValue::make_int(v_field("__bb_cap__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "remaining" && args.size() == 1) {
+                result = DalvikValue::make_int(v_field("__bb_lim__") - v_field("__bb_pos__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "flip" && args.size() == 1) {
+                v_set("__bb_lim__", v_field("__bb_pos__"));
+                v_set("__bb_pos__", 0);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "clear" && args.size() == 1) {
+                v_set("__bb_pos__", 0);
+                v_set("__bb_lim__", v_field("__bb_cap__"));
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "rewind" && args.size() == 1) {
+                v_set("__bb_pos__", 0);
                 result = args[0];
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;

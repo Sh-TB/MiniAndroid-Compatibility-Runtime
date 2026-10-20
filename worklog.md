@@ -10612,3 +10612,25 @@ Stage Summary:
 - libGDX family natives are LIVE for the first time on a fresh container (box2d + gdx dlopen ok); the remaining tower3d frontier is a precise shadow-heap receiver-binding law (F-NEW-462) with fixture-first next step.
 - Honest pendings: F-NEW-449 MessageInfo + chess RecyclerView content layer untouched (named next); draw-op frontier documented, not fixed; virtual-time measurement law named.
 - Wave score: 10/10 units terminal, 3 fully closed, weighted ~85%.
+
+---
+Task ID: CONT-114
+Agent: Super Z (main)
+Task: Issue #364 «ادامه فیل و یوز» — elephant wave on CONT-113's named pendings: F-NEW-462 fixture-first + everything it exposed; push per standing rule.
+
+Work Log:
+- Container truth re-established: stale snapshot e99c2fbd (registry 566, junk UUID commits) vs origin/main 23948dd8 (CONT-112/113 waves) — git fetch showed 229 missing commits; reset --hard; registry 777 + worklog matched remote; fresh `make -j2` reproduced binary 9f0fd0f4b9faa016 byte-identical (deterministic rebuild law re-proven on a second fresh container).
+- #364 refetched in full (80 comments; last = CONT-113 6280773133). Wave mission = CONT-113's named next lever (F-NEW-462 fixture-first) + the chain it exposed.
+- W2: F-NEW-462 decode with real DEX dumps (scripts/c114_dump_graphics.py, static-field + per-list diff-base fixes): tower3d AndroidGraphics extends AbstractGraphics; ctor stores config/app with obj=v10 AFTER a DEX super ctor; view created via createGLSurfaceView. Fresh run: [IGET-MISS-DIAG] obj#138 (GLSurfaceView20) 11 rows ALL caller=AndroidGraphics.onDrawFrame -> receiver bug, not keying.
+- W3: V1 probe rows (ctor-calls-ctor negative control, fixtures/c114_f462_probe) all CORRECT pre-fix -> CONT-113 ctor-this-binding theory REFUTED. True root: dispatch_gl_surface_view_frame passed the VIEW as args[0] of onSurfaceCreated/onSurfaceChanged/onDrawFrame while dispatching the RENDERER's class methods (AOSP GLThread law: callbacks run ON the renderer). One-line fix. Bracket 0/3 -> 3/3 (ctorStamp 0->777, seq 0->4242). Tower3d: obj#138 misses 11 -> 0, setupGL completes, Gdx.app set.
+- W4: next layer = DefaultTextureBinder.getMaxTextureUnits NPE (IntBuffer.get on null) — ByteBuffer.asIntBuffer had NO handler. F-NEW-463: six typed view buffers (OpenJDK law, __bb_parent__ identity, full algebra) + GLES20.glGetIntegerv state-query-into-Buffer (ES2 spec-minimum table). getMaxTextureUnits progressed to the Gdx.gl read.
+- W5: next layer = Array.add ARR-LEN-NULL on an R414-materialized bare shell. F-NEW-464: materialize_init_default now EXECUTES the ()V ctor (DEX-defined + F-NEW-274 gate + same-type re-entrancy guard). obj#346 faces get real zero-state.
+- W6: honest remaining face registered as F-NEW-465 CONFIRMED_OPEN_GAP: obj#393 allocated frame=0 pc=0 (neither execute_new_instance nor materialize_init_default), dispatched Array.add with zero keys; correlated REC-MISS java/lang/reflect/Array;.newInstance + ClassReflection attribute-copy path. Allocation site not pinned — CONT-28 ctor-skip identifiability named.
+- Battery at 9b5d38f5: f462 3/3, c448 7/7, c449 4/4, wall 12/12 MATCH byte-identical (dooz d602648e/opencalc d5f3c7b5/unote 90a67cc1/microtimer bbd350b6 x3), goldens 4/4, negatives 19/19 (canonical gate_a probe store regenerated per CONT-111 remedy; interim 9/19 = documented sequence artifact), MG-310 7/7, MG-150 3/3, selftest 13/13, c74esc green. Zero unadjudicated drift.
+- Registry 777 -> 780 id-unique (main == mirror): F-NEW-462 ROOT-CAUSED-FIXED (refined), F-NEW-463/464 ROOT-CAUSED-FIXED, F-NEW-465 CONFIRMED_OPEN_GAP. Evidence: evidence/cont114/evidence.json. Ledger posted to #364; push verified HEAD == origin/main.
+
+Stage Summary:
+- F-NEW-462 closed with the honest refinement: the CONT-113 theory was refuted by a probe and replaced by the true receiver law (fixture-first worked exactly as designed).
+- tower3d advanced three death-layers (setupGL NPE -> IntBuffer NPE -> bare-shell ctor-skip NPE); the visible face stands at DEFAULT_BACKGROUND_ONLY — draw-op frontier is now reached with a HEALTHY AndroidGraphics state for the first time.
+- Honest pendings: F-NEW-465 (allocation site pinning), F-NEW-449, chess RecyclerView, virtual-time measurement law.
+- Wave score: 6/6 units terminal, 3 roots closed, 1 honest open registered with precise evidence.

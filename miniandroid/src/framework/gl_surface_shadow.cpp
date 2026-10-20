@@ -221,6 +221,36 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
 // Dispatch one GLES20 static through the bridge. Returns the handled flag;
 // ret maps from the DEX prototype's return char (I/Z→int, F→float, V→void).
 CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
+    // ── F-NEW-463 (CONT-114): state-query-into-Buffer family ────────────
+    // AOSP GLES20.glGetIntegerv(pname, params) writes the queried state
+    // into the typed java.nio view (the tower3d path passes the IntBuffer
+    // from BufferUtils.newIntBuffer into DefaultTextureBinder). The bridge
+    // has no native-query path yet; the answer table carries the OpenGL ES
+    // 2.0 spec-minimum family (a real driver answers its own limits — the
+    // spec guarantees at least these). Writes land in the view object's
+    // __bb_b<i>__ element run — the engine's F-NEW-463 view-buffer identity
+    // (same storage the IntBuffer.get shadow reads).
+    if (ctx.method == "glGetIntegerv" && ctx.args.size() >= 2 &&
+        ctx.args[0].kind == CallContext::Arg::Kind::INT &&
+        ctx.args[1].kind == CallContext::Arg::Kind::OBJECT) {
+        static const struct { uint32_t pname; int32_t val; } kGlQuery[] = {
+            {0x8872u, 8},     // GL_MAX_TEXTURE_IMAGE_UNITS (ES2 spec min)
+            {0x8B4Du, 8},     // GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+            {0x8869u, 8},     // GL_MAX_VERTEX_ATTRIBS
+            {0x0D33u, 2048},  // GL_MAX_TEXTURE_SIZE
+        };
+        const uint32_t pname = (uint32_t)ctx.args[0].int_val;
+        const uint32_t buf = ctx.args[1].object_id;
+        for (const auto& q : kGlQuery) {
+            if (q.pname != pname) continue;
+            if (heap && buf != 0)
+                heap->set_object_int_field(buf, "__bb_b0__", q.val);
+            gfx::GfxTrace::instance().gl_call(
+                "GLES20", ctx.method, true, (int)ctx.args.size(),
+                "state-query-into-buffer");
+            return CallResult::handled_void();
+        }
+    }
     GlMarshal m;
     const bool marsh = marshal_gles20(heap, ctx, m);
     int32_t iret = 0;
