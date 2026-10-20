@@ -1,0 +1,28 @@
+{
+  "wave": "CONT-116",
+  "date_utc": "2026-10-20",
+  "base": "origin/main 492df09a (CONT-115)",
+  "binary": "3ecd381cda214dcd",
+  "binary_lineage": "9b5d38f5742eb99c -> +Constructor.newInstance varargs/descriptor (both shims) -> +F464 inverted-condition fix",
+  "fixes": [
+    {"id": "F-NEW-465(a)", "law": "Constructor.newInstance forwards varargs Object[] and dispatches the arity+primitive-shape-matched <init> via exact descriptor (F-023 authority); dispatch miss is LOUD ([F465-CTOR-MISS], pinned alloc site)", "sites": ["dalvik_engine.cpp ~34079 (hot shim)", "dalvik_engine.cpp ~54705 (cold shim)"]},
+    {"id": "F-NEW-465(b)", "law": "materialize_init_default runs the ()V ctor exactly when it exists (CONT-116 corrected the INVERTED !class_has_no_arg_ctor condition left by CONT-114's F-NEW-464)"}
+  ],
+  "bracket": {
+    "pre": {"death": "Array.add pc=4 ARR-LEN-NULL <- R414-INIT-DEFAULT obj#393 zero-field shell", "runs": "run/c116/t_diag.log, 3/3 deterministic pre-fix (11a38a5a, rc=1)"},
+    "post": {"death": "ARR-LEN-NULL ABSENT; IGET-MISS keys:<none> 2->0; FIELD-TRACE items stored by Array.<init> on materialized shells; NEW death = Array.<init> getClass-null (attribute copy-ctor chain) — registered as next fixture", "runs": "run/c116/t465c{1,2,3}.log, run/c116/t_diag2.log"}
+  },
+  "fnew449_decode": {
+    "array": "o5042 [Ljava/lang/Object; len=11 (S36-AOOB)",
+    "construction": "11 STRING_REF aput stores idx 0..10 (EXP093-APUT); FNA excluded (98 rows all [I, later); no copyOf",
+    "walk": "20 R337-UNSAFE rows = all 11 p3 instance fields (10 real + aux zzd x10), then entries[11] terminator read",
+    "residual": "which 12th store ART executes OR string-derived terminator demand; both disassemblers desync on n2.r",
+    "fixture": "MessageInfo-shape two-count-sources probe (named next lever)"
+  },
+  "battery": {
+    "wall": {"dooz": "d602648e8e401895 MATCH", "opencalc": "d5f3c7b5e9936ae6 MATCH", "unote": "90a67cc1ddda57b7 MATCH", "microtimer": "bbd350b6c14fbd52 MATCH"},
+    "whites_controls": {"chess": "a0319686d56ff5c0 MATCH", "tower3d": "11a38a5aeeff45a6 stable", "solitaire": "ba50a4d28ea62fe7 MATCH"},
+    "probes": {"c448": "6/6", "c449": "4/4", "goldens": "4/4", "negatives": "19/19 (store regenerated per CONT-111 remedy)", "reinstall": "8/8", "mg310": "7/7", "mg150": "3/3", "selftest": "13/13"}
+  },
+  "registry": {"roots": 780, "id_unique": true, "changes": ["F-NEW-465 -> ROOT-CAUSED-FIXED", "F-NEW-449 decode deepened, stays CONFIRMED_OPEN_GAP"]}
+}
