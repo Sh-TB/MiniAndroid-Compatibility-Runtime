@@ -94,6 +94,11 @@ void note_loader(const std::string& caller_class, const std::string& libname);
 bool has_loaded_libs();
 std::vector<LoadedLib> loaded_libs_snapshot();
 
+// FIX-TTT (CONT-120): true iff a native fault poisoned the host loader this
+// process (guarded dlopen faulted post-probe). The run command uses this
+// for the _exit teardown law — a poisoned loader's _dl_fini walk can hang.
+bool loader_poisoned();
+
 // ── Symbol resolution (JNI short + long mangling, RegisterNatives) ────
 // Returns the function pointer for Java_<class>_<method> or the registered
 // native. `tried` lists every symbol name attempted (AOSP "No

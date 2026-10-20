@@ -320,6 +320,33 @@ CallResult GLSurfaceViewShadow::dispatch(const CallContext& ctx) {
     // ── GLSurfaceView instance methods (GL lifecycle state) ─────────────
     if (cls.find("opengl/GLSurfaceView") != std::string::npos) {
         const uint32_t self = ctx.receiver_id;
+        // ── F-NEW-462 CONT-120 (bouncy evidence): SurfaceView.getHolder law
+        // reaches GLSurfaceView. AOSP android.opengl.GLSurfaceView EXTENDS
+        // android.view.SurfaceView, so getHolder() is the SurfaceView holder
+        // law verbatim: ONE holder per view, allocated on first request,
+        // back-linked to the owner so SurfaceHolder methods resolve their
+        // view — and NEVER null (a null holder here made bouncy's
+        // GL20Renderer.<init> die on SurfaceHolder.setFormat with a null
+        // receiver NPE, which unwound onCreate and left later-initialized
+        // fields null → the follow-up Set.add null chain). The holder object
+        // is the same "Landroid/view/SurfaceHolder;" class SurfaceViewShadow
+        // serves, with the same svHolder/svOwner fields, so lockCanvas/
+        // setFormat/setFixedSize resolve through the ONE SurfaceHolder law
+        // regardless of which view acquired the holder.
+        if (m == "getHolder") {
+            uint32_t holder = 0;
+            auto hf = heap_->get_object_ref_field(self, "svHolder", holder);
+            if (!hf || holder == 0 || !heap_->has_object(holder)) {
+                holder = heap_->allocate("Landroid/view/SurfaceHolder;");
+                heap_->set_object_ref_field(self, "svHolder", holder,
+                                            "Landroid/view/SurfaceHolder;",
+                                            "", false);
+                heap_->set_object_int_field(holder, "svOwner",
+                                            static_cast<int32_t>(self));
+            }
+            return CallResult::handled_object(holder,
+                                              "Landroid/view/SurfaceHolder;");
+        }
         auto store_ref = [&](const char* field) {
             if (self != 0 && ctx.args.size() >= 1 &&
                 ctx.args[0].kind == CallContext::Arg::Kind::OBJECT && heap_) {

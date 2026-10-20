@@ -5861,6 +5861,56 @@ void ViewShadow::set_focused_view(uint32_t view_id) {
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
 
+    // ── FIX-D12 (CONT-120): AOSP ViewRootImpl.checkThread law ───────────
+    // AOSP ViewRootImpl.checkThread: "Only the original thread that created
+    // a view hierarchy can touch their views." (CalledFromWrongThread-
+    // Exception, raised from requestLayout/invalidate and every mutation
+    // that reaches them — TextView.setText → checkForRelayout →
+    // requestLayout, setVisibility → requestLayout, ...). This runtime
+    // serializes background-thread bodies (F-110d current-thread identity
+    // law): while a drained body is active, current_thread_id() !=
+    // main_thread_id() is the exact "wrong thread" condition. The view
+    // hierarchy here is main-thread-owned (inflate/setContentView run on
+    // the main identity), so a View-tree mutation from a drained body
+    // raises CalledFromWrongThreadException with the AOSP message — while
+    // a Handler.post'ed runnable stays LEGAL (the Looper drain re-binds
+    // the identity to the posted-to Looper's thread before the body runs,
+    // F-110d — the same law AOSP runs on).
+    // Env: MINIANDROID_D12_LAW=0 disables the check (default ON,
+    // battery-verified zero anchor drift this wave).
+    {
+        static const bool d12_law = [] {
+            const char* e = std::getenv("MINIANDROID_D12_LAW");
+            return !e || e[0] != '0';
+        }();
+        static const char* const kD12Mutators[] = {
+            "requestLayout", "invalidate", "setText", "setTextSize",
+            "setTextColor", "setVisibility", "setLayoutParams",
+            "setBackgroundColor", "setBackgroundResource", "setEnabled",
+            "setPadding", "setTranslationX", "setTranslationY",
+            "setAlpha", "setClickable", "setFocusable"};
+        if (d12_law && ctx.receiver_id != 0) {
+            bool is_mutator = false;
+            for (const char* mm : kD12Mutators)
+                if (m == mm) { is_mutator = true; break; }
+            if (is_mutator && registry_) {
+                if (auto* ts = registry_->find_as<ThreadShadow>()) {
+                    if (ts->current_thread_id() != ts->main_thread_id()) {
+                        std::cerr << "[FIX-D12] CalledFromWrongThreadException: "
+                                  << ctx.class_name << "." << m
+                                  << " from a drained thread body "
+                                  << "(main-thread view-hierarchy law)"
+                                  << std::endl;
+                        return CallResult::handled_exception(
+                            "Landroid/view/CalledFromWrongThreadException;",
+                            "Only the original thread that created a view "
+                            "hierarchy can touch their views.");
+                    }
+                }
+            }
+        }
+    }
+
     // ── ROOT-053: WebView availability probe (AOSP android.webkit law) ──
     // WebView.getCurrentWebViewPackage (API 26+, static) returns a non-null
     // WebViewPackageInfo on any device that ships a WebView implementation.
