@@ -10821,3 +10821,80 @@ Work Log:
 Stage Summary:
 - CONT-123 terminal: last REGISTERED row resolved to state-family-landed; 1 LAW-LANDED-PARTIAL closed by live re-verification; compose tap frontier honestly unchanged.
 - Next: synthetic-Compose-tree tap probe, draw-walk Z-sorting, Parcel substrate probes (R-NEW-018/019), InMemoryDexClassLoader (R-NEW-133), 112 PARTIAL roots, the 3 gap levers.
+
+---
+Task ID: CONT-124 (Train 1/5)
+Agent: main (Z.ai)
+Task: «۵ تا قطار هر قطار کلی واگن تغییرات اسری روی دوز تلگرام و غیره» — 5 trains, each with many wagons, all SOURCE-level changes impacting dooz/telegram/etc.
+
+Work Log:
+- Container reset recovery: local e99c2fbd/566 roots -> origin/main d6484d1d/783 roots (remote had CONT-119..123 already: F-NEW-449 ROOT-CAUSED-FIXED, FIX-TTT/FIX-D12 landed). Binary rebuilt byte-identical 04a89c52 (deterministic rebuild).
+- DECODE: fresh 180s dooz = 100% bg; FIELD-TRACE Ld61;.i = 88 ctor-zero-init puts, ZERO position writes. [SYNTH-EXC] aput-object-store-check AIOOBE x9 'Lf6; cannot be stored in [Lxt0;' at Liw0;.b pc=16 -> Lr;.g catch-all -> recovery re-throw pc=57 uncovered -> APP-BOUNDARY unwind through Lel0;.c/.d (LayoutNode placement) at MainActivity.onCreate.
+- DEX ground truth (new tool scripts/c124_dex_classdef.py): Lxt0;/Lvt0;/Lbu0; are INTERFACES (access 0x0601/0x0601/0x0401), chain Lbu0; extends Lvt0; extends Lxt0;; Lf6; implements Lbu0; => Lf6; IS-A Lxt0; — the store is JVMS-LEGAL; the engine's assignable walk lacked superinterface transitivity.
+- FIX F-NEW-469: superinterface closure BFS in dalvik_class_assignable (DEX class_to_interfaces_ + F-NEW-236 framework tables, visited-bounded 64) at all three walk points. Only previously-FALSE answers can flip TRUE.
+- VERIFIED: ASC-REJECT 9->0, AIOOBE 27->0; 180s dooz Ld61;.i0 (updateSizeAndPosition) writes REAL packed positions 2319282340800 — the placement pass survives for the first time in the current lineage. Honest residuals: place-then-reset poison + draw-op frontier (face d602648e byte-identical at 30s AND 180s).
+- Wall at 6bb7150a: 9/9 anchors, selftest rc=0, negatives 19/19 (probe store regenerated per CONT-111 remedy). Registry 784.
+- PUSH be350cee (HEAD==origin/main verified).
+
+Stage Summary:
+- F-NEW-469 ROOT-CAUSED-FIXED: the deepest proven reason zero Placeable.position writes landed at HEAD was the bogus AIOOBE killing the placement pass. The engine store-check is now JVMS-exact on interface chains. Next: place-then-reset poison law, draw-op frontier.
+
+---
+Task ID: CONT-125 (Train 2/5)
+Agent: main (Z.ai)
+Task: Train 2 — F-NEW-470 + corpus fan-out sweep.
+
+Work Log:
+- Fan-out sweep (scripts/cont125_sweep.sh, 12 apps): F-NEW-469 passes every corpus store-check (aioobe=0 all); 6 faces MATCH records; bouncy/chessclock sweep-want rows stale (honest corrections); memory 807a0cca = NEW dialog state recorded OBSERVED (no false fan-out claim); opmt first evidence 548a2d91 rc=0; tictactoe renders b5a7a35d rc=1 (SIGSEGV stays fixed).
+- tictactoe decode: Gdx.app.log NPE x2 <- Gdx.app null <- AndroidApplication.<clinit> marked ERRONEOUS by F-NEW-395 because the clinit's diag_result inherited the STALE in-flight GdxRuntimeException (raised by the SharedLibraryLoader.load fault in an OUTER frame, mid-unwind when the lazy clinit was triggered).
+- FIX F-NEW-470: entry-snapshot attribution at the clinit consumer — the unwind is attributed to the clinit only when NEW vs entry (JVMS 5.5: only a clinit whose OWN bytecode throws marks erroneous).
+- VERIFIED: [CLASS_INIT] AndroidApplication result=OK at 75bf7de9; onResume executes its REAL body. Honest residual: invoke-super AndroidApplication.onCreate still undelivered (method_ids[1184] exists; parsed table misses it) -> F-NEW-471 spec.
+- Wall at 75bf7de9: 9/9 anchors, selftest, negatives 19/19. Registry 785.
+- PUSH 84a978e1.
+
+Stage Summary:
+- The clinit erroneous-poisoning family is closed for the correct JVMS reason; the class_data parse gap is named (F-NEW-471) with byte-level evidence.
+
+---
+Task ID: CONT-126 (Train 3/5)
+Agent: main (Z.ai)
+Task: Train 3 — F-NEW-469 probe landed (fixture-first completion) + FIELD-TRACE statics coverage.
+
+Work Log:
+- Probe fixtures/cont124_iface_chain built (aapt2+ECJ+D8, apk 196a9594345e5c05): 4/4 PASS at 6b2911e7 — direct-store; transitive-store (THE LAW: grandparent-interface store legal); negative-store (array-covariance alias store of unrelated class STILL raises AIOOBE — the check keeps its teeth); chain-dispatch (id()=42).
+- FIELD-TRACE statics: sget/sget-object/sput/sput-object handlers wired to field_trace_active (4 read-only hooks).
+- Immediate payoff: MINIANDROID_FIELD_TRACE=Lcom/badlogic/gdx/Gdx;.app pinned put-static Gdx.app in AndroidApplication.onResume (late) vs the null read in AndroidGraphics.preserveEGLContextOnPause (early) — F-NEW-471 confirmed per-access.
+- Wall at 6b2911e7: 9/9 anchors, selftest rc=0, negatives 19/19. Registry 785 (probe evidence updated).
+- PUSH 0844430f.
+
+Stage Summary:
+- The Train 1 law is probe-backed per fixture-first discipline; the statics diagnostic blind spot is closed.
+
+---
+Task ID: CONT-127 (Train 4/5)
+Agent: main (Z.ai)
+Task: Train 4 — F-NEW-471 slice 1: RESOLUTION-GAP LOUD LAW.
+
+Work Log:
+- execute_invoke_super's shadow-fallback boundary now checks method_resolve_entry: if the super-call target exists in method_ids (byte truth) but no parsed DEX body dispatched, log [F-NEW-471-RES-GAP] cls.method method_id=N caller=... (bounded 40).
+- VERIFIED live: fires EXACTLY once at the decoded site (AndroidApplication.onCreate method_id=1184, caller=AndroidLauncher.onCreate) — run/c127/ttt_gap.log.
+- F-NEW-471 CLASSIFIED: full chain recorded (method_ids[1184] vs 52-method parsed table vs blob-walk desync at vm[10]/0x31862b; incoherent first direct method GLES30.glUniformBlockBinding) + next levers (alignment-repair walker / method_ids-guided lazy recovery).
+- Wall at 255789332406ff63: 9/9 anchors, selftest rc=0, negatives 19/19. Registry 786.
+- PUSH 9ad8b422.
+
+Stage Summary:
+- The silent-shadow-fallback blind spot is permanently closed; the class_data alignment repair is the named high-fan-out lever (single parse law, every corpus app's method table).
+
+---
+Task ID: CONT-128 (Train 5/5)
+Agent: main (Z.ai)
+Task: Train 5 — grand close-out: worklog, final ledger to #364, remote verification.
+
+Work Log:
+- 4 trains landed this session: be350cee (CONT-124), 84a978e1 (CONT-125), 0844430f (CONT-126), 9ad8b422 (CONT-127).
+- Registry 783 -> 786 (F-NEW-469 ROOT-CAUSED-FIXED, F-NEW-470 ROOT-CAUSED-FIXED, F-NEW-471 CLASSIFIED; id-unique main==mirror at every step, no inflation).
+- Every train: full zero-drift wall (9/9 anchors byte-identical incl. dooz d602648e + telegram 20ac8cbbbb), selftest rc=0, negatives 19/19, HEAD==origin/main verified after push.
+- Final ledger posted to #364.
+
+Stage Summary:
+- The user's «۵ قطار» directive is served: 4 source-level trains + close-out. dooz placement is UNBLOCKED (first position writes in lineage); the store-check law is JVMS-exact; the clinit attribution law is JVMS-exact; two diagnostic blind spots closed. Next train owns the class_data alignment repair (F-NEW-471) and the dooz place-then-reset poison.
