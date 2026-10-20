@@ -10590,3 +10590,25 @@ Stage Summary:
 - Chess toolbar face advanced for the first time since CONT-104 (1080x0 -> 1080x168 with the version text child); every fix probed or bracketed; zero unadjudicated drift.
 - Honest pendings: F-NEW-449 (MessageInfo metadata) and CONT-110 P0 first-divergence report = next-wave levers; chess RecyclerView board list still empty (children=0) — content-layer frontier.
 - Wave score: 10/10 units terminal, 6 fully closed, weighted ~85%.
+
+---
+Task ID: CONT-113
+Agent: Super Z (main)
+Task: Issue #364 CONT-113 — "ادامه کل مطالب رو اجرا بکن ۳۶۴" — CONT-110 P0 pair-report lever in full + the tower3d/libGDX chain it exposed; train-batch, push per standing rule.
+
+Work Log:
+- Container truth re-established: stale snapshot (registry 535, junk commit e99c2fbd over CONT-10) -> git fetch showed origin/main 1e205d9a (CONT-112); reset --hard; registry 773 + worklog matched remote exactly; fresh `make -j2` reproduced binary 5bfac05272cbeb51 byte-identical to the CONT-112 battery binary.
+- #364 refetched in full (79 comments; last = CONT-112 6275076848). Wave mission = CONT-112's named lever 2 (CONT-110 P0 pair report) + everything it exposed.
+- W1-3: #366 matrix revalidated at HEAD via cont81_corpus_runner (install-prove-run): 4/4 controls REAL_APP_CONTENT at exact wall faces; 5 whites stable (tower3d/solitaire/tripeaks/fishrings/klondike). Stopwatch honest verdict: APK ARTIFACT contains ZERO <activity> elements (aapt2 xmltree/badging concur) -> replaced by klondike per #366 rules, not a runtime root.
+- W4: tower3d NO_ROOT decoded: dlopen libm.so invalid ELF header (host ld-script) -> F-NEW-387 anchor set was MISSING in the fresh container (build artifact, not code); bouncy box2d IDENTICAL error (menu face despite dead physics).
+- W5-7: three generic fixes: F-NEW-459 (Makefile `anchors` target + `all` dependency + .DEFAULT_GOAL pinned — rule-order default-goal demotion caught), F-NEW-460 (libstdc++ anchor linked -lstdc++; empty anchor had BLOCKED the real C++ ABI), F-NEW-461 (bionic strip family test LIBC|LIBC_*; __cxa_pure_virtual@LIBC_O). Bracket: tower3d NO_ROOT -> DEFAULT_BACKGROUND_ONLY 3/3 (11a38a5a); bouncy box2d dlopen ok, uncaughts 21->10, face adjudicated per F-NEW-443.
+- W8: F-NEW-462 CONFIRMED_OPEN_GAP registered with precise evidence (AndroidGraphics ctor receiver binding: graphics field stores land on the GLSurfaceView20 shadow object -> config/app NULL NPEs).
+- W9: veldsoft family decode: SplashActivity 5000ms virtual redirect timer never reached in 5-frame budget (F100-STATE provisional row); solitaire APP_PIXELS; pair report written (evidence/cont113/pair_report.md).
+- W10: full battery at 9f0fd0f4: wall 12/12 x2 MATCH byte-identical (dooz d602648e/opencalc d5f3c7b5/unote 90a67cc1/microtimer bbd350b6), c449 4/4, c448 7/7, chess face a0319686 held, goldens rc=0, negatives 19/19 (canonical gate_a probe store regenerated at run/gatea/probe_store — CONT-111 documented remedy), MG-310 7/7, MG-150 3/3, selftest 13/13, c74esc/c106a/c106b2 green.
+- Registry 773 -> 777 id-unique (main == mirror): F-NEW-459/460/461 ROOT-CAUSED-FIXED, F-NEW-462 CONFIRMED_OPEN_GAP. Evidence: evidence/cont113/{evidence.json,pair_report.md}. Ledger posted to #364; push verified HEAD == origin/main.
+
+Stage Summary:
+- The #366 white-vs-working matrix now has ONE separating stage for all five whites (DRAW_OPS->APP_PIXELS) — not five boot failures; the tower3d branch of that frontier was driven NO_ROOT -> DEFAULT_BACKGROUND_ONLY inside the wave via three generic native-loader/pipeline fixes.
+- libGDX family natives are LIVE for the first time on a fresh container (box2d + gdx dlopen ok); the remaining tower3d frontier is a precise shadow-heap receiver-binding law (F-NEW-462) with fixture-first next step.
+- Honest pendings: F-NEW-449 MessageInfo + chess RecyclerView content layer untouched (named next); draw-op frontier documented, not fixed; virtual-time measurement law named.
+- Wave score: 10/10 units terminal, 3 fully closed, weighted ~85%.

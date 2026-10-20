@@ -8,11 +8,19 @@
 # symbols resolve against genuine implementations — never a stub:
 #   libm.so       → -lm            (glibc libm: layout-free C math surface)
 #   libdl.so      → -ldl           (glibc dl: dlopen/dlsym contracts)
-#   libstdc++.so  → (empty anchor; satisfies the DT_NEEDED so the loader
-#                    error names the real missing C++ symbol, if any)
+#   libstdc++.so  → anchor against -lstdc++ (CONT-113 F-NEW-460: an empty
+#                    anchor SATISFIED the Android DT_NEEDED by SONAME and
+#                    thereby BLOCKED glibc's real libstdc++.so.6 — every
+#                    Itanium-ABI symbol the NDK C++ libs need
+#                    (__cxa_pure_virtual, operator new, ...) died with
+#                    "undefined symbol". The anchor must carry the real
+#                    host C++ ABI in its dependency chain, exactly like
+#                    the libm/libc anchors carry -lm/-lc; layout-free
+#                    Itanium-ABI symbols are SysV-stable, the same ABI
+#                    caveat as the C anchors).
 #   liblog.so     → first-party implementation of the core liblog surface
 #                    (__android_log_print/write/vprint/buf_print) writing
- *                   bounded [LOG] rows to stderr — a real compatibility
+#                    bounded [LOG] rows to stderr — a real compatibility
 #                    implementation, not a fake success.
 #   libc.so       → empty anchor against -lc (glibc). ABI caveat recorded:
 #                    layout-free C symbols are SysV-stable; bionic struct
@@ -71,7 +79,7 @@ gcc -shared -fPIC -O2 -Wl,-soname,libm.so -Wl,--no-as-needed -lm \
     -o "$OUT/libm.so" tmp/cont83_anchors/empty.c
 gcc -shared -fPIC -O2 -Wl,-soname,libdl.so -Wl,--no-as-needed -ldl \
     -o "$OUT/libdl.so" tmp/cont83_anchors/empty.c
-gcc -shared -fPIC -O2 -Wl,-soname,libstdc++.so -Wl,--no-as-needed \
+gcc -shared -fPIC -O2 -Wl,-soname,libstdc++.so -Wl,--no-as-needed -lstdc++ \
     -o "$OUT/libstdc++.so" tmp/cont83_anchors/empty.c
 gcc -shared -fPIC -O2 -Wl,-soname,libc.so -Wl,--no-as-needed -lc \
     -o "$OUT/libc.so" tmp/cont83_anchors/empty.c

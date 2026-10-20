@@ -1,0 +1,92 @@
+{
+ "wave": "CONT-113",
+ "issue": 364,
+ "date": "2026-10-20",
+ "base_commit": "1e205d9a (CONT-112 final; container re-verified fresh via git fetch + registry/worklog truth check)",
+ "final_binary_sha16": "9f0fd0f4b9faa016",
+ "binary_lineage": [
+  "5bfac05272cbeb51 = fresh deterministic rebuild at origin/main 1e205d9a (matches the CONT-112 battery binary byte-for-byte)",
+  "9f0fd0f4b9faa016 = + F-NEW-461 bionic LIBC_* version-family strip (the only source change)"
+ ],
+ "anchor_set": "miniandroid/build/anchor_libs (5 anchors, Android sonames; libstdc++.so sha16 7a9b37148a5a1edb after F-NEW-460 -lstdc++ wiring)",
+ "registry": "773 -> 777 id-unique (main == mirror): F-NEW-459/460/461 ROOT-CAUSED-FIXED, F-NEW-462 CONFIRMED_OPEN_GAP",
+ "mission": {
+  "directives_read": "#364 full comment refetch (79 comments; last = CONT-112 ledger 6275076848). Levers named by CONT-112: (1) F-NEW-449 MessageInfo, (2) CONT-110 P0 first-divergence pair report, (3) chess RecyclerView content layer. This wave delivered lever 2 IN FULL (items 01-05/07/08) plus the tower3d/libGDX chain it exposed; levers 1/3 remain named for the next wave.",
+  "container_recovery": "stale snapshot (registry 535, HEAD e99c2fbd over CONT-10) -> git fetch: origin/main 1e205d9a 224+ commits ahead -> reset --hard; registry/worklog matched remote exactly (773 / CONT-112); stale local junk commit superseded (its scripts exist on remote, a.out already absent)"
+ },
+ "wagons": [
+  {
+   "id": "W1-matrix-revalidation",
+   "task": "#366 matrix at current HEAD per CONT-110 item 02: 4 working controls (opencalc/unote/microtimer/chess) + 5 white targets; install-prove (src sha == installed sha) then run by package",
+   "status": "TESTED",
+   "evidence": "run/c113/matrix_ctrl/result.json (4/4 REAL_APP_CONTENT, wall faces exact), run/c113/matrix_white/result.json, run/c113/matrix_white2/result.json"
+  },
+  {
+   "id": "W2-stopwatch-artifact-verdict",
+   "task": "stopwatch mainActivity empty decode: aapt2 dump xmltree has NO E: activity element at all; badging has no launchable-activity; MiniAndroid activities:[] is a CORRECT parse of an artifact-defective APK -> replaced by klondike per #366 'do NOT use corrupt APK-fetch cases'",
+   "status": "TESTED",
+   "evidence": "aapt2 xmltree/badging transcripts in evidence/cont113/pair_report.md section 01"
+  },
+  {
+   "id": "W3-pair-report",
+   "task": "CONT-110 P0 item 07: first-divergence pair report, five independent stage verdicts (items 03/04/05), one separating stage for ALL whites (DRAW_OPS->APP_PIXELS), sub-case decodes",
+   "status": "TESTED",
+   "evidence": "evidence/cont113/pair_report.md"
+  },
+  {
+   "id": "W4-tower3d-familyA-decode",
+   "task": "Family A (WINDOW_ROOT/NO_ROOT) decode: stack.tower3d dies at UnsatisfiedLinkError dlopen libm.so invalid ELF header (host ld-script); bouncy box2d IDENTICAL error (menu face rendered despite dead physics) -> F-NEW-387 anchor set missing in fresh container (build artifact, not a code bug)",
+   "status": "TESTED",
+   "evidence": "run/c113/matrix_white/stack.tower3d/stdout_r1.txt rows 276-297; run/c113/bouncy/r1.log rows 298-312"
+  },
+  {
+   "id": "W5-F-NEW-459-anchor-pipeline",
+   "task": "Generic fix: miniandroid/Makefile gains `anchors` target (runs cont83_build_anchors.sh) and `all` depends on it with .DEFAULT_GOAL := all pinned (rule-order demotion bug caught: anchors had silently become the default goal). Bracket: tower3d NO_ROOT/WINDOW_ROOT 0/3 -> DEFAULT_BACKGROUND_ONLY/APP_DRAW_OPS 3/3 deterministic 11a38a5aeeff45a6",
+   "status": "TESTED",
+   "evidence": "miniandroid/Makefile; run/c113/tower3d_anchors.log; run/c113/tower3d_fix_r{1,2,3}.log"
+  },
+  {
+   "id": "W6-F-NEW-460-libstdcxx-anchor",
+   "task": "Empty libstdc++ anchor satisfied the Android DT_NEEDED by SONAME and BLOCKED glibc real libstdc++.so.6 (__cxa_pure_virtual died). Fix: anchor linked -lstdc++ (Itanium-ABI layout-free, same caveat as C anchors); anchor sha 5dd95f611a38a7ce -> 7a9b37148a5a1edb",
+   "status": "TESTED",
+   "evidence": "scripts/cont83_build_anchors.sh; run/c113/bouncy_fix.log row 298: [S2-NATIVE] load gdx-box2d: dlopen ok"
+  },
+  {
+   "id": "W7-F-NEW-461-bionic-version-family",
+   "task": "strip_bionic_version_tags matched only exact LIBC; __cxa_pure_virtual@LIBC_O stayed versioned -> glibc rejected. Fix: family test LIBC|LIBC_* prefix (GLIBC_* never matches); bounded rewrite in the runtime-owned extracted copy only",
+   "status": "TESTED",
+   "evidence": "miniandroid/src/jni/native_dep.cpp; bouncy uncaught 21->10, face dd0c14257fa1f2af -> 8a6c24ac8a7d718e adjudicated per F-NEW-443 (natives dead -> live, not a wall row)"
+  },
+  {
+   "id": "W8-F-NEW-462-graphics-receiver-open",
+   "task": "Honest decode: post-fix tower3d dies at AndroidGraphics.setupGL config-NULL + updatePpi app-NULL NPEs; obj#138 (GLSurfaceView20) carries the AndroidGraphics field slots (IGET-MISS-DIAG keys) -> ctor receiver binding through nested view construction = new CONFIRMED_OPEN_GAP with precise evidence, fixture-first next wave",
+   "status": "OBSERVED",
+   "evidence": "run/c113/tower3d_fix_r1.log rows 710-716; registry F-NEW-462"
+  },
+  {
+   "id": "W9-veldsoft-familyB-decode",
+   "task": "tripeaks/fishrings identical faces: SplashActivity 5000ms virtual redirect Timer never reached in 5-frame budget (F100-STATE provisional-launch row quoted); banner WebView asset honestly missing (F085). solitaire APP_PIXELS; klondike SPLASH_ONLY. Harness honesty lever named",
+   "status": "OBSERVED",
+   "evidence": "run/c113/matrix_white/eu.veldsoft.tri.peaks/stdout_r1.txt; pair_report.md section 03"
+  },
+  {
+   "id": "W10-battery-and-gates",
+   "task": "Full battery at 9f0fd0f4: wall 12/12 x2 MATCH byte-identical, c449 4/4, c448 7/7, chess toolbar face a0319686 held, goldens rc=0, negatives 19/19 (canonical gate_a install+run regenerated 99-row results file after fresh-container probe_store rebuild; documented CONT-111 precedent), MG-310 7/7, MG-150 3/3, selftest 13/13, c74esc/c106a/c106b2 green",
+   "status": "TESTED",
+   "evidence": "run/c113/battery.log; probe_store regenerated at run/gatea/probe_store (the canonical path)"
+  }
+ ],
+ "success_rate": {
+  "wave_units_terminal": "10/10",
+  "fully_closed": 3,
+  "weighted_pct": 85,
+  "honest_notes": "F-NEW-462 left open by design (decode complete, fix needs the fixture-first lever); F-NEW-449 and chess RecyclerView levers NOT attempted this wave (named next); veldsoft/solitaire draw-op frontier documented, not fixed; stopwatch verdict is artifact-level, not a runtime fix"
+ },
+ "next_levers": [
+  "F-NEW-462 fixture-first two-class ctor-calls-ctor receiver-binding probe + generic shadow-heap this-binding fix",
+  "F-NEW-449 MessageInfo (protobuf-lite) metadata decode (Telegram frontier)",
+  "chess RecyclerView content layer (adapter/ViewHolder DEX path)",
+  "draw-op frontier unification (solitaire family vs dooz compose family)",
+  "virtual-time measurement law for splash-timer apps (harness)"
+ ]
+}

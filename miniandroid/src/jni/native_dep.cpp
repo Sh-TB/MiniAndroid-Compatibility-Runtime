@@ -246,7 +246,17 @@ bool strip_bionic_version_tags(const std::string& path, int& rewritten,
                     dynstr->sh_offset + a.vna_name < buf.size()) {
                     const char* name = reinterpret_cast<const char*>(
                         buf.data() + dynstr->sh_offset + a.vna_name);
-                    if (std::strcmp(name, "LIBC") == 0)
+                    // CONT-113 F-NEW-461: bionic tags the C ABI per API
+                    // level — LIBC plus per-letter variants (LIBC_N/O/P/Q/
+                    // R/S...). __cxa_pure_virtual (the C++ ABI thunk every
+                    // NDK C++ lib needs) is tagged LIBC_O, so an exact
+                    // "LIBC" match left every LIBC_* symbol versioned and
+                    // glibc rejected the lookup ("undefined symbol ...,
+                    // version LIBC_O"). The family test (exact LIBC or the
+                    // LIBC_ prefix) covers the whole bionic tag family;
+                    // GLIBC_* host tags never match the prefix.
+                    if (std::strcmp(name, "LIBC") == 0 ||
+                        std::strncmp(name, "LIBC_", 5) == 0)
                         libc_idx.push_back(a.vna_other);
                 }
                 if (!a.vna_next) break;

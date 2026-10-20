@@ -80,10 +80,24 @@ TEST_EXECUTABLE = $(BUILDDIR)/miniandroid_test
 JSON_DIR = third_party/nlohmann_json
 JSON_INCLUDE = -I$(JSON_DIR)/include
 
-# Default target
-.PHONY: all clean test run help version megabatch run-megabatch
+# F-NEW-387 anchor set (CONT-113): the Android-soname ELF anchors
+# (libm.so/liblog.so/libc.so/libdl.so/libstdc++.so under build/anchor_libs)
+# are a REQUIRED build artifact of the native loader, not an optional
+# extra — a fresh container that rebuilds only the binary loses them and
+# every libGDX-family APK dies with "dlopen failed: ... invalid ELF
+# header" (the host libm.so is a GNU ld script, not an ELF). `all` builds
+# them so the anchor set can never go stale/missing again.
+.PHONY: all clean test run help version megabatch run-megabatch anchors
 
-all: $(EXECUTABLE)
+# Explicit default goal: rule order must not silently demote `all`.
+.DEFAULT_GOAL := all
+
+ANCHOR_LIBS = $(BUILDDIR)/anchor_libs
+
+anchors:
+	@bash ../scripts/cont83_build_anchors.sh
+
+all: $(EXECUTABLE) anchors
 
 $(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MAIN_OBJECT)
 	@mkdir -p $(BUILDDIR)
