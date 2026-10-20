@@ -5009,8 +5009,33 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
             // ExceptionInInitializerError on first use; this engine's
             // registered active-use answer is NoClassDefFoundError with the
             // original type preserved in the failure evidence.
+            // ── CONT-125 (F-NEW-470): STALE-UNWIND CLINIT ATTRIBUTION LAW ──
+            // JVMS 5.5 marks a class ERRONEOUS only when its OWN <clinit>
+            // bytecode throws. An in-flight unwind that was already
+            // propagating through an OUTER frame when the lazy init was
+            // triggered belongs to that outer stack — it must not fail a
+            // clinit whose own body completed. Snapshot the in-flight state
+            // at entry and attribute the unwind to the clinit only when it
+            // is NEW (entry had no in-flight unwind, or the exit unwind is a
+            // different exception than the entry one).
+            // Live face (tictactoe v3, binary 6bb7150a): SharedLibraryLoader
+            // load faulted (GATEA-NATIVE FIX-TTT kept the runtime alive) and
+            // libGDX wrapped it in GdxRuntimeException mid-unwind; the lazy
+            // AndroidApplication.<clinit> (2-instruction body) was triggered
+            // during that unwind; the stale marker flowed into diag_result,
+            // F-NEW-395 CLINIT-UNWIND marked the class ERRONEOUS, the
+            // invoke-super AndroidApplication.onCreate dispatch was refused,
+            // Gdx.app stayed null, and AndroidLauncher.onCreate died on the
+            // Gdx.app.log NPE (two APP-BOUNDARY unwinds). On ART the class
+            // initializes fine — the app reaches initializeForView.
+            const bool f470_unwind_valid_at_entry = frame_unwind_exception_valid_;
+            const uint32_t f470_unwind_obj_at_entry =
+                frame_unwind_exception_.object_id;
             if (ok_diag &&
-                diag_result.halt_reason.rfind("unwind ", 0) == 0) {
+                diag_result.halt_reason.rfind("unwind ", 0) == 0 &&
+                (!f470_unwind_valid_at_entry ||
+                 frame_unwind_exception_.object_id !=
+                     f470_unwind_obj_at_entry)) {
                 std::cerr << "[F-NEW-395] CLINIT-UNWIND class="
                           << class_descriptor
                           << " in-flight=" << diag_result.halt_reason
