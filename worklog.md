@@ -10700,3 +10700,21 @@ Work Log:
 
 Stage Summary:
 - CONT-116 terminal: F-NEW-465 ROOT-CAUSED-FIXED (two laws, A/B bracketed), F-NEW-449 decoded to a single fork with named fixture, battery green at 3ecd381c, zero unadjudicated drift.
+
+---
+Task ID: CONT-117
+Agent: main (Z.ai)
+Task: «قطار یوز فیل ۱۰۰ تسک کاری کوچیک» — create 100 small work tasks mined from registry + source + internet/GitHub ready code; execute to terminal state; push.
+
+Work Log:
+- Container stale-snapshot recovery #3: local e99c2fbd (535 roots) -> git reset --hard origin/main 4dd923e3 (780 roots). #364 new comments after baseline 6286824142: exactly 1 (6288306104 = CONT-116 RESULT from parallel wave; F-NEW-465 ROOT-CAUSED-FIXED there; no new user requests).
+- Built 101-task ledger from three sources: A=36 PARTIAL registry roots, B=24 UNPROVEN roots (dated trace scan), C=16 source-stub adjudications, D=14 ready-source laws (webfetch: protobuf-lite MessageSchema.java buffer[]/objects[]/RawMessageInfo; Robolectric ShadowView.java invalidate/requestLayout/performClick/scroll/post/checkThread), E=11 battery tasks.
+- scripts/cont117_executor.py executed A-D (90 tasks): 88 تایید, 2 honest CONFIRMED_OPEN_GAP (D-05 unknown-field path, D-12 wrong-thread law — full-source grep zero hits, no false closure).
+- Container reset had wiped miniandroid/build/: foreground chunk rebuild -> binary 3ecd381cda214dcd byte-identical to CONT-116 (deterministic rebuild #4).
+- Battery: selftest green; 6/6 anchors MATCH (dooz/opencalc/unote/microtimer/chess/tower3d) zero drift; negatives initially 9/19 = missing probe store (container reset) -> CONT-111 remedy re-applied -> 19/19 PASS.
+- REGISTRY SYNC GAP caught by battery: root_registry.json stale on F-NEW-465+F-NEW-449 vs canonical mirror (CONT-116 updated mirror only). scripts/cont117_registry_sync.py fixed per CONT-111 precedent -> main==mirror True, 780 id-unique.
+
+Stage Summary:
+- 101/101 tasks terminal: 99 تایید + 2 honest OPEN, weighted ~99%. 0 new root IDs (plan discipline). No registry inflation.
+- Artifacts: scripts/cont117_{executor,ledger,registry_sync,battery_parse}.py, scripts/cont117_battery.sh, run/c117/{task_results,battery}.json, run/c117/cont117_ledger.md, evidence/cont117/evidence.json.
+- Next: F-NEW-449 fixture (MessageInfo two-count-sources), D-05/D-12 law landings, B-cluster upgrades.
