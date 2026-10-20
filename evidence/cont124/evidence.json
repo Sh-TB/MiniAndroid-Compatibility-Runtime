@@ -1,0 +1,39 @@
+{
+ "wave": "CONT-124 (Train 1 of 5)",
+ "user_directive": "\u06f5 \u0642\u0637\u0627\u0631\u060c \u0647\u0631 \u0642\u0637\u0627\u0631 \u06a9\u0644\u06cc \u0648\u0627\u06af\u0646\u060c \u062a\u063a\u06cc\u06cc\u0631\u0627\u062a \u0627\u0633\u0631\u06cc \u0631\u0648\u06cc \u062f\u0648\u0632 \u062a\u0644\u06af\u0631\u0627\u0645 \u0648 \u063a\u06cc\u0631\u0647 (5 trains, many wagons, source-level changes on dooz/telegram/etc.)",
+ "base": {
+  "head": "d6484d1d",
+  "binary": "04a89c52",
+  "registry": 783
+ },
+ "decode_chain": [
+  "1. fresh 180s dooz at 04a89c52: face d602648e = 100% bg (250,250,250), zero placement writes (FIELD-TRACE Ld61;.i: 88 ctor-zero-init puts only)",
+  "2. dooz_asc run: [SYNTH-EXC] aput-object-store-check AIOOBE x9 'Lf6; cannot be stored in an array of type [Lxt0;' at Liw0;.b pc=16, UNCAUGHT",
+  "3. crash.log: AIOOBE caught by Lr;.g catch-all (Compose:initializeView), recovery re-throw at pc=57 uncovered, APP-BOUNDARY unwind through Lel0;.c/.d (LayoutNode placement) at MainActivity.onCreate invoke_pc=306",
+  "4. DEX ground truth (scripts/c124_dex_classdef.py, committed): Lxt0;=INTERFACE, Lvt0;=INTERFACE extends Lxt0;, Lbu0;=INTERFACE extends Lvt0;, Lf6;=class implements Lbu0; => Lf6; IS-A Lxt0; \u2014 the store is JVMS-LEGAL",
+  "5. engine walk inspected: dalvik_class_assignable checked only DIRECTLY declared interfaces per node \u2014 no transitive iface->iface walk"
+ ],
+ "fix": "F-NEW-469 superinterface closure BFS in dalvik_class_assignable (DEX tables + F-NEW-236 framework tables, visited-bounded 64); only previously-FALSE answers can flip TRUE",
+ "post_fix": {
+  "binary": "6bb7150a91bacda1",
+  "asc_reject": "9 -> 0",
+  "array_store_exception": "27 -> 0",
+  "dooz180": "Ld61;.i0 writes REAL packed positions 2319282340800 (first placement writes in the current lineage)",
+  "face_30s": "d602648e8e401895 (anchor byte-identical)",
+  "face_180s": "d602648e8e401895 (residual: place-then-reset poison + draw-op frontier \u2014 named, not faked)"
+ },
+ "battery": {
+  "anchors": "9/9 ANCHOR_MATCH byte-identical (dooz d602648e/opencalc d5f3c7b5/unote 90a67cc1/microtimer bbd350b6/chess a0319686/tower3d 11a38a5a/sudoku be640e39/klondike 31ddd4d5/telegram 20ac8cbbbb)",
+  "selftest": "rc=0",
+  "negatives": "19/19 PASS (probe store regenerated per CONT-111 remedy)",
+  "registry": "784 id-unique main==mirror row-equal (F-NEW-469 added, F-NEW-267 evidence refreshed, no inflation)"
+ },
+ "logs": [
+  "run/c124/dooz180_base.log",
+  "run/c124/dooz180_ft.log",
+  "run/c124/dooz_asc.log",
+  "run/c124/dooz_mt.log",
+  "run/c124/dooz180_fixed.log",
+  "run/c124/battery.log"
+ ]
+}
