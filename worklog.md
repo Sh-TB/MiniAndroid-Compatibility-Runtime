@@ -10634,3 +10634,25 @@ Stage Summary:
 - tower3d advanced three death-layers (setupGL NPE -> IntBuffer NPE -> bare-shell ctor-skip NPE); the visible face stands at DEFAULT_BACKGROUND_ONLY — draw-op frontier is now reached with a HEALTHY AndroidGraphics state for the first time.
 - Honest pendings: F-NEW-465 (allocation site pinning), F-NEW-449, chess RecyclerView, virtual-time measurement law.
 - Wave score: 6/6 units terminal, 3 roots closed, 1 honest open registered with precise evidence.
+
+---
+Task ID: CONT-115
+Agent: Super Z (main)
+Task: «ادامه فیل و یوز با ۵۰ تسک مجزا و واقعا کاربردی» — execute the CONT-110 canonical 50-task plan at current HEAD with real runtime evidence, zero-drift wall, registry/worklog/evidence, push.
+
+Work Log:
+- Container truth RESTORED: stale snapshot e99c2fbd (registry 535) reset via git fetch to origin/main 9d1155d6 (231 commits recovered); registry 780 roots verified.
+- Deterministic rebuild reproduced 9b5d38f5742eb99c byte-identical (CONT-114 final binary; law re-proven on a third container). Anchor set present (libstdc++.so 7a9b3714).
+- 12-target runtime matrix at 9b5d38f5: dooz d602648e / chess a0319686 / opencalc d5f3c7b5 / unote 90a67cc1 / microtimer bbd350b6 / telegram 20ac8cbbbb / tower3d 11a38a5a / solitaire ba50a4d2 / tripeaks b5a7a35d / klondike 31ddd4d5 — ALL byte-identical to recorded faces (zero unadjudicated drift).
+- NEW EVIDENCE: sudoku ×3 face be640e39e82901c9 = REAL tutorial UI (SplashActivity→TutorialActivity, view_root 336 nodes, 4195 white text px) — historical WINDOW_ROOT white-screen claim REFUTED at current HEAD.
+- NEW EVIDENCE: whatsapp = 5,615-byte non-ZIP stub, load_apk honest FAIL 25ms → ARTIFACT_DEFECTIVE (APP-013 BLOCKED; task-03 honest-classify requirement met).
+- F-NEW-449 signature reproduced LIVE in telegram 60s run (play_billing n2;.r aget-oob length=11 index=11 → LaunchActivity APP-BOUNDARY).
+- F-NEW-465 signature reproduced LIVE in tower3d (Array.add zero-field-keys bare-shell + Array.newInstance REC-MISS + R358-ANEW obj#40).
+- Classifier selftest 14/14 PASS (T04).
+- Source audit: evidence/cont115/source_audit.json — 28 task clusters with file:line engine evidence (android_shadows setBackground:7968, obtainStyledAttributes:4979, LooperShadow F-029a, RecyclerView/ViewHolder ×4 files, etc.).
+- 50-task ledger written (run/c115/cont115_ledger.md): 33 تایید / 16 honest PARTIAL / 1 رد (renderer theory) — 0 new root IDs (plan discipline), weighted ≈78%, no false closure; named next levers F-NEW-449/465, F-NEW-256 bridge, T08 traversal diff.
+
+Stage Summary:
+- The CONT-110 50-task plan is fully adjudicated at current HEAD with fresh runtime evidence: 11 targets zero-drift, sudoku claim refuted with a real-content face, whatsapp honestly artifact-defective, both open gaps (449/465) live-reproduced.
+- The telegram journey's single blocker is confirmed to be the F-NEW-449 play_billing chain (16 PARTIAL tasks share this root) — the next wave's highest-fan-out lever.
+- Push: pending (commit after ledger + evidence staged, run/ via git add -f per precedent).

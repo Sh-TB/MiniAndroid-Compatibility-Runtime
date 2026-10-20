@@ -1,0 +1,3177 @@
+{
+ "wave": "CONT-115",
+ "date": "2026-10-20T07:59:06.856003Z",
+ "head": "9d1155d6",
+ "binary_sha16": null,
+ "registry_roots": 780,
+ "tasks": {
+  "T01_first_divergence_mandatory": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 391,
+     "text": "(frame_census_.first_missing_stage.empty()"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 393,
+     "text": ": \", first_missing_stage=\" + frame_census_.first_missing_stage) +"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 1863,
+     "text": "{\"first_missing_stage\", \"DEX_LIFECYCLE\"}};"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5907,
+     "text": "// REAL_APP_CONTENT. first_missing_stage names the earliest stage of"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6054,
+     "text": "frame_census_.first_missing_stage ="
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6119,
+     "text": "census[\"first_missing_stage\"] = first_missing;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3189,
+     "text": "trace_engine_.set_first_divergence("
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3523,
+     "text": "trace_engine_.set_first_divergence("
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3555,
+     "text": "trace_engine_.set_first_divergence("
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5652,
+     "text": "trace_engine_.set_first_divergence("
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6271,
+     "text": "trace_engine_.set_first_divergence("
+    },
+    {
+     "file": "miniandroid/src/diagnostics/trace_overlay.cpp",
+     "line": 215,
+     "text": "const nlohmann::json& div = trace.first_divergence();"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 411,
+     "text": "// the canonical stage machine, write trace_summary.json, close the"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6067,
+     "text": "// 21-P0-6: the census travels WITH the verdict (trace_summary +"
+    },
+    {
+     "file": "miniandroid/src/main.cpp",
+     "line": 148,
+     "text": "std::cout << \"  --trace                S135 runtime event backbone: trace.jsonl + trace_summary.json\\n\";"
+    },
+    {
+     "file": "miniandroid/src/diagnostics/trace_engine.cpp",
+     "line": 695,
+     "text": "// verdict \u2014 trace_summary + FRAME_ANALYSIS event carry the correlated proof"
+    },
+    {
+     "file": "miniandroid/src/diagnostics/trace_engine.cpp",
+     "line": 865,
+     "text": "std::ofstream f(output_dir + \"/trace_summary.json\");"
+    }
+   ],
+   "verdict_sources": "engine trace_engine/trace_summary + cont81 classifier 12-bucket verdict_v2"
+  },
+  "T04_classifier_stage_separation": {
+   "audit": [
+    {
+     "file": "scripts/cont81_repeat_battery.py",
+     "line": 16,
+     "text": "if r.get(\"verdict_v2\") in (\"REAL_APP_CONTENT\","
+    },
+    {
+     "file": "scripts/cont81_repeat_battery.py",
+     "line": 27,
+     "text": "row = {\"package\": pkg, \"verdict_v2\": rr[\"verdict_v2\"],"
+    },
+    {
+     "file": "scripts/cont81_repeat_battery.py",
+     "line": 34,
+     "text": "print(f\"  {pkg}: {row['verdict_v2']} stable={row['repeat_face_stable']} \""
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 27,
+     "text": "Verdict vocabulary V2 (row[\"verdict_v2\"]):"
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 268,
+     "text": "row[\"verdict_v2\"] = verdict"
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 383,
+     "text": "verdicts.add(r[\"verdict_v2\"])"
+    },
+    {
+     "file": "scripts/diff366_final.py",
+     "line": 82,
+     "text": "m['pixclass'] = 'PARTIAL_MARGINAL'"
+    },
+    {
+     "file": "scripts/closeout_screen.py",
+     "line": 55,
+     "text": "m['pixclass'] = 'PARTIAL_MARGINAL'"
+    },
+    {
+     "file": "scripts/closeout_screen.py",
+     "line": 156,
+     "text": "if ops > 0 or px == 'PARTIAL_MARGINAL':"
+    },
+    {
+     "file": "scripts/cont76_semantic_probe.py",
+     "line": 105,
+     "text": "row[\"verdict\"] = \"PARTIAL_MARGINAL\""
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 12,
+     "text": "PARTIAL_MARGINAL with an explicit note."
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 35,
+     "text": "PARTIAL_MARGINAL"
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 13,
+     "text": "3. Install/run failures separated: INSTALL_FAILURE, RUNTIME_CRASH,"
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 29,
+     "text": "HARNESS_ENVIRONMENT_FAILURE, INSTALL_FAILURE, PREREQUISITE_MISMATCH"
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 62,
+     "text": "V2_HARNESS = {\"HARNESS_ENVIRONMENT_FAILURE\", \"INSTALL_FAILURE\","
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 213,
+     "text": "verdict = \"INSTALL_FAILURE\""
+    },
+    {
+     "file": "scripts/cont81_corpus_runner.py",
+     "line": 472,
+     "text": "check(\"install-failure\", classify_v2(r)[\"verdict_v2\"], \"INSTALL_FAILURE\")"
+    },
+    {
+     "file": "scripts/cont115_source_audit.py",
+     "line": 62,
+     "text": "\"audit\": grep_multi([r\"verdict_v2\", r\"PARTIAL_MARGINAL\", r\"INSTALL_FAILURE\", r\"HARNESS_ENVIRONMENT_FAILURE\"],"
+    }
+   ],
+   "selftest_cmd": "python3 scripts/cont81_corpus_runner.py --selftest"
+  },
+  "T05_failsoft_paths": {
+   "audit": [
+    {
+     "file": "miniandroid/src/storage/file_sandbox.cpp",
+     "line": 854,
+     "text": "} catch (...) {}"
+    },
+    {
+     "file": "miniandroid/src/storage/file_sandbox.cpp",
+     "line": 912,
+     "text": "} catch (...) {}"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 502,
+     "text": "} catch (...) {}"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 511,
+     "text": "} catch (...) {}"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3066,
+     "text": "\"   try{k=decodeURIComponent(k);}catch(e){}\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3067,
+     "text": "\"   try{v=decodeURIComponent(v);}catch(e){}\""
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6579,
+     "text": "} catch (...) {}"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6983,
+     "text": "try { std::filesystem::create_directories(frames_dir); } catch (...) {}"
+    }
+   ]
+  },
+  "T06_tree_counters": {
+   "audit": [
+    {
+     "file": "miniandroid/src/webview/html_dom.cpp",
+     "line": 404,
+     "text": "// ELEMENT siblings (#text nodes never count). Modern stylesheets"
+    },
+    {
+     "file": "miniandroid/src/runtime/application_runtime.cpp",
+     "line": 2551,
+     "text": "if (shadow_view_) j[\"view_node_count\"] = shadow_view_->node_count();"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3305,
+     "text": "int node_count = 0;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3519,
+     "text": "if (node_count >= max_nodes) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3528,
+     "text": "\"visited=\" + std::to_string(node_count) +"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3537,
+     "text": "node_count++;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3538,
+     "text": "frame_census_.nodes_visited = node_count;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6607,
+     "text": "//                                     ViewShadow node text), so the counter/"
+    },
+    {
+     "file": "miniandroid/src/webview/html_dom.cpp",
+     "line": 349,
+     "text": "// recurse into the media body with the constraint attached"
+    },
+    {
+     "file": "miniandroid/src/runtime/application_runtime.cpp",
+     "line": 1795,
+     "text": "// The hook (dispatch_view_attached, CAMPAIGN 009 \u00a710) existed but was"
+    },
+    {
+     "file": "miniandroid/src/runtime/application_runtime.cpp",
+     "line": 1800,
+     "text": "bool attached = dalvik_engine.dispatch_view_attached();"
+    },
+    {
+     "file": "miniandroid/src/runtime/application_runtime.cpp",
+     "line": 1801,
+     "text": "if (attached) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 247,
+     "text": "// screenshot and the view hierarchy attached to a run's evidence"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2276,
+     "text": "// \"not attached to a window\" when attach never ran (evidence: dooz at"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2286,
+     "text": "bool attached = dalvik_engine_.dispatch_view_attached();"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2287,
+     "text": "if (attached) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3101,
+     "text": "// VIEWTREE observation: content root existence + renderer family."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3107,
+     "text": "diagnostics::ev::VIEWTREE_CREATED, diagnostics::EventSev::CONFIRMED,"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3190,
+     "text": "\"VIEWTREE\","
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5906,
+     "text": "// DIAGNOSTIC_ONLY / VIEWTREE_NO_APP_PIXELS / PARTIAL_RENDER_BUDGET /"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6049,
+     "text": "verdict = \"VIEWTREE_NO_APP_PIXELS\";"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 14057,
+     "text": "// the census/render walk uses (VIEWTREE_CREATED root_id law). Skeleton"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 49123,
+     "text": "// boot chain (S135 logger: VIEWTREE NOT_REACHED divergence,"
+    },
+    {
+     "file": "miniandroid/src/renderer/view_renderer.cpp",
+     "line": 803,
+     "text": "if (std::getenv(\"MINIANDROID_VIEWTREE_DUMP\") != nullptr) {"
+    }
+   ]
+  },
+  "T07_installed_apk_identity": {
+   "audit": []
+  },
+  "T08_traversal_scheduling": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3310,
+     "text": "// Android re-measures on requestLayout(). Without this"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3319,
+     "text": "// R-NEW-302 FIX (AOSP requestLayout law): also"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3444,
+     "text": "// requestLayout flag (AOSP performTraversals"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51831,
+     "text": "// AOSP setMinimumWidth/Height: store + requestLayout()"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 943,
+     "text": "if (el.name == \"requestFocus\" || el.name == \"requestLayout\" || el.name == \"tag\") return 0;"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 2717,
+     "text": "// on the NEXT traversal (AOSP ViewRootImpl requestLayout scheduling"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 5504,
+     "text": "// R-NEW-302: AOSP addView(View) \u2192 requestLayout \u2014 the tree changed,"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 5518,
+     "text": "// R-NEW-302: AOSP removeView(View) \u2192 requestLayout."
+    },
+    {
+     "file": "miniandroid/src/runtime/application_runtime.cpp",
+     "line": 1791,
+     "text": "// AOSP ViewRootImpl.performTraversals(): dispatchAttachedToWindow()"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2266,
+     "text": "// AOSP ViewRootImpl.performTraversals(): dispatchAttachedToWindow() runs"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3091,
+     "text": "// F-NEW-384 (CONT-82): the AOSP performTraversals insets pass runs"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3334,
+     "text": "// ViewRootImpl.performTraversals order:"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3444,
+     "text": "// requestLayout flag (AOSP performTraversals"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3545,
+     "text": "// performTraversals \u2192 draw \u2192 computeScroll)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12630,
+     "text": "// Android \u2014 ViewRootImpl.performTraversals measures and lays out with"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12936,
+     "text": "// R-NEW-430: ViewRootImpl performTraversals \u2192 draw \u2192 computeScroll law."
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 5200,
+     "text": "// invalidates the declaration \u2014 the property computes to its"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 6079,
+     "text": "// heap-corruption root cause (invalidated RB-tree iterator)."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3309,
+     "text": "// setContentView must invalidate layout, exactly as"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4726,
+     "text": "// invalidates per-frame-delay; the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 2293,
+     "text": "//      invalidate ClassInfo& references held by"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 8958,
+     "text": "// that just iput-objects the text into the mText field and calls invalidate()."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 8985,
+     "text": "// Still let the bytecode execute (it just does iput-object + invalidate,"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 41039,
+     "text": "method == \"invalidateAuthToken\" || method == \"setAuthToken\" ||"
+    }
+   ]
+  },
+  "T09_frame_freshness": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 243,
+     "text": "if (success && config.frame_count > 0) stage_frame_sequence(result, config);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6968,
+     "text": "bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const ExecutionConfig& config) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6969,
+     "text": "trace_engine_.info(\"ExecutionEngine\", \"stage_frame_sequence\","
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6605,
+     "text": "//                                   - framebuffer SHA256 (frame hash)"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6616,
+     "text": "// Minimal SHA-256 (FIPS 180-4) for frame hashing. No external dependency"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 18256,
+     "text": "// state at halt \u2014 the spinning frame's v4 is the hash table."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 262,
+     "text": "// render did not refresh \u2014 that is stale-frame laundering into"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 269,
+     "text": "<< \" re-capture SKIPPED (stale framebuffer not\""
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3082,
+     "text": "// its own honest state \u2014 never a stale ledger from a previous frame."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3085,
+     "text": "// its own honest state \u2014 never a stale ledger from a previous frame."
+    },
+    {
+     "file": "miniandroid/src/framework/touch_dispatcher.cpp",
+     "line": 878,
+     "text": "// Unknown/stale framework token \u2014 hostile-input safe: ignore."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 2007,
+     "text": "0   // frame_id=0 (pre-execution)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 2338,
+     "text": "0   // frame_id=0 (pre-execution)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 2879,
+     "text": "\" frame#\" + std::to_string(ho->creator_frame_id);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 5407,
+     "text": "uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 5409,
+     "text": "frame_id);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 6000,
+     "text": "uint32_t frame_id = 0) {"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 6002,
+     "text": "frame_id);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12156,
+     "text": "uint32_t canvas_obj = heap_.allocate(\"Landroid/graphics/Canvas;\", pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);"
+    }
+   ]
+  },
+  "T10_placeholder_overdraw": {
+   "audit": [
+    {
+     "file": "miniandroid/src/gles/gles20_bridge.cpp",
+     "line": 170,
+     "text": "// (slot 0 is the reserved placeholder \u2014 see gl_surface_shadow.cpp"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3450,
+     "text": "// CAMPAIGN 013: deferred custom-view placeholders."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3452,
+     "text": "std::vector<CVP> custom_view_placeholders;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4170,
+     "text": "// an honest placeholder: draw a light-grey surface"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4381,
+     "text": "// placeholder may NOT stand in for a"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4396,
+     "text": "// placeholder measured this session)."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4456,
+     "text": "<< \"placeholder SUPPRESSED \""
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4501,
+     "text": "// (replaces the prior placeholder rect + dimensions text)."
+    }
+   ]
+  },
+  "T12_source_first_tree": {
+   "evidence_files": [
+    "evidence/cont113/pair_report.md",
+    "docs/WHITE_SCREEN_LOADING_ROOTS.md"
+   ],
+   "audit": [
+    {
+     "file": "docs/WHITE_SCREEN_LOADING_ROOTS.md",
+     "line": 17,
+     "text": "(WINDOW_ROOT / APP_DRAW_OPS / LOOPER / ACTIVITY_NAVIGATION / COMPOSE /"
+    },
+    {
+     "file": "docs/WHITE_SCREEN_LOADING_ROOTS.md",
+     "line": 24,
+     "text": "| sudoku (plain run) | white | `WINDOW_ROOT` (verdict=NO_ROOT) | **NO** \u2014 window/content-root chain, not a byte source | F-NEW-233 verdict record (MEGA-W2) |"
+    },
+    {
+     "file": "docs/WHITE_SCREEN_LOADING_ROOTS.md",
+     "line": 26,
+     "text": "| telegram settings-face | renders (2-face) | `ACTIVITY_NAVIGATION` (intro/auth chain) | **NO** \u2014 loading works (7 asset OPENs provenanced, prefs \u00d721); the miss"
+    },
+    {
+     "file": "evidence/cont113/pair_report.md",
+     "line": 1,
+     "text": "# CONT-113 \u2014 #366 First-Divergence Pair Report (CONT-110 P0, items 01\u201305/07/08)"
+    },
+    {
+     "file": "evidence/cont113/pair_report.md",
+     "line": 43,
+     "text": "| WINDOW_ROOT (content root attached) | P | P (post F-NEW-459; was \u2717 pre-wave) | P | P | P |"
+    }
+   ]
+  },
+  "T28_constraintlayout_law": {
+   "registry": {
+    "F-NEW-451": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "opencalc renders a keypad-only face under AOSP-true dimension values: with F-NEW-450 the SlidingUpPanelLayout umanoPanelHeight reads 108px (",
+     "evidence": "run/c108/ (oc_probe, oc_probe2, oc_probe3, oc_fix1, oc_fix2, oc_pre_probe, oc_pre_probe2 = pre/post A/B with [F453-SMD]/[F453-LAY]/[F453-MEASURE] decode probes + androguard disassembly scripts c108_scan_*.py + run/c108/oc_supl_onmeasure_v2.txt onMeasure/onLayout/i()/h() decode + oc_mainactivity_scan.txt + oc_getdrawable_all.txt + res/9t.xml umano attrs 41dp + res/MB.xml below_shadow decode); battery: evidence/cont108/evidence.json"
+    },
+    "F-NEW-453": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "Degenerate DEX self-report (setMeasuredDimension(0,0)) survives the DEX readback and poisons umano/coverage layout laws",
+     "evidence": "A/B decode chain run/c108/: [F453-SMD] (solver writes 0x0 x20 incl. EXACTLY 1080x1421, byte-identical pre/post), [F453-LAY] (fork lays both children at identical zero-size rects (0,108 0,108) post vs (0,10497 0,10497) pre), [P1-1-VIS] view=738 0->4 INVISIBLE at the fork's i() coverage law; androguard disassembly of SlidingUpPanelLayout onMeasure/onLayout/i()/h() + res/9t.xml umanoPanelHeight=41dp + res/Bu.xml display_background. Fix A/B: oc_fix1 (partial: bridge only \u2014 keypad 1080x1313 measured but layout still consumed stale 0) -> oc_fix2 (complete: full keypad face d5f3c7b5e9936ae6). Battery: evidence/cont108/evidence.json; WANT adjudications csw/tanana/opencalc in scripts/cont70_gate.sh."
+    }
+   },
+   "audit": [
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 2698,
+     "text": "// stale degenerate store over measured_* \u2014 the"
+    },
+    {
+     "file": "miniandroid/src/framework/touch_dispatcher.cpp",
+     "line": 425,
+     "text": "// geometry did not contain the point \u2014 so any stale/unmeasured"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 2701,
+     "text": "// face). The native takeover is the authoritative answer:"
+    }
+   ]
+  },
+  "T29_chess_toolbar_f448": {
+   "registry": {
+    "F-NEW-448": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "F-NEW-448 (CONT-111 refresh) CONFIRMED_OPEN_GAP \u2014 root cause refined to two layers. LAYER 1 (FIXED this wave): the AOSP View suggested-minim",
+     "evidence": "run/c112/battery.log + run/c112/chess_pre.log + run/c112/chess_final.log + run/c112/c449_pre.log + run/c112/c449.log + scripts/cont112_toolbar_disasm.py + evidence/cont112/evidence.json"
+    },
+    "F-NEW-454": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "Framework-package style routing missing in apply_style + theme style-reference deref'd like a value",
+     "evidence": "run/c112/chess_diag.log + run/c112/chess_res_dump.txt + run/c112/chess_fw.log + run/c112/chess_fix6.log + run/c112/c449.log + evidence/cont112/evidence.json"
+    }
+   }
+  },
+  "T30_f449_messageinfo": {
+   "registry": {
+    "F-NEW-449": {
+     "status": "CONFIRMED_OPEN_GAP",
+     "title": "Telegram play_billing n2.r (protobuf-lite MessageSchema builder) aget-oob 'length=11; index=11' boundary decoded: rotated-loop boundary read",
+     "evidence": "run/c107/post/c106b.stderr + fixtures/cont107_reflectcount"
+    }
+   },
+   "audit": [
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 14907,
+     "text": "DalvikValue mi_str = get_register(1); /* v1 = raw MessageInfo string */"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 52135,
+     "text": "// GeneratedMessageInfoFactory.messageInfoFor \u2014 DEX Lyb0;.a \u2014 does"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 54198,
+     "text": "// chain \u2014 GeneratedMessageInfoFactory.isSupported answers"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 58862,
+     "text": "// newSchemaForRawMessageInfo decoded fieldCount=0 from a perfectly"
+    }
+   ]
+  },
+  "T31_visibility_states": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5105,
+     "text": "// with menuView.setVisibility(INVISIBLE) \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12637,
+     "text": "// child/panel bounds and setVisibility(INVISIBLE) on the whole pad \u2014"
+    },
+    {
+     "file": "miniandroid/src/exp004_main.cpp",
+     "line": 277,
+     "text": "view_meta.add_method(\"setVisibility\", \"(I)V\", false, true);"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 1564,
+     "text": "// setVisibility already use the 4/8 constants \u2014 only the"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6621,
+     "text": "if (m == \"setVisibility\") {"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6625,
+     "text": "// \u2500\u2500 ADDITIONAL-AUDIT P1-1 (AOSP View.setVisibility law) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6626,
+     "text": "// AOSP setVisibility \u2192 setFlags \u2192 (PFLAG_DRAWING_STATE_CHANGED +"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6649,
+     "text": "std::cerr << \"[VIS-TRACE] setVisibility(\" << n->visibility"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 7052,
+     "text": "// pad (constraintLayout2) was setVisibility(INVISIBLE) during the"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3731,
+     "text": "node->visibility != 4 /* INVISIBLE */) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3829,
+     "text": "// INVISIBLE (4) draws NO own content (background,"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3831,
+     "text": "// pixel-proved INVISIBLE views were fully drawn"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3834,
+     "text": "// of an INVISIBLE ViewGroup still draw (AOSP"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3835,
+     "text": "// dispatchDraw runs under an INVISIBLE parent);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5100,
+     "text": "// An INVISIBLE (4) view draws NOTHING, its"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5101,
+     "text": "// subtree included (INVISIBLE = \"hidden but"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5105,
+     "text": "// with menuView.setVisibility(INVISIBLE) \u2014"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5196,
+     "text": "// S86 \u00a7F-NEW-168: INVISIBLE subtrees too (AOSP"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12636,
+     "text": "// child fully inside the panel rect \u2192 INVISIBLE) read degenerate"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3832,
+     "text": "// (only GONE pruned) \u2014 silent-wrongness with"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3836,
+     "text": "// the child queue below only prunes GONE."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5102,
+     "text": "// occupying space\"); only GONE (8) frees the"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5106,
+     "text": "// under the old GONE-only pruning the menu's"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5194,
+     "text": "// S67 A4 parity: GONE children render nothing in"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 8007,
+     "text": "// Pass-3 (K-34): the old \"read() returns 0, no real impl\" shadow is GONE \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 25907,
+     "text": "{\"Landroid/view/View$Visibility;.GONE\", 2},"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44261,
+     "text": "// wrap/EXACTLY-0/GONE cases keep their DEX answer."
+    },
+    {
+     "file": "miniandroid/src/exp004_main.cpp",
+     "line": 630,
+     "text": "view->set_visibility(RuntimeViewVisibility::GONE);"
+    },
+    {
+     "file": "miniandroid/src/exp004_main.cpp",
+     "line": 632,
+     "text": "{\"action\", \"SET_GONE\"},"
+    }
+   ]
+  },
+  "T32_measurespec_tables": {
+   "audit": [
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 1440,
+     "text": "//   setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), ...)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12403,
+     "text": "// View's REAL onMeasure(int widthMeasureSpec, int heightMeasureSpec)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12441,
+     "text": "// contract evidence \u2014 incoming MeasureSpec words and the app's own"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12575,
+     "text": "// by the REAL DEX DrawerLayout.onMeasure getChildMeasureSpec chain)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12612,
+     "text": "// final geometry (AOSPMeasureSpec.EXACTLY = 0x40000000 | size); the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21064,
+     "text": "\"Landroid/view/View$MeasureSpec;\" &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21068,
+     "text": "// R500 (ROOT-VIEW-FRAME family): AOSP View$MeasureSpec mode"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21073,
+     "text": "// law answers 0 (probe evidence: makeMeasureSpec(200, EXACTLY)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21496,
+     "text": "\"Landroid/view/View$MeasureSpec;\" &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21500,
+     "text": "// R500 (ROOT-VIEW-FRAME family): AOSP View.java MeasureSpec"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3665,
+     "text": "// DEX measure specs are EXACTLY(rect) and"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5697,
+     "text": "int width_spec = config.screen_width;  // EXACTLY mode"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 1441,
+     "text": "//   getDefaultSize: AT_MOST/EXACTLY -> specSize; UNSPECIFIED -> suggested size."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 6308,
+     "text": "// parent's EXACTLY (live face: every row measured 1080x1920)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12611,
+     "text": "// EXACTLY(rect) \u2014 the runtime's own measure pass already resolved the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12612,
+     "text": "// final geometry (AOSPMeasureSpec.EXACTLY = 0x40000000 | size); the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12660,
+     "text": "// 1) onMeasure(II)V \u2014 EXACTLY specs from the resolved rect."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12662,
+     "text": "constexpr int MEASURE_SPEC_EXACTLY = 1 << 30;"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12663,
+     "text": "int spec_w = MEASURE_SPEC_EXACTLY | ((r - l) & 0x3FFFFFFF);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12664,
+     "text": "int spec_h = MEASURE_SPEC_EXACTLY | ((b - t) & 0x3FFFFFFF);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 1441,
+     "text": "//   getDefaultSize: AT_MOST/EXACTLY -> specSize; UNSPECIFIED -> suggested size."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 1511,
+     "text": "// getDefaultSize(AT_MOST) = specSize (microtimer row buttons 1080x0,"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 7162,
+     "text": "// onCreate-frame AT_MOST measures run last. AOSP law"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21066,
+     "text": "field_res.field_name == \"AT_MOST\" ||"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21069,
+     "text": "// constants (EXACTLY = 0x40000000, AT_MOST = 0x80000000,"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21077,
+     "text": "} else if (field_res.field_name == \"AT_MOST\") {"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21498,
+     "text": "field_res.field_name == \"AT_MOST\" ||"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21503,
+     "text": "//   AT_MOST = 2 << 30 (0x80000000)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21506,
+     "text": "// answered typed-default 0 for EXACTLY/AT_MOST, so every"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21512,
+     "text": "} else if (field_res.field_name == \"AT_MOST\") {"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3633,
+     "text": "// S114: the offset ladder treats `auto` as UNSPECIFIED (CSS 2.1 \u00a79.3.2 \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 1441,
+     "text": "//   getDefaultSize: AT_MOST/EXACTLY -> specSize; UNSPECIFIED -> suggested size."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21067,
+     "text": "field_res.field_name == \"UNSPECIFIED\")) {"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21070,
+     "text": "// UNSPECIFIED = 0) are JVM-stable compile-time ints consumed"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21499,
+     "text": "field_res.field_name == \"UNSPECIFIED\")) {"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21502,
+     "text": "//   UNSPECIFIED = 0, EXACTLY = 1 << 30 (0x40000000),"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 40514,
+     "text": "//   UNSPECIFIED \u2192 want. Padding joins the sums."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44238,
+     "text": "// EXACTLY/AT_MOST \u2192 spec size, UNSPECIFIED \u2192 0."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44338,
+     "text": "// EXACTLY \u2192 specSize, UNSPECIFIED \u2192 suggested min = 0)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51419,
+     "text": "//   UNSPECIFIED=0); specSize = spec & 0x3FFFFFFF."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51670,
+     "text": "// F-NEW-370 (CONT-71): View.resolveSizeAndState(II I)I + resolveSize(II)I"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51673,
+     "text": "//   resolveSizeAndState(size, spec, childState):"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51681,
+     "text": "//   setMeasuredDimension(resolveSizeAndState(widthUsed, widthSpec, \u2026),"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51682,
+     "text": "//                        resolveSizeAndState(heightUsed, heightSpec, \u2026));"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51686,
+     "text": "// F-NEW-370). resolveSize = resolveSizeAndState(size, spec, 0) &"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51690,
+     "text": "if ((method == \"resolveSizeAndState\" || method == \"resolveSize\") &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51707,
+     "text": "// args[2]=childMeasuredState (resolveSizeAndState only). The INT32"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51734,
+     "text": "(method == \"resolveSizeAndState\") ? iv(2) : 0;"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51751,
+     "text": "if (method == \"resolveSize\") res = res & kSizeMask;"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 3492,
+     "text": "// container size \u2014 resolveSizeAndState caps a wrap"
+    }
+   ]
+  },
+  "T33_linearlayout_weight": {
+   "audit": [
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3693,
+     "text": "n->bold = get(\"font-weight\") == \"bold\" || get(\"font-weight\") == \"700\" ||"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3694,
+     "text": "get(\"font-weight\") == \"800\" || get(\"font-weight\") == \"900\";"
+    },
+    {
+     "file": "miniandroid/src/webview/html_dom.cpp",
+     "line": 637,
+     "text": "// inheritable: color, font-size, font-weight, text-align"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3361,
+     "text": "// stores (lp.leftMargin = 20, lp.weight = 1,"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3398,
+     "text": "lp_heap.get_object_field(lpo, \"weight\");"
+    },
+    {
+     "file": "miniandroid/src/api/shared_prefs.cpp",
+     "line": 10,
+     "text": "* - XML parsing: Custom lightweight parser (no external dependencies)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 20609,
+     "text": "// LinearLayout.LayoutParams.weight read 1.06535e9 instead of 1.0f \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 20610,
+     "text": "// the 0px+weight children collapsed to width 0 / full-width garbage)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 28613,
+     "text": "//   create(Typeface family, int weight, boolean italic) \u2014 API 28+"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 28614,
+     "text": "//     weight-variant entry (androidx Ly0;.b shape), never null."
+    },
+    {
+     "file": "miniandroid/src/renderer/view_renderer.cpp",
+     "line": 205,
+     "text": "// Pass 2: weighted children share the remaining free space"
+    },
+    {
+     "file": "miniandroid/src/resources/resource_parser.cpp",
+     "line": 175,
+     "text": "line += \" \" + trim(remaining);  // Add space and next line"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 1373,
+     "text": "else if (n == \"weightSum\") a.weight_sum = (float)atof(raw.c_str()), a.weight_sum_valid = true;"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 1824,
+     "text": "node.weight_sum = a.weight_sum;                 // G04 \u00a79: weightSum law"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 4076,
+     "text": "//   remainingWeightSum = weightSum > 0 ? weightSum : totalWeight"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 4215,
+     "text": "// top (shrinkable when remainingExcess < 0). weightSum caps"
+    }
+   ]
+  },
+  "T34_late_child_attach": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3308,
+     "text": "// were measured empty; DEX setText()/addView() after"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3321,
+     "text": "// tree since the last frame (addView/removeView/"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3364,
+     "text": "// The addView/setLayoutParams captures sync at"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4251,
+     "text": "// addView) must not suppress it. Generic"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 2371,
+     "text": "// stage fields were all lost (addView received null children)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12235,
+     "text": "// (inflate(res, this), addView, findViewById) operate on the live node."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 13977,
+     "text": "// (Compose ensureCompositionCreated -> AndroidComposeView via addView)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 13982,
+     "text": "// Snapshot node ids: dispatch may mutate the node map (addView of"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 13996,
+     "text": "// addViewInner pending-consume law that may fire DURING this"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 14136,
+     "text": "//   * ViewGroup.addViewInner(): when the parent is attached"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3310,
+     "text": "// Android re-measures on requestLayout(). Without this"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3319,
+     "text": "// R-NEW-302 FIX (AOSP requestLayout law): also"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3444,
+     "text": "// requestLayout flag (AOSP performTraversals"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 51831,
+     "text": "// AOSP setMinimumWidth/Height: store + requestLayout()"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 943,
+     "text": "if (el.name == \"requestFocus\" || el.name == \"requestLayout\" || el.name == \"tag\") return 0;"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 2717,
+     "text": "// on the NEXT traversal (AOSP ViewRootImpl requestLayout scheduling"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 5504,
+     "text": "// R-NEW-302: AOSP addView(View) \u2192 requestLayout \u2014 the tree changed,"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 5518,
+     "text": "// R-NEW-302: AOSP removeView(View) \u2192 requestLayout."
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6311,
+     "text": "//     traversal; no requestLayout (the caller reattaches or removes"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6319,
+     "text": "//     cleared (removeView semantics; R-NEW-302 requestLayout too)."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3321,
+     "text": "// tree since the last frame (addView/removeView/"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 5518,
+     "text": "// R-NEW-302: AOSP removeView(View) \u2192 requestLayout."
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6292,
+     "text": "if (m == \"removeView\" || m == \"removeViewInLayout\") {"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6319,
+     "text": "//     cleared (removeView semantics; R-NEW-302 requestLayout too)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 14153,
+     "text": "// attach wave ran BEFORE the child existed, so without this addView-time"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44526,
+     "text": "uint32_t attach_parent = 0, attach_child = 0;"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44528,
+     "text": "attach_parent, attach_child)) {"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44529,
+     "text": "dispatch_attached_subtree_from(attach_child);"
+    },
+    {
+     "file": "miniandroid/src/resources/axml_parser.cpp",
+     "line": 176,
+     "text": "attach(parent_el.children.back(), c);"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6284,
+     "text": "record_pending_child_attach(ctx.receiver_id, child);"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6286,
+     "text": "<< \" attached -> pending child-attach child=\""
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6313,
+     "text": "//   attachViewToParent(View, int, LayoutParams): child.mParent kept,"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6348,
+     "text": "// AOSP attachViewToParent(View child, int index, LayoutParams"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6557,
+     "text": "// setContent, fragment containers) attaches children to that"
+    }
+   ]
+  },
+  "T35_textview_pipeline": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4131,
+     "text": "// G36/G47: per-line StaticLayout law \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 28548,
+     "text": "// then StaticLayout$Builder.setLineBreakConfig(config) \u2014 with no ctor"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 28555,
+     "text": "// the StaticLayout builder chain, which stores it the same way)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35260,
+     "text": "// its text in SpannableString BEFORE StaticLayout.Builder.obtain"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35558,
+     "text": "// TextDelegate width 0 \u2192 StaticLayout built with width=0 (measured"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35575,
+     "text": "// StaticLayout build law consumes) \u2014 measured geometry and painted"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35621,
+     "text": "// ROOT-063 (S115): android.text.StaticLayout$Builder / StaticLayout \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35624,
+     "text": "// ROOT CAUSE this fixes: no StaticLayout shadow existed. Telegram's"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35626,
+     "text": "//   StaticLayout.Builder.obtain(text, start, end, paint, width)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35631,
+     "text": "// that measures rich text through StaticLayout hits the same wall."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4063,
+     "text": "node->ellipsize);  // MG-073"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35877,
+     "text": "// F-NEW-344 probe: setter VALUE (the ellipsized-"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35924,
+     "text": "heap_.set_object_field(self, \"ellipsize\", args[1]);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36934,
+     "text": "// (the renderer's wrap/ellipsize law, F-NEW-421, consumes the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36962,
+     "text": "heap_.set_object_field(tv_recv, \"__ellipsize__\", args[1]);"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36976,
+     "text": "vn->ellipsize_mode = mode;"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36982,
+     "text": "auto v = heap_.get_object_field(tv_recv, \"__ellipsize__\");"
+    },
+    {
+     "file": "miniandroid/src/renderer/view_renderer.cpp",
+     "line": 437,
+     "text": "<< \" ell=\" << (int)n.ellipsize_mode"
+    },
+    {
+     "file": "miniandroid/src/renderer/view_renderer.cpp",
+     "line": 460,
+     "text": "//   L3  maxLines caps the visible lines; ellipsize truncates the"
+    },
+    {
+     "file": "miniandroid/src/renderer/view_renderer.cpp",
+     "line": 549,
+     "text": "// maxLines cap + ellipsize (AOSP TruncateAt law)."
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 121,
+     "text": "font, text_align, text_baseline,"
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 133,
+     "text": "text_baseline = s.text_baseline;"
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 461,
+     "text": "float baseline = y;"
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 462,
+     "text": "if (text_baseline == \"middle\") baseline = y + asc - lh / 2;"
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 463,
+     "text": "else if (text_baseline == \"top\" || text_baseline == \"hanging\") baseline = y + asc;"
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 464,
+     "text": "else if (text_baseline == \"bottom\") baseline = y + asc - lh;"
+    },
+    {
+     "file": "miniandroid/src/webview/canvas2d.cpp",
+     "line": 465,
+     "text": "float px_, py_; map_point(pen_x, baseline, px_, py_);"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 866,
+     "text": "if (s) { c->text_baseline = s; JS_FreeCString(ctx, s); }"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 872,
+     "text": "return JS_NewString(ctx, c ? c->text_baseline.c_str() : \"alphabetic\");"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 4975,
+     "text": "float baseline = n->line_h_px > 0 || n->line_h_num > 0"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 9710,
+     "text": "// nested subtree \u2014 including TextPainter Lg6;.d (ZERO executions"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35567,
+     "text": "// .width. Overloads: (CharSequence, TextPaint) and (CharSequence,"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35568,
+     "text": "// TextPaint, TextDirectionHeuristic, float firstPassMode) \u2014 dooz v23"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 35835,
+     "text": "v.class_desc = \"Landroid/text/TextPaint;\";"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36018,
+     "text": "// TextPainter paint: save/clip/translate/layout.draw/restore)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36019,
+     "text": "// sets the TextPaint color BEFORE Layout.draw; the draw law"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36102,
+     "text": "// paint identity: the TextPaint the builder recorded"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36679,
+     "text": "//   \u2022 TextView.getPaint() returns the view's OWN TextPaint, created at"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36694,
+     "text": "// Pre-fix: NO handler \u2192 getPaint() NULL \u2192 TextPaint.measureText"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36703,
+     "text": "class_name.find(\"TextPaint;\") != std::string::npos ||"
+    }
+   ]
+  },
+  "T36_canvas_capture": {
+   "audit": [
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12127,
+     "text": "// number of captured ops (0 = nothing drawn / no onDraw / no heap object)."
+    },
+    {
+     "file": "miniandroid/src/runtime/application_runtime.cpp",
+     "line": 276,
+     "text": "shadow_canvas_    = shadow_registry_->find_as<CanvasShadow>();"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4292,
+     "text": "shadow_registry_->find_as<framework::CanvasShadow>()) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5410,
+     "text": "shadow_registry_->find_as<framework::CanvasShadow>()) {"
+    },
+    {
+     "file": "miniandroid/src/main.cpp",
+     "line": 1119,
+     "text": "auto* canvas_shadow = shadow_registry.find_as<framework::CanvasShadow>();"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12126,
+     "text": "// bytecode and capture the draw primitives via CanvasShadow. Returns the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12131,
+     "text": "auto* canvas_shadow = shadow_registry_->find_as<framework::CanvasShadow>();"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12810,
+     "text": "// AndPost (SurfaceViewShadow + CanvasShadow surface capture)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36020,
+     "text": "// reads the color through CanvasShadow's per-paint state so the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36069,
+     "text": "// ALREADY applied to the CanvasShadow's matrix/clip state"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 36103,
+     "text": "// (F-NEW-297 build law stores it) \u2014 its CanvasShadow"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4257,
+     "text": "if (drew_bg) frame_census_.app_draw_ops++;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4325,
+     "text": "frame_census_.app_draw_ops += sv_ops;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4334,
+     "text": "int ondraw_ops = 0;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4341,
+     "text": "ondraw_ops ="
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4343,
+     "text": "if (ondraw_ops > 0) {"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4369,
+     "text": "frame_census_.app_draw_ops += ondraw_ops;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4371,
+     "text": "<< ondraw_ops << \" ops (rp=\" << s109_rp << \") for \""
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4442,
+     "text": "frame_census_.app_draw_ops++;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4634,
+     "text": "frame_census_.app_draw_ops++;"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4841,
+     "text": "frame_census_.app_draw_ops++;"
+    }
+   ]
+  },
+  "T37_drawable_bounds": {
+   "audit": [
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 39317,
+     "text": "// S109 ROOT-039 \u2014 Drawable.getBounds/setBounds + Rect.width/height"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 39319,
+     "text": "// internal mutable Rect mBounds (identity-stable); setBounds(l,t,r,b)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 39323,
+     "text": "if ((method == \"getBounds\" || method == \"setBounds\") &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 39351,
+     "text": "// setBounds(l, t, r, b) \u2014 args[1..4] ints"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 50281,
+     "text": "// (draw/setBounds) can consume them. Vector/XML drawables keep"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 5498,
+     "text": "// S118 SVG intrinsic-ratio law (SVG2 \u00a77.2 replaced"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 86,
+     "text": "// BitmapFactory scales the BITMAP ITSELF: intrinsic size ="
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4970,
+     "text": "// centers the intrinsic-size image inside the view"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4982,
+     "text": "// density-scaled intrinsic, centered."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 26230,
+     "text": "// the compose text intrinsic leg (getDesiredWidth family). Answers"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 26231,
+     "text": "// whether the intrinsic path reaches the engine and with what args."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 27670,
+     "text": "// same methods as compiler intrinsics; the parity law here answers them"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 27680,
+     "text": "//     match these (class,method) pairs, so the prefix the intrinsic"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 38138,
+     "text": "// to an intrinsic with FIXED semantics \u2014 javadoc is the contract):"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 39449,
+     "text": "// S109 ROOT-033b \u2014 Drawable intrinsic/minimum dims (AOSP law)."
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8162,
+     "text": "// carry the view id so setColorFilter/setState tracking can attach)."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4110,
+     "text": "// ColorStateList \u2014 REFERENCE, \u2026) is"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4114,
+     "text": "// ResourcesImpl.loadColorStateList"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 5993,
+     "text": "// \u2500\u2500 F-NEW-383 (CONT-82): ColorStateList wrap helper \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 5994,
+     "text": "// AOSP ColorStateList.valueOf(int color): a single default-state spec whose"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 6001,
+     "text": "uint32_t id = heap.allocate(\"Landroid/content/res/ColorStateList;\", pc,"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 29493,
+     "text": "// F-NEW-383 (CONT-82) \u2014 Resources.getColorStateList(int) (AOSP"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 29496,
+     "text": "// ColorStateList. The engine had NO law: ResourcesCompat.getColor-"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 29506,
+     "text": "method == \"getColorStateList\" && args.size() >= 2 &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 29522,
+     "text": "std::cerr << \"[F383-CSL] Resources.getColorStateList resid=0x\""
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 29535,
+     "text": "\"Landroid/content/res/ColorStateList;\");"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3674,
+     "text": "// from setBackgroundColor(int) take priority. Per \u00a717:"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3687,
+     "text": "// A DEX setBackgroundResource(resid) parks the"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3851,
+     "text": "// setBackgroundColor(int) overrode it AFTER"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3970,
+     "text": "// EditText; setBackground(null) removes it, but the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37052,
+     "text": "// EXP-095 (CM-020): View.setBackgroundColor(int) \u2014 capture the color so"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37055,
+     "text": "if (method == \"setBackgroundColor\" && args.size() >= 2 &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37072,
+     "text": "//   * setBackgroundDrawable(Drawable)/setBackground(Drawable) fell into"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37074,
+     "text": "//   * setBackgroundResource(resid) REUSED image_resource_id \u2014 never"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37079,
+     "text": "//   2. setBackground(Drawable) \u2192 color lookup \u2192 set_bg_color"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37081,
+     "text": "//   3. setBackgroundResource(I) \u2192 ViewShadow::set_bg_resource."
+    }
+   ]
+  },
+  "T38_elevation_clipping": {
+   "audit": [
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6678,
+     "text": "\"translationX\", \"translationY\", \"translationZ\", \"translationXBy\","
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6679,
+     "text": "\"translationYBy\", \"translationZBy\", \"alphaBy\", \"scaleXBy\", \"scaleYBy\","
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 1586,
+     "text": "else if (n == \"elevation\") a.elevation_px = parse_dim_attr(&at, stats);"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6965,
+     "text": "// \u2500\u2500 CONT-101 T6 (F-NEW-419): AOSP View elevation Z-state round-trip."
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6972,
+     "text": "n->elevation = ctx.arg_as_float(0, 0.0f);"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6977,
+     "text": "return CallResult::handled_float(n ? n->elevation : 0.0f);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3971,
+     "text": "// container draws its own stroke \u2014 a bordered box is"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3977,
+     "text": "canvas.draw_rect(left, top, right, top + 1, border);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3978,
+     "text": "canvas.draw_rect(left, bottom - 1, right, bottom, border);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3979,
+     "text": "canvas.draw_rect(left, top, left + 1, bottom, border);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3980,
+     "text": "canvas.draw_rect(right - 1, top, right, bottom, border);"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6020,
+     "text": "// through dispatch_custom_view_draw / the CDW recorder, which"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 25815,
+     "text": "// drawing call. Ordinals below are the fixed AOSP declaration orders."
+    },
+    {
+     "file": "miniandroid/src/framework/dialog_shadow.cpp",
+     "line": 596,
+     "text": "canvas.draw_rect(l - 2, t - 2, r + 2, b + 2, RGBA{0xB0, 0xB0, 0xB0, 0xFF});  // border"
+    },
+    {
+     "file": "miniandroid/src/framework/touch_dispatcher.cpp",
+     "line": 436,
+     "text": "// iterated in REVERSE draw order (AOSP ViewGroup.dispatchTouchEvent"
+    },
+    {
+     "file": "miniandroid/src/framework/touch_dispatcher.cpp",
+     "line": 438,
+     "text": "// TOPMOST-drawn sibling at the point wins \u2014 first-in-order used to"
+    }
+   ]
+  },
+  "T39_41_compose_family": {
+   "registry": {
+    "F-NEW-256": {
+     "status": "SUPERSEDED-BY-EVIDENCE",
+     "title": "Compose real-content frontier \u2014 REFINED CONT-10: scope re-invocation WORKS (W5 'zero reinvocation' corrected); destination content NOW MATER",
+     "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). SUPERSEDED-BY-EVIDENCE: the W6 theory (AndroidCanvas bridge never constructed) was re-rooted by CONT-11 W7 with full runtime proof \u2014 draw machinery EXONERATED (dispatchDraw/coordinator walk/canvas.translate live); the tree is unplaced because the MEASURE pass dies (F-NEW-265: null-text CharSequence into Lm7.<init> -> getClass-check throw -> deferred-throw cascade -> Lel0.Y null-Throwable -> onMeasure death -> isPlaced=false). Follow F-NEW-265. [CONT-17 pointer 2026-10-08: SUPERSEDED \u2014 see this row's status flip; follow F-NEW-265]"
+    },
+    "F-NEW-259": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "DEX-list iterator protocol resolves size()/get(I) by NAME only \u2014 R8-renamed Kotlin collection overrides (kotlin.collections.ArrayDeque size\u2192",
+     "evidence": "evidence/cont10/fnew259_evidence.json"
+    },
+    "F-NEW-259b": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "java.util.ArrayList.addAll(Collection) had NO engine implementation \u2014 silent no-op; R8 lowers `list += filter{...}` to addAll, so dooz NavCo",
+     "evidence": "evidence/cont10/fnew259_evidence.json"
+    },
+    "F-NEW-271": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "NULL-ELEMENT REPRESENTATION LEAK (F-265 arm (c) root, CLOSED): the CollectionShadow four-store element model encoded null elements as kind 2",
+     "evidence": "HEAD b6ee41e77acb88ec (CONT-20; engine diag family F271-READ/F271-WRITE committed in 0b019608 + F271-COLL this wave). PRE-FIX: run/cont18i/dooz_f271 [F271-READ] Lnb0;.S pc=163 field Lnb0;.j:Lqb0 answered STRING_REF len=0 from readkey=Lnb0;->j recv#2838 (heap_cls=Lnb0;, declarer=Lnb0; \u2014 heap slot itself corrupt); [F271-WRITE] Lnb0;.p pc=1553 <- STRING_REF \"\" (caught in the act). Pre-fix probe run/cont20/dooz_probe [F271-COLL]: add recv=o2839 a1:t7/o3108 + a1:t7/o3131 (real Lqb0) AND a1:t8/o0 NULL x6 caller=Lnb0;.u pc=4; remove recv=o2839 a1:t1/o0 -> served t5/o0(\"\") caller=Lnb0;.p pc=1537. Genericity pre-proof (pure java.util, no dooz/Compose): fcol K19 FAIL headNull=false lastNull=false poppedNull=false, K20 FAIL secondNull=false (run/cont20/fcol_before). POST-FIX: fcol K19 PASS headNull=true lastNull=true midStr=true poppedNull=true, K20 PASS firstNotNull=true firstEmptyStr=true secondNull=true, K1-K18 unchanged (run/cont20/fcol_after); dooz [F271-COLL] remove recv=o2839 -> served t8/o0 (typed null) x2 runs (run/cont20/dooz_after, dooz_after2); Lnb0.S pc=185 death face GONE x2; composition advances (Lnb0.S pc=913/190 activity; deeper worker/coroutine faces). REGRESSION at b6ee41e77acb88ec: anchors 18/18 x3 BYTE-IDENTICAL (dooz d602648e8e401895, microtimer da73010a, unote 4f1a9e4e, gmdice f3b483fe, opencalc a976d2f9, chess b5a7a35d); fcol 20/20 (18 recorded + new K19/K20); f259 7/7; f259g 12/13 (known honest L row, unchanged); f266 6/6; f268 12/12. gate-A negatives harness scores 9/19 at BOTH the pre-fix and post-fix binaries with identical failing rows (A/B at b4937c81aba0998c) \u2014 pre-existing infrastructure drift, NOT a regression of this wave."
+    }
+   },
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3662,
+     "text": "// walk skipped every unplaced LayoutNode"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4182,
+     "text": "// draws the whole composed LayoutNode tree through"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4245,
+     "text": "// whole LayoutNode tree regardless of platform"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 3550,
+     "text": "// S33 (R-NEW-332): LayoutNode census \u2014 count LayoutNode constructions"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 3564,
+     "text": "std::cerr << \"[NODE-CENSUS] LayoutNode ctor #\" << ctor_count"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 3566,
+     "text": "// [S34-CTORCALLER] direct caller of the LayoutNode ctor"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 3865,
+     "text": "// [S34-MLAW] LayoutNode.measure(constraints) entries"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 3869,
+     "text": "std::cerr << \"[S34-MLAW] LayoutNode.measure #\" << meas_n"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 4084,
+     "text": "std::cerr << \"[S34-EMITCHAIN] LayoutNode factory #\" << emit_count"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 4097,
+     "text": "std::cerr << \"[NODE-CENSUS] LayoutNode.draw #\" << draw_count"
+    }
+   ]
+  },
+  "T42_webview_ladder": {
+   "audit": [
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 1897,
+     "text": "static JSValue win_requestAnimationFrame(JSContext* ctx, JSValueConst, int argc, JSValueConst* argv) {"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2548,
+     "text": "JS_SetPropertyStr(ctx, global, \"requestAnimationFrame\","
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2549,
+     "text": "JS_NewCFunction(ctx, win_requestAnimationFrame, \"requestAnimationFrame\", 1));"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2559,
+     "text": "JS_SetPropertyStr(ctx, *tgt, \"requestAnimationFrame\","
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2560,
+     "text": "JS_NewCFunction(ctx, win_requestAnimationFrame, \"requestAnimationFrame\", 1));"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3307,
+     "text": "\"t('rAF',function(){return requestAnimationFrame(function(){});});\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3308,
+     "text": "\"t('raf-typeof',function(){return typeof requestAnimationFrame;});\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3309,
+     "text": "\"t('raf-window-typeof',function(){return typeof window.requestAnimationFrame;});\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3310,
+     "text": "\"t('raf-direct',function(){window.requestAnimationFrame(function(){});return 1;});\""
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 6881,
+     "text": "// S109 WEBVIEW-ENGINE: JS timers + requestAnimationFrame are driven by"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 6457,
+     "text": "bool WebViewEngine::load_document(const std::string& url, const std::string& html,"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 5750,
+     "text": "// The WebView render law for a chromium-less engine: a loaded document is"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8318,
+     "text": "// (created in WebView's ctor, one per instance); the load family"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8418,
+     "text": "// AOSP WebView.loadUrl loads http(s) documents over the network"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8426,
+     "text": "// WebViewEngine::load_document(final_url, body). The FINAL url (post"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8564,
+     "text": "// WRONG for every WebView that has a loaded document. The script"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8584,
+     "text": "<< \" : no WebViewEngine document loaded\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 291,
+     "text": "// \u2500\u2500 ADDITIONAL-AUDIT P1-11: evaluateJavascript evaluation core \u2500\u2500\u2500\u2500\u2500"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 292,
+     "text": "// Android contract (WebView.java evaluateJavascript): the script runs"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 310,
+     "text": "\"<evaluateJavascript>\", JS_EVAL_TYPE_GLOBAL);"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 316,
+     "text": "report_exception(\"evaluateJavascript\");"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 6542,
+     "text": "// \u2500\u2500 ADDITIONAL-AUDIT P1-11: WebView.evaluateJavascript engine entry \u2500\u2500\u2500\u2500\u2500"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44590,
+     "text": "// \u2500\u2500 ADDITIONAL-AUDIT P1-11: WebView.evaluateJavascript"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 44598,
+     "text": "if (method == \"evaluateJavascript\" && shadow_registry_ != nullptr) {"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8560,
+     "text": "if (m == \"evaluateJavascript\") {"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8561,
+     "text": "// \u2500\u2500 ADDITIONAL-AUDIT P1-11 (evaluateJavascript routing law) \u2500\u2500\u2500\u2500\u2500"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8582,
+     "text": "std::cerr << \"[P1-11-WV] evaluateJavascript BLOCKED on view=\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 127,
+     "text": "// Scripts that measure geometry from DOMContentLoaded (accelerace's"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 297,
+     "text": "// determinism). DOM/canvas mutations surface on the next frame render"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 1221,
+     "text": "// S117 DOM traversal law (WHATWG DOM \u00a74.4): the full sibling/child family."
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 1228,
+     "text": "// DOM family: every HTML5 app benefits, zero package checks."
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 1358,
+     "text": "// detach from current parent (move semantics, DOM law)"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2093,
+     "text": "// (DOM \u00a7querySelector; document.querySelector keeps the root scope)."
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2146,
+     "text": "// (WHATWG DOM \u00a72.7). mykanji's fail dialog writes the correct answer via"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2198,
+     "text": "// \u2500\u2500 S133 getElementsByTagName law (DOM \u00a7Live collections; array form) \u2500\u2500\u2500"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2365,
+     "text": "// S117 DOM traversal law: full WHATWG sibling/child family"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2411,
+     "text": "// dispatches (\"DOMContentLoaded\") used to miss every listener"
+    }
+   ],
+   "evidence_files": [
+    "evidence/s133_webfix",
+    "evidence/s133_browser"
+   ]
+  },
+  "T43_surface_gl": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4311,
+     "text": "\"Landroid/opengl/GLSurfaceView;\");"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4389,
+     "text": "// (2) SurfaceView/GLSurfaceView"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4418,
+     "text": "walk == \"Landroid/opengl/GLSurfaceView;\")"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5422,
+     "text": "\"Landroid/opengl/GLSurfaceView;\");"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5724,
+     "text": "if (!n || n->class_desc.find(\"GLSurfaceView\") == std::string::npos)"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12717,
+     "text": "if (node->class_desc.find(\"GLSurfaceView\") == std::string::npos) return false;"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12719,
+     "text": "// renderer object stored by GLSurfaceViewShadow::setRenderer"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12745,
+     "text": "// F-NEW-462 (CONT-114): RENDERER RECEIVER LAW. AOSP GLSurfaceView's"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12751,
+     "text": "// AndroidGraphics `this` store/read landed on the GLSurfaceView20 view"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12805,
+     "text": "// observe the transitions. MiniAndroid model (mirrors the GLSurfaceView"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 41449,
+     "text": "// surface); eglTerminate/eglMakeCurrent/eglSwapBuffers answer the"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 41533,
+     "text": "if (method == \"eglMakeCurrent\" || method == \"eglSwapBuffers\" ||"
+    },
+    {
+     "file": "miniandroid/src/framework/gl_surface_shadow.cpp",
+     "line": 524,
+     "text": "if (m == \"eglMakeCurrent\" || m == \"eglSwapBuffers\" ||"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4293,
+     "text": "// \u2500\u2500 S86 \u00a7F-NEW-164: SurfaceView"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4295,
+     "text": "// onDraw path. SurfaceView games"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4308,
+     "text": "\"Landroid/view/SurfaceView;\") &&"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4311,
+     "text": "\"Landroid/opengl/GLSurfaceView;\");"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4389,
+     "text": "// (2) SurfaceView/GLSurfaceView"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4395,
+     "text": "// EbitenSurfaceView full-screen"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4417,
+     "text": "if (walk == \"Landroid/view/SurfaceView;\" ||"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4418,
+     "text": "walk == \"Landroid/opengl/GLSurfaceView;\")"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5411,
+     "text": "// S86 \u00a7F-NEW-164: posted SurfaceView"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5419,
+     "text": "\"Landroid/view/SurfaceView;\") &&"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 5742,
+     "text": "const bool drew = dalvik_engine_.dispatch_gl_surface_view_frame("
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 12710,
+     "text": "bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_id, int w, int h, bool* first_frame_out) {"
+    }
+   ]
+  },
+  "T44_native_abi": {
+   "registry": {
+    "F-NEW-387": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "Android native dependency resolution law (DT_NEEDED anchors + bionic version-tag strip)",
+     "evidence": "run/cont83/nat1_run5.log ([NAT1-ADD] add3=9, [NAT1-MATH] mathCheck=9 via the REAL libm through the anchor, 3/3 repeatable; [NAT1-NEG] UnsatisfiedLinkError honest block; ld-script masquerade rejected 'not an ELF object (ld-script/archive?)'); run/cont83/tower_run2.log: stack.tower3d libgdx.so (sha16 2e9dc948aab382e5, 193008B) dlopen ok \u2014 13 @LIBC versym entries rewritten, 5 Android sonames served by validated anchors; gfx trace native.verstrip/native.dep/native.load rows; measured libgdx symbol surface: 14 UND, all standard C (readelf), zero Android-specific symbols."
+    },
+    "F-NEW-459": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "F-NEW-387 anchor set is a build artifact a fresh container loses (libGDX family dlopen-fails)",
+     "evidence": ""
+    },
+    "F-NEW-460": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "Empty libstdc++ anchor satisfies the Android DT_NEEDED and blocks the host C++ ABI",
+     "evidence": ""
+    },
+    "F-NEW-461": {
+     "status": "ROOT-CAUSED-FIXED",
+     "title": "Bionic version-tag strip matched only exact LIBC; the LIBC_* API-level family stayed versioned",
+     "evidence": ""
+    }
+   },
+   "audit": [
+    {
+     "file": "miniandroid/src/jni/native_dep.cpp",
+     "line": 195,
+     "text": "// Default: beside the runtime binary (build/anchor_libs)."
+    },
+    {
+     "file": "miniandroid/src/jni/native_dep.cpp",
+     "line": 198,
+     "text": "if (n <= 0) return \"anchor_libs\";"
+    },
+    {
+     "file": "miniandroid/src/jni/native_dep.cpp",
+     "line": 204,
+     "text": "\"/anchor_libs\";"
+    },
+    {
+     "file": "miniandroid/src/jni/native_dep.cpp",
+     "line": 216,
+     "text": "bool strip_bionic_version_tags(const std::string& path, int& rewritten,"
+    },
+    {
+     "file": "miniandroid/src/jni/native_dep.cpp",
+     "line": 308,
+     "text": "if (strip_bionic_version_tags(host_path, stripped, swhy) &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 10362,
+     "text": "// loader HAS loaded a library is UnsatisfiedLinkError(\"No"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 10474,
+     "text": "throw_deferred(\"Ljava/lang/UnsatisfiedLinkError;\", ule,"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61254,
+     "text": "// UnsatisfiedLinkError."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61290,
+     "text": "throw_deferred(\"Ljava/lang/UnsatisfiedLinkError;\", d,"
+    },
+    {
+     "file": "miniandroid/src/diagnostics/install_inspection.cpp",
+     "line": 1119,
+     "text": "\"(UnsatisfiedLinkError) \u2014 CPU-translation boundary, not a runtime bug\""
+    },
+    {
+     "file": "miniandroid/src/main.cpp",
+     "line": 689,
+     "text": "// for provenance; load attempts report the REAL dlopen refusal)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 16,
+     "text": "#include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 33,
+     "text": "#include \"../jni/dlopen_exec.h\"  // #371 CLOSEOUT S-2: real native execution layer"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 10365,
+     "text": "// above \u2192 REAL dlopen library \u2192 fail-soft flow below."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 26949,
+     "text": "// load attempt reports the real dlopen refusal (NAT-05 shape)."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61253,
+     "text": "// location \u2192 dlopen \u2192 JNI_OnLoad handshake \u2192 success OR"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61257,
+     "text": "// REALLY dlopen'd on the host (the ABI the runtime can execute) and"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61259,
+     "text": "// dlopen_exec.cpp). Success is a real loaded handle that native-method"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61267,
+     "text": "// real dlopen (+ JNI_OnLoad when present) of the extracted bytes."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 61282,
+     "text": "// dlopen + JNI_OnLoad \u2192 live handle for native dispatch. Honest"
+    }
+   ]
+  },
+  "T45_font_bitmap_provenance": {
+   "audit": [
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 58,
+     "text": "// BitmapFactory law chain (BitmapFactory.java decodeResourceStream +"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 59,
+     "text": "// BitmapFactory.cpp native scale): inDensity = the SELECTED entry's config"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 82,
+     "text": "// 50,73 20x20). The measure side (layout_inflater BitmapFactory law)"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 86,
+     "text": "// BitmapFactory scales the BITMAP ITSELF: intrinsic size ="
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 1289,
+     "text": "// S68 \u00a712/\u00a713: BitmapFactory.decodeResource resolver hook \u2014"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3148,
+     "text": "// S68 \u00a712/\u00a713: the BitmapFactory.decodeResource resolver hook is"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 4698,
+     "text": "// programmatic bitmap (BitmapFactory."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 18715,
+     "text": "// the BitmapFactory inDensity\u2192inTargetDensity scaling input."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 50278,
+     "text": "// BitmapShadow machinery BitmapFactory uses; store the bitmap oid"
+    },
+    {
+     "file": "miniandroid/src/renderer/software_renderer.cpp",
+     "line": 1039,
+     "text": "// Per AOSP `BitmapFactory.nativeDecodeByteArray`:"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2263,
+     "text": "static void image_decode(ImageObj* im, WebViewEngine::Impl* impl) {"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2272,
+     "text": "std::cerr << \"[WV-IMAGE] decode failed: \" << im->src << std::endl;"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2285,
+     "text": "std::cerr << \"[WV-IMAGE] decoded \" << im->src << \" \" << w << \"x\" << h << std::endl;"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2298,
+     "text": "image_decode(im, impl_of(ctx));"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2747,
+     "text": "// Encoding): the corpus encodes digest inputs and decodes fetched"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2761,
+     "text": "\" this.decode=function(u8){\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 2767,
+     "text": "\"  return decodeURIComponent(escape(s));};}\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3049,
+     "text": "// '+' = space, percent-decode) | pair-array | record; append/set/"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3066,
+     "text": "\"   try{k=decodeURIComponent(k);}catch(e){}\""
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3067,
+     "text": "\"   try{v=decodeURIComponent(v);}catch(e){}\""
+    },
+    {
+     "file": "miniandroid/src/storage/sqlite_shadow.cpp",
+     "line": 7,
+     "text": "#include \"../diagnostics/file_io_trace.h\"  // #371 PHASE B6 (ST-10): sqlite-op provenance rows"
+    },
+    {
+     "file": "miniandroid/src/storage/sqlite_shadow.cpp",
+     "line": 160,
+     "text": "// #371 PHASE B6 (ST-10): sqlite-op provenance row \u2014 the ONE databases_dir"
+    },
+    {
+     "file": "miniandroid/src/storage/sqlite_shadow.cpp",
+     "line": 395,
+     "text": "// ST-10 (#371): SQL write provenance row (real backend op)."
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 3371,
+     "text": "// count DOM nodes for provenance"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 11,
+     "text": "#include \"../diagnostics/gfx_provenance.h\"  // S82-GFX \u00a76: evidence-bit pixel chain"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 13,
+     "text": "#include \"../diagnostics/file_io_trace.h\"   // IAPK: file-IO provenance (F-NEW-234 wave)"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 192,
+     "text": "// IAPK: file-IO provenance instrument must open BEFORE any DEX/lifecycle"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 383,
+     "text": "// and the deferred-UI provenance are appended HERE (same placement law"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 1827,
+     "text": "// MASTER CAMPAIGN FIX (lifecycle-provenance law): the engine records"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 1838,
+     "text": "\"(REAL_DALVIK_INTERPRETER, entry-time provenance)\");"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 4002,
+     "text": "// @font-face family resolution (Typeface.createFromAsset law)"
+    },
+    {
+     "file": "miniandroid/src/webview/webview_engine.cpp",
+     "line": 6496,
+     "text": "// S113: @font-face registration law (Typeface.createFromAsset equivalence)"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 731,
+     "text": "// its own assets/ (any package, any name \u2014 AOSP Typeface family"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 740,
+     "text": "// surfaces them through the same Typeface family model. The FIX-4"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21436,
+     "text": "\"Landroid/graphics/Typeface;\" &&"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21442,
+     "text": "// F-NEW-294 (CONT-35): AOSP Typeface static-constant law."
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21443,
+     "text": "// frameworks/base/graphics/java/android/graphics/Typeface.java"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21456,
+     "text": "// Compose font resolver (FontListFontFamilyTypefaceAdapter"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21457,
+     "text": "// .resolve \u2192 TypefaceResult(value, immediate)) then handed"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 21465,
+     "text": "// a REAL heap Typeface object carrying its family/style"
+    }
+   ]
+  },
+  "T48_corpus_cluster": {
+   "evidence_files": [
+    "canonical/app_registry.json",
+    "canonical/compatibility_matrix.json"
+   ],
+   "audit": [
+    {
+     "file": "scripts/patch_battery_f233.py",
+     "line": 15,
+     "text": "#    first_missing_stage=...]\""
+    },
+    {
+     "file": "scripts/s41_gatea_multiapp.py",
+     "line": 113,
+     "text": "for marker in (\"F-NEW-233 frame truth\", \"first_missing_stage\"):"
+    },
+    {
+     "file": "scripts/diff366_final.py",
+     "line": 125,
+     "text": "'first_missing_stage': fa.get('first_missing_stage'),"
+    },
+    {
+     "file": "scripts/cont10_run1.sh",
+     "line": 12,
+     "text": "grep -E \"first_missing_stage|FRAME_ANALYSIS\" \"$RUN/run.log\" | head -4"
+    },
+    {
+     "file": "scripts/test/run_test_battery.sh",
+     "line": 64,
+     "text": "#    first_missing_stage=...]\""
+    },
+    {
+     "file": "scripts/test/run_test_battery.sh",
+     "line": 1471,
+     "text": "# frame truth: verdict=VIEWTREE_NO_APP_PIXELS, first_missing_stage=MEASURE]\""
+    },
+    {
+     "file": "scripts/f232_233_registry.py",
+     "line": 88,
+     "text": "\"first_missing_stage=WINDOW_ROOT \u2014 SUCCESS requires authoritative \""
+    },
+    {
+     "file": "scripts/f232_233_registry.py",
+     "line": 97,
+     "text": "\"verdict/first_missing_stage on the census; append the frame-truth \""
+    },
+    {
+     "file": "scripts/fn197_wave2_comment.py",
+     "line": 30,
+     "text": "| F-NEW-208..214 | SUCCESS-PATH corpus/signature/clusters/authority-accounting/upstream-source/high-fan-out ranking/protection regression + logs-as-data | PENDI"
+    },
+    {
+     "file": "scripts/test/run_test_battery.sh",
+     "line": 172,
+     "text": "# emoji-presentation claim (MG-083), surrogate-pair single cluster"
+    },
+    {
+     "file": "scripts/cont21_cluster_scan.py",
+     "line": 2,
+     "text": "\"\"\"CONT-21 / Issue #384 \u2014 Phase C: shared-primitive clustering scan."
+    },
+    {
+     "file": "scripts/cont21_cluster_scan.py",
+     "line": 5,
+     "text": "run/cont21/cluster_scan.json with exact per-target evidence lines."
+    },
+    {
+     "file": "scripts/cont21_cluster_scan.py",
+     "line": 36,
+     "text": "json.dump(scan, open(\"/home/z/my-project/run/cont21/cluster_scan.json\", \"w\"), indent=1)"
+    },
+    {
+     "file": "scripts/cont17_tasks_5_19.py",
+     "line": 37,
+     "text": "'dooz first-frame cluster re-verified at HEAD: recomposition pass#2 runs '"
+    },
+    {
+     "file": "scripts/s82gfx_family_scan.py",
+     "line": 2,
+     "text": "\"\"\"S82-GFX-REVOLUTION P1 \u2014 per-title graphics fingerprint + family clustering."
+    },
+    {
+     "file": "scripts/s115_comment_tickets.py",
+     "line": 96,
+     "text": "*Batch context: all 77 NEAR_BLANK tickets were re-run at this HEAD in one assembly-line sweep \u2014 dominant shared frontier is the empty-view-tree family (lifecycl"
+    }
+   ]
+  },
+  "T49_probe_inventory": {
+   "fixtures": [
+    "arm_only_scope_probe",
+    "c114_f462_probe",
+    "capaudit_probe",
+    "classkey_probe",
+    "colorpipe_probe",
+    "cont102_a_probe",
+    "cont102_b_probe",
+    "cont102_c_probe",
+    "cont102_d_probe",
+    "cont103_a_probe",
+    "cont104_insets_probe",
+    "cont106_clinitsentinel",
+    "cont107_reflectcount",
+    "cont107_toolbarmeasure",
+    "cont111_minmeasure",
+    "cont112_lawderef",
+    "cont12_oracle",
+    "cont26_inv_oracle",
+    "cont72_draw_probe",
+    "cont72_priv_probe",
+    "cont74_escape_probe",
+    "cont7w3_probe",
+    "cont82_arrays_fixture",
+    "cont83_gfx_probe",
+    "cont83_native_probe",
+    "cont86_clock_probe",
+    "cont86_swipe_probe",
+    "cont87_clinit_probe",
+    "cont94_parent_probe",
+    "cont95_sax_probe",
+    "cont96_perf_probe",
+    "cont97_acts_probe",
+    "cont97_res_probe",
+    "cont98_cursor_probe",
+    "cont99_btn_probe",
+    "cont99_cv_probe",
+    "cont99_img_probe",
+    "cont99_lay_probe",
+    "cont99_tr_probe",
+    "cont99_tx_probe",
+    "cont99_zo_probe",
+    "emoji_probe",
+    "f084_loop_probe",
+    "f217_mutex_probe",
+    "f235_set_probe",
+    "f266_probe",
+    "f268_exception_probe",
+    "fcol_audit_probe",
+    "fnew217_probe",
+    "fnew252_probe",
+    "fnew253_probe",
+    "fnew259_probe",
+    "fnew259g_probe",
+    "fnew260_probe",
+    "fnew262_probe",
+    "fnew286_probe",
+    "fnew289_probe",
+    "fnew290_probe",
+    "fnew291_probe",
+    "fnew292_probe",
+    "fnew293_probe",
+    "fnew294_probe",
+    "fnew295_probe",
+    "fnew296_probe",
+    "fnew297_probe",
+    "fnew298_probe",
+    "fnew302_probe",
+    "fnew309_probe",
+    "fnew320_probe",
+    "fnew322_probe",
+    "fnew323_probe",
+    "fnew324_probe",
+    "fnew325_probe",
+    "fnew326_probe",
+    "fnew327_probe",
+    "fnew328_probe",
+    "fnew345_probe",
+    "fnew351_probe",
+    "fnew352_probe",
+    "fnew382_props_probe",
+    "font_probe",
+    "frag_tx_probe",
+    "gate_a_probe",
+    "hmap_probe",
+    "lifecycle_transaction_probe",
+    "linkedlist_probe",
+    "loading_probe",
+    "maxext_probe",
+    "mg150_hittest_fence",
+    "mg310_clinit_fence",
+    "native_probe",
+    "native_probe_apk",
+    "notif_builder_probe",
+    "r464_reflection_probe",
+    "s105_park_probe",
+    "s106_exc_probe",
+    "s133_webfix",
+    "s81_visual_probe",
+    "s82gfx",
+    "s83gfx",
+    "s92battery",
+    "theme_semantics_probe",
+    "w4_ladder_probe"
+   ],
+   "scripts_probes": [
+    "c108_diff_logs.py",
+    "c108_render_tree.py",
+    "c108_scan_all_gd.py",
+    "c108_scan_main.py",
+    "c108_scan_setvis.py",
+    "c108_scan_sites.py",
+    "c108_scan_supl.py",
+    "c108_scan_supl_v2.py",
+    "cont101_build_probes.sh",
+    "cont101_oracle.py",
+    "cont101_registry_update.py",
+    "cont101_run_probes.sh",
+    "cont102_build_probe.sh",
+    "cont102_manifest_test.cpp",
+    "cont102_registry_update.py",
+    "cont103_build_probe.sh",
+    "cont103_registry_update.py",
+    "cont104_battery.sh",
+    "cont104_build_probe.sh",
+    "cont104_disasm.py",
+    "cont104_registry_update.py",
+    "cont105_registry_triage.py",
+    "cont105_registry_update.py",
+    "cont106_battery.sh",
+    "cont106_build_probe.sh",
+    "cont106_post_comment.py",
+    "cont106_registry_update.py",
+    "cont106_scan_P.py",
+    "cont106_scan_k.py",
+    "cont106_scan_n2r.py",
+    "cont106_scan_u1.py",
+    "cont107_battery.sh",
+    "cont107_build.sh",
+    "cont107_build_probes.sh",
+    "cont107_evidence.py",
+    "cont107_fetch_comments.py",
+    "cont107_post_comment.py",
+    "cont107_probe_run.sh",
+    "cont107_registry_update.py",
+    "cont107_scan_c41.py",
+    "cont107_scan_m3.py",
+    "cont107_scan_m3_v2.py",
+    "cont108_battery.sh",
+    "cont108_registry_update.py",
+    "cont10_anchors.sh",
+    "cont10_baseline.py",
+    "cont10_build_probe.sh",
+    "cont10_cl10.sh",
+    "cont10_cl11.sh",
+    "cont10_cl12.sh",
+    "cont10_cl13.sh",
+    "cont10_cl14.sh",
+    "cont10_cl15.sh",
+    "cont10_cl16.sh",
+    "cont10_cl17.sh",
+    "cont10_cl2.sh",
+    "cont10_cl3.sh",
+    "cont10_cl4.sh",
+    "cont10_cl5.sh",
+    "cont10_cl6.sh",
+    "cont10_cl7.sh",
+    "cont10_cl8.sh",
+    "cont10_cl9.sh",
+    "cont10_cltrace_run.sh",
+    "cont10_fielddump.py",
+    "cont10_inval_analyze.py",
+    "cont10_mtrace_run.sh",
+    "cont10_run1.sh",
+    "cont111_battery.sh",
+    "cont111_build_probe.sh",
+    "cont111_registry_sync.py",
+    "cont111_registry_update.py",
+    "cont111_scan_toolbar.py",
+    "cont112_battery.sh",
+    "cont112_build_probe.sh",
+    "cont112_registry_update.py",
+    "cont112_toolbar_disasm.py",
+    "cont113_battery.sh",
+    "cont113_matrix.sh",
+    "cont113_registry_update.py",
+    "cont114_battery.sh",
+    "cont114_post_comment.py",
+    "cont114_registry_update.py",
+    "cont115_source_audit.py",
+    "cont11_anchors.sh",
+    "cont11_baseline.sh",
+    "cont11_build_fcol.sh",
+    "cont11_build_probe.sh",
+    "cont11_calc_dive.sh",
+    "cont11_dex_census.py",
+    "cont11_dooz_trace.sh",
+    "cont11_flatxref.py",
+    "cont11_innerclass_check.py",
+    "cont11_invoke_xref.py",
+    "cont11_issue_comment.py",
+    "cont11_phase1_verify.sh",
+    "cont11_rawscan.py",
+    "cont11_register_f260.py",
+    "cont11_registry_update.py",
+    "cont11_static_field_xref.py",
+    "cont11_validator_repair.py",
+    "cont11_w7_baseline.py",
+    "cont11_w7_baseline.sh",
+    "cont11_xref.py",
+    "cont11w7_mosaic.py",
+    "cont11w7_verify_f345.py",
+    "cont12_anchors.sh",
+    "cont12_b1_merge.sh",
+    "cont12_b1_merge2.sh",
+    "cont12_build_oracle.sh",
+    "cont12_build_probe.sh",
+    "cont12_fetch_matrix.sh",
+    "cont12_frontier_verify.sh",
+    "cont12_oracle_res.sh",
+    "cont12_oracle_res2.sh",
+    "cont12_phase0_baseline.sh",
+    "cont12_registry.py",
+    "cont12_regression.sh",
+    "cont12_run_oracle.sh",
+    "cont12_write_matrix.py",
+    "cont14_baseline.py",
+    "cont14_retest.py",
+    "cont15_battery.py",
+    "cont15_sixgame.py",
+    "cont16_fetch_issues.py",
+    "cont16_probe_run.py",
+    "cont16_registry_update.py",
+    "cont16_regression.sh",
+    "cont17_fetch_all_issues.py",
+    "cont17_fetch_trailing_comments.py",
+    "cont17_task20_backfill.py",
+    "cont17_task30_report.py",
+    "cont17_tasks_21_22.py",
+    "cont17_tasks_23_26.py",
+    "cont17_tasks_27_29.py",
+    "cont17_tasks_31_42.py",
+    "cont17_tasks_50_55.py",
+    "cont17_tasks_56_77_census.py",
+    "cont17_tasks_5_19.py",
+    "cont18_anchors.sh",
+    "cont18_build_f217.sh",
+    "cont18_lawcef_diag.sh",
+    "cont18_registry_lawa.py",
+    "cont18_registry_lawcef.py",
+    "cont18_t01_dex_disasm.py",
+    "cont18_t01_dex_extract.py",
+    "cont18_t01_f084_probe.py",
+    "cont18_t01_static_facts.py",
+    "cont18f_register_f267.py",
+    "cont18g_build_f268.sh",
+    "cont18g_f268_disasm.py",
+    "cont18g_fetch_issues.py",
+    "cont18g_register_f268_269.py",
+    "cont18h_newinst_xref.py",
+    "cont18h_registry.py",
+    "cont18h_regression.py",
+    "cont18i_dooz_baseline.sh",
+    "cont18i_fieldkey_audit.py",
+    "cont19_metrics.py",
+    "cont19_seven_target_battery.sh"
+   ]
+  },
+  "T46_47_telegram": {
+   "audit": [
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 22746,
+     "text": "// e.g. RecyclerView.onMeasure's super \u2192 ViewGroup) are untouched \u2014"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 45251,
+     "text": "// divergence. RecyclerView/ScrollView/GestureDetector read the same"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 49224,
+     "text": "// got null receivers (chess 10.6.0: the board RecyclerView findViewById"
+    },
+    {
+     "file": "miniandroid/src/resources/real_layout.cpp",
+     "line": 35,
+     "text": "cls == \"RecyclerView\" || cls == \"ListView\" || cls == \"GridView\";"
+    },
+    {
+     "file": "miniandroid/src/resources/layout_inflater.cpp",
+     "line": 2560,
+     "text": "cd.find(\"RecyclerView\") != std::string::npos;"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6107,
+     "text": "// chess_jwtc_298 RecyclerView.onAttachedToWindow \u2192"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 6298,
+     "text": "// RecyclerView's ChildHelper drives this family through REAL DEX"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8129,
+     "text": "// (the RecyclerView LayoutParams.mViewHolder law:"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8129,
+     "text": "// (the RecyclerView LayoutParams.mViewHolder law:"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8131,
+     "text": "// tryGetViewHolderForPositionByDeadline on obj#1802, read"
+    },
+    {
+     "file": "miniandroid/src/framework/android_shadows.cpp",
+     "line": 8133,
+     "text": "// getChildViewHolderInt) was silently dropped. Record the"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2392,
+     "text": "// F-053 (M9): GradientDrawable <shape> DRAW law."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2394,
+     "text": "// AOSP GradientDrawable.draw(Canvas): (1) fill the shape \u2014 mGradientState"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2790,
+     "text": "// \u2500\u2500 S83-B2 \u00a714: RING (kind 3, GradientDrawable.RING) \u2014 annulus law."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2793,
+     "text": "// (developer.android.com GradientDrawable: \"the inner radius equals the"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2828,
+     "text": "// \u2500\u2500 S83-B2 \u00a714: LINE (kind 2, GradientDrawable.LINE) \u2014 AOSP draws ONE"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2857,
+     "text": "// AOSP 8-step angle\u2192orientation table (GradientDrawable):"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 2918,
+     "text": "// established (ColorDrawable color / GradientDrawable state)."
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3050,
+     "text": "// children resolve ColorDrawable\u2192kind1 / GradientDrawable\u2192kind2, and"
+    },
+    {
+     "file": "miniandroid/src/runtime/execution_engine.cpp",
+     "line": 3849,
+     "text": "// F-053 (M9): GradientDrawable <shape> law. The"
+    },
+    {
+     "file": "miniandroid/src/dex/dalvik_engine.cpp",
+     "line": 37116,
+     "text": "// S83-B2 \u00a714: code-level LayerDrawable/GradientDrawable"
+    }
+   ]
+  }
+ }
+}
