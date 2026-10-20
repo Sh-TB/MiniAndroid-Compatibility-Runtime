@@ -10898,3 +10898,24 @@ Work Log:
 
 Stage Summary:
 - The user's «۵ قطار» directive is served: 4 source-level trains + close-out. dooz placement is UNBLOCKED (first position writes in lineage); the store-check law is JVMS-exact; the clinit attribution law is JVMS-exact; two diagnostic blind spots closed. Next train owns the class_data alignment repair (F-NEW-471) and the dooz place-then-reset poison.
+
+---
+Task ID: CONT-129
+Agent: main (Z.ai)
+Task: «چه تاثیری رو اون همه برنامه داشت و چقدر بهبود تو اجرا برنامه ها داشته» — measure, with fresh evidence, the actual impact of all runtime work on app execution.
+
+Work Log:
+- Hygiene: stray auto-commit (tmp/cont126_build junk + one real script) soft-reset at base ff162dc8; re-committed only scripts/c124_scan_allocs.py.
+- #364 re-read: 93 comments, all ledgers, no new user request — this round driven by the impact question.
+- Fresh full-corpus battery (scripts/cont129_battery.sh, idempotent skip-if-done, 5 chunks): 22 real APKs at binary 255789332406ff63, canonical harness --frames 5 --max-seconds 25.
+- Param adjudication: telegram face at 25s = 31ddd4d5 (DIFF vs anchor 20ac8cbbbb) -> re-run at wall params (max-seconds 60) -> face 20ac8cbbbb692e63 MATCH. Zero drift 9/9 confirmed; DIFF honestly classified as harness-param artifact.
+- Scorecard (scripts/cont129_parse.py -> run/c129/scorecard.json): 21/22 render a face; 7 rc=0 (unote, microtimer, gmdice, bouncy, opmt, chessclock, flappycow); 11/22 zero exceptions; 6 fully clean; whatsapp honest ARTIFACT_DEFECTIVE; telegram/forkgram honest UPP-001 dlopen APP-BOUNDARY loops.
+- Registry impact mine (scripts/cont129_impact_mine.py -> run/c129/impact_mine.json): 786 roots, 312 ROOT-CAUSED-FIXED (+50 VERIFIED-FIXED +3 ALREADY_FIXED), open-ish ~127; top fan-out F-NEW-272 -> 9 apps, F-NEW-376 -> 7, F-NEW-271 -> 6.
+- Baseline comparison: s57 (2026-10-14) 5 anchors -> 4 of 5 faces ADVANCED since (opencalc a976d2f9->d5f3c7b5, unote 4f1a9e4e->90a67cc1, chess b5a7a35d->a0319686, microtimer da73010a->bbd350b6; dooz frozen by design frontier).
+- tictactoe before/after: CONT-118 NATIVE SIGSEGV (rc=139) -> today renders b5a7a35d, runtime survives poisoned loader (FIX-TTT + F-NEW-470).
+- dooz state-level: F-NEW-469 landed AIOOBE 27->0, ASC-REJECT 9->0, first placement writes in lineage (face frozen by place-then-reset poison + draw-op frontier).
+- Ledger posted to #364 (Persian) as comment 6299071987.
+
+Stage Summary:
+- The impact question is answered with hard numbers, not claims: 21/22 render, 7 clean-exit, 11 exception-free, 9/9 anchors byte-identical, corpus's only native crash defused, 312 root causes fixed behind zero-drift walls. Honest residuals named: UPP-001 dlopen architecture, whatsapp corrupt artifact, dooz draw-op frontier.
+- Next train owns F-NEW-471 class_data alignment repair + dooz place-then-reset poison.
