@@ -10767,3 +10767,23 @@ Work Log:
 Stage Summary:
 - CONT-120 terminal: 4 product laws landed (guarded-native, wrong-thread, reflective-catch, GL-holder), 2 probe isolations (FIX-449 narrowed to data construction, FIX-D05 substrate verified), 1 new root row, 9/9 wall zero drift, registry 781 synced.
 - Next: c3.<clinit> data-construction bisect (FIX-449 endgame → 16 telegram PARTIAL), bouncy Set-add decode, F-NEW-374 MCM lever, B-cluster 48 UNPROVEN re-scan.
+
+---
+Task ID: CONT-121
+Agent: main (Z.ai)
+Task: «حل ۳۶۴ با این روش تمامشون رو حل بکن و جواب بده» + «ادامه» — train wave: FIX-449 endgame, bouncy Set-add, CAS spin, F-NEW-374 re-probe, B-cluster re-scan.
+
+Work Log:
+- State verified: origin e38c2135 (CONT-120); local unpushed worklog-only UUID commit 1af5530b folded into this wave. No new #364 comments after 6290232218.
+- W-00 TOOL-BUG: dump_method_bytecode.get_string() sliced data[end:end] (empty) since Sep-4 UUID commit — every string lookup returned '' silently. Fixed; c3/n2/p3 class defs found in telegram classes.dex.
+- W-01 FIX-449 ENDGAME: androguard installed (py3.13). p3.d(I) case-4 builds Object[11] with 11 aput-object field-name strings (app data CORRECT); s2 = RawMessageInfo(CHM, infoString, objects). n2.r = MessageSchema walk (597 insns), fault pc=692 code-units = byte 0x568 aget-object. ROOT: String.length() answered UTF-8 byte count (info string = 40 UTF-16 units but 64 bytes; 12 Myanmar-block chars 3B/1unit) while the walk indexes UTF-16 units → 24 phantom iterations → garbage descriptors → over-consumed objects → AOOB(11,11). JVM unit law landed: str_utf16_unit_count + str_char_at_unit (supplementary cp = 2 unit slots, high+low surrogates) at C97 entry + F-090e deep charAt sites and both length sites. Binary 71a48bdb. VERIFIED: n2.r resolves ALL 11 fields in p3.d aput order; S36-AOOB GONE; telegram face 20ac8cbbbb byte-identical.
+- W-02 F-NEW-467: bouncy f141-null-recv ×9 — FIELD-TRACE pinned iput requestedThumbnails value=<unset>: the EXP-088+ CLASS-SCOPED CHM bypass force-bridged newKeySet (real dex at <init> 0x00fa) to a handlerless null. Method-scoped compute-family law (F-NEW-215 precedent) in both swallow lists. Binary e2e535cb. VERIFIED: value=obj#96, f141 0.
+- W-02b F-NEW-468: lifted newKeySet exposed DesugarVarHandle$0.m CAS-retry spin (F084 halt ×9): casTabAt array-element offset hit F-NEW-217 UNSAFE-CAS-UNRESOLVED (object-field registry only). Array-element law: array box + __array_length__ bounds → array[i], registry only for non-array targets; landed across getObject/putObject/compareAndSwap{Object,Int,Long}. Binary 1abe5c6a. VERIFIED: bouncy rc 1→0 FULL SUCCESS (first clean corpus run), F084 0, F-NEW-217 0, face 8a6c24ac stable.
+- W-03: opencalc under MCM+F368 on 1abe5c6a → face 3e73a5ad == recorded CONT-71 divergent face (deterministic across binaries). F-NEW-374 stays CLASSIFIED honestly.
+- W-04: 72 UNPROVEN × 15 fresh logs; 2 hits REFUTED (inventory mentions, not behavioral evidence — CONT-119 discipline). All stay UNPROVEN.
+- Battery: 9/9 ANCHOR_MATCH zero drift (incl. telegram 20ac8cbbbb on the law-landed binary) + negatives PASS + selftest PASS; registry 783 id-unique main==mirror status row-equal (F-NEW-449 → ROOT-CAUSED-FIXED; F-NEW-467/468 added).
+- Secret guard: c121 logs contain the known GOOGLE_API_KEY telegram rows — run/c121/*.log EXCLUDED from the commit (battery.log carries anchor evidence); evidence/ledger carry the verdicts.
+
+Stage Summary:
+- CONT-121 terminal: 4 product laws landed (JVM UTF-16 unit law, CHM method-scoped bypass, Unsafe array-element atomic law, + tool fix), 2 new roots + 1 upgrade, 9/9 wall zero drift, bouncy FIRST FULL-SUCCESS corpus run, FIX-449 (highest-fan-out lever) closed end-to-end.
+- Next: 16 telegram PARTIAL re-adjudication, theme-path NPE decode, j$CHM real-bytecode audit, F-NEW-374 trust decode.

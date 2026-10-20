@@ -1,0 +1,61 @@
+{
+  "wave": "CONT-121",
+  "date": "2026-10-20",
+  "directive": "«حل ۳۶۴ با این روش تمامشون رو حل بکن و جواب بده» + «ادامه» — train method: one motion, many wagons, every problem a wagon",
+  "base": "e38c2135 (origin/main, CONT-120) — local carried an unpushed worklog-only UUID commit 1af5530b, folded into this wave's commit",
+  "binary": {
+    "start": "f20576eba2e61e6c (CONT-120)",
+    "after_unit_law": "71a48bdbf0f71af7",
+    "final": "1abe5c6a7abc6060"
+  },
+  "wagons": [
+    {
+      "id": "W-00",
+      "name": "tool-bug capture (glow-worm)",
+      "result": "تایید FIXED — miniandroid/tools/dump_method_bytecode.py get_string() sliced data[end:end] (zero-length) since the Sep-4 UUID commit: EVERY string lookup returned '' so all type/method lookups silently failed on every dex. Fixed to data[uleb_end:null_term]. c3/n2/p3 found in classes.dex immediately after."
+    },
+    {
+      "id": "W-01",
+      "name": "FIX-449 endgame — F-NEW-449 ROOT-CAUSED-FIXED",
+      "result": "تایید LANDED — androguard installed (system py3.13); p3.d(I) decoded: case-4 builds Object[11] via 11 aput-object (zzd,zze,zzg,zzh,zzi,zzf,zzj,zzk,zzl,zzm,zzn) + s2(this, infoString) — app data CORRECT; n2.r = MessageSchema walk (597 insns), fault pc=692 code-units = byte 0x568 aget-object v29,v24,v10; loop bound = String.length(); ROOT = String.length() answered UTF-8 BYTE count (64) vs UTF-16 unit count (40) — 12 Myanmar-block chars 3-bytes/1-unit; walk ran 24 phantom iterations -> garbage descriptors -> entries[11] AOOB. JVM unit law landed (str_utf16_unit_count/str_char_at_unit; charAt supplementary = 2 unit slots high+low) at both sites (C97 entry + F-090e deep). VERIFIED: n2.r resolves ALL 11 fields in p3.d exact aput order; S36-AOOB ELIMINATED; telegram screenshot face 20ac8cbbbb byte-identical anchor; 16 telegram PARTIAL tasks unlocked."
+    },
+    {
+      "id": "W-02",
+      "name": "bouncy Set-add — F-NEW-467 ROOT-CAUSED-FIXED",
+      "result": "تایید LANDED — requestThumbnail pc=6 Set.add-on-null; field initialized at <init> 0x00fa-0x0102 by ConcurrentHashMap.newKeySet(); FIELD-TRACE pinned iput value=<unset> -> the EXP-088+ CLASS-SCOPED CHM bypass force-bridged newKeySet to a handlerless null. Method-scoped compute-family law (F-NEW-215 precedent) in BOTH swallow lists. VERIFIED: FIELD-TRACE value=obj#96, f141 9->0."
+    },
+    {
+      "id": "W-02b",
+      "name": "DesugarVarHandle CAS spin — F-NEW-468 ROOT-CAUSED-FIXED",
+      "result": "تایید LANDED — after newKeySet lifted, KeySetView.add -> casTabAt -> Unsafe.compareAndSwapObject(table, ABASE+i*ASHIFT=idx) hit F-NEW-217 UNSAFE-CAS-UNRESOLVED (object-field registry only) -> CAS false forever -> .m infinite retry -> F084 honest halt x9. Array-element resolution law (array box + __array_length__ bounds -> array[i]; registry only for non-array targets) across get/put/CAS object+Int+Long. VERIFIED: bouncy rc 1->0 FULL SUCCESS (first clean run), F084 0, F-NEW-217 0, face stable 8a6c24ac."
+    },
+    {
+      "id": "W-03",
+      "name": "F-NEW-374 MCM lever scoped re-probe",
+      "result": "تایید CLASSIFIED STANDS — opencalc under MCM_LAW=1+F368_LAW=1 on binary 1abe5c6a: face 3e73a5ad1ab7379d == the recorded CONT-71 divergent face byte-for-byte (deterministic across binaries); garbage OOB spec still declined (count 0). The per-container DEX-measure trust discipline remains the named lever; no false landing."
+    },
+    {
+      "id": "W-04",
+      "name": "B-cluster UNPROVEN re-scan",
+      "result": "تایید NO-UPGRADE (honest) — 72 UNPROVEN roots scanned against 15 fresh c121 logs; 2 token-set hits (R-NEW-151 FileProvider, R-NEW-192 Scroller) REFUTED on inspection: manifest provider-registration row + REC-MISS missing-class rows = inventory mentions, not behavioral evidence (CONT-119 discipline). 70 no hits. All stay UNPROVEN."
+    }
+  ],
+  "battery": {
+    "anchors": "9/9 ANCHOR_MATCH zero drift (dooz d602648e, opencalc d5f3c7b5, unote 90a67cc1, microtimer bbd350b6, chess a0319686, tower3d 11a38a5a, sudoku be640e39, klondike 31ddd4d5, telegram 20ac8cbbbb) on final binary 1abe5c6a7abc6060",
+    "negatives": "PASS rc=0",
+    "selftest": "PASS rc=0",
+    "registry": "783 roots id-unique, main==mirror, status row-equal"
+  },
+  "honest_notes": [
+    "telegram still has 5 honest uncaught (ll9/j x2, UPP-001 ULE libjnigraphics, o6.k1/yc0.j theme-path NPEs) — independent open fronts, not suppressed",
+    "F-NEW-374 stays CLASSIFIED (deterministic 3e73a5ad divergence re-confirmed, decode unchanged)",
+    "signal APK still absent from corpus — BLOCKED stands",
+    "androguard installed to system python3.13 (pip --break-system-packages) as a repo ANALYSIS dependency; runtime build unchanged"
+  ],
+  "next": [
+    "16 telegram PARTIAL tasks: re-adjudicate against the completed billing walk (schema now builds)",
+    "o6.k1/yc0.j theme-loading NPE decode (theme file path law)",
+    "j$CHM get/put real-bytecode behavior audit under telegram (bypass no longer shields them)",
+    "F-NEW-374 per-container DEX-measure trust decode (R-NEW-441 family)"
+  ]
+}

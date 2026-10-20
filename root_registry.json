@@ -7316,13 +7316,19 @@
  },
  {
   "id": "F-NEW-449",
-  "status": "CONFIRMED_OPEN_GAP",
+  "status": "ROOT-CAUSED-FIXED",
   "priority": "P1",
-  "title": "Telegram play_billing n2.r (protobuf-lite MessageSchema builder) aget-oob 'length=11; index=11' boundary decoded: rotated-loop boundary read at 0x568 re-indexes the Field[]/String[] entries array (v24) one past its length after `add-int/lit8 v4, v10, 1` (issue #364 CONT-106 batch; CONT-104 U3 carry). CONT-120 ISOLATION PROBE (fixtures/cont120_fix449_walk, 3/3 PASS): walk ops verified ENGINE-CORRECT on a known-good 10-string-field trio — count-token law in-bounds (count=11 consumed=11 entries=11 buffer=33), rotated-terminator law reproduces the EXACT S36 signature (AOOB length=11; index=11, caught by the fixture), buffer layout 3-ints-per-field holds. The live divergence is therefore isolated to the DATA construction upstream (c3.<clinit> info-string/entries build — the R337 rows); the bisect continues there with the probe as the isolation tool. Status stays OPEN honestly.",
+  "title": "Telegram play_billing n2.r (protobuf-lite MessageSchema builder) aget-oob 'length=11; index=11' boundary decoded: rotated-loop boundary read at 0x568 re-indexes the Field[]/String[] entries array (v24) one past its length after `add-int/lit8 v4, v10, 1` (issue #364 CONT-106 batch; CONT-104 U3 carry). CONT-120 ISOLATION PROBE (fixtures/cont120_fix449_walk, 3/3 PASS): walk ops verified ENGINE-CORRECT on a known-good 10-string-field trio — count-token law in-bounds (count=11 consumed=11 entries=11 buffer=33), rotated-terminator law reproduces the EXACT S36 signature (AOOB length=11; index=11, caught by the fixture), buffer layout 3-ints-per-field holds. The live divergence is therefore isolated to the DATA construction upstream (c3.<clinit> info-string/entries build — the R337 rows); the bisect continues there with the probe as the isolation tool. Status stays OPEN honestly. || CONT-121 ENDGAME ROOT: the two-count-sources divergence was String.length() answering the UTF-8 BYTE count while n2.r walks String.charAt/length() under the JVM UTF-16 CODE-UNIT law — the p3 info string is 40 UTF-16 units but 64 UTF-8 bytes (12 Myanmar-block chars = 3 bytes each, 1 unit), so the walk loop i<length() ran 24 phantom iterations, decoded garbage field descriptors, over-consumed the Object[11] entries array (built by p3.d case-4: 11 x aput-object zzd..zzn) and died at entries[11] (S36-AOOB len=11 idx=11). Fix (JVM unit law, str_utf16_unit_count/str_char_at_unit): String.length() answers the UTF-16 unit count and String.charAt(idx) addresses units (supplementary code point = two unit slots, high+low surrogate) at BOTH dispatch sites (C97 bridge-intrinsic entry + F-090e deep site). Verified: n2.r walk resolves ALL 11 p3 fields in p3.d's exact aput order (zze,zzd,zzg,zzh,zzi,zzf,zzj,zzk,zzl,zzm,zzn), S36-AOOB eliminated, telegram screenshot face 20ac8cbbbb byte-identical to the recorded anchor.",
   "layer": "framework (reflection metadata array construction vs walk-count agreement)",
   "root_cause": "CONT-116 runtime decode (deepened, still OPEN): the OOB array is o5042 [Ljava/lang/Object; len=11 built by EXACTLY 11 STRING_REF aput stores idx 0..10 (EXP093-APUT trace; no filled-new-array — 98 FNA rows all [I and later; no copyOf in window). The n2.r walk consumed ALL 11 p3 instance fields (Unsafe objectFieldOffset rows: 10 real fields zze/zzg/zzh/zzi/zzf/zzj/zzk/zzl/zzm/zzn + aux zzd read 10x interleaved = 20 R337 rows) and THEN read entries[11] as the post-field terminator entry — the parse of s2.b demands one more entry than the constructed array carries. p3 has exactly 11 instance fields; the c106b reflection-count law stays GREEN (negative control). Residual decode fork (needs the complete disassembly of n2.r or an ART reference run): which 12th store ART executes (unrolled+loop construction shows 11 stores at idx 0..10 in-engine), or whether the walk's terminator demand is string-derived and the string differs. Fixture per CONT-107 plan: MessageInfo-shape probe asserting two count sources agree over the same class.",
   "fix": "PENDING fixture-first (c106b, next wave): probe two count sources over the same class (getDeclaredFields().length vs the count protobuf derives) and assert agreement; then the generic fix targets whichever reflection law disagrees.",
-  "evidence": "run/c116_tg_s36.log [S36-AOOB] arr=o5042 len=11 idx=11; run/c116_tg_aput.log (11 stores idx0..10 + v24 write-back row); run/c116_tg_fna.log (FNA exclusion + 20 R337 walk rows); run/c115/telegram.log (signature rows at CONT-115)  run/c120/w449_out.log (W449- PASS ×3 + VERDICT WALK-OPS-OK divergence-isolated-to-data-construction); fixtures/cont120_fix449_walk/; run/c120/w449_probe.apk.",
+  "evidence": [
+   "run/c121/dis_n2;_r.txt (MessageSchema walk, pc=692)",
+   "run/c116_tg_s36.log [S36-AOOB] arr=o5042 len=11 idx=11; run/c116_tg_aput.log (11 stores idx0..10 + v24 write-back row); run/c116_tg_fna.log (FNA exclusion + 20 R337 walk rows); run/c115/telegram.log (signature rows at CONT-115)  run/c120/w449_out.log (W449- PASS ×3 + VERDICT WALK-OPS-OK divergence-isolated-to-data-construction); fixtures/cont120_fix449_walk/; run/c120/w449_probe.apk.",
+   "scripts/cont121_info_string.py (40 units vs 64 bytes)",
+   "run/c121/dis_p3_d.txt (Object[11] builder)",
+   "run/c121/telegram.log (11/11 field walk, no AOOB)"
+  ],
   "registered_wave": "CONT-106",
   "registered_date": "2026-10-19"
  },
@@ -7508,5 +7514,31 @@
   "layer": "jni/native-execution (host loader fault containment)",
   "title": "Tictactoe SIGSEGV process-death (FIRST corpus rc=139, CONT-118 W-06 / CONT-119 FIX-TTT decode) ROOT-CAUSED-FIXED CONT-120: libgdx.so (x86_64, 260696 bytes, sha16 553c8769776ff741) faults INSIDE the host loader dlopen (ELF constructor path; fork-probe reproduces the SIGSEGV standalone; the tower3d libgdx.so of the same family loads clean with no JNI_OnLoad = per-library defect, not a family law). Fixed by the three-layer GUARDED-NATIVE law in src/jni/dlopen_exec.cpp: (1) fork dlopen pre-probe (a faulting child dies by signal without exposing the parent loader lock; a cleanly refused probe still lets the parent dlopen for the REAL dlerror); (2) sigsetjmp fault guard around dlopen, JNI_OnLoad and every symbol call (a fault becomes an honest load failure / UnsatisfiedLinkError, crash-forensics handler saved+restored); (3) loader-poison teardown law (_exit on run completion after a poisoned-loader fault — the partially-loaded library's _dl_fini walk hangs exit). Verified: rc 139→1, honest UnsatisfiedLinkError delivered into libGDX SharedLibraryLoader.load's own catch-all handler (deferred handler @0x24 type=<catch-all>), 5 frames complete, tower3d anchor byte-identical (clean loads unaffected).",
   "evidence": "run/c120/tictactoe_fixed3.log (S2-NATIVE fault row + deferred handler delivery + PARTIAL SUCCESS); run/c119/tictactoe1.log (the crash: signal=11 si_code=1 fault_addr=0x0 right after the F-NEW-441 extract); /tmp probe bisect scripts (scripts/cont120_ttt_dlopen_probe.c — step1 FAULT inside dlopen vs tower3d step1 OK); run/c120/battery.log tower3d_ANCHOR_MATCH; miniandroid/src/jni/dlopen_exec.cpp (dlopen_probe/run_native_guarded/loader_poisoned); miniandroid/src/main.cpp (teardown law)."
+ },
+ {
+  "id": "F-NEW-467",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "dex/concurrency (desugared-lib method-scoped bypass discipline)",
+  "title": "BOUNCY Set.add-ON-NULL (f141-null-recv x9): the EXP-088+ Phase 5 CHM bridge bypass was CLASS-SCOPED — it force-bridged EVERY Lj$/util/concurrent/ConcurrentHashMap; method to protect the two decoded hang methods (.e/.f = computeIfAbsent/compute). The bridge has no newKeySet handler, so ConcurrentHashMap.newKeySet() (real dex bytecode at BouncyActivity.<init> 0x00fa: new KeySetView(new CHM(), TRUE)) answered <unset> — FIELD-TRACE pinned iput requestedThumbnails value=<unset> at obj#21 — and requestThumbnail pc=6 died 'Set.add on null' x9 per getView. Fix (F-NEW-215 precedent: a bypass owns exactly the methods whose bytecode hangs): both swallow lists now METHOD-SCOPED to the compute family (.e/.f R8-renamed + computeIfAbsent/compute/computeIfPresent/merge real names); every other CHM method executes its real dex bytecode. Verified: FIELD-TRACE value=obj#96 (real KeySetView), f141 count 9->0.",
+  "evidence": [
+   "run/c121/bouncy.log (f141 x9)",
+   "run/c121/bouncy_ft.log (FIELD-TRACE <unset>)",
+   "run/c121/bouncy2.log (value=obj#96, f141 0)",
+   "scripts/cont121_bouncy_decode.py",
+   "scripts/cont121_s2_builder.py"
+  ]
+ },
+ {
+  "id": "F-NEW-468",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "dex/concurrency (Unsafe array-element atomic law)",
+  "title": "DesugarVarHandle$0.m CAS-RETRY SPIN (F084 halt, bouncy, after F-NEW-467 lifted newKeySet): KeySetView.add -> CHM.putVal -> casTabAt(table, i) -> Unsafe.compareAndSwapObject(tab, ABASE+i*ASHIFT, ...) — the engine answers arrayBaseOffset=0/arrayIndexScale=1 so the dex-computed offset IS the element index, but field_name_for337 only resolves OBJECT-field offsets -> F-NEW-217 UNSAFE-CAS-UNRESOLVED (obj=277 offset=1) -> CAS false forever while getObject kept returning the expected value -> infinite retry, F084 interpreter halt (honest, not a hang). Fix (F-NEW-468 law): resolve_unsafe_name_for337 — when the target object is an array box (has __array_length__), the offset addresses the ELEMENT 'array[i]' (offset bounds-checked); the object-field offset registry (F-NEW-160) is only consulted for non-array targets (a blind registry hit on a colliding offset would cross-link two objects' storage). Landed across getObject/getObjectVolatile/getOrderedObject, putObject family, compareAndSwapObject/Int/Long. Verified: bouncy rc 1->0 FULL SUCCESS (first clean corpus run of bouncy), F084 0, F-NEW-217 0, face stable 8a6c24ac.",
+  "evidence": [
+   "run/c121/bouncy2.log (F084 halts, F-NEW-217 x16)",
+   "run/c121/bouncy3.log (rc=0 clean)",
+   "scripts/cont121_c3_analysis.py"
+  ]
  }
 ]
