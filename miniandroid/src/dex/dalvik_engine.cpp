@@ -23054,6 +23054,33 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
+        // ── CONT-127 (F-NEW-471 SLICE 1): RESOLUTION-GAP LOUD LAW ──────────
+        // When a super-call's declaring class + method exist in the DEX
+        // method_ids table (byte-truth) but try_recursive_invoke found no
+        // parsed DEX body to dispatch, the call falls to the shadow bridge
+        // SILENTLY. ART would have linked the real body; a silent shadow
+        // fallback hides class-data parse gaps (live face: tictactoe v3,
+        // AndroidApplication.onCreate — method_ids[1184] exists, the
+        // engine's parsed table has 52 methods without it, the super-call
+        // fell to the Activity shadow, Gdx.app never got its onCreate-time
+        // assignment, and AndroidLauncher.onCreate died on the
+        // Gdx.app.log NPE). Name the gap AT the call site, bounded.
+        if (dex_report_) {
+            const auto& mre = method_resolve_entry(current_dex_index_,
+                                                   method_idx);
+            if (mre.cls == declaring_class && mre.name == method_name) {
+                static std::atomic<uint64_t> f471_gap_n{0};
+                if (f471_gap_n.fetch_add(1, std::memory_order_relaxed) < 40) {
+                    std::cerr << "[F-NEW-471-RES-GAP] super-call "
+                              << declaring_class << "." << method_name
+                              << " method_id=" << method_idx
+                              << " exists in method_ids but no parsed DEX"
+                              << " body dispatched (shadow bridge fallback)"
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+        }
         // R-NEW-345 SUPER-DISPATCH IDENTITY LAW: pass the CLEAN declaring
         // class into the bridge. ART super-dispatch resolves the SAME
         // receiver/method identity as virtual dispatch; the old "<super>"

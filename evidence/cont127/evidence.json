@@ -1,0 +1,23 @@
+{
+ "wave": "CONT-127 (Train 4 of 5)",
+ "base": {
+  "head": "0844430f",
+  "binary": "6b2911e7"
+ },
+ "deliverables": [
+  "F-NEW-471 SLICE 1 landed: RESOLUTION-GAP LOUD LAW at execute_invoke_super shadow-fallback boundary \u2014 when a super-call target exists in method_ids (byte truth) but no parsed DEX body dispatched, name the gap at the call site: [F-NEW-471-RES-GAP] cls.method method_id=N ... caller",
+  "verified live: fires EXACTLY ONCE at the decoded site (AndroidApplication.onCreate method_id=1184, caller=AndroidLauncher.onCreate) \u2014 run/c127/ttt_gap.log; the silent-shadow-fallback blind spot that hid the tictactoe death chain is permanently closed",
+  "F-NEW-471 CLASSIFIED with the full decode chain (method_ids byte-truth vs 52-method parsed table vs blob-walk desync at vm[10]; incoherent first direct method = alignment gap) + named next levers (alignment-repair walker / method_ids-guided lazy recovery)"
+ ],
+ "battery": {
+  "binary": "255789332406ff63",
+  "anchors": "9/9 byte-identical",
+  "selftest": "rc=0",
+  "negatives": "19/19",
+  "registry": "786 id-unique main==mirror (F-NEW-471 added CLASSIFIED; no inflation)"
+ },
+ "logs": [
+  "run/c127/ttt_gap.log",
+  "run/c127/battery.log"
+ ]
+}
