@@ -3111,6 +3111,10 @@ public:
     // IntentFilter state (heap oid → declared actions). AOSP IntentFilter:
     // <init>(String... actions) / addAction(String); match by exact action.
     std::map<uint32_t, std::vector<std::string>> intent_filters_;
+    // R-NEW-097 (CONT-122): category half of the same AOSP law —
+    // addCategory(String) / countCategories() / getCategory(i) /
+    // matchAction(String) need the declared-category list per filter oid.
+    std::map<uint32_t, std::vector<std::string>> intent_filter_categories_;
     // ── #371 PHASE B5: service + broadcast dispatch state ──
     // AOSP ActiveServices law: startService instantiates the service class,
     // runs onCreate then onStartCommand(intent, flags, startId); a second
