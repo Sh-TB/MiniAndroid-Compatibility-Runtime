@@ -1,0 +1,60 @@
+{
+  "wave": "CONT-120",
+  "title": "«حل ۳۶۴ با این روش تمامشون رو حل بکن» — landing wave: the four CONT-119 fixture-specs landed as product laws + two probe isolations + one new root-cause row",
+  "base": "origin/main 07166cce (CONT-119)",
+  "binary_before": "3ecd381cda214dcd",
+  "binary_after": "see run/c120/battery.log (rebuilt with 4 changed TUs; 9/9 anchors zero drift)",
+  "laws_landed": [
+    {
+      "id": "FIX-TTT / F-NEW-466",
+      "what": "guarded-native law: fork dlopen pre-probe + sigsetjmp fault guard (dlopen/JNI_OnLoad/symbol calls) + loader-poison _exit teardown",
+      "root": "tictactoe libgdx.so (x86_64, sha16 553c8769776ff741) faults inside the host loader dlopen (ELF constructors); standalone fork-probe reproduced the SIGSEGV; the tower3d libgdx.so (same family, no JNI_OnLoad) loads clean — per-library defect",
+      "verification": "rc 139→1; honest UnsatisfiedLinkError delivered into libGDX SharedLibraryLoader.load's own catch-all (deferred handler @0x24 type=<catch-all>); 5 frames complete; tower3d anchor byte-identical",
+      "files": ["miniandroid/src/jni/dlopen_exec.cpp", "miniandroid/src/jni/dlopen_exec.h", "miniandroid/src/main.cpp", "scripts/cont120_ttt_dlopen_probe.c"]
+    },
+    {
+      "id": "FIX-D12 / wrong-thread law",
+      "what": "ViewShadow.checkThread: View-tree mutations from a drained background-thread body raise CalledFromWrongThreadException with the AOSP message; Handler.post'ed bodies stay legal (Looper drain re-binds identity); env MINIANDROID_D12_LAW=0 disables",
+      "verification": "probe fixture D12- PASS raised-and-typed (exact type checked by name); posted-recovery mutation executed legally at the next frame drain (EXP091-SETTEXT text=\"posted-recovery\", no exception); 9/9 anchors zero drift",
+      "files": ["miniandroid/src/framework/android_shadows.cpp", "miniandroid/src/dex/dalvik_engine.cpp (CalledFromWrongThreadException→RuntimeException row)", "fixtures/cont120_d05_unknown/"]
+    },
+    {
+      "id": "FIX-D12-ADJACENT / unified0113 memory (F368 reflective subset)",
+      "what": "the five OpenJDK reflective exception rows (NoSuchMethodException/NoSuchFieldException/InstantiationException/IllegalAccessException/InvocationTargetException → ReflectiveOperationException) moved from the env-gated kF368ExcParent into the unconditional kBuiltinExcParent",
+      "verification": "memory F106-CTOR NoSuchMethodException delivers in-frame in the DEFAULT binary (deferred handler @0x53 type=Exception; app own-log 'Default behavior class null could not be instantiated'; uncaught 0, was ×24); face 6da289aab14d2256 == CONT-71's F368-only activation face byte-for-byte; 9/9 anchors zero drift (opencalc does NOT diverge — narrower than the CONT-71 full-pair)",
+      "files": ["miniandroid/src/dex/dalvik_engine.cpp"]
+    },
+    {
+      "id": "F-NEW-462 facet-2 / GLSurfaceView.getHolder",
+      "what": "holder-acquisition law reaches GLSurfaceView (AOSP GLSurfaceView extends SurfaceView): one non-null holder per view, svHolder/svOwner back-link, same SurfaceHolder method law",
+      "verification": "bouncy 'SurfaceHolder.setFormat on a null object reference' NPE CLOSED (setFormat-null count 0, was the onCreate unwind at invoke_pc=148); the Set.add null root is now isolated as independent (was masked as cascade)",
+      "files": ["miniandroid/src/framework/gl_surface_shadow.cpp"]
+    }
+  ],
+  "probe_isolations": [
+    {
+      "id": "FIX-449 / F-NEW-449",
+      "probe": "fixtures/cont120_fix449_walk (real ECJ/D8 build, run/c120/w449_probe.apk)",
+      "result": "3/3 PASS — WALK-A count-token law in-bounds (count=11 consumed=11 entries=11 buffer=33); WALK-B rotated-terminator reproduces the EXACT S36 signature 'AOOB length=11; index=11'; WALK-C buffer 3-ints-per-field (len=33)",
+      "conclusion": "walk ops are engine-correct; the live divergence is isolated to DATA construction upstream (c3.<clinit> info-string/entries build, R337 rows) — root narrowed honestly, stays CONFIRMED_OPEN_GAP"
+    },
+    {
+      "id": "FIX-D05 / unknown-field substrate",
+      "probe": "fixtures/cont120_d05_unknown (run/c120/d05_probe.apk)",
+      "result": "5/5 PASS — known fields decoded (f1/f2/f3), unknown fields captured byte-perfect (f15 varint, f9 length-delimited), re-serialization byte-equal round-trip",
+      "conclusion": "the UnknownFieldSchema contract executes correctly on the engine-op substrate; D-05's engine-op foundation verified"
+    }
+  ],
+  "honest_notes": [
+    "bouncy Set.add null (requestThumbnail pc=6) remains open as an INDEPENDENT root — previously masked as a cascade of the GL unwind; upstream Bouncy source unreachable from this container (GitHub clone 404/token scope), decode from the APK continues next wave",
+    "memory full visual completion still pending the F-NEW-374 MCM per-container-trust lever (face 6da289aa == the recorded F368-only state, honestly PARTIAL)",
+    "the android-34 stub jar lacks android.view.CalledFromWrongThreadException — the probe checks the raised type BY NAME (runtime identity is the subject, not compile-time)",
+    "tictactoe app-level init still fails downstream of the honest UnsatisfiedLinkError (GdxRuntimeException path) — the app's own handling on a device without natives; the RUNTIME no longer dies"
+  ],
+  "battery": {
+    "anchors": "9/9 ANCHOR_MATCH zero drift (dooz d602648e8e401895, opencalc d5f3c7b5e9936ae6, unote 90a67cc1ddda57b7, microtimer bbd350b6c14fbd52, chess a0319686d56ff5c0, tower3d 11a38a5aeeff45a6, sudoku be640e39e82901c9, klondike 31ddd4d5b8e6d18e, telegram 20ac8cbbbb692e63)",
+    "negatives": "PASS (s41_gatea_negative rc=0)",
+    "selftest": "PASS rows in run/c120/battery.log",
+    "registry": "781 roots id-unique, main==mirror row-equal (F-NEW-466 added, no inflation of existing semantics)"
+  }
+}

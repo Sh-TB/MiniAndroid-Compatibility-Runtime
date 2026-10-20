@@ -22,10 +22,14 @@
 #include "../diagnostics/gfx_trace.h"  // CONT-83 WS-B native.load rows
 
 #include <dlfcn.h>
+#include <csetjmp>
+#include <csignal>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <map>
 #include <mutex>
 #include <vector>
@@ -47,6 +51,7 @@ unsigned long long g_load_attempts = 0;
 unsigned long long g_load_successes = 0;
 unsigned long long g_native_calls = 0;
 unsigned long long g_unsupported_slot_calls = 0;
+unsigned long long g_native_call_faults = 0;  // FIX-TTT guarded-call faults
 
 std::vector<LoadedLib>& libs() {
     static std::vector<LoadedLib> v;
@@ -55,6 +60,132 @@ std::vector<LoadedLib>& libs() {
 std::map<std::string, std::string>& loader_notes() {  // caller class → lib
     static std::map<std::string, std::string> m;
     return m;
+}
+
+// ── FIX-TTT (CONT-120): FAULT-GUARDED NATIVE CALL LAW ──────────────────
+// A real dlopen hands us REAL foreign code (JNI_OnLoad, JNI functions)
+// running against our minimal JavaVM/JNIEnv bridge. A fault inside that
+// code is a LIBRARY-vs-BRIDGE contract failure in this environment — on a
+// real device it would kill the process, but a compatibility runtime must
+// SURVIVE to report honestly (the tictactoe evidence: libgdx.so's
+// JNI_OnLoad dereferenced a null the minimal bridge handed it → SIGSEGV
+// si_addr=0x0 → the whole run died BEFORE the runtime could raise the
+// honest UnsatisfiedLinkError the AOSP Runtime.loadLibrary0 contract
+// demands for a rejected library). Law: native entry points we do not
+// control run inside a sigsetjmp guard; a SIGSEGV/SIGBUS inside the guard
+// longjmps back, the library is dlclose'd, and the caller sees a load
+// failure / UnsatisfiedLinkError with the REAL fault recorded on stderr.
+// The guard is the standard recover-from-plugin-fault technique; the
+// engine-wide crash forensics handler (diagnostics/crash_forensics.cpp)
+// is saved and restored around every guarded region, so faults OUTSIDE a
+// guarded region keep their full forensics path.
+sigjmp_buf& guard_jb() {
+    static sigjmp_buf jb;
+    return jb;
+}
+volatile sig_atomic_t g_guard_active = 0;
+
+struct GuardedSignal {
+    int sig;
+    struct sigaction old;
+};
+// Saved pre-guard actions (crash-forensics handler) — read by the guard
+// handler's fallback path, written only by install_native_guard.
+GuardedSignal g_guard_saved[2];
+size_t g_guard_saved_n = 0;
+
+// Installs the guard handlers for SIGSEGV/SIGBUS (saves the previous
+// actions so the engine-wide crash-forensics path survives the guard).
+void install_native_guard() {
+    struct sigaction sa;
+    memset(&sa, 0, sizeof sa);
+    sa.sa_flags = SA_NODEFER;  // allow return through the faulting signal
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = [](int sig) {
+        if (g_guard_active) {
+            g_guard_active = 0;
+            siglongjmp(guard_jb(), 1);
+        }
+        // Fault outside a guarded region: restore the handler that was
+        // live before the guard was installed — the engine-wide crash
+        // forensics path — and re-raise so a REAL engine crash keeps its
+        // full forensic evidence.
+        for (size_t i = 0; i < g_guard_saved_n; i++)
+            sigaction(g_guard_saved[i].sig, &g_guard_saved[i].old, nullptr);
+        raise(sig);
+    };
+    const int sigs[2] = {SIGSEGV, SIGBUS};
+    g_guard_saved_n = 0;
+    for (int s : sigs)
+        if (sigaction(s, &sa, &g_guard_saved[g_guard_saved_n].old) == 0) {
+            g_guard_saved[g_guard_saved_n].sig = s;
+            g_guard_saved_n++;
+        }
+}
+
+void restore_native_guard() {
+    for (size_t i = 0; i < g_guard_saved_n; i++)
+        sigaction(g_guard_saved[i].sig, &g_guard_saved[i].old, nullptr);
+}
+
+// Runs `fn()` under the guard; returns false iff the native code faulted
+// (the caller records the honest failure and cleans up).
+template <typename F>
+bool run_native_guarded(F&& fn) {
+    install_native_guard();
+    bool faulted = false;
+    if (sigsetjmp(guard_jb(), 1) == 0) {
+        g_guard_active = 1;
+        fn();
+        g_guard_active = 0;
+    } else {
+        faulted = true;  // longjmp landed: g_guard_active already cleared
+    }
+    restore_native_guard();
+    return !faulted;
+}
+
+// ── FIX-TTT (CONT-120): DLOPEN FAULT PRE-CHECK LAW ──────────────────────
+// A library whose ELF constructors / loader processing faults (tictactoe
+// evidence: libgdx.so SIGSEGV inside dlopen with the anchor pre-pass in
+// place, while the tower3d libgdx.so of the same family loads clean) would
+// otherwise take the whole runtime down inside glibc's loader — and a
+// post-fault longjmp would leave the loader lock held. Law: probe the
+// exact dlopen in a FORKED child first (inherits the anchor pre-pass and
+// address space; a faulted child dies by signal WITHOUT poisoning the
+// parent's loader). The parent attempts its real dlopen only when the
+// probe came back clean; a faulted/refused probe becomes the honest load
+// failure. Belt-and-braces: the parent's own dlopen also runs under the
+// fault guard, and any residual fault sets g_loader_poisoned so NO further
+// real dlopen is attempted this process (every later load fails honestly —
+// the loader-lock exposure is never repeated).
+volatile sig_atomic_t g_loader_poisoned = 0;
+int g_probe_status = 0;  // raw waitpid status of the last fork-probe child
+
+// Probe verdict: SAFE → parent dlopens for real; REFUSED → parent dlopens
+// anyway (its own failure carries the REAL dlerror string); FAULTED → the
+// library faults inside the loader, the parent must NOT dlopen it.
+enum class ProbeVerdict { SAFE, REFUSED, FAULTED };
+
+ProbeVerdict dlopen_probe(const char* host_path) {
+    if (g_loader_poisoned) return ProbeVerdict::FAULTED;
+    pid_t p = fork();
+    if (p < 0) return ProbeVerdict::SAFE;  // fork unavailable: direct dlopen
+    if (p == 0) {
+        // Probe child: dlopen then _exit — never unwind, never run parent
+        // atexit handlers, never touch the parent's state.
+        void* h = dlopen(host_path, RTLD_NOW | RTLD_LOCAL);
+        _exit(h ? 0 : 2);
+    }
+    int st = 0;
+    while (waitpid(p, &st, 0) < 0) {
+        // EINTR only; other errors would leave the child unreaped — accept.
+        break;
+    }
+    g_probe_status = st;
+    if (WIFSIGNALED(st)) return ProbeVerdict::FAULTED;
+    if (WIFEXITED(st) && WEXITSTATUS(st) == 0) return ProbeVerdict::SAFE;
+    return ProbeVerdict::REFUSED;
 }
 struct RegisteredNative {
     std::string class_desc;
@@ -317,7 +448,39 @@ LoadOutcome load_library(const std::string& libname,
             (void)row;   // trace rows already landed inside prepare
     }
     dlerror();
-    void* h = dlopen(host_path.c_str(), RTLD_NOW | RTLD_LOCAL);
+    // FIX-TTT: fork-probe the dlopen first — a library that faults inside
+    // the loader (ELF constructors) must become an honest load failure,
+    // never process death and never a poisoned loader lock. A cleanly
+    // refused probe still lets the parent dlopen so the REAL dlerror
+    // reaches the AOSP UnsatisfiedLinkError message.
+    if (dlopen_probe(host_path.c_str()) == ProbeVerdict::FAULTED) {
+        out.detail = "dlopen faulted (SIGSEGV/SIGBUS inside the library's "
+                     "ELF constructors/loader; fork-probe child died by "
+                     "signal) — runtime survived (FIX-TTT)";
+        fprintf(stderr, "[S2-NATIVE] load %s (%s): %s\n", libname.c_str(),
+                host_path.c_str(), out.detail.c_str());
+        gfx::GfxTrace::instance().native_load(libname, host_path, false,
+                                              out.detail);
+        return out;
+    }
+    void* h = nullptr;
+    bool dlopen_faulted = !run_native_guarded(
+        [&] { h = dlopen(host_path.c_str(), RTLD_NOW | RTLD_LOCAL); });
+    if (dlopen_faulted) {
+        // Residual fault the probe did not catch (address-space layout
+        // difference): the loader may hold its lock now — poison it so no
+        // further real dlopen is ever attempted this process, and report
+        // the honest failure.
+        g_loader_poisoned = 1;
+        out.detail = "dlopen faulted (SIGSEGV/SIGBUS inside the loader, "
+                     "post-probe residual) — loader poisoned for this "
+                     "process, runtime survived (FIX-TTT)";
+        fprintf(stderr, "[S2-NATIVE] load %s (%s): %s\n", libname.c_str(),
+                host_path.c_str(), out.detail.c_str());
+        gfx::GfxTrace::instance().native_load(libname, host_path, false,
+                                              out.detail);
+        return out;
+    }
     if (!h) {
         const char* e = dlerror();
         out.detail = std::string("dlopen failed: ") + (e ? e : "unknown error");
@@ -333,9 +496,26 @@ LoadOutcome load_library(const std::string& libname,
     lib.logical_path = logical_path;
     lib.handle = h;
     // JNI_OnLoad handshake (AOSP: version must be >= JNI_VERSION_1_1)
+    // FIX-TTT (CONT-120): FAULT-GUARDED — a foreign JNI_OnLoad that faults
+    // against the minimal bridge (libgdx.so evidence: SIGSEGV si_addr=0x0)
+    // is a load FAILURE, not process death: dlclose + honest detail, and
+    // the caller raises the AOSP UnsatisfiedLinkError contract.
     int (*onload)(void*, void*) = (int (*)(void*, void*))dlsym(h, "JNI_OnLoad");
     if (onload) {
-        int v = onload(&g_vm, nullptr);
+        int v = 0;
+        bool onload_ok = run_native_guarded(
+            [&] { v = onload(&g_vm, nullptr); });
+        if (!onload_ok) {
+            out.detail = "JNI_OnLoad faulted (SIGSEGV/SIGBUS at the handshake) "
+                         "against the minimal JavaVM bridge; library unloaded "
+                         "(dlclose) — runtime survived (FIX-TTT guard)";
+            dlclose(h);
+            fprintf(stderr, "[S2-NATIVE] %s: %s\n", libname.c_str(),
+                    out.detail.c_str());
+            gfx::GfxTrace::instance().native_load(libname, host_path, false,
+                                                  out.detail);
+            return out;
+        }
         if (v == 0) {
             out.detail = "JNI_OnLoad failed (returned 0)";
             dlclose(h);
@@ -518,8 +698,23 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
     // overflow buffer must stay alive across the call
     std::vector<uint64_t> overflow = stack_args;
     double sse_ret = 0.0;
-    uint64_t int_ret = miniandroid_native_thunk(
-        fn, overflow.data(), overflow.size(), int_regs, sse_regs, &sse_ret);
+    // FIX-TTT (CONT-120): the same fault guard that covers the JNI_OnLoad
+    // handshake covers every real symbol call — foreign code we do not
+    // control must never take the process down; a fault becomes an honest
+    // call failure with the error string the caller records.
+    uint64_t int_ret = 0;
+    bool call_ok = run_native_guarded([&] {
+        int_ret = miniandroid_native_thunk(
+            fn, overflow.data(), overflow.size(), int_regs, sse_regs, &sse_ret);
+    });
+    if (!call_ok) {
+        ++g_native_call_faults;
+        error = "native call faulted (SIGSEGV/SIGBUS inside the library) — "
+                "guarded, runtime survived (FIX-TTT)";
+        fprintf(stderr, "[S2-NATIVE] guarded call fault: %s sig=%s\n",
+                error.c_str(), sig.c_str());
+        return false;
+    }
 
     switch (ret) {
         case 'V': out.kind = JOutcome::Kind::VOID; break;
@@ -585,6 +780,7 @@ unsigned long long load_attempts() {
     std::lock_guard<std::mutex> lk(g_mu);
     return g_load_attempts;
 }
+bool loader_poisoned() { return g_loader_poisoned != 0; }
 unsigned long long load_successes() {
     std::lock_guard<std::mutex> lk(g_mu);
     return g_load_successes;

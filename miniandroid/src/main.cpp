@@ -12,6 +12,7 @@
 #include <sstream>
 #include <ctime>
 #include "diagnostics/crash_forensics.h"
+#include "jni/dlopen_exec.h"  // FIX-TTT teardown law (loader-poisoned exit)
 #include <filesystem>
 #include <cstdlib>
 // ─── S61 PERF: poor-man's sampling profiler (env MINIANDROID_SAMPLE=1) ───
@@ -1527,7 +1528,17 @@ int main(int argc, char* argv[]) {
     } else if (command == "dex") {
         return cmd_dex(apk_path, verbose);
     } else if (command == "run") {
-        return cmd_run(apk_path, config);
+        int rc = cmd_run(apk_path, config);
+        // FIX-TTT (CONT-120) teardown law: when a native fault poisoned the
+        // loader this process (fork-probe missed, guarded dlopen faulted),
+        // the partially-loaded library's _dl_fini walk at exit can hang —
+        // the run itself completed and its evidence is flushed, so leave
+        // via _exit (no atexit/fini walk). Normal runs keep the full
+        // destructor path.
+        std::cout.flush();
+        std::cerr.flush();
+        if (miniandroid::nativeexec::loader_poisoned()) ::_exit(rc);
+        return rc;
     } else {
         std::cerr << "[ERROR] Unknown command: " << command << "\n\n";
         print_usage(argv[0]);

@@ -1316,6 +1316,29 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
     {"Ljava/lang/InterruptedException;", "Ljava/lang/Exception;"},
     {"Ljava/lang/ClassNotFoundException;", "Ljava/lang/Exception;"},
     {"Ljava/lang/ReflectiveOperationException;", "Ljava/lang/Exception;"},
+    // FIX-D12 (CONT-120): AOSP android.view.CalledFromWrongThreadException
+    // extends RuntimeException (android.view hierarchy) — the companion
+    // row for the ViewShadow.checkThread law so app catch(RuntimeException)
+    // / catch(Exception) handlers can receive it.
+    {"Landroid/view/CalledFromWrongThreadException;", "Ljava/lang/RuntimeException;"},
+    // FIX-D12-ADJACENT / unified0113 (CONT-120): the five reflective
+    // NoSuch*/Illegal* families are OpenJDK java.lang facts of the SAME
+    // kind as the ClassNotFoundException row above (java.lang §7 parent
+    // chain) — they belonged in the unconditional table, not behind the
+    // F-NEW-368 experiment gate. Without the NoSuchMethodException row a
+    // typed catch(Exception) around Class.getDeclaredConstructor NEVER
+    // matches and the deferred unwind aborts the whole DEX frame — the
+    // memory app's CoordinatorLayout.getResolvedLayoutParams evidence
+    // (F106-CTOR uncaught ×24, fan-out 24, the highest-count signature of
+    // CONT-119). AOSP CoordinatorLayout.getResolvedLayoutParams wraps the
+    // reflection in catch(NoSuchMethodException)/catch(Exception) and the
+    // frame must survive it. The network / android rows below stay on the
+    // gated table (F-NEW-368's per-container-trust experiment, unchanged).
+    {"Ljava/lang/NoSuchMethodException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/NoSuchFieldException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/InstantiationException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/IllegalAccessException;", "Ljava/lang/ReflectiveOperationException;"},
+    {"Ljava/lang/InvocationTargetException;", "Ljava/lang/ReflectiveOperationException;"},
     {"Ljava/io/IOException;", "Ljava/lang/Exception;"},
     {"Ljava/io/FileNotFoundException;", "Ljava/io/IOException;"},
     {"Ljava/io/EOFException;", "Ljava/io/IOException;"},
@@ -1334,23 +1357,16 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
 static const size_t kBuiltinExcParent_N = sizeof(kBuiltinExcParent) / sizeof(kBuiltinExcParent[0]);
 
 // F-NEW-368 extension table (CONT-71, env-gated MINIANDROID_F368_LAW): the
-// reflective / java.net / java.util.concurrent / android exception families —
-// every row an OpenJDK (java.lang §7) or AOSP libcore documented parent.
-// Without these rows a typed catch(Exception) around getDeclaredField/
-// getDeclaredMethod/getDeclaredConstructor never matches (NoSuch*Exception
-// had NO chain to Exception) and the deferred unwind aborts the whole DEX
-// frame (memory CoordinatorLayout.getResolvedLayoutParams evidence).
+// java.net / java.util.concurrent / android exception families — every row
+// an AOSP libcore documented parent. (CONT-120: the five REFLECTIVE rows
+// moved to the unconditional kBuiltinExcParent above — unified0113/memory
+// F106-CTOR evidence; java.lang §7 chains are not experiment-gateable.)
 // Gated because the in-frame delivery it unlocks completes container DEX
 // measure chains whose downstream emulation is still incomplete (the
 // F-NEW-370 decode trail) — the default binary keeps the pre-wave
 // behavior byte-for-byte; the flag activates the delivery for the
 // per-container-trust experiment.
 static const miniandroid::dalvik::KvPair kF368ExcParent[] = {
-    {"Ljava/lang/NoSuchMethodException;", "Ljava/lang/ReflectiveOperationException;"},
-    {"Ljava/lang/NoSuchFieldException;", "Ljava/lang/ReflectiveOperationException;"},
-    {"Ljava/lang/InstantiationException;", "Ljava/lang/ReflectiveOperationException;"},
-    {"Ljava/lang/IllegalAccessException;", "Ljava/lang/ReflectiveOperationException;"},
-    {"Ljava/lang/InvocationTargetException;", "Ljava/lang/ReflectiveOperationException;"},
     {"Ljava/net/SocketException;", "Ljava/io/IOException;"},
     {"Ljava/net/ConnectException;", "Ljava/net/SocketException;"},
     {"Ljava/net/UnknownHostException;", "Ljava/io/IOException;"},

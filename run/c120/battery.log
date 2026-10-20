@@ -1,0 +1,87 @@
+== binary ==
+f20576eba2e61e6c
+head=07166cce7a95fb8fb204f5a2a1439287dc03cb7e
+== E-01 selftest ==
+  [PASS] install-failure: INSTALL_FAILURE
+  [PASS] no-screenshot: NO_SCREEN
+  [PASS] splash: SPLASH_ONLY
+  [PASS] white-blank: WHITE_BLANK
+  [PASS] dark-default-bg: DEFAULT_BACKGROUND_ONLY
+  [PASS] rich-no-provenance: PARTIAL_MARGINAL
+  [PASS] rich-no-provenance-note: True
+  [PASS] genuine-content: REAL_APP_CONTENT
+  [PASS] abi-refusal: PREREQUISITE_MISMATCH
+  [PASS] budget-timeout: BUDGET_TIMEOUT
+  [PASS] interactive: INTERACTIVE_CONTENT_VERIFIED
+  [PASS] sparse-content: REAL_APP_CONTENT
+  [PASS] sparse-content-note: True
+  [PASS] harness-failure: HARNESS_ENVIRONMENT_FAILURE
+SELFTEST: 14/14 PASS
+selftest rc=0
+  [PASS] sparse-content-note: True
+  [PASS] harness-failure: HARNESS_ENVIRONMENT_FAILURE
+SELFTEST: 14/14 PASS
+== run dooz ==
+rc=1
+face=d602648e8e401895 recorded=d602648e8e401895
+dooz_ANCHOR_MATCH
+== run opencalc ==
+rc=1
+face=d5f3c7b5e9936ae6 recorded=d5f3c7b5e9936ae6
+opencalc_ANCHOR_MATCH
+== run unote ==
+rc=0
+face=90a67cc1ddda57b7 recorded=90a67cc1ddda57b7
+unote_ANCHOR_MATCH
+== run microtimer ==
+rc=0
+face=bbd350b6c14fbd52 recorded=bbd350b6c14fbd52
+microtimer_ANCHOR_MATCH
+== run chess ==
+rc=1
+face=a0319686d56ff5c0 recorded=a0319686d56ff5c0
+chess_ANCHOR_MATCH
+== run tower3d ==
+rc=1
+face=11a38a5aeeff45a6 recorded=11a38a5aeeff45a6
+tower3d_ANCHOR_MATCH
+== run sudoku ==
+rc=1
+face=be640e39e82901c9 recorded=be640e39e82901c9
+sudoku_ANCHOR_MATCH
+== run klondike ==
+rc=1
+face=31ddd4d5b8e6d18e recorded=31ddd4d5b8e6d18e
+klondike_ANCHOR_MATCH
+== run telegram ==
+rc=1
+face=20ac8cbbbb692e63 recorded=20ac8cbbbb692e63
+telegram_ANCHOR_MATCH
+== negatives ==
+PASS N-01
+PASS N-02
+PASS N-03
+PASS N-04
+PASS N-05
+PASS N-06
+PASS N-08-ISO-02
+PASS N-08-ISO-03
+PASS N-08-ISO-04
+PASS N-08-ASSET-05
+PASS N-08-IO-10
+PASS N-08-RES-04
+PASS N-08-NAT-01
+PASS N-09
+PASS N-10
+PASS N-11
+PASS N-12
+PASS N-18
+PASS N-19
+NEGATIVE TESTS: 19/19 PASS
+negatives rc=0
+== registry id-unique + mirror consistency ==
+roots=780 unique=780 ID_UNIQUE=True
+main=780 mirror=780 MAIN_EQ_MIRROR=True
+== HEAD check ==
+HEAD=07166cce7a95fb8fb204f5a2a1439287dc03cb7e ORIGIN=07166cce7a95fb8fb204f5a2a1439287dc03cb7e
+== SUMMARY ==

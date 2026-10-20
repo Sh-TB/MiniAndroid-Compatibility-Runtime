@@ -1,0 +1,1320 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=29
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$array; offset=0x1f265d static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$array; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$color; offset=0x1f2668 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$color; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$drawable; offset=0x1f266e static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$drawable; with_defaults=6/6
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$id; offset=0x1f268d static_fields=26 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$id; with_defaults=26/26
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$layout; offset=0x1f2710 static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$layout; with_defaults=3/3
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$mipmap; offset=0x1f2720 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$mipmap; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$raw; offset=0x1f272b static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$raw; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$string; offset=0x1f2736 static_fields=78 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$string; with_defaults=78/78
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$style; offset=0x1f28bd static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$style; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/dozingcatsoftware/bouncy/R$xml; offset=0x1f28c3 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/dozingcatsoftware/bouncy/R$xml; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=92
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=112
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=118
+[S123-ACTION-REG] activities=3 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 1395 entries (1347 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 2 DEX files for 'com.dozingcatsoftware.bouncy.BouncyActivity'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk named_ids=122 types=10
+[ARSC-VALUES] apk=upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk strings=78 colors=1 dimens=0 bools=0 integers=0 raw=2 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Vector Pinball" (resid @0x7f080001)
+[A7b] icon @0x7f060000 -> res/2r.xml DECODE FAILED (adaptive-icon: layers reference app resources but no resolver was provided) — honest miss
+[EXP093-APP] Manifest declares Application class: Landroid/support/multidex/MultiDexApplication; (engine binds it post-DEX-inject)
+[BMF-RESOLVER] registering resolver EARLY (entries=89)
+[S1-PROVIDER] manifest providers transferred: 0
+[EXP088-MD-INJECT] Injected 689 classes from secondary DEX files (0 duplicates skipped) — total classes now: 2036
+[EXP095-HIER] superclass map extended by 689 secondary-DEX classes (total 2084)
+[S102-IFACE-CLOSURE] declared-interfaces index extended by 360 secondary-DEX classes (total 726)
+[F087-MD-ANN] class-annotation index extended by 0 secondary-DEX classes (total 1)
+[R341-APP] instantiating Application Landroid/support/multidex/MultiDexApplication; obj#14 (post-DEX-inject, AOSP order)
+[TRY-ENTRY] Landroid/support/multidex/MultiDexApplication;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Application;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Application;.<init> caller=Landroid/support/multidex/MultiDexApplication;.<init>
+[S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/Context;
+[F166-BASECTX] <init> served for Landroid/content/Context; (receiver=14)
+[MEM] method_exit: Landroid/support/multidex/MultiDexApplication;.<init> insns=2 RSS=48.4727 MB
+[R341-APP] <init> OK
+[TRY-ENTRY] Landroid/support/multidex/MultiDexApplication;.attachBaseContext dex_report=YES
+[TRY-ENTRY] Landroid/app/Application;.attachBaseContext dex_report=YES
+[REC-MISS] Landroid/app/Application;.attachBaseContext caller=Landroid/support/multidex/MultiDexApplication;.attachBaseContext
+[S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .attachBaseContext
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/Context;
+[F166-BASECTX] attachBaseContext served for Landroid/content/Context; (receiver=14)
+[EXP062-INIT] Landroid/support/multidex/MultiDex; static_fields=11 with_defaults=10
+[CLASS_INIT] class=Landroid/support/multidex/MultiDex; method=<clinit> bytecode_size=20
+[TRY-ENTRY] Landroid/support/multidex/MultiDex;.<clinit> dex_report=YES
+[TRY-ENTRY] Ljava/util/HashSet;.<init> dex_report=YES
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Landroid/support/multidex/MultiDex;.<clinit>
+[TRY-ENTRY] Ljava/lang/System;.getProperty dex_report=YES
+[REC-MISS] Ljava/lang/System;.getProperty caller=Landroid/support/multidex/MultiDex;.<clinit>
+[TRY-ENTRY] Landroid/support/multidex/MultiDex;.isVMMultidexCapable dex_report=YES
+[TRY-ENTRY] Ljava/lang/StringBuilder;.<init> dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Landroid/support/multidex/MultiDex;.isVMMultidexCapable
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroid/support/multidex/MultiDex;.isVMMultidexCapable
+[TRY-ENTRY] Ljava/lang/StringBuilder;.append dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroid/support/multidex/MultiDex;.isVMMultidexCapable
+[TRY-ENTRY] Ljava/lang/StringBuilder;.toString dex_report=YES
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Landroid/support/multidex/MultiDex;.isVMMultidexCapable
+[TRY-ENTRY] Landroid/util/Log;.i dex_report=YES
+[REC-MISS] Landroid/util/Log;.i caller=Landroid/support/multidex/MultiDex;.isVMMultidexCapable
+[CLASS_INIT] class=Landroid/support/multidex/MultiDex; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=34
+[TRY-ENTRY] Landroid/support/multidex/MultiDex;.install dex_report=YES
+[TRY-ENTRY] Landroid/util/Log;.i dex_report=YES
+[REC-MISS] Landroid/util/Log;.i caller=Landroid/support/multidex/MultiDex;.install
+[SGET] class=Landroid/support/multidex/MultiDex; method=install pc=7 field=Landroid/support/multidex/MultiDex;.IS_VM_MULTIDEX_CAPABLE value=0
+[TRY-ENTRY] Landroid/support/multidex/MultiDex;.getApplicationInfo dex_report=YES
+[TRY-ENTRY] Landroid/support/multidex/MultiDexApplication;.getApplicationInfo dex_report=YES
+[TRY-ENTRY] Landroid/app/Application;.getApplicationInfo dex_report=YES
+[REC-MISS] Landroid/app/Application;.getApplicationInfo caller=Landroid/support/multidex/MultiDex;.getApplicationInfo
+[TRY-ENTRY] Landroid/content/Context;.getApplicationInfo dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationInfo caller=Landroid/support/multidex/MultiDex;.getApplicationInfo
+[S71-ANCESTRY] re-dispatch Landroid/support/multidex/MultiDexApplication; as Landroid/app/Application; for .getApplicationInfo
+[S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .getApplicationInfo
+[TRY-ENTRY] Ljava/io/File;.<init> dex_report=YES
+[R347-FILE-CTOR] argc=2 path="/data/app/com.dozingcatsoftware.bouncy/base.apk" caller=Landroid/support/multidex/MultiDex;.install a1t=5("/data/app/com.dozingcatsoftware.bouncy/base.apk")
+[R347-FILE-CTOR] argc=2 path="/data/data/com.dozingcatsoftware.bouncy" caller=Landroid/support/multidex/MultiDex;.install a1t=5("/data/data/com.dozingcatsoftware.bouncy")
+[SGET] class=Landroid/support/multidex/MultiDex; method=doInstallation pc=4 field=Landroid/support/multidex/MultiDex;.installedApk obj_id=15
+[REC-MISS] Ljava/util/Set;.contains caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Ljava/util/Set;.add caller=Landroid/support/multidex/MultiDex;.doInstallation
+[SGET] class=Landroid/support/multidex/MultiDex; method=doInstallation pc=18 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Landroid/support/multidex/MultiDex;.doInstallation
+[SGET] class=Landroid/support/multidex/MultiDex; method=doInstallation pc=31 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Ljava/lang/System;.getProperty caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Landroid/util/Log;.w caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Landroid/app/Application;.getClassLoader caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Landroid/content/Context;.getClassLoader caller=Landroid/support/multidex/MultiDex;.doInstallation
+[S71-ANCESTRY] re-dispatch Landroid/support/multidex/MultiDexApplication; as Landroid/app/Application; for .getClassLoader
+[S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .getClassLoader
+[REC-MISS] Landroid/util/Log;.e caller=Landroid/support/multidex/MultiDex;.doInstallation
+[REC-MISS] Landroid/util/Log;.i caller=Landroid/support/multidex/MultiDex;.install
+[R341-APP] onCreate SKIPPED ins=0
+[R341-APP] identity published to ActivityShadow
+[R341-APP] bound application obj#14 (Landroid/support/multidex/MultiDexApplication;)
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=21)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[REC-MISS] Landroid/os/Looper;.myLooper caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[REC-MISS] Landroid/os/Handler;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[EXP062-INIT] Lcom/dozingcatsoftware/vectorpinball/model/Field; static_fields=2 with_defaults=2
+[REC-MISS] Ljava/util/Random;.<init> caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.<init>
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/model/Field;.nanosSinceBallMoved caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.<init> value=-1
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/model/Field;.zoomNanos caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.<init> value=0
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lj$/util/Objects;.requireNonNull
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lj$/util/Objects;.requireNonNull
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lj$/util/Objects;.requireNonNull
+[REC-MISS] Ljava/lang/Long;.valueOf caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState; method=<clinit> bytecode_size=37
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.<init>
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState; method=$values pc=3 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.MAIN_MENU obj_id=44
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState; method=$values pc=8 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.TABLE_SELECTION obj_id=45
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState; method=$values pc=13 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.HIGH_SCORE obj_id=46
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=42
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=<init> pc=63 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.MAIN_MENU obj_id=44
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=<init> pc=69 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[REC-MISS] Ljava/lang/System;.currentTimeMillis caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[REC-MISS] Ljava/lang/Long;.valueOf caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[EXP062-INIT] Lcom/dozingcatsoftware/bouncy/FieldViewManager; static_fields=4 with_defaults=2
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/FieldViewManager; method=<clinit> bytecode_size=101
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/util/Arrays;.asList caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/util/Arrays;.asList caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[REC-MISS] Ljava/util/Arrays;.asList caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<clinit>
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/FieldViewManager; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=46
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.minFlipperActivationMillis caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<init> value=50
+[REC-MISS] Landroid/os/Handler;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldViewManager;.<init>
+[EXP062-INIT] Lcom/dozingcatsoftware/vectorpinball/model/FieldDriver; static_fields=3 with_defaults=3
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lj$/util/Objects;.requireNonNull
+[EXP062-INIT] Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager; static_fields=3 with_defaults=3
+[REC-MISS] Ljava/util/LinkedList;.<init> caller=Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager;.<init>
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager;.totalFrames caller=Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager;.<init> value=0
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager;.currentNanosPerFrame caller=Lcom/dozingcatsoftware/vectorpinball/util/FrameRateManager;.setCurrentRateIndex value=16420361
+[EXP062-INIT] Lj$/util/concurrent/ConcurrentHashMap; static_fields=11 with_defaults=11
+[CLASS_INIT] class=Lj$/util/concurrent/ConcurrentHashMap; method=<clinit> bytecode_size=145
+[F-NEW-215] CLINIT-BYPASS-LIFTED class=Lj$/util/concurrent/ConcurrentHashMap; (initialization protocol runs; compute-methods stay bypassed)
+[F-NEW-215] CLINIT-BYPASS-LIFTED class=Lj$/util/concurrent/ConcurrentHashMap; (second swallow list)
+[REC-MISS] Ljava/lang/Runtime;.getRuntime caller=Lj$/util/concurrent/ConcurrentHashMap;.<clinit>
+[REC-MISS] Ljava/lang/Runtime;.availableProcessors caller=Lj$/util/concurrent/ConcurrentHashMap;.<clinit>
+[REC-MISS] Ljava/io/ObjectStreamField;.<init> caller=Lj$/util/concurrent/ConcurrentHashMap;.<clinit>
+[SGET] class=Lj$/util/concurrent/ConcurrentHashMap; method=<clinit> pc=27 field=Ljava/lang/Integer;.TYPE obj_id=0
+[REC-MISS] Ljava/io/ObjectStreamField;.<init> caller=Lj$/util/concurrent/ConcurrentHashMap;.<clinit>
+[REC-MISS] Ljava/io/ObjectStreamField;.<init> caller=Lj$/util/concurrent/ConcurrentHashMap;.<clinit>
+[CLASS_INIT] class=Lj$/sun/misc/DesugarUnsafe; method=<clinit> bytecode_size=32
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lj$/sun/misc/DesugarUnsafe;.getUnsafeField
+[R337-REFLECT] Class(Lsun/misc/Unsafe;).getDeclaredField("theUnsafe") type=Ljava/lang/Object; instance [synthetic-auto] -> Field obj#83
+[REC-MISS] Ljava/lang/reflect/Field;.setAccessible caller=Lj$/sun/misc/DesugarUnsafe;.<clinit>
+[REC-MISS] Ljava/lang/reflect/Field;.get caller=Lj$/sun/misc/DesugarUnsafe;.<clinit>
+[R337-REFLECT] Field.get(theUnsafe) -> Unsafe obj#85
+[CLASS_INIT] class=Lj$/sun/misc/DesugarUnsafe; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=65
+[SGET] class=Lj$/sun/misc/DesugarUnsafe; method=getUnsafe pc=0 field=Lj$/sun/misc/DesugarUnsafe;.theUnsafeWrapper obj_id=84
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-REFLECT] Class(Lj$/util/concurrent/ConcurrentHashMap;).getDeclaredField("sizeCtl") type=I instance -> Field obj#87
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-UNSAFE] objectFieldOffset Lj$/util/concurrent/ConcurrentHashMap;.sizeCtl -> 16 caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-REFLECT] Class(Lj$/util/concurrent/ConcurrentHashMap;).getDeclaredField("transferIndex") type=I instance -> Field obj#88
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-UNSAFE] objectFieldOffset Lj$/util/concurrent/ConcurrentHashMap;.transferIndex -> 24 caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-REFLECT] Class(Lj$/util/concurrent/ConcurrentHashMap;).getDeclaredField("baseCount") type=J instance -> Field obj#89
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-UNSAFE] objectFieldOffset Lj$/util/concurrent/ConcurrentHashMap;.baseCount -> 32 caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-REFLECT] Class(Lj$/util/concurrent/ConcurrentHashMap;).getDeclaredField("cellsBusy") type=I instance -> Field obj#90
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-UNSAFE] objectFieldOffset Lj$/util/concurrent/ConcurrentHashMap;.cellsBusy -> 40 caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[REC-MISS] Ljava/lang/Class;.getDeclaredField caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-REFLECT] Class(Lj$/util/concurrent/ConcurrentHashMap$CounterCell;).getDeclaredField("value") type=J instance -> Field obj#92
+[REC-MISS] Lsun/misc/Unsafe;.objectFieldOffset caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[R337-UNSAFE] objectFieldOffset Lj$/util/concurrent/ConcurrentHashMap$CounterCell;.value -> 48 caller=Lj$/sun/misc/DesugarUnsafe;.objectFieldOffset
+[REC-MISS] Lsun/misc/Unsafe;.arrayBaseOffset caller=Lj$/sun/misc/DesugarUnsafe;.arrayBaseOffset
+[REC-MISS] Lsun/misc/Unsafe;.arrayIndexScale caller=Lj$/sun/misc/DesugarUnsafe;.arrayIndexScale
+[REC-MISS] Ljava/lang/Integer;.numberOfLeadingZeros caller=Lj$/util/concurrent/ConcurrentHashMap;.<clinit>
+[CLASS_INIT] class=Lj$/util/concurrent/ConcurrentHashMap; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=65
+[REC-MISS] Ljava/util/concurrent/Executors;.newSingleThreadExecutor caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.<init>
+[EXECUTOR] newSingleThreadExecutor → ThreadPoolExecutor obj=96 core=1
+[U0113-ACTIVITY] activity heap object #21 (Lcom/dozingcatsoftware/bouncy/BouncyActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/dozingcatsoftware/bouncy/BouncyActivity;' id=21
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=onCreate pc=35 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[EXP062-INIT] Lcom/dozingcatsoftware/bouncy/BouncyActivity; static_fields=11 with_defaults=11
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=<clinit> bytecode_size=23
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> bytecode_size=341
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture$Bitness; method=<clinit> bytecode_size=42
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture$Bitness; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=80
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=0 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._32 obj_id=101
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> bytecode_size=54
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=86
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=4 field=Lcom/badlogic/gdx/utils/Architecture;.x86 obj_id=105
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Os; method=<clinit> bytecode_size=66
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Os; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=93
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=39 field=Lcom/badlogic/gdx/utils/Os;.Linux obj_id=111
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=121 field=Lcom/badlogic/gdx/utils/Architecture;.ARM obj_id=106
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=167 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._64 obj_id=102
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=200 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=204 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._32 obj_id=101
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=208 field=Lcom/badlogic/gdx/utils/Architecture;.x86 obj_id=105
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=214 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=216 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=250 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=252 field=Lcom/badlogic/gdx/utils/Os;.Windows obj_id=110
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=261 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=263 field=Lcom/badlogic/gdx/utils/Os;.Linux obj_id=111
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=272 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=274 field=Lcom/badlogic/gdx/utils/Os;.MacOsX obj_id=112
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=283 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=285 field=Lcom/badlogic/gdx/utils/Os;.IOS obj_id=114
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=294 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=296 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=305 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.architecture obj_id=105
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=307 field=Lcom/badlogic/gdx/utils/Architecture;.ARM obj_id=106
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=316 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.bitness obj_id=101
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=318 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._64 obj_id=102
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/util/Random;.<init> caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=103
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=2 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=4 field=Lcom/badlogic/gdx/utils/Os;.IOS obj_id=114
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=isLoaded pc=3 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadedLibraries obj_id=116
+[REC-MISS] Ljava/util/HashSet;.contains caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.isLoaded
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=mapLibraryName pc=0 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=mapLibraryName pc=2 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=24 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=113
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=26 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=113
+[REC-MISS] Ljava/lang/System;.loadLibrary caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load
+[GATEA-NATIVE] System.loadLibrary("gdx-box2d") caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load
+[F-NEW-441] on-demand extract lib/x86_64/libgdx-box2d.so → /data/app/com.dozingcatsoftware.bouncy/lib/x86_64 (270816 bytes)
+[S2-NATIVE] load gdx-box2d: dlopen ok (runtime/data/data/app/com.dozingcatsoftware.bouncy/lib/x86_64/libgdx-box2d.so)
+[S2-NATIVE] System.loadLibrary("gdx-box2d") LOADED size=270816 sha16=a5ab5ba8f6f6ee91 (dlopen ok; no JNI_OnLoad)
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=setLoaded pc=3 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadedLibraries obj_id=116
+[REC-MISS] Ljava/util/HashSet;.add caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.setLoaded
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=103
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getMaxFrameRateForDisplay)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getMaxFrameRateForDisplay
+[REC-MISS] Landroid/view/Display;.getRefreshRate caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getMaxFrameRateForDisplay
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getMaxFrameRateForDisplay
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Lcom/dozingcatsoftware/bouncy/BouncyActivity; as Landroid/app/Activity; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2131034113
+[U007-INFLATE] setContentView(layoutResId=0x7f050001)
+[REC-MISS] Landroid/view/View;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Color;.argb caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setARGB caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setAntiAlias caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/view/Display;.getMetrics caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[EXT-AOSP-002] setTextSize view=126 class=Landroid/graphics/Paint; px=63
+[REC-MISS] Landroid/graphics/Paint;.setARGB caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[EXT-AOSP-002] setTextSize view=128 class=Landroid/graphics/Paint; px=23.625
+[REC-MISS] Landroid/graphics/Paint;.setAntiAlias caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setARGB caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setTextSize caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[EXT-AOSP-002] setTextSize view=131 class=Landroid/graphics/Paint; px=31.5
+[REC-MISS] Landroid/graphics/Paint;.setAntiAlias caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setARGB caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[SGET] class=Lcom/dozingcatsoftware/bouncy/ScoreView; method=<init> pc=178 field=Landroid/graphics/Paint$Style;.STROKE obj_id=133
+[REC-MISS] Landroid/graphics/Paint;.setStyle caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setAntiAlias caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setARGB caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[SGET] class=Lcom/dozingcatsoftware/bouncy/ScoreView; method=<init> pc=195 field=Landroid/graphics/Paint$Style;.FILL obj_id=134
+[REC-MISS] Landroid/graphics/Paint;.setStyle caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setAntiAlias caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.<init>
+[DEFAULT-MEASURE] class=Lcom/dozingcatsoftware/bouncy/ScoreView; view=124 node=FOUND overrides_onMeasure=0 flag=1
+[REC-MISS] Landroid/view/SurfaceView;.<init> caller=Lcom/dozingcatsoftware/bouncy/CanvasFieldView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.<init> caller=Lcom/dozingcatsoftware/bouncy/CanvasFieldView;.<init>
+[REC-MISS] Landroid/graphics/RectF;.<init> caller=Lcom/dozingcatsoftware/bouncy/CanvasFieldView;.<init>
+[REC-MISS] Landroid/graphics/Paint;.setAntiAlias caller=Lcom/dozingcatsoftware/bouncy/CanvasFieldView;.<init>
+[DEFAULT-MEASURE] class=Lcom/dozingcatsoftware/bouncy/CanvasFieldView; view=137 node=FOUND overrides_onMeasure=0 flag=1
+[REC-MISS] Landroid/opengl/GLSurfaceView;.<init> caller=Lcom/dozingcatsoftware/bouncy/GLFieldView;.<init>
+[DEFAULT-MEASURE] class=Lcom/dozingcatsoftware/bouncy/GLFieldView; view=141 node=FOUND overrides_onMeasure=0 flag=1
+[U007-INFLATE] root_id=121 views=31 strings=13 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=121 recorded for first-traversal attach+measure
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=onCreate pc=78 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; recv_oid=21 act_oid=21)
+[REC-MISS] Landroid/view/Window;.setNavigationBarColor caller=Lcom/dozingcatsoftware/bouncy/AboutActivity$$ExternalSyntheticApiModelOutline0;.m
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=106
+[REC-MISS] Landroid/app/Activity;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Landroid/content/ContextWrapper;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Landroid/content/Context;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Landroid/content/Context;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/AssetManager;.list caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/Arrays;.asList caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[REC-MISS] Ljava/util/List;.contains caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.getNumberOfLevels
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getInitialLevel
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=getInitialLevel pc=8 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.INITIAL_LEVEL_PREFS_KEY obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getInitialLevel
+[SGET] class=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader; method=layoutMapForLevel pc=0 field=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;._layoutMap obj_id=167
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel pc=6
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Landroid/app/Activity;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Landroid/content/ContextWrapper;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Landroid/content/Context;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[REC-MISS] Landroid/content/Context;.getAssets caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.readFieldLayout
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Landroid/app/Activity;
+[EXP071-ASSET-ARGS] open argc=2 arg[0]type=7 obj=168 arg[1]type=5 str="tables/table1.json"
+[EXP071-ASSET] AssetManager.open("tables/table1.json") → InputStream id=184
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.<init> caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 1024
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[STREAM-READ] asset=tables/table1.json read[off=0 len=1024] → 115
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.write caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[REC-MISS] Ljava/io/ByteArrayOutputStream;.toByteArray caller=Lcom/dozingcatsoftware/vectorpinball/util/IOUtils;.utf8FromStream
+[REC-MISS] Lorg/json/JSONObject;.<init> caller=Lcom/dozingcatsoftware/bouncy/util/JSONUtils;.mapFromJSONString
+[REC-MISS] Lorg/json/JSONObject;.keys caller=Lcom/dozingcatsoftware/bouncy/util/JSONUtils;.mapFromJSONObject
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/dozingcatsoftware/bouncy/util/JSONUtils;.mapFromJSONObject
+[SGET] class=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader; method=layoutMapForLevel pc=18 field=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;._layoutMap obj_id=167
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel
+[REC-MISS] Ljava/util/Map;.put caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/FieldLayoutReader;.layoutMapForLevel pc=24
+[F089] shadow put map=167 key="int:1" arg0_kind=6 arg0_str="" arg0_obj=182 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[EXP062-INIT] Lcom/badlogic/gdx/math/Vector2; static_fields=4 with_defaults=4
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector2; method=<clinit> bytecode_size=25
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector2; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=110
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/WorldLayers; method=<init> pc=3 field=Lcom/badlogic/gdx/math/Vector2;.Zero obj_id=196
+[R-NEW-397] synthesized Collections.EMPTY_LIST obj#198
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/WorldLayers; method=<init> pc=14 field=Ljava/util/Collections;.EMPTY_LIST obj_id=198
+[EXP062-INIT] Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; static_fields=21 with_defaults=21
+[CLASS_INIT] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=<clinit> bytecode_size=18
+[CLASS_INIT] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=132
+[REC-MISS] Ljava/util/Random;.<init> caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=12
+[EXP062-INIT] Lcom/dozingcatsoftware/vectorpinball/util/MathUtils; static_fields=1 with_defaults=1
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=26
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=40
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=54
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=66
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.mercyBallDurationMillis caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> value=20000
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=81
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.multiballSaverDurationMillis caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> value=30000
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=96
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.preserveMultiplierIncreaseDurationMillis caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> value=7500
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=111
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.<init> pc=124
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=<init> pc=138 field=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.DEFAULT_BALL_COLOR value=-65536
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.colorFromMap
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.colorFromMap pc=0
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=<init> pc=148 field=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.DEFAULT_SECONDARY_BALL_COLOR value=-5197648
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.colorFromMap
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.colorFromMap pc=0
+[REC-MISS] Ljava/util/Map;.containsKey caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.listForKey
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=listForKey pc=13 field=Ljava/util/Collections;.EMPTY_LIST obj_id=198
+[REC-MISS] Ljava/util/List;.size caller=Lcom/dozingcatsoftware/vectorpinball/util/MathUtils;.asFloatList
+[REC-MISS] Ljava/util/Map;.containsKey caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.listForKey
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=listForKey pc=13 field=Ljava/util/Collections;.EMPTY_LIST obj_id=198
+[REC-MISS] Ljava/util/List;.size caller=Lcom/dozingcatsoftware/vectorpinball/util/MathUtils;.asFloatList
+[REC-MISS] Ljava/util/Map;.containsKey caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.listForKey
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=listForKey pc=13 field=Ljava/util/Collections;.EMPTY_LIST obj_id=198
+[REC-MISS] Ljava/util/List;.size caller=Lcom/dozingcatsoftware/vectorpinball/util/MathUtils;.asFloatList
+[REC-MISS] Ljava/util/Map;.containsKey caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.listForKey
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=listForKey pc=13 field=Ljava/util/Collections;.EMPTY_LIST obj_id=198
+[REC-MISS] Ljava/util/List;.size caller=Lcom/dozingcatsoftware/vectorpinball/util/MathUtils;.asFloatList
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.createFieldElements
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.createFieldElements pc=7
+[REC-MISS] Ljava/util/Map;.containsKey caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.listForKey
+[SGET] class=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout; method=listForKey pc=13 field=Ljava/util/Collections;.EMPTY_LIST obj_id=198
+[REC-MISS] Ljava/util/List;.iterator caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.createFieldElements
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.createFieldElements
+[REC-MISS] Ljava/util/List;.size caller=Lcom/dozingcatsoftware/vectorpinball/model/WorldLayers;.setGravity
+[REC-MISS] Ljava/util/PriorityQueue;.<init> caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.resetForLayoutMap
+[M3-LONG-PUT] field=Lcom/dozingcatsoftware/vectorpinball/model/Field;.gameTimeNanos caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.resetForLayoutMap value=0
+[REC-MISS] Ljava/util/List;.iterator caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.resetForLayoutMap
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.resetForLayoutMap
+[REC-MISS] Ljava/util/List;.toArray caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.resetForLayoutMap
+[REC-MISS] Ljava/util/List;.toArray caller=Lcom/dozingcatsoftware/vectorpinball/model/Field;.resetForLayoutMap
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.getDelegateClassName
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/dozingcatsoftware/vectorpinball/model/FieldLayout;.getDelegateClassName pc=4
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968580
+[EXP088-B-DBG] findViewById: target=0x7f040004 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040004) → view_id=137
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968582
+[EXP088-B-DBG] findViewById: target=0x7f040006 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040006) → view_id=141
+[EXP062-INIT] Lcom/dozingcatsoftware/bouncy/GL20Renderer; static_fields=4 with_defaults=4
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/GL20Renderer; method=<clinit> bytecode_size=14
+[REC-MISS] Ljava/nio/ByteOrder;.nativeOrder caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.<clinit>
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.<clinit>
+[SGET] class=Lcom/dozingcatsoftware/bouncy/GL20Renderer; method=<clinit> pc=4 field=Ljava/nio/ByteOrder;.LITTLE_ENDIAN obj_id=226
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/GL20Renderer; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=138
+[EXP062-INIT] Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable; static_fields=1 with_defaults=1
+[REC-MISS] Ljava/util/Arrays;.sort caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.sin caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Math;.cos caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Lcom/dozingcatsoftware/bouncy/util/TrigLookupTable$SinCosValues;.<init>
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=1024 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.asIntBuffer argc=1 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=256 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.asIntBuffer argc=1 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=1024 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=256 caller=Lcom/dozingcatsoftware/bouncy/GL20Renderer;.makeByteBuffer
+[C013-HIER] getHolder dispatched via superclass chain: Lcom/dozingcatsoftware/bouncy/GLFieldView; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/dozingcatsoftware/bouncy/GLFieldView; receiver=Lcom/dozingcatsoftware/bouncy/GLFieldView;)
+[C013-HIER] getHolder dispatched via superclass chain: Lcom/dozingcatsoftware/bouncy/GLFieldView; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/dozingcatsoftware/bouncy/GLFieldView; receiver=Lcom/dozingcatsoftware/bouncy/GLFieldView;)
+[C013-HIER] setEGLContextClientVersion dispatched via superclass chain: Lcom/dozingcatsoftware/bouncy/GLFieldView; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/dozingcatsoftware/bouncy/GLFieldView; receiver=Lcom/dozingcatsoftware/bouncy/GLFieldView;)
+[C013-HIER] setEGLConfigChooser dispatched via superclass chain: Lcom/dozingcatsoftware/bouncy/GLFieldView; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/dozingcatsoftware/bouncy/GLFieldView; receiver=Lcom/dozingcatsoftware/bouncy/GLFieldView;)
+[C013-HIER] setRenderer dispatched via superclass chain: Lcom/dozingcatsoftware/bouncy/GLFieldView; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/dozingcatsoftware/bouncy/GLFieldView; receiver=Lcom/dozingcatsoftware/bouncy/GLFieldView;)
+[C013-HIER] setRenderMode dispatched via superclass chain: Lcom/dozingcatsoftware/bouncy/GLFieldView; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/dozingcatsoftware/bouncy/GLFieldView; receiver=Lcom/dozingcatsoftware/bouncy/GLFieldView;)
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968594
+[EXP088-B-DBG] findViewById: target=0x7f040012 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040012) → view_id=124
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=highScorePrefsKeyForLevel pc=5 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.HIGHSCORES_PREFS_KEY obj_id=0
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=highScoresFromPreferences pc=68 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.OLD_HIGHSCORE_PREFS_KEY obj_id=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=lastScorePrefsKeyForLevel pc=5 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.LAST_SCORE_PREFS_KEY obj_id=0
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968579
+[EXP088-B-DBG] findViewById: target=0x7f040003 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040003) → view_id=143
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968596
+[EXP088-B-DBG] findViewById: target=0x7f040014 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040014) → view_id=144
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968586
+[EXP088-B-DBG] findViewById: target=0x7f04000a content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f04000a) → view_id=157
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968595
+[EXP088-B-DBG] findViewById: target=0x7f040013 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040013) → view_id=146
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968587
+[EXP088-B-DBG] findViewById: target=0x7f04000b content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f04000b) → view_id=147
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968591
+[EXP088-B-DBG] findViewById: target=0x7f04000f content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f04000f) → view_id=145
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968599
+[EXP088-B-DBG] findViewById: target=0x7f040017 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040017) → view_id=162
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968598
+[EXP088-B-DBG] findViewById: target=0x7f040016 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040016) → view_id=164
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=270 color=0xff50a0ff
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=270 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=275 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=275 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=278 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=278 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=281 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=281 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=284 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=284 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=287 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=287 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=290 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=290 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=293 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=293 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter; method=getView pc=16 field=Landroid/widget/ImageView$ScaleType;.FIT_CENTER obj_id=271
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP095-BG] view=296 color=0x0
+[EXP071-BRIDGE-HMAP] Lj$/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity$TableListAdapter;.getView pc=75
+[P1-2-IMAGE] setImageBitmap view=296 → real pipeline (null bitmap clears content)
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke interface method 'Ljava/util/Set;.add' on a null object reference) method=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.requestThumbnail pc=6 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate invoke_pc=296 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[C102-ADAPTER] setAdapter count=9 materialized=0
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968597
+[EXP088-B-DBG] findViewById: target=0x7f040015 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040015) → view_id=150
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968593
+[EXP088-B-DBG] findViewById: target=0x7f040011 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040011) → view_id=151
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968581
+[EXP088-B-DBG] findViewById: target=0x7f040005 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040005) → view_id=152
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968576
+[EXP088-B-DBG] findViewById: target=0x7f040000 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040000) → view_id=154
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968590
+[EXP088-B-DBG] findViewById: target=0x7f04000e content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f04000e) → view_id=155
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968592
+[EXP088-B-DBG] findViewById: target=0x7f040010 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040010) → view_id=156
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968601
+[EXP088-B-DBG] findViewById: target=0x7f040019 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040019) → view_id=149
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968584
+[EXP088-B-DBG] findViewById: target=0x7f040008 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040008) → view_id=153
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968583
+[EXP088-B-DBG] findViewById: target=0x7f040007 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040007) → view_id=161
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968585
+[EXP088-B-DBG] findViewById: target=0x7f040009 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040009) → view_id=159
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968588
+[EXP088-B-DBG] findViewById: target=0x7f04000c content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f04000c) → view_id=160
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968589
+[EXP088-B-DBG] findViewById: target=0x7f04000d content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f04000d) → view_id=135
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968600
+[EXP088-B-DBG] findViewById: target=0x7f040018 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040018) → view_id=122
+[EXP088-B-ENTER] bridge_to_api: Lcom/dozingcatsoftware/bouncy/BouncyActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=1 arg0_kind=0 arg0_int=2130968578
+[EXP088-B-DBG] findViewById: target=0x7f040002 content_view_id=79 registry=YES
+[EXP088-B] findViewById(0x7f040002) → view_id=165
+[C013-HIER] setOnTouchListener dispatched via superclass chain: Landroid/widget/ImageButton; -> Landroid/widget/ImageView; (declared=Landroid/widget/ImageButton; receiver=Landroid/widget/ImageButton;)
+[C013-HIER] setOnTouchListener dispatched via superclass chain: Landroid/widget/ImageButton; -> Landroid/widget/ImageView; (declared=Landroid/widget/ImageButton; receiver=Landroid/widget/ImageButton;)
+[C013-HIER] setOnTouchListener dispatched via superclass chain: Landroid/widget/CheckBox; -> Landroid/widget/Button; (declared=Landroid/widget/CheckBox; receiver=Landroid/widget/CheckBox;)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=onCreate pc=550 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP062-INIT] Lcom/dozingcatsoftware/bouncy/VPSoundpool; static_fields=25 with_defaults=10
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=<clinit> bytecode_size=72
+[CLASS_INIT] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=<clinit> result=OK engine=0x7ffd71701af8 storage_size=157
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=initSounds pc=27 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mContext obj_id=21
+[R339-SVC] getSystemService("audio") → Landroid/media/AudioManager; (shadow layer, caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.initSounds)
+[THREAD-START] thread_oid=320 runnable_oid=321 → pending inline run (deterministic law)
+[EXP092-REQDELEGATE] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity$$ExternalSyntheticLambda16; args_count=1 pc=0x243 caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onCreate depth=0 receiver_id=321
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=10 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=15 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mContext obj_id=21
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Landroid/app/Activity;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=21 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=23 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.ID_DING_START value=0
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=29 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/bumper/dinga1.ogg fd=3 off=1459454 len=60630
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=46
+[F089] shadow put map=318 key="int:0" arg0_kind=6 arg0_str="" arg0_obj=322 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=49 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=51 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.ID_DING_START value=0
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=58 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/bumper/dingc1.ogg fd=4 off=1520146 len=61728
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=74
+[F089] shadow put map=318 key="int:1" arg0_kind=6 arg0_str="" arg0_obj=182 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=77 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=79 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.ID_DING_START value=0
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=87 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/bumper/dingc2.ogg fd=5 off=1581936 len=61340
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=103
+[F089] shadow put map=318 key="int:2" arg0_kind=6 arg0_str="" arg0_obj=276 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=106 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=108 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.ID_DING_START value=0
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=116 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/bumper/dingd1.ogg fd=6 off=1643336 len=58010
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=132
+[F089] shadow put map=318 key="int:3" arg0_kind=6 arg0_str="" arg0_obj=279 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=135 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=137 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.ID_DING_START value=0
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=145 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/bumper/dinge1.ogg fd=7 off=1701406 len=60289
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=161
+[F089] shadow put map=318 key="int:4" arg0_kind=6 arg0_str="" arg0_obj=282 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=164 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=174 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/bumper/dingg1.ogg fd=8 off=1761757 len=59603
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=190
+[F089] shadow put map=318 key="int:5" arg0_kind=6 arg0_str="" arg0_obj=285 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=193 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=201 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/misc/andBounce2.ogg fd=9 off=1821423 len=19990
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=217
+[F089] shadow put map=318 key="int:100" arg0_kind=6 arg0_str="" arg0_obj=325 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=220 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=228 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/misc/flipper1.ogg fd=10 off=1856033 len=7767
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=244
+[F089] shadow put map=318 key="int:101" arg0_kind=6 arg0_str="" arg0_obj=328 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=247 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=255 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/misc/message2.ogg fd=11 off=1863863 len=9828
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=271
+[F089] shadow put map=318 key="int:102" arg0_kind=6 arg0_str="" arg0_obj=52 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=274 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=282 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/misc/startup1.ogg fd=12 off=1888869 len=16791
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=298
+[F089] shadow put map=318 key="int:103" arg0_kind=6 arg0_str="" arg0_obj=57 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=301 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPoolMap obj_id=318
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=309 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mSoundPool obj_id=317
+[ASSET-FD] openFd assets/audio/misc/rolloverE.ogg fd=13 off=1873752 len=15053
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds pc=325
+[F089] shadow put map=318 key="int:200" arg0_kind=6 arg0_str="" arg0_obj=351 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/HashMap;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=328 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mContext obj_id=21
+[R400-MEDIA] MediaPlayer.create → non-null PREPARED player obj_id=355 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=loadSounds pc=339 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.mContext obj_id=21
+[R400-MEDIA] MediaPlayer.create → non-null PREPARED player obj_id=356 caller=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.loadSounds
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=resetMusicState pc=0 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.soundsLoaded value=1
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=pauseMusic pc=0 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.soundsLoaded value=1
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=pauseMusic pc=5 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.drumbass obj_id=355
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=pauseMusic pc=20 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.androidpad obj_id=356
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=resetMusicState pc=15 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.drumbass obj_id=355
+[SGET] class=Lcom/dozingcatsoftware/bouncy/VPSoundpool; method=resetMusicState pc=22 field=Lcom/dozingcatsoftware/bouncy/VPSoundpool;.androidpad obj_id=356
+[THREAD-START] drained oid=321 cls=Lcom/dozingcatsoftware/bouncy/BouncyActivity$$ExternalSyntheticLambda16; → REAL DEX run() executed
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Lcom/dozingcatsoftware/bouncy/BouncyActivity; as Landroid/app/Activity; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=onCreate pc=592 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=onCreate pc=615 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[PARSE] Ljava/lang/Integer;.parseInt("0", radix 10) → 0
+[P1-1-VIS] view=141 Lcom/dozingcatsoftware/bouncy/GLFieldView; visibility 8 -> 0 (requestLayout raised)
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/dozingcatsoftware/bouncy/BouncyActivity; runtime_class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[G07-LIFECYCLE] Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/dozingcatsoftware/bouncy/BouncyActivity; runtime_class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=enterFullscreenMode pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=enterFullscreenMode pc=7 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; recv_oid=21 act_oid=21)
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.getMaxFrameRateForDisplay)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=isPowerSaveModeEnabled pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[R339-SVC] getSystemService("power") → Landroid/os/PowerManager; (shadow layer, caller=Lcom/dozingcatsoftware/bouncy/BouncyActivity;.isPowerSaveModeEnabled)
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=updateBackCallbackEnabled pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=hasCustomBackAction pc=2 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.MAIN_MENU obj_id=44
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getOnBackInvokedDispatcher class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[SGET] class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; method=updateUiControls pc=21 field=Lcom/dozingcatsoftware/bouncy/BouncyActivity$DialogState;.TABLE_SELECTION obj_id=45
+[C013-HIER] setVisibility dispatched via superclass chain: Landroid/widget/TableLayout; -> Landroid/widget/LinearLayout; (declared=Landroid/widget/TableLayout; receiver=Landroid/widget/TableLayout;)
+[C013-HIER] setVisibility dispatched via superclass chain: Landroid/widget/CheckBox; -> Landroid/widget/Button; (declared=Landroid/widget/CheckBox; receiver=Landroid/widget/CheckBox;)
+[G07-LIFECYCLE] Lcom/dozingcatsoftware/bouncy/BouncyActivity;.onResume() dispatched via DEX engine (ok=1, instructions=172)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=2036 nodes=46 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=512
+[F384-ROOTINSETS] root=o121 cls=Landroid/widget/LinearLayout; insets=o365 dispatched=false
+[ECR-ROOT] scalar content_view_id root=121
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[P0-1-ORDER] first-traversal attach wave root=121 attached=0 (attach strictly precedes measure)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[V1-CONTENT-BOUNDS] root=121 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=123 class=Landroid/widget/FrameLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x147)
+[EXP092-RENDER] node=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; text="" children=0 depth=2 pos=(0,0) size=(1080x147)
+[LIFEWIN-OPEN] Lcom/dozingcatsoftware/bouncy/ScoreView; view=124
+[LIFEWIN-CLOSE] Lcom/dozingcatsoftware/bouncy/ScoreView; view=124 dispatched=NO
+[F096-LIFECYCLE] Lcom/dozingcatsoftware/bouncy/ScoreView; view=124 rect=(0,0 1080x147) dispatched=NO
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/ScoreView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=147
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.isGameInProgress recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->unlimitedBalls" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->ballNumber" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getBallNumber
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->scoreMultiplier" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScoreMultiplier
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->score" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScore
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=2 arg0_type=7_obj=21 arg1_type=1_int=2131230793
+[CTX-F136] getString(resid=0x7f080049, fargs=0) → "Touch to start"
+[ANT6-DT] paint=126 size=24 face=-1 caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.onDraw pc=187
+[C013-ONDRAW] view=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; dispatched=YES ops=2
+[C013-CUSTOMVIEW] onDraw replayed 2 ops (rp=2) for Lcom/dozingcatsoftware/bouncy/ScoreView; at (0,0 1080x147)
+[EXP092-RENDER] node=136 class=Landroid/widget/FrameLayout; text="" children=5 depth=1 pos=(0,147) size=(1080x1773)
+[EXP092-RENDER] node=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; text="" children=0 depth=2 pos=(0,147) size=(1080x1773)
+[LIFEWIN-OPEN] Lcom/dozingcatsoftware/bouncy/GLFieldView; view=141
+[LIFEWIN-CLOSE] Lcom/dozingcatsoftware/bouncy/GLFieldView; view=141 dispatched=NO
+[F096-LIFECYCLE] Lcom/dozingcatsoftware/bouncy/GLFieldView; view=141 rect=(0,147 1080x1773) dispatched=NO
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/GLFieldView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1773
+[C013-ONDRAW] view=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/dozingcatsoftware/bouncy/GLFieldView; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-RENDER] node=143 class=Landroid/widget/LinearLayout; text="" children=2 depth=2 pos=(185,344) size=(710x1378)
+[EXP092-RENDER] node=144 class=Landroid/widget/LinearLayout; text="" children=3 depth=3 pos=(227,365) size=(626x126)
+[EXP092-RENDER] node=145 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(227,365) size=(126x126)
+[EXP092-RENDER] node=146 class=Landroid/widget/TextView; text="Select Table" children=0 depth=4 pos=(353,380) size=(374x95)
+[EXP092-RENDER] node=147 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(727,365) size=(126x126)
+[EXP092-RENDER] node=148 class=Landroid/widget/TableLayout; text="" children=8 depth=3 pos=(404,491) size=(272x1231)
+[EXP092-RENDER] node=149 class=Landroid/widget/CheckBox; text="Unlimited Balls" children=0 depth=4 pos=(404,491) size=(272x44)
+[EXP092-RENDER] node=150 class=Landroid/widget/Button; text="Start Game" children=0 depth=4 pos=(404,546) size=(231x126)
+[EXP092-RENDER] node=153 class=Landroid/widget/Button; text="High scores" children=0 depth=4 pos=(404,735) size=(231x126)
+[EXP092-RENDER] node=154 class=Landroid/widget/Button; text="Help" children=0 depth=4 pos=(404,882) size=(231x126)
+[EXP092-RENDER] node=155 class=Landroid/widget/Button; text="Preferences" children=0 depth=4 pos=(404,1029) size=(231x126)
+[EXP092-RENDER] node=156 class=Landroid/widget/Button; text="Quit" children=0 depth=4 pos=(404,1218) size=(231x126)
+[EXP092-COPY] fb has 2067905 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2067905 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=557
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=717
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=121
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=121 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=123 class=Landroid/widget/FrameLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x147)
+[EXP092-RENDER] node=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; text="" children=0 depth=2 pos=(0,0) size=(1080x147)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/ScoreView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=147
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.isGameInProgress recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->unlimitedBalls" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->ballNumber" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getBallNumber
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->scoreMultiplier" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScoreMultiplier
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->score" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScore
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=2 arg0_type=7_obj=21 arg1_type=1_int=2131230793
+[CTX-F136] getString(resid=0x7f080049, fargs=0) → "Touch to start"
+[ANT6-DT] paint=126 size=24 face=-1 caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.onDraw pc=187
+[C013-ONDRAW] view=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; dispatched=YES ops=2
+[C013-CUSTOMVIEW] onDraw replayed 2 ops (rp=2) for Lcom/dozingcatsoftware/bouncy/ScoreView; at (0,0 1080x147)
+[EXP092-RENDER] node=136 class=Landroid/widget/FrameLayout; text="" children=5 depth=1 pos=(0,147) size=(1080x1773)
+[EXP092-RENDER] node=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; text="" children=0 depth=2 pos=(0,147) size=(1080x1773)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/GLFieldView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1773
+[C013-ONDRAW] view=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/dozingcatsoftware/bouncy/GLFieldView; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-RENDER] node=143 class=Landroid/widget/LinearLayout; text="" children=2 depth=2 pos=(185,344) size=(710x1378)
+[EXP092-RENDER] node=144 class=Landroid/widget/LinearLayout; text="" children=3 depth=3 pos=(227,365) size=(626x126)
+[EXP092-RENDER] node=145 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(227,365) size=(126x126)
+[EXP092-RENDER] node=146 class=Landroid/widget/TextView; text="Select Table" children=0 depth=4 pos=(353,380) size=(374x95)
+[EXP092-RENDER] node=147 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(727,365) size=(126x126)
+[EXP092-RENDER] node=148 class=Landroid/widget/TableLayout; text="" children=8 depth=3 pos=(404,491) size=(272x1231)
+[EXP092-RENDER] node=149 class=Landroid/widget/CheckBox; text="Unlimited Balls" children=0 depth=4 pos=(404,491) size=(272x44)
+[EXP092-RENDER] node=150 class=Landroid/widget/Button; text="Start Game" children=0 depth=4 pos=(404,546) size=(231x126)
+[EXP092-RENDER] node=153 class=Landroid/widget/Button; text="High scores" children=0 depth=4 pos=(404,735) size=(231x126)
+[EXP092-RENDER] node=154 class=Landroid/widget/Button; text="Help" children=0 depth=4 pos=(404,882) size=(231x126)
+[EXP092-RENDER] node=155 class=Landroid/widget/Button; text="Preferences" children=0 depth=4 pos=(404,1029) size=(231x126)
+[EXP092-RENDER] node=156 class=Landroid/widget/Button; text="Quit" children=0 depth=4 pos=(404,1218) size=(231x126)
+[EXP092-COPY] fb has 2067905 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2067905 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=121
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=121 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=123 class=Landroid/widget/FrameLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x147)
+[EXP092-RENDER] node=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; text="" children=0 depth=2 pos=(0,0) size=(1080x147)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/ScoreView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=147
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.isGameInProgress recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->unlimitedBalls" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->ballNumber" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getBallNumber
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->scoreMultiplier" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScoreMultiplier
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->score" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScore
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=2 arg0_type=7_obj=21 arg1_type=1_int=2131230793
+[CTX-F136] getString(resid=0x7f080049, fargs=0) → "Touch to start"
+[ANT6-DT] paint=126 size=24 face=-1 caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.onDraw pc=187
+[C013-ONDRAW] view=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; dispatched=YES ops=2
+[C013-CUSTOMVIEW] onDraw replayed 2 ops (rp=2) for Lcom/dozingcatsoftware/bouncy/ScoreView; at (0,0 1080x147)
+[EXP092-RENDER] node=136 class=Landroid/widget/FrameLayout; text="" children=5 depth=1 pos=(0,147) size=(1080x1773)
+[EXP092-RENDER] node=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; text="" children=0 depth=2 pos=(0,147) size=(1080x1773)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/GLFieldView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1773
+[C013-ONDRAW] view=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/dozingcatsoftware/bouncy/GLFieldView; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-RENDER] node=143 class=Landroid/widget/LinearLayout; text="" children=2 depth=2 pos=(185,344) size=(710x1378)
+[EXP092-RENDER] node=144 class=Landroid/widget/LinearLayout; text="" children=3 depth=3 pos=(227,365) size=(626x126)
+[EXP092-RENDER] node=145 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(227,365) size=(126x126)
+[EXP092-RENDER] node=146 class=Landroid/widget/TextView; text="Select Table" children=0 depth=4 pos=(353,380) size=(374x95)
+[EXP092-RENDER] node=147 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(727,365) size=(126x126)
+[EXP092-RENDER] node=148 class=Landroid/widget/TableLayout; text="" children=8 depth=3 pos=(404,491) size=(272x1231)
+[EXP092-RENDER] node=149 class=Landroid/widget/CheckBox; text="Unlimited Balls" children=0 depth=4 pos=(404,491) size=(272x44)
+[EXP092-RENDER] node=150 class=Landroid/widget/Button; text="Start Game" children=0 depth=4 pos=(404,546) size=(231x126)
+[EXP092-RENDER] node=153 class=Landroid/widget/Button; text="High scores" children=0 depth=4 pos=(404,735) size=(231x126)
+[EXP092-RENDER] node=154 class=Landroid/widget/Button; text="Help" children=0 depth=4 pos=(404,882) size=(231x126)
+[EXP092-RENDER] node=155 class=Landroid/widget/Button; text="Preferences" children=0 depth=4 pos=(404,1029) size=(231x126)
+[EXP092-RENDER] node=156 class=Landroid/widget/Button; text="Quit" children=0 depth=4 pos=(404,1218) size=(231x126)
+[EXP092-COPY] fb has 2067905 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2067905 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=121
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=121 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=123 class=Landroid/widget/FrameLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x147)
+[EXP092-RENDER] node=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; text="" children=0 depth=2 pos=(0,0) size=(1080x147)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/ScoreView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=147
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.isGameInProgress recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->unlimitedBalls" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->ballNumber" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getBallNumber
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->scoreMultiplier" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScoreMultiplier
+[IGET-MISS-DIAG] asked="Lcom/dozingcatsoftware/vectorpinball/model/GameState;->score" obj#28 cls=Lcom/dozingcatsoftware/vectorpinball/model/GameState; keys: Lcom/dozingcatsoftware/vectorpinball/model/GameState;->gameInProgress Lcom/dozingcatsoftware/vectorpinball/model/GameState;->paused Lcom/dozingcatsoftware/vectorpinball/model/GameState;->totalBalls gameInProgress paused totalBalls caller=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.getScore
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=2 arg0_type=7_obj=21 arg1_type=1_int=2131230793
+[CTX-F136] getString(resid=0x7f080049, fargs=0) → "Touch to start"
+[ANT6-DT] paint=126 size=24 face=-1 caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.onDraw pc=187
+[C013-ONDRAW] view=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; dispatched=YES ops=2
+[C013-CUSTOMVIEW] onDraw replayed 2 ops (rp=2) for Lcom/dozingcatsoftware/bouncy/ScoreView; at (0,0 1080x147)
+[EXP092-RENDER] node=136 class=Landroid/widget/FrameLayout; text="" children=5 depth=1 pos=(0,147) size=(1080x1773)
+[EXP092-RENDER] node=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; text="" children=0 depth=2 pos=(0,147) size=(1080x1773)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/GLFieldView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1773
+[C013-ONDRAW] view=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/dozingcatsoftware/bouncy/GLFieldView; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-RENDER] node=143 class=Landroid/widget/LinearLayout; text="" children=2 depth=2 pos=(185,344) size=(710x1378)
+[EXP092-RENDER] node=144 class=Landroid/widget/LinearLayout; text="" children=3 depth=3 pos=(227,365) size=(626x126)
+[EXP092-RENDER] node=145 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(227,365) size=(126x126)
+[EXP092-RENDER] node=146 class=Landroid/widget/TextView; text="Select Table" children=0 depth=4 pos=(353,380) size=(374x95)
+[EXP092-RENDER] node=147 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(727,365) size=(126x126)
+[EXP092-RENDER] node=148 class=Landroid/widget/TableLayout; text="" children=8 depth=3 pos=(404,491) size=(272x1231)
+[EXP092-RENDER] node=149 class=Landroid/widget/CheckBox; text="Unlimited Balls" children=0 depth=4 pos=(404,491) size=(272x44)
+[EXP092-RENDER] node=150 class=Landroid/widget/Button; text="Start Game" children=0 depth=4 pos=(404,546) size=(231x126)
+[EXP092-RENDER] node=153 class=Landroid/widget/Button; text="High scores" children=0 depth=4 pos=(404,735) size=(231x126)
+[EXP092-RENDER] node=154 class=Landroid/widget/Button; text="Help" children=0 depth=4 pos=(404,882) size=(231x126)
+[EXP092-RENDER] node=155 class=Landroid/widget/Button; text="Preferences" children=0 depth=4 pos=(404,1029) size=(231x126)
+[EXP092-RENDER] node=156 class=Landroid/widget/Button; text="Quit" children=0 depth=4 pos=(404,1218) size=(231x126)
+[EXP092-COPY] fb has 2067905 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2067905 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=121
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=121 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=123 class=Landroid/widget/FrameLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x147)
+[EXP092-RENDER] node=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; text="" children=0 depth=2 pos=(0,0) size=(1080x147)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/ScoreView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=147
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.isGameInProgress recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=2 arg0_type=7_obj=21 arg1_type=1_int=2131230793
+[CTX-F136] getString(resid=0x7f080049, fargs=0) → "Touch to start"
+[ANT6-DT] paint=126 size=24 face=-1 caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.onDraw pc=187
+[C013-ONDRAW] view=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; dispatched=YES ops=2
+[C013-CUSTOMVIEW] onDraw replayed 2 ops (rp=2) for Lcom/dozingcatsoftware/bouncy/ScoreView; at (0,0 1080x147)
+[EXP092-RENDER] node=136 class=Landroid/widget/FrameLayout; text="" children=5 depth=1 pos=(0,147) size=(1080x1773)
+[EXP092-RENDER] node=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; text="" children=0 depth=2 pos=(0,147) size=(1080x1773)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/GLFieldView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1773
+[C013-ONDRAW] view=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/dozingcatsoftware/bouncy/GLFieldView; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-RENDER] node=143 class=Landroid/widget/LinearLayout; text="" children=2 depth=2 pos=(185,344) size=(710x1378)
+[EXP092-RENDER] node=144 class=Landroid/widget/LinearLayout; text="" children=3 depth=3 pos=(227,365) size=(626x126)
+[EXP092-RENDER] node=145 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(227,365) size=(126x126)
+[EXP092-RENDER] node=146 class=Landroid/widget/TextView; text="Select Table" children=0 depth=4 pos=(353,380) size=(374x95)
+[EXP092-RENDER] node=147 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(727,365) size=(126x126)
+[EXP092-RENDER] node=148 class=Landroid/widget/TableLayout; text="" children=8 depth=3 pos=(404,491) size=(272x1231)
+[EXP092-RENDER] node=149 class=Landroid/widget/CheckBox; text="Unlimited Balls" children=0 depth=4 pos=(404,491) size=(272x44)
+[EXP092-RENDER] node=150 class=Landroid/widget/Button; text="Start Game" children=0 depth=4 pos=(404,546) size=(231x126)
+[EXP092-RENDER] node=153 class=Landroid/widget/Button; text="High scores" children=0 depth=4 pos=(404,735) size=(231x126)
+[EXP092-RENDER] node=154 class=Landroid/widget/Button; text="Help" children=0 depth=4 pos=(404,882) size=(231x126)
+[EXP092-RENDER] node=155 class=Landroid/widget/Button; text="Preferences" children=0 depth=4 pos=(404,1029) size=(231x126)
+[EXP092-RENDER] node=156 class=Landroid/widget/Button; text="Quit" children=0 depth=4 pos=(404,1218) size=(231x126)
+[EXP092-COPY] fb has 2067905 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2067905 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c120/bouncy_fixed/frames
+[ECR-ROOT] scalar content_view_id root=121
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=121 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=123 class=Landroid/widget/FrameLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x147)
+[EXP092-RENDER] node=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; text="" children=0 depth=2 pos=(0,0) size=(1080x147)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/ScoreView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=147
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.isGameInProgress recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[DRAWWIN-ZRET] decl=Lcom/dozingcatsoftware/vectorpinball/model/GameState;.hasUnlimitedBalls recv=28(Lcom/dozingcatsoftware/vectorpinball/model/GameState;) ret=FALSE
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Lcom/dozingcatsoftware/bouncy/BouncyActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Lcom/dozingcatsoftware/bouncy/BouncyActivity; args=2 arg0_type=7_obj=21 arg1_type=1_int=2131230793
+[CTX-F136] getString(resid=0x7f080049, fargs=0) → "Touch to start"
+[ANT6-DT] paint=126 size=24 face=-1 caller=Lcom/dozingcatsoftware/bouncy/ScoreView;.onDraw pc=187
+[C013-ONDRAW] view=124 class=Lcom/dozingcatsoftware/bouncy/ScoreView; dispatched=YES ops=2
+[C013-CUSTOMVIEW] onDraw replayed 2 ops (rp=2) for Lcom/dozingcatsoftware/bouncy/ScoreView; at (0,0 1080x147)
+[EXP092-RENDER] node=136 class=Landroid/widget/FrameLayout; text="" children=5 depth=1 pos=(0,147) size=(1080x1773)
+[EXP092-RENDER] node=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; text="" children=0 depth=2 pos=(0,147) size=(1080x1773)
+[C013-LEAFCHK] Lcom/dozingcatsoftware/bouncy/GLFieldView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1773
+[C013-ONDRAW] view=141 class=Lcom/dozingcatsoftware/bouncy/GLFieldView; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/dozingcatsoftware/bouncy/GLFieldView; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-RENDER] node=143 class=Landroid/widget/LinearLayout; text="" children=2 depth=2 pos=(185,344) size=(710x1378)
+[EXP092-RENDER] node=144 class=Landroid/widget/LinearLayout; text="" children=3 depth=3 pos=(227,365) size=(626x126)
+[EXP092-RENDER] node=145 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(227,365) size=(126x126)
+[EXP092-RENDER] node=146 class=Landroid/widget/TextView; text="Select Table" children=0 depth=4 pos=(353,380) size=(374x95)
+[EXP092-RENDER] node=147 class=Landroid/widget/ImageButton; text="" children=0 depth=4 pos=(727,365) size=(126x126)
+[EXP092-RENDER] node=148 class=Landroid/widget/TableLayout; text="" children=8 depth=3 pos=(404,491) size=(272x1231)
+[EXP092-RENDER] node=149 class=Landroid/widget/CheckBox; text="Unlimited Balls" children=0 depth=4 pos=(404,491) size=(272x44)
+[EXP092-RENDER] node=150 class=Landroid/widget/Button; text="Start Game" children=0 depth=4 pos=(404,546) size=(231x126)
+[EXP092-RENDER] node=153 class=Landroid/widget/Button; text="High scores" children=0 depth=4 pos=(404,735) size=(231x126)
+[EXP092-RENDER] node=154 class=Landroid/widget/Button; text="Help" children=0 depth=4 pos=(404,882) size=(231x126)
+[EXP092-RENDER] node=155 class=Landroid/widget/Button; text="Preferences" children=0 depth=4 pos=(404,1029) size=(231x126)
+[EXP092-RENDER] node=156 class=Landroid/widget/Button; text="Quit" children=0 depth=4 pos=(404,1218) size=(231x126)
+[EXP092-COPY] fb has 2067905 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2067905 non-white pixels
