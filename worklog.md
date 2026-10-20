@@ -10669,3 +10669,21 @@ Work Log:
 
 Stage Summary:
 - CONT-115 wave terminal: 50/50 tasks adjudicated (33 تایید / 16 PARTIAL-honest / 1 رد), zero unadjudicated drift, 0 new root IDs, evidence chain complete at binary 9b5d38f5.
+
+---
+Task ID: CONT-116
+Agent: Super Z (main)
+Task: «یوز فیل قطار ادامه» — elephant batch: F-NEW-465 (named lever) + F-NEW-449 decode; fixture-first, full battery, push.
+
+Work Log:
+- F-NEW-465 decode via existing env-gated diagnostics (zero new engine noise): ALLOC-TRACE pinned TWO shell sources (obj#347 shim-layer pc=0 frame=453; obj#393 materializer pc=0 frame=0); FIELD-TRACE items proved obj#38's ctor DID store — the shells were two SPECIFIC dispatch faces.
+- Root (a): BOTH Constructor.newInstance shims dropped/mis-dispatched the varargs; no-descriptor heuristic can cross-bind same-arity overloads (Array(I) vs Array(Array)). Fix: unbox initargs, arity+primitive-shape select, dispatch via F-023 exact descriptor; dispatch miss now LOUD with pinned alloc site.
+- Root (b) — the wave's central catch: F-NEW-464's materialize gate was INVERTED (`!class_has_no_arg_ctor`): the ()V body ran only for classes WITHOUT one. Array has ()V -> never ran -> obj#393 stayed bare. One-condition fix, honest F-NEW-274 null path untouched.
+- Bracket: ARR-LEN-NULL death ELIMINATED (keys:<none> 2->0, items stored); run advances to a NEW deeper death (attribute copy-ctor getClass-null) — registered honestly as the next fixture; face stays 11a38a5a (draw-op frontier).
+- F-NEW-449 decode deepened with S36/EXP093/FNA/R337 traces: o5042 Object[11] = 11 STRING_REF stores; walk consumes ALL 11 p3 fields (10 real + aux zzd x10) then reads entries[11] terminator; fixture (two-count-sources probe) named; both dumpers desync on n2.r (tool gap recorded).
+- Battery at 3ecd381cda214dcd: wall 4/4 MATCH, chess/tower3d/solitaire byte-identical, c448 6/6, c449 4/4, goldens 4/4, negatives 19/19 (store regenerated per CONT-111 remedy), reinstall 8/8, MG-310 7/7, MG-150 3/3, selftest 13/13.
+- Registry: F-NEW-465 -> ROOT-CAUSED-FIXED (evidence-anchored), F-NEW-449 decode deepened (stays OPEN); 780 roots id-unique, no inflation.
+
+Stage Summary:
+- Two real generic fixes landed with A/B brackets; the CONT-114-named F-NEW-465 face is closed with its own allocation-site evidence; F-NEW-449 is now decoded to a single fork with a named fixture.
+- Next wave owns: tower3d copy-ctor layer fixture, F-NEW-449 MessageInfo probe + n2.r disassembler fix, compose AndroidCanvas bridge (F-NEW-256 family).

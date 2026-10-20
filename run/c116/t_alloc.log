@@ -1,0 +1,1143 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=43
+[EXP062-SV] parse_static_values for Landroidx/core/R$attr; offset=0x59fe37 static_fields=17 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$attr; with_defaults=17/17
+[EXP062-SV] parse_static_values for Landroidx/core/R$color; offset=0x59fe8d static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$color; with_defaults=6/6
+[EXP062-SV] parse_static_values for Landroidx/core/R$dimen; offset=0x59feac static_fields=22 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$dimen; with_defaults=22/22
+[EXP062-SV] parse_static_values for Landroidx/core/R$drawable; offset=0x59ff1b static_fields=19 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$drawable; with_defaults=19/19
+[EXP062-SV] parse_static_values for Landroidx/core/R$id; offset=0x59ff7b static_fields=74 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$id; with_defaults=74/74
+[EXP062-SV] parse_static_values for Landroidx/core/R$integer; offset=0x5a00ee static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$integer; with_defaults=1/1
+[EXP062-SV] parse_static_values for Landroidx/core/R$layout; offset=0x5a00f4 static_fields=9 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$layout; with_defaults=9/9
+[EXP062-SV] parse_static_values for Landroidx/core/R$string; offset=0x5a0122 static_fields=8 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$string; with_defaults=8/8
+[EXP062-SV] parse_static_values for Landroidx/core/R$style; offset=0x5a014b static_fields=7 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$style; with_defaults=7/7
+[EXP062-SV] parse_static_values for Landroidx/core/R$styleable; offset=0x5a016f static_fields=44 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$styleable; with_defaults=44/44
+[EXP062-SV] parse_static_values for Landroidx/lifecycle/runtime/R$id; offset=0x5a0dfe static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Landroidx/lifecycle/runtime/R$id; with_defaults=1/1
+[EXP062-SV] parse_static_values for Landroidx/startup/R$string; offset=0x5a0eb4 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Landroidx/startup/R$string; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/badlogic/gdx/backends/android/R$drawable; offset=0x5a1a0b static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/badlogic/gdx/backends/android/R$drawable; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lstack/tower3d/R$drawable; offset=0x5a2ac3 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lstack/tower3d/R$drawable; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lstack/tower3d/R$mipmap; offset=0x5a2ace static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lstack/tower3d/R$mipmap; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lstack/tower3d/R$string; offset=0x5a2ad9 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lstack/tower3d/R$string; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lstack/tower3d/R$style; offset=0x5a2adf static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lstack/tower3d/R$style; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=198
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=218
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=235
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 4387 entries (4339 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'stack.tower3d.android.AndroidLauncher'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/stack.tower3d_1.apk named_ids=173 types=10
+[ARSC-VALUES] apk=upload/canonical_apks/stack.tower3d_1.apk strings=10 colors=6 dimens=22 bools=0 integers=1 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Stack Tower 3D" (resid @0x7f090001)
+[A7b] icon @0x7f080000 -> res/BW.xml DECODE FAILED (adaptive-icon: layers reference app resources but no resolver was provided) — honest miss
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=147)
+[S1-PROVIDER] manifest providers transferred: 1
+[S1-PROVIDER]   androidx.startup.InitializationProvider
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
+[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=84.0586 MB
+[371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=1
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.getContext dex_report=YES
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[EXP062-INIT] Landroidx/startup/AppInitializer; static_fields=3 with_defaults=1
+[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.<clinit> dex_report=YES
+[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=25
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.getInstance dex_report=YES
+[SGET-MISS] key=Landroidx/startup/AppInitializer;.sInstance storage_size=25 same_class_keys=2 engine=0x7fff9942e398 first=Landroidx/startup/AppInitializer;.SECTION_NAME
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=0 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=4 field=Landroidx/startup/AppInitializer;.sLock obj_id=18
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=7 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/AppInitializer;.<init>
+[TRY-ENTRY] Ljava/util/HashSet;.<init> dex_report=YES
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Landroidx/startup/AppInitializer;.<init>
+[TRY-ENTRY] Ljava/util/HashMap;.<init> dex_report=YES
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=23 field=Landroidx/startup/AppInitializer;.sInstance obj_id=19
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.discoverAndInitialize dex_report=YES
+[EXP062-INIT] Landroidx/tracing/Trace; static_fields=6 with_defaults=1
+[TRY-ENTRY] Landroidx/tracing/Trace;.beginSection dex_report=YES
+[TRY-ENTRY] Landroidx/tracing/TraceApi18Impl;.beginSection dex_report=YES
+[TRY-ENTRY] Landroid/os/Trace;.beginSection dex_report=YES
+[REC-MISS] Landroid/os/Trace;.beginSection caller=Landroidx/tracing/TraceApi18Impl;.beginSection
+[TRY-ENTRY] Landroid/content/Context;.getPackageName dex_report=YES
+[REC-MISS] Landroid/content/Context;.getPackageName caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[TRY-ENTRY] Ljava/lang/Class;.getName dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getName caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[TRY-ENTRY] Landroid/content/ComponentName;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ComponentName;.<init> caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[TRY-ENTRY] Landroid/content/Context;.getPackageManager dex_report=YES
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/content/pm/PackageManager;.getProviderInfo caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[F273-PROVINFO] androidx.startup.InitializationProvider metaData entries=1
+[EXP062-INIT] Landroidx/startup/R$string; static_fields=1 with_defaults=1
+[SGET] class=Landroidx/startup/AppInitializer; method=discoverAndInitialize pc=2 field=Landroidx/startup/R$string;.androidx_startup value=2131296256
+[REC-MISS] Landroid/content/Context;.getString caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[EXP093-APPSTR] HIT! class=Landroid/content/Context; args=2 arg0_type=7_obj=17 arg1_type=1_int=2131296256
+[CTX-F136] getString(resid=0x7f090000, fargs=0) → "androidx.startup"
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/os/Bundle;.keySet caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Set;.iterator caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Set;.iterator caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/os/Trace;.endSection caller=Landroidx/tracing/TraceApi18Impl;.endSection
+[S1-PROVIDER] installed androidx.startup.InitializationProvider obj#14 attachInfo+onCreate OK
+[R341-APP] default Application bound: obj#32
+[R341-APP] bound application obj#32 (Landroid/app/Application;)
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lstack/tower3d/android/AndroidLauncher;
+[ALLOC-TRACE] obj#34 Lcom/badlogic/gdx/utils/Array; pc=6 frame=13 seq=33
+[ALLOC-TRACE] obj#36 Lcom/badlogic/gdx/utils/Array; pc=13 frame=13 seq=35
+[ALLOC-TRACE] obj#38 Lcom/badlogic/gdx/utils/SnapshotArray; pc=20 frame=13 seq=37
+[REC-MISS] Ljava/lang/reflect/Array;.newInstance caller=Lcom/badlogic/gdx/utils/reflect/ArrayReflection;.newInstance
+[R358-ANEW] newInstance(Ljava/lang/Class;, 16) -> obj#40
+[ALLOC-TRACE] obj#41 Lcom/badlogic/gdx/utils/Array; pc=29 frame=13 seq=40
+[U0113-ACTIVITY] activity heap object #33 (Lstack/tower3d/android/AndroidLauncher;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lstack/tower3d/android/AndroidLauncher;' id=33
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP062-INIT] Lstack/tower3d/StackTowerGame; static_fields=18 with_defaults=16
+[CLASS_INIT] class=Lstack/tower3d/StackTowerGame; method=<clinit> bytecode_size=44
+[CLASS_INIT] class=Lstack/tower3d/StackTowerGame; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=48
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; static_fields=3 with_defaults=2
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; method=<clinit> bytecode_size=17
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Pools; method=<clinit> bytecode_size=8
+[ALLOC-TRACE] obj#51 Lcom/badlogic/gdx/utils/ObjectMap; pc=0 frame=32 seq=50
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/ObjectMap; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/ObjectMap; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=51
+[REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[EXP062-INIT] Lcom/badlogic/gdx/math/MathUtils; static_fields=23 with_defaults=22
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/MathUtils; method=<clinit> bytecode_size=8
+[EXP062-INIT] Lcom/badlogic/gdx/math/RandomXS128; static_fields=2 with_defaults=2
+[REC-MISS] Ljava/util/Random;.<init> caller=Lcom/badlogic/gdx/math/RandomXS128;.<init>
+[REC-MISS] Ljava/util/Random;.<init> caller=Lcom/badlogic/gdx/math/RandomXS128;.<init>
+[REC-MISS] Ljava/util/Random;.nextLong caller=Lcom/badlogic/gdx/math/RandomXS128;.<init>
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/math/RandomXS128;.seed0 caller=Lcom/badlogic/gdx/math/RandomXS128;.setState value=-8108722261328812909
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/math/RandomXS128;.seed1 caller=Lcom/badlogic/gdx/math/RandomXS128;.setState value=-3316441345133366397
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/MathUtils; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=76
+[REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Pools; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=77
+[SGET] class=Lcom/badlogic/gdx/utils/Pools; method=get pc=0 field=Lcom/badlogic/gdx/utils/Pools;.typePools obj_id=51
+[REC-MISS] Ljava/lang/Class;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[REC-MISS] Ljava/lang/Object;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[ALLOC-TRACE] obj#57 Lcom/badlogic/gdx/utils/ReflectionPool; pc=10 frame=45 seq=56
+[ALLOC-TRACE] obj#58 Lcom/badlogic/gdx/utils/Array; pc=3 frame=50 seq=57
+[ALLOC-TRACE] obj#60 Lcom/badlogic/gdx/utils/reflect/Constructor; pc=0 frame=53 seq=59
+[REC-MISS] Ljava/lang/Class;.getConstructor caller=Lcom/badlogic/gdx/utils/reflect/ClassReflection;.getConstructor
+[F106-CTOR] getConstructor Lcom/badlogic/gdx/graphics/g2d/GlyphLayout$GlyphRun; params=[] → ctor#61 mods=0x10001 (()V) caller=Lcom/badlogic/gdx/utils/reflect/ClassReflection;.getConstructor
+[REC-MISS] Ljava/lang/Class;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[REC-MISS] Ljava/lang/Object;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/ObjectMap;->size" obj#51 cls=Lcom/badlogic/gdx/utils/ObjectMap; keys: Lcom/badlogic/gdx/utils/ObjectMap;->keyTable Lcom/badlogic/gdx/utils/ObjectMap;->loadFactor Lcom/badlogic/gdx/utils/ObjectMap;->mask Lcom/badlogic/gdx/utils/ObjectMap;->shift Lcom/badlogic/gdx/utils/ObjectMap;->threshold Lcom/badlogic/gdx/utils/ObjectMap;->valueTable caller=Lcom/badlogic/gdx/utils/ObjectMap;.put
+[ALLOC-TRACE] obj#62 Lcom/badlogic/gdx/utils/IntArray; pc=8 frame=31 seq=61
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=78
+[ALLOC-TRACE] obj#64 Lcom/badlogic/gdx/utils/Array; pc=3 frame=60 seq=63
+[ALLOC-TRACE] obj#66 Lcom/badlogic/gdx/utils/IntArray; pc=11 frame=60 seq=65
+[EXP062-INIT] Lcom/badlogic/gdx/math/Rectangle; static_fields=3 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Rectangle; method=<clinit> bytecode_size=15
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Rectangle; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=81
+[ALLOC-TRACE] obj#73 Lcom/badlogic/gdx/utils/Array; pc=31 frame=29 seq=72
+[ALLOC-TRACE] obj#75 Lcom/badlogic/gdx/utils/Array; pc=38 frame=29 seq=74
+[ALLOC-TRACE] obj#77 Lcom/badlogic/gdx/utils/Array; pc=45 frame=29 seq=76
+[CLASS_INIT] class=Lstack/tower3d/StackTowerGame$State; method=<clinit> bytecode_size=37
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lstack/tower3d/StackTowerGame$State;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lstack/tower3d/StackTowerGame$State;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lstack/tower3d/StackTowerGame$State;.<init>
+[SGET] class=Lstack/tower3d/StackTowerGame$State; method=$values pc=3 field=Lstack/tower3d/StackTowerGame$State;.READY obj_id=79
+[SGET] class=Lstack/tower3d/StackTowerGame$State; method=$values pc=8 field=Lstack/tower3d/StackTowerGame$State;.PLAYING obj_id=80
+[SGET] class=Lstack/tower3d/StackTowerGame$State; method=$values pc=13 field=Lstack/tower3d/StackTowerGame$State;.GAME_OVER obj_id=81
+[CLASS_INIT] class=Lstack/tower3d/StackTowerGame$State; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=85
+[SGET] class=Lstack/tower3d/StackTowerGame; method=<init> pc=52 field=Lstack/tower3d/StackTowerGame$State;.READY obj_id=79
+[EXP062-INIT] Lcom/badlogic/gdx/math/Vector3; static_fields=6 with_defaults=5
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector3; method=<clinit> bytecode_size=39
+[EXP062-INIT] Lcom/badlogic/gdx/math/Matrix4; static_fields=27 with_defaults=23
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Matrix4; method=<clinit> bytecode_size=71
+[EXP062-INIT] Lcom/badlogic/gdx/math/Quaternion; static_fields=3 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Quaternion; method=<clinit> bytecode_size=16
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Quaternion; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=116
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Matrix4; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=120
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector3; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=121
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidApplication; method=getVersion pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP062-INIT] Lcom/badlogic/gdx/utils/GdxNativesLoader; static_fields=2 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=<clinit> bytecode_size=1
+[MEM] method_exit: Lcom/badlogic/gdx/utils/GdxNativesLoader;.<clinit> insns=1 RSS=232.617 MB
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=122
+[SGET] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=load pc=3 field=Lcom/badlogic/gdx/utils/GdxNativesLoader;.nativesLoaded value=0
+[SGET] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=load pc=9 field=Lcom/badlogic/gdx/utils/GdxNativesLoader;.disableNativesLoading value=0
+[ALLOC-TRACE] obj#104 Lcom/badlogic/gdx/utils/SharedLibraryLoader; pc=15 frame=118 seq=103
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> bytecode_size=341
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture$Bitness; method=<clinit> bytecode_size=42
+[ALLOC-TRACE] obj#105 Lcom/badlogic/gdx/utils/Architecture$Bitness; pc=0 frame=120 seq=104
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
+[ALLOC-TRACE] obj#106 Lcom/badlogic/gdx/utils/Architecture$Bitness; pc=10 frame=120 seq=105
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
+[ALLOC-TRACE] obj#107 Lcom/badlogic/gdx/utils/Architecture$Bitness; pc=20 frame=120 seq=106
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
+[ALLOC-TRACE] obj#108 [Lcom/badlogic/gdx/utils/Architecture$Bitness; pc=31 frame=0 seq=107
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture$Bitness; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=127
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=0 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._32 obj_id=105
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> bytecode_size=54
+[ALLOC-TRACE] obj#109 Lcom/badlogic/gdx/utils/Architecture; pc=0 frame=124 seq=108
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[ALLOC-TRACE] obj#110 Lcom/badlogic/gdx/utils/Architecture; pc=10 frame=124 seq=109
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[ALLOC-TRACE] obj#111 Lcom/badlogic/gdx/utils/Architecture; pc=20 frame=124 seq=110
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[ALLOC-TRACE] obj#112 Lcom/badlogic/gdx/utils/Architecture; pc=30 frame=124 seq=111
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
+[ALLOC-TRACE] obj#113 [Lcom/badlogic/gdx/utils/Architecture; pc=41 frame=0 seq=112
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=133
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=4 field=Lcom/badlogic/gdx/utils/Architecture;.x86 obj_id=109
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Os; method=<clinit> bytecode_size=66
+[ALLOC-TRACE] obj#114 Lcom/badlogic/gdx/utils/Os; pc=0 frame=129 seq=113
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[ALLOC-TRACE] obj#115 Lcom/badlogic/gdx/utils/Os; pc=10 frame=129 seq=114
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[ALLOC-TRACE] obj#116 Lcom/badlogic/gdx/utils/Os; pc=20 frame=129 seq=115
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[ALLOC-TRACE] obj#117 Lcom/badlogic/gdx/utils/Os; pc=30 frame=129 seq=116
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[ALLOC-TRACE] obj#118 Lcom/badlogic/gdx/utils/Os; pc=40 frame=129 seq=117
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
+[ALLOC-TRACE] obj#119 [Lcom/badlogic/gdx/utils/Os; pc=51 frame=0 seq=118
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Os; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=140
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=39 field=Lcom/badlogic/gdx/utils/Os;.Linux obj_id=115
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=121 field=Lcom/badlogic/gdx/utils/Architecture;.ARM obj_id=110
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=167 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._64 obj_id=106
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=200 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=204 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._32 obj_id=105
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=208 field=Lcom/badlogic/gdx/utils/Architecture;.x86 obj_id=109
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=214 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=216 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=250 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=252 field=Lcom/badlogic/gdx/utils/Os;.Windows obj_id=114
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=261 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=263 field=Lcom/badlogic/gdx/utils/Os;.Linux obj_id=115
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=272 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=274 field=Lcom/badlogic/gdx/utils/Os;.MacOsX obj_id=116
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=283 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=285 field=Lcom/badlogic/gdx/utils/Os;.IOS obj_id=118
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=294 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=296 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=305 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.architecture obj_id=109
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=307 field=Lcom/badlogic/gdx/utils/Architecture;.ARM obj_id=110
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=316 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.bitness obj_id=105
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=318 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._64 obj_id=106
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[REC-MISS] Ljava/util/Random;.<init> caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=150
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=2 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=4 field=Lcom/badlogic/gdx/utils/Os;.IOS obj_id=118
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=isLoaded pc=3 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadedLibraries obj_id=120
+[REC-MISS] Ljava/util/HashSet;.contains caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.isLoaded
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=mapLibraryName pc=0 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=mapLibraryName pc=2 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=24 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=26 field=Lcom/badlogic/gdx/utils/Os;.Android obj_id=117
+[REC-MISS] Ljava/lang/System;.loadLibrary caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load
+[GATEA-NATIVE] System.loadLibrary("gdx") caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load
+[F-NEW-441] on-demand extract lib/x86_64/libgdx.so → /data/app/stack.tower3d/lib/x86_64 (193008 bytes)
+[S2-NATIVE] load gdx: dlopen ok (runtime/data/data/app/stack.tower3d/lib/x86_64/libgdx.so)
+[S2-NATIVE] System.loadLibrary("gdx") LOADED size=193008 sha16=2e9dc948aab382e5 (dlopen ok; no JNI_OnLoad)
+[SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=setLoaded pc=3 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadedLibraries obj_id=120
+[REC-MISS] Ljava/util/HashSet;.add caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.setLoaded
+[EXP062-INIT] Lcom/badlogic/gdx/backends/android/AndroidGraphics; static_fields=2 with_defaults=2
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=<clinit> bytecode_size=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=152
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init>
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=1792488304441929857
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init>
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameStart caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=1792488304441957016
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameId caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=-1
+[REC-MISS] Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
+[SGET-MISS] key=Ljavax/microedition/khronos/egl/EGL10;.EGL_DEFAULT_DISPLAY storage_size=152 same_class_keys=0 engine=0x7fff9942e398
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=checkGL20 pc=6 field=Ljavax/microedition/khronos/egl/EGL10;.EGL_DEFAULT_DISPLAY obj_id=0
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglInitialize caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglChooseConfig caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglTerminate caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
+[EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GdxEglConfigChooser; static_fields=4 with_defaults=4
+[EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; static_fields=3 with_defaults=2
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<clinit> bytecode_size=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=159
+[REC-MISS] Landroid/opengl/GLSurfaceView;.<init> caller=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=<clinit> bytecode_size=67
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=139 pc=0 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<init>
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=140 pc=10 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<init>
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=141 pc=20 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<init>
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=142 pc=30 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<init>
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=143 pc=40 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<init>
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=144 pc=50 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<init>
+[SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=3 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Default obj_id=139
+[SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=8 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.NumberPad obj_id=140
+[SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=13 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.PhonePad obj_id=141
+[SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=18 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Email obj_id=142
+[SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=23 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Password obj_id=143
+[SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=28 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.URI obj_id=144
+[CLASS_INIT] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=166
+[SGET] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<init> pc=3 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Default obj_id=139
+[EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; static_fields=1 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; method=<clinit> bytecode_size=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=168
+[C013-HIER] setEGLContextFactory dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
+[EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; static_fields=2 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; method=<clinit> bytecode_size=32
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=170
+[C013-HIER] setEGLConfigChooser dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
+[C013-HIER] setEGLConfigChooser dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
+[C013-HIER] setRenderer dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
+[C013-HIER] setPreserveEGLContextOnPause dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
+[EXP062-INIT] Lcom/badlogic/gdx/backends/android/DefaultAndroidInput; static_fields=1 with_defaults=1
+[ALLOC-TRACE] obj#151 Lcom/badlogic/gdx/utils/IntSet; pc=3 frame=170 seq=150
+[REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/IntSet;.<init>
+[ALLOC-TRACE] obj#156 Lcom/badlogic/gdx/utils/Array; pc=3 frame=176 seq=155
+[ALLOC-TRACE] obj#159 Lcom/badlogic/gdx/utils/Array; pc=3 frame=179 seq=158
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.currentEventTimeStamp caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.<init> value=0
+[REC-MISS] Landroid/os/Handler;.<init> caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.<init>
+[REC-MISS] Landroid/app/Activity;.getPackageManager caller=Lcom/badlogic/gdx/backends/android/AndroidTouchHandler;.supportsMultitouch
+[REC-MISS] Landroid/content/ContextWrapper;.getPackageManager caller=Lcom/badlogic/gdx/backends/android/AndroidTouchHandler;.supportsMultitouch
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Lcom/badlogic/gdx/backends/android/AndroidTouchHandler;.supportsMultitouch
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Lcom/badlogic/gdx/backends/android/AndroidTouchHandler;.supportsMultitouch
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getPackageManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getPackageManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/pm/PackageManager;.hasSystemFeature caller=Lcom/badlogic/gdx/backends/android/AndroidTouchHandler;.supportsMultitouch
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidHaptics;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidHaptics;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidHaptics;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidHaptics;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getSystemService
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getSystemService
+[R339-SVC] getSystemService("vibrator") → Landroid/os/Vibrator; (shadow layer, caller=Lcom/badlogic/gdx/backends/android/AndroidHaptics;.<init>)
+[REC-MISS] Landroid/os/Vibrator;.hasVibrator caller=Lcom/badlogic/gdx/backends/android/AndroidHaptics;.<init>
+[SGET] class=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput; method=<init> pc=227 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[REC-MISS] Landroid/app/Activity;.getOnBackInvokedDispatcher caller=Lkotlin/io/path/PathTreeWalk$$ExternalSyntheticApiModelOutline0;.m
+[REC-MISS] Landroid/app/Activity;.getOnBackInvokedDispatcher caller=Lkotlin/io/path/PathTreeWalk$$ExternalSyntheticApiModelOutline0;.m
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getOnBackInvokedDispatcher class=Lstack/tower3d/android/AndroidLauncher;
+[REC-MISS] Landroid/app/Activity;.getWindowManager caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.getRotation
+[REC-MISS] Landroid/app/Activity;.getWindowManager caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.getRotation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.getRotation
+[REC-MISS] Landroid/view/Display;.getRotation caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;.getRotation
+[REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getSystemService
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getSystemService
+[R339-SVC] getSystemService("display") → Landroid/hardware/display/DisplayManager; (shadow layer, caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode)
+[REC-MISS] Landroid/hardware/display/DisplayManager;.getDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[REC-MISS] Landroid/view/Display;.getRealMetrics caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[REC-MISS] Landroid/view/Display;.getRefreshRate caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getDisplayMode
+[CLASS_INIT] class=Lcom/badlogic/gdx/Input$Orientation; method=<clinit> bytecode_size=27
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$Orientation;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$Orientation;.<init>
+[SGET] class=Lcom/badlogic/gdx/Input$Orientation; method=$values pc=3 field=Lcom/badlogic/gdx/Input$Orientation;.Landscape obj_id=193
+[SGET] class=Lcom/badlogic/gdx/Input$Orientation; method=$values pc=8 field=Lcom/badlogic/gdx/Input$Orientation;.Portrait obj_id=194
+[CLASS_INIT] class=Lcom/badlogic/gdx/Input$Orientation; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=174
+[SGET] class=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput; method=<init> pc=283 field=Lcom/badlogic/gdx/Input$Orientation;.Portrait obj_id=194
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/IntSet;->size" obj#151 cls=Lcom/badlogic/gdx/utils/IntSet; keys: Lcom/badlogic/gdx/utils/IntSet;->keyTable Lcom/badlogic/gdx/utils/IntSet;->loadFactor Lcom/badlogic/gdx/utils/IntSet;->mask Lcom/badlogic/gdx/utils/IntSet;->shift Lcom/badlogic/gdx/utils/IntSet;->threshold keyTable caller=Lcom/badlogic/gdx/utils/IntSet;.add
+[REC-MISS] Landroid/media/AudioAttributes$Builder;.<init> caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/AudioAttributes$Builder;.setUsage caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/AudioAttributes$Builder;.setContentType caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/AudioAttributes$Builder;.build caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/SoundPool$Builder;.<init> caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/SoundPool$Builder;.setAudioAttributes caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/SoundPool$Builder;.setMaxStreams caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/media/SoundPool$Builder;.build caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getSystemService
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getSystemService
+[R339-SVC] getSystemService("audio") → Landroid/media/AudioManager; (shadow layer, caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>)
+[REC-MISS] Landroid/app/Activity;.setVolumeControlStream caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[REC-MISS] Landroid/app/Activity;.setVolumeControlStream caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setVolumeControlStream
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setVolumeControlStream class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getFilesDir
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getFilesDir
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getAssets
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getAssets class=Landroid/app/Activity;
+[REC-MISS] Landroid/app/Activity;.getFilesDir caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getFilesDir caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getFilesDir caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getFilesDir
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getFilesDir
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFilesDir class=Landroid/app/Activity;
+[R347-FILE] getAbsolutePath path="/data/data/stack.tower3d/files" -> "/data/data/stack.tower3d/files"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.<init>
+[REC-MISS] Landroid/app/Activity;.getExternalFilesDir caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[REC-MISS] Landroid/content/ContextWrapper;.getExternalFilesDir caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[REC-MISS] Landroid/content/ContextWrapper;.getExternalFilesDir caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getExternalFilesDir
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getExternalFilesDir
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getExternalFilesDir class=Landroid/app/Activity;
+[R347-FILE] getAbsolutePath path="/storage/emulated/0/Android/data/stack.tower3d/files" -> "/storage/emulated/0/Android/data/stack.tower3d/files"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidFiles;.initExternalFilesPath
+[SGET] class=Lcom/badlogic/gdx/net/NetJavaImpl; method=<init> pc=20 field=Ljava/util/concurrent/TimeUnit;.SECONDS obj_id=212
+[REC-MISS] Ljava/util/concurrent/SynchronousQueue;.<init> caller=Lcom/badlogic/gdx/net/NetJavaImpl;.<init>
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicInteger;.<init> caller=Lcom/badlogic/gdx/net/NetJavaImpl$1;.<init>
+[REC-MISS] Ljava/util/concurrent/ThreadPoolExecutor;.<init> caller=Lcom/badlogic/gdx/net/NetJavaImpl;.<init>
+[REC-MISS] Ljava/util/concurrent/ThreadPoolExecutor;.allowCoreThreadTimeOut caller=Lcom/badlogic/gdx/net/NetJavaImpl;.<init>
+[ALLOC-TRACE] obj#216 Lcom/badlogic/gdx/utils/ObjectMap; pc=57 frame=211 seq=215
+[REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
+[ALLOC-TRACE] obj#219 Lcom/badlogic/gdx/utils/ObjectMap; pc=64 frame=211 seq=218
+[REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
+[ALLOC-TRACE] obj#222 Lcom/badlogic/gdx/utils/ObjectMap; pc=71 frame=211 seq=221
+[REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
+[REC-MISS] Landroid/os/Handler;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.init
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidClipboard;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidClipboard;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidClipboard;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/badlogic/gdx/backends/android/AndroidClipboard;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getSystemService
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getSystemService
+[R339-SVC] getSystemService("clipboard") → Landroid/content/ClipboardManager; (shadow layer, caller=Lcom/badlogic/gdx/backends/android/AndroidClipboard;.<init>)
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->renderUnderCutout" obj#43 cls=Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration; keys: Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->a Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->b Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->depth Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->disableAudio Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->g Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->getTouchEventsForLiveWallpaper caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.init
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#38 cls=Lcom/badlogic/gdx/utils/SnapshotArray; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#38 cls=Lcom/badlogic/gdx/utils/SnapshotArray; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lstack/tower3d/android/AndroidLauncher; recv_oid=33 act_oid=33)
+[REC-MISS] Landroid/view/Window;.setFlags caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.init
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lstack/tower3d/android/AndroidLauncher; recv_oid=33 act_oid=33)
+[REC-MISS] Landroid/view/Window;.clearFlags caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.init
+[REC-MISS] Landroid/widget/FrameLayout$LayoutParams;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.createLayoutParams
+[LP-INIT] bridged Landroid/widget/FrameLayout$LayoutParams;.<init> argc=3
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lstack/tower3d/android/AndroidLauncher;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lstack/tower3d/android/AndroidLauncher; args=2 arg0_kind=6 arg0_obj=138
+[F023-PARENTLINK] setContentView(View) content view=138 linked under activity view=33
+[R349-ORDER] setContentView(View) deferred attach+measure root=138 (AOSP first-traversal ordering law)
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[R349-ORDER] setContentView(View) attach wave + measure done, root=138
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lstack/tower3d/android/AndroidLauncher; recv_oid=33 act_oid=33)
+[REC-MISS] Landroid/view/Window;.getDecorView caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.useImmersiveMode
+[F023-PARENTLINK] getDecorView: activity view=33 linked under decor view=232
+[REC-MISS] Landroid/view/View;.setSystemUiVisibility caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.useImmersiveMode
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lstack/tower3d/android/AndroidLauncher; recv_oid=33 act_oid=33)
+[REC-MISS] Landroid/view/Window;.getDecorView caller=Lcom/badlogic/gdx/backends/android/AndroidVisibilityListener;.createListener
+[F023-PARENTLINK] getDecorView: activity view=33 linked under decor view=232
+[REC-MISS] Landroid/view/View;.setOnSystemUiVisibilityChangeListener caller=Lcom/badlogic/gdx/backends/android/AndroidVisibilityListener;.createListener
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getConfiguration caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.init
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidApplication; method=init pc=221 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/backends/android/keyboardheight/AndroidXKeyboardHeightProvider; → v3 obj_id=238 pc=227 caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.init
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lstack/tower3d/android/AndroidLauncher; runtime_class=Lstack/tower3d/android/AndroidLauncher;
+[G07-LIFECYCLE] Lstack/tower3d/android/AndroidLauncher;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lstack/tower3d/android/AndroidLauncher; runtime_class=Lstack/tower3d/android/AndroidLauncher;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/badlogic/gdx/backends/android/AndroidApplication; runtime_class=Lstack/tower3d/android/AndroidLauncher;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput; runtime_class=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput;
+[SGET] class=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput; method=registerSensorListeners pc=311 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; runtime_class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;
+[REC-MISS] Ljava/util/List;.size caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.resume
+[REC-MISS] Landroid/media/SoundPool;.autoResume caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.resume
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lstack/tower3d/android/AndroidLauncher;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lstack/tower3d/android/AndroidLauncher;
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidApplication; method=onResume pc=79 field=Lcom/badlogic/gdx/Gdx;.input obj_id=150
+[REC-MISS] Landroid/opengl/GLSurfaceView;.post caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.onResume
+[REC-MISS] Landroid/view/View;.post caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.onResume
+[QUEUE] Runnable id=239 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=1, source=View.post)
+[G07-LIFECYCLE] Lstack/tower3d/android/AndroidLauncher;.onResume() dispatched via DEX engine (ok=1, instructions=118)
+[QUEUE] Runnable id=239 dequeued (ready_at=0ms <= now=0ms virtual)
+[EXP090-DRAIN2] Iteration 0 drained 1 runnables
+[EXP090-DRAIN2] Invoking Runnable id=239 class=Lcom/badlogic/gdx/backends/android/AndroidApplication$2;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Lcom/badlogic/gdx/backends/android/keyboardheight/AndroidXKeyboardHeightProvider;.start
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Lcom/badlogic/gdx/backends/android/keyboardheight/AndroidXKeyboardHeightProvider;.start
+[EXP088-B-ENTER] bridge_to_api: Lstack/tower3d/android/AndroidLauncher;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lstack/tower3d/android/AndroidLauncher;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lstack/tower3d/android/AndroidLauncher; args=1 arg0_kind=0 arg0_int=16908290
+[EXP088-B-DBG] findViewById: target=0x1020002 content_view_id=8a registry=YES
+[EXP088-B-DBG] find_by_android_id returned 0
+[EXP061-NEW] new-instance Lcom/badlogic/gdx/backends/android/keyboardheight/AndroidXKeyboardHeightProvider$1; → v1 obj_id=240 pc=11 caller=Lcom/badlogic/gdx/backends/android/keyboardheight/AndroidXKeyboardHeightProvider;.start
+[EXP062-INIT] Landroidx/core/view/ViewCompat; static_fields=50 with_defaults=41
+[CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> bytecode_size=85
+[EXP062-INIT] Landroidx/core/R$id; static_fields=74 with_defaults=74
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=0 field=Landroidx/core/R$id;.accessibility_custom_action_0 value=2131034113
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=2 field=Landroidx/core/R$id;.accessibility_custom_action_1 value=2131034114
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=4 field=Landroidx/core/R$id;.accessibility_custom_action_2 value=2131034125
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=6 field=Landroidx/core/R$id;.accessibility_custom_action_3 value=2131034136
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=8 field=Landroidx/core/R$id;.accessibility_custom_action_4 value=2131034139
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=10 field=Landroidx/core/R$id;.accessibility_custom_action_5 value=2131034140
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=12 field=Landroidx/core/R$id;.accessibility_custom_action_6 value=2131034141
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=14 field=Landroidx/core/R$id;.accessibility_custom_action_7 value=2131034142
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=16 field=Landroidx/core/R$id;.accessibility_custom_action_8 value=2131034143
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=18 field=Landroidx/core/R$id;.accessibility_custom_action_9 value=2131034144
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=20 field=Landroidx/core/R$id;.accessibility_custom_action_10 value=2131034115
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=22 field=Landroidx/core/R$id;.accessibility_custom_action_11 value=2131034116
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=24 field=Landroidx/core/R$id;.accessibility_custom_action_12 value=2131034117
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=26 field=Landroidx/core/R$id;.accessibility_custom_action_13 value=2131034118
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=28 field=Landroidx/core/R$id;.accessibility_custom_action_14 value=2131034119
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=30 field=Landroidx/core/R$id;.accessibility_custom_action_15 value=2131034120
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=32 field=Landroidx/core/R$id;.accessibility_custom_action_16 value=2131034121
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=34 field=Landroidx/core/R$id;.accessibility_custom_action_17 value=2131034122
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=36 field=Landroidx/core/R$id;.accessibility_custom_action_18 value=2131034123
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=38 field=Landroidx/core/R$id;.accessibility_custom_action_19 value=2131034124
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=40 field=Landroidx/core/R$id;.accessibility_custom_action_20 value=2131034126
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=42 field=Landroidx/core/R$id;.accessibility_custom_action_21 value=2131034127
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=44 field=Landroidx/core/R$id;.accessibility_custom_action_22 value=2131034128
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=46 field=Landroidx/core/R$id;.accessibility_custom_action_23 value=2131034129
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=48 field=Landroidx/core/R$id;.accessibility_custom_action_24 value=2131034130
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=50 field=Landroidx/core/R$id;.accessibility_custom_action_25 value=2131034131
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=52 field=Landroidx/core/R$id;.accessibility_custom_action_26 value=2131034132
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=54 field=Landroidx/core/R$id;.accessibility_custom_action_27 value=2131034133
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=56 field=Landroidx/core/R$id;.accessibility_custom_action_28 value=2131034134
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=58 field=Landroidx/core/R$id;.accessibility_custom_action_29 value=2131034135
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=60 field=Landroidx/core/R$id;.accessibility_custom_action_30 value=2131034137
+[SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=62 field=Landroidx/core/R$id;.accessibility_custom_action_31 value=2131034138
+[REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/core/view/ViewCompat$AccessibilityPaneVisibilityManager;.<init>
+[CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=297
+[SGET] class=Landroidx/core/view/ViewCompat$Api21Impl; method=setOnApplyWindowInsetsListener pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[ROOT-059] null-recv routed to shadow law: Landroid/view/View;.setOnApplyWindowInsetsListener caller=Landroidx/core/view/ViewCompat$Api21Impl;.setOnApplyWindowInsetsListener
+[REC-MISS] Landroid/view/View;.setOnApplyWindowInsetsListener caller=Landroidx/core/view/ViewCompat$Api21Impl;.setOnApplyWindowInsetsListener
+[EXP090-DRAIN2] Runnable id=239 invoked
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=4339 nodes=4 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lstack/tower3d/android/AndroidLauncher;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=603
+[F384-ROOTINSETS] root=o138 cls=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; insets=o246 dispatched=false
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
+[ECR-ROOT] scalar content_view_id root=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[V1-CONTENT-BOUNDS] root=138 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[LIFEWIN-OPEN] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; view=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[LIFEWIN-CLOSE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; view=138 dispatched=YES
+[F096-LIFECYCLE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; view=138 rect=(0,0 1080x1920) dispatched=YES
+[C013-LEAFCHK] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[REC-MISS] Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetCurrentContext caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[CLASS_INIT] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> bytecode_size=67
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Application$ApplicationType;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Application$ApplicationType;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Application$ApplicationType;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Application$ApplicationType;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Application$ApplicationType;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Application$ApplicationType;.<init>
+[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=3 field=Lcom/badlogic/gdx/Application$ApplicationType;.Android obj_id=253
+[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=8 field=Lcom/badlogic/gdx/Application$ApplicationType;.Desktop obj_id=254
+[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=13 field=Lcom/badlogic/gdx/Application$ApplicationType;.HeadlessDesktop obj_id=255
+[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=18 field=Lcom/badlogic/gdx/Application$ApplicationType;.Applet obj_id=256
+[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=23 field=Lcom/badlogic/gdx/Application$ApplicationType;.WebGL obj_id=257
+[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=28 field=Lcom/badlogic/gdx/Application$ApplicationType;.iOS obj_id=258
+[CLASS_INIT] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=304
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=setupGL pc=20 field=Lcom/badlogic/gdx/Application$ApplicationType;.Android obj_id=253
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=<init> pc=7 field=Lcom/badlogic/gdx/Application$ApplicationType;.Android obj_id=253
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=<clinit> bytecode_size=47
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.<init>
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=3 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.OpenGL obj_id=260
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=8 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.GLES obj_id=261
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=13 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.WebGL obj_id=262
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=18 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.NONE obj_id=263
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=309
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=<init> pc=11 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.GLES obj_id=261
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=<init> pc=58 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.GLES obj_id=261
+[REC-MISS] Ljava/util/regex/Pattern;.compile caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
+[REC-MISS] Ljava/util/regex/Pattern;.matcher caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
+[RX-DIAG] Pattern.matcher cond=MATCH argc=2 a0=t7 a1=t5 caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion pc=4
+[REC-MISS] Ljava/util/regex/Matcher;.find caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=extractVersion pc=62 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=setupGL pc=85 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=setupGL pc=110 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=setupGL pc=133 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=setupGL pc=156 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[REC-MISS] Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logConfig pc=6 field=Ljavax/microedition/khronos/egl/EGL10;.EGL_DEFAULT_DISPLAY obj_id=0
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logConfig pc=82 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logConfig pc=128 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logConfig pc=150 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logConfig pc=172 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logConfig pc=194 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
+[REC-MISS] Landroid/view/Display;.getMetrics caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=updateSafeAreaInsets pc=9 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lstack/tower3d/android/AndroidLauncher; recv_oid=33 act_oid=33)
+[REC-MISS] Landroid/view/Window;.getDecorView caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updateSafeAreaInsets
+[F023-PARENTLINK] getDecorView: activity view=33 linked under decor view=232
+[REC-MISS] Landroid/view/View;.getRootWindowInsets caller=Landroidx/tracing/Trace$$ExternalSyntheticApiModelOutline0;.m
+[REC-MISS] Landroid/view/WindowInsets;.getDisplayCutout caller=Landroidx/tracing/Trace$$ExternalSyntheticApiModelOutline0;.m
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Mesh; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Mesh; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=312
+[SGET] class=Lcom/badlogic/gdx/graphics/Mesh; method=invalidateAllMeshes pc=0 field=Lcom/badlogic/gdx/graphics/Mesh;.meshes obj_id=285
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/Mesh;.invalidateAllMeshes
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/Mesh;.invalidateAllMeshes pc=2
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Texture; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Texture; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=313
+[SGET] class=Lcom/badlogic/gdx/graphics/Texture; method=invalidateAllTextures pc=0 field=Lcom/badlogic/gdx/graphics/Texture;.managedTextures obj_id=286
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/Texture;.invalidateAllTextures
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/Texture;.invalidateAllTextures pc=2
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Cubemap; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Cubemap; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=314
+[SGET] class=Lcom/badlogic/gdx/graphics/Cubemap; method=invalidateAllCubemaps pc=0 field=Lcom/badlogic/gdx/graphics/Cubemap;.managedCubemaps obj_id=287
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/Cubemap;.invalidateAllCubemaps
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/Cubemap;.invalidateAllCubemaps pc=2
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/TextureArray; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/TextureArray; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=315
+[SGET] class=Lcom/badlogic/gdx/graphics/TextureArray; method=invalidateAllTextureArrays pc=0 field=Lcom/badlogic/gdx/graphics/TextureArray;.managedTextureArrays obj_id=288
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/TextureArray;.invalidateAllTextureArrays
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/TextureArray;.invalidateAllTextureArrays pc=2
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; static_fields=12 with_defaults=11
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=<clinit> bytecode_size=15
+[ALLOC-TRACE] obj#289 Lcom/badlogic/gdx/utils/ObjectMap; pc=0 frame=354 seq=288
+[REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
+[REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/BufferUtils; method=<clinit> bytecode_size=11
+[ALLOC-TRACE] obj#292 Lcom/badlogic/gdx/utils/Array; pc=0 frame=359 seq=291
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/BufferUtils; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=329
+[REC-MISS] Ljava/nio/ByteBuffer;.allocateDirect caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=4 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteOrder;.nativeOrder caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteBuffer;.order caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteBuffer;.asIntBuffer caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.asIntBuffer argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=329
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=invalidateAllShaderPrograms pc=0 field=Lcom/badlogic/gdx/Gdx;.gl20 obj_id=268
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=invalidateAllShaderPrograms pc=5 field=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram;.shaders obj_id=289
+[REC-MISS] Landroid/app/Activity;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[REC-MISS] Landroid/content/ContextWrapper;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[REC-MISS] Landroid/content/Context;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[REC-MISS] Ljava/lang/Object;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=hashCode class=Lstack/tower3d/android/AndroidLauncher;
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=invalidateAllFrameBuffers pc=0 field=Lcom/badlogic/gdx/Gdx;.gl20 obj_id=268
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; static_fields=5 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=<clinit> bytecode_size=18
+[REC-MISS] Ljava/nio/ByteBuffer;.allocateDirect caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=4 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteOrder;.nativeOrder caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteBuffer;.order caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteBuffer;.asIntBuffer caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.asIntBuffer argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=333
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=invalidateAllFrameBuffers pc=5 field=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.buffers obj_id=296
+[REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.invalidateAllFrameBuffers
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.invalidateAllFrameBuffers pc=7
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logManagedCachesStatus pc=0 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/graphics/Mesh;.getManagedStatus
+[SGET] class=Lcom/badlogic/gdx/graphics/Mesh; method=getManagedStatus pc=7 field=Lcom/badlogic/gdx/graphics/Mesh;.meshes obj_id=285
+[REC-MISS] Ljava/util/Map;.keySet caller=Lcom/badlogic/gdx/graphics/Mesh;.getManagedStatus
+[REC-MISS] Ljava/util/Set;.iterator caller=Lcom/badlogic/gdx/graphics/Mesh;.getManagedStatus
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/badlogic/gdx/graphics/Mesh;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/Mesh;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/graphics/Mesh;.getManagedStatus
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logManagedCachesStatus pc=11 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/graphics/Texture;.getManagedStatus
+[SGET] class=Lcom/badlogic/gdx/graphics/Texture; method=getManagedStatus pc=7 field=Lcom/badlogic/gdx/graphics/Texture;.managedTextures obj_id=286
+[REC-MISS] Ljava/util/Map;.keySet caller=Lcom/badlogic/gdx/graphics/Texture;.getManagedStatus
+[REC-MISS] Ljava/util/Set;.iterator caller=Lcom/badlogic/gdx/graphics/Texture;.getManagedStatus
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/badlogic/gdx/graphics/Texture;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/Texture;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/graphics/Texture;.getManagedStatus
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logManagedCachesStatus pc=20 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/graphics/Cubemap;.getManagedStatus
+[SGET] class=Lcom/badlogic/gdx/graphics/Cubemap; method=getManagedStatus pc=7 field=Lcom/badlogic/gdx/graphics/Cubemap;.managedCubemaps obj_id=287
+[REC-MISS] Ljava/util/Map;.keySet caller=Lcom/badlogic/gdx/graphics/Cubemap;.getManagedStatus
+[REC-MISS] Ljava/util/Set;.iterator caller=Lcom/badlogic/gdx/graphics/Cubemap;.getManagedStatus
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/badlogic/gdx/graphics/Cubemap;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/Cubemap;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/graphics/Cubemap;.getManagedStatus
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logManagedCachesStatus pc=29 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram;.getManagedStatus
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=getManagedStatus pc=7 field=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram;.shaders obj_id=289
+[SGET] class=Lcom/badlogic/gdx/utils/ObjectMap; method=keys pc=0 field=Lcom/badlogic/gdx/utils/Collections;.allocateIterators value=0
+[ALLOC-TRACE] obj#309 Lcom/badlogic/gdx/utils/ObjectMap$Keys; pc=14 frame=384 seq=308
+[ALLOC-TRACE] obj#310 Lcom/badlogic/gdx/utils/ObjectMap$Keys; pc=21 frame=384 seq=309
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram;.getManagedStatus
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=logManagedCachesStatus pc=38 field=Lcom/badlogic/gdx/Gdx;.app obj_id=33
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=getManagedStatus pc=5 field=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.buffers obj_id=296
+[REC-MISS] Ljava/util/Map;.keySet caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[REC-MISS] Ljava/util/Set;.iterator caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.getManagedStatus
+[REC-MISS] Landroid/util/Log;.i caller=Lcom/badlogic/gdx/backends/android/AndroidApplicationLogger;.log
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[REC-MISS] Landroid/view/Display;.getWidth caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[REC-MISS] Landroid/view/Display;.getHeight caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated value=1792488304503075648
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glViewport caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
+[REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lstack/tower3d/android/AndroidLauncher; as Lcom/badlogic/gdx/backends/android/AndroidApplication; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[S71-ANCESTRY] re-dispatch Lcom/badlogic/gdx/backends/android/AndroidApplication; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
+[REC-MISS] Landroid/view/Display;.getMetrics caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
+[SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=updateSafeAreaInsets pc=9 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lstack/tower3d/android/AndroidLauncher;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lstack/tower3d/android/AndroidLauncher; recv_oid=33 act_oid=33)
+[REC-MISS] Landroid/view/Window;.getDecorView caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updateSafeAreaInsets
+[F023-PARENTLINK] getDecorView: activity view=33 linked under decor view=232
+[REC-MISS] Landroid/view/View;.getRootWindowInsets caller=Landroidx/tracing/Trace$$ExternalSyntheticApiModelOutline0;.m
+[REC-MISS] Landroid/view/WindowInsets;.getDisplayCutout caller=Landroidx/tracing/Trace$$ExternalSyntheticApiModelOutline0;.m
+[REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glViewport caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceChanged
+[ALLOC-TRACE] obj#318 Lcom/badlogic/gdx/utils/Array; pc=3 frame=421 seq=317
+[ALLOC-TRACE] obj#320 Lcom/badlogic/gdx/utils/Array; pc=3 frame=419 seq=319
+[ALLOC-TRACE] obj#322 Lcom/badlogic/gdx/utils/Array; pc=10 frame=417 seq=321
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder; static_fields=3 with_defaults=2
+[REC-MISS] Ljava/nio/ByteBuffer;.allocateDirect caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BB] method=allocateDirect argc=1 a0:t1=64 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteOrder;.nativeOrder caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[C86-BRIDGE] Ljava/nio/ByteOrder;.nativeOrder argc=0 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteBuffer;.order caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[REC-MISS] Ljava/nio/ByteBuffer;.asIntBuffer caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
+[SGET] class=Lcom/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder; method=getMaxTextureUnits pc=6 field=Lcom/badlogic/gdx/Gdx;.gl obj_id=268
+[REC-MISS] Landroid/opengl/GLES20;.glGetIntegerv caller=Lcom/badlogic/gdx/backends/android/AndroidGL20;.glGetIntegerv
+[REC-MISS] Ljava/nio/IntBuffer;.get caller=Lcom/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder;.getMaxTextureUnits
+[REC-MISS] Ljava/lang/Math;.min caller=Lcom/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder;.<init>
+[ALLOC-TRACE] obj#335 Lcom/badlogic/gdx/utils/Array; pc=3 frame=439 seq=334
+[ALLOC-TRACE] obj#339 Lcom/badlogic/gdx/utils/Array; pc=3 frame=443 seq=338
+[ALLOC-TRACE] obj#344 Lcom/badlogic/gdx/utils/Array; pc=3 frame=448 seq=343
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; static_fields=15 with_defaults=15
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=<clinit> bytecode_size=65
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/g3d/Attribute; static_fields=2 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=<clinit> bytecode_size=8
+[ALLOC-TRACE] obj#347 Lcom/badlogic/gdx/utils/Array; pc=0 frame=453 seq=346
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=353
+[SGET] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=getAttributeType pc=1 field=Lcom/badlogic/gdx/graphics/g3d/Attribute;.types obj_id=347
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.getAttributeType
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.register
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=353
+[SGET] class=Lstack/tower3d/StackTowerGame; method=create pc=23 field=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute;.AmbientLight value=1
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/graphics/g3d/Attribute;.type caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.<init> value=1
+[REC-MISS] Ljava/lang/Long;.numberOfTrailingZeros caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.<init>
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Color; method=<clinit> bytecode_size=335
+[REC-MISS] Ljava/lang/Float;.intBitsToFloat caller=Lcom/badlogic/gdx/utils/NumberUtils;.intToFloatColor
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Color; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=389
+[SGET] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=is pc=0 field=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute;.Mask value=1
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/graphics/g3d/Attributes;->mask" obj#343 cls=Lcom/badlogic/gdx/graphics/g3d/Environment; keys: Lcom/badlogic/gdx/graphics/g3d/Attributes;->attributes Lcom/badlogic/gdx/graphics/g3d/Attributes;->sorted attributes sorted caller=Lcom/badlogic/gdx/graphics/g3d/Attributes;.has
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/graphics/g3d/Attributes;->mask" obj#343 cls=Lcom/badlogic/gdx/graphics/g3d/Environment; keys: Lcom/badlogic/gdx/graphics/g3d/Attributes;->attributes Lcom/badlogic/gdx/graphics/g3d/Attributes;->sorted attributes sorted caller=Lcom/badlogic/gdx/graphics/g3d/Attributes;.enable
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/graphics/g3d/Attributes;.mask caller=Lcom/badlogic/gdx/graphics/g3d/Attributes;.enable value=1
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#344 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#344 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
+[SGET-MISS] key=Lcom/badlogic/gdx/utils/Sort;.instance storage_size=389 same_class_keys=0 engine=0x7fff9942e398
+[ALLOC-TRACE] obj#385 Lcom/badlogic/gdx/utils/Sort; pc=4 frame=563 seq=384
+[ALLOC-TRACE] obj#386 Lcom/badlogic/gdx/utils/TimSort; pc=4 frame=565 seq=385
+[EXP062-INIT] Lcom/badlogic/gdx/utils/TimSort; static_fields=4 with_defaults=4
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Lcom/badlogic/gdx/math/Vector3;.nor
+[EXP062-INIT] Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; static_fields=2 with_defaults=1
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; method=<clinit> bytecode_size=9
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; method=<clinit> result=OK engine=0x7fff9942e398 storage_size=396
+[SGET] class=Lcom/badlogic/gdx/graphics/g3d/Environment; method=add pc=0 field=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute;.Type value=1
+[ALLOC-TRACE] obj#393 Lcom/badlogic/gdx/utils/Array; pc=0 frame=0 seq=392
+[R414-INIT-DEFAULT] Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute;.lights obj#346 = new Lcom/badlogic/gdx/utils/Array; (recv=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; caller=Lcom/badlogic/gdx/graphics/g3d/Environment;.add pc=18)
+[IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#393 cls=Lcom/badlogic/gdx/utils/Array; keys: <none> caller=Lcom/badlogic/gdx/utils/Array;.add
+[SYNTH-EXC] ARR-LEN-NULL (deferred): Ljava/lang/NullPointerException; (Attempt to get length of null array) method=Lcom/badlogic/gdx/utils/Array;.add pc=4 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lstack/tower3d/android/AndroidLauncher;.onCreate invoke_pc=25 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488304510361347
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=677
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=818
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
+[ECR-ROOT] scalar content_view_id root=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[V1-CONTENT-BOUNDS] root=138 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488304820194220
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
+[ECR-ROOT] scalar content_view_id root=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[V1-CONTENT-BOUNDS] root=138 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488305007514615
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
+[ECR-ROOT] scalar content_view_id root=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[V1-CONTENT-BOUNDS] root=138 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488305180386002
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
+[ECR-ROOT] scalar content_view_id root=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[V1-CONTENT-BOUNDS] root=138 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488305349630496
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c116/t_alloc/frames
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
+[ECR-ROOT] scalar content_view_id root=138
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[REC-MISS] Landroid/view/View$MeasureSpec;.getSize caller=Lcom/badlogic/gdx/backends/android/surfaceview/FillResolutionStrategy;.calcMeasures
+[DEX-MEASURE] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.onMeasure spec_w=1073742904 (0x40000438) spec_h=1073743744 (0x40000780) -> 1080x1920 
+[V1-CONTENT-BOUNDS] root=138 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[C013-ONDRAW] view=138 class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; dispatched=NO ops=0
+[C013-CUSTOMVIEW] surface-family: placeholder SUPPRESSED for Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; — surface pixels are owned by the surface pipeline (F-NEW-162)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488305523391765
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameStart caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792488305523391765
