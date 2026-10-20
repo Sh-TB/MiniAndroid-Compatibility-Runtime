@@ -27750,6 +27750,52 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
     }
     // Primitive descriptors only match by identity (handled above).
     if (from_desc.size() == 1 || to_desc.size() == 1) return false;
+    // ── CONT-124 (F-NEW-469): SUPERINTERFACE CLOSURE LAW ────────────────────
+    // JVMS 5.1 / ART Class::IsAssignableFrom: an interface S is assignable
+    // to interface T when S extends T TRANSITIVELY (iface→iface chains of
+    // any depth). The prior walk checked each hop's DIRECTLY declared
+    // interfaces only — a three-level chain (class implements I3; I3
+    // extends I2; I2 extends I1) answered FALSE and the aput-object
+    // store-check threw a BOGUS ArrayStoreException on a legal store.
+    // Live face (dooz v23, binary 04a89c52): Liw0;.b stored Lf6; (implements
+    // Lbu0;) into [Lxt0; — Lbu0; extends Lvt0; extends Lxt0; — the walk
+    // answered FALSE, the AIOOBE escaped the Lr;.g recovery re-throw, the
+    // LayoutNode placement pass (Lel0;.c/.d) unwound, no Placeable.position
+    // write ever landed, and dooz rendered the bare themed background.
+    // Law: BFS the superinterface graph from every interface encountered
+    // (the start class's own list AND every superclass hop's list) through
+    // BOTH the DEX tables (class_to_interfaces_) and the F-NEW-236 framework
+    // tables (framework_implements), visited-set bounded. Only previously-
+    // FALSE answers can flip to TRUE — permissive in exactly the direction
+    // the JVMS law demands; illegal stores are still rejected.
+    auto interface_reaches = [&](const std::string& iface,
+                                 const std::string& target) -> bool {
+        if (iface == target) return true;
+        std::vector<std::string> work{iface};
+        std::unordered_set<std::string> visited{iface};
+        int hops = 0;
+        while (!work.empty() && hops < 64) {
+            std::string cur = work.back();
+            work.pop_back();
+            ++hops;
+            auto it = class_to_interfaces_.find(cur);
+            if (it != class_to_interfaces_.end()) {
+                for (const auto& sup : it->second) {
+                    if (sup == target) return true;
+                    if (visited.insert(sup).second) work.push_back(sup);
+                }
+            }
+            // Platform interfaces carry their parents only in the framework
+            // tables (libcore law) — same consult the F-NEW-253 tail makes.
+            std::unordered_set<std::string> fw_closure;
+            framework::framework_interface_closure(cur, fw_closure);
+            for (const auto& sup : fw_closure) {
+                if (sup == target) return true;
+                if (visited.insert(sup).second) work.push_back(sup);
+            }
+        }
+        return false;
+    };
     // R-NEW-010 store-check completion (CONT-122, tower3d live face):
     // JVMS 5.1 / AOSP Class.isAssignableFrom — the STARTING class's OWN
     // declared interfaces count. The walk below only inspects interfaces
@@ -27762,7 +27808,7 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
         auto own_ifc = class_to_interfaces_.find(from_desc);
         if (own_ifc != class_to_interfaces_.end()) {
             for (const auto& ifc : own_ifc->second)
-                if (ifc == to_desc) return true;
+                if (interface_reaches(ifc, to_desc)) return true;
         }
         if (framework::framework_implements(from_desc, to_desc)) return true;
     }
@@ -27787,11 +27833,13 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
         walk = sup;
         if (walk.empty()) break;
         if (walk == to_desc) return true;
-        // Interface declared anywhere along the super chain counts.
+        // Interface declared anywhere along the super chain counts —
+        // through the FULL superinterface closure (F-NEW-469), not just
+        // the directly declared list.
         auto ifc_it = class_to_interfaces_.find(walk);
         if (ifc_it != class_to_interfaces_.end()) {
             for (const auto& ifc : ifc_it->second)
-                if (ifc == to_desc) return true;
+                if (interface_reaches(ifc, to_desc)) return true;
         }
         // F-NEW-292: the hop class may itself be a PLATFORM class whose
         // libcore implements metadata lives in the framework tables
@@ -27806,7 +27854,7 @@ bool DalvikExecutionEngine::dalvik_class_assignable(const std::string& from_desc
     auto ifc_it = class_to_interfaces_.find(from_desc);
     if (ifc_it != class_to_interfaces_.end()) {
         for (const auto& ifc : ifc_it->second)
-            if (ifc == to_desc) return true;
+            if (interface_reaches(ifc, to_desc)) return true;
     }
     // ── F-NEW-253 (CONT-7 W3): PLATFORM HIERARCHY FALLBACK — one central
     // point. Class.isInstance/isAssignableFrom ask assignability between
