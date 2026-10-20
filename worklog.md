@@ -10656,3 +10656,16 @@ Stage Summary:
 - The CONT-110 50-task plan is fully adjudicated at current HEAD with fresh runtime evidence: 11 targets zero-drift, sudoku claim refuted with a real-content face, whatsapp honestly artifact-defective, both open gaps (449/465) live-reproduced.
 - The telegram journey's single blocker is confirmed to be the F-NEW-449 play_billing chain (16 PARTIAL tasks share this root) — the next wave's highest-fan-out lever.
 - Push: pending (commit after ledger + evidence staged, run/ via git add -f per precedent).
+
+---
+Task ID: CONT-115-PUSH
+Agent: Super Z (main)
+Task: push record + remote verification for CONT-115.
+
+Work Log:
+- Secret guard initially BLOCKED (fail-closed): run/c115/telegram.log line 448 echoed the app's own embedded GOOGLE_API_KEY via [RES-F136] getString resid=0x7f0f0092 (Telegram APK resource-read row, not a repo credential); redacted in the committed copy (value masked), guard PASS.
+- Commit 4e015c85 pushed: 9d1155d6..4e015c85 main -> main; HEAD == origin/main == 4e015c85372fd2b1f6f65d7c998c2874fbe2cc37 verified.
+- Ledger posted to #364 as comment 6286824142.
+
+Stage Summary:
+- CONT-115 wave terminal: 50/50 tasks adjudicated (33 تایید / 16 PARTIAL-honest / 1 رد), zero unadjudicated drift, 0 new root IDs, evidence chain complete at binary 9b5d38f5.
