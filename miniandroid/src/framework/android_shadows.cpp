@@ -7101,6 +7101,36 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_float(n ? n->elevation : 0.0f);
     }
+    // ── F-NEW-192 (CONT-123): the Z-state family (AOSP View.java):
+    // setTranslationZ/getTranslationZ are the dynamic half of Z, and
+    // getZ()/setZ() are the COMPOSITION accessors — Z = elevation +
+    // translationZ. ViewPropertyAnimator/Objector-animator Z drives
+    // translationZ, elevation stays static. Residual (named, honest):
+    // the DRAW-WALK Z-sorting (RenderNode sibling ordering by Z + outline
+    // shadow rasterization) is not modeled — the axis-aligned walk keeps
+    // declaration order; the state family is what apps read back.
+    if (m == "setTranslationZ") {
+        auto* n = get_or_create_node(ctx.receiver_id,
+            ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->translation_z = ctx.arg_as_float(0, 0.0f);
+        return CallResult::handled_void();
+    }
+    if (m == "getTranslationZ") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? n->translation_z : 0.0f);
+    }
+    if (m == "getZ") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_float(n ? (n->elevation + n->translation_z)
+                                           : 0.0f);
+    }
+    if (m == "setZ") {
+        // AOSP setZ(z): elevation stays, translationZ = z - elevation.
+        auto* n = get_or_create_node(ctx.receiver_id,
+            ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->translation_z = ctx.arg_as_float(0, 0.0f) - n->elevation;
+        return CallResult::handled_void();
+    }
     if (m == "setPivotX") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->pivot_x = ctx.arg_as_float(0, 0.0f);

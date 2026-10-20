@@ -1,0 +1,13 @@
+{
+  "wave": "CONT-123",
+  "title": "«حل ۳۶۴ با این روش تمامشون رو حل بکن و جواب بده» — decode wave: Z-state family landed+probed, F-NEW-384 re-verified at HEAD, F-NEW-267 frontier refreshed",
+  "base": "origin/main c68505d3 (CONT-122)",
+  "binary": "04a89c528ba7cc59",
+  "wagons": [
+    {"id": "W-01", "row": "F-NEW-192", "what": "elevation Z-STATE family (setTranslationZ/getTranslationZ/getZ/setZ; AOSP Z = elevation + translationZ; setZ adjusts translationZ keeping elevation) landed on ViewShadow node state", "verification": "fixtures/cont123_zstate probe 4/4 PASS (setElevation(4)->getZ=4; +tZ(3)->getZ=7; setZ(10)->tZ=6 el=4; round-trip); status REGISTERED → ROOT-CAUSED-PARTIAL (draw-walk Z-sorting + outline shadows stay the named residual)"},
+    {"id": "W-02", "row": "F-NEW-384", "what": "measure-path residual re-verification at HEAD", "verification": "run/c123/chess_probe.log: ZERO k1.c NPE occurrences; insets chains all served live ([ROOT-059] WindowInsets$Builder.build x2; [C013-HIER] setOnApplyWindowInsetsListener + getRootWindowInsets + computeSystemWindowInsets via ActionBarOverlayLayout superclass chain; [F384-ROOTINSETS] dispatched); chess anchor a0319686d56ff5c0 byte-identical; status LAW-LANDED-PARTIAL → VERIFIED-FIXED"},
+    {"id": "W-03", "row": "F-NEW-267", "what": "scripted-tap refresh at HEAD (--tap 820,1837 on dooz)", "verification": "run/c123/dooz_tap.log: face d602648e8e401895 byte-identical to anchor; [F117-TAP] DOWN target=0 at frame 1 — compose-internal hit-test frontier UNCHANGED; row stays ROOT-CAUSED-PARTIAL; [UC009-ATTACH-DIAG] ComposeView NOT in class index recorded as the decode pointer"}
+  ],
+  "wall": {"anchors": "chess a0319686 + dooz d602648e byte-identical at the wave binary; full 9-anchor wall green at the CONT-122 base and re-checked after W-01 landing (no drift)", "registry": "783 id-unique main==mirror row-equal (3 rows updated)"},
+  "next": ["compose synthetic-tree tap probe (F-NEW-267 probe spec)", "draw-walk Z-sorting + outline shadows (F-NEW-192 residual)", "Parcel substrate probes (R-NEW-018/019)", "InMemoryDexClassLoader (R-NEW-133)", "112 PARTIAL roots", "3 gap levers: signatures /proc FileProvider"]
+}

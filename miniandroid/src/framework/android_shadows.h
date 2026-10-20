@@ -1479,7 +1479,12 @@ public:
         float translation_x = 0, translation_y = 0;
         // F-NEW-419 (CONT-101 T6): AOSP View elevation Z-state —
         // setElevation records, getElevation answers the SAME value.
+        // F-NEW-192 (CONT-123): the full Z-state family — translationZ is
+        // the dynamic half (AOSP Z = elevation + translationZ, View.java
+        // getZ()); animations (ViewPropertyAnimator, ObjectAnimator of Z)
+        // drive translationZ, elevation is the static half.
         float elevation = 0;
+        float translation_z = 0;
         float scale_x = 1.0f, scale_y = 1.0f;
         float rotation_deg = 0.0f, pivot_x = 0.0f, pivot_y = 0.0f;
         // F-NEW-359: AOSP lazy-pivot contract (View.java mSetPivotX/Y) —

@@ -10806,3 +10806,18 @@ Work Log:
 Stage Summary:
 - CONT-122 terminal: 16 probes → 12 upgrades + 3 honest gaps + 48 hygiene rows; 7 laws + 4 deeper fixes; zero-drift wall intact.
 - Next: Parcel substrate probes (R-NEW-018/019), InMemoryDexClassLoader (R-NEW-133), scheme matrix / metadata parser / resource-shrunk, the 3 gap levers, 112 PARTIAL roots, F-NEW-192 REGISTERED, F-NEW-384 measure residual, compose ×4.
+
+---
+Task ID: CONT-123
+Agent: main (Z.ai)
+Task: «حل ۳۶۴ با این روش تمامشون رو حل بکن و جواب بده» — decode wave: F-NEW-192 (last REGISTERED), F-NEW-384 residual re-verify, F-NEW-267 frontier refresh.
+
+Work Log:
+- W-01: elevation Z-STATE family landed (setTranslationZ/getTranslationZ/getZ/setZ; Z = elevation + translationZ; setZ keeps elevation) on ViewShadow; live probe fixtures/cont123_zstate 4/4 PASS at binary 04a89c52; F-NEW-192 REGISTERED → ROOT-CAUSED-PARTIAL (draw-walk Z-sorting residual named).
+- W-02: F-NEW-384 measure-path residual re-verified at HEAD — zero k1.c NPEs live, insets chains all served ([ROOT-059] builder ×2, [C013-HIER] listener/root/computeSystem dispatch, [F384-ROOTINSETS] dispatched), chess anchor byte-identical → VERIFIED-FIXED.
+- W-03: F-NEW-267 scripted-tap refresh at HEAD — dooz face byte-identical, target=0 at frame 1, compose-internal hit-test frontier unchanged; stays ROOT-CAUSED-PARTIAL; UC009 diag pointer recorded.
+- Registry 783 id-unique main==mirror row-equal; 3 rows updated, no inflation.
+
+Stage Summary:
+- CONT-123 terminal: last REGISTERED row resolved to state-family-landed; 1 LAW-LANDED-PARTIAL closed by live re-verification; compose tap frontier honestly unchanged.
+- Next: synthetic-Compose-tree tap probe, draw-walk Z-sorting, Parcel substrate probes (R-NEW-018/019), InMemoryDexClassLoader (R-NEW-133), 112 PARTIAL roots, the 3 gap levers.
