@@ -39,6 +39,26 @@ namespace framework {
 inline const std::unordered_map<std::string, std::string>&
 framework_direct_superclass() {
     static const std::unordered_map<std::string, std::string> kTable = {
+        // R-NEW-010 store-check completion (CONT-122, telegram live face):
+        // the android.animation family — dalvik_class_assignable walked
+        // ValueAnimator → <unknown> → FALSE and the aput-object
+        // ArrayStoreException law (correctly) rejected a LEGAL store
+        // `Landroid/animation/ValueAnimator;` → `[Landroid/animation/Animator;`
+        // (Lcom/google/firebase/messaging/j;.<init> pc=104). AOSP
+        // android.animation hierarchy (ValueAnimator.java / AnimatorSet.java /
+        // ObjectAnimator.java source truth).
+        {"Landroid/animation/Animator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/ValueAnimator;", "Landroid/animation/Animator;"},
+        {"Landroid/animation/ObjectAnimator;", "Landroid/animation/ValueAnimator;"},
+        {"Landroid/animation/AnimatorSet;", "Landroid/animation/Animator;"},
+        {"Landroid/animation/AnimatorListenerAdapter;", "Ljava/lang/Object;"},
+        {"Landroid/animation/ArgbEvaluator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/IntEvaluator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/FloatEvaluator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/AccelerateDecelerateInterpolator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/AccelerateInterpolator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/DecelerateInterpolator;", "Ljava/lang/Object;"},
+        {"Landroid/animation/LinearInterpolator;", "Ljava/lang/Object;"},
         // view hierarchy root
         {"Landroid/view/View;", "Ljava/lang/Object;"},
         {"Landroid/view/ViewGroup;", "Landroid/view/View;"},
@@ -265,6 +285,25 @@ inline std::string framework_superclass_of(const std::string& class_desc) {
 inline const std::map<std::string, std::vector<std::string>>&
 framework_class_interfaces() {
     static const std::map<std::string, std::vector<std::string>> kTable = {
+        // R-NEW-010 store-check completion (CONT-122, telegram live face):
+        // android.text family (AOSP source truth — SpannableStringBuilder.java
+        // implements CharSequence, Spannable, Editable, GetChars,
+        // GraphicsOperations; SpannableString/Editable/Annotation chains).
+        // Without these edges dalvik_class_assignable rejected the LEGAL
+        // SpannableStringBuilder → [Ljava/lang/CharSequence; store at
+        // Lorg/telegram/ui/b80;.createView pc=72.
+        {"Landroid/text/SpannableStringBuilder;",
+         {"Ljava/lang/CharSequence;", "Landroid/text/Spannable;",
+          "Landroid/text/Editable;", "Landroid/text/GetChars;"}},
+        {"Landroid/text/SpannableString;",
+         {"Ljava/lang/CharSequence;", "Landroid/text/Spannable;",
+          "Landroid/text/GetChars;"}},
+        {"Landroid/text/Editable;",
+         {"Ljava/lang/CharSequence;", "Landroid/text/Spannable;"}},
+        {"Landroid/text/Spannable;", {"Ljava/lang/CharSequence;"}},
+        {"Landroid/text/Spanned;", {"Ljava/lang/CharSequence;"}},
+        {"Landroid/text/GetChars;", {"Ljava/lang/CharSequence;"}},
+        {"Landroid/text/Annotation;", {"Ljava/lang/Object;"}},
         // java.util list family (OpenJDK ArrayList/Abstract*.java)
         {"Ljava/util/ArrayList;",
          {"Ljava/util/List;", "Ljava/util/RandomAccess;",
