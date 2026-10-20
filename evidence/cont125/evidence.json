@@ -1,0 +1,46 @@
+{
+ "wave": "CONT-125 (Train 2 of 5)",
+ "base": {
+  "head": "be350cee",
+  "binary": "6bb7150a"
+ },
+ "fanout_sweep": {
+  "script": "scripts/cont125_sweep.sh",
+  "results": "run/c125/sweep.log",
+  "verdicts": [
+   "flappycow/gmdice/tripeaks/stopwatch/fishrings/notes: faces MATCH recorded records \u2014 zero drift",
+   "bouncy 8a6c24ac: matches the CURRENT record (CONT-121 F-NEW-467/468 face) \u2014 sweep want row was stale (honest)",
+   "chessclock fe3ae1167c9e968c: matches (sweep want was an 8-char prefix \u2014 comparison fixed honestly)",
+   "memory 807a0cca NEW STATE: dialog painted 97.9% fb (2,029,440/2,073,600 px) \u2014 recorded as OBSERVED, NOT claimed as F-NEW-469 fan-out (no A/B at the old binary)",
+   "tictactoe: SIGSEGV stays fixed (FIX-TTT), now renders the app-invariant default face b5a7a35d with rc=1 (decode below)",
+   "opmt: first evidence face 548a2d91 rc=0",
+   "aioobe=0 across ALL swept apps \u2014 the F-NEW-469 law passes every corpus store-check"
+  ]
+ },
+ "fix": {
+  "id": "F-NEW-470 stale-unwind clinit attribution",
+  "chain": [
+   "tictactoe NPE chain: Gdx.app.log on null Gdx.app -> AndroidLauncher.onCreate APP-BOUNDARY x2",
+   "root: AndroidApplication.<clinit> marked ERRONEOUS by F-NEW-395 because the clinit's diag_result inherited the STALE in-flight GdxRuntimeException (raised by SharedLibraryLoader.load fault in an OUTER frame, mid-unwind when the lazy clinit was triggered)",
+   "JVMS 5.5: only a clinit whose OWN bytecode throws marks erroneous",
+   "fix: entry-snapshot attribution at the clinit consumer (engine source)"
+  ],
+  "post": [
+   "binary 75bf7de9b9477684: [CLASS_INIT] AndroidApplication result=OK; onResume executes its REAL body (NPE inside proves dispatch)",
+   "named residual: invoke-super AndroidApplication.onCreate still undelivered \u2014 the engine's parsed method table misses it (method_ids[1184] EXISTS; class_data blob walk desyncs at vm[10] in BOTH parsers; first parsed direct method resolves to GLES30.glUniformBlockBinding \u2014 incoherent). Named as F-NEW-471 spec: class_data alignment-repair + loud resolution-miss law"
+  ]
+ },
+ "battery": {
+  "anchors": "9/9 byte-identical at 75bf7de9",
+  "selftest": "rc=0",
+  "negatives": "19/19 (probe store persisted)",
+  "registry": "785 id-unique main==mirror (F-NEW-470 added, no inflation)"
+ },
+ "logs": [
+  "run/c125/ttt_fixed.log",
+  "run/c125/ttt_init.log",
+  "run/c125/ttt_app.log",
+  "run/c125/sweep.log",
+  "run/c125/battery.log"
+ ]
+}
