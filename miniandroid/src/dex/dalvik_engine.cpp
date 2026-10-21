@@ -53776,6 +53776,140 @@ measure_cm_done:;
     }
 
     // ────────────────────────────────────────────────────────────────────
+    // F-NEW-474 (CONT-144): java.io.RandomAccessFile over real files.
+    // MultiDex.install -> ZipUtil.findCentralDirectory reads the running
+    // APK via RandomAccessFile: length(), backward seek + read([BII) for
+    // the EOCD. With no law the engine answered 0-length -> "File too
+    // short to be a zip file: 0" -> ZipException -> APP BOUNDARY unwind
+    // (bouncy 20-frame deep run). Law: <init>(String|File, mode) resolves
+    // the path (any on-disk file; the running APK via apk_path_), slurps
+    // the REAL bytes once into raf_bytes_; length/seek/getFilePointer/
+    // read([B)/read([BII)/read()/close answer from the real content
+    // (read returns -1 at EOF — OpenJDK law).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/RandomAccessFile;") {
+        const uint32_t raf_recv = !args.empty() && args[0].type == DalvikType::OBJECT_REF
+                                      ? args[0].object_id : 0;
+        {
+            static std::atomic<uint64_t> f474_diag{0};
+            if (f474_diag.fetch_add(1, std::memory_order_relaxed) < 10) {
+                std::cerr << "[F474-RAF] bridge class=" << class_name
+                          << " method=" << method << " recv=" << raf_recv
+                          << " argc=" << args.size()
+                          << " registered=" << (raf_bytes_.count(raf_recv) > 0)
+                          << std::endl;
+            }
+        }
+        if (method == "<init>" && raf_recv != 0) {
+            std::string path;
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+                path = args[1].string_val;
+            } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                // File argument: read its "path" field law.
+                auto pv = heap_.get_object_field(args[1].object_id, "path");
+                if (pv.has_value() && pv->type == DalvikType::STRING_REF)
+                    path = pv->string_val;
+            }
+            heap_.set_object_field(raf_recv, "__raf_path__",
+                                   DalvikValue::make_string(path, 0));
+            // Resolve + slurp real bytes. The engine's single-APK domain
+            // law: the "source apk" a MultiDex/ZipUtil stream reads IS the
+            // running APK (apk_path_) — any unresolvable path falls back
+            // to it, never to invented bytes.
+            std::string resolved = path;
+            std::ifstream f(resolved, std::ios::binary);
+            if (!f && !apk_path_.empty()) {
+                f.clear();
+                f.open(apk_path_, std::ios::binary);
+            }
+            if (f) {
+                std::string bytes((std::istreambuf_iterator<char>(f)),
+                                  std::istreambuf_iterator<char>());
+                raf_bytes_[raf_recv] = std::move(bytes);
+            }
+            heap_.set_object_field(raf_recv, "__raf_pos__", DalvikValue::make_long(0));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        auto raf_it = raf_bytes_.find(raf_recv);
+        auto raf_pos = [&]() -> int64_t {
+            auto v = heap_.get_object_field(raf_recv, "__raf_pos__");
+            if (v.has_value() && v->type == DalvikType::INT64) return v->long_val;
+            if (v.has_value() && v->type == DalvikType::INT32) return v->int_val;
+            return 0;
+        };
+        if (method == "length" && raf_it != raf_bytes_.end()) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_long(
+                static_cast<int64_t>(raf_it->second.size()));
+            return true;
+        }
+        if (method == "seek" && args.size() >= 2) {
+            int64_t pos = args[1].type == DalvikType::INT64 ? args[1].long_val
+                          : args[1].type == DalvikType::INT32 ? args[1].int_val : 0;
+            heap_.set_object_field(raf_recv, "__raf_pos__",
+                                   DalvikValue::make_long(pos));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getFilePointer") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_long(raf_pos());
+            return true;
+        }
+        if ((method == "read" || method == "readBytes") && raf_it != raf_bytes_.end()) {
+            const std::string& data = raf_it->second;
+            int64_t pos = raf_pos();
+            if (pos >= static_cast<int64_t>(data.size())) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(-1);  // OpenJDK EOF law
+                return true;
+            }
+            if (args.size() == 1) {
+                // read() single byte.
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(
+                    static_cast<uint8_t>(data[static_cast<size_t>(pos)]));
+                heap_.set_object_field(raf_recv, "__raf_pos__",
+                                       DalvikValue::make_long(pos + 1));
+                return true;
+            }
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                uint32_t arr = args[1].object_id;
+                auto lv = heap_.get_object_field(arr, "__array_length__");
+                int32_t cap = lv.has_value() && lv->type == DalvikType::INT32
+                                  ? lv->int_val : 0;
+                int32_t off = 0, len = cap;
+                if (args.size() >= 4 && args[2].type == DalvikType::INT32 &&
+                    args[3].type == DalvikType::INT32) {
+                    off = args[2].int_val;
+                    len = args[3].int_val;
+                }
+                if (len > static_cast<int64_t>(data.size()) - pos)
+                    len = static_cast<int32_t>(data.size() - pos);
+                for (int32_t i = 0; i < len; ++i) {
+                    heap_.set_object_field(
+                        arr, "array[" + std::to_string(off + i) + "]",
+                        DalvikValue::make_byte(
+                            static_cast<int8_t>(data[static_cast<size_t>(pos) + i])));
+                }
+                heap_.set_object_field(raf_recv, "__raf_pos__",
+                                       DalvikValue::make_long(pos + len));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(len > 0 ? len : -1);
+                return true;
+            }
+        }
+        if (method == "close") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
     // R-NEW-018/019 (CONT-138): android.os.Parcel marshalling law.
     // AOSP Parcel (frameworks/base/core/java/android/os/Parcel.java) is an
     // ordered TYPED RECORD stream: writeX appends and advances the write
