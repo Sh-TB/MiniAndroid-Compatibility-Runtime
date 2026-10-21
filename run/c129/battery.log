@@ -1,33 +1,33 @@
 == WAGON 1 dooz apk=io.github.yamin8000.dooz_23.apk ==
 rc=1
 face=d602648e8e401895
-anchor=d602648e DIFF
-uncaught_or_synthexc=5 boundary=0 f100=14 vrnodes=''
+anchor=d602648e MATCH
+uncaught_or_synthexc=4 boundary=0 f100=14 vrnodes=''
   KEY: [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lub1;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
   KEY: [SYNTH-EXC] STREAM-OPEN (deferred): Ljava/io/FileNotFoundException; (runtime/data/data/data/io.github.yamin8000.dooz/files/datastore/settings.preferences_pb (open failed: ENOENT)) method=Ly8;.q pc=59 → deferred handler @0x0x54 type=Ljava/io/FileNotFoundException;
 == WAGON 2 klondike apk=klondike_veldsoft_3.apk ==
 rc=1
 face=31ddd4d5b8e6d18e
-anchor=31ddd4d5 DIFF
+anchor=31ddd4d5 MATCH
 uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
 == WAGON 3 unote apk=app.varlorg.unote_30.apk ==
 rc=0
 face=90a67cc1ddda57b7
-anchor=90a67cc1 DIFF
+anchor=90a67cc1 MATCH
 uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
 == WAGON 4 chess apk=chess_jwtc_298.apk ==
 rc=1
 face=a0319686d56ff5c0
-anchor=a0319686 DIFF
+anchor=a0319686 MATCH
 uncaught_or_synthexc=5 boundary=0 f100=14 vrnodes=''
   KEY: [SYNTH-EXC] F275-SVCINFO (deferred): Landroid/content/pm/PackageManager$NameNotFoundException; (g.h0) method=Lg/q;.c pc=23 → deferred handler @0x0x2c type=Landroid/content/pm/PackageManager$NameNotFoundException;
   KEY: [SYNTH-EXC] F-NEW-219 (deferred): Ljava/lang/NoSuchMethodException; (Landroidx/appcompat/widget/ActionBarOverlayLayout;.makeOptionalFitsSystemWindows(...)) method=Lg/c0;.y pc=275 → deferred handler @0x0x131 type=Ljava/lang/NoSuchMethodException;
 BATCH 1-4 DONE
 == WAGON 5 telegram apk=telegram_official.apk ==
 rc=1
-face=31ddd4d5b8e6d18e
-anchor=20ac8cbbbb DIFF
-uncaught_or_synthexc=1175 boundary=0 f100=14 vrnodes=''
+face=20ac8cbbbb692e63
+anchor=20ac8cbbbb MATCH
+uncaught_or_synthexc=21 boundary=0 f100=14 vrnodes=''
   KEY: [SYNTH-EXC] GATEA-NATIVE (deferred): Ljava/lang/UnsatisfiedLinkError; ("tmessages.49" extracted at /data/app/org.telegram.messenger.web/lib/x86_64/libtmessages.49.so (size=21084544, sha16=f0b0cd8ea5b80fe1) but dlopen failed: libjnigraphics.so: cannot open shared object file: No such file or directory) method=Lorg/telegram/messenger/NativeLoader;.initNativeLibs pc=17 → deferred handler @0x0x20 type=<catch-all>
   KEY: [SYNTH-EXC] GATEA-NATIVE (deferred): Ljava/lang/UnsatisfiedLinkError; ("tmessages.49" extracted at /data/app/org.telegram.messenger.web/lib/x86_64/libtmessages.49.so (size=21084544, sha16=f0b0cd8ea5b80fe1) but dlopen failed: libjnigraphics.so: cannot open shared object file: No such file or directory) method=Lorg/telegram/messenger/NativeLoader;.initNativeLibs pc=197 → deferred handler @0x0xcb type=<catch-all>
 == WAGON 6 tower3d apk=stack.tower3d_1.apk ==
@@ -72,50 +72,3 @@ uncaught_or_synthexc=5 boundary=0 f100=14 vrnodes=''
   KEY: [SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d2") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
   KEY: [SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
 BATCH 9-12 DONE
-== WAGON 13 bouncy apk=com.dozingcatsoftware.bouncy_43.apk ==
-rc=0
-face=8a6c24ac8a7d718e
-uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
-== WAGON 14 tripeaks apk=tripeaks_v1.2.1_vc4.apk ==
-rc=1
-face=b5a7a35d5fe0564b
-uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
-== WAGON 15 fishrings apk=fishrings_v1.23_vc6.apk ==
-rc=1
-face=b5a7a35d5fe0564b
-uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
-== WAGON 16 memory apk=org.secuso.privacyfriendlymemory_100.apk ==
-rc=1
-face=6da289aab14d2256
-uncaught_or_synthexc=3 boundary=0 f100=14 vrnodes=''
-  KEY: [SYNTH-EXC] 371-GETXML-NOTFOUND (deferred): Landroid/content/res/Resources$NotFoundException; (File 0 from xml type xml resource ID) method=Landroidx/core/content/res/ResourcesCompat;.inflateColorStateList pc=8 → uncaught (deferred frame unwind + propagate)
-  KEY: [SYNTH-EXC] F-NEW-219 (deferred): Ljava/lang/NoSuchMethodException; (Landroidx/appcompat/widget/FitWindowsLinearLayout;.makeOptionalFitsSystemWindows(...)) method=Landroidx/appcompat/widget/ViewUtils;.makeOptionalFitsSystemWindows pc=13 → deferred handler @0x0x2b type=Ljava/lang/NoSuchMethodException;
-BATCH 13-16 DONE
-== WAGON 17 opmt apk=opmt_v0.1.2_vc1.apk ==
-rc=0
-face=548a2d91ef9892fb
-uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
-== WAGON 18 chessclock apk=chessclock_29.apk ==
-rc=0
-face=fe3ae1167c9e968c
-uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
-== WAGON 19 flappycow apk=flappycow_rebuilt.apk ==
-rc=0
-face=13cf47464d9787f4
-uncaught_or_synthexc=0 boundary=0 f100=14 vrnodes=''
-== WAGON 20 forkgram apk=forkgram_709208.apk ==
-rc=1
-face=31ddd4d5b8e6d18e
-uncaught_or_synthexc=1132 boundary=0 f100=14 vrnodes=''
-  KEY: [SYNTH-EXC] GATEA-NATIVE (deferred): Ljava/lang/UnsatisfiedLinkError; ("tmessages.49" extracted at /data/app/org.forkgram.classic/lib/arm64-v8a/libtmessages.49.so (size=18847608, sha16=6175edf792986029) but dlopen failed: runtime/data/data/app/org.forkgram.classic/lib/arm64-v8a/libtmessages.49.so: cannot open shared object file: No such file or directory) method=Lorg/telegram/messenger/NativeLoader;.initNativeLibs pc=12 → deferred handler @0x0x1b type=<catch-all>
-  KEY: [SYNTH-EXC] GATEA-NATIVE (deferred): Ljava/lang/UnsatisfiedLinkError; ("tmessages.49" extracted at /data/app/org.forkgram.classic/lib/arm64-v8a/libtmessages.49.so (size=18847608, sha16=6175edf792986029) but dlopen failed: runtime/data/data/app/org.forkgram.classic/lib/arm64-v8a/libtmessages.49.so: cannot open shared object file: No such file or directory) method=Lorg/telegram/messenger/NativeLoader;.initNativeLibs pc=201 → deferred handler @0x0xcf type=<catch-all>
-== WAGON 21 notes apk=notes_secuso_105.apk ==
-rc=1
-face=d0a409043ffc83a7
-uncaught_or_synthexc=1 boundary=0 f100=14 vrnodes=''
-  KEY: [SYNTH-EXC] F275-SVCINFO (deferred): Landroid/content/pm/PackageManager$NameNotFoundException; (androidx.appcompat.app.AppLocalesMetadataHolderService) method=Landroidx/appcompat/app/AppLocalesMetadataHolderService;.getServiceInfo pc=26 → uncaught (deferred frame unwind + propagate)
-== WAGON 22 whatsapp apk=whatsapp.apk ==
-rc=1
-face=NO_SCREENSHOT
-uncaught_or_synthexc=0 boundary=0 f100=0 vrnodes=''
-BATCH 17-22 DONE
