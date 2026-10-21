@@ -1,0 +1,56 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/de.tobiasbielefeld.solitaire_71.apk
+[*] Output directory: run/c154/de.tobiasbielefeld.solitaire
+[DATA-ROOT] context package = de.tobiasbielefeld.solitaire (data dir runtime/data/data/data/de.tobiasbielefeld.solitaire)
+LOG/d/ViewUtils: Could not find method makeOptionalFitsSystemWindows. Oh well...
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+LOG/e/Bitmap.getMenu(): No picture for current game available
+null
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 4111 IMPLEMENTED, 401 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 2
+Warnings: 1
+
+Screenshot: run/c154/de.tobiasbielefeld.solitaire/screenshot.png
+Report: run/c154/de.tobiasbielefeld.solitaire/report.md

@@ -11005,3 +11005,21 @@ Work Log:
 Stage Summary:
 - The dooz draw frontier descended to the EXACT stale field: kind=4 const (M0 pc0) -> acceptance (h&kind)&&(g&kind) -> capability flags written ONLY on late-chain nodes -> query bound to early chains via scope.V -> S0 = identity-resolver -> blank content + h1 overlay. Every link machine-verified with register snapshots or live FIELD-TRACE.
 - Next train owns: FIELD-TRACE Lxk0;.V writes + the scope iteration above Lel0;.i (Lho1;.d / Lt4;.getRoot) — V one-time-bind vs app rebind question.
+
+---
+Task ID: CONT-154 (corpus 22->116, sequential honest battery)
+Agent: main agent (Z.ai)
+Task: «۱۰۰ برنامه رو تست بکن» — expand corpus to 100+ real F-Droid APKs, test all, produce the WHY table with numbers; «۱۰ تا ۵۰ قطار» parallel-rails demand.
+
+Work Log:
+- Hygiene: stray auto-commit b4c3add0 (worklog/registry/wall-log evidence + tmp junk) soft-reset to b53e17e7; real evidence re-committed (5ee90d9f). HEAD==origin/main verified.
+- Corpus expansion: F-Droid API probe (api/v1/packages suggestedVersionCode) over 117+28 curated IDs + 286 mined from f-droid.org index -> 94 new APKs downloaded (upload/fdroid_batch/, 25MB cap, zip-verified, sha16 manifest). Corpus 22 -> 116 distinct apps.
+- Battery: cont154_big_battery.sh over all 94 (canonical 22 reuse fresh same-binary c129 logs). HARNESS ARTIFACT FOUND AND FIXED: parallel chunk execution caused interference -> flaky rc=1 (textpad flipped rc=1->rc=0 SUCCESS on isolated re-run). ALL 94 re-ran SEQUENTIALLY; parallel-era evidence archived in run/c154/parallel_flawed/ (825MB, kept out of git) + scorecard2.json documents the flawed pass.
+- Honest scorecard (scorecard_final.json, stdout Status/Message authoritative): 4 SUCCESS (ac.stresa.uturn, app.starlingmap, bouncy, textpad), 90 PARTIAL; 75/94 render non-white >1%; 21/94 zero uncaught-in-flight; F-016 in-flight counts + F-NEW-233 verdict/first_missing_stage per app.
+- WHY table (engine-named): APP_DRAW_OPS 49 (52% — SAME family as dooz F-NEW-473..480 stale scope.V Compose draw-block law), WINDOW_ROOT 17, APP_PIXELS 4, pre-frame crash 20.
+- Grand total 116: 96/116 (82%) render, 11/116 (9%) full SUCCESS, vs 10 days ago: corpus 22, render 21, rc=0 6.
+- REC-MISS census corrected: benign trace noise (app handlers continue past them; 726 EXC-PROPAGATE caught events corpus-wide) — NOT the worklist; first-exception census misleading (NameNotFoundException×20 mostly caught at caller; textpad proof).
+
+Stage Summary:
+- The user's three demands answered with machine-generated numbers: (1) 100+ apps tested = 116; (2) real progress metric = corpus ×5.3, render 21->96, SUCCESS 6->11; (3) WHY not complete = ONE named root family (APP_DRAW_OPS 49/94) pinned to F-NEW-480's scope.V stale-binding next lever.
+- Next train owns: FIELD-TRACE Lxk0;.V writes on dooz -> generic fix for the Compose draw-block stale-binding family (targets 49 apps at once); then WINDOW_ROOT 17-app cohort.

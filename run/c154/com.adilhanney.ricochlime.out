@@ -1,0 +1,23 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/com.adilhanney.ricochlime_1140003.apk
+[*] Output directory: run/c154/com.adilhanney.ricochlime
+[DATA-ROOT] context package = com.adilhanney.ricochlime (data dir runtime/data/data/data/com.adilhanney.ricochlime)
+LOG/w/FlutterActivity: FlutterActivity -1017183867 onStart called after release.
+LOG/w/FlutterActivity: FlutterActivity -1017183867 onResume called after release.
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 121 IMPLEMENTED, 15 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 7
+
+Screenshot: run/c154/com.adilhanney.ricochlime/screenshot.png
+Report: run/c154/com.adilhanney.ricochlime/report.md
