@@ -1,0 +1,157 @@
+{
+ "head": "0ee5b568",
+ "binary": "9e755c3dde69510c",
+ "wall": "9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568",
+ "batch": [
+  {
+   "id": "R-NEW-001",
+   "verdict": "PARTIAL",
+   "note": "kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-002",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (17 src files match 'Intent'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-004",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (10 src files match 'locks'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-005",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (10 src files match 'locks'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-006",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (10 src files match 'locks'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-015",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (13 src files match 'reflect|GetMethod|FindClass'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-017",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (45 src files match 'reflect|Method'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-020",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (15 src files match 'EXP093|Bundle'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-021",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (62 src files match 'measure|layout'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-022",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (9 src files match 'invalidate'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-024",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (9 src files match 'MeasureSpec|EXACTLY|AT_MOST'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-029",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (2 src files match 'NoClassDefFoundError'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-030",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (65 src files match 'load_apk|single'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-031",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (48 src files match 'ARSC|drawable'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-034",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (30 src files match 'density'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-035",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (26 src files match 'inflate'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-036",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (11 src files match 'layout_inflat'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-037",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (15 src files match 'EXP093|Bundle'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-044",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (6 src files match 'classes2|multidex|dex_count'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-061",
+   "verdict": "PARTIAL",
+   "note": "kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-062",
+   "verdict": "PARTIAL",
+   "note": "kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-066",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (30 src files match 'density'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-067",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (61 src files match 'RGB|renderer|pixel'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-068",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (6 src files match 'GradientDrawable'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-069",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (14 src files match 'state_list|StateList'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-070",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (14 src files match 'state_list|StateList'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-078",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (16 src files match 'ImageView'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-079",
+   "verdict": "PARTIAL",
+   "note": "kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-080",
+   "verdict": "PARTIAL",
+   "note": "kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  },
+  {
+   "id": "R-NEW-086",
+   "verdict": "VERIFIED-CORRECT",
+   "note": "mechanism re-anchored at HEAD (76 src files match 'bound|bounds check'); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  }
+ ]
+}
