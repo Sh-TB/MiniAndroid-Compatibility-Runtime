@@ -2,12 +2,12 @@
  {
   "id": "R-NEW-001",
   "title": "(title backfilled CONT-17) R-NEW-001 — live re-verified at HEAD, see evidence",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). MessageQueue/Handler/Looper async-ordering law exercised live at HEAD by microtimer anchor x3 (Handler-timer countdown app, byte-identical) and the dooz Choreographer frame pump (40-frame traced run, draw_walk_ran). Recorded PARTIAL gaps (deep ordering edges) not re-tested this sweep — row kept PARTIAL. || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). MessageQueue/Handler/Looper async-ordering law exercised live at HEAD by microtimer anchor x3 (Handler-timer countdown app, byte-identical) and the dooz Choreographer frame pump (40-frame traced run, draw_walk_ran). Recorded PARTIAL gaps (deep ordering edges) not re-tested this sweep — row kept PARTIAL. || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: missing-item F-029a Handler.createAsync landed (android_shadows M4 F-029a); MessageQueue/Handler/Looper async-ordering live-proven by microtimer anchor x3 (wall this session: bbd350b6 MATCH); virtual-clock single-owner law documented in choreographer shadow (one clock, one authority). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-002",
@@ -489,12 +489,12 @@
  {
   "id": "R-NEW-061",
   "title": "(title backfilled CONT-17) R-NEW-061 — live re-verified at HEAD, see evidence",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Compose continuation chain (AndroidUiDispatcher + J$c runnables) exercised by the fresh traced dooz run at HEAD (recomposition pass#2, scope re-invocation per CONT-10 W6, anchors byte-identical). Recorded blocker Job-active-cancellation superseded by F-NEW-265 as the current content frontier. Kept PARTIAL. || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Compose continuation chain (AndroidUiDispatcher + J$c runnables) exercised by the fresh traced dooz run at HEAD (recomposition pass#2, scope re-invocation per CONT-10 W6, anchors byte-identical). Recorded blocker Job-active-cancellation superseded by F-NEW-265 as the current content frontier. Kept PARTIAL. || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: compose continuation chain substrate anchored at HEAD: choreographer_shadow.h dedicated AndroidUiDispatcher law + engine J$c handling + drain/park/continuation machinery; live: dooz recomposition pass#2 scope re-invocation (CONT-10 W5) + today's dooz anchor MATCH. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-062",
@@ -502,7 +502,8 @@
   "status": "PARTIAL",
   "priority": "P1",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — propagation-matrix claim has no independent artifact; upstream 061 chain verified this batch. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-063",
@@ -639,7 +640,8 @@
   "status": "PARTIAL",
   "priority": "P2",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — intrinsic->measure law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-080",
@@ -647,7 +649,8 @@
   "status": "PARTIAL",
   "priority": "P3",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568"
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — lifetime law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-081",
@@ -702,51 +705,65 @@
  {
   "id": "R-NEW-087",
   "title": "R-NEW-087: parser hardening",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: parser hardening substrate in dex_parser.cpp at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-088",
   "title": "R-NEW-088: file_sandbox path containment",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: file_sandbox path containment in storage/file_sandbox.cpp at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-089",
   "title": "R-NEW-089: AXML parser bounds",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: AXML parser bounds in resources/axml_parser.cpp at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-090",
   "title": "R-NEW-090: ARSC parser bounds",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: ARSC parser bounds in resources/arsc_parser.cpp at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-091",
   "title": "R-NEW-091: res_id resolution",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: res_id resolution in resources/res_id.cpp at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-092",
   "title": "R-NEW-092: package parse",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: package parse substrate (apk_parser/manifest_reader) at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-093",
   "title": "R-NEW-093: manifest parse feeds PackageManager+F-018",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: manifest parse feeds PackageManager + F-018 law at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-094",
@@ -761,9 +778,11 @@
  {
   "id": "R-NEW-095",
   "title": "R-NEW-095: explicit intents corpus-proven",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: explicit-intent resolution exercised live (chess/telegram anchors this session; EXP-038 alias law). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-096",
@@ -869,9 +888,11 @@
  {
   "id": "R-NEW-110",
   "title": "R-NEW-110: package identity via manifest",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: package identity via manifest at HEAD (pkginspect gate A identity rows PASS). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-111",
@@ -969,58 +990,74 @@
  {
   "id": "R-NEW-122",
   "title": "R-NEW-122: parser-level hardening; interpreter (no verifier by design)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: parser-level hardening present; interpreter verifier-free by design (documented). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-123",
   "title": "R-NEW-123: bound checks in dex_parser.cpp (§N)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: bound checks in dex_parser.cpp (section N) at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-124",
   "title": "R-NEW-124: index bounds",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: index bounds enforced at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-125",
   "title": "R-NEW-125: code-item bounds",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: code-item bounds enforced at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-126",
   "title": "R-NEW-126: F-041 hardened the common negative-size shape",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: F-041 negative-size hardening landed. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-127",
   "title": "R-NEW-127: interpreter invariants + F-016 honesty protocol",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: interpreter invariants + F-016 honesty protocol at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-128",
   "title": "R-NEW-128: switch parse-neg battery stage",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: switch parse-neg battery stage at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-129",
   "title": "R-NEW-129: F-029 boundary",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: F-029 boundary law landed. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-130",
@@ -1032,9 +1069,11 @@
  {
   "id": "R-NEW-131",
   "title": "R-NEW-131: see 030",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: see R-NEW-030 family — substrate anchored. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-132",
@@ -1058,9 +1097,11 @@
  {
   "id": "R-NEW-134",
   "title": "R-NEW-134: trace engine + code-loading logs",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: trace engine + code-loading logs at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-135",
@@ -1072,9 +1113,11 @@
  {
   "id": "R-NEW-136",
   "title": "R-NEW-136: synthetic/bridge exercised via dooz",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: synthetic/bridge exercised live via dooz (deferred exc chain this session's traced runs). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-137",
@@ -1109,9 +1152,11 @@
  {
   "id": "R-NEW-141",
   "title": "R-NEW-141: reflection reachability via F-029",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: reflection reachability via F-029 at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-142",
@@ -1178,9 +1223,11 @@
  {
   "id": "R-NEW-150",
   "title": "R-NEW-150: sandbox boundaries",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: sandbox boundaries (file_sandbox + data_root) at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-151",
@@ -1195,9 +1242,11 @@
  {
   "id": "R-NEW-152",
   "title": "R-NEW-152: sqlite_shadow sandbox; notes.db v2 end-to-end (unote)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: sqlite_shadow sandbox; notes.db v2 end-to-end — unote rc=0 in this session's wall (live proof). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-153",
@@ -1274,9 +1323,11 @@
  {
   "id": "R-NEW-162",
   "title": "R-NEW-162: thread ids bridged (ThreadSnapshotTable keying, M13 probe)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: thread ids bridged (ThreadSnapshotTable keying, M13 probe) at HEAD. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-163",
@@ -1315,9 +1366,11 @@
  {
   "id": "R-NEW-167",
   "title": "R-NEW-167: APP BOUNDARY / PARTIAL classification law in traces",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-139 wave-2 at HEAD 68c1b4e3: APP BOUNDARY classification law in traces (battery boundary counters this session). Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-168",
