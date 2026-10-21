@@ -11023,3 +11023,18 @@ Work Log:
 Stage Summary:
 - The user's three demands answered with machine-generated numbers: (1) 100+ apps tested = 116; (2) real progress metric = corpus ×5.3, render 21->96, SUCCESS 6->11; (3) WHY not complete = ONE named root family (APP_DRAW_OPS 49/94) pinned to F-NEW-480's scope.V stale-binding next lever.
 - Next train owns: FIELD-TRACE Lxk0;.V writes on dooz -> generic fix for the Compose draw-block stale-binding family (targets 49 apps at once); then WINDOW_ROOT 17-app cohort.
+
+---
+Task ID: CONT-154 TRAIN 2 (engine rail — F-NEW-481)
+Agent: main agent (Z.ai)
+Task: first wagon of the multi-rail demand: attack the APP_DRAW_OPS root family (49 apps) via the pinned next lever (FIELD-TRACE Lxk0;.V writes).
+
+Work Log:
+- Trace run: MINIANDROID_FIELD_TRACE='Lxk0;.V' on dooz v23, binary f6b272ea (run/c154/dooz_vtrace.log, 128 events; tooling note: env value needs shell quotes — ';.V' split the command otherwise).
+- Law decoded: EVERY put to Lxk0;.V is from Lxk0;.<init> (binds 2717->2708, 6459->6457, 6479->6475, 6482->6470, 6485->6466, ...); ZERO rebinds. S0 = ((Lwt0;)this.V).e identity-resolver confirmed live.
+- REFINEMENT of TRAIN 10: S0 DOES get .V on LATE instances (6459/6485) — late scopes are queried by some walk; the blank face is therefore NOT 'late scopes never queried' but 'the draw loop (Lel0;.i -> Lpz0;.L0 -> M0 -> T0) receives only EARLY receivers (2717 x54 / 2061 x54 / 2708 x30 / NULL x12 — TRAIN 7 census, zero late objects)'.
+- Structural law: draw loop iterates a scope list snapshotted at first layout; late Lxk0; instances (whose V-chains carry the bit-4-capable nodes, TRAIN 9) never become draw-loop receivers. Engine-missed invalidation shape. Registered F-NEW-481 (both files, 795 id-unique main==mirror); F-NEW-480 evidence addendum added.
+- Next lever (single question): the scope enumeration above Lel0;.i (Lho1;.d / Lt4;.getRoot) — app pushes new scopes into a list the draw loop should re-read each frame (generic fix), or app only passes the early list (upstream state).
+
+Stage Summary:
+- F-NEW-481 is the generic fix target for the 49-app APP_DRAW_OPS cohort (52% of the new corpus). Registry 794->795, both files synced. Ledger posted to #364 (comment 6326171674); push 2db4acec verified HEAD==origin/main.
