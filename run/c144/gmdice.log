@@ -1,0 +1,772 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=27
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=33
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=53
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=53
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/de.duenndns.gmdice_8.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 71 entries (23 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'de.duenndns.gmdice.GameMasterDice'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/de.duenndns.gmdice_8.apk named_ids=73 types=8
+[ARSC-VALUES] apk=upload/canonical_apks/de.duenndns.gmdice_8.apk strings=19 colors=6 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "GM Dice" (resid @0x7f040001)
+[A7b] icon @0x7f020002 -> res/drawable-hdpi-v4/logo.png (7432 bytes) DECODED 72x72 rgba rgba_bytes=20736 fnv1a=0x8a66dfd69a301225
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=39)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lde/duenndns/gmdice/GameMasterDice;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/ListActivity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/ListActivity;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lde/duenndns/gmdice/GameMasterDice;
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.equals dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DSADiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[MEM] method_exit: Lde/duenndns/gmdice/DiceSet;.<init> insns=2 RSS=18.4141 MB
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/StandardDiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/StandardDiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/StandardDiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceCache;.<init> dex_report=YES
+[TRY-ENTRY] Ljava/util/ArrayList;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.equals dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.split dex_report=YES
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d2") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6+1") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d10") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d20") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[REC-MISS] Ljava/util/Random;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.<init>
+[U0113-ACTIVITY] activity heap object #15 (Lde/duenndns/gmdice/GameMasterDice;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lde/duenndns/gmdice/GameMasterDice;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[REC-MISS] Landroid/app/ListActivity;.onCreate caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/ListActivity;.onCreate method_id=13 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2130903040
+[U007-INFLATE] setContentView(layoutResId=0x7f030000)
+[U007-INFLATE] root_id=41 views=10 strings=2 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=41 recorded for first-traversal attach+measure
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .setTitle
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/ListActivity;
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230721
+[EXP088-B-DBG] findViewById: target=0x7f080001 content_view_id=29 registry=YES
+[EXP088-B] findViewById(0x7f080001) → view_id=46
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=46 class=Landroid/widget/Button; listener_id=15 listener_class_at_reg=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-BG] getBackground view=46 class=Landroid/widget/Button; -> Drawable o53
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=54
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-TINT] setColorFilter drawable=o53
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .getResources
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x7f050001 -> 0xff081008
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=46 color=0xff081008 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230722
+[EXP088-B-DBG] findViewById: target=0x7f080002 content_view_id=29 registry=YES
+[EXP088-B] findViewById(0x7f080002) → view_id=47
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=47 class=Landroid/widget/Button; listener_id=15 listener_class_at_reg=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-BG] getBackground view=47 class=Landroid/widget/Button; -> Drawable o56
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=54
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-TINT] setColorFilter drawable=o56
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .getResources
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x7f050001 -> 0xff081008
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=47 color=0xff081008 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230723
+[EXP088-B-DBG] findViewById: target=0x7f080003 content_view_id=29 registry=YES
+[EXP088-B] findViewById(0x7f080003) → view_id=48
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=48 class=Landroid/widget/Button; listener_id=15 listener_class_at_reg=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-BG] getBackground view=48 class=Landroid/widget/Button; -> Drawable o57
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=54
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-TINT] setColorFilter drawable=o57
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .getResources
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x7f050001 -> 0xff081008
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=48 color=0xff081008 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230724
+[EXP088-B-DBG] findViewById: target=0x7f080004 content_view_id=29 registry=YES
+[EXP088-B] findViewById(0x7f080004) → view_id=49
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=49 class=Landroid/widget/Button; listener_id=15 listener_class_at_reg=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-BG] getBackground view=49 class=Landroid/widget/Button; -> Drawable o58
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=54
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-TINT] setColorFilter drawable=o58
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .getResources
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x7f050001 -> 0xff081008
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=49 color=0xff081008 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230725
+[EXP088-B-DBG] findViewById: target=0x7f080005 content_view_id=29 registry=YES
+[EXP088-B] findViewById(0x7f080005) → view_id=50
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=50 class=Landroid/widget/Button; listener_id=15 listener_class_at_reg=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-BG] getBackground view=50 class=Landroid/widget/Button; -> Drawable o59
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=145 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=54
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[R393-TINT] setColorFilter drawable=o59
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=150 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .getResources
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x7f050001 -> 0xff081008
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=50 color=0xff081008 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230720
+[EXP088-B-DBG] findViewById: target=0x7f080000 content_view_id=29 registry=YES
+[EXP088-B] findViewById(0x7f080000) → view_id=44
+[CLASS_INIT] class=Lde/duenndns/gmdice/GameMasterDice; method=<clinit> bytecode_size=332
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[CLASS_INIT] class=Lde/duenndns/gmdice/GameMasterDice; method=<clinit> result=OK engine=0x7ffe166a6c38 storage_size=30
+[SGET-MISS] key=Lde/duenndns/gmdice/GameMasterDice;.resultlog storage_size=30 same_class_keys=4 engine=0x7ffe166a6c38 first=Lde/duenndns/gmdice/GameMasterDice;.SPIN_COUNT
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=177 field=Lde/duenndns/gmdice/GameMasterDice;.resultlog obj_id=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationContext class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/ArrayAdapter;.<init> caller=Lde/duenndns/gmdice/RollResultAdapter;.<init>
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=192 field=Lde/duenndns/gmdice/GameMasterDice;.resultlog obj_id=84
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .setListAdapter
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Lde/duenndns/gmdice/GameMasterDice;
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lde/duenndns/gmdice/GameMasterDice; runtime_class=Lde/duenndns/gmdice/GameMasterDice;
+[G07-LIFECYCLE] Lde/duenndns/gmdice/GameMasterDice;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lde/duenndns/gmdice/GameMasterDice; runtime_class=Lde/duenndns/gmdice/GameMasterDice;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/ListActivity; runtime_class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/app/ListActivity;.onResume caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[F-NEW-471-RES-GAP] super-call Landroid/app/ListActivity;.onResume method_id=15 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=46 class=Landroid/widget/Button; arg_kind=5 text="3D20"
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-STRFMT] String.format("%dd%d", n=2) → "1d20"
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=47 class=Landroid/widget/Button; arg_kind=5 text="1d20"
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-STRFMT] String.format("%dd%d", n=2) → "1d6"
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=48 class=Landroid/widget/Button; arg_kind=5 text="1d6"
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-STRFMT] String.format("%dd%d%+d", n=3) → "1d6+4"
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=49 class=Landroid/widget/Button; arg_kind=5 text="1d6+4"
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lde/duenndns/gmdice/GameMasterDice;.configKeepScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/ListActivity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lde/duenndns/gmdice/GameMasterDice; recv_oid=15 act_oid=15)
+[REC-MISS] Landroid/view/Window;.clearFlags caller=Lde/duenndns/gmdice/GameMasterDice;.configKeepScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Lde/duenndns/gmdice/GameMasterDice;
+[S71-ANCESTRY] re-dispatch Lde/duenndns/gmdice/GameMasterDice; as Landroid/app/ListActivity; for .invalidateOptionsMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Lde/duenndns/gmdice/GameMasterDice;
+[G07-LIFECYCLE] Lde/duenndns/gmdice/GameMasterDice;.onResume() dispatched via DEX engine (ok=1, instructions=138)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=23 nodes=11 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/ListView;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=331
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/ListView;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/ListView;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[F384-ROOTINSETS] root=o41 cls=Landroid/widget/LinearLayout; insets=o90 dispatched=false
+[ECR-ROOT] scalar content_view_id root=41
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[P0-1-ORDER] first-traversal attach wave root=41 attached=0 (attach strictly precedes measure)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=384
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=525
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=41
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=41
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=41
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=41
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=41
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_5: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_6: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_7: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_8: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_9: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_10: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_11: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_12: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_13: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_14: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_15: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_16: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_17: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_18: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels
+[FRAME-SEQ] frame_19: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=20 dir=run/c144/gmdice/frames
+[EXT01-WINBG] windowBackground=@0xff101810 rgb(16,24,16)
+[V1-CONTENT-BOUNDS] root=41 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=41 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=42 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=43 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=44 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=45 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=46 class=Landroid/widget/Button; text="3D20" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=47 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=48 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=49 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=50 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 2061529 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2061529 non-white pixels

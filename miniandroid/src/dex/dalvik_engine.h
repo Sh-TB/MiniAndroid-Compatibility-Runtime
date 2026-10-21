@@ -2737,6 +2737,16 @@ public:
     // format (marshall() byte layout) is NOT reproduced — recorded honestly.
     std::map<uint32_t, std::vector<DalvikValue>> parcel_records_;
 
+    // F-NEW-474 (CONT-144): java.io.RandomAccessFile over real files.
+    // MultiDex.install -> ZipUtil.findCentralDirectory reads the running
+    // APK through RandomAccessFile (length() + backward EOCD seek/read);
+    // with no law, length() answered 0 -> "File too short to be a zip
+    // file" ZipException -> APP BOUNDARY unwind (bouncy deep-frames). The
+    // law serves REAL bytes: the path is resolved to an on-disk file (the
+    // running APK included), slurped once, length/seek/read answer from
+    // the real content. Side table: heap object id -> slurped bytes.
+    std::map<uint32_t, std::string> raf_bytes_;
+
     // EXP-042 Phase 4: Singleton cache for Android framework objects.
     // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
     // Value: heap object ID. Returns the same heap object across all calls,

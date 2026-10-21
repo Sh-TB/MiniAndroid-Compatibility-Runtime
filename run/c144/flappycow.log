@@ -1,0 +1,731 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=72
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$color; offset=0xb370 static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$color; with_defaults=3/3
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$dimen; offset=0xb380 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$dimen; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$drawable; offset=0xb38b static_fields=28 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$drawable; with_defaults=28/28
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$id; offset=0xb418 static_fields=16 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$id; with_defaults=16/16
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$integer; offset=0xb469 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$integer; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$layout; offset=0xb46f static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$layout; with_defaults=3/3
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$mipmap; offset=0xb47f static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$mipmap; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$raw; offset=0xb485 static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$raw; with_defaults=5/5
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$string; offset=0xb49f static_fields=36 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$string; with_defaults=36/36
+[EXP062-SV] parse_static_values for Lcom/quchen/flappycow/R$style; offset=0xb554 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/quchen/flappycow/R$style; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=80
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=100
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=100
+[S123-ACTION-REG] activities=5 action_targets=3
+FONT_SOURCE apk=upload/flappycow_rebuilt.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 105 entries (57 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.quchen.flappycow.MainActivity'
+[U007-RES] ResourceRuntime loaded: upload/flappycow_rebuilt.apk named_ids=96 types=10
+[ARSC-VALUES] apk=upload/flappycow_rebuilt.apk strings=36 colors=3 dimens=2 bools=0 integers=1 raw=5 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Flutter Cow" (resid @0x7f09000a)
+[A7b] icon @0x7f070000 -> res/mipmap-xhdpi-v4/ic_launcher.png (2969 bytes) DECODED 96x96 palette→rgba rgba_bytes=36864 fnv1a=0xe4c024c8b571a51
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=42)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/quchen/flappycow/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/google/example/games/basegameutils/BaseGameActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/google/example/games/basegameutils/BaseGameActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/quchen/flappycow/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[TRY-ENTRY] Lcom/google/example/games/basegameutils/GameHelper;.<init> dex_report=YES
+[MEM] method_exit: Lcom/google/example/games/basegameutils/GameHelper;.<init> insns=2 RSS=21.9805 MB
+[TRY-ENTRY] Lcom/quchen/flappycow/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/quchen/flappycow/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/quchen/flappycow/MainActivity;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[TRY-ENTRY] Lcom/google/example/games/basegameutils/BaseGameActivity;.onCreate dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/google/example/games/basegameutils/BaseGameActivity;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=4 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/google/example/games/basegameutils/BaseGameActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[CLASS_INIT] class=Lcom/quchen/flappycow/StartscreenView; method=<clinit> bytecode_size=136
+[TRY-ENTRY] Lcom/quchen/flappycow/StartscreenView;.<clinit> dex_report=YES
+[CLASS_INIT] class=Lcom/quchen/flappycow/StartscreenView; method=<clinit> result=OK engine=0x7fffa49dc658 storage_size=32
+[TRY-ENTRY] Lcom/quchen/flappycow/StartscreenView;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/view/View;.<init> dex_report=YES
+[REC-MISS] Landroid/view/View;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.splash storage_size=32 same_class_keys=7 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=5 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=0
+[EXP062-INIT] Lcom/quchen/flappycow/Util; static_fields=1 with_defaults=1
+[TRY-ENTRY] Lcom/quchen/flappycow/Util;.getBitmapAlpha8 dex_report=YES
+[TRY-ENTRY] Landroid/graphics/BitmapFactory$Options;.<init> dex_report=YES
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[TRY-ENTRY] Lcom/quchen/flappycow/MainActivity;.getResources dex_report=YES
+[TRY-ENTRY] Lcom/google/example/games/basegameutils/BaseGameActivity;.getResources dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.getResources dex_report=YES
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[TRY-ENTRY] Landroid/content/ContextWrapper;.getResources dex_report=YES
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[TRY-ENTRY] Landroid/content/Context;.getResources dex_report=YES
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[TRY-ENTRY] Landroid/content/Context;.getResources dex_report=YES
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/graphics/BitmapFactory;.decodeResource dex_report=YES
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/splash.png -> Bitmap obj=28 (720x1280)
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=20 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[TRY-ENTRY] Landroid/graphics/Bitmap;.getWidth dex_report=YES
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=26 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.logInOut storage_size=35 same_class_keys=8 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=38 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/signinout.png -> Bitmap obj=31 (300x176)
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.play storage_size=36 same_class_keys=9 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=53 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/play_button.png -> Bitmap obj=33 (320x160)
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=70 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=76 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.achievements storage_size=37 same_class_keys=10 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=87 field=Lcom/quchen/flappycow/StartscreenView;.achievements obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/achievement_button.png -> Bitmap obj=36 (112x112)
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=104 field=Lcom/quchen/flappycow/StartscreenView;.achievements obj_id=36
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=110 field=Lcom/quchen/flappycow/StartscreenView;.achievements obj_id=36
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.leaderboard storage_size=38 same_class_keys=11 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=121 field=Lcom/quchen/flappycow/StartscreenView;.leaderboard obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/highscore_button.png -> Bitmap obj=39 (112x112)
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=138 field=Lcom/quchen/flappycow/StartscreenView;.leaderboard obj_id=39
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=144 field=Lcom/quchen/flappycow/StartscreenView;.leaderboard obj_id=39
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.speaker storage_size=39 same_class_keys=12 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=155 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/speaker.png -> Bitmap obj=42 (56x112)
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.info storage_size=40 same_class_keys=13 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=170 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/about.png -> Bitmap obj=44 (250x250)
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=186 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=192 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.<init>
+[SGET-MISS] key=Lcom/quchen/flappycow/StartscreenView;.socket storage_size=41 same_class_keys=14 engine=0x7fffa49dc658 first=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=<init> pc=203 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=0
+[REC-MISS] Landroid/graphics/BitmapFactory$Options;.<init> caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[SGET] class=Lcom/quchen/flappycow/Util; method=getBitmapAlpha8 pc=5 field=Landroid/graphics/Bitmap$Config;.ALPHA_8 obj_id=26
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/graphics/BitmapFactory;.decodeResource caller=Lcom/quchen/flappycow/Util;.getBitmapAlpha8
+[BITMAP-FACTORY] decoded res/drawable-nodpi-v4/socket.png -> Bitmap obj=47 (218x340)
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setOnline pc=35 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.setOnline
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setOnline pc=41 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setOnline
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.setOnline
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSpeaker pc=5 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.setSpeaker
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSpeaker pc=11 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSpeaker
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.setSpeaker
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=2 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=12 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=20 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lcom/quchen/flappycow/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lcom/quchen/flappycow/MainActivity; args=1 arg0_kind=6 arg0_obj=17
+[F023-PARENTLINK] setContentView(View) content view=17 linked under activity view=15
+[F105-OWNER] view_tree_lifecycle_owner id not in app resources — owner install skipped
+[R349-ORDER] setContentView(View) deferred attach+measure root=17 (AOSP first-traversal ordering law)
+[R349-ORDER] setContentView(View) attach wave + measure done, root=17
+[EXP062-INIT] Lcom/quchen/flappycow/MainActivity; static_fields=4 with_defaults=4
+[CLASS_INIT] class=Lcom/quchen/flappycow/MainActivity; method=<clinit> bytecode_size=1
+[MEM] method_exit: Lcom/quchen/flappycow/MainActivity;.<clinit> insns=1 RSS=172.539 MB
+[CLASS_INIT] class=Lcom/quchen/flappycow/MainActivity; method=<clinit> result=OK engine=0x7fffa49dc658 storage_size=46
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/quchen/flappycow/MainActivity;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=2 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=12 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=20 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/quchen/flappycow/MainActivity; runtime_class=Lcom/quchen/flappycow/MainActivity;
+[G07-LIFECYCLE] Lcom/quchen/flappycow/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/quchen/flappycow/MainActivity; runtime_class=Lcom/quchen/flappycow/MainActivity;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/google/example/games/basegameutils/BaseGameActivity; runtime_class=Lcom/quchen/flappycow/MainActivity;
+[F-NEW-471-RES-GAP] super-call Lcom/google/example/games/basegameutils/BaseGameActivity;.onResume method_id=107 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/quchen/flappycow/MainActivity;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/quchen/flappycow/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/quchen/flappycow/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lcom/quchen/flappycow/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lcom/google/example/games/basegameutils/BaseGameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/quchen/flappycow/MainActivity;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=2 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=12 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getWidth caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=setSocket pc=20 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Bitmap;.getHeight caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.setSocket
+[G07-LIFECYCLE] Lcom/quchen/flappycow/MainActivity;.onResume() dispatched via DEX engine (ok=1, instructions=34)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=57 nodes=2 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lcom/quchen/flappycow/MainActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=384
+[F384-ROOTINSETS] root=o17 cls=Lcom/quchen/flappycow/StartscreenView; insets=o54 dispatched=false
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[LIFEWIN-OPEN] Lcom/quchen/flappycow/StartscreenView; view=17
+[LIFEWIN-CLOSE] Lcom/quchen/flappycow/StartscreenView; view=17 dispatched=NO
+[F096-LIFECYCLE] Lcom/quchen/flappycow/StartscreenView; view=17 rect=(0,0 1080x1920) dispatched=NO
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/view/View;.onSizeChanged caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[F-NEW-471-RES-GAP] super-call Landroid/view/View;.onSizeChanged method_id=60 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=26 field=Lcom/quchen/flappycow/StartscreenView;.REGION_LOG_IN_OUT obj_id=18
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=78 field=Lcom/quchen/flappycow/StartscreenView;.REGION_PLAY obj_id=19
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=127 field=Lcom/quchen/flappycow/StartscreenView;.REGION_ACHIEVEMENT obj_id=23
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=176 field=Lcom/quchen/flappycow/StartscreenView;.REGION_LEADERBOARD obj_id=24
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=225 field=Lcom/quchen/flappycow/StartscreenView;.REGION_SPEAKER obj_id=21
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=274 field=Lcom/quchen/flappycow/StartscreenView;.REGION_INFO obj_id=20
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onSizeChanged pc=323 field=Lcom/quchen/flappycow/StartscreenView;.REGION_SOCKET obj_id=22
+[REC-MISS] Landroid/graphics/Rect;.<init> caller=Lcom/quchen/flappycow/StartscreenView;.onSizeChanged
+[C013-ONSIZE] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES size=1080x1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=439
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=598
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=17
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_5: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_6: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_7: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=0 field=Lcom/quchen/flappycow/StartscreenView;.splash obj_id=28
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=10 field=Lcom/quchen/flappycow/StartscreenView;.logInOut obj_id=31
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=19 field=Lcom/quchen/flappycow/StartscreenView;.play obj_id=33
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=28 field=Lcom/quchen/flappycow/StartscreenView;.speaker obj_id=42
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=37 field=Lcom/quchen/flappycow/StartscreenView;.info obj_id=44
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[SGET] class=Lcom/quchen/flappycow/StartscreenView; method=onDraw pc=46 field=Lcom/quchen/flappycow/StartscreenView;.socket obj_id=47
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_8: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_9: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_10: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_11: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_12: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_13: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_14: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_15: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_16: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_17: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_18: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
+[FRAME-SEQ] frame_19: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=20 dir=run/c144/flappycow/frames
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Lcom/quchen/flappycow/StartscreenView; text="" children=0 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Lcom/quchen/flappycow/StartscreenView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[REC-MISS] Landroid/graphics/Canvas;.drawBitmap caller=Lcom/quchen/flappycow/StartscreenView;.onDraw
+[C013-ONDRAW] view=17 class=Lcom/quchen/flappycow/StartscreenView; dispatched=YES ops=6
+[C013-CUSTOMVIEW] onDraw replayed 6 ops (rp=6) for Lcom/quchen/flappycow/StartscreenView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 1971379 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 1971379 non-white pixels
