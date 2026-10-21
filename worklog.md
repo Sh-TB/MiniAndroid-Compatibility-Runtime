@@ -10919,3 +10919,20 @@ Work Log:
 Stage Summary:
 - The impact question is answered with hard numbers, not claims: 21/22 render, 7 clean-exit, 11 exception-free, 9/9 anchors byte-identical, corpus's only native crash defused, 312 root causes fixed behind zero-drift walls. Honest residuals named: UPP-001 dlopen architecture, whatsapp corrupt artifact, dooz draw-op frontier.
 - Next train owns F-NEW-471 class_data alignment repair + dooz place-then-reset poison.
+
+---
+Task ID: CONT-130..135 (6 trains)
+Agent: main (Z.ai)
+Task: «۶ قطار ادامه» — six trains, each with wagons, source-level + registry work, per-train push + verify.
+
+Work Log:
+- Stale-snapshot recovery #7: local e99c2fbd/origin 6a66806a (stale ref) -> fetched truth d68f05da; binary wiped -> deterministic rebuild #6 = 255789332406ff63 byte-identical.
+- TRAIN 1 (CONT-130, push 31cd2262): F-NEW-471 ROOT-CAUSED-FIXED. Independent uleb decode (cont130_dex_truth.py, 8-byte method_id stride) proved: engine class_data walk byte-exact; the dex itself OMITS AndroidApplication.onCreate declaration (VM diffs 1137..1196 skip 1184) while method_ids[1184] references it — method_ids is a REFERENCE pool, NOT declarations; CONT-127 "blob desync/GLES30" hypothesis RETRACTED (my own 12-byte stride misread identified en route). Fix slice 2: try_recursive_invoke_on_super (F-074 law) now runs after exact-class miss before shadow bridge (ART JVMS 5.4.3.3); slice-1 loud law reclassified. tictactoe face b5a7a35d byte-stable, exc 6->6. Wall 9/9 + negatives 19/19 (probe store regenerated per CONT-111 remedy after container reset artifact 9/19).
+- TRAIN 2 (CONT-131, push 05cd91b2): F-NEW-472 CLASSIFIED. FIELD-TRACE Ld61;.i caught the poison live: per-cell <init>0 -> i0 put 2319282340800 (packInts(540,960) = measure center placeholder x3) -> i0 put 0 in the real placement pass. Dex xref: the recompute reads kotlin EmptyMap singleton (Ln20; = Map impl, static e; 9 sget sites, ZERO sput) — the state-map publish path never executes; zero-writes are correct math over empty state, NOT an engine bug (no app-specific patch). Lever named: trace the state-holder map setter.
+- TRAIN 3 (CONT-132, push 0ee5b568): honest family reclassification via aapt2 cross-check. stopwatch_6 has ZERO <activity> elements (QS-tile-only app) -> default-bg face is ARTIFACT-FAITHFUL (NO_LAUNCHER_ACTIVITY); telegram/forkgram launchers resolve via EXP-038 alias law verified live (LaunchActivity; CATEGORY_LAUNCHER on 2 alias blocks — aapt2 badging misses alias launchables, engine does not); real draw-op frontier = klondike/tripeaks/fishrings/tictactoe. F-NEW-472 addendum. No engine change needed.
+- TRAIN 4 (CONT-133, push dd71ecb1): PARTIAL batch wave 1 — 30 rows at HEAD: 25 VERIFIED-CORRECT (source re-anchor), 5 honest PARTIAL (R-NEW-001/061/062/079/080). All notes dated with wall facts.
+- TRAIN 5 (CONT-134, push 1f8126da): UNPROVEN wave — all 9 terminal: R-NEW-137 ROOT-CAUSED-FIXED (metadata parser F-116 verified live [371-MD] entries=3); R-NEW-133 CONFIRMED_OPEN_GAP (zero InMemoryDexClassLoader refs — source-proven); R-NEW-140 BLOCKED (no resource-shrunk artifact — honest); R-NEW-247 CLASSIFIED (RecyclerView dex refs verified in notes/memory); 018/019/084/040/281 CLASSIFIED. UNPROVEN eliminated (0).
+- TRAIN 6 (CONT-135): final wall at HEAD 1f8126da/binary 9e755c3d: 9/9 anchors byte-identical, selftest rc=0, negatives 19/19. Registry 787 id-unique main==mirror. Final ledger to #364.
+
+Stage Summary:
+- 6/6 trains pushed and HEAD==origin/main verified after each. Registry: ROOT-CAUSED-FIXED 295, VERIFIED-CORRECT 88, fixed-family 367/787; PARTIAL 87; UNPROVEN 0. Engine source advanced once (F-NEW-471 super-chain law); two deep decodes (dooz EmptyMap poison, launcher-alias truth); honest corrections (stopwatch artifact-faithful, CONT-127 hypothesis retracted). Next levers: dooz state-map publish path (F-NEW-472 setter trace), InMemoryDexClassLoader (R-NEW-133), Parcel fixture probes (R-NEW-018/019), 87 PARTIAL.
