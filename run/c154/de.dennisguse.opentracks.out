@@ -1,0 +1,23 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/de.dennisguse.opentracks_6766.apk
+[*] Output directory: run/c154/de.dennisguse.opentracks
+[DATA-ROOT] context package = de.dennisguse.opentracks (data dir runtime/data/data/data/de.dennisguse.opentracks)
+LOG/i/Startup: de.dennisguse.opentracks; BuildType: release; VersionName: v4.29.0irreproducible/v4.29.0 VersionCode: 6766
+LOG/w/RecyclerView: No adapter attached; skipping layout
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 10 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 12073 IMPLEMENTED, 977 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 9
+Warnings: 3
+
+Screenshot: run/c154/de.dennisguse.opentracks/screenshot.png
+Report: run/c154/de.dennisguse.opentracks/report.md

@@ -1,0 +1,37 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/com.cg.lrceditor_57.apk
+[*] Output directory: run/c154/com.cg.lrceditor
+[DATA-ROOT] context package = com.cg.lrceditor (data dir runtime/data/data/data/com.cg.lrceditor)
+LOG/d/ViewUtils: Could not find method makeOptionalFitsSystemWindows. Oh well...
+LOG/w/DividerItem: @android:attr/listDivider was not set in the theme used for this DividerItemDecoration. Please set that attribute all call setDrawable()
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+LOG/e/CoordinatorLayout: Default behavior class null could not be instantiated. Did you forget a default constructor?
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 2722 IMPLEMENTED, 262 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 9
+Warnings: 2
+
+Screenshot: run/c154/com.cg.lrceditor/screenshot.png
+Report: run/c154/com.cg.lrceditor/report.md

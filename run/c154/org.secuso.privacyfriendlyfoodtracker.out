@@ -1,0 +1,22 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/org.secuso.privacyfriendlyfoodtracker_100.apk
+[*] Output directory: run/c154/org.secuso.privacyfriendlyfoodtracker
+[DATA-ROOT] context package = org.secuso.privacyfriendlyfoodtracker (data dir runtime/data/data/data/org.secuso.privacyfriendlyfoodtracker)
+LOG/d/AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 1227 IMPLEMENTED, 59 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 2
+
+Screenshot: run/c154/org.secuso.privacyfriendlyfoodtracker/screenshot.png
+Report: run/c154/org.secuso.privacyfriendlyfoodtracker/report.md

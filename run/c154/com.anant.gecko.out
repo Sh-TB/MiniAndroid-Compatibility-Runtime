@@ -1,0 +1,22 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/com.anant.gecko_3.apk
+[*] Output directory: run/c154/com.anant.gecko
+[DATA-ROOT] context package = com.anant.gecko (data dir runtime/data/data/data/com.anant.gecko)
+LOG/e/ComposeInternal: Error was captured in composition.
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16302 IMPLEMENTED, 182 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 32
+Warnings: 2
+
+Screenshot: run/c154/com.anant.gecko/screenshot.png
+Report: run/c154/com.anant.gecko/report.md

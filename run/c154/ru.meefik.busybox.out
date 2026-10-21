@@ -1,0 +1,22 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/ru.meefik.busybox_51.apk
+[*] Output directory: run/c154/ru.meefik.busybox
+[DATA-ROOT] context package = ru.meefik.busybox (data dir runtime/data/data/data/ru.meefik.busybox)
+LOG/d/ViewUtils: Could not find method makeOptionalFitsSystemWindows. Oh well...
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 3287 IMPLEMENTED, 252 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 1
+
+Screenshot: run/c154/ru.meefik.busybox/screenshot.png
+Report: run/c154/ru.meefik.busybox/report.md
