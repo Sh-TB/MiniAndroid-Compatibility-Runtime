@@ -1147,7 +1147,8 @@
   "status": "BLOCKED",
   "priority": "P3",
   "layer": null,
-  "evidence": "CONT-134: corpus contains NO resource-shrunk APK (artifact property); the claim cannot be exercised without an artifact — honest BLOCKED pending corpus addition, no fabrication."
+  "evidence": "CONT-134: corpus contains NO resource-shrunk APK (artifact property); the claim cannot be exercised without an artifact — honest BLOCKED pending corpus addition, no fabrication. || CONT-143 fresh corpus sweep (this session): 27 APK artifacts audited (upload/*.apk + upload/canonical_apks/*.apk) — EVERY entry carries resources.arsc; NO resource-shrunk artifact exists in the corpus. The BLOCKED state is honest and current: the claim cannot be exercised without an artifact; needs user corpus addition, no fabrication. Corruption sweep companion: upload/whatsapp.apk sha16 c473ad25086720a8 is NOT a zip file (5,615-byte stub) — ARTIFACT_DEFECTIVE re-confirmed byte-level.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-141",
@@ -3642,11 +3643,8 @@
   "status": "BLOCKED",
   "priority": "P2",
   "layer": null,
-  "evidence": {
-   "wave": "CONT-97 re-affirmation",
-   "result": "BLOCKED re-verified at current head: the blocker is the LIVE z.ai Svelte-5 bundle (external web asset, not engine DEX); the engine boots the shell honestly white. Unchanged from the CONT-17 BLOCKED note; needs an upstream bundle fix or a live-network repro to advance."
-  },
-  "date": "2026-10-08"
+  "evidence": "{\"wave\": \"CONT-97 re-affirmation\", \"result\": \"BLOCKED re-verified at current head: the blocker is the LIVE z.ai Svelte-5 bundle (external web asset, not engine DEX); the engine boots the shell honestly white. Unchanged from the CONT-17 BLOCKED note; needs an upstream bundle fix or a live-network repro to advance.\"} || CONT-143 dated re-affirmation: blocker is the LIVE z.ai Svelte-5 bundle (external web asset, not engine DEX) — upstream-bound, engine boots the shell honestly white. Stays BLOCKED.",
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-160",
