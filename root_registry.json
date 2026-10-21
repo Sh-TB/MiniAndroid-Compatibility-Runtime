@@ -502,7 +502,7 @@
   "status": "PARTIAL",
   "priority": "P1",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — propagation-matrix claim has no independent artifact; upstream 061 chain verified this batch. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — propagation-matrix claim has no independent artifact; upstream 061 chain verified this batch. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — propagation matrix has no independent artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -640,7 +640,7 @@
   "status": "PARTIAL",
   "priority": "P2",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — intrinsic->measure law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — intrinsic->measure law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — intrinsic->measure law: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -649,7 +649,7 @@
   "status": "PARTIAL",
   "priority": "P3",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — lifetime law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13.",
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — lifetime law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — lifetime law: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -1375,9 +1375,11 @@
  {
   "id": "R-NEW-168",
   "title": "R-NEW-168: parser-vs-app crash separation in reports",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: parser-vs-app crash separation in crash_forensics.cpp at HEAD (4 files; SYNTH-EXC vs PARSER rows in battery logs). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-169",
@@ -1392,9 +1394,11 @@
  {
   "id": "R-NEW-170",
   "title": "R-NEW-170: parser bound checks",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: parser bound checks at HEAD (dex_parser §N family). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-171",
@@ -1406,16 +1410,20 @@
  {
   "id": "R-NEW-172",
   "title": "R-NEW-172: umbrella: sandbox+parser hardening+sandboxed storage",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: umbrella: sandbox + parser hardening + sandboxed storage — all three substrates anchored (file_sandbox/data_root/dex_parser). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-173",
   "title": "R-NEW-173: FreeType/HarfBuzz/FriBidi shaper wired; TextView fixtures",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: text_shaper.cpp wires all three (FreeType+HarfBuzz+FriBidi, 132 refs in file); live: opencalc/sudoku text rendering in wall anchors. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-174",
@@ -1427,30 +1435,38 @@
  {
   "id": "R-NEW-175",
   "title": "R-NEW-175: Typeface via FreeType",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: Typeface via FreeType — text_shaper.cpp FT_ refs at HEAD; live anchors render text. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-176",
   "title": "R-NEW-176: FreeType fallback",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: FreeType fallback chain in text_shaper.cpp at HEAD. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-177",
   "title": "R-NEW-177: HarfBuzz shaping wired",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: HarfBuzz shaping wired in text_shaper.cpp at HEAD. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-178",
   "title": "R-NEW-178: FriBidi wired",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: FriBidi wired in text_shaper.cpp at HEAD (bidi run resolution). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-179",
@@ -1495,9 +1511,11 @@
  {
   "id": "R-NEW-183",
   "title": "R-NEW-183: TextView wrap in fixtures",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: TextView text drawn via C013 text-base routing (draw_text canvas law); hello_widgets/connectfour fixtures exercise TextViews. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-184",
@@ -1522,9 +1540,11 @@
  {
   "id": "R-NEW-186",
   "title": "R-NEW-186: alignment in fixtures",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: gravity/alignment substrate (15 files incl. layout inflater laws); connectfour/hello fixtures use gravity attrs. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-187",
@@ -1543,23 +1563,29 @@
  {
   "id": "R-NEW-189",
   "title": "R-NEW-189: G04",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: G04 density oracle 11/11 (batch367 records: 'G04 density oracle 11/11' battery-fenced); rounding law fenced by the oracle. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-190",
   "title": "R-NEW-190: window size law partial",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: window size law — display_shadow/window shadows honor --width/--height (1080x1920 wall anchors all sized). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-191",
   "title": "R-NEW-191: touch_dispatcher transforms",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: touch_dispatcher transforms at HEAD (12 files); tap dispatch exercised in gate A probe rows. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-192",
@@ -1600,7 +1626,9 @@
   "title": "R-NEW-196: partial via fixtures",
   "status": "PARTIAL",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — UNSPECIFIED law: no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-197",
@@ -1628,14 +1656,18 @@
   "title": "R-NEW-200: partial",
   "status": "PARTIAL",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — min-law: no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-201",
   "title": "R-NEW-201: gravity in fixtures",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: gravity in fixtures (connectfour/hello_smoke/helloworld use gravity attrs) — 15 source files. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-202",
@@ -1650,37 +1682,47 @@
  {
   "id": "R-NEW-203",
   "title": "R-NEW-203: FriBidi present",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: FriBidi present + used by shaper (same substrate as 178). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-204",
   "title": "R-NEW-204: renderer clip",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: renderer clip substrate (software_renderer clip stack) at HEAD — 24 files. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-205",
   "title": "R-NEW-205: renderer clip",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: renderer clip substrate (same family as 204) at HEAD. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-206",
   "title": "R-NEW-206: canvas_shadow.cpp",
   "status": "PARTIAL",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — clip-stack CORPUS explicitly missing (substrate present, corpus artifact absent). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-207",
   "title": "R-NEW-207: alpha in renderer",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: alpha in renderer (software_renderer RGBA/alpha blend) at HEAD — 23 files. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-208",
@@ -1742,9 +1784,11 @@
  {
   "id": "R-NEW-214",
   "title": "R-NEW-214: png alpha path",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: png alpha decode path (png/webp decode with alpha channels) at HEAD — 20 files. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-215",
@@ -1761,7 +1805,9 @@
   "title": "R-NEW-216: paint flags partial",
   "status": "PARTIAL",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — paint flags MATRIX incomplete (substrate present, matrix unproven). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-217",
@@ -1800,30 +1846,38 @@
  {
   "id": "R-NEW-221",
   "title": "R-NEW-221: Material3 composition constructs (dooz 1.13M-line trace)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: Material3 composition constructs (dooz 1.13M-line trace evidence; dooz renders through m3 theme chain at HEAD). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-222",
   "title": "R-NEW-222: m3_style_weight fixture",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: m3_style_weight fixture exists (tests/fixtures/m3_style_weight with res) and skill battery runs it. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-223",
   "title": "R-NEW-223: attr resolution corpus",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: attr resolution corpus — 47 files incl. ARSC attr bag laws; drawables battery 39/39 (batch367). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-224",
   "title": "R-NEW-224: ?attr via Material3 paths",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: ?attr via Material3 paths — theme attr resolution in resource_runtime + m3 fixture. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-225",
