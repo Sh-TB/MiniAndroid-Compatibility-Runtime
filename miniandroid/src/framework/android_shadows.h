@@ -1789,6 +1789,7 @@ public:
         // how Robolectric handles View subclasses.
         if (class_name.find("Landroid/") == 0 ||
             class_name.find("Ljava/") == 0 ||
+            class_name.find("Ldalvik/") == 0 ||  // R-NEW-133 (CONT-137): dalvik.* is core Android runtime — InMemoryDexClassLoader.<init> was claimed by this catch-all (bogus view node) and the real ctor never reached the engine law
             class_name.find("Lkotlin/") == 0 ||
             class_name.find("Lcom/google/") == 0 ||
             class_name.find("Landroidx/") == 0) {

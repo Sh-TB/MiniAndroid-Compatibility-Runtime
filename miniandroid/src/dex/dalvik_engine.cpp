@@ -28161,6 +28161,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // The deep sites remain in place — they are unreachable for these keys
     // now, but they document the law origin and stay correct if this entry
     // block is ever removed.
+    // R-NEW-133 (CONT-137) transport law: java.lang.Character.digit —
+    // AOSP Character.digit(char, int): numeric value of the code point in
+    // the given radix; -1 when the char has no digit value in that radix
+    // or the radix is out of range (MIN_RADIX=2, MAX_RADIX=36). ASCII
+    // subset: '0'..'9' → 0..9, 'a'..'z' / 'A'..'Z' → 10..35.
+    if (class_name == "Ljava/lang/Character;" && method == "digit" &&
+        args.size() >= 2) {
+        int32_t c = 0, radix = 10;
+        if (args[0].type == DalvikType::CHAR || args[0].type == DalvikType::INT32 ||
+            args[0].type == DalvikType::SHORT || args[0].type == DalvikType::BYTE)
+            c = args[0].int_val;
+        if (args[1].type == DalvikType::INT32)
+            radix = args[1].int_val;
+        int32_t dv = -1;
+        if (radix >= 2 && radix <= 36) {
+            if (c >= '0' && c <= '9') dv = c - '0';
+            else if (c >= 'a' && c <= 'z') dv = c - 'a' + 10;
+            else if (c >= 'A' && c <= 'Z') dv = c - 'A' + 10;
+            if (dv >= radix) dv = -1;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(dv);
+        return true;
+    }
     if (class_name == "Ljava/lang/Character;" &&
         (method == "isWhitespace" || method == "isSpaceChar") &&
         args.size() >= 1) {
@@ -39332,6 +39356,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             bb_set(bid, "__bb_pos__", 0);
             bb_set(bid, "__bb_lim__", cap);
             bb_set(bid, "__bb_order__", 0);
+            // R-NEW-133 (CONT-137): OpenJDK wrap IS backed by the array —
+            // store the backing array link so InMemoryDexClassLoader (and
+            // any other reader) can recover the bytes. Previously the link
+            // was dropped, leaving wrapped buffers unreadable.
+            for (size_t wi = 0; wi < args.size(); ++wi) {
+                if (args[wi].type == DalvikType::OBJECT_REF &&
+                    !args[wi].class_desc.empty() &&
+                    args[wi].class_desc[0] == '[') {
+                    heap_.set_object_field(
+                        bid, "__bb_array__",
+                        DalvikValue::make_object(args[wi].object_id,
+                                                 args[wi].class_desc));
+                    break;
+                }
+            }
             result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
@@ -53714,6 +53753,266 @@ measure_cm_done:;
         result = DalvikValue::make_object(classloader_singleton_id_,
                                           "Ljava/lang/ClassLoader;");
         return true;
+    }
+    // R-NEW-133 (CONT-137) Context.getClassLoader law — AOSP
+    // ContextImpl.getClassLoader(): the APK-domain loader, NEVER null for
+    // a live Context (Activity/Service/Application all inherit it). The
+    // S102 law above covered only Class.getClassLoader; the Activity
+    // shadow chain re-dispatched getClassLoader through the Context
+    // ancestry and finally answered null, so InMemoryDexClassLoader(bb,
+    // getClassLoader()) captured a null parent (f474 probe: a2type=8).
+    // One loader per APK domain — same singleton identity as S102.
+    if (method == "getClassLoader" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        if (classloader_singleton_id_ == 0 ||
+            !heap_.has_object(classloader_singleton_id_)) {
+            classloader_singleton_id_ =
+                heap_.allocate("Ljava/lang/ClassLoader;", pc_, 0);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(classloader_singleton_id_,
+                                          "Ljava/lang/ClassLoader;");
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-133 (CONT-137): dalvik.system.InMemoryDexClassLoader law.
+    {
+        if (class_name.find("InMemory") != std::string::npos ||
+            class_name.find("DexClassLoader") != std::string::npos) {
+            static std::atomic<uint64_t> r133_diag{0};
+            if (r133_diag.fetch_add(1, std::memory_order_relaxed) < 8) {
+                std::cerr << "[R133-BRIDGE] entered bridge_to_api class="
+                          << class_name << " method=" << method
+                          << " argc=" << args.size() << std::endl;
+            }
+        }
+    }
+    if (class_name == "Ldalvik/system/InMemoryDexClassLoader;") {
+        if (method == "<init>" && args.size() >= 1) {
+            // Args: (receiver, ByteBuffer|ByteBuffer[]|byte[], [parent]).
+            // Collect backing dex bytes from every buffer in the image set.
+            auto read_array_bytes = [&](uint32_t array_id,
+                                        std::string* out) -> bool {
+                auto len_v = heap_.get_object_field(array_id, "__array_length__");
+                if (!len_v.has_value() || len_v->type != DalvikType::INT32)
+                    return false;
+                int32_t n = len_v->int_val;
+                if (n <= 0 || n > (32 << 20)) return false;  // 32MB sanity cap
+                out->reserve(static_cast<size_t>(n));
+                for (int32_t i = 0; i < n; ++i) {
+                    auto ev = heap_.get_object_field(
+                        array_id, "array[" + std::to_string(i) + "]");
+                    int32_t b = 0;
+                    if (ev.has_value()) {
+                        // aput-byte stores DalvikValue::BYTE with byte_val;
+                        // int-typed stores keep int_val (dalvik_engine.h
+                        // make_byte law — reading int_val on a BYTE reads
+                        // the wrong union lane and zeroed the whole dex).
+                        if (ev->type == DalvikType::BYTE)
+                            b = static_cast<int32_t>(ev->byte_val);
+                        else if (ev->type == DalvikType::INT32)
+                            b = ev->int_val;
+                        else if (ev->type == DalvikType::SHORT)
+                            b = static_cast<int32_t>(ev->short_val);
+                        else if (ev->type == DalvikType::CHAR)
+                            b = static_cast<int32_t>(ev->char_val);
+                    }
+                    out->push_back(static_cast<char>(b & 0xFF));
+                }
+                return true;
+            };
+            auto read_bb_bytes = [&](uint32_t bb_id, std::string* out) -> bool {
+                // F-NEW-393 wrap law: wrap([B) stores the backing array at
+                // __bb_array__ (CONT-137 extension — previously the array
+                // link was dropped, making the buffer unreadable).
+                auto arr = heap_.get_object_field(bb_id, "__bb_array__");
+                if (arr.has_value() && arr->type == DalvikType::OBJECT_REF &&
+                    arr->object_id != 0)
+                    return read_array_bytes(arr->object_id, out);
+                // Fallback: lazily-stored per-byte fields __bb_b<i>__.
+                auto cap_v = heap_.get_object_field(bb_id, "__bb_cap__");
+                int32_t cap =
+                    cap_v.has_value() && cap_v->type == DalvikType::INT32
+                        ? cap_v->int_val : 0;
+                if (cap <= 0 || cap > (32 << 20)) return false;
+                out->reserve(static_cast<size_t>(cap));
+                for (int32_t i = 0; i < cap; ++i) {
+                    auto ev = heap_.get_object_field(
+                        bb_id, "__bb_b" + std::to_string(i) + "__");
+                    out->push_back(static_cast<char>(
+                        ev.has_value() && ev->type == DalvikType::INT32
+                            ? ev->int_val & 0xFF : 0));
+                }
+                return true;
+            };
+            std::string dex_bytes;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                uint32_t src = args[1].object_id;
+                auto src_obj = heap_.get(src);
+                std::string scls =
+                    src_obj ? src_obj->class_descriptor : args[1].class_desc;
+                if (scls.rfind("[L", 0) == 0) {
+                    // ByteBuffer[]: iterate elements.
+                    auto len_v = heap_.get_object_field(src, "__array_length__");
+                    int32_t n = len_v.has_value() &&
+                                        len_v->type == DalvikType::INT32
+                                    ? len_v->int_val : 0;
+                    for (int32_t i = 0; i < n; ++i) {
+                        auto ev = heap_.get_object_field(
+                            src, "array[" + std::to_string(i) + "]");
+                        if (ev.has_value() &&
+                            ev->type == DalvikType::OBJECT_REF &&
+                            ev->object_id != 0) {
+                            std::string part;
+                            read_bb_bytes(ev->object_id, &part);
+                            dex_bytes += part;
+                        }
+                    }
+                } else if (scls == "Ljava/nio/ByteBuffer;") {
+                    read_bb_bytes(src, &dex_bytes);
+                } else if (scls.rfind("[B", 0) == 0) {
+                    read_array_bytes(src, &dex_bytes);
+                }
+            }
+            // Dex header scan: magic + string_ids/type_ids/class_defs walk.
+            std::set<std::string> classes;
+            if (dex_bytes.size() >= 0x70 &&
+                dex_bytes.compare(0, 3, "dex") == 0) {
+                auto rd_u2 = [&](size_t off) -> uint32_t {
+                    return static_cast<uint8_t>(dex_bytes[off]) |
+                           (static_cast<uint8_t>(dex_bytes[off + 1]) << 8);
+                };
+                auto rd_u4 = [&](size_t off) -> uint32_t {
+                    return static_cast<uint8_t>(dex_bytes[off]) |
+                           (static_cast<uint8_t>(dex_bytes[off + 1]) << 8) |
+                           (static_cast<uint8_t>(dex_bytes[off + 2]) << 16) |
+                           (static_cast<uint8_t>(dex_bytes[off + 3]) << 24);
+                };
+                auto uleb = [&](size_t* off) -> uint32_t {
+                    uint32_t r = 0; int s = 0;
+                    while (*off < dex_bytes.size()) {
+                        uint8_t x = static_cast<uint8_t>(dex_bytes[(*off)++]);
+                        r |= (x & 0x7F) << s;
+                        if (!(x & 0x80)) break;
+                        s += 7;
+                    }
+                    return r;
+                };
+                uint32_t str_n = rd_u4(0x38), str_off = rd_u4(0x3C);
+                uint32_t type_n = rd_u4(0x40), type_off = rd_u4(0x44);
+                uint32_t cls_n = rd_u4(0x60), cls_off = rd_u4(0x64);
+                auto str_at = [&](uint32_t si) -> std::string {
+                    if (si >= str_n) return {};
+                    uint32_t so = rd_u4(str_off + si * 4);
+                    if (so >= dex_bytes.size()) return {};
+                    size_t o = so;
+                    uleb(&o);  // utf16 length (units) — skip
+                    std::string out;
+                    while (o < dex_bytes.size() && dex_bytes[o] != 0) {
+                        char c = dex_bytes[o++];
+                        out.push_back(c);
+                        if (out.size() > 256) break;
+                    }
+                    return out;
+                };
+                for (uint32_t ci = 0; ci < cls_n && ci < 65536; ++ci) {
+                    uint32_t coff = cls_off + ci * 32;
+                    if (coff + 4 > dex_bytes.size()) break;
+                    uint32_t type_idx = rd_u2(coff);
+                    if (type_idx >= type_n) continue;
+                    uint32_t str_idx = rd_u4(type_off + type_idx * 4);
+                    std::string desc = str_at(str_idx);
+                    if (!desc.empty() && desc[0] == 'L')
+                        classes.insert(desc);
+                }
+            }
+            uint32_t recv = args[0].type == DalvikType::OBJECT_REF
+                                ? args[0].object_id : 0;
+            if (recv != 0) {
+                inmemory_dex_class_tables_[recv] = classes;
+                // Parent loader capture (AOSP: delegating to parent).
+                if (args.size() >= 3 && args[2].type == DalvikType::OBJECT_REF)
+                    heap_.set_object_field(
+                        recv, "__imdcl_parent__", args[2]);
+                std::cerr << "[R133-IMDCL] init obj#" << recv
+                          << " dex_bytes=" << dex_bytes.size()
+                          << " magic=" << (dex_bytes.size() >= 4
+                                ? (dex_bytes[0] == 'd' && dex_bytes[1] == 'e' &&
+                                           dex_bytes[2] == 'x' && dex_bytes[3] == '\n'
+                                       ? "OK"
+                                       : "BAD")
+                                : "SHORT")
+                          << " b0..3=" << (dex_bytes.size() >= 4
+                                ? (std::to_string((int)(uint8_t)dex_bytes[0]) + "," +
+                                   std::to_string((int)(uint8_t)dex_bytes[1]) + "," +
+                                   std::to_string((int)(uint8_t)dex_bytes[2]) + "," +
+                                   std::to_string((int)(uint8_t)dex_bytes[3]))
+                                : std::string("-"))
+                          << " classes=" << classes.size()
+                          << " argc=" << args.size()
+                          << " a2type=" << (args.size() >= 3
+                                ? std::to_string(static_cast<int>(args[2].type)) +
+                                      (args[2].type == DalvikType::OBJECT_REF
+                                           ? std::string("#") +
+                                                 std::to_string(args[2].object_id)
+                                           : std::string())
+                                : std::string("-"))
+                          << std::endl;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "loadClass" && args.size() >= 2 &&
+            args[1].type == DalvikType::STRING_REF) {
+            std::string bin = args[1].string_val;
+            std::string ldesc = framework::normalize_class_desc(
+                bin[0] == 'L' ? bin : "L" + bin + ";");
+            auto it = inmemory_dex_class_tables_.find(args[0].object_id);
+            if (it != inmemory_dex_class_tables_.end() &&
+                it->second.count(ldesc) > 0) {
+                // Child-first law: the in-memory dex declares this class.
+                auto cit = class_info_index_.find(ldesc);
+                if (cit != class_info_index_.end()) {
+                    result = DalvikValue::make_class(
+                        ldesc, (uint32_t)(cit->second + 1));
+                } else {
+                    // Class present in the buffer dex but not in the primary
+                    // table — return a class-token object referencing the
+                    // descriptor (honest presence; the executor's single-dex
+                    // linker cannot instantiate it, and we do NOT pretend).
+                    result = DalvikValue::make_class(ldesc, 1);
+                }
+                std::cerr << "[R133-IMDCL] loadClass \"" << bin
+                          << "\" -> buffer-dex HIT" << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Parent-chain subset (S102 law inlined — the runtime class_name
+            // here is the InMemoryDexClassLoader, not ClassLoader, so the
+            // ClassLoader section below would not match): resolve from the
+            // primary dex table, else ClassNotFoundException (real law —
+            // no invented default).
+            auto pit = class_info_index_.find(ldesc);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (pit != class_info_index_.end()) {
+                result = DalvikValue::make_class(
+                    ldesc, (uint32_t)(pit->second + 1));
+            } else {
+                throw_deferred("Ljava/lang/ClassNotFoundException;", bin,
+                               "R133-IMDCL");
+                result = DalvikValue::make_null();
+            }
+            return true;
+        }
+        if (method == "getParent" && !args.empty()) {
+            auto p = heap_.get_object_field(args[0].object_id,
+                                            "__imdcl_parent__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = p.has_value() ? *p : DalvikValue::make_null();
+            return true;
+        }
     }
 
     if (class_name == "Ljava/lang/ClassLoader;") {

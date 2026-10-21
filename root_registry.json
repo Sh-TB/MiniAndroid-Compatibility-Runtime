@@ -1047,10 +1047,11 @@
  {
   "id": "R-NEW-133",
   "title": "R-NEW-133: no in-memory DEX trace",
-  "status": "CONFIRMED_OPEN_GAP",
+  "status": "IMPLEMENTED+TESTED",
   "priority": "P3",
   "layer": null,
-  "evidence": "CONT-134 probe at HEAD 0ee5b568: ZERO InMemoryDexClassLoader references in miniandroid/src/ — the gap is real and source-proven; named lever: InMemoryDexClassLoader shadow law (load DEX from byte[] buffer)."
+  "evidence": "CONT-137 IMPLEMENTED+TESTED at HEAD 137b0928+engine: InMemoryDexClassLoader law landed in dalvik_engine.cpp bridge — <init>(ByteBuffer|ByteBuffer[]|byte[], ClassLoader) recovers backing bytes (ByteBuffer.wrap now stores __bb_array__ — F-NEW-393 wrap extension) and scans the dex header (string_ids/type_ids/class_defs) into per-loader class tables; loadClass resolves buffer-dex classes CHILD-FIRST then falls to the primary table (S102), absent class -> real ClassNotFoundException (no invented default); getParent captured. Fixture-first: fixtures/fnew474_probe built with the REAL aapt2/ECJ/D8 toolchain (payload.dex = real secondary D8 dex, 756 bytes, sha16 94e49e84) — probe 5/5 assertions: DEX-BYTES 756, HIT com.miniandroid.f474.Payload, NEG-OK (CNFE), PARENT true, REMAIN 756. Generic engine gaps fixed en route: (a) ViewShadow user-class catch-all claimed Ldalvik/system/* (bogus view node swallowed the real ctor) — Ldalvik/ added to the framework-prefix exclusion; (b) Context.getClassLoader answered null (S102 covered only Class.getClassLoader) — Context law answers the one APK-domain loader singleton; (c) java.lang.Character.digit(CI)I unimplemented — ASCII law landed (radix 2..36, -1 on invalid). Honest scope note: class RESOLUTION from the in-memory dex is implemented+tested; LINKING/EXECUTING second-dex bytecode remains the single-dex executor limitation (recorded, not pretended). Zero-drift wall at binary rebuild #8: 9/9 anchors byte-identical + negatives 19/19 + gate A 98/0/1 + skill selftest 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-134",
