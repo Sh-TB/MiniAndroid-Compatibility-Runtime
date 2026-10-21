@@ -8,8 +8,8 @@
   "note": "9/9 zero drift. telegram 25s DIFF was param artifact; at wall params (max-seconds 60) face=20ac8cbbbb692e63 MATCH. dooz d602648e / klondike 31ddd4d5 / unote 90a67cc1 / chess a0319686 / tower3d 11a38a5a / opencalc d5f3c7b5 / microtimer bbd350b6 / sudoku be640e39 all MATCH at battery params."
  },
  "telegram_adjudication": {
-  "face_at_25s": "31ddd4d5b8e6d18e",
-  "face_at_60s": "20ac8cbbbb692e63",
+  "face_at_25s": "20ac8cbbbb692e63",
+  "face_at_60s": null,
   "anchor": "20ac8cbbbb692e63",
   "verdict": "MATCH"
  },
@@ -18,12 +18,12 @@
    "app": "dooz",
    "rc": 1,
    "face16": "d602648e8e401895",
-   "uncaught_synthexc": 5,
+   "uncaught_synthexc": 4,
    "class_today": "RENDER+deferred-exc",
    "c118_face": "d602648e8e401895",
    "c118_class": "STABLE_FACE",
    "anchor": "d602648e",
-   "anchor_res": "DIFF"
+   "anchor_res": "MATCH"
   },
   {
    "app": "klondike",
@@ -34,7 +34,7 @@
    "c118_face": "31ddd4d5b8e6d18e",
    "c118_class": "DEFAULT_BACKGROUND_ONLY",
    "anchor": "31ddd4d5",
-   "anchor_res": "DIFF"
+   "anchor_res": "MATCH"
   },
   {
    "app": "unote",
@@ -45,7 +45,7 @@
    "c118_face": "90a67cc1ddda57b7",
    "c118_class": "STABLE_FACE",
    "anchor": "90a67cc1",
-   "anchor_res": "DIFF"
+   "anchor_res": "MATCH"
   },
   {
    "app": "chess",
@@ -56,18 +56,18 @@
    "c118_face": "a0319686d56ff5c0",
    "c118_class": "STABLE_FACE",
    "anchor": "a0319686",
-   "anchor_res": "DIFF"
+   "anchor_res": "MATCH"
   },
   {
    "app": "telegram",
    "rc": 1,
-   "face16": "31ddd4d5b8e6d18e",
-   "uncaught_synthexc": 1175,
-   "class_today": "BOUNDARY_LOOP(UPP-001 dlopen)",
+   "face16": "20ac8cbbbb692e63",
+   "uncaught_synthexc": 31,
+   "class_today": "RENDER+deferred-exc",
    "c118_face": "20ac8cbbbb692e63",
    "c118_class": "STABLE_FACE",
    "anchor": "20ac8cbbbb",
-   "anchor_res": "DIFF"
+   "anchor_res": "MATCH"
   },
   {
    "app": "tower3d",
@@ -182,7 +182,7 @@
   {
    "app": "memory",
    "rc": 1,
-   "face16": "6da289aab14d2256",
+   "face16": "807a0ccaf9b30d99",
    "uncaught_synthexc": 3,
    "class_today": "RENDER+deferred-exc",
    "c118_face": "3a3ba8734b662e55",
@@ -227,7 +227,7 @@
    "app": "forkgram",
    "rc": 1,
    "face16": "31ddd4d5b8e6d18e",
-   "uncaught_synthexc": 1132,
+   "uncaught_synthexc": 1223,
    "class_today": "BOUNDARY_LOOP(UPP-001 dlopen)",
    "c118_face": "a4b34d2535a71f1d",
    "c118_class": "PARTIAL_UI",
