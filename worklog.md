@@ -10936,3 +10936,24 @@ Work Log:
 
 Stage Summary:
 - 6/6 trains pushed and HEAD==origin/main verified after each. Registry: ROOT-CAUSED-FIXED 295, VERIFIED-CORRECT 88, fixed-family 367/787; PARTIAL 87; UNPROVEN 0. Engine source advanced once (F-NEW-471 super-chain law); two deep decodes (dooz EmptyMap poison, launcher-alias truth); honest corrections (stopwatch artifact-faithful, CONT-127 hypothesis retracted). Next levers: dooz state-map publish path (F-NEW-472 setter trace), InMemoryDexClassLoader (R-NEW-133), Parcel fixture probes (R-NEW-018/019), 87 PARTIAL.
+
+---
+Task ID: CONT-136..145 (10 trains)
+Agent: main agent (Z.ai)
+Task: «۱۰ قطار» — 10-train formation advancing #364 endgame from CONT-135 baseline 553aeef6.
+
+Work Log:
+- Snapshot recovery: git reset --hard to origin/main 553aeef6; binary rebuilt deterministically (rebuild #7 = 9e755c3d byte-identical to CONT-135 wall); harness fix: cont129_battery.sh per-wagon maxsec (telegram wall=60s), 9/9 anchors re-verified (push c62d7760).
+- TRAIN 1 (CONT-136, push 137b0928): F-NEW-473 CLASSIFIED — dooz blank-face draw-walk gate decoded multi-layer (Ltv0;.i gate FALSE 6/6, root layer obj#2575 flag never marked, Ljt1; sole ctor Lj7;.e never executes, CDW-OP=0); Ld61;.i byte-xref upheld CONT-131.
+- TRAIN 2 (CONT-137, push b5958f4d): R-NEW-133 IMPLEMENTED+TESTED — InMemoryDexClassLoader law (dex-header scan, child-first loadClass, honest CNFE); ByteBuffer.wrap __bb_array__ link; ViewShadow Ldalvik/ exclusion; Context.getClassLoader law; Character.digit law; fnew474_probe (real toolchain) 5/5.
+- TRAIN 3 (CONT-138, push 68c1b4e3): R-NEW-018/019 VERIFIED-CORRECT — Parcel marshalling law (typed records, independent read position, past-end=native JNI); fnew475_probe 8/8.
+- TRAIN 4 (CONT-139, push 19caae31): PARTIAL wave 2 — 27 VERIFIED-CORRECT / 3 kept (claims recovered from git 4eebde76). PARTIAL 87->60.
+- TRAIN 5 (CONT-140, push 7f60d792): PARTIAL wave 3 — 23 verified / 7 kept. PARTIAL 60->37.
+- TRAIN 6 (CONT-141, push 117bcf18): PARTIAL wave 4 — 14 verified / 21 kept (open fronts). PARTIAL 37->23.
+- TRAIN 7 (CONT-142, push 754e0a6d): F-NEW-473 family generalization — CDW-OP=0 in klondike/tripeaks/tictactoe too (one family-level root).
+- TRAIN 8 (CONT-143, push 638aaa29): BLOCKED pair re-affirmed — 27-APK corpus sweep (all have resources.arsc), whatsapp NOT-a-zip sha16 c473ad25, R-NEW-456 upstream-bound, Signal no artifact.
+- TRAIN 9 (CONT-144, push d0dacf52): F-NEW-474 ROOT-CAUSED-FIXED — RandomAccessFile real-bytes law (MultiDex.install length()=0 -> ZipException); bouncy rc 1->0 at 20 frames, face unchanged; deep dive: 6/7 rc=0 apps stable at 20 frames, 0 exceptions.
+- TRAIN 10 (CONT-145): grand close-out — final wall 9/9 anchors + negatives 19/19 + gate A 98/0/1 + skill 13/13; Persian ledger posted to #364 (comment 6309676140).
+
+Stage Summary:
+- 10/10 trains pushed, HEAD==origin/main verified after each (final d0dacf52). Registry 789 id-unique main==mirror: fixed-family 600/789 = 76.0% (ROOT-CAUSED-FIXED 296+18, VERIFIED-CORRECT 154, VERIFIED-FIXED 50, IMPLEMENTED(+TESTED) 64), PARTIAL 87->23, CONFIRMED_OPEN_GAP 0, BLOCKED 2 (artifact-bound). Engine advanced: InMemoryDexClassLoader law, Parcel law, RandomAccessFile law, ByteBuffer.wrap array link, ViewShadow dalvik exclusion, Context.getClassLoader, Character.digit. Two new fixtures with the real aapt2/ECJ/D8 toolchain (fnew474_probe 5/5, fnew475_probe 8/8). Zero drift across all 4 wall runs this session. Next levers: compose root-layer marking path (F-NEW-473), second-dex LINK for IMDCL, 23 remaining PARTIAL (mostly artifact-bound), WhatsApp/Signal need user APKs.
