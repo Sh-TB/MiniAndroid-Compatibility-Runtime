@@ -502,7 +502,7 @@
   "status": "PARTIAL",
   "priority": "P1",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — propagation-matrix claim has no independent artifact; upstream 061 chain verified this batch. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — propagation matrix has no independent artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — propagation-matrix claim has no independent artifact; upstream 061 chain verified this batch. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — propagation matrix has no independent artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — propagation matrix, no independent artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -640,7 +640,7 @@
   "status": "PARTIAL",
   "priority": "P2",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — intrinsic->measure law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — intrinsic->measure law: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — intrinsic->measure law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — intrinsic->measure law: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — intrinsic->measure law, no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -649,7 +649,7 @@
   "status": "PARTIAL",
   "priority": "P3",
   "layer": null,
-  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — lifetime law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — lifetime law: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-133 batch re-verify at HEAD 0ee5b568/binary 9e755c3d: kept PARTIAL (no deterministic re-anchor this batch); wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), selftest rc=0, negatives 19/19 (probe store regenerated), HEAD==origin/main 0ee5b568 || CONT-139 wave-2 at HEAD 68c1b4e3: kept PARTIAL — lifetime law: no corpus artifact, honest. Wall: 9/9 anchors byte-identical (dooz d602648e, klondike 31ddd4d5, unote 90a67cc1, chess a0319686, telegram 20ac8cbbbb@60s, tower3d 11a38a5a, opencalc d5f3c7b5, microtimer bbd350b6, sudoku be640e39), negatives 19/19, gate A 98/0/1, skill selftest 13/13. || CONT-140 wave-3 at HEAD 19caae31: kept — lifetime law: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — lifetime law, no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -1627,7 +1627,7 @@
   "status": "PARTIAL",
   "priority": "P2",
   "layer": null,
-  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — UNSPECIFIED law: no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — UNSPECIFIED law: no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — UNSPECIFIED law, no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -1657,7 +1657,7 @@
   "status": "PARTIAL",
   "priority": "P3",
   "layer": null,
-  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — min-law: no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — min-law: no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — min-law, no named artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -1712,7 +1712,7 @@
   "status": "PARTIAL",
   "priority": "P2",
   "layer": null,
-  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — clip-stack CORPUS explicitly missing (substrate present, corpus artifact absent). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — clip-stack CORPUS explicitly missing (substrate present, corpus artifact absent). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — clip-stack corpus artifact absent. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -1806,7 +1806,7 @@
   "status": "PARTIAL",
   "priority": "P3",
   "layer": null,
-  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — paint flags MATRIX incomplete (substrate present, matrix unproven). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "evidence": " || CONT-140 wave-3 at HEAD 19caae31: kept — paint flags MATRIX incomplete (substrate present, matrix unproven). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13. || CONT-141 wave-4 at HEAD 7f60d792: kept — paint-flags matrix incomplete. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "date": "2026-10-21"
  },
  {
@@ -1882,9 +1882,11 @@
  {
   "id": "R-NEW-225",
   "title": "R-NEW-225: state_list",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: state_list substrate (framework/state_list.cpp, dedicated file + battery-fenced drawables 39/39 batch367). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-226",
@@ -1899,9 +1901,11 @@
  {
   "id": "R-NEW-227",
   "title": "R-NEW-227: state_list",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: state_list family (same substrate as 225). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-228",
@@ -1974,16 +1978,20 @@
  {
   "id": "R-NEW-235",
   "title": "R-NEW-235: window flags parse",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: window flags parse in window shadows / WindowManager.LayoutParams handling at HEAD. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-236",
   "title": "R-NEW-236: draw order in renderer",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: draw order = view-tree child order (dispatchDraw walk + renderer FIFO op order) at HEAD. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-237",
@@ -2025,19 +2033,21 @@
  {
   "id": "R-NEW-241",
   "title": "R-NEW-241: Choreographer pump F-050 (CM8)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: Choreographer pump F-050 landed (choreographer_shadow.cpp dedicated law; frame pump driven by doFrame). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-242",
   "title": "(title backfilled CONT-17) R-NEW-242 — live re-verified at HEAD, see evidence",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). First frame end-to-end confirmed at HEAD: frame pump + composition pass#2 + LayoutNode materialization + background frame emitted (anchor d602648e x3). Content pixels blocked by F-NEW-265. Kept PARTIAL.",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). First frame end-to-end confirmed at HEAD: frame pump + composition pass#2 + LayoutNode materialization + background frame emitted (anchor d602648e x3). Content pixels blocked by F-NEW-265. Kept PARTIAL. || CONT-141 wave-4 at HEAD 7f60d792: F-050 four frame-pump roots fixed (CM8); 3-run deterministic — microtimer/dooz anchors byte-identical x-runs this session; frontier moved to F-NEW-473 draw-walk gate (recorded). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-243",
@@ -2136,7 +2146,9 @@
   "title": "R-NEW-253: partial",
   "status": "PARTIAL",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: kept — claim un-named in history; nothing to verify. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-254",
@@ -2172,36 +2184,40 @@
  {
   "id": "R-NEW-258",
   "title": "R-NEW-258: readError eliminated (F-028/F-030, CM4/CM5); observation plumbing unproven",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: readError eliminated (F-028/F-030 laws landed); observation plumbing = trace engine (CONT-121+ trace_exporter). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-259",
   "title": "(title backfilled CONT-17) R-NEW-259 — live re-verified at HEAD, see evidence",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Composition lifecycle sub-face advanced past its recorded gap R-NEW-279: lifecycle chain exception-free at HEAD (single in-flight exception is the measure-pass cascade, not lifecycle). Kept PARTIAL with F-NEW-265 pointer.",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Composition lifecycle sub-face advanced past its recorded gap R-NEW-279: lifecycle chain exception-free at HEAD (single in-flight exception is the measure-pass cascade, not lifecycle). Kept PARTIAL with F-NEW-265 pointer. || CONT-141 wave-4 at HEAD 7f60d792: composition lifecycle — CONT-10 W5 proved scope.compose runs + NavHost re-execution (dooz LayoutNodes materialized); suspected gap R-NEW-279 superseded by F-NEW-473 chain. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-260",
   "title": "(title backfilled CONT-17) R-NEW-260 — live re-verified at HEAD, see evidence",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). F-057 view-node duality owner-walk law exercised by every anchor run at HEAD (6/6 x3 byte-identical — all View-shadow apps walk owners). hello_color regression-watch unchanged (not in anchor set). Kept PARTIAL (watch).",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). F-057 view-node duality owner-walk law exercised by every anchor run at HEAD (6/6 x3 byte-identical — all View-shadow apps walk owners). hello_color regression-watch unchanged (not in anchor set). Kept PARTIAL (watch). || CONT-141 wave-4 at HEAD 7f60d792: F-057 view-node duality law landed (ShadowRegistry dispatch ViewShadow-first for getParent/getTag; law text in shadow_registry.cpp). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-261",
   "title": "R-NEW-261: frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief §15); F-050 fixed real pump family (CM8)",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: frame-clock FALSE-LEAD verdict stands; F-050 fixed the real pump roots — both anchored. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-262",
@@ -2234,9 +2250,11 @@
  {
   "id": "R-NEW-266",
   "title": "R-NEW-266: draw order",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: draw order family (same law as 236). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-267",
@@ -2269,9 +2287,11 @@
  {
   "id": "R-NEW-271",
   "title": "R-NEW-271: hello_color per-element pixel counts (evidence.json) — early provenance",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: hello_color per-element pixel counts — EXP092 framebuffer census law (non-white pixel counts in battery logs this session). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-272",
@@ -2283,9 +2303,11 @@
  {
   "id": "R-NEW-273",
   "title": "R-NEW-273: alpha stats in metrics",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: alpha stats carried by renderer RGBA paths (23 files). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-274",
@@ -2318,9 +2340,11 @@
  {
   "id": "R-NEW-278",
   "title": "R-NEW-278: renderer RGB format documented",
-  "status": "PARTIAL",
+  "status": "VERIFIED-CORRECT",
   "priority": "P2",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: renderer RGB format documented (RGBA framebuffer in software_renderer; EXP092 census reads it live). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-279",
@@ -2328,9 +2352,9 @@
   "status": "PARTIAL",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). dooz full lifecycle callback chain exception-free re-confirmed at HEAD: fresh traced run shows lifecycle-complete with exactly 1 in-flight exception (measure cascade Lzs;.m family — not lifecycle). Kept PARTIAL with F-NEW-265 pointer.",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). dooz full lifecycle callback chain exception-free re-confirmed at HEAD: fresh traced run shows lifecycle-complete with exactly 1 in-flight exception (measure cascade Lzs;.m family — not lifecycle). Kept PARTIAL with F-NEW-265 pointer. || CONT-141 wave-4 at HEAD 7f60d792: kept — 'implementation + proof' rows remain Job/composition-active frontier; live re-verify note dated but not a proof of implementation. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-280",
@@ -2383,9 +2407,9 @@
   "status": "PARTIAL",
   "priority": "P0",
   "layer": null,
-  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Recomposer creation + MonotonicFrameClock fold confirmed live at HEAD (frame-driven recomposition pass#2 with reader ops per CONT-9/10 lineage; anchors byte-identical). Job-active-cancellation face re-classified SETUP-phase (CONT-9 W5, suppression stays refuted). Kept PARTIAL; successor root F-NEW-265.",
+  "evidence": "CONT-17 live re-verify at binary a8761a482a186eac (2026-10-08): anchors 6/6 x3 byte-identical (dooz d602648e8e401895 / microtimer da73010a37dd0189 / unote 4f1a9e4e8f64fae8 / gmdice f3b483fe7b7cf51b / opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b); probes f266 6/6, f259 7/7, f259g 12/13 (L honest artifact), fcol 3/18 unchanged; gate A 98/0/1; negatives 19/19; skill 13/13. Fresh traced dooz run run/cont17/dooz_traced: anchor reproduced, F-NEW-233 verdict DEFAULT_BACKGROUND_ONLY first_missing_stage=APP_DRAW_OPS, app_draw_ops=0 draw_walk_ran=true, 1 uncaught in-flight (La; cascade, unwind chain through Lzs;.m measure family). Recomposer creation + MonotonicFrameClock fold confirmed live at HEAD (frame-driven recomposition pass#2 with reader ops per CONT-9/10 lineage; anchors byte-identical). Job-active-cancellation face re-classified SETUP-phase (CONT-9 W5, suppression stays refuted). Kept PARTIAL; successor root F-NEW-265. || CONT-141 wave-4 at HEAD 7f60d792: kept — Job-active cancellation remains the named frontier (unimplemented surface). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "verified_current": true,
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-286",
@@ -2619,8 +2643,8 @@
   "status": "PARTIAL",
   "priority": "P1",
   "layer": null,
-  "evidence": "[CONT-17 task 41 2026-10-08] Fragment host family re-anchored: STTT APK absent (BLOCKED-APK-ABSENT); the A/B separation evidence now exists on notes_secuso (task 32 — law A attachBaseContext2 NPE precedes law B; see F-NEW-168). Row stays PARTIAL pending a FragmentActivity-host APK. CONT-25 pointer 2026-10-08: NEW FACE — com.itsfrz.tictactoe 1.0.5 (vc5, Compose corpus control B, sha 2a057a9a519acd81): NPE 'Parameter specified as non-null is null: method androidx.fragment.app.FragmentContainerView.<init>, parameter fm' (caller Lo4/k;.e) unwinds to MainActivity.onCreate [APP-BOUNDARY] BEFORE any Compose entry — pre-Composer blocker, 3 uncaught, blank frame d55056a8 x3. Next action: supportFragmentManager/FragmentContainerView(fm) host law. Evidence: run/cont25/base_itsfrz; evidence/cont25/COMPOSE_ROOT_TEST.md §2.",
-  "date": "2026-10-08"
+  "evidence": "[CONT-17 task 41 2026-10-08] Fragment host family re-anchored: STTT APK absent (BLOCKED-APK-ABSENT); the A/B separation evidence now exists on notes_secuso (task 32 — law A attachBaseContext2 NPE precedes law B; see F-NEW-168). Row stays PARTIAL pending a FragmentActivity-host APK. CONT-25 pointer 2026-10-08: NEW FACE — com.itsfrz.tictactoe 1.0.5 (vc5, Compose corpus control B, sha 2a057a9a519acd81): NPE 'Parameter specified as non-null is null: method androidx.fragment.app.FragmentContainerView.<init>, parameter fm' (caller Lo4/k;.e) unwinds to MainActivity.onCreate [APP-BOUNDARY] BEFORE any Compose entry — pre-Composer blocker, 3 uncaught, blank frame d55056a8 x3. Next action: supportFragmentManager/FragmentContainerView(fm) host law. Evidence: run/cont25/base_itsfrz; evidence/cont25/COMPOSE_ROOT_TEST.md §2. || CONT-141 wave-4 at HEAD 7f60d792: kept — Fragment host window S27 cross-app law: honest-open substrate question. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-332",
@@ -2684,8 +2708,8 @@
   "status": "PARTIAL",
   "priority": "P1",
   "layer": null,
-  "evidence": "[CONT-17 task 50 2026-10-08] recomposer re-post arm: bounded-pump law design recorded (Recomposer suspension must re-post a frame callback via the existing Choreographer pump; NO budget inflation, no polling). Implementation queued for the engine batch; row honestly PARTIAL.",
-  "date": "2026-10-08"
+  "evidence": "[CONT-17 task 50 2026-10-08] recomposer re-post arm: bounded-pump law design recorded (Recomposer suspension must re-post a frame callback via the existing Choreographer pump; NO budget inflation, no polling). Implementation queued for the engine batch; row honestly PARTIAL. || CONT-141 wave-4 at HEAD 7f60d792: kept — S39 OBSERVED r339f/r340 observations; observation != law. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-341",
@@ -3508,7 +3532,9 @@
   "title": "SlidingUpPanelLayout runtime-state family: View.getLeft/getTop/getRight/getBottom had NO bridge (umano dimChildToDimen cover test read degenerate bounds); F096 dispatched real-DEX onLayout with a degenerate 0x0 rect; layout weight shares computed 3x too tall for opencalculator rows",
   "status": "PARTIAL",
   "priority": "P1",
-  "layer": null
+  "layer": null,
+  "evidence": " || CONT-141 wave-4 at HEAD 7f60d792: kept — SlidingUpPanelLayout runtime-state family: no corpus artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-442",
@@ -3649,8 +3675,9 @@
   "status": "PARTIAL",
   "priority": "P1",
   "layer": "renderer/framework",
-  "evidence": "run/s134/fast/ (before/after fingerprints; boxcars 1-color frame; headingcalc 823 colors with real headings), run logs [C013-CUSTOMVIEW] surface-family + text-base routing lines, T02 c95affdefb734ffd x3, dooz/ballbreak byte-identical to HEAD A/B",
-  "writer_classification": "C013 inline placeholder = DIAGNOSTIC writer currently reaching AUTHORITATIVE frames (§19 violation)"
+  "evidence": "run/s134/fast/ (before/after fingerprints; boxcars 1-color frame; headingcalc 823 colors with real headings), run logs [C013-CUSTOMVIEW] surface-family + text-base routing lines, T02 c95affdefb734ffd x3, dooz/ballbreak byte-identical to HEAD A/B || CONT-141 wave-4 at HEAD 7f60d792: kept — placeholder-contamination law: diagnostic pixels now unpainted (authoritative-frame purity) but the CLASSIFICATION law keeps honest open rows. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "writer_classification": "C013 inline placeholder = DIAGNOSTIC writer currently reaching AUTHORITATIVE frames (§19 violation)",
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-163",
@@ -3702,15 +3729,11 @@
   "status": "PARTIAL",
   "priority": "P1",
   "component": "dex/invoke-return-null",
-  "evidence": {
-   "before": "NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F during attachBaseContext; app died before onCreate",
-   "after": "5 [F166-BASECTX] dispatches; the null-check PASSED; app boots into onCreate, creates views; frame REAL_APP_CONTENT (23472 non-default px, chrome renders)",
-   "regression": "laws130 51/51; dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 byte-identical; simplestopwatch e00fe7e082c385f8 with isolated --data-root (the 1797c760 delta was the DOCUMENTED shared-data-root prefs persistence law, A/B-proven not a code regression)",
-   "disassembly": "s134_wa_disasm.py: LX/009;.<init> getBaseContext → A06 null-check; A0F = R8 Intrinsics throw helper"
-  },
+  "evidence": "{\"before\": \"NPE 'INVOKE_RETURN must not be null' at LX/00i;.A0F during attachBaseContext; app died before onCreate\", \"after\": \"5 [F166-BASECTX] dispatches; the null-check PASSED; app boots into onCreate, creates views; frame REAL_APP_CONTENT (23472 non-default px, chrome renders)\", \"regression\": \"laws130 51/51; dooz ba8a95eb2278594f + ballbreak 8a951f5f975c4742 byte-identical; simplestopwatch e00fe7e082c385f8 with isolated --data-root (the 1797c760 delta was the DOCUMENTED shared-data-root prefs persistence law, A/B-proven not a code regression)\", \"disassembly\": \"s134_wa_disasm.py: LX/009;.<init> getBaseContext → A06 null-check; A0F = R8 Intrinsics throw helper\"} || CONT-141 wave-4 at HEAD 7f60d792: kept — WhatsApp onCreate death chain: artifact-bound (corpus whatsapp.apk is a corrupted 5,615-byte stub — honest artifact defect). Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "session": "S134 wave 3",
   "fix": "F166-BASECTX routing law in try_shadow_dispatch: ContextWrapper-family receivers now reach the S110 base-context law for getBaseContext/attachBaseContext, and ContextWrapper.<init>(base) records mBase (AOSP ctor=attachBaseContext delegation). Path-scoped: fires only on Context-named receiver classes where REC-MISS previously answered null.",
-  "residual": "Next frontier faces (new root F-NEW-167): the app's infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) → VirtualMachineError unwind → AppContext.set state missing. Classic §17 chain: missing API → clinit failure → static state missing → downstream ISE."
+  "residual": "Next frontier faces (new root F-NEW-167): the app's infra/logging Log.<clinit> hits the java.util.concurrent/nio REC-MISS family (AtomicReference.<init>, CountDownLatch.<init>, ReentrantLock.<init>, Charset.defaultCharset, TimeZone.getDefault) → VirtualMachineError unwind → AppContext.set state missing. Classic §17 chain: missing API → clinit failure → static state missing → downstream ISE.",
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-168",
@@ -3719,8 +3742,8 @@
   "priority": "P1",
   "component": "androidx/fragment-host",
   "session": "S134 wave 5",
-  "evidence": "[CONT-17 task 32 2026-10-08] Fragment host law A/B separation RESOLVED on notes_secuso (org.secuso.privacyfriendlynotes, run/cont17/notes_secuso at a8761a482a186eac): the app dies at law A — NPE in AppCompatDelegateImpl.attachBaseContext2 -> AppCompatActivity.attachBaseContext -> APP-BOUNDARY (FIRST divergence) — BEFORE any FragmentManager host face; \"not been attached to a host\" count = 0 in the run. Law B (FragmentManager host) NOT REACHED on this app — no evidence either way; STTT (nl.hnogame) APK absent. Status stays PARTIAL (law B untested).",
-  "date": "2026-10-08"
+  "evidence": "[CONT-17 task 32 2026-10-08] Fragment host law A/B separation RESOLVED on notes_secuso (org.secuso.privacyfriendlynotes, run/cont17/notes_secuso at a8761a482a186eac): the app dies at law A — NPE in AppCompatDelegateImpl.attachBaseContext2 -> AppCompatActivity.attachBaseContext -> APP-BOUNDARY (FIRST divergence) — BEFORE any FragmentManager host face; \"not been attached to a host\" count = 0 in the run. Law B (FragmentManager host) NOT REACHED on this app — no evidence either way; STTT (nl.hnogame) APK absent. Status stays PARTIAL (law B untested). || CONT-141 wave-4 at HEAD 7f60d792: kept — WhatsApp next faces: same artifact-bound family. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-170",
@@ -3747,10 +3770,11 @@
   "status": "PARTIAL",
   "priority": "P0",
   "summary": "RegularImmutableMap.createHashTable probe spin — ROOT-CAUSED TO THE KEY-MATERIALIZATION LAYER: instrumented evidence (SPIN-REGS/HISTO/TABLE, F172-AGET) proves (a) the hash table is correctly filled (-1 markers, len 32768), (b) 315 entries placed, (c) the probe visits 49,685 slots = sum(0..314) quadratic signature = ALL keys hash to slot 0 because guava smear(k) = C2*rotl(k,15) has low-15-bits zero for every integer key < 2^17. Real Android never sees this because real MobileConfig map keys are not placeholder Integers. Fix shipped this wave: Arrays.fill length resolution now reads __new_array_length__ (uniform new-array convention; R-NEW-361 no-op-fill family). Remaining: F-NEW-173.",
-  "evidence": "wa_spin2-6.log SPIN-HISTO (pc0xaf=50001/pc0xdf=49685 quadratic signature), SPIN-REGS (v10=Integer(22183), v9=17750, v6=315), SPIN-TABLE (o24744: 3781 empty/315 occupied in first 4096), F172-AGET sequential probe trace.",
+  "evidence": "wa_spin2-6.log SPIN-HISTO (pc0xaf=50001/pc0xdf=49685 quadratic signature), SPIN-REGS (v10=Integer(22183), v9=17750, v6=315), SPIN-TABLE (o24744: 3781 empty/315 occupied in first 4096), F172-AGET sequential probe trace. || CONT-141 wave-4 at HEAD 7f60d792: kept — open front row, no artifact. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "layer": "DEX interpreter / array + loop semantics",
   "title": "F-NEW-172",
-  "law": null
+  "law": null,
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-173",
@@ -4036,10 +4060,10 @@
   "layer": "white-screen family",
   "title": "V10 five-app gate white/black frontier (fresh census attribution): Dame (blidraughts), Droidify, OpenCalculator all reach auth_root_valid + measure + layout + draw-walk but stop at first_missing_stage=APP_DRAW_OPS with a 2-node visited tree (root+1 child) — the app's real view-building never reaches the authoritative walk. game2048 stops earlier: NO_ROOT (effective_content_root_()==0, setContentView never lands). This refines the phase-15 'shared empty-shell SHA' class into two machine-readable states: APP_DRAW_OPS-starved root (dame/droidify/opencalc, SHA b5a7a35d5fe0564b shared) vs NO_ROOT (game2048, SHA 31ddd4d5b8e6d18e = WhatsApp empty-shell class).",
   "law": "F-NEW-197 WAVE 2 (SUCCESS-PATH methodology: source-first, SOURCE->CODE PATH->LAW->REPRO->TRACE->FIX->3-RUN). Six generic laws IMPLEMENTED+TESTED, all package-agnostic:\n  1. TYPEDARRAY STALE-PRESENCE LAW: the TypedArray heap object is a recycled singleton; AOSP TypedArray.obtain rewrites EVERY slot per call (AttributeResolution.cpp: unfilled = TYPE_NULL/absent). array_present[i] is now written UNCONDITIONALLY per slot (1 resolved / 0 absent) — presence from an earlier obtain can never leak (opencalc face: call 1 resolved 0x01010054; call 2 styleable[0]=0x010100af hit=no inherited present=1 value=0 -> getInt answered 0 -> setGravity(0) -> ISE 'gravity must be set to either top or bottom' -> APP BOUNDARY).\n  2. XML-ATTRIBUTESET PRECEDENCE LAW: obtainStyledAttributes resolves each styleable slot with the AOSP order (1) XML AttributeSet value, (2) style, (3) theme, (4) absent -> caller default. The inflater passes the tag's parsed AXML attrs (attr_resid + typed value) through CustomViewCtorHook -> AttributeSetStore -> the F-NEW-175 producer. Evidence: gravity slot now answers 48 (Gravity.TOP) from the XML ([F175-READ] stored=48 present=1); absent slots honor caller defaults (def=400 -> 400).\n  3. CONFIG-CONTEXT LAW: Context.createConfigurationContext never answers null (AOSP ContextImpl); dual-view implemented in both dispatch layers; one FRESH context per call; S110 base-context map records the receiver. Face: appcompat attachBaseContext2 chain (AppCompatActivity=Lg/m; pc=180 createConfigurationContext -> pc=184 .getResources()) NPE'd -> attach aborted (f141 family, same signature as the solitaire support-chain record).\n  4. NEW-THEME LAW: Resources.newTheme() answers a non-null Theme (AOSP Resources.java); ContextThemeWrapper.getTheme()'s mTheme=newTheme(); mTheme.setTo() NPE'd (Ll/c;.b pc=26).\n  5. CLASS-TOKEN getClass LAW: Object.getClass on a CLASS_REF receiver answers Ljava/lang/Class; (a Class object's runtime class IS java.lang.Class) — never null (Gson $Gson$Types.getRawType type.getClass().getName() probe NPE'd).\n  6. CLASS-TOKEN INSTANCEOF LAWS: (a) CLASS_REF with ref_id==0 classifies as the java.lang.Class token (heap-backed or not); (b) desc-only OBJECT_REF (oid=0, desc present) classifies by its creation-site descriptor.\nEVIDENCE: opencalculator vc53 uncaught-in-flight exceptions 3 -> 1 across the wave; laws130 51/51; goldens x3 BYTE-IDENTICAL (dooz d602648e8e401895, ssw 10446aaf0cd642cc, headingcalc be1cea9cf994b26a, microtimer da73010a37dd0189, whatsapp 31ddd4d5b8e6d18e); opencalc x3 deterministic b5a7a35d5fe0564b.\nREMAINING SUB-FRONTIERS (refined, machine-readable):\n  A. GENERIC-TYPE REFLECTION FAMILY: Class.getGenericSuperclass / ParameterizedType.getActualTypeArguments / .getRawType are UNBRIDGED (null) -> Gson TypeToken (j1/a;.<init> -> Le1/d;.g) IAE 'Expected a Class, ParameterizedType, or GenericArrayType' in MainActivity.onResume; the instanceof diag proves the argument register arrives degenerate (oid=0 desc=empty) from the unbridged chain. Needed: real ParameterizedType heap objects carrying type-argument identity.\n  B. TREE-BUILD GAP: the frame remains the shared empty-shell SHA b5a7a35d5fe0564b (DEFAULT_BACKGROUND_ONLY) — the XML tree the inflater builds still does not reach the authoritative draw walk (2-node visited family). Next probe: R005-DECOR view=927 under decor=899 vs the walk's effective_content_root. WAVE 2 ADDENDUM: F-NEW-199 (disk-io execution) and F-NEW-203 (thread-identity observability) laws also landed in the same commits — ArchTaskExecutor background runnables execute on the canonical pump and isMainThread UNKNOWN is exposed, both zero-regression.  The sub-frontier B (tree-build gap) is CLOSED for the opencalc family (F-NEW-220); remaining legs: F-NEW-217 (kotlinx resume) + F-NEW-221 (R8 merge) + droidify protobuf-CNFE family.",
-  "evidence": "[CONT-17 task 40 2026-10-08] white-frontier shared-SHA refresh at a8761a482a186eac: the OpenCalculator face is RESOLVED — opencalc now REAL_APP_CONTENT anchor a976d2f9fb675cb3 x3 byte-identical (run/cont16/reg). Remaining faces (Dame/Droidify) BLOCKED-APK-ABSENT locally. Row stays PARTIAL with the opencalc arm closed.",
+  "evidence": "[CONT-17 task 40 2026-10-08] white-frontier shared-SHA refresh at a8761a482a186eac: the OpenCalculator face is RESOLVED — opencalc now REAL_APP_CONTENT anchor a976d2f9fb675cb3 x3 byte-identical (run/cont16/reg). Remaining faces (Dame/Droidify) BLOCKED-APK-ABSENT locally. Row stays PARTIAL with the opencalc arm closed. || CONT-141 wave-4 at HEAD 7f60d792: kept — five-app gate white/black frontier census: census attribution row. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "fix": "OPEN — next-root material (V3-R1 F-096 one-time dispatch containment + app-side view-build chains queued).",
   "wave": "SECONDARY-V10",
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-198",
@@ -4210,7 +4234,7 @@
   "layer": "layout/traversal",
   "title": "DEEP-AUDIT P1-9: cross-check the traversal order against AOSP ViewRootImpl — attach -> measure -> layout -> pre-draw/state checks -> draw -> capture; requestLayout DURING layout must schedule a second layout pass (AOSP supports re-entrant valid requesters), not mark layout complete and move on; no simplistic measure-once/layout-once/draw-once model where Android semantics require another pass.",
   "law": "AOSP ViewRootImpl performTraversals / requestLayout during layout (second-pass law).",
-  "evidence": "traversal-order cross-check — one known bounded divergence: requestLayout honored at stage granularity vs AOSP same-traversal second pass; no corpus face at HEAD; recorded honestly",
+  "evidence": "traversal-order cross-check — one known bounded divergence: requestLayout honored at stage granularity vs AOSP same-traversal second pass; no corpus face at HEAD; recorded honestly || CONT-141 wave-4 at HEAD 7f60d792: kept — traversal-order AOSP cross-check: deep-audit row, needs dedicated probe. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "fanout": "dynamic-layout family (GONE toggle F-NEW-185, adapters)",
   "test": "3-run protocol",
   "source": "user campaign mandate",
@@ -4222,7 +4246,7 @@
   "affected_titles": "",
   "api": "",
   "upstream_source": "AOSP frameworks/base (per-entry law text)",
-  "date": "2026-10-08"
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-207",
@@ -6346,9 +6370,10 @@
   "priority": "P2",
   "layer": "dalvik/deferred-exception delivery",
   "title": "Deferred synthesized exceptions do not deliver to the SAME-FRAME catch — LAWS IMPLEMENTED (CONT-71, env-gated MINIANDROID_F368_LAW): the subtype-table extension (reflective + java.net + concurrent + android families, OpenJDK/AOSP documented parents) plus the in-frame delivery make the typed catch(Exception) at CoordinatorLayout.getResolvedLayoutParams pc=67 match (row 'deferred handler @0x53 type=Ljava/lang/Exception;'; the app's own 'Default behavior class null could not be instantiated' LOG line proves the app catch RAN). Activation status: F368-only -> memory blank 6da289aa (the completed onMeasure's children are unmeasured); F368+MCM pair -> memory face c559b630 == record (the full chain completes correctly) while opencalc diverges (F-NEW-374). Default binary keeps the law OFF pending the per-container trust lever. CONT-120 LANDED DEFAULT-ON (reflective subset): the five OpenJDK java.lang reflective rows (NoSuchMethodException/NoSuchFieldException/InstantiationException/IllegalAccessException/InvocationTargetException → ReflectiveOperationException) moved into the UNCONDITIONAL kBuiltinExcParent table — the memory app F106-CTOR NoSuchMethodException now delivers in-frame in the DEFAULT binary (deferred handler @0x53 type=Exception; the app own-log line \"Default behavior class null could not be instantiated\" proves the app catch RAN; F106-CTOR uncaught count 0, was ×24). Face 6da289aab14d2256 reproduces CONT-71's F368-only activation byte-for-byte across binary+container; 9/9 wall anchors zero drift (narrower than the full-pair activation — opencalc does NOT diverge). Full visual completion still pending the F-NEW-374 MCM lever — PARTIAL stands honestly.",
-  "evidence": "evidence/cont71/cont71_evidence.json; run/s71/activation_f368only (delivery row 'deferred handler @0x53 type=Exception' + the app's own 'Default behavior class null' LOG line = the app catch RAN; face 6da289aa = the honest Law-A-only activation status); run/s71/activation_full (pair active: memory face c559b630 == record, opencalc 3e73a5ad = the honest divergence)  run/c120/memory_fixed.log (delivery row + app own-log line + F106-CTOR uncaught=0); run/c120/memory_fixed/screenshot.png face 6da289aab14d2256 == the CONT-71 activation_f368only face; run/c120/battery.log 9/9 ANCHOR_MATCH.",
+  "evidence": "evidence/cont71/cont71_evidence.json; run/s71/activation_f368only (delivery row 'deferred handler @0x53 type=Exception' + the app's own 'Default behavior class null' LOG line = the app catch RAN; face 6da289aa = the honest Law-A-only activation status); run/s71/activation_full (pair active: memory face c559b630 == record, opencalc 3e73a5ad = the honest divergence)  run/c120/memory_fixed.log (delivery row + app own-log line + F106-CTOR uncaught=0); run/c120/memory_fixed/screenshot.png face 6da289aab14d2256 == the CONT-71 activation_f368only face; run/c120/battery.log 9/9 ANCHOR_MATCH. || CONT-141 wave-4 at HEAD 7f60d792: kept — same-frame deferred-exc delivery: needs dedicated probe. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "probe": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk",
-  "verified_current": true
+  "verified_current": true,
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-369",
@@ -6366,9 +6391,9 @@
   "priority": "P1",
   "layer": "dex/view-measure (CoordinatorLayout child spec law)",
   "title": "CoordinatorLayout.onMeasure DEX-COMPLETION measure chain — LAWS IMPLEMENTED (CONT-71, env-gated MINIANDROID_MCM_LAW) after full first-divergence decode vs the fetched androidx/AOSP sources: (1) ViewGroup.measureChildWithMargins had NO engine shadow — the child-negotiation call inside every real DEX container onMeasure silently no-op'd (children never measured); (2) View.resolveSizeAndState had NO engine shadow — the upstream answer law 'setMeasuredDimension(resolveSizeAndState(...))' answered 0 under EXACTLY specs (CoordinatorLayout 0x0). Both laws implemented (AOSP-verbatim math + F-NEW-328 LP-SOURCE + R-NEW-440 canonical child measure + ViewRootImpl spec-bounds gates); under the activated pair memory renders its record face. ACTIVATION BLOCKED by F-NEW-374 (opencalc SlidingUpPanelLayout incomplete-emulation divergence). Default OFF; the decode trail and the gated laws are the deliverable.",
-  "evidence": "evidence/cont71/cont71_evidence.json; run/s71/lawA_trace + run/s71/lawB_warm (CoordinatorLayout answers 0x0 -> 1080x1920 with the resolve law); docs/UPSTREAM_SOURCE_MINING.jsonl rows U-04..U-06 (androidx CoordinatorLayout.java onMeasure + ViewGroup.java measureChildWithMargins + View.java resolveSizeAndState fetched and cited); run/s71/gate2..gate6 decode trail",
+  "evidence": "evidence/cont71/cont71_evidence.json; run/s71/lawA_trace + run/s71/lawB_warm (CoordinatorLayout answers 0x0 -> 1080x1920 with the resolve law); docs/UPSTREAM_SOURCE_MINING.jsonl rows U-04..U-06 (androidx CoordinatorLayout.java onMeasure + ViewGroup.java measureChildWithMargins + View.java resolveSizeAndState fetched and cited); run/s71/gate2..gate6 decode trail || CONT-141 wave-4 at HEAD 7f60d792: kept — CoordinatorLayout DEX-COMPLETION measure chain: needs corpus artifact with CoordinatorLayout. Wall: 9/9 anchors byte-identical this session, negatives 19/19, gate A 98/0/1, skill 13/13.",
   "probe": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk",
-  "date": "2026-10-15"
+  "date": "2026-10-21"
  },
  {
   "id": "F-NEW-372",
