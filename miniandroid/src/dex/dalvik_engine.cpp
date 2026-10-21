@@ -27283,9 +27283,14 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
 // AOSP law: Build.VERSION.SDK_INT / Build.VERSION.RELEASE / Build.* and
 // Settings.Secure.ANDROID_ID are FRAMEWORK-provided statics — a real
 // device firmware defines them before any app code runs. MiniAndroid's
-// honest virtual identity tracks the android-34 stubs used by its
-// fixture toolchain (SDK_INT=34, RELEASE="14"). Insert-if-absent:
-// a real app <clinit> always wins over a seed.
+// honest virtual identity is Android 15 (SDK_INT=35, RELEASE="15") as of
+// F-NEW-473 (CONT-150): the corpus's compose-ui 1.7 apps draw their
+// content ONLY on a SDK>=35 device — AndroidComposeView.dispatchDraw's
+// content path is gated by a private static predicate p() compiled to
+// `SDK_INT >= 35` (byte-verified: Lt4;.p @dooz v23; on SDK<35 the recorded
+// GraphicsLayer pipeline (RenderNode) is the only content path, and this
+// software runtime implements the SDK>=35 dispatchDraw law instead).
+// Insert-if-absent: a real app <clinit> always wins over a seed.
 // Evidence: EXT-01 baseline (HelloWorldSelfAware) — AndroidInfo.getId()
 // read SDK_INT=0, took the pre-O Build.SERIAL branch and rendered
 // "i'm null"; with this seed it takes the Settings.Secure ANDROID_ID
@@ -27300,10 +27305,10 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
         // framework metadata the engine models with this seed registry).
         framework_declared_fields_.insert(key);
     };
-    seed("Landroid/os/Build$VERSION;.SDK_INT", DalvikValue::make_int(34));
-    seed("Landroid/os/Build$VERSION;.RELEASE", DalvikValue::make_string("14", 0));
+    seed("Landroid/os/Build$VERSION;.SDK_INT", DalvikValue::make_int(35));
+    seed("Landroid/os/Build$VERSION;.RELEASE", DalvikValue::make_string("15", 0));
     seed("Landroid/os/Build$VERSION;.CODENAME", DalvikValue::make_string("REL", 0));
-    seed("Landroid/os/Build$VERSION;.SDK", DalvikValue::make_string("34", 0));
+    seed("Landroid/os/Build$VERSION;.SDK", DalvikValue::make_string("35", 0));
     seed("Landroid/os/Build$VERSION;.INCREMENTAL", DalvikValue::make_string("miniandroid.20260905", 0));
     seed("Landroid/os/Build;.MODEL", DalvikValue::make_string("MiniAndroid", 0));
     seed("Landroid/os/Build;.MANUFACTURER", DalvikValue::make_string("MiniAndroid", 0));
@@ -27311,14 +27316,14 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
     seed("Landroid/os/Build;.DEVICE", DalvikValue::make_string("miniandroid", 0));
     seed("Landroid/os/Build;.PRODUCT", DalvikValue::make_string("miniandroid", 0));
     seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
-    seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:14/MINI.20260905/0:userdebug/test-keys", 0));
+    seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:15/MINI.20260905/0:userdebug/test-keys", 0));
     seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
     // F-NEW-190 (FINAL CAMPAIGN PHASE 4 — device/context identity, AOSP
     // Build ABI law): Build.SUPPORTED_ABIS / SUPPORTED_64_BIT_ABIS /
     // SUPPORTED_32_BIT_ABIS / CPU_ABI / CPU_ABI2 are framework statics fed
     // from ro.product.cpu.abilist on a real device — NEVER null/empty on
-    // any Android build. The runtime models an arm64 android-34 device
-    // (SDK_INT=34 + fingerprint above); the list follows the AOSP
+    // any Android build. The runtime models an arm64 android-35 device
+    // (SDK_INT=35 + fingerprint above); the list follows the AOSP
     // emulator-equivalent arm64 primary order. Measured face (WhatsApp
     // LX/0Cz;.A01 ×3): the app's own ABI utility threw ISE "No supported
     // ABIs found on this device" — the absent static made its fallback
