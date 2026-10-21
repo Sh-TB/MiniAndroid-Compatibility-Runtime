@@ -139,16 +139,18 @@
   {
     "id": "R-NEW-018",
     "title": "R-NEW-018: no Parcel substrate",
-    "status": "UNPROVEN",
+    "status": "CLASSIFIED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134 probe at HEAD 0ee5b568: Parcel substrate REFERENCES exist at HEAD (miniandroid/src/framework/view_ancestry.h, dalvik_engine.cpp/.h) — the blanket absence claim is refuted; full Parcel marshalling law remains unproven by a live trace (named lever: Parcel fixture probe, fixture-first)."
   },
   {
     "id": "R-NEW-019",
     "title": "R-NEW-019: no Parcel substrate",
-    "status": "UNPROVEN",
+    "status": "CLASSIFIED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134 probe at HEAD 0ee5b568: same substrate state as R-NEW-018 (view_ancestry.h + engine references present); unproven live; named lever: Parcel fixture probe pair."
   },
   {
     "id": "R-NEW-020",
@@ -313,9 +315,10 @@
   {
     "id": "R-NEW-040",
     "title": "R-NEW-040: no trace (RESEARCHED, audit M-family)",
-    "status": "UNPROVEN",
+    "status": "CLASSIFIED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134: the row is an audit M-family RESEARCH conclusion (no runtime claim to probe); terminal as research record, wall-anchored at HEAD 0ee5b568."
   },
   {
     "id": "R-NEW-041",
@@ -671,9 +674,10 @@
   {
     "id": "R-NEW-084",
     "title": "R-NEW-084: no scheme matrix",
-    "status": "UNPROVEN",
+    "status": "CLASSIFIED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134 probe: content:// dispatch code exists at HEAD (android_shadows.cpp, dalvik_engine.cpp — provider query-Cursor dispatch law); the multi-SCHEME matrix remains unproven (named lever: scheme matrix fixture battery)."
   },
   {
     "id": "R-NEW-085",
@@ -1043,9 +1047,10 @@
   {
     "id": "R-NEW-133",
     "title": "R-NEW-133: no in-memory DEX trace",
-    "status": "UNPROVEN",
+    "status": "CONFIRMED_OPEN_GAP",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134 probe at HEAD 0ee5b568: ZERO InMemoryDexClassLoader references in miniandroid/src/ — the gap is real and source-proven; named lever: InMemoryDexClassLoader shadow law (load DEX from byte[] buffer)."
   },
   {
     "id": "R-NEW-134",
@@ -1071,9 +1076,10 @@
   {
     "id": "R-NEW-137",
     "title": "R-NEW-137: no metadata parser",
-    "status": "UNPROVEN",
+    "status": "ROOT-CAUSED-FIXED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134: metadata parser LANDED (F-116/R-NEW-384 meta-data capture in manifest_reader.cpp, component-keyed + application-level, resource-id Bundle law) and VERIFIED LIVE in CONT-132 stopwatch evidence: [371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=3 + [CTX-F136] getString androidx.startup — the parser parses, stores, and serves."
   },
   {
     "id": "R-NEW-138",
@@ -1092,9 +1098,10 @@
   {
     "id": "R-NEW-140",
     "title": "R-NEW-140: no resource-shrunk trace",
-    "status": "UNPROVEN",
+    "status": "BLOCKED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134: corpus contains NO resource-shrunk APK (artifact property); the claim cannot be exercised without an artifact — honest BLOCKED pending corpus addition, no fabrication."
   },
   {
     "id": "R-NEW-141",
@@ -1965,9 +1972,10 @@
   {
     "id": "R-NEW-247",
     "title": "R-NEW-247: no RecyclerView corpus demand",
-    "status": "UNPROVEN",
+    "status": "CLASSIFIED",
     "priority": "P3",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134: notes_secuso_105/memory APKs contain RecyclerView classes (dex refs verified) — demand EXISTS in corpus; live dispatch trace pending (notes log c129 rendered d0a40904 rc=1); named lever: RecyclerView trace during notes run."
   },
   {
     "id": "R-NEW-248",
@@ -2224,9 +2232,10 @@
   {
     "id": "R-NEW-281",
     "title": "R-NEW-281: Known gap (M9-B analysis)",
-    "status": "UNPROVEN",
+    "status": "CLASSIFIED",
     "priority": "P1",
-    "layer": null
+    "layer": null,
+    "evidence": "CONT-134: M9-B analysis conclusion row — terminal as analysis record, wall-anchored at HEAD 0ee5b568."
   },
   {
     "id": "R-NEW-282",
