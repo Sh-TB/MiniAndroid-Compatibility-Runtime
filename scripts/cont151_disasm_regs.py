@@ -22,7 +22,7 @@ def uleb(b, o):
 SIZES = [2]*256
 for op in range(0x00, 0x08): SIZES[op] = 1   # nop/move-family 12x + returns
 SIZES[0x0f]=1; SIZES[0x10]=1; SIZES[0x11]=1; SIZES[0x12]=1
-SIZES[0x08]=2; SIZES[0x09]=2; SIZES[0x0a]=2; SIZES[0x0e]=2  # move/from16 22x
+SIZES[0x08]=2; SIZES[0x09]=2; SIZES[0x0a]=1; SIZES[0x0e]=1  # 22x moves=2; move-result/return-void=1
 SIZES[0x0b]=1; SIZES[0x0c]=1; SIZES[0x0d]=1
 SIZES[0x1d]=1; SIZES[0x1e]=1; SIZES[0x21]=1; SIZES[0x27]=1; SIZES[0x28]=1
 for op in range(0x7b, 0x90): SIZES[op] = 1
@@ -138,10 +138,10 @@ for DEXNAME in DEXES:
         line = f'  {pc:4d}: '
         if op in (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x0b,0x0c,0x0d):
             line += f'op{op:02x} v{A}, v{B}'
-        elif op in (0x08,0x09,0x0a,0x0e):
+        elif op in (0x08,0x09):
             v16 = struct.unpack_from('<H', dex, base + pc*2 + 2)[0]
             line += f'op{op:02x} v{AA}, v{v16}'
-        elif op in (0x0f,0x10,0x11):
+        elif op in (0x0a,0x0e,0x0f,0x10,0x11):
             line += f'return v{AA}'
         elif op == 0x12:
             line += f'const/4 v{A}, #{B-16 if B>7 else B}'
