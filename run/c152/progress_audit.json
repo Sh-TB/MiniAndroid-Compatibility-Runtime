@@ -1,0 +1,431 @@
+{
+ "crossings": [
+  {
+   "app": "bouncy",
+   "rc": [
+    1,
+    0
+   ],
+   "face": [
+    "8a6c24ac8a7d718e",
+    "8a6c24ac8a7d718e"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "CLEAN(rc=0,no-exc)"
+   ],
+   "kind": "CLEAN_EXIT_JOINED"
+  },
+  {
+   "app": "tictactoe",
+   "rc": [
+    139,
+    1
+   ],
+   "face": [
+    "NO_SCREENSHOT",
+    "b5a7a35d5fe0564b"
+   ],
+   "class": [
+    "NATIVE_SIGSEGV",
+    "DEFAULT_BG_FACE(cross-app boundary face)"
+   ],
+   "kind": "NATIVE_CRASH_DEFUSED"
+  }
+ ],
+ "deltas": [
+  {
+   "app": "chess",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "a0319686d56ff5c0",
+    "a0319686d56ff5c0"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "chessclock",
+   "rc": [
+    0,
+    0
+   ],
+   "face": [
+    "fe3ae1167c9e968c",
+    "fe3ae1167c9e968c"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "CLEAN(rc=0,no-exc)"
+   ],
+   "kind": "CLEAN_STABLE"
+  },
+  {
+   "app": "dooz",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "d602648e8e401895",
+    "d602648e8e401895"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "flappycow",
+   "rc": [
+    0,
+    0
+   ],
+   "face": [
+    "13cf47464d9787f4",
+    "13cf47464d9787f4"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "CLEAN(rc=0,no-exc)"
+   ],
+   "kind": "CLEAN_STABLE"
+  },
+  {
+   "app": "forkgram",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "a4b34d2535a71f1d",
+    "31ddd4d5b8e6d18e"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "BOUNDARY_LOOP(UPP-001 dlopen)"
+   ],
+   "kind": "FACE_ADVANCED"
+  },
+  {
+   "app": "gmdice",
+   "rc": [
+    0,
+    0
+   ],
+   "face": [
+    "3891679dff449331",
+    "3891679dff449331"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "memory",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "3a3ba8734b662e55",
+    "807a0ccaf9b30d99"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "FACE_ADVANCED"
+  },
+  {
+   "app": "microtimer",
+   "rc": [
+    0,
+    0
+   ],
+   "face": [
+    "bbd350b6c14fbd52",
+    "bbd350b6c14fbd52"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "CLEAN(rc=0,no-exc)"
+   ],
+   "kind": "CLEAN_STABLE"
+  },
+  {
+   "app": "notes",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "d0a409043ffc83a7",
+    "d0a409043ffc83a7"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "opencalc",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "d5f3c7b5e9936ae6",
+    "d5f3c7b5e9936ae6"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "opmt",
+   "rc": [
+    0,
+    0
+   ],
+   "face": [
+    "548a2d91ef9892fb",
+    "548a2d91ef9892fb"
+   ],
+   "class": [
+    "PARTIAL_UI",
+    "CLEAN(rc=0,no-exc)"
+   ],
+   "kind": "CLEAN_STABLE"
+  },
+  {
+   "app": "sudoku",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "be640e39e82901c9",
+    "be640e39e82901c9"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "telegram",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "20ac8cbbbb692e63",
+    "20ac8cbbbb692e63"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "tower3d",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "11a38a5aeeff45a6",
+    "11a38a5aeeff45a6"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "RENDER+deferred-exc"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "unote",
+   "rc": [
+    0,
+    0
+   ],
+   "face": [
+    "90a67cc1ddda57b7",
+    "90a67cc1ddda57b7"
+   ],
+   "class": [
+    "STABLE_FACE",
+    "CLEAN(rc=0,no-exc)"
+   ],
+   "kind": "CLEAN_STABLE"
+  }
+ ],
+ "residuals": [
+  {
+   "app": "fishrings",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "b5a7a35d5fe0564b",
+    "b5a7a35d5fe0564b"
+   ],
+   "class": [
+    "DEFAULT_BACKGROUND_ONLY",
+    "DEFAULT_BG_FACE(cross-app boundary face)"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "klondike",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "31ddd4d5b8e6d18e",
+    "31ddd4d5b8e6d18e"
+   ],
+   "class": [
+    "DEFAULT_BACKGROUND_ONLY",
+    "DEFAULT_BG_FACE(cross-app boundary face)"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "stopwatch",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "31ddd4d5b8e6d18e",
+    "31ddd4d5b8e6d18e"
+   ],
+   "class": [
+    "DEFAULT_BACKGROUND_ONLY",
+    "DEFAULT_BG_FACE(cross-app boundary face)"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "tripeaks",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "b5a7a35d5fe0564b",
+    "b5a7a35d5fe0564b"
+   ],
+   "class": [
+    "DEFAULT_BACKGROUND_ONLY",
+    "DEFAULT_BG_FACE(cross-app boundary face)"
+   ],
+   "kind": "STABLE"
+  },
+  {
+   "app": "whatsapp",
+   "rc": [
+    1,
+    1
+   ],
+   "face": [
+    "NO_SCREENSHOT",
+    "NO_SCREENSHOT"
+   ],
+   "class": [
+    "ARTIFACT_DEFECTIVE",
+    "ARTIFACT_DEFECTIVE"
+   ],
+   "kind": "STABLE"
+  }
+ ],
+ "registry": {
+  "total": 793,
+  "fixed_family_strict": 594,
+  "fixed_family_pct": 74.9,
+  "closed_terminal_nonfix": 132,
+  "open_ish": 56,
+  "raw_breakdown": {
+   "ROOT-CAUSED-FIXED": 296,
+   "VERIFIED-CORRECT": 155,
+   "VERIFIED-FIXED": 50,
+   "STALE_OR_SUPERSEDED": 48,
+   "NOT-APPLICABLE": 44,
+   "IMPLEMENTED": 37,
+   "SUPERSEDED-BY-EVIDENCE": 35,
+   "IMPLEMENTED+TESTED": 27,
+   "PARTIAL": 24,
+   "CLASSIFIED": 22,
+   "ROOT_CAUSED_FIXED": 18,
+   "USED_BY_EXECUTION": 7,
+   "ROOT-CAUSED-PARTIAL": 5,
+   "INFRA-LANDED": 4,
+   "ALREADY_FIXED_AND_TESTED": 3,
+   "ROOT-CAUSED-CLOSED": 3,
+   "VERIFIED": 3,
+   "OBSERVED": 3,
+   "DUPLICATE-SUPERSEDED": 3,
+   "BLOCKED": 2,
+   "REJECTED_WITH_REASON": 2,
+   "TESTED": 1,
+   "ROOT-CAUSED-FIXED (manifestation 1) / SUPERSEDED (2) / BLOCKED (3)": 1
+  },
+  "partial_now": 24,
+  "blocked_now": 2,
+  "confirmed_open_gap_now": 0
+ },
+ "commits_since_1019": {
+  "total": 48,
+  "by_day": {
+   "2026-10-20": 23,
+   "2026-10-21": 25
+  }
+ },
+ "battery_totals_now": {
+  "apps_run": 22,
+  "rc0": 7,
+  "zero_exc": 11,
+  "rendered_face": 21,
+  "clean": 6
+ },
+ "s57_anchor_advancement": {
+  "opencalc": [
+   "a976d2f9",
+   "d5f3c7b5"
+  ],
+  "unote": [
+   "4f1a9e4e",
+   "90a67cc1"
+  ],
+  "chess": [
+   "b5a7a35d",
+   "a0319686"
+  ],
+  "microtimer": [
+   "da73010a",
+   "bbd350b6"
+  ],
+  "dooz": [
+   "d602648e (frozen by design frontier)",
+   "d602648e"
+  ]
+ }
+}
