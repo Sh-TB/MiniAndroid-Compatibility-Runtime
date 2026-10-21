@@ -2728,6 +2728,15 @@ public:
     // subset). Side table: heap object id -> in-memory dex class set.
     std::map<uint32_t, std::set<std::string>> inmemory_dex_class_tables_;
 
+    // R-NEW-018/019 (CONT-138): android.os.Parcel marshalling law.
+    // AOSP Parcel is an ordered typed record stream: writeX appends a
+    // tagged record and advances the write position; readX consumes from
+    // the independent read position (setDataPosition moves it). The engine
+    // subset records values in a side table keyed by the parcel object id
+    // (read position lives in the heap field __parcel_rpos__). Binder wire
+    // format (marshall() byte layout) is NOT reproduced — recorded honestly.
+    std::map<uint32_t, std::vector<DalvikValue>> parcel_records_;
+
     // EXP-042 Phase 4: Singleton cache for Android framework objects.
     // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
     // Value: heap object ID. Returns the same heap object across all calls,

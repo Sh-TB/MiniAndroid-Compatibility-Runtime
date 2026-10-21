@@ -139,18 +139,20 @@
  {
   "id": "R-NEW-018",
   "title": "R-NEW-018: no Parcel substrate",
-  "status": "CLASSIFIED",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
   "layer": null,
-  "evidence": "CONT-134 probe at HEAD 0ee5b568: Parcel substrate REFERENCES exist at HEAD (miniandroid/src/framework/view_ancestry.h, dalvik_engine.cpp/.h) — the blanket absence claim is refuted; full Parcel marshalling law remains unproven by a live trace (named lever: Parcel fixture probe, fixture-first)."
+  "evidence": "CONT-138 PROVEN+TESTED at HEAD b5958f4d+engine: android.os.Parcel marshalling law landed (dalvik_engine bridge) — obtain/writeInt/writeLong/writeString/writeFloat/writeDouble/writeByte/writeByteArray append typed records; readX consumes from the independent read position (__parcel_rpos__); setDataPosition/dataPosition/dataSize/recycle per AOSP; past-end readX follows native JNI behavior (0 for numerics, null string). Fixture-first: fixtures/fnew475_probe (real aapt2/ECJ/D8 toolchain, apk sha16 b263e8e3aae7642b) — probe 8/8 assertions: SIZE-OK 4, POS0-OK, INT-OK 42, LONG-OK 1234567890123, STRING-OK parcel-law, FLOAT-OK 2.5, POS4-OK, PASTEND-OK 0. Honest scope: the ordered typed-record + independent-read-position law is what Parcel's Java contract exposes; the native binder WIRE byte format (marshall()) is NOT reproduced (recorded). Zero-drift wall after the law: 9/9 anchors byte-identical. R-NEW-019: same law serves the pair (one substrate, one probe family).",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-019",
   "title": "R-NEW-019: no Parcel substrate",
-  "status": "CLASSIFIED",
+  "status": "VERIFIED-CORRECT",
   "priority": "P3",
   "layer": null,
-  "evidence": "CONT-134 probe at HEAD 0ee5b568: same substrate state as R-NEW-018 (view_ancestry.h + engine references present); unproven live; named lever: Parcel fixture probe pair."
+  "evidence": "CONT-138 PROVEN+TESTED at HEAD b5958f4d+engine: android.os.Parcel marshalling law landed (dalvik_engine bridge) — obtain/writeInt/writeLong/writeString/writeFloat/writeDouble/writeByte/writeByteArray append typed records; readX consumes from the independent read position (__parcel_rpos__); setDataPosition/dataPosition/dataSize/recycle per AOSP; past-end readX follows native JNI behavior (0 for numerics, null string). Fixture-first: fixtures/fnew475_probe (real aapt2/ECJ/D8 toolchain, apk sha16 b263e8e3aae7642b) — probe 8/8 assertions: SIZE-OK 4, POS0-OK, INT-OK 42, LONG-OK 1234567890123, STRING-OK parcel-law, FLOAT-OK 2.5, POS4-OK, PASTEND-OK 0. Honest scope: the ordered typed-record + independent-read-position law is what Parcel's Java contract exposes; the native binder WIRE byte format (marshall()) is NOT reproduced (recorded). Zero-drift wall after the law: 9/9 anchors byte-identical. R-NEW-019: same law serves the pair (one substrate, one probe family).",
+  "date": "2026-10-21"
  },
  {
   "id": "R-NEW-020",
