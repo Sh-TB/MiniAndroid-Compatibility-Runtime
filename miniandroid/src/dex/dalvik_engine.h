@@ -2718,6 +2718,16 @@ public:
     // never returns null for APK classes; single-APK subset = one loader).
     uint32_t classloader_singleton_id_ = 0;
 
+    // R-NEW-133 (CONT-137): dalvik.system.InMemoryDexClassLoader law.
+    // AOSP: InMemoryDexClassLoader(ByteBuffer/ByteBuffer[], ClassLoader)
+    // loads classes from a DEX image held in memory (child-first, then
+    // parent). Engine subset: <init> scans the buffer bytes (dex header ->
+    // string_ids/type_ids/class_defs) and records the class descriptors
+    // per loader object; loadClass(name) resolves buffer-dex classes FIRST,
+    // then falls through to the primary dex table (single-APK parent-chain
+    // subset). Side table: heap object id -> in-memory dex class set.
+    std::map<uint32_t, std::set<std::string>> inmemory_dex_class_tables_;
+
     // EXP-042 Phase 4: Singleton cache for Android framework objects.
     // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
     // Value: heap object ID. Returns the same heap object across all calls,

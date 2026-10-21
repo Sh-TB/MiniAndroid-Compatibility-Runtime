@@ -1,0 +1,490 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=0
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=0
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=19
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=20
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=miniandroid/build/fixtures/fnew474_probe.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 49 entries (1 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.miniandroid.f474.MainActivity'
+[U007-RES] ResourceRuntime loaded: miniandroid/build/fixtures/fnew474_probe.apk named_ids=0 types=0
+[ARSC-VALUES] apk=miniandroid/build/fixtures/fnew474_probe.apk strings=0 colors=0 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=3)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/miniandroid/f474/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/miniandroid/f474/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/miniandroid/f474/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/miniandroid/f474/MainActivity;.<init> insns=2 RSS=19.4297 MB
+[TRY-ENTRY] Lcom/miniandroid/f474/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/miniandroid/f474/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/miniandroid/f474/MainActivity;' id=15
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/miniandroid/f474/MainActivity;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=1 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/miniandroid/f474/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/f474/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP062-INIT] Lcom/miniandroid/f474/MainActivity; static_fields=1 with_defaults=1
+[TRY-ENTRY] Lcom/miniandroid/f474/MainActivity;.hexBytes dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.length dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[TRY-ENTRY] Ljava/lang/String;.charAt dex_report=YES
+[TRY-ENTRY] Ljava/lang/Character;.digit dex_report=YES
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[REC-MISS] Ljava/lang/Character;.digit caller=Lcom/miniandroid/f474/MainActivity;.hexBytes
+[MEM] method_exit: Lcom/miniandroid/f474/MainActivity;.hexBytes insns=13615 RSS=20.9375 MB
+[SGET] class=Lcom/miniandroid/f474/MainActivity; method=onCreate pc=9 field=Ljava/lang/System;.out obj_id=17
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.wrap argc=1 caller=Lcom/miniandroid/f474/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClassLoader class=Lcom/miniandroid/f474/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClassLoader class=Landroid/app/Activity;
+[R133-BRIDGE] entered bridge_to_api class=Ldalvik/system/InMemoryDexClassLoader; method=<init> argc=3
+[R133-IMDCL] init obj#20 dex_bytes=756 magic=OK b0..3=100,101,120,10 classes=1 argc=3 a2type=7#21
+[R133-BRIDGE] entered bridge_to_api class=Ldalvik/system/InMemoryDexClassLoader; method=loadClass argc=2
+[R133-IMDCL] loadClass "com.miniandroid.f474.Payload" -> buffer-dex HIT
+[SGET] class=Lcom/miniandroid/f474/MainActivity; method=onCreate pc=48 field=Ljava/lang/System;.out obj_id=17
+[R133-BRIDGE] entered bridge_to_api class=Ldalvik/system/InMemoryDexClassLoader; method=loadClass argc=2
+[SYNTH-EXC] R133-IMDCL (deferred): Ljava/lang/ClassNotFoundException; (com.miniandroid.f474.Absent) method=Lcom/miniandroid/f474/MainActivity;.onCreate pc=73 → deferred handler @0x0x54 type=Ljava/lang/ClassNotFoundException;
+[SGET] class=Lcom/miniandroid/f474/MainActivity; method=onCreate pc=85 field=Ljava/lang/System;.out obj_id=17
+[SGET] class=Lcom/miniandroid/f474/MainActivity; method=onCreate pc=108 field=Ljava/lang/System;.out obj_id=17
+[R133-BRIDGE] entered bridge_to_api class=Ldalvik/system/InMemoryDexClassLoader; method=getParent argc=1
+[SGET] class=Lcom/miniandroid/f474/MainActivity; method=onCreate pc=136 field=Ljava/lang/System;.out obj_id=17
+[C86-BRIDGE] Ljava/nio/ByteBuffer;.remaining argc=1 caller=Lcom/miniandroid/f474/MainActivity;.onCreate
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/miniandroid/f474/MainActivity; runtime_class=Lcom/miniandroid/f474/MainActivity;
+[G07-LIFECYCLE] Lcom/miniandroid/f474/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/miniandroid/f474/MainActivity; runtime_class=Lcom/miniandroid/f474/MainActivity;
+[G07-LIFECYCLE] Lcom/miniandroid/f474/MainActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=1 nodes=0 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=46
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=48
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=183
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=2 dir=run/c137/f474/frames
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
