@@ -23054,17 +23054,58 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
-        // ── CONT-127 (F-NEW-471 SLICE 1): RESOLUTION-GAP LOUD LAW ──────────
-        // When a super-call's declaring class + method exist in the DEX
-        // method_ids table (byte-truth) but try_recursive_invoke found no
-        // parsed DEX body to dispatch, the call falls to the shadow bridge
-        // SILENTLY. ART would have linked the real body; a silent shadow
-        // fallback hides class-data parse gaps (live face: tictactoe v3,
-        // AndroidApplication.onCreate — method_ids[1184] exists, the
-        // engine's parsed table has 52 methods without it, the super-call
-        // fell to the Activity shadow, Gdx.app never got its onCreate-time
-        // assignment, and AndroidLauncher.onCreate died on the
-        // Gdx.app.log NPE). Name the gap AT the call site, bounded.
+        // ── CONT-130 (F-NEW-471 SLICE 2): SUPERCLASS-CHAIN SUPER RESOLUTION ─
+        // Byte-level ground truth (scripts/cont130_dex_truth.py, tictactoe v3
+        // classes.dex, class_def[1563] @ class_data_off 0x3185fe): the
+        // engine's class_data walk is BYTE-EXACT (DM diffs 1135/1/38 =
+        // <clinit>/<init>/init; 49 VM diffs resolving 1137..1196 with 1184
+        // SKIPPED by the encoded diff stream — the dex genuinely does NOT
+        // declare AndroidApplication.onCreate while method_ids[1184]
+        // references it for the invoke-super in AndroidLauncher.onCreate).
+        // That is a NORMAL dex shape: a method_ids entry is a REFERENCE
+        // pool slot, not a declaration; ART resolves the super-call by
+        // walking the superclass chain (JVMS 5.4.3.3) — an app-parsed
+        // ancestor's body if one declares it, else the first framework
+        // ancestor (the F-NEW-324 boundary, already landed). The engine's
+        // super path only tried the EXACT declaring class, so a
+        // declared-ancestor super-call silently shadow-fallbacked.
+        // LAW: after the exact-class miss, walk the app-parsed superclass
+        // chain (the F-074/S21 walker, receiver identity preserved,
+        // 16-hop cap) BEFORE the shadow bridge. Strictly closer to ART:
+        // only reachable when the exact class missed, and a chain hit is
+        // a real DEX body the old path never ran. Framework-bottomed
+        // chains (tictactoe AndroidApplication→Activity) still resolve
+        // through the F-NEW-324 boundary law — unchanged byte path.
+        if (try_recursive_invoke_on_super(declaring_class, method_name, args,
+                                          return_val, result, proto_35c)) {
+            last_invoke_return_ = return_val;
+            recursively_invoked = true;
+            api_status = ApiCallTrace::Status::IMPLEMENTED;
+            static std::atomic<uint64_t> f471_chain_n{0};
+            if (f471_chain_n.fetch_add(1, std::memory_order_relaxed) < 40) {
+                std::cerr << "[F-NEW-471-SUPER-CHAIN] super-call "
+                          << declaring_class << "." << method_name
+                          << " not declared locally; dispatched via"
+                          << " app-parsed superclass chain (ART 5.4.3.3)"
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+    }
+    if (!recursively_invoked && config_.enable_api_bridge) {
+        // ── CONT-127 (F-NEW-471 SLICE 1) + CONT-130 RECLASSIFICATION ────────
+        // Byte truth (cont130_dex_truth.py): method_ids is a REFERENCE pool,
+        // not a declaration table — a reference whose class declares no such
+        // method in class_data is a NORMAL dex shape resolved by superclass
+        // resolution, NOT evidence of a parse desync. The engine's
+        // class_data walk was re-verified byte-exact for tictactoe v3
+        // (class_def[1563]: 3 DM + 49 VM, diffs self-consistent, names
+        // addAndroidEventListener..useImmersiveMode — onCreate omitted by
+        // the dex itself). After SLICE 2's chain walk, reaching this point
+        // means the whole app-parsed chain lacks a body: the call resolves
+        // onto the first FRAMEWORK ancestor (F-NEW-324 boundary law below)
+        // — the ART-equivalent shadow target. This log now DOCUMENTS that
+        // resolution (bounded); it no longer claims a parse gap.
         if (dex_report_) {
             const auto& mre = method_resolve_entry(current_dex_index_,
                                                    method_idx);
@@ -23074,8 +23115,10 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
                     std::cerr << "[F-NEW-471-RES-GAP] super-call "
                               << declaring_class << "." << method_name
                               << " method_id=" << method_idx
-                              << " exists in method_ids but no parsed DEX"
-                              << " body dispatched (shadow bridge fallback)"
+                              << " has no declaration in class_data or any"
+                              << " app-parsed superclass (reference-only"
+                              << " method_ids slot) — framework-boundary"
+                              << " shadow dispatch (ART-equivalent)"
                               << " caller=" << current_class_ << "."
                               << current_method_ << std::endl;
                 }
