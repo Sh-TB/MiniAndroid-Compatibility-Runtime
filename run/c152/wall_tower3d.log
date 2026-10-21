@@ -1,5 +1,5 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=151
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=116
 [EXP062-SV] parse_static_values for Landroidx/core/R$attr; offset=0x59fe37 static_fields=17 with_defaults=0
 [EXP062-SV-DONE] Landroidx/core/R$attr; with_defaults=17/17
 [EXP062-SV] parse_static_values for Landroidx/core/R$color; offset=0x59fe8d static_fields=6 with_defaults=0
@@ -34,9 +34,9 @@
 [EXP062-SV-DONE] Lstack/tower3d/R$string; with_defaults=1/1
 [EXP062-SV] parse_static_values for Lstack/tower3d/R$style; offset=0x5a2adf static_fields=1 with_defaults=0
 [EXP062-SV-DONE] Lstack/tower3d/R$style; with_defaults=1/1
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=313
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=333
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=349
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=273
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=294
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=311
 [S123-ACTION-REG] activities=1 action_targets=1
 FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 4387 entries (4339 from APK + 48 framework) — LinearLayout present: YES
@@ -52,7 +52,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
 [TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
 [REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
-[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=83.8789 MB
+[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=84.2461 MB
 [371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=1
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
@@ -62,9 +62,9 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP062-INIT] Landroidx/startup/AppInitializer; static_fields=3 with_defaults=1
 [CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> bytecode_size=8
 [TRY-ENTRY] Landroidx/startup/AppInitializer;.<clinit> dex_report=YES
-[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=25
+[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=25
 [TRY-ENTRY] Landroidx/startup/AppInitializer;.getInstance dex_report=YES
-[SGET-MISS] key=Landroidx/startup/AppInitializer;.sInstance storage_size=25 same_class_keys=2 engine=0x7ffead834d08 first=Landroidx/startup/AppInitializer;.SECTION_NAME
+[SGET-MISS] key=Landroidx/startup/AppInitializer;.sInstance storage_size=25 same_class_keys=2 engine=0x7ffd0f9bcb88 first=Landroidx/startup/AppInitializer;.SECTION_NAME
 [SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=0 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
 [SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=4 field=Landroidx/startup/AppInitializer;.sLock obj_id=18
 [SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=7 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
@@ -126,12 +126,12 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
 [EXP062-INIT] Lstack/tower3d/StackTowerGame; static_fields=18 with_defaults=16
 [CLASS_INIT] class=Lstack/tower3d/StackTowerGame; method=<clinit> bytecode_size=44
-[CLASS_INIT] class=Lstack/tower3d/StackTowerGame; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=48
+[CLASS_INIT] class=Lstack/tower3d/StackTowerGame; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=48
 [EXP062-INIT] Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; static_fields=3 with_defaults=2
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; method=<clinit> bytecode_size=17
 [CLASS_INIT] class=Lcom/badlogic/gdx/utils/Pools; method=<clinit> bytecode_size=8
 [CLASS_INIT] class=Lcom/badlogic/gdx/utils/ObjectMap; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/ObjectMap; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=51
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/ObjectMap; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=51
 [REC-MISS] Ljava/lang/Math;.ceil caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
 [REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
 [EXP062-INIT] Lcom/badlogic/gdx/math/MathUtils; static_fields=23 with_defaults=22
@@ -142,9 +142,9 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/util/Random;.nextLong caller=Lcom/badlogic/gdx/math/RandomXS128;.<init>
 [M3-LONG-PUT] field=Lcom/badlogic/gdx/math/RandomXS128;.seed0 caller=Lcom/badlogic/gdx/math/RandomXS128;.setState value=-8108722261328812909
 [M3-LONG-PUT] field=Lcom/badlogic/gdx/math/RandomXS128;.seed1 caller=Lcom/badlogic/gdx/math/RandomXS128;.setState value=-3316441345133366397
-[CLASS_INIT] class=Lcom/badlogic/gdx/math/MathUtils; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=76
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/MathUtils; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=76
 [REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Pools; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=77
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Pools; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=77
 [SGET] class=Lcom/badlogic/gdx/utils/Pools; method=get pc=0 field=Lcom/badlogic/gdx/utils/Pools;.typePools obj_id=51
 [REC-MISS] Ljava/lang/Class;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
 [REC-MISS] Ljava/lang/Object;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
@@ -153,10 +153,10 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/lang/Class;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
 [REC-MISS] Ljava/lang/Object;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/ObjectMap;->size" obj#51 cls=Lcom/badlogic/gdx/utils/ObjectMap; keys: Lcom/badlogic/gdx/utils/ObjectMap;->keyTable Lcom/badlogic/gdx/utils/ObjectMap;->loadFactor Lcom/badlogic/gdx/utils/ObjectMap;->mask Lcom/badlogic/gdx/utils/ObjectMap;->shift Lcom/badlogic/gdx/utils/ObjectMap;->threshold Lcom/badlogic/gdx/utils/ObjectMap;->valueTable caller=Lcom/badlogic/gdx/utils/ObjectMap;.put
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=78
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g2d/GlyphLayout; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=78
 [EXP062-INIT] Lcom/badlogic/gdx/math/Rectangle; static_fields=3 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/math/Rectangle; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Lcom/badlogic/gdx/math/Rectangle; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=81
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Rectangle; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=81
 [CLASS_INIT] class=Lstack/tower3d/StackTowerGame$State; method=<clinit> bytecode_size=37
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lstack/tower3d/StackTowerGame$State;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lstack/tower3d/StackTowerGame$State;.<init>
@@ -164,7 +164,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [SGET] class=Lstack/tower3d/StackTowerGame$State; method=$values pc=3 field=Lstack/tower3d/StackTowerGame$State;.READY obj_id=79
 [SGET] class=Lstack/tower3d/StackTowerGame$State; method=$values pc=8 field=Lstack/tower3d/StackTowerGame$State;.PLAYING obj_id=80
 [SGET] class=Lstack/tower3d/StackTowerGame$State; method=$values pc=13 field=Lstack/tower3d/StackTowerGame$State;.GAME_OVER obj_id=81
-[CLASS_INIT] class=Lstack/tower3d/StackTowerGame$State; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=85
+[CLASS_INIT] class=Lstack/tower3d/StackTowerGame$State; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=85
 [SGET] class=Lstack/tower3d/StackTowerGame; method=<init> pc=52 field=Lstack/tower3d/StackTowerGame$State;.READY obj_id=79
 [EXP062-INIT] Lcom/badlogic/gdx/math/Vector3; static_fields=6 with_defaults=5
 [CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector3; method=<clinit> bytecode_size=39
@@ -172,14 +172,14 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [CLASS_INIT] class=Lcom/badlogic/gdx/math/Matrix4; method=<clinit> bytecode_size=71
 [EXP062-INIT] Lcom/badlogic/gdx/math/Quaternion; static_fields=3 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/math/Quaternion; method=<clinit> bytecode_size=16
-[CLASS_INIT] class=Lcom/badlogic/gdx/math/Quaternion; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=116
-[CLASS_INIT] class=Lcom/badlogic/gdx/math/Matrix4; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=120
-[CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector3; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=121
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Quaternion; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=116
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Matrix4; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=120
+[CLASS_INIT] class=Lcom/badlogic/gdx/math/Vector3; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=121
 [SGET] class=Lcom/badlogic/gdx/backends/android/AndroidApplication; method=getVersion pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [EXP062-INIT] Lcom/badlogic/gdx/utils/GdxNativesLoader; static_fields=2 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=<clinit> bytecode_size=1
-[MEM] method_exit: Lcom/badlogic/gdx/utils/GdxNativesLoader;.<clinit> insns=1 RSS=232.227 MB
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=122
+[MEM] method_exit: Lcom/badlogic/gdx/utils/GdxNativesLoader;.<clinit> insns=1 RSS=233.738 MB
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=122
 [SGET] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=load pc=3 field=Lcom/badlogic/gdx/utils/GdxNativesLoader;.nativesLoaded value=0
 [SGET] class=Lcom/badlogic/gdx/utils/GdxNativesLoader; method=load pc=9 field=Lcom/badlogic/gdx/utils/GdxNativesLoader;.disableNativesLoading value=0
 [CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> bytecode_size=341
@@ -187,14 +187,14 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture$Bitness;.<init>
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture$Bitness; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=127
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture$Bitness; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=127
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=0 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._32 obj_id=105
 [CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> bytecode_size=54
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Architecture;.<init>
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=133
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Architecture; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=133
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=4 field=Lcom/badlogic/gdx/utils/Architecture;.x86 obj_id=109
 [REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
 [REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
@@ -204,7 +204,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/utils/Os;.<init>
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Os; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=140
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/Os; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=140
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=39 field=Lcom/badlogic/gdx/utils/Os;.Linux obj_id=115
 [REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
 [REC-MISS] Ljava/lang/System;.getProperty caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
@@ -234,7 +234,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> pc=318 field=Lcom/badlogic/gdx/utils/Architecture$Bitness;._64 obj_id=106
 [REC-MISS] Ljava/util/HashSet;.<init> caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
 [REC-MISS] Ljava/util/Random;.<init> caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.<clinit>
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=150
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=150
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=2 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.os obj_id=117
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=load pc=4 field=Lcom/badlogic/gdx/utils/Os;.IOS obj_id=118
 [SGET] class=Lcom/badlogic/gdx/utils/SharedLibraryLoader; method=isLoaded pc=3 field=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.loadedLibraries obj_id=120
@@ -252,14 +252,14 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/util/HashSet;.add caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.setLoaded
 [EXP062-INIT] Lcom/badlogic/gdx/backends/android/AndroidGraphics; static_fields=2 with_defaults=2
 [CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=<clinit> bytecode_size=1
-[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=152
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=152
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init>
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=1792610818884880528
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=1792612559756385186
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init>
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameStart caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=1792610818884908443
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameStart caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=1792612559756412741
 [M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameId caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.<init> value=-1
 [REC-MISS] Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
-[SGET-MISS] key=Ljavax/microedition/khronos/egl/EGL10;.EGL_DEFAULT_DISPLAY storage_size=152 same_class_keys=0 engine=0x7ffead834d08
+[SGET-MISS] key=Ljavax/microedition/khronos/egl/EGL10;.EGL_DEFAULT_DISPLAY storage_size=152 same_class_keys=0 engine=0x7ffd0f9bcb88
 [SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=checkGL20 pc=6 field=Ljavax/microedition/khronos/egl/EGL10;.EGL_DEFAULT_DISPLAY obj_id=0
 [REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
 [REC-MISS] Ljavax/microedition/khronos/egl/EGL10;.eglInitialize caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20
@@ -268,7 +268,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GdxEglConfigChooser; static_fields=4 with_defaults=4
 [EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; static_fields=3 with_defaults=2
 [CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<clinit> bytecode_size=1
-[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=159
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=159
 [REC-MISS] Landroid/opengl/GLSurfaceView;.<init> caller=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.<init>
 [CLASS_INIT] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=<clinit> bytecode_size=67
 [EXP061-NEW] new-instance Lcom/badlogic/gdx/Input$OnscreenKeyboardType; → v0 obj_id=139 pc=0 caller=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.<clinit>
@@ -289,15 +289,15 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=18 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Email obj_id=142
 [SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=23 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Password obj_id=143
 [SGET] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=$values pc=28 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.URI obj_id=144
-[CLASS_INIT] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=166
+[CLASS_INIT] class=Lcom/badlogic/gdx/Input$OnscreenKeyboardType; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=166
 [SGET] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; method=<init> pc=3 field=Lcom/badlogic/gdx/Input$OnscreenKeyboardType;.Default obj_id=139
 [EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; static_fields=1 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; method=<clinit> bytecode_size=1
-[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=168
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ContextFactory; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=168
 [C013-HIER] setEGLContextFactory dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
 [EXP062-INIT] Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; static_fields=2 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; method=<clinit> bytecode_size=32
-[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=170
+[CLASS_INIT] class=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$ConfigChooser; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=170
 [C013-HIER] setEGLConfigChooser dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
 [C013-HIER] setEGLConfigChooser dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
 [C013-HIER] setRenderer dispatched via superclass chain: Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; -> Landroid/opengl/GLSurfaceView; (declared=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; receiver=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;)
@@ -380,7 +380,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lcom/badlogic/gdx/Input$Orientation;.<init>
 [SGET] class=Lcom/badlogic/gdx/Input$Orientation; method=$values pc=3 field=Lcom/badlogic/gdx/Input$Orientation;.Landscape obj_id=193
 [SGET] class=Lcom/badlogic/gdx/Input$Orientation; method=$values pc=8 field=Lcom/badlogic/gdx/Input$Orientation;.Portrait obj_id=194
-[CLASS_INIT] class=Lcom/badlogic/gdx/Input$Orientation; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=174
+[CLASS_INIT] class=Lcom/badlogic/gdx/Input$Orientation; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=174
 [SGET] class=Lcom/badlogic/gdx/backends/android/DefaultAndroidInput; method=<init> pc=283 field=Lcom/badlogic/gdx/Input$Orientation;.Portrait obj_id=194
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/IntSet;->size" obj#151 cls=Lcom/badlogic/gdx/utils/IntSet; keys: Lcom/badlogic/gdx/utils/IntSet;->keyTable Lcom/badlogic/gdx/utils/IntSet;->loadFactor Lcom/badlogic/gdx/utils/IntSet;->mask Lcom/badlogic/gdx/utils/IntSet;->shift Lcom/badlogic/gdx/utils/IntSet;->threshold keyTable caller=Lcom/badlogic/gdx/utils/IntSet;.add
 [REC-MISS] Landroid/media/AudioAttributes$Builder;.<init> caller=Lcom/badlogic/gdx/backends/android/DefaultAndroidAudio;.<init>
@@ -634,7 +634,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=60 field=Landroidx/core/R$id;.accessibility_custom_action_30 value=2131034137
 [SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=62 field=Landroidx/core/R$id;.accessibility_custom_action_31 value=2131034138
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/core/view/ViewCompat$AccessibilityPaneVisibilityManager;.<init>
-[CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=297
+[CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=297
 [SGET] class=Landroidx/core/view/ViewCompat$Api21Impl; method=setOnApplyWindowInsetsListener pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [ROOT-059] null-recv routed to shadow law: Landroid/view/View;.setOnApplyWindowInsetsListener caller=Landroidx/core/view/ViewCompat$Api21Impl;.setOnApplyWindowInsetsListener
 [REC-MISS] Landroid/view/View;.setOnApplyWindowInsetsListener caller=Landroidx/core/view/ViewCompat$Api21Impl;.setOnApplyWindowInsetsListener
@@ -646,7 +646,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=748
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=703
 [F384-ROOTINSETS] root=o138 cls=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20; insets=o246 dispatched=false
 [ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
 [ECR-ROOT] scalar content_view_id root=138
@@ -684,7 +684,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=18 field=Lcom/badlogic/gdx/Application$ApplicationType;.Applet obj_id=256
 [SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=23 field=Lcom/badlogic/gdx/Application$ApplicationType;.WebGL obj_id=257
 [SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=$values pc=28 field=Lcom/badlogic/gdx/Application$ApplicationType;.iOS obj_id=258
-[CLASS_INIT] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=304
+[CLASS_INIT] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=304
 [SGET] class=Lcom/badlogic/gdx/backends/android/AndroidGraphics; method=setupGL pc=20 field=Lcom/badlogic/gdx/Application$ApplicationType;.Android obj_id=253
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=<init> pc=7 field=Lcom/badlogic/gdx/Application$ApplicationType;.Android obj_id=253
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=<clinit> bytecode_size=47
@@ -696,7 +696,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=8 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.GLES obj_id=261
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=13 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.WebGL obj_id=262
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=$values pc=18 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.NONE obj_id=263
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=309
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=309
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=<init> pc=11 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.GLES obj_id=261
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLVersion; method=<init> pc=58 field=Lcom/badlogic/gdx/graphics/glutils/GLVersion$Type;.GLES obj_id=261
 [REC-MISS] Ljava/util/regex/Pattern;.compile caller=Lcom/badlogic/gdx/graphics/glutils/GLVersion;.extractVersion
@@ -805,22 +805,22 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Landroid/view/View;.getRootWindowInsets caller=Landroidx/tracing/Trace$$ExternalSyntheticApiModelOutline0;.m
 [REC-MISS] Landroid/view/WindowInsets;.getDisplayCutout caller=Landroidx/tracing/Trace$$ExternalSyntheticApiModelOutline0;.m
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Mesh; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Mesh; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=312
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Mesh; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=312
 [SGET] class=Lcom/badlogic/gdx/graphics/Mesh; method=invalidateAllMeshes pc=0 field=Lcom/badlogic/gdx/graphics/Mesh;.meshes obj_id=285
 [REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/Mesh;.invalidateAllMeshes
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/Mesh;.invalidateAllMeshes pc=2
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Texture; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Texture; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=313
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Texture; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=313
 [SGET] class=Lcom/badlogic/gdx/graphics/Texture; method=invalidateAllTextures pc=0 field=Lcom/badlogic/gdx/graphics/Texture;.managedTextures obj_id=286
 [REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/Texture;.invalidateAllTextures
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/Texture;.invalidateAllTextures pc=2
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Cubemap; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Cubemap; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=314
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Cubemap; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=314
 [SGET] class=Lcom/badlogic/gdx/graphics/Cubemap; method=invalidateAllCubemaps pc=0 field=Lcom/badlogic/gdx/graphics/Cubemap;.managedCubemaps obj_id=287
 [REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/Cubemap;.invalidateAllCubemaps
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/Cubemap;.invalidateAllCubemaps pc=2
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/TextureArray; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/TextureArray; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=315
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/TextureArray; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=315
 [SGET] class=Lcom/badlogic/gdx/graphics/TextureArray; method=invalidateAllTextureArrays pc=0 field=Lcom/badlogic/gdx/graphics/TextureArray;.managedTextureArrays obj_id=288
 [REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/TextureArray;.invalidateAllTextureArrays
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/TextureArray;.invalidateAllTextureArrays pc=2
@@ -830,7 +830,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Ljava/lang/Math;.max caller=Lcom/badlogic/gdx/utils/ObjectSet;.tableSize
 [REC-MISS] Ljava/lang/Long;.numberOfLeadingZeros caller=Lcom/badlogic/gdx/utils/ObjectMap;.<init>
 [CLASS_INIT] class=Lcom/badlogic/gdx/utils/BufferUtils; method=<clinit> bytecode_size=11
-[CLASS_INIT] class=Lcom/badlogic/gdx/utils/BufferUtils; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=329
+[CLASS_INIT] class=Lcom/badlogic/gdx/utils/BufferUtils; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=329
 [REC-MISS] Ljava/nio/ByteBuffer;.allocateDirect caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
 [C86-BRIDGE] Ljava/nio/ByteBuffer;.allocateDirect argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
 [C86-BB] method=allocateDirect argc=1 a0:t1=4 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
@@ -840,7 +840,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
 [REC-MISS] Ljava/nio/ByteBuffer;.asIntBuffer caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
 [C86-BRIDGE] Ljava/nio/ByteBuffer;.asIntBuffer argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=329
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=329
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=invalidateAllShaderPrograms pc=0 field=Lcom/badlogic/gdx/Gdx;.gl20 obj_id=268
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram; method=invalidateAllShaderPrograms pc=5 field=Lcom/badlogic/gdx/graphics/glutils/ShaderProgram;.shaders obj_id=289
 [REC-MISS] Landroid/app/Activity;.hashCode caller=Lcom/badlogic/gdx/utils/ObjectMap;.place
@@ -860,7 +860,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [C86-BRIDGE] Ljava/nio/ByteBuffer;.order argc=2 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
 [REC-MISS] Ljava/nio/ByteBuffer;.asIntBuffer caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
 [C86-BRIDGE] Ljava/nio/ByteBuffer;.asIntBuffer argc=1 caller=Lcom/badlogic/gdx/utils/BufferUtils;.newIntBuffer
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=333
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=333
 [SGET] class=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer; method=invalidateAllFrameBuffers pc=5 field=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.buffers obj_id=296
 [REC-MISS] Ljava/util/Map;.get caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.invalidateAllFrameBuffers
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lcom/badlogic/gdx/graphics/glutils/GLFrameBuffer;.invalidateAllFrameBuffers pc=7
@@ -924,7 +924,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [REC-MISS] Landroid/view/Display;.getWidth caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
 [REC-MISS] Landroid/view/Display;.getHeight caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated value=1792610818949354236
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated value=1792612559822329887
 [REC-MISS] Ljavax/microedition/khronos/opengles/GL10;.glViewport caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated
 [REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.updatePpi
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Lstack/tower3d/android/AndroidLauncher;
@@ -966,41 +966,41 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=<clinit> bytecode_size=65
 [EXP062-INIT] Lcom/badlogic/gdx/graphics/g3d/Attribute; static_fields=2 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=353
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=353
 [SGET] class=Lcom/badlogic/gdx/graphics/g3d/Attribute; method=getAttributeType pc=1 field=Lcom/badlogic/gdx/graphics/g3d/Attribute;.types obj_id=347
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.getAttributeType
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.register
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#347 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=353
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=353
 [SGET] class=Lstack/tower3d/StackTowerGame; method=create pc=23 field=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute;.AmbientLight value=1
 [M3-LONG-PUT] field=Lcom/badlogic/gdx/graphics/g3d/Attribute;.type caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.<init> value=1
 [REC-MISS] Ljava/lang/Long;.numberOfTrailingZeros caller=Lcom/badlogic/gdx/graphics/g3d/Attribute;.<init>
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Color; method=<clinit> bytecode_size=335
 [REC-MISS] Ljava/lang/Float;.intBitsToFloat caller=Lcom/badlogic/gdx/utils/NumberUtils;.intToFloatColor
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Color; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=389
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/Color; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=389
 [SGET] class=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; method=is pc=0 field=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute;.Mask value=1
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/graphics/g3d/Attributes;->mask" obj#343 cls=Lcom/badlogic/gdx/graphics/g3d/Environment; keys: Lcom/badlogic/gdx/graphics/g3d/Attributes;->attributes Lcom/badlogic/gdx/graphics/g3d/Attributes;->sorted attributes sorted caller=Lcom/badlogic/gdx/graphics/g3d/Attributes;.has
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/graphics/g3d/Attributes;->mask" obj#343 cls=Lcom/badlogic/gdx/graphics/g3d/Environment; keys: Lcom/badlogic/gdx/graphics/g3d/Attributes;->attributes Lcom/badlogic/gdx/graphics/g3d/Attributes;->sorted attributes sorted caller=Lcom/badlogic/gdx/graphics/g3d/Attributes;.enable
 [M3-LONG-PUT] field=Lcom/badlogic/gdx/graphics/g3d/Attributes;.mask caller=Lcom/badlogic/gdx/graphics/g3d/Attributes;.enable value=1
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#344 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
 [IGET-MISS-DIAG] asked="Lcom/badlogic/gdx/utils/Array;->size" obj#344 cls=Lcom/badlogic/gdx/utils/Array; keys: Lcom/badlogic/gdx/utils/Array;->items Lcom/badlogic/gdx/utils/Array;->ordered items ordered caller=Lcom/badlogic/gdx/utils/Array;.add
-[SGET-MISS] key=Lcom/badlogic/gdx/utils/Sort;.instance storage_size=389 same_class_keys=0 engine=0x7ffead834d08
+[SGET-MISS] key=Lcom/badlogic/gdx/utils/Sort;.instance storage_size=389 same_class_keys=0 engine=0x7ffd0f9bcb88
 [EXP062-INIT] Lcom/badlogic/gdx/utils/TimSort; static_fields=4 with_defaults=4
 [REC-MISS] Ljava/lang/Math;.sqrt caller=Lcom/badlogic/gdx/math/Vector3;.nor
 [EXP062-INIT] Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; static_fields=2 with_defaults=1
 [CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; method=<clinit> result=OK engine=0x7ffead834d08 storage_size=396
+[CLASS_INIT] class=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute; method=<clinit> result=OK engine=0x7ffd0f9bcb88 storage_size=396
 [SGET] class=Lcom/badlogic/gdx/graphics/g3d/Environment; method=add pc=0 field=Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute;.Type value=1
 [SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Ljava/lang/Object;.getClass' on a null object reference) method=Lcom/badlogic/gdx/utils/Array;.<init> pc=6 → uncaught (deferred frame unwind + propagate)
 [R414-INIT-DEFAULT] Lcom/badlogic/gdx/graphics/g3d/attributes/DirectionalLightsAttribute;.lights obj#346 = new Lcom/badlogic/gdx/utils/Array; (recv=Lcom/badlogic/gdx/graphics/g3d/attributes/ColorAttribute; caller=Lcom/badlogic/gdx/graphics/g3d/Environment;.add pc=18)
 [EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lstack/tower3d/android/AndroidLauncher;.onCreate invoke_pc=25 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610818964753852
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=835
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612559829998145
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=779
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=976
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=919
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
@@ -1019,7 +1019,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073600 non-white pixels
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610819296017442
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612560166749177
 [FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
@@ -1037,7 +1037,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073600 non-white pixels
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610819469155307
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612560337101454
 [FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
@@ -1055,7 +1055,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073600 non-white pixels
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610819646245332
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612560506862322
 [FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
@@ -1073,7 +1073,7 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073600 non-white pixels
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610819819000625
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612560689842030
 [FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
 [FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c152/wall_tower3d/frames
 [ARSC-VALUES] drawable paths resolved via canonical resolver: 0/75
@@ -1090,5 +1090,5 @@ FONT_SOURCE apk=upload/canonical_apks/stack.tower3d_1.apk font_files=0 registere
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073600 non-white pixels
 [REC-MISS] Ljava/lang/System;.nanoTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610819990332921
-[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameStart caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792610819990332921
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.lastFrameTime caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612560860115171
+[M3-LONG-PUT] field=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.frameStart caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onDrawFrame value=1792612560860115171

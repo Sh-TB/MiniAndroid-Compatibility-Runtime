@@ -10973,3 +10973,35 @@ Work Log:
 
 Stage Summary:
 - 4/4 trains pushed, HEAD==origin/main verified after each (final e6d61a81). Registry 789->793 id-unique main==mirror. Engine source UNCHANGED (zero drift by construction; walls: 3+3+2+2 anchors all byte-identical). The dooz blank-face frontier descended 4 levels: record-scheduler -> content-step gate -> registry query -> chain sever, each level runtime-verified with per-instruction evidence. Next train owns: padChain sever pc + re-pad re-link law (F-NEW-479), then the Lqz0;.b mask-put store semantics.
+
+---
+Task ID: CONT-152
+Agent: main agent (Z.ai)
+Task: «کدام برنامه از مرحله‌ای رد شده که قبلاً نمی‌توانست؟ با رقم و عدد» — real progress audit, then continue trains.
+
+Work Log:
+- Recovery hygiene: stray UUID auto-commit d0dca10c (tmp/cont151_f476_build junk + real c129 evidence) soft-reset to 1fc02d43; only real evidence re-committed (64ec38c4). HEAD==origin/main verified.
+- Progress audit (scripts/cont152_progress_audit.py -> run/c152/progress_audit.json): c118 baseline vs fresh battery (binary f6b272ea). Stage crossings machine-verified: tictactoe rc139->1 (corpus's only native crash defused, now renders), bouncy rc1->0 (F-NEW-474), dooz AIOOBE 27->0 + ASC-REJECT 9->0 (F-NEW-469). Face advances: 4/5 s57 anchors (opencalc/unote/chess/microtimer) + memory 3a3ba873->807a0cca. rc=0 club 6->7 (bouncy joined). 11/22 zero-exc, 21/22 render.
+- Same-normalization registry delta vs d68f05da: fixed-family 497->594 (+97 roots, 63.2%->74.9%), open-ish 136->56 (-80), PARTIAL 112->24, UNPROVEN 9->0. 48 commits pushed in 2 days (23 on 10-20, 25 on 10-21).
+- Honest residuals re-affirmed: klondike/tripeaks/fishrings/stopwatch/tictactoe at draw-op frontier CDW-OP=0 (root descended 4 levels F-NEW-473..479 — chain SEVERED by padChain); telegram 31 exc + forkgram 1223 exc UPP-001 APP-BOUNDARY (honest reclassification, not improvement); whatsapp corrupt artifact; signal no artifact.
+- Persian ledger posted to #364 (comment 6324380028). Push 441944ab, HEAD==origin/main verified.
+
+Stage Summary:
+- The self-deception question is answered with machine-verified numbers: 2 hard stage crossings, 5 faces advanced, fixed-family +97 roots in 2 days, open-ish -80. Honest frontier named: draw-op blank content for 5 apps.
+- Next train owns: padChain sever pc + re-pad re-link law (F-NEW-479), then Lqz0;.b mask-put store semantics — the draw-op frontier attack.
+
+---
+Task ID: CONT-153 TRAINs 7-10 (draw-frontier descent, «ادامه» round after progress audit)
+Agent: main agent (Z.ai)
+Task: continue the 100-train formation: padChain sever pc (pinned next lever from CONT-151), then kind-4 provenance, then the stale-binding site.
+
+Work Log:
+- TRAIN 7 (a0528995): padChain per-instruction decode (run/c152/padchain_disasm.txt) + register replay pin the re-termination block pc394-417 END-TO-END: pc400 2708.i=v7=0 (NULL terminator constant, v7=0 throughout), pc402 2060.j=0, pc405 2060.h=-1, pc407 2060.l=0, pc417 head re-point 2059.f=2708; 'trimChain did not update the head' assertion PASSED. 'Severed chain' RETRACTED for deliberate re-termination. T0 return census: 6/12 v1=obj#1521 + 6/12 NULL — '12/12 NULL' RETRACTED. Mask gate promoted PRE-walk. Secret guard blocked wall_telegram.log (GOOGLE_API_KEY-shaped APP-CONTENT string) — excluded raw log, sanitized adjudication committed (same protocol as CONT-129).
+- TRAIN 8 (2f9a2991): F-NEW-480 kind-4 provenance SOLVED: Lpz0;.M0 pc0 'const/4 v0, #4' hard-coded -> T0(4, receiver); acceptance law register-verified (h&kind)&&(g&kind) — 2708.h=0x4CE0AB has 0x80+0x400000 but NOT 0x4; T0-null -> M0 pc7 h1 overlay fallthrough -> blank. T0-hit -> mask g, check-cast Lfw;, draw via Lgl0;.c. Trace-log provenance verified = dooz APK (TG-SQLITE line = append-mode residue; telegram/forkgram dexes lack the Lpz0; family — strscan proof).
+- TRAIN 9 (8807a5a2): live FIELD-TRACE Lwt0;.g (579 events): 20/69 puts carry bit 0x4 (Lfw;.N0 0x408085/0x64a5bd, Lfw;.L0, Lkz0;.a 0xd/0x7/0x5/0xf/0x1007) — ALL on LATE instances (obj#6xxx/9xxx), temporally BEFORE draw windows (lines 140376-140495 vs first T0 window 155826). Structural law: query walks EARLY chain, capable nodes in LATE chains.
+- TRAIN 10 (ede8ee09): S0/h1 ABSTRACT on Lpz0; — overrides Lc70;39/Lm;91/Lug0;3/Lxk0;7; Lxk0;.S0 = ((Lwt0;)this.V).e; live census Lwt0;.e = 414 events ALL constructor self-references; stale site NAMED = scope.V binding (early scopes 2717/2061 -> V=2708/2357 early chains; late bit-4 chains never queried). TOOLING LAW: cls/disasm tools carry cumulative direct+virtual midx bug — per-list restart required; fixed walker cont153_cleanwalk.py.
+- Walls after each train: 9/9 anchors byte-identical at binary f6b272ea (4 wall runs this round). Registry 793->794 id-unique main==mirror.
+
+Stage Summary:
+- The dooz draw frontier descended to the EXACT stale field: kind=4 const (M0 pc0) -> acceptance (h&kind)&&(g&kind) -> capability flags written ONLY on late-chain nodes -> query bound to early chains via scope.V -> S0 = identity-resolver -> blank content + h1 overlay. Every link machine-verified with register snapshots or live FIELD-TRACE.
+- Next train owns: FIELD-TRACE Lxk0;.V writes + the scope iteration above Lel0;.i (Lho1;.d / Lt4;.getRoot) — V one-time-bind vs app rebind question.

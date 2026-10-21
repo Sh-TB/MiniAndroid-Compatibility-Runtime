@@ -1,8 +1,8 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
 [BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=35
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=43
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=63
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=63
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=42
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=62
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=62
 [S123-ACTION-REG] activities=9 action_targets=2
 FONT_SOURCE apk=upload/canonical_apks/app.varlorg.unote_30.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 114 entries (66 from APK + 48 framework) — LinearLayout present: YES
@@ -21,7 +21,7 @@ FONT_SOURCE apk=upload/canonical_apks/app.varlorg.unote_30.apk font_files=0 regi
 [REC-MISS] Landroid/app/Activity;.<init> caller=Lapp/varlorg/unote/NoteMain;.<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lapp/varlorg/unote/NoteMain;
-[MEM] method_exit: Lapp/varlorg/unote/NoteMain;.<init> insns=2 RSS=19.8203 MB
+[MEM] method_exit: Lapp/varlorg/unote/NoteMain;.<init> insns=2 RSS=19.6641 MB
 [TRY-ENTRY] Lapp/varlorg/unote/NoteMain;.attachBaseContext dex_report=YES
 [U0113-ACTIVITY] activity heap object #15 (Lapp/varlorg/unote/NoteMain;) recorded for handler dispatch
 [C94-SINGLETON] LAUNCH-STORE key='Lapp/varlorg/unote/NoteMain;' id=15
@@ -463,7 +463,7 @@ FONT_SOURCE apk=upload/canonical_apks/app.varlorg.unote_30.apk font_files=0 regi
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=354
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=355
 [REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Lapp/varlorg/unote/NoteMain;.onCreate
 [REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Lapp/varlorg/unote/NoteMain;.onCreate
 [REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lapp/varlorg/unote/NoteMain;.onCreate
@@ -513,7 +513,7 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=390
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=532
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=522
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0

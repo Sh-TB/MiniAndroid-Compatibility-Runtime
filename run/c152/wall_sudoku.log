@@ -1,5 +1,5 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=144
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=161
 [EXP062-SV] parse_static_values for Landroidx/activity/R$id; offset=0x8a0992 static_fields=1 with_defaults=0
 [EXP062-SV-DONE] Landroidx/activity/R$id; with_defaults=1/1
 [EXP062-SV] parse_static_values for Landroidx/appcompat/R$anim; offset=0x8a09c1 static_fields=24 with_defaults=0
@@ -544,9 +544,9 @@
 [EXP062-SV-DONE] Lcom/google/android/material/R$styleable; with_defaults=961/961
 [EXP062-SV] parse_static_values for Lcom/google/android/material/R$xml; offset=0x8ad239 static_fields=5 with_defaults=0
 [EXP062-SV-DONE] Lcom/google/android/material/R$xml; with_defaults=5/5
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=407
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=427
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=452
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=417
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=436
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=461
 [S123-ACTION-REG] activities=11 action_targets=3
 FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 7504 entries (7471 from APK + 33 framework) — LinearLayout present: YES
@@ -635,7 +635,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [TRY-ENTRY] Landroid/app/Application;.<init> dex_report=YES
 [REC-MISS] Landroid/app/Application;.<init> caller=Lorg/secuso/privacyfriendlysudoku/PFSudoku;.<init>
 [TRY-ENTRY] Lorg/secuso/privacyfriendlysudoku/PFSudoku$$ExternalSyntheticLambda1;.<init> dex_report=YES
-[MEM] method_exit: Lorg/secuso/privacyfriendlysudoku/PFSudoku$$ExternalSyntheticLambda1;.<init> insns=2 RSS=133.895 MB
+[MEM] method_exit: Lorg/secuso/privacyfriendlysudoku/PFSudoku$$ExternalSyntheticLambda1;.<init> insns=2 RSS=133.578 MB
 [TRY-ENTRY] Lkotlin/LazyKt;.lazy dex_report=YES
 [TRY-ENTRY] Lkotlin/LazyKt__LazyJVMKt;.lazy dex_report=YES
 [TRY-ENTRY] Lkotlin/jvm/internal/Intrinsics;.checkNotNullParameter dex_report=YES
@@ -645,7 +645,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [CLASS_INIT] class=Lkotlin/UNINITIALIZED_VALUE; method=<clinit> bytecode_size=8
 [TRY-ENTRY] Lkotlin/UNINITIALIZED_VALUE;.<clinit> dex_report=YES
 [TRY-ENTRY] Lkotlin/UNINITIALIZED_VALUE;.<init> dex_report=YES
-[CLASS_INIT] class=Lkotlin/UNINITIALIZED_VALUE; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=24
+[CLASS_INIT] class=Lkotlin/UNINITIALIZED_VALUE; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=24
 [SGET] class=Lkotlin/SynchronizedLazyImpl; method=<init> pc=10 field=Lkotlin/UNINITIALIZED_VALUE;.INSTANCE obj_id=17
 [R341-APP] <init> OK
 [TRY-ENTRY] Lorg/secuso/privacyfriendlysudoku/PFSudoku;.attachBaseContext dex_report=YES
@@ -671,7 +671,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/StringBuilder;.append caller=Landroidx/multidex/MultiDex;.isVMMultidexCapable
 [REC-MISS] Ljava/lang/StringBuilder;.toString caller=Landroidx/multidex/MultiDex;.isVMMultidexCapable
 [REC-MISS] Landroid/util/Log;.i caller=Landroidx/multidex/MultiDex;.isVMMultidexCapable
-[CLASS_INIT] class=Landroidx/multidex/MultiDex; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=35
+[CLASS_INIT] class=Landroidx/multidex/MultiDex; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=35
 [REC-MISS] Landroid/util/Log;.i caller=Landroidx/multidex/MultiDex;.install
 [SGET] class=Landroidx/multidex/MultiDex; method=install pc=7 field=Landroidx/multidex/MultiDex;.IS_VM_MULTIDEX_CAPABLE value=0
 [REC-MISS] Landroid/app/Application;.getApplicationInfo caller=Landroidx/multidex/MultiDex;.getApplicationInfo
@@ -699,12 +699,12 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Landroid/util/Log;.i caller=Landroidx/multidex/MultiDex;.install
 [EXP062-INIT] Lorg/secuso/privacyfriendlysudoku/backup/BackupCreator; static_fields=2 with_defaults=2
 [CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/backup/BackupCreator; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/backup/BackupCreator; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=37
+[CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/backup/BackupCreator; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=37
 [CLASS_INIT] class=Lorg/secuso/privacyfriendlybackup/api/pfa/BackupManager; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lorg/secuso/privacyfriendlybackup/api/pfa/BackupManager; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=38
+[CLASS_INIT] class=Lorg/secuso/privacyfriendlybackup/api/pfa/BackupManager; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=38
 [EXP062-INIT] Lorg/secuso/privacyfriendlysudoku/backup/BackupRestorer; static_fields=2 with_defaults=2
 [CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/backup/BackupRestorer; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/backup/BackupRestorer; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=41
+[CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/backup/BackupRestorer; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=41
 [REC-MISS] Landroid/app/Application;.onCreate caller=Lorg/secuso/privacyfriendlysudoku/PFSudoku;.onCreate
 [F-NEW-471-RES-GAP] super-call Landroid/app/Application;.onCreate method_id=246 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lorg/secuso/privacyfriendlysudoku/PFSudoku;.onCreate
 [S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .onCreate
@@ -713,14 +713,14 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Landroidx/appcompat/app/AppLocalesStorageHelper$SerialExecutor;.<init>
 [EXP062-INIT] Landroidx/collection/ArraySet; static_fields=10 with_defaults=6
 [CLASS_INIT] class=Landroidx/collection/ArraySet; method=<clinit> bytecode_size=10
-[CLASS_INIT] class=Landroidx/collection/ArraySet; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=66
+[CLASS_INIT] class=Landroidx/collection/ArraySet; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=66
 [SGET] class=Landroidx/collection/ArraySet; method=<init> pc=5 field=Landroidx/collection/ArraySet;.INT obj_id=35
 [SGET] class=Landroidx/collection/ArraySet; method=<init> pc=9 field=Landroidx/collection/ArraySet;.OBJECT obj_id=36
-[CLASS_INIT] class=Landroidx/appcompat/app/AppCompatDelegate; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=69
+[CLASS_INIT] class=Landroidx/appcompat/app/AppCompatDelegate; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=69
 [EXP062-INIT] Landroidx/appcompat/widget/VectorEnabledTintResources; static_fields=2 with_defaults=2
 [CLASS_INIT] class=Landroidx/appcompat/widget/VectorEnabledTintResources; method=<clinit> bytecode_size=1
-[MEM] method_exit: Landroidx/appcompat/widget/VectorEnabledTintResources;.<clinit> insns=1 RSS=143.355 MB
-[CLASS_INIT] class=Landroidx/appcompat/widget/VectorEnabledTintResources; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=71
+[MEM] method_exit: Landroidx/appcompat/widget/VectorEnabledTintResources;.<clinit> insns=1 RSS=143.543 MB
+[CLASS_INIT] class=Landroidx/appcompat/widget/VectorEnabledTintResources; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=71
 [SGET] class=Lorg/secuso/privacyfriendlysudoku/PFSudoku; method=onCreate pc=27 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [REC-MISS] Landroid/app/NotificationChannel;.<init> caller=Lorg/secuso/privacyfriendlysudoku/PFSudoku;.onCreate
 [S71-ANCESTRY] re-dispatch Lorg/secuso/privacyfriendlysudoku/PFSudoku; as Landroid/app/Application; for .getSystemService
@@ -744,11 +744,11 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [S123-SPUT-CH] key=Landroidx/collection/ContainerHelpers;.EMPTY_INTS val_type=7 obj=43 caller=Landroidx/collection/ContainerHelpers;.<clinit>
 [S123-SPUT-CH] key=Landroidx/collection/ContainerHelpers;.EMPTY_LONGS val_type=7 obj=44 caller=Landroidx/collection/ContainerHelpers;.<clinit>
 [S123-SPUT-CH] key=Landroidx/collection/ContainerHelpers;.EMPTY_OBJECTS val_type=7 obj=45 caller=Landroidx/collection/ContainerHelpers;.<clinit>
-[CLASS_INIT] class=Landroidx/collection/ContainerHelpers; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=84
+[CLASS_INIT] class=Landroidx/collection/ContainerHelpers; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=84
 [SGET] class=Landroidx/collection/SimpleArrayMap; method=<init> pc=3 field=Landroidx/collection/ContainerHelpers;.EMPTY_INTS obj_id=43
 [SGET] class=Landroidx/collection/SimpleArrayMap; method=<init> pc=7 field=Landroidx/collection/ContainerHelpers;.EMPTY_OBJECTS obj_id=45
 [CLASS_INIT] class=Landroidx/lifecycle/LifecycleRegistry; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Landroidx/lifecycle/LifecycleRegistry; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=85
+[CLASS_INIT] class=Landroidx/lifecycle/LifecycleRegistry; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=85
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReference;.<init> caller=Landroidx/lifecycle/Lifecycle;.<init>
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/arch/core/internal/SafeIterableMap;.<init>
 [CLASS_INIT] class=Landroidx/lifecycle/Lifecycle$State; method=<clinit> bytecode_size=57
@@ -762,7 +762,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/lifecycle/Lifecycle$State; method=$values pc=13 field=Landroidx/lifecycle/Lifecycle$State;.CREATED obj_id=54
 [SGET] class=Landroidx/lifecycle/Lifecycle$State; method=$values pc=18 field=Landroidx/lifecycle/Lifecycle$State;.STARTED obj_id=55
 [SGET] class=Landroidx/lifecycle/Lifecycle$State; method=$values pc=23 field=Landroidx/lifecycle/Lifecycle$State;.RESUMED obj_id=56
-[CLASS_INIT] class=Landroidx/lifecycle/Lifecycle$State; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=91
+[CLASS_INIT] class=Landroidx/lifecycle/Lifecycle$State; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=91
 [SGET] class=Landroidx/lifecycle/LifecycleRegistry; method=<init> pc=12 field=Landroidx/lifecycle/Lifecycle$State;.INITIALIZED obj_id=53
 [REC-MISS] Ljava/lang/ref/WeakReference;.<init> caller=Landroidx/lifecycle/LifecycleRegistry;.<init>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArraySet;.<init> caller=Landroidx/activity/contextaware/ContextAwareHelper;.<init>
@@ -772,17 +772,17 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/lifecycle/LifecycleRegistry; method=<init> pc=12 field=Landroidx/lifecycle/Lifecycle$State;.INITIALIZED obj_id=53
 [REC-MISS] Ljava/lang/ref/WeakReference;.<init> caller=Landroidx/lifecycle/LifecycleRegistry;.<init>
 [CLASS_INIT] class=Landroidx/savedstate/SavedStateRegistryController; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Landroidx/savedstate/SavedStateRegistryController; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=92
+[CLASS_INIT] class=Landroidx/savedstate/SavedStateRegistryController; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=92
 [SGET] class=Landroidx/savedstate/SavedStateRegistryController; method=create pc=0 field=Landroidx/savedstate/SavedStateRegistryController;.Companion obj_id=73
 [EXP062-INIT] Landroidx/savedstate/SavedStateRegistry; static_fields=2 with_defaults=2
 [CLASS_INIT] class=Landroidx/savedstate/SavedStateRegistry; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Landroidx/savedstate/SavedStateRegistry; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=94
+[CLASS_INIT] class=Landroidx/savedstate/SavedStateRegistry; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=94
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/arch/core/internal/SafeIterableMap;.<init>
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Landroidx/activity/OnBackPressedDispatcher;.<init>
 [CLASS_INIT] class=Landroidx/core/os/BuildCompat; method=<clinit> bytecode_size=72
 [SGET] class=Landroidx/core/os/BuildCompat; method=<clinit> pc=7 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Landroidx/core/os/BuildCompat$Api30Impl; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Landroidx/core/os/BuildCompat$Api30Impl; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=96
+[CLASS_INIT] class=Landroidx/core/os/BuildCompat$Api30Impl; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=96
 [SGET] class=Landroidx/core/os/BuildCompat; method=<clinit> pc=14 field=Landroidx/core/os/BuildCompat$Api30Impl;.INSTANCE obj_id=83
 [REC-MISS] Landroid/os/ext/SdkExtensions;.getExtensionVersion caller=Landroidx/core/os/BuildCompat$Api30Impl;.getExtensionVersion
 [SGET] class=Landroidx/core/os/BuildCompat; method=<clinit> pc=24 field=Landroid/os/Build$VERSION;.SDK_INT value=35
@@ -794,7 +794,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/core/os/BuildCompat; method=<clinit> pc=56 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Landroidx/core/os/BuildCompat; method=<clinit> pc=60 field=Landroidx/core/os/BuildCompat$Api30Impl;.INSTANCE obj_id=83
 [REC-MISS] Landroid/os/ext/SdkExtensions;.getExtensionVersion caller=Landroidx/core/os/BuildCompat$Api30Impl;.getExtensionVersion
-[CLASS_INIT] class=Landroidx/core/os/BuildCompat; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=100
+[CLASS_INIT] class=Landroidx/core/os/BuildCompat; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=100
 [SGET] class=Landroidx/core/os/BuildCompat; method=isAtLeastT pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/activity/OnBackPressedDispatcher$Api33Impl;.createOnBackInvokedCallback
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicInteger;.<init> caller=Landroidx/activity/ComponentActivity;.<init>
@@ -808,8 +808,8 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Landroidx/activity/ComponentActivity;.<init>
 [SGET] class=Landroidx/activity/ComponentActivity; method=<init> pc=107 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=109
-[SGET-MISS] key=Landroidx/arch/core/executor/ArchTaskExecutor;.sInstance storage_size=109 same_class_keys=2 engine=0x7fff039b6db8 first=Landroidx/arch/core/executor/ArchTaskExecutor;.sIOThreadExecutor
+[CLASS_INIT] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=109
+[SGET-MISS] key=Landroidx/arch/core/executor/ArchTaskExecutor;.sInstance storage_size=109 same_class_keys=2 engine=0x7ffc170c53a8 first=Landroidx/arch/core/executor/ArchTaskExecutor;.sIOThreadExecutor
 [SGET] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=getInstance pc=0 field=Landroidx/arch/core/executor/ArchTaskExecutor;.sInstance obj_id=0
 [SGET] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=getInstance pc=10 field=Landroidx/arch/core/executor/ArchTaskExecutor;.sInstance obj_id=0
 [EXP062-INIT] Landroidx/arch/core/executor/DefaultTaskExecutor$1; static_fields=1 with_defaults=1
@@ -829,7 +829,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/lifecycle/LifecycleRegistry; method=addObserver pc=19 field=Landroidx/lifecycle/Lifecycle$State;.INITIALIZED obj_id=53
 [EXP062-INIT] Landroidx/lifecycle/Lifecycling; static_fields=5 with_defaults=3
 [CLASS_INIT] class=Landroidx/lifecycle/Lifecycling; method=<clinit> bytecode_size=26
-[CLASS_INIT] class=Landroidx/lifecycle/Lifecycling; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=116
+[CLASS_INIT] class=Landroidx/lifecycle/Lifecycling; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=116
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Landroidx/arch/core/internal/FastSafeIterableMap;.get pc=2
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Landroidx/arch/core/internal/FastSafeIterableMap;.putIfAbsent pc=15
 [F089] shadow put map=70 key="obj:103" arg0_kind=6 arg0_str="" arg0_obj=103 arg0_cls=Landroidx/activity/ComponentActivity$3; nargs=2 recv=Ljava/util/HashMap;
@@ -886,7 +886,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/savedstate/SavedStateRegistryController; method=performAttach pc=10 field=Landroidx/lifecycle/Lifecycle$State;.INITIALIZED obj_id=53
 [EXP062-INIT] Landroidx/savedstate/Recreator; static_fields=3 with_defaults=2
 [CLASS_INIT] class=Landroidx/savedstate/Recreator; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Landroidx/savedstate/Recreator; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=119
+[CLASS_INIT] class=Landroidx/savedstate/Recreator; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=119
 [SGET] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=getInstance pc=0 field=Landroidx/arch/core/executor/ArchTaskExecutor;.sInstance obj_id=107
 [SGET] class=Landroidx/arch/core/executor/ArchTaskExecutor; method=getInstance pc=4 field=Landroidx/arch/core/executor/ArchTaskExecutor;.sInstance obj_id=107
 [REC-MISS] Landroid/os/Looper;.getMainLooper caller=Landroidx/arch/core/executor/DefaultTaskExecutor;.isMainThread
@@ -929,7 +929,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/ref/WeakReference;.get caller=Landroidx/lifecycle/LifecycleRegistry;.sync
 [EXP062-INIT] Landroidx/lifecycle/SavedStateHandleSupport; static_fields=5 with_defaults=4
 [CLASS_INIT] class=Landroidx/lifecycle/SavedStateHandleSupport; method=<clinit> bytecode_size=28
-[CLASS_INIT] class=Landroidx/lifecycle/SavedStateHandleSupport; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=124
+[CLASS_INIT] class=Landroidx/lifecycle/SavedStateHandleSupport; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=124
 [SGET] class=Landroidx/lifecycle/SavedStateHandleSupport; method=enableSavedStateHandles pc=13 field=Landroidx/lifecycle/Lifecycle$State;.INITIALIZED obj_id=53
 [REC-MISS] Ljava/lang/Boolean;.valueOf caller=Landroidx/arch/core/internal/SafeIterableMap;.iterator
 [REC-MISS] Ljava/util/WeakHashMap;.put caller=Landroidx/arch/core/internal/SafeIterableMap;.iterator
@@ -961,7 +961,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Landroid/os/Handler;.<init> caller=Landroidx/fragment/app/FragmentHostCallback;.<init>
 [EXP062-INIT] Landroidx/fragment/app/FragmentManager; static_fields=5 with_defaults=5
 [CLASS_INIT] class=Landroidx/fragment/app/FragmentManager; method=<clinit> bytecode_size=1
-[CLASS_INIT] class=Landroidx/fragment/app/FragmentManager; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=129
+[CLASS_INIT] class=Landroidx/fragment/app/FragmentManager; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=129
 [EXP062-INIT] Landroidx/fragment/app/FragmentStore; static_fields=1 with_defaults=1
 [EXP062-INIT] Landroidx/fragment/app/FragmentLayoutInflaterFactory; static_fields=1 with_defaults=1
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Landroidx/activity/OnBackPressedCallback;.<init>
@@ -977,7 +977,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [CLASS_INIT] class=Landroidx/fragment/app/FragmentFactory; method=<clinit> bytecode_size=8
 [SGET] class=Landroidx/collection/SimpleArrayMap; method=<init> pc=3 field=Landroidx/collection/ContainerHelpers;.EMPTY_INTS obj_id=43
 [SGET] class=Landroidx/collection/SimpleArrayMap; method=<init> pc=7 field=Landroidx/collection/ContainerHelpers;.EMPTY_OBJECTS obj_id=45
-[CLASS_INIT] class=Landroidx/fragment/app/FragmentFactory; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=132
+[CLASS_INIT] class=Landroidx/fragment/app/FragmentFactory; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=132
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Landroidx/fragment/app/FragmentManager;.<init>
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReference;.<init> caller=Landroidx/lifecycle/Lifecycle;.<init>
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/arch/core/internal/SafeIterableMap;.<init>
@@ -996,7 +996,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/collection/SimpleArrayMap; method=<init> pc=7 field=Landroidx/collection/ContainerHelpers;.EMPTY_OBJECTS obj_id=45
 [SGET] class=Landroidx/appcompat/app/AppCompatDelegateImpl; method=<clinit> pc=7 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Landroidx/appcompat/app/AppCompatDelegateImpl; method=<clinit> pc=30 field=Landroid/os/Build;.FINGERPRINT obj_id=0
-[CLASS_INIT] class=Landroidx/appcompat/app/AppCompatDelegateImpl; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=138
+[CLASS_INIT] class=Landroidx/appcompat/app/AppCompatDelegateImpl; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=138
 [SGET] class=Landroidx/appcompat/app/AppCompatDelegateImpl; method=<init> pc=54 field=Landroidx/appcompat/app/AppCompatDelegateImpl;.sLocalNightModes obj_id=184
 [REC-MISS] Landroid/app/Activity;.getClass caller=Landroidx/appcompat/app/AppCompatDelegateImpl;.<init>
 [REC-MISS] Landroid/content/ContextWrapper;.getClass caller=Landroidx/appcompat/app/AppCompatDelegateImpl;.<init>
@@ -1013,13 +1013,13 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [EXP062-INIT] Landroidx/appcompat/widget/AppCompatDrawableManager; static_fields=4 with_defaults=4
 [CLASS_INIT] class=Landroidx/appcompat/widget/AppCompatDrawableManager; method=<clinit> bytecode_size=5
 [SGET] class=Landroidx/appcompat/widget/AppCompatDrawableManager; method=<clinit> pc=0 field=Landroid/graphics/PorterDuff$Mode;.SRC_IN obj_id=188
-[CLASS_INIT] class=Landroidx/appcompat/widget/AppCompatDrawableManager; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=143
+[CLASS_INIT] class=Landroidx/appcompat/widget/AppCompatDrawableManager; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=143
 [SGET] class=Landroidx/appcompat/widget/AppCompatDrawableManager; method=preload pc=3 field=Landroidx/appcompat/widget/AppCompatDrawableManager;.INSTANCE obj_id=0
 [EXP062-INIT] Landroidx/appcompat/widget/ResourceManagerInternal; static_fields=7 with_defaults=7
 [CLASS_INIT] class=Landroidx/appcompat/widget/ResourceManagerInternal; method=<clinit> bytecode_size=13
 [SGET] class=Landroidx/appcompat/widget/ResourceManagerInternal; method=<clinit> pc=0 field=Landroid/graphics/PorterDuff$Mode;.SRC_IN obj_id=188
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Landroidx/collection/LruCache;.<init>
-[CLASS_INIT] class=Landroidx/appcompat/widget/ResourceManagerInternal; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=150
+[CLASS_INIT] class=Landroidx/appcompat/widget/ResourceManagerInternal; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=150
 [SGET] class=Landroidx/appcompat/widget/ResourceManagerInternal; method=get pc=3 field=Landroidx/appcompat/widget/ResourceManagerInternal;.INSTANCE obj_id=0
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/appcompat/widget/ResourceManagerInternal;.<init>
 [SGET] class=Landroidx/appcompat/widget/ResourceManagerInternal; method=installDefaultInflateDelegates pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
@@ -1114,7 +1114,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroidx/core/app/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
 [SGET] class=Landroidx/appcompat/view/ContextThemeWrapper; method=getResourcesInternal pc=8 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[SGET-MISS] key=Landroidx/appcompat/view/ContextThemeWrapper;.sEmptyConfig storage_size=582 same_class_keys=0 engine=0x7fff039b6db8
+[SGET-MISS] key=Landroidx/appcompat/view/ContextThemeWrapper;.sEmptyConfig storage_size=582 same_class_keys=0 engine=0x7ffc170c53a8
 [SGET] class=Landroidx/appcompat/view/ContextThemeWrapper; method=isEmptyConfiguration pc=4 field=Landroidx/appcompat/view/ContextThemeWrapper;.sEmptyConfig obj_id=0
 [REC-MISS] Landroid/content/res/Configuration;.<init> caller=Landroidx/appcompat/view/ContextThemeWrapper;.isEmptyConfiguration
 [SGET] class=Landroidx/appcompat/view/ContextThemeWrapper; method=isEmptyConfiguration pc=18 field=Landroidx/appcompat/view/ContextThemeWrapper;.sEmptyConfig obj_id=217
@@ -1169,13 +1169,13 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=913
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=908
 [ARSC-VALUES] drawable paths resolved via canonical resolver: 89/432
 [ECR-ROOT] scan root=0 candidates=0 cur_act=41
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=924
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=919
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=1058
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=1053
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0 DEFERRED-UI-PENDING (earliest ready_at=0ms — launch frame is provisional; cross-check with --frames time-driven capture)
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
@@ -1364,7 +1364,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity;.<clinit>
 [REC-MISS] Ljava/lang/StringBuilder;.append caller=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity;.<clinit>
 [REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity;.<clinit>
-[CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=587
+[CLASS_INIT] class=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=587
 [REC-MISS] Landroid/content/Intent;.getAction caller=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity;.onCreate
 [REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lorg/secuso/privacyfriendlysudoku/ui/PrefManager;.isFirstTimeLaunch
 [SGET] class=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity; method=onCreate pc=40 field=Landroid/os/Build$VERSION;.SDK_INT value=35
@@ -1387,7 +1387,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [C013-HIER] getContext dispatched via superclass chain: Landroidx/viewpager/widget/ViewPager; -> Landroid/view/ViewGroup; (declared=Landroidx/viewpager/widget/ViewPager; receiver=Landroidx/viewpager/widget/ViewPager;)
 [EXP062-INIT] Landroidx/viewpager/widget/ViewPager; static_fields=20 with_defaults=18
 [CLASS_INIT] class=Landroidx/viewpager/widget/ViewPager; method=<clinit> bytecode_size=31
-[CLASS_INIT] class=Landroidx/viewpager/widget/ViewPager; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=607
+[CLASS_INIT] class=Landroidx/viewpager/widget/ViewPager; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=607
 [REC-MISS] Landroid/widget/Scroller;.<init> caller=Landroidx/viewpager/widget/ViewPager;.initViewPager
 [REC-MISS] Landroid/view/ViewConfiguration;.get caller=Landroidx/viewpager/widget/ViewPager;.initViewPager
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=get class=Lorg/secuso/privacyfriendlysudoku/ui/TutorialActivity;
@@ -1413,7 +1413,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [REC-MISS] Landroid/widget/EdgeEffect;.<init> caller=Landroidx/viewpager/widget/ViewPager;.initViewPager
 [CLASS_INIT] class=Landroidx/core/view/AccessibilityDelegateCompat; method=<clinit> bytecode_size=8
 [REC-MISS] Landroid/view/View$AccessibilityDelegate;.<init> caller=Landroidx/core/view/AccessibilityDelegateCompat;.<clinit>
-[CLASS_INIT] class=Landroidx/core/view/AccessibilityDelegateCompat; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=608
+[CLASS_INIT] class=Landroidx/core/view/AccessibilityDelegateCompat; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=608
 [REC-MISS] Landroid/view/View$AccessibilityDelegate;.<init> caller=Landroidx/core/view/AccessibilityDelegateCompat$AccessibilityDelegateAdapter;.<init>
 [EXP062-INIT] Landroidx/core/view/ViewCompat; static_fields=55 with_defaults=39
 [CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> bytecode_size=99
@@ -1452,7 +1452,7 @@ FONT_SOURCE apk=upload/sudoku_secuso_101.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=74 field=Landroidx/core/R$id;.accessibility_custom_action_30 value=2131296296
 [SGET] class=Landroidx/core/view/ViewCompat; method=<clinit> pc=76 field=Landroidx/core/R$id;.accessibility_custom_action_31 value=2131296297
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Landroidx/core/view/ViewCompat$AccessibilityPaneVisibilityManager;.<init>
-[CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> result=OK engine=0x7fff039b6db8 storage_size=725
+[CLASS_INIT] class=Landroidx/core/view/ViewCompat; method=<clinit> result=OK engine=0x7ffc170c53a8 storage_size=725
 [REC-MISS] Landroid/view/ViewGroup;.getImportantForAccessibility caller=Landroidx/core/view/ViewCompat$Api16Impl;.getImportantForAccessibility
 [REC-MISS] Landroid/view/View;.getImportantForAccessibility caller=Landroidx/core/view/ViewCompat$Api16Impl;.getImportantForAccessibility
 [REC-MISS] Landroid/view/View;.getImportantForAccessibility caller=Landroidx/core/view/ViewCompat$Api16Impl;.getImportantForAccessibility

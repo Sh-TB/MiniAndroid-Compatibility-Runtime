@@ -1,5 +1,5 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=34
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=36
 [EXP062-SV] parse_static_values for Landroidx/activity/R$id; offset=0x64921e static_fields=2 with_defaults=0
 [EXP062-SV-DONE] Landroidx/activity/R$id; with_defaults=2/2
 [EXP062-SV] parse_static_values for Landroidx/appcompat/R$anim; offset=0x649264 static_fields=24 with_defaults=0
@@ -209,8 +209,8 @@
 [EXP062-SV] parse_static_values for Leu/veldsoft/free/klondike/R$xml; offset=0x64cb4c static_fields=2 with_defaults=0
 [EXP062-SV-DONE] Leu/veldsoft/free/klondike/R$xml; with_defaults=2/2
 [BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=212
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=232
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=250
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=233
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=251
 [S123-ACTION-REG] activities=15 action_targets=1
 FONT_SOURCE apk=upload/klondike_veldsoft_3.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 5609 entries (5572 from APK + 37 framework) — LinearLayout present: YES
@@ -226,7 +226,7 @@ FONT_SOURCE apk=upload/klondike_veldsoft_3.apk font_files=0 registered=0 first=<
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
 [TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
 [REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
-[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=100.883 MB
+[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=100.625 MB
 [371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=3
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
@@ -236,9 +236,9 @@ FONT_SOURCE apk=upload/klondike_veldsoft_3.apk font_files=0 registered=0 first=<
 [EXP062-INIT] Landroidx/startup/AppInitializer; static_fields=3 with_defaults=1
 [CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> bytecode_size=8
 [TRY-ENTRY] Landroidx/startup/AppInitializer;.<clinit> dex_report=YES
-[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> result=OK engine=0x7ffe78fb53c8 storage_size=25
+[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> result=OK engine=0x7fffcee28498 storage_size=25
 [TRY-ENTRY] Landroidx/startup/AppInitializer;.getInstance dex_report=YES
-[SGET-MISS] key=Landroidx/startup/AppInitializer;.sInstance storage_size=25 same_class_keys=2 engine=0x7ffe78fb53c8 first=Landroidx/startup/AppInitializer;.SECTION_NAME
+[SGET-MISS] key=Landroidx/startup/AppInitializer;.sInstance storage_size=25 same_class_keys=2 engine=0x7fffcee28498 first=Landroidx/startup/AppInitializer;.SECTION_NAME
 [SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=0 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
 [SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=4 field=Landroidx/startup/AppInitializer;.sLock obj_id=18
 [SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=7 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
@@ -404,7 +404,7 @@ FONT_SOURCE apk=upload/klondike_veldsoft_3.apk font_files=0 registered=0 first=<
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=1
 [F100-STATE] quiescence at tick=1 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=662
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=620
 [REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Leu/veldsoft/free/klondike/SplashActivity;.onCreate
 [REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Leu/veldsoft/free/klondike/SplashActivity;.onCreate
 [REC-MISS] Landroid/webkit/WebView;.dispatchApplyWindowInsets caller=Leu/veldsoft/free/klondike/SplashActivity;.onCreate
@@ -421,10 +421,10 @@ FONT_SOURCE apk=upload/klondike_veldsoft_3.apk font_files=0 registered=0 first=<
 [EXP092-COPY] fb has 0 non-white pixels out of 2073600 total
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 0 non-white pixels
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=719
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=678
 [F100-STATE] pump entry: pending_cb=0 queue_size=1
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=850
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=809
 [F100-STATE] pump entry: pending_cb=0 queue_size=1
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
 [F100-STATE] pump entry: pending_cb=0 queue_size=1

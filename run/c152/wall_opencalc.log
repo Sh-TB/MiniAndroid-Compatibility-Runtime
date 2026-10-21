@@ -1,8 +1,8 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=109
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=154
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=174
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=178
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=56
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=99
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=119
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=123
 [S123-ACTION-REG] activities=3 action_targets=1
 FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 1540 entries (1495 from APK + 45 framework) — LinearLayout present: YES
@@ -18,7 +18,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
 [TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
 [REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
-[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=46.5312 MB
+[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=45.4609 MB
 [371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=3
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
 [TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
@@ -31,9 +31,9 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/InitializationProvider;.onCreate
 [CLASS_INIT] class=Lo0/a; method=<clinit> bytecode_size=8
 [TRY-ENTRY] Lo0/a;.<clinit> dex_report=YES
-[CLASS_INIT] class=Lo0/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=24
+[CLASS_INIT] class=Lo0/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=24
 [TRY-ENTRY] Lo0/a;.c dex_report=YES
-[SGET-MISS] key=Lo0/a;.d storage_size=24 same_class_keys=1 engine=0x7ffde48718a8 first=Lo0/a;.e
+[SGET-MISS] key=Lo0/a;.d storage_size=24 same_class_keys=1 engine=0x7ffeb34cb158 first=Lo0/a;.e
 [SGET] class=Lo0/a; method=c pc=0 field=Lo0/a;.d obj_id=0
 [SGET] class=Lo0/a; method=c pc=4 field=Lo0/a;.e obj_id=18
 [SGET] class=Lo0/a; method=c pc=7 field=Lo0/a;.d obj_id=0
@@ -121,12 +121,12 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Landroidx/lifecycle/l;.<clinit>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Landroidx/lifecycle/l;.<clinit>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Landroidx/lifecycle/l;.<clinit>
-[CLASS_INIT] class=Landroidx/lifecycle/l; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=33
+[CLASS_INIT] class=Landroidx/lifecycle/l; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=33
 [SGET] class=Landroidx/lifecycle/u; method=<init> pc=21 field=Landroidx/lifecycle/l;.b obj_id=42
 [REC-MISS] Ljava/lang/ref/WeakReference;.<init> caller=Landroidx/lifecycle/u;.<init>
 [CLASS_INIT] class=LJ1/a; method=<clinit> bytecode_size=13
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;.newUpdater caller=LJ1/a;.<clinit>
-[CLASS_INIT] class=LJ1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=34
+[CLASS_INIT] class=LJ1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=34
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArraySet;.<init> caller=Lb/a;.<init>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=LP/m;.<init>
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReference;.<init> caller=Landroidx/lifecycle/u;.<init>
@@ -135,7 +135,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/ref/WeakReference;.<init> caller=Landroidx/lifecycle/u;.<init>
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Lp/f;.<init>
 [REC-MISS] Landroid/os/SystemClock;.uptimeMillis caller=La/l;.<init>
-[M3-CLOCK] SystemClock.uptimeMillis -> 0ms virtual hs=0x7ffde4870d30
+[M3-CLOCK] SystemClock.uptimeMillis -> 0ms virtual hs=0x7ffeb34ca5e0
 [M3-LONG-PUT] field=La/l;.a caller=La/l;.<init> value=10000
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicInteger;.<init> caller=La/m;.<init>
 [REC-MISS] Landroid/os/Bundle;.<init> caller=La/g;.<init>
@@ -145,7 +145,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=La/m;.<init>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=La/m;.<init>
 [SGET] class=La/m; method=<init> pc=115 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[SGET-MISS] key=Lo/a;.m storage_size=34 same_class_keys=0 engine=0x7ffde48718a8
+[SGET-MISS] key=Lo/a;.m storage_size=34 same_class_keys=0 engine=0x7ffeb34cb158
 [SGET] class=Lo/a; method=r0 pc=0 field=Lo/a;.m obj_id=0
 [SGET] class=Lo/a; method=r0 pc=10 field=Lo/a;.m obj_id=0
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicInteger;.<init> caller=Lo/b;.<init>
@@ -164,7 +164,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/lifecycle/u; method=a pc=11 field=Landroidx/lifecycle/l;.a obj_id=41
 [SGET] class=Landroidx/lifecycle/u; method=a pc=16 field=Landroidx/lifecycle/l;.b obj_id=42
 [CLASS_INIT] class=Landroidx/lifecycle/v; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Landroidx/lifecycle/v; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=37
+[CLASS_INIT] class=Landroidx/lifecycle/v; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=37
 [SGET] class=Landroidx/lifecycle/u; method=a pc=23 field=Landroidx/lifecycle/v;.a obj_id=99
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lp/a;.a pc=2
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Landroidx/lifecycle/u;.a pc=172
@@ -175,7 +175,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [IGET-MISS-DIAG] asked="Landroidx/lifecycle/u;->g" obj#59 cls=Landroidx/lifecycle/u; keys: Landroidx/lifecycle/u;->a Landroidx/lifecycle/u;->b Landroidx/lifecycle/u;->c Landroidx/lifecycle/u;->d Landroidx/lifecycle/u;->e Landroidx/lifecycle/u;->i caller=Landroidx/lifecycle/u;.a
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Landroidx/lifecycle/u;.b pc=11
 [CLASS_INIT] class=Lz1/g; method=<clinit> bytecode_size=6
-[CLASS_INIT] class=Lz1/g; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=38
+[CLASS_INIT] class=Lz1/g; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=38
 [IGET-MISS-DIAG] asked="Landroidx/lifecycle/u;->f" obj#59 cls=Landroidx/lifecycle/u; keys: Landroidx/lifecycle/u;->a Landroidx/lifecycle/u;->b Landroidx/lifecycle/u;->c Landroidx/lifecycle/u;->d Landroidx/lifecycle/u;->e Landroidx/lifecycle/u;->i caller=Landroidx/lifecycle/u;.a
 [REC-MISS] Ljava/lang/Enum;.compareTo caller=Landroidx/lifecycle/u;.a
 [REC-MISS] Ljava/lang/Enum;.compareTo caller=Landroidx/lifecycle/u;.a
@@ -315,7 +315,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/Enum;.equals caller=Lz1/g;.a
 [REC-MISS] Ljava/lang/Object;.equals caller=Lz1/g;.a
 [CLASS_INIT] class=Landroidx/lifecycle/F; method=<clinit> bytecode_size=37
-[CLASS_INIT] class=Landroidx/lifecycle/F; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=42
+[CLASS_INIT] class=Landroidx/lifecycle/F; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=42
 [SGET] class=Landroidx/lifecycle/F; method=b pc=6 field=Landroidx/lifecycle/l;.b obj_id=42
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/lifecycle/F;.b
 [SGET] class=Lp/f; method=iterator pc=12 field=Ljava/lang/Boolean;.FALSE obj_id=121
@@ -323,7 +323,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP071-BRIDGE-HMAP] Ljava/util/WeakHashMap;.put argc=3 caller=Lp/f;.iterator pc=14
 [F089] shadow put map=70 key="obj:120" arg0_kind=6 arg0_str="" arg0_obj=120 arg0_cls=Lp/b; nargs=2 recv=Ljava/util/WeakHashMap;
 [CLASS_INIT] class=Lp1/f; method=<clinit> bytecode_size=17
-[CLASS_INIT] class=Lp1/f; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=45
+[CLASS_INIT] class=Lp1/f; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=45
 [SGET] class=Lp1/e; method=<init> pc=5 field=Lp1/f;.b obj_id=125
 [SGET] class=Lo/a; method=r0 pc=0 field=Lo/a;.m obj_id=92
 [SGET] class=Lo/a; method=r0 pc=4 field=Lo/a;.m obj_id=92
@@ -370,10 +370,10 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Ld0/F;.<init>
 [CLASS_INIT] class=Ld0/A; method=<clinit> bytecode_size=9
 [CLASS_INIT] class=Lt/a; method=<clinit> bytecode_size=10
-[CLASS_INIT] class=Lt/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=47
+[CLASS_INIT] class=Lt/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=47
 [SGET] class=Ls/h; method=<init> pc=5 field=Lt/a;.a obj_id=160
 [SGET] class=Ls/h; method=<init> pc=14 field=Lt/a;.b obj_id=161
-[CLASS_INIT] class=Ld0/A; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=48
+[CLASS_INIT] class=Ld0/A; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=48
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Ld0/F;.<init>
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReference;.<init> caller=Landroidx/lifecycle/u;.<init>
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Lp/f;.<init>
@@ -398,21 +398,21 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lx0/b;.<clinit>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Lx0/b;.<clinit>
 [EXP062-INIT] Le1/e; static_fields=10 with_defaults=10
-[CLASS_INIT] class=Lx0/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=62
+[CLASS_INIT] class=Lx0/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=62
 [SGET] class=Lcom/darkempire78/opencalculator/activities/MainActivity; method=<init> pc=31 field=Lx0/b;.b obj_id=184
-[SGET-MISS] key=Ljava/math/BigDecimal;.ZERO storage_size=62 same_class_keys=0 engine=0x7ffde48718a8
+[SGET-MISS] key=Ljava/math/BigDecimal;.ZERO storage_size=62 same_class_keys=0 engine=0x7ffeb34cb158
 [SGET] class=Lcom/darkempire78/opencalculator/activities/MainActivity; method=<init> pc=42 field=Ljava/math/BigDecimal;.ZERO obj_id=0
 [CLASS_INIT] class=Lg/t; method=<clinit> bytecode_size=48
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Lg/r;.<init>
 [SGET] class=Ls/e; method=<init> pc=3 field=Lt/a;.a obj_id=160
 [SGET] class=Ls/e; method=<init> pc=7 field=Lt/a;.b obj_id=161
-[CLASS_INIT] class=Lg/t; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=72
+[CLASS_INIT] class=Lg/t; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=72
 [SGET] class=Lg/m; method=j pc=4 field=Lg/t;.a obj_id=188
 [CLASS_INIT] class=Lg/F; method=<clinit> bytecode_size=30
 [SGET] class=Ls/h; method=<init> pc=5 field=Lt/a;.a obj_id=160
 [SGET] class=Ls/h; method=<init> pc=14 field=Lt/a;.b obj_id=161
 [SGET] class=Lg/F; method=<clinit> pc=19 field=Landroid/os/Build;.FINGERPRINT obj_id=0
-[CLASS_INIT] class=Lg/F; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=75
+[CLASS_INIT] class=Lg/F; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=75
 [SGET] class=Lg/F; method=<init> pc=66 field=Lg/F;.i0 obj_id=196
 [REC-MISS] Landroid/app/Activity;.getClass caller=Lg/F;.<init>
 [REC-MISS] Landroid/content/ContextWrapper;.getClass caller=Lg/F;.<init>
@@ -425,8 +425,8 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [IGET-MISS-DIAG] asked="Ls/h;->c" obj#196 cls=Ls/h; keys: Ls/h;->a Ls/h;->b a b caller=Ls/h;.c
 [CLASS_INIT] class=Ln/v; method=<clinit> bytecode_size=5
 [SGET] class=Ln/v; method=<clinit> pc=0 field=Landroid/graphics/PorterDuff$Mode;.SRC_IN obj_id=200
-[CLASS_INIT] class=Ln/v; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=77
-[SGET-MISS] key=Ln/v;.c storage_size=77 same_class_keys=1 engine=0x7ffde48718a8 first=Ln/v;.b
+[CLASS_INIT] class=Ln/v; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=77
+[SGET-MISS] key=Ln/v;.c storage_size=77 same_class_keys=1 engine=0x7ffeb34cb158 first=Ln/v;.b
 [SGET-MISS]   landed: LJ1/a;.c
 [SGET-MISS]   landed: Landroidx/lifecycle/F;.c
 [SGET-MISS]   landed: Landroidx/lifecycle/l;.c
@@ -438,8 +438,8 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [CLASS_INIT] class=Ln/R0; method=<clinit> bytecode_size=13
 [SGET] class=Ln/R0; method=<clinit> pc=0 field=Landroid/graphics/PorterDuff$Mode;.SRC_IN obj_id=200
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Ln/k;.<init>
-[CLASS_INIT] class=Ln/R0; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=80
-[SGET-MISS] key=Ln/R0;.i storage_size=80 same_class_keys=2 engine=0x7ffde48718a8 first=Ln/R0;.h
+[CLASS_INIT] class=Ln/R0; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=80
+[SGET-MISS] key=Ln/R0;.i storage_size=80 same_class_keys=2 engine=0x7ffeb34cb158 first=Ln/R0;.h
 [SGET-MISS]   landed: Le1/e;.i
 [SGET-MISS]   landed: Lg/F;.i0
 [SGET-MISS]   landed: Lg/t;.i
@@ -495,7 +495,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
 [SGET] class=Ll/c; method=getResources pc=8 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[SGET-MISS] key=Ll/c;.f storage_size=83 same_class_keys=0 engine=0x7ffde48718a8
+[SGET-MISS] key=Ll/c;.f storage_size=83 same_class_keys=0 engine=0x7ffeb34cb158
 [SGET-MISS]   landed: Landroidx/lifecycle/l;.f
 [SGET-MISS]   landed: Le1/e;.f
 [SGET-MISS]   landed: Lg/t;.f
@@ -523,7 +523,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Landroid/content/res/Resources$Theme;.applyStyle caller=Ll/c;.b
 [F364-APPLYSTYLE] resid=0x7f120241 force=1 caller=Ll/c;.b
 [CLASS_INIT] class=LG/b; method=<clinit> bytecode_size=194
-[CLASS_INIT] class=LG/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=89
+[CLASS_INIT] class=LG/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=89
 [SGET] class=LG/b; method=m pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [REC-MISS] Landroid/content/res/Resources$Theme;.rebase caller=LG/p;.a
 [REC-MISS] Landroid/app/Activity;.attachBaseContext caller=Lg/m;.attachBaseContext
@@ -550,11 +550,11 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/util/Iterator;.next caller=La/m;.onCreate
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.add caller=Ld0/F;.b
 [CLASS_INIT] class=Lq1/d; method=<clinit> bytecode_size=6
-[CLASS_INIT] class=Lq1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=90
+[CLASS_INIT] class=Lq1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=90
 [SGET] class=Lq1/d; method=<init> pc=3 field=Lq1/d;.d obj_id=249
 [SGET] class=La/y; method=<init> pc=12 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=La/u; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=La/u; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=91
+[CLASS_INIT] class=La/u; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=91
 [SGET] class=La/y; method=<init> pc=22 field=La/u;.a obj_id=250
 [SGET] class=Lo/a; method=r0 pc=0 field=Lo/a;.m obj_id=92
 [SGET] class=Lo/a; method=r0 pc=4 field=Lo/a;.m obj_id=92
@@ -642,16 +642,16 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getLastNonConfigurationInstance class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Landroidx/lifecycle/K;.<init>
 [CLASS_INIT] class=Ld0/H; method=<clinit> bytecode_size=10
-[CLASS_INIT] class=Ld0/H; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=92
+[CLASS_INIT] class=Ld0/H; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=92
 [SGET] class=Ld0/F; method=b pc=105 field=Ld0/H;.h obj_id=267
 [CLASS_INIT] class=Lg0/a; method=<clinit> bytecode_size=8
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Lg0/b;.<init>
-[CLASS_INIT] class=Lg0/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=93
+[CLASS_INIT] class=Lg0/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=93
 [SGET] class=LC/b; method=<init> pc=9 field=Lg0/a;.b obj_id=268
 [CLASS_INIT] class=Lz1/k; method=<clinit> bytecode_size=27
 [R350-FORNAME] "kotlin.reflect.jvm.internal.ReflectionFactoryImpl" → ClassNotFoundException
 [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lz1/k;.<clinit> pc=3 → deferred handler @0x0xf type=Ljava/lang/ClassNotFoundException;
-[CLASS_INIT] class=Lz1/k; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=94
+[CLASS_INIT] class=Lz1/k; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=94
 [SGET] class=Lz1/k; method=a pc=0 field=Lz1/k;.a obj_id=273
 [REC-MISS] Ljava/lang/Object;.getClass caller=Lz1/k;.a
 [CLASS_INIT] class=Lz1/d; method=<clinit> bytecode_size=625
@@ -729,7 +729,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [REC-MISS] Ljava/lang/Integer;.valueOf caller=Lz1/d;.<clinit>
 [REC-MISS] Ljava/util/Iterator;.hasNext caller=Lz1/d;.<clinit>
 [CLASS_INIT] class=Lq1/o; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lq1/o; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=95
+[CLASS_INIT] class=Lq1/o; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=95
 [SGET] class=Lq1/q; method=u pc=0 field=Lq1/o;.a obj_id=349
 [REC-MISS] Ljava/util/Collection;.size caller=Lq1/q;.u
 [REC-MISS] Ljava/util/Collection;.size caller=Lq1/q;.u
@@ -1075,7 +1075,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lz1/d;.<clinit> pc=620
 [STR] substring(7,16) of "kotlin.Function9" → "Function9"
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lz1/d;.<clinit> pc=620
-[CLASS_INIT] class=Lz1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=97
+[CLASS_INIT] class=Lz1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=97
 [SGET] class=LC/b; method=t pc=25 field=Lz1/d;.c obj_id=354
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=LC/b;.t pc=66
 [M3-REFLECT] Class.getCanonicalName -> d0.H
@@ -1084,7 +1084,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [SGET] class=LP/m; method=s pc=24 field=Lz1/d;.b obj_id=350
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=LP/m;.s pc=31
 [CLASS_INIT] class=Lh0/b; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lh0/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=98
+[CLASS_INIT] class=Lh0/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=98
 [SGET] class=LP/m; method=s pc=83 field=Lh0/b;.a obj_id=485
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=LP/m;.s pc=87
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=LP/m;.s pc=127
@@ -1093,9 +1093,9 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [CLASS_INIT] class=Lw1/a; method=<clinit> bytecode_size=38
 [R500-REFLECT] Class(Landroid/os/Build$VERSION;).getField("SDK_INT") declared=Landroid/os/Build$VERSION; type=I static -> Field obj#501
 [R500-REFLECT] Field.get static Landroid/os/Build$VERSION;.SDK_INT kind=static -> ref
-[CLASS_INIT] class=Lw1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=100
+[CLASS_INIT] class=Lw1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=100
 [SGET] class=LB1/e; method=<clinit> pc=7 field=Lw1/a;.a obj_id=502
-[CLASS_INIT] class=LB1/e; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=101
+[CLASS_INIT] class=LB1/e; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=101
 [SGET] class=La/g; method=b pc=11 field=LB1/e;.a obj_id=500
 [SGET] class=La/g; method=b pc=16 field=LB1/e;.b obj_id=503
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=La/g;.b pc=63
@@ -1128,9 +1128,9 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [SGET] class=Lg/F; method=z pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=LL/g; method=<clinit> bytecode_size=10
 [SGET] class=LL/g; method=a pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=LL/g; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=102
+[CLASS_INIT] class=LL/g; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=102
 [CLASS_INIT] class=LL/e; method=<clinit> bytecode_size=30
-[CLASS_INIT] class=LL/e; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=103
+[CLASS_INIT] class=LL/e; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=103
 [SGET] class=LL/g; method=a pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
@@ -1149,7 +1149,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDrawable class=Landroid/app/Activity;
 [RES] getDrawable resid=0x7f080076 name= path=res/hq.xml
 [CLASS_INIT] class=Ln/r0; method=<clinit> bytecode_size=22
-[CLASS_INIT] class=Ln/r0; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=106
+[CLASS_INIT] class=Ln/r0; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=106
 [SGET] class=Ln/r0; method=a pc=8 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Lg/m; method=getResources pc=0 field=Ln/o1;.a value=0
 [F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.getResources method_id=2890 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lg/m;.getResources
@@ -1169,14 +1169,14 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroid/app/Activity;
 [CLASS_INIT] class=LE/e; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=LE/e; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=107
+[CLASS_INIT] class=LE/e; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=107
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
 [SGET] class=LE/e; method=c pc=4 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [F116-ACTINFO] com.darkempire78.opencalculator.Lg.F; metaData=0 (no manifest entries)
 [EXP093-BUNDLE] getString class=Landroid/os/Bundle; key="android.support.PARENT_ACTIVITY" bundle_id=560 has_obj=1
 [CLASS_INIT] class=Ls/g; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Ls/g; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=109
+[CLASS_INIT] class=Ls/g; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=109
 [SGET] class=Lg/m; method=getResources pc=0 field=Ln/o1;.a value=0
 [F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.getResources method_id=2890 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lg/m;.getResources
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
@@ -1189,7 +1189,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [SGET] class=LE/h; method=onCreate pc=3 field=Landroidx/lifecycle/E;.b value=0
 [SGET] class=Landroidx/lifecycle/C; method=b pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Landroidx/lifecycle/E$a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Landroidx/lifecycle/E$a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=111
+[CLASS_INIT] class=Landroidx/lifecycle/E$a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=111
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerActivityLifecycleCallbacks class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [F058-REG] registerActivityLifecycleCallbacks obs=571 cls=Landroidx/lifecycle/E$a; total=1
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFragmentManager class=Lcom/darkempire78/opencalculator/activities/MainActivity;
@@ -1199,9 +1199,9 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [F058-REG] registerActivityLifecycleCallbacks obs=575 cls=Landroidx/lifecycle/E$a; total=2
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFragmentManager class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [CLASS_INIT] class=Landroidx/lifecycle/k; method=<clinit> bytecode_size=97
-[CLASS_INIT] class=Landroidx/lifecycle/k; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=120
+[CLASS_INIT] class=Landroidx/lifecycle/k; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=120
 [CLASS_INIT] class=Landroidx/lifecycle/j; method=<clinit> bytecode_size=73
-[CLASS_INIT] class=Landroidx/lifecycle/j; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=121
+[CLASS_INIT] class=Landroidx/lifecycle/j; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=121
 [EXP071-BRIDGE-HMAP] Ljava/util/WeakHashMap;.put argc=3 caller=Landroidx/lifecycle/u;.h pc=337
 [RET] Lq1/d;.isEmpty val=1 type=9 obj=0
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
@@ -1212,7 +1212,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lq1/q;.t pc=10
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lq1/q;.t pc=10
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lq1/q;.t pc=10
-[CLASS_INIT] class=Lu0/c; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=122
+[CLASS_INIT] class=Lu0/c; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=122
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lcom/darkempire78/opencalculator/activities/MainActivity;
@@ -1245,7 +1245,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Lu0/c;.b pc=221
 [CLASS_INIT] class=Lv0/z; method=<clinit> bytecode_size=12
-[CLASS_INIT] class=Lv0/z; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=123
+[CLASS_INIT] class=Lv0/z; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=123
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getLayoutInflater class=Landroid/app/Activity;
 [F-NEW-334] SparseArray law: <init> recv=626 caller=Landroidx/constraintlayout/widget/ConstraintLayout;.<init>
 [EXP062-INIT] Lv/c; static_fields=2 with_defaults=2
@@ -1255,20 +1255,20 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [F-NEW-334] SparseArray law: put recv=626 caller=Landroidx/constraintlayout/widget/ConstraintLayout;.i
 [C013-HIER] getContext dispatched via superclass chain: Landroidx/constraintlayout/widget/ConstraintLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/constraintlayout/widget/ConstraintLayout; receiver=Landroidx/constraintlayout/widget/ConstraintLayout;)
 [CLASS_INIT] class=LA/r; method=<clinit> bytecode_size=1056
-[CLASS_INIT] class=LA/r; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=136
+[CLASS_INIT] class=LA/r; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=136
 [TAG-ENTRY] bridge_to_api Lcom/darkempire78/opencalculator/activities/MainActivity;.obtainStyledAttributes argc=5 caller=Landroidx/constraintlayout/widget/ConstraintLayout;.i
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [F-NEW-175] obtainStyledAttributes attrs=115 theme-backed (apk=upload/opencalculator_53.apk)
 [DEFAULT-MEASURE] class=Landroidx/constraintlayout/widget/ConstraintLayout; view=624 node=FOUND overrides_onMeasure=1 flag=0
 [CLASS_INIT] class=Ll1/d; method=<clinit> bytecode_size=14
 [CLASS_INIT] class=Ll1/b; method=<clinit> bytecode_size=66
-[CLASS_INIT] class=Ll1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=142
-[CLASS_INIT] class=Ll1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=144
+[CLASS_INIT] class=Ll1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=142
+[CLASS_INIT] class=Ll1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=144
 [TAG-ENTRY] bridge_to_api Lcom/darkempire78/opencalculator/activities/MainActivity;.obtainStyledAttributes argc=3 caller=Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;.<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [F-NEW-175] obtainStyledAttributes attrs=1 theme-backed (apk=upload/opencalculator_53.apk)
 [CLASS_INIT] class=Ln1/a; method=<clinit> bytecode_size=44
-[CLASS_INIT] class=Ln1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=145
+[CLASS_INIT] class=Ln1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=145
 [TAG-ENTRY] bridge_to_api Lcom/darkempire78/opencalculator/activities/MainActivity;.obtainStyledAttributes argc=3 caller=Lcom/sothree/slidinguppanel/SlidingUpPanelLayout;.<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [F-NEW-175] obtainStyledAttributes attrs=15 theme-backed (apk=upload/opencalculator_53.apk)
@@ -1277,7 +1277,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
 [CLASS_INIT] class=Ll1/f; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Ll1/f; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=146
+[CLASS_INIT] class=Ll1/f; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=146
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=get class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=get class=Landroid/app/Activity;
 [SGET] class=Lg/m; method=getResources pc=0 field=Ln/o1;.a value=0
@@ -1309,7 +1309,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP062-INIT] Landroidx/recyclerview/widget/RecyclerView; static_fields=10 with_defaults=2
 [CLASS_INIT] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> bytecode_size=84
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> pc=34 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=157
+[CLASS_INIT] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=157
 [M3-LONG-PUT] field=Lm0/K;.c caller=Landroidx/recyclerview/widget/RecyclerView;.<init> value=120
 [M3-LONG-PUT] field=Lm0/K;.d caller=Landroidx/recyclerview/widget/RecyclerView;.<init> value=120
 [M3-LONG-PUT] field=Lm0/K;.e caller=Landroidx/recyclerview/widget/RecyclerView;.<init> value=250
@@ -1319,8 +1319,8 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=<init> pc=339 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=LP/W; method=<clinit> bytecode_size=26
 [SGET] class=LP/W; method=<clinit> pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=LP/W; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=157
-[SGET-MISS] key=LP/W;.a storage_size=157 same_class_keys=0 engine=0x7ffde48718a8
+[CLASS_INIT] class=LP/W; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=157
+[SGET-MISS] key=LP/W;.a storage_size=157 same_class_keys=0 engine=0x7ffeb34cb158
 [SGET-MISS]   landed: LA/r;.a
 [SGET-MISS]   landed: LB1/e;.a
 [SGET-MISS]   landed: LE/e;.a
@@ -1355,13 +1355,13 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [M3-LONG-PUT] field=Lm0/c;.a caller=Lm0/c;.<init> value=0
 [EXP062-INIT] LP/S; static_fields=7 with_defaults=3
 [CLASS_INIT] class=LP/S; method=<clinit> bytecode_size=92
-[CLASS_INIT] class=LP/S; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=164
+[CLASS_INIT] class=LP/S; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=164
 [R339-SVC] getSystemService("accessibility") → Landroid/view/accessibility/AccessibilityManager; (shadow layer, caller=Landroidx/recyclerview/widget/RecyclerView;.<init>)
 [CLASS_INIT] class=LP/b; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=LP/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=165
+[CLASS_INIT] class=LP/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=165
 [F274-CTORGATE] Lm0/i0;.e initializer type Lm0/h0; has no ()V ctor -> honest null (recv=Lm0/i0; caller=Lm0/i0;.j pc=0)
 [CLASS_INIT] class=Ll0/a; method=<clinit> bytecode_size=38
-[CLASS_INIT] class=Ll0/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=166
+[CLASS_INIT] class=Ll0/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=166
 [TAG-ENTRY] bridge_to_api Lcom/darkempire78/opencalculator/activities/MainActivity;.obtainStyledAttributes argc=5 caller=Landroidx/recyclerview/widget/RecyclerView;.<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [F-NEW-175] obtainStyledAttributes attrs=12 theme-backed (apk=upload/opencalculator_53.apk)
@@ -1685,7 +1685,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [TAG-ENTRY] bridge_to_api Landroid/view/View;.setTag argc=3 caller=LW0/d;.b0
 [TAG-PROBE] bridge_to_api entered Landroid/view/View;.setTag argc=3
 [CLASS_INIT] class=Lf/a; method=<clinit> bytecode_size=984
-[CLASS_INIT] class=Lf/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=205
+[CLASS_INIT] class=Lf/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=205
 [TAG-ENTRY] bridge_to_api Lcom/darkempire78/opencalculator/activities/MainActivity;.obtainStyledAttributes argc=2 caller=Lg/F;.w
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [F-NEW-175] obtainStyledAttributes attrs=127 theme-backed (apk=upload/opencalculator_53.apk)
@@ -1707,7 +1707,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [C013-HIER] findViewById dispatched via superclass chain: Landroidx/appcompat/widget/FitWindowsLinearLayout; -> Landroid/widget/LinearLayout; (declared=Landroidx/appcompat/widget/FitWindowsLinearLayout; receiver=Landroidx/appcompat/widget/FitWindowsLinearLayout;)
 [CLASS_INIT] class=Ln/r1; method=<clinit> bytecode_size=12
 [SGET] class=Ln/r1; method=<clinit> pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Ln/r1; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=206
+[CLASS_INIT] class=Ln/r1; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=206
 [SGET] class=Lg/F; method=w pc=269 field=Ln/r1;.a value=0
 [F-NEW-219] NOT-RESOLVED Landroidx/appcompat/widget/FitWindowsLinearLayout;.makeOptionalFitsSystemWindows(...) → NoSuchMethodException caller=Lg/F;.w
 [SYNTH-EXC] F-NEW-219 (deferred): Ljava/lang/NoSuchMethodException; (Landroidx/appcompat/widget/FitWindowsLinearLayout;.makeOptionalFitsSystemWindows(...)) method=Lg/F;.w pc=281 → deferred handler @0x0x137 type=Ljava/lang/NoSuchMethodException;
@@ -1740,7 +1740,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP061-ADDVIEW] parent=1031 parent_class=Landroid/widget/FrameLayout; child=624
 [C013-HIER] addView dispatched via superclass chain: Landroidx/appcompat/widget/ContentFrameLayout; -> Landroid/widget/FrameLayout; (declared=Landroidx/appcompat/widget/ContentFrameLayout; receiver=Landroidx/appcompat/widget/ContentFrameLayout;)
 [S134-GCB] bridge getCallback recv=Landroid/view/Window; reg=Y act=35 caller=Lg/F;.j
-[MEM] method_exit: Lg/m;.onContentChanged insns=1 RSS=196.562 MB
+[MEM] method_exit: Lg/m;.onContentChanged insns=1 RSS=196.84 MB
 [C013-HIER] setOnLongClickListener dispatched via superclass chain: Landroid/widget/ImageButton; -> Landroid/widget/ImageView; (declared=Landroid/widget/ImageButton; receiver=Landroid/widget/ImageButton;)
 [EXP067-SETIMAGE] view_id=847 resid=0x7f080098
 [C013-HIER] setImageResource dispatched via superclass chain: Landroid/widget/ImageButton; -> Landroid/widget/ImageView; (declared=Landroid/widget/ImageButton; receiver=Landroid/widget/ImageButton;)
@@ -1752,23 +1752,23 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
 [CLASS_INIT] class=Le1/h; method=<clinit> bytecode_size=20
-[CLASS_INIT] class=Le1/h; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=208
+[CLASS_INIT] class=Le1/h; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=208
 [F-NEW-222] Collections.emptyMap → shared singleton obj#1069
 [CLASS_INIT] class=Lf1/q; method=<clinit> bytecode_size=445
 [CLASS_INIT] class=Lf1/g; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Lf1/g; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=210
-[CLASS_INIT] class=Lf1/q; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=241
+[CLASS_INIT] class=Lf1/g; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=210
+[CLASS_INIT] class=Lf1/q; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=241
 [CLASS_INIT] class=Lf1/h; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lf1/h; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=242
+[CLASS_INIT] class=Lf1/h; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=242
 [CLASS_INIT] class=Lf1/d; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lf1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=246
+[CLASS_INIT] class=Lf1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=246
 [CLASS_INIT] class=Li1/b; method=<clinit> bytecode_size=33
 [R350-FORNAME] "java.sql.Date" → ClassNotFoundException
 [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (java.sql.Date) method=Li1/b;.<clinit> pc=2 → deferred handler @0x0x7 type=Ljava/lang/ClassNotFoundException;
-[CLASS_INIT] class=Li1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=250
+[CLASS_INIT] class=Li1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=250
 [SGET] class=Lc1/d; method=<init> pc=310 field=Li1/b;.a value=0
 [CLASS_INIT] class=Lf1/b; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lf1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=251
+[CLASS_INIT] class=Lf1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=251
 [SGET] class=Lm0/W; method=f pc=19 field=Landroidx/recyclerview/widget/RecyclerView;.G0 value=1
 [SGET] class=Lm0/W; method=f pc=19 field=Landroidx/recyclerview/widget/RecyclerView;.G0 value=1
 [F-NEW-334] SparseArray law: <init> recv=1195 caller=Lm0/W;.c
@@ -1858,7 +1858,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [SGET] class=La/i; method=a pc=128 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getOnBackInvokedDispatcher class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [CLASS_INIT] class=La/s; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=La/s; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=252
+[CLASS_INIT] class=La/s; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=252
 [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/E$a; obs=571 ins=1634
 [SGET] class=Landroidx/lifecycle/E$a; method=onActivityPostCreated pc=5 field=Landroidx/lifecycle/E;.b value=0
 [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/E$a; obs=575 ins=63
@@ -1928,92 +1928,92 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.get argc=2 caller=Lu0/c;.b pc=221
 [CLASS_INIT] class=LH1/M; method=<clinit> bytecode_size=21
-[CLASS_INIT] class=LH1/M; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=254
+[CLASS_INIT] class=LH1/M; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=254
 [CLASS_INIT] class=LH1/o; method=<clinit> bytecode_size=73
-[CLASS_INIT] class=LH1/o; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=262
+[CLASS_INIT] class=LH1/o; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=262
 [CLASS_INIT] class=LH1/O; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=LH1/O; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=263
+[CLASS_INIT] class=LH1/O; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=263
 [CLASS_INIT] class=LH1/u; method=<clinit> bytecode_size=11
 [CLASS_INIT] class=LN1/d; method=<clinit> bytecode_size=24
 [CLASS_INIT] class=LN1/k; method=<clinit> bytecode_size=106
 [CLASS_INIT] class=LL1/r; method=<clinit> bytecode_size=11
-[CLASS_INIT] class=LL1/r; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=264
+[CLASS_INIT] class=LL1/r; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=264
 [SGET] class=LN1/k; method=<clinit> pc=2 field=LL1/r;.a value=4
 [SGET] class=LL1/a; method=d pc=7 field=LL1/r;.a value=4
 [SGET] class=LN1/k; method=<clinit> pc=34 field=LL1/r;.a value=4
 [CLASS_INIT] class=LL1/a; method=<clinit> bytecode_size=50
-[CLASS_INIT] class=LL1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=271
+[CLASS_INIT] class=LL1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=271
 [SGET] class=LL1/a; method=d pc=7 field=LL1/r;.a value=4
 [SGET] class=LL1/a; method=d pc=7 field=LL1/r;.a value=4
 [SGET] class=LL1/a; method=d pc=7 field=LL1/r;.a value=4
 [CLASS_INIT] class=LN1/f; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=LN1/f; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=276
-[CLASS_INIT] class=LN1/k; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=279
+[CLASS_INIT] class=LN1/f; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=276
+[CLASS_INIT] class=LN1/k; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=279
 [SGET] class=LN1/d; method=<clinit> pc=2 field=LN1/k;.c value=4
 [SGET] class=LN1/d; method=<clinit> pc=4 field=LN1/k;.d value=2097150
 [SGET] class=LN1/d; method=<clinit> pc=6 field=LN1/k;.e value=-129542144
 [CLASS_INIT] class=LH1/k; method=<clinit> bytecode_size=12
 [CLASS_INIT] class=Lr1/e; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lr1/e; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=280
+[CLASS_INIT] class=Lr1/e; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=280
 [CLASS_INIT] class=LH1/i; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=LH1/i; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=281
-[CLASS_INIT] class=LH1/k; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=282
+[CLASS_INIT] class=LH1/i; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=281
+[CLASS_INIT] class=LH1/k; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=282
 [CLASS_INIT] class=LN1/b; method=<clinit> bytecode_size=37
-[CLASS_INIT] class=LN1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=286
+[CLASS_INIT] class=LN1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=286
 [M3-LONG-PUT] field=LN1/b;.c caller=LN1/b;.<init> value=60000000000
 [CLASS_INIT] class=LL1/i; method=<clinit> bytecode_size=13
-[CLASS_INIT] class=LL1/i; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=287
+[CLASS_INIT] class=LL1/i; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=287
 [CLASS_INIT] class=LL1/k; method=<clinit> bytecode_size=31
-[CLASS_INIT] class=LL1/k; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=290
+[CLASS_INIT] class=LL1/k; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=290
 [M3-LONG-PUT] field=LN1/b;.controlState caller=LN1/b;.<init> value=17592186044416
-[CLASS_INIT] class=LN1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=291
+[CLASS_INIT] class=LN1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=291
 [SGET] class=LH1/u; method=<clinit> pc=4 field=LH1/V;.c value=0
 [CLASS_INIT] class=LN1/c; method=<clinit> bytecode_size=78
 [CLASS_INIT] class=LN1/l; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=LN1/l; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=295
+[CLASS_INIT] class=LN1/l; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=295
 [SGET] class=LN1/c; method=<clinit> pc=9 field=LL1/r;.a value=4
 [SGET] class=LL1/a; method=d pc=7 field=LL1/r;.a value=4
 [SGET] class=LN1/c; method=<clinit> pc=34 field=LN1/k;.d value=2097150
 [CLASS_INIT] class=LL1/f; method=<clinit> bytecode_size=11
-[CLASS_INIT] class=LL1/f; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=296
+[CLASS_INIT] class=LL1/f; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=296
 [CLASS_INIT] class=LH1/q; method=<clinit> bytecode_size=36
 [SGET] class=LH1/q; method=<clinit> pc=2 field=LL1/r;.a value=4
 [CLASS_INIT] class=LH1/p; method=<clinit> bytecode_size=43
 [CLASS_INIT] class=LH1/y; method=<clinit> bytecode_size=29
-[CLASS_INIT] class=LH1/y; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=299
+[CLASS_INIT] class=LH1/y; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=299
 [M3-LONG-PUT] field=LH1/z;.c caller=LH1/p;.<clinit> value=1
-[CLASS_INIT] class=LH1/p; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=302
-[CLASS_INIT] class=LH1/q; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=302
+[CLASS_INIT] class=LH1/p; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=302
+[CLASS_INIT] class=LH1/q; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=302
 [SGET] class=LL1/f; method=<init> pc=17 field=LH1/q;.a value=0
-[CLASS_INIT] class=LN1/c; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=304
-[CLASS_INIT] class=LH1/u; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=305
+[CLASS_INIT] class=LN1/c; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=304
+[CLASS_INIT] class=LH1/u; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=305
 [CLASS_INIT] class=LL1/l; method=<clinit> bytecode_size=147
 [SGET] class=LL1/l; method=<clinit> pc=3 field=LL1/r;.a value=4
 [CLASS_INIT] class=LI1/d; method=<clinit> bytecode_size=31
 [SGET] class=LI1/d; method=a pc=4 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=LI1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=305
+[CLASS_INIT] class=LI1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=305
 [SGET] class=LI1/d; method=a pc=4 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=LL1/l; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=306
+[CLASS_INIT] class=LL1/l; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=306
 [CLASS_INIT] class=Lr1/j; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lr1/j; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=307
+[CLASS_INIT] class=Lr1/j; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=307
 [CLASS_INIT] class=Lr1/b; method=<clinit> bytecode_size=19
-[CLASS_INIT] class=Lr1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=309
+[CLASS_INIT] class=Lr1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=309
 [CLASS_INIT] class=LH1/l; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=LH1/l; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=311
+[CLASS_INIT] class=LH1/l; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=311
 [CLASS_INIT] class=LH1/h; method=<clinit> bytecode_size=19
-[CLASS_INIT] class=LH1/h; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=313
+[CLASS_INIT] class=LH1/h; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=313
 [CLASS_INIT] class=LL1/h; method=<clinit> bytecode_size=29
-[CLASS_INIT] class=LL1/h; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=316
+[CLASS_INIT] class=LL1/h; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=316
 [CLASS_INIT] class=Lv/e; method=<clinit> bytecode_size=1
-[CLASS_INIT] class=Lv/e; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=316
+[CLASS_INIT] class=Lv/e; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=316
 [EXP062-INIT] LF/e; static_fields=14 with_defaults=7
 [CLASS_INIT] class=LL1/e; method=<clinit> bytecode_size=13
-[CLASS_INIT] class=LL1/e; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=324
+[CLASS_INIT] class=LL1/e; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=324
 [M3-LONG-PUT] field=LN1/h;.a caller=LN1/h;.<init> value=0
 [CLASS_INIT] class=LL1/s; method=<clinit> bytecode_size=28
-[CLASS_INIT] class=LL1/s; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=327
+[CLASS_INIT] class=LL1/s; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=327
 [CLASS_INIT] class=LH1/U; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=LH1/U; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=328
+[CLASS_INIT] class=LH1/U; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=328
 [M3-LONG-PUT] field=LH1/z;.c caller=LL1/a;.c value=4294967296
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Lp/a;.a pc=2
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Landroidx/lifecycle/u;.a pc=172
@@ -2021,17 +2021,17 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Landroidx/lifecycle/u;.b pc=11
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Landroidx/lifecycle/u;.b pc=11
 [CLASS_INIT] class=Ls1/a; method=<clinit> bytecode_size=38
-[CLASS_INIT] class=Ls1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=330
+[CLASS_INIT] class=Ls1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=330
 [CLASS_INIT] class=Lt1/b; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lt1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=331
+[CLASS_INIT] class=Lt1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=331
 [M3-LONG-PUT] field=LH1/z;.c caller=LH1/z;.h value=0
 [M3-LONG-PUT] field=LN1/h;.a caller=LN1/h;.<init> value=0
-[M3-LONG-PUT] field=LN1/h;.a caller=LN1/b;.b value=1792610821026648250
+[M3-LONG-PUT] field=LN1/h;.a caller=LN1/b;.b value=1792612561811617723
 [CLASS_INIT] class=LN1/a; method=<clinit> bytecode_size=11
-[CLASS_INIT] class=LN1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=332
+[CLASS_INIT] class=LN1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=332
 [C013-HIER] setDaemon dispatched via superclass chain: LN1/a; -> Ljava/lang/Thread; (declared=LN1/a; receiver=LN1/a;)
 [CLASS_INIT] class=LN1/m; method=<clinit> bytecode_size=37
-[CLASS_INIT] class=LN1/m; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=336
+[CLASS_INIT] class=LN1/m; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=336
 [C013-HIER] setName dispatched via superclass chain: LN1/a; -> Ljava/lang/Thread; (declared=LN1/a; receiver=LN1/a;)
 [THREAD-START] thread_oid=1436 (subclass self-run law) → pending inline run
 [C013-HIER] start dispatched via superclass chain: LN1/a; -> Ljava/lang/Thread; (declared=LN1/a; receiver=LN1/a;)
@@ -2044,10 +2044,10 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [R359-UI] runOnUiThread runnable=1448 (enqueued on main queue)
 [TS-DIAG] toString cls=Ljava/lang/Object; a0=t5 recv_oid=0 caller=Lv0/y;.i pc=149
 [CLASS_INIT] class=LH1/s; method=<clinit> bytecode_size=11
-[CLASS_INIT] class=LH1/s; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=337
+[CLASS_INIT] class=LH1/s; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=337
 [M3-LONG-PUT] field=LN1/h;.a caller=LN1/h;.<init> value=0
 [QUEUE] Runnable id=1458 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=2)
-[M3-LONG-PUT] field=LN1/a;.d caller=LN1/a;.run value=1792610881032506114
+[M3-LONG-PUT] field=LN1/a;.d caller=LN1/a;.run value=1792612621817360259
 [QUEUE] Runnable id=1448 dequeued (ready_at=0ms <= now=0ms virtual)
 [QUEUE] Runnable id=1458 dequeued (ready_at=0ms <= now=0ms virtual)
 [SGET] class=Lv0/b; method=run pc=0 field=Lcom/darkempire78/opencalculator/activities/MainActivity;.K value=0
@@ -2063,20 +2063,20 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [C013-HIER] start dispatched via superclass chain: LN1/a; -> Ljava/lang/Thread; (declared=LN1/a; receiver=LN1/a;)
 [M3-LONG-PUT] field=LN1/a;.e caller=LN1/a;.i value=0
 [M3-LONG-PUT] field=LN1/a;.e caller=LN1/a;.i value=0
-[M3-LONG-PUT] field=LN1/a;.d caller=LN1/a;.run value=1792610881035707854
+[M3-LONG-PUT] field=LN1/a;.d caller=LN1/a;.run value=1792612621820540015
 [PARK-DRAIN] park depth=0 work_units=0
 [PARK-YIELD] parked worker frame suspended (depth=1, quiescence) at LN1/a;.run
 [THREAD-START] drained oid=1460 cls=LN1/a; (self-run law) → REAL DEX run() executed
 [TS-DIAG] toString cls=Ljava/lang/Object; a0=t5 recv_oid=0 caller=Lcom/darkempire78/opencalculator/activities/MainActivity;.onResume pc=242
 [CLASS_INIT] class=LG1/d; method=<clinit> bytecode_size=18
 [CLASS_INIT] class=Lz1/a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lz1/a; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=339
-[CLASS_INIT] class=LG1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=340
+[CLASS_INIT] class=Lz1/a; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=339
+[CLASS_INIT] class=LG1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=340
 [RX-DIAG] Pattern.matcher cond=MATCH argc=2 a0=t7 a1=t5 caller=LG1/c;.c pc=8
 [CLASS_INIT] class=Lq1/n; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lq1/n; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=341
+[CLASS_INIT] class=Lq1/n; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=341
 [CLASS_INIT] class=Lq1/m; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lq1/m; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=342
+[CLASS_INIT] class=Lq1/m; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=342
 [EXP091-SETTEXT] view_id=701 class=Landroid/widget/EditText; arg_kind=5 text=""
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Lcom/darkempire78/opencalculator/activities/MainActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
@@ -2140,9 +2140,9 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [EXP093-STRFMT] String.format("\u%04x", n=1) → "\u001d"
 [EXP093-STRFMT] String.format("\u%04x", n=1) → "\u001e"
 [EXP093-STRFMT] String.format("\u%04x", n=1) → "\u001f"
-[CLASS_INIT] class=Lk1/b; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=345
+[CLASS_INIT] class=Lk1/b; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=345
 [CLASS_INIT] class=Le1/d; method=<clinit> bytecode_size=6
-[CLASS_INIT] class=Le1/d; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=346
+[CLASS_INIT] class=Le1/d; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=346
 [EXP071-BRIDGE-HMAP] Ljava/util/concurrent/ConcurrentHashMap;.get argc=2 caller=Lc1/d;.c pc=2
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Lc1/d;.c pc=49
 [SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Ljava/lang/Class;.getSuperclass' on a null object reference) method=Le1/d;.f pc=60 → uncaught (deferred frame unwind + propagate)
@@ -2173,7 +2173,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [F-NEW-471-RES-GAP] super-call Landroid/view/ViewGroup;.onAttachedToWindow method_id=4552 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Landroidx/recyclerview/widget/RecyclerView;.onAttachedToWindow
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=onAttachedToWindow pc=40 field=Landroidx/recyclerview/widget/RecyclerView;.G0 value=1
 [CLASS_INIT] class=Lm0/p; method=<clinit> bytecode_size=16
-[CLASS_INIT] class=Lm0/p; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=348
+[CLASS_INIT] class=Lm0/p; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=348
 [M3-LONG-PUT] field=Lm0/p;.c caller=Landroidx/recyclerview/widget/RecyclerView;.onAttachedToWindow value=16666667
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=onAttachedToWindow pc=121 field=Landroidx/recyclerview/widget/RecyclerView;.A0 value=0
 [UC009-ATTACH] onAttachedToWindow dispatched view=915 class=Landroidx/recyclerview/widget/RecyclerView;
@@ -2182,7 +2182,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [UC009-ATTACH] attach dispatch complete ok=true
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=775
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=706
 [F384-ROOTINSETS] root=o1027 cls=Landroidx/appcompat/widget/FitWindowsLinearLayout; insets=o1616 dispatched=false
 [ECR-ROOT] scalar content_view_id root=1027
 [EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
@@ -2209,7 +2209,7 @@ FONT_SOURCE apk=upload/opencalculator_53.apk font_files=0 registered=0 first=<no
 [C013-HIER] getPaddingStart dispatched via superclass chain: Landroidx/constraintlayout/widget/ConstraintLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/constraintlayout/widget/ConstraintLayout; receiver=Landroidx/constraintlayout/widget/ConstraintLayout;)
 [C013-HIER] getPaddingEnd dispatched via superclass chain: Landroidx/constraintlayout/widget/ConstraintLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/constraintlayout/widget/ConstraintLayout; receiver=Landroidx/constraintlayout/widget/ConstraintLayout;)
 [CLASS_INIT] class=Lx/j; method=<clinit> bytecode_size=6
-[CLASS_INIT] class=Lx/j; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=349
+[CLASS_INIT] class=Lx/j; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=349
 [C013-HIER] setMeasuredDimension dispatched via superclass chain: Landroidx/constraintlayout/widget/ConstraintLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/constraintlayout/widget/ConstraintLayout; receiver=Landroidx/constraintlayout/widget/ConstraintLayout;)
 [C013-HIER] setClickable dispatched via superclass chain: Landroidx/constraintlayout/widget/ConstraintLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/constraintlayout/widget/ConstraintLayout; receiver=Landroidx/constraintlayout/widget/ConstraintLayout;)
 [C013-HIER] setFocusable dispatched via superclass chain: Landroidx/constraintlayout/widget/ConstraintLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/constraintlayout/widget/ConstraintLayout; receiver=Landroidx/constraintlayout/widget/ConstraintLayout;)
@@ -2544,10 +2544,10 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] fb has 17844 non-white pixels out of 2073600 total
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 17844 non-white pixels
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=924
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=847
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=1068
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=992
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
@@ -2899,7 +2899,7 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [LIFEWIN-ZRET] decl=Landroidx/recyclerview/widget/LinearLayoutManager;.N recv=1048(Landroidx/recyclerview/widget/LinearLayoutManager;) ret=TRUE
 [CLASS_INIT] class=LL/l; method=<clinit> bytecode_size=86
 [SGET] class=LL/l; method=<clinit> pc=8 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=LL/l; method=<clinit> result=OK engine=0x7ffde48718a8 storage_size=349
+[CLASS_INIT] class=LL/l; method=<clinit> result=OK engine=0x7ffeb34cb158 storage_size=349
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=onLayout pc=0 field=LL/l;.a value=0
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=U pc=9 field=Landroidx/recyclerview/widget/RecyclerView;.A0 value=0
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=U pc=9 field=Landroidx/recyclerview/widget/RecyclerView;.A0 value=0

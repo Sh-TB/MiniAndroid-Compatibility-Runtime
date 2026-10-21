@@ -1,5 +1,5 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=30
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=120
 [EXP062-SV] parse_static_values for Lnet/openid/appauth/R$anim; offset=0x1fa756 static_fields=25 with_defaults=0
 [EXP062-SV-DONE] Lnet/openid/appauth/R$anim; with_defaults=25/25
 [EXP062-SV] parse_static_values for Lnet/openid/appauth/R$animator; offset=0x1fa7d4 static_fields=6 with_defaults=0
@@ -30,9 +30,9 @@
 [EXP062-SV-DONE] Lnet/openid/appauth/R$styleable; with_defaults=492/492
 [EXP062-SV] parse_static_values for Lnet/openid/appauth/R$xml; offset=0x1fc2f7 static_fields=1 with_defaults=0
 [EXP062-SV-DONE] Lnet/openid/appauth/R$xml; with_defaults=1/1
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=90
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=110
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=115
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=181
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=202
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=206
 [S123-ACTION-REG] activities=21 action_targets=22
 FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 1956 entries (1912 from APK + 44 framework) — LinearLayout present: YES
@@ -50,7 +50,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [TRY-ENTRY] Ljwtc/android/chess/helpers/MyPGNProvider;.<init> dex_report=YES
 [TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
 [REC-MISS] Landroid/content/ContentProvider;.<init> caller=Ljwtc/android/chess/helpers/MyPGNProvider;.<init>
-[MEM] method_exit: Ljwtc/android/chess/helpers/MyPGNProvider;.<init> insns=2 RSS=55.7773 MB
+[MEM] method_exit: Ljwtc/android/chess/helpers/MyPGNProvider;.<init> insns=2 RSS=53.7188 MB
 [TRY-ENTRY] Ljwtc/android/chess/helpers/MyPGNProvider;.attachInfo dex_report=YES
 [TRY-ENTRY] Ljwtc/android/chess/helpers/MyPGNProvider;.onCreate dex_report=YES
 [TRY-ENTRY] Ljwtc/chess/f;.onCreate dex_report=YES
@@ -113,7 +113,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [F089] shadow put map=24 key="event" arg0_kind=5 arg0_str="event" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Ljwtc/chess/f;.<clinit> pc=71
 [F089] shadow put map=24 key="result" arg0_kind=5 arg0_str="result" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
-[CLASS_INIT] class=Ljwtc/chess/f; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=32
+[CLASS_INIT] class=Ljwtc/chess/f; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=32
 [SGET] class=Ljwtc/chess/f; method=onCreate pc=73 field=Ljwtc/chess/f;.CONTENT_URI obj_id=23
 [REC-MISS] Landroid/net/Uri;.toString caller=Ljwtc/chess/f;.onCreate
 [REC-MISS] Ljava/lang/StringBuilder;.append caller=Ljwtc/chess/f;.onCreate
@@ -132,8 +132,8 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
 [REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/InitializationProvider;.onCreate
 [CLASS_INIT] class=Lg1/a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lg1/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=33
-[SGET-MISS] key=Lg1/a;.d storage_size=33 same_class_keys=1 engine=0x7fff4edaa968 first=Lg1/a;.e
+[CLASS_INIT] class=Lg1/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=33
+[SGET-MISS] key=Lg1/a;.d storage_size=33 same_class_keys=1 engine=0x7ffc2c790328 first=Lg1/a;.e
 [SGET] class=Lg1/a; method=c pc=0 field=Lg1/a;.d obj_id=0
 [SGET] class=Lg1/a; method=c pc=4 field=Lg1/a;.e obj_id=31
 [SGET] class=Lg1/a; method=c pc=7 field=Lg1/a;.d obj_id=0
@@ -167,7 +167,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Landroid/app/Activity;.<init> caller=Lc0/i;.<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
 [CLASS_INIT] class=Ls/a; method=<clinit> bytecode_size=10
-[CLASS_INIT] class=Ls/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=41
+[CLASS_INIT] class=Ls/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=41
 [SGET] class=Lr/j; method=<init> pc=5 field=Ls/a;.a obj_id=48
 [SGET] class=Lr/j; method=<init> pc=14 field=Ls/a;.b obj_id=49
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReference;.<init> caller=Landroidx/lifecycle/v;.<init>
@@ -178,7 +178,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Landroidx/lifecycle/n;.<clinit>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Landroidx/lifecycle/n;.<clinit>
 [REC-MISS] Ljava/lang/Enum;.<init> caller=Landroidx/lifecycle/n;.<clinit>
-[CLASS_INIT] class=Landroidx/lifecycle/n; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=47
+[CLASS_INIT] class=Landroidx/lifecycle/n; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=47
 [SGET] class=Landroidx/lifecycle/v; method=<init> pc=18 field=Landroidx/lifecycle/n;.g obj_id=56
 [REC-MISS] Ljava/lang/ref/WeakReference;.<init> caller=Landroidx/lifecycle/v;.<init>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArraySet;.<init> caller=Lc/a;.<init>
@@ -189,7 +189,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Ljava/lang/ref/WeakReference;.<init> caller=Landroidx/lifecycle/v;.<init>
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Ln/f;.<init>
 [REC-MISS] Landroid/os/SystemClock;.uptimeMillis caller=Landroidx/activity/m;.<init>
-[M3-CLOCK] SystemClock.uptimeMillis -> 0ms virtual hs=0x7fff4eda9df0
+[M3-CLOCK] SystemClock.uptimeMillis -> 0ms virtual hs=0x7ffc2c78f7b0
 [M3-LONG-PUT] field=Landroidx/activity/m;.f caller=Landroidx/activity/m;.<init> value=10000
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicInteger;.<init> caller=Landroidx/activity/ComponentActivity;.<init>
 [REC-MISS] Landroid/os/Bundle;.<init> caller=Landroidx/activity/result/i;.<init>
@@ -198,7 +198,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Landroidx/activity/ComponentActivity;.<init>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Landroidx/activity/ComponentActivity;.<init>
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Landroidx/activity/ComponentActivity;.<init>
-[SGET-MISS] key=Lm/a;.j storage_size=47 same_class_keys=0 engine=0x7fff4edaa968
+[SGET-MISS] key=Lm/a;.j storage_size=47 same_class_keys=0 engine=0x7ffc2c790328
 [SGET-MISS]   landed: Landroidx/lifecycle/n;.j
 [SGET] class=Landroidx/lifecycle/v; method=d pc=4 field=Lm/a;.j obj_id=0
 [SGET] class=Landroidx/lifecycle/v; method=d pc=14 field=Lm/a;.j obj_id=0
@@ -218,7 +218,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [SGET] class=Landroidx/lifecycle/v; method=a pc=7 field=Landroidx/lifecycle/n;.f obj_id=55
 [SGET] class=Landroidx/lifecycle/v; method=a pc=12 field=Landroidx/lifecycle/n;.g obj_id=56
 [CLASS_INIT] class=Landroidx/lifecycle/w; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Landroidx/lifecycle/w; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=50
+[CLASS_INIT] class=Landroidx/lifecycle/w; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=50
 [SGET] class=Landroidx/lifecycle/v; method=a pc=19 field=Landroidx/lifecycle/w;.a obj_id=108
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ln/a;.a pc=2
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Landroidx/lifecycle/v;.a pc=170
@@ -368,7 +368,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [F089] shadow put map=79 key="obj:126" arg0_kind=6 arg0_str="" arg0_obj=126 arg0_cls=Ln/b; nargs=2 recv=Ljava/util/WeakHashMap;
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/lifecycle/h0;.<init>
 [CLASS_INIT] class=Le3/c; method=<clinit> bytecode_size=17
-[CLASS_INIT] class=Le3/c; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=53
+[CLASS_INIT] class=Le3/c; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=53
 [SGET] class=Le3/b; method=<init> pc=5 field=Le3/c;.b obj_id=131
 [REC-MISS] Ljava/lang/Object;.getClass caller=Lf1/e;.c
 [SGET] class=Landroidx/lifecycle/v; method=d pc=4 field=Lm/a;.j obj_id=101
@@ -418,7 +418,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [CLASS_INIT] class=Landroidx/fragment/app/r; method=<clinit> bytecode_size=9
 [SGET] class=Lr/j; method=<init> pc=5 field=Ls/a;.a obj_id=48
 [SGET] class=Lr/j; method=<init> pc=14 field=Ls/a;.b obj_id=49
-[CLASS_INIT] class=Landroidx/fragment/app/r; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=54
+[CLASS_INIT] class=Landroidx/fragment/app/r; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=54
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Landroidx/fragment/app/u;.<init>
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicReference;.<init> caller=Landroidx/lifecycle/v;.<init>
 [REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Ln/f;.<init>
@@ -443,13 +443,13 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Lg/o;.<init>
 [SGET] class=Lr/g; method=<init> pc=3 field=Ls/a;.a obj_id=48
 [SGET] class=Lr/g; method=<init> pc=7 field=Ls/a;.b obj_id=49
-[CLASS_INIT] class=Lg/q; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=63
+[CLASS_INIT] class=Lg/q; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=63
 [SGET] class=Lg/k; method=getDelegate pc=4 field=Lg/q;.f obj_id=190
 [CLASS_INIT] class=Lg/c0; method=<clinit> bytecode_size=30
 [SGET] class=Lr/j; method=<init> pc=5 field=Ls/a;.a obj_id=48
 [SGET] class=Lr/j; method=<init> pc=14 field=Ls/a;.b obj_id=49
 [SGET] class=Lg/c0; method=<clinit> pc=19 field=Landroid/os/Build;.FINGERPRINT obj_id=0
-[CLASS_INIT] class=Lg/c0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=66
+[CLASS_INIT] class=Lg/c0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=66
 [REC-MISS] Landroid/app/Activity;.getClass caller=Lg/c0;.<init>
 [REC-MISS] Landroid/content/ContextWrapper;.getClass caller=Lg/c0;.<init>
 [REC-MISS] Landroid/content/Context;.getClass caller=Lg/c0;.<init>
@@ -462,15 +462,15 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [IGET-MISS-DIAG] asked="Lr/j;->h" obj#198 cls=Lr/j; keys: Lr/j;->f Lr/j;->g f g caller=Lr/j;.c
 [CLASS_INIT] class=Ll/t; method=<clinit> bytecode_size=5
 [SGET] class=Ll/t; method=<clinit> pc=0 field=Landroid/graphics/PorterDuff$Mode;.SRC_IN obj_id=202
-[CLASS_INIT] class=Ll/t; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=68
-[SGET-MISS] key=Ll/t;.c storage_size=68 same_class_keys=1 engine=0x7fff4edaa968 first=Ll/t;.b
+[CLASS_INIT] class=Ll/t; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=68
+[SGET-MISS] key=Ll/t;.c storage_size=68 same_class_keys=1 engine=0x7ffc2c790328 first=Ll/t;.b
 [SGET-MISS]   landed: Le3/c;.c
 [SGET] class=Ll/t; method=d pc=3 field=Ll/t;.c obj_id=0
 [CLASS_INIT] class=Ll/l2; method=<clinit> bytecode_size=13
 [SGET] class=Ll/l2; method=<clinit> pc=0 field=Landroid/graphics/PorterDuff$Mode;.SRC_IN obj_id=202
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=La1/c;.<init>
-[CLASS_INIT] class=Ll/l2; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=71
-[SGET-MISS] key=Ll/l2;.g storage_size=71 same_class_keys=2 engine=0x7fff4edaa968 first=Ll/l2;.f
+[CLASS_INIT] class=Ll/l2; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=71
+[SGET-MISS] key=Ll/l2;.g storage_size=71 same_class_keys=2 engine=0x7ffc2c790328 first=Ll/l2;.f
 [SGET-MISS]   landed: Landroidx/lifecycle/n;.g
 [SGET-MISS]   landed: Lg/q;.g
 [SGET] class=Ll/l2; method=c pc=3 field=Ll/l2;.g obj_id=0
@@ -530,7 +530,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
 [SGET] class=Lj/d; method=getResources pc=8 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[SGET-MISS] key=Lj/d;.f storage_size=74 same_class_keys=0 engine=0x7fff4edaa968
+[SGET-MISS] key=Lj/d;.f storage_size=74 same_class_keys=0 engine=0x7ffc2c790328
 [SGET-MISS]   landed: Landroidx/lifecycle/n;.f
 [SGET-MISS]   landed: Lg/h0;.f
 [SGET-MISS]   landed: Lg/q;.f
@@ -589,7 +589,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
 [PREFS] Loaded ChessPlayer.xml
 [CLASS_INIT] class=Lq2/a; method=<clinit> bytecode_size=43
-[CLASS_INIT] class=Lq2/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=80
+[CLASS_INIT] class=Lq2/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=80
 [REC-MISS] Landroid/content/SharedPreferences;.contains caller=Lq2/a;.b
 [REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lq2/a;.l
 [REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lq2/a;.l
@@ -607,11 +607,11 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Ljava/util/Iterator;.next caller=Landroidx/activity/ComponentActivity;.onCreate
 [REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.add caller=Landroidx/fragment/app/h;.a
 [CLASS_INIT] class=Lf3/h; method=<clinit> bytecode_size=6
-[CLASS_INIT] class=Lf3/h; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=81
+[CLASS_INIT] class=Lf3/h; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=81
 [SGET] class=Lf3/h; method=<init> pc=3 field=Lf3/h;.i obj_id=239
 [SGET] class=Landroidx/activity/x; method=<init> pc=12 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Landroidx/activity/u; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Landroidx/activity/u; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=82
+[CLASS_INIT] class=Landroidx/activity/u; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=82
 [SGET] class=Landroidx/activity/x; method=<init> pc=46 field=Landroidx/activity/u;.a obj_id=244
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/activity/u;.a
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/activity/u;.a
@@ -707,12 +707,12 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getLastNonConfigurationInstance class=Landroid/app/Activity;
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Landroidx/lifecycle/p0;.<init>
 [CLASS_INIT] class=Landroidx/fragment/app/x; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Landroidx/fragment/app/x; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=83
+[CLASS_INIT] class=Landroidx/fragment/app/x; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=83
 [SGET] class=Landroidx/fragment/app/h; method=a pc=46 field=Landroidx/fragment/app/x;.h obj_id=259
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/emoji2/text/u;.<init>
 [CLASS_INIT] class=La1/a; method=<clinit> bytecode_size=8
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=La1/b;.<init>
-[CLASS_INIT] class=La1/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=84
+[CLASS_INIT] class=La1/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=84
 [SGET] class=Landroidx/emoji2/text/u; method=<init> pc=6 field=La1/a;.b obj_id=261
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/emoji2/text/u;.<init>
 [REC-MISS] Ljava/lang/Object;.getClass caller=Landroidx/emoji2/text/u;.<init>
@@ -728,7 +728,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=La1/b;.<init>
 [REC-MISS] Ljava/util/Map;.putAll caller=La1/d;.<init>
 [CLASS_INIT] class=Landroidx/lifecycle/m0; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Landroidx/lifecycle/m0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=86
+[CLASS_INIT] class=Landroidx/lifecycle/m0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=86
 [SGET] class=Landroidx/emoji2/text/u; method=n pc=63 field=Landroidx/lifecycle/m0;.g obj_id=268
 [REC-MISS] Ljava/util/Map;.put caller=Landroidx/emoji2/text/u;.n
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Landroidx/emoji2/text/u;.n pc=67
@@ -756,10 +756,10 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [R500-REFLECT] Field.get static Landroid/os/Build$VERSION;.SDK_INT kind=static -> ref
 [REC-MISS] Ljava/lang/Integer;.intValue caller=Lk3/a;.<clinit>
 [REC-MISS] Ljava/lang/Number;.intValue caller=Lk3/a;.<clinit>
-[CLASS_INIT] class=Lk3/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=87
+[CLASS_INIT] class=Lk3/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=87
 [SGET] class=Lo3/d; method=<clinit> pc=0 field=Lk3/a;.a obj_id=280
 [REC-MISS] Ljava/lang/Integer;.intValue caller=Lo3/d;.<clinit>
-[CLASS_INIT] class=Lo3/d; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=88
+[CLASS_INIT] class=Lo3/d; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=88
 [SGET] class=Landroidx/activity/result/i; method=d pc=11 field=Lo3/d;.f obj_id=281
 [SGET] class=Landroidx/activity/result/i; method=d pc=13 field=Lo3/d;.f obj_id=281
 [REC-MISS] Ljava/util/concurrent/ThreadLocalRandom;.current caller=Lp3/a;.a
@@ -866,9 +866,9 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [REC-MISS] Landroid/os/LocaleList;.toLanguageTags caller=Lg/v;.b
 [CLASS_INIT] class=Lj0/f; method=<clinit> bytecode_size=20
 [REC-MISS] Landroid/os/LocaleList;.<init> caller=Lj0/e;.a
-[CLASS_INIT] class=Lj0/f; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=89
+[CLASS_INIT] class=Lj0/f; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=89
 [CLASS_INIT] class=Lj0/d; method=<clinit> bytecode_size=25
-[CLASS_INIT] class=Lj0/d; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=90
+[CLASS_INIT] class=Lj0/d; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=90
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
 [S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Ljwtc/android/chess/start; recv_oid=46 act_oid=46)
@@ -894,7 +894,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [RES] getDrawable resid=0x7f080082 name= path=res/hq.xml
 [SGET] class=Ll/l2; method=h pc=153 field=Ll/t;.b obj_id=202
 [CLASS_INIT] class=Ll/l1; method=<clinit> bytecode_size=22
-[CLASS_INIT] class=Ll/l1; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=93
+[CLASS_INIT] class=Ll/l1; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=93
 [SGET] class=Ll/l1; method=a pc=8 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Lg/k; method=getResources pc=4 field=Ll/j3;.a value=0
 [F-NEW-471-RES-GAP] super-call Landroid/content/Context;.getResources method_id=584 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lg/k;.getResources
@@ -922,7 +922,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroid/app/Activity;
 [CLASS_INIT] class=Lc0/e; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lc0/e; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=94
+[CLASS_INIT] class=Lc0/e; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=94
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
 [S71-ANCESTRY] re-dispatch Ljwtc/android/chess/start; as Landroidx/activity/ComponentActivity; for .getPackageManager
@@ -937,7 +937,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [SGET] class=Lg/q; method=f pc=3 field=Lg/q;.l obj_id=194
 [SGET] class=Lg/c0; method=d pc=53 field=Lg/q;.l obj_id=194
 [CLASS_INIT] class=Lr/i; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Lr/i; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=96
+[CLASS_INIT] class=Lr/i; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=96
 [SGET] class=Lg/k; method=getResources pc=4 field=Ll/j3;.a value=0
 [F-NEW-471-RES-GAP] super-call Landroid/content/Context;.getResources method_id=584 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lg/k;.getResources
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroidx/activity/ComponentActivity;
@@ -949,7 +949,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [SGET] class=Lc0/i; method=onCreate pc=3 field=Landroidx/lifecycle/e0;.g value=0
 [SGET] class=Landroidx/lifecycle/b0; method=b pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Landroidx/lifecycle/e0$a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Landroidx/lifecycle/e0$a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=98
+[CLASS_INIT] class=Landroidx/lifecycle/e0$a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=98
 [SGET] class=Landroidx/lifecycle/b0; method=b pc=6 field=Landroidx/lifecycle/e0$a;.Companion obj_id=347
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerActivityLifecycleCallbacks class=Landroidx/activity/ComponentActivity;
 [F058-REG] registerActivityLifecycleCallbacks obs=349 cls=Landroidx/lifecycle/e0$a; total=1
@@ -965,9 +965,9 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getFragmentManager class=Landroidx/activity/ComponentActivity;
 [C013-HIER] getFragmentManager dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [CLASS_INIT] class=Landroidx/lifecycle/m; method=<clinit> bytecode_size=84
-[CLASS_INIT] class=Landroidx/lifecycle/m; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=107
+[CLASS_INIT] class=Landroidx/lifecycle/m; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=107
 [CLASS_INIT] class=Landroidx/lifecycle/l; method=<clinit> bytecode_size=73
-[CLASS_INIT] class=Landroidx/lifecycle/l; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=108
+[CLASS_INIT] class=Landroidx/lifecycle/l; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=108
 [EXP071-BRIDGE-HMAP] Ljava/util/WeakHashMap;.put argc=3 caller=Landroidx/lifecycle/v;.g pc=252
 [F089] shadow put map=174 key="obj:367" arg0_kind=6 arg0_str="" arg0_obj=367 arg0_cls=Ln/d; nargs=2 recv=Ljava/util/WeakHashMap;
 [RET] Lf3/h;.isEmpty val=1 type=9 obj=0
@@ -987,7 +987,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationContext class=Landroidx/activity/ComponentActivity;
 [C013-HIER] getApplicationContext dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [CLASS_INIT] class=Lf/a; method=<clinit> bytecode_size=984
-[CLASS_INIT] class=Lf/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=135
+[CLASS_INIT] class=Lf/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=135
 [TAG-ENTRY] bridge_to_api Ljwtc/android/chess/start;.obtainStyledAttributes argc=2 caller=Lg/c0;.y
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=127 theme-backed (apk=upload/chess_jwtc_298.apk)
@@ -1008,15 +1008,15 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP062-INIT] Ln0/d1; static_fields=5 with_defaults=1
 [CLASS_INIT] class=Ln0/i1; method=<clinit> bytecode_size=52
 [SGET] class=Ln0/i1; method=<clinit> pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[MEM] method_exit: Ln0/c1;.a insns=1 RSS=204.43 MB
+[MEM] method_exit: Ln0/c1;.a insns=1 RSS=202.883 MB
 [ROOT-059] WindowInsets$Builder.build -> o444
 [SGET] class=Ln0/k1; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Ln0/k1; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Ln0/k1; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [SGET] class=Ln0/k1; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Ln0/i1; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=137
-[CLASS_INIT] class=Ln0/h1; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=138
-[CLASS_INIT] class=Ln0/k1; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=139
+[CLASS_INIT] class=Ln0/i1; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=137
+[CLASS_INIT] class=Ln0/h1; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=138
+[CLASS_INIT] class=Ln0/k1; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=139
 [C013-HIER] getContext dispatched via superclass chain: Landroidx/appcompat/widget/ActionBarOverlayLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/appcompat/widget/ActionBarOverlayLayout; receiver=Landroidx/appcompat/widget/ActionBarOverlayLayout;)
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
@@ -1027,10 +1027,10 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [CLASS_INIT] class=Landroidx/appcompat/widget/ActionBarOverlayLayout; method=<clinit> bytecode_size=62
 [SGET] class=Landroidx/appcompat/widget/ActionBarOverlayLayout; method=<clinit> pc=12 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Lf0/c; method=<clinit> bytecode_size=9
-[CLASS_INIT] class=Lf0/c; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=141
+[CLASS_INIT] class=Lf0/c; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=141
 [ROOT-059] WindowInsets$Builder.build -> o463
 [SGET] class=Ln0/k1; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Landroidx/appcompat/widget/ActionBarOverlayLayout; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=143
+[CLASS_INIT] class=Landroidx/appcompat/widget/ActionBarOverlayLayout; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=143
 [TAG-ENTRY] bridge_to_api Landroid/content/res/Resources$Theme;.obtainStyledAttributes argc=2 caller=Landroidx/appcompat/widget/ActionBarOverlayLayout;.i
 [EXP062-ADDVIEW-TRACE] invoke-virtual addView argc=2 this_id=427 this_class=Landroidx/appcompat/widget/ActionBarOverlayLayout; child_type=7 child_id=470 child_class=Ll/f; caller=Landroidx/appcompat/widget/ActionBarOverlayLayout;.<init> pc=109
 [EXP061-ADDVIEW] parent=427 parent_class=Landroid/view/ViewGroup; child=470
@@ -1118,7 +1118,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [C013-HIER] getContext dispatched via superclass chain: Landroidx/appcompat/widget/Toolbar; -> Landroid/view/ViewGroup; (declared=Landroidx/appcompat/widget/Toolbar; receiver=Landroidx/appcompat/widget/Toolbar;)
 [C013-HIER] getContext dispatched via superclass chain: Landroidx/appcompat/widget/Toolbar; -> Landroid/view/ViewGroup; (declared=Landroidx/appcompat/widget/Toolbar; receiver=Landroidx/appcompat/widget/Toolbar;)
 [CLASS_INIT] class=Ll/t2; method=<clinit> bytecode_size=1
-[CLASS_INIT] class=Ll/t2; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=143
+[CLASS_INIT] class=Ll/t2; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=143
 [SGET] class=Lg/k; method=getResources pc=4 field=Ll/j3;.a value=0
 [F-NEW-471-RES-GAP] super-call Landroid/content/Context;.getResources method_id=584 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lg/k;.getResources
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroidx/activity/ComponentActivity;
@@ -1129,7 +1129,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
 [SGET] class=Ll/t2; method=a pc=11 field=Ll/j3;.a value=0
 [CLASS_INIT] class=Ll/s2; method=<clinit> bytecode_size=54
-[CLASS_INIT] class=Ll/s2; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=150
+[CLASS_INIT] class=Ll/s2; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=150
 [TAG-ENTRY] bridge_to_api Ljwtc/android/chess/start;.obtainStyledAttributes argc=2 caller=Ll/s2;.a
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=127 theme-backed (apk=upload/chess_jwtc_298.apk)
@@ -1150,12 +1150,12 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP060-LISTENER] setOnClickListener view_id=502 class=Ll/x; listener_id=500 listener_class_at_reg=Ll/d3;
 [EXP062-INIT] Ln0/q0; static_fields=5 with_defaults=3
 [CLASS_INIT] class=Ln0/q0; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Ln0/q0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=155
+[CLASS_INIT] class=Ln0/q0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=155
 [SGET] class=Ln0/f0; method=u pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [C013-HIER] setOnApplyWindowInsetsListener dispatched via superclass chain: Landroidx/appcompat/widget/ActionBarOverlayLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/appcompat/widget/ActionBarOverlayLayout; receiver=Landroidx/appcompat/widget/ActionBarOverlayLayout;)
 [CLASS_INIT] class=Ll/m3; method=<clinit> bytecode_size=12
 [SGET] class=Ll/m3; method=<clinit> pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Ll/m3; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=156
+[CLASS_INIT] class=Ll/m3; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=156
 [SGET] class=Lg/c0; method=y pc=263 field=Ll/m3;.a value=0
 [F-NEW-219] NOT-RESOLVED Landroidx/appcompat/widget/ActionBarOverlayLayout;.makeOptionalFitsSystemWindows(...) → NoSuchMethodException caller=Lg/c0;.y
 [SYNTH-EXC] F-NEW-219 (deferred): Ljava/lang/NoSuchMethodException; (Landroidx/appcompat/widget/ActionBarOverlayLayout;.makeOptionalFitsSystemWindows(...)) method=Lg/c0;.y pc=275 → deferred handler @0x0x131 type=Ljava/lang/NoSuchMethodException;
@@ -1180,7 +1180,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [C013-HIER] requestLayout dispatched via superclass chain: Landroidx/appcompat/widget/ContentFrameLayout; -> Landroid/widget/FrameLayout; (declared=Landroidx/appcompat/widget/ContentFrameLayout; receiver=Landroidx/appcompat/widget/ContentFrameLayout;)
 [F023-PARENTLINK] getDecorView: activity view=46 linked under decor view=424
 [CLASS_INIT] class=Lg/o0; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Lg/o0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=159
+[CLASS_INIT] class=Lg/o0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=159
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
 [S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Ljwtc/android/chess/start; recv_oid=46 act_oid=46)
@@ -1244,7 +1244,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [SGET] class=Ln0/q0; method=g pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Ll/f1; method=<clinit> bytecode_size=15
-[CLASS_INIT] class=Ll/f1; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=161
+[CLASS_INIT] class=Ll/f1; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=161
 [SGET] class=Ll/f1; method=<init> pc=30 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [TAG-ENTRY] bridge_to_api Ljwtc/android/chess/start;.obtainStyledAttributes argc=5 caller=Landroidx/emoji2/text/u;.A
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
@@ -1271,13 +1271,13 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [F-NEW-175] obtainStyledAttributes attrs=22 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [CLASS_INIT] class=Ll/b0; method=<clinit> bytecode_size=13
-[CLASS_INIT] class=Ll/b0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=162
+[CLASS_INIT] class=Ll/b0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=162
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=22 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [CLASS_INIT] class=Landroidx/emoji2/text/l; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Landroidx/emoji2/text/l; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=163
-[SGET-MISS] key=Landroidx/emoji2/text/l;.k storage_size=163 same_class_keys=1 engine=0x7fff4edaa968 first=Landroidx/emoji2/text/l;.j
+[CLASS_INIT] class=Landroidx/emoji2/text/l; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=163
+[SGET-MISS] key=Landroidx/emoji2/text/l;.k storage_size=163 same_class_keys=1 engine=0x7ffc2c790328 first=Landroidx/emoji2/text/l;.j
 [SGET-MISS]   landed: Landroidx/lifecycle/n;.k
 [SGET-MISS]   landed: Lf/a;.k
 [SGET-MISS]   landed: Lg/q;.k
@@ -1317,14 +1317,14 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [M3-LONG-PUT] field=Le1/n0;.e caller=Landroidx/recyclerview/widget/RecyclerView;.<init> value=250
 [M3-LONG-PUT] field=Le1/n0;.f caller=Landroidx/recyclerview/widget/RecyclerView;.<init> value=250
 [CLASS_INIT] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> bytecode_size=29
-[CLASS_INIT] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=169
+[CLASS_INIT] class=Landroidx/recyclerview/widget/RecyclerView; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=169
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=get class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=get class=Landroid/app/Activity;
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=<init> pc=333 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [CLASS_INIT] class=Ln0/u0; method=<clinit> bytecode_size=26
 [SGET] class=Ln0/u0; method=<clinit> pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Ln0/u0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=169
-[SGET-MISS] key=Ln0/u0;.a storage_size=169 same_class_keys=0 engine=0x7fff4edaa968
+[CLASS_INIT] class=Ln0/u0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=169
+[SGET-MISS] key=Ln0/u0;.a storage_size=169 same_class_keys=0 engine=0x7ffc2c790328
 [SGET-MISS]   landed: Landroidx/activity/u;.a
 [SGET-MISS]   landed: Landroidx/lifecycle/l;.a
 [SGET-MISS]   landed: Landroidx/lifecycle/w;.a
@@ -1347,10 +1347,10 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [S71-ANCESTRY] re-dispatch Ljwtc/android/chess/start; as Landroidx/activity/ComponentActivity; for .getSystemService
 [R339-SVC] getSystemService("accessibility") → Landroid/view/accessibility/AccessibilityManager; (shadow layer, caller=Landroidx/recyclerview/widget/RecyclerView;.<init>)
 [CLASS_INIT] class=Ln0/b; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Ln0/b; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=171
+[CLASS_INIT] class=Ln0/b; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=171
 [F274-CTORGATE] Le1/g1;.e initializer type Le1/f1; has no ()V ctor -> honest null (recv=Le1/g1; caller=Le1/g1;.<init> pc=5)
 [CLASS_INIT] class=Ld1/a; method=<clinit> bytecode_size=38
-[CLASS_INIT] class=Ld1/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=172
+[CLASS_INIT] class=Ld1/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=172
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=12 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Landroid/content/Context;)
@@ -1405,11 +1405,11 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Ln/a;.a pc=2
 [F089-REMOVE] map=73 cls=Ljava/util/HashMap; key="obj:135" obj_entries=5 str_entries=0 caller=Ljava/util/HashMap;.remove
 [CLASS_INIT] class=Landroidx/lifecycle/g0; method=<clinit> bytecode_size=22
-[CLASS_INIT] class=Landroidx/lifecycle/g0; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=175
+[CLASS_INIT] class=Landroidx/lifecycle/g0; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=175
 [CLASS_INIT] class=Ln3/g; method=<clinit> bytecode_size=25
 [R350-FORNAME] "kotlin.reflect.jvm.internal.ReflectionFactoryImpl" → ClassNotFoundException
 [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Ln3/g;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
-[CLASS_INIT] class=Ln3/g; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=176
+[CLASS_INIT] class=Ln3/g; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=176
 [CLASS_INIT] class=Ln3/b; method=<clinit> bytecode_size=110
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lf3/s;.P pc=62
 [F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lf3/s;.P pc=62 recv_oid=778 key=obj#706 val=obj#732
@@ -1467,7 +1467,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lf3/s;.P pc=62 recv_oid=778 key=obj#704 val=obj#774
 [EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Lf3/s;.P pc=62
 [F089-MAP] Ljava/util/LinkedHashMap;.put caller=Lf3/s;.P pc=62 recv_oid=778 key=obj#705 val=obj#776
-[CLASS_INIT] class=Ln3/b; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=176
+[CLASS_INIT] class=Ln3/b; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=176
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplication class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplication class=Landroid/app/Activity;
 [S71-ANCESTRY] re-dispatch Ljwtc/android/chess/start; as Landroidx/activity/ComponentActivity; for .getApplication
@@ -1508,7 +1508,7 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getOnBackInvokedDispatcher class=Landroidx/activity/ComponentActivity;
 [C013-HIER] getOnBackInvokedDispatcher dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [CLASS_INIT] class=Landroidx/activity/s; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Landroidx/activity/s; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=177
+[CLASS_INIT] class=Landroidx/activity/s; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=177
 [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/e0$a; obs=349 ins=1319
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity;
@@ -1611,13 +1611,13 @@ FONT_SOURCE apk=upload/chess_jwtc_298.apk font_files=0 registered=0 first=<none>
 [UC009-ATTACH] onAttachedToWindow dispatched view=477 class=Landroidx/appcompat/widget/Toolbar;
 [F-NEW-471-RES-GAP] super-call Landroid/view/ViewGroup;.onAttachedToWindow method_id=2358 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Landroidx/recyclerview/widget/RecyclerView;.onAttachedToWindow
 [CLASS_INIT] class=Le1/x; method=<clinit> bytecode_size=16
-[CLASS_INIT] class=Le1/x; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=180
+[CLASS_INIT] class=Le1/x; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=180
 [M3-LONG-PUT] field=Le1/x;.h caller=Landroidx/recyclerview/widget/RecyclerView;.onAttachedToWindow value=16666667
 [UC009-ATTACH] onAttachedToWindow dispatched view=566 class=Landroidx/recyclerview/widget/RecyclerView;
 [UC009-ATTACH] attach dispatch complete ok=true
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=614
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=739
 [SGET] class=Ln0/k1; method=<init> pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
 [C013-HIER] isAttachedToWindow dispatched via superclass chain: Landroidx/appcompat/widget/ActionBarOverlayLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/appcompat/widget/ActionBarOverlayLayout; receiver=Landroidx/appcompat/widget/ActionBarOverlayLayout;)
 [C013-HIER] getRootWindowInsets dispatched via superclass chain: Landroidx/appcompat/widget/ActionBarOverlayLayout; -> Landroid/view/ViewGroup; (declared=Landroidx/appcompat/widget/ActionBarOverlayLayout; receiver=Landroidx/appcompat/widget/ActionBarOverlayLayout;)
@@ -1787,21 +1787,21 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [LIFEWIN-ZRET] decl=Landroidx/recyclerview/widget/LinearLayoutManager;.R recv=665(Landroidx/recyclerview/widget/GridLayoutManager;) ret=TRUE
 [CLASS_INIT] class=Lj0/h; method=<clinit> bytecode_size=70
 [SGET] class=Lj0/h; method=<clinit> pc=4 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Lj0/h; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=180
+[CLASS_INIT] class=Lj0/h; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=180
 [SGET] class=Landroidx/recyclerview/widget/RecyclerView; method=onLayout pc=0 field=Lj0/h;.a value=0
 [LIFEWIN-ZRET] decl=Landroidx/recyclerview/widget/GridLayoutManager;.F0 recv=665(Landroidx/recyclerview/widget/GridLayoutManager;) ret=FALSE
 [M3-LONG-PUT] field=Le1/b1;.l caller=Landroidx/recyclerview/widget/RecyclerView;.m value=-1
 [F-NEW-334] SparseArray law: get recv=684 caller=Le1/w0;.j
 [SGET] class=Le1/w0; method=j pc=634 field=Lj0/h;.a value=0
 [CLASS_INIT] class=Lj2/a; method=<clinit> bytecode_size=21
-[CLASS_INIT] class=Lj2/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=183
+[CLASS_INIT] class=Lj2/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=183
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=1 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Landroid/content/Context;)
 [CLASS_INIT] class=Lq/a; method=<clinit> bytecode_size=10
-[CLASS_INIT] class=Lq/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=184
+[CLASS_INIT] class=Lq/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=184
 [CLASS_INIT] class=Lp/a; method=<clinit> bytecode_size=40
-[CLASS_INIT] class=Lp/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=185
+[CLASS_INIT] class=Lp/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=185
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=13 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Landroid/content/Context;)
@@ -1814,9 +1814,9 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [LIFEWIN-ZRET] decl=Lq/a;.getUseCompatPadding recv=913(Lcom/google/android/material/card/MaterialCardView;) ret=FALSE
 [F-NEW-471-RES-GAP] super-call Landroid/view/View;.setPadding method_id=2258 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lq/a;.a
 [CLASS_INIT] class=Lm1/a; method=<clinit> bytecode_size=876
-[CLASS_INIT] class=Lm1/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=220
+[CLASS_INIT] class=Lm1/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=220
 [CLASS_INIT] class=Ly1/g; method=<clinit> bytecode_size=19
-[CLASS_INIT] class=Ly1/g; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=222
+[CLASS_INIT] class=Ly1/g; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=222
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=3 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
@@ -1837,26 +1837,26 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [CLASS_INIT] class=Lr1/c; method=<clinit> bytecode_size=31
 [SGET] class=Lr1/c; method=<clinit> pc=15 field=Landroid/os/Build$VERSION;.SDK_INT value=35
-[CLASS_INIT] class=Lr1/c; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=224
+[CLASS_INIT] class=Lr1/c; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=224
 [CLASS_INIT] class=Lf2/k; method=<clinit> bytecode_size=44
 [F298-SETCOLOR] recv=964 cls=Landroid/graphics/Paint; color=0xffffffff caller=Lf2/k;.<clinit> pc=9
-[CLASS_INIT] class=Lf2/k; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=227
+[CLASS_INIT] class=Lf2/k; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=227
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=obtainStyledAttributes class=Landroidx/activity/ComponentActivity;
 [F-NEW-175] obtainStyledAttributes attrs=2 theme-backed (apk=upload/chess_jwtc_298.apk)
 [C013-HIER] obtainStyledAttributes dispatched via superclass chain: Landroidx/fragment/app/j; -> Landroidx/activity/ComponentActivity; (declared=Ljwtc/android/chess/start; receiver=Ljwtc/android/chess/start;)
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/view/ContextThemeWrapper;
 [F166-BASECTX] <init> served for Landroid/view/ContextThemeWrapper; (receiver=973)
 [CLASS_INIT] class=Le2/a; method=<clinit> bytecode_size=48
-[CLASS_INIT] class=Le2/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=232
+[CLASS_INIT] class=Le2/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=232
 [CLASS_INIT] class=Lf0/a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lf0/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=233
+[CLASS_INIT] class=Lf0/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=233
 [F298-SETCOLOR] recv=1015 cls=Landroid/graphics/Paint; color=0x44000000 caller=Le2/a;.a pc=27
 [F298-SETCOLOR] recv=1014 cls=Landroid/graphics/Paint; color=0x0 caller=Le2/a;.<init> pc=30
 [CLASS_INIT] class=Lf2/q; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Lf2/q; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=235
+[CLASS_INIT] class=Lf2/q; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=235
 [LIFEWIN-ZRET] decl=Lf2/k;.u recv=963(Lf2/k;) ret=TRUE
 [CLASS_INIT] class=Lx1/a; method=<clinit> bytecode_size=13
-[CLASS_INIT] class=Lx1/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=237
+[CLASS_INIT] class=Lx1/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=237
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
 [S71-ANCESTRY] re-dispatch Ljwtc/android/chess/start; as Landroidx/activity/ComponentActivity; for .getTheme
@@ -1896,8 +1896,8 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [LIFEWIN-ZRET] decl=Lf2/k;.j recv=963(Lf2/k;) ret=TRUE
 [CLASS_INIT] class=Ln1/a; method=<clinit> bytecode_size=40
 [CLASS_INIT] class=Lz0/a; method=<clinit> bytecode_size=1242
-[CLASS_INIT] class=Lz0/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=241
-[CLASS_INIT] class=Ln1/a; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=245
+[CLASS_INIT] class=Lz0/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=241
+[CLASS_INIT] class=Ln1/a; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=245
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
 [S71-ANCESTRY] re-dispatch Ljwtc/android/chess/start; as Landroidx/activity/ComponentActivity; for .getTheme
@@ -1944,7 +1944,7 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroidx/activity/ComponentActivity;
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getTheme class=Landroid/app/Activity;
 [CLASS_INIT] class=Le0/o; method=<clinit> bytecode_size=23
-[CLASS_INIT] class=Le0/o; method=<clinit> result=OK engine=0x7fff4edaa968 storage_size=248
+[CLASS_INIT] class=Le0/o; method=<clinit> result=OK engine=0x7ffc2c790328 storage_size=248
 [EXP071-BRIDGE-HMAP] Ljava/util/WeakHashMap;.get argc=2 caller=Lg4/g;.r pc=18
 [SYNTH-EXC] 371-GETXML-NOTFOUND (deferred): Landroid/content/res/Resources$NotFoundException; (File 4294967295 from xml type xml resource ID) method=Lg4/g;.r pc=118 → uncaught (deferred frame unwind + propagate)
 [DEFAULT-MEASURE] class=Lcom/google/android/material/card/MaterialCardView; view=913 node=FOUND overrides_onMeasure=1 flag=0
@@ -1993,10 +1993,10 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2073600 non-white pixels
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=729
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=852
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=880
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=1001
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0

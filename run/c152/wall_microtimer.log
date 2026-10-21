@@ -1,8 +1,8 @@
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=81
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=90
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=110
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=110
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=37
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=44
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=64
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=64
 [S123-ACTION-REG] activities=1 action_targets=1
 FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 registered=0 first=<none>
 [EXP068] Built class→superclass map: 191 entries (143 from APK + 48 framework) — LinearLayout present: YES
@@ -25,7 +25,7 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
 [F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
 [TRY-ENTRY] Lk/a;.<init> dex_report=YES
-[MEM] method_exit: Lk/a;.<init> insns=3 RSS=20.7695 MB
+[MEM] method_exit: Lk/a;.<init> insns=3 RSS=20.5 MB
 [TRY-ENTRY] Landroid/os/Looper;.getMainLooper dex_report=YES
 [REC-MISS] Landroid/os/Looper;.getMainLooper caller=Ldubrowgn/microtimer/MainActivity;.<init>
 [BRIDGE-TID] Landroid/os/Looper;.getMainLooper static=1 shadow=YES
@@ -57,14 +57,14 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationContext class=Ldubrowgn/microtimer/MainActivity;
 [CLASS_INIT] class=La/e; method=<clinit> bytecode_size=6
 [TRY-ENTRY] La/e;.<clinit> dex_report=YES
-[CLASS_INIT] class=La/e; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=26
+[CLASS_INIT] class=La/e; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=26
 [TRY-ENTRY] La/e;.g dex_report=YES
-[MEM] method_exit: La/e;.g insns=2 RSS=166.883 MB
+[MEM] method_exit: La/e;.g insns=2 RSS=167.082 MB
 [CLASS_INIT] class=Lt/c; method=<clinit> bytecode_size=8
 [TRY-ENTRY] Lt/c;.<clinit> dex_report=YES
 [TRY-ENTRY] Lt/c;.<init> dex_report=YES
 [TRY-ENTRY] Lt/a;.<init> dex_report=YES
-[CLASS_INIT] class=Lt/c; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=26
+[CLASS_INIT] class=Lt/c; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=26
 [TRY-ENTRY] Lt/c;.<init> dex_report=YES
 [TRY-ENTRY] Lt/a;.<init> dex_report=YES
 [TRY-ENTRY] Lt/c;.iterator dex_report=YES
@@ -73,10 +73,10 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Le/y;.<init>
 [REC-MISS] Ljava/util/LinkedHashSet;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [CLASS_INIT] class=La/b; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=La/b; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=27
+[CLASS_INIT] class=La/b; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=27
 [SGET] class=Ldubrowgn/microtimer/MainActivity; method=onCreate pc=109 field=La/b;.d obj_id=30
 [CLASS_INIT] class=Le/a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Le/a; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=28
+[CLASS_INIT] class=Le/a; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=28
 [REC-MISS] Landroid/app/Application;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .getSystemService
@@ -100,7 +100,7 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [F106-CTOR] getDeclaredConstructor Ldubrowgn/microtimer/db/Database_Impl; params=[] → ctor#40 mods=0x10001 (()V) caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [REC-MISS] Ljava/lang/reflect/Constructor;.newInstance caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [CLASS_INIT] class=Le/o; method=<clinit> bytecode_size=13
-[CLASS_INIT] class=Le/o; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=29
+[CLASS_INIT] class=Le/o; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=29
 [REC-MISS] Ljava/util/concurrent/atomic/AtomicBoolean;.<init> caller=Le/o;.<init>
 [REC-MISS] Ljava/util/IdentityHashMap;.<init> caller=Le/o;.<init>
 [REC-MISS] Ljava/util/Collections;.newSetFromMap caller=Le/o;.<init>
@@ -511,7 +511,7 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
 [CLASS_INIT] class=Le/b0; method=<clinit> bytecode_size=8
 [REC-MISS] Ljava/util/TreeMap;.<init> caller=Le/b0;.<clinit>
-[CLASS_INIT] class=Le/b0; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=32
+[CLASS_INIT] class=Le/b0; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=32
 [SGET] class=Ldubrowgn/microtimer/MainActivity; method=onCreate pc=1330 field=Le/b0;.i obj_id=164
 [REC-MISS] Ljava/lang/Integer;.valueOf caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [REC-MISS] Ljava/util/TreeMap;.ceilingEntry caller=Ldubrowgn/microtimer/MainActivity;.onCreate
@@ -519,7 +519,7 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.<init> caller=Lh/f;.<init>
 [SQLITE-SHADOW] helper<init> oid=171 name="app-data" version=1
 [CLASS_INIT] class=Li/a; method=<clinit> bytecode_size=8
-[CLASS_INIT] class=Li/a; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=33
+[CLASS_INIT] class=Li/a; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=33
 [REC-MISS] Landroid/app/Application;.getCacheDir caller=Lh/f;.<init>
 [REC-MISS] Landroid/content/Context;.getCacheDir caller=Lh/f;.<init>
 [S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .getCacheDir
@@ -557,7 +557,7 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [SQLITE-SHADOW] opened db oid=185 path=runtime/data/data/data/dubrowgn.microtimer/databases/app-data user_version=1 target_version=1
 [C013-HIER] getWritableDatabase dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
 [CLASS_INIT] class=Lh/c; method=<clinit> bytecode_size=6
-[CLASS_INIT] class=Lh/c; method=<clinit> result=OK engine=0x7fff402f76f8 storage_size=34
+[CLASS_INIT] class=Lh/c; method=<clinit> result=OK engine=0x7ffd0393d538 storage_size=34
 [REC-MISS] Ljava/nio/channels/FileChannel;.close caller=Li/a;.b
 [REC-MISS] Ljava/nio/channels/spi/AbstractInterruptibleChannel;.close caller=Li/a;.b
 [REC-MISS] Ljava/util/concurrent/locks/Lock;.unlock caller=Li/a;.b
@@ -693,7 +693,7 @@ FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 reg
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=433
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=348
 [REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
 [REC-MISS] Landroid/widget/ScrollView;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
@@ -780,10 +780,10 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 893597 non-white pixels
-[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=478
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=390
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=631
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=535
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0 DEFERRED-UI-PENDING (earliest ready_at=0ms — launch frame is provisional; cross-check with --frames time-driven capture)
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
