@@ -1,0 +1,25 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/ws.xsoh.etar_57.apk
+[*] Output directory: run/c154/ws.xsoh.etar
+[DATA-ROOT] context package = ws.xsoh.etar (data dir runtime/data/data/data/ws.xsoh.etar)
+LOG/d/ExtensionsFactory: No custom extensions.
+LOG/d/ExtensionsFactory: AllInOneMenuExtensions not found in properties file.
+LOG/d/AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+LOG/d/ViewUtils: Could not find method makeOptionalFitsSystemWindows. Oh well...
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 2644 IMPLEMENTED, 205 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 17
+Warnings: 2
+
+Screenshot: run/c154/ws.xsoh.etar/screenshot.png
+Report: run/c154/ws.xsoh.etar/report.md

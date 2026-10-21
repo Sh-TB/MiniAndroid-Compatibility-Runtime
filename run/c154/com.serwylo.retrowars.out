@@ -1,0 +1,45 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/com.serwylo.retrowars_70.apk
+[*] Output directory: run/c154/com.serwylo.retrowars
+[DATA-ROOT] context package = com.serwylo.retrowars (data dir runtime/data/data/data/com.serwylo.retrowars)
+LOG/i/MultiDex: VM with version null does not have multidex support
+LOG/i/MultiDex: Installing application
+LOG/w/MultiDex: MultiDex is not guaranteed to work in SDK version 35: SDK version higher than 20 should be backed by runtime with built-in multidex capabilty but it's not the case here: java.vm.version="null"
+LOG/i/MultiDex: MultiDexExtractor.load(/data/app/com.serwylo.retrowars/base.apk, false, )
+LOG/i/MultiDex: Blocking on lock /data/data/com.serwylo.retrowars/code_cache/secondary-dexes/MultiDex.lock
+LOG/i/MultiDex: /data/data/com.serwylo.retrowars/code_cache/secondary-dexes/MultiDex.lock locked
+LOG/i/MultiDex: loading existing secondary dex files
+LOG/i/MultiDex: load found 0 secondary dex files
+LOG/i/MultiDex: install done
+LOG/i/GLVersion: Invalid version string: PortableGL 0.101 (MiniAndroid software GL)
+LOG/i/AndroidGraphics: OGL renderer: PortableGL 0.101 (MiniAndroid software GL)
+LOG/i/AndroidGraphics: OGL vendor: PortableGL 0.101 (MiniAndroid software GL)
+LOG/i/AndroidGraphics: OGL version: PortableGL 0.101 (MiniAndroid software GL)
+LOG/i/AndroidGraphics: OGL extensions: PortableGL 0.101 (MiniAndroid software GL)
+LOG/i/AndroidGraphics: framebuffer: (0, 0, 0, 0)
+LOG/i/AndroidGraphics: depthbuffer: (0)
+LOG/i/AndroidGraphics: stencilbuffer: (0)
+LOG/i/AndroidGraphics: samples: (0)
+LOG/i/AndroidGraphics: coverage sampling: (false)
+LOG/i/AndroidGraphics: Managed meshes/app: { }
+LOG/i/AndroidGraphics: Managed textures/app: { }
+LOG/i/AndroidGraphics: Managed cubemap/app: { }
+LOG/i/AndroidGraphics: Managed shaders/app: { }
+LOG/i/AndroidGraphics: Managed buffers/app: { }
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 1026 IMPLEMENTED, 46 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 2
+
+Screenshot: run/c154/com.serwylo.retrowars/screenshot.png
+Report: run/c154/com.serwylo.retrowars/report.md

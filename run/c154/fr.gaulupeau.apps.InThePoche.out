@@ -1,0 +1,25 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/fr.gaulupeau.apps.InThePoche_234.apk
+[*] Output directory: run/c154/fr.gaulupeau.apps.InThePoche
+[DATA-ROOT] context package = fr.gaulupeau.apps.InThePoche (data dir runtime/data/data/data/fr.gaulupeau.apps.InThePoche)
+LOG/d/AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+LOG/d/MainActivity: onCreate()
+LOG/d/ViewUtils: Could not find method makeOptionalFitsSystemWindows. Oh well...
+LOG/v/MainActivity: onCreate() restoring state
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 6421 IMPLEMENTED, 536 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 4
+Warnings: 3
+
+Screenshot: run/c154/fr.gaulupeau.apps.InThePoche/screenshot.png
+Report: run/c154/fr.gaulupeau.apps.InThePoche/report.md

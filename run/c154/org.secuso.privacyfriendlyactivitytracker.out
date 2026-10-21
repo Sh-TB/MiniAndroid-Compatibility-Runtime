@@ -1,0 +1,27 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/org.secuso.privacyfriendlyactivitytracker_100.apk
+[*] Output directory: run/c154/org.secuso.privacyfriendlyactivitytracker
+[DATA-ROOT] context package = org.secuso.privacyfriendlyactivitytracker (data dir runtime/data/data/data/org.secuso.privacyfriendlyactivitytracker)
+LOG/i/MultiDex: VM with version null does not have multidex support
+LOG/i/MultiDex: Installing application
+LOG/w/MultiDex: MultiDex is not guaranteed to work in SDK version 35: SDK version higher than 20 should be backed by runtime with built-in multidex capabilty but it's not the case here: java.vm.version="null"
+LOG/e/MultiDex: Context class loader is null or not dex-capable. Must be running in test mode. Skip patching.
+LOG/i/MultiDex: install done
+LOG/d/AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 1481 IMPLEMENTED, 53 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 2
+
+Screenshot: run/c154/org.secuso.privacyfriendlyactivitytracker/screenshot.png
+Report: run/c154/org.secuso.privacyfriendlyactivitytracker/report.md

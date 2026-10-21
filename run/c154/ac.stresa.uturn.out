@@ -1,0 +1,21 @@
+[*] FRAME-SEQUENCE enabled (5 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (25 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/ac.stresa.uturn_22.apk
+[*] Output directory: run/c154/ac.stresa.uturn
+[DATA-ROOT] context package = ac.stresa.uturn (data dir runtime/data/data/data/ac.stresa.uturn)
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully [F-NEW-200 stub-census: 51554 IMPLEMENTED, 268 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 6
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/c154/ac.stresa.uturn/screenshot.png
+Report: run/c154/ac.stresa.uturn/report.md
