@@ -53776,6 +53776,129 @@ measure_cm_done:;
     }
 
     // ────────────────────────────────────────────────────────────────────
+    // R-NEW-018/019 (CONT-138): android.os.Parcel marshalling law.
+    // AOSP Parcel (frameworks/base/core/java/android/os/Parcel.java) is an
+    // ordered TYPED RECORD stream: writeX appends and advances the write
+    // end; readX consumes from an INDEPENDENT read position
+    // (setDataPosition moves it; dataPosition reports it; dataSize is the
+    // written length). Engine subset: typed records in parcel_records_
+    // keyed by the parcel object id, read position in __parcel_rpos__.
+    // Past-end reads follow the native JNI behavior: readInt/readLong
+    // answer 0, readString answers null (sticky native error is not
+    // surfaced through the Java layer). Binder wire format (marshall()
+    // byte layout) is NOT reproduced — out of scope, recorded honestly.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/os/Parcel;") {
+        const uint32_t recv = !args.empty() && args[0].type == DalvikType::OBJECT_REF
+                                  ? args[0].object_id : 0;
+        if (method == "obtain") {
+            uint32_t pid = heap_.allocate("Landroid/os/Parcel;", pc_, 0);
+            heap_.set_object_field(pid, "__parcel_rpos__", DalvikValue::make_int(0));
+            parcel_records_[pid] = {};
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(pid, "Landroid/os/Parcel;");
+            return true;
+        }
+        auto rec_it = parcel_records_.find(recv);
+        auto rpos_of = [&]() -> int32_t {
+            auto v = heap_.get_object_field(recv, "__parcel_rpos__");
+            return v.has_value() && v->type == DalvikType::INT32 ? v->int_val : 0;
+        };
+        auto rpos_set = [&](int32_t p) {
+            heap_.set_object_field(recv, "__parcel_rpos__", DalvikValue::make_int(p));
+        };
+        // writer family
+        static const std::pair<const char*, DalvikType> kParcelWriters[] = {
+            {"writeInt", DalvikType::INT32}, {"writeLong", DalvikType::INT64},
+            {"writeString", DalvikType::STRING_REF}, {"writeFloat", DalvikType::FLOAT32},
+            {"writeDouble", DalvikType::FLOAT64}, {"writeByte", DalvikType::BYTE}};
+        if (rec_it != parcel_records_.end()) {
+            for (const auto& w : kParcelWriters) {
+                if (method == w.first && args.size() >= 2) {
+                    DalvikValue v = args[1];
+                    v.type = w.second;
+                    rec_it->second.push_back(v);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+            }
+            if (method == "writeByteArray" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF) {
+                // Each element becomes one BYTE record (read order preserved).
+                auto len_v = heap_.get_object_field(args[1].object_id, "__array_length__");
+                int32_t n = len_v.has_value() && len_v->type == DalvikType::INT32
+                                ? len_v->int_val : 0;
+                for (int32_t i = 0; i < n; ++i) {
+                    auto ev = heap_.get_object_field(
+                        args[1].object_id, "array[" + std::to_string(i) + "]");
+                    DalvikValue v = ev.has_value() ? *ev : DalvikValue::make_byte(0);
+                    v.type = DalvikType::BYTE;
+                    rec_it->second.push_back(v);
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            // reader family
+            static const std::pair<const char*, DalvikType> kParcelReaders[] = {
+                {"readInt", DalvikType::INT32}, {"readLong", DalvikType::INT64},
+                {"readString", DalvikType::STRING_REF},
+                {"readFloat", DalvikType::FLOAT32},
+                {"readDouble", DalvikType::FLOAT64},
+                {"readByte", DalvikType::BYTE}};
+            for (const auto& r : kParcelReaders) {
+                if (method == r.first) {
+                    int32_t p = rpos_of();
+                    const auto& recs = rec_it->second;
+                    if (p >= 0 && p < static_cast<int32_t>(recs.size())) {
+                        DalvikValue v = recs[static_cast<size_t>(p)];
+                        v.type = r.second;
+                        result = v;
+                        rpos_set(p + 1);
+                    } else {
+                        // AOSP native past-end: 0 for numerics, null string.
+                        result = r.second == DalvikType::STRING_REF
+                                     ? DalvikValue::make_null()
+                                     : DalvikValue::make_int(0);
+                        if (r.second == DalvikType::FLOAT32)
+                            result = DalvikValue::make_float(0.f);
+                        else if (r.second == DalvikType::FLOAT64)
+                            result = DalvikValue::make_double(0.0);
+                        else if (r.second == DalvikType::INT64)
+                            result = DalvikValue::make_long(0);
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            if (method == "setDataPosition" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                rpos_set(args[1].int_val);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "dataPosition") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(rpos_of());
+                return true;
+            }
+            if (method == "dataSize") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(rec_it->second.size()));
+                return true;
+            }
+            if (method == "recycle") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
     // R-NEW-133 (CONT-137): dalvik.system.InMemoryDexClassLoader law.
     {
         if (class_name.find("InMemory") != std::string::npos ||
