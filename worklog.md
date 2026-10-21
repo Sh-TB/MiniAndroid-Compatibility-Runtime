@@ -10957,3 +10957,19 @@ Work Log:
 
 Stage Summary:
 - 10/10 trains pushed, HEAD==origin/main verified after each (final d0dacf52). Registry 789 id-unique main==mirror: fixed-family 600/789 = 76.0% (ROOT-CAUSED-FIXED 296+18, VERIFIED-CORRECT 154, VERIFIED-FIXED 50, IMPLEMENTED(+TESTED) 64), PARTIAL 87->23, CONFIRMED_OPEN_GAP 0, BLOCKED 2 (artifact-bound). Engine advanced: InMemoryDexClassLoader law, Parcel law, RandomAccessFile law, ByteBuffer.wrap array link, ViewShadow dalvik exclusion, Context.getClassLoader, Character.digit. Two new fixtures with the real aapt2/ECJ/D8 toolchain (fnew474_probe 5/5, fnew475_probe 8/8). Zero drift across all 4 wall runs this session. Next levers: compose root-layer marking path (F-NEW-473), second-dex LINK for IMDCL, 23 remaining PARTIAL (mostly artifact-bound), WhatsApp/Signal need user APKs.
+
+---
+Task ID: CONT-151 TRAINs 3-6 (batch «ادامه ۱۰۰ قطار» resumed)
+Agent: main agent (Z.ai)
+Task: continue the 100-train formation from CONT-150 TRAIN 2 (5a1fe002); stale-snapshot recovery #8; draw-frontier ladder on F-NEW-473.
+
+Work Log:
+- Recovery: container reset wiped binary + worklog back to CONT-9/10 era; git fetch -> origin/main 5a1fe002 (CONT-150 TRAIN 2, CONT-129..150 all preserved); reset --hard; deterministic rebuild #8 = f6b272ea2492736 (matches TRAIN 1's wall sha); baseline battery 22 apps: 9/9 anchors MATCH byte-identical, 21/22 render, 7 rc=0, 11 zero-exc.
+- TRAIN 3 (push 922ff806): F-NEW-476 VERIFIED-CORRECT — fixture fnew476_probe (real aapt2/ECJ/D8) 5/5 PASS: invoke arg-register mapping faithful for 35c count=2..5 (incl. G-nibble Object) + 3rc 6/8-reg wide/float/object mixes. The dooz i1->r1 unset-arg cascade = upstream-faithful null-params. Durable tools: cont151_cls.py, cont151_xref.py (multi-dex whole-dex xref), cont151_disasm_regs.py (register-accurate; fixed 0x08/0x09=22x, 0x0a=move-result 1-unit, 0x0e=return-void 1-unit, 21t=2-unit, 0x71=invoke-STATIC laws — the engine interpreter was right every time my table wasn't).
+- TRAIN 4 (push 0debf60a): F-NEW-477 CLASSIFIED — content-draw terminal root-caused: Lpz0;.T0(4) returns NULL 12/12 windows (RET-TRACE) -> M0 pc37 skips content 12/12 -> zero canvas primitives. Lxk0;.h1/Lug0;.h1 = layout-bounds OVERLAY draws (correctly gated). Draw-window census complete (367 entries).
+- TRAIN 5 (push fac91be6): F-NEW-478 CLASSIFIED — T0's g() = BIT-MASK test ((kind & 0x80) | (kind & 0x400000)), kind 4 has neither -> FALSE 12/12; the Lwt0; chain walk (S0 superhierarchy law) returns REAL candidates (Lg4;/Ltt0;/Lkn1;/Lzm1;/Lc70;) whose kind-ints never match.
+- TRAIN 6 (push e6d61a81): F-NEW-479 CLASSIFIED — the chain is SEVERED, not empty: Lkz0;.a builds obj#2708.i = obj#2060, then Lel0;.c (padChain, identified by its own const-string) writes it NULL with no re-link; every T0 walk reads NULL. 18 padChain calls all from the Lel0;.d binding cascade.
+- TRAIN 7 (investigated, not pushed): padChain per-instruction (3615 lines): pc40 links pad blocks (f.i=pad, pad.j=f), tail pc279 calls Lqz0;.a(container=obj#2708,...) -> Lqz0;.b mask-put; the exact sever pc + the final .i NULL write law = next train's single question. Registry rows F-NEW-477/478/479 carry the full chain.
+
+Stage Summary:
+- 4/4 trains pushed, HEAD==origin/main verified after each (final e6d61a81). Registry 789->793 id-unique main==mirror. Engine source UNCHANGED (zero drift by construction; walls: 3+3+2+2 anchors all byte-identical). The dooz blank-face frontier descended 4 levels: record-scheduler -> content-step gate -> registry query -> chain sever, each level runtime-verified with per-instruction evidence. Next train owns: padChain sever pc + re-pad re-link law (F-NEW-479), then the Lqz0;.b mask-put store semantics.
