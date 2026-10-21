@@ -7,14 +7,14 @@ B=./miniandroid/build/miniandroid
 LOG=run/c129/battery.log
 mkdir -p run/c129
 
-wagon() { # id name apkpath anchor(optional)
-  local id="$1" name="$2" apk="$3" anchor="${4:-}"
+wagon() { # id name apkpath anchor(optional) maxsec(optional, default 25; telegram wall=60 per CONT-129 adjudication)
+  local id="$1" name="$2" apk="$3" anchor="${4:-}" maxsec="${5:-25}"
   if [ -f "run/c129/$name.log" ] && grep -q 'rc=' "run/c129/$name.log" 2>/dev/null; then
     echo "== WAGON $id $name SKIP (done) ==" | tee -a "$LOG"; return 0
   fi
   echo "== WAGON $id $name apk=$(basename $apk) ==" | tee -a "$LOG"
   timeout 170 "$B" run "$apk" --width 1080 --height 1920 --frames 5 \
-    --max-seconds 25 -o "run/c129/$name" > /dev/null 2> "run/c129/$name.log"
+    --max-seconds "$maxsec" -o "run/c129/$name" > /dev/null 2> "run/c129/$name.log"
   local rc=$?
   echo "rc=$rc" | tee -a "$LOG"
   local face="NO_SCREENSHOT"
@@ -38,7 +38,7 @@ case "${1}-${2}" in
          wagon 2 klondike   upload/klondike_veldsoft_3.apk 31ddd4d5
          wagon 3 unote      $CA/app.varlorg.unote_30.apk 90a67cc1
          wagon 4 chess      upload/chess_jwtc_298.apk a0319686 ;;
-  5-8)   wagon 5 telegram   upload/telegram_official.apk 20ac8cbbbb
+  5-8)   wagon 5 telegram   upload/telegram_official.apk 20ac8cbbbb 60
          wagon 6 tower3d    $CA/stack.tower3d_1.apk 11a38a5a
          wagon 7 opencalc   upload/opencalculator_53.apk d5f3c7b5
          wagon 8 microtimer $CA/dubrowgn.microtimer_8.apk bbd350b6 ;;
