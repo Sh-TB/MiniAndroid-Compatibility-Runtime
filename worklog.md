@@ -11174,3 +11174,23 @@ Work Log:
 
 Stage Summary:
 - The «ادامه ۱۰ قطار» formation complete: 10/10 trains pushed and verified. The 10-day "no complete render" question now has TWO landed engine fixes advancing the cohort map: 9 of the 17 WINDOW_ROOT apps render real content (was 0/17 at round start). Next levers registered: F-NEW-485 WindowMetrics shadow family (aat), F-NEW-481 lambda-replay (the 49-app APP_DRAW_OPS cohort), Koin pair, NPE/ArrayStore trio.
+
+---
+Task ID: CONT-156 (10 trains / 50 wagons)
+Agent: main agent (Z.ai)
+Task: «ادامه ۱۰ قطار ۵۰ واگن و پوش» — 10 trains, 50 wagons, push. Session opened on a STALE snapshot (local HEAD e99c2fbd, 295 commits behind origin/main) — reset to e5ca5772 (CONT-155 TRAIN 10), #364 re-read (0 new comments after 6332075471).
+
+Work Log:
+- Deterministic rebuild #10: d7d3d61a76129682 byte-identical (zero drift by construction).
+- TRAIN 1 (F-NEW-481 lever census): holder-xref tool (typed-holder + new-instance + store-track, per-list restart laws); holder web = Lpz0;.N:Loz0; single write site (pz0.<init> pc=64), Loz0;.g back-ref, pz0.r1 creates fresh Loz0;; live census: dispatchDraw=6/el0.i=6/pz0.<init>=41(2 early+39 late)/r1=2(via xk0.k0,ug0.k0)/em1.g-ff.g-sc0.g=0/gl0.c=0/RenderNode path UNUSED/rh1.a dead; Choreographer HEALTHY (Lh9.doFrame per frame) — starvation hypothesis RETRACTED; kz0.d dead in this build (root getter = kz0.c).
+- TRAIN 2 (F-NEW-486 ROOT-CAUSED-FIXED): WindowMetrics shadow family (getCurrentWindowMetrics/getMaximumWindowMetrics singleton + device-profile Rect(0,0,1080,1920) + Insets(0,0,0,0); getBounds/getWindowInsets never-null) — aat crossed 0%→99.3% (killer signature absent), WINDOW_ROOT 9/17→10/17; wall 9/9 at 2dc7f5b4.
+- TRAIN 3 (cohort re-run): 17-app WINDOW_ROOT measured face-based (classifier de-exceptioned): 12/17 render (aat + librecontactsbackup new; CONT-155 six re-verified 99.4%).
+- TRAIN 4 (F-NEW-487 ROOT-CAUSED-FIXED): filled-new-array type fallback was a DEAD STUB → arrays allocated with literal "<unknown>" heap descriptor → R-NEW-010 store-check false ArrayStoreException at ghostsq Utils.<clinit>; fix = dex_report_ types fallback + "<unknown>" guard in asc_src_known — ghostsq 0%→99.4%; wall 9/9 at 9a36acf0.
+- TRAIN 5 (F-NEW-488 ROOT-CAUSED-FIXED): PackageManager.getApplicationInfo(String,int) shadow (ApplicationInfo singleton + metaData Bundle + honest NameNotFoundException for foreign packages) — ricochlime metaData killer gone; app then surfaces FLUTTER-BOUNDARY (F-NEW-489, Dart VM); wall 9/9 at dd2622762.
+- TRAIN 6 (fdroid re-battery): cont156_big_battery.sh, 94 apps fresh in 7 chunks → 85/94 ≥50% real-content (73/94 at c154), 12 crossings, 0 regressions; scorecard.json.
+- TRAIN 7 (canonical 22 fresh): cont156_canon_battery.sh → 17/21 >1% (klondike/stopwatch byte-stable boundary faces wall-MATCHed; forkgram/telegram UPP-001; whatsapp corrupt NO-SHOT); registry F-NEW-489/491/492/493 CLASSIFIED (Koin vararg-null, fdroid-pe attach ok=false, Shizuku IPC) → 807 id-unique main==mirror.
+- TRAIN 8 (F-NEW-490 census): MINIANDROID_F490_DIAG added (read-only) — ZERO [F490-NULL] on goodtime: the call never reaches bridge_to_api's Constructor handler while getConstructor on the same class does ([F106-CTOR] proof); gap A = execute_invoke_virtual loses newInstance pre-bridge; gap B (NEW) = invoke-direct has NO null-this guard (f141 only in invoke-virtual) — ctor bodies execute with this=null (AOSP throws at the invoke site); wall 9/9 + negatives 19/19 + selftest 13/13 at c7092cab.
+- TRAINS 9-10 (close-out): Persian ledger to #364; this worklog; batch push; HEAD==origin/main verification.
+
+Stage Summary:
+- 10/10 trains landed: 3 engine fixes ROOT-CAUSED-FIXED (F-NEW-486 WindowMetrics family, F-NEW-487 FNA fallback, F-NEW-488 PM.getApplicationInfo) + 6 honest CLASSIFIED rows (489-493, 490 refined with 2 named dispatch gaps) + F-NEW-481 lever census with 1 hypothesis honestly RETRACTED. Corpus: fdroid 94 = 85/94 ≥50% (+12 crossings, 0 regressions), WINDOW_ROOT 9/17→12/17. Registry 799→807. Pushed as 4da3d004 + e4e3060d + close-out commit; every gate green at every intermediate binary.

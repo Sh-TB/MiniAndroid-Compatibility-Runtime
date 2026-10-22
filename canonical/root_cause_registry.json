@@ -8112,7 +8112,9 @@
   "layer": "framework-reflect",
   "evidence": {
    "decode": "GoodtimeApplication.attachBaseContext -> Constructor.newInstance REC-MISS -> null -> getClass() on null (Kotlin null-check shape) -> NPE attributed at Lki0;.<init> pc=0 -> app dead before DI. The existing Constructor.newInstance shadow (FIX-M3-012b, Room lineage) guards class_desc/__reflect_class and returns make_null() silently on miss — the silent-null family. Named lever: getDeclaredConstructor token provenance for this call shape + honest IllegalArgumentException instead of silent null (AOSP: newInstance with wrong token shape throws, never null).",
-   "run": "run/c155/t3/com.apps.adrcotfas.goodtime_364.log (pinned stack)"
+   "run": "run/c156/t7_good.log, run/c156/t7c_good.log (bridge census)",
+   "census_4880diag": "CONT-156 Train 9 added MINIANDROID_F490_DIAG (bounded, read-only) to the Constructor.newInstance silent-null paths — ZERO [F490-NULL] lines on goodtime: the call NEVER reaches bridge_to_api's Constructor handler (33K-line law chain). getConstructor on the SAME class DOES bridge ([F106-CTOR] mints ctor#399/422). Named gap A: execute_invoke_virtual's runtime-class dispatch loses Constructor.newInstance between try_recursive_invoke misses and the bridge (recursively_invoked claimed somewhere in the 22645-22897 window, or api_class divergence). Named gap B (NEW): the ki0 NPE shape 'f141-null-recv at ki0.<init> pc=0' proves a ctor body executed with this=null — invoke-direct has NO null-this guard (f141 exists only in execute_invoke_virtual); AOSP throws the NPE AT THE INVOKE SITE so the caller's catch can handle it.",
+   "gates": "wall 9/9 MATCH + negatives 19/19 + selftest 13/13 at binary c7092cabf22792ff (diag build, behavior-neutral)"
   }
  },
  {
