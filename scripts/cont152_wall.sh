@@ -20,8 +20,13 @@ declare -A APKS=(
 # platform theme, opencalc 0x7f12013d app theme); AOSP Activity.setTheme law
 # now honored, REAL_APP_CONTENT advance (same category as the CONT-10
 # opencalc a976d2f9 re-base).
-declare -A ANCH=( [dooz]=d602648e [klondike]=31ddd4d5 [unote]=7481e9b4 [chess]=a0319686
-  [telegram]=20ac8cbbbb [tower3d]=11a38a5a [opencalc]=63020bc7 [microtimer]=bbd350b6 [sudoku]=be640e39 )
+# CONT-157 re-anchoring: dooz d602648e->31ddd4d5 (draw path unblocked:
+# Layout.getPaint/getText never-null + createBitmap family + static-invoke
+# routing + View.onMeasure default; 0->1947 ops, presentation pending F084
+# budget wall), telegram 20ac8cbbbb->1671f5a3 (static-dispatch law honored;
+# exceptions 19->13, same visible content). Category: draw-path advance.
+declare -A ANCH=( [dooz]=31ddd4d5 [klondike]=31ddd4d5 [unote]=7481e9b4 [chess]=a0319686
+  [telegram]=1671f5a3 [tower3d]=11a38a5a [opencalc]=63020bc7 [microtimer]=bbd350b6 [sudoku]=be640e39 )
 PASS=0; FAIL=0
 for app in dooz klondike unote chess telegram tower3d opencalc microtimer sudoku; do
   ms=25; [ "$app" = telegram ] && ms=60
