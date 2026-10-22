@@ -10591,6 +10591,32 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             if (!jni::JNIBridge::instance().invoke(
                     jni_ctx, int_ret, long_ret, float_ret, double_ret,
                     string_ret, obj_ret, is_obj_ret)) {
+                // F-NEW-504 (CONT-159): ENGINE-SIDE SHADOW BEFORE REAL-NATIVE.
+                // Layering gap this closes: a native method declared in an
+                // APP-DEX class never reaches bridge_to_api — the DEX class
+                // IS found by try_recursive_invoke, this native block
+                // intercepts, JNIBridge has no handler → the REAL library
+                // attempt runs. For libgdx BufferUtils.newDisposableByteBuffer
+                // the real libgdx.so allocator FAULTED under the engine's
+                // heap model (guarded, survived — FIX-TTT law) and answered
+                // null → the consumer's .order(ByteOrder.nativeOrder()) NPE'd
+                // on the null → AndroidLauncher.onCreate death (tower3d).
+                // Framework-class natives reach bridge_to_api only because
+                // their class is DEX-ABSENT (class-miss → bridge). The same
+                // engine-side shadow surface must serve APP-class natives:
+                // consult bridge_to_api FIRST (heap-side handlers live
+                // there); only on a miss fall through to the real-library
+                // attempt (unchanged semantics for every existing native).
+                {
+                    ApiCallTrace::Status bridge_status = ApiCallTrace::Status::MISSING;
+                    DalvikValue bridge_val;
+                    if (bridge_to_api(class_descriptor, method_name, args,
+                                      bridge_val, bridge_status)) {
+                        return_val = bridge_val;
+                        recursion_depth_--;
+                        return true;
+                    }
+                }
                 // ── #371 CLOSEOUT S-2: REAL native execution attempt ────
                 // AOSP law (art_jni.cc): an ACC_NATIVE method dispatches to
                 // the loaded-library symbol resolved by JNI mangling or
@@ -11445,6 +11471,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             std::cerr << "[RET-BEFORE] " << cls_ref.name << "." << method.name
                       << " bytecode_size=" << method.bytecode.size()
                       << std::endl;
+        }
+        // CONT-159 tower3d decode (env-gated, read-only): the copy-ctor
+        // killer's CALLER was invisible in METHOD-TRACE (no METHOD-IN for
+        // the calling frame between the last Array.get and the fatal
+        // Array.<init>(30)). Print the interpreter's caller identity at the
+        // invoke site so the call site can be pinned to a bytecode pc.
+        static thread_local const bool ret_caller_on =
+            diag_env("MINIANDROID_RET_CALLER_TRACE");
+        if (ret_caller_on) {
+            std::cerr << "[RET-CALLER] callee=" << cls_ref.name << "."
+                      << method.name << " size=" << method.bytecode.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << " pc=" << pc_ << std::endl;
         }
 
         phase_clock().exit(phase_clock().invoke_resolve, f107_r0);  // resolve ends
@@ -20436,7 +20475,18 @@ DalvikValue DalvikExecutionEngine::materialize_init_default(
         DalvikValue recv = DalvikValue::make_object(oid, type_desc);
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
-        bool ran = try_recursive_invoke(type_desc, "<init>", {recv}, ret, res);
+        // F-NEW-501 (CONT-159): pass the EXACT "()V" descriptor. The
+        // materializer must run THE no-arg constructor — ART's default-
+        // initialization contract. With the descriptor left empty, the
+        // lenient overload selection (EXP-078 largest-bytecode law) picked
+        // whichever same-name <init> had the biggest body: for libgdx Array
+        // that was the COPY ctor (Array;(Array;)V, 30 units > 7) — it then
+        // read the fresh shell's ABSENT items field → getClass() on null →
+        // NPE → AndroidLauncher.onCreate death (tower3d uniform-black face).
+        // The F-NEW-274 gate above already verified a local ()V exists, so
+        // the exact-match law resolves it deterministically.
+        bool ran = try_recursive_invoke(type_desc, "<init>", {recv}, ret, res,
+                                        "()V");
         f464_in_flight.clear();
         if (ran) heap_.mark_initialized(oid);
         // ran == false: keep the seeded shell (honest — ctor not found in
@@ -27310,6 +27360,23 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                 status = ApiCallTrace::Status::STUBBED; break;
         }
         result = call_result_to_dalvik(cr);
+        // CONT-159: pass-1 answer channel (same law as the pass-2 diag —
+        // GLES20/GL statics answer here; the pass-2 diag never sees them).
+        static thread_local const bool ans1_on =
+            diag_env("MINIANDROID_SHADOW_ANSWER_TRACE");
+        if (ans1_on) {
+            static thread_local uint64_t ans1_n = 0;
+            if (ans1_n < 300) {
+                ++ans1_n;
+                std::cerr << "[SHADOW-ANSWER-1] " << class_name << "."
+                          << method << " ret_type="
+                          << static_cast<int>(result.type)
+                          << " int=" << result.int_val
+                          << " obj=" << result.object_id
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
         return true;
     }
 
@@ -27343,6 +27410,27 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                     status = ApiCallTrace::Status::STUBBED; break;
             }
             result = call_result_to_dalvik(cr);
+            // CONT-159 (F-NEW-503 decode diag, env-gated): the shadow
+            // answer channel — which (class, method) answered and with what
+            // value shape. Pins int-return fidelity end-to-end.
+            static thread_local const bool ans_on =
+                diag_env("MINIANDROID_SHADOW_ANSWER_TRACE");
+            if (ans_on) {
+                static thread_local uint64_t ans_n = 0;
+                if (ans_n < 300) {
+                    ++ans_n;
+                    std::cerr << "[SHADOW-ANSWER] " << class_name << "."
+                              << method << " status="
+                              << (status == ApiCallTrace::Status::IMPLEMENTED
+                                      ? "IMPL"
+                                      : "STUB")
+                              << " ret_type=" << static_cast<int>(result.type)
+                              << " int=" << result.int_val
+                              << " obj=" << result.object_id
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
             return true;
         }
     }
@@ -39286,6 +39374,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {"os.arch", "aarch64"},
     {"os.version", "5.15.0-miniandroid"},
 };
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-507 (CONT-159) — Class.getResourceAsStream / ClassLoader.
+    //getResourceAsStream — REAL classpath law. ROOT CAUSE this replaces: NO
+    // handler → null → libGDX ClasspathFileHandle.read threw
+    // GdxRuntimeException(path + " does not exist") on the FIRST classpath
+    // resource (com/badlogic/gdx/utils/lsans-15.fnt — the libGDX default
+    // BitmapFont bundled at the APK ROOT, not under assets/) →
+    // AndroidLauncher.onCreate death (tower3d live face). Law (libcore):
+    // getResourceAsStream resolves against the classloader's class path —
+    // for an APK that is the APK's own entry table (the S102
+    // SERVICELOADER-APK-ENTRY precedent already reads ROOT entries this
+    // way). The leading '/' (the Class form prepends it) strips; the stream
+    // registers in open_assets_ under the "apk-entry:" backing so the
+    // F104 read family answers REAL bytes. Honest miss → null (the caller
+    // throws its own exception — no fabrication).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getResourceAsStream" &&
+        (class_name == "Ljava/lang/Class;" ||
+         class_name == "Ljava/lang/ClassLoader;")) {
+        std::string res_path;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::STRING_REF && !a.string_val.empty()) {
+                res_path = a.string_val;
+                break;
+            }
+        }
+        if (!res_path.empty()) {
+            if (res_path[0] == '/') res_path = res_path.substr(1);
+            std::string backing = "apk-entry:" + res_path;
+            const std::string& bytes = cached_asset_bytes(backing);
+            if (!bytes.empty()) {
+                uint32_t sid = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
+                open_assets_[sid] = {backing, 0};
+                result = DalvikValue::make_object(sid, "Ljava/io/InputStream;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "OPEN", res_path, false, "getResourceAsStream (APK entry miss)",
+                current_class_ + "." + current_method_);
+        }
+    }
     if (class_name == "Ljava/lang/System;" && method == "getProperty" &&
         (args.size() == 1 || args.size() == 2)) {
         std::string key;
@@ -39482,6 +39612,41 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-504 (CONT-159) — libGDX BufferUtils NATIVE buffer-allocation
+    // family (DEX-referenced JNI surface, implemented engine-side where the
+    // heap lives). ROOT CAUSE this replaces: newDisposableByteBuffer(I) —
+    // libgdx's native direct-ByteBuffer allocator — had NO handler; the
+    // S2-NATIVE guarded call loaded the real libgdx.so and FAULTED inside it
+    // (SIGSEGV/SIGBUS, guarded — the runtime survived per the FIX-TTT law)
+    // and answered null. Every consumer then died on the null:
+    // BufferUtils.newUnsafeByteBuffer pc=8 does
+    // newDisposableByteBuffer(cap).order(ByteOrder.nativeOrder()) →
+    // ByteBuffer.order on a null receiver → NPE → AndroidLauncher.onCreate
+    // death (tower3d live face — the first libGDX-3D title to reach the GL
+    // buffer layer). LAW: the native allocator answers the SAME heap
+    // ByteBuffer shape the S108 ROOT-022 allocateDirect law produces
+    // (cap/pos/lim/order fields + the lazy __bb_b<i>__ element run), LITTLE
+    // ENDIAN order recorded (the native allocator byte-order contract). The
+    // same shape serves newUnsafeByteBuffer's marker bookkeeping (its Java
+    // body tracks the buffer in the unsafeBuffers array afterwards).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Lcom/badlogic/gdx/utils/BufferUtils;" &&
+        method == "newDisposableByteBuffer") {
+        int32_t cap = 0;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::INT32) { cap = a.int_val; break; }
+        }
+        if (cap < 0) cap = 0;
+        uint32_t bid = heap_.allocate("Ljava/nio/ByteBuffer;", 0, 0);
+        heap_.set_object_field(bid, "__bb_cap__", DalvikValue::make_int(cap));
+        heap_.set_object_field(bid, "__bb_pos__", DalvikValue::make_int(0));
+        heap_.set_object_field(bid, "__bb_lim__", DalvikValue::make_int(cap));
+        heap_.set_object_field(bid, "__bb_order__", DalvikValue::make_int(1));
+        result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
     if (class_name == "Lorg/telegram/tgnet/NativeByteBuffer;") {
         // shared address→oid registry (both natives consult it)
@@ -56701,6 +56866,67 @@ measure_cm_done:;
         }
     }
     // ────────────────────────────────────────────────────────────────────
+    // F-NEW-502 (CONT-159): Class.getComponentType() — REAL array-component
+    // law. ROOT CAUSE this replaces: the engine had NO getComponentType
+    // handler; the unanswered call returned null. Observable collapse
+    // (tower3d, libgdx 3D): Array.add → Array.resize → ArrayReflection
+    // .newInstance(items.getClass().getComponentType(), newSize) —
+    // getComponentType on the [Ljava/lang/Object; token answered null →
+    // the R-NEW-358 Array.newInstance shadow saw an EMPTY component
+    // descriptor → returned null → `newItems.length` (array-length on
+    // null) → NPE → AndroidLauncher.onCreate death → uniform-black face.
+    // Law (OpenJDK Class.getComponentType): array classes answer the
+    // component Class; non-arrays answer null. Descriptor convention
+    // (engine-wide): the token's __referent_desc carries the represented
+    // descriptor; "[X" strips to X — a bare primitive letter answers the
+    // primitive class token, an L...;/[[... descriptor answers its class
+    // token. Works for CLASS_REF receivers and heap Class objects both.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "getComponentType") {
+        std::string rep_desc;
+        if (!args.empty() && args[0].type == DalvikType::CLASS_REF) {
+            rep_desc = args[0].class_desc;
+        } else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                   args[0].object_id != 0 &&
+                   heap_.has_object(args[0].object_id)) {
+            auto rep = heap_.get_object_field(args[0].object_id,
+                                              "__referent_desc");
+            if (rep.has_value() && rep->type == DalvikType::STRING_REF &&
+                !rep->string_val.empty())
+                rep_desc = rep->string_val;
+            else if (args[0].class_desc == "Ljava/lang/Class;" ||
+                     args[0].class_desc.empty())
+                rep_desc.clear();
+            else
+                rep_desc = args[0].class_desc;
+        }
+        // Deep-array descriptors ("[[I"): strip ALL leading '[' then the
+        // answer is the element type's descriptor with the remaining depth.
+        size_t depth = 0;
+        while (depth < rep_desc.size() && rep_desc[depth] == '[') ++depth;
+        if (depth == 0) {
+            // Non-array class: OpenJDK answers null.
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string comp = rep_desc.substr(depth);
+        // Primitive component ("I", "J", ...) — answer the primitive class
+        // token (the F-119 primitive descriptor law keeps the bare form).
+        if (comp.size() == 1 &&
+            std::string("IZBCSJFD").find(comp[0]) != std::string::npos) {
+            result = make_stable_class_token(comp);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Class component: keep the exact descriptor form (L...; or a
+        // deeper array). The Array.newInstance shadow's descriptor-form
+        // branch (R-NEW-010 law) prepends exactly one '[' per dimension.
+        result = make_stable_class_token(comp);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
     // S102 LAW 4 — LONG-BITMATH-64 (java.lang.Long 64-bit static family).
     //   Upstream: OpenJDK java/lang/Long.java — pure functions over the
     //   64-bit two's-complement bit pattern:
@@ -61131,6 +61357,56 @@ measure_cm_done:;
             eq = true;
         }
         result = DalvikValue::make_bool(eq);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-500 (CONT-159): String.compareTo(String) — REAL lexicographic
+    // law. ROOT CAUSE this replaces: the engine had NO compareTo handler;
+    // the unhandled virtual fall-through answered 0, so every pair of
+    // DISTINCT strings "compared equal". Observable collapse (tower3d,
+    // libgdx 3D): Attribute.getAttributeType scans the registered-alias
+    // array with compareTo → returned 0 ("found" at index 0) for every
+    // DISTINCT alias → Attribute.register returned the same bit for every
+    // attribute class (DirectionalLightsAttribute.Type ==
+    // ColorAttribute.Type == 1) → Environment.add(DirectionalLight) matched
+    // the foreign ColorAttribute instance under the DLA type key, read the
+    // ABSENT DirectionalLightsAttribute.lights field THROUGH it (R-NEW-414
+    // default) and the F-NEW-464 ()V dispatch — then EXP-078's largest-
+    // bytecode overload pick ran the COPY ctor Array;(Array;)V on the fresh
+    // shell → getClass() on null items → NPE → AndroidLauncher.onCreate
+    // death → uniform-black face. Also poisons every libgdx Sort/TimSort
+    // consumer (render-list ordering). Law (OpenJDK String.compareTo):
+    // lexicographic by UTF-16 code unit; the first differing unit k answers
+    // this[k] - other[k]; common-prefix strings answer the length
+    // difference. Units walked via str_char_at_unit (the CONT-121 JVM UTF-16
+    // unit law): BMP strings answer identically to a code-point walk;
+    // supplementary pairs compare per unit — the JVM contract. Honest bound:
+    // a null argument answers 0 (the engine's documented fail-soft null law;
+    // AOSP throws NPE — the caller-visible deviation is registered below).
+    if (class_name == "Ljava/lang/String;" && method == "compareTo" &&
+        args.size() >= 2 && args[0].type == DalvikType::STRING_REF &&
+        args[1].type == DalvikType::STRING_REF) {
+        const std::string& s_a = args[0].string_val;
+        const std::string& s_b = args[1].string_val;
+        int32_t units_a = 0, units_b = 0;
+        {
+            int32_t i = 0, out = 0;
+            while (str_char_at_unit(s_a, i, out)) { ++units_a; ++i; }
+            i = 0;
+            while (str_char_at_unit(s_b, i, out)) { ++units_b; ++i; }
+        }
+        int32_t lim = units_a < units_b ? units_a : units_b;
+        int32_t cmp = 0;
+        for (int32_t k = 0; k < lim && cmp == 0; ++k) {
+            int32_t ca = 0, cb = 0;
+            str_char_at_unit(s_a, k, ca);
+            str_char_at_unit(s_b, k, cb);
+            cmp = ca - cb;
+        }
+        if (cmp == 0) cmp = units_a - units_b;
+        result = DalvikValue::make_int(cmp);
+        status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
 

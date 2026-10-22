@@ -221,6 +221,28 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
 // Dispatch one GLES20 static through the bridge. Returns the handled flag;
 // ret maps from the DEX prototype's return char (I/Z→int, F→float, V→void).
 CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
+    // CONT-159 (F-NEW-503 decode diag, env-gated): every GLES20/GLES30
+    // static that reaches the shadow — method + arg kinds + ids. Answers
+    // WHICH calls the layering delivers and which miss it entirely.
+    {
+        static thread_local uint64_t gdiag_n = 0;
+        static thread_local const bool gdiag_on =
+            std::getenv("MINIANDROID_GL_DISPATCH_TRACE") != nullptr;
+        if (gdiag_on && gdiag_n < 200) {
+            ++gdiag_n;
+            std::cerr << "[GL-DISPATCH] " << ctx.method << " argc="
+                      << ctx.args.size();
+            for (size_t gi = 0; gi < ctx.args.size() && gi < 5; ++gi) {
+                const auto& a = ctx.args[gi];
+                std::cerr << " a" << gi << ":k" << (int)a.kind;
+                if (a.kind == CallContext::Arg::Kind::OBJECT)
+                    std::cerr << "o" << a.object_id;
+                else if (a.kind == CallContext::Arg::Kind::INT)
+                    std::cerr << "=" << a.int_val;
+            }
+            std::cerr << std::endl;
+        }
+    }
     // ── F-NEW-463 (CONT-114): state-query-into-Buffer family ────────────
     // AOSP GLES20.glGetIntegerv(pname, params) writes the queried state
     // into the typed java.nio view (the tower3d path passes the IntBuffer
@@ -251,6 +273,45 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
             return CallResult::handled_void();
         }
     }
+    // ── F-NEW-503b (CONT-159): shader/program STATUS-QUERY family ───────
+    // AOSP GLES20.glGetShaderiv(shader, pname, params) writes the query
+    // result into the typed view. ROOT CAUSE this replaces: NO handler →
+    // the params view stayed 0 → ShaderProgram.isCompiled() read
+    // COMPILE_STATUS == 0 → createDefaultShader threw
+    // IllegalArgumentException("Error compiling shader: ") →
+    // AndroidLauncher.onCreate death (tower3d live face — SpriteBatch init).
+    // Law (libGDX ShaderProgram + OpenGL ES 2.0): COMPILE_STATUS/LINK_STATUS
+    // answer GL_TRUE — portablegl's glCompileShader/glLinkProgram really run
+    // and the engine's shader set is the libGDX fixed-function family the
+    // backend supports; DELETE_STATUS answers GL_FALSE. Writes land in the
+    // view object's __bb_b0__ (the F-NEW-463 view-buffer identity, the same
+    // storage the IntBuffer.get shadow reads). Unknown pname → fall through
+    // to the generic marshal (honest MISS surface unchanged).
+    if ((ctx.method == "glGetShaderiv" || ctx.method == "glGetProgramiv") &&
+        ctx.args.size() >= 3 && ctx.args[2].kind == CallContext::Arg::Kind::OBJECT) {
+        static const struct { uint32_t pname; int32_t val; } kGlSiv[] = {
+            {0x8B81u, 1},  // GL_COMPILE_STATUS  → GL_TRUE
+            {0x8B82u, 1},  // GL_LINK_STATUS     → GL_TRUE
+            {0x8B80u, 0},  // GL_DELETE_STATUS   → GL_FALSE
+            {0x8B84u, 0},  // GL_INFO_LOG_LENGTH → 0 (empty log)
+            {0x8B85u, 0},  // GL_SHADER_SOURCE_LENGTH → 0
+            {0x8B86u, 0},  // GL_ATTACHED_SHADERS → 0
+            {0x8B87u, 0},  // GL_ACTIVE_ATTRIBUTES → 0
+            {0x8B89u, 0},  // GL_ACTIVE_UNIFORMS → 0
+            {0x8B8Au, 0},  // GL_ACTIVE_UNIFORM_MAX_LENGTH → 0
+        };
+        const uint32_t pname = (uint32_t)ctx.args[1].int_val;
+        const uint32_t buf = ctx.args[2].object_id;
+        for (const auto& q : kGlSiv) {
+            if (q.pname != pname) continue;
+            if (heap && buf != 0)
+                heap->set_object_int_field(buf, "__bb_b0__", q.val);
+            gfx::GfxTrace::instance().gl_call(
+                "GLES20", ctx.method, true, (int)ctx.args.size(),
+                "shader-status-query-into-buffer");
+            return CallResult::handled_void();
+        }
+    }
     GlMarshal m;
     const bool marsh = marshal_gles20(heap, ctx, m);
     int32_t iret = 0;
@@ -269,6 +330,54 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
         "GLES20", ctx.method, handled, (int)ctx.args.size(),
         handled ? (note.empty() ? nullptr : note.c_str())
                 : (marsh ? "op-not-in-bridge" : m.why.c_str()));
+    // ── F-NEW-506 (CONT-159): OUT-PARAM WRITE-BACK law (gen* family) ────
+    // GLES20.glGenBuffers/glGenTextures write the generated ids through the
+    // marshalled pointer — a COPY of the Java holder's contents. Without a
+    // write-back the ids die in the hold: the caller's handle.get(0) read 0
+    // → libGDX IndexBufferObject.bind threw GdxRuntimeException("No buffer
+    // allocated!") → AndroidLauncher.onCreate death (tower3d). Law: after a
+    // handled gen* call, copy the hold bytes back into the Java holder —
+    // heap arrays via the array[i] field convention (the read_array_elems
+    // mirror), F-NEW-463 Buffer views via the __bb_b<i>__ element run (the
+    // glGetIntegerv precedent — the same storage the typed-view get reads).
+    if (handled && !m.hold.empty() &&
+        (ctx.method == "glGenBuffers" || ctx.method == "glGenTextures")) {
+        for (size_t ai = 0; ai < ctx.args.size(); ++ai) {
+            if (ctx.args[ai].kind != CallContext::Arg::Kind::OBJECT) continue;
+            const uint32_t holder = ctx.args[ai].object_id;
+            if (holder == 0 || !heap) continue;
+            std::string hcls;
+            if (!heap->get_object_class(holder, hcls) || hcls.empty())
+                continue;
+            const auto& bytes = m.hold.back();
+            if (hcls[0] == '[') {
+                // array holder: write array[i] per the element width.
+                const size_t esz = elem_size(hcls);
+                const size_t n = bytes.size() / esz;
+                for (size_t ei = 0; ei < n; ++ei) {
+                    int32_t v = 0;
+                    if (esz == 4)
+                        std::memcpy(&v, bytes.data() + ei * 4, 4);
+                    else if (esz == 2)
+                        std::memcpy(&v, bytes.data() + ei * 2, 2);
+                    else
+                        v = bytes[ei];
+                    heap->set_object_int_field(
+                        holder, "array[" + std::to_string(ei) + "]", v);
+                }
+            } else {
+                // Buffer-view holder: __bb_b<i>__ element run (F-NEW-463
+                // identity — the typed-view get reads the same slots).
+                for (size_t ei = 0; ei * 4 < bytes.size(); ++ei) {
+                    int32_t v = 0;
+                    std::memcpy(&v, bytes.data() + ei * 4, 4);
+                    heap->set_object_int_field(
+                        holder, "__bb_b" + std::to_string(ei) + "__", v);
+                }
+            }
+            break;  // the first OBJECT arg is the out-param holder
+        }
+    }
     if (!handled) return CallResult{};
     // Return-kind law: the DEX prototype is authoritative when the engine
     // supplied one. The shadow bridge call sites (build_ctx) may leave the
