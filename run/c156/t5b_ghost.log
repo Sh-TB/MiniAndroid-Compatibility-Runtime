@@ -1,0 +1,1104 @@
+[*] FRAME-SEQUENCE enabled (3 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] MAX-SECONDS enabled (20 s wall-clock soft budget)
+[*] Running APK: upload/fdroid_batch/com.ghostsq.commander_479.apk
+[*] Output directory: run/c156/t5b_ghost_face
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=42
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$anim; offset=0x5c8520 static_fields=4 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$anim; with_defaults=4/4
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$array; offset=0x5c8535 static_fields=15 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$array; with_defaults=15/15
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$attr; offset=0x5c8581 static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$attr; with_defaults=5/5
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$color; offset=0x5c859b static_fields=40 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$color; with_defaults=40/40
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$drawable; offset=0x5c8664 static_fields=77 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$drawable; with_defaults=77/77
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$id; offset=0x5c87e6 static_fields=300 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$id; with_defaults=300/300
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$layout; offset=0x5c8dc4 static_fields=41 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$layout; with_defaults=41/41
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$menu; offset=0x5c8e92 static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$menu; with_defaults=6/6
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$mipmap; offset=0x5c8eb1 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$mipmap; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$raw; offset=0x5c8eb7 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$raw; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$string; offset=0x5c8ebd static_fields=564 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$string; with_defaults=564/564
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$style; offset=0x5c99c3 static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$style; with_defaults=6/6
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$styleable; offset=0x5c99e2 static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$styleable; with_defaults=6/6
+[EXP062-SV] parse_static_values for Lcom/ghostsq/commander/R$xml; offset=0x5c99ee static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lcom/ghostsq/commander/R$xml; with_defaults=3/3
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=201
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=221
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=237
+[DATA-ROOT] context package = com.ghostsq.commander (data dir runtime/data/data/data/com.ghostsq.commander)
+[S123-ACTION-REG] activities=14 action_targets=13
+FONT_SOURCE apk=upload/fdroid_batch/com.ghostsq.commander_479.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 5510 entries (5462 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.ghostsq.commander.FileCommander'
+[U007-RES] ResourceRuntime loaded: upload/fdroid_batch/com.ghostsq.commander_479.apk named_ids=1063 types=13
+[ARSC-VALUES] apk=upload/fdroid_batch/com.ghostsq.commander_479.apk strings=564 colors=40 dimens=0 bools=0 integers=0 raw=1 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Ghost Commander" (resid @0x7f0b001e)
+[A7b] icon @0x7f090000 -> res/2r.xml DECODE FAILED (adaptive-icon: layers reference app resources but no resolver was provided) — honest miss
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=340)
+[S1-PROVIDER] manifest providers transferred: 3
+[S1-PROVIDER]   com.ghostsq.commander.FileProvider
+[S1-PROVIDER]   com.ghostsq.commander.StreamProvider
+[S1-PROVIDER]   com.ghostsq.commander.DocumentsProvider
+[TRY-ENTRY] Lcom/ghostsq/commander/FileProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Lcom/ghostsq/commander/FileProvider;.<init>
+[MEM] method_exit: Lcom/ghostsq/commander/FileProvider;.<init> insns=7 RSS=99.9531 MB
+[TRY-ENTRY] Lcom/ghostsq/commander/FileProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Lcom/ghostsq/commander/FileProvider;.onCreate dex_report=YES
+[MEM] method_exit: Lcom/ghostsq/commander/FileProvider;.onCreate insns=2 RSS=99.9531 MB
+[S1-PROVIDER] installed com.ghostsq.commander.FileProvider obj#14 attachInfo+onCreate OK
+[TRY-ENTRY] Lcom/ghostsq/commander/StreamProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Lcom/ghostsq/commander/StreamProvider;.<init>
+[TRY-ENTRY] Lcom/ghostsq/commander/StreamProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Lcom/ghostsq/commander/StreamProvider;.onCreate dex_report=YES
+[S1-PROVIDER] installed com.ghostsq.commander.StreamProvider obj#17 attachInfo+onCreate OK
+[TRY-ENTRY] Lcom/ghostsq/commander/DocumentsProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/provider/DocumentsProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/provider/DocumentsProvider;.<init> caller=Lcom/ghostsq/commander/DocumentsProvider;.<init>
+[TRY-ENTRY] Lcom/ghostsq/commander/DocumentsProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Lcom/ghostsq/commander/DocumentsProvider;.onCreate dex_report=YES
+[TRY-ENTRY] Landroid/provider/DocumentsProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/provider/DocumentsProvider;.getContext caller=Lcom/ghostsq/commander/DocumentsProvider;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/provider/DocumentsProvider;.getContext method_id=550 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/ghostsq/commander/DocumentsProvider;.onCreate
+[S1-PROVIDER] installed com.ghostsq.commander.DocumentsProvider obj#19 attachInfo+onCreate OK
+[R341-APP] default Application bound: obj#21
+[R341-APP] bound application obj#21 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/ghostsq/commander/FileCommander;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/ghostsq/commander/FileCommander;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[TRY-ENTRY] Ljava/util/ArrayList;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/ghostsq/commander/FileCommander;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #22 (Lcom/ghostsq/commander/FileCommander;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/ghostsq/commander/FileCommander;' id=22
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[EXP062-INIT] Lcom/ghostsq/commander/ColorsKeeper; static_fields=9 with_defaults=8
+[TRY-ENTRY] Lcom/ghostsq/commander/ColorsKeeper;.getTheme dex_report=YES
+[TRY-ENTRY] Lcom/ghostsq/commander/FileCommander;.getResources dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.getResources dex_report=YES
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=systemSupportsThemeSwitching pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getConfiguration caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=getTheme pc=41 field=Lcom/ghostsq/commander/ColorsKeeper;.theme obj_id=0
+[EXP062-INIT] Lcom/ghostsq/commander/utils/Utils; static_fields=22 with_defaults=17
+[CLASS_INIT] class=Lcom/ghostsq/commander/utils/Utils; method=<clinit> bytecode_size=1494
+[REC-MISS] Ljava/util/Locale;.getDefault caller=Lcom/ghostsq/commander/utils/Utils;.<clinit>
+[REC-MISS] Ljava/util/Locale;.getLanguage caller=Lcom/ghostsq/commander/utils/Utils;.<clinit>
+[CLASS_INIT] class=Lcom/ghostsq/commander/utils/Utils; method=<clinit> result=OK engine=0x7fff49403178 storage_size=54
+[EXP062-INIT] Lcom/ghostsq/commander/R$style; static_fields=6 with_defaults=6
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getThemeId pc=11 field=Lcom/ghostsq/commander/R$style;.GCDark value=2131492867
+[REC-MISS] Landroid/app/Activity;.setTheme caller=Lcom/ghostsq/commander/utils/Utils;.setTheme
+[REC-MISS] Landroid/content/ContextWrapper;.setTheme caller=Lcom/ghostsq/commander/utils/Utils;.setTheme
+[REC-MISS] Landroid/content/Context;.setTheme caller=Lcom/ghostsq/commander/utils/Utils;.setTheme
+[REC-MISS] Landroid/content/Context;.setTheme caller=Lcom/ghostsq/commander/utils/Utils;.setTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTheme class=Landroid/app/Activity;
+[C013-HIER] setTheme dispatched via superclass chain: Lcom/ghostsq/commander/FileCommander; -> Landroid/app/Activity; (declared=Lcom/ghostsq/commander/FileCommander; receiver=Lcom/ghostsq/commander/FileCommander;)
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=11 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onCreate pc=20 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/utils/Utils;.needActionBar
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/utils/Utils;.needActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getConfiguration caller=Lcom/ghostsq/commander/utils/Utils;.needActionBar
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/ghostsq/commander/utils/Utils;.needActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/utils/Utils;.needActionBar
+[REC-MISS] Landroid/view/ViewConfiguration;.get caller=Lcom/ghostsq/commander/utils/Utils;.hasPermanentMenuKey
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=get class=Landroid/app/Activity;
+[REC-MISS] Landroid/view/ViewConfiguration;.hasPermanentMenuKey caller=Lcom/ghostsq/commander/utils/Utils;.hasPermanentMenuKey
+[REC-MISS] Landroid/app/Activity;.getWindow caller=Lcom/ghostsq/commander/utils/Utils;.setActionBar
+[REC-MISS] Landroid/app/Activity;.getWindow caller=Lcom/ghostsq/commander/utils/Utils;.setActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lcom/ghostsq/commander/FileCommander; recv_oid=22 act_oid=22)
+[REC-MISS] Landroid/view/Window;.requestFeature caller=Lcom/ghostsq/commander/utils/Utils;.setActionBar
+[REC-MISS] Landroid/app/Activity;.getActionBar caller=Lcom/ghostsq/commander/utils/Utils;.setActionBar
+[REC-MISS] Landroid/app/Activity;.getActionBar caller=Lcom/ghostsq/commander/utils/Utils;.setActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getActionBar class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getActionBar class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getActionBar class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .getActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getActionBar class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .getActionBar
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getActionBar class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP062-INIT] Lcom/ghostsq/commander/Dialogs; static_fields=11 with_defaults=11
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=changeLanguage pc=21 field=Lcom/ghostsq/commander/utils/Utils;.systemLocaleLang obj_id=0
+[REC-MISS] Ljava/util/Locale;.<init> caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Ljava/util/Locale;.setDefault caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Landroid/content/res/Configuration;.<init> caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Landroid/content/res/Resources;.updateConfiguration caller=Lcom/ghostsq/commander/utils/Utils;.changeLanguage
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/FileCommander;.onCreate
+[EXP062-INIT] Lcom/ghostsq/commander/FileCommander; static_fields=12 with_defaults=12
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/ghostsq/commander/FileCommander;.getRotMode
+[REC-MISS] Landroid/view/Display;.getWidth caller=Lcom/ghostsq/commander/FileCommander;.getRotMode
+[REC-MISS] Landroid/view/Display;.getHeight caller=Lcom/ghostsq/commander/FileCommander;.getRotMode
+[EXP062-INIT] Lcom/ghostsq/commander/Panels; static_fields=4 with_defaults=4
+[CLASS_INIT] class=Lcom/ghostsq/commander/Panels; method=<clinit> bytecode_size=11
+[REC-MISS] Landroid/os/Environment;.getExternalStorageDirectory caller=Lcom/ghostsq/commander/Panels;.<clinit>
+[R347-FILE] getAbsolutePath path="/storage/emulated/0" -> "/storage/emulated/0"
+[CLASS_INIT] class=Lcom/ghostsq/commander/Panels; method=<clinit> result=OK engine=0x7fff49403178 storage_size=87
+[EXP062-INIT] Lcom/ghostsq/commander/R$id; static_fields=300 with_defaults=300
+[SGET] class=Lcom/ghostsq/commander/Panels; method=<init> pc=6 field=Lcom/ghostsq/commander/R$id;.left_dir value=2131099787
+[SGET] class=Lcom/ghostsq/commander/Panels; method=<init> pc=8 field=Lcom/ghostsq/commander/R$id;.right_dir value=2131099859
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getDisplayMetrics caller=Lcom/ghostsq/commander/Panels;.<init>
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=systemSupportsThemeSwitching pc=0 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper;.getTheme
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getConfiguration caller=Lcom/ghostsq/commander/ColorsKeeper;.getSystemTheme
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=getTheme pc=41 field=Lcom/ghostsq/commander/ColorsKeeper;.theme obj_id=0
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP062-INIT] Lcom/ghostsq/commander/R$color; static_fields=40 with_defaults=40
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=setColorsByTheme pc=17 field=Lcom/ghostsq/commander/R$color;.ttl_drk value=2130968613
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[RES] getColor resid=0x7f040025 -> 0xff555555
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=setColorsByTheme pc=25 field=Lcom/ghostsq/commander/R$color;.bgr_drk value=2130968577
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[RES] getColor resid=0x7f040001 -> 0xff000000
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=setColorsByTheme pc=33 field=Lcom/ghostsq/commander/R$color;.fgr_drk value=2130968601
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[RES] getColor resid=0x7f040019 -> 0xfff0f0f0
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=setColorsByTheme pc=43 field=Lcom/ghostsq/commander/R$color;.sel_drk value=2130968606
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[RES] getColor resid=0x7f04001e -> 0xff58b6e1
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=setColorsByTheme pc=51 field=Lcom/ghostsq/commander/R$color;.sfg_drk value=2130968609
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[RES] getColor resid=0x7f040021 -> 0xfff0f0f0
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=setColorsByTheme pc=59 field=Lcom/ghostsq/commander/R$color;.btn_drk value=2130968581
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[RES] getColor resid=0x7f040005 -> 0xff2a2a2a
+[REC-MISS] Landroid/app/Activity;.getSharedPreferences caller=Lcom/ghostsq/commander/ColorsKeeper;.restoreTypeColors
+[REC-MISS] Landroid/content/ContextWrapper;.getSharedPreferences caller=Lcom/ghostsq/commander/ColorsKeeper;.restoreTypeColors
+[REC-MISS] Landroid/content/Context;.getSharedPreferences caller=Lcom/ghostsq/commander/ColorsKeeper;.restoreTypeColors
+[REC-MISS] Landroid/content/Context;.getSharedPreferences caller=Lcom/ghostsq/commander/ColorsKeeper;.restoreTypeColors
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getSharedPreferences
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP062-INIT] Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; static_fields=2 with_defaults=2
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=-$$Nest$sfgettheme pc=0 field=Lcom/ghostsq/commander/ColorsKeeper;.theme obj_id=0
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=-$$Nest$sfgettheme pc=0 field=Lcom/ghostsq/commander/ColorsKeeper;.theme obj_id=0
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=134 field=Lcom/ghostsq/commander/R$color;.fg1_drk value=2130968589
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f04000d -> 0xffffffef
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=-$$Nest$sfgettheme pc=0 field=Lcom/ghostsq/commander/ColorsKeeper;.theme obj_id=0
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper; method=-$$Nest$sfgettheme pc=0 field=Lcom/ghostsq/commander/ColorsKeeper;.theme obj_id=0
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=127 field=Lcom/ghostsq/commander/R$color;.fg2_drk value=2130968591
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f04000f -> 0xffd1ffdf
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefMasks pc=18 field=Lcom/ghostsq/commander/utils/Utils;.C_IMAGE obj_id=0
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[SGET] class=Lcom/ghostsq/commander/utils/Utils; method=getExtsByCategory pc=11 field=Lcom/ghostsq/commander/utils/Utils;.mimes obj_id=28
+[REC-MISS] Ljava/lang/StringBuffer;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=120 field=Lcom/ghostsq/commander/R$color;.fg3_drk value=2130968593
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040011 -> 0xffc4f0ff
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuffer;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=113 field=Lcom/ghostsq/commander/R$color;.fg4_drk value=2130968595
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040013 -> 0xffffffd8
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuffer;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Ljava/lang/StringBuffer;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefMasks
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=106 field=Lcom/ghostsq/commander/R$color;.fg5_drk value=2130968597
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040015 -> 0xffffe0f4
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=99 field=Lcom/ghostsq/commander/R$color;.fg6_drk value=2130968599
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040017 -> 0xffd6d6d6
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=141 field=Lcom/ghostsq/commander/R$color;.fgr_drk value=2130968601
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040019 -> 0xfff0f0f0
+[REC-MISS] Landroid/content/SharedPreferences;.getInt caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.restore
+[REC-MISS] Ljava/lang/Math;.min caller=Lcom/ghostsq/commander/ColorsKeeper;.setColorsByTheme
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=134 field=Lcom/ghostsq/commander/R$color;.fg1_drk value=2130968589
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f04000d -> 0xffffffef
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=127 field=Lcom/ghostsq/commander/R$color;.fg2_drk value=2130968591
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f04000f -> 0xffd1ffdf
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=120 field=Lcom/ghostsq/commander/R$color;.fg3_drk value=2130968593
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040011 -> 0xffc4f0ff
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=113 field=Lcom/ghostsq/commander/R$color;.fg4_drk value=2130968595
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040013 -> 0xffffffd8
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=106 field=Lcom/ghostsq/commander/R$color;.fg5_drk value=2130968597
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040015 -> 0xffffe0f4
+[REC-MISS] Landroid/app/Activity;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/ContextWrapper;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[REC-MISS] Landroid/content/Context;.getResources caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=99 field=Lcom/ghostsq/commander/R$color;.fg6_drk value=2130968599
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor;.getDefColor
+[RES] getColor resid=0x7f040017 -> 0xffd6d6d6
+[EXP062-INIT] Lcom/ghostsq/commander/R$layout; static_fields=41 with_defaults=41
+[SGET] class=Lcom/ghostsq/commander/Panels; method=<init> pc=109 field=Lcom/ghostsq/commander/R$layout;.picker_mode value=2131165206
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity; args=1 arg0_kind=0 arg0_int=2131165206
+[U007-INFLATE] setContentView(layoutResId=0x7f070016)
+[V4-TAG] unknown short tag <AutoCompleteTextView> not in DEX — generic View leaf (evidence recorded, not silent)
+[REC-MISS] Landroid/widget/HorizontalScrollView;.<init> caller=Lcom/ghostsq/commander/LockableScrollView;.<init>
+[DEFAULT-MEASURE] class=Lcom/ghostsq/commander/LockableScrollView; view=209 node=FOUND overrides_onMeasure=0 flag=1
+[REC-MISS] Landroid/view/ViewGroup;.<init> caller=Lcom/ghostsq/commander/PanelsView;.<init>
+[DEFAULT-MEASURE] class=Lcom/ghostsq/commander/PanelsView; view=211 node=FOUND overrides_onMeasure=1 flag=0
+[U007-INFLATE] root_id=201 views=25 strings=2 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=201 recorded for first-traversal attach+measure
+[C013-HIER] setContentView dispatched via superclass chain: Lcom/ghostsq/commander/FileCommander; -> Landroid/app/Activity; (declared=Lcom/ghostsq/commander/FileCommander; receiver=Lcom/ghostsq/commander/FileCommander;)
+[SGET] class=Lcom/ghostsq/commander/Panels; method=<init> pc=116 field=Lcom/ghostsq/commander/R$id;.main value=2131099796
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060094 search_root=c9
+[EXP088-B-VS] NOT FOUND
+[SGET] class=Lcom/ghostsq/commander/Panels; method=<init> pc=126 field=Lcom/ghostsq/commander/R$id;.hrz_scroll value=2131099781
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060085 receiver=16 → FOUND view_id=209 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/Panels; method=<init> pc=150 field=Lcom/ghostsq/commander/R$id;.panels value=2131099821
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600ad receiver=16 → FOUND view_id=211 (receiver subtree)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[SGET] class=Lcom/ghostsq/commander/PanelsView; method=init pc=2 field=Lcom/ghostsq/commander/R$id;.left_list value=2131099789
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/PanelsView;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008d receiver=d3 → FOUND view_id=219 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/PanelsView; method=init pc=10 field=Lcom/ghostsq/commander/R$id;.right_list value=2131099861
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/PanelsView;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d5 receiver=d3 → FOUND view_id=227 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/PanelsView; method=init pc=18 field=Lcom/ghostsq/commander/R$id;.divider value=2131099726
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/PanelsView;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06004e receiver=d3 → FOUND view_id=220 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/PanelsView; method=init pc=26 field=Lcom/ghostsq/commander/R$id;.left_stat value=2131099792
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/PanelsView;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060090 receiver=d3 → FOUND view_id=213 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/PanelsView; method=init pc=34 field=Lcom/ghostsq/commander/R$id;.right_stat value=2131099864
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/PanelsView;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d8 receiver=d3 → FOUND view_id=221 (receiver subtree)
+[REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/Display;.getMetrics caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/widget/LinearLayout;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/ViewGroup;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[P1-1-VIS] view=213 Landroid/widget/LinearLayout; visibility 0 -> 8 (requestLayout raised)
+[REC-MISS] Landroid/widget/LinearLayout;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/ViewGroup;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/ghostsq/commander/PanelsView;.init
+[P1-1-VIS] view=221 Landroid/widget/LinearLayout; visibility 0 -> 8 (requestLayout raised)
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=40 field=Lcom/ghostsq/commander/R$id;.left_list value=2131099789
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008d receiver=16 → FOUND view_id=219 (receiver subtree)
+[REC-MISS] Landroid/widget/ListView;.setItemsCanFocus caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setFocusableInTouchMode caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnItemSelectedListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setChoiceMode caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnItemClickListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnFocusChangeListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnTouchListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnKeyListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnScrollListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .registerForContextMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .registerForContextMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .registerForContextMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=115 field=Lcom/ghostsq/commander/R$id;.left_stat_text value=2131099793
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060091 receiver=16 → FOUND view_id=217 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=132 field=Lcom/ghostsq/commander/R$id;.left_location value=2131099790
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008e receiver=16 → FOUND view_id=216 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=149 field=Lcom/ghostsq/commander/R$id;.left_sorting value=2131099791
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008f receiver=16 → FOUND view_id=218 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008b receiver=16 → FOUND view_id=203 (receiver subtree)
+[F447-NPE] app-caller null-recv NPE parity: Landroid/view/View;.getWidth caller=Lcom/ghostsq/commander/Panels;.setPanelTitle
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Landroid/view/View;.getWidth' on a null object reference) method=Lcom/ghostsq/commander/Panels;.setPanelTitle pc=16 → deferred handler @0x0x56 type=Ljava/lang/Exception;
+[REC-MISS] Ljava/lang/NullPointerException;.printStackTrace caller=Lcom/ghostsq/commander/Panels;.setPanelTitle
+[REC-MISS] Ljava/lang/Exception;.printStackTrace caller=Lcom/ghostsq/commander/Panels;.setPanelTitle
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=43 field=Lcom/ghostsq/commander/R$id;.right_list value=2131099861
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d5 receiver=16 → FOUND view_id=227 (receiver subtree)
+[REC-MISS] Landroid/widget/ListView;.setItemsCanFocus caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setFocusableInTouchMode caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnItemSelectedListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setChoiceMode caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnItemClickListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnFocusChangeListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnTouchListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnKeyListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[REC-MISS] Landroid/widget/ListView;.setOnScrollListener caller=Lcom/ghostsq/commander/ListHelper;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .registerForContextMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .registerForContextMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .registerForContextMenu
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=registerForContextMenu class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=118 field=Lcom/ghostsq/commander/R$id;.right_stat_text value=2131099865
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d9 receiver=16 → FOUND view_id=225 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=135 field=Lcom/ghostsq/commander/R$id;.right_location value=2131099862
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d6 receiver=16 → FOUND view_id=224 (receiver subtree)
+[SGET] class=Lcom/ghostsq/commander/ListHelper; method=<init> pc=152 field=Lcom/ghostsq/commander/R$id;.right_sorting value=2131099863
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d7 receiver=16 → FOUND view_id=226 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d3 receiver=16 → FOUND view_id=204 (receiver subtree)
+[F447-NPE] app-caller null-recv NPE parity: Landroid/view/View;.getWidth caller=Lcom/ghostsq/commander/Panels;.setPanelTitle
+[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Landroid/view/View;.getWidth' on a null object reference) method=Lcom/ghostsq/commander/Panels;.setPanelTitle pc=16 → deferred handler @0x0x56 type=Ljava/lang/Exception;
+[REC-MISS] Ljava/lang/NullPointerException;.printStackTrace caller=Lcom/ghostsq/commander/Panels;.setPanelTitle
+[REC-MISS] Ljava/lang/Exception;.printStackTrace caller=Lcom/ghostsq/commander/Panels;.setPanelTitle
+[EXP062-INIT] Lcom/ghostsq/commander/favorites/Favorites; static_fields=3 with_defaults=3
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/ghostsq/commander/favorites/Favorites;.<init>
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lcom/ghostsq/commander/favorites/Favorites;.<init>
+[REC-MISS] Landroid/widget/BaseAdapter;.<init> caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/widget/BaseAdapter;.getClass caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Ljava/lang/Class;.getName caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[SGET] class=Lcom/ghostsq/commander/favorites/LocationBar; method=<init> pc=26 field=Lcom/ghostsq/commander/R$id;.uri_edit_panel value=2131099939
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060123 receiver=16 → FOUND view_id=205 (receiver subtree)
+[MEM] method_exit: Lcom/ghostsq/commander/FileCommander;.getContext insns=1 RSS=238.289 MB
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getSystemService
+[R339-SVC] getSystemService("layout_inflater") → Landroid/view/LayoutInflater; (shadow layer, caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>)
+[SGET] class=Lcom/ghostsq/commander/favorites/LocationBar; method=<init> pc=52 field=Lcom/ghostsq/commander/R$id;.uri_edit value=2131099938
+[REC-MISS] Landroid/widget/LinearLayout;.findViewById caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/view/ViewGroup;.findViewById caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/view/View;.findViewById caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/view/View;.findViewById caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[EXP088-B-ENTER] bridge_to_api: Landroid/widget/LinearLayout;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060122 receiver=cd → FOUND view_id=207 (receiver subtree)
+[REC-MISS] Landroid/view/View;.setAdapter caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/widget/AutoCompleteTextView;.setAdapter caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/view/View;.setOnKeyListener caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/widget/AutoCompleteTextView;.setOnKeyListener caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[REC-MISS] Landroid/view/View;.addTextChangedListener caller=Lcom/ghostsq/commander/favorites/LocationBar;.<init>
+[SGET] class=Lcom/ghostsq/commander/favorites/LocationBar; method=<init> pc=73 field=Lcom/ghostsq/commander/R$id;.go_button value=2131099769
+[EXP088-B-ENTER] bridge_to_api: Landroid/widget/LinearLayout;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060079 receiver=cd → FOUND view_id=208 (receiver subtree)
+[EXP060-LISTENER] setOnClickListener view_id=208 class=Landroid/widget/Button; listener_id=238 listener_class_at_reg=Lcom/ghostsq/commander/favorites/LocationBar;
+[SGET] class=Lcom/ghostsq/commander/favorites/LocationBar; method=<init> pc=88 field=Lcom/ghostsq/commander/R$id;.star value=2131099908
+[EXP088-B-ENTER] bridge_to_api: Landroid/widget/LinearLayout;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060104 receiver=cd → FOUND view_id=206 (receiver subtree)
+[EXP060-LISTENER] setOnClickListener view_id=206 class=Landroid/widget/Button; listener_id=238 listener_class_at_reg=Lcom/ghostsq/commander/favorites/LocationBar;
+[C013-HIER] setOnClickListener dispatched via superclass chain: Landroid/widget/CheckBox; -> Landroid/widget/Button; (declared=Landroid/widget/CheckBox; receiver=Landroid/widget/CheckBox;)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getSharedPreferences
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP095-BG] view=213 color=0x0
+[M3-SETTEXTCOLOR] view_id=217 color=0xfff0f0f0 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[M3-SETTEXTCOLOR] view_id=216 color=0xfff0f0f0 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[M3-SETTEXTCOLOR] view_id=218 color=0xfff0f0f0 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP095-BG] view=221 color=0x0
+[M3-SETTEXTCOLOR] view_id=225 color=0xfff0f0f0 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[M3-SETTEXTCOLOR] view_id=224 color=0xfff0f0f0 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[M3-SETTEXTCOLOR] view_id=226 color=0xfff0f0f0 provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getSharedPreferences
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=134 field=Lcom/ghostsq/commander/R$color;.fg1_drk value=2130968589
+[RES] getColor resid=0x7f04000d -> 0xffffffef
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=127 field=Lcom/ghostsq/commander/R$color;.fg2_drk value=2130968591
+[RES] getColor resid=0x7f04000f -> 0xffd1ffdf
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=120 field=Lcom/ghostsq/commander/R$color;.fg3_drk value=2130968593
+[RES] getColor resid=0x7f040011 -> 0xffc4f0ff
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=113 field=Lcom/ghostsq/commander/R$color;.fg4_drk value=2130968595
+[RES] getColor resid=0x7f040013 -> 0xffffffd8
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=106 field=Lcom/ghostsq/commander/R$color;.fg5_drk value=2130968597
+[RES] getColor resid=0x7f040015 -> 0xffffe0f4
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=99 field=Lcom/ghostsq/commander/R$color;.fg6_drk value=2130968599
+[RES] getColor resid=0x7f040017 -> 0xffd6d6d6
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/ColorsKeeper$FileTypeColor; method=getDefColor pc=141 field=Lcom/ghostsq/commander/R$color;.fgr_drk value=2130968601
+[RES] getColor resid=0x7f040019 -> 0xfff0f0f0
+[EXP062-INIT] Lcom/ghostsq/commander/adapters/CommanderAdapterBase; static_fields=9 with_defaults=3
+[CLASS_INIT] class=Lcom/ghostsq/commander/adapters/CommanderAdapterBase; method=<clinit> bytecode_size=49
+[R347-FILE] getAbsolutePath path="/storage/emulated/0" -> "/storage/emulated/0"
+[SGET] class=Lcom/ghostsq/commander/adapters/CommanderAdapterBase; method=<clinit> pc=14 field=Ljava/io/File;.separatorChar value=0
+[CLASS_INIT] class=Lcom/ghostsq/commander/adapters/CommanderAdapterBase; method=<clinit> result=OK engine=0x7fff49403178 storage_size=483
+[PARSE] Ljava/lang/Integer;.parseInt("12", radix 10) → 12
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008b receiver=16 → FOUND view_id=203 (receiver subtree)
+[EXT-AOSP-002] setTextSize view=203 class=Landroid/widget/TextView; px=31.5
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d3 receiver=16 → FOUND view_id=204 (receiver subtree)
+[EXT-AOSP-002] setTextSize view=204 class=Landroid/widget/TextView; px=31.5
+[SGET] class=Lcom/ghostsq/commander/favorites/LocationBar; method=setFingerFriendly pc=4 field=Lcom/ghostsq/commander/R$id;.go_button value=2131099769
+[EXP088-B-ENTER] bridge_to_api: Landroid/widget/LinearLayout;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f060079 receiver=cd → FOUND view_id=208 (receiver subtree)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getWindowManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindowManager class=Landroid/app/Activity;
+[R418-WM] getWindowManager -> WindowManagerImpl singleton (recv=Landroid/app/Activity;)
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f06008b receiver=16 → FOUND view_id=203 (receiver subtree)
+[EXP060-LISTENER] setOnClickListener view_id=203 class=Landroid/widget/TextView; listener_id=162 listener_class_at_reg=Lcom/ghostsq/commander/Panels;
+[EXP088-B-ENTER] bridge_to_api: Lcom/ghostsq/commander/FileCommander;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f0600d3 receiver=16 → FOUND view_id=204 (receiver subtree)
+[EXP060-LISTENER] setOnClickListener view_id=204 class=Landroid/widget/TextView; listener_id=162 listener_class_at_reg=Lcom/ghostsq/commander/Panels;
+[TOAST] makeText obj=353 text="" resid=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSystemService class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getSystemService
+[R339-SVC] getSystemService("notification") → Landroid/app/NotificationManager; (shadow layer, caller=Lcom/ghostsq/commander/FileCommander;.onCreate)
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onCreate pc=131 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[EXP062-INIT] Lcom/ghostsq/commander/R$string; static_fields=564 with_defaults=564
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onCreate pc=139 field=Lcom/ghostsq/commander/R$string;.progress value=2131427659
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getString
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Landroid/app/Activity; args=2 arg0_type=7_obj=22 arg1_type=1_int=2131427659
+[CTX-F136] getString(resid=0x7f0b014b, fargs=0) → "Progress"
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onCreate pc=145 field=Lcom/ghostsq/commander/R$string;.inprogress value=2131427537
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getString
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Landroid/app/Activity; args=2 arg0_type=7_obj=22 arg1_type=1_int=2131427537
+[CTX-F136] getString(resid=0x7f0b00d1, fargs=0) → "A file operation is in progress"
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onCreate pc=159 field=Lcom/ghostsq/commander/R$string;.alert value=2131427354
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getString
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Landroid/app/Activity; args=2 arg0_type=7_obj=22 arg1_type=1_int=2131427354
+[CTX-F136] getString(resid=0x7f0b001a, fargs=0) → "Alert"
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onCreate pc=165 field=Lcom/ghostsq/commander/R$string;.alert value=2131427354
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getString
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getString class=Landroid/app/Activity;
+[EXP093-APPSTR] HIT! class=Landroid/app/Activity; args=2 arg0_type=7_obj=22 arg1_type=1_int=2131427354
+[CTX-F136] getString(resid=0x7f0b001a, fargs=0) → "Alert"
+[S123-ICTOR2] Intent.<init> recv=357 args=2 a0k6 a1k6="Lcom/ghostsq/commander/BackgroundWork;"
+[S123-ICTOR] intent_ctor args=2 arg1_kind=6 arg1_class=Lcom/ghostsq/commander/BackgroundWork; arg1_id=358
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=startBackgroundWork pc=7 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=bindService class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .bindService
+[F-NEW-471-RES-GAP] super-call Landroid/app/Service;.onCreate method_id=91 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/ghostsq/commander/BackgroundWork;.onCreate
+[S71-ANCESTRY] re-dispatch Landroid/app/Service; as Landroid/content/Context; for .onCreate
+LOG/d/BackgroundWork: onBind
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getSharedPreferences
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getSharedPreferences class=Landroid/app/Activity;
+[PREFS] Loaded FileCommander.xml
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getPackageManager
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/ghostsq/commander/FileCommander; as Landroid/app/Activity; for .getPackageName
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
+LOG/d/GhostCommanderActivity: Started 1.64.2b4
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/ghostsq/commander/FileCommander; runtime_class=Lcom/ghostsq/commander/FileCommander;
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Landroid/app/Activity; runtime_class=Lcom/ghostsq/commander/FileCommander;
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onStart method_id=25 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/ghostsq/commander/FileCommander;.onStart
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onStart
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onStart
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onStart pc=3 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[SGET] class=Lcom/ghostsq/commander/FileCommander; method=onStart pc=9 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+LOG/e/GhostCommanderActivity: No background work!
+[G07-LIFECYCLE] Lcom/ghostsq/commander/FileCommander;.onStart() dispatched via DEX engine (ok=1, instructions=17)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/ghostsq/commander/FileCommander; runtime_class=Lcom/ghostsq/commander/FileCommander;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lcom/ghostsq/commander/FileCommander;
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onResume method_id=23 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/ghostsq/commander/FileCommander;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[G07-LIFECYCLE] Lcom/ghostsq/commander/FileCommander;.onResume() dispatched via DEX engine (ok=1, instructions=4)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=5462 nodes=27 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=664
+[F384-ROOTINSETS] root=o201 cls=Landroid/widget/FrameLayout; insets=o367 dispatched=false
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/951
+[ECR-ROOT] scalar content_view_id root=201
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[P0-1-ORDER] first-traversal attach wave root=201 attached=0 (attach strictly precedes measure)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/widget/ListView; declaring=Landroid/view/View; argc=3 recv=219 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R440-CANONICAL] container measure delegated view=219 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/view/View; declaring=Landroid/view/View; argc=3 recv=220 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R347-MEASURE] view=220 class=Landroid/view/View; dex_onmeasure=NO wspec=0x40000001 hspec=0x0 -> 1x0
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/widget/ListView; declaring=Landroid/view/View; argc=3 recv=227 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R440-CANONICAL] container measure delegated view=227 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[EXP062-INIT] Lcom/ghostsq/commander/PanelsView; static_fields=1 with_defaults=1
+[DEX-MEASURE] Lcom/ghostsq/commander/PanelsView;.onMeasure spec_w=-2147482568 (0x80000438) spec_h=0 (0x00000000) -> 0x0 
+[V1-CONTENT-BOUNDS] root=201 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=201 class=Landroid/widget/FrameLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=202 class=Landroid/widget/LinearLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x52)
+[EXP092-RENDER] node=203 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(0,0) size=(540x52)
+[EXP092-RENDER] node=204 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(540,0) size=(540x52)
+[EXP092-RENDER] node=209 class=Lcom/ghostsq/commander/LockableScrollView; text="" children=1 depth=1 pos=(0,0) size=(85x0)
+[LIFEWIN-OPEN] Lcom/ghostsq/commander/LockableScrollView; view=209
+[LIFEWIN-CLOSE] Lcom/ghostsq/commander/LockableScrollView; view=209 dispatched=NO
+[F096-LIFECYCLE] Lcom/ghostsq/commander/LockableScrollView; view=209 rect=(0,0 85x0) dispatched=NO
+[C013-LEAFCHK] Lcom/ghostsq/commander/LockableScrollView; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=211 class=Lcom/ghostsq/commander/PanelsView; text="" children=5 depth=2 pos=(0,0) size=(85x0)
+[LIFEWIN-OPEN] Lcom/ghostsq/commander/PanelsView; view=211
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/widget/ListView; declaring=Landroid/view/View; argc=3 recv=219 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R440-CANONICAL] container measure delegated view=219 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/view/View; declaring=Landroid/view/View; argc=3 recv=220 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R347-MEASURE] view=220 class=Landroid/view/View; dex_onmeasure=NO wspec=0x40000001 hspec=0x40000000 -> 1x0
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/widget/ListView; declaring=Landroid/view/View; argc=3 recv=227 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R440-CANONICAL] container measure delegated view=227 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 0x105
+[LIFEWIN-CLOSE] Lcom/ghostsq/commander/PanelsView; view=211 dispatched=YES
+[F096-LIFECYCLE] Lcom/ghostsq/commander/PanelsView; view=211 rect=(0,0 85x0) dispatched=YES
+[C013-LEAFCHK] Lcom/ghostsq/commander/PanelsView; children=5 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=219 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=220 class=Landroid/view/View; text="" children=0 depth=3 pos=(1080,0) size=(1x0)
+[EXP092-RENDER] node=227 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(1081,0) size=(-996x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=703
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=833
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/951
+[ECR-ROOT] scalar content_view_id root=201
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/widget/ListView; declaring=Landroid/view/View; argc=3 recv=219 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R440-CANONICAL] container measure delegated view=219 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[R347-MPROBE] invoke-virtual measure runtime=Landroid/view/View; declaring=Landroid/view/View; argc=3 recv=220 a1t=1 a2t=1 caller=Lcom/ghostsq/commander/PanelsView;.onMeasure
+[R347-MEASURE] view=220 class=Landroid/view/View; dex_onmeasure=NO wspec=0x40000001 hspec=0x0 -> 1x0
+[R440-CANONICAL] container measure delegated view=227 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[DEX-MEASURE] Lcom/ghostsq/commander/PanelsView;.onMeasure spec_w=-2147482568 (0x80000438) spec_h=0 (0x00000000) -> 0x0 
+[V1-CONTENT-BOUNDS] root=201 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=201 class=Landroid/widget/FrameLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=202 class=Landroid/widget/LinearLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x52)
+[EXP092-RENDER] node=203 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(0,0) size=(540x52)
+[EXP092-RENDER] node=204 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(540,0) size=(540x52)
+[EXP092-RENDER] node=209 class=Lcom/ghostsq/commander/LockableScrollView; text="" children=1 depth=1 pos=(0,0) size=(85x0)
+[C013-LEAFCHK] Lcom/ghostsq/commander/LockableScrollView; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=211 class=Lcom/ghostsq/commander/PanelsView; text="" children=5 depth=2 pos=(0,0) size=(85x0)
+[C013-LEAFCHK] Lcom/ghostsq/commander/PanelsView; children=5 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=219 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,0) size=(0x105)
+[EXP092-RENDER] node=220 class=Landroid/view/View; text="" children=0 depth=3 pos=(0,105) size=(3x105)
+[EXP092-RENDER] node=227 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,210) size=(0x105)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/951
+[ECR-ROOT] scalar content_view_id root=201
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[R440-CANONICAL] container measure delegated view=219 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[R347-MEASURE] view=220 class=Landroid/view/View; dex_onmeasure=NO wspec=0x40000001 hspec=0x0 -> 1x0
+[R440-CANONICAL] container measure delegated view=227 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[DEX-MEASURE] Lcom/ghostsq/commander/PanelsView;.onMeasure spec_w=-2147482568 (0x80000438) spec_h=0 (0x00000000) -> 0x0 
+[V1-CONTENT-BOUNDS] root=201 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=201 class=Landroid/widget/FrameLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=202 class=Landroid/widget/LinearLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x52)
+[EXP092-RENDER] node=203 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(0,0) size=(540x52)
+[EXP092-RENDER] node=204 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(540,0) size=(540x52)
+[EXP092-RENDER] node=209 class=Lcom/ghostsq/commander/LockableScrollView; text="" children=1 depth=1 pos=(0,0) size=(85x0)
+[C013-LEAFCHK] Lcom/ghostsq/commander/LockableScrollView; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=211 class=Lcom/ghostsq/commander/PanelsView; text="" children=5 depth=2 pos=(0,0) size=(85x0)
+[C013-LEAFCHK] Lcom/ghostsq/commander/PanelsView; children=5 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=219 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,0) size=(0x105)
+[EXP092-RENDER] node=220 class=Landroid/view/View; text="" children=0 depth=3 pos=(0,105) size=(3x105)
+[EXP092-RENDER] node=227 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,210) size=(0x105)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=3 dir=run/c156/t5b_ghost_face/frames
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/951
+[ECR-ROOT] scalar content_view_id root=201
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[R440-CANONICAL] container measure delegated view=219 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[R347-MEASURE] view=220 class=Landroid/view/View; dex_onmeasure=NO wspec=0x40000001 hspec=0x0 -> 1x0
+[R440-CANONICAL] container measure delegated view=227 class=Landroid/widget/ListView; spec=0x40000438x7ffffff6 -> 1080x1073741814
+[DEX-MEASURE] Lcom/ghostsq/commander/PanelsView;.onMeasure spec_w=-2147482568 (0x80000438) spec_h=0 (0x00000000) -> 0x0 
+[V1-CONTENT-BOUNDS] root=201 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=201 class=Landroid/widget/FrameLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=202 class=Landroid/widget/LinearLayout; text="" children=2 depth=1 pos=(0,0) size=(1080x52)
+[EXP092-RENDER] node=203 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(0,0) size=(540x52)
+[EXP092-RENDER] node=204 class=Landroid/widget/TextView; text="" children=0 depth=2 pos=(540,0) size=(540x52)
+[EXP092-RENDER] node=209 class=Lcom/ghostsq/commander/LockableScrollView; text="" children=1 depth=1 pos=(0,0) size=(85x0)
+[C013-LEAFCHK] Lcom/ghostsq/commander/LockableScrollView; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=211 class=Lcom/ghostsq/commander/PanelsView; text="" children=5 depth=2 pos=(0,0) size=(85x0)
+[C013-LEAFCHK] Lcom/ghostsq/commander/PanelsView; children=5 own_content=0 img_resid=0 bg=0x0 vis=0 w=85 h=0
+[EXP092-RENDER] node=219 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,0) size=(0x105)
+[EXP092-RENDER] node=220 class=Landroid/view/View; text="" children=0 depth=3 pos=(0,105) size=(3x105)
+[EXP092-RENDER] node=227 class=Landroid/widget/ListView; text="" children=0 depth=3 pos=(0,210) size=(0x105)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 1987 IMPLEMENTED, 67 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 4
+Execution Time: 0ms
+Errors: 0
+Warnings: 1
+
+Screenshot: run/c156/t5b_ghost_face/screenshot.png
+Report: run/c156/t5b_ghost_face/report.md
