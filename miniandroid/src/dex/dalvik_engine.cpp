@@ -24233,7 +24233,15 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         }
         // The returned Class object rides the invoke return path
         // (return_val → move-result-object at the call site).
-        return_val = DalvikValue::make_class(want_desc, instruction_sequence_);
+        // W8 (F-NEW-511a): STABLE CLASS-TOKEN IDENTITY LAW for Class.forName
+        // (same defect F-NEW-249 fixed for Object.getClass): make_class
+        // stamped ref_id = instruction_sequence_ — a monotonic COUNTER,
+        // not a heap id — and the CLASS_REF→shadow-arg conversion carries
+        // that counter as object_id, ALIASING an arbitrary live heap object.
+        // Live face (W8 survivalmanual): forName tokens aliased heap ids 24/
+        // 45/66/87 (PackageManager owned 24) → the androidx.startup HashSet
+        // stored "Class<KotprefInitializer>" backed by a foreign object.
+        return_val = make_stable_class_token(want_desc);
         last_invoke_return_ = return_val;
         status = ApiCallTrace::Status::IMPLEMENTED;
         // R-NEW-350 log cap: microtimer's Room init calls Class.forName

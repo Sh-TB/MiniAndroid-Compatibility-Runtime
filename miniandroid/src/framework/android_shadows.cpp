@@ -2449,6 +2449,31 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_object(obj_id, ctx.class_name);
     }
 
+    // ── W8 (F-NEW-510): the EXP-093 Bundle.keySet/ContentValues keySet
+    // materialization shape — the engine answers keySet with an
+    // "Ljava/util/ArrayList;" WRAPPER whose backing array hangs off the
+    // "array" field; the wrapper itself carries NO __array_length__.
+    // Resolve one wrapper hop so the array-backed fallback below sees the
+    // real length/elements. Shared-primitive evidence (W8 survivalmanual):
+    // androidx.startup AppInitializer iterating metadata.keySet() saw
+    // hasNext=false over a 4-entry metaData Bundle → ZERO initializers
+    // discovered → Kotpref "has not been initialized" ISE ×34 uncaught.
+    // Scope law: the hop fires ONLY when the parent lacks
+    // __array_length__ but carries a REF "array" field — every other
+    // parent shape is untouched.
+    auto f510_resolve_wrapper = [&](uint32_t& parent_var) {
+        if (heap_) {
+            int32_t f510_len = 0;
+            if (!heap_->get_object_int_field(parent_var, "__array_length__",
+                                             f510_len)) {
+                uint32_t f510_back = 0;
+                if (heap_->get_object_ref_field(parent_var, "array",
+                                                f510_back) &&
+                    f510_back != 0)
+                    parent_var = f510_back;
+            }
+        }
+    };
     if (m == "hasNext") {
         // F-NEW-237: the receiver is either (a) a fresh iterator box
         // carrying __iterator_parent__ — cursor lives on the box, elements
@@ -2464,6 +2489,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             parent_id = box_parent;
             is_box = true;
         }
+        f510_resolve_wrapper(parent_id);
         // ── CONT-69 (F-NEW-369 root): SUBLIST-WINDOW resolution ─────────
         // The iterator's parent may be a subList VIEW box (the CONT-69
         // view-iterator mint binds __iterator_parent__ to the view). The
@@ -2528,6 +2554,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             parent_id = box_parent;
             is_box = true;
         }
+        f510_resolve_wrapper(parent_id);
         // ── CONT-69 (F-NEW-369 root): SUBLIST-WINDOW resolution ─────────
         // Same window law as hasNext(): the parent may be a subList view
         // box; the served slot is view_off + cursor and the window end

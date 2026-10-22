@@ -1,0 +1,64 @@
+{
+    "wave": "CONT-11 WAVE 8",
+    "date": "2026-10-23",
+    "head_at_start": "409a6a42 (post W7-REBASE push)",
+    "binary_final": "060fdbefd3e9f9d2",
+    "binary_intermediate_510_only": "44fd341200fc0d8a",
+    "binary_pre_w8_reproduced": "55c5e06b1e0a3997 (byte-identical to the recorded W7-REBASE binary — lineage holds)",
+    "directive": "20-by-20 apps+games (user 2025-10-22): batches of 20, strengthen the base, comment 'problem solved', move forward",
+    "batch_composition": {
+        "survivors": "13 W7 DEFAULT_BACKGROUND_ONLY rows + secuso_memory (the PARTIAL attribution row)",
+        "fillers": "6 LAW-001-clean new APKs (secuso_ludo, sopadeletras, secuso_dicer, survivalmanual, peri, dmfs_tasks)",
+        "total": "8 games + 12 apps = 20"
+    },
+    "screening_prefix": {
+        "file": "evidence/cont11/batch20_w8_screening_prefix.json",
+        "REAL": 0, "PARTIAL": 3, "DEFAULT": 17,
+        "crash_family": {
+            "deskclock": 36, "survivalmanual": 34, "sopadeletras": 32, "etar": 19,
+            "dmfs_tasks": 14, "alexcalc": 11, "tictactoe_em": 8, "fossify_math": 4,
+            "solitaire_tb": 2
+        },
+        "silent_family": ["stacktower", "andstatus2048", "bmi", "compose_stopwatch", "tananaev_calc", "mueller_stopwatch", "textpad", "peri"]
+    },
+    "fixes": [
+        {
+            "id": "F-NEW-510",
+            "what": "CollectionShadow hasNext/next one-hop wrapper resolution (keySet wrapper shape)",
+            "why": "androidx.startup discovered ZERO initializers in every androidx-startup app (Bundle.keySet iteration saw empty)",
+            "status": "ROOT-CAUSED-FIXED"
+        },
+        {
+            "id": "F-NEW-511 (511a)",
+            "what": "Class.forName returns the STABLE per-descriptor heap token (F-069/F-249 law) instead of ref_id=instruction-counter",
+            "why": "the CLASS_REF→arg conversion aliased the counter as a heap object id (PackageManager#24 served as 'Class<KotprefInitializer>') — a data-corruption class",
+            "status": "ROOT-CAUSED-FIXED"
+        },
+        {
+            "id": "F-NEW-511 (511b) DEFERRED",
+            "what": "singletonList CLASS_REF→token materialization at the container boundary",
+            "why": "completes the startup chain (Kotpref ISE gone, survivalmanual 34→26, app reaches Material FAB inflation) BUT exposes the chess Toolbar.setSubtitle/x0-family gap (anchor face PARTIAL→blank) — W9 owns 511b + that decode together",
+            "status": "CLASSIFIED (patch preserved: evidence/cont11/w8/fnew511_patch.diff)"
+        }
+    ],
+    "gates_at_final_binary": {
+        "anchors_x3": "6/6 MATCH — opencalc 63020bc7 / chess a0319686 / dooz 31ddd4d5 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a — ZERO DRIFT",
+        "negatives": "19/19 PASS",
+        "selftest": "14/14 PASS",
+        "gate_a_multiapp": "ALL PASS (3/3 families)",
+        "reinstall_matrix": "8/8 PASS",
+        "artifacts_gate": "jsonl artifacts written (s41_gatea_docs.py absent in this container — pre-existing)",
+        "battery_note": "run_test_battery.sh FAILS on pre-existing harness staleness (test links omit build/audio/*.o; tools/android-34.jar path drift — repaired by symlink) — NOT a wave regression; the wave diff touches no audio/link surface"
+    },
+    "batch_postfix": {
+        "file": "evidence/cont11/batch20_w8_screening.json",
+        "REAL": 0, "PARTIAL": 3, "DEFAULT": 17,
+        "note": "content faces unchanged at the final binary — the visible content gates sit behind the deferred F-NEW-511b + the Resources$NotFoundException family; the landed fixes are trace-proven mechanism repairs (startup discovery loop + token identity)"
+    },
+    "next_wave_frontier": [
+        "W9: land F-NEW-511b + the chess Toolbar.setSubtitle→x0-family decode (instance-of/check-cast/iget on the wrapped TransformationMethod holder)",
+        "W9: Resources$NotFoundException getColorStateList family (survivalmanual FAB + alexcalc Toolbar — same signature)",
+        "W9: deskclock yg0.i NPE pin (36 uncaught), sopadeletras La;/qh1.f (32), etar alerts IAE (19), dmfs ContentOperation.register (14) — decode-owned",
+        "tictactoe_em/stacktower libGDX native faces (F-NEW-498 family) + F-NEW-508 font-parse tab frontier"
+    ]
+}
