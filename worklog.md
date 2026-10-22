@@ -11162,3 +11162,15 @@ Work Log:
 
 Stage Summary:
 - All 17 WINDOW_ROOT apps now have a named, machine-verified root: 9 render (6 F-NEW-482 + 3 F-NEW-484), aat = F-NEW-485 CLASSIFIED (shadow family lever), Koin pair = B-type upstream, NPE/ArrayStore trio = D-type decodes pending. TRAIN 10 = the grand ledger + close.
+
+---
+Task ID: CONT-155 TRAIN 10
+Agent: main agent (Z.ai)
+Task: TRAIN 10 — grand close-out: ledger to #364 + final verification.
+
+Work Log:
+- Persian ledger posted to #364 (comment 6332075471): 10 trains, 2 engine fixes (F-NEW-482/484), 4 new roots (482/483/484/485), 9/17 WINDOW_ROOT render, 2 re-based anchors with reasons, registry 795->799.
+- Final state: HEAD e1ac5e7e, binary d7d3d61a76129682, wall 9/9 MATCH, negatives 19/19, skill selftest 13/13, HEAD==origin/main verified.
+
+Stage Summary:
+- The «ادامه ۱۰ قطار» formation complete: 10/10 trains pushed and verified. The 10-day "no complete render" question now has TWO landed engine fixes advancing the cohort map: 9 of the 17 WINDOW_ROOT apps render real content (was 0/17 at round start). Next levers registered: F-NEW-485 WindowMetrics shadow family (aat), F-NEW-481 lambda-replay (the 49-app APP_DRAW_OPS cohort), Koin pair, NPE/ArrayStore trio.
