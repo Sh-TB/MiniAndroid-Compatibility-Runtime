@@ -12673,6 +12673,43 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
             out_w = node->dex_measured_w;
             out_h = node->dex_measured_h;
         }
+        // F-NEW-496 (CONT-157): AOSP View.onMeasure DEFAULT fallback law
+        // (frameworks/base/core/java/android/view/View.java):
+        //   protected void onMeasure(int wspec, int hspec) {
+        //       setMeasuredDimension(
+        //           getDefaultSize(getSuggestedMinimumWidth(), wspec),
+        //           getDefaultSize(getSuggestedMinimumHeight(), hspec)); }
+        //   getDefaultSize: UNSPECIFIED → suggested size;
+        //                   EXACTLY/AT_MOST → specSize.
+        // When the app's onMeasure bytecode ran but the chain produced no
+        // captured setMeasuredDimension write-back (ComposeView measure
+        // descends into the Compose measure pass whose internal
+        // setMeasuredDimensionRaw the engine does not capture — dooz Lt4;
+        // [DEX-MEASURE] spec AT_MOST(1080)xAT_MOST(1920) -> 0x0 FAILED), the
+        // engine's old answer was 0x0 → the compose view node stayed 1x1 →
+        // the draw replay rect collapsed (631 recorded ops replayed into a
+        // 1x1 rect — invisible) → white face. AOSP never answers 0x0 for a
+        // full-screen AT_MOST measure: the View.onMeasure DEFAULT is the
+        // specSize. Honoring the same fallback here is the generic View law
+        // (no app knowledge) and equals what AndroidComposeView itself
+        // produces for fillMaxSize content under these specs.
+        if (!node->dex_measure_valid) {
+            auto f496_dflt = [](int spec) -> int {
+                const int mode = (spec >> 30) & 0x3;
+                const int size = spec & 0x3fffffff;
+                if (mode == 0) return 0;   // UNSPECIFIED → suggested (0)
+                return size;               // EXACTLY(1) / AT_MOST(2) → specSize
+            };
+            out_w = f496_dflt(wspec);
+            out_h = f496_dflt(hspec);
+            static thread_local uint64_t f496_log = 0;
+            if (f496_log++ < 16)
+                fprintf(stderr,
+                        "[F-NEW-496] onMeasure no-write-back fallback: "
+                        "spec %dx%d -> measured %dx%d (AOSP getDefaultSize "
+                        "law)\n",
+                        wspec & 0x3fffffff, hspec & 0x3fffffff, out_w, out_h);
+        }
         // MASTER-2 §22 structured diagnostic (opt-in): real-DEX onMeasure
         // contract evidence — incoming MeasureSpec words and the app's own
         // setMeasuredDimension write-back. Answers "why is this custom view
@@ -12689,7 +12726,10 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
         }
         CrashForensics::note("MEASURE", "%s.onMeasure spec_w=%d spec_h=%d -> %dx%d",
                              cls.c_str(), wspec, hspec, out_w, out_h);
-        return node->dex_measure_valid;
+        // F-NEW-496: the AOSP default fallback above filled out_w/out_h —
+        // the measure CONTRACT completed, return success so the caller uses
+        // the measured size instead of collapsing to the 1x1 default.
+        return true;
     }
     return false;
 }
@@ -36353,6 +36393,105 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-494 (CONT-157): Landroid/text/Layout; never-null accessor law —
+    // getPaint() / getText().
+    //
+    // ROOT CAUSE this fixes: dooz v23 white-screen (full-viewport uniform
+    // (250,250,250) background, face d602648e, ops=0 per C013-ONDRAW).
+    // Decoded chain (byte-exact, cont157_disasm2 + xref tools):
+    //   Compose draw → Lrw1;.<init> (StaticLayout-equivalent ctor, field
+    //   f:Landroid/text/Layout;) pc=451 Layout.getPaint() → NO shadow arm →
+    //   null TextPaint → pc=471 Lyl;.D(null-paint, text, 0, 32) →
+    //   SDK>=29 arm pc=83 Lfu0;.m(paint,…,rect) (Paint.getTextBounds shim,
+    //   body = single invoke-virtual) → [F447-NPE] ART-faithful NPE
+    //   "Paint.getTextBounds on a null object reference" → catch-all unwind
+    //   ×96 per run ([EXCEPTION] Lto1;.d/Lel0;.Y) → drawContent never
+    //   records a single canvas op → framebuffer = window background only.
+    // The SAME null feeds pc=455 Layout.getText() on the second path.
+    //
+    // AOSP law (frameworks/base/core/java/android/text/Layout.java):
+    //   mPaint and mText are FINAL fields set in the Layout constructor —
+    //   getPaint() and getText() are never-null on device for every layout
+    //   produced by StaticLayout.Builder.build(). The engine's build law
+    //   (ROOT-063/F-NEW-297) already records paintOid + text on the layout
+    //   object — the accessors just never surfaced them.
+    //
+    // FIX (one generic accessor family, zero app knowledge): getPaint()
+    // returns the recorded paint identity; getText() returns the recorded
+    // text payload. Missing identity (layout object materialized by a
+    // non-build path) — AOSP never-null law kept: materialize a fresh
+    // TextPaint carrying the pipeline-default size (documented 42px
+    // fallback, the same constant the build law uses) and record it back
+    // (idempotent); getText() falls back to the empty string.
+    // ────────────────────────────────────────────────────────────────────────
+    // Dispatch note: the app invokes the INHERITED accessors with declared
+    // class Landroid/text/Layout; but the engine's virtual dispatch keys
+    // the shadow lookup on the RUNTIME class — the receiver is the
+    // StaticLayout object the build law materialized, so the arm must
+    // match BOTH class names (measured: Layout-only arm never fired in
+    // the dooz_fixed run — zero [F-NEW-494] lines while F298-BUILD ran).
+    if ((class_name == "Landroid/text/Layout;" ||
+         class_name == "Landroid/text/StaticLayout;") &&
+        (method == "getPaint" || method == "getText")) {
+        uint32_t lay_self = (!args.empty() &&
+                             args[0].type == DalvikType::OBJECT_REF)
+                                ? args[0].object_id
+                                : 0;
+        if (method == "getPaint") {
+            uint32_t paint_oid = 0;
+            if (lay_self && heap_.has_object(lay_self)) {
+                auto fv = heap_.get_object_field(lay_self, "paintOid");
+                if (fv.has_value() && fv->type == DalvikType::INT32 &&
+                    fv->int_val > 0 && heap_.has_object((uint32_t)fv->int_val))
+                    paint_oid = (uint32_t)fv->int_val;
+            }
+            if (!paint_oid) {
+                // never-null fallback (AOSP mPaint final): materialize the
+                // layout-owned TextPaint and record it back.
+                paint_oid = heap_.allocate("Landroid/text/TextPaint;", pc_, 0);
+                DalvikValue pv;
+                pv.type = DalvikType::FLOAT32;
+                pv.float_val = 42.0f;
+                heap_.set_object_field(paint_oid, "__text_size_px__", pv);
+                if (lay_self && heap_.has_object(lay_self)) {
+                    DalvikValue back;
+                    back.type = DalvikType::INT32;
+                    back.int_val = (int32_t)paint_oid;
+                    heap_.set_object_field(lay_self, "paintOid", back);
+                }
+                std::cerr << "[F-NEW-494] getPaint: no recorded identity on obj#"
+                          << lay_self << " — materialized TextPaint obj#"
+                          << paint_oid << " (never-null law)" << std::endl;
+            }
+            static thread_local uint64_t f494_n = 0;
+            if (f494_n++ < 24)
+                std::cerr << "[F-NEW-494] Layout.getPaint() -> obj#" << paint_oid
+                          << " (layout obj#" << lay_self << ")" << std::endl;
+            DalvikValue r;
+            r.type = DalvikType::OBJECT_REF;
+            r.object_id = paint_oid;
+            r.class_desc = "Landroid/text/TextPaint;";
+            result = r;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getText()
+        std::string lay_text;
+        if (lay_self && heap_.has_object(lay_self)) {
+            auto fv = heap_.get_object_field(lay_self, "text");
+            if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                lay_text = fv->string_val;
+        }
+        static thread_local uint64_t f494t_n = 0;
+        if (f494t_n++ < 24)
+            std::cerr << "[F-NEW-494] Layout.getText() len=" << lay_text.size()
+                      << " (layout obj#" << lay_self << ")" << std::endl;
+        result = DalvikValue::make_string(lay_text, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // ROOT-063 (S115): android.text.StaticLayout$Builder / StaticLayout —
     // REAL materialization (never-null fluent builder + measurable layout).
     //
@@ -40311,6 +40450,86 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_null();
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-495 (CONT-157): Bitmap.createBitmap(w>0, h>0, …) AOSP
+    // materialization law.
+    //
+    // ROOT CAUSE this fixes: dooz v23's Compose drawWithCache build path
+    // (Lf22;.e — the "drawCachedImage" law, const-string at pc=411) calls
+    // Bitmap.createBitmap(w, h, ARGB_8888) to allocate the cached layer;
+    // with no positive-dims arm the invoke answered REC-MISS null → the
+    // cached-image holder kept a null Bitmap → Bitmap.getWidth(null) /
+    // prepareToDraw(null) NPE at Lf22;.e pc=245/369 → the whole layer
+    // paint unwound through the catch-alls → after F-NEW-494 unblocked
+    // text measure only 7-11 draw ops survived per frame (title text
+    // only, face 6e1b0cfc, board still background).
+    //
+    // AOSP law (graphics/Bitmap.java): createBitmap(int w, int h, Config)
+    // and the (DisplayMetrics, w, h, Config) overload return a MUTABLE
+    // bitmap, zero-filled = transparent black (ARGB_8888) — never null
+    // for positive dims; OOM ("Failed to allocate a … byte allocation")
+    // when the allocation is impossibly large. The engine already keeps
+    // real pixel buffers for decoded bitmaps (BitmapStore; bind/flush
+    // bitmap-canvas machinery F-NEW-345) — createBitmap just never fed
+    // it. Overloads matched: (w, h, cfg[, mutable]) and (dm, w, h, cfg).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "createBitmap" && class_name == "Landroid/graphics/Bitmap;") {
+        int32_t cb_w = 0, cb_h = 0;
+        // (w, h, cfg[, mutable]) — 2 INTs first. The (colors, w, h, cfg) and
+        // (src, …) overloads must NOT land here (colors carries pixels the
+        // law would silently zero-fill).
+        bool cb_wh =
+            args.size() >= 3 && args.size() <= 4 &&
+            args[0].type == DalvikType::INT32 &&
+            args[1].type == DalvikType::INT32;
+        // (DisplayMetrics, w, h, cfg) — OBJECT-first, distinguished from the
+        // colors variant by the runtime class of args[0]. (null-dm, w, h, …)
+        // is the LAWFUL androidx ImageBitmapKt form (AOSP: dm is nullable,
+        // density falls back to the device profile) — NULL_REF first arg.
+        bool cb_dm =
+            args.size() >= 4 &&
+            ((args[0].type == DalvikType::OBJECT_REF &&
+              args[0].class_desc.find("DisplayMetrics") != std::string::npos) ||
+             args[0].type == DalvikType::NULL_REF) &&
+            args[1].type == DalvikType::INT32 &&
+            args[2].type == DalvikType::INT32;
+        if (cb_wh) { cb_w = args[0].int_val; cb_h = args[1].int_val; }
+        else if (cb_dm) { cb_w = args[1].int_val; cb_h = args[2].int_val; }
+        if ((cb_wh || cb_dm) && cb_w > 0 && cb_h > 0) {
+            const int64_t cb_pixels = (int64_t)cb_w * (int64_t)cb_h;
+            if (cb_pixels > 64000000) {  // 64MP allocation guard (AOSP OOM)
+                std::string oom_msg = "Failed to allocate a " +
+                    std::to_string(cb_pixels * 4) +
+                    " byte allocation with " + std::to_string(cb_w) + "x" +
+                    std::to_string(cb_h) + " pixels";
+                throw_deferred("Ljava/lang/OutOfMemoryError;", oom_msg,
+                               "F-NEW-495-OOM");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            uint32_t bmp_oid = heap_.allocate(
+                "Landroid/graphics/Bitmap;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            framework::BitmapStore::instance().create(bmp_oid, cb_w, cb_h,
+                                                      "createBitmap");
+            // AOSP ARGB_8888 law: zero-filled = transparent black.
+            auto* cb_sb =
+                framework::BitmapStore::instance().get_mut(bmp_oid);
+            if (cb_sb) {
+                cb_sb->rgba.assign((size_t)cb_w * cb_h * 4, 0);
+                cb_sb->has_pixels = true;
+            }
+            static thread_local uint64_t f495_n = 0;
+            if (f495_n++ < 32)
+                std::cerr << "[F-NEW-495] createBitmap " << cb_w << "x" << cb_h
+                          << " -> obj#" << bmp_oid << std::endl;
+            result = DalvikValue::make_object(bmp_oid,
+                                              "Landroid/graphics/Bitmap;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     // ────────────────────────────────────────────────────────────────────────
     // S109 ROOT-038 — javax.xml SAX FAMILY + Resources.openRawResource.
@@ -63775,9 +63994,16 @@ measure_cm_done:;
     }
     if (shadow_registry_ != nullptr) {
         framework::CallContext ctx;
-        ctx.caller = current_class_ + "." + current_method_ + " pc=" +
-                     std::to_string(pc_);
-        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        // EXP-071 Phase 8 flag HONORED HERE (F-NEW-495, CONT-157): a STATIC
+        // invoke has NO receiver — args[0] is the first real parameter. The
+        // previous unconditional receiver assumption hijacked ctx.class_name
+        // with args[0].class_desc for object-first static calls
+        // (Bitmap.createBitmap(DisplayMetrics,…): class_name became
+        // "Landroid/util/DisplayMetrics;" → no shadow claims it → REC-MISS
+        // null → dooz DrawCache bitmap null → getWidth/prepareToDraw NPE
+        // chain → the Compose cached-image layer never materialized).
+        const bool sctx_static = current_invoke_is_static_;
+        if (!sctx_static && !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
             ctx.has_receiver = true;
             ctx.receiver_id = args[0].object_id;
             ctx.receiver_class = args[0].class_desc;
@@ -63788,8 +64014,9 @@ measure_cm_done:;
         ctx.method = method;
         ctx.caller = current_class_ + "." + current_method_ + " pc=" +
                      std::to_string(pc_);
-        // Convert DalvikValue args to CallContext::Arg (skip arg[0] = receiver)
-        for (size_t i = 1; i < args.size(); i++) {
+        // Convert DalvikValue args to CallContext::Arg. Instance calls skip
+        // args[0] (the receiver); static calls marshal ALL args.
+        for (size_t i = sctx_static ? 0 : 1; i < args.size(); i++) {
             framework::CallContext::Arg arg;
             if (args[i].type == DalvikType::INT32) {
                 arg.kind = framework::CallContext::Arg::Kind::INT;

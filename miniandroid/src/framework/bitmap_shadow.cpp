@@ -427,7 +427,64 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             store.create(obj, w, h, "createBitmap(w,h,config)");
             return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
         }
+        // F-NEW-495b (CONT-157): androidx passes a DELIBERATE NULL dm —
+        // ImageBitmapKt.createBitmap(w, h, config, colorSpace) calls
+        // Bitmap.createBitmap(null, w, h, config, hasAlpha, colorSpace)
+        // (Ld1;.c bytecode evidence: range base reg never loaded, probe
+        // [S109-BITMAP] createBitmap static=1 argc=6 a0k7 a1k0=63 a2k0=63).
+        // AOSP Bitmap.java: "if (dm != null) { density = dm.densityDpi; }"
+        // — the dm is NULLABLE and the bitmap still materializes at the
+        // device density. Match the (NULL, w, h, cfg[, Z][, cs]) shape:
+        // NULL first arg + two positive INTs = the dm-family createBitmap.
+        // Pre-fix every androidx ImageBitmap allocation answered null →
+        // the DrawCache null-bitmap NPE chain (F-NEW-495).
+        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::NULL_REF &&
+            ctx.args.size() >= 3 &&
+            ctx.args[1].kind == CallContext::Arg::Kind::INT &&
+            ctx.args[2].kind == CallContext::Arg::Kind::INT) {
+            const int w = ctx.arg_as_int(1, 0);
+            const int h = ctx.arg_as_int(2, 0);
+            if (w <= 0 || h <= 0 || !heap_)
+                return CallResult::handled_null();
+            const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
+            store.create(obj, w, h, "createBitmap(null-dm,w,h)");
+            static thread_local uint64_t f495n_n = 0;
+            if (f495n_n++ < 16)
+                std::cerr << "[F-NEW-495] createBitmap(null-dm) " << w << "x"
+                          << h << " -> obj#" << obj << std::endl;
+            return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
+        }
         if (ctx.args.size() >= 4 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            // F-NEW-495 (CONT-157): (DisplayMetrics, int w, int h, Config)
+            // — the dm overload. SAME 4-arg OBJECT-first kind-shape as the
+            // (colors, w, h, cfg) variant below; distinguish by the arg's
+            // runtime class (ctx.args[0].object_class). AOSP Bitmap.java:
+            // createBitmap(DisplayMetrics dm, int w, int h, Config) scales
+            // w/h by dm.density (applyDensity) — the engine pins the device
+            // profile, and the dm the apps pass is their own Resources
+            // displayMetrics with the same density → identity pass-through.
+            // Pre-fix this shape fell into the colors branch (args[0] read
+            // as an int[] that is actually a DisplayMetrics) → handled_null
+            // → dooz v23 DrawCache bitmap null → Bitmap.getWidth(null) /
+            // prepareToDraw(null) NPE chain (Lpm;.h pc=26 evidence) → the
+            // cached-image layer of the Compose draw never materialized.
+            if (ctx.args[0].object_class.find("DisplayMetrics") !=
+                    std::string::npos &&
+                ctx.args[1].kind == CallContext::Arg::Kind::INT &&
+                ctx.args[2].kind == CallContext::Arg::Kind::INT) {
+                const int w = ctx.arg_as_int(1, 0);
+                const int h = ctx.arg_as_int(2, 0);
+                if (w <= 0 || h <= 0 || !heap_)
+                    return CallResult::handled_null();
+                const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
+                store.create(obj, w, h, "createBitmap(dm,w,h,config)");
+                static thread_local uint64_t f495_dm_n = 0;
+                if (f495_dm_n++ < 16)
+                    std::cerr << "[F-NEW-495] createBitmap(dm) " << w << "x"
+                              << h << " -> obj#" << obj << std::endl;
+                return CallResult::handled_object(obj,
+                                                  "Landroid/graphics/Bitmap;");
+            }
             // int[] colors variant: (colors, w, h, config) — colors[0] INT kind.
             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
                 ctx.args[1].kind == CallContext::Arg::Kind::INT) {
