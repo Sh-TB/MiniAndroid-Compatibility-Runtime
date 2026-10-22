@@ -45,6 +45,8 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 #include <optional>
 #include <string>
 #include <unordered_set>
@@ -164,6 +166,42 @@ public:
             fprintf(stderr, "[S124-THEME] apply_style resid=0x%x force=%d "
                             "bag=%zu keys=%zu\n",
                     style_resid, force ? 1 : 0, style_bag.size(), kv_.size());
+        // ── CONT-155 (F-NEW-483 audit): env-gated READ-ONLY bag dump. ────
+        // MINIANDROID_THEME_BAG_DUMP=<resid-hex|all> prints the FLATTENED
+        // (parent-chain-expanded) key set of every apply_style, plus whether
+        // specific audit keys are present. Zero behavior change: pure fprintf
+        // on the already-materialized style_bag. Bounded to 600 keys/print.
+        if (style_resid != 0) {
+            static const char* bag_dump_env = std::getenv(
+                "MINIANDROID_THEME_BAG_DUMP");
+            if (bag_dump_env && bag_dump_env[0]) {
+                bool dump_this = (strcmp(bag_dump_env, "all") == 0);
+                uint32_t want = 0;
+                if (!dump_this) want = (uint32_t)strtoul(bag_dump_env,
+                                                         nullptr, 16);
+                if (dump_this || want == style_resid) {
+                    fprintf(stderr,
+                            "[THEME-BAG-DUMP] resid=0x%x flattened=%zu keys:",
+                            style_resid, style_bag.size());
+                    size_t shown = 0;
+                    for (const auto& kv : style_bag) {
+                        if (shown++ >= 600) break;
+                        fprintf(stderr, " 0x%x", kv.first);
+                    }
+                    fprintf(stderr, "\n");
+                    for (uint32_t probe : {0x10100abu /*windowActionBar*/,
+                                           0x1010057u /*windowNoTitle*/,
+                                           0x1010033u /*theme*/}) {
+                        bool hit = false;
+                        for (const auto& kv : style_bag)
+                            if (kv.first == probe) { hit = true; break; }
+                        fprintf(stderr, "[THEME-BAG-DUMP] resid=0x%x "
+                                        "probe 0x%x -> %s\n",
+                                style_resid, probe, hit ? "PRESENT" : "ABSENT");
+                    }
+                }
+            }
+        }
         keys_applied_ += 1;
     }
 
