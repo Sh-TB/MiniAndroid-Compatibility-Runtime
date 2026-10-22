@@ -16,7 +16,7 @@
    "id": "GAME-001",
    "title": "Snake Deluxe",
    "package": "com.miniandroid.snakedeluxe",
-   "upstream": "in-house \u2014 games/snake-deluxe (source in repo)",
+   "upstream": "in-house — games/snake-deluxe (source in repo)",
    "evidence_level": "E5",
    "status": "VERIFIED",
    "checkpoints": {
@@ -39,7 +39,7 @@
    "id": "GAME-002",
    "title": "Mini Tetris",
    "package": "com.miniandroid.tetris",
-   "upstream": "in-house \u2014 games/mini-tetris (source in repo)",
+   "upstream": "in-house — games/mini-tetris (source in repo)",
    "evidence_level": "E5",
    "status": "VERIFIED",
    "checkpoints": {
@@ -55,14 +55,14 @@
    "note": "S119 7 locks + 10+ stack; tick-drift fix pending",
    "sessions": "S80 / S83 / S95",
    "evidence_refs": [
-    "real-dalvik run; START tap at (786,1854) (S95 protocol correction \u2014 old (540,1500) hit no touch target); autoplay driver scripts/s80_tet_autoplay.py"
+    "real-dalvik run; START tap at (786,1854) (S95 protocol correction — old (540,1500) hit no touch target); autoplay driver scripts/s80_tet_autoplay.py"
    ]
   },
   {
    "id": "GAME-003",
    "title": "MiniCraft (House Builder)",
    "package": "com.miniandroid.minicraft",
-   "upstream": "in-house \u2014 games/minicraft (source in repo)",
+   "upstream": "in-house — games/minicraft (source in repo)",
    "evidence_level": "E5",
    "status": "VERIFIED",
    "checkpoints": {
@@ -85,7 +85,7 @@
    "id": "GAME-004",
    "title": "2048",
    "package": "com.miniandroid.g2048",
-   "upstream": "in-house \u2014 games/2048 (source in repo)",
+   "upstream": "in-house — games/2048 (source in repo)",
    "evidence_level": "E4",
    "status": "VERIFIED",
    "checkpoints": {
@@ -108,7 +108,7 @@
    "id": "GAME-005",
    "title": "TicTacToe Deluxe",
    "package": "com.miniandroid.tictactoedeluxe",
-   "upstream": "in-house \u2014 games/tictactoe-deluxe (source in repo)",
+   "upstream": "in-house — games/tictactoe-deluxe (source in repo)",
    "evidence_level": "E4",
    "status": "VERIFIED",
    "checkpoints": {
@@ -259,10 +259,11 @@
     "L6": true,
     "L7": false
    },
-   "note": "",
+   "note": " CONT-158: killer chain classified = F-NEW-498 (libgdx.so dlopen SIGSEGV inside loader + null Gdx.app NPE at AndroidLauncher.onCreate; face b5a7a35d uniform grey-48, RelativeLayout children=0).",
    "sessions": "S83 / S83b / S92",
    "evidence_refs": [
-    "real-dalvik run + click probe; s83b click frames click_GAME-TTT-CLASSIC_CLICK_00..02.jpg"
+    "real-dalvik run + click probe; s83b click frames click_GAME-TTT-CLASSIC_CLICK_00..02.jpg",
+    "CONT-158 battery: run/c158/battery/tictactoe.log"
    ]
   },
   {
@@ -328,10 +329,11 @@
     "L6": true,
     "L7": false
    },
-   "note": "S122 menu->GameActivity->deck deal (aces rendered)",
+   "note": "S122 menu->GameActivity->deck deal (aces rendered) CONT-158: F-NEW-497 crossed the 5s splash Timer → MenuActivity renders (face re-based 31ddd4d5→a77038da, 136 colors; New Game/View Help/About Game/Check for Updates/Exit). Wall: 8 MATCH + this JUSTIFIED RE-BASE (REAL_APP_CONTENT advance category).",
    "sessions": "S64",
    "evidence_refs": [
-    "real-dalvik run; canonical harvested from s64_spotlight/fk_game_deal_response.png (deal-response frame)"
+    "real-dalvik run; canonical harvested from s64_spotlight/fk_game_deal_response.png (deal-response frame)",
+    "CONT-158 anchors: run/c158/anchors/klondike — [F497-DRAIN] 1 launch, virtual 5000ms"
    ]
   },
   {
@@ -351,10 +353,11 @@
     "L6": true,
     "L7": false
    },
-   "note": "S121 state change 1860 px/tap, 2x IDENTICAL",
+   "note": "S121 state change 1860 px/tap, 2x IDENTICAL. CONT-158: F-NEW-497 crossed the 5s splash Timer → GameActivity renders the real Rings board (face a341e3ad, 3310 distinct colors, 100% non-white) — the b5a7a35d uniform-splash face era closed; assets/banner.html absence confirmed artifact-faithful (APK has no assets/ dir).",
    "sessions": "S65 / S79 / S91 / S93",
    "evidence_refs": [
-    "real-dalvik run 60 frames; tap 184,184@40 (arrow onClick -> updateInfo() -> repaint(); 36 ImageViews setImageResource); RC=0, 0 crash-log errors"
+    "real-dalvik run 60 frames; tap 184,184@40 (arrow onClick -> updateInfo() -> repaint(); 36 ImageViews setImageResource); RC=0, 0 crash-log errors",
+    "CONT-158 battery: run/c158/battery/fishrings — [F497-DRAIN] 1 launch; game board 3310 colors"
    ]
   },
   {
@@ -363,26 +366,27 @@
    "package": "eu.veldsoft.tri.peaks",
    "upstream": "https://github.com/VelbazhdSoftwareLLC/TriPeaks",
    "evidence_level": "E4",
-   "status": "PARTIAL",
+   "status": "OBSERVED",
    "checkpoints": {
     "L0": true,
     "L1": true,
     "L2": true,
     "L3": true,
     "L4": true,
-    "L5": false,
+    "L5": true,
     "L6": true,
     "L7": true
    },
-   "note": "S121 full-session HUD ledger (flagship)",
+   "note": "CONT-158: F-NEW-497 drain-to-deadline crossed the 5s splash Timer — LobbyActivity renders (face e2a290ab, 130 colors; texts: \"Welcome to the Tri Peaks Solitaire for Android!\" + New Game/About Us/Help/Exit). Pre-fix face b5a7a35d uniform grey-48. Game table still behind taps (S121 HUD ledger remains the play evidence).",
    "sessions": "S65",
    "evidence_refs": [
-    "real-dalvik run; canonical harvested from visual_forensics/s65_reval/tripeaks/board_full.png"
+    "real-dalvik run; canonical harvested from visual_forensics/s65_reval/tripeaks/board_full.png",
+    "CONT-158 battery (binary b7b193b5+): run/c158/battery/tripeaks — [F497-DRAIN] 1 launch, virtual 5000ms; frame_497_drain texts real lobby UI"
    ]
   },
   {
    "id": "GAME-017",
-   "title": "OPMT (One More Time\u2026)",
+   "title": "OPMT (One More Time…)",
    "package": "one.scarecrow.games.OPMT",
    "upstream": "https://github.com/scarecrowgames/OneMoreTimePuzzleGame",
    "evidence_level": "E4",
@@ -545,7 +549,7 @@
    "id": "GAME-024",
    "title": "FlappyCow",
    "package": "com.quchen.flappycow",
-   "upstream": "upstream source rebuild \u2014 upload/flappycow_rebuilt.apk",
+   "upstream": "upstream source rebuild — upload/flappycow_rebuilt.apk",
    "evidence_level": "E5",
    "status": "VERIFIED",
    "checkpoints": {
@@ -591,7 +595,7 @@
    "id": "GAME-026",
    "title": "Snake Neon",
    "package": "com.miniandroid.snakeneon",
-   "upstream": "in-house \u2014 games/snake-neon (source in repo)",
+   "upstream": "in-house — games/snake-neon (source in repo)",
    "evidence_level": "E5",
    "status": "VERIFIED",
    "checkpoints": {
@@ -1908,9 +1912,11 @@
     "L6": false,
     "L7": false
    },
-   "note": "trace-only (E3); no meaningful visual proof",
+   "note": "trace-only (E3); no meaningful visual proof CONT-158: F-NEW-497 drain fired the app restart flow (relaunch MainActivity, root 512); same menu texts; face 807a0cca→6da289aa (relaunch theme rebind gap = F-NEW-499 CLASSIFIED).",
    "sessions": "S85",
-   "evidence_refs": []
+   "evidence_refs": [
+    "CONT-158 battery: run/c158/battery/memory"
+   ]
   },
   {
    "id": "GAME-089",
@@ -1961,7 +1967,7 @@
    "upstream": "real APK (S39-S42)",
    "evidence_level": "E3",
    "status": "BLOCKED",
-   "note": "real Hilt/DI/composition execution 0-error (S40); first frame blank \u2014 Compose Recomposer frontier R-NEW-344. Honest: NOT A RENDER.",
+   "note": "real Hilt/DI/composition execution 0-error (S40); first frame blank — Compose Recomposer frontier R-NEW-344. Honest: NOT A RENDER. CONT-158: face stable at 31ddd4d5 draw-op boundary (1947 recorded ops since F-NEW-495; presentation still behind the F084 throughput wall = F-NEW-481 cohort frontier).",
    "checkpoints": {
     "L0": true,
     "L1": true,

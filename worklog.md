@@ -11194,3 +11194,34 @@ Work Log:
 
 Stage Summary:
 - 10/10 trains landed: 3 engine fixes ROOT-CAUSED-FIXED (F-NEW-486 WindowMetrics family, F-NEW-487 FNA fallback, F-NEW-488 PM.getApplicationInfo) + 6 honest CLASSIFIED rows (489-493, 490 refined with 2 named dispatch gaps) + F-NEW-481 lever census with 1 hypothesis honestly RETRACTED. Corpus: fdroid 94 = 85/94 ≥50% (+12 crossings, 0 regressions), WINDOW_ROOT 9/17→12/17. Registry 799→807. Pushed as 4da3d004 + e4e3060d + close-out commit; every gate green at every intermediate binary.
+
+---
+Task ID: CONT-157 (backfill — section was missing from worklog; reconstructed from git fd4a1c89 + #364 comment 6338903381)
+Agent: main agent (Z.ai)
+Task: کاشی موزایکی اجرا + جنگ صفحه سفید (تلگرام / دوز / ماشین‌حساب)
+
+Work Log:
+- 3 engine fixes ROOT-CAUSED-FIXED: F-NEW-494 (Layout.getPaint/getText never-null family — dooz 0 draw ops → 7), F-NEW-495 (Bitmap.createBitmap materialization + static-invoke routing — dooz ops 7→631→1947, telegram exc 19→13), F-NEW-496 (View.onMeasure AOSP no-write-back default — 1x1→1080x1920).
+- Wall: 7/9 first pass → dooz d602648e→31ddd4d5 + telegram 20ac8cbbbb→1671f5a3 justified re-bases (draw-path advance).
+- Registry 807→810. Binary 22578fcb03e0cd15. Pushed as fd4a1c89; ledger = #364 comment 6338903381.
+
+Stage Summary:
+- Honest frontier left to CONT-158: dooz presentation behind the F084 draw-throughput wall (F-NEW-481 cohort).
+
+---
+Task ID: CONT-158
+Agent: main agent (Z.ai)
+Task: «۳۶۴ رو کامل بکن — ۱۰ از بازی و ۱۰ تا از گیم‌ها رو بررسی بکن، ببین این همه تغییرات اثری داشته، اگر نداشته مشکلاتشون رو حل بکن» — 20-row game battery + effect audit + fixes.
+
+Work Log:
+- Session opened on a STALE snapshot (local HEAD e99c2fbd, 299 commits behind origin/main, 0 unique local commits) → reset to fd4a1c89 (CONT-157). Binary rebuilt deterministically: 22578fcb03e0cd15 byte-identical. #364 re-read: 105 comments, latest 6338903381 (CONT-157 ledger).
+- GAME BATTERY (scripts/cont158_game_battery.sh): 20 rows = 18 games (canonical_apks ×10 incl. dooz/bouncy variants, upload-root ×5, in-house g2048/snake/tetris) + 2 honestly-labeled ref tools (stopwatch, opencalc). PRE-fix: 10/18 content-classified; blank faces collapsed into 3 shared signatures: 31ddd4d5 (dooz,doos_top,klondike,stopwatch — draw-op boundary), b5a7a35d (tictactoe,fishrings,tripeaks), chess a0319686 grey-254 + tower3d 11a38a5a black.
+- ROOT DECODE (b5a7a35d trio): fishrings+tripeaks = RelativeLayout→WebView splash, loadUrl(assets/banner.html) reported asset-MISSING — unzip -l PROVES both APKs have NO assets/ dir at all (artifact-faithful 404); the REAL transition is [QUEUE] Timer.schedule delay=5000ms → never fired (5 frames × 300ms frame_delay = 1500ms virtual << 5000ms). runnables_fired=0 all frames. tictactoe = libGDX: libgdx.so dlopen SIGSEGV + null Gdx.app NPE → F-NEW-498 CLASSIFIED.
+- FIX F-NEW-497 ROOT-CAUSED-FIXED (execution_engine.cpp stage_frame_sequence): POST-CAPTURE DRAIN-TO-DEADLINE — after the frame loop, while queue holds future-dated work and virtual_now < max_wall_seconds×1000: poll-timeout advance (AOSP MessageQueue.next parity), drain+dispatch via invoke_handler_runnable, compose pump per boundary, consume_pending_intent+finish at EVERY round (launch intent pends while queue may be empty — first implementation stranded the cascade at the G07 final boundary AFTER the screenshot; corrected), one deterministic render + frame_497_drain.png. Deadline read from the DECLARED budget onto the ONE virtual clock — zero wall clock, uniform, launch-frame contract untouched. Bounds = §18 storm law (512 rounds / 64 no-progress).
+- RESULTS (post-fix binary b7b193b541735991): fishrings b5a7a35d→a341e3ad (3310 colors — real Rings board); tripeaks b5a7a35d→e2a290ab (lobby texts: Welcome to the Tri Peaks Solitaire + New Game/About Us/Help/Exit); klondike 31ddd4d5→a77038da (MenuActivity: New Game/View Help/About Game/Check for Updates/Exit). Games content: 10→13 of 18 (12 strict-classified + memory text-visible).
+- WALL: 9/9 — 8 MATCH (unote verified at its TRUE CONT-155+ anchor 7481e9b4; the 90a67cc1 c129-era list entry was stale) + klondike JUSTIFIED RE-BASE 31ddd4d5→a77038da (REAL_APP_CONTENT advance, CONT-157 category). NEGATIVES: initial 9/19 = missing probe_store session state (stale-snapshot reset), regenerated probe run → 19/19 PASS (NOT a fix regression). SELFTEST 13/13.
+- Registry 810→813 (F-NEW-497 ROOT-CAUSED-FIXED; F-NEW-498 tictactoe libGDX boundary CLASSIFIED; F-NEW-499 relaunch theme rebind gap CLASSIFIED — memory same texts, bg 28→48 grey) id-unique main==mirror. game_registry.json: GAME-015/014 notes + GAME-016 PARTIAL→OBSERVED.
+- Artifacts: run/c158/cont158_mosaic.png (20-tile grid from REAL battery faces), run/c158/battery/scorecard.json, run/c158/scorecard_prefix_fix.json (pre-fix), scripts/cont158_game_battery.sh + cont158_parse.py + cont158_anchor_wall.sh + cont158_registry.py + cont158_games.py + cont158_mosaic.py.
+
+Stage Summary:
+- The instruction's question answered WITH NUMBERS: the accumulated engine changes DID have per-game effect (13/18 games render real content; anchors zero-drift); the 3 blank-face sharers that were fixable got ONE generic fix (F-NEW-497) and crossed. Remaining frontier: dooz×2 (F084 throughput wall), tictactoe (F-NEW-498 libGDX/native), chess (0xFFFFFFFF getxml chain), tower3d (black uniform — decode pending).

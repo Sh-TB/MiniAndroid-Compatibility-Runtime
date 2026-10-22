@@ -7412,6 +7412,100 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
         prev = framebuffer_;
     }
 
+    // ── F-NEW-497 (CONT-158) — POST-CAPTURE DRAIN-TO-DEADLINE ───────────
+    // AOSP MessageQueue.next() poll-timeout parity for the END of the
+    // capture window. The canonical frame pass (N × frame_delay_ms of
+    // Looper life) reaches only ~1500ms of app life; a splash Timer
+    // (5000ms: fishrings/tripeaks) is still future-dated when the last
+    // frame renders, so the capture shows the launch screen forever and
+    // the app's own first transition never runs. The harness already
+    // promises an app-life window: --max-seconds. Law (uniform — no app
+    // checks; deterministic — no wall clock: the deadline is read from
+    // the DECLARED budget and applied to the ONE virtual clock): after
+    // the frame loop, while the queue holds future-dated work and
+    // virtual_now < deadline: poll-timeout advance to next_ready, drain
+    // due runnables, dispatch them (invoke_handler_runnable — same path
+    // as the per-frame law), one compose pump per boundary (F-050), and
+    // render the drained state once. Frame 0/1 (launch-frame contract,
+    // GATE H/G07 goldens) is untouched — this pass runs AFTER the last
+    // rendered frame. Bounds = §18 storm law: 512 rounds absolute,
+    // 64 consecutive no-progress rounds.
+    if (hs->queue_size() > 0 && config.max_wall_seconds > 0) {
+        const int64_t deadline_ms =
+            static_cast<int64_t>(config.max_wall_seconds) * 1000;
+        int drain_rounds = 0;
+        int no_progress = 0;
+        int64_t drained_runnables = 0;
+        int launches_497 = 0;
+        while (drain_rounds < 512) {
+            // G07/G08 law: activity transitions requested by drained
+            // callbacks apply at THIS boundary — including the case where
+            // the compose pump's internal F100 drain was the site that ran
+            // the runnable which called startActivity (the intent is then
+            // pending while the queue may already be empty; without this
+            // consume the launch cascade would strand until the G07 final
+            // boundary — AFTER the end-of-window screenshot).
+            {
+                nlohmann::json launch497 = consume_pending_intent();
+                if (!launch497.is_null()) ++launches_497;
+                (void)consume_finish_cascade();
+            }
+            if (hs->queue_size() == 0) break;
+            int64_t now = hs->virtual_now_ms();
+            int64_t next = hs->next_ready_ms();
+            if (next > deadline_ms) break;  // unreachable inside the window
+            if (next > now) { hs->advance_virtual(next - now); no_progress = 0; }
+            pump_compose_frames(/*max_frames=*/1);
+            std::vector<uint32_t> drained497;
+            size_t n = hs->drain_ready(&drained497);
+            if (n == 0) {
+                if (++no_progress > 64) break;  // §18 storm bound
+                continue;
+            }
+            no_progress = 0;
+            for (uint32_t rid : drained497) invoke_handler_runnable(rid);
+            drained_runnables += static_cast<int64_t>(n);
+            ++drain_rounds;
+        }
+        if (drained_runnables > 0 || launches_497 > 0) {
+            fired_total += static_cast<int>(drained_runnables);
+            std::cerr << "[F497-DRAIN] post-capture drain-to-deadline: "
+                      << drained_runnables << " runnable(s) fired, "
+                      << launches_497 << " activity launch(es), virtual_now="
+                      << hs->virtual_now_ms() << "ms (deadline=" << deadline_ms
+                      << "ms, queue_left=" << hs->queue_size() << ")"
+                      << std::endl;
+            // One deterministic render of the drained state — the final
+            // screenshot re-capture (F-NEW-198 end-of-window law) then
+            // publishes exactly this framebuffer.
+            stage_render_frame(result, config);
+            std::vector<uint8_t> nowfb = framebuffer_;
+            std::string png_sha;
+            bool saved497 = save_frame(frames_dir + "/frame_497_drain.png",
+                                       &png_sha);
+            nlohmann::json f497;
+            f497["index"] = manifest["frames"].size();
+            f497["file"] = "frame_497_drain.png";
+            f497["event"] = "F-NEW-497 post-capture drain-to-deadline";
+            f497["looper_virtual_ms"] = hs->virtual_now_ms();
+            f497["runnables_fired"] = drained_runnables;
+            f497["activity_launches"] = launches_497;
+            f497["saved"] = saved497;
+            if (nowfb.size() == prev.size()) {
+                size_t diff497 = 0;
+                for (size_t i = 0; i < nowfb.size(); ++i)
+                    if (nowfb[i] != prev[i]) ++diff497;
+                f497["changed_pixels_vs_previous"] = diff497;
+            }
+            f497["sha256"] = sha256_hex(nowfb);
+            f497["png_sha256"] = png_sha;
+            f497["visible_texts"] = collect_texts();
+            manifest["frames"].push_back(f497);
+            std::cerr << "[F497-DRAIN] frame_497_drain.png saved=" << saved497
+                      << std::endl;
+        }
+    }
+
     manifest["runnables_fired_total"] = fired_total;
     try {
         std::ofstream mf(frames_dir + "/manifest.json");
