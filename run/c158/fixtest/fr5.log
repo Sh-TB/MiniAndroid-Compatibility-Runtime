@@ -1,0 +1,1059 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=37
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$id; offset=0x50ff static_fields=51 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$id; with_defaults=51/51
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$layout; offset=0x51ff static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$layout; with_defaults=5/5
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$menu; offset=0x5219 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$menu; with_defaults=1/1
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$mipmap; offset=0x521f static_fields=16 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$mipmap; with_defaults=16/16
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$raw; offset=0x5270 static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$raw; with_defaults=5/5
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$string; offset=0x528a static_fields=19 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$string; with_defaults=19/19
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$style; offset=0x52ea static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$style; with_defaults=2/2
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=43
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=63
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=63
+[S123-ACTION-REG] activities=5 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/fishrings_v1.23_vc6.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 71 entries (23 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'eu.veldsoft.fish.rings.SplashActivity'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/fishrings_v1.23_vc6.apk named_ids=99 types=7
+[ARSC-VALUES] apk=upload/canonical_apks/fishrings_v1.23_vc6.apk strings=19 colors=0 dimens=0 bools=0 integers=0 raw=5 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Fish Rings for Android" (resid @0x7f060002)
+[A7b] icon @0x7f040005 -> res/mipmap-xxhdpi-v4/ic_launcher.png (11357 bytes) DECODED 144x144 rgb rgba_bytes=82944 fnv1a=0x2d0456be66a9a465
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=37)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Leu/veldsoft/fish/rings/SplashActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[M3-LONG-PUT] field=Leu/veldsoft/fish/rings/SplashActivity;.timeout caller=Leu/veldsoft/fish/rings/SplashActivity;.<init> value=0
+[MEM] method_exit: Leu/veldsoft/fish/rings/SplashActivity;.<init> insns=6 RSS=19.5859 MB
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Leu/veldsoft/fish/rings/SplashActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Leu/veldsoft/fish/rings/SplashActivity;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=2 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Leu/veldsoft/fish/rings/SplashActivity; args=1 arg0_kind=0 arg0_int=2130837508
+[U007-INFLATE] setContentView(layoutResId=0x7f020004)
+[U007-INFLATE] root_id=16 views=2 strings=0 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=16 recorded for first-traversal attach+measure
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/SplashActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity; args=1 arg0_kind=0 arg0_int=2130771969
+[EXP088-B-DBG] findViewById: target=0x7f010001 content_view_id=10 registry=YES
+[EXP088-B] findViewById(0x7f010001) → view_id=17
+[TRY-ENTRY] Landroid/webkit/WebView;.getSettings dex_report=YES
+[REC-MISS] Landroid/webkit/WebView;.getSettings caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F085-WV] getSettings: webview=o17 -> settings=o18
+[TRY-ENTRY] Landroid/webkit/WebSettings;.setJavaScriptEnabled dex_report=YES
+[REC-MISS] Landroid/webkit/WebSettings;.setJavaScriptEnabled caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/SplashActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity; args=1 arg0_kind=0 arg0_int=2130771969
+[EXP088-B-DBG] findViewById: target=0x7f010001 content_view_id=10 registry=YES
+[EXP088-B] findViewById(0x7f010001) → view_id=17
+[TRY-ENTRY] Landroid/webkit/WebView;.loadUrl dex_report=YES
+[REC-MISS] Landroid/webkit/WebView;.loadUrl caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F085-WV] loadUrl asset MISSING (honest placeholder): webview=o17 entry=assets/banner.html
+[F085-WV] loadUrl/postUrl: webview=o17 url="file:///android_asset/banner.html"
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getPackageManager dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getComponentName dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/content/pm/PackageManager;.getActivityInfo dex_report=YES
+[REC-MISS] Landroid/content/pm/PackageManager;.getActivityInfo caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F116-ACTINFO] eu.veldsoft.fish.rings.Leu.veldsoft.fish.rings.SplashActivity; metaData=2
+[TRY-ENTRY] Landroid/os/Bundle;.getInt dex_report=YES
+[REC-MISS] Landroid/os/Bundle;.getInt caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[M3-LONG-PUT] field=Leu/veldsoft/fish/rings/SplashActivity;.timeout caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate value=5000
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getPackageManager dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getComponentName dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/content/pm/PackageManager;.getActivityInfo dex_report=YES
+[REC-MISS] Landroid/content/pm/PackageManager;.getActivityInfo caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F116-ACTINFO] eu.veldsoft.fish.rings.Leu.veldsoft.fish.rings.SplashActivity; metaData=2
+[TRY-ENTRY] Landroid/os/Bundle;.getString dex_report=YES
+[REC-MISS] Landroid/os/Bundle;.getString caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[EXP093-BUNDLE] getString class=Landroid/os/Bundle; key="redirect" bundle_id=25 has_obj=1
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.onPostCreate dex_report=YES
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.onStart dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Leu/veldsoft/fish/rings/SplashActivity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[G07-LIFECYCLE] Leu/veldsoft/fish/rings/SplashActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Leu/veldsoft/fish/rings/SplashActivity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onResume method_id=4 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[REC-MISS] Ljava/util/Timer;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[REC-MISS] Ljava/util/TimerTask;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity$1;.<init>
+[MEM] method_exit: Leu/veldsoft/fish/rings/SplashActivity$1;.<init> insns=3 RSS=167.59 MB
+[REC-MISS] Ljava/util/Timer;.schedule caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[QUEUE] Runnable id=27 enqueued (delay=5000ms, ready_at=5000ms virtual, queue_depth=1, source=Timer.schedule)
+[F115-TIMER] schedule task=o27 delay=5000ms period=0ms caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[G07-LIFECYCLE] Leu/veldsoft/fish/rings/SplashActivity;.onResume() dispatched via DEX engine (ok=1, instructions=11)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=23 nodes=3 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/RelativeLayout;.onAttachedToWindow caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/webkit/WebView;.onAttachedToWindow caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=338
+[REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/webkit/WebView;.dispatchApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/webkit/WebView;.onApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F384-ROOTINSETS] root=o16 cls=Landroid/widget/RelativeLayout; insets=o28 dispatched=false
+[ECR-ROOT] scalar content_view_id root=16
+[P0-1-ORDER] first-traversal attach wave root=16 attached=0 (attach strictly precedes measure)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=371
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=505
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[QUEUE] Runnable id=27 dequeued (ready_at=5000ms <= now=5000ms virtual)
+[F100-PUMP] frame=0 drain round=0 runnable(s)=1
+[EXP090-DRAIN] Invoking Runnable id=27 class=Leu/veldsoft/fish/rings/SplashActivity$1;
+[MEM] method_exit: Leu/veldsoft/fish/rings/SplashActivity;.access$0 insns=2 RSS=191.957 MB
+[R350-FORNAME] "eu.veldsoft.fish.rings.GameActivity" -> Leu/veldsoft/fish/rings/GameActivity; (initialized=0)
+[REC-MISS] Landroid/content/Intent;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity$1;.run
+[S123-ICTOR2] Intent.<init> recv=29 args=2 a0k6 a1k6="Leu/veldsoft/fish/rings/GameActivity;"
+[S123-ICTOR] intent_ctor args=2 arg1_kind=6 arg1_class=Leu/veldsoft/fish/rings/GameActivity; arg1_id=4
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=startActivity class=Leu/veldsoft/fish/rings/SplashActivity;
+[S123-SA] startActivity intent_id=29 action="" component="Leu/veldsoft/fish/rings/GameActivity;"
+[INTENT] startActivity called → Leu/veldsoft/fish/rings/GameActivity;
+[EXP090-DRAIN] Runnable id=27 invoked
+[FRAGMENT-LIFECYCLE] method=onPause declared_in=Leu/veldsoft/fish/rings/SplashActivity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[G08-LIFECYCLE] {"class":"Leu/veldsoft/fish/rings/SplashActivity;","dispatched":false,"instructions":0,"method":"onPause"}
+[REC-MISS] Landroid/app/Activity;.<init> caller=Leu/veldsoft/fish/rings/GameActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Leu/veldsoft/fish/rings/GameActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=30)
+[G08-LIFECYCLE] {"class":"Leu/veldsoft/fish/rings/GameActivity;","dispatched":true,"instructions":47,"method":"<init>"} (F-118 constructor law)
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130837505
+[U007-INFLATE] setContentView(layoutResId=0x7f020001)
+[U007-INFLATE] root_id=38 views=44 strings=0 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=38 recorded for first-traversal attach+measure
+[REC-MISS] Landroid/media/MediaPlayer;.create caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[R400-MEDIA] MediaPlayer.create → non-null PREPARED player obj_id=82 caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/media/MediaPlayer;.create caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[R400-MEDIA] MediaPlayer.create → non-null PREPARED player obj_id=83 caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/media/MediaPlayer;.create caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[R400-MEDIA] MediaPlayer.create → non-null PREPARED player obj_id=84 caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/media/MediaPlayer;.create caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[R400-MEDIA] MediaPlayer.create → non-null PREPARED player obj_id=85 caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771980
+[EXP088-B-DBG] findViewById: target=0x7f01000c content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01000c) → view_id=45
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771981
+[EXP088-B-DBG] findViewById: target=0x7f01000d content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01000d) → view_id=46
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771982
+[EXP088-B-DBG] findViewById: target=0x7f01000e content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01000e) → view_id=47
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771983
+[EXP088-B-DBG] findViewById: target=0x7f01000f content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01000f) → view_id=48
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771984
+[EXP088-B-DBG] findViewById: target=0x7f010010 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010010) → view_id=49
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771985
+[EXP088-B-DBG] findViewById: target=0x7f010011 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010011) → view_id=50
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771986
+[EXP088-B-DBG] findViewById: target=0x7f010012 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010012) → view_id=51
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771987
+[EXP088-B-DBG] findViewById: target=0x7f010013 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010013) → view_id=52
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771988
+[EXP088-B-DBG] findViewById: target=0x7f010014 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010014) → view_id=53
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771989
+[EXP088-B-DBG] findViewById: target=0x7f010015 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010015) → view_id=54
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771990
+[EXP088-B-DBG] findViewById: target=0x7f010016 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010016) → view_id=55
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771991
+[EXP088-B-DBG] findViewById: target=0x7f010017 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010017) → view_id=56
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771992
+[EXP088-B-DBG] findViewById: target=0x7f010018 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010018) → view_id=57
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771993
+[EXP088-B-DBG] findViewById: target=0x7f010019 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010019) → view_id=58
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771994
+[EXP088-B-DBG] findViewById: target=0x7f01001a content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001a) → view_id=59
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771995
+[EXP088-B-DBG] findViewById: target=0x7f01001b content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001b) → view_id=60
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771996
+[EXP088-B-DBG] findViewById: target=0x7f01001c content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001c) → view_id=61
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771997
+[EXP088-B-DBG] findViewById: target=0x7f01001d content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001d) → view_id=62
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771998
+[EXP088-B-DBG] findViewById: target=0x7f01001e content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001e) → view_id=63
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771999
+[EXP088-B-DBG] findViewById: target=0x7f01001f content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001f) → view_id=64
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772000
+[EXP088-B-DBG] findViewById: target=0x7f010020 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010020) → view_id=65
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772001
+[EXP088-B-DBG] findViewById: target=0x7f010021 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010021) → view_id=66
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772002
+[EXP088-B-DBG] findViewById: target=0x7f010022 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010022) → view_id=67
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772003
+[EXP088-B-DBG] findViewById: target=0x7f010023 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010023) → view_id=68
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772004
+[EXP088-B-DBG] findViewById: target=0x7f010024 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010024) → view_id=69
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772005
+[EXP088-B-DBG] findViewById: target=0x7f010025 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010025) → view_id=70
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772006
+[EXP088-B-DBG] findViewById: target=0x7f010026 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010026) → view_id=71
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772007
+[EXP088-B-DBG] findViewById: target=0x7f010027 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010027) → view_id=72
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772008
+[EXP088-B-DBG] findViewById: target=0x7f010028 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010028) → view_id=73
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772009
+[EXP088-B-DBG] findViewById: target=0x7f010029 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010029) → view_id=74
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772010
+[EXP088-B-DBG] findViewById: target=0x7f01002a content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002a) → view_id=75
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772011
+[EXP088-B-DBG] findViewById: target=0x7f01002b content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002b) → view_id=76
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772012
+[EXP088-B-DBG] findViewById: target=0x7f01002c content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002c) → view_id=77
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772013
+[EXP088-B-DBG] findViewById: target=0x7f01002d content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002d) → view_id=78
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772014
+[EXP088-B-DBG] findViewById: target=0x7f01002e content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002e) → view_id=79
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772015
+[EXP088-B-DBG] findViewById: target=0x7f01002f content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002f) → view_id=80
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771970
+[EXP088-B-DBG] findViewById: target=0x7f010002 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010002) → view_id=39
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=39 class=Landroid/widget/ImageView; listener_id=32 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$1;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771971
+[EXP088-B-DBG] findViewById: target=0x7f010003 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010003) → view_id=40
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=40 class=Landroid/widget/ImageView; listener_id=33 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$2;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771972
+[EXP088-B-DBG] findViewById: target=0x7f010004 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010004) → view_id=41
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=41 class=Landroid/widget/ImageView; listener_id=34 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$3;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771973
+[EXP088-B-DBG] findViewById: target=0x7f010005 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010005) → view_id=42
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=42 class=Landroid/widget/ImageView; listener_id=35 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$4;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771974
+[EXP088-B-DBG] findViewById: target=0x7f010006 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010006) → view_id=43
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=43 class=Landroid/widget/ImageView; listener_id=36 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$5;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771975
+[EXP088-B-DBG] findViewById: target=0x7f010007 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010007) → view_id=44
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=44 class=Landroid/widget/ImageView; listener_id=37 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$6;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771984
+[EXP088-B-DBG] findViewById: target=0x7f010010 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010010) → view_id=49
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=49 class=Landroid/widget/ImageView; listener_id=32 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$1;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771985
+[EXP088-B-DBG] findViewById: target=0x7f010011 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010011) → view_id=50
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=50 class=Landroid/widget/ImageView; listener_id=32 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$1;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771986
+[EXP088-B-DBG] findViewById: target=0x7f010012 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010012) → view_id=51
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=51 class=Landroid/widget/ImageView; listener_id=33 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$2;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771987
+[EXP088-B-DBG] findViewById: target=0x7f010013 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010013) → view_id=52
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=52 class=Landroid/widget/ImageView; listener_id=33 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$2;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772000
+[EXP088-B-DBG] findViewById: target=0x7f010020 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010020) → view_id=65
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=65 class=Landroid/widget/ImageView; listener_id=34 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$3;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772001
+[EXP088-B-DBG] findViewById: target=0x7f010021 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010021) → view_id=66
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=66 class=Landroid/widget/ImageView; listener_id=34 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$3;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772002
+[EXP088-B-DBG] findViewById: target=0x7f010022 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010022) → view_id=67
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=67 class=Landroid/widget/ImageView; listener_id=34 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$3;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771997
+[EXP088-B-DBG] findViewById: target=0x7f01001d content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001d) → view_id=62
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=62 class=Landroid/widget/ImageView; listener_id=35 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$4;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771998
+[EXP088-B-DBG] findViewById: target=0x7f01001e content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001e) → view_id=63
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=63 class=Landroid/widget/ImageView; listener_id=35 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$4;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771999
+[EXP088-B-DBG] findViewById: target=0x7f01001f content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01001f) → view_id=64
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=64 class=Landroid/widget/ImageView; listener_id=35 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$4;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772012
+[EXP088-B-DBG] findViewById: target=0x7f01002c content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002c) → view_id=77
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=77 class=Landroid/widget/ImageView; listener_id=36 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$5;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772013
+[EXP088-B-DBG] findViewById: target=0x7f01002d content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002d) → view_id=78
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=78 class=Landroid/widget/ImageView; listener_id=36 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$5;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772014
+[EXP088-B-DBG] findViewById: target=0x7f01002e content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002e) → view_id=79
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=79 class=Landroid/widget/ImageView; listener_id=36 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$5;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772009
+[EXP088-B-DBG] findViewById: target=0x7f010029 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010029) → view_id=74
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=74 class=Landroid/widget/ImageView; listener_id=37 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$6;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772010
+[EXP088-B-DBG] findViewById: target=0x7f01002a content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002a) → view_id=75
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=75 class=Landroid/widget/ImageView; listener_id=37 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$6;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130772011
+[EXP088-B-DBG] findViewById: target=0x7f01002b content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f01002b) → view_id=76
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=76 class=Landroid/widget/ImageView; listener_id=37 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$6;
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/GameActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/GameActivity; args=1 arg0_kind=0 arg0_int=2130771976
+[EXP088-B-DBG] findViewById: target=0x7f010008 content_view_id=26 registry=YES
+[EXP088-B] findViewById(0x7f010008) → view_id=81
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=81 class=Landroid/widget/ImageView; listener_id=87 listener_class_at_reg=Leu/veldsoft/fish/rings/GameActivity$7;
+[CLASS_INIT] class=Leu/veldsoft/fish/rings/Rings; method=<clinit> bytecode_size=8
+[REC-MISS] Ljava/util/Random;.<init> caller=Leu/veldsoft/fish/rings/Rings;.<clinit>
+[CLASS_INIT] class=Leu/veldsoft/fish/rings/Rings; method=<clinit> result=OK engine=0x7ffdb101a048 storage_size=26
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Leu/veldsoft/fish/rings/GameActivity; recv_oid=30 act_oid=30)
+[REC-MISS] Landroid/view/Window;.getDecorView caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[F023-PARENTLINK] getDecorView: activity view=30 linked under decor view=91
+[REC-MISS] Landroid/view/View;.getWidth caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Leu/veldsoft/fish/rings/GameActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Leu/veldsoft/fish/rings/GameActivity; recv_oid=30 act_oid=30)
+[REC-MISS] Landroid/view/Window;.getDecorView caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[F023-PARENTLINK] getDecorView: activity view=30 linked under decor view=91
+[REC-MISS] Landroid/view/View;.getHeight caller=Leu/veldsoft/fish/rings/GameActivity;.onCreate
+[SGET] class=Leu/veldsoft/fish/rings/Rings; method=<init> pc=15 field=Ljava/lang/Integer;.TYPE obj_id=0
+[REC-MISS] Ljava/lang/reflect/Array;.newInstance caller=Leu/veldsoft/fish/rings/Rings;.<init>
+[R358-ANEW] newInstance(I, dims=[3,12]) -> obj#94 [[I
+[SGET] class=Leu/veldsoft/fish/rings/Rings; method=<init> pc=33 field=Ljava/lang/Integer;.TYPE obj_id=0
+[REC-MISS] Ljava/lang/reflect/Array;.newInstance caller=Leu/veldsoft/fish/rings/Rings;.<init>
+[R358-ANEW] newInstance(I, dims=[3,12,2]) -> obj#113 [[[I
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sin caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.sqrt caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.cos caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Double;.isNaN caller=Leu/veldsoft/fish/rings/Rings;.init
+[REC-MISS] Ljava/lang/Math;.min caller=Leu/veldsoft/fish/rings/Rings;.init
+[G08-LIFECYCLE] {"class":"Leu/veldsoft/fish/rings/GameActivity;","dispatched":true,"instructions":2665,"method":"onCreate"}
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Leu/veldsoft/fish/rings/GameActivity; runtime_class=Leu/veldsoft/fish/rings/GameActivity;
+[G08-LIFECYCLE] {"class":"Leu/veldsoft/fish/rings/GameActivity;","dispatched":false,"instructions":0,"method":"onStart"}
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Leu/veldsoft/fish/rings/GameActivity; runtime_class=Leu/veldsoft/fish/rings/GameActivity;
+[G08-LIFECYCLE] {"class":"Leu/veldsoft/fish/rings/GameActivity;","dispatched":false,"instructions":0,"method":"onResume"}
+[FRAGMENT-LIFECYCLE] method=onStop declared_in=Leu/veldsoft/fish/rings/SplashActivity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[G08-LIFECYCLE] {"class":"Leu/veldsoft/fish/rings/SplashActivity;","dispatched":false,"instructions":0,"method":"onStop"}
+[G08-LAUNCH] launched Leu/veldsoft/fish/rings/GameActivity; (stack depth now 1, B view root 38)
+[F497-DRAIN] post-capture drain-to-deadline: 0 runnable(s) fired, 1 activity launch(es), virtual_now=5000ms (deadline=25000ms, queue_left=0)
+[ECR-ROOT] scalar content_view_id root=38
+[P0-1-ORDER] first-traversal attach wave root=38 attached=0 (attach strictly precedes measure)
+[V1-CONTENT-BOUNDS] root=38 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=38 class=Landroid/widget/RelativeLayout; text="" children=43 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=39 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(184,184) size=(110x78)
+[EXP092-RENDER] node=40 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(551,184) size=(110x78)
+[EXP092-RENDER] node=41 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(709,341) size=(110x78)
+[EXP092-RENDER] node=42 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(709,735) size=(110x78)
+[EXP092-RENDER] node=43 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(26,341) size=(110x78)
+[EXP092-RENDER] node=44 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(26,735) size=(110x78)
+[EXP092-RENDER] node=45 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,604) size=(53x53)
+[EXP092-RENDER] node=46 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(244,551) size=(53x53)
+[EXP092-RENDER] node=47 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,457) size=(53x53)
+[EXP092-RENDER] node=48 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,347) size=(53x53)
+[EXP092-RENDER] node=49 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(244,252) size=(53x53)
+[EXP092-RENDER] node=50 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,200) size=(53x53)
+[EXP092-RENDER] node=51 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,200) size=(53x53)
+[EXP092-RENDER] node=52 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(541,252) size=(53x53)
+[EXP092-RENDER] node=53 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,347) size=(53x53)
+[EXP092-RENDER] node=54 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,457) size=(53x53)
+[EXP092-RENDER] node=55 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(541,551) size=(53x53)
+[EXP092-RENDER] node=56 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,604) size=(53x53)
+[EXP092-RENDER] node=57 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(486,347) size=(53x53)
+[EXP092-RENDER] node=58 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(394,402) size=(53x53)
+[EXP092-RENDER] node=59 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,496) size=(53x53)
+[EXP092-RENDER] node=60 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,604) size=(53x53)
+[EXP092-RENDER] node=61 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(391,698) size=(53x53)
+[EXP092-RENDER] node=62 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(486,753) size=(53x53)
+[EXP092-RENDER] node=63 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,753) size=(53x53)
+[EXP092-RENDER] node=64 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(690,698) size=(53x53)
+[EXP092-RENDER] node=65 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(743,604) size=(53x53)
+[EXP092-RENDER] node=66 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(743,496) size=(53x53)
+[EXP092-RENDER] node=67 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(690,402) size=(53x53)
+[EXP092-RENDER] node=68 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,347) size=(53x53)
+[EXP092-RENDER] node=69 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(299,347) size=(53x53)
+[EXP092-RENDER] node=70 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(394,402) size=(53x53)
+[EXP092-RENDER] node=71 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,496) size=(53x53)
+[EXP092-RENDER] node=72 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,604) size=(53x53)
+[EXP092-RENDER] node=73 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(394,698) size=(53x53)
+[EXP092-RENDER] node=74 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(299,753) size=(53x53)
+[EXP092-RENDER] node=75 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,753) size=(53x53)
+[EXP092-RENDER] node=76 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(95,698) size=(53x53)
+[EXP092-RENDER] node=77 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(42,604) size=(53x53)
+[EXP092-RENDER] node=78 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(42,496) size=(53x53)
+[EXP092-RENDER] node=79 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(95,402) size=(53x53)
+[EXP092-RENDER] node=80 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,347) size=(53x53)
+[EXP092-RENDER] node=81 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(0,1747) size=(1080x173)
+[EXP092-COPY] fb has 2073360 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073360 non-white pixels
+[F497-DRAIN] frame_497_drain.png saved=1
+[FRAME-SEQ] done: runnables_fired=0 frames=6 dir=run/c158/fixtest/fr5/frames
+[F384-ROOTINSETS] root=o38 cls=Landroid/widget/RelativeLayout; insets=o156 dispatched=false
+[V1-CONTENT-BOUNDS] root=38 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=38 class=Landroid/widget/RelativeLayout; text="" children=43 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=39 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(184,184) size=(110x78)
+[EXP092-RENDER] node=40 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(551,184) size=(110x78)
+[EXP092-RENDER] node=41 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(709,341) size=(110x78)
+[EXP092-RENDER] node=42 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(709,735) size=(110x78)
+[EXP092-RENDER] node=43 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(26,341) size=(110x78)
+[EXP092-RENDER] node=44 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(26,735) size=(110x78)
+[EXP092-RENDER] node=45 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,604) size=(53x53)
+[EXP092-RENDER] node=46 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(244,551) size=(53x53)
+[EXP092-RENDER] node=47 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,457) size=(53x53)
+[EXP092-RENDER] node=48 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,347) size=(53x53)
+[EXP092-RENDER] node=49 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(244,252) size=(53x53)
+[EXP092-RENDER] node=50 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,200) size=(53x53)
+[EXP092-RENDER] node=51 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,200) size=(53x53)
+[EXP092-RENDER] node=52 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(541,252) size=(53x53)
+[EXP092-RENDER] node=53 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,347) size=(53x53)
+[EXP092-RENDER] node=54 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,457) size=(53x53)
+[EXP092-RENDER] node=55 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(541,551) size=(53x53)
+[EXP092-RENDER] node=56 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,604) size=(53x53)
+[EXP092-RENDER] node=57 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(486,347) size=(53x53)
+[EXP092-RENDER] node=58 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(394,402) size=(53x53)
+[EXP092-RENDER] node=59 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,496) size=(53x53)
+[EXP092-RENDER] node=60 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(339,604) size=(53x53)
+[EXP092-RENDER] node=61 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(391,698) size=(53x53)
+[EXP092-RENDER] node=62 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(486,753) size=(53x53)
+[EXP092-RENDER] node=63 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,753) size=(53x53)
+[EXP092-RENDER] node=64 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(690,698) size=(53x53)
+[EXP092-RENDER] node=65 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(743,604) size=(53x53)
+[EXP092-RENDER] node=66 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(743,496) size=(53x53)
+[EXP092-RENDER] node=67 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(690,402) size=(53x53)
+[EXP092-RENDER] node=68 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(596,347) size=(53x53)
+[EXP092-RENDER] node=69 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(299,347) size=(53x53)
+[EXP092-RENDER] node=70 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(394,402) size=(53x53)
+[EXP092-RENDER] node=71 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,496) size=(53x53)
+[EXP092-RENDER] node=72 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(446,604) size=(53x53)
+[EXP092-RENDER] node=73 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(394,698) size=(53x53)
+[EXP092-RENDER] node=74 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(299,753) size=(53x53)
+[EXP092-RENDER] node=75 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,753) size=(53x53)
+[EXP092-RENDER] node=76 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(95,698) size=(53x53)
+[EXP092-RENDER] node=77 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(42,604) size=(53x53)
+[EXP092-RENDER] node=78 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(42,496) size=(53x53)
+[EXP092-RENDER] node=79 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(95,402) size=(53x53)
+[EXP092-RENDER] node=80 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(189,347) size=(53x53)
+[EXP092-RENDER] node=81 class=Landroid/widget/ImageView; text="" children=0 depth=1 pos=(0,1747) size=(1080x173)
+[EXP092-COPY] fb has 2073360 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073360 non-white pixels
