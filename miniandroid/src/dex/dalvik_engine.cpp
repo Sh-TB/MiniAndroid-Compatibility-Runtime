@@ -48720,9 +48720,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // SharedPreferences the unboxing-style interface call NPE'd and the
     // onCreate hit APP BOUNDARY before setContentView finished.
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-261 (CONT-11 W7): the Context-family guard below matched by
+    // RUNTIME-CLASS NAME SUBSTRING ("Context"/"Activity" in the descriptor).
+    // Real APKs dispatch through their own hierarchy — a receiver like
+    // Lde/tobiasbielefeld/solitaire/ui/GameSelector; (extends R8-renamed
+    // support-v7/v4 classes) carries NEITHER substring, so the guard
+    // missed and getSharedPreferences answered NULL; the app's own bundled
+    // PreferenceManager then ran getString on the null receiver and every
+    // later prefs read NPE'd (batch-20 face: 35 uncaught exceptions in
+    // solitaire_tb, 27 in andstatus2048 — all downstream of ONE null).
+    // AOSP law: getSharedPreferences is declared on android.content.Context;
+    // ANY receiver whose runtime ancestry reaches a Context-family shadow
+    // root must take this bridge. The ancestry walk is the same bounded
+    // DEX-chain walk as the F-NEW-259 slot resolution (16 hops, exact
+    // shadow-root descriptors, no name guessing).
+    // ────────────────────────────────────────────────────────────────────────
+    auto f261_is_context_family = [&](const DalvikValue& recv) -> bool {
+        if (recv.object_id == 0) return false;
+        std::string rc;
+        if (!heap_.get_object_class(recv.object_id, rc)) return false;
+        std::string walk = rc;
+        for (int hop = 0; hop < 16 && !walk.empty(); ++hop) {
+            if (walk == "Landroid/app/Activity;" ||
+                walk == "Landroid/app/Application;" ||
+                walk == "Landroid/app/Service;" ||
+                walk == "Landroid/content/ContextWrapper;" ||
+                walk == "Landroid/content/Context;" ||
+                walk == "Landroid/content/AbstractThreadedSyncAdapter;")
+                return true;
+            auto sit = class_to_superclass_.find(walk);
+            if (sit == class_to_superclass_.end()) break;
+            walk = sit->second;
+        }
+        return false;
+    };
     if ((method == "getSharedPreferences" || method == "getPreferences") &&
-        (class_name.find("Context") != std::string::npos ||
-         class_name.find("Activity") != std::string::npos)) {
+        ((class_name.find("Context") != std::string::npos ||
+          class_name.find("Activity") != std::string::npos) ||
+         f261_is_context_family(args.empty() ? DalvikValue{} : args[0]))) {
         // Extract preference name from first argument (String)
         std::string prefs_name = "default";
         if (method == "getPreferences") {

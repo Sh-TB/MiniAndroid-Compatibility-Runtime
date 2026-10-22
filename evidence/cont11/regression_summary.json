@@ -1,0 +1,16 @@
+{
+ "binary_sha16": "8f45e4eca7d142fa",
+ "f261_probe_apk_sha16": "7a5065b83ce14088",
+ "f261_probe_rows": "5/5 PASS (A..E: direct/fix-face/2-hop-ancestry/cross-receiver-identity/cross-file-negative)",
+ "f259_probe_rerun": "A..G all PASS (154 row hits, 0 FAIL)",
+ "anchors_x3": {
+  "opencalc": "a976d2f9fb675cb3",
+  "chess": "b5a7a35d5fe0564b",
+  "dooz": "d602648e8e401895",
+  "microtimer": "da73010a37dd0189",
+  "unote": "4f1a9e4e8f64fae8"
+ },
+ "skill": "13/13",
+ "negatives": "19/19",
+ "gate_a_results": 99
+}

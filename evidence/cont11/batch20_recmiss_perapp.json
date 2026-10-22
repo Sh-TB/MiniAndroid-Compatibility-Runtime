@@ -1,0 +1,42 @@
+{
+ "mueller_stopwatch": {
+  "Landroid/content/ContentProvider;.getContext": 2,
+  "Landroid/content/Context;.getApplicationContext": 2,
+  "Landroid/content/ContentProvider;.<init>": 1,
+  "Ljava/util/HashSet;.<init>": 1,
+  "Landroid/os/Trace;.beginSection": 1,
+  "Landroid/content/Context;.getPackageName": 1
+ },
+ "fossify_math": {
+  "Ljava/util/Iterator;.hasNext": 35,
+  "Ljava/util/Iterator;.next": 28,
+  "Ljava/lang/Enum;.compareTo": 26,
+  "Ljava/lang/Integer;.valueOf": 23,
+  "Ljava/util/LinkedHashMap;.put": 17,
+  "Ljava/lang/Object;.getClass": 16
+ },
+ "deskclock": {
+  "Ljava/lang/Object;.getClass": 40,
+  "Ljava/lang/Enum;.compareTo": 24,
+  "Ljava/lang/StringBuilder;.append": 22,
+  "Ljava/lang/ref/WeakReference;.get": 12,
+  "Ljava/lang/ref/Reference;.get": 12,
+  "Landroid/content/res/Resources;.getConfiguration": 10
+ },
+ "etar": {
+  "Ljava/lang/Object;.hashCode": 19,
+  "Ljava/util/GregorianCalendar;.get": 18,
+  "Ljava/lang/Long;.numberOfTrailingZeros": 12,
+  "Ljava/lang/ref/WeakReference;.get": 12,
+  "Ljava/lang/Object;.equals": 12,
+  "Landroid/content/Context;.getSharedPreferences": 10
+ },
+ "textpad": {
+  "Landroid/view/View$MeasureSpec;.getMode": 36,
+  "Landroid/content/res/Resources;.getDisplayMetrics": 18,
+  "Landroid/widget/FrameLayout;.onMeasure": 17,
+  "Landroid/view/View$MeasureSpec;.makeMeasureSpec": 17,
+  "Ljava/lang/ref/WeakReference;.get": 12,
+  "Ljava/util/concurrent/CopyOnWriteArrayList;.<init>": 9
+ }
+}

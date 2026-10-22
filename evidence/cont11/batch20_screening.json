@@ -1,0 +1,120 @@
+{
+ "batch_directive": "20-by-20 apps+games (user 2025-10-22)",
+ "binary_sha16": "aed46450c103f2ea",
+ "records": [
+  {
+   "label": "mueller_stopwatch",
+   "apk": "com.github.muellerma.stopwatch_6.apk",
+   "apk_sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+   "abi": "PURE_DEX",
+   "install": "OK",
+   "package": "com.github.muellerma.stopwatch",
+   "rc": 1,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "png": {
+    "w": 1080,
+    "h": 1920,
+    "distinct_colors": 1,
+    "bg_px": 2073600,
+    "content_px": 0,
+    "content_frac": 0.0
+   },
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 0,
+   "app_boundary": 0,
+   "app_draw_ops": null
+  },
+  {
+   "label": "fossify_math",
+   "apk": "org.fossify.math_10.apk",
+   "apk_sha256": "7c5443c22d6d62c67dfe80df33ea9161ff0fa440f92590bcb45d7008b57613ed",
+   "abi": "MIXED:arm64-v8a,armeabi-v7a,x86,x86_64",
+   "install": "OK",
+   "package": "org.fossify.math",
+   "rc": 1,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "png": {
+    "w": 1080,
+    "h": 1920,
+    "distinct_colors": 1,
+    "bg_px": 2073600,
+    "content_px": 0,
+    "content_frac": 0.0
+   },
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 5,
+   "app_boundary": 1,
+   "app_draw_ops": null,
+   "first_uncaught": "EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalArgumentException; unwound Lp5/d;.a invoke_pc=0x1d depth=4 [FRONTIER]"
+  },
+  {
+   "label": "deskclock",
+   "apk": "com.best.deskclock_2037.apk",
+   "apk_sha256": "12d446e9fd32aa63941fba022dad33eeb98e74470d2d354a245f284bacdf4f87",
+   "abi": "PURE_DEX",
+   "install": "OK",
+   "package": "com.best.deskclock",
+   "rc": 1,
+   "screenshot_sha16": "b5a7a35d5fe0564b",
+   "png": {
+    "w": 1080,
+    "h": 1920,
+    "distinct_colors": 1,
+    "bg_px": 2073600,
+    "content_px": 0,
+    "content_frac": 0.0
+   },
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 23,
+   "app_boundary": 8,
+   "app_draw_ops": null,
+   "first_uncaught": "EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lyg0;.i invoke_pc=0x7 depth=4 [FRONTIER]"
+  },
+  {
+   "label": "etar",
+   "apk": "ws.xsoh.etar_57.apk",
+   "apk_sha256": "dae01d93c8920aa63845868db2190bcc4aa6ff8410b1289de1ce27b1bb89c599",
+   "abi": "PURE_DEX",
+   "install": "OK",
+   "package": "ws.xsoh.etar",
+   "rc": 1,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "png": {
+    "w": 1080,
+    "h": 1920,
+    "distinct_colors": 1,
+    "bg_px": 2073600,
+    "content_px": 0,
+    "content_frac": 0.0
+   },
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 37,
+   "app_boundary": 8,
+   "app_draw_ops": null,
+   "first_uncaught": "EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/preference/Preference;.<init> invoke_pc=0x37 depth=14 [FRONTIER]"
+  },
+  {
+   "label": "textpad",
+   "apk": "com.maxistar.textpad_63.apk",
+   "apk_sha256": "322ba8b62ed791db8e2ad7b459ad4bc952992c933d30a61eb190256152d7fb2e",
+   "abi": "PURE_DEX",
+   "install": "OK",
+   "package": "com.maxistar.textpad",
+   "rc": 1,
+   "screenshot_sha16": "cf0756dac53d8d48",
+   "png": {
+    "w": 1080,
+    "h": 1920,
+    "distinct_colors": 1,
+    "bg_px": 2073600,
+    "content_px": 0,
+    "content_frac": 0.0
+   },
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 5,
+   "app_boundary": 1,
+   "app_draw_ops": null,
+   "first_uncaught": "EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/fragment/app/FragmentActivity;.onRequestPermissionsResult invoke_pc=0x2 depth=4 [FRONTIER]"
+  }
+ ]
+}
