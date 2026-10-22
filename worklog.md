@@ -11088,3 +11088,18 @@ Work Log:
 Stage Summary:
 - FIRST ENGINE SOURCE FIX of CONT-155, first cohort-level render advance of the campaign: 6 previously WINDOW_ROOT-blank apps now paint real content, at zero anchor drift. Honest residual ladder for the cohort: aat (onCreate still unresolved — next case), theme-gate trio (top generic lever: AppCompat theme-attr resolution), Koin pair (upstream DI registry completeness), NPE trio (per-app decode).
 - TRAIN 5 owns: ch.bailu.aat onCreate-resolution case + the theme-gate decode (C-type).
+
+---
+Task ID: CONT-155 TRAIN 5
+Agent: main agent (Z.ai)
+Task: TRAIN 5 — C-type theme-gate decode (todolist/leradar/exodusprivacy "You need to use a Theme.AppCompat theme").
+
+Work Log:
+- TypedArray built attrs=127 theme-backed; the APK's own R$styleable.AppCompatTheme fill payload byte-verified — windowActionBar (0x10100ab) ABSENT from the array (build-rewritten styleable; engine faithfully materialized dex data, NOT an engine defect; index constants remap consistently).
+- F093-DIAG census: 125/127 MISS, 2 HIT = exactly the app-owned keys (windowNoTitle/windowActionModeOverlay).
+- App-arsc parent chain walked (scripts/cont155_theme_chain.py, sparse-law walker — 3 walker laws fixed en route: ResTable_package field offsets +268/+276; 0x0201/0x0202 constants swap; SPARSE/OFFSET16 flags in ResTable_type res0): 5 app levels, 10 keys, chain terminates at android:Theme.Material.Light.NoActionBar (0x010302e3) — the app does NOT parent into bundled appcompat styles at all.
+- Engine's materialized map = 373 keys; 0x10100ab not among them. Remaining question (does the framework Material bag carry 0x10100ab) needs the ENGINE parser as authority — python walker handles DENSE/OFFSET16 but fw arsc mixes SPARSE-pair chunks.
+- Registry F-NEW-483 CLASSIFIED appended, 797 roots id-unique main==mirror. Evidence: run/c155/train5_theme_gate.md.
+
+Stage Summary:
+- C-type kill chain pinned end-to-end with one honest open link (framework Material bag content audit) — TRAIN 6 owns the engine-side theme-bag dump and the definitive fix (theme engine or framework table, never the app).
