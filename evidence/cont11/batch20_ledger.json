@@ -19,15 +19,15 @@
    "uncaught": 12,
    "first_uncaught_cls": "Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException;",
    "fix1": {
-    "sha16": "b6dde6074bf47264",
+    "sha16": "8a6c24ac8a7d718e",
     "verdict": "REAL_APP_CONTENT",
     "uncaught": 0,
     "png": {
      "w": 1080,
      "h": 1920,
-     "distinct_colors": 145,
-     "content_px": 978380,
-     "content_frac": 0.4718
+     "distinct_colors": 746,
+     "content_px": 1137140,
+     "content_frac": 0.5484
     }
    }
   },
@@ -131,15 +131,15 @@
    "uncaught": 0,
    "first_uncaught_cls": null,
    "fix1": {
-    "sha16": "97927c42cbeec270",
+    "sha16": "548a2d91ef9892fb",
     "verdict": "REAL_APP_CONTENT",
     "uncaught": 0,
     "png": {
      "w": 1080,
      "h": 1920,
-     "distinct_colors": 1408,
-     "content_px": 1263099,
-     "content_frac": 0.6091
+     "distinct_colors": 1638,
+     "content_px": 1258563,
+     "content_frac": 0.6069
     }
    }
   },
@@ -159,15 +159,15 @@
    "uncaught": 0,
    "first_uncaught_cls": null,
    "fix1": {
-    "sha16": "4e6e59ecfb910187",
-    "verdict": "REAL_APP_CONTENT",
+    "sha16": "6da289aab14d2256",
+    "verdict": "PARTIAL_CONTENT",
     "uncaught": 0,
     "png": {
      "w": 1080,
      "h": 1920,
-     "distinct_colors": 329,
-     "content_px": 558942,
-     "content_frac": 0.2696
+     "distinct_colors": 254,
+     "content_px": 10716,
+     "content_frac": 0.0052
     }
    }
   },
@@ -187,7 +187,7 @@
    "uncaught": 6,
    "first_uncaught_cls": "Lcom/badlogic/gdx/utils/SharedLibraryLoadRuntimeException;",
    "fix1": {
-    "sha16": "31ddd4d5b8e6d18e",
+    "sha16": "11a38a5aeeff45a6",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
@@ -243,7 +243,7 @@
    "uncaught": 27,
    "first_uncaught_cls": "Ljava/lang/NullPointerException;",
    "fix1": {
-    "sha16": "31ddd4d5b8e6d18e",
+    "sha16": "b5a7a35d5fe0564b",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
@@ -271,15 +271,15 @@
    "uncaught": 35,
    "first_uncaught_cls": "Ljava/lang/IllegalArgumentException;",
    "fix1": {
-    "sha16": "6588621c4a0c4182",
+    "sha16": "ba50a4d28ea62fe7",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
      "w": 1080,
      "h": 1920,
-     "distinct_colors": 2,
-     "content_px": 136080,
-     "content_frac": 0.0656
+     "distinct_colors": 1,
+     "content_px": 0,
+     "content_frac": 0.0
     }
    }
   },
@@ -355,7 +355,7 @@
    "uncaught": 0,
    "first_uncaught_cls": null,
    "fix1": {
-    "sha16": "5c4a0172628849ba",
+    "sha16": "d602648e8e401895",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
@@ -383,15 +383,15 @@
    "uncaught": 16,
    "first_uncaught_cls": "Ljava/lang/IllegalArgumentException;",
    "fix1": {
-    "sha16": "7960bce447ac6d8f",
+    "sha16": "2ac5d8d0cbf9552a",
     "verdict": "REAL_APP_CONTENT",
     "uncaught": 0,
     "png": {
      "w": 1080,
      "h": 1920,
-     "distinct_colors": 224,
-     "content_px": 674238,
-     "content_frac": 0.3252
+     "distinct_colors": 396,
+     "content_px": 765987,
+     "content_frac": 0.3694
     }
    }
   },
@@ -411,7 +411,7 @@
    "uncaught": 0,
    "first_uncaught_cls": null,
    "fix1": {
-    "sha16": "31ddd4d5b8e6d18e",
+    "sha16": "d602648e8e401895",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
@@ -467,7 +467,7 @@
    "uncaught": 5,
    "first_uncaught_cls": "Ljava/lang/IllegalArgumentException;",
    "fix1": {
-    "sha16": "31ddd4d5b8e6d18e",
+    "sha16": "b5a7a35d5fe0564b",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
@@ -523,7 +523,7 @@
    "uncaught": 37,
    "first_uncaught_cls": "Ljava/lang/NullPointerException;",
    "fix1": {
-    "sha16": "31ddd4d5b8e6d18e",
+    "sha16": "b270ff040b3601dc",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
@@ -551,15 +551,15 @@
    "uncaught": 5,
    "first_uncaught_cls": "Ljava/lang/NullPointerException;",
    "fix1": {
-    "sha16": "cf0756dac53d8d48",
+    "sha16": "3e0c1295b03e36c4",
     "verdict": "DEFAULT_BACKGROUND_ONLY",
     "uncaught": 0,
     "png": {
      "w": 1080,
      "h": 1920,
-     "distinct_colors": 1,
-     "content_px": 0,
-     "content_frac": 0.0
+     "distinct_colors": 2,
+     "content_px": 2418,
+     "content_frac": 0.0012
     }
    }
   }
