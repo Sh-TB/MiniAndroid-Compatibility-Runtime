@@ -11149,3 +11149,16 @@ Work Log:
 
 Stage Summary:
 - SECOND engine fix of the formation; the C-type trio fully rescued; cumulative WINDOW_ROOT 9/17 render. Remaining cohort residuals: aat case, Koin pair, NPE/ArrayStore trio. TRAIN 9 owns the final wall + ledger; TRAIN 10 close-out.
+
+---
+Task ID: CONT-155 TRAIN 9
+Agent: main agent (Z.ai)
+Task: TRAIN 9 — the aat case decode + final wall.
+
+Work Log:
+- aat decoded (verbose + METHOD-TRACE): the launcher DOES declare onCreate (earlier A-type classification corrected to D-type — honest correction registered); the kill = WindowManager.getCurrentWindowMetrics (API 30) has NO engine shadow -> null -> Kotlin checkNotNullExpressionValue 'must not be null' inside AppLayout.updateMeasurementSDK30 -> NPE unwinds MainActivity.onCreate before any view. Full stack pinned: onCreate -> createViews -> MainControlBar x2 -> ControlBar -> getBigButtonSize -> getScreenSmallSide -> updateMeasurement -> updateMeasurementSDK30 -> Intrinsics NPE (depth 11). ACRA init chain present but recovered — NOT the killer.
+- F-NEW-485 CLASSIFIED registered (799 roots, id-unique main==mirror) with the named generic lever: WindowManager/WindowMetrics shadow family (getSystemService(WINDOW_SERVICE) -> metrics carrying 1080x1920).
+- Final wall: 9/9 anchors MATCH (incl. the 2 F-NEW-484 re-based faces); negatives 19/19; skill selftest 13/13 — all green at binary d7d3d61a76129682.
+
+Stage Summary:
+- All 17 WINDOW_ROOT apps now have a named, machine-verified root: 9 render (6 F-NEW-482 + 3 F-NEW-484), aat = F-NEW-485 CLASSIFIED (shadow family lever), Koin pair = B-type upstream, NPE/ArrayStore trio = D-type decodes pending. TRAIN 10 = the grand ledger + close.
