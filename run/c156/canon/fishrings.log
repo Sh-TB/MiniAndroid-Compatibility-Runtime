@@ -1,0 +1,212 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=71
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$id; offset=0x50ff static_fields=51 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$id; with_defaults=51/51
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$layout; offset=0x51ff static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$layout; with_defaults=5/5
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$menu; offset=0x5219 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$menu; with_defaults=1/1
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$mipmap; offset=0x521f static_fields=16 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$mipmap; with_defaults=16/16
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$raw; offset=0x5270 static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$raw; with_defaults=5/5
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$string; offset=0x528a static_fields=19 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$string; with_defaults=19/19
+[EXP062-SV] parse_static_values for Leu/veldsoft/fish/rings/R$style; offset=0x52ea static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Leu/veldsoft/fish/rings/R$style; with_defaults=2/2
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=78
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=98
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=98
+[S123-ACTION-REG] activities=5 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/fishrings_v1.23_vc6.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 71 entries (23 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'eu.veldsoft.fish.rings.SplashActivity'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/fishrings_v1.23_vc6.apk named_ids=99 types=7
+[ARSC-VALUES] apk=upload/canonical_apks/fishrings_v1.23_vc6.apk strings=19 colors=0 dimens=0 bools=0 integers=0 raw=5 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Fish Rings for Android" (resid @0x7f060002)
+[A7b] icon @0x7f040005 -> res/mipmap-xxhdpi-v4/ic_launcher.png (11357 bytes) DECODED 144x144 rgb rgba_bytes=82944 fnv1a=0x2d0456be66a9a465
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=37)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Leu/veldsoft/fish/rings/SplashActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[M3-LONG-PUT] field=Leu/veldsoft/fish/rings/SplashActivity;.timeout caller=Leu/veldsoft/fish/rings/SplashActivity;.<init> value=0
+[MEM] method_exit: Leu/veldsoft/fish/rings/SplashActivity;.<init> insns=6 RSS=19.6133 MB
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Leu/veldsoft/fish/rings/SplashActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Leu/veldsoft/fish/rings/SplashActivity;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=2 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Leu/veldsoft/fish/rings/SplashActivity; args=1 arg0_kind=0 arg0_int=2130837508
+[U007-INFLATE] setContentView(layoutResId=0x7f020004)
+[U007-INFLATE] root_id=16 views=2 strings=0 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=16 recorded for first-traversal attach+measure
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/SplashActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity; args=1 arg0_kind=0 arg0_int=2130771969
+[EXP088-B-DBG] findViewById: target=0x7f010001 content_view_id=10 registry=YES
+[EXP088-B] findViewById(0x7f010001) → view_id=17
+[TRY-ENTRY] Landroid/webkit/WebView;.getSettings dex_report=YES
+[REC-MISS] Landroid/webkit/WebView;.getSettings caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F085-WV] getSettings: webview=o17 -> settings=o18
+[TRY-ENTRY] Landroid/webkit/WebSettings;.setJavaScriptEnabled dex_report=YES
+[REC-MISS] Landroid/webkit/WebSettings;.setJavaScriptEnabled caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Leu/veldsoft/fish/rings/SplashActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Leu/veldsoft/fish/rings/SplashActivity; args=1 arg0_kind=0 arg0_int=2130771969
+[EXP088-B-DBG] findViewById: target=0x7f010001 content_view_id=10 registry=YES
+[EXP088-B] findViewById(0x7f010001) → view_id=17
+[TRY-ENTRY] Landroid/webkit/WebView;.loadUrl dex_report=YES
+[REC-MISS] Landroid/webkit/WebView;.loadUrl caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F085-WV] loadUrl asset MISSING (honest placeholder): webview=o17 entry=assets/banner.html
+[F085-WV] loadUrl/postUrl: webview=o17 url="file:///android_asset/banner.html"
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getPackageManager dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getComponentName dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/content/pm/PackageManager;.getActivityInfo dex_report=YES
+[REC-MISS] Landroid/content/pm/PackageManager;.getActivityInfo caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F116-ACTINFO] eu.veldsoft.fish.rings.Leu.veldsoft.fish.rings.SplashActivity; metaData=2
+[TRY-ENTRY] Landroid/os/Bundle;.getInt dex_report=YES
+[REC-MISS] Landroid/os/Bundle;.getInt caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[M3-LONG-PUT] field=Leu/veldsoft/fish/rings/SplashActivity;.timeout caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate value=5000
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getPackageManager dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageManager class=Landroid/app/Activity;
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.getComponentName dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getComponentName class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/content/pm/PackageManager;.getActivityInfo dex_report=YES
+[REC-MISS] Landroid/content/pm/PackageManager;.getActivityInfo caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F116-ACTINFO] eu.veldsoft.fish.rings.Leu.veldsoft.fish.rings.SplashActivity; metaData=2
+[TRY-ENTRY] Landroid/os/Bundle;.getString dex_report=YES
+[REC-MISS] Landroid/os/Bundle;.getString caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[EXP093-BUNDLE] getString class=Landroid/os/Bundle; key="redirect" bundle_id=25 has_obj=1
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.onPostCreate dex_report=YES
+[TRY-ENTRY] Leu/veldsoft/fish/rings/SplashActivity;.onStart dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Leu/veldsoft/fish/rings/SplashActivity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[G07-LIFECYCLE] Leu/veldsoft/fish/rings/SplashActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Leu/veldsoft/fish/rings/SplashActivity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Leu/veldsoft/fish/rings/SplashActivity;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onResume method_id=4 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Leu/veldsoft/fish/rings/SplashActivity;
+[REC-MISS] Ljava/util/Timer;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[REC-MISS] Ljava/util/TimerTask;.<init> caller=Leu/veldsoft/fish/rings/SplashActivity$1;.<init>
+[MEM] method_exit: Leu/veldsoft/fish/rings/SplashActivity$1;.<init> insns=3 RSS=166.285 MB
+[REC-MISS] Ljava/util/Timer;.schedule caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[QUEUE] Runnable id=27 enqueued (delay=5000ms, ready_at=5000ms virtual, queue_depth=1, source=Timer.schedule)
+[F115-TIMER] schedule task=o27 delay=5000ms period=0ms caller=Leu/veldsoft/fish/rings/SplashActivity;.onResume
+[G07-LIFECYCLE] Leu/veldsoft/fish/rings/SplashActivity;.onResume() dispatched via DEX engine (ok=1, instructions=11)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=23 nodes=3 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/RelativeLayout;.onAttachedToWindow caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/webkit/WebView;.onAttachedToWindow caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=359
+[REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/webkit/WebView;.dispatchApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[REC-MISS] Landroid/webkit/WebView;.onApplyWindowInsets caller=Leu/veldsoft/fish/rings/SplashActivity;.onCreate
+[F384-ROOTINSETS] root=o16 cls=Landroid/widget/RelativeLayout; insets=o28 dispatched=false
+[ECR-ROOT] scalar content_view_id root=16
+[P0-1-ORDER] first-traversal attach wave root=16 attached=0 (attach strictly precedes measure)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=391
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=522
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=1
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=1 DEFERRED-UI-PENDING (earliest ready_at=5000ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c156/canon/fishrings/frames
+[ECR-ROOT] scalar content_view_id root=16
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/webkit/WebView; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels

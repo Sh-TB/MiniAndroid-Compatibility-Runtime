@@ -34736,7 +34736,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Identity fields: FIX-M3-012b law stores "class_desc"; F-029
         // records carry "__reflect_class". Either binds the target class.
         result = DalvikValue::make_null();
+        // F-NEW-490 (CONT-156 Train 9): bounded diagnostic on the
+        // silent-null paths — goodtime's attachBaseContext DI bootstrap
+        // received a NULL from this call and died on the follow-up
+        // getClass() null-check; AOSP answers an exception or a live
+        // object, never a silent null. The diag names WHICH null path
+        // fired (no-token vs missing-decl) so the token provenance can
+        // be fixed without guessing.
+        static thread_local const bool f490_diag =
+            std::getenv("MINIANDROID_F490_DIAG") != nullptr;
+        static thread_local uint32_t f490_budget = 40;
+        auto f490_say = [&](const char* why, const std::string& detail) {
+            if (f490_diag && f490_budget > 0) {
+                --f490_budget;
+                std::cerr << "[F490-NULL] " << why << " " << detail
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        };
         if (args.empty() || args[0].type != DalvikType::OBJECT_REF) {
+            f490_say("no-receiver-token",
+                     args.empty() ? "args=0" : "arg0-not-object");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -34750,6 +34770,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (cls_f.has_value()) rcls = cls_f->string_val;
         }
         if (rcls.empty()) {
+            f490_say("token-has-no-class-identity",
+                     "obj#" + std::to_string(args[0].object_id));
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }

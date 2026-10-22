@@ -1,0 +1,403 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=74
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$array; offset=0x5a93 static_fields=4 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$array; with_defaults=4/4
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$color; offset=0x5aa8 static_fields=8 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$color; with_defaults=8/8
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$drawable; offset=0x5ad1 static_fields=7 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$drawable; with_defaults=7/7
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$id; offset=0x5af5 static_fields=10 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$id; with_defaults=10/10
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$layout; offset=0x5b28 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$layout; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$string; offset=0x5b33 static_fields=38 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$string; with_defaults=38/38
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$xml; offset=0x5bf2 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$xml; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=80
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=100
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=100
+[S123-ACTION-REG] activities=2 action_targets=1
+FONT_SOURCE apk=upload/chessclock_29.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 70 entries (22 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.chessclock.android.ChessClock'
+[U007-RES] ResourceRuntime loaded: upload/chessclock_29.apk named_ids=70 types=7
+[ARSC-VALUES] apk=upload/chessclock_29.apk strings=38 colors=8 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Simple Chess Clock" (resid @0x7f060000)
+[A7b] icon @0x7f020000 -> res/drawable-hdpi-v4/icon.png (3399 bytes) DECODED 72x72 ga rgba_bytes=20736 fnv1a=0x990dff4864d51813
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=19)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/chessclock/android/ChessClock;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/os/Handler;.<init> dex_report=YES
+[REC-MISS] Landroid/os/Handler;.<init> caller=Lcom/chessclock/android/ChessClock;.<init>
+[TRY-ENTRY] Lcom/chessclock/android/DialogFactory;.<init> dex_report=YES
+[MEM] method_exit: Lcom/chessclock/android/DialogFactory;.<init> insns=2 RSS=18.4102 MB
+[EXP062-INIT] Lcom/chessclock/android/ChessClock; static_fields=14 with_defaults=14
+[CLASS_INIT] class=Lcom/chessclock/android/ChessClock; method=<clinit> bytecode_size=37
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.<clinit> dex_report=YES
+[CLASS_INIT] class=Lcom/chessclock/android/ChessClock; method=<clinit> result=OK engine=0x7ffde6facc08 storage_size=39
+[SGET] class=Lcom/chessclock/android/ChessClock; method=<init> pc=20 field=Lcom/chessclock/android/ChessClock;.NO_DELAY obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=<init> pc=27 field=Lcom/chessclock/android/ChessClock;.MINUTES obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=<init> pc=31 field=Lcom/chessclock/android/ChessClock;.SECONDS obj_id=0
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$1;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$2;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$3;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$4;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$7;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$8;.<init> dex_report=YES
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/chessclock/android/ChessClock;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/chessclock/android/ChessClock;' id=15
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/chessclock/android/ChessClock;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=1 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/chessclock/android/ChessClock;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.requestWindowFeature dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Lcom/chessclock/android/ChessClock; as Landroid/app/Activity; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .requestWindowFeature
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.getWindow dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lcom/chessclock/android/ChessClock; recv_oid=15 act_oid=15)
+[TRY-ENTRY] Landroid/view/Window;.addFlags dex_report=YES
+[REC-MISS] Landroid/view/Window;.addFlags caller=Lcom/chessclock/android/ChessClock;.onCreate
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity; args=1 arg0_kind=0 arg0_int=2130903041
+[U007-INFLATE] setContentView(layoutResId=0x7f030001)
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[U007-INFLATE] root_id=25 views=15 strings=0 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=25 recorded for first-traversal attach+measure
+[C013-HIER] setContentView dispatched via superclass chain: Lcom/chessclock/android/ChessClock; -> Landroid/app/Activity; (declared=Lcom/chessclock/android/ChessClock; receiver=Lcom/chessclock/android/ChessClock;)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.setUpGame dex_report=YES
+[TRY-ENTRY] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences dex_report=YES
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 receiver=f → FOUND view_id=30 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 receiver=f → FOUND view_id=36 (receiver subtree)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x7f050000 -> 0xffffffff
+[REC-MISS] Landroid/widget/TextView;.setTextColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[M3-SETTEXTCOLOR] view_id=30 color=0xffffffff provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x7f050000 -> 0xffffffff
+[REC-MISS] Landroid/widget/TextView;.setTextColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[M3-SETTEXTCOLOR] view_id=36 color=0xffffffff provenance=EXPLICIT_RUNTIME (prev=0x0 prov=0)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080004 receiver=f → FOUND view_id=31 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080007 receiver=f → FOUND view_id=37 (receiver subtree)
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080002 receiver=f → FOUND view_id=29 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080005 receiver=f → FOUND view_id=35 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080009 receiver=f → FOUND view_id=39 (receiver subtree)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080008 receiver=f → FOUND view_id=38 (receiver subtree)
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x7f050003 -> 0xff444444
+[REC-MISS] Landroid/widget/Button;.setBackgroundColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP095-BG] view=29 color=0xff444444
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x7f050003 -> 0xff444444
+[REC-MISS] Landroid/widget/Button;.setBackgroundColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP095-BG] view=35 color=0xff444444
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=223 field=Lcom/chessclock/android/ChessClock;.NO_DELAY obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=237 field=Lcom/chessclock/android/ChessClock;.MINUTES obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=251 field=Lcom/chessclock/android/ChessClock;.SECONDS obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[PARSE] Ljava/lang/Integer;.parseInt("10", radix 10) → 10
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[PARSE] Ljava/lang/Integer;.parseInt("10", radix 10) → 10
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[PARSE] Ljava/lang/Integer;.parseInt("0", radix 10) → 0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=319 field=Landroid/provider/Settings$System;.DEFAULT_RINGTONE_URI obj_id=11
+[REC-MISS] Landroid/net/Uri;.toString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/net/Uri;.parse caller=Lcom/chessclock/android/ChessClock;.initRingtone
+[S107-URI] parse "content://settings/system/ringtone" scheme=content caller=Lcom/chessclock/android/ChessClock;.initRingtone
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[C013-HIER] getBaseContext dispatched via superclass chain: Lcom/chessclock/android/ChessClock; -> Landroid/app/Activity; (declared=Lcom/chessclock/android/ChessClock; receiver=Lcom/chessclock/android/ChessClock;)
+[REC-MISS] Landroid/media/RingtoneManager;.getRingtone caller=Lcom/chessclock/android/ChessClock;.initRingtone
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=15 field=Lcom/chessclock/android/ChessClock;.MINUTES obj_id=0
+[M3-LONG-PUT] field=Lcom/chessclock/android/ChessClock;.t_P1 caller=Lcom/chessclock/android/ChessClock;.setUpGame value=600000
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=15 field=Lcom/chessclock/android/ChessClock;.MINUTES obj_id=0
+[M3-LONG-PUT] field=Lcom/chessclock/android/ChessClock;.t_P2 caller=Lcom/chessclock/android/ChessClock;.setUpGame value=600000
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=439 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=29 class=Landroid/widget/Button; listener_id=18 listener_class_at_reg=Lcom/chessclock/android/ChessClock$1;
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=35 class=Landroid/widget/Button; listener_id=19 listener_class_at_reg=Lcom/chessclock/android/ChessClock$2;
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=39 class=Landroid/widget/Button; listener_id=20 listener_class_at_reg=Lcom/chessclock/android/ChessClock$3;
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=38 class=Landroid/widget/Button; listener_id=21 listener_class_at_reg=Lcom/chessclock/android/ChessClock$4;
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-STRFMT] String.format("%d.%d", n=2) → "0.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-STRFMT] String.format("%d:%02d", n=2) → "10:00"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=30 class=Landroid/widget/TextView; arg_kind=5 text="10:00"
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-STRFMT] String.format("%d.%d", n=2) → "0.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-STRFMT] String.format("%d:%02d", n=2) → "10:00"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=36 class=Landroid/widget/TextView; arg_kind=5 text="10:00"
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/chessclock/android/ChessClock; runtime_class=Lcom/chessclock/android/ChessClock;
+[G07-LIFECYCLE] Lcom/chessclock/android/ChessClock;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/chessclock/android/ChessClock; runtime_class=Lcom/chessclock/android/ChessClock;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lcom/chessclock/android/ChessClock;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Lcom/chessclock/android/ChessClock;.onResume
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onResume method_id=4 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/chessclock/android/ChessClock;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[G07-LIFECYCLE] Lcom/chessclock/android/ChessClock;.onResume() dispatched via DEX engine (ok=1, instructions=6)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=22 nodes=16 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/RelativeLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lcom/chessclock/android/ChessClock;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=374
+[REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/TextView;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/view/View;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/view/View;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/RelativeLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/TextView;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/view/View;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/view/View;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lcom/chessclock/android/ChessClock;.onCreate
+[F384-ROOTINSETS] root=o25 cls=Landroid/widget/RelativeLayout; insets=o54 dispatched=false
+[ECR-ROOT] scalar content_view_id root=25
+[P0-1-ORDER] first-traversal attach wave root=25 attached=0 (attach strictly precedes measure)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=26 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=27 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,0) size=(679x276)
+[EXP092-RENDER] node=32 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=33 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=34 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=36 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,967) size=(679x276)
+[EXP092-RENDER] node=38 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,0) size=(231x126)
+[EXP092-RENDER] node=39 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(849,0) size=(231x126)
+[EXP092-COPY] fb has 2012468 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2012468 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=423
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=568
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=26 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=27 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,0) size=(679x276)
+[EXP092-RENDER] node=32 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=33 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=34 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=36 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,967) size=(679x276)
+[EXP092-RENDER] node=38 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,0) size=(231x126)
+[EXP092-RENDER] node=39 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(849,0) size=(231x126)
+[EXP092-COPY] fb has 2012468 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2012468 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=26 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=27 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,0) size=(679x276)
+[EXP092-RENDER] node=32 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=33 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=34 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=36 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,967) size=(679x276)
+[EXP092-RENDER] node=38 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,0) size=(231x126)
+[EXP092-RENDER] node=39 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(849,0) size=(231x126)
+[EXP092-COPY] fb has 2012468 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2012468 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=26 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=27 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,0) size=(679x276)
+[EXP092-RENDER] node=32 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=33 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=34 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=36 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,967) size=(679x276)
+[EXP092-RENDER] node=38 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,0) size=(231x126)
+[EXP092-RENDER] node=39 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(849,0) size=(231x126)
+[EXP092-COPY] fb has 2012468 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2012468 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=26 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=27 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,0) size=(679x276)
+[EXP092-RENDER] node=32 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=33 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=34 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=36 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,967) size=(679x276)
+[EXP092-RENDER] node=38 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,0) size=(231x126)
+[EXP092-RENDER] node=39 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(849,0) size=(231x126)
+[EXP092-COPY] fb has 2012468 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2012468 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c156/canon/chessclock/frames
+[ECR-ROOT] scalar content_view_id root=25
+[V1-CONTENT-BOUNDS] root=25 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=25 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=26 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=27 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,0) size=(679x276)
+[EXP092-RENDER] node=32 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=33 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=34 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=36 class=Landroid/widget/TextView; text="10:00" children=0 depth=3 pos=(0,967) size=(679x276)
+[EXP092-RENDER] node=38 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,0) size=(231x126)
+[EXP092-RENDER] node=39 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(849,0) size=(231x126)
+[EXP092-COPY] fb has 2012468 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2012468 non-white pixels

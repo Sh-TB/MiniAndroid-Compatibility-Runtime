@@ -1,0 +1,149 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=85
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$attr; offset=0xbe93e static_fields=17 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$attr; with_defaults=17/17
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$color; offset=0xbe994 static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$color; with_defaults=6/6
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$dimen; offset=0xbe9b3 static_fields=9 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$dimen; with_defaults=9/9
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$drawable; offset=0xbe9e1 static_fields=45 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$drawable; with_defaults=45/45
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$id; offset=0xbeac3 static_fields=18 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$id; with_defaults=18/18
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$layout; offset=0xbeb1e static_fields=11 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$layout; with_defaults=11/11
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$string; offset=0xbeb56 static_fields=11 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$string; with_defaults=11/11
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$style; offset=0xbeb8e static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$style; with_defaults=1/1
+[EXP062-SV] parse_static_values for Landroidx/appcompat/R$styleable; offset=0xbeb94 static_fields=178 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/R$styleable; with_defaults=178/178
+[EXP062-SV] parse_static_values for Landroidx/appcompat/resources/R$drawable; offset=0xbecd8 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Landroidx/appcompat/resources/R$drawable; with_defaults=1/1
+[EXP062-SV] parse_static_values for Landroidx/core/R$attr; offset=0xbecde static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$attr; with_defaults=3/3
+[EXP062-SV] parse_static_values for Landroidx/core/R$id; offset=0xbecee static_fields=42 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$id; with_defaults=42/42
+[EXP062-SV] parse_static_values for Landroidx/core/R$styleable; offset=0xbedc1 static_fields=28 with_defaults=0
+[EXP062-SV-DONE] Landroidx/core/R$styleable; with_defaults=26/28
+[EXP062-SV] parse_static_values for Landroidx/startup/R$string; offset=0xbedf6 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Landroidx/startup/R$string; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=115
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=135
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=138
+[S123-ACTION-REG] activities=0 action_targets=0
+FONT_SOURCE apk=upload/canonical_apks/com.github.muellerma.stopwatch_6.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 1105 entries (1060 from APK + 45 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for ''
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/com.github.muellerma.stopwatch_6.apk named_ids=978 types=12
+[ARSC-VALUES] apk=upload/canonical_apks/com.github.muellerma.stopwatch_6.apk strings=23 colors=44 dimens=51 bools=0 integers=4 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Stopwatch" (resid @0x7f0d001c)
+[A7b] icon @0x7f0c0000 -> res/BW.xml DECODE FAILED (adaptive-icon: layers reference app resources but no resolver was provided) — honest miss
+[EXP093-APP] Manifest declares Application class: Lcom/github/muellerma/stopwatch/StopwatchApp; (engine binds it post-DEX-inject)
+[BMF-RESOLVER] registering resolver EARLY (entries=333)
+[S1-PROVIDER] manifest providers transferred: 1
+[S1-PROVIDER]   androidx.startup.InitializationProvider
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.<init> dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/startup/InitializationProvider;.<init>
+[MEM] method_exit: Landroidx/startup/InitializationProvider;.<init> insns=2 RSS=30.2969 MB
+[371-MD] ProviderInfo androidx.startup.InitializationProvider metaData entries=3
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.attachInfo dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.onCreate dex_report=YES
+[TRY-ENTRY] Landroidx/startup/InitializationProvider;.getContext dex_report=YES
+[TRY-ENTRY] Landroid/content/ContentProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[TRY-ENTRY] Landroid/content/ContentProvider;.getContext dex_report=YES
+[REC-MISS] Landroid/content/ContentProvider;.getContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/InitializationProvider;.onCreate
+[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.<clinit> dex_report=YES
+[CLASS_INIT] class=Landroidx/startup/AppInitializer; method=<clinit> result=OK engine=0x7fff9fc2c3d8 storage_size=24
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.getInstance dex_report=YES
+[SGET-MISS] key=Landroidx/startup/AppInitializer;.sInstance storage_size=24 same_class_keys=1 engine=0x7fff9fc2c3d8 first=Landroidx/startup/AppInitializer;.sLock
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=0 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=4 field=Landroidx/startup/AppInitializer;.sLock obj_id=18
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=7 field=Landroidx/startup/AppInitializer;.sInstance obj_id=0
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Landroidx/startup/AppInitializer;.<init>
+[TRY-ENTRY] Ljava/util/HashSet;.<init> dex_report=YES
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Landroidx/startup/AppInitializer;.<init>
+[TRY-ENTRY] Ljava/util/HashMap;.<init> dex_report=YES
+[SGET] class=Landroidx/startup/AppInitializer; method=getInstance pc=25 field=Landroidx/startup/AppInitializer;.sInstance obj_id=19
+[TRY-ENTRY] Landroidx/startup/AppInitializer;.discoverAndInitialize dex_report=YES
+[TRY-ENTRY] Landroidx/tracing/Trace;.beginSection dex_report=YES
+[TRY-ENTRY] Landroidx/tracing/TraceApi18Impl;.beginSection dex_report=YES
+[TRY-ENTRY] Landroid/os/Trace;.beginSection dex_report=YES
+[REC-MISS] Landroid/os/Trace;.beginSection caller=Landroidx/tracing/TraceApi18Impl;.beginSection
+[TRY-ENTRY] Landroid/content/Context;.getPackageName dex_report=YES
+[REC-MISS] Landroid/content/Context;.getPackageName caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[TRY-ENTRY] Ljava/lang/Class;.getName dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getName caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/content/ComponentName;.<init> caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/content/Context;.getPackageManager caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/content/pm/PackageManager;.getProviderInfo caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[F273-PROVINFO] androidx.startup.InitializationProvider metaData entries=3
+[EXP062-INIT] Landroidx/startup/R$string; static_fields=1 with_defaults=1
+[SGET] class=Landroidx/startup/AppInitializer; method=discoverAndInitialize pc=2 field=Landroidx/startup/R$string;.androidx_startup value=2131558427
+[REC-MISS] Landroid/content/Context;.getString caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[EXP093-APPSTR] HIT! class=Landroid/content/Context; args=2 arg0_type=7_obj=17 arg1_type=1_int=2131558427
+[CTX-F136] getString(resid=0x7f0d001b, fargs=0) → "androidx.startup"
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/os/Bundle;.keySet caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/os/BaseBundle;.keySet caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Set;.iterator caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Set;.iterator caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Landroidx/startup/AppInitializer;.discoverAndInitialize
+[REC-MISS] Landroid/os/Trace;.endSection caller=Landroidx/tracing/TraceApi18Impl;.endSection
+[S1-PROVIDER] installed androidx.startup.InitializationProvider obj#14 attachInfo+onCreate OK
+[R341-APP] instantiating Application Lcom/github/muellerma/stopwatch/StopwatchApp; obj#32 (post-DEX-inject, AOSP order)
+[REC-MISS] Landroid/app/Application;.<init> caller=Lcom/github/muellerma/stopwatch/StopwatchApp;.<init>
+[CLASS_INIT] class=Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped; method=<clinit> result=OK engine=0x7fff9fc2c3d8 storage_size=27
+[SGET] class=Lcom/github/muellerma/stopwatch/StopwatchApp; method=<init> pc=10 field=Lcom/github/muellerma/stopwatch/ServiceStatus$Stopped;.INSTANCE obj_id=34
+[R341-APP] <init> OK
+[R341-APP] onCreate SKIPPED ins=0
+[R341-APP] identity published to ActivityShadow
+[R341-APP] bound application obj#32 (Lcom/github/muellerma/stopwatch/StopwatchApp;)
+[G12-ACF] framework-namespace <clinit> skipped (parent-delegation): Landroid/app/AppComponentFactory; [platform-ns]
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=1060 nodes=1 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=197
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=0
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=205
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=338
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=0
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=0
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=0
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=0
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c156/canon/stopwatch/frames
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/1
+[ECR-ROOT] scan root=0 candidates=0 cur_act=0

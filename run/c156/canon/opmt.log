@@ -1,0 +1,220 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=53
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$color; offset=0x4b51 static_fields=8 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$color; with_defaults=8/8
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$drawable; offset=0x4b7a static_fields=9 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$drawable; with_defaults=9/9
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$id; offset=0x4ba8 static_fields=15 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$id; with_defaults=15/15
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$layout; offset=0x4bf4 static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$layout; with_defaults=3/3
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$mipmap; offset=0x4c04 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$mipmap; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$string; offset=0x4c0f static_fields=17 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$string; with_defaults=17/17
+[EXP062-SV] parse_static_values for Lone/scarecrow/games/OPMT/R$style; offset=0x4c65 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lone/scarecrow/games/OPMT/R$style; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=60
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=80
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=80
+[S123-ACTION-REG] activities=3 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/opmt_v0.1.2_vc1.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 80 entries (33 from APK + 47 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'one.scarecrow.games.OPMT.MainMenu'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/opmt_v0.1.2_vc1.apk named_ids=55 types=7
+[ARSC-VALUES] apk=upload/canonical_apks/opmt_v0.1.2_vc1.apk strings=17 colors=8 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "OPMT" (resid @0x7f060001)
+[A7b] icon @0x7f050000 -> res/mipmap-xxxhdpi-v4/icon.png (10777 bytes) DECODED 500x500 rgb rgba_bytes=1000000 fnv1a=0xfd4972ffc1736e84
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=17)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.<init> dex_report=YES
+[TRY-ENTRY] Landroidx/appcompat/app/AppCompatActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Landroidx/appcompat/app/AppCompatActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[MEM] method_exit: Landroidx/appcompat/app/AppCompatActivity;.<init> insns=2 RSS=18.5742 MB
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lone/scarecrow/games/OPMT/MainMenu;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lone/scarecrow/games/OPMT/MainMenu;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[TRY-ENTRY] Landroidx/appcompat/app/AppCompatActivity;.onCreate dex_report=YES
+[S83-APXACT] onCreate semantic shadow: Landroidx/appcompat/app/AppCompatActivity; (appcompat delegate state machine bypassed at the framework boundary; app onCreate continues)
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Landroidx/appcompat/app/AppCompatActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Landroidx/appcompat/app/AppCompatActivity; args=1 arg0_kind=0 arg0_int=2130968577
+[U007-INFLATE] setContentView(layoutResId=0x7f040001)
+[U007-INFLATE] root_id=16 views=6 strings=3 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=16 recorded for first-traversal attach+measure
+[C013-HIER] setContentView dispatched via superclass chain: Lone/scarecrow/games/OPMT/MainMenu; -> Landroidx/appcompat/app/AppCompatActivity; (declared=Lone/scarecrow/games/OPMT/MainMenu; receiver=Lone/scarecrow/games/OPMT/MainMenu;)
+[EXP062-INIT] Landroidx/appcompat/app/AppCompatDelegate; static_fields=3 with_defaults=3
+[TRY-ENTRY] Landroidx/appcompat/app/AppCompatDelegate;.setDefaultNightMode dex_report=YES
+[MEM] method_exit: Landroidx/appcompat/app/AppCompatDelegate;.setDefaultNightMode insns=1 RSS=165.734 MB
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.getWindow dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroidx/appcompat/app/AppCompatActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[S134-F134A] getWindow answered (RECEIVER IDENTITY ref_class=Lone/scarecrow/games/OPMT/MainMenu; recv_oid=15 act_oid=15)
+[TRY-ENTRY] Landroid/view/Window;.setFlags dex_report=YES
+[REC-MISS] Landroid/view/Window;.setFlags caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lone/scarecrow/games/OPMT/MainMenu;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f03000c receiver=f → FOUND view_id=20 (receiver subtree)
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lone/scarecrow/games/OPMT/MainMenu;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f03000d receiver=f → FOUND view_id=19 (receiver subtree)
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lone/scarecrow/games/OPMT/MainMenu;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f03000a receiver=f → FOUND view_id=21 (receiver subtree)
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lone/scarecrow/games/OPMT/MainMenu;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f03000e receiver=f → FOUND view_id=17 (receiver subtree)
+[TRY-ENTRY] Landroid/content/Intent;.<init> dex_report=YES
+[REC-MISS] Landroid/content/Intent;.<init> caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[S123-ICTOR2] Intent.<init> recv=23 args=2 a0k6 a1k6="Lone/scarecrow/games/OPMT/GameActivity;"
+[S123-ICTOR] intent_ctor args=2 arg1_kind=6 arg1_class=Lone/scarecrow/games/OPMT/GameActivity; arg1_id=24
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda0;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/widget/Button;.setOnClickListener dex_report=YES
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=21 class=Landroid/widget/Button; listener_id=25 listener_class_at_reg=Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda0;
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda1;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/widget/Button;.setOnClickListener dex_report=YES
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=20 class=Landroid/widget/Button; listener_id=26 listener_class_at_reg=Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda1;
+[TRY-ENTRY] Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda2;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/widget/Button;.setOnClickListener dex_report=YES
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=19 class=Landroid/widget/Button; listener_id=27 listener_class_at_reg=Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda2;
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=17 class=Landroid/widget/Button; listener_id=28 listener_class_at_reg=Lone/scarecrow/games/OPMT/MainMenu$$ExternalSyntheticLambda3;
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lone/scarecrow/games/OPMT/MainMenu; runtime_class=Lone/scarecrow/games/OPMT/MainMenu;
+[G07-LIFECYCLE] Lone/scarecrow/games/OPMT/MainMenu;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lone/scarecrow/games/OPMT/MainMenu; runtime_class=Lone/scarecrow/games/OPMT/MainMenu;
+[G07-LIFECYCLE] Lone/scarecrow/games/OPMT/MainMenu;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=33 nodes=7 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/FrameLayout;.onAttachedToWindow caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=352
+[REC-MISS] Landroid/widget/FrameLayout;.dispatchApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/FrameLayout;.onApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Lone/scarecrow/games/OPMT/MainMenu;.onCreate
+[F384-ROOTINSETS] root=o16 cls=Landroid/widget/FrameLayout; insets=o29 dispatched=false
+[ECR-ROOT] scalar content_view_id root=16
+[EXT01-WINBG] windowBackground=@0xfffafafa rgb(250,250,250)
+[P0-1-ORDER] first-traversal attach wave root=16 attached=0 (attach strictly precedes measure)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/FrameLayout; text="" children=2 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(938,37) size=(95x95)
+[EXP092-RENDER] node=18 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(277,1379) size=(525x467)
+[EXP092-RENDER] node=19 class=Landroid/widget/Button; text="Play with Friend" children=0 depth=2 pos=(277,1379) size=(525x131)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="Play with Computer" children=0 depth=2 pos=(277,1547) size=(525x131)
+[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="How to play?" children=0 depth=2 pos=(277,1715) size=(525x131)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=431
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=592
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=16
+[EXT01-WINBG] windowBackground=@0xfffafafa rgb(250,250,250)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/FrameLayout; text="" children=2 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(938,37) size=(95x95)
+[EXP092-RENDER] node=18 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(277,1379) size=(525x467)
+[EXP092-RENDER] node=19 class=Landroid/widget/Button; text="Play with Friend" children=0 depth=2 pos=(277,1379) size=(525x131)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="Play with Computer" children=0 depth=2 pos=(277,1547) size=(525x131)
+[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="How to play?" children=0 depth=2 pos=(277,1715) size=(525x131)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=16
+[EXT01-WINBG] windowBackground=@0xfffafafa rgb(250,250,250)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/FrameLayout; text="" children=2 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(938,37) size=(95x95)
+[EXP092-RENDER] node=18 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(277,1379) size=(525x467)
+[EXP092-RENDER] node=19 class=Landroid/widget/Button; text="Play with Friend" children=0 depth=2 pos=(277,1379) size=(525x131)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="Play with Computer" children=0 depth=2 pos=(277,1547) size=(525x131)
+[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="How to play?" children=0 depth=2 pos=(277,1715) size=(525x131)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=16
+[EXT01-WINBG] windowBackground=@0xfffafafa rgb(250,250,250)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/FrameLayout; text="" children=2 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(938,37) size=(95x95)
+[EXP092-RENDER] node=18 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(277,1379) size=(525x467)
+[EXP092-RENDER] node=19 class=Landroid/widget/Button; text="Play with Friend" children=0 depth=2 pos=(277,1379) size=(525x131)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="Play with Computer" children=0 depth=2 pos=(277,1547) size=(525x131)
+[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="How to play?" children=0 depth=2 pos=(277,1715) size=(525x131)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=16
+[EXT01-WINBG] windowBackground=@0xfffafafa rgb(250,250,250)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/FrameLayout; text="" children=2 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(938,37) size=(95x95)
+[EXP092-RENDER] node=18 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(277,1379) size=(525x467)
+[EXP092-RENDER] node=19 class=Landroid/widget/Button; text="Play with Friend" children=0 depth=2 pos=(277,1379) size=(525x131)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="Play with Computer" children=0 depth=2 pos=(277,1547) size=(525x131)
+[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="How to play?" children=0 depth=2 pos=(277,1715) size=(525x131)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c156/canon/opmt/frames
+[ECR-ROOT] scalar content_view_id root=16
+[EXT01-WINBG] windowBackground=@0xfffafafa rgb(250,250,250)
+[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=16 class=Landroid/widget/FrameLayout; text="" children=2 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(938,37) size=(95x95)
+[EXP092-RENDER] node=18 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(277,1379) size=(525x467)
+[EXP092-RENDER] node=19 class=Landroid/widget/Button; text="Play with Friend" children=0 depth=2 pos=(277,1379) size=(525x131)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="Play with Computer" children=0 depth=2 pos=(277,1547) size=(525x131)
+[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="How to play?" children=0 depth=2 pos=(277,1715) size=(525x131)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels

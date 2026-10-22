@@ -1,0 +1,967 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=67
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=74
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=94
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=95
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=upload/canonical_apks/dubrowgn.microtimer_8.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 191 entries (143 from APK + 48 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'dubrowgn.microtimer.MainActivity'
+[U007-RES] ResourceRuntime loaded: upload/canonical_apks/dubrowgn.microtimer_8.apk named_ids=206 types=10
+[ARSC-VALUES] apk=upload/canonical_apks/dubrowgn.microtimer_8.apk strings=9 colors=13 dimens=26 bools=0 integers=1 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Micro Timer" (resid @0x7f090000)
+[A7b] icon @0x7f080000 -> res/RN.xml DECODE FAILED (adaptive-icon: layers reference app resources but no resolver was provided) — honest miss
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=105)
+[S1-PROVIDER] manifest providers transferred: 0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Ldubrowgn/microtimer/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Ldubrowgn/microtimer/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[TRY-ENTRY] Lk/a;.<init> dex_report=YES
+[MEM] method_exit: Lk/a;.<init> insns=3 RSS=20.6875 MB
+[TRY-ENTRY] Landroid/os/Looper;.getMainLooper dex_report=YES
+[REC-MISS] Landroid/os/Looper;.getMainLooper caller=Ldubrowgn/microtimer/MainActivity;.<init>
+[BRIDGE-TID] Landroid/os/Looper;.getMainLooper static=1 shadow=YES
+[TRY-ENTRY] Landroid/os/Handler;.<init> dex_report=YES
+[REC-MISS] Landroid/os/Handler;.<init> caller=Ldubrowgn/microtimer/MainActivity;.<init>
+[TRY-ENTRY] Ldubrowgn/microtimer/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Ldubrowgn/microtimer/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Ldubrowgn/microtimer/MainActivity;' id=15
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-ARSC] staged duplicate package id=0x1 skipped
+[S124-FWRES] framework-res table loaded: /home/z/my-project/miniandroid/build/../framework_res/resources.arsc bytes=19830716 types=22
+[TRY-ENTRY] Ldubrowgn/microtimer/MainActivity;.c dex_report=YES
+[TRY-ENTRY] Ljava/lang/Class;.getName dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[TRY-ENTRY] Landroid/util/Log;.d dex_report=YES
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Ldubrowgn/microtimer/MainActivity;.getApplicationContext dex_report=YES
+[TRY-ENTRY] Landroid/content/Context;.getApplicationContext dex_report=YES
+[REC-MISS] Landroid/content/Context;.getApplicationContext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationContext class=Ldubrowgn/microtimer/MainActivity;
+[CLASS_INIT] class=La/e; method=<clinit> bytecode_size=6
+[TRY-ENTRY] La/e;.<clinit> dex_report=YES
+[CLASS_INIT] class=La/e; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=26
+[TRY-ENTRY] La/e;.g dex_report=YES
+[MEM] method_exit: La/e;.g insns=2 RSS=166.84 MB
+[CLASS_INIT] class=Lt/c; method=<clinit> bytecode_size=8
+[TRY-ENTRY] Lt/c;.<clinit> dex_report=YES
+[TRY-ENTRY] Lt/c;.<init> dex_report=YES
+[TRY-ENTRY] Lt/a;.<init> dex_report=YES
+[CLASS_INIT] class=Lt/c; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=26
+[TRY-ENTRY] Lt/c;.<init> dex_report=YES
+[TRY-ENTRY] Lt/a;.<init> dex_report=YES
+[TRY-ENTRY] Lt/c;.iterator dex_report=YES
+[REC-MISS] Ljava/lang/Character;.isWhitespace caller=La/e;.k
+[REC-MISS] Ljava/lang/Character;.isSpaceChar caller=La/e;.k
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Le/y;.<init>
+[REC-MISS] Ljava/util/LinkedHashSet;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[CLASS_INIT] class=La/b; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=La/b; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=27
+[SGET] class=Ldubrowgn/microtimer/MainActivity; method=onCreate pc=109 field=La/b;.d obj_id=30
+[CLASS_INIT] class=Le/a; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Le/a; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=28
+[REC-MISS] Landroid/app/Application;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .getSystemService
+[R339-SVC] getSystemService("activity") → Landroid/app/ActivityManager; (shadow layer, caller=Ldubrowgn/microtimer/MainActivity;.onCreate)
+[REC-MISS] Landroid/app/ActivityManager;.isLowRamDevice caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getPackage caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[M3-REFLECT] Class.getPackage -> "dubrowgn.microtimer.db" (obj=35)
+[REC-MISS] Ljava/lang/Package;.getName caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getCanonicalName caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[M3-REFLECT] Class.getCanonicalName -> dubrowgn.microtimer.db.Database
+[STR] substring(23,31) of "dubrowgn.microtimer.db.Database" → "Database"
+[STR] concat("Database", "_Impl")
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getClassLoader caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[R350-FORNAME] "dubrowgn.microtimer.db.Database_Impl" -> Ldubrowgn/microtimer/db/Database_Impl; (initialized=1)
+[REC-MISS] Ljava/lang/Class;.getDeclaredConstructor caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[F106-CTOR] getDeclaredConstructor Ldubrowgn/microtimer/db/Database_Impl; params=[] → ctor#40 mods=0x10001 (()V) caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/reflect/Constructor;.newInstance caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[CLASS_INIT] class=Le/o; method=<clinit> bytecode_size=13
+[CLASS_INIT] class=Le/o; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=29
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicBoolean;.<init> caller=Le/o;.<init>
+[REC-MISS] Ljava/util/IdentityHashMap;.<init> caller=Le/o;.<init>
+[REC-MISS] Ljava/util/Collections;.newSetFromMap caller=Le/o;.<init>
+[COLLECTIONS] newSetFromMap → set oid=54
+[REC-MISS] Ljava/util/WeakHashMap;.<init> caller=Lb/d;.<init>
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Le/o;.<init>
+[LOCALE-CONST] synthesized Locale.US tag="en_US" oid=61
+[SGET] class=Le/o; method=<init> pc=83 field=Ljava/util/Locale;.US obj_id=61
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Le/o;.<init>
+[REC-MISS] Ljava/util/Map;.put caller=Le/o;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/LinkedHashMap;.put argc=3 caller=Le/o;.<init> pc=101
+[F089-MAP] Ljava/util/LinkedHashMap;.put caller=Le/o;.<init> pc=101 recv_oid=59 key="alarm" val=obj#62
+[F089] shadow put map=59 key="alarm" arg0_kind=5 arg0_str="alarm" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/LinkedHashMap;
+[REC-MISS] Ljava/util/Map;.get caller=Le/o;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Le/o;.<init> pc=108
+[REC-MISS] Ljava/util/Map;.entrySet caller=Le/o;.<init>
+[REC-MISS] Ljava/util/Set;.iterator caller=Le/o;.<init>
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Le/o;.<init>
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Ldubrowgn/microtimer/db/Database;.<init>
+[REC-MISS] Ljava/util/concurrent/locks/ReentrantReadWriteLock;.<init> caller=Ldubrowgn/microtimer/db/Database;.<init>
+[REC-MISS] Ljava/lang/ThreadLocal;.<init> caller=Ldubrowgn/microtimer/db/Database;.<init>
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Ldubrowgn/microtimer/db/Database;.<init>
+[REC-MISS] Ljava/util/Collections;.synchronizedMap caller=Ldubrowgn/microtimer/db/Database;.<init>
+[COLLECTIONS] synchronizedMap → backing map (single-thread law)
+[REC-MISS] Ljava/util/LinkedHashMap;.<init> caller=Ldubrowgn/microtimer/db/Database;.<init>
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Object;.getClass caller=Ldubrowgn/microtimer/db/Database_Impl;.f
+[SGET] class=Lm/a; method=<init> pc=5 field=Le/a;.a obj_id=32
+[REC-MISS] Ljava/util/HashSet;.<init> caller=Ldubrowgn/microtimer/db/Database_Impl;.j
+[REC-MISS] Ljava/util/BitSet;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Set;.iterator caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/List;.size caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/List;.iterator caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.isInstance caller=Ldubrowgn/microtimer/db/Database;.o
+[REC-MISS] Ljava/lang/Class;.isInstance caller=Ldubrowgn/microtimer/db/Database;.o
+[SGET] class=Lh/g; method=setWriteAheadLoggingEnabled pc=4 field=Le/a;.a obj_id=32
+[REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Collections;.emptyList caller=Ldubrowgn/microtimer/db/Database_Impl;.k
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Ldubrowgn/microtimer/db/Database_Impl;.k pc=11
+[F089] shadow put map=85 key="obj:87" arg0_kind=6 arg0_str="Ll/d;" arg0_obj=87 arg0_cls=Ll/d; nargs=2 recv=Ljava/util/HashMap;
+[REC-MISS] Ljava/util/BitSet;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Map;.entrySet caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Set;.iterator caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Iterator;.next caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Map$Entry;.getKey caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Map$Entry;.getValue caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/List;.iterator caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/List;.size caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicBoolean;.<init> caller=Le/e0;.<init>
+[SGET] class=Lm/a; method=<init> pc=5 field=Le/a;.a obj_id=32
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicBoolean;.<init> caller=Le/e0;.<init>
+[SGET] class=Lm/a; method=<init> pc=5 field=Le/a;.a obj_id=32
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicBoolean;.<init> caller=Le/e0;.<init>
+[SGET] class=Lm/a; method=<init> pc=5 field=Le/a;.a obj_id=32
+[REC-MISS] Ljava/util/concurrent/atomic/AtomicBoolean;.<init> caller=Le/e0;.<init>
+[SGET] class=Lm/a; method=<init> pc=5 field=Le/a;.a obj_id=32
+[REC-MISS] Landroid/content/Context;.getPackageName caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/net/Uri;.parse caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[S107-URI] parse "package:dubrowgn.microtimer" scheme=package caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[SGET] class=Ldubrowgn/microtimer/MainActivity; method=onCreate pc=805 field=Landroid/os/Build$VERSION;.SDK_INT value=35
+[REC-MISS] Landroid/app/Activity;.checkSelfPermission caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.checkSelfPermission caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.checkSelfPermission caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.checkSelfPermission caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=checkSelfPermission class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=checkSelfPermission class=Landroid/app/Activity;
+[EXP093-PERM] checkSelfPermission("android.permission.POST_NOTIFICATIONS") → GRANTED
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[R339-SVC] getSystemService("power") → Landroid/os/PowerManager; (shadow layer, caller=Ldubrowgn/microtimer/MainActivity;.onCreate)
+[REC-MISS] Landroid/content/Context;.getPackageName caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getPackageName class=Landroid/app/Activity;
+[REC-MISS] Landroid/os/PowerManager;.isIgnoringBatteryOptimizations caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/content/Intent;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[S123-ICTOR2] Intent.<init> recv=114 args=2 a0k5="android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" a1k6
+[S123-ICTOR] intent_ctor args=2 arg1_kind=6 arg1_class=Landroid/net/Uri; arg1_id=112
+[REC-MISS] Landroid/app/Activity;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=startActivity class=Ldubrowgn/microtimer/MainActivity;
+[S123-SA] startActivity intent_id=114 action="android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" component=""
+[INTENT] startActivity called (no component set)
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[R339-SVC] getSystemService("alarm") → Landroid/app/AlarmManager; (shadow layer, caller=Ldubrowgn/microtimer/MainActivity;.onCreate)
+[REC-MISS] Landroid/app/AlarmManager;.canScheduleExactAlarms caller=Lk/b;.a
+[ALARM-MANAGER] canScheduleExactAlarms -> true (manifest-derived law)
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[R339-SVC] getSystemService("notification") → Landroid/app/NotificationManager; (shadow layer, caller=Ldubrowgn/microtimer/MainActivity;.onCreate)
+[REC-MISS] Landroid/app/NotificationManager;.canUseFullScreenIntent caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/content/Intent;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[S123-ICTOR2] Intent.<init> recv=117 args=2 a0k5="android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT" a1k6
+[S123-ICTOR] intent_ctor args=2 arg1_kind=6 arg1_class=Landroid/net/Uri; arg1_id=112
+[REC-MISS] Landroid/app/Activity;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.startActivity caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=startActivity class=Ldubrowgn/microtimer/MainActivity;
+[S123-SA] startActivity intent_id=117 action="android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT" component=""
+[INTENT] startActivity called (no component set)
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[R339-SVC] getSystemService("notification") → Landroid/app/NotificationManager; (shadow layer, caller=Ldubrowgn/microtimer/MainActivity;.onCreate)
+[REC-MISS] Landroid/app/NotificationChannel;.<init> caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/NotificationChannel;.setDescription caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/NotificationManager;.createNotificationChannel caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.setContentView caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.setContentView caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131165184
+[U007-INFLATE] setContentView(layoutResId=0x7f070000)
+[REC-MISS] Landroid/widget/FrameLayout;.<init> caller=Ldubrowgn/microtimer/RoTimeControl;.<init>
+[REC-MISS] Landroid/widget/LinearLayout$LayoutParams;.<init> caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[LP-INIT] bridged Landroid/widget/LinearLayout$LayoutParams;.<init> argc=3
+[REC-MISS] Landroid/widget/FrameLayout;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/ViewGroup;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[EXP095-ADDVIEW-LP] child=125 w=-2 h=-2 gravity=0x0 margins=(0,0,0,0) weight=0 parent_class=Ldubrowgn/microtimer/RoTimeControl; via=setLayoutParams
+[F-NEW-322] setLayoutParams view=125 lp_obj=127 class=Landroid/widget/LinearLayout$LayoutParams; (-2x-2)
+[EXP061-NEW] new-instance Landroid/widget/TextView; → v0 obj_id=128 pc=9 caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/widget/FrameLayout;.getContext caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/ViewGroup;.getContext caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.getContext caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.getContext caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/widget/TextView;.<init> caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/widget/LinearLayout$LayoutParams;.<init> caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[LP-INIT] bridged Landroid/widget/LinearLayout$LayoutParams;.<init> argc=3
+[REC-MISS] Landroid/widget/TextView;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.setLayoutParams caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[EXP095-ADDVIEW-LP] child=128 w=-1 h=-2 gravity=0x0 margins=(0,0,0,0) weight=0 parent_class=Landroid/widget/TextView; via=setLayoutParams
+[F-NEW-322] setLayoutParams view=128 lp_obj=129 class=Landroid/widget/LinearLayout$LayoutParams; (-1x-2)
+[REC-MISS] Landroid/widget/TextView;.setHint caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[EXP065-SETHINT] view_id=128 class=Landroid/widget/TextView; hint="HH:MM:SS"
+[REC-MISS] Landroid/widget/TextView;.setTextSize caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[EXT-AOSP-002] setTextSize view=128 class=Landroid/widget/TextView; px=105
+[REC-MISS] Landroid/widget/TextView;.setTextAlignment caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.setTextAlignment caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/View;.setTextAlignment caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[F-NEW-294] synthesized Typeface.MONOSPACE family=monospace style=0 oid=130
+[SGET] class=Ldubrowgn/microtimer/RoTimeControl; method=a pc=62 field=Landroid/graphics/Typeface;.MONOSPACE obj_id=130
+[REC-MISS] Landroid/widget/TextView;.setTypeface caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[EXP062-ADDVIEW-TRACE] invoke-virtual addView argc=2 this_id=125 this_class=Ldubrowgn/microtimer/RoTimeControl; child_type=7 child_id=128 child_class=Landroid/widget/TextView; caller=Ldubrowgn/microtimer/RoTimeControl;.a pc=71
+[REC-MISS] Landroid/widget/FrameLayout;.addView caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/ViewGroup;.addView caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[REC-MISS] Landroid/view/ViewGroup;.addView caller=Ldubrowgn/microtimer/RoTimeControl;.a
+[EXP061-ADDVIEW] parent=125 parent_class=Ldubrowgn/microtimer/RoTimeControl; child=128
+[DEFAULT-MEASURE] class=Ldubrowgn/microtimer/RoTimeControl; view=125 node=FOUND overrides_onMeasure=0 flag=1
+[U007-INFLATE] root_id=119 views=25 strings=0 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=119 recorded for first-traversal attach+measure
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034175
+[EXP088-B-DBG] findViewById: target=0x7f05003f content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05003f) → view_id=121
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034176
+[EXP088-B-DBG] findViewById: target=0x7f050040 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050040) → view_id=125
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034152
+[EXP088-B-DBG] findViewById: target=0x7f050028 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050028) → view_id=147
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=147 class=Landroid/widget/Button; listener_id=149 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034154
+[EXP088-B-DBG] findViewById: target=0x7f05002a content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05002a) → view_id=134
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=134 class=Landroid/widget/Button; listener_id=150 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034155
+[EXP088-B-DBG] findViewById: target=0x7f05002b content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05002b) → view_id=135
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=135 class=Landroid/widget/Button; listener_id=151 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034156
+[EXP088-B-DBG] findViewById: target=0x7f05002c content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05002c) → view_id=136
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=136 class=Landroid/widget/Button; listener_id=152 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034157
+[EXP088-B-DBG] findViewById: target=0x7f05002d content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05002d) → view_id=138
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=138 class=Landroid/widget/Button; listener_id=153 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034158
+[EXP088-B-DBG] findViewById: target=0x7f05002e content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05002e) → view_id=139
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=139 class=Landroid/widget/Button; listener_id=154 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034159
+[EXP088-B-DBG] findViewById: target=0x7f05002f content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f05002f) → view_id=140
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=140 class=Landroid/widget/Button; listener_id=155 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034160
+[EXP088-B-DBG] findViewById: target=0x7f050030 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050030) → view_id=142
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=142 class=Landroid/widget/Button; listener_id=156 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034161
+[EXP088-B-DBG] findViewById: target=0x7f050031 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050031) → view_id=143
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=143 class=Landroid/widget/Button; listener_id=157 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034162
+[EXP088-B-DBG] findViewById: target=0x7f050032 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050032) → view_id=144
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=144 class=Landroid/widget/Button; listener_id=158 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034153
+[EXP088-B-DBG] findViewById: target=0x7f050029 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050029) → view_id=146
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=146 class=Landroid/widget/Button; listener_id=159 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034163
+[EXP088-B-DBG] findViewById: target=0x7f050033 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050033) → view_id=131
+[REC-MISS] Landroid/widget/ImageButton;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=131 class=Landroid/widget/ImageView; listener_id=160 listener_class_at_reg=Lk/d;
+[C013-HIER] setOnClickListener dispatched via superclass chain: Landroid/widget/ImageButton; -> Landroid/widget/ImageView; (declared=Landroid/widget/ImageButton; receiver=Landroid/widget/ImageButton;)
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034164
+[EXP088-B-DBG] findViewById: target=0x7f050034 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050034) → view_id=124
+[REC-MISS] Landroid/widget/ImageButton;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=124 class=Landroid/widget/ImageView; listener_id=161 listener_class_at_reg=Lk/d;
+[C013-HIER] setOnClickListener dispatched via superclass chain: Landroid/widget/ImageButton; -> Landroid/widget/ImageView; (declared=Landroid/widget/ImageButton; receiver=Landroid/widget/ImageButton;)
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.findViewById caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-ENTER] bridge_to_api: Ldubrowgn/microtimer/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Ldubrowgn/microtimer/MainActivity; args=1 arg0_kind=0 arg0_int=2131034165
+[EXP088-B-DBG] findViewById: target=0x7f050035 content_view_id=77 registry=YES
+[EXP088-B] findViewById(0x7f050035) → view_id=148
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.setOnClickListener caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=148 class=Landroid/widget/Button; listener_id=162 listener_class_at_reg=Lk/d;
+[REC-MISS] Landroid/app/Activity;.setShowWhenLocked caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.setShowWhenLocked caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Ldubrowgn/microtimer/MainActivity; as Landroid/app/Activity; for .setShowWhenLocked
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setShowWhenLocked
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setShowWhenLocked
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setShowWhenLocked class=Ldubrowgn/microtimer/MainActivity;
+[REC-MISS] Landroid/app/Activity;.setTurnScreenOn caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/app/Activity;.setTurnScreenOn caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Ldubrowgn/microtimer/MainActivity; as Landroid/app/Activity; for .setTurnScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setTurnScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setTurnScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTurnScreenOn class=Ldubrowgn/microtimer/MainActivity;
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[R339-SVC] getSystemService("keyguard") → Landroid/app/KeyguardManager; (shadow layer, caller=Ldubrowgn/microtimer/MainActivity;.onCreate)
+[REC-MISS] Landroid/app/KeyguardManager;.requestDismissKeyguard caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[CLASS_INIT] class=Le/b0; method=<clinit> bytecode_size=8
+[REC-MISS] Ljava/util/TreeMap;.<init> caller=Le/b0;.<clinit>
+[CLASS_INIT] class=Le/b0; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=32
+[SGET] class=Ldubrowgn/microtimer/MainActivity; method=onCreate pc=1330 field=Le/b0;.i obj_id=164
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Ljava/util/TreeMap;.ceilingEntry caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[SGET] class=Lm/a; method=a pc=2 field=Le/a;.a obj_id=32
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.<init> caller=Lh/f;.<init>
+[SQLITE-SHADOW] helper<init> oid=171 name="app-data" version=1
+[CLASS_INIT] class=Li/a; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Li/a; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=33
+[REC-MISS] Landroid/app/Application;.getCacheDir caller=Lh/f;.<init>
+[REC-MISS] Landroid/content/Context;.getCacheDir caller=Lh/f;.<init>
+[S71-ANCESTRY] re-dispatch Landroid/app/Application; as Landroid/content/Context; for .getCacheDir
+[STR] concat("app-data", ".lck")
+[R347-FILE-CTOR] argc=3 path="/data/data/dubrowgn.microtimer/cache/app-data.lck" caller=Li/a;.<init> a1t=7(o176) a2t=5("app-data.lck")
+[SGET] class=Li/a; method=<init> pc=22 field=Li/a;.e obj_id=175
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.get argc=2 caller=Li/a;.<init> pc=25
+[REC-MISS] Ljava/util/concurrent/locks/ReentrantLock;.<init> caller=Li/a;.<init>
+[REC-MISS] Ljava/util/Map;.put caller=Li/a;.<init>
+[EXP071-BRIDGE-HMAP] Ljava/util/HashMap;.put argc=3 caller=Li/a;.<init> pc=36
+[F089] shadow put map=175 key="app-data" arg0_kind=5 arg0_str="app-data" arg0_obj=0 arg0_cls= nargs=2 recv=Ljava/util/HashMap;
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.setWriteAheadLoggingEnabled caller=Le/d0;.a
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.setWriteAheadLoggingEnabled caller=Le/d0;.a
+[C013-HIER] setWriteAheadLoggingEnabled dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[IGET-MISS-DIAG] asked="Lh/f;->g" obj#171 cls=Lh/f; keys: Lh/f;->a Lh/f;->b Lh/f;->c Lh/f;->d Lh/f;->f a caller=Lh/f;.q
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.q
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.q
+[C013-HIER] getDatabaseName dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[REC-MISS] Ljava/util/concurrent/locks/Lock;.lock caller=Li/a;.a
+[R347-FILE] getParentFile path="/data/data/dubrowgn.microtimer/cache/app-data.lck" -> File o179
+[REC-MISS] Ljava/io/FileOutputStream;.<init> caller=Li/a;.a
+[LOAD-WRITE] stream=o180 path="runtime/data/data/data/dubrowgn.microtimer/cache/app-data.lck" append=0 ok=1 caller=Li/a;.a
+[REC-MISS] Ljava/io/FileOutputStream;.getChannel caller=Li/a;.a
+[REC-MISS] Ljava/nio/channels/FileChannel;.lock caller=Li/a;.a
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.v
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.v
+[C013-HIER] getDatabaseName dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[IGET-MISS-DIAG] asked="Lh/f;->g" obj#171 cls=Lh/f; keys: Lh/f;->a Lh/f;->b Lh/f;->c Lh/f;->d Lh/f;->e Lh/f;->f caller=Lh/f;.v
+[REC-MISS] Landroid/app/Application;.getDatabasePath caller=Lh/f;.v
+[REC-MISS] Landroid/content/Context;.getDatabasePath caller=Lh/f;.v
+[R347-FILE] getParentFile path="/data/data/dubrowgn.microtimer/databases/app-data" -> File o184
+[FILE-META] isDirectory path="/data/data/dubrowgn.microtimer/databases" -> EXISTS (dir)
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase caller=Lh/f;.u
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase caller=Lh/f;.u
+[SQLITE-SHADOW] opened db oid=185 path=runtime/data/data/data/dubrowgn.microtimer/databases/app-data user_version=1 target_version=1
+[C013-HIER] getWritableDatabase dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[CLASS_INIT] class=Lh/c; method=<clinit> bytecode_size=6
+[CLASS_INIT] class=Lh/c; method=<clinit> result=OK engine=0x7ffe7a58c9c8 storage_size=34
+[REC-MISS] Ljava/nio/channels/FileChannel;.close caller=Li/a;.b
+[REC-MISS] Ljava/nio/channels/spi/AbstractInterruptibleChannel;.close caller=Li/a;.b
+[REC-MISS] Ljava/util/concurrent/locks/Lock;.unlock caller=Li/a;.b
+[REC-MISS] Landroid/database/sqlite/SQLiteDatabase;.inTransaction caller=Lh/c;.m
+[REC-MISS] Ljava/lang/ThreadLocal;.get caller=Ldubrowgn/microtimer/db/Database;.c
+[REC-MISS] Ljava/lang/ThreadLocal;.initialValue caller=Ldubrowgn/microtimer/db/Database;.c
+[SGET] class=Lm/a; method=a pc=2 field=Le/a;.a obj_id=32
+[IGET-MISS-DIAG] asked="Lh/f;->g" obj#171 cls=Lh/f; keys: Lh/f;->a Lh/f;->b Lh/f;->c Lh/f;->d Lh/f;->e Lh/f;->f caller=Lh/f;.q
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.q
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.q
+[C013-HIER] getDatabaseName dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[REC-MISS] Ljava/util/concurrent/locks/Lock;.lock caller=Li/a;.a
+[R347-FILE] getParentFile path="/data/data/dubrowgn.microtimer/cache/app-data.lck" -> File o188
+[REC-MISS] Ljava/io/FileOutputStream;.<init> caller=Li/a;.a
+[LOAD-WRITE] stream=o189 path="runtime/data/data/data/dubrowgn.microtimer/cache/app-data.lck" append=0 ok=1 caller=Li/a;.a
+[REC-MISS] Ljava/io/FileOutputStream;.getChannel caller=Li/a;.a
+[REC-MISS] Ljava/nio/channels/FileChannel;.lock caller=Li/a;.a
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.v
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.v
+[C013-HIER] getDatabaseName dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[IGET-MISS-DIAG] asked="Lh/f;->g" obj#171 cls=Lh/f; keys: Lh/f;->a Lh/f;->b Lh/f;->c Lh/f;->d Lh/f;->e Lh/f;->f caller=Lh/f;.v
+[REC-MISS] Landroid/app/Application;.getDatabasePath caller=Lh/f;.v
+[REC-MISS] Landroid/content/Context;.getDatabasePath caller=Lh/f;.v
+[R347-FILE] getParentFile path="/data/data/dubrowgn.microtimer/databases/app-data" -> File o190
+[FILE-META] isDirectory path="/data/data/dubrowgn.microtimer/databases" -> EXISTS (dir)
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase caller=Lh/f;.u
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase caller=Lh/f;.u
+[C013-HIER] getWritableDatabase dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[REC-MISS] Landroid/database/sqlite/SQLiteDatabase;.equals caller=La/e;.a
+[REC-MISS] Ljava/lang/Object;.equals caller=La/e;.a
+[REC-MISS] Ljava/nio/channels/FileChannel;.close caller=Li/a;.b
+[REC-MISS] Ljava/nio/channels/spi/AbstractInterruptibleChannel;.close caller=Li/a;.b
+[REC-MISS] Ljava/util/concurrent/locks/Lock;.unlock caller=Li/a;.b
+[REC-MISS] Landroid/database/sqlite/SQLiteDatabase;.inTransaction caller=Lh/c;.m
+[REC-MISS] Ljava/lang/ThreadLocal;.get caller=Ldubrowgn/microtimer/db/Database;.c
+[REC-MISS] Ljava/lang/ThreadLocal;.initialValue caller=Ldubrowgn/microtimer/db/Database;.c
+[SGET] class=Lm/a; method=a pc=2 field=Le/a;.a obj_id=32
+[IGET-MISS-DIAG] asked="Lh/f;->g" obj#171 cls=Lh/f; keys: Lh/f;->a Lh/f;->b Lh/f;->c Lh/f;->d Lh/f;->e Lh/f;->f caller=Lh/f;.q
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.q
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.q
+[C013-HIER] getDatabaseName dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[REC-MISS] Ljava/util/concurrent/locks/Lock;.lock caller=Li/a;.a
+[R347-FILE] getParentFile path="/data/data/dubrowgn.microtimer/cache/app-data.lck" -> File o191
+[REC-MISS] Ljava/io/FileOutputStream;.<init> caller=Li/a;.a
+[LOAD-WRITE] stream=o192 path="runtime/data/data/data/dubrowgn.microtimer/cache/app-data.lck" append=0 ok=1 caller=Li/a;.a
+[REC-MISS] Ljava/io/FileOutputStream;.getChannel caller=Li/a;.a
+[REC-MISS] Ljava/nio/channels/FileChannel;.lock caller=Li/a;.a
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.v
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getDatabaseName caller=Lh/f;.v
+[C013-HIER] getDatabaseName dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[IGET-MISS-DIAG] asked="Lh/f;->g" obj#171 cls=Lh/f; keys: Lh/f;->a Lh/f;->b Lh/f;->c Lh/f;->d Lh/f;->e Lh/f;->f caller=Lh/f;.v
+[REC-MISS] Landroid/app/Application;.getDatabasePath caller=Lh/f;.v
+[REC-MISS] Landroid/content/Context;.getDatabasePath caller=Lh/f;.v
+[R347-FILE] getParentFile path="/data/data/dubrowgn.microtimer/databases/app-data" -> File o193
+[FILE-META] isDirectory path="/data/data/dubrowgn.microtimer/databases" -> EXISTS (dir)
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase caller=Lh/f;.u
+[REC-MISS] Landroid/database/sqlite/SQLiteOpenHelper;.getWritableDatabase caller=Lh/f;.u
+[C013-HIER] getWritableDatabase dispatched via superclass chain: Lh/f; -> Landroid/database/sqlite/SQLiteOpenHelper; (declared=Lh/f; receiver=Lh/f;)
+[REC-MISS] Landroid/database/sqlite/SQLiteDatabase;.equals caller=La/e;.a
+[REC-MISS] Ljava/lang/Object;.equals caller=La/e;.a
+[REC-MISS] Ljava/nio/channels/FileChannel;.close caller=Li/a;.b
+[REC-MISS] Ljava/nio/channels/spi/AbstractInterruptibleChannel;.close caller=Li/a;.b
+[REC-MISS] Ljava/util/concurrent/locks/Lock;.unlock caller=Li/a;.b
+[SGET] class=Lh/c; method=j pc=15 field=Lh/c;.b obj_id=187
+[REC-MISS] Landroid/database/sqlite/SQLiteDatabase;.rawQueryWithFactory caller=Lh/c;.j
+[SQLITE-SHADOW] rawQuery rows=0 cols=4 sql="select * from alarm"
+[REC-MISS] Landroid/database/Cursor;.getColumnIndex caller=La/e;.j
+[REC-MISS] Landroid/database/Cursor;.getColumnIndex caller=La/e;.j
+[REC-MISS] Landroid/database/Cursor;.getColumnIndex caller=La/e;.j
+[REC-MISS] Landroid/database/Cursor;.getColumnIndex caller=La/e;.j
+[REC-MISS] Landroid/database/Cursor;.getCount caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/database/Cursor;.moveToNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/database/Cursor;.close caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[SGET] class=Le/b0; method=v pc=0 field=Le/b0;.i obj_id=164
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Le/b0;.v
+[REC-MISS] Ljava/util/Map;.put caller=Le/b0;.v
+[F089] shadow put map=164 key="int:0" arg0_kind=6 arg0_str="" arg0_obj=62 arg0_cls=Ljava/lang/Integer; nargs=2 recv=Ljava/util/TreeMap;
+[REC-MISS] Ljava/util/TreeMap;.size caller=Le/b0;.v
+[REC-MISS] Ljava/util/Collection;.size caller=Ln/c;.q
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Ldubrowgn/microtimer/MainActivity; runtime_class=Ldubrowgn/microtimer/MainActivity;
+[G07-LIFECYCLE] Ldubrowgn/microtimer/MainActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Ldubrowgn/microtimer/MainActivity; runtime_class=Ldubrowgn/microtimer/MainActivity;
+[REC-MISS] Ljava/lang/Class;.getName caller=Ldubrowgn/microtimer/MainActivity;.c
+[REC-MISS] Landroid/util/Log;.d caller=Ldubrowgn/microtimer/MainActivity;.c
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Ldubrowgn/microtimer/MainActivity;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Ldubrowgn/microtimer/MainActivity;.onResume
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onResume method_id=31 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Ldubrowgn/microtimer/MainActivity;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Ldubrowgn/microtimer/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Ldubrowgn/microtimer/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Ldubrowgn/microtimer/MainActivity;
+[REC-MISS] Landroid/widget/LinearLayout;.getChildCount caller=Ldubrowgn/microtimer/MainActivity;.onResume
+[REC-MISS] Landroid/view/ViewGroup;.getChildCount caller=Ldubrowgn/microtimer/MainActivity;.onResume
+[REC-MISS] Landroid/view/ViewGroup;.getChildCount caller=Ldubrowgn/microtimer/MainActivity;.onResume
+[G07-LIFECYCLE] Ldubrowgn/microtimer/MainActivity;.onResume() dispatched via DEX engine (ok=1, instructions=19)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=143 nodes=36 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ScrollView;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageButton;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageButton;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=388
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ScrollView;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ScrollView;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageButton;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageButton;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageButton;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/ImageButton;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/view/View;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.dispatchApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/Button;.onApplyWindowInsets caller=Ldubrowgn/microtimer/MainActivity;.onCreate
+[F384-ROOTINSETS] root=o119 cls=Landroid/widget/LinearLayout; insets=o200 dispatched=false
+[ECR-ROOT] scalar content_view_id root=119
+[EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
+[P0-1-ORDER] first-traversal attach wave root=119 attached=0 (attach strictly precedes measure)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[V1-CONTENT-BOUNDS] root=119 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=119 class=Landroid/widget/LinearLayout; text="" children=8 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=120 class=Landroid/widget/ScrollView; text="" children=1 depth=1 pos=(0,0) size=(1080x934)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=0 depth=2 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=122 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,934) size=(1080x3)
+[EXP092-RENDER] node=123 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,937) size=(1080x126)
+[EXP092-RENDER] node=124 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(0,937) size=(126x126)
+[EXP092-RENDER] node=125 class=Ldubrowgn/microtimer/RoTimeControl; text="" children=1 depth=2 pos=(126,937) size=(538x123)
+[LIFEWIN-OPEN] Ldubrowgn/microtimer/RoTimeControl; view=125
+[LIFEWIN-CLOSE] Ldubrowgn/microtimer/RoTimeControl; view=125 dispatched=NO
+[F096-LIFECYCLE] Ldubrowgn/microtimer/RoTimeControl; view=125 rect=(126,937 538x123) dispatched=NO
+[C013-LEAFCHK] Ldubrowgn/microtimer/RoTimeControl; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=538 h=123
+[EXP092-RENDER] node=128 class=Landroid/widget/TextView; text="" children=0 depth=3 pos=(126,937) size=(538x123)
+[EXP092-RENDER] node=131 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(664,937) size=(126x126)
+[EXP092-RENDER] node=132 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,1063) size=(1080x3)
+[EXP092-RENDER] node=133 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1073) size=(1066x210)
+[EXP092-RENDER] node=134 class=Landroid/widget/Button; text="1" children=0 depth=2 pos=(7,1073) size=(355x210)
+[EXP092-RENDER] node=135 class=Landroid/widget/Button; text="2" children=0 depth=2 pos=(362,1073) size=(355x210)
+[EXP092-RENDER] node=136 class=Landroid/widget/Button; text="3" children=0 depth=2 pos=(717,1073) size=(356x210)
+[EXP092-RENDER] node=137 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1283) size=(1066x210)
+[EXP092-RENDER] node=138 class=Landroid/widget/Button; text="4" children=0 depth=2 pos=(7,1283) size=(355x210)
+[EXP092-RENDER] node=139 class=Landroid/widget/Button; text="5" children=0 depth=2 pos=(362,1283) size=(355x210)
+[EXP092-RENDER] node=140 class=Landroid/widget/Button; text="6" children=0 depth=2 pos=(717,1283) size=(356x210)
+[EXP092-RENDER] node=141 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1493) size=(1066x210)
+[EXP092-RENDER] node=142 class=Landroid/widget/Button; text="7" children=0 depth=2 pos=(7,1493) size=(355x210)
+[EXP092-RENDER] node=143 class=Landroid/widget/Button; text="8" children=0 depth=2 pos=(362,1493) size=(355x210)
+[EXP092-RENDER] node=144 class=Landroid/widget/Button; text="9" children=0 depth=2 pos=(717,1493) size=(356x210)
+[EXP092-RENDER] node=145 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1703) size=(1066x210)
+[EXP092-RENDER] node=146 class=Landroid/widget/Button; text="00" children=0 depth=2 pos=(7,1703) size=(355x210)
+[EXP092-RENDER] node=147 class=Landroid/widget/Button; text="0" children=0 depth=2 pos=(362,1703) size=(355x210)
+[EXP092-RENDER] node=148 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(717,1703) size=(356x210)
+[EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 893597 non-white pixels
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=430
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=571
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0 DEFERRED-UI-PENDING (earliest ready_at=0ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0 DEFERRED-UI-PENDING (earliest ready_at=0ms — launch frame is provisional; cross-check with --frames time-driven capture)
+[G08-LAUNCH] FAILED: no component (implicit intent)
+[ECR-ROOT] scalar content_view_id root=119
+[EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
+[V1-CONTENT-BOUNDS] root=119 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=119 class=Landroid/widget/LinearLayout; text="" children=8 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=120 class=Landroid/widget/ScrollView; text="" children=1 depth=1 pos=(0,0) size=(1080x934)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=0 depth=2 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=122 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,934) size=(1080x3)
+[EXP092-RENDER] node=123 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,937) size=(1080x126)
+[EXP092-RENDER] node=124 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(0,937) size=(126x126)
+[EXP092-RENDER] node=125 class=Ldubrowgn/microtimer/RoTimeControl; text="" children=1 depth=2 pos=(126,937) size=(538x123)
+[C013-LEAFCHK] Ldubrowgn/microtimer/RoTimeControl; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=538 h=123
+[EXP092-RENDER] node=128 class=Landroid/widget/TextView; text="" children=0 depth=3 pos=(126,937) size=(538x123)
+[EXP092-RENDER] node=131 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(664,937) size=(126x126)
+[EXP092-RENDER] node=132 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,1063) size=(1080x3)
+[EXP092-RENDER] node=133 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1073) size=(1066x210)
+[EXP092-RENDER] node=134 class=Landroid/widget/Button; text="1" children=0 depth=2 pos=(7,1073) size=(355x210)
+[EXP092-RENDER] node=135 class=Landroid/widget/Button; text="2" children=0 depth=2 pos=(362,1073) size=(355x210)
+[EXP092-RENDER] node=136 class=Landroid/widget/Button; text="3" children=0 depth=2 pos=(717,1073) size=(356x210)
+[EXP092-RENDER] node=137 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1283) size=(1066x210)
+[EXP092-RENDER] node=138 class=Landroid/widget/Button; text="4" children=0 depth=2 pos=(7,1283) size=(355x210)
+[EXP092-RENDER] node=139 class=Landroid/widget/Button; text="5" children=0 depth=2 pos=(362,1283) size=(355x210)
+[EXP092-RENDER] node=140 class=Landroid/widget/Button; text="6" children=0 depth=2 pos=(717,1283) size=(356x210)
+[EXP092-RENDER] node=141 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1493) size=(1066x210)
+[EXP092-RENDER] node=142 class=Landroid/widget/Button; text="7" children=0 depth=2 pos=(7,1493) size=(355x210)
+[EXP092-RENDER] node=143 class=Landroid/widget/Button; text="8" children=0 depth=2 pos=(362,1493) size=(355x210)
+[EXP092-RENDER] node=144 class=Landroid/widget/Button; text="9" children=0 depth=2 pos=(717,1493) size=(356x210)
+[EXP092-RENDER] node=145 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1703) size=(1066x210)
+[EXP092-RENDER] node=146 class=Landroid/widget/Button; text="00" children=0 depth=2 pos=(7,1703) size=(355x210)
+[EXP092-RENDER] node=147 class=Landroid/widget/Button; text="0" children=0 depth=2 pos=(362,1703) size=(355x210)
+[EXP092-RENDER] node=148 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(717,1703) size=(356x210)
+[EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 893597 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=119
+[EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
+[V1-CONTENT-BOUNDS] root=119 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=119 class=Landroid/widget/LinearLayout; text="" children=8 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=120 class=Landroid/widget/ScrollView; text="" children=1 depth=1 pos=(0,0) size=(1080x934)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=0 depth=2 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=122 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,934) size=(1080x3)
+[EXP092-RENDER] node=123 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,937) size=(1080x126)
+[EXP092-RENDER] node=124 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(0,937) size=(126x126)
+[EXP092-RENDER] node=125 class=Ldubrowgn/microtimer/RoTimeControl; text="" children=1 depth=2 pos=(126,937) size=(538x123)
+[C013-LEAFCHK] Ldubrowgn/microtimer/RoTimeControl; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=538 h=123
+[EXP092-RENDER] node=128 class=Landroid/widget/TextView; text="" children=0 depth=3 pos=(126,937) size=(538x123)
+[EXP092-RENDER] node=131 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(664,937) size=(126x126)
+[EXP092-RENDER] node=132 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,1063) size=(1080x3)
+[EXP092-RENDER] node=133 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1073) size=(1066x210)
+[EXP092-RENDER] node=134 class=Landroid/widget/Button; text="1" children=0 depth=2 pos=(7,1073) size=(355x210)
+[EXP092-RENDER] node=135 class=Landroid/widget/Button; text="2" children=0 depth=2 pos=(362,1073) size=(355x210)
+[EXP092-RENDER] node=136 class=Landroid/widget/Button; text="3" children=0 depth=2 pos=(717,1073) size=(356x210)
+[EXP092-RENDER] node=137 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1283) size=(1066x210)
+[EXP092-RENDER] node=138 class=Landroid/widget/Button; text="4" children=0 depth=2 pos=(7,1283) size=(355x210)
+[EXP092-RENDER] node=139 class=Landroid/widget/Button; text="5" children=0 depth=2 pos=(362,1283) size=(355x210)
+[EXP092-RENDER] node=140 class=Landroid/widget/Button; text="6" children=0 depth=2 pos=(717,1283) size=(356x210)
+[EXP092-RENDER] node=141 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1493) size=(1066x210)
+[EXP092-RENDER] node=142 class=Landroid/widget/Button; text="7" children=0 depth=2 pos=(7,1493) size=(355x210)
+[EXP092-RENDER] node=143 class=Landroid/widget/Button; text="8" children=0 depth=2 pos=(362,1493) size=(355x210)
+[EXP092-RENDER] node=144 class=Landroid/widget/Button; text="9" children=0 depth=2 pos=(717,1493) size=(356x210)
+[EXP092-RENDER] node=145 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1703) size=(1066x210)
+[EXP092-RENDER] node=146 class=Landroid/widget/Button; text="00" children=0 depth=2 pos=(7,1703) size=(355x210)
+[EXP092-RENDER] node=147 class=Landroid/widget/Button; text="0" children=0 depth=2 pos=(362,1703) size=(355x210)
+[EXP092-RENDER] node=148 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(717,1703) size=(356x210)
+[EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 893597 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=119
+[EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
+[V1-CONTENT-BOUNDS] root=119 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=119 class=Landroid/widget/LinearLayout; text="" children=8 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=120 class=Landroid/widget/ScrollView; text="" children=1 depth=1 pos=(0,0) size=(1080x934)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=0 depth=2 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=122 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,934) size=(1080x3)
+[EXP092-RENDER] node=123 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,937) size=(1080x126)
+[EXP092-RENDER] node=124 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(0,937) size=(126x126)
+[EXP092-RENDER] node=125 class=Ldubrowgn/microtimer/RoTimeControl; text="" children=1 depth=2 pos=(126,937) size=(538x123)
+[C013-LEAFCHK] Ldubrowgn/microtimer/RoTimeControl; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=538 h=123
+[EXP092-RENDER] node=128 class=Landroid/widget/TextView; text="" children=0 depth=3 pos=(126,937) size=(538x123)
+[EXP092-RENDER] node=131 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(664,937) size=(126x126)
+[EXP092-RENDER] node=132 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,1063) size=(1080x3)
+[EXP092-RENDER] node=133 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1073) size=(1066x210)
+[EXP092-RENDER] node=134 class=Landroid/widget/Button; text="1" children=0 depth=2 pos=(7,1073) size=(355x210)
+[EXP092-RENDER] node=135 class=Landroid/widget/Button; text="2" children=0 depth=2 pos=(362,1073) size=(355x210)
+[EXP092-RENDER] node=136 class=Landroid/widget/Button; text="3" children=0 depth=2 pos=(717,1073) size=(356x210)
+[EXP092-RENDER] node=137 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1283) size=(1066x210)
+[EXP092-RENDER] node=138 class=Landroid/widget/Button; text="4" children=0 depth=2 pos=(7,1283) size=(355x210)
+[EXP092-RENDER] node=139 class=Landroid/widget/Button; text="5" children=0 depth=2 pos=(362,1283) size=(355x210)
+[EXP092-RENDER] node=140 class=Landroid/widget/Button; text="6" children=0 depth=2 pos=(717,1283) size=(356x210)
+[EXP092-RENDER] node=141 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1493) size=(1066x210)
+[EXP092-RENDER] node=142 class=Landroid/widget/Button; text="7" children=0 depth=2 pos=(7,1493) size=(355x210)
+[EXP092-RENDER] node=143 class=Landroid/widget/Button; text="8" children=0 depth=2 pos=(362,1493) size=(355x210)
+[EXP092-RENDER] node=144 class=Landroid/widget/Button; text="9" children=0 depth=2 pos=(717,1493) size=(356x210)
+[EXP092-RENDER] node=145 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1703) size=(1066x210)
+[EXP092-RENDER] node=146 class=Landroid/widget/Button; text="00" children=0 depth=2 pos=(7,1703) size=(355x210)
+[EXP092-RENDER] node=147 class=Landroid/widget/Button; text="0" children=0 depth=2 pos=(362,1703) size=(355x210)
+[EXP092-RENDER] node=148 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(717,1703) size=(356x210)
+[EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 893597 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[ECR-ROOT] scalar content_view_id root=119
+[EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
+[V1-CONTENT-BOUNDS] root=119 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=119 class=Landroid/widget/LinearLayout; text="" children=8 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=120 class=Landroid/widget/ScrollView; text="" children=1 depth=1 pos=(0,0) size=(1080x934)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=0 depth=2 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=122 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,934) size=(1080x3)
+[EXP092-RENDER] node=123 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,937) size=(1080x126)
+[EXP092-RENDER] node=124 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(0,937) size=(126x126)
+[EXP092-RENDER] node=125 class=Ldubrowgn/microtimer/RoTimeControl; text="" children=1 depth=2 pos=(126,937) size=(538x123)
+[C013-LEAFCHK] Ldubrowgn/microtimer/RoTimeControl; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=538 h=123
+[EXP092-RENDER] node=128 class=Landroid/widget/TextView; text="" children=0 depth=3 pos=(126,937) size=(538x123)
+[EXP092-RENDER] node=131 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(664,937) size=(126x126)
+[EXP092-RENDER] node=132 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,1063) size=(1080x3)
+[EXP092-RENDER] node=133 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1073) size=(1066x210)
+[EXP092-RENDER] node=134 class=Landroid/widget/Button; text="1" children=0 depth=2 pos=(7,1073) size=(355x210)
+[EXP092-RENDER] node=135 class=Landroid/widget/Button; text="2" children=0 depth=2 pos=(362,1073) size=(355x210)
+[EXP092-RENDER] node=136 class=Landroid/widget/Button; text="3" children=0 depth=2 pos=(717,1073) size=(356x210)
+[EXP092-RENDER] node=137 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1283) size=(1066x210)
+[EXP092-RENDER] node=138 class=Landroid/widget/Button; text="4" children=0 depth=2 pos=(7,1283) size=(355x210)
+[EXP092-RENDER] node=139 class=Landroid/widget/Button; text="5" children=0 depth=2 pos=(362,1283) size=(355x210)
+[EXP092-RENDER] node=140 class=Landroid/widget/Button; text="6" children=0 depth=2 pos=(717,1283) size=(356x210)
+[EXP092-RENDER] node=141 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1493) size=(1066x210)
+[EXP092-RENDER] node=142 class=Landroid/widget/Button; text="7" children=0 depth=2 pos=(7,1493) size=(355x210)
+[EXP092-RENDER] node=143 class=Landroid/widget/Button; text="8" children=0 depth=2 pos=(362,1493) size=(355x210)
+[EXP092-RENDER] node=144 class=Landroid/widget/Button; text="9" children=0 depth=2 pos=(717,1493) size=(356x210)
+[EXP092-RENDER] node=145 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1703) size=(1066x210)
+[EXP092-RENDER] node=146 class=Landroid/widget/Button; text="00" children=0 depth=2 pos=(7,1703) size=(355x210)
+[EXP092-RENDER] node=147 class=Landroid/widget/Button; text="0" children=0 depth=2 pos=(362,1703) size=(355x210)
+[EXP092-RENDER] node=148 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(717,1703) size=(356x210)
+[EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 893597 non-white pixels
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=5 dir=run/c156/canon/microtimer/frames
+[ECR-ROOT] scalar content_view_id root=119
+[EXT01-WINBG] windowBackground=@0xffffffff rgb(255,255,255)
+[V1-CONTENT-BOUNDS] root=119 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=119 class=Landroid/widget/LinearLayout; text="" children=8 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=120 class=Landroid/widget/ScrollView; text="" children=1 depth=1 pos=(0,0) size=(1080x934)
+[EXP092-RENDER] node=121 class=Landroid/widget/LinearLayout; text="" children=0 depth=2 pos=(0,0) size=(1080x0)
+[EXP092-RENDER] node=122 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,934) size=(1080x3)
+[EXP092-RENDER] node=123 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,937) size=(1080x126)
+[EXP092-RENDER] node=124 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(0,937) size=(126x126)
+[EXP092-RENDER] node=125 class=Ldubrowgn/microtimer/RoTimeControl; text="" children=1 depth=2 pos=(126,937) size=(538x123)
+[C013-LEAFCHK] Ldubrowgn/microtimer/RoTimeControl; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=538 h=123
+[EXP092-RENDER] node=128 class=Landroid/widget/TextView; text="" children=0 depth=3 pos=(126,937) size=(538x123)
+[EXP092-RENDER] node=131 class=Landroid/widget/ImageButton; text="" children=0 depth=2 pos=(664,937) size=(126x126)
+[EXP092-RENDER] node=132 class=Landroid/view/View; text="" children=0 depth=1 pos=(0,1063) size=(1080x3)
+[EXP092-RENDER] node=133 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1073) size=(1066x210)
+[EXP092-RENDER] node=134 class=Landroid/widget/Button; text="1" children=0 depth=2 pos=(7,1073) size=(355x210)
+[EXP092-RENDER] node=135 class=Landroid/widget/Button; text="2" children=0 depth=2 pos=(362,1073) size=(355x210)
+[EXP092-RENDER] node=136 class=Landroid/widget/Button; text="3" children=0 depth=2 pos=(717,1073) size=(356x210)
+[EXP092-RENDER] node=137 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1283) size=(1066x210)
+[EXP092-RENDER] node=138 class=Landroid/widget/Button; text="4" children=0 depth=2 pos=(7,1283) size=(355x210)
+[EXP092-RENDER] node=139 class=Landroid/widget/Button; text="5" children=0 depth=2 pos=(362,1283) size=(355x210)
+[EXP092-RENDER] node=140 class=Landroid/widget/Button; text="6" children=0 depth=2 pos=(717,1283) size=(356x210)
+[EXP092-RENDER] node=141 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1493) size=(1066x210)
+[EXP092-RENDER] node=142 class=Landroid/widget/Button; text="7" children=0 depth=2 pos=(7,1493) size=(355x210)
+[EXP092-RENDER] node=143 class=Landroid/widget/Button; text="8" children=0 depth=2 pos=(362,1493) size=(355x210)
+[EXP092-RENDER] node=144 class=Landroid/widget/Button; text="9" children=0 depth=2 pos=(717,1493) size=(356x210)
+[EXP092-RENDER] node=145 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(7,1703) size=(1066x210)
+[EXP092-RENDER] node=146 class=Landroid/widget/Button; text="00" children=0 depth=2 pos=(7,1703) size=(355x210)
+[EXP092-RENDER] node=147 class=Landroid/widget/Button; text="0" children=0 depth=2 pos=(362,1703) size=(355x210)
+[EXP092-RENDER] node=148 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(717,1703) size=(356x210)
+[EXP092-COPY] fb has 893597 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 893597 non-white pixels
