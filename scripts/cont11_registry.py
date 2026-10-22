@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
-"""cont11_registry.py — register F-NEW-261 (CONT-11 W7) in root_registry.json
+"""cont11_registry.py — register F-NEW-509 (CONT-11 W7) in root_registry.json
 with the batch-20 evidence chain. No inflation: one root, one entry."""
 import json
 
 RR = "/home/z/my-project/root_registry.json"
 r = json.load(open(RR))
-roots = r["roots"]
-if any(x.get("id") == "F-NEW-261" for x in roots):
-    print("F-NEW-261 already present — refreshing fields only")
-    entry = next(x for x in roots if x.get("id") == "F-NEW-261")
+# registry shape may be dict-with-roots or bare list (post-rebase remote form)
+roots = r["roots"] if isinstance(r, dict) and "roots" in r else r
+entry = None
+if isinstance(r, dict) and "roots" in r:
+    hit = [x for x in roots if x.get("id") == "F-NEW-509"]
+    if hit:
+        print("F-NEW-509 already present — refreshing fields only")
+        entry = hit[0]
+    else:
+        entry = {"id": "F-NEW-509"}
+        roots.append(entry)
 else:
-    entry = {"id": "F-NEW-261"}
-    roots.append(entry)
+    hit = [x for x in roots if isinstance(x, dict) and x.get("id") == "F-NEW-509"]
+    entry = hit[0] if hit else {"id": "F-NEW-509"}
+    if not hit:
+        roots.append(entry)
 
 entry.update({
-    "id": "F-NEW-261",
+    "id": "F-NEW-509",
     "status": "ROOT-CAUSED-FIXED",
     "title": (
         "bridge_to_api Context-family guards (P0.12 getSharedPreferences / "
@@ -51,9 +60,10 @@ entry.update({
     ),
 })
 
-r["total_roots"] = len(roots)
-r["total"] = len(roots)
-import collections
-r["status_counts"] = dict(collections.Counter(x.get("status", "?") for x in roots))
+if isinstance(r, dict):
+    r["total_roots"] = len(roots)
+    r["total"] = len(roots)
+    import collections
+    r["status_counts"] = dict(collections.Counter(x.get("status", "?") for x in roots))
 json.dump(r, open(RR, "w"), indent=1)
-print("registry roots:", len(roots), "| F-NEW-261 registered ROOT-CAUSED-FIXED")
+print("registry roots:", len(roots), "| F-NEW-509 registered ROOT-CAUSED-FIXED")

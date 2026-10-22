@@ -1,0 +1,29 @@
+{
+  "rebased_binary_sha16": "55c5e06b1e0a3997",
+  "pre509_cont159_binary_sha16": "2acd3a23e7064f2c",
+  "base_binary_pre_rebase": "8f45e4eca7d142fa (F-NEW-509 fix alone on the pre-rebase tree)",
+  "f261_probe": {
+    "apk_sha16": "7a5065b83ce14088",
+    "rows": "5/5 PASS (F261-A..E)",
+    "rebased_binary_rerun": "110 PASS / 0 FAIL (5 rows across repeated frames)"
+  },
+  "f259_probe_rerun": "A..G all PASS (154 row hits, 0 FAIL)",
+  "anchors_x3_rebased": {
+    "opencalc": "63020bc7334048fe",
+    "chess": "a0319686d56ff5c0",
+    "dooz": "31ddd4d5b8e6d18e (run1 851cc176 = fresh-store first-run; run2/run3 stable)",
+    "microtimer": "bbd350b6c14fbd52",
+    "unote": "7481e9b468eaa376"
+  },
+  "anchor_attribution": "dooz 31ddd4d5 / chess a0319686 / tower3d 11a38a5a / unote 7481e9b4 match the remote CONT-157/158 re-based lineage exactly (draw-path advance category); opencalc/microtimer deltas are CONT-159 rendering-law re-bases, deterministic x3 on both arms",
+  "batch20_rebased": {
+    "REAL_APP_CONTENT": ["bouncy 8a6c24ac8a7d718e", "fishrings a341e3ad9092f640 (recorded)", "tripeaks e2a290ab98762eea (recorded)", "opmt 548a2d91ef9892fb", "quelltext_mem 35295a57f6c898ab", "smt_calc 2ac5d8d0cbf9552a"],
+    "PARTIAL_CONTENT": ["secuso_memory 6da289aab14d2256 (10,716 px; A/B-ATTRIBUTED to the remote CONT-157..159 lineage — identical PARTIAL frame at pre-509 2acd3a23 arm, NOT an F-NEW-509 interaction; was 558,942 px REAL at the pre-rebase lineage)"],
+    "DEFAULT_BACKGROUND_ONLY": 13,
+    "uncaught": "20/20 = 0 (the F-NEW-509 fix composes cleanly with remote F-NEW-494..507)"
+  },
+  "negatives": "19/19 PASS",
+  "skill": "13/13 PASS",
+  "gate_a": "98 PASS / 0 FAIL / 1 INFO",
+  "registry": "822 -> 823 (F-NEW-509 ROOT-CAUSED-FIXED; id collision with remote F-NEW-261 resolved by re-numbering)"
+}
