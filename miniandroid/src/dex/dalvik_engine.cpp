@@ -2343,6 +2343,88 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                             break;
                         }
                     }
+                    // ── F-NEW-482 (CONT-155): INHERITED onCreate DISPATCH ──
+                    // AOSP ActivityThread.performLaunchActivity law: the
+                    // framework ALWAYS calls activity.onCreate(savedInstanceState)
+                    // on the receiver's runtime class — regardless of WHICH
+                    // superclass declares it. The same-class all_methods()
+                    // scan above silently skipped launcher activities that
+                    // declare only <init> and inherit onCreate from a base
+                    // activity (Simple Mobile Tools SplashActivity -> Ll7/h;
+                    // whose 219-insn onCreate never ran; cohort evidence: 7/17
+                    // of the CONT-154 WINDOW_ROOT apps: flashlight,
+                    // app.subster, voyager, how2vote, ricochlime,
+                    // fdroid-privileged, fossify-contacts — all reached
+                    // onStart/onResume with main_method EMPTY and zero
+                    // setContentView). Fix: the try_recursive_invoke
+                    // super-chain walk — the SAME resolution law the multi-DEX
+                    // manifest path and the G07 onStart/onResume dispatch
+                    // already use. Wrap mirrors the found-path above exactly:
+                    // theme bind (CONT-68) -> onActivityPreCreated (F-058) ->
+                    // onCreate -> fragments-to-created (F-NEW-304) ->
+                    // onActivityCreated -> F-NEW-366 finish gate -> onPostCreate
+                    // (A93) -> onActivityPostCreated.
+                    if (result.main_method.empty()) {
+                        log("🎯 F-NEW-482: launcher class declares no onCreate/main"
+                            " — dispatching INHERITED onCreate via super-chain");
+                        {
+                            uint32_t eff_theme =
+                                resources::ResourceRuntime::instance()
+                                    .resolve_activity_theme(apk_path_, cls.name);
+                            resources::ResourceRuntime::instance()
+                                .set_activity_theme(eff_theme);
+                        }
+                        dispatch_activity_lifecycle_callbacks(
+                            "onActivityPreCreated", result);
+                        DalvikValue f482_ret;
+                        std::vector<DalvikValue> f482_args;
+                        f482_args.push_back(activity_val);              // p0 = this
+                        f482_args.push_back(DalvikValue::make_null());  // p1 = Bundle
+                        bool ok482 = try_recursive_invoke(
+                            cls.name, "onCreate", f482_args, f482_ret, result,
+                            "(Landroid/os/Bundle;)V");
+                        if (ok482) {
+                            result.main_method = "onCreate";
+                            log("🎯 F-NEW-482: inherited onCreate dispatched"
+                                " via super-chain");
+                            advance_fragments_to_created(result);
+                            dispatch_activity_lifecycle_callbacks(
+                                "onActivityCreated", result);
+                            bool f366_finished_in_create = false;
+                            {
+                                auto* as_fin =
+                                    shadow_registry_
+                                        ? shadow_registry_->find_as<
+                                              framework::ActivityShadow>()
+                                        : nullptr;
+                                f366_finished_in_create =
+                                    as_fin && as_fin->pending_finish();
+                            }
+                            if (f366_finished_in_create) {
+                                log("[A93-POSTCREATE] skipped (F-NEW-482): activity"
+                                    " finished during onCreate");
+                            } else {
+                                DalvikValue postcreate_val;
+                                std::vector<DalvikValue> postcreate_args;
+                                postcreate_args.push_back(activity_val);
+                                postcreate_args.push_back(DalvikValue::make_null());
+                                bool post_ok = try_recursive_invoke(
+                                    cls.name, "onPostCreate", postcreate_args,
+                                    postcreate_val, result,
+                                    "(Landroid/os/Bundle;)V");
+                                log(post_ok
+                                        ? "[A93-POSTCREATE] onPostCreate dispatched"
+                                          " (F-NEW-482 path)"
+                                        : "[A93-POSTCREATE] onPostCreate not"
+                                          " overridden (framework stub)");
+                            }
+                            dispatch_activity_lifecycle_callbacks(
+                                "onActivityPostCreated", result);
+                        } else {
+                            log("⚠️ F-NEW-482: inherited onCreate also unresolved"
+                                " — falling through to the legacy heuristic");
+                        }
+                    }
                     // Skip the legacy scan loop
                     goto entry_point_search_done;
                 }

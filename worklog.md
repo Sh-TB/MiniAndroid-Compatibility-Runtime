@@ -11072,3 +11072,19 @@ Work Log:
 
 Stage Summary:
 - The 10-day 'no complete render' question now has a complete machine-verified causal chain: frozen root chain (kind-4 fails) + absent replay leg. TRAIN 3 owns the fix-lever decision: census the lambda holder structures (who keeps Loz0; reachable) -> choose replay-after-dispatchDraw vs chain-head refresh.
+
+---
+Task ID: CONT-155 TRAINs 3-4
+Agent: main agent (Z.ai)
+Task: TRAIN 3 — WINDOW_ROOT 17-app cohort census + sub-type decode; TRAIN 4 — the A-sub-type root cause FIXED in engine source (F-NEW-482), verified end-to-end.
+
+Work Log:
+- Cohort census (scripts/cont155_train3_windowroot.sh, 17 fresh runs): A=7 onCreate-never-ran, B=2 Koin DI NoDefinitionFound (goodtime Lcc4;.e throw-site decoded: app builds message Exception "No definition found for type '...'"), C=3 AppCompat theme-gate false-negative ("You need to use a Theme.AppCompat theme" thrown by AppCompatDelegateImpl.createSubDecor despite app declaring Theme.AppCompat — engine theme-attr resolution gap), D=4 named exceptions (ArrayStoreException/NPE trio).
+- Sub-type A root-caused (flashlight --verbose): DEX-0 launch path's "Find onCreate" loop scans ONLY the launcher class's own all_methods() (SplashActivity declares only <init>); inherited Ll7/h;.onCreate (219 insns) never dispatched; flow: F-NEW-169 attach -> U0113/C94 -> "main_method is EMPTY, trying fallback" -> legacy heuristic. The manifest multi-DEX path + G07 already resolve via try_recursive_invoke super-chain — only the DEX-0 path didn't.
+- FIX (F-NEW-482, dalvik_engine.cpp ~2346): when main_method still empty after the same-class scan, dispatch INHERITED onCreate via try_recursive_invoke with the full AOSP wrap (theme bind -> PreCreated -> onCreate -> fragments-to-created -> onActivityCreated -> F-NEW-366 finish gate -> A93 onPostCreate -> PostCreated).
+- Verify: rebuild -> binary 7b6927614ebef26f; wall 9/9 anchors BYTE-IDENTICAL (zero drift — anchor launchers declare onCreate directly); flashlight onStart 27->1190 insns, setContentView FIRES (F023-PARENTLINK view=1102, R349-ORDER, R005-DECOR), face default-bg -> 100% non-white; cohort re-run: 6/17 WINDOW_ROOT apps now render (flashlight, subster, voyager, how2vote, fossify-contacts, fossify-filemanager); negatives 19/19 (the intermediate 9/19 was the container-reset-wiped probe_store prep — re-created, NOT a fix regression); skill selftest 13/13.
+- Registry: F-NEW-482 ROOT-CAUSED-FIXED appended, 796 roots id-unique main==mirror (scripts/cont155_train4_registry.py).
+
+Stage Summary:
+- FIRST ENGINE SOURCE FIX of CONT-155, first cohort-level render advance of the campaign: 6 previously WINDOW_ROOT-blank apps now paint real content, at zero anchor drift. Honest residual ladder for the cohort: aat (onCreate still unresolved — next case), theme-gate trio (top generic lever: AppCompat theme-attr resolution), Koin pair (upstream DI registry completeness), NPE trio (per-app decode).
+- TRAIN 5 owns: ch.bailu.aat onCreate-resolution case + the theme-gate decode (C-type).
