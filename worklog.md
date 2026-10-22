@@ -11038,3 +11038,22 @@ Work Log:
 
 Stage Summary:
 - F-NEW-481 is the generic fix target for the 49-app APP_DRAW_OPS cohort (52% of the new corpus). Registry 794->795, both files synced. Ledger posted to #364 (comment 6326171674); push 2db4acec verified HEAD==origin/main.
+
+---
+Task ID: CONT-155 TRAIN 1
+Agent: main agent (Z.ai)
+Task: «ادامه ۱۰ قطار» — 10-train formation. TRAIN 1: F-NEW-481 scope-enumeration decode (the pinned next lever from CONT-154 TRAIN 2).
+
+Work Log:
+- Recovery: stale snapshot -> reset --hard to origin/main f41e2ac5 (CONT-154 TRAIN 2); #364 re-read: 102 comments across 2 pages, both new = own CONT-154 ledgers (6326171305/6326171674), NO new user request; deterministic rebuild #9 = f6b272ea24927363 byte-identical; baseline wall 9/9 anchors MATCH.
+- Tool: scripts/cont155_methxref.py — whole-dex instruction-aligned invoke-site xref; 4 walker bugs fixed en route (class_def stride 32; field-skip count sf+ifc; opcode = LOW byte of LE unit; per-list-restart midx naming) — all laws now verbatim from verified tools.
+- Whole-dex census: Lel0;.i has EXACTLY 2 call sites: Lt4;.dispatchDraw unit46 (per-frame 'AndroidOwner:draw' pass, getRoot re-read EVERY frame) + Lug0;.h1 unit27 (overlay).
+- REFUTED CONT-154 TRAIN 2's 'scope list snapshotted at first layout' — root is re-read per frame; stale link is deeper: el0.i -> this.I -> kz0.d -> Lpz0;.L0 -> M0 (single scope, no recursion).
+- M0 callers = exactly 2: Lpz0;.L0 unit61 + Loz0;.a unit24; Loz0; = draw-block LAMBDA created in r1 unit65 capturing the current pz0; r1 callers include LAYER callbacks (Lem1;.g/Lff;.g/Lsc0;.g) with the law: wt0.e gate -> lo.T -> layer.t (frozen pz0) -> r1.
+- LIVE FIELD-TRACE Loz0;.g: 41 events ALL <init>, zero rebinds; LATE captures EXIST (6311->6309 ... 9247->9245) — engine creates late draw lambdas correctly, but early lambdas replayed ~54x each, late invoked ZERO times (T0 census).
+- Registry F-NEW-481 evidence addendum +1803 chars, both files, id-unique, main==mirror (scripts/cont155_train1_registry.py).
+- Evidence: run/c155/train1_draw_entry_decoded.md.
+
+Stage Summary:
+- Draw-entry enumeration fully mapped end-to-end for the first time: dispatchDraw(per-frame) -> el0.i -> kz0.d -> L0 -> M0, PLUS the layer-callback path (wt0.e gate -> layer.t -> r1 -> fresh lambda -> M0). Late lambdas created but never replayed — r1 must early-return for late pz0 (Z M flag / wt0.e gate on late layers).
+- TRAIN 2 owns: gate census (Lpz0;.M, Lc31;.P, Lwt0;.e) on late layers -> generic fix or honest upstream classification.
