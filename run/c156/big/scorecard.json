@@ -1,0 +1,664 @@
+{
+ "rows": [
+  {
+   "app": "ac.stresa.uturn",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.chompass",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.floatdeck",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 6,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.lonecloud.prism",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.simple.peri",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 6,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.sopadeletras",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.starlingmap",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.subster",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.vger.voyager",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 31,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "app.wocheneinkauf",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "au.how2vote.app",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "ca.leradar.app",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "cc.skysparkle.matewave",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "cc.skysparkle.sparkledns",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 73,
+   "verdict": "blank"
+  },
+  {
+   "app": "ch.bailu.aat",
+   "face_pct": 99.3,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "code.alimiracle.sunpiano",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "codes.swistak.batterymonitor",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.acutis.firewall",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.adilhanney.ricochlime",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "blank"
+  },
+  {
+   "app": "com.aeropayout.game",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.amaze.filemanager",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 38,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.anant.fitbuddy",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 18,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.anant.gecko",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 6,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.andsi.airlyrics",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 9,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.apps.adrcotfas.goodtime",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "blank"
+  },
+  {
+   "app": "com.arslan.shizuwall",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "blank"
+  },
+  {
+   "app": "com.ashkanrafiee.balance",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.ashkanrafiee.librecontactsbackup",
+   "face_pct": 74.1,
+   "rc": null,
+   "exceptions": 0,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.aurora.store",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.avstaim.listai",
+   "face_pct": 97.3,
+   "rc": null,
+   "exceptions": 21,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.awagam.android",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.beemdevelopment.aegis",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 11,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.best.deskclock",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 10,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.bitmavrick.lumolight",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.cg.lrceditor",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 17,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.chiranth7.webstack",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.concealnetwork.concealmobile",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.curryplayer.quicksettingssoundprofile",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.dozingcatsoftware.bouncy",
+   "face_pct": 99.1,
+   "rc": null,
+   "exceptions": 0,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.etesync.syncadapter",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.fsck.k9",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.ghostsq.commander",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.jens.automation2",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.kunzisoft.keepass.libre",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 11,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.manichord.mgit",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.maxistar.textpad",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.nononsenseapps.notepad",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.readrops.app",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "blank"
+  },
+  {
+   "app": "com.serwylo.lexica",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "blank"
+  },
+  {
+   "app": "com.serwylo.retrowars",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.simplemobiletools.flashlight",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "com.termux.api",
+   "face_pct": 19.5,
+   "rc": null,
+   "exceptions": 18,
+   "verdict": "blank"
+  },
+  {
+   "app": "com.todobom.opennotescanner",
+   "face_pct": 85.6,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "de.baumann.browser",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 17,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "de.dennisguse.opentracks",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 13,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "de.ph1b.audiobook",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "de.tobiasbielefeld.solitaire",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 20,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "eu.faircode.netguard",
+   "face_pct": 97.3,
+   "rc": null,
+   "exceptions": 11,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "fr.gaulupeau.apps.InThePoche",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 10,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "net.typeblog.shelter",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.connectbot",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.dmfs.tasks",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "blank"
+  },
+  {
+   "app": "org.dystopia.email",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.eu.exodus_privacy.exodusprivacy",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 10,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fdroid.fdroid",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fdroid.fdroid.privileged",
+   "face_pct": 0.0,
+   "rc": null,
+   "exceptions": 0,
+   "verdict": "blank"
+  },
+  {
+   "app": "org.fossify.calendar",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.clock",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.contacts",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.filemanager",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.math",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.messages",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.musicplayer",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.notes",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.fossify.phone",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 4,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.joinmastodon.android",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 5,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.liberty.android.fantastischmemo",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 6,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.ligi.passandroid",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 9,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.ligi.survivalmanual",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 9,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.openhab.habdroid",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 10,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.proninyaroslav.libretorrent",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 8,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.quantumbadger.redreader",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 11,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.schabi.newpipe",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 10,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendly2048",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 6,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlyactivitytracker",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlybackup",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 7,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlydicer",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 3,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlyfoodtracker",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlyludo",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlynotes",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 1,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlysolitaire",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 0,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "org.secuso.privacyfriendlytodolist",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 8,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "ru.meefik.busybox",
+   "face_pct": 99.3,
+   "rc": null,
+   "exceptions": 2,
+   "verdict": "RENDER"
+  },
+  {
+   "app": "ws.xsoh.etar",
+   "face_pct": 99.4,
+   "rc": null,
+   "exceptions": 9,
+   "verdict": "RENDER"
+  }
+ ],
+ "render": 85,
+ "blank": 9
+}

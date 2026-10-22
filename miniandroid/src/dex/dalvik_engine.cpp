@@ -15783,7 +15783,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                     if (!asc_heap_cls.empty()) asc_src_cls = asc_heap_cls; \
                                 } \
                                 bool asc_src_known = \
-                                    !asc_src_cls.empty() && asc_src_cls != "Larray;"; \
+                                    !asc_src_cls.empty() && asc_src_cls != "Larray;" && \
+                                    /* F-NEW-487 (CONT-156 Train 4): the literal \
+                                     * "<unknown>" marker is an UNRESOLVED type, \
+                                     * not a known concrete class — the \
+                                     * conservative scope law above says the \
+                                     * check only fires on a CONCRETE known \
+                                     * descriptor. An "<unknown>"-typed value \
+                                     * (pre-FNA-fallback allocations) must bypass \
+                                     * the check exactly like "Larray;" — the \
+                                     * old guard let the marker through and the \
+                                     * assignability test rejected it, throwing \
+                                     * FALSE ArrayStoreExceptions. */ \
+                                    asc_src_cls != "<unknown>"; \
                                 bool asc_comp_object = \
                                     !asc_component.empty() && \
                                     (asc_component[0] == 'L' || asc_component[0] == '['); \
@@ -17360,6 +17372,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             type_desc = std::string(reinterpret_cast<const char*>(raw.data() + pos), end - pos);
                         }
                     }
+                }
+                // F-NEW-487 (CONT-156 Train 4): the single-dex / resolution
+                // fallback. The previous fallback was a DEAD STUB (an empty
+                // class_info_index_ lookup, result discarded) — when per-DEX
+                // resolution did not answer, type_desc stayed the literal
+                // "<unknown>" and the array was ALLOCATED with that string
+                // as its heap class_descriptor. Downstream, the aput-object
+                // store-check (R-NEW-010) then rejected every store of the
+                // array into a typed array: ghostsq Utils.<clinit> builds
+                // String[][] via filled-new-array {..}, [Ljava/lang/String;
+                // — the inner arrays carried "<unknown>" and the store into
+                // [[Ljava/lang/String; threw ArrayStoreException at <clinit>
+                // (app dead on arrival: NoClassDefFoundError cascade for the
+                // erroneous class). Resolve through the merged dex_report_
+                // types table (the same fallback resolve_type_for_dex uses).
+                if ((type_desc.empty() || type_desc == "<unknown>") &&
+                    dex_report_ && type_idx < dex_report_->types.size()) {
+                    type_desc = dex_report_->types[type_idx];
                 }
 
                 // Allocate the array
@@ -51882,6 +51912,83 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             seed_ai("processName", ai_pkg);
             if (!application_class_desc_.empty())
                 seed_ai("className", application_class_desc_);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ── F-NEW-488 (CONT-156 Train 5): PackageManager.getApplicationInfo ──
+    // ROOT CAUSE (ricochlime decode): Lu0/j;.t calls getPackageManager().
+    // getApplicationInfo(pkg, GET_META_DATA=128) and reads .metaData — the
+    // PackageManager receiver variant was NOT shadowed (REC-MISS) → null
+    // → iget-null-recv NPE on '.metaData' at pc=16 → onCreate unwind
+    // (WINDOW_ROOT blank). AOSP law: PackageManager.getApplicationInfo
+    // serves the SAME ApplicationInfo the Context variant serves (AOSP
+    // PackageManagerService.getApplicationInfo → PackageInfo.applicationInfo);
+    // a real install NEVER answers null for its own package; a foreign
+    // package name throws NameNotFoundException (AOSP contract).
+    if (method == "getApplicationInfo" &&
+        class_name.find("PackageManager") != std::string::npos &&
+        args.size() >= 2) {
+        std::string want_pkg;
+        if (args[1].type == DalvikType::STRING_REF) want_pkg = args[1].string_val;
+        const bool own = want_pkg.empty() || want_pkg == package_name_;
+        if (!own) {
+            // AOSP: throws NameNotFoundException for an uninstalled package.
+            raise_synthetic_exception(
+                "Landroid/content/pm/PackageManager$NameNotFoundException;",
+                want_pkg, "f488-name-not-found");
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        result = get_or_create_singleton("Landroid/content/pm/ApplicationInfo;");
+        if (result.type == DalvikType::OBJECT_REF &&
+            heap_.has_object(result.object_id)) {
+            auto seed488 = [&](const char* fn, const std::string& val) {
+                auto cur = heap_.get_object_field(result.object_id, fn);
+                if (!cur.has_value() ||
+                    (cur->type != DalvikType::STRING_REF &&
+                     cur->type != DalvikType::OBJECT_REF))
+                    heap_.set_object_field(result.object_id, fn,
+                                           DalvikValue::make_string(val, 0));
+            };
+            if (!package_name_.empty()) {
+                seed488("packageName", package_name_);
+                seed488("sourceDir",
+                        "/data/app/" + package_name_ + "/base.apk");
+                seed488("publicSourceDir",
+                        "/data/app/" + package_name_ + "/base.apk");
+                seed488("dataDir", "/data/data/" + package_name_);
+            }
+            {
+                auto cur_en = heap_.get_object_field(result.object_id, "enabled");
+                if (!cur_en.has_value())
+                    heap_.set_object_field(result.object_id, "enabled",
+                                           DalvikValue::make_bool(true));
+            }
+            if (!application_meta_data_.empty()) {
+                auto cur_md = heap_.get_object_field(result.object_id, "metaData");
+                if (!cur_md.has_value() ||
+                    cur_md->type != DalvikType::OBJECT_REF) {
+                    uint32_t bundle_id = heap_.allocate(
+                        "Landroid/os/Bundle;", pc_,
+                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                    for (const auto& [k, v] : application_meta_data_) {
+                        static const std::string digits = "0123456789";
+                        bool numeric = !v.empty() &&
+                            v.find_first_not_of(digits) == std::string::npos;
+                        if (numeric)
+                            heap_.set_object_field(bundle_id, "bundle:" + k,
+                                DalvikValue::make_int(std::stoi(v)));
+                        else
+                            heap_.set_object_field(bundle_id, "bundle:" + k,
+                                DalvikValue::make_string(v, 0));
+                    }
+                    heap_.set_object_field(result.object_id, "metaData",
+                        DalvikValue::make_object(bundle_id,
+                                                 "Landroid/os/Bundle;"));
+                }
+            }
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
