@@ -11103,3 +11103,19 @@ Work Log:
 
 Stage Summary:
 - C-type kill chain pinned end-to-end with one honest open link (framework Material bag content audit) — TRAIN 6 owns the engine-side theme-bag dump and the definitive fix (theme engine or framework table, never the app).
+
+---
+Task ID: CONT-155 TRAIN 6
+Agent: main agent (Z.ai)
+Task: TRAIN 6 — framework/theme bag audit for the C-type theme gate (F-NEW-483).
+
+Work Log:
+- Engine-side env-gated read-only bag dump added (MINIANDROID_THEME_BAG_DUMP in Theme::apply_style, zero behavior change); rebuild + todolist run.
+- Materialized 373-key map dumped: 0x1010033/0x1010057/0x10100ae PRESENT; 0x10100ab windowActionBar ABSENT (probe x2); the whole 0x10100a0-0x10100ad window family cluster missing.
+- THE CHECK SLOT PINNED: [SGET] AppCompatTheme_windowActionBar=117 (createSubDecor pc=8) — hasValue(slot 117) reads an app-namespace attr (0x7f04xxxx region) absent from the theme map -> false -> the pc=404 ISE.
+- On-device semantics: the appcompat Theme.AppCompat.Empty chain level (~130 compat attrs) participates; the engine's materialized chain (5 app styles, 3/1/3/1/2 keys) jumps straight to Platform.AppCompat.Light — the compat attr-bag level is NOT expanded. That is the named residual.
+- Python arsc probes gained 3 more durable laws (package field offsets +268/+276; 0x0201/0x0202 swap; SPARSE/OFFSET16) + UTF-8 string-pool flag (0x100) identified for the next probe.
+- Registry F-NEW-483 addendum, 797 roots id-unique main==mirror.
+
+Stage Summary:
+- The C-type is now pinned to a single precise mechanism: the theme materialization misses the appcompat Empty chain level; slot 117 hasValue=false. TRAIN 7 owns the UTF-8-pool style-name probe -> confirm which level carries the compat bag -> theme-expansion fix or honest framework-table classification.
