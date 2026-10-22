@@ -30208,6 +30208,128 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     // ────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // W9 (F-NEW-513) — Resources.getValue(int id, TypedValue outValue,
+    // boolean resolveRefs) (AOSP Resources.java law):
+    //   `public void getValue(int id, TypedValue outValue, boolean
+    //        resolveRefs) throws NotFoundException`
+    // ResourcesImpl.getValue fills outValue from the ARSC: Res_value
+    // dataType IS the TypedValue.type constant space (ResourceTypes.h —
+    // 0x1C..0x1F colors, 0x10/0x11 ints, 0x12 bool, 0x03 string, 0x01
+    // reference, 0x05 dimension, 0x06 fraction), data is the raw word.
+    // An unresolved id THROWS NotFoundException (the AOSP contract).
+    // Pre-fix: NO handler → REC-MISS → the TypedValue stayed type=0 →
+    // androidx ResourcesCompat.isColorInt (in-APK DEX: `value.type >=
+    // TYPE_FIRST_COLOR_INT && value.type <= TYPE_LAST_COLOR_INT`)
+    // answered FALSE for every plain color → getColorStateList took the
+    // res.getXml(id) inflate path → F-371 getXml NotFound on a COLOR id
+    // → Resources$NotFoundException unwound MaterialResources/FAB ctor →
+    // survivalmanual ActivityMainBinding.inflate death (29 uncaught) and
+    // the same signature on alexcalc's Toolbar. The consumer chain:
+    // MaterialResources.getColorStateList → AppCompatResources →
+    // ContextCompat → ResourcesCompat.getColorStateList → isColorInt.
+    // TypedValue fields written (AOSP TypedValue public fields): type,
+    // data, assetCookie (0 — no asset indirection modeled), resourceId,
+    // and `string` for STRING entries. resolveRefs law: REFERENCE values
+    // deref (bounded 4 hops — same walk F-383 uses) when the flag is set.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "getValue" && args.size() >= 4 &&
+        args[1].type == DalvikType::INT32 &&
+        args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0) {
+        int32_t gv_resid = args[1].int_val;
+        uint32_t gv_out = args[2].object_id;
+        bool gv_deref = (args[3].type == DalvikType::INT32)
+                            ? (args[3].int_val != 0)
+                            : (args[3].type == DalvikType::OBJECT_REF &&
+                               args[3].object_id != 0);
+        bool gv_resolved = false;
+        resources::ResValue gv_val;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded() || rt.ensure_loaded(apk_path_)) {
+                auto v = rt.arsc().resolve_value((uint32_t)gv_resid);
+                if (v && !v->is_null()) {
+                    gv_val = *v;
+                    gv_resolved = true;
+                    // resolveRefs law: walk REFERENCE chains to the
+                    // terminal value (AOSP ResTable resolve; ATTRIBUTE
+                    // refs resolve through the theme — unmodeled here,
+                    // the walk stops when resolve_value has no answer).
+                    for (int hop = 0; gv_deref && gv_val.is_reference() &&
+                                     gv_val.ref_id != 0 && hop < 4;
+                         ++hop) {
+                        auto nv = rt.arsc().resolve_value(gv_val.ref_id);
+                        if (!nv || nv->is_null()) break;
+                        gv_val = *nv;
+                    }
+                }
+            }
+        }
+        std::cerr << "[F513-GETVALUE] resid=0x" << std::hex << gv_resid
+                  << " datatype=0x" << (gv_resolved ? (int)gv_val.type : -1)
+                  << std::dec << " -> "
+                  << (gv_resolved ? "resolved" : "NOT_FOUND") << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // AOSP: getValue on an unknown id throws NotFoundException. BUT the
+        // throw fires ONLY for APP-package ids (0x7f...) — ids whose package
+        // byte is the app table and which the ARSC genuinely lacks. Framework
+        // -package ids (0x01… android.R.* — attrs/styles AOSP resolves from
+        // framework-res) are NOT in the app ARSC by construction: MiniAndroid
+        // does not model the framework value table, so for those the honest
+        // state is the zero-state TypedValue + a recorded row (the same
+        // observable as the pre-law REC-MISS path — the androidx consumer
+        // then routes per its own catch structure). Regression law (W9
+        // live A/B): throwing for 0x1010054-class ids killed chess +
+        // opencalc onCreate (white faces) — the framework-res boundary,
+        // NOT an app-visible NotFound on device.
+        if (!gv_resolved) {
+            // AOSP NotFound contract, scoped to ids that are REAL app-table
+            // ids (0x7f…): those genuinely missing from the ARSC throw —
+            // the app-visible device truth. Every other unresolved shape is
+            // an UPSTREAM ENGINE LEAK the app would never see on device:
+            //   - 0x01… framework ids (framework-res unmodeled);
+            //   - raw values leaking through the theme/attr slot into an
+            //     id-typed read (W9 live faces: chess 0xfffef7ff via
+            //     l/l2.b — the method has NO try blocks, so on device this
+            //     call cannot happen with a non-id; survivalmanual
+            //     0xfffafafa / 0x1010054 via ResourceManagerInternal) —
+            //     the honest state is the zero-state TypedValue + a
+            //     recorded row (F-NEW-483 theme-gate family owns the
+            //     upstream decode; F-383's null-degrade precedent).
+            const uint32_t gv_pkg = ((uint32_t)gv_resid >> 24) & 0xFF;
+            if (gv_pkg == 0x7f) {
+                throw_deferred(
+                    "Landroid/content/res/Resources$NotFoundException;",
+                    "Resource ID #0x" + to_hex((uint32_t)gv_resid),
+                    "F513-GETVALUE-NOTFOUND");
+                return true;
+            }
+            std::cerr << "[F513-GETVALUE] non-app-package id 0x" << std::hex
+                      << gv_resid << std::dec
+                      << " → zero-state TypedValue (upstream leak / "
+                         "framework-res unmodeled — no throw)"
+                      << std::endl;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        // TypedValue population (AOSP Res_value → TypedValue field map).
+        heap_.set_object_field(gv_out, "type",
+                               DalvikValue::make_int((int32_t)gv_val.type));
+        heap_.set_object_field(gv_out, "data",
+                               DalvikValue::make_int((int32_t)gv_val.data));
+        heap_.set_object_field(gv_out, "assetCookie",
+                               DalvikValue::make_int(0));
+        heap_.set_object_field(gv_out, "resourceId",
+                               DalvikValue::make_int(gv_resid));
+        if (gv_val.is_string()) {
+            heap_.set_object_field(
+                gv_out, "string",
+                DalvikValue::make_string(gv_val.string_value, 0));
+        }
+        result = DalvikValue::make_void();
+        return true;
+    }
     // F-NEW-383 (CONT-82) — Resources.getColorStateList(int) (AOSP
     // Resources.java law): color resources resolve through the ARSC table
     // (REFERENCE chains deref to the terminal COLOR) and wrap as a
@@ -37893,7 +38015,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         (method == "setMaxLines" || method == "getMaxLines" ||
          method == "setEllipsize" || method == "getEllipsize" ||
          method == "setIncludeFontPadding" ||
-         method == "getIncludeFontPadding" || method == "getLineHeight")) {
+         method == "getIncludeFontPadding" || method == "getLineHeight" ||
+         method == "setFilters" || method == "getFilters" ||
+         method == "setTransformationMethod" ||
+         method == "getTransformationMethod")) {
         uint32_t tv_recv = (!args.empty() &&
                             args[0].type == DalvikType::OBJECT_REF)
                                ? args[0].object_id
@@ -37957,6 +38082,73 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     result = DalvikValue::make_object(0, "");
                     result.object_id = 0;  // AOSP default null
                 }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // ────────────────────────────────────────────────────────────
+            // W9 (F-NEW-512): TextView FILTERS + TRANSFORMATION-METHOD
+            // state laws (AOSP frameworks/base core/java/android/widget/
+            // TextView.java — the source IS the law):
+            //   `private InputFilter[] mFilters = new InputFilter[0];`
+            //   `public InputFilter[] getFilters() { return mFilters; }`
+            //   `public void setFilters(InputFilter[] filters) {...}`
+            // → getFilters() NEVER returns null; the pre-set default is
+            // the EMPTY array. Pre-fix: NO handler → REC-MISS → NULL →
+            // emoji2's EmojiProcessingFilter.g([InputFilter) executed
+            // array-length on null → NPE → Toolbar.setSubtitle's
+            // AppCompatTextView build (l/a1 ctor → l/w → x0/g.r → x0/f.r)
+            // unwound to onCreate APP-BOUNDARY → chess Toolbar 1080x0
+            // (face b270ff04) the moment F-NEW-511b let androidx.startup
+            // reach the emoji2 initializer chain.
+            // getTransformationMethod(): AOSP mTransformation is NULL
+            // until set (the plain-TextView ctor default) — null is the
+            // honest answer; the emoji helper's t() wraps null lawfully
+            // (instance-of(null)→false → new EmojiTransformationMethod(
+            // null); both wrappers are plain stores).
+            // ────────────────────────────────────────────────────────────
+            if (method == "setFilters" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF) {
+                heap_.set_object_field(tv_recv, "__filters__", args[1]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getFilters") {
+                auto v = heap_.get_object_field(tv_recv, "__filters__");
+                if (v.has_value() && v->type == DalvikType::OBJECT_REF &&
+                    v->object_id != 0 && heap_.has_object(v->object_id)) {
+                    result = *v;  // identity: the SAME array AOSP stores
+                } else {
+                    // AOSP ctor default: new InputFilter[0] (non-null).
+                    uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+                    heap_.set_object_field(arr_id, "__array_length__",
+                                           DalvikValue::make_int(0));
+                    DalvikValue arr_val;
+                    arr_val.type = DalvikType::OBJECT_REF;
+                    arr_val.object_id = arr_id;
+                    arr_val.class_desc =
+                        "[Landroid/text/InputFilter;";
+                    heap_.set_object_field(tv_recv, "__filters__", arr_val);
+                    result = arr_val;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setTransformationMethod" && args.size() >= 2) {
+                heap_.set_object_field(tv_recv, "__transformation_method__",
+                                       args[1]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getTransformationMethod") {
+                auto v = heap_.get_object_field(tv_recv,
+                                                "__transformation_method__");
+                if (v.has_value() && v->type == DalvikType::OBJECT_REF &&
+                    v->object_id != 0)
+                    result = *v;  // recorded method identity
+                else
+                    result = DalvikValue::make_null();  // AOSP default
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
@@ -38916,7 +39108,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         uint32_t list_id = heap_.allocate("Ljava/util/Collections$SingletonList;", pc_, 0);
         int32_t n = 0;
         if (method == "singletonList" && args.size() >= 1) {
-            heap_.set_object_field(list_id, "array[0]", args[0]);
+            // W9 (F-NEW-511b container arm): materialize a CLASS_REF element
+            // to its STABLE per-descriptor heap token before the store —
+            // raw CLASS_REF values carry object_id=0 (ref_id holds the
+            // identity), and every heap-field ref reader (and the shadow
+            // iterator fallback) requires OBJECT_REF + oid != 0. Live face
+            // (W8 survivalmanual): EmojiCompatInitializer.dependencies() →
+            // singletonList(DefaultLifecycleInitializer.class) →
+            // List.next() served "iterator exhausted (pos=0)" because the
+            // stored CLASS_REF read back as nothing → StartupException.
+            // Same materialization convention as F-NEW-282 (frame boundary)
+            // and F-NEW-511a (forName token identity). NOTE: the JVM law is
+            // element-type-agnostic — Collections.singletonList stores the
+            // reference verbatim; the materialization only changes the
+            // ENGINE's internal representation of a class literal from the
+            // counter-tagged CLASS_REF to the same stable heap token every
+            // other Class reference already uses (F-069/F-249/511a law).
+            DalvikValue f511_elem = args[0];
+            if (f511_elem.type == DalvikType::CLASS_REF &&
+                !f511_elem.class_desc.empty()) {
+                uint32_t f511_tok = 0;
+                auto f511_it = class_token_ids_.find(f511_elem.class_desc);
+                if (f511_it != class_token_ids_.end()) {
+                    f511_tok = f511_it->second;
+                } else {
+                    f511_tok = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+                    heap_.set_object_field(
+                        f511_tok, "__referent_desc",
+                        DalvikValue::make_string(f511_elem.class_desc, 0));
+                    class_token_ids_.emplace(f511_elem.class_desc, f511_tok);
+                }
+                f511_elem = DalvikValue::make_object(f511_tok,
+                                                     "Ljava/lang/Class;");
+            }
+            heap_.set_object_field(list_id, "array[0]", f511_elem);
             n = 1;
         } else if (method == "unmodifiableList" && args.size() >= 1 &&
                    args[0].type == DalvikType::OBJECT_REF) {
