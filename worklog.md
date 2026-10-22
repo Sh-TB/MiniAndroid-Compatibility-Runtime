@@ -11225,3 +11225,25 @@ Work Log:
 
 Stage Summary:
 - The instruction's question answered WITH NUMBERS: the accumulated engine changes DID have per-game effect (13/18 games render real content; anchors zero-drift); the 3 blank-face sharers that were fixable got ONE generic fix (F-NEW-497) and crossed. Remaining frontier: dooz×2 (F084 throughput wall), tictactoe (F-NEW-498 libGDX/native), chess (0xFFFFFFFF getxml chain), tower3d (black uniform — decode pending).
+---
+Task ID: CONT-159
+Agent: main agent (Z.ai)
+Task: «ادامه» — CONT-159: tower3d decode wave (the CONT-158 honest frontier: tower3d black uniform, chess getxml, dooz F084, tictactoe libGDX).
+
+Work Log:
+- Session opened at origin/main 00a11d7f (CONT-158 close-out); no new #364 comments after 6339919810. Binary rebuilt: ledger hash b7b193b5 was a stale intermediate — committed source builds deterministically at 737539f1ea6f4e62 (2× rebuild byte-identical); ALL gates re-verified at 737539f1: wall 9/9 MATCH, negatives 19/19, selftest 13/13.
+- TRAIN 2 (tower3d decode): the killer chain decoded end-to-end with a new whole-DEX disassembler (cont159_disasm2.py, corrected walker) + [RET-CALLER] env-gated caller diag (MINIANDROID_RET_CALLER_TRACE) + GL-DISPATCH/F235/SHADOW-ANSWER diags:
+  1. String.compareTo MISSING → unhandled fallback 0 → Attribute.register collapsed ALL type aliases to bit 1 (DirectionalLightsAttribute.Type == ColorAttribute.Type == 1) → Environment.add matched a foreign ColorAttribute under the DLA key (F-NEW-500).
+  2. The R414 materializer's no-descriptor try_recursive_invoke picked the Array COPY ctor (EXP-078 largest-bytecode law, 30 units > 7) → getClass() on the fresh shell's absent items → NPE (F-NEW-501).
+  3. Class.getComponentType MISSING → Array.newInstance(null,…) → null → resize array-length NPE (F-NEW-502).
+  4. GLES20 bridge P(k) indexed by JAVA-ARG position over the pointer-only array → glGenBuffers wrote ids through nullptr → SEGV fault_addr=0x0 (F-NEW-503) + glGetShaderiv MISSING → isCompiled()=0 → SpriteBatch.createDefaultShader IAE (F-NEW-503b).
+  5. App-class natives (BufferUtils.newDisposableByteBuffer) never reached bridge_to_api → real libgdx.so FAULTED (guarded) → null → order() NPE (F-NEW-504 + the shadow).
+  6. portablegl.h:15223 glCreateShader STUB returns 0 → ShaderProgram.loadShader skipped compile → IAE (F-NEW-505: engine-side handle minting + stable uniform-location maps).
+  7. gen* out-param write-back MISSING → IndexBufferObject 'No buffer allocated!' (F-NEW-506).
+  8. Class.getResourceAsStream MISSING → libGDX default BitmapFont GdxRuntimeException (F-NEW-507: apk-entry backing streams, readLine delivers REAL fnt bytes).
+- Result: tower3d went from uniform-black + 3 stacked engine death chains to DEEP app execution (SpriteBatch + Mesh + GL buffers + font pipeline live; stub-census 841→1520 IMPLEMENTED). Honest frontier: BitmapFontData.load parseInt('\t') NFE — the tab-token provenance unresolved (file bytes contain ZERO tabs; both split layers answer true tokens) — F-NEW-508 CLASSIFIED with named next lever (pair-split element identity at the 63828 site).
+- WALL: 9/9 MATCH at 2acd3a23e7064f2c — ZERO drift across all 8 laws (tower3d 11a38a5a unchanged, honest); negatives 19/19; selftest 13/13. Battery 20 rows: zero regressions, faces identical to CONT-158 (content 12/18 games + memory).
+- Registry 813→822 (F-NEW-500..507 ROOT-CAUSED-FIXED, F-NEW-508 CLASSIFIED) id-unique main==mirror.
+
+Stage Summary:
+- The tower3d decode wave landed 8 generic engine laws in ONE session (compareTo/getComponentType/resource-stream = framework-shape gaps; GLSL handle family + write-back + layering = GL-path gaps; materializer descriptor + native layering = dispatch gaps). Every fix root-caused from live bytecode + trace evidence, none app-keyed. Remaining frontier: tower3d font-parse tab (F-NEW-508), chess getxml chain, dooz F084 throughput, tictactoe libgdx.so native.

@@ -18,6 +18,9 @@
 #define MINIANDROID_GLES20_BRIDGE_H
 
 #include <string>
+#include <vector>
+#include <map>
+#include <cstdint>
 #include <cstdint>
 #include <map>
 
@@ -64,6 +67,32 @@ private:
     std::map<uint32_t, PGLShaderFuncs> programs_;
     std::map<uint32_t, std::string> shader_sources_;
     uint32_t next_vert_ = 1, next_frag_ = 1;
+
+    // ── F-NEW-505 (CONT-159): GLSL shader-handle family, engine-side ────
+    // This PortableGL port stubs the whole GLSL surface (glCreateShader
+    // returns 0, glCompileShader/glLinkProgram no-op — the backend renders
+    // through fixed-function C-function programs, the register_program_
+    // shaders path). The stubs leaked through the bridge as REAL answers:
+    // glCreateShader → 0 → ShaderProgram.loadShader's `if (shader == 0)`
+    // branch skipped the compile entirely → isCompiled() false →
+    // SpriteBatch.createDefaultShader threw IllegalArgumentException →
+    // AndroidLauncher.onCreate death (tower3d, the first libGDX-3D title to
+    // reach SpriteBatch init). The engine owns the handle algebra:
+    //   shaders:  handle → {type, source, compiled, deleted}
+    //   programs: handle → {attached shaders, linked, deleted}
+    //   locations: stable per-program (name → location) map so glUniform*
+    //     calls bind the same slot the getter minted.
+    // Status queries flow through the Java-side law (gl_surface_shadow
+    // F-NEW-503b: COMPILE_STATUS/LINK_STATUS → GL_TRUE for engine-minted
+    // handles). The GLSL source itself is stored for the trace (the
+    // glsl-not-compiled honesty note stands).
+    struct GlShader { uint32_t type = 0; bool compiled = false; bool deleted = false; };
+    struct GlProgram { std::vector<uint32_t> attached; bool linked = false; bool deleted = false; };
+    std::map<uint32_t, GlShader> gl_shaders_;
+    std::map<uint32_t, GlProgram> gl_programs_;
+    std::map<uint32_t, std::map<std::string, int32_t>> gl_locations_;
+    uint32_t gl_next_shader_ = 1;
+    uint32_t gl_next_program_ = 1;
 };
 
 }  // namespace gles
