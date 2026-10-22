@@ -11134,3 +11134,18 @@ Work Log:
 
 Stage Summary:
 - C-type pinned to ONE wrong link: the launch path binds SplashScreenTheme instead of the manifest's AppTheme. TRAIN 8 owns the resolver probe (theme_resid parse vs F-094 find_id vs splash clone) -> the generic fix candidate.
+
+---
+Task ID: CONT-155 TRAIN 8
+Agent: main agent (Z.ai)
+Task: TRAIN 8 — F-NEW-484: the runtime setTheme rebind (the C-type fix).
+
+Work Log:
+- Chain completion: manifest launcher theme IS Theme.SplashScreen (byte-exact axml: dtype 0x01 REFERENCE data 0x7f1201e9) — launch binding CORRECT; the splash lib's installSplashScreen() setTheme(postSplashScreenTheme) is the AOSP theme switch; the shadow only LOGGED setTheme — S124 kept the launch theme -> slot-117 hasValue=false -> the createSubDecor ISE.
+- FIX (two paths): ActivityShadow::dispatch setTheme handler + the dalvik bridge site — ResourceRuntime::set_activity_theme(resid); env-gated MINIANDROID_F484_DIAG.
+- VERIFY: todolist ISE GONE + root=628 + face 100% non-white; leradar 100%; exodusprivacy 100% — C-type trio 3/3; WINDOW_ROOT cohort cumulative 9/17 render.
+- Zero-drift wall: 2 anchors honestly RE-BASED (unote 7481e9b4 — app setTheme(0x1030128) platform theme; opencalc 63020bc7 — app setTheme(0x7f12013d) app theme); REAL_APP_CONTENT advance category (CONT-10 a976d2f9 precedent); wall 9/9 MATCH; negatives 19/19; selftest 13/13.
+- Registry F-NEW-484 ROOT-CAUSED-FIXED appended, 798 roots id-unique main==mirror. Binary d7d3d61a76129682. Evidence: run/c155/train8_settheme_fix.md.
+
+Stage Summary:
+- SECOND engine fix of the formation; the C-type trio fully rescued; cumulative WINDOW_ROOT 9/17 render. Remaining cohort residuals: aat case, Koin pair, NPE/ArrayStore trio. TRAIN 9 owns the final wall + ledger; TRAIN 10 close-out.

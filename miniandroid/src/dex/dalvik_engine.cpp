@@ -45323,6 +45323,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // recorded content root ONLY, one-shot-guarded, and the
             // XML-inflate INT branch keeps its S42 attach timing.
             // ────────────────────────────────────────────────────────────
+            // ── F-NEW-484 (CONT-155): AOSP Activity.setTheme(int) LAW ──
+            // The runtime theme override must REBIND the S124 activity
+            // theme. Law: the androidx core-splashscreen postSplashScreen-
+            // Theme pattern — the launcher activity's manifest theme IS
+            // Theme.SplashScreen (zero compat attrs); installSplashScreen()
+            // calls setTheme(postSplashScreenTheme) at onCreate start and
+            // EVERY later obtainStyledAttributes (the AppCompat
+            // createSubDecor gate included) resolves against the NEW
+            // theme. Previous behavior: the EXP088-B shadow recorded the
+            // call but the ResourceRuntime kept the LAUNCH theme — SECUSO
+            // todolist evidence: SplashScreenTheme stayed bound,
+            // AppCompatTheme_windowActionBar slot-117 hasValue answered
+            // false → the "You need to use a Theme.AppCompat theme" ISE at
+            // createSubDecor pc=404 → APP-BOUNDARY unwind → WINDOW_ROOT.
+            // AOSP: Activity.setTheme → mTheme = resid; async re-resolution
+            // (ContextThemeWrapperImpl). Env-gated diag: MINIANDROID_F484_DIAG.
+            if (method == "setTheme" && shadow_registry_ != nullptr &&
+                args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                args[1].int_val != 0) {
+                uint32_t f484_theme = (uint32_t)args[1].int_val;
+                auto& rt484 = resources::ResourceRuntime::instance();
+                rt484.set_activity_theme(f484_theme);
+                if (std::getenv("MINIANDROID_F484_DIAG"))
+                    std::cerr << "[F-NEW-484] setTheme rebind: resid=0x"
+                              << std::hex << f484_theme << std::dec
+                              << " (AOSP Activity.setTheme law)"
+                              << std::endl;
+            }
             if (method == "setContentView" && shadow_registry_ != nullptr) {
                 if (auto* vs =
                         shadow_registry_->find_as<framework::ViewShadow>()) {
