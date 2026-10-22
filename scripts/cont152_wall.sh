@@ -15,8 +15,13 @@ declare -A APKS=(
   [microtimer]="$CA/dubrowgn.microtimer_8.apk"
   [sudoku]=upload/sudoku_secuso_101.apk
 )
-declare -A ANCH=( [dooz]=d602648e [klondike]=31ddd4d5 [unote]=90a67cc1 [chess]=a0319686
-  [telegram]=20ac8cbbbb [tower3d]=11a38a5a [opencalc]=d5f3c7b5 [microtimer]=bbd350b6 [sudoku]=be640e39 )
+# CONT-155 F-NEW-484 re-anchoring: unote 90a67cc1->7481e9b4, opencalc
+# d5f3c7b5->63020bc7 — the apps call runtime setTheme (unote 0x1030128
+# platform theme, opencalc 0x7f12013d app theme); AOSP Activity.setTheme law
+# now honored, REAL_APP_CONTENT advance (same category as the CONT-10
+# opencalc a976d2f9 re-base).
+declare -A ANCH=( [dooz]=d602648e [klondike]=31ddd4d5 [unote]=7481e9b4 [chess]=a0319686
+  [telegram]=20ac8cbbbb [tower3d]=11a38a5a [opencalc]=63020bc7 [microtimer]=bbd350b6 [sudoku]=be640e39 )
 PASS=0; FAIL=0
 for app in dooz klondike unote chess telegram tower3d opencalc microtimer sudoku; do
   ms=25; [ "$app" = telegram ] && ms=60
