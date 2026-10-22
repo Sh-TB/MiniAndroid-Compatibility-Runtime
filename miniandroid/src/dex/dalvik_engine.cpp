@@ -45972,6 +45972,96 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ── F-NEW-486 (CONT-156 Train 2): AOSP API 30+ WindowMetrics family ──
+    // ROOT CAUSE (aat decode, CONT-155 Train 9): WindowManager.
+    // getCurrentWindowMetrics (API 30) had NO shadow → answered null →
+    // Kotlin checkNotNull "must not be null" inside AppLayout.
+    // updateMeasurementSDK30 → NPE unwound MainActivity.onCreate before
+    // any view (4-instruction pin, stack depth 11, F-NEW-485 CLASSIFIED).
+    // AOSP law: getCurrentWindowMetrics/getMaximumWindowMetrics return a
+    // WindowMetrics carrying the window Rect + Insets. A real device
+    // NEVER returns null. Device-profile law (identical to
+    // Display.getMetrics above): portrait 1080x1920, zero insets.
+    // Stable identity: the SAME WindowMetrics object per WindowManager
+    // (Kotlin callers may hold it across measure passes; AOSP WindowMetrics
+    // is an immutable value object freshly built per call, so either
+    // identity satisfies app code — the singleton additionally survives
+    // == comparisons on cached receivers).
+    if ((method == "getCurrentWindowMetrics" ||
+         method == "getMaximumWindowMetrics") &&
+        class_name.find("WindowManager") != std::string::npos) {
+        DalvikValue mo = get_or_create_singleton("Landroid/view/WindowMetrics;");
+        auto bv = heap_.get_object_field(mo.object_id, "mBounds");
+        if (!bv.has_value()) {
+            // First materialization: seed bounds + zero insets (AOSP
+            // WindowMetrics fields are mBounds/mWindowInsets; field-name
+            // access only matters for interpreter iget — method access is
+            // dispatched below).
+            uint32_t rid = heap_.allocate("Landroid/graphics/Rect;", 0, 0);
+            heap_.set_object_field(rid, "left", DalvikValue::make_int(0));
+            heap_.set_object_field(rid, "top", DalvikValue::make_int(0));
+            heap_.set_object_field(rid, "right",
+                                   DalvikValue::make_int(1080));
+            heap_.set_object_field(rid, "bottom",
+                                   DalvikValue::make_int(1920));
+            heap_.set_object_field(
+                mo.object_id, "mBounds",
+                DalvikValue::make_object(rid, "Landroid/graphics/Rect;"));
+            uint32_t io = heap_.allocate("Landroid/graphics/Insets;", 0, 0);
+            for (const char* f : {"left", "top", "right", "bottom"})
+                heap_.set_object_field(io, f, DalvikValue::make_int(0));
+            heap_.set_object_field(
+                mo.object_id, "mWindowInsets",
+                DalvikValue::make_object(io, "Landroid/graphics/Insets;"));
+        }
+        result = mo;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getBounds" &&
+        class_name == "Landroid/view/WindowMetrics;") {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        auto bv = recv ? heap_.get_object_field(recv, "mBounds")
+                       : std::nullopt;
+        if (bv.has_value() && bv->type == DalvikType::OBJECT_REF &&
+            bv->object_id != 0) {
+            result = *bv;
+        } else {
+            // Unseeded receiver: answer the device-profile rect directly
+            // (AOSP law — never null).
+            uint32_t rid = heap_.allocate("Landroid/graphics/Rect;", 0, 0);
+            heap_.set_object_field(rid, "left", DalvikValue::make_int(0));
+            heap_.set_object_field(rid, "top", DalvikValue::make_int(0));
+            heap_.set_object_field(rid, "right",
+                                   DalvikValue::make_int(1080));
+            heap_.set_object_field(rid, "bottom",
+                                   DalvikValue::make_int(1920));
+            result = DalvikValue::make_object(rid,
+                                              "Landroid/graphics/Rect;");
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (method == "getWindowInsets" &&
+        class_name == "Landroid/view/WindowMetrics;") {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        auto iv = recv ? heap_.get_object_field(recv, "mWindowInsets")
+                       : std::nullopt;
+        if (iv.has_value() && iv->type == DalvikType::OBJECT_REF &&
+            iv->object_id != 0) {
+            result = *iv;
+        } else {
+            uint32_t io = heap_.allocate("Landroid/graphics/Insets;", 0, 0);
+            for (const char* f : {"left", "top", "right", "bottom"})
+                heap_.set_object_field(io, f, DalvikValue::make_int(0));
+            result = DalvikValue::make_object(io,
+                                              "Landroid/graphics/Insets;");
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (method == "getMetrics" && class_name == "Landroid/view/Display;" &&
         args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
         // Engine-bridge framing: args[0] = receiver (Display), args[1] = the
