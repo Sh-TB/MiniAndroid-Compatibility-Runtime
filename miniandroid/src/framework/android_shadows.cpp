@@ -4479,6 +4479,33 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         std::cerr << std::endl;
     }
     // Activity instance methods
+    // ── F-NEW-484 (CONT-155): AOSP Activity.setTheme(int) LAW ───────────
+    // The runtime theme override REBINDS the S124 activity theme. Law: the
+    // androidx core-splashscreen postSplashScreenTheme pattern — the
+    // launcher activity's manifest theme IS Theme.SplashScreen (zero
+    // compat attrs); installSplashScreen() calls setTheme(postSplashScreen
+    // Theme) at onCreate start, and every later obtainStyledAttributes
+    // (the AppCompat createSubDecor gate included) resolves against the
+    // NEW theme. Previous behavior: this dispatch only LOGGED the call, so
+    // the ResourceRuntime kept the LAUNCH theme — SECUSO todolist:
+    // SplashScreenTheme stayed bound, AppCompatTheme_windowActionBar
+    // slot-117 hasValue answered false → the "You need to use a
+    // Theme.AppCompat theme" ISE at createSubDecor pc=404 → APP-BOUNDARY
+    // unwind → WINDOW_ROOT. Env-gated diag: MINIANDROID_F484_DIAG.
+    if (m == "setTheme") {
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::INT &&
+            ctx.args[0].int_val != 0) {
+            uint32_t f484_theme = (uint32_t)ctx.args[0].int_val;
+            resources::ResourceRuntime::instance().set_activity_theme(
+                f484_theme);
+            if (std::getenv("MINIANDROID_F484_DIAG"))
+                std::cerr << "[F-NEW-484] Activity.setTheme rebind: resid=0x"
+                          << std::hex << f484_theme << std::dec
+                          << " (AOSP Activity.setTheme law)" << std::endl;
+        }
+        return CallResult::handled_void();
+    }
     // ── F-058 (R-NEW-279): ActivityLifecycleCallbacks registration ──────
     // AOSP Activity.java L1627: registerActivityLifecycleCallbacks(cb)
     // delegates to getApplication().registerActivityLifecycleCallbacks(cb).
