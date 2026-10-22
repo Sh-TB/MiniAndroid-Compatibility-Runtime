@@ -11119,3 +11119,18 @@ Work Log:
 
 Stage Summary:
 - The C-type is now pinned to a single precise mechanism: the theme materialization misses the appcompat Empty chain level; slot 117 hasValue=false. TRAIN 7 owns the UTF-8-pool style-name probe -> confirm which level carries the compat bag -> theme-expansion fix or honest framework-table classification.
+
+---
+Task ID: CONT-155 TRAIN 7
+Agent: main agent (Z.ai)
+Task: TRAIN 7 — style-name resolution + manifest theme decode for the C-type.
+
+Work Log:
+- UTF-8 string-pool decode law implemented (flags 0x100; 1-2 byte len pairs) — style names resolved: the engine-walked 5-level chain = SplashScreenTheme family (NOT appcompat styles).
+- Manifest axml theme attrs decoded byte-exact (attr layout: ns/name/rawValue u4 x3 + Res_value size u2/res0/dtype/data u4): application AND view.MainActivity theme = REFERENCE 0x7f120010 = @style/AppTheme.
+- Engine bound 0x7f1201e9 = @style/SplashScreenTheme (F366 + THEME-BAG-DUMP) — the WRONG style: the launch path bound the androidx splash-library theme instead of the app's manifest theme. Zero compat attrs in its chain -> slot-117 hasValue=false -> the pc=404 ISE -> WINDOW_ROOT. C-type causal chain now complete end-to-end.
+- Durable laws gained: manifest attr Res_value offsets (dtype @+19, data @+20); string pool flags 0x100 = UTF-8; the earlier 4-H struct bug law (size is u4 at +4).
+- Registry F-NEW-483 addendum, 797 roots id-unique main==mirror.
+
+Stage Summary:
+- C-type pinned to ONE wrong link: the launch path binds SplashScreenTheme instead of the manifest's AppTheme. TRAIN 8 owns the resolver probe (theme_resid parse vs F-094 find_id vs splash clone) -> the generic fix candidate.
