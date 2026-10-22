@@ -11057,3 +11057,18 @@ Work Log:
 Stage Summary:
 - Draw-entry enumeration fully mapped end-to-end for the first time: dispatchDraw(per-frame) -> el0.i -> kz0.d -> L0 -> M0, PLUS the layer-callback path (wt0.e gate -> layer.t -> r1 -> fresh lambda -> M0). Late lambdas created but never replayed — r1 must early-return for late pz0 (Z M flag / wt0.e gate on late layers).
 - TRAIN 2 owns: gate census (Lpz0;.M, Lc31;.P, Lwt0;.e) on late layers -> generic fix or honest upstream classification.
+
+---
+Task ID: CONT-155 TRAIN 2
+Agent: main agent (Z.ai)
+Task: TRAIN 2 — late-layer gate census (the TRAIN 1 single question: why r1 early-returns for late pz0).
+
+Work Log:
+- METHOD-TRACE 'Loz0;|a' on live dooz = 0 lines: Loz0;.a NEVER EXECUTES — the lambda-replay leg (layer callbacks -> r1 -> fresh Loz0; -> oz0.a -> M0) is dead at runtime; all windows from the root chain.
+- FIELD-TRACE Lel0;.M = 19 events, ALL <init> value=1 (early 2039 + late 6300..9xxx); r1's M-write never fired. (Lpz0;.M first guess corrected: M is an Lel0; field, 0 events.)
+- M0 fully decoded (120 insns): T0(4) null -> h1 overlay (blank face); hit -> gl0.c REAL draw + the .j-chain walk testing each node's .g bitmask (Iw0 iterator, v11=v11.j).
+- FINAL F-NEW-481 LAW pinned end-to-end: runtime has ONLY the root-chain draw leg; the layer-invalidate replay leg of Compose's draw pipeline is ABSENT — per-frame redraw walks the frozen early chain while correctly-built late draw lambdas sit uninvoked. Generic, app-independent — root of the 49-app APP_DRAW_OPS cohort.
+- Registry F-NEW-481 +1277 chars (both files, id-unique, main==mirror). Evidence: run/c155/train2_gate_census.md.
+
+Stage Summary:
+- The 10-day 'no complete render' question now has a complete machine-verified causal chain: frozen root chain (kind-4 fails) + absent replay leg. TRAIN 3 owns the fix-lever decision: census the lambda holder structures (who keeps Loz0; reachable) -> choose replay-after-dispatchDraw vs chain-head refresh.
