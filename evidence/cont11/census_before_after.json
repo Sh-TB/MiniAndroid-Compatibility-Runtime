@@ -1,0 +1,970 @@
+[
+ {
+  "apk": "ac.stresa.uturn_22.apk",
+  "was_crash": true,
+  "now_crash": false,
+  "was_family": "NPE:Lkotlin/jvm/functions/Function1;.invoke",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "app.chompass_92.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Thread$UncaughtExceptionHandler;.uncaughtException",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "app.floatdeck_8.apk",
+  "was_crash": true,
+  "now_crash": false,
+  "was_family": "NPE:Ljava/lang/Thread$UncaughtExceptionHandler;.uncaughtException",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "app.lonecloud.prism_10402.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "app.simple.peri_983.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lkotlin/jvm/functions/Function1;.invoke",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "app.sopadeletras_24.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "app.starlingmap_2100.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=SUCCESS",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "app.subster_201.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "app.vger.voyager_988.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "app.wocheneinkauf_199.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "au.how2vote.app_109001000.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "ca.leradar.app_3.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "OTHER",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "cc.skysparkle.matewave_2.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "cc.skysparkle.sparkledns_10006.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lkotlin/jvm/functions/Function1;.invoke",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "ch.bailu.aat_45.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lorg/acra/plugins/PluginLoader;.loadEnabled",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "code.alimiracle.sunpiano_2.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "CNF:unknown",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/ClassNotFoundException"
+ },
+ {
+  "apk": "codes.swistak.batterymonitor_1007003.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/res/ColorStateList;.getDefaultColor",
+  "now_verdict": "verdict=VIEWTREE_NO_APP_PIXELS first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.acutis.firewall_10006.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "CNF:unknown",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/ClassNotFoundException"
+ },
+ {
+  "apk": "com.adilhanney.ricochlime_1140003.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "com.aeropayout.game_12.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/security/keystore/KeyGenParameterSpec$Builder;.setEncryptionPaddings",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.amaze.filemanager_126.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/cardview/widget/CardView$1;.getAppTheme",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.anant.fitbuddy_82.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/String;.hashCode",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.anant.gecko_3.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:unknown-api",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.andsi.airlyrics_17.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/app/AppOpsManager;.unsafeCheckOpNoThrow",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.apps.adrcotfas.goodtime_364.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.arslan.shizuwall_51.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/app/ActivityManager$TaskDescription$Builder;.setStatusBarColor",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.ashkanrafiee.balance_29000.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/text/NumberFormat;.format",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.ashkanrafiee.librecontactsbackup_32.apk",
+  "was_crash": true,
+  "now_crash": false,
+  "was_family": "NPE:Landroid/view/WindowMetrics;.getBounds",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "com.aurora.store_76.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.avstaim.listai_29.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/VirtualMachineError",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/VirtualMachineError"
+ },
+ {
+  "apk": "com.awagam.android_5.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.beemdevelopment.aegis_82.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/Context;.getFilesDir",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.best.deskclock_2037.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/res/TypedArray;.recycle",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.bitmavrick.lumolight_35.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.cg.lrceditor_57.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NSM:unknown",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NoSuchMethodException"
+ },
+ {
+  "apk": "com.chiranth7.webstack_6.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.concealnetwork.concealmobile_59.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/webkit/ServiceWorkerController;.setServiceWorkerClient",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.curryplayer.quicksettingssoundprofile_11.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=DEFAULT_BACKGROUND_ONLY",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "com.dozingcatsoftware.bouncy_43.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/List;.size",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.etesync.syncadapter_20700.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/animation/AnimatorSet$Builder;.with",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.fsck.k9_39046.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.ghostsq.commander_479.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "com.jens.automation2_149.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=DEFAULT_BACKGROUND_ONLY",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "com.kunzisoft.keepass.libre_45500.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Thread$UncaughtExceptionHandler;.uncaughtException",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NoSuchMethodException"
+ },
+ {
+  "apk": "com.manichord.mgit_240.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/database/Cursor;.moveToFirst",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.maxistar.textpad_63.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/fragment/app/FragmentManager;.noteStateNotSaved",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.nononsenseapps.notepad_72700.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.readrops.app_22.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.serwylo.lexica_30018.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "com.serwylo.retrowars_70.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lcom/badlogic/gdx/backends/android/AndroidInput;.onResume",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.simplemobiletools.flashlight_66.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "OTHER",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "com.termux.api_1002.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lcom/google/android/material/shape/MaterialShapeDrawable;.isElevationOverlayEnabled",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.todobom.opennotescanner_35.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": null,
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "de.baumann.browser_159.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "CNF:unknown",
+  "now_verdict": null,
+  "now_exc": "java/lang/ClassNotFoundException"
+ },
+ {
+  "apk": "de.dennisguse.opentracks_6766.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lcom/google/android/material/search/SearchBar;.setText",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "de.ph1b.audiobook_5410002.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "de.tobiasbielefeld.solitaire_71.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:unknown-api",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "eu.faircode.netguard_2026080101.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "fr.gaulupeau.apps.InThePoche_234.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/customview/widget/ViewDragHelper;.continueSettling",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "net.typeblog.shelter_445.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/res/TypedArray;.recycle",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.connectbot_11101000.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lkotlin/jvm/functions/Function1;.invoke",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.dmfs.tasks_82200.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/List;.size",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.dystopia.email_121.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/res/Resources;.getConfiguration",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.eu.exodus_privacy.exodusprivacy_23.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/fragment/app/J;.m",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.fdroid.fdroid.privileged_2070.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "org.fdroid.fdroid_1023052.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:unknown-api",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.fossify.calendar_23.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.fossify.clock_10.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.fossify.contacts_13.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/fragment/app/s;.p",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.fossify.filemanager_14.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "OTHER",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "org.fossify.math_10.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.fossify.messages_25.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.fossify.musicplayer_17.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.fossify.notes_13.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.fossify.phone_22.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/IllegalArgumentException",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/IllegalArgumentException"
+ },
+ {
+  "apk": "org.joinmastodon.android_191.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "OTHER",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "org.liberty.android.fantastischmemo_241.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/appcompat/view/menu/MenuBuilder;.findItem",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.ligi.passandroid_373.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lkotlin/Lazy;.getValue",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.ligi.survivalmanual_500.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/drawerlayout/widget/DrawerLayout;.addDrawerListener",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.openhab.habdroid_599.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/coordinatorlayout/widget/CoordinatorLayout$LayoutParams;.getBehavior",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.proninyaroslav.libretorrent_9000354.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/res/TypedArray;.getBoolean",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.quantumbadger.redreader_119.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:unknown-api",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.schabi.newpipe_1015.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/ResourceBundle;.getString",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.secuso.privacyfriendly2048_100.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/VirtualMachineError",
+  "now_verdict": null,
+  "now_exc": "java/lang/VirtualMachineError"
+ },
+ {
+  "apk": "org.secuso.privacyfriendlyactivitytracker_100.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlybackup_10.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/content/res/TypedArray;.recycle",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.secuso.privacyfriendlydicer_101.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "OTHER",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlyfoodtracker_100.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlyludo_100.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlynotes_105.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlysolitaire_4.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlytodolist_103.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroidx/customview/widget/ViewDragHelper;.continueSettling",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "ru.meefik.busybox_51.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Process;.getOutputStream",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "ws.xsoh.etar_57.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/net/Uri;.getAuthority",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.simondalvai.ball2box_69.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=DEFAULT_BACKGROUND_ONLY",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "eu.quelltext.memory_7.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=SUCCESS",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "org.andstatus.game2048_47.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.opensurge2d.surgeengine_30650.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/List;.size",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "org.secuso.privacyfriendlydame_101.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlysolitaire_4.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "OTHER",
+  "now_verdict": null,
+  "now_exc": null
+ },
+ {
+  "apk": "page.codeberg.lanticy.guandan_7.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NSM:unknown",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NoSuchMethodException"
+ },
+ {
+  "apk": "de.tobiasbielefeld.solitaire_71.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:unknown-api",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.justdeax.composeStopwatch_1009011.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/lang/Object;.getClass",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.simplemobiletools.calculator_8.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:unknown-api",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.tananaev.calculator_11.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Landroid/app/Notification$Builder;.setSmallIcon",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "alexcalc_20.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/Collection;.iterator",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_PIXELS",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "bmi_402.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "OTHER",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "app.varlorg.unote_30.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=SUCCESS",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "bouncy.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/List;.size",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.dozingcatsoftware.bouncy_43.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/List;.size",
+  "now_verdict": null,
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "com.emmanuelmess.tictactoe_3.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NSM:unknown",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/NoSuchMethodException"
+ },
+ {
+  "apk": "com.github.muellerma.stopwatch_6.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=NO_ROOT",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": null
+ },
+ {
+  "apk": "de.duenndns.gmdice_8.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=SUCCESS",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "dooz_23_toplevel.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/VirtualMachineError",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/VirtualMachineError"
+ },
+ {
+  "apk": "dubrowgn.microtimer_8.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=SUCCESS",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "fishrings_v1.23_vc6.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=DEFAULT_BACKGROUND_ONLY",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ },
+ {
+  "apk": "io.github.yamin8000.dooz_23.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "EXC:java/lang/VirtualMachineError",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": "java/lang/VirtualMachineError"
+ },
+ {
+  "apk": "opmt_v0.1.2_vc1.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=SUCCESS",
+  "now_verdict": "verdict=SUCCESS",
+  "now_exc": null
+ },
+ {
+  "apk": "org.secuso.privacyfriendlymemory_100.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Ljava/util/List;.iterator",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "stack.tower3d_1.apk",
+  "was_crash": true,
+  "now_crash": true,
+  "was_family": "NPE:Lcom/badlogic/gdx/backends/android/AndroidInput;.onResume",
+  "now_verdict": "verdict=NO_ROOT first_missing=WINDOW_ROOT",
+  "now_exc": "java/lang/NullPointerException"
+ },
+ {
+  "apk": "tripeaks_v1.2.1_vc4.apk",
+  "was_crash": false,
+  "now_crash": false,
+  "was_family": "NO-UNCAUGHT:verdict=DEFAULT_BACKGROUND_ONLY",
+  "now_verdict": "verdict=DEFAULT_BACKGROUND_ONLY first_missing=APP_DRAW_OPS",
+  "now_exc": null
+ }
+]
