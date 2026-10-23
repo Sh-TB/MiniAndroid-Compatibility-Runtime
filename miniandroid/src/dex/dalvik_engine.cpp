@@ -54517,6 +54517,113 @@ measure_cm_done:;
             result = DalvikValue::make_object(arr_id, "[Ljava/lang/Class;");
             return true;
         }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-517 (CONT-12; app.simple.peri + the 16-title
+        // Object.getClass loading-census cluster, issue #387):
+        // Class.getConstructors / Class.getDeclaredConstructors —
+        // OpenJDK Class.java law.
+        //
+        // ROOT-CAUSE evidence (run/cont12/peri at binary b0620f75):
+        // androidx SavedStateViewModelFactory_androidKt
+        // .findMatchingConstructor reads modelClass.constructors
+        // (→ Class.getConstructors) under a Kotlin null-check intrinsic
+        // ("getConstructors(...)"): the engine had NO handler → the
+        // typed-null law answered null → Intrinsics
+        // .checkNotNullExpressionValue NPE → ViewModel creation died BOTH
+        // at MainComposeActivity.onCreate (onResume → viewModel()) AND
+        // inside the first composition (TagsKt.Folder → viewModel() →
+        // GapComposer catch-all → "Error was captured in composition.")
+        // → 0 content ops → DEFAULT_BACKGROUND_ONLY. The same factory
+        // chain serves every Hilt/ViewModel app — the recurring root of
+        // the census's 16-title Object.getClass umbrella survivors
+        // (nononsenseapps.notepad, app.simple.peri,
+        // eu.faircode.netguard + cluster).
+        //
+        // Upstream laws implemented here (generic, app-agnostic):
+        //   1. getDeclaredConstructors(): ALL declared ctors in DEX
+        //      table order, private included (OpenJDK).
+        //   2. getConstructors(): PUBLIC ctors only (ACC_PUBLIC 0x1) —
+        //      constructors are never inherited, so the class's own
+        //      publics ARE the whole answer (OpenJDK
+        //      §Class.getConstructors).
+        //   3. Records carry the FULL Constructor record contract the
+        //      existing Constructor-side laws already consume:
+        //        class_desc       = referent (the FIX-M3-012b newInstance
+        //                           shim's binding field, F-106)
+        //        __reflect_class  = referent (F-029/F-NEW-219 identity)
+        //        __reflect_name   = "<init>"
+        //        __reflect_ret    = "V" (ctors return void)
+        //        __reflect_mods   = raw DEX access flags
+        //                           (Constructor.getModifiers, R-NEW-380)
+        //        __reflect_params = comma-joined parameter descriptors
+        //                           (Constructor.getParameterTypes, S60)
+        //   4. NEVER null — empty array when no (public) ctors exist or
+        //      no parsed dex def backs the token (libcore parity for
+        //      synthetic tokens; the Kotlin intrinsic demand).
+        // ────────────────────────────────────────────────────────────────
+        if ((method == "getConstructors" ||
+             method == "getDeclaredConstructors") && !dotted.empty()) {
+            const bool ctors_public_only = method == "getConstructors";
+            std::vector<uint32_t> cids;
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != referent_desc) continue;
+                for (const auto& mi : cd.direct_methods) {
+                    if (!mi.is_constructor) continue;
+                    if (ctors_public_only && (mi.access_flags & 0x1) == 0)
+                        continue;  // getConstructors law: public only
+                    std::string plist;
+                    for (size_t pi = 0; pi < mi.parameters.size(); ++pi)
+                        plist += (pi ? "," : "") + mi.parameters[pi];
+                    uint32_t cid = heap_.allocate(
+                        "Ljava/lang/reflect/Constructor;", pc_, 0);
+                    heap_.set_object_field(
+                        cid, "class_desc",
+                        DalvikValue::make_string(referent_desc, 0));
+                    heap_.set_object_field(
+                        cid, "__reflect_class",
+                        DalvikValue::make_string(referent_desc, 0));
+                    heap_.set_object_field(
+                        cid, "__reflect_name",
+                        DalvikValue::make_string("<init>", 0));
+                    heap_.set_object_field(
+                        cid, "__reflect_ret",
+                        DalvikValue::make_string("V", 0));
+                    heap_.set_object_field(
+                        cid, "__reflect_mods",
+                        DalvikValue::make_int(
+                            static_cast<int32_t>(mi.access_flags)));
+                    heap_.set_object_field(
+                        cid, "__reflect_params",
+                        DalvikValue::make_string(plist, 0));
+                    cids.push_back(cid);
+                }
+                break;
+            }
+            uint32_t arr_id = heap_.allocate(
+                "[Ljava/lang/reflect/Constructor;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int(static_cast<int32_t>(cids.size())));
+            for (size_t i = 0; i < cids.size(); ++i) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(
+                        cids[i], "Ljava/lang/reflect/Constructor;"));
+            }
+            {
+                static thread_local uint64_t f517_n = 0;
+                if (f517_n < 16) {
+                    ++f517_n;
+                    std::cerr << "[F-NEW-517] " << method << "("
+                              << referent_desc << ") -> " << cids.size()
+                              << " constructors" << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                arr_id, "[Ljava/lang/reflect/Constructor;");
+            return true;
+        }
         // F-NEW-190b (S90, same root chain): Class.getSuperclass — OpenJDK
         // law: returns the direct superclass (fresh Class object), NULL
         // for Object and for interfaces (documented contract). The parsed
