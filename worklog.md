@@ -11398,3 +11398,4 @@ Stage Summary:
 - The ×2 recurring census face named by CONT-13 is ROOT-CAUSED-FIXED as F-NEW-519 (TextView.getTextColors AOSP field-initializer law); batterymonitor crossed from instant crash to its real PagerTitleStrip UI tree (the loading-screen bar), fossify_notes runs 0-uncaught.
 - The whole-batch regression is byte-clean (20/20 census SHAs + 5/5 anchors); the draw-path frontier remains the corpus-wide next root (APP_DRAW_OPS), with the named per-app faces unchanged.
 - Next wave: S102 compose-locals loader family + DataStore ENOENT routing (the two named non-killing blockers), then batch-5 of 20.
+- PUSH: remote main 578c63d9 (717e0058..578c63d9), secret-guard PASS (the venv2/ androguard scratch venv tripped the fail-closed guard — removed, not a repo artifact). Ledger = #387 comment 6373034282 (CONT-14-B4, مشکلش حل شد).
