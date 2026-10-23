@@ -1,0 +1,61 @@
+[
+ {
+  "label": "fossify_notes",
+  "apk": "org.fossify.notes_13.apk",
+  "apk_sha16": "5a56e0e39cc488e1",
+  "binary": "33038c783656331a",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 231.4,
+  "synth_exc": [
+   "[SYNTH-EXC] F084-HALT-RETURN (deferred): Ljava/lang/VirtualMachineError; (F084 interpreter halt in callee (no return value): Wall-clock budget reached (90000 ms)) method=Lj/j;.w pc=3 \u2192 uncaught (deferred frame unwind + propagate)",
+   "[SYNTH-EXC] F084-HALT-RETURN (deferred): Ljava/lang/VirtualMachineError; (F084 interpreter halt in callee (no return value): Wall-clock budget reached (90000 ms)) method=Lj/j;.s pc=3 \u2192 uncaught (deferred frame unwind + propagate)"
+  ],
+  "uncaught": [
+   "[EXC-PROPAGATE] Ljava/lang/VirtualMachineError; uncaught at caller Lorg/fossify/notes/activities/SplashActivity;.onCreate invoke_pc=105 \u2192 APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+   "[EXC-PROPAGATE] Ljava/lang/VirtualMachineError; uncaught at caller Lorg/fossify/notes/activities/SplashActivity;.onCreate invoke_pc=105 \u2192 APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)"
+  ],
+  "app_draw_ops": null,
+  "fb_nonwhite": null,
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0
+  },
+  "loading_screen": false,
+  "verdict": [
+   "NO_ROOT",
+   "WINDOW_ROOT"
+  ]
+ },
+ {
+  "label": "batterymonitor",
+  "apk": "codes.swistak.batterymonitor_1007003.apk",
+  "apk_sha16": "eb5d370187c3699a",
+  "binary": "33038c783656331a",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 1.9,
+  "synth_exc": [
+   "[SYNTH-EXC] F-NEW-219 (deferred): Ljava/lang/NoSuchMethodException; (Landroidx/appcompat/widget/ActionBarOverlayLayout;.makeOptionalFitsSystemWindows(...)) method=Landroidx/appcompat/widget/ViewUtils;.makeOptionalFitsSystemWindows pc=11 \u2192 deferred handler @0x0x2a type=Ljava/lang/NoSuchMethodExceptio",
+   "[SYNTH-EXC] f141-null-recv (deferred): Ljava/lang/NullPointerException; (Attempt to invoke virtual method 'Landroid/content/res/ColorStateList;.getDefaultColor' on a null object reference) method=Landroidx/viewpager/widget/PagerTitleStrip;.<init> pc=138 \u2192 uncaught (deferred frame unwind + propagate)"
+  ],
+  "uncaught": [
+   "[EXC-PROPAGATE] Ljava/lang/IllegalStateException; uncaught at caller Lcodes/swistak/batterymonitor/app/BatteryInfoActivity;.onCreate invoke_pc=28 \u2192 APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+   "[EXC-PROPAGATE] Ljava/lang/NullPointerException; uncaught at caller Lcodes/swistak/batterymonitor/app/BatteryInfoActivity;.onCreate invoke_pc=33 \u2192 APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)"
+  ],
+  "app_draw_ops": null,
+  "fb_nonwhite": 2073600,
+  "screenshot_sha16": "58efcb27f83480c5",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 194,
+   "content_px": 854
+  },
+  "loading_screen": true,
+  "verdict": null
+ }
+]
