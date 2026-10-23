@@ -3492,8 +3492,7 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
     if (m == "interrupt" || m == "join" ||
         m == "setDaemon" || m == "setName" || m == "setPriority" ||
         m == "yield" || m == "holdsLock" ||
-        m == "getContextClassLoader" || m == "setContextClassLoader" ||
-        m == "getUncaughtExceptionHandler" || m == "setUncaughtExceptionHandler") {
+        m == "getContextClassLoader" || m == "setContextClassLoader") {
         // F-150 (S72-W4): "sleep" REMOVED from this no-op family — it was
         // shadowing the real Thread.sleep law (dalvik_engine DEX-bridge:
         // advance the ONE virtual clock + F-110b yield when inside a
@@ -3501,6 +3500,15 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         // (while(!done){tick; sleep(T);}) spun at its loop head until the
         // F-084 visit cap (50001 visits) — silent wrongness (§038), first
         // observed on zhangman.github.snake GameMainThread.run.
+        // CONT-11 (#387) reconciliation: "get/setUncaughtExceptionHandler"
+        // REMOVED the same way — the registry shadow dispatch reaches this
+        // family BEFORE the engine's F-NEW-272 law in try_shadow_dispatch,
+        // so the handled_void no-op answered the STATIC
+        // Thread.getDefaultUncaughtExceptionHandler() with UNSET (probe
+        // cont11 F273-A1 null; F273-A3 set-then-get fail) and the app's
+        // chained kotlinx fallback NPE'd. The engine-level F-NEW-272 law
+        // (default = RuntimeInit$KillApplicationHandler, never null) now
+        // receives these calls.
         return CallResult::handled_void();
     }
     if (m == "equals") {

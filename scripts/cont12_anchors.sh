@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # cont12_anchors.sh — anchors x3 at the CONT-12 F-266 binary.
 B=/home/z/my-project/miniandroid/build/miniandroid
-OUT=/home/z/my-project/run/w8/anchors
+OUT=/home/z/my-project/run/cont11rc/anchors
 mkdir -p "$OUT"
 declare -A APK=(
   [opencalc]=/home/z/my-project/upload/opencalculator_53.apk
   [chess]=/home/z/my-project/upload/chess_jwtc_298.apk
   [dooz]=/home/z/my-project/upload/canonical_apks/io.github.yamin8000.dooz_23.apk
-  [microtimer]=/home/z/my-project/upload/canonical_apks/dubrowgn.microtimer_8.apk
+  [mmicrotimer]=/home/z/my-project/upload/canonical_apks/dubrowgn.microtimer_8.apk
   [unote]=/home/z/my-project/upload/canonical_apks/app.varlorg.unote_30.apk
 )
 declare -A PKG=(
   [opencalc]=com.darkempire78.opencalculator
   [chess]=jwtc.android.chess
   [dooz]=io.github.yamin8000.dooz
-  [microtimer]=dubrowgn.microtimer
+  [mmicrotimer]=dubrowgn.microtimer
   [unote]=app.varlorg.unote
 )
 for name in opencalc chess dooz microtimer unote; do

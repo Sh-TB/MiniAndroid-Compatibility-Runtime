@@ -1,0 +1,50 @@
+{
+  "content_root_id": 16,
+  "experiment": "EXP-061",
+  "node_source": "content-root-walk",
+  "nodes": [
+    {
+      "android_view_id": 0,
+      "children": [
+        17
+      ],
+      "class": "Landroid/widget/LinearLayout;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 1920,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 16,
+      "parent_id": 15,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "android_view_id": 0,
+      "children": [],
+      "class": "Landroid/widget/TextView;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 572,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 17,
+      "parent_id": 16,
+      "text": "F272-A|PASS|impl5:1080x1920 captured=true\nF272-default-block|ran\nF272-A-block|PASS|placed=true\nF272-B|PASS|impl5:11x22\nF273-A1|PASS|Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;@30\nF273-A2|PASS|identity-stable\nF273-A3|PASS|set-then-get\nF273-A4|PASS|per-thread\nF273-A5|PASS|fallback-to-default\nF273-B|PASS|chain-ok\nF274-A|PASS|null\nF274-B|PASS|stable-identity fields-equal\n",
+      "text_resource_id": 0,
+      "view_type": "TextView",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "view_count": 2
+}

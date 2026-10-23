@@ -28438,6 +28438,76 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_int(dv);
         return true;
     }
+    // ── CONT-11 (#387) reconciliation: F-NEW-272 static-arm completion ────
+    // The F-NEW-272 UEH law lives in try_shadow_dispatch, but the
+    // invoke-STATIC flow (execute_invoke_static → try_recursive_invoke miss
+    // → bridge_to_api) never reaches try_shadow_dispatch on this lineage —
+    // probe cont11 F273-A1/A3 ground truth: the STATIC
+    // Thread.getDefaultUncaughtExceptionHandler() answered null while the
+    // instance rows passed. Same law, second dispatch view (the two-view
+    // pattern R-NEW-339 established): static get (0 args) → the process
+    // default (RuntimeInit$KillApplicationHandler, NEVER null — RuntimeInit
+    // installs it at boot); static set (1 arg) → install; instance get/set
+    // via the receiver slot keep the per-thread map semantics.
+    if ((class_name == "Ljava/lang/Thread;" ||
+         is_thread_receiver(class_name)) &&
+        (method == "getUncaughtExceptionHandler" ||
+         method == "setUncaughtExceptionHandler" ||
+         method == "getDefaultUncaughtExceptionHandler" ||
+         method == "setDefaultUncaughtExceptionHandler")) {
+        auto ensure_default_handler = [&]() -> DalvikValue {
+            if (default_uncaught_handler_.object_id != 0 &&
+                heap_.has_object(default_uncaught_handler_.object_id))
+                return default_uncaught_handler_;
+            uint32_t hid = heap_.allocate(
+                "Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;",
+                pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            default_uncaught_handler_ = DalvikValue::make_object(
+                hid,
+                "Lcom/android/internal/os/RuntimeInit$KillApplicationHandler;");
+            return default_uncaught_handler_;
+        };
+        // STATIC arm (no receiver slot): get → default; set → install.
+        if (method == "getDefaultUncaughtExceptionHandler" ||
+            method == "setDefaultUncaughtExceptionHandler" ||
+            current_invoke_is_static_) {
+            if (method == "getDefaultUncaughtExceptionHandler" ||
+                (method == "getUncaughtExceptionHandler" &&
+                 args.empty())) {
+                result = ensure_default_handler();
+            } else {
+                default_uncaught_handler_ =
+                    (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        ? args[0]
+                        : DalvikValue::make_null();
+                result = DalvikValue::make_void();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // INSTANCE arm (receiver in args[0]) — same law as the
+        // try_shadow_dispatch F-NEW-272 block (per-thread map, default
+        // fallback).
+        uint32_t t_oid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id
+                             : 0;
+        if (method == "getUncaughtExceptionHandler") {
+            auto it = thread_uncaught_handlers_.find(t_oid);
+            if (it != thread_uncaught_handlers_.end() &&
+                it->second.object_id != 0)
+                result = it->second;
+            else
+                result = ensure_default_handler();
+        } else {
+            thread_uncaught_handlers_[t_oid] =
+                (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
+                    ? args[1]
+                    : DalvikValue::make_null();
+            result = DalvikValue::make_void();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/lang/Character;" &&
         (method == "isWhitespace" || method == "isSpaceChar") &&
         args.size() >= 1) {
