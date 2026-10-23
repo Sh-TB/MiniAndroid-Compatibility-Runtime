@@ -1436,6 +1436,26 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
     {"Ljava/lang/AssertionError;", "Ljava/lang/Error;"},
     {"Ljava/lang/NoClassDefFoundError;", "Ljava/lang/LinkageError;"},
     {"Ljava/lang/LinkageError;", "Ljava/lang/Error;"},
+    // F-NEW-518 (CONT-13, batch-3 census): the android.content PM family.
+    // AOSP PackageManager.java: `public static class NameNotFoundException
+    // extends AndroidException` (import android.util.AndroidException) and
+    // AndroidException.java: `public class AndroidException extends Exception`.
+    // Without these rows the platform-isPackageInstalled pattern —
+    // `try { pm.getPackageInfo(pkg, 0); true } catch (e: Exception) { false }`
+    // — could NEVER match its own handler: the DEX handler type is
+    // java/lang/Exception, the thrown class has no DEX superclass (framework
+    // class, not in class_to_superclass_), and the AndroidException row was
+    // trapped behind the F-NEW-368 experiment gate. Live evidence (fossify
+    // math/notes/clock/calendar ×4, batch-3 census): the handler at
+    // Lo5/f;.U pc=17 (return false) decoded in the DEX try table, thrown
+    // NameNotFoundException → is_exception_subtype false → deferred unwind →
+    // APP BOUNDARY death at SplashActivity.onCreate. Same precedent as
+    // FIX-D12-ADJACENT (CONT-120): platform exception chains are AOSP FACTS,
+    // not experiment-gateable. No behavior flip under the gate (the gated
+    // table's AndroidException row carries the identical parent).
+    {"Landroid/content/pm/PackageManager$NameNotFoundException;", "Landroid/util/AndroidException;"},
+    {"Landroid/content/pm/PackageManager$ApplicationNotFoundException;", "Landroid/util/AndroidException;"},
+    {"Landroid/util/AndroidException;", "Ljava/lang/Exception;"},
 };
 static const size_t kBuiltinExcParent_N = sizeof(kBuiltinExcParent) / sizeof(kBuiltinExcParent[0]);
 

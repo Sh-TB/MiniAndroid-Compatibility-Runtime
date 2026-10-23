@@ -11357,3 +11357,24 @@ Work Log:
 
 Stage Summary:
 - The interrupted wave completed end-to-end: one generic root closed (F-NEW-517 — the missing Class.getConstructors law behind every Hilt/ViewModel app), peri crossed blank→REAL_APP_CONTENT (loading-screen directive exceeded: full Setup UI), zero anchor drift. Honest frontier: notepad (F-NEW-515 content-provider/coroutine-unwind family), netguard (Service-Context-null family — new decode row), the WindowInsets M3-19 cycle reclassified non-killing; W10 queue unchanged beyond these (F-NEW-483 theme-attr TypedArray decode + compose draw chain + 13 DEFAULT rows).
+
+---
+Task ID: CONT-13-BATCH3
+Agent: Super Z (main)
+Task: User directive «ادامه و پوشش ۲۰ قطار» — batch 3 of the 20-by-20 directive on issue #387: cover 20 titles at the TRUE post-CONT-12 head, fix the recurring root, re-census, regression, comment, push.
+
+Work Log:
+- STALE-SNAPSHOT DETECTED (2nd occurrence): local HEAD e99c2fbd (CONT-10 era) while origin/main = 856261cf (CONT-12 COMPLETE, registry 832). Killed the stale build, reset to origin/main, rebuilt from the TRUE tree (binary sha16 prefix recorded; single-thread make in 10-min chunks — detached builds keep dying in this container).
+- Consumed issue #387 + its 2 comments (CONT-11 reconciliation + CONT-12 Persian ledger): census 121 titles, F-NEW-272/273/274 closed, F-NEW-514 decoded -> F-NEW-517 landed (peri REAL_APP_CONTENT), open faces 515/516.
+- Batch 3 = 20 titles: 13 getClass-umbrella survivors + 4 fossify (F-NEW-515 pool) + 3 List.size (F-NEW-516 pool). Harness scripts/cont13_batch20.py (census law; fixed a results-clobbering bug by merging per chunk).
+- CLUSTER: all 4 fossify titles died on the SAME anchor — PackageManager$NameNotFoundException (org.fossify.thankyou) at Lo5/f;.U pc=12 -> deferred unwind -> APP BOUNDARY death at SplashActivity.onCreate.
+- ROOT-CAUSED (machine-verified): the app's catch IS lawful (DEX try covers the invoke; typed handler Ljava/lang/Exception; -> pc 17 return-false, decoded via scripts/cont9_dexdump.py) — the ENGINE's is_exception_subtype returned FALSE because PackageManager$NameNotFoundException had NO parent row (builtin table lacked it; framework class absent from class_to_superclass_; AndroidException->Exception trapped behind the F-NEW-368 gate).
+- FIX F-NEW-518 (generic, unconditional, FIX-D12-ADJACENT precedent): NameNotFoundException -> android.util.AndroidException -> java/lang/Exception (+ ApplicationNotFoundException companion) in kBuiltinExcParent.
+- RE-CENSUS (same 20 titles, post-fix binary): fossify_math -> MainActivity REAL UI (13,071 content px, toolbar icons screenshot banked); fossify_calendar 12,336 px; fossify_notes/clock past splash (next faces ledgered); netguard 27,335 px; bouncy rc=0 72,622 px. Pre-fix 1/20 real-content -> post-fix 4/20; fossify family = pre-load-crash -> rendered UI (the loading-screen bar).
+- Remaining faces honestly ledgered (no false closure): ColorStateList.getDefaultColor NPE (notes + census batterymonitor, recurring x2 — next fix), compose-locals loader CNF/NSM (matewave/sparkledns), DataStore first-read ENOENT x2 (awagam/compose_stopwatch), f141 null-contract singles, k9 Koin face.
+- Regression: anchors 5/5 ZERO DRIFT prefix-exact (chess a0319686/opencalc 63020bc7/microtimer bbd350b6/unote 7481e9b4/tower3d 11a38a5a); negatives 19/19 (after regenerating the probe store at the s41 path run/gatea/probe_store — the earlier 9/19 was a stale-store artifact, root-caused, NOT a runtime regression); selftest 13/13.
+- Registry 832->833 (F-NEW-518 ROOT-CAUSED-FIXED, id-unique). Artifacts: evidence/cont13/{CONT13_BATCH3_LEDGER.md,batch20_census.json,fossify_math_post_f518.png,fossify_calendar_post_f518.png}.
+
+Stage Summary:
+- Batch 3 covered 20/20 titles at the true head; the fossify 4-title recurring root (F-NEW-518) root-caused to the exception-hierarchy table gap, fixed generically, re-censused to rendered UI. No anchor drift, negatives/selftest green, registry id-unique.
+- Next wave owns: ColorStateList.getDefaultColor null-producer (recurring x2), the compose-locals loader family, the DataStore FNFE boundary face; then batch 4 of the 20-by-20 directive.
