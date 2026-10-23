@@ -37856,6 +37856,93 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-519 (CONT-14, batch-4 of the 20-by-20 directive) — TextView.
+    // getTextColors() AOSP LAW (TextView.java, source-first).
+    // AOSP TextView state: `private ColorStateList mTextColor =
+    // ColorStateList.valueOf(0xFF000000);` — the FIELD INITIALIZER
+    // guarantees getTextColors() NEVER returns null for a live TextView:
+    //   • setTextColor(int color) → mTextColor = ColorStateList.valueOf(
+    //     color); mCurTextColor = color;  (the CSL is REPLACED — the
+    //     EXPLICIT_RUNTIME provenance marks this arm)
+    //   • setTextColor(ColorStateList colors) → mTextColor = colors
+    //     (the captured heap object IS the state — identity-faithful)
+    //   • getTextColors() → return mTextColor;
+    // Pre-fix: NO handler → getTextColors() NULL → the census-recurring
+    // face (×2: batterymonitor + the fossify_notes family) died at
+    // Landroidx/viewpager/widget/PagerTitleStrip;.<init> pc=138 (0x114
+    // bytes) with NPE "invoke virtual method ColorStateList.getDefaultColor
+    // on a null object reference" — DEX truth machine-verified from the
+    // APK bytes: iget mCurrText → TextView.getTextColors() → move-result →
+    // ColorStateList.getDefaultColor() → iput mTextColor. Every
+    // ViewPager+PagerTitleStrip app (notes-family UI) crossed this face.
+    // Read-side law only (no setter change, zero renderer coupling):
+    //   1. captured CSL object (text_color_state_object) still a live
+    //      ColorStateList → return THAT object (identity contract);
+    //   2. else, AOSP valueOf arm: EXPLICIT_RUNTIME or STYLE_RESOLVED
+    //      provenance → valueOf(recorded color); UNSET → the F-NEW-301
+    //      getter default law (renderer parity: black / Button-family
+    //      white) = the field initializer's honest degrade — never null.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getTextColors" &&
+        (class_name.rfind("Landroid/widget/TextView;", 0) == 0 ||
+         class_name.rfind("Landroid/widget/Button;", 0) == 0 ||
+         class_name.rfind("Landroid/widget/EditText;", 0) == 0 ||
+         is_subclass_of(class_name, "Landroid/widget/TextView;")) &&
+        shadow_registry_ != nullptr && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        auto* vs519 = shadow_registry_->find_as<framework::ViewShadow>();
+        const framework::ViewShadow::ViewNode* n519 =
+            vs519 ? vs519->find_node(args[0].object_id) : nullptr;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (n519 && n519->text_color_state_object != 0) {
+            std::string csl_cls;
+            if (heap_.get_object_class(n519->text_color_state_object,
+                                       csl_cls) &&
+                csl_cls == "Landroid/content/res/ColorStateList;") {
+                result = DalvikValue::make_object(
+                    n519->text_color_state_object, csl_cls);
+                static thread_local uint64_t f519_n = 0;
+                if (f519_n++ < 12)
+                    std::cerr << "[F-NEW-519] TextView.getTextColors view=o"
+                              << args[0].object_id
+                              << " -> captured CSL o"
+                              << n519->text_color_state_object
+                              << " (identity)" << std::endl;
+                return true;
+            }
+        }
+        int32_t tc519 = 0xFF000000;  // AOSP field initializer
+        if (n519) {
+            if (n519->text_color != 0) {
+                // AOSP: any color the view's text paints with (explicit
+                // runtime OR style-resolved via the inflater's
+                // setTextColor path) is mTextColor's single-spec state —
+                // renderer-parity with F-NEW-301 getCurrentTextColor.
+                tc519 = (int32_t)n519->text_color;
+            } else if (n519->class_desc.find("Button;") !=
+                           std::string::npos &&
+                       n519->class_desc.find("ImageButton;") ==
+                           std::string::npos) {
+                tc519 = 0xFFFFFFFF;  // button label default (F-NEW-301 parity)
+            }
+        }
+        uint32_t csl519 = csl_wrap_single(
+            heap_, pc_, tc519,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        result = DalvikValue::make_object(
+            csl519, "Landroid/content/res/ColorStateList;");
+        static thread_local uint64_t f519_wrap_n = 0;
+        if (f519_wrap_n++ < 12)
+            std::cerr << "[F-NEW-519] TextView.getTextColors view=o"
+                      << args[0].object_id << " -> valueOf CSL o" << csl519
+                      << " color=0x" << std::hex << tc519 << std::dec
+                      << " prov=" << (n519 ? int(n519->text_color_provenance)
+                                           : -1)
+                      << std::endl;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-NEW-226 (user campaign §A companion; ssw vc53 face) — VIEW PAINT
     // IDENTITY LAW (AOSP TextView.java + Paint.java source-first).
     //   • TextView.getPaint() returns the view's OWN TextPaint, created at
