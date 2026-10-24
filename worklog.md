@@ -11399,3 +11399,20 @@ Stage Summary:
 - The whole-batch regression is byte-clean (20/20 census SHAs + 5/5 anchors); the draw-path frontier remains the corpus-wide next root (APP_DRAW_OPS), with the named per-app faces unchanged.
 - Next wave: S102 compose-locals loader family + DataStore ENOENT routing (the two named non-killing blockers), then batch-5 of 20.
 - PUSH: remote main 578c63d9 (717e0058..578c63d9), secret-guard PASS (the venv2/ androguard scratch venv tripped the fail-closed guard — removed, not a repo artifact). Ledger = #387 comment 6373034282 (CONT-14-B4, مشکلش حل شد).
+
+---
+Task ID: CONT-11-W7-REVERIFY
+Agent: Super Z (main)
+Task: Cold-reset continuation (container was at the CONT-10 snapshot e99c2fbd) — 60/40 directive: shared-problem execution push + old-apps block. Ended as an INDEPENDENT RE-VERIFICATION of the remote's CONT-11 W7 / F-NEW-265 chain after reconciling against origin/main 2a2905b5 (remote had advanced CONT-11->CONT-14 batches->CONT-17/18h, registry 566->834).
+
+Work Log:
+- Rebuilt the engine from the CONT-10 snapshot (kernel OOM-kills on dalvik_engine.cpp/trace_exporter.cpp; trace_exporter.o built -O1, deviation recorded; resilient build loop). Binary e0a019853da44b8a. SEMANTIC NEUTRALITY: 5 anchors x3 byte-identical with recorded values.
+- Independently re-derived the dooz draw chain (source-first: upstream ui-1.11.4 sources + dooz disassembly): dispatchDraw runs (ops=0); canvas holder swap Lt4;.w=Lhi;->Ly3;.a; root.draw(Ly3;); draw walk descends (Lel0;.i x164, Lpz0;.L0 path-B x82 pairs, M0 x164, Ly3;.f x164, Ly3;.p x0); T0(4)=head(Nodes.Draw) null on every visited chain; THE GATE: Lel0;.I()Z isPlaced FALSE x108 / TRUE x18 — MATCHES the remote F-NEW-265 face. R8-map corrections (Ly3;=AndroidCanvas via Lhi; CanvasHolder; W6's Ljt1; = text-path symptom) independently reproduced.
+- Reconciliation: local interim registry registration (F-NEW-261=placement gate) COLLIDED with remote F-NEW-261 (S83-APXACT) — DROPPED at reset to origin/main; registry untouched (834 roots, remote truth). Re-verification banked as evidence/cont11_w7reverify/W7_INDEPENDENT_REVERIFY.md (no root inflation).
+- 40% old-apps block at THIS (older, CONT-10-era) binary: forkgram REAL_APP_CONTENT cf4c41e62ceb6557 x2 (44 in-flight exceptions: ApplicationLoader UnsatisfiedLinkError + d6;.b0/y3/x3 NPE family = Telegram frontier at this binary); old-games x2 ALL REAL_APP_CONTENT: 2048 59ca1526611c4622, SnakeDeluxe 34a712689ce66e58, MiniCraft b0876952f41e4af2, Tetris f360daa244cfca8d, SnakeNeon 24fb7694eb64634a, gmdice f3b483fe7b7cf51b.
+- Tooling banked: scripts/cont11_disasm_dispatch.py (androguard per-method disassembler), scripts/cont11_buildloop.sh (OOM-resilient build), cont11_baseline/drawtrace runners.
+
+Stage Summary:
+- The remote's F-NEW-265 chain (measure-pass death -> isPlaced=false -> child-draw gate skips -> 0 ops) is INDEPENDENTLY CONFIRMED from a cold reset with matching quantitative evidence; zero registry changes; no false claims.
+- Old-games/forkgram regression datapoints banked at the CONT-10-era binary (labeled as such).
+- Next waves (per remote pointers): F-NEW-265 ARM-1/2/3 decomposition + CONT-18 deferred-throw arms; forkgram d6; NPE family re-check at the CURRENT remote binary.
