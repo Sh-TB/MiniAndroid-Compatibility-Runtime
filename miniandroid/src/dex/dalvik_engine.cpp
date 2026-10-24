@@ -28535,6 +28535,361 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_int(dv);
         return true;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-28 W1 (F-NEW-516 family root fix): f141 null-contract battery.
+    //
+    // The census family (batch-3/4, issue #387): R8 compiles its implicit
+    // null-check instrumentation as an IMMEDIATE X.getClass() on factory
+    // results — frequently inside <clinit>. A framework factory that
+    // answers null therefore kills the whole class at first touch, while
+    // on ART the same bytecode never sees null (these APIs are never-null
+    // by contract; ART either returns a real instance or throws). DEX-
+    // decoded census roots (cont26 disassembler, this session):
+    //   webstack      Lru1;.<clinit> pc=47  Logger.getLogger(n).getClass()
+    //   audiobook     Lox5;.<clinit> pc=14  LocalTime.of(22,0).getClass()
+    //   wocheneinkauf Lqm;.<clinit>  pc=25  TrustManagerFactory.getInstance(algo).init(null)
+    // (aurora Ly26;.a pc=29 caught-handler, prism unifiedpush cursor,
+    //  surgeengine Sensors list, goodtime Lap2;.a = same family shape;
+    //  each names its own null-producer → W2 first-dives.)
+    //
+    // Laws (upstream-sourced, never-null by contract):
+    //   L1 OpenJDK java.util.logging.Logger: getLogger(String[,String])
+    //      demand-creates and caches per name — NEVER null; getName
+    //      returns the recorded name; log/info/... family void;
+    //      isLoggable true (default INFO logger); getLevel null is the
+    //      OpenJDK contract for an unset level (NOT a stub null).
+    //   L2 OpenJDK java.time.LocalTime: of(...)/ofSecondOfDay/
+    //      ofNanoOfDay validate and return a value instance — NEVER null
+    //      (DateTimeException on out-of-range, not null); getters +
+    //      toSecondOfDay/toNanoOfDay/isBefore/isAfter/compareTo/toString
+    //      from the stored nano-of-day payload; now() = wall clock
+    //      (same source as the System.currentTimeMillis law).
+    //   L3 AOSP javax.net.ssl.TrustManagerFactory: getDefaultAlgorithm()
+    //      answers "X509"; getInstance(String[,String]) returns a factory
+    //      or throws NoSuchAlgorithmException — NEVER null; init(...) any
+    //      overload void-success; getTrustManagers() non-null 1-element
+    //      array (engine trust-store semantics arrive with the first
+    //      census face that needs them); getAlgorithm() recorded algo.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/logging/Logger;") {
+        if (method == "getLogger" && args.size() >= 1 &&
+            args[0].type == DalvikType::STRING_REF) {
+            // OpenJDK Logger.getLogger: NPE on null name, then
+            // demandLoggerFor(name) — create-and-cache, never null.
+            if (args[0].string_val.empty() && args[0].is_null) {
+                throw_deferred("Ljava/lang/NullPointerException;",
+                               "Logger.getLogger name is null", "F516-L1");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            static std::unordered_map<std::string, uint32_t> f516_loggers;
+            const std::string lname = args[0].string_val;
+            uint32_t oid = 0;
+            auto it = f516_loggers.find(lname);
+            if (it != f516_loggers.end() && heap_.has_object(it->second)) {
+                oid = it->second;
+            } else {
+                oid = heap_.allocate("Ljava/util/logging/Logger;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                heap_.set_object_field(oid, "__logger_name__",
+                    DalvikValue::make_string(lname, 0));
+                f516_loggers[lname] = oid;
+            }
+            static thread_local uint64_t f516_l1 = 0;
+            if (f516_l1 < 8) { ++f516_l1;
+                std::cerr << "[F516-L1] Logger.getLogger('" << lname
+                          << "') -> oid=" << oid << " (never-null law)"
+                          << std::endl; }
+            result = DalvikValue::make_object(oid, "Ljava/util/logging/Logger;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getName" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            auto nv = heap_.get_object_field(args[0].object_id, "__logger_name__");
+            result = nv.has_value() ? *nv : DalvikValue::make_string("", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // OpenJDK contract: getLevel() returns null when no level was
+        // explicitly set on THIS logger (parent levels are resolved by
+        // isLoggable, not getLevel). Null here is the CONTRACT answer.
+        if (method == "getLevel") {
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isLoggable") {
+            result = DalvikValue::make_bool(true);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        static const std::set<std::string> f516_logger_void = {
+            "log", "logp", "logrb", "info", "warning", "severe", "fine",
+            "finer", "finest", "config", "setLevel", "entering", "exiting",
+            "throwing", "addHandler", "removeHandler", "setFilter",
+            "setUseParentHandlers", "setParent", "setResourceBundleName"
+        };
+        if (f516_logger_void.count(method)) {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Ljava/time/LocalTime;") {
+        if ((method == "of" && args.size() >= 2) || method == "ofSecondOfDay" ||
+            method == "ofNanoOfDay" || method == "now") {
+            int64_t nano_of_day = -1;
+            if (method == "of") {
+                int32_t hour = dalvik_int_value(args[0]);
+                int32_t minute = dalvik_int_value(args[1]);
+                int32_t second = args.size() > 2 ? dalvik_int_value(args[2]) : 0;
+                int64_t nano = args.size() > 3
+                    ? (int64_t)dalvik_int_value(args[3]) : 0;
+                if (hour < 0 || hour > 23 || minute < 0 || minute > 59 ||
+                    second < 0 || second > 59 || nano < 0 || nano > 999999999LL) {
+                    // OpenJDK: DateTimeException, NEVER null.
+                    throw_deferred("Ljava/time/DateTimeException;",
+                        "Invalid time " + std::to_string(hour) + ":" +
+                        std::to_string(minute), "F516-L2");
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                nano_of_day = ((int64_t)hour * 3600 + (int64_t)minute * 60 +
+                               second) * 1000000000LL + nano;
+            } else if (method == "ofSecondOfDay" && !args.empty()) {
+                int32_t sod = dalvik_int_value(args[0]);
+                if (sod < 0 || sod > 86399) {
+                    throw_deferred("Ljava/time/DateTimeException;",
+                        "Invalid second of day " + std::to_string(sod),
+                        "F516-L2");
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                nano_of_day = (int64_t)sod * 1000000000LL;
+            } else if (method == "ofNanoOfDay" && !args.empty() &&
+                       args[0].type == DalvikType::INT64) {
+                int64_t nod = args[0].long_val;
+                if (nod < 0 || nod >= 86400000000000LL) {
+                    throw_deferred("Ljava/time/DateTimeException;",
+                        "Invalid nano of day " + std::to_string(nod),
+                        "F516-L2");
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                nano_of_day = nod;
+            } else {  // now() — same wall-clock source as the
+                      // System.currentTimeMillis law (EXP-043).
+                auto now = std::chrono::system_clock::now();
+                auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    now.time_since_epoch()).count();
+                int64_t tod_ms = ((ms % 86400000LL) + 86400000LL) % 86400000LL;
+                nano_of_day = tod_ms * 1000000LL;
+            }
+            uint32_t oid = heap_.allocate("Ljava/time/LocalTime;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(oid, "__nano_of_day__",
+                DalvikValue::make_long(nano_of_day));
+            static thread_local uint64_t f516_l2 = 0;
+            if (f516_l2 < 8) { ++f516_l2;
+                std::cerr << "[F516-L2] LocalTime." << method
+                          << " -> oid=" << oid << " nano_of_day=" << nano_of_day
+                          << std::endl; }
+            result = DalvikValue::make_object(oid, "Ljava/time/LocalTime;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        int64_t f516_nod_self = -1;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            auto nv = heap_.get_object_field(args[0].object_id, "__nano_of_day__");
+            if (nv.has_value() && nv->type == DalvikType::INT64)
+                f516_nod_self = nv->long_val;
+        }
+        if (method == "getHour" || method == "getMinute" ||
+            method == "getSecond" || method == "getNano" ||
+            method == "toSecondOfDay" || method == "toNanoOfDay") {
+            int32_t r = 0;
+            if (method == "getHour") r = (int32_t)(f516_nod_self / 3600000000000LL);
+            else if (method == "getMinute") r = (int32_t)((f516_nod_self / 60000000000LL) % 60);
+            else if (method == "getSecond") r = (int32_t)((f516_nod_self / 1000000000LL) % 60);
+            else if (method == "getNano") r = (int32_t)(f516_nod_self % 1000000000LL);
+            else if (method == "toSecondOfDay") r = (int32_t)(f516_nod_self / 1000000000LL);
+            else r = (int32_t)f516_nod_self;
+            result = DalvikValue::make_int(r);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if ((method == "isBefore" || method == "isAfter") && args.size() >= 2 &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            int64_t other = -1;
+            auto nv = heap_.get_object_field(args[1].object_id, "__nano_of_day__");
+            if (nv.has_value() && nv->type == DalvikType::INT64)
+                other = nv->long_val;
+            bool r = (method == "isBefore") ? (f516_nod_self < other)
+                                            : (f516_nod_self > other);
+            result = DalvikValue::make_bool(r);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "compareTo" && args.size() >= 2 &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            int64_t other = -1;
+            auto nv = heap_.get_object_field(args[1].object_id, "__nano_of_day__");
+            if (nv.has_value() && nv->type == DalvikType::INT64)
+                other = nv->long_val;
+            int32_t r = f516_nod_self < other ? -1 : (f516_nod_self > other ? 1 : 0);
+            result = DalvikValue::make_int(r);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "toString") {
+            int64_t nod = f516_nod_self < 0 ? 0 : f516_nod_self;
+            int32_t h = (int32_t)(nod / 3600000000000LL);
+            int32_t mi = (int32_t)((nod / 60000000000LL) % 60);
+            int32_t s = (int32_t)((nod / 1000000000LL) % 60);
+            int32_t n = (int32_t)(nod % 1000000000LL);
+            char buf[32];
+            if (n != 0) {
+                int32_t ms = n / 1000000, us = (n / 1000) % 1000, ns2 = n % 1000;
+                if (ns2 != 0) snprintf(buf, sizeof buf, "%02d:%02d:%02d.%09d", h, mi, s, n);
+                else if (us != 0) snprintf(buf, sizeof buf, "%02d:%02d:%02d.%06d", h, mi, s, ms*1000+us);
+                else snprintf(buf, sizeof buf, "%02d:%02d:%02d.%03d", h, mi, s, ms);
+            } else if (s != 0) snprintf(buf, sizeof buf, "%02d:%02d:%02d", h, mi, s);
+            else snprintf(buf, sizeof buf, "%02d:%02d", h, mi);
+            result = DalvikValue::make_string(buf, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    if (class_name == "Ljavax/net/ssl/TrustManagerFactory;") {
+        if (method == "getDefaultAlgorithm") {
+            // AOSP TrustManagerFactory: security property
+            // ssl.TrustManagerFactory.algorithm defaults to "X509".
+            result = DalvikValue::make_string("X509", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getInstance" && args.size() >= 1 &&
+            args[0].type == DalvikType::STRING_REF) {
+            const std::string algo = args[0].string_val;
+            // AOSP: supported standard algorithms for the default provider
+            // family are "X509" and its alias "X.509"/"PKIX"; unknown
+            // algorithm -> NoSuchAlgorithmException (never null).
+            if (algo != "X509" && algo != "X.509" && algo != "PKIX") {
+                throw_deferred("Ljava/security/NoSuchAlgorithmException;",
+                    "TrustManagerFactory " + algo + " not available", "F516-L3");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            uint32_t oid = heap_.allocate("Ljavax/net/ssl/TrustManagerFactory;",
+                pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(oid, "__algorithm__",
+                DalvikValue::make_string(algo, 0));
+            static thread_local uint64_t f516_l3 = 0;
+            if (f516_l3 < 8) { ++f516_l3;
+                std::cerr << "[F516-L3] TrustManagerFactory.getInstance('" << algo
+                          << "') -> oid=" << oid << " (never-null law)"
+                          << std::endl; }
+            result = DalvikValue::make_object(oid, "Ljavax/net/ssl/TrustManagerFactory;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getAlgorithm" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            auto av = heap_.get_object_field(args[0].object_id, "__algorithm__");
+            result = av.has_value() ? *av : DalvikValue::make_string("X509", 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "init") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getTrustManagers" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t arr = heap_.allocate("[Ljavax/net/ssl/TrustManager;", pc_, 0);
+            heap_.set_object_field(arr, "__array_length__",
+                DalvikValue::make_int(1));
+            uint32_t tm = heap_.allocate("Ljavax/net/ssl/X509TrustManager;",
+                pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(arr, "array[0]",
+                DalvikValue::make_object(tm, "Ljavax/net/ssl/X509TrustManager;"));
+            result = DalvikValue::make_object(arr, "[Ljavax/net/ssl/TrustManager;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // L4 (CONT-28 W1 companion): java.text.BreakIterator — OpenJDK
+    // contract: getInstance()/getCharacterInstance()/getLineInstance()/
+    // getSentenceInstance()/getWordInstance() return a RuleBasedBreakIterator
+    // — NEVER null. Census face (wocheneinkauf Ly7;.a pc=34):
+    // setText on a null receiver because the factory stub answered null.
+    if (class_name == "Ljava/text/BreakIterator;") {
+        if (method == "getInstance" || method == "getCharacterInstance" ||
+            method == "getLineInstance" || method == "getSentenceInstance" ||
+            method == "getWordInstance") {
+            uint32_t oid = heap_.allocate("Ljava/text/BreakIterator;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(oid, "__bi_text__",
+                DalvikValue::make_string("", 0));
+            heap_.set_object_field(oid, "__bi_pos__",
+                DalvikValue::make_int(0));
+            static thread_local uint64_t f516_l4 = 0;
+            if (f516_l4 < 4) { ++f516_l4;
+                std::cerr << "[F516-L4] BreakIterator." << method
+                          << " -> oid=" << oid << " (never-null law)"
+                          << std::endl; }
+            result = DalvikValue::make_object(oid, "Ljava/text/BreakIterator;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setText") {
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                heap_.set_object_field(args[0].object_id, "__bi_text__",
+                    DalvikValue::make_string(args[1].string_val, 0));
+            heap_.set_object_field(args[0].object_id, "__bi_pos__",
+                DalvikValue::make_int(0));
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Boundary contract: first()/last() answer a boundary; next()/
+        // previous()/following()/preceding() answer DONE(-1) when the
+        // engine's iterator has no segment table — the app loop
+        // `for (e = bi.next(); e != DONE; ...)` terminates lawfully.
+        if (method == "first" || method == "last") {
+            result = DalvikValue::make_int(method == "first" ? 0 : -1);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "next" || method == "previous" ||
+            method == "following" || method == "preceding") {
+            result = DalvikValue::make_int(-1);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "current" || method == "getText" ||
+            method == "getRuleStatus" || method == "getRuleStatusVec") {
+            if (method == "current")
+                result = DalvikValue::make_int(0);
+            else if (method == "getRuleStatus")
+                result = DalvikValue::make_int(0);
+            else if (method == "getRuleStatusVec")
+                result = DalvikValue::make_null();
+            else {
+                auto tv = heap_.get_object_field(args[0].object_id, "__bi_text__");
+                result = tv.has_value() ? *tv : DalvikValue::make_string("", 0);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // ── CONT-11 (#387) reconciliation: F-NEW-272 static-arm completion ────
     // The F-NEW-272 UEH law lives in try_shadow_dispatch, but the
     // invoke-STATIC flow (execute_invoke_static → try_recursive_invoke miss
