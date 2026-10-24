@@ -1677,6 +1677,13 @@ public:
     bool dispatch_view_lifecycle_once(uint32_t view_object_id,
                                       int l, int t, int r, int b);
 
+    // R-NEW-466 (AOSP measure→layout pairing law): re-dispatch onLayout
+    // when a re-measure raised dex_layout_required after the F-096
+    // one-shot. Compose placement (placeAt → isPlaced) lives in onLayout —
+    // see dalvik_engine.cpp for the full evidence chain.
+    bool dispatch_view_relayout(uint32_t view_object_id,
+                                int l, int t, int r, int b);
+
     // Public chain query for the render phase (F-096 call-site logging):
     // TRUE when the class's DEX chain defines the method.
     bool chain_overrides_method(const std::string& class_desc,

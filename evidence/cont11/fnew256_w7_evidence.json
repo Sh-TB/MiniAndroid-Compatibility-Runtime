@@ -1,0 +1,94 @@
+{
+  "artifact": "fnew256_w7_evidence.json — CONT-11 W7: F-NEW-256 draw-path frontier advanced with the R-NEW-466 measure→layout pairing fix + full placement-pipeline identity map. Evidence-first: every claim trace-backed at the W7 binary.",
+  "head": "local main (parent 6a66806a = CONT-10 W6 push record)",
+  "binary_note": "engine TU compiled -O1 (container RAM limit killed -O2 on the 53k-line dalvik_engine.cpp); semantic equivalence proven by anchors x3 byte-identical at the W6 recorded values (dooz d602648e8e401895, chess b5a7a35d5fe0564b, microtimer da73010a37dd0189, unote 4f1a9e4e8f64fae8) — and opencalc HEALED back to its canonical long-standing golden e364b001ee7abd66 (the W6 drift a976d2f9 is gone)",
+  "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+  "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+
+  "w7_root_fixed": {
+    "id": "R-NEW-466",
+    "title": "AOSP measure→layout pairing (onLayout re-dispatch after re-measure)",
+    "root_cause": "F-096 law dispatched onMeasure+onLayout ONCE per view node (f096_lifecycle_done). AOSP View.java: EVERY measure() sets PFLAG_LAYOUT_REQUIRED; the next layout() re-runs onLayout. Compose AndroidComposeView does ALL placement inside onLayout (measureAndLayout → root.place(0,0) → placeAt → markNodeAndSubtreeAsPlaced → MeasurePassDelegate.isPlaced=true). Recomposition-materialized children arrived AFTER the one-shot layout → isPlaced stayed false forever → the compose draw walk gate (drawContent child check node.I() == J.p.w == isPlaced) skipped every child → 0 canvas ops.",
+    "fix": "ViewShadow node dex_layout_required raised by every dispatch_custom_view_measure success; new DalvikExecutionEngine::dispatch_view_relayout (AOSP-pairing gates: pairing flag + f096-done + R-NEW-441 degenerate frame + onLayout override check) called from the per-frame layout traversal. No compose knowledge, no R8 tables, no app-specific code.",
+    "live_proof_pre_fix": "trace15 (12 frames): Lt4;.onMeasure 15x, Lt4;.onLayout 1x",
+    "live_proof_post_fix": "fix1: [R445-RELAYOUT] Lt4; view=1430 rect=(0,0 1080x1920) dispatched=YES per traversal (trace tag keeps the pre-registration number 445; renumbered R-NEW-466 at registration because 445 was taken by the webview fetch law)"
+  },
+
+  "placement_pipeline_identity_map": {
+    "method": "whole-APK DEX cross-reference (scripts/cont11_xref2.py — new scanner: full string/type/proto/method/class tables, switch-payload-correct instruction walk) + caller-frame CL-TRACE + S134-QGET qualified field probes + upstream/s43 sources as the law",
+    "map": {
+      "Lbt0;": "MeasurePassDelegate — w=isPlaced, q0=markNodeAndSubtreeAsPlaced(115B), r0=markSubtreeAsNotPlaced(76B), k0(J,F,Lf90;)/v0=placeAt overloads, y0(J)Z=measure-side dispatch",
+      "Lzs0;": "MeasureAndLayoutDelegate — k(Lj4;)Z=measureAndLayout(356B; 3 TreeSet drains = the 3 Invalidation kinds), g=forceMeasureTheSubtree walk, f=force wrapper, n/o=remeasureAndRelayoutIfNeeded variants, a=requestLayout-ish",
+      "Lel0;": "LayoutNode — d(Ld31;)=attach(owner) [error strings 'Cannot attach … already is attached'], B(I,Lel0;)=insertAt, u()=parent getter, i(Ldi;Lrc0;)=draw entry, I()Z=isPlaced gate (J.p.w), J(Lil0;)=layout delegate holder",
+      "Lj4;": "Owner switch-lambdas (tag 0/1/2) — a()Object; the tag-2 instance o2657 rides k() as the onLayout callback",
+      "Ly3;": "canvas holder — field a: Landroid/graphics/Canvas; (the ENGINE canvas), f(F,F)V=translate delegate — RAN 124x/frame reaching the engine CanvasShadow",
+      "Lwt0;": "DrawScope chain (ctor <init> + i/j parent links, z0()=size-ish)",
+      "Lhl0;": "draw-entity traversal a(Lel0;)Ld31;",
+      "Ljn;.g/Lv31;": "bitmap-backed Canvas factory sites (Lj7; = Canvas factory class; Ljt1;=AndroidCanvas wrapper is ORPHANED in the R8 graph — zero new-instance/check-cast/callers — its construction never was the frontier)"
+    },
+    "w5_correction": "the W6-era hypothesis 'AndroidCanvas bridge Ljt1; never constructed' was a MISIDENTIFICATION of the frontier: Ljt1; has no construction site in the whole APK (orphaned R8 remnant); the real gate is the isPlaced draw-walk predicate"
+  },
+
+  "w7_remaining_frontier": {
+    "verdict": "honest DEFAULT_BACKGROUND_ONLY retained — dooz anchor d602648e8e401895 x3 unchanged",
+    "stage": "the relayout QUEUE: children materialized by recomposition never enter the delegate's relayoutNodes (k drained ~3 entries across the whole run; Lbt0;.k0/v0 placeAt never ran; q0 never ran; child w stayed 0). Upstream law: requestRemeasure queues only (isPlaced || canAffectPlacedParent) nodes; markLayoutPending fires in performMeasure's tail (MeasurePassDelegate.kt:447); remeasureIfNeeded re-queues (Measurement) + (Placement) invalidations (MeasureAndLayoutDelegate.kt:178-230).",
+    "next_wave": "the requestRemeasure/markLayoutPending/relayoutNodes queueing chain — engine must execute the delegate queue-add laws so recomposed children get (Measurement)+(Placement) entries; then placeAt→markNodeAndSubtreeAsPlaced→isPlaced=true→draw gate opens"
+  },
+
+  "regression_battery": {
+    "anchors_x3": {
+      "opencalc": "e364b001ee7abd66 x3 — CANONICAL GOLDEN RESTORED (W6 drift a976d2f9 healed by the R-NEW-466 relayout re-running ConstraintLayout.onLayout per traversal)",
+      "chess": "b5a7a35d5fe0564b x3 (matches recorded)",
+      "dooz": "d602648e8e401895 x3 (matches recorded — honest unchanged)",
+      "microtimer": "da73010a37dd0189 x3 (matches recorded)",
+      "unote": "4f1a9e4e8f64fae8 x3 (matches recorded)"
+    },
+    "controls_x3": {
+      "bouncy": "b6dde6074bf47264 x3 (matches recorded)",
+      "fishrings": "a341e3ad9092f640 x3 (matches recorded REAL_APP_CONTENT anchor from CONT-8)",
+      "gmdice": "f3b483fe7b7cf51b x3 deterministic",
+      "stopwatch": "31ddd4d5b8e6d18e x3 deterministic",
+      "stacktower": "31ddd4d5b8e6d18e x3 deterministic",
+      "tripeaks": "e2a290ab98762eea x3 deterministic",
+      "tictactoe": "b5a7a35d5fe0564b x3 deterministic",
+      "secuso_memory": "first-launch state law: fresh store run1=31ddd4d5b8e6d18e then 4e6e59ecfb910187 steady — REPRODUCIBLE on a second fresh store (app-level first-launch face, not engine noise)"
+    },
+    "gate_a": "98 PASS / 0 FAIL / 1 INFO at the R-NEW-466 binary (probe rebuilt: gate_a_probe.apk sha256 3d50246f1fed8bd928fb241a8a0e500d, libprobe ad413625925ed8e5 — same as recorded lineage)",
+    "negatives": "19/19 PASS (scripts/s41_gatea_negative.py at this binary)",
+    "skill_selftest": "13/13 PASS",
+    "goldens": "4/4 PASS (user_golden_gate.py)"
+  },
+
+  "honesty_notes": [
+    "gate A multiapp matrix (s41_gatea_multiapp.py) NOT fully run: needs run/diff366/hidden_sources staging (chess/bouncy available; com.sanskritbasics.memory_34 and com.sidhant.blockblast artifact-lost since the container reset) — recorded PARTIAL, the probe's own 99 rows are the battery",
+    "six-game controls 2048/mini-tetris/minicraft/snake APKs remain artifact-lost; the canonical-pool control set (8 titles x3) substitutes",
+    "fix4 run hit the F084 60s wall-clock budget during probing (diagnostic-heavy runs); final battery at 90s budget completed normally"
+  ],
+
+  "reconciliation_onto_remote_lineage": {
+    "context": "the push was rejected non-fast-forward: the remote had moved 6a66806a -> a6bb8e05 (CONT-11 W7 RE-VERIFY + CONT-12/13/14/15x waves, registry 566 -> 834/835). A parallel agent INDEPENDENTLY confirmed the same gate: F-NEW-265 CLASSIFIED (Lel0;.I()Z isPlaced FALSE x108 / TRUE x18; 'W6 Ljt1; = text-path symptom' — same refutation as this wave), F-NEW-256 SUPERSEDED-BY-EVIDENCE.",
+    "rebase": "commit 1d49bcf4 rebased onto origin/main a6bb8e05; conflicts resolved by taking the remote engine/registry/worklog and hand-porting the three code edits (dex_layout_required field auto-merged; flag-raise + dispatch_view_relayout re-applied into the CONT-157 engine at dalvik_engine.cpp:12735/13054; dalvik_engine.h decl + execution_engine.cpp call auto-merged). Registry edits re-applied onto the 834-base: R-NEW-466 appended (835), F-NEW-265 cross-noted (stays CLASSIFIED — the queue stage is still open).",
+    "reconciled_binary_anchors_x3": {
+      "note": "NEW baseline facts — the remote never pinned these five at the CONT-157+ binary; fresh stores required (old-binary stores render differently)",
+      "dooz": "31ddd4d5b8e6d18e x3 (default-background face at this lineage)",
+      "opencalc": "63020bc7334048fe x3",
+      "chess": "3f7e670759b7c6a8 x3 (R-NEW-466 ON — the AOSP-correct per-traversal onLayout face)",
+      "microtimer": "bbd350b6c14fbd52 x3",
+      "unote": "7481e9b468eaa376 x3"
+    },
+    "ab_neutrality_proof": {
+      "switch": "MINIANDROID_R466_DISABLE=1 (env kill-switch on the flag-raise)",
+      "dooz": "ON 31ddd4d5 x3 == OFF 31ddd4d5 x3 (queue stage still blocks — honest)",
+      "opencalc": "ON 63020bc7 x3 == OFF 63020bc7 x3",
+      "chess": "ON 3f7e6707 x3 != OFF a0319686 x3 — REAL SEMANTIC DELTA, expected: jwtc chess DEX views do per-traversal onLayout work; the OFF face is the stale-onLayout bug face, the ON face is AOSP-correct; both deterministic x3; the OFF face matches the remote lineage's pre-fix behavior",
+      "microtimer": "ON == OFF (bbd350b6 x3)",
+      "unote": "ON == OFF (7481e9b4 x3)"
+    },
+    "gates_at_reconciled_binary_law_on": {
+      "gate_a": "98 PASS / 0 FAIL / 1 INFO",
+      "negatives": "19/19 PASS",
+      "skill_selftest": "13/13 PASS",
+      "goldens": "4/4 PASS"
+    }
+  }
+}

@@ -11416,3 +11416,18 @@ Stage Summary:
 - The remote's F-NEW-265 chain (measure-pass death -> isPlaced=false -> child-draw gate skips -> 0 ops) is INDEPENDENTLY CONFIRMED from a cold reset with matching quantitative evidence; zero registry changes; no false claims.
 - Old-games/forkgram regression datapoints banked at the CONT-10-era binary (labeled as such).
 - Next waves (per remote pointers): F-NEW-265 ARM-1/2/3 decomposition + CONT-18 deferred-throw arms; forkgram d6; NPE family re-check at the CURRENT remote binary.
+
+---
+Task ID: CONT-11-WAVE-7-RECONCILE
+Agent: Super Z (main)
+Task: Reconcile the W7 commit onto the remote lineage (push rejected non-fast-forward; remote at a6bb8e05 = CONT-11 W7 RE-VERIFY + CONT-12..157 waves, registry 834).
+
+Work Log:
+- Parallel-agent convergence CONFIRMED: remote F-NEW-265 CLASSIFIED = the SAME isPlaced gate this wave root-caused (their re-verify: Lel0;.I()Z FALSE x108/TRUE x18; same Ljt1;-orphan refutation). F-NEW-256 SUPERSEDED-BY-EVIDENCE on remote. My stream's contribution stands: the FIRST generic law fix toward the gate (R-NEW-466) + the full placement-pipeline identity map (Lzs0;/Lbt0;/Lel0;/Lj4;/Ly3;/Lwt0;/Lhl0;).
+- Rebase 1d49bcf4 onto origin/main: conflicts resolved by taking the remote engine/registry/worklog, hand-porting the three code edits into the CONT-157 engine (dalvik_engine.cpp:12735 flag-raise + :13054 dispatch_view_relayout; .h decl + execution_engine.cpp:3677 call auto-merged). Registry re-applied on the 834-base (R-NEW-466 added -> 835; F-NEW-265 cross-noted, stays CLASSIFIED).
+- Reconciled binary (CONT-157 engine + R-NEW-466): NEW five-app baseline x3 pinned (dooz 31ddd4d5 / opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 — fresh stores; the remote never pinned these at this lineage).
+- A/B neutrality proof via MINIANDROID_R466_DISABLE=1: dooz/opencalc/microtimer/unote ON==OFF byte-identical x3; chess REAL delta ON 3f7e6707 vs OFF a0319686 (expected — jwtc DEX views do per-traversal onLayout work; OFF = the stale-onLayout bug face = the remote lineage's pre-fix behavior; both deterministic x3). Law default-ON per AOSP.
+- Gates at the reconciled binary, law ON: gate A 98/0/1, negatives 19/19, skill 13/13, goldens 4/4.
+
+Stage Summary:
+- W7 landed on the reconciled lineage: R-NEW-466 (835th root) + F-NEW-265 cross-note + evidence/cont11/fnew256_w7_evidence.json (now includes the reconciliation block). Next wave owns the relayoutNodes queue-add laws (the last stage before placeAt -> isPlaced -> real dooz draw ops), plus the 40% stream (Telegram/forkgram chain per the remote's REAL_APP_CONTENT forkgram face cf4c41e6).

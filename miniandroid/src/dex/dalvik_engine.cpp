@@ -12732,6 +12732,18 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
             out_w = node->dex_measured_w;
             out_h = node->dex_measured_h;
         }
+        // R-NEW-466 (CONT-11 W7, AOSP measure→layout pairing): View.java
+        // measure() sets PFLAG_LAYOUT_REQUIRED after onMeasure returns —
+        // the next View.layout() MUST re-run onLayout. The layout traversal
+        // consumes this flag (dispatch_view_relayout) so hosts whose DEX
+        // onLayout drives per-traversal work (compose measureAndLayout →
+        // placeAt → isPlaced — the F-NEW-265 gate) re-run their placement
+        // after every re-measure. Cross-ref: F-NEW-265 (the isPlaced draw
+        // gate), evidence/cont11/fnew256_w7_evidence.json.
+        // MINIANDROID_R466_DISABLE=1 is the A/B kill-switch (neutrality
+        // proof harness); the law is default-ON per the AOSP pairing.
+        if (std::getenv("MINIANDROID_R466_DISABLE") == nullptr)
+            node->dex_layout_required = true;
         // F-NEW-496 (CONT-157): AOSP View.onMeasure DEFAULT fallback law
         // (frameworks/base/core/java/android/view/View.java):
         //   protected void onMeasure(int wspec, int hspec) {
@@ -13040,6 +13052,71 @@ bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
                 dispatched_any ? "YES" : "NO");
     }
     return dispatched_any;
+}
+
+// R-NEW-466 (CONT-11 W7): AOSP measure→layout pairing — re-dispatch of
+// onLayout for DEX views whose onMeasure ran AGAIN after their F-096
+// one-shot lifecycle dispatch. AOSP View.java: measure() sets
+// PFLAG_LAYOUT_REQUIRED after every onMeasure; the next layout() runs
+// onLayout(changed, l,t,r,b) and clears it. Compose's AndroidComposeView
+// does ALL placement inside onLayout (measureAndLayout → root.place →
+// placeAt → markNodeAndSubtreeAsPlaced): content materialized by
+// recomposition AFTER the first layout stays isPlaced=false forever under
+// the once-per-node law, and the compose draw walk (drawContent →
+// node.I() == measurePassDelegate.isPlaced — the F-NEW-265 gate) skips
+// every unplaced child — 0 canvas ops. Generic AOSP pairing law: no
+// compose knowledge, no R8 tables — any DEX view that re-measures gets
+// its onLayout re-run, exactly as ViewRootImpl.performTraversals does
+// (measure → layout EVERY traversal).
+bool DalvikExecutionEngine::dispatch_view_relayout(
+    uint32_t view_object_id, int l, int t, int r, int b) {
+    if (!dex_report_ || !shadow_registry_) return false;
+    if (view_object_id == 0) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return false;
+    auto* node = view_shadow->find_node(view_object_id);
+    if (!node) return false;
+    // Pairing gate: only re-dispatch when a re-measure raised the flag.
+    if (!node->dex_layout_required) return false;
+    // The F-096 one-shot must have run first (initial measure+layout pair).
+    if (!node->f096_lifecycle_done) return false;
+    // R-NEW-441 degenerate-frame gate (same law as the one-shot dispatch):
+    // a 0x0 frame is never a laid-out window on real Android.
+    if (r - l <= 0 && b - t <= 0) return false;
+    // Only views whose DEX chain actually overrides onLayout.
+    std::string cls = node->class_desc;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    if (!class_info_index_.count(cls)) return false;
+    if (!class_chain_defines_method(cls, "onLayout")) {
+        node->dex_layout_required = false;  // nothing to re-run — consume
+        return false;
+    }
+    node->dex_layout_required = false;  // consume the pairing flag
+    lifecycle_window_active_ = true;
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool ok = try_recursive_invoke(
+        cls, "onLayout",
+        {DalvikValue::make_object(view_object_id, node->class_desc),
+         DalvikValue::make_bool(true),
+         DalvikValue::make_int(l), DalvikValue::make_int(t),
+         DalvikValue::make_int(r), DalvikValue::make_int(b)},
+        ret, res);
+    lifecycle_window_active_ = false;
+    static thread_local uint64_t r445_log = 0;
+    if (r445_log < 16) {
+        r445_log++;
+        fprintf(stderr,
+                "[R445-RELAYOUT] %s view=%u rect=(%d,%d %dx%d) dispatched=%s\n",
+                cls.c_str(), view_object_id, l, t, r - l, b - t,
+                ok ? "YES" : "NO");
+    }
+    return ok;
 }
 
 bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_id, int w, int h, bool* first_frame_out) {

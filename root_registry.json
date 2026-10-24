@@ -5204,7 +5204,8 @@
   "probe": "MINIANDROID_DRAW_WINDOW_TRACE + MINIANDROID_F141_DIAG + MINIANDROID_CL_TRACE traces (run/w7/dooz_drawwin, dooz_f141, dooz_exc)",
   "verified_current": "CONT-18h: arms (a)+(b) verified live at HEAD; arm (c) re-rooted to F-NEW-271; measure-pass death (Lzs.m depth-17 unwind) still reproduced at be95a47f797d3d99/f882ca1832b955e3; historical chain link-by-link proof at aed46450/d701221b stands.; CONT-11 W7 independent re-derivation at rebuilt binary aed46450c103f2ea: Lgl0;.c=0 in 85,838-entry METHOD-TRACE; Lbt0;.w (isPlaced) 89 reads/0 place-writer executions; draw-window 430 rows/6 frames (children count=1, I(6128)=FALSE); F-028c param passing verified clean; 13 R8<->1.11.4 identities (P:Lc31;=OwnedLayer, r1=reuseLayer, T0(4)=head(Nodes.Draw)) CONT-23 pointer 2026-10-08: the measure-pass DEATH FACE IS GONE at fa88902fdee6e982 — Lzs0.m (MeasureAndLayoutDelegate.measureAndLayout) executes x9 with ZERO exceptions (no SYNTH-EXC, no uncaught, run/cont23/dooz_mtrace); place-writer Lbt0.q0 executes x2; Lel0.I (isPlaced) TRUE x32 in the draw window and the walk descends into child nodes. The content frontier re-rooted to the composition/scheduler layer: 6 LayoutNodes attach, the first-frame applyChanges REMOVES the NavHost content subtree (UiApplier.remove -> removeAt(0,1) -> detach, runtime caller chain captured via MINIANDROID_CL_TRACE), the destination-arriving recomposition never runs because the frame-pump quiesces at tick 3 and the Recomposer runner never re-arms -> registered F-NEW-277. Lgl0.c (CanvasDrawScope.draw) still 0; anchor d602648e8e401895 unchanged.",
   "fanout": "any Compose app that measures text (all of them); pending independent Compose APK refetch",
-  "date": "2026-10-08"
+  "date": "2026-10-08",
+  "r_new_466_note": "CONT-11 W7: first generic law fix toward this gate landed — R-NEW-466 (measure→layout pairing: onLayout re-dispatched after every re-measure). The gate itself stays CLASSIFIED: recomposed children still never enter the delegate relayoutNodes queue (placeAt/markNodeAndSubtreeAsPlaced never run for them) — next stage owns the requestRemeasure/markLayoutPending/queue-add laws (MeasureAndLayoutDelegate.kt:198/273-230 + MeasurePassDelegate.kt:447)."
  },
  {
   "id": "F-NEW-264d",
@@ -8401,5 +8402,20 @@
   "status": "ROOT-CAUSED-FIXED",
   "priority": "P0",
   "layer": "framework-textview"
+ },
+ {
+  "id": "R-NEW-466",
+  "title": "AOSP measure-to-layout pairing law: View.measure sets PFLAG_LAYOUT_REQUIRED after EVERY onMeasure dispatch; the following layout() must re-run onLayout(changed,l,t,r,b). The engine dispatched onLayout ONCE per view node (f096_lifecycle_done one-shot), so hosts whose content tree changes AFTER the first static-frame layout never re-ran per-traversal placement: compose AndroidComposeView.onLayout -> measureAndLayout -> root.place(0,0) -> placeAt -> markNodeAndSubtreeAsPlaced never executed for recomposition-materialized children -> MeasurePassDelegate.isPlaced stayed false -> the compose draw walk gate (node.I()==J.p.w==isPlaced, the F-NEW-265 face) skipped every child -> 0 canvas ops. Fix: ViewShadow dex_layout_required raised by every dispatch_custom_view_measure success; new dispatch_view_relayout() consumed by the per-frame layout traversal. Generic AOSP law — no compose knowledge, no R8 tables. Cross-ref: F-NEW-265.",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "framework-lifecycle",
+  "fixed_in": "CONT-11 W7 (main-agent stream; reconciled onto remote CONT-157 tree)",
+  "evidence": [
+   "evidence/cont11/fnew256_w7_evidence.json",
+   "trace15: Lt4;.onMeasure 15x vs Lt4;.onLayout 1x pre-fix (pairing gap, live)",
+   "FIELD-TRACE Lbt0;.w: root obj#2325=1, ALL children=0 (unplaced)",
+   "fix1: [R445-RELAYOUT] Lt4; view=1430 dispatched=YES post-fix",
+   "opencalc canonical golden e364b001ee7abd66 RESTORED at the fix binary (the W6 a976d2f9 drift healed by per-traversal onLayout)"
+  ]
  }
 ]
