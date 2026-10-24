@@ -59,3 +59,14 @@ SHA-256: 299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b
 ## Remaining frontier (single highest-ROI root)
 
 **Recompose-scope re-invocation in frame-driven recomposition passes** — the first generic semantic divergence between MiniAndroid and upstream Compose on the real-UI path. It blocks dooz's real content AND every future Compose app whose UI materializes after a side effect (the navigation/LaunchedEffect pattern = most of the Compose ecosystem).
+
+---
+
+# CONT-10 WAVE 7 ADDENDUM (re-based onto CONT-28 W1 remote line)
+
+The W7 investigation ran at the 6a66806a lineage (binary aed46450c103f2ea) in a parallel container; the remote line had advanced to CONT-28 W1 (1c89ea54) in the meantime. This addendum lands the W7 products onto the CONT-28 base:
+
+- F-NEW-521 REGISTERED (CLASSIFIED, P0, dalvik/collections): the scatter-family growth-on-put law is dead at runtime — full proof chain in evidence/cont10/w7_fnew261_evidence.json (spin locus pc-exact; metadata arrays; resize/put/field traces; growth region 0 hits). The remote's F-NEW-261 is a DIFFERENT root (S83-APXACT) — id collision avoided.
+- Generic diagnostics RE-LANDED onto the CONT-28 engine (adapted to the CONT-96 flat-array visit counting + wall-clock halt site): MINIANDROID_HALT_HISTO (pc histogram + registers + [J/[I interiors at BOTH the instruction-budget and wall-clock halt sites) and MINIANDROID_PC_WATCH (per-pc register dumps, 240 cap). Env-gated, read-only, bounded.
+- CONT-28 re-baseline check: dooz 851cc1761a1dfcdf reproduced exactly; the 183 F084 halts are ALL wall-clock-family (120000 ms, zero HALT-LOOP) — consistent with the W7 moving-operand spin signature (the epoch guard correctly stays silent); the burn moved into the draw window (dispatchDraw/Lel0;.i) as the remote line's fixes advanced composition further.
+- Next wave owns: the growth-decision routing law (Lhv0;.d 0x88-0x9c → 0xaa), a full-table positive/negative probe, then re-classify the draw-window burn with the new instruments; Telegram trains after that on the same repeat-pattern lever.

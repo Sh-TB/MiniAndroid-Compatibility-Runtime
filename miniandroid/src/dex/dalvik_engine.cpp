@@ -18609,6 +18609,82 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         // snapshot feeds the threshold check below.
         const uint32_t f084_visit_now =
             (pc_ < pc_visit_count_.size()) ? ++pc_visit_count_[pc_] : 1u;
+        // CONT-10 W7 (generic, env-gated, read-only): MINIANDROID_PC_WATCH
+        // = comma list of "Lcls;.meth:0xPC" tokens. On every interpreter pc
+        // advance matching a token, dump the frame's leading registers
+        // (bounded 240 dumps total). Answers: WHY does a moving-operand
+        // loop keep running (which register fails to converge) — evidence
+        // for the scatter-map probe-spin family, replayable offline.
+        {
+            static thread_local const bool pcw_on =
+                std::getenv("MINIANDROID_PC_WATCH") != nullptr;
+            static thread_local std::string pcw_spec;
+            static thread_local bool pcw_init = false;
+            static thread_local uint64_t pcw_n = 0;
+            if (pcw_on) {
+                if (!pcw_init) {
+                    pcw_spec = std::getenv("MINIANDROID_PC_WATCH");
+                    pcw_init = true;
+                }
+                if (pcw_n < 240) {
+                    size_t start = 0;
+                    while (start <= pcw_spec.size()) {
+                        size_t comma = pcw_spec.find(',', start);
+                        std::string tok = pcw_spec.substr(
+                            start, comma == std::string::npos
+                                       ? std::string::npos
+                                       : comma - start);
+                        size_t colon = tok.rfind(":0x");
+                        if (colon == std::string::npos)
+                            colon = tok.rfind(':');
+                        if (colon != std::string::npos) {
+                            std::string cm = tok.substr(0, colon);
+                            uint32_t wpc = static_cast<uint32_t>(
+                                strtoul(tok.c_str() + colon + 1, nullptr, 16));
+                            size_t dot = cm.rfind(';');
+                            if (dot != std::string::npos) {
+                                std::string c = cm.substr(0, dot + 1);
+                                std::string m = cm.substr(dot + 1);
+                                if (!m.empty() && m[0] == '.') m.erase(0, 1);
+                                if (current_class_ == c &&
+                                    current_method_ == m && pc_ == wpc) {
+                                    ++pcw_n;
+                                    std::cerr << "[PC-WATCH] " << cm
+                                              << ":" << to_hex(pc_)
+                                              << " n=" << pcw_n;
+                                    if (current_registers_) {
+                                        const uint32_t nr =
+                                            current_registers_->get_size();
+                                        for (uint32_t r = 0;
+                                             r < nr && r < 12; ++r) {
+                                            DalvikValue v =
+                                                current_registers_->read_v(
+                                                    static_cast<uint16_t>(r));
+                                            std::cerr << " v" << r << "=";
+                                            if (v.type == DalvikType::INT32)
+                                                std::cerr << v.int_val;
+                                            else if (v.type ==
+                                                     DalvikType::INT64)
+                                                std::cerr << "(long)"
+                                                          << v.long_val;
+                                            else if (v.type ==
+                                                     DalvikType::OBJECT_REF)
+                                                std::cerr << "o"
+                                                          << v.object_id;
+                                            else
+                                                std::cerr << "uninit";
+                                        }
+                                    }
+                                    std::cerr << std::endl;
+                                }
+                            }
+                        }
+                        if (comma == std::string::npos) break;
+                        start = comma + 1;
+                    }
+                }
+            }
+        }
         uint16_t opb = (pc_ < bytecode_.size()) ? (bytecode_[pc_] & 0xFF) : 0xFFFF;
         const bool cond_branch = opb >= 0x32 && opb <= 0x3d;
         if (cond_branch) {
@@ -18886,6 +18962,96 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             halt_reason_ = "Max instructions reached (" + std::to_string(config_.max_instructions) + ")";
             halted_ = true;
             log("HALT: " + halt_reason_);
+            // CONT-10 W7 (generic, env-gated, read-only): when the global
+            // instruction budget dies, dump the CURRENT frame's pc-visit
+            // histogram so the burn locus is evidence, not guesswork. The
+            // loop-visit spin guard only catches zero-decision-input loops;
+            // a loop whose condition operands keep moving (e.g. re-running
+            // invalidation passes or a full scatter-table probe) reaches
+            // this budget halt instead.
+            static thread_local const bool halt_histo_on =
+                std::getenv("MINIANDROID_HALT_HISTO") != nullptr;
+            if (halt_histo_on) {
+                std::cerr << "[HALT-HISTO] frame="
+                          << current_class_ << "." << current_method_
+                          << " pc=" << to_hex(pc_)
+                          << std::endl;
+                std::vector<std::pair<uint32_t, uint64_t>> htop;
+                for (size_t hi = 0; hi < pc_visit_count_.size(); ++hi)
+                    if (pc_visit_count_[hi] > 0)
+                        htop.push_back({(uint32_t)hi, pc_visit_count_[hi]});
+                std::sort(htop.begin(), htop.end(),
+                          [](auto& a, auto& b) { return a.second > b.second; });
+                int hshown = 0;
+                for (auto& kv : htop) {
+                    if (hshown++ >= 16) break;
+                    std::cerr << "[HALT-HISTO]   pc" << to_hex(kv.first)
+                              << " visits=" << kv.second << std::endl;
+                }
+                if (current_registers_) {
+                    const uint32_t nregs = current_registers_->get_size();
+                    std::cerr << "[HALT-REGS] " << current_class_ << "."
+                              << current_method_ << " regs=" << nregs;
+                    for (uint32_t r = 0; r < nregs && r < 20; ++r) {
+                        DalvikValue v = current_registers_->read_v(
+                            static_cast<uint16_t>(r));
+                        std::cerr << " v" << r << "=";
+                        if (v.type == DalvikType::INT32)
+                            std::cerr << v.int_val;
+                        else if (v.type == DalvikType::INT64)
+                            std::cerr << "(long)" << v.long_val;
+                        else if (v.type == DalvikType::OBJECT_REF) {
+                            std::cerr << "o" << v.object_id;
+                            if (heap_.has_object(v.object_id)) {
+                                const auto* ho = heap_.get(v.object_id);
+                                if (ho) {
+                                    std::cerr << "<" << ho->class_descriptor
+                                              << ">";
+                                    int fcnt = 0;
+                                    for (const auto& kv : ho->fields) {
+                                        if (fcnt++ >= 2) break;
+                                        std::cerr << " " << kv.first << "="
+                                                  << dalvik_value_to_string(
+                                                         kv.second);
+                                    }
+                                }
+                            }
+                        } else
+                            std::cerr << "uninit";
+                    }
+                    std::cerr << std::endl;
+                    for (uint32_t r = 0; r < nregs && r < 20; ++r) {
+                        DalvikValue v = current_registers_->read_v(
+                            static_cast<uint16_t>(r));
+                        if (v.type != DalvikType::OBJECT_REF) continue;
+                        if (!heap_.has_object(v.object_id)) continue;
+                        const auto* ho = heap_.get(v.object_id);
+                        if (!ho) continue;
+                        if (ho->class_descriptor != "[J" &&
+                            ho->class_descriptor != "[I")
+                            continue;
+                        auto lf = heap_.get_object_field(v.object_id,
+                                                         "__array_length__");
+                        std::cerr << "[HALT-ARR] v" << r << " "
+                                  << ho->class_descriptor << " len="
+                                  << (lf.has_value() &&
+                                              lf->type == DalvikType::INT32
+                                          ? lf->int_val
+                                          : -1);
+                        for (int e = 0; e < 6; ++e) {
+                            auto el = heap_.get_object_field(
+                                v.object_id,
+                                "array[" + std::to_string(e) + "]");
+                            if (!el.has_value()) continue;
+                            if (el->type == DalvikType::INT64)
+                                std::cerr << " [" << el->long_val << "]";
+                            else if (el->type == DalvikType::INT32)
+                                std::cerr << " [" << el->int_val << "]";
+                        }
+                        std::cerr << std::endl;
+                    }
+                }
+            }
             break;
         }
 
@@ -18910,6 +19076,97 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                std::to_string(config_.max_wall_ms) + " ms)";
                 halted_ = true;
                 log("HALT: " + halt_reason_);
+            // CONT-10 W7 (generic, env-gated, read-only): when the wall-clock
+            // budget dies (the F084 family now usually fires here at CONT-28+), dump the CURRENT frame's pc-visit
+            // histogram so the burn locus is evidence, not guesswork. The
+            // loop-visit spin guard only catches zero-decision-input loops;
+            // a loop whose condition operands keep moving (e.g. re-running
+            // invalidation passes or a full scatter-table probe) reaches
+            // this budget halt instead.
+            static thread_local const bool halt_histo_on =
+                std::getenv("MINIANDROID_HALT_HISTO") != nullptr;
+            if (halt_histo_on) {
+                std::cerr << "[HALT-HISTO] frame="
+                          << current_class_ << "." << current_method_
+                          << " pc=" << to_hex(pc_)
+                          << std::endl;
+                std::vector<std::pair<uint32_t, uint64_t>> htop;
+                for (size_t hi = 0; hi < pc_visit_count_.size(); ++hi)
+                    if (pc_visit_count_[hi] > 0)
+                        htop.push_back({(uint32_t)hi, pc_visit_count_[hi]});
+                std::sort(htop.begin(), htop.end(),
+                          [](auto& a, auto& b) { return a.second > b.second; });
+                int hshown = 0;
+                for (auto& kv : htop) {
+                    if (hshown++ >= 16) break;
+                    std::cerr << "[HALT-HISTO]   pc" << to_hex(kv.first)
+                              << " visits=" << kv.second << std::endl;
+                }
+                if (current_registers_) {
+                    const uint32_t nregs = current_registers_->get_size();
+                    std::cerr << "[HALT-REGS] " << current_class_ << "."
+                              << current_method_ << " regs=" << nregs;
+                    for (uint32_t r = 0; r < nregs && r < 20; ++r) {
+                        DalvikValue v = current_registers_->read_v(
+                            static_cast<uint16_t>(r));
+                        std::cerr << " v" << r << "=";
+                        if (v.type == DalvikType::INT32)
+                            std::cerr << v.int_val;
+                        else if (v.type == DalvikType::INT64)
+                            std::cerr << "(long)" << v.long_val;
+                        else if (v.type == DalvikType::OBJECT_REF) {
+                            std::cerr << "o" << v.object_id;
+                            if (heap_.has_object(v.object_id)) {
+                                const auto* ho = heap_.get(v.object_id);
+                                if (ho) {
+                                    std::cerr << "<" << ho->class_descriptor
+                                              << ">";
+                                    int fcnt = 0;
+                                    for (const auto& kv : ho->fields) {
+                                        if (fcnt++ >= 2) break;
+                                        std::cerr << " " << kv.first << "="
+                                                  << dalvik_value_to_string(
+                                                         kv.second);
+                                    }
+                                }
+                            }
+                        } else
+                            std::cerr << "uninit";
+                    }
+                    std::cerr << std::endl;
+                    for (uint32_t r = 0; r < nregs && r < 20; ++r) {
+                        DalvikValue v = current_registers_->read_v(
+                            static_cast<uint16_t>(r));
+                        if (v.type != DalvikType::OBJECT_REF) continue;
+                        if (!heap_.has_object(v.object_id)) continue;
+                        const auto* ho = heap_.get(v.object_id);
+                        if (!ho) continue;
+                        if (ho->class_descriptor != "[J" &&
+                            ho->class_descriptor != "[I")
+                            continue;
+                        auto lf = heap_.get_object_field(v.object_id,
+                                                         "__array_length__");
+                        std::cerr << "[HALT-ARR] v" << r << " "
+                                  << ho->class_descriptor << " len="
+                                  << (lf.has_value() &&
+                                              lf->type == DalvikType::INT32
+                                          ? lf->int_val
+                                          : -1);
+                        for (int e = 0; e < 6; ++e) {
+                            auto el = heap_.get_object_field(
+                                v.object_id,
+                                "array[" + std::to_string(e) + "]");
+                            if (!el.has_value()) continue;
+                            if (el->type == DalvikType::INT64)
+                                std::cerr << " [" << el->long_val << "]";
+                            else if (el->type == DalvikType::INT32)
+                                std::cerr << " [" << el->int_val << "]";
+                        }
+                        std::cerr << std::endl;
+                    }
+                }
+            }
+
                 // F-NEW-084 closeout (cont375): EVERY graceful stop carries
                 // the same frame evidence as a loop-guard halt — the wall
                 // clock may stop INSIDE a legitimately long frame, and the

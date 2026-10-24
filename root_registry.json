@@ -8425,5 +8425,15 @@
   "status": "REGISTERED",
   "priority": "P1",
   "layer": "framework/collections-views"
+ },
+ {
+  "id": "F-NEW-521",
+  "status": "CLASSIFIED",
+  "title": "androidx.collection MutableScatterMap-family growth-on-put dead at runtime: Lhv0;.d growth region (pcs 0xaa..0x20f incl. resize invoke 0x20f) never executes across 40 puts (threshold field round-trip healthy 6->5->4->3 FIELD-TRACE; size increment live) -> cap-8 tables fill 8/8 with zero EMPTY (0x80) metadata bytes (live WATCH-ARR: 0xFF40000000000000) -> scatter get (Lrh0;.b, SWAR murmur probe, fully disassembled pc-exact) open-addressing probe wraps IN-BOUNDS forever (moving operands defeat the epoch spin guard, no AIOOBE) -> first doFrame dies at the budget (W7 binary: [MEM] insns=99969266 single invocation) -> placement never propagates (Lbt0;.v0 place fires once for root only; q0/Lbt0;.w=0 for every materialized child) -> Lug0;.h1 skips all children -> DEFAULT_BACKGROUND_ONLY. Also refutes the W6 framing: Ljt1; (AndroidCanvas) has ZERO external refs in the APK; the live draw canvas is Ly3; (implements Ldi; compose Canvas). At CONT-28+ head the same family signature persists as wall-clock halts (183x @120s, zero HALT-LOOP) with the burn moved into the draw window (dispatchDraw/Lel0;.i) — re-verification instrument: MINIANDROID_HALT_HISTO + MINIANDROID_PC_WATCH (re-landed this wave).",
+  "priority": "P0",
+  "layer": "dalvik/collections",
+  "evidence": "evidence/cont10/w7_fnew261_evidence.json",
+  "probe": "PENDING (next wave: growth-decision routing law Lhv0;.d 0x88-0x9c -> 0xaa; full-table positive/negative probe; then placement/canvas cascade)",
+  "verified_current": "ARG-TRACE (W7 binary aed46450c103f2ea at 6a66806a lineage): baseline x3 d602648e8e401895 byte-identical; anchors 5/5x3; gate A 98/0/1; negatives 19/19; skill 13/13. CONT-28 re-baseline: dooz 851cc176 reproduced; halts classified wall-clock-family (no HALT-LOOP) — same moving-operand signature."
  }
 ]
