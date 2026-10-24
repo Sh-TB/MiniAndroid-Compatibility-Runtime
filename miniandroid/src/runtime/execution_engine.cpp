@@ -3667,6 +3667,15 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             if (task.view_id != 0) {
                                 dalvik_engine_.dispatch_view_lifecycle_once(
                                     task.view_id, left, top, right, bottom);
+                                // R-NEW-466 (AOSP measure→layout pairing):
+                                // a re-measure since the last layout marks
+                                // dex_layout_required — re-run onLayout so
+                                // per-traversal placement (compose
+                                // measureAndLayout → placeAt → isPlaced)
+                                // executes for content materialized after
+                                // the first static-frame layout.
+                                dalvik_engine_.dispatch_view_relayout(
+                                    task.view_id, left, top, right, bottom);
                             }
 
                             // Draw view background

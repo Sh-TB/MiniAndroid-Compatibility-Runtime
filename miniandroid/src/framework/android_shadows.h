@@ -1277,6 +1277,21 @@ public:
         // idempotent for the static-frame runs this runtime models; later
         // frames reuse the composed result).
         bool f096_lifecycle_done = false;
+        // R-NEW-466 (CONT-11 W7, AOSP measure→layout pairing law):
+        // View.java measure(): ANY onMeasure dispatch sets
+        // PFLAG_LAYOUT_REQUIRED; the following View.layout() then runs
+        // onLayout(changed, l,t,r,b) and clears it. The runtime re-measures
+        // DEX views EVERY traversal (dispatch_custom_view_measure) but the
+        // F-096 law dispatched onLayout ONCE per node — correct for static
+        // frames, WRONG for hosts whose content tree changes after the
+        // first layout (compose AndroidComposeView.onLayout →
+        // measureAndLayout → root.place → markNodeAndSubtreeAsPlaced:
+        // children materialized by RECOMPOSITION after the first layout
+        // never got isPlaced=true → the draw walk skipped them → 0 canvas
+        // ops, the dooz draw frontier). This flag is raised by every DEX
+        // onMeasure dispatch and consumed by the layout traversal, which
+        // re-dispatches onLayout until the pairing completes.
+        bool dex_layout_required = false;
         // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;
