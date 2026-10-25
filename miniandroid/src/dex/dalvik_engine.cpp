@@ -4789,9 +4789,9 @@ bool DalvikExecutionEngine::execute_method_internal(
             result.final_status =
                 DalvikExecutionResult::FinalStatus::COMPLETED_PARTIAL;
             result.halt_reason = "unwind " +
-                (frame_unwind_exception_.class_desc.empty()
+                (std::string(frame_unwind_exception_.class_desc).empty()
                      ? std::string("Ljava/lang/RuntimeException;")
-                     : frame_unwind_exception_.class_desc);
+                     : std::string(frame_unwind_exception_.class_desc));
         } else {
             result.final_status =
                 DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS;
@@ -6607,12 +6607,12 @@ uint32_t DalvikExecutionEngine::frag_build_preference_list_view(
         auto tfield = heap_.get_object_field(frag_oid, p + "title");
         std::string title =
             (tfield && tfield->type == DalvikType::STRING_REF && !tfield->is_null)
-                ? tfield->string_val
+                ? std::string(tfield->string_val)
                 : std::string();
         auto sfield = heap_.get_object_field(frag_oid, p + "summary");
         std::string summary =
             (sfield && sfield->type == DalvikType::STRING_REF && !sfield->is_null)
-                ? sfield->string_val
+                ? std::string(sfield->string_val)
                 : std::string();
         if (!title.empty()) {
             uint32_t tv = vs->create_view("Landroid/widget/TextView;");
@@ -9278,8 +9278,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
             if (ctx.has_receiver) {
                 ctx.receiver_id = args[0].object_id;
-                ctx.receiver_class = args[0].class_desc;
-                ctx.class_name = args[0].class_desc.empty() ? class_descriptor : args[0].class_desc;
+                ctx.receiver_class = std::string(args[0].class_desc);
+                ctx.class_name = std::string(args[0].class_desc).empty() ? class_descriptor : std::string(args[0].class_desc);
             } else {
                 ctx.class_name = class_descriptor;
             }
@@ -9727,8 +9727,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
                 if (ctx.has_receiver) {
                     ctx.receiver_id = args[0].object_id;
-                    ctx.receiver_class = args[0].class_desc;
-                    ctx.class_name = args[0].class_desc.empty() ? class_descriptor : args[0].class_desc;
+                    ctx.receiver_class = std::string(args[0].class_desc);
+                    ctx.class_name = std::string(args[0].class_desc).empty() ? class_descriptor : std::string(args[0].class_desc);
                 } else {
                     ctx.class_name = class_descriptor;
                 }
@@ -11645,7 +11645,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                           << method.name
                           << " recv=" << (args.empty() ? 0 : args[0].object_id)
                           << "(" << (args.empty() ? std::string("null")
-                                                  : args[0].class_desc) << ")"
+                                                  : std::string(args[0].class_desc)) << ")"
                           << " ret=" << (return_val.int_val ? "TRUE" : "FALSE")
                           << std::endl;
             }
@@ -12228,7 +12228,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                           << method.name
                           << " recv=" << (args.empty() ? 0 : args[0].object_id)
                           << "(" << (args.empty() ? std::string("null")
-                                                  : args[0].class_desc) << ")"
+                                                  : std::string(args[0].class_desc)) << ")"
                           << " ret=" << (return_val.int_val ? "TRUE" : "FALSE")
                           << std::endl;
             }
@@ -20276,7 +20276,7 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
         if (iof_n < 200) {
             ++iof_n;
             std::string oc = (src_val.type == DalvikType::OBJECT_REF)
-                                 ? src_val.class_desc : std::string("-");
+                                 ? std::string(src_val.class_desc) : std::string("-");
             std::string hc;
             if (src_val.type == DalvikType::OBJECT_REF &&
                 src_val.object_id != 0 && heap_.has_object(src_val.object_id)) {
@@ -20331,7 +20331,7 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
             target_type.rfind("Landroid/", 0) != 0;
         if (f259_dex_target && f259_ins++ < 1024) {
             std::string f259_oc = src_val.type == DalvikType::OBJECT_REF
-                                      ? src_val.class_desc
+                                      ? std::string(src_val.class_desc)
                                       : std::string("-");
             std::cerr << "[F259-INS] " << current_class_ << "."
                       << current_method_ << " target=" << target_type
@@ -24113,8 +24113,8 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         if (view_shadow) {
             auto* node = view_shadow->find_node(args[0].object_id);
             if (node) {
-                const std::string& cls = !args[0].class_desc.empty()
-                                             ? args[0].class_desc : class_name;
+                const std::string& cls = !std::string(args[0].class_desc).empty()
+                                             ? std::string(args[0].class_desc) : class_name;
                 bool overrides = class_chain_defines_method(cls, "onMeasure");
                 // M3 F-005 FIX-A: content families never take the
                 // getDefaultSize fallback (see the constructor-time site).
@@ -27375,7 +27375,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                   << method << " recv="
                                   << (!args.empty() ? args[0].object_id : 0u)
                                   << " cls="
-                                  << (!args.empty() ? args[0].class_desc
+                                  << (!args.empty() ? std::string(args[0].class_desc)
                                                     : std::string("-"))
                                   << " caller=" << current_class_ << "."
                                   << current_method_ << std::endl;
@@ -27973,7 +27973,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                           << " (declared=" << class_name
                           << " receiver=" << (!args.empty() &&
                              args[0].type == DalvikType::OBJECT_REF
-                             ? args[0].class_desc : std::string("-"))
+                             ? std::string(args[0].class_desc) : std::string("-"))
                           << ")" << std::endl;
                 // F-NEW-259g-a: shadow exception channel (hierarchy walk).
                 if (cr3.is_exc) {
@@ -29360,10 +29360,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         int32_t idx = args[1].int_val;
         // Read-only view of the receiver's bytes (deep site copied; the
         // copy was never mutated — elimination is behavior-identical).
+        // CONT-32 CowStr: the value's string lives out-of-band; bind a local
+        // copy (the pointer was only ever read through, never kept).
         static const std::string c97_empty_str;
+        std::string c97_recv;
         const std::string* sp = &c97_empty_str;
-        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
-            sp = &args[0].string_val;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            c97_recv = args[0].string_val;
+            sp = &c97_recv;
+        }
         const std::string& s = *sp;
         // CONT-121 W-01: JVM UTF-16 unit law (str_char_at_unit). BMP-only
         // strings answer identically to the old code-point walk; supplementary
@@ -30023,7 +30028,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 audio::MediaPlayer* eng = f356_mp_engine_for(mp_id);
                 std::string fpath =
                     args[1].type == DalvikType::STRING_REF && !args[1].is_null
-                        ? args[1].string_val
+                        ? std::string(args[1].string_val)
                         : std::string();
                 Storage::PathResolution pr =
                     Storage::resolve_android_path(fpath);
@@ -30275,8 +30280,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (method == "create" && args.size() == 2) {
             std::string fam =
                 args[0].type == DalvikType::STRING_REF
-                    ? (args[0].string_val.empty() ? "sans-serif"
-                                                  : args[0].string_val)
+                    ? (std::string(args[0].string_val).empty() ? "sans-serif"
+                                                  : std::string(args[0].string_val))
                     : tf_read_family(args[0]);
             int style = args[1].type == DalvikType::INT32 ? args[1].int_val
                                                           : 0;
@@ -30812,7 +30817,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << " recv_oid="
                       << (!args.empty() ? args[0].object_id : 0)
                       << " recv_cls="
-                      << (!args.empty() ? args[0].class_desc : std::string("-"))
+                      << (!args.empty() ? std::string(args[0].class_desc) : std::string("-"))
                       << " caller=" << current_class_ << "." << current_method_
                       << std::endl;
         }
@@ -31741,7 +31746,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         //      raw access flags (__reflect_mods) and its parameter
         //      descriptor list (__reflect_params, comma-joined).
         // ────────────────────────────────────────────────────────────────
-        std::string referent = args.empty() ? std::string() : args[0].class_desc;
+        std::string referent = args.empty() ? std::string() : std::string(args[0].class_desc);
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
             auto* tok = heap_.get(args[0].object_id);
@@ -32255,7 +32260,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                                   "method_descriptor");
                 std::string desc =
                     (dv3.has_value() && dv3->type == DalvikType::STRING_REF)
-                        ? dv3->string_val
+                        ? std::string(dv3->string_val)
                         : std::string();
                 result = DalvikValue::make_string(nm + desc, 0);
             } else {
@@ -32312,7 +32317,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         return true;
                     }()) {
                     std::string sv = probe_ev->type == DalvikType::STRING_REF
-                                         ? probe_ev->string_val
+                                         ? std::string(probe_ev->string_val)
                                          : std::string();
                     if (sv.rfind("enum:", 0) == 0) {
                         std::string ident = sv.substr(5);
@@ -32641,12 +32646,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 std::cerr << " a" << ci << ":t" << static_cast<int>(args[ci].type)
                           << (args[ci].class_desc.empty()
                                   ? ""
-                                  : ("(" + args[ci].class_desc + ")"));
+                                  : ("(" + std::string(args[ci].class_desc) + ")"));
             std::cerr << " caller=" << current_class_ << "."
                       << current_method_ << std::endl;
         }
         std::string token_desc =
-            args.empty() ? std::string() : args[0].class_desc;
+            args.empty() ? std::string() : std::string(args[0].class_desc);
         // S90 DIAG (F-NEW-162): log the ANSWER for the lifecycle walk —
         // the interface branch depends on LEO→LO being true.
         static thread_local const bool cls_ans_trace =
@@ -34060,7 +34065,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         auto el = heap_.get_object_field(
                             a.object_id, "array[" + std::to_string(i) + "]");
                         st.columns.push_back(
-                            el.has_value() ? el->string_val : std::string());
+                            el.has_value() ? std::string(el->string_val) : std::string());
                     }
                     break;
                 }
@@ -34128,7 +34133,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         if (method == "getColumnIndex") {
             MatrixCursorState& st = ensure_state(args[0].object_id);
-            std::string want = args.size() > 1 ? args[1].string_val : std::string();
+            std::string want = args.size() > 1 ? std::string(args[1].string_val) : std::string();
             for (size_t i = 0; i < st.columns.size(); ++i)
                 if (st.columns[i] == want) {
                     result = DalvikValue::make_int((int)i);
@@ -34141,7 +34146,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         if (method == "getColumnIndexOrThrow") {
             MatrixCursorState& st = ensure_state(args[0].object_id);
-            std::string want = args.size() > 1 ? args[1].string_val : std::string();
+            std::string want = args.size() > 1 ? std::string(args[1].string_val) : std::string();
             for (size_t i = 0; i < st.columns.size(); ++i)
                 if (st.columns[i] == want) {
                     result = DalvikValue::make_int((int)i);
@@ -34315,7 +34320,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         if (method == "put" && args.size() >= 3) {
             std::string k = args[1].type == DalvikType::STRING_REF
-                                ? args[1].string_val
+                                ? std::string(args[1].string_val)
                                 : std::string();
             ensure_cv(args[0].object_id).emplace_back(k, args[2]);
             result = DalvikValue::make_void();
@@ -34327,7 +34332,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             method == "getAsDouble" || method == "getAsFloat" ||
             method == "getAsByte" || method == "getAsShort") {
             std::string k = args.size() > 1 && args[1].type == DalvikType::STRING_REF
-                                ? args[1].string_val
+                                ? std::string(args[1].string_val)
                                 : std::string();
             DalvikValue v = find_key(args[0].object_id, k);
             // Unwrap a BOXED value first (AOSP: put(String, Integer) stores
@@ -34392,7 +34397,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
         if (method == "containsKey") {
-            std::string k = args.size() > 1 ? args[1].string_val : std::string();
+            std::string k = args.size() > 1 ? std::string(args[1].string_val) : std::string();
             bool found = false;
             for (auto& [ck, cv] : content_values_[args[0].object_id])
                 if (ck == k) { found = true; break; }
@@ -34410,7 +34415,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (method == "clear") {
                 content_values_[args[0].object_id].clear();
             } else {
-                std::string k = args.size() > 1 ? args[1].string_val : std::string();
+                std::string k = args.size() > 1 ? std::string(args[1].string_val) : std::string();
                 auto& v = content_values_[args[0].object_id];
                 for (auto it = v.begin(); it != v.end(); ++it)
                     if (it->first == k) { v.erase(it); break; }
@@ -34593,7 +34598,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else if (method == "isAbsolute") {
             result = DalvikValue::make_bool(!scheme.empty());
         } else if (method == "getQueryParameter") {
-            std::string key = args.size() > 1 ? args[1].string_val : std::string();
+            std::string key = args.size() > 1 ? std::string(args[1].string_val) : std::string();
             std::string out;
             if (!query.empty()) {
                 size_t s0 = 0;
@@ -35546,7 +35551,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         !args.empty()) {
         // static: args[0] = regex string
         std::string rx = args[0].type == DalvikType::STRING_REF
-                             ? args[0].string_val
+                             ? std::string(args[0].string_val)
                              : std::string();
         uint32_t pid = heap_.allocate("Ljava/util/regex/Pattern;", pc_, 0);
         heap_.set_object_field(pid, "regex", DalvikValue::make_string(rx, 0));
@@ -36500,7 +36505,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
                 case DalvikType::OBJECT_REF: {
                     const auto* o = heap_.get(a.object_id);
-                    std::string ocls = o ? o->class_descriptor : a.class_desc;
+                    std::string ocls = o ? o->class_descriptor : std::string(a.class_desc);
                     // Boxed primitives are Numbers/Boolean per AOSP
                     // JSONStringer.value — serialize as scalars (fairymahjong
                     // settings carry Integer refs: [F243-DIAG] proved the
@@ -45081,7 +45086,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         args[0].object_id != 0) {
         const auto* f264_ro = heap_.get(args[0].object_id);
         std::string f264_rcls =
-            f264_ro ? f264_ro->class_descriptor : args[0].class_desc;
+            f264_ro ? f264_ro->class_descriptor : std::string(args[0].class_desc);
         if (!f264_rcls.empty() && f264_rcls != "Ljava/util/ArrayList;" &&
             f264_rcls != "Ljava/util/LinkedList;" &&
             is_subclass_of(f264_rcls, "Ljava/util/ArrayList;"))
@@ -45103,7 +45108,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         uint32_t f101_src = args[1].object_id;
         const auto* f101_sobj = heap_.get(f101_src);
         std::string f101_scls =
-            f101_sobj ? f101_sobj->class_descriptor : args[1].class_desc;
+            f101_sobj ? f101_sobj->class_descriptor : std::string(args[1].class_desc);
         bool f101_dex_src = f101_sobj != nullptr && !f101_scls.empty() &&
                             f101_scls[0] == 'L' &&
                             class_info_index_.find(f101_scls) !=
@@ -45955,7 +45960,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         uint32_t f91_id = args[0].object_id;
         const auto* f91_recv = heap_.get(f91_id);
         std::string f91_cls = f91_recv ? f91_recv->class_descriptor
-                                       : args[0].class_desc;
+                                       : std::string(args[0].class_desc);
         bool f91_dex_defined =
             f91_recv != nullptr && !f91_cls.empty() && f91_cls[0] == 'L' &&
             class_info_index_.find(f91_cls) != class_info_index_.end();
@@ -49819,7 +49824,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::string activity_class =
                 (args.empty() || args[0].type != DalvikType::OBJECT_REF)
                     ? std::string()
-                    : args[0].class_desc;
+                    : std::string(args[0].class_desc);
             if (activity_class.empty() && !args.empty() &&
                 args[0].type == DalvikType::OBJECT_REF &&
                 args[0].object_id != 0 && heap_.has_object(args[0].object_id))
@@ -50514,7 +50519,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 for (size_t di = 0; di < args.size(); ++di)
                     std::cerr << " a" << di << "(t=" << static_cast<int>(args[di].type)
                               << ",null=" << args[di].is_null
-                              << ",s=\"" << (args[di].type == DalvikType::STRING_REF ? args[di].string_val : std::string(""))
+                              << ",s=\"" << (args[di].type == DalvikType::STRING_REF ? std::string(args[di].string_val) : std::string(""))
                               << "\")";
                 std::cerr << std::endl;
             }
@@ -50762,7 +50767,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 for (size_t di = 0; di < args.size(); ++di)
                     std::cerr << " a" << di << "(t=" << static_cast<int>(args[di].type)
                               << ",i=" << args[di].int_val
-                              << ",s=\"" << (args[di].type == DalvikType::STRING_REF ? args[di].string_val : std::string(""))
+                              << ",s=\"" << (args[di].type == DalvikType::STRING_REF ? std::string(args[di].string_val) : std::string(""))
                               << "\")";
                 std::cerr << std::endl;
             }
@@ -51280,7 +51285,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                   args[0].type == DalvikType::NULL_REF)) {
                 recv = (args[0].type == DalvikType::NULL_REF)
                            ? std::string("NULL")
-                           : args[0].class_desc;
+                           : std::string(args[0].class_desc);
                 if (args[0].type == DalvikType::OBJECT_REF) {
                     if (auto* hobj = heap_.get(args[0].object_id))
                         recv += std::string("(runtime=") +
@@ -53834,7 +53839,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto get_str = [&](const char* f) -> std::string {
             auto v = heap_.get_object_field(args[0].object_id, f);
             return (v.has_value() && v->type == DalvikType::STRING_REF)
-                       ? v->string_val : std::string();
+                       ? std::string(v->string_val) : std::string();
         };
         auto get_int = [&](const char* f) -> int {
             auto v = heap_.get_object_field(args[0].object_id, f);
@@ -53915,7 +53920,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                             "hdr_" + args[1].string_val);
             result = DalvikValue::make_string(
                 (v.has_value() && v->type == DalvikType::STRING_REF)
-                    ? v->string_val : std::string(), 0);
+                    ? std::string(v->string_val) : std::string(), 0);
             return true;
         }
         if (method == "getInputStream") {
@@ -56183,7 +56188,7 @@ measure_cm_done:;
                 uint32_t src = args[1].object_id;
                 auto src_obj = heap_.get(src);
                 std::string scls =
-                    src_obj ? src_obj->class_descriptor : args[1].class_desc;
+                    src_obj ? src_obj->class_descriptor : std::string(args[1].class_desc);
                 if (scls.rfind("[L", 0) == 0) {
                     // ByteBuffer[]: iterate elements.
                     auto len_v = heap_.get_object_field(src, "__array_length__");
@@ -56356,7 +56361,7 @@ measure_cm_done:;
             if (inst_get || stat_get) {
                 const DalvikValue& name_v = inst_get ? args[1] : args[0];
                 std::string res_name = name_v.type == DalvikType::STRING_REF
-                                           ? name_v.string_val
+                                           ? std::string(name_v.string_val)
                                            : std::string();
                 std::vector<uint32_t> url_ids;
                 if (!res_name.empty() && !apk_path_.empty()) {
@@ -56392,7 +56397,7 @@ measure_cm_done:;
             if (method == "getResource") {  // singular: URL or null (real law)
                 const DalvikValue& name_v = args.size() >= 2 ? args[1] : args[0];
                 std::string res_name = name_v.type == DalvikType::STRING_REF
-                                           ? name_v.string_val
+                                           ? std::string(name_v.string_val)
                                            : std::string();
                 std::string key = "apk-entry:" + res_name;
                 bool present = !res_name.empty() && !apk_path_.empty() &&
@@ -56470,7 +56475,7 @@ measure_cm_done:;
                 uint32_t id = args[0].object_id;
                 auto uf = heap_.get_object_field(id, "url");
                 std::string url_s = uf.has_value() && uf->type == DalvikType::STRING_REF
-                                        ? uf->string_val
+                                        ? std::string(uf->string_val)
                                         : std::string();
                 uint32_t is_id = heap_.allocate("Ljava/io/InputStream;", pc_, 0);
                 if (!url_s.empty()) {
@@ -57539,6 +57544,85 @@ measure_cm_done:;
             if (method == "getUnsafe" || method == "getUnsafeInstance") {
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = get_unsafe337();
+                return true;
+            }
+            if (method == "allocateInstance") {
+                // ── F-NEW-522 (CONT-32): Unsafe.allocateInstance(Class) law ──
+                // ART/libcore: allocate a ZEROED instance of the class WITHOUT
+                // running any constructor. This is the protobuf-lite
+                // default-instance bootstrap (play_billing c3.g →
+                // GeneratedMessageLite h(Class) chain): an engine null here
+                // NPEs the message-info build and every GMS-billing app dies
+                // in its own "Unable to get message info" wrapper (telegram
+                // BillingController.<init> → postInitApplication →
+                // LaunchActivity.onCreate APP-BOUNDARY).
+                // Law details:
+                //   - args[0]=theUnsafe receiver, args[1]=the Class (CLASS_REF).
+                //   - heap_.allocate is the RAW path (zeroed fields, NO ctor) —
+                //     deliberately NOT materialize_init_default (which runs
+                //     the ()V ctor; skipping it is the whole point of the API).
+                //   - Interface/abstract/array shapes answer InstantiationException
+                //     (libcore law); null class arg answers NPE.
+                std::string f522_cls;
+                if (args.size() > 1) {
+                    if (args[1].type == DalvikType::CLASS_REF) {
+                        // F-069 token law: a CLASS_REF class_desc IS the
+                        // referred descriptor — except the bare-token
+                        // fallback whose class_desc is java.lang.Class
+                        // itself; in that case the referent lives on the
+                        // backing heap object.
+                        if (args[1].class_desc != "Ljava/lang/Class;")
+                            f522_cls = args[1].class_desc;
+                        else if (args[1].ref_id != 0 &&
+                                 heap_.has_object(args[1].ref_id)) {
+                            auto f522_ref = heap_.get_object_field(
+                                args[1].ref_id, "__referent_desc");
+                            if (f522_ref.has_value() &&
+                                f522_ref->type == DalvikType::STRING_REF)
+                                f522_cls = f522_ref->string_val;
+                        }
+                    } else if (args[1].type == DalvikType::OBJECT_REF &&
+                               args[1].object_id != 0 &&
+                               heap_.has_object(args[1].object_id)) {
+                        // OBJECT_REF Class tokens (getClass results etc.)
+                        // carry class_desc = "Ljava/lang/Class;" and the
+                        // real class in __referent_desc (F-103 convention).
+                        auto f522_ref = heap_.get_object_field(
+                            args[1].object_id, "__referent_desc");
+                        if (f522_ref.has_value() &&
+                            f522_ref->type == DalvikType::STRING_REF)
+                            f522_cls = f522_ref->string_val;
+                        else if (args[1].class_desc != "Ljava/lang/Class;")
+                            f522_cls = args[1].class_desc;
+                    }
+                }
+                if (f522_cls.empty()) {
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "allocateInstance(null class)",
+                                   "F-NEW-522");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                if (f522_cls[0] != 'L') {
+                    throw_deferred(
+                        "Ljava/lang/InstantiationException;",
+                        "allocateInstance: unsupported class " + f522_cls,
+                        "F-NEW-522");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                uint32_t f522_oid = heap_.allocate(f522_cls, 0, 0);
+                if (r337_trace) {
+                    std::cerr << "[R337-UNSAFE] allocateInstance "
+                              << f522_cls << " -> obj#" << f522_oid
+                              << " (zeroed, no ctor)"
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(f522_oid, f522_cls);
                 return true;
             }
             if (method == "objectFieldOffset" ||
@@ -60453,7 +60537,7 @@ measure_cm_done:;
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
         const auto* f238_recv = heap_.get(args[0].object_id);
         std::string f238_rcls =
-            f238_recv ? f238_recv->class_descriptor : args[0].class_desc;
+            f238_recv ? f238_recv->class_descriptor : std::string(args[0].class_desc);
         if (f238_recv && !f238_rcls.empty() &&
             is_subclass_of(f238_rcls, "Ljava/util/AbstractCollection;")) {
             bool f238_has_arg = args.size() >= 2;
@@ -60471,7 +60555,7 @@ measure_cm_done:;
                 std::string arg_desc =
                     (f238_arg && !f238_arg->class_descriptor.empty())
                         ? f238_arg->class_descriptor
-                        : args[1].class_desc;
+                        : std::string(args[1].class_desc);
                 if (arg_desc.size() > 1 && arg_desc[0] == '[') {
                     f238_component = arg_desc.substr(1);
                 } else if (f238_arg) {
@@ -64674,7 +64758,7 @@ measure_cm_done:;
                 std::cerr << "[UC010-READBACK] [" << fi << "] oid="
                           << arr_el.object_id << " class="
                           << (f.has_value() && f->type == DalvikType::STRING_REF
-                                  ? f->string_val
+                                  ? std::string(f->string_val)
                                   : std::string("<none>"))
                           << "\n";
             }
@@ -65801,7 +65885,7 @@ measure_cm_done:;
                 result = DalvikValue::make_bool(keys.empty());
             } else {  // containsKey
                 std::string k = args.size() >= 2 && args[1].type == DalvikType::STRING_REF
-                                    ? args[1].string_val
+                                    ? std::string(args[1].string_val)
                                     : std::string();
                 bool hit = false;
                 for (const auto& kk : keys)
