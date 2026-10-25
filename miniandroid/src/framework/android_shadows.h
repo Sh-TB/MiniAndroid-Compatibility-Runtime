@@ -2617,6 +2617,11 @@ public:
                // so every ArrayDeque op REC-MISSed and peek answered null
                // (fcol probe K5). No app names, pure java.util family.
                class_name == "Ljava/util/ArrayDeque;" ||
+               // F-NEW-520 (CONT-29 W1): PriorityQueue claim — the class
+               // was claimed by NO shadow: iterator() answered NULL and
+               // Iterator.hasNext NPE'd (wocheneinkauf Ly7;.a face). Same
+               // generic java.util family law as the ArrayDeque entry.
+               class_name == "Ljava/util/PriorityQueue;" ||
                // LAW-F (CONT-18): stream-pipeline family claims — the
                // source/collector boxes minted by the stream law dispatch
                // through their own class descriptors; without the claims

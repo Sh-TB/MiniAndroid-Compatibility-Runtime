@@ -132,6 +132,7 @@ bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
 #include "../storage/sqlite_shadow.h"    // M3 F-ROOM-CHAIN: SQLite family shadow
 #include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
 #include <chrono>
+#include <unordered_map>  // CONT-29 W1: METHOD-CENSUS (env-gated, read-only)
 #include <x86intrin.h>  // S61 PERF: __rdtsc phase timers
 #include <atomic>
 #include <algorithm>
@@ -4675,8 +4676,59 @@ bool DalvikExecutionEngine::execute_method_internal(
     
     // Execute until halt
     uint64_t f107_fe0 = 0; phase_clock().enter(phase_clock().em_fetch, f107_fe0);  // S61
+    // CONT-29 W1 (generic, env-gated, read-only): per-method interpreter insn
+    // census — names the throughput burn (draw-window wall) as evidence,
+    // not guesswork. Accumulates per (class.method) insn deltas at method
+    // exit; dumps the TOP-8 rows every ~2s wall clock (bounded 64 dumps).
+    // Zero cost when MINIANDROID_METHOD_CENSUS is unset.
+    static thread_local const bool mi_census_on_
+        = std::getenv("MINIANDROID_METHOD_CENSUS") != nullptr;
+    const uint64_t mi_census_entry = mi_census_on_ ? instruction_sequence_ : 0;
     bool success = fetch_decode_execute(result);
     phase_clock().exit(phase_clock().em_fetch, f107_fe0);
+    if (mi_census_on_) {
+        static thread_local std::unordered_map<std::string, uint64_t> mi_map;
+        static thread_local std::unordered_map<std::string, uint64_t> mi_calls;
+        static thread_local std::chrono::steady_clock::time_point mi_win;
+        static thread_local bool mi_win_init = false;
+        static thread_local uint32_t mi_dumps = 0;
+        static thread_local uint64_t mi_last_seq = 0;
+        const uint64_t mi_delta
+            = instruction_sequence_ > mi_census_entry
+                  ? instruction_sequence_ - mi_census_entry
+                  : 0;
+        std::string key = class_name + "." + method_name;
+        mi_map[key] += mi_delta;
+        mi_calls[key] += 1;
+        if (!mi_win_init) {
+            mi_win = std::chrono::steady_clock::now();
+            mi_win_init = true;
+            mi_last_seq = instruction_sequence_;
+        }
+        auto mi_el = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - mi_win).count();
+        if (mi_el >= 2000 && mi_dumps < 64) {
+            ++mi_dumps;
+            mi_win = std::chrono::steady_clock::now();
+            const uint64_t win_insns
+                = instruction_sequence_ > mi_last_seq
+                      ? instruction_sequence_ - mi_last_seq
+                      : 0;
+            mi_last_seq = instruction_sequence_;
+            std::vector<std::pair<std::string, uint64_t>> rows(
+                mi_map.begin(), mi_map.end());
+            std::sort(rows.begin(), rows.end(),
+                      [](const auto& a, const auto& b) {
+                          return a.second > b.second;
+                      });
+            std::cerr << "[METHOD-CENSUS] window_insns=" << win_insns
+                      << " total_methods=" << mi_map.size();
+            for (size_t r = 0; r < rows.size() && r < 8; ++r)
+                std::cerr << " | " << rows[r].first << "=" << rows[r].second
+                          << " (n=" << mi_calls[rows[r].first] << ")";
+            std::cerr << std::endl;
+        }
+    }
     uint64_t f107_pp0 = 0; phase_clock().enter(phase_clock().em_pop, f107_pp0);  // S61
 
     // EXP-042 Phase 1: memory probe after each method returns. This lets us
@@ -20322,6 +20374,13 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint16_t field_idx) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().resolve_field_ph, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().resolve_field_ph, f107_t0};
+    // R-NEW-467 memo fast path: the resolved identity is run-invariant per
+    // (dex, idx); the epoch guard re-derives on any hierarchy-table growth.
+    if (field_memo_.size() == 65536) {
+        const FieldMemo& m = field_memo_[field_idx];
+        if (m.epoch == field_memo_epoch() && m.res.resolved)
+            return m.res;
+    }
     FieldResolution resolution;
     
     if (!dex_report_) {
@@ -20360,6 +20419,13 @@ DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint
                         !resolution.field_name.empty() &&
                         resolution.class_descriptor[0] == 'L') {
                         resolution.resolved = true;
+                        // R-NEW-467: bank the memo for this (dex, idx).
+                        if (field_memo_.size() == 65536) {
+                            FieldMemo& m = field_memo_[field_idx];
+                            m.res = resolution;
+                            m.s134_valid = false;
+                            m.epoch = field_memo_epoch();
+                        }
                         return resolution;
                     }
                 }
@@ -20383,7 +20449,13 @@ DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint
     }
 
     resolution.resolved = true;
-
+    // R-NEW-467: bank the memo for this (dex, idx).
+    if (field_memo_.size() == 65536) {
+        FieldMemo& m = field_memo_[field_idx];
+        m.res = resolution;
+        m.s134_valid = false;
+        m.epoch = field_memo_epoch();
+    }
     // Look up field offset from runtime metadata cache if available
     auto class_it = class_info_cache_.find(resolution.class_descriptor);
     if (class_it != class_info_cache_.end() && class_it->second) {
@@ -20499,6 +20571,45 @@ std::string DalvikExecutionEngine::true_dex_field_declarer(
     return std::string();  // framework-owned field: no DEX declarer
 }
 
+// ── CONT-29 W1 R-NEW-467: FIELD-RESOLUTION MEMOIZATION ──────────────────
+// Epoch = the fingerprint of everything the resolution + declarer walk
+// reads. Fixed after parse: nothing — BOTH hierarchy tables can grow
+// mid-run (secondary-DEX class injection + [EXP095-HIER] superclass
+// extension), and current_dex_index_ selects the multidex field table.
+// All three are monotonically growing, so folding their sizes into the
+// epoch makes ANY mid-run change invalidate every memo (re-derive once).
+uint64_t DalvikExecutionEngine::field_memo_epoch() const {
+    return (static_cast<uint64_t>(
+                static_cast<uint32_t>(current_dex_index_))
+            << 48)
+         ^ (static_cast<uint64_t>(class_to_superclass_.size()) << 24)
+         ^ static_cast<uint64_t>(class_info_index_.size());
+}
+
+const DalvikExecutionEngine::FieldMemo&
+DalvikExecutionEngine::resolved_field_memo(uint16_t field_idx) {
+    if (field_memo_.size() != 65536) field_memo_.resize(65536);
+    FieldMemo& m = field_memo_[field_idx];
+    const uint64_t ep = field_memo_epoch();
+    // A hit requires BOTH the resolved identity AND the S134 parts: the
+    // resolve_field-internal bank stores res-only entries (s134_valid=false,
+    // empty fkey) — returning one of those would key every access with an
+    // EMPTY string (the 851cc176→d602648e anchor collapse, first A/B).
+    if (m.epoch == ep && m.res.resolved && m.s134_valid) return m;
+
+    m.res = resolve_field(field_idx);
+    m.s134_valid = false;
+    m.epoch = ep;
+    if (m.res.resolved) {
+        m.s134_decl = true_dex_field_declarer(m.res.class_descriptor,
+                                              m.res.field_name);
+        m.s134_fkey = s134_dex_field_key(
+            m.s134_decl, m.res.field_name, is_dex_defined_class(m.s134_decl));
+        m.s134_valid = true;
+    }
+    return m;
+}
+
 static DalvikValue s134_field_default(const std::string& type_desc) {
     if (!type_desc.empty() && (type_desc[0] == 'L' || type_desc[0] == '['))
         return DalvikValue::make_null();
@@ -20521,7 +20632,11 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     uint16_t field_idx = bytecode_[pc + 1];
     
     uint64_t f107_sr0 = 0; phase_clock().enter(phase_clock().sget_resolve_ph, f107_sr0);
-    FieldResolution field_res = resolve_field(field_idx);
+    // R-NEW-467: memoized resolution + S134 identity (same value the fresh
+    // walk answers; epoch-guarded on the mid-run-mutable hierarchy inputs).
+    const DalvikExecutionEngine::FieldMemo& field_memo
+        = resolved_field_memo(field_idx);
+    const FieldResolution& field_res = field_memo.res;
     phase_clock().exit(phase_clock().sget_resolve_ph, f107_sr0);
     uint64_t f107_si0 = 0; phase_clock().enter(phase_clock().sget_init_ph, f107_si0);
     DalvikValue result_value;
@@ -20552,14 +20667,11 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
             // MarginLayoutParams) keeps ONE bare slot even when the REF
             // class is DEX-defined; the ref-class key fabricated a second
             // identity and the read answered a fabricated default.
-            const std::string s134_decl = true_dex_field_declarer(
-                field_res.class_descriptor, field_res.field_name);
-            std::string s134_fkey =
-                s134_dex_field_key(s134_decl, field_res.field_name,
-                                   is_dex_defined_class(s134_decl));
+            const std::string& s134_fkey = field_memo.s134_fkey;
+            const bool s134_decl_is_dex = field_memo.s134_valid
+                && is_dex_defined_class(field_memo.s134_decl);
             auto field_val = heap_.get_object_field(obj_ref.object_id, s134_fkey);
-            if (!field_val.has_value() &&
-                is_dex_defined_class(s134_decl)) {
+            if (!field_val.has_value() && s134_decl_is_dex) {
                 // AOSP law: an instance field never written answers its
                 // DEFAULT value — never another class's same-named slot.
                 // FINAL-CAMPAIGN PHASE 3 diag (SGET-MISS probe precedent):
@@ -20896,8 +21008,10 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg
     uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
     
-    // Resolve field from DEX
-    FieldResolution field_res = resolve_field(field_idx);
+    // Resolve field from DEX (R-NEW-467 memoized)
+    const DalvikExecutionEngine::FieldMemo& field_memo
+        = resolved_field_memo(field_idx);
+    const FieldResolution& field_res = field_memo.res;
     if (!field_res.resolved) {
         trace.error_message = "Failed to resolve field index " + std::to_string(field_idx);
         trace.status = InstructionTrace::Status::CRASH_ERROR;
@@ -20967,12 +21081,10 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                           << std::endl;
             }
             // F-NEW-325: true-declarer keying (see execute_iget).
-            const std::string s134_decl =
-                true_dex_field_declarer(field_res.class_descriptor,
-                                        field_res.field_name);
+            // R-NEW-467: the declarer walk + key concat are memoized.
+            const std::string& s134_fkey = field_memo.s134_fkey;
             auto field_val = heap_.get_object_field(obj_ref.object_id,
-                s134_dex_field_key(s134_decl, field_res.field_name,
-                                   is_dex_defined_class(s134_decl)));
+                s134_fkey);
             // S134 F-NEW-160 probe: qualified-read hit/miss visibility.
             {
                 static thread_local const bool s134_qprobe =
@@ -21425,7 +21537,10 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     uint8_t obj_reg = (instr >> 12) & 0xF;
     uint16_t field_idx = bytecode_[pc + 1];
 
-    FieldResolution field_res = resolve_field(field_idx);
+    // R-NEW-467: memoized resolution (same value the fresh walk answers).
+    const DalvikExecutionEngine::FieldMemo& field_memo_iput
+        = resolved_field_memo(field_idx);
+    const FieldResolution& field_res = field_memo_iput.res;
     DalvikValue src_val = get_register(src_reg);
     DalvikValue obj_ref = get_register(obj_reg);
 
@@ -21488,8 +21603,7 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
             // bare even when the REF class is DEX-defined; a real DEX
             // declarer keeps the qualified slot + the raw bare mirror
             // (F-NEW-321 law unchanged).
-            const std::string s134_decl = true_dex_field_declarer(
-                field_res.class_descriptor, field_res.field_name);
+            const std::string& s134_decl = field_memo_iput.s134_decl;
             if (!is_dex_defined_class(s134_decl)) {
                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
                                        src_val);
@@ -21597,7 +21711,10 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     uint8_t obj_reg = (instr >> 12) & 0xF;
     uint16_t field_idx = bytecode_[pc + 1];
 
-    FieldResolution field_res = resolve_field(field_idx);
+    // R-NEW-467: memoized resolution (same value the fresh walk answers).
+    const DalvikExecutionEngine::FieldMemo& field_memo_iputo
+        = resolved_field_memo(field_idx);
+    const FieldResolution& field_res = field_memo_iputo.res;
     DalvikValue src_val = get_register(src_reg);
     // F-NEW-282 (store side) — materialize now that src_val is bound.
     if (src_val.type == DalvikType::CLASS_REF && !src_val.class_desc.empty()) {
@@ -21763,8 +21880,7 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
             // bare even when the REF class is DEX-defined; a real DEX
             // declarer keeps the qualified slot + the raw bare mirror
             // (F-NEW-321 law unchanged).
-            const std::string s134_decl = true_dex_field_declarer(
-                field_res.class_descriptor, field_res.field_name);
+            const std::string& s134_decl = field_memo_iputo.s134_decl;
             if (!is_dex_defined_class(s134_decl)) {
                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
                                        src_val);

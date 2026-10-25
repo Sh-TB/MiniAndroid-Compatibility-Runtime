@@ -2486,6 +2486,26 @@ public:
         std::string error_message;
     };
     FieldResolution resolve_field(uint16_t field_idx);
+    // ── CONT-29 W1 R-NEW-467: FIELD-RESOLUTION MEMOIZATION ──────────────
+    // Field identity (class/name/type) and the S134 declarer/key pair are
+    // RUN-INVARIANT per (dex, field_idx): they derive only from the parsed
+    // DEX + the class-hierarchy tables. The interpreter re-derived them on
+    // EVERY field access (a 60s dooz run: 2.29M iget-object = the #1 burn
+    // opcode at ~1.9us each — raw DEX re-parse + hierarchy chain walk +
+    // string concat per access). Memoize; epoch-guarded on the inputs that
+    // can legally grow mid-run (current_dex_index_, class_to_superclass_,
+    // class_info_index_ — secondary-DEX ingestion). Semantics identical:
+    // a hit returns the SAME value the fresh walk answers.
+    struct FieldMemo {
+        FieldResolution res;
+        std::string s134_decl;
+        std::string s134_fkey;
+        bool s134_valid = false;
+        uint64_t epoch = 0;
+    };
+    const FieldMemo& resolved_field_memo(uint16_t field_idx);
+    uint64_t field_memo_epoch() const;
+    std::vector<FieldMemo> field_memo_;   // lazy, indexed by field_idx
     // S134 F-NEW-160: a declaring class is FRAMEWORK-OWNED (bare field keys,
     // C++ shadow interop) iff the runtime provides it — i.e. it has NO DEX
     // body in this APK. App-bundled classes that merely live under android*/
