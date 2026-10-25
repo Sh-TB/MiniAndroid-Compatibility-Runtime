@@ -444,6 +444,177 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
     }
 
+    // ── F-NEW-520 (CONT-29 W1): PRIORITYQUEUE CLAIM + HEAP-FAMILY LAWS ──
+    // java.util.PriorityQueue was claimed by NO shadow: add/offer/poll/
+    // peek/iterator all REC-MISSed → iterator() answered null →
+    // Iterator.hasNext NPE killed the caller (decoded face: wocheneinkauf
+    // Ly7;.a — PriorityQueue.iterator() at pc 0xe4 → hasNext at 0xec on a
+    // NULL; the BreakIterator line-breaking worklist never ran).
+    // OpenJDK law: PriorityQueue is an unbounded priority heap. iterator()
+    // walks the internal ARRAY in array order (the doc guarantees "no
+    // particular order" — array order IS faithful, no sorted law needed);
+    // poll()/peek() return the LEAST element under the comparator/
+    // Comparable. Shadow-side ordering scope: INT/STRING elements order
+    // correctly (engine-side value semantics); APP-OBJECT elements have no
+    // shadow-side compareTo — poll()/peek() fall back to FIFO-head and
+    // this comment RECORDS the approximation (the decoded consumer's
+    // order-sensitive path feeds a text-layout quality metric, not a
+    // crash frontier; a compareTo-bridge is the follow-up lever).
+    if (ctx.class_name == "Ljava/util/PriorityQueue;") {
+        auto* pq = get_or_create(obj_id, /*is_map=*/false);
+        if (m == "<init>") {
+            // Unbounded heap: every ctor shape (none/capacity/comparator/
+            // collection) starts an empty store (a collection-seeded ctor
+            // re-adds through addAll → add, reaching this same law).
+            pq->elements.clear();
+            pq->elem_kinds.clear();
+            pq->elem_strings.clear();
+            pq->elem_ints.clear();
+            return CallResult::handled_void();
+        }
+        if (m == "add" || m == "offer") {
+            if (!ctx.args.empty()) {
+                const auto& a0 = ctx.args[0];
+                const bool a0_is_int =
+                    a0.kind == CallContext::Arg::Kind::INT ||
+                    a0.kind == CallContext::Arg::Kind::BOOL ||
+                    a0.kind == CallContext::Arg::Kind::LONG;
+                uint32_t item = ctx.arg_as_object(0, 0);
+                uint8_t kind = 2;
+                int32_t ival = 0;
+                std::string sval;
+                if (a0_is_int) {
+                    kind = 3;
+                    ival = a0.kind == CallContext::Arg::Kind::INT
+                               ? a0.int_val
+                               : (a0.kind == CallContext::Arg::Kind::BOOL
+                                      ? (a0.bool_val ? 1 : 0)
+                                      : static_cast<int32_t>(a0.long_val));
+                } else if (item != 0) {
+                    kind = 1;
+                    // F520 probe finding: autoboxed Integer elements arrive
+                    // as OBJECT refs (Integer.valueOf) — the natural-
+                    // ordering law needs the UNBOXED key. Kind 5 = object
+                    // element with an int ordering key (serve returns the
+                    // OBJECT faithfully — the caller's check-cast to
+                    // Integer stays lawful; only the ORDER uses the key).
+                    std::string box_cls;
+                    if (heap_ &&
+                        heap_->get_object_class(item, box_cls) &&
+                        box_cls == "Ljava/lang/Integer;") {
+                        int32_t bv = 0;
+                        if (heap_->get_object_int_field(item, "value", bv)) {
+                            kind = 5;
+                            ival = bv;
+                        }
+                    }
+                } else if (a0.kind == CallContext::Arg::Kind::STRING) {
+                    sval = ctx.arg_as_string(0);
+                } else {
+                    kind = 4;  // typed null element
+                }
+                pq->elements.push_back(item);
+                pq->elem_kinds.push_back(kind);
+                pq->elem_strings.push_back(sval);
+                pq->elem_ints.push_back(ival);
+            }
+            return CallResult::handled_bool(true);  // unbounded: never false
+        }
+        if (m == "peek" || m == "poll") {
+            if (pq->elements.empty()) return CallResult::handled_null();
+            // least-element law: all elements with int keys (kind 3 raw
+            // int / kind 5 int-boxed) -> min value; all-STRING ->
+            // lexicographic min; anything else -> head (FIFO fallback,
+            // recorded above).
+            size_t pick = 0;
+            bool all_int = true, all_str = true;
+            for (uint8_t k : pq->elem_kinds) {
+                if (k != 3 && k != 5) all_int = false;
+                if (k != 2) all_str = false;
+            }
+            if (all_int) {
+                for (size_t i = 1; i < pq->elem_ints.size(); ++i)
+                    if (pq->elem_ints[i] < pq->elem_ints[pick]) pick = i;
+            } else if (all_str) {
+                for (size_t i = 1; i < pq->elem_strings.size(); ++i)
+                    if (pq->elem_strings[i] < pq->elem_strings[pick]) pick = i;
+            }
+            uint8_t k = pq->elem_kinds[pick];
+            std::string pick_cls;
+            if ((k == 1 || k == 5) && heap_)
+                heap_->get_object_class(pq->elements[pick], pick_cls);
+            CallResult out = (k == 2)
+                ? CallResult::handled_string(pq->elem_strings[pick])
+                : (k == 3 ? CallResult::handled_int(pq->elem_ints[pick])
+                          : ((k == 1 || k == 5) && pq->elements[pick] != 0
+                                 ? CallResult::handled_object(
+                                       pq->elements[pick], pick_cls)
+                                 : CallResult::handled_null()));
+            if (m == "poll") {
+                pq->elements.erase(pq->elements.begin() + pick);
+                pq->elem_kinds.erase(pq->elem_kinds.begin() + pick);
+                pq->elem_strings.erase(pq->elem_strings.begin() + pick);
+                pq->elem_ints.erase(pq->elem_ints.begin() + pick);
+            }
+            return out;
+        }
+        if (m == "size")
+            return CallResult::handled_int((int)pq->elements.size());
+        if (m == "isEmpty")
+            return CallResult::handled_bool(pq->elements.empty());
+        if (m == "clear") {
+            pq->elements.clear();
+            pq->elem_kinds.clear();
+            pq->elem_strings.clear();
+            pq->elem_ints.clear();
+            return CallResult::handled_void();
+        }
+        if (m == "contains") {
+            // identity/content scan over the parallel stores (Set-family
+            // equality scope is NOT the law here — PriorityQueue.contains
+            // is an O(n) scan, no dedup on add).
+            if (!ctx.args.empty()) {
+                const auto& a0 = ctx.args[0];
+                // Autoboxed-primitive args: contains(42) arrives as an
+                // Integer OBJECT (Integer.valueOf) — unbox the ordering key
+                // and compare it against the kind-3/5 element keys.
+                int32_t a0_box_key = 0;
+                bool a0_has_box_key = false;
+                std::string a0_cls;
+                if (a0.kind == CallContext::Arg::Kind::OBJECT &&
+                    a0.object_id != 0 && heap_ &&
+                    heap_->get_object_class(a0.object_id, a0_cls) &&
+                    a0_cls == "Ljava/lang/Integer;" &&
+                    heap_->get_object_int_field(a0.object_id, "value",
+                                                a0_box_key)) {
+                    a0_has_box_key = true;
+                }
+                for (size_t i = 0; i < pq->elements.size(); ++i) {
+                    uint8_t k = pq->elem_kinds[i];
+                    if (a0.kind == CallContext::Arg::Kind::STRING) {
+                        if (k == 2 && pq->elem_strings[i] ==
+                                          ctx.arg_as_string(0))
+                            return CallResult::handled_bool(true);
+                    } else if (a0.kind == CallContext::Arg::Kind::INT) {
+                        if ((k == 3 || k == 5) && pq->elem_ints[i] == a0.int_val)
+                            return CallResult::handled_bool(true);
+                    } else if (a0_has_box_key) {
+                        if ((k == 3 || k == 5) &&
+                            pq->elem_ints[i] == a0_box_key)
+                            return CallResult::handled_bool(true);
+                    } else if (k == 1 &&
+                               pq->elements[i] == ctx.arg_as_object(0, 0)) {
+                        return CallResult::handled_bool(true);
+                    }
+                }
+            }
+            return CallResult::handled_bool(false);
+        }
+        // iterator()/toArray()/forEach(...) fall through to the generic
+        // Iterable laws below — they read the SAME elements store in array
+        // order (OpenJDK iterator() = "no particular order", faithful).
+    }
+
     // ── F-NEW-252 wave-2 (S102 ServiceLoader decline law) ────────────────
     // java.util.ServiceLoader is NOT a collection. The generic iterator
     // law below claims any Iterable-shaped receiver and answers

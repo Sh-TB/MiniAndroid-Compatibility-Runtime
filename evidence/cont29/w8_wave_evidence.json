@@ -1,0 +1,55 @@
+{
+  "wave": "CONT-29 W1",
+  "head_at_evidence": "origin/main 7f8d639c (synced: remote was 322 commits ahead of the stale local container; fast-forward reset)",
+  "binary": "e4da5315cfd95e46 (deterministic rebuild byte-identical after source replay; pre-memo A/B binary 586d15da9b62b692 preserved at run/w8/binary_prememo)",
+  "directive": "user 2026-10-25: «ادامه گیت هاب خیلی جلوتره برری بکن و خودتو به روز بکن» (GitHub is ahead — review and update yourself) + standing «ادامه بده ببینیم چی میشه واقعا» + «دستاورد نکن الکی» (no fake achievements) + dooz/telegram completeness + 10-20 trains for Telegram",
+  "phase0_sync": {
+    "remote_ahead_commits": 322,
+    "local_reset": "e99c2fbd (CONT-10 W6) -> 7f8d639c (CONT-10 W7 re-based onto CONT-28 W1)",
+    "registry_at_sync": 837,
+    "dooz_baseline_reproduced": "851cc1761a1dfcdf x3 byte-identical at --max-seconds 300 (the recorded REAL_APP_CONTENT face)"
+  },
+  "fnew521_register_evidence": {
+    "tool": "MINIANDROID_PC_WATCH='Lhv0;.d:0x84,Lhv0;.d:0x88,Lhv0;.d:0x9c,Lhv0;.d:0xaa' (194 rows, run/w8/dooz_pcreg)",
+    "ground_truth_decode": "scripts/w8_hexdump_method.py (raw-byte, format-correct; w7_disasm pcs = code units confirmed by factor-2 alignment)",
+    "branch_law": "eu 0x84 iget Lhv0;.f:I (threshold) -> eu 0x88 if-nez v2 -> 0x9e place path; fall-through 0x8a-0x9c deleted-byte check -> if-nez -> 0xaa GROWTH (resize via Lmg1;.b/Lhv0;.f); insert tail eu 0x277 (byte 0x4ee) decrements threshold by (fresh-slot ? 1 : 0)",
+    "finding": "threshold round-trips PERFECTLY at the branch (v2 6->5->4 on obj#2418) but every map is ABANDONED after 2-3 puts (~97 puts across ~dozens of maps, each restarting at 6); growth region 0 hits; NO branch-semantics bug, NO field-aliasing bug",
+    "consequence": "the W7 full-table spin face was CONT-10-era; at CONT-28+ the family burns as wall-clock halts in the draw window (HALT-HISTO: 39x Lt4;.dispatchDraw, wide walks visits=1, zero tight loops) = the F-NEW-381 throughput wall",
+    "status": "root stays CLASSIFIED (P0 latent); probe honestly PENDING (synthetic trigger needs the dooz APK's own DEX classes; cannot be source-built)"
+  },
+  "throughput_profile": {
+    "tool": "MINIANDROID_PERF_PHASES=1 (existing S61/S61 op histogram; 60s dooz)",
+    "pre_fix_top": "iget-object 2,286,261 calls / 12.78G ticks (est 4259ms, ~1.9us each — the #1 burn); iget 584k / 2.53G; sget-object 198k / 2.09G (~3.5us); iput-object 262k / 1.42G",
+    "method_census": "MINIANDROID_METHOD_CENSUS (added this wave, env-gated, read-only): top burn = compose snapshot/state machinery (Lkc;.e 49,894 calls, Lwi1;.i/Lso1;.b 33k each, Lbw0;.d = scatter family 9.9k) — 3,922 methods total",
+    "post_fix_top": "iget-object 8.86G (-30.6%), iget 1.76G (-30.5%), iget-wide 803M (-26.9%), iput-object 1.10G (-22.2%); top-12 burn -10.5%",
+    "instrumentation_note": "with METHOD_CENSUS on, the dooz 90s anchor moved 851cc176 -> 31ddd4d5 (diag overhead, honest, recorded; the census runs env-gated OFF by default)"
+  },
+  "rnew467_field_memo": {
+    "fix": "resolve_field memo fast path + FieldMemo bank (res + s134 decl/fkey, both success returns); execute_iget/iget_object/iput/iput_object via resolved_field_memo (const-ref); epoch = dex_index<<48 ^ super_size<<24 ^ class_info_size (any mid-run growth invalidates once)",
+    "semantic_trap_caught": "first A/B collapsed the dooz anchor 851cc176 -> d602648e: the resolve_field-internal bank stores res-only entries (s134_valid=false, empty fkey) and resolved_field_memo's hit condition must require s134_valid — returning a res-only entry keyed EVERY access with an EMPTY string. Fixed; hit requires resolved AND s134_valid.",
+    "neutrality": "dooz 851cc176 x3 byte-identical; anchors 6/6 pinned faces; negatives 19/19 (post probe-store regen — 9/19 was the CONT-158 stale-store artifact, run/gatea/probe_store rebuilt); skill 13/13; goldens 4/4; games 6/7 EXACT + snakeneon 2617c81c det x3 IDENTICAL on both A/B arms (pre-memo 586d15da vs post-memo e4da5315 — the recorded b669ce89 was the CONT-28-container face; real-content verdict unchanged)"
+  },
+  "fnew520_priorityqueue": {
+    "decoded_face": "wocheneinkauf Ly7;.a: PriorityQueue.iterator() pc 0xe4 -> NULL (class claimed by NO shadow) -> Iterator.hasNext NPE 0xec; the BreakIterator line-breaking worklist never ran",
+    "fix": "CollectionShadow claims Ljava/util/PriorityQueue; — add/offer kind-faithful; peek/poll least-element (int keys incl. autoboxed-Integer kind-5 unboxed from the heap 'value' field; all-STRING lexicographic min; mixed/app-object FIFO head, approximation RECORDED — no shadow-side compareTo); size/isEmpty/clear/contains (contains unboxes autoboxed args); iterator = generic Iterable law in array order (OpenJDK: 'no particular order' — faithful)",
+    "probe": "fixtures/fnew520_probe (real aapt2/ECJ/D8, 5ca42edafba59ae2): 6/6 PASS",
+    "census_crossing": "wocheneinkauf 0 content px (1 color) -> 1356 colors / 8,579 content px REAL APP UI (evidence/cont29/batch20_census.json); remaining face = S102 compose-locals CNF (proven ART-faithful decoy)"
+  },
+  "census_batch20": {
+    "verdict": "5/20 content rows (was 4/20 at CONT-13/14): CROSSED wocheneinkauf 0->8,579 px; retained EXACT sha bouncy 72622 / fossify_math 13071 / fossify_calendar 12336; netguard 27,059 content-retained (minor delta, honest); 14 rows blank faces named in the census json (each with its own first-dive pending — the established next-faces discipline)"
+  },
+  "regression_wall": {
+    "dooz_300s": "851cc1761a1dfcdf x3 byte-identical (pre- and post-fix binaries)",
+    "anchors": "6/6 pinned faces (opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 / dooz 851cc1761a1dfcdf)",
+    "negatives": "19/19 PASS",
+    "skill_selftest": "13/13 PASS",
+    "user_goldens": "4/4 PASS (2048 / snakedeluxe / minicraft REAL_APP_UI + helloworld canonical 83720c1028f832d0)",
+    "games_battery": "6/7 EXACT sha (g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snake_deluxe 5235683fc7b1f04b / ttt_deluxe db1d633d77b5819a / minicraft e77a073f733255eb / gmdice 3891679dff449331, all deterministic x3) + snakeneon 2617c81c (A/B-neutral)"
+  },
+  "honest_limitations": [
+    "F-NEW-521 growth route: latent (no live trigger at this head); the root is NOT closed and no fix was pretended",
+    "R-NEW-467 recovers ~10.5% of the top-12 opcode burn; the F-NEW-381 wall remains (heap string-keyed field maps, per-call frame costs) — the next structural lever, not this wave",
+    "PriorityQueue poll ordering for app-object elements is FIFO (recorded approximation); a shadow->DEX compareTo bridge is the follow-up",
+    "wochenikauf's S102 face and 14 blank census faces are honestly named, not claimed fixed"
+  ]
+}
