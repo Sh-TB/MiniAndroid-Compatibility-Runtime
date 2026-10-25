@@ -14859,7 +14859,7 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         // A more efficient approach would be to add an iterator to ViewShadow,
         // but for now we scan all heap objects.
         node_source = "full-heap-scan (no tracked content root)";
-        for (const auto& [oid, obj] : heap_.all_objects()) {
+        for (const uint32_t oid : heap_.get_all_ids()) {  // F-NEW-381 phase 2: id-ascending
             const auto* node = view_shadow->find_node(oid);
             if (node == nullptr) continue;
             ordered_nodes.push_back(node);
@@ -64104,7 +64104,11 @@ measure_cm_done:;
                 // stored in static_field_storage_.
                 // The D8 shrinker remaps resource IDs to small ordinals.
                 std::string r_string_prefix = "Lorg/telegram/messenger/R$string;.";
-                for (const auto& [skey, sval] : static_field_storage_) {
+                std::vector<std::string> r337_sorted_keys; r337_sorted_keys.reserve(static_field_storage_.size());  // F-NEW-381 phase 2: first-match is semantic — preserve std::map order
+                for (const auto& skv337 : static_field_storage_) r337_sorted_keys.push_back(skv337.first);
+                std::sort(r337_sorted_keys.begin(), r337_sorted_keys.end());
+                for (const auto& skey : r337_sorted_keys) {
+                    const DalvikValue& sval = static_field_storage_.at(skey);
                     if (skey.find(r_string_prefix) == 0 &&
                         sval.type == DalvikType::INT32 && sval.int_val == resid) {
                         // Found! Extract field name from key

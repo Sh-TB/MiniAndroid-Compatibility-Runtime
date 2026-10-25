@@ -1,108 +1,65 @@
 #!/usr/bin/env python3
-# cont33_registry.py — add F-NEW-291 + F-NEW-292 to root_registry.json
-# (599 -> 601), dedup-checked.
+"""CONT-33 registry update:
+- F-NEW-524 ROOT-CAUSED-FIXED (heap-map representation lever: the three hot
+  string/uint-keyed maps swap std::map -> std::unordered_map with the
+  frozen ordered consumers preserved by explicit sorted iteration)
+- F-NEW-381 evidence refresh (phase-2 lever landed: iget-object
+  1.112us -> 1.038us/call on the 90s dooz PERF census; wall remains)
+Registry stays id-unique; mirror sync."""
 import json
 
-REG = "/home/z/my-project/root_registry.json"
-with open(REG) as f:
-    r = json.load(f)
+BASE = "/home/z/my-project"
+REG = f"{BASE}/canonical/root_cause_registry.json"
+MIRROR = f"{BASE}/root_registry.json"
 
-ids = [x.get("id") for x in r["roots"]]
-assert "F-NEW-291" not in ids, "F-NEW-291 already present — dedup check failed"
-assert "F-NEW-292" not in ids, "F-NEW-292 already present — dedup check failed"
-assert ids[-1] == "F-NEW-290", f"unexpected tail: {ids[-1]}"
+r = json.load(open(REG))
+ids = {row["id"] for row in r}
+print("registry rows:", len(r))
 
-e291 = {
-    "id": "F-NEW-291",
-    "status": "ROOT_CAUSED_FIXED",
-    "title": "STRING.FORMAT LOCALE OVERLOAD: the EXP093 bridge read args[0] as the format string "
-             "unconditionally — for the DEX 3-arg overload format(Locale, String, Object...) it "
-             "consumed the Locale AS the format (fmt=''), pushed the real '%02d' + the varargs array "
-             "into the argument list (the [EXP093-STRFMT] String.format(\"\", n=2) → \"\" log face), "
-             "and every Locale-overload call answered the empty string — composeStopwatch Lwv;.p "
-             "(format(Locale.US, '%02d', millis%1000) then substring(0,2)) threw "
-             "StringIndexOutOfBoundsException (length=0; begin=0; end=2), the composition text pass "
-             "died in catch-all churn (Lx30;.n/Lel;.j/Ld91;.c), and the frame stayed "
-             "DEFAULT_BACKGROUND_ONLY.",
+def append(row):
+    if row["id"] in ids:
+        print("SKIP (exists):", row["id"])
+        return
+    r.append(row)
+    ids.add(row["id"])
+    print("APPENDED:", row["id"], row["status"])
+
+append({
+    "id": "F-NEW-524",
+    "status": "ROOT-CAUSED-FIXED",
     "priority": "P1",
-    "layer": "dalvik-engine/string-format",
-    "root_cause": "FIRST DIVERGENCE PROVEN AT RUNTIME (2026-10-09, run/cont32+run/cont33: composeStopwatch "
-                  "v1.9.1 vc1009011 sha256 dbf937ebbe7c0b3d on binary c280b243f880e7e6 after F-NEW-290): "
-                  "Lwv;.p(J)Ljava/lang/String; (androguard decode) pc 0-11 = String.format(Locale.US, "
-                  "\"%02d\", Arrays.copyOf([millis%1000])) — the DEX 3-arg Locale overload — pc 15 "
-                  "substring(0,2). EXP093 (dalvik_engine.cpp:53280) read args[0] as fmt; the Locale "
-                  "OBJECT_REF failed the STRING_REF check so fmt='' and the defensive else pushed "
-                  "[fmt-string, array] as fargs (n=2). java_format_walk('') = ''. The SIOOBE is the app's "
-                  "uncaught STR-BRIDGE face and its catch-all churn aborted the text pass. ART law: "
-                  "java.lang.String.format(Locale l, String format, Object... args) formats with "
-                  "args[1] as the format string and args[2] as the varargs array; the two overloads are "
-                  "discriminated by DEX arg shape (the 2-arg form is (String, Object[]) so args[1] can "
-                  "never be a String there).",
-    "fix": "EXP093 overload discrimination by arg SHAPE (no name checks): fmt_idx/varargs_idx shift to "
-           "(1,2) when args.size()>=3 && args[0].type != STRING_REF && args[1].type == STRING_REF; "
-           "defensive non-array loop starts at varargs_idx. java_format_walk untouched (it already "
-           "formats %02d with boxed Long). Probe fixtures/fnew291_probe (real aapt2/ECJ/D8): "
-           "FMT-LOC-D2/SUB/2ARG/S/DINT = the Locale-overload contract incl. the exact Lwv;.p consumer "
-           "shape; FMT-NOLOC-D2/ARR = the 2-arg regression arm. PRE x3 on c280b243f880e7e6: SUMMARY "
-           "FAIL 2 pass 5 fail with FMT-LOC-SUB throwing the EXACT SIOOBE(length=0) face; POST x3 on "
-           "fa7dd04c99364cad: SUMMARY PASS 7/0 (\"07\", \"50\", \"01:02\", \"x!\", \"42\"). Target x3: "
-           "SIOOBE 1→0/run, EXP093 answers format(\"%02d\", n=1) → \"00\" (was format(\"\", n=2) → \"\").",
-    "evidence": "evidence/cont33/FORMAT_LOCALE_FRONTIER.md; run/cont33/f291_pre_r1..3, f291_post_r1..3",
-}
-e292 = {
-    "id": "F-NEW-292",
-    "status": "ROOT_CAUSED_FIXED",
-    "title": "LIBCORE INTERFACE HIERARCHY GAP (UUID + Enum family): the framework interface tables "
-             "(F-NEW-236/F-NEW-253) had no row for java.util.UUID or java.lang.Enum, so "
-             "Class.isInstance/instance-of answered FALSE for the Serializable edge on both — "
-             "androidx DisposableSaveableStateRegistry.canBeSavedToBundle (whitelist Class[] "
-             "{Serializable, Parcelable, String, SparseArray, Binder, Size, SizeF}, decoded from the "
-             "upstream ui-android-1.11.4 AAR) rejected the rememberSaveable values: UUID "
-             "(IAE '…cannot be saved using the current SaveableStateRegistry…' x51/run, value "
-             "Ljava/util/UUID;@7220) and R8-renamed app enums Ll71; extends Ljava/lang/Enum; "
-             "(same IAE x26/run) — Lh4;.onMeasure catch-all aborted the measure pass, ops=0, "
-             "DEFAULT_BACKGROUND_ONLY.",
-    "priority": "P1",
-    "layer": "dalvik-engine/framework-hierarchy",
-    "root_cause": "FIRST DIVERGENCE PROVEN AT RUNTIME (2026-10-09, run/cont33: composeStopwatch v1.9.1 "
-                  "vc1009011 sha256 dbf937ebbe7c0b3d on binary fa7dd04c99364cad after F-NEW-291): the "
-                  "app's real canBeSavedToBundle bytecode (renamed Laj0;.n) walks the whitelist via "
-                  "Class.isInstance → F-103 law → dalvik_class_assignable(Ljava/util/UUID;, "
-                  "Ljava/io/Serializable;) — identity no, DEX tables absent (platform class), F-NEW-253 "
-                  "framework closure EMPTY (no UUID row) → false → IAE x51. Same for app enums: the "
-                  "Serializable edge lives on the PLATFORM hop java.lang.Enum (libcore: public abstract "
-                  "class Enum implements Comparable, Serializable) — the app class_def declares none and "
-                  "the walk checked class_to_interfaces_ (DEX-only) at each hop, never the framework "
-                  "tables. ART truth: BOTH saves succeed (UUID Serializable arm; every enum Serializable "
-                  "via Enum). Upstream AAR decode (scripts/cont33_jvm_disasm.py, JVM bytecode): "
-                  "canBeSavedToBundle = NOT(SnapshotMutableState-policy reject) ∧ NOT(Function∧"
-                  "Serializable) ∧ whitelist isInstance walk {Serializable, Parcelable, String, "
-                  "SparseArray, Binder, Size, SizeF}.",
-    "fix": "One framework_class_interfaces block (view_ancestry.h): UUID row {Serializable, Comparable} + "
-           "Enum row {Serializable, Comparable} (libcore source law, receiver-identity keyed, no name "
-           "dispatch) + per-hop platform consult in dalvik_class_assignable's superclass walk "
-           "(framework_implements(walk, to_desc) after the DEX-table check — intermediate platform hops "
-           "see the same boot-classpath truth the F-NEW-253 tail gives from_desc). Probe "
-           "fixtures/fnew292_probe: UUID-SER/INSTOF/CMP + ENUM-SER/INSTOF (Tick enum = the Ll71; shape) "
-           "+ NEG-PARCEL/STR/CHARSEQ/ENUMSTR over-acceptance guards. PRE (UUID face x3 on "
-           "fa7dd04c99364cad): FAIL 3 pass 3 fail, Serializable.isInstance(uuid)=false; PRE (enum face on "
-           "c577629024f2a33b): ENUM-SER/INSTOF FAIL. POST x3 on 859557953a3b144c: SUMMARY PASS 9/0 "
-           "(negatives honestly false). Target x3: IAE 51→0/run, status FAILURE→PARTIAL SUCCESS, "
-           "FIRST PAINTED CONTENT — DIALOG-RENDER window painted, frame 5c4a0172628849ba → "
-           "9afb2bd2606f303e x3 deterministic (divergence honestly MOVED: Lh4; ops=0, budget-halt "
-           "unwinds at the 15 s harness clock).",
-    "evidence": "evidence/cont33/FORMAT_LOCALE_FRONTIER.md; run/cont33/f292_pre_r1..3, f292_pre2_r1, "
-                "f292_post_r1..3, f292_post2_r1..3, csw_post292b_r1..3",
-}
+    "layer": "dalvik/interpreter-throughput (heap field-map representation; F-NEW-381 phase 2)",
+    "date": "2026-10-26",
+    "title": "Heap representation wall (the named F-NEW-381 phase-2 lever): HeapObject.fields, DalvikHeap.objects_ and static_field_storage_ were std::map (RB-tree) — every iget/iput/sget paid O(log n) pointer-chasing walks with string compares on qualified keys, on top of the memoized resolution",
+    "root_cause": "The CONT-32 ledger named the remaining iget-object constant: after the CowStr register lever, the per-access cost is the map lookups — objects_.find(uint32) tree walk + fields.find(qualified string) tree walk + static_field_storage_.find(string) on the sget path. Hot path is find/operator[] only (order-independent); ~35 fields-iteration sites and 4 static-iteration sites exist but are cold (bounded diagnostics, collect-then-sort, collect-then-erase, name-priority scans).",
+    "evidence": {
+        "wave": "CONT-33",
+        "fix": "std::map -> std::unordered_map for the three hot maps (dalvik_engine.h). Frozen ordered consumers keep the historical std::map iteration contract by explicit sorted keys: DalvikHeap::dump()/get_all_ids() (id-ascending), the view-tree fallback full-heap scan (id-ascending), and the R$string resource-id scan (first-match IS semantic — D8 shrinker ordinal collisions). all_objects() signature updated. Bounded diagnostic stderr dumps may print in hash order — zero semantic surface (ledger-noted). Patch: scripts/cont33_heap_unordered.py (anchor-verified, idempotent).",
+        "ab_measurement": "dooz 90s PERF-PHASES A/B at identical HEAD 733bcbe3 lineage — op=0x54 (iget-object): PRE 3,929,077 calls / 13.11G ticks / 1.112 us-per-call; POST 3,697,908 calls / 11.52G ticks / 1.038 us-per-call (-6.6%). sget-object (op=0x62): 0.891 -> 0.773 est_ms. Wall clock: the 90s window still ends in the F084 budget halt mid-composition — the F-NEW-381 wall REMAINS (structural per-instruction cost, next named lever = the per-call method-invocation machinery: try_recursive_invoke 4.64M calls dominates the phase mass).",
+        "regression": "FULL GATE at the lever binary (sha16 3a3961d63697483d, HEAD 733bcbe3): dooz 90s x4 byte-identical 851cc1761a1dfcdf; anchors opencalc 63020bc7334048fe x2, chess 3f7e670759b7c6a8 x2, microtimer bbd350b6c14fbd52 x2, unote 7481e9b468eaa376, tower3d 11a38a5aeeff45a6 — 6/6 byte-identical; user goldens 4/4 PASS (2048/snakedeluxe/minicraft REAL_APP_UI pixel gates + helloworld 83720c1028f832d0); gate-A probe 98 PASS / 1 INFO / 0 FAIL; negatives 19/19 PASS (after run/gatea/probe_store regeneration at the new binary — the initial 9/19 was the stale-store artifact, same as the CONT-158/CONT-32 records); skill selftest 13/13; telegram 60s face 774075b428f53791 byte-identical; batch-20 census re-run byte-exact retention across all 20 rows (5/20 content rows same px + same sha; 15 blanks same blank)."
+    },
+    "verified_current": True,
+})
 
-r["roots"].append(e291)
-r["roots"].append(e292)
+for row in r:
+    if row["id"] == "F-NEW-381":
+        ev = row.get("evidence") or {}
+        if isinstance(ev, dict):
+            ev["cont33_update"] = ("CONT-33 landed the ledger's NAMED phase-2 lever (heap-map "
+                "representation -> F-NEW-524): iget-object per-call 1.112us -> 1.038us (-6.6%) on "
+                "the dooz 90s PERF census, sget-object 0.891 -> 0.773 est_ms, zero semantic drift "
+                "(full gate: anchors 6/6 byte-identical, goldens 4/4, negatives 19/19, skill 13/13, "
+                "telegram face byte-identical, batch-20 byte-exact retention). The wall REMAINS: "
+                "the 90s window still ends in the F084 budget halt mid-first-composition. Next "
+                "named lever: per-call method-invocation machinery (try_recursive_invoke 4.64M "
+                "calls / 74.7T ticks dominates the phase mass; frame setup/register marshaling "
+                "per nested call).")
+        print("F-NEW-381 evidence refreshed")
 
-if "status_counts" in r:
-    sc = r["status_counts"]
-    for k in ("ROOT_CAUSED_FIXED",):
-        sc[k] = sc.get(k, 0) + 2
-
-with open(REG, "w") as f:
-    json.dump(r, f, indent=1, ensure_ascii=False)
-print("registry now", len(r["roots"]), "roots (599 -> 601)")
+json.dump(r, open(REG, "w"), indent=1, ensure_ascii=False)
+try:
+    json.dump(r, open(MIRROR, "w"), indent=1, ensure_ascii=False)
+    print("mirror synced")
+except Exception as e:
+    print("mirror sync skipped:", e)
+print("registry rows after:", len(r))

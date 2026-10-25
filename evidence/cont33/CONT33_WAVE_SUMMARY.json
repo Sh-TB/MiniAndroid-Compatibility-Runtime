@@ -1,0 +1,39 @@
+{
+ "wave": "CONT-33",
+ "head": "733bcbe3",
+ "binary_sha16": "3a3961d63697483d",
+ "lever": "F-NEW-524 heap-map representation (std::map -> std::unordered_map x3, frozen ordered consumers sorted)",
+ "ab": {
+  "iget_object_pre": {
+   "calls": 3929077,
+   "ticks": 13112309988,
+   "us_per_call": 1.112
+  },
+  "iget_object_post": {
+   "calls": 3697908,
+   "ticks": 11518856734,
+   "us_per_call": 1.038
+  },
+  "sget_object_est_ms": {
+   "pre": 0.891,
+   "post": 0.773
+  },
+  "delta": "-6.6% per-call on the #1 opcode; wall REMAINS (F084 budget halt mid-composition at 90s)"
+ },
+ "gates": {
+  "dooz_90s": "x4 byte-identical 851cc1761a1dfcdf",
+  "anchors": "6/6 byte-identical (opencalc 63020bc7334048fe x2, chess 3f7e670759b7c6a8 x2, microtimer bbd350b6c14fbd52 x2, unote 7481e9b468eaa376, tower3d 11a38a5aeeff45a6)",
+  "goldens": "4/4 PASS (REAL_APP_UI pixel gates + helloworld 83720c1028f832d0)",
+  "gatea_probe": "98 PASS / 1 INFO / 0 FAIL",
+  "negatives": "19/19 PASS (after run/gatea/probe_store regeneration)",
+  "skill": "13/13 PASS",
+  "telegram_60s": "face 774075b428f53791 byte-identical",
+  "batch20": "byte-exact retention across all 20 rows (5/20 content)"
+ },
+ "honest_residuals": [
+  "dooz: board still not painted in the canonical 90s window \u2014 F-NEW-381 stands; the lever shrank the #1 opcode by 6.6% but the first composition needs more than the window holds",
+  "telegram: LaunchActivity still not reaching the chat list \u2014 F-NEW-523 (ra/a.get priorities ISE) + Firebase face + honest native boundary stand",
+  "batch-20: 15/20 blanks unchanged \u2014 the A-getClass/fossify-515/listsize-516 families remain the named stuck list"
+ ],
+ "next_lever": "per-call method-invocation machinery (try_recursive_invoke 4.64M calls / 74.7T ticks dominate the phase mass; frame setup + register marshaling per nested call)"
+}
