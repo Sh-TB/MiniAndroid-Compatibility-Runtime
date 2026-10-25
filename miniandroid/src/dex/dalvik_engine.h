@@ -37,6 +37,7 @@ class HeapAllocator;
 #include <filesystem>
 #include <map>
 #include <unordered_map>
+#include <algorithm>  // F-NEW-381 phase 2: get_all_ids sorted-order contract
 #include <stack>
 #include <tuple>                       // CONT-102: manifest activity attrs
 #include <memory>
@@ -941,8 +942,10 @@ struct HeapObject {
     uint32_t creator_pc = 0;
     uint32_t creator_frame_id = 0;
     
-    // Fields (simplified - would be full field table in production)
-    std::map<std::string, DalvikValue> fields;
+    // Fields (F-NEW-381 phase 2: unordered — the interpreter hot path
+    // is find/operator[] only; frozen ordered consumers sort keys
+    // explicitly, preserving the historical std::map iteration law)
+    std::unordered_map<std::string, DalvikValue> fields;
     
     // Bridge to Android API stub
     std::shared_ptr<api::AndroidObject> api_object;
@@ -1095,8 +1098,8 @@ public:
     
     json dump() const {
         json arr = json::array();
-        for (const auto& pair : objects_) {
-            arr.push_back(pair.second.to_json());
+        for (const uint32_t oid : get_all_ids()) {  // F-NEW-381 phase 2: id-ascending
+            arr.push_back(objects_.at(oid).to_json());
         }
         return arr;
     }
@@ -1107,7 +1110,9 @@ public:
     
     std::vector<uint32_t> get_all_ids() const {
         std::vector<uint32_t> ids;
+        ids.reserve(objects_.size());
         for (const auto& pair : objects_) ids.push_back(pair.first);
+        std::sort(ids.begin(), ids.end());  // F-NEW-381 phase 2: std::map order preserved
         return ids;
     }
     
@@ -1203,7 +1208,9 @@ public:
     // EXP-060: Read-only access to the entire heap. Used by the
     // synthetic-click campaign to scan for newly-created objects
     // (e.g. LoginActivity) after a click is dispatched.
-    const std::map<uint32_t, HeapObject>& all_objects() const {
+    // F-NEW-381 phase 2: unordered storage; consumers that need the
+    // historical id-ascending order use get_all_ids() (sorted).
+    const std::unordered_map<uint32_t, HeapObject>& all_objects() const {
         return objects_;
     }
 
@@ -1221,7 +1228,7 @@ public:
     }
 
 private:
-    std::map<uint32_t, HeapObject> objects_;
+    std::unordered_map<uint32_t, HeapObject> objects_;
     uint32_t next_id_;
     uint64_t alloc_sequence_;
     json allocation_log_;
@@ -2904,7 +2911,7 @@ public:
     // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): corrected namespace reference; the
     // previous commit (3392b03 EXP-035) referenced runtime::DalvikValue which does
     // not exist, breaking the entire build since EXP-035.
-    std::map<std::string, DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name"
+    std::unordered_map<std::string, DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name" (F-NEW-381 phase 2: unordered; the frozen first-match consumer sorts keys)
     std::map<std::string, std::shared_ptr<runtime::RuntimeClassInfo>> class_info_cache_;  // cached class metadata
 
     // ────────────────────────────────────────────────────────────────────
