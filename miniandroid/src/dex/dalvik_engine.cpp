@@ -1134,6 +1134,37 @@ fallback:
 
 bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
                                              const std::string& ancestor_desc) const {
+    // R-NEW-530 (CONT-34): subclass-reachability memo. The walk in
+    // is_subclass_of_impl is a PURE function of the class tables (DEX
+    // superclass chains + the static framework ancestry table); the only
+    // mutation is monotonic class-table growth, guarded by the same epoch
+    // law as the R-NEW-467 field memo (size-compare, any growth invalidates
+    // once). dooz 300s PERF evidence: 4,626,192 walks burning ~28% of the
+    // interpreter's core budget — the compose placement pass re-derives the
+    // SAME answers millions of times. Negative answers memoize too (most
+    // instanceof probes walk to the root and answer false).
+    struct R530Memo {
+        size_t epoch = static_cast<size_t>(-1);
+        std::unordered_map<std::string, bool> answers;
+    };
+    static thread_local R530Memo r530;
+    size_t r530_epoch_now = class_to_superclass_.size();
+    if (r530.epoch != r530_epoch_now) {
+        r530.epoch = r530_epoch_now;
+        r530.answers.clear();
+    }
+    std::string r530_key = framework::normalize_class_desc(class_desc);
+    r530_key.push_back('\0');
+    r530_key += framework::normalize_class_desc(ancestor_desc);
+    auto r530_it = r530.answers.find(r530_key);
+    if (r530_it != r530.answers.end()) return r530_it->second;
+    bool r530_ans = is_subclass_of_impl(class_desc, ancestor_desc);
+    r530.answers.emplace(std::move(r530_key), r530_ans);
+    return r530_ans;
+}
+
+bool DalvikExecutionEngine::is_subclass_of_impl(const std::string& class_desc,
+                                             const std::string& ancestor_desc) const {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().subclass, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().subclass, f107_t0};
     // G12 FIX-G12-001b (descriptor form law): the UI layer hands us
@@ -6020,6 +6051,23 @@ void DalvikExecutionEngine::install_content_providers(
                 }
                 heap_.set_object_field(pinfo_id, "grantUriPermissions",
                                        DalvikValue::make_bool(grant_up));
+                // F-NEW-525: exported + multiprocess (AOSP PackageParser
+                // ProviderInfo law — defaults FALSE, manifest value wins;
+                // ShizukuProvider.attachInfo enforces exported=true /
+                // multiprocess=false at attach). Unset previously read
+                // 0 for exported too — the seed is drift-free for every
+                // manifest that does not declare exported=true.
+                for (const auto& [ename, eval] : manifest_provider_exported_) {
+                    if (ename == pcls) {
+                        heap_.set_object_field(
+                            pinfo_id, "exported",
+                            DalvikValue::make_bool(eval));
+                        break;
+                    }
+                }
+                heap_.set_object_field(
+                    pinfo_id, "multiprocess",
+                    DalvikValue::make_bool(false));
                 // 371-CLOSEOUT: ProviderInfo.metaData (AOSP PackageParser
                 // law — component <meta-data> children become the Bundle;
                 // android:resource refs land as the RESOLVED resource id
@@ -24546,6 +24594,13 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         !args.empty() && args[0].type == DalvikType::STRING_REF) {
         static const char* kFrameworkClasses[] = {
             "android.os.SystemProperties",
+            // F-NEW-526: hidden-but-real framework class —
+            // shizuku-style reflective service holders probe it
+            // in <clinit> (py7.a evidence: forName CNF swallowed
+            // by the clinit catch left getService Method null ->
+            // NPE at the later getService.invoke). AOSP: forName
+            // succeeds on every device.
+            "android.os.ServiceManager",
         };
         const std::string& fw_name = args[0].string_val;
         for (const char* fw : kFrameworkClasses) {
@@ -28201,6 +28256,31 @@ std::string DalvikExecutionEngine::java_format_walk(
                             default: break;
                         }
                     }
+                    // F-NEW-529 (CONT-34, telegram g5/q charset-factory
+                    // face): AOSP %s == String.valueOf(obj) == obj.toString()
+                    // — the engine answered "object@N", so protobuf/Conscrypt
+                    // -style factory ISE messages rendered garbage and the
+                    // charset gate killed the chain. Bridge-dispatch the
+                    // object's toString (bounded depth; "object@N" stays the
+                    // honest last resort for law-less classes).
+                    {
+                        static thread_local int f529_depth = 0;
+                        if (f529_depth < 4) {
+                            ++f529_depth;
+                            DalvikValue ts_out;
+                            ApiCallTrace::Status ts_st =
+                                ApiCallTrace::Status::STUBBED;
+                            std::vector<DalvikValue> ts_args;
+                            ts_args.push_back(v);
+                            if (bridge_to_api(v.class_desc, "toString",
+                                              ts_args, ts_out, ts_st, 0) &&
+                                ts_out.type == DalvikType::STRING_REF) {
+                                --f529_depth;
+                                return ts_out.string_val;
+                            }
+                            --f529_depth;
+                        }
+                    }
                     return "object@" + std::to_string(v.object_id);
                 }
                 case DalvikType::NULL_REF: return "null";
@@ -28944,6 +29024,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //      array (engine trust-store semantics arrive with the first
     //      census face that needs them); getAlgorithm() recorded algo.
     // ────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-526 — android.os.ServiceManager (AOSP hidden framework class,
+    // android.os.ServiceManager.java). Statics: getService(String) /
+    // checkService(String) answer the live IBinder for every framework
+    // service name — deterministic per-name token (create-and-cache,
+    // never-null family law, F-NEW-516 precedent; approximation RECORDED:
+    // real AOSP answers null for unknown names, the engine models every
+    // service as present — callers that probe optional services get a
+    // non-null binder instead of an NPE kill). class_desc = Binder; (the
+    // Binder→IBinder hierarchy row exists, so py7.a's check-cast
+    // Landroid/os/IBinder; passes). The R-NEW-354 registry arm makes
+    // Class.forName('android.os.ServiceManager') succeed, so reflective
+    // holders (shizuku py7: forName → getMethod('getService') →
+    // invoke(null, name)) complete the full AOSP round-trip.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/os/ServiceManager;" &&
+        (method == "getService" || method == "checkService")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        std::string sname;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::STRING_REF && !a.string_val.empty()) {
+                sname = a.string_val;
+                break;
+            }
+        }
+        if (!sname.empty()) {
+            static std::unordered_map<std::string, uint32_t> f526_services;
+            uint32_t oid = 0;
+            auto sit = f526_services.find(sname);
+            if (sit != f526_services.end() && heap_.has_object(sit->second)) {
+                oid = sit->second;
+            } else {
+                oid = heap_.allocate("Landroid/os/Binder;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                heap_.set_object_field(oid, "__service_name__",
+                    DalvikValue::make_string(sname, 0));
+                f526_services[sname] = oid;
+            }
+            static thread_local uint64_t f526_n = 0;
+            if (f526_n < 8) { ++f526_n;
+                std::cerr << "[F526-SM] " << method << "('" << sname
+                          << "') -> oid=" << oid << " (never-null law)"
+                          << std::endl; }
+            result = DalvikValue::make_object(oid, "Landroid/os/Binder;");
+        }
+        return true;
+    }
     if (class_name == "Ljava/util/logging/Logger;") {
         if (method == "getLogger" && args.size() >= 1 &&
             args[0].type == DalvikType::STRING_REF) {
@@ -30846,12 +30974,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     // EXP-071 Phase 7: Diagnostic — log HashMap.put/get entry to bridge_to_api.
     if (class_name.find("HashMap") != std::string::npos &&
-        (method == "put" || method == "get")) {
-        std::cerr << "[EXP071-BRIDGE-HMAP] " << class_name << "." << method
-                  << " argc=" << args.size()
-                  << " caller=" << current_class_ << "." << current_method_
-                  << " pc=" << pc_
-                  << std::endl;
+        (method == "put" || method == "get" || method == "keySet" ||
+         method == "size")) {
+        static thread_local uint64_t f527_hmap = 0;
+        if (f527_hmap < 5000) { ++f527_hmap;
+            std::cerr << "[F527-HMAP] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " recv_oid=" << (!args.empty() ? args[0].object_id : 0)
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc_ << std::endl; }
     }
     // F-089 diagnostics: Map interface dispatch visibility (navigation
     // NavigatorProvider registration chain — put(name, navigator) /
@@ -43258,6 +43389,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     break;
                 }
             }
+            // F-NEW-525: exported + multiprocess (AOSP PackageParser law).
+            for (const auto& [ename, eval] : manifest_provider_exported_) {
+                if (ename == owner_class) {
+                    heap_.set_object_field(
+                        pi_id, "exported",
+                        DalvikValue::make_bool(eval));
+                    break;
+                }
+            }
+            heap_.set_object_field(
+                pi_id, "multiprocess",
+                DalvikValue::make_bool(false));
             auto md_it = component_meta_data_.find(owner_class);
             if (md_it != component_meta_data_.end() && !md_it->second.empty()) {
                 uint32_t md_bundle = heap_.allocate("Landroid/os/Bundle;", pc_, 0);
@@ -49104,6 +49247,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 break;
             }
         }
+        // F-NEW-525: exported + multiprocess (AOSP PackageParser law).
+        for (const auto& [ename, eval] : manifest_provider_exported_) {
+            if (ename == norm || ename == bare || ename == prov_class) {
+                heap_.set_object_field(pi_id, "exported",
+                                       DalvikValue::make_bool(eval));
+                break;
+            }
+        }
+        heap_.set_object_field(
+            pi_id, "multiprocess", DalvikValue::make_bool(false));
         if ((pi_flags & 0x80) != 0) {
             // metaData seeding — identical law to the S1-PROVIDER install
             // path: component_meta_data_ entries, descriptor→dotted fallback,
@@ -53542,6 +53695,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             static const std::string digits = "0123456789";
                             bool numeric = !v.empty() &&
                                 v.find_first_not_of(digits) == std::string::npos;
+                            // F-NEW-528: "@0x…" reference-typed values land as
+                            // the RESOLVED integer (AOSP Bundle.putInt law) —
+                            // gms.version evidence: the string form made
+                            // Bundle.getInt answer 0 → play-services manifest
+                            // gate ISE at APP BOUNDARY. Honest fallback = the
+                            // resource id itself (nonzero; the play-services
+                            // caller gates on presence/nonzero).
+                            if (v.rfind("@0x", 0) == 0 && v.size() > 3) {
+                                int32_t md_int = 0;
+                                bool md_ok = false;
+                                try {
+                                    uint32_t md_resid =
+                                        (uint32_t)std::stoul(v.substr(3),
+                                                             nullptr, 16);
+                                    auto& md_rt =
+                                        resources::ResourceRuntime::instance();
+                                    if (md_rt.loaded() ||
+                                        md_rt.ensure_loaded(apk_path_)) {
+                                        auto mi =
+                                            md_rt.arsc().resolve_int(md_resid);
+                                        if (mi) { md_int = *mi; md_ok = true; }
+                                    }
+                                    if (!md_ok) {
+                                        md_int = (int32_t)md_resid;
+                                        md_ok = true;
+                                    }
+                                } catch (...) { md_ok = false; }
+                                if (md_ok) {
+                                    heap_.set_object_field(bundle_id,
+                                        "bundle:" + k,
+                                        DalvikValue::make_int(md_int));
+                                    continue;
+                                }
+                            }
                             if (numeric)
                                 heap_.set_object_field(bundle_id, "bundle:" + k,
                                     DalvikValue::make_int(std::stoi(v)));
@@ -53638,6 +53825,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         static const std::string digits = "0123456789";
                         bool numeric = !v.empty() &&
                             v.find_first_not_of(digits) == std::string::npos;
+                        // F-NEW-528: "@0x…" reference-typed values land as
+                        // the RESOLVED integer (same law as site 1) — the
+                        // play-services gms.version gate reads this Bundle.
+                        if (v.rfind("@0x", 0) == 0 && v.size() > 3) {
+                            int32_t md_int = 0;
+                            bool md_ok = false;
+                            try {
+                                uint32_t md_resid =
+                                    (uint32_t)std::stoul(v.substr(3), nullptr,
+                                                         16);
+                                auto& md_rt =
+                                    resources::ResourceRuntime::instance();
+                                if (md_rt.loaded() ||
+                                    md_rt.ensure_loaded(apk_path_)) {
+                                    auto mi =
+                                        md_rt.arsc().resolve_int(md_resid);
+                                    if (mi) { md_int = *mi; md_ok = true; }
+                                }
+                                if (!md_ok) {
+                                    md_int = (int32_t)md_resid;
+                                    md_ok = true;
+                                }
+                            } catch (...) { md_ok = false; }
+                            if (md_ok) {
+                                heap_.set_object_field(bundle_id,
+                                    "bundle:" + k,
+                                    DalvikValue::make_int(md_int));
+                                continue;
+                            }
+                        }
                         if (numeric)
                             heap_.set_object_field(bundle_id, "bundle:" + k,
                                 DalvikValue::make_int(std::stoi(v)));
