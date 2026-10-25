@@ -40,6 +40,7 @@ class HeapAllocator;
 #include <stack>
 #include <tuple>                       // CONT-102: manifest activity attrs
 #include <memory>
+#include <atomic>                      // CONT-32 F-NEW-381 lever: COW cell refcounts
 #include <cstdint>
 #include <optional>
 #include <functional>
@@ -442,6 +443,189 @@ enum class DalvikType {
     REGISTER_UNSET
 };
 
+// ─── F-NEW-381 STRUCTURAL LEVER (CONT-32): out-of-band COW string cell ─────
+// DalvikValue carried TWO by-value std::string members (~112B per value);
+// every register read/write copied both (~60-90M copies per dooz run — the
+// measured F-NEW-381 throughput-wall constant: cost is the per-instruction
+// value-copy constant, not any single method). CowStr stores the string
+// out-of-band in a refcounted cell: copy = one 8B pointer (+ an atomic inc
+// ONLY when a cell exists); unset cells (non-ref values — the vast majority
+// of interpreter traffic) are a null pointer with ZERO atomics and zero
+// string ctor/dtor churn. VALUE-IDENTICAL BY CONSTRUCTION: every read
+// returns the same string content as the old by-value member.
+struct StrCell {
+    mutable std::atomic<int64_t> rc;
+    std::string s;
+    explicit StrCell(std::string&& v) : rc(1), s(std::move(v)) {}
+    explicit StrCell(const std::string& v) : rc(1), s(v) {}
+};
+
+class CowStr {
+public:
+    CowStr() = default;
+    // Converting ctors (non-explicit): let `cond ? cowstr : "literal"`
+    // ternaries find a common type (the char array converts to CowStr);
+    // conversions FROM CowStr remain exactly one (operator const string&),
+    // so no new overload ambiguity is created anywhere.
+    CowStr(std::string s) { if (!s.empty()) cell_ = new StrCell(std::move(s)); }
+    CowStr(const char* s) : cell_(nullptr) {
+        if (s && *s) cell_ = new StrCell(std::string(s));
+    }
+    CowStr(const CowStr& o) noexcept : cell_(o.cell_) {
+        if (cell_) cell_->rc.fetch_add(1, std::memory_order_relaxed);
+    }
+    CowStr(CowStr&& o) noexcept : cell_(o.cell_) { o.cell_ = nullptr; }
+    CowStr& operator=(const CowStr& o) noexcept {
+        if (this != &o) {
+            release();
+            cell_ = o.cell_;
+            if (cell_) cell_->rc.fetch_add(1, std::memory_order_relaxed);
+        }
+        return *this;
+    }
+    CowStr& operator=(CowStr&& o) noexcept {
+        if (this != &o) { release(); cell_ = o.cell_; o.cell_ = nullptr; }
+        return *this;
+    }
+    ~CowStr() { release(); }
+
+    // Mutation sites (census: whole-string assignment only — the 1605
+    // member-access sites never mutate the buffer in place).
+    CowStr& operator=(const std::string& s) { assign(s); return *this; }
+    CowStr& operator=(const char* s) {
+        if (s && *s) assign(std::string(s)); else reset_to_empty();
+        return *this;
+    }
+
+    // Implicit conversion keeps every read site source-compatible:
+    // comparisons, map finds, concatenation, nlohmann json, std::to_string.
+    operator const std::string&() const {
+        static const std::string kEmpty;
+        return cell_ ? cell_->s : kEmpty;
+    }
+
+    // Const forwarding — the exact method surface of the member-access
+    // census: size/length/empty/c_str/data/back/substr/find/operator[]/at.
+    size_t size() const { return cell_ ? cell_->s.size() : 0; }
+    size_t length() const { return size(); }
+    bool empty() const { return !cell_ || cell_->s.empty(); }
+    const char* c_str() const { return cell_ ? cell_->s.c_str() : ""; }
+    const char* data() const { return c_str(); }
+    char back() const { return cell_ ? cell_->s.back() : '\0'; }
+    char operator[](size_t i) const { return cell_ ? cell_->s[i] : '\0'; }
+    char at(size_t i) const { return cell_ ? cell_->s.at(i) : '\0'; }
+    std::string substr(size_t pos = 0, size_t n = std::string::npos) const {
+        return static_cast<const std::string&>(*this).substr(pos, n);
+    }
+    size_t find(const std::string& needle, size_t pos = 0) const {
+        return static_cast<const std::string&>(*this).find(needle, pos);
+    }
+    size_t find(const char* needle, size_t pos = 0) const {
+        return static_cast<const std::string&>(*this).find(needle, pos);
+    }
+    size_t find(char c, size_t pos = 0) const {
+        return static_cast<const std::string&>(*this).find(c, pos);
+    }
+    size_t rfind(const std::string& needle, size_t pos = std::string::npos) const {
+        return static_cast<const std::string&>(*this).rfind(needle, pos);
+    }
+    size_t rfind(const char* needle, size_t pos = std::string::npos) const {
+        return static_cast<const std::string&>(*this).rfind(needle, pos);
+    }
+    size_t rfind(char c, size_t pos = std::string::npos) const {
+        return static_cast<const std::string&>(*this).rfind(c, pos);
+    }
+
+private:
+    void assign(const std::string& s) {
+        if (cell_) {
+            if (cell_->rc.load(std::memory_order_relaxed) == 1) {
+                cell_->s = s;   // unique owner: mutate in place
+                return;
+            }
+            release();          // shared: drop our ref, fall through to clone
+        }
+        if (!s.empty()) cell_ = new StrCell(s);   // empty string = null cell
+    }
+    void reset_to_empty() {
+        if (cell_) {
+            if (cell_->rc.load(std::memory_order_relaxed) == 1) {
+                cell_->s.clear();
+                return;
+            }
+            release();
+        }
+    }
+    void release() {
+        if (cell_ && cell_->rc.fetch_sub(1, std::memory_order_acq_rel) == 1)
+            delete cell_;
+        cell_ = nullptr;
+    }
+    StrCell* cell_ = nullptr;
+};
+
+// ── CowStr free operators (ADL law) ────────────────────────────────────────
+// std::string's free operator+/operator<< live in namespace std and are only
+// reachable via ADL when an operand IS a std type — CowStr (miniandroid::
+// dalvik) never drags them in, so the mixed-shape concat/compare sites fail
+// to compile on conversion alone. This set covers every census shape with an
+// exact-match candidate (no ambiguity against std's operator set: whenever a
+// std operand IS present, these exact-match overloads win outright).
+inline std::string operator+(const CowStr& a, const CowStr& b) {
+    return static_cast<const std::string&>(a) + static_cast<const std::string&>(b);
+}
+inline std::string operator+(const CowStr& a, const std::string& b) {
+    return static_cast<const std::string&>(a) + b;
+}
+inline std::string operator+(const std::string& a, const CowStr& b) {
+    return a + static_cast<const std::string&>(b);
+}
+inline std::string operator+(const CowStr& a, const char* b) {
+    return static_cast<const std::string&>(a) + b;
+}
+inline std::string operator+(const char* a, const CowStr& b) {
+    return a + static_cast<const std::string&>(b);
+}
+inline std::string operator+(const CowStr& a, char b) {
+    return static_cast<const std::string&>(a) + b;
+}
+inline std::string operator+(char a, const CowStr& b) {
+    return a + static_cast<const std::string&>(b);
+}
+inline std::ostream& operator<<(std::ostream& os, const CowStr& v) {
+    return os << static_cast<const std::string&>(v);
+}
+inline bool operator==(const CowStr& a, const CowStr& b) {
+    return static_cast<const std::string&>(a) == static_cast<const std::string&>(b);
+}
+inline bool operator==(const CowStr& a, const std::string& b) {
+    return static_cast<const std::string&>(a) == b;
+}
+inline bool operator==(const std::string& a, const CowStr& b) {
+    return a == static_cast<const std::string&>(b);
+}
+inline bool operator==(const CowStr& a, const char* b) {
+    return static_cast<const std::string&>(a) == b;
+}
+inline bool operator==(const char* a, const CowStr& b) {
+    return a == static_cast<const std::string&>(b);
+}
+inline bool operator!=(const CowStr& a, const CowStr& b) {
+    return static_cast<const std::string&>(a) != static_cast<const std::string&>(b);
+}
+inline bool operator!=(const CowStr& a, const std::string& b) {
+    return static_cast<const std::string&>(a) != b;
+}
+inline bool operator!=(const std::string& a, const CowStr& b) {
+    return a != static_cast<const std::string&>(b);
+}
+inline bool operator!=(const CowStr& a, const char* b) {
+    return static_cast<const std::string&>(a) != b;
+}
+inline bool operator!=(const char* a, const CowStr& b) {
+    return a != static_cast<const std::string&>(b);
+}
+
 struct DalvikValue {
     DalvikType type = DalvikType::REGISTER_UNSET;
     
@@ -456,9 +640,10 @@ struct DalvikValue {
         char char_val;
     };
     
-    // Reference types
-    std::string string_val;       // For STRING_REF
-    std::string class_desc;       // For CLASS_REF or OBJECT_REF
+    // Reference types — F-NEW-381 structural lever (CONT-32): out-of-band
+    // COW cells (CowStr above). Value-identical; register copies are 8B.
+    CowStr string_val;            // For STRING_REF
+    CowStr class_desc;            // For CLASS_REF or OBJECT_REF
     uint32_t object_id = 0;       // For OBJECT_REF
     uint32_t ref_id = 0;          // Unique reference ID
     

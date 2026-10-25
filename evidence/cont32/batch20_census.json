@@ -1,0 +1,422 @@
+[
+ {
+  "label": "prism",
+  "apk": "app.lonecloud.prism_10402.apk",
+  "apk_sha16": "cf33481a841ae6f5",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.7,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "c2b7441f95d90a1d",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "wocheneinkauf",
+  "apk": "app.wocheneinkauf_199.apk",
+  "apk_sha16": "02c08e2a3a1e585f",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 0,
+  "wall_s": 24.4,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "80d942e7b762a05e",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1356,
+   "content_px": 8579,
+   "content_frac": 0.0662
+  },
+  "uncaught_n": 0
+ },
+ {
+  "label": "matewave",
+  "apk": "cc.skysparkle.matewave_2.apk",
+  "apk_sha16": "64f39c03647a461a",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.5,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "b5a7a35d5fe0564b",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "sparkledns",
+  "apk": "cc.skysparkle.sparkledns_10006.apk",
+  "apk_sha16": "8fe1286923f69290",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 3.1,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "3fddba97cbe5ac66",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 0
+ },
+ {
+  "label": "aurora",
+  "apk": "com.aurora.store_76.apk",
+  "apk_sha16": "fd9c75d90d0f4a7c",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 3.9,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "b5a7a35d5fe0564b",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "awagam",
+  "apk": "com.awagam.android_5.apk",
+  "apk_sha16": "30af184cdbb35f9b",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.6,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "b5a7a35d5fe0564b",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "webstack",
+  "apk": "com.chiranth7.webstack_6.apk",
+  "apk_sha16": "2f22bbbd4e089ddf",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.3,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "5c4a0172628849ba",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "compose_stopwatch",
+  "apk": "com.justdeax.composeStopwatch_1009011.apk",
+  "apk_sha16": "dbf937ebbe7c0b3d",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 4.3,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "d602648e8e401895",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 0
+ },
+ {
+  "label": "notepad",
+  "apk": "com.nononsenseapps.notepad_72700.apk",
+  "apk_sha16": "0d79884020f2a09e",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.0,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "894a69b0d4f16baa",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "k9",
+  "apk": "com.fsck.k9_39046.apk",
+  "apk_sha16": "0f9dd57fbd06dddf",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 3.1,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "b270ff040b3601dc",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "audiobook",
+  "apk": "de.ph1b.audiobook_5410002.apk",
+  "apk_sha16": "59f0cfe7773f3dc6",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.1,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "d602648e8e401895",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "goodtime",
+  "apk": "com.apps.adrcotfas.goodtime_364.apk",
+  "apk_sha16": "4eb797c2dd565d28",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 1.8,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "netguard",
+  "apk": "eu.faircode.netguard_2026080101.apk",
+  "apk_sha16": "158b4308da000629",
+  "family_group": "A-getClass",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.4,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "17c32e074010fcb0",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 633,
+   "content_px": 27059,
+   "content_frac": 0.2088
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "fossify_math",
+  "apk": "org.fossify.math_10.apk",
+  "apk_sha16": "7c5443c22d6d62c6",
+  "family_group": "B-fossify-515",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 6.0,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "43fa6bf67b88dbd7",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 446,
+   "content_px": 13071,
+   "content_frac": 0.1009
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "fossify_notes",
+  "apk": "org.fossify.notes_13.apk",
+  "apk_sha16": "5a56e0e39cc488e1",
+  "family_group": "B-fossify-515",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.4,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "b270ff040b3601dc",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "fossify_calendar",
+  "apk": "org.fossify.calendar_23.apk",
+  "apk_sha16": "d43b2df05d5702be",
+  "family_group": "B-fossify-515",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 4.7,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "9afd473e163b9c33",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 43,
+   "content_px": 12336,
+   "content_frac": 0.0952
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "fossify_clock",
+  "apk": "org.fossify.clock_10.apk",
+  "apk_sha16": "43cf9f0ec45f1f1f",
+  "family_group": "B-fossify-515",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.6,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "b270ff040b3601dc",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "dmfs_tasks",
+  "apk": "org.dmfs.tasks_82200.apk",
+  "apk_sha16": "7f3a1528142c8a8a",
+  "family_group": "C-listsize-516",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.3,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "surgeengine",
+  "apk": "org.opensurge2d.surgeengine_30650.apk",
+  "apk_sha16": "c1020c5a1e594b21",
+  "family_group": "C-listsize-516",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 1.4,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 1,
+   "content_px": 0,
+   "content_frac": 0.0
+  },
+  "uncaught_n": 1
+ },
+ {
+  "label": "bouncy",
+  "apk": "com.dozingcatsoftware.bouncy_43.apk",
+  "apk_sha16": "ffda0d9cb0b1b2aa",
+  "family_group": "C-listsize-516",
+  "install": "OK",
+  "run_rc": 0,
+  "wall_s": 2.6,
+  "sig": null,
+  "verdict_line": null,
+  "rec_miss": null,
+  "screenshot_sha16": "8a6c24ac8a7d718e",
+  "png": {
+   "w": 1080,
+   "h": 1920,
+   "distinct_colors": 982,
+   "content_px": 72622,
+   "content_frac": 0.5604
+  },
+  "uncaught_n": 0
+ }
+]
