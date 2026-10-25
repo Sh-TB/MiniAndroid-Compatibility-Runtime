@@ -320,6 +320,13 @@ public:
     std::optional<std::vector<int32_t>> resolve_int_array(
         uint32_t resource_id) const;
 
+    // F-NEW-528 (CONT-34): scalar integer entry — the twin of
+    // resolve_int_array for android:value="@integer/@color/@bool"
+    // meta-data references (AOSP PackageParser.parseMetaData
+    // Bundle.putInt contract). One reference hop is dereferenced
+    // (ResolveAttributeReference law); non-integer answers nullopt.
+    std::optional<int32_t> resolve_int(uint32_t resource_id) const;
+
     // --- Stats / evidence ----------------------------------------------------
     struct Stats {
         uint32_t package_count = 0;
