@@ -2064,6 +2064,19 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_int(static_cast<int32_t>(
                 state->map_entries.size() + state->map_string_entries.size()));
         }
+        // F-NEW-527 (CONT-34, telegram Firebase ra/a face): keySet/values/
+        // entrySet VIEW boxes (keySet law ~3163) carry their elements in
+        // view_elements — the pre-fix size answered 0 on a fully-populated
+        // keySet view, so 'priorities.keySet().size() < enum.values().length'
+        // threw IllegalStateException "Not all priorities have been
+        // configured" at APP BOUNDARY. The iterator law (hasNext ~2711)
+        // already counts view_elements; size/isEmpty must agree with it.
+        // Count BOTH stores (the dual-store shape 782/833 already use) —
+        // a view box populates exactly one of them.
+        if (state->is_view) {
+            return CallResult::handled_int(static_cast<int32_t>(
+                state->elements.size() + state->view_elements.size()));
+        }
         // ── F-NEW-237b (fairymahjong butterfly face): ENGINE-ARRAY-BACKED
         // list fallback. Lists produced by engine laws that store elements
         // as heap "array[i]" fields (Arrays.asList products — F-036 — and
@@ -2101,6 +2114,11 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             // EXP-071 Phase 7: Check both object and string entries.
             return CallResult::handled_bool(
                 state->map_entries.empty() && state->map_string_entries.empty());
+        }
+        // F-NEW-527: view boxes — agree with the size law (see above).
+        if (state->is_view) {
+            return CallResult::handled_bool(
+                state->elements.empty() && state->view_elements.empty());
         }
         // F-NEW-237b: engine-array-backed fallback (see size).
         if (state->elements.empty() && heap_) {

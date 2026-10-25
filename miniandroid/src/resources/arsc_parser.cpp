@@ -830,6 +830,27 @@ std::optional<std::vector<std::string>> ArscParser::resolve_string_array(
     return out;
 }
 
+// F-NEW-528 (CONT-34): scalar integer entry (see header).
+std::optional<int32_t> ArscParser::resolve_int(
+    uint32_t resource_id) const {
+    auto r = resolve(resource_id);
+    if (!r) return std::nullopt;
+    const ArscEntry* e = r->best_for(device_config());
+    if (!e) return std::nullopt;
+    if (e->is_complex) return std::nullopt;
+    if (e->value.is_reference()) {
+        // one hop dereference (ResolveAttributeReference law).
+        auto rr = resolve(e->value.ref_id);
+        if (!rr) return std::nullopt;
+        const ArscEntry* re = rr->best_for(device_config());
+        if (!re || re->is_complex || re->value.is_reference())
+            return std::nullopt;
+        return (int32_t)re->value.data;
+    }
+    if (e->value.is_string()) return std::nullopt;
+    return (int32_t)e->value.data;
+}
+
 std::optional<std::vector<int32_t>> ArscParser::resolve_int_array(
     uint32_t resource_id) const {
     auto r = resolve(resource_id);

@@ -1411,6 +1411,19 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 prov_grants.emplace_back(cls, p.grant_uri_permissions);
             }
             dalvik_engine_.set_manifest_provider_grants(prov_grants);
+            // F-NEW-525: per-provider android:exported (AOSP PackageParser law).
+            std::vector<std::pair<std::string, bool>> prov_exported;
+            for (const auto& p : result.apk_info.providers) {
+                std::string cls = p.name;
+                if (!cls.empty()) {
+                    if (cls[0] == '.')
+                        cls = result.apk_info.package_name + cls;
+                    else if (cls.find('.') == std::string::npos)
+                        cls = result.apk_info.package_name + "." + cls;
+                }
+                prov_exported.emplace_back(cls, p.exported);
+            }
+            dalvik_engine_.set_manifest_provider_exported(prov_exported);
             // ── #371 PHASE B5: manifest <service>/<receiver> transfer ──
             // Services/receivers live on ManifestInfo (the AXML parse), so
             // this path re-parses the binary manifest (same as the S123

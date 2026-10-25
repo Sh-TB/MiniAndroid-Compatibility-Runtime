@@ -1619,6 +1619,11 @@ public:
         std::vector<std::pair<std::string, bool>> name_grants) {
         manifest_provider_grants_ = std::move(name_grants);
     }
+    // F-NEW-525: per-provider android:exported (AOSP law).
+    void set_manifest_provider_exported(
+        std::vector<std::pair<std::string, bool>> name_exported) {
+        manifest_provider_exported_ = std::move(name_exported);
+    }
     // 371-CLOSEOUT: component meta-data with resource references — the
     // ProviderInfo.metaData / resolveContentProvider / loadXmlMetaData law
     // set (androidx FileProvider contract; generic across all components).
@@ -2148,6 +2153,11 @@ public:
     // These walk the DEX superclass chain (class_to_superclass_) to determine
     // if a class inherits from a known Android View type.
     bool is_subclass_of(const std::string& class_desc, const std::string& ancestor_desc) const;
+    // R-NEW-530 (CONT-34): memoized wrapper — the subclass walk is a PURE
+    // function of the monotonically growing class tables (epoch = super-table
+    // size, the R-NEW-467 epoch law); dooz 300s PERF: 4.63M walks = ~28% of
+    // the core budget. The raw walk lives in is_subclass_of_impl.
+    bool is_subclass_of_impl(const std::string& class_desc, const std::string& ancestor_desc) const;
 
     // F-105 (S59, R-NEW-379): declaration↔heap class reconciliation for
     // object references (shared by instance-of and check-cast). See the
@@ -3321,6 +3331,11 @@ public:
     int manifest_min_sdk_ = 0;
     // #371: manifest <provider> name → grantUriPermissions.
     std::vector<std::pair<std::string, bool>> manifest_provider_grants_;
+    // F-NEW-525: per-provider android:exported (AOSP PackageParser
+    // ProviderInfo law — ShizukuProvider.attachInfo enforces
+    // exported=true / multiprocess=false; manifest_reader already
+    // parses both).
+    std::vector<std::pair<std::string, bool>> manifest_provider_exported_;
     // GATE A: provider object → bound context object (attachInfo law).
     std::map<uint32_t, uint32_t> provider_context_;
     // ── #371 PHASE B1: ContentResolver authority→provider dispatch map ──
