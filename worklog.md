@@ -11512,3 +11512,22 @@ Stage Summary:
 - The wave moved BOTH flagship frontiers with zero regression drift: the interpreter's per-instruction value-copy constant (the F-NEW-381 wall) shrank -39% on the #1 opcode, and the telegram play_billing chain killer (the 13-exception family) is dead via the generic Unsafe.allocateInstance law.
 - Honest: dooz board still not painting (the wall remains — next lever: heap field-map representation); telegram chat list still not reached (F-NEW-523 + Firebase face + honest native boundary stand). No достаорд claimed beyond the machine-verified rows.
 - Next wave owns: heap field-map representation (F-NEW-381 second lever), shadow->DEX compareTo bridge (PQ ordering), F-NEW-523 dive (ra/a priority-config tree + FirebaseOptions metadata read), the R-NEW-350 default-ON root (microtimer retry), and the standing telegram trains.
+
+---
+Task ID: CONT-33-WAVE
+Agent: Super Z (main)
+Task: Self-update from GitHub (honest stale admission) + dooz/telegram priority wave — land the named F-NEW-381 phase-2 heap-representation lever, full regression gate, batch-20 parallel-track census, push.
+
+Work Log:
+- SELF-UPDATE (user directive): local container was STALE at the CONT-10-era snapshot e99c2fbd; origin/main was 325 commits ahead (CONT-11..CONT-32). Fast-forward to 733bcbe3, zero local divergence. Consumed CONT-32 ledger + registry (813->815) + batch-20 census; honest admission: I was behind, the repo was at CONT-32 while my context said CONT-10.
+- Rebuilt the engine from HEAD (binary sha16 3a3961d63697483d) — background builds die with the tool-call boundary in this sandbox; foreground 590s-window make chunks are the working recipe.
+- PRE baseline reproduced CONT-32 EXACTLY: dooz 90s anchor 851cc1761a1dfcdf, iget-object ~1.11us/call @ 3.93M calls, telegram face 774075b428f53791 — lineage faithful.
+- F-NEW-524 (the ledger's NAMED next lever) ROOT-CAUSED-FIXED: HeapObject.fields + DalvikHeap.objects_ + static_field_storage_ std::map -> std::unordered_map (hot path = find/operator[] only). Frozen ordered consumers preserve the std::map contract by explicit sorted keys: DalvikHeap::dump/get_all_ids (id-ascending), view-tree fallback full-heap scan (id-ascending), R$string resource-id scan (first-match IS semantic — D8 ordinal collisions). ~35 fields-iteration sites audited: diagnostics/bounded dumps left hash-order (zero semantic surface, ledger-noted). Patch scripts/cont33_heap_unordered.py (anchor-verified, idempotent).
+- A/B: iget-object 1.112 -> 1.038 us/call (-6.6%), sget-object 0.891 -> 0.773 est_ms. The F-NEW-381 wall REMAINS: the 90s dooz window still ends in the F084 budget halt mid-first-composition (the run is cut while still composing — board not painted; no false claim).
+- FULL GATE at the lever binary: dooz 90s x4 byte-identical 851cc1761a1dfcdf; anchors 6/6 byte-identical (opencalc 63020bc7 x2, chess 3f7e6707 x2, microtimer bbd350b6 x2, unote 7481e9b4, tower3d 11a38a5a); user goldens 4/4 PASS; gate-A probe 98 PASS/1 INFO/0 FAIL; negatives 19/19 (after run/gatea/probe_store regen at the new binary — the 9/19 was the stale-store artifact, same as CONT-158/CONT-32); skill 13/13; telegram face byte-identical; batch-20 census re-run byte-exact retention across all 20 rows (5/20 content; 15 blanks = the named stuck list unchanged).
+- F-NEW-523 static decode advanced (ready-made cont9_dexdump.py): ra/a.get builds HashMap priorities (m5/b config objects, 30000/86400000ms) then checks keySet().size() against d5/c enum values (3 consts) before the ISE at pc=121 (0x01d4) — the live sub-answer pin (put lost vs size wrong vs values() length) needs the CL-TRACE run at the next wave.
+- Registry 815->816 id-unique (F-NEW-524 ROOT-CAUSED-FIXED; F-NEW-381 cont33 evidence refresh), canonical==mirror. PUSH: 733bcbe3..8c1fdea4, secret guard PASS.
+
+Stage Summary:
+- Honest self-update done; the wave landed the named phase-2 lever with the full gate green and byte-exact corpus retention — no drift, no false claims, the wall honestly stands.
+- Next wave owns: (1) per-call method-invocation machinery lever (try_recursive_invoke 4.64M calls/74.7T ticks dominate — frame setup + register marshaling per nested call), (2) telegram F-NEW-523 live CL-TRACE pin + Firebase API-key face, (3) the 15-blank stuck list (A-getClass family first: prism/matewave compose chains at the current binary).
