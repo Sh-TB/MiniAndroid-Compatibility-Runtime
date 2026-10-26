@@ -10222,6 +10222,45 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     if (!method_descriptor.empty()) {
         m3_active_key += method_descriptor;
     }
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-541 (CONT-37): CALLER-SITE PC identity — the dispatch SITE is
+    // part of the computation identity.
+    //
+    // OBSERVATION (dooz v23, 300s completed run rc=0, run/cont37/): the
+    // board Canvas block NEVER executes — 0 LINE ops in the full
+    // MINIANDROID_CANVAS_OP_TRACE; the board zone y∈[400,1500] receives
+    // ZERO draw primitives while the chrome paints 231,873 content px.
+    // DEX decode (scripts/cont37_scan_canvas.py + cont9_dexdump.py):
+    //   drawLine terminal = Ljt1;.drawLine; the only app-level callers =
+    //   Ly3;.m(J,J,Lg7;)V pc=42 (the compose Canvas.drawLine impl)
+    //   ← Lgi;.j0 ← Lgl0;.j0 ← Lp00;.j0 (iface) ← Lmy;.i pc=69 — and the
+    //   Canvas-block lambda Lz6;.i (530 units, DrawScope-carrying, calls
+    //   Ly3;.m at pc=303). BOTH Lmy;.i and Lz6;.i have ZERO invocations
+    //   in the whole run — created during composition, never dispatched.
+    //   The live stub trace names the killer:
+    //   [M3-19-CYCLE] Lho1;.b(Lf90;)Ljava/lang/Object;#532 re-entered
+    //   while active (depth=24) — active-cycle stub, lifetime_calls=9.
+    //   Lho1;.b is the DRAW-BLOCK DISPATCHER (takes the Lf90; draw block);
+    //   its key (#532 = the block's object id) is COMPLETE by the
+    //   F-NEW-306 test — yet the SAME block legitimately re-enters while
+    //   active: compose dispatches the block PER STRUCTURAL POSITION
+    //   (nested draw-modifier layers re-dispatch the same block object
+    //   from different walk sites). The distinguishing identity — the
+    //   CALLER'S dispatch-site pc — is invisible to an argument-identity
+    //   key: the F-098/F-NEW-286/F-NEW-297 family's invisible-nesting
+    //   shape, one level deeper (payload identical, site differs).
+    //
+    // LAW: the caller's invoke-site pc is computation identity. Two
+    // re-entrant calls identical in (method, receiver, args) but issued
+    // from DIFFERENT call sites are different structural dispatches —
+    // execute real DEX. Same-site re-entry remains same-computation
+    // evidence (the stub's original S22/F-017/F-076 contract is
+    // preserved). Keys become strictly more specific, so the guard only
+    // fires LESS often; MAX_RECURSION_DEPTH (80) remains the loud
+    // backstop. Key-part syntax "~pc<N>" cannot collide with "#<id>",
+    // "=<value>", "@<descriptor>".
+    // ────────────────────────────────────────────────────────────────────
+    m3_active_key += "~pc" + std::to_string(pc_);
     if (!current_invoke_is_static_ && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
         m3_active_key += "#" + std::to_string(args[0].object_id);
@@ -18862,6 +18901,41 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                       << " (currently in " << current_class_ << "." << current_method_
                       << " PC=" << pc_ << "/" << bytecode_.size() << ")"
                       << " RSS=" << (miniandroid::probe::rss_kb() / 1024) << " MB" << std::endl;
+        }
+
+        // ── F-NEW-542 (CONT-37): env-gated LIVE HEAP CENSUS ────────────────
+        // Every 16th progress tick (~1.6M instructions) when
+        // MINIANDROID_HEAP_CENSUS is set: RSS + live heap-object population
+        // + top-8 classes by allocation count. Bounded 40 emissions per run
+        // (bounded-logging law). Names the top allocator of an unbounded
+        // heap face LIVE — no SIGKILL flush loss (telegram's named #1
+        // structural lever). Read-only; zero app knowledge; emission only.
+        {
+            static thread_local const bool heap_census_on =
+                DalvikHeap::heap_census_enabled();
+            static thread_local uint64_t heap_census_ticks = 0;
+            if (heap_census_on && (global_insn_counter % (progress_interval_ * 16)) == 0) {
+                if (heap_census_ticks < 40) {
+                    ++heap_census_ticks;
+                    const auto& hist = heap_.class_histogram();
+                    std::vector<std::pair<uint64_t, const std::string*>> tops;
+                    tops.reserve(hist.size());
+                    for (const auto& kv : hist) tops.push_back({kv.second, &kv.first});
+                    std::sort(tops.begin(), tops.end(), std::greater<>());
+                    uint64_t total = 0;
+                    for (const auto& kv : hist) total += kv.second;
+                    fprintf(stderr, "[HEAP-CENSUS] insn=%llu rss_kb=%llu live_objects=%llu alloc_total=%llu top:",
+                            (unsigned long long)global_insn_counter,
+                            (unsigned long long)miniandroid::probe::rss_kb(),
+                            (unsigned long long)heap_.size(),
+                            (unsigned long long)total);
+                    for (size_t k = 0; k < tops.size() && k < 8; ++k)
+                        fprintf(stderr, " %s=%llu", tops[k].second->c_str(),
+                                (unsigned long long)tops[k].first);
+                    fprintf(stderr, "\n");
+                    fflush(stderr);
+                }
+            }
         }
 
         // EXP-042 Phase 1: Per-frame loop detection (replaces the previous

@@ -1032,6 +1032,9 @@ public:
     uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
         HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
         objects_[obj.object_id] = obj;
+        // F-NEW-542: env-gated live allocation histogram (see the member
+        // comment). One cached-branch load per allocation when unset.
+        if (heap_census_enabled()) note_alloc_class(class_desc);
         // CONT-28 (generic diagnostic): env-gated allocation trace. When
         // MINIANDROID_ALLOC_TRACE names a class-descriptor substring, every
         // heap allocation whose class matches logs object_id + class + pc +
@@ -1095,6 +1098,25 @@ public:
     }
     
     size_t size() const { return objects_.size(); }
+    
+    // ── F-NEW-542 (CONT-37): INCREMENTAL PER-CLASS ALLOCATION HISTOGRAM ────
+    // Env-gated (MINIANDROID_HEAP_CENSUS): the interpreter's progress
+    // sampler emits the live top-K class counts + object population so an
+    // unbounded-heap face (telegram RSS 2.9GB@15s → container OOM rc=137,
+    // the CONT-36-named #1 structural lever) names its TOP ALLOCATOR
+    // live — no SIGKILL flush loss. Maintained ONLY when the env is set
+    // (heap_census_enabled(), cached once) so the default run pays one
+    // cached-branch load per allocation, zero map work.
+    static bool heap_census_enabled() {
+        static const bool on = std::getenv("MINIANDROID_HEAP_CENSUS") != nullptr;
+        return on;
+    }
+    void note_alloc_class(const std::string& class_desc) {
+        ++class_histogram_[class_desc];
+    }
+    const std::unordered_map<std::string, uint64_t>& class_histogram() const {
+        return class_histogram_;
+    }
     
     json dump() const {
         json arr = json::array();
@@ -1229,6 +1251,7 @@ public:
 
 private:
     std::unordered_map<uint32_t, HeapObject> objects_;
+    std::unordered_map<std::string, uint64_t> class_histogram_;  // F-NEW-542
     uint32_t next_id_;
     uint64_t alloc_sequence_;
     json allocation_log_;
