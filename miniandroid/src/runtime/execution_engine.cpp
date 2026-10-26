@@ -217,6 +217,19 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
         std::cerr << "[BOOT-ORDER] " << boot_stage_no << "/7 stage=" << name
                   << " ok=" << (ok ? 1 : 0)
                   << " ms=" << ms << std::endl;
+        // CONT-38 (R-NEW-547 evidence): per-stage RSS — attributes the
+        // telegram boot bulk (~2GB pre-100K-insns) to its stage. Read-only
+        // /proc/self/statm read (resident pages × page size), one line per
+        // stage, zero behavior change.
+        {
+            std::ifstream statm("/proc/self/statm");
+            long total_pages = 0, resident_pages = 0;
+            if (statm) statm >> total_pages >> resident_pages;
+            std::cerr << "[BOOT-RSS] stage=" << name
+                      << " rss_mb="
+                      << (resident_pages * 4096.0 / (1024.0 * 1024.0))
+                      << std::endl;
+        }
         return ok;
     };
 
