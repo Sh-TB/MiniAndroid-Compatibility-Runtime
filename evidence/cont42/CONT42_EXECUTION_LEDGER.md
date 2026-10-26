@@ -120,3 +120,25 @@ with byte-exact walls as the only acceptable proof of semantic preservation.
 - scripts/{cont42_baseline.sh, cont42_profile_build.sh, cont42_batch50.py,
   cont11_drawmap*.py (superseded by the self-update; kept for the record)}
 - registry 843 → 844 (R-NEW-554 ROOT-CAUSED-FIXED)
+
+## §6 — TRAIN 3 ADDENDUM: the -fno-icf attribution (same session, back-to-back)
+
+- Built the PROFILE binary with `-fno-icf` and re-ran the 60s gprof: the 68M
+  "R530Memo::~R530Memo" symbol PERSISTS (65.5M calls, 14.4%) → NOT compiler ICF.
+- Root identity: the GNU linker deduplicates the IDENTICAL machine code of every
+  `unordered_map<string, trivially-destructible-value>` destructor across
+  translation units (weak-symbol dedup, independent of the compiler's -fno-icf).
+  gprof shows the winner's NAME; the 65.5M calls are the UNION of all such
+  destructor invocations engine-wide. The caller edges give the true levers:
+  1. **try_recursive_invoke: 15,965,348 dtor calls** — the tri entry builds ~6
+     local string-keyed maps per call (2.67M tri calls). Lever: hoist/pool the
+     per-call identity maps.
+  2. **HeapObject COPY CTOR: 5,490,924** — full HeapObject copies
+     (descriptors + the ENTIRE fields unordered_map) 5.5M times per run.
+     Lever: shared_ptr discipline — never copy a HeapObject.
+  3. The invoke family (virtual/direct/super/interface/static) shares ~44M.
+  Background costs: 629.9M std::string operator== per 60s; 25M InstructionTrace
+  Operand vector reallocs (3.3%); _init 7.6% (static-init machinery).
+- Evidence: evidence/cont42/nofold_profile_addendum.json; registry R-NEW-554
+  `next` updated. TRAIN 3's mission is named: HeapObject copy elimination +
+  tri map hoisting, then the planned telegram SvgHelper train.

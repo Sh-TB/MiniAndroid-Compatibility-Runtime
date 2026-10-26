@@ -11722,3 +11722,17 @@ Work Log:
 Stage Summary:
 - TRAIN 2 complete: the dooz composition now gets 39.5% more interpreter budget per window with the whole wall byte-exact — the Case E throughput brake is measurably lighter, and every fix is a generic engine law (no app-specific code anywhere).
 - Next trains: CONT-43 = -fno-icf profile attribution then the named hot costs + telegram SvgHelper parse loop; CONT-44 XmlPullParser family; CONT-45 Fragment family; CONT-46 the 6 zero-unwind blanks; then the dooz board composition train (R-NEW-546 four allocation sites) with the larger budget.
+
+---
+Task ID: CONT-42-T3
+Agent: Super Z (main)
+Task: TRAIN 3 (back-to-back, «چند ده قطار») — the -fno-icf profile attribution for the 68M destructor symbol banked in TRAIN 2's post-fix profile.
+
+Work Log:
+- Rebuilt build_prof with -fno-icf (profile-only flag, never shipped) and re-ran the 60s dooz profile: the 65.5M-call dtor symbol PERSISTS → NOT compiler ICF.
+- Root identity established: GNU ld weak-symbol dedup folds the IDENTICAL machine code of every unordered_map<string, trivially-destructible-value> dtor across TUs (regardless of -fno-icf); gprof shows one name for the union.
+- True callers (from the caller edges): try_recursive_invoke 15,965,348 (per-call local maps ×~6); HeapObject COPY CTOR 5,490,924 (whole-field-map copies — the shared_ptr-discipline lever); the invoke family ~44M.
+- Banked: evidence/cont42/nofold_profile_addendum.json + evidence/cont42/CONT42_EXECUTION_LEDGER.md §6 + registry R-NEW-554 `next` updated (844 roots).
+
+Stage Summary:
+- The next throughput train's levers are named with true call volumes: HeapObject copy elimination + tri per-call map hoisting; then the planned telegram SvgHelper train. TRAIN 3 closes the session's pipeline at three pushed trains' worth of evidence; every claim carries its gprof/phase-clock/census artifact.
