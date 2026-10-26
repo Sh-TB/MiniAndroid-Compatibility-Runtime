@@ -8407,5 +8407,65 @@
   "fix": "moveSharedPreferencesFrom + moveDatabaseFrom bridge law: TRUE (the single-data-root model cannot produce the source-exists-move-IO-fails shape; identity law S99 keeps the per-name prefs object).",
   "evidence": "run/cont35/v5_bdc..v8_bdc ([F535-MOVE] rows; deskclock advanced past the prefs family to the app-internal b4/q60 IAE face)",
   "fanout": "best_deskclock + every androidx PreferenceManager device-protected-storage migration (targetSdk 24+ direct-boot family)"
+ },
+ {
+  "id": "R-NEW-536",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P0",
+  "layer": "dalvik/bridge_to_api (Class.newInstance ctor-dispatch family)",
+  "date": "2026-10-26",
+  "title": "Class.newInstance dispatched <init> WITHOUT a descriptor — the EXP-080 lenient arity heuristic bound a WRONG 1-param overload (p1 left UNINITIALIZED)",
+  "root_cause": "how2vote/leradar/subster live: PluginManager.instantiatePlugin → Class.newInstance → AllowListPlugin.<init> ran the (Context)V BODY with p1=t0/o0 (ARG-TRACE) — for a 1-arg call both <init>()V (param_count==arg_count-1) and <init>(Context)V (param_count==arg_count, 'static-like') match the permissive rule; the wrong body executed and ConfigXmlParser.parse read a zero ctx → getResources() zero answer → getClass NPE (F088 recv_type=0) → the cordova plugin-instantiation family died.",
+  "fix": "F-023 authority path at the Class.newInstance site: resolve the exact no-arg ctor descriptor from the DEX direct_methods (is_constructor && parameters.empty() && bytecode non-empty) and pass it to try_recursive_invoke; no no-arg ctor → honest InstantiationException (class-newinst-noarg) instead of a silent wrong-ctor run.",
+  "evidence": "evidence/cont36/ (ARG-TRACE AllowListPlugin.<init> args=1 + [F088] getClass miss recv_type=0 caller=ConfigXmlParser.parse); anchors 6/6 + games 7/7 byte-exact at 60d377668b5a2649",
+  "family": "how2vote, leradar, subster (+ every Class.newInstance consumer)"
+ },
+ {
+  "id": "R-NEW-537",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P0",
+  "layer": "dalvik/try_recursive_invoke + bridge_to_api (Uri$Builder fluent family)",
+  "date": "2026-10-26",
+  "title": "android.net.Uri$Builder had NO engine law — every fluent setter answered a silent null and the NEXT chain link died NPE-on-null",
+  "root_cause": "how2vote live: capacitor WebViewLocalServer.registerUriForScheme chains new Uri.Builder().scheme(s).authority(a).path(\"\")… — with no law each link returned null → .path invoked on a null result → registerUriForScheme pc=0x1a NPE → Bridge.loadWebView → Bridge.<init> APP-BOUNDARY (4 titles: how2vote/leradar/subster/voyager).",
+  "fix": "R-NEW-537/537b/537c (both channels): ALL Uri$Builder setters (scheme/authority/path/query/fragment + encoded twins) STORE the string under the F-104 Uri field names AND return the receiver builder (AOSP fluent identity); setters accept NULL args (assign-nothing + return this — AOSP never throws); appendPath joins with the AOSP '/' rule; build() materializes a Landroid/net/Uri; object; Uri.withAppendedPath(Uri,String) = buildUpon+appendPath+build with documented null NPE.",
+  "evidence": "ARG-TRACE Uri$Builder chain rows; ab10 live: getBridgeJS/getCordovaPluginJS faces dead; anchors byte-exact",
+  "family": "how2vote, leradar, subster, voyager + every Uri.Builder consumer"
+ },
+ {
+  "id": "R-NEW-538",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P0",
+  "layer": "dalvik/try_recursive_invoke + bridge_to_api (AssetManager.list)",
+  "date": "2026-10-26",
+  "title": "AssetManager.list(String) had NO law on the try_recursive_invoke channel (open's own channel) — capacitor getFilesContent died ARR-LEN-NULL",
+  "root_cause": "how2vote live: JSExport.getFilesContent runs getAssets().list(\"native-bridge.js\") then array-length — the dispatch channel that serves AssetManager.open (inside try_recursive_invoke) had NO list twin → unresolved null answer → ARR-LEN-NULL at getFilesContent pc=13 → Bridge.getJSInjector chain death. Secondary law: an existing FILE path must answer an EMPTY ARRAY (0 children — the app branches on length==0 to fall back to open()); only a MISSING path answers null. The first cut answered null for the FILE 'native-bridge.js' (live [R538-ENUM] prefix=assets/native-bridge.js/ n=0).",
+  "fix": "list law mirrored into BOTH channels (§22 one-semantic-two-surfaces): file-exists check (exact 'assets/'+dir entry) → EMPTY array; children enumeration under prefix → array; missing → null (AOSP documented quirk).",
+  "evidence": "[R538-LIST] assets/native-bridge.js/ -> 0 children (file law fired); getBridgeJS face DEAD post-fix; anchors byte-exact",
+  "family": "how2vote, leradar, subster, voyager + every AssetManager.list consumer"
+ },
+ {
+  "id": "R-NEW-539",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "dalvik/interpreter diagnostics (bounded-logging law)",
+  "date": "2026-10-26",
+  "title": "Six UNGATED telegram hot-path debug traces (EXP-055/056/059/060/071 era) burned fprintf+string-build CPU per call and violated the bounded-logging law",
+  "root_cause": "[TRY-INVOKE]/[IGET-OBJ-DBG]/[RET]/[EXP071-IGET-COUNTRY]/[EXP059-IGET]/[EXP060-IGET] printed on EVERY UserConfig.isClientActivated / isEmpty / addFragmentToStack / presentFragment hot call (thousands per telegram run) with NO env gate — the 'isEmpty' substring alone matched every app collection method.",
+  "fix": "All six sites env-gated behind MINIANDROID_TG_DEBUG (diag_env cached-flag pattern, CONT-96 law); identical output when the flag is set, silent+fast when off.",
+  "evidence": "run/cont36/tg/run1.diag (ungated stream captured) vs run3.diag; anchors 6/6 byte-exact (semantic neutrality)",
+  "family": "telegram + every app with isEmpty-format methods"
+ },
+ {
+  "id": "R-NEW-540",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "dalvik/bridge_to_api (Context.getSystemService family)",
+  "date": "2026-10-26",
+  "title": "JobScheduler missing from BOTH service maps + the substring-only guard missed Application/Service receivers — WorkManager bootstrap died",
+  "root_cause": "chompass live: androidx.work SystemJobScheduler.<init> first insn JobSchedulerExtKt.getWmJobScheduler(ctx) → ctx.getSystemService(\"jobscheduler\") → the class/string service maps had NO jobscheduler entry AND the guard (class_name.find(\"Context\")/\"Activity\") missed the app's Application-class receiver → null → ctor NPE at pc=0x0 → Schedulers.createBestAvailableBackgroundScheduler death.",
+  "fix": "Both F-033 sites: {JobScheduler, jobscheduler} added to the class AND string maps (AOSP Context.JOB_SCHEDULER_SERVICE, API 21+, never-null) + the guard extended with the S85-FIX hierarchy walk (is_subclass_of over Context/Activity/Application/Service/View roots).",
+  "evidence": "ab12 live: R339-SVC fires for activity/connectivity on WorkManager receivers post-guard; anchors byte-exact",
+  "family": "chompass + every WorkManager/JobScheduler consumer"
  }
 ]
