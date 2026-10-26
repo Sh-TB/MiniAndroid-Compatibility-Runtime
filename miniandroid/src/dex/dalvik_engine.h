@@ -49,6 +49,7 @@ class HeapAllocator;
 #include <iomanip>
 #include <chrono>
 #include <set>
+#include <unordered_set>  // CONT-42: M3 active-key set (lookup-only)
 
 #include "../../third_party/nlohmann_json/include/nlohmann/json.hpp"
 
@@ -1338,30 +1339,43 @@ public:
     uint32_t last_invoke_pc_ = 0;
     void set_last_invoke_pc(uint32_t pc) { last_invoke_pc_ = pc; }
     
-    StackFrame pop_frame() {
-        if (stack_.empty()) return StackFrame{};
-        
+    // CONT-42 THROUGHPUT LAW (gprof, dooz 60s profile): pop_frame was the
+    // single hottest engine function (12.7% of wall, 1.27M calls): (a) the
+    // EXP-042 cap erased ONE element from the FRONT on every push at cap —
+    // vector::erase(begin) is O(n) per pop, the exact shape the F-107b law
+    // already banned for the trace vectors; (b) the frame was COPIED twice
+    // (push_back(frame) + return frame) although the only call site discards
+    // the return. Fix: F-107b BATCHED erase (drop a batch in one erase —
+    // identical FIFO order, identical survivor set modulo the documented
+    // bounded BATCH lag), move into completed_frames_, and return void (the
+    // sole caller never consumed the returned copy).
+    static constexpr size_t kCompletedFrameBatch = 64;
+    void pop_frame() {
+        if (stack_.empty()) return;
+
         Frame frame = std::move(stack_.top());
         stack_.pop();
-        
+
         frame.exit_time = Clock::now();
         frame.duration_ms = std::chrono::duration<double, std::milli>(
             frame.exit_time - frame.enter_time).count();
         frame.status = StackFrame::Status::RETURNED;
-        
+
         // EXP-042 Phase 1: Cap completed_frames_ to bound memory. Each frame
         // embeds a DexRegisterFile (~16 DalvikValue entries × 88 B + set + map
         // = ~2 KB). For deep recursive APKs (Telegram's Theme.getColor recurses
         // 6 000+ times), an uncapped vector grows past 12 MB and pushes toward
-        // OOM. The cap keeps the last N frames; older frames are discarded.
+        // OOM. The cap keeps the last N frames; older frames are discarded
+        // (F-107b batched erase — one O(n) memmove per BATCH, not per pop).
         if (completed_frame_cap_ > 0 &&
-            completed_frames_.size() >= completed_frame_cap_) {
-            completed_frames_.erase(completed_frames_.begin());
+            completed_frames_.size() >= completed_frame_cap_ +
+                                            kCompletedFrameBatch) {
+            completed_frames_.erase(completed_frames_.begin(),
+                                    completed_frames_.begin() +
+                                        static_cast<long>(kCompletedFrameBatch));
         }
-        completed_frames_.push_back(frame);
+        completed_frames_.push_back(std::move(frame));
         current_depth_ = stack_.size();
-        
-        return frame;
     }
     
     StackFrame& top() { return stack_.top(); }
@@ -1628,6 +1642,11 @@ struct DalvikExecutionResult {
     // Traces
     std::vector<InstructionTrace> instruction_traces;
     std::vector<ApiCallTrace> api_call_traces;
+    // CONT-42 THROUGHPUT LAW: the O(1) survivor-ring cursor for
+    // api_call_traces (batched_cap_push ring form). 0 = chronological;
+    // nonzero = physical ring order. ring_normalize_chrono() restores
+    // true FIFO order once at execution end (single O(cap) rotate).
+    size_t api_call_ring_cursor = 0;
     
     // Final register state (from top frame if exists)
     json final_registers;
@@ -2187,7 +2206,9 @@ public:
     // call counter, which silently corrupted app semantics after 10 calls
     // (evidence: chessclock v29 clock label "null" from tick 2; tictactoe
     // CHAR-PROBE access$ throttle "null WINS" mid-game).
-    std::set<std::string> active_invoke_keys_;
+    // CONT-42 THROUGHPUT LAW: count/insert/erase by key only, never ordered
+    // iteration -> unordered_set (kills the rb-tree string compares per invoke).
+    std::unordered_set<std::string> active_invoke_keys_;
 
     // EXP-051: Public singleton accessor so the shadow registry can
     // share the engine's singleton cache (which guarantees that

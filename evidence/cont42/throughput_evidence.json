@@ -1,0 +1,68 @@
+{
+ "artifact": "throughput_evidence.json — CONT-42 TRAIN 2 (user: «ادامه از جایی که ناقص موندی ادامه بده» / standing «چند ده قطار» directive). The dooz board frontier is THROUGHPUT-bound (CONT-41 Case E); this wave attacked the interpreter's generic hot paths with a measure-first discipline.",
+ "head_at_wave_start": "94a4d98f (origin/main, CONT-41 TRAIN 1)",
+ "binary": "7af40aa291aaf039 (-g0 -O2 build of the fixed tree; canonical flags lost -g only — zero codegen effect)",
+ "method": [
+  "gprof (-pg build, dooz 60s window, ~14.3M insns) — flat profile named the four levers",
+  "MINIANDROID_PERF_PHASES=1 phase clock (45s) — call counts falsified the is_subclass_of theory (2,973 calls only)",
+  "fix -> rebuild -> byte-exact gates -> re-profile"
+ ],
+ "baseline_run": {
+  "window": "90s",
+  "insns": 32900000,
+  "anchor": "851cc1761a1dfcdf",
+  "rc": 1
+ },
+ "post_fix_run": {
+  "window": "90s",
+  "insns": 45900000,
+  "anchor": "851cc1761a1dfcdf",
+  "rc": 1,
+  "delta": "+39.5% instructions in the same wall-clock window, anchor byte-exact"
+ },
+ "profile_pre_top": [
+  "12.69% CallStack::pop_frame (1,272,435 calls; O(n) erase per push + double copy)",
+  "9.03% batched_cap_push<ApiCallTrace> (1,557,425 pushes; batched memmove ~18GB/run)",
+  "6.41% std::map<string,int>::operator[] (4,434,794 calls; M3 gate per-invoke bumps)",
+  "5.69% R530Memo::~R530Memo symbol (49,166,715; later identified as ICF-merged unordered_map dtor code)",
+  "4.43% std::operator==(string,string) (522,930,190)",
+  "4.25% fetch_decode_execute (the interpreter core itself)"
+ ],
+ "profile_post_top": [
+  "13.77% R530Memo::~R530Memo symbol (68,354,856 — ICF-folded unordered_map dtor code; NEXT frontier: -fno-icf profile build)",
+  "9.94% _init (static-init machinery)",
+  "6.31% fetch_decode_execute (1,591,212 calls — more insns per second)",
+  "4.54% std::operator==(string,string) (659,806,168)",
+  "3.68% try_recursive_invoke (2,797,756)",
+  "1.82% batched_cap_push (was 9.03%)",
+  "pop_frame: OUT OF THE TOP (was 12.69%)",
+  "map<string,int>::operator[]: OUT OF THE TOP (was 6.41%)"
+ ],
+ "regression": {
+  "anchors_6": {
+   "opencalc": "63020bc7334048fe",
+   "chess": "3f7e670759b7c6a8",
+   "microtimer": "bbd350b6c14fbd52",
+   "unote": "7481e9b468eaa376",
+   "tower3d": "11a38a5aeeff45a6",
+   "dooz": "851cc1761a1dfcdf",
+   "verdict": "6/6 BYTE-EXACT"
+  },
+  "games_7": {
+   "g2048": "f43face08299ffc6",
+   "tetris": "b818a6a7016bea8e",
+   "snake_deluxe": "5235683fc7b1f04b",
+   "snakeneon": "2617c81c9e72b195",
+   "ttt_deluxe": "db1d633d77b5819a",
+   "minicraft": "e77a073f733255eb",
+   "gmdice": "3891679dff449331",
+   "verdict": "7/7 EXACT-TO-PIN"
+  },
+  "negatives": "19/19 PASS (after run/gatea/probe_store regen at the new binary — the established stale-store artifact, CONT-32/33/158 precedent)",
+  "reinstall": "8/8 PASS",
+  "skill_selftest": "13/13 PASS",
+  "batch50_census": "50/50 rows; 14/14 content rows BYTE-EXACT RETAINED; zero drift; no new crossing claimed",
+  "verdict": "ZERO DRIFT ACROSS THE WHOLE WALL"
+ },
+ "next_train": "CONT-43: (a) the ICF-merged 68M destructor symbol + 660M string operator== — rebuild the PROFILE binary with -fno-icf for true attribution, then the named fixes; (b) the planned CONT-43 telegram SvgHelper parse loop; (c) CONT-44 XmlPullParser family; (d) CONT-45 Fragment family; (e) CONT-46 6 zero-unwind blanks."
+}
