@@ -1,0 +1,261 @@
+{
+ "aegis": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Landroidx/fragment/app/Fragment;.<init> pc=0x47 depth=3",
+  "n_unwind": 3,
+  "n_sites": 3,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "aeropayout": {
+  "deepest": "Ljava/lang/NullPointerException; unwound LL1/l;.get pc=0x3b0 depth=14",
+  "n_unwind": 8,
+  "n_sites": 4,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "amaze": {
+  "deepest": "Ljava/lang/NumberFormatException; unwound Lch/qos/logback/core/util/StatusPrinter;.buildStr pc=0x1f depth=10",
+  "n_unwind": 22,
+  "n_sites": 19,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "audiobook": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lyx;.a pc=0x32 depth=11",
+  "n_unwind": 11,
+  "n_sites": 9,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "aurora": {
+  "deepest": "Ljava/lang/IllegalStateException; unwound Lvs2;.b pc=0x76 depth=68",
+  "n_unwind": 31,
+  "n_sites": 23,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "awagam": {
+  "deepest": "Ljava/lang/IllegalArgumentException; unwound Lokhttp3/ConnectionSpec$Builder;.cipherSuites pc=0x1c depth=70",
+  "n_unwind": 30,
+  "n_sites": 24,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "batterymonitor": {
+  "deepest": "Ljava/lang/IllegalStateException; unwound Landroidx/fragment/app/FragmentManager;.enqueueAction pc=0x12 depth=5",
+  "n_unwind": 4,
+  "n_sites": 4,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "best_deskclock": {
+  "deepest": "Landroid/content/res/Resources$NotFoundException; unwound Lfb;.D pc=0x10 depth=7",
+  "n_unwind": 21,
+  "n_sites": 17,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "chompass": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Landroidx/work/impl/background/systemjob/SystemJobScheduler;.<init> pc=0x0 depth=15",
+  "n_unwind": 28,
+  "n_sites": 26,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "compose_stopwatch": {
+  "deepest": "NO-UNWIND",
+  "n_unwind": 0,
+  "n_sites": 0,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "concealmobile": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/apache/cordova/engine/SystemWebView;.init pc=0xa depth=6",
+  "n_unwind": 5,
+  "n_sites": 5,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "dmfs_tasks": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/dmfs/xmlobjects/pull/XmlObjectPull;.pull pc=0x6 depth=7",
+  "n_unwind": 8,
+  "n_sites": 8,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "firewall": {
+  "deepest": "Ljava/lang/UnsupportedOperationException; unwound Landroidx/lifecycle/r0;.create pc=0x3b depth=81",
+  "n_unwind": 32,
+  "n_sites": 24,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "fitbuddy": {
+  "deepest": "Lj; unwound Le64;.h pc=0x4 depth=15",
+  "n_unwind": 21,
+  "n_sites": 21,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "floatdeck": {
+  "deepest": "NO-UNWIND",
+  "n_unwind": 0,
+  "n_sites": 0,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "fossify_clock": {
+  "deepest": "NO-UNWIND",
+  "n_unwind": 0,
+  "n_sites": 0,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "fossify_notes": {
+  "deepest": "NO-UNWIND",
+  "n_unwind": 0,
+  "n_sites": 0,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "gecko": {
+  "deepest": "Lorg/xmlpull/v1/XmlPullParserException; unwound Ls1;.i pc=0xdf depth=44",
+  "n_unwind": 32,
+  "n_sites": 21,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "goodtime": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lf05;.<init> pc=0x0 depth=6",
+  "n_unwind": 7,
+  "n_sites": 7,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "how2vote": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/apache/cordova/AllowListPlugin;.<init> pc=0x13 depth=10",
+  "n_unwind": 6,
+  "n_sites": 6,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "k9": {
+  "deepest": "Lorg/koin/core/error/NoDefinitionFoundException; unwound Lorg/koin/core/scope/Scope;.resolveInstance pc=0xf depth=7",
+  "n_unwind": 26,
+  "n_sites": 15,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "leradar": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/apache/cordova/AllowListPlugin;.<init> pc=0x13 depth=10",
+  "n_unwind": 6,
+  "n_sites": 6,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "lrceditor": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;.m pc=0x13 depth=6",
+  "n_unwind": 4,
+  "n_sites": 4,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "lumolight": {
+  "deepest": "Lorg/xmlpull/v1/XmlPullParserException; unwound La4;.h pc=0xe6 depth=105",
+  "n_unwind": 32,
+  "n_sites": 21,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "matewave": {
+  "deepest": "Ljava/lang/IllegalArgumentException; unwound Le80;.<init> pc=0xa depth=61",
+  "n_unwind": 32,
+  "n_sites": 23,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "notepad": {
+  "deepest": "Ljava/lang/IllegalArgumentException; unwound Lcom/nononsenseapps/notepad/database/Notification;.getNotificationsWithTime pc=0x17 depth=5",
+  "n_unwind": 8,
+  "n_sites": 8,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "prism": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/unifiedpush/android/distributor/Database;.m pc=0x0 depth=62",
+  "n_unwind": 32,
+  "n_sites": 26,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "qssp": {
+  "deepest": "NO-UNWIND",
+  "n_unwind": 0,
+  "n_sites": 0,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "ricochlime": {
+  "deepest": "Ljava/lang/RuntimeException; unwound Lv2/h;.<init> pc=0x21 depth=3",
+  "n_unwind": 2,
+  "n_sites": 2,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "shizuwall": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lxy0;.<init> pc=0x0 depth=7",
+  "n_unwind": 4,
+  "n_sites": 4,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "sopadeletras": {
+  "deepest": "Ljava/lang/IllegalArgumentException; unwound Lxn;.a pc=0x0 depth=62",
+  "n_unwind": 32,
+  "n_sites": 25,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "sparkledns": {
+  "deepest": "NO-UNWIND",
+  "n_unwind": 0,
+  "n_sites": 0,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "subster": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/apache/cordova/AllowListPlugin;.<init> pc=0x13 depth=10",
+  "n_unwind": 6,
+  "n_sites": 6,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "sunpiano": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lj4/b;.<clinit> pc=0x8 depth=47",
+  "n_unwind": 32,
+  "n_sites": 22,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "surgeengine": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lorg/liballeg/android/AllegroActivity;.<init> pc=0x1e depth=3",
+  "n_unwind": 2,
+  "n_sites": 2,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "voyager": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme pc=0x1a depth=10",
+  "n_unwind": 10,
+  "n_sites": 9,
+  "fatal": 0,
+  "synth_n": 0
+ },
+ "webstack": {
+  "deepest": "Ljava/lang/NullPointerException; unwound Lq21;.<init> pc=0x89 depth=60",
+  "n_unwind": 32,
+  "n_sites": 24,
+  "fatal": 0,
+  "synth_n": 0
+ }
+}
