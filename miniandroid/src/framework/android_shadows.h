@@ -1775,6 +1775,13 @@ public:
         if (class_name == "Landroid/webkit/CookieManager;") {
             return true;
         }
+        // R-NEW-552 (CONT-41): the WebView provider's service-worker
+        // controller — same provider singleton family; Capacitor's
+        // Bridge.loadWebView boot chain asks getInstance on every launch.
+        if (class_name == "Landroid/webkit/ServiceWorkerController;" ||
+            class_name == "Landroid/webkit/ServiceWorkerWebSettings;") {
+            return true;
+        }
         // Match any class ending in "View;" or "ViewGroup;" or containing
         // well-known View subclasses. Specific dispatch is done by
         // method name.

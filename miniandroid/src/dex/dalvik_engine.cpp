@@ -8920,8 +8920,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             "LIST", prefix538, dir_present538, "AssetManager.list",
             current_class_ + "." + current_method_);
         if (!dir_present538) {
-            // AOSP documented quirk: list on a missing dir → null.
-            return_val = DalvikValue::make_null();
+            // R-NEW-551 twin (same law as the bridge channel): missing
+            // path → IOException, never null (AOSP-faithful; the null
+            // channel ARR-LEN-NULL-killed the capacitor family).
+            throw_deferred("Ljava/io/IOException;",
+                           "Unable to list asset file " + dir538,
+                           "R551-LIST-MISSING");
             recursion_depth_--;
             return true;
         }
@@ -34647,6 +34651,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             heap_.set_object_field(b_id, field, v537);
         };
         if (is_setter537(method) && args.size() >= 2) {
+            // R-NEW-549b DIAG (env-gated, bounded): the capacitor
+            // registerUriForScheme family built Uris whose accessors ALL
+            // answered null — this trace names every setter/store/argument
+            // shape so the null face is attributable op-level.
+            static thread_local uint64_t diag537_n = 0;
+            if (diag_env("MINIANDROID_URI_DEBUG") && diag537_n++ < 32)
+                std::cerr << "[R537-SET] builder=o" << b_id << " " << method
+                          << " arg1_type=" << static_cast<int>(args[1].type)
+                          << " val=\""
+                          << (args[1].type == DalvikType::STRING_REF
+                                  ? std::string(args[1].string_val)
+                                  : std::string())
+                          << "\" caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
             if (args[1].type == DalvikType::STRING_REF)
                 store_str537(method.c_str(), args[1].string_val);
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -34895,6 +34913,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (method == "getScheme") {
+            // R-NEW-549b DIAG: name the field-scan truth (env-gated).
+            static thread_local uint64_t diaggs_n = 0;
+            if (diag_env("MINIANDROID_URI_DEBUG") && diaggs_n++ < 32) {
+                std::cerr << "[R537-GS] uri=o" << args[0].object_id
+                          << " scheme=\"" << uscheme << "\" path=\"" << upath
+                          << "\" fields=";
+                if (uobj)
+                    for (const auto& [fname, fval] : uobj->fields)
+                        std::cerr << fname
+                                  << (fval.type == DalvikType::STRING_REF
+                                          ? ":str "
+                                          : ":t" +
+                                                std::to_string(
+                                                    static_cast<int>(
+                                                        fval.type)) +
+                                                " ");
+                std::cerr << "caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
             if (!uscheme.empty()) {
                 result = DalvikValue::make_string(uscheme, 0);
             } else {
@@ -35735,6 +35772,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ── #371 PHASE B1: Uri.getAuthority/getQueryParameter — the routing
     // accessors provider code uses beside the existing getPath/getScheme
     // laws (Uri heap objects carry the parsed fields).
+    // R-NEW-550 (CONT-41) AUTHORITY FIELD-FIRST LAW: the old body read the
+    // LONGEST string field as `raw` and re-parsed it with parse_content_uri
+    // — for BUILDER-BUILT Uris (Uri$Builder law R-NEW-537: fields
+    // scheme="http", authority="localhost", path="/") raw = "localhost",
+    // parse fails, getAuthority answered NULL. Live face: capacitor
+    // WebViewLocalServer.register → UriMatcher.addURI(scheme, authority=…,
+    // path, code) — Capacitor's matcher walks token level i==-1 =
+    // AUTHORITY and invokes authority.contains("*") (addURI pc=0x62 in all
+    // 4 capacitor census titles) → NPE on the null → Bridge.<init> death ×
+    // subster/voyager/how2vote/leradar (the 4-title family). AOSP
+    // Uri.java: getAuthority answers the encoded authority PART the Uri
+    // was built with — for a builder Uri that IS the stored field; the
+    // re-parse fallback exists only for parse()-built Uris whose
+    // uri_raw carries the whole string. Law: read the "authority" field
+    // first (the R-NEW-537 setter/build convention); when absent/empty,
+    // fall back to the parse_content_uri(raw) channel unchanged. The same
+    // field-first order applies to getHost (AOSP: authority minus
+    // userinfo/port — single-authority form keeps the whole field).
     if (class_name == "Landroid/net/Uri;" &&
         (method == "getAuthority" || method == "getQueryParameter" ||
          method == "getHost" || method == "isHierarchical" ||
@@ -35743,15 +35798,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             !heap_.has_object(args[0].object_id))
             return false;
         std::string raw, scheme, auth, path, query;
-        for (const auto& [fname, fval] : heap_.get(args[0].object_id)->fields)
-            if (fval.type == DalvikType::STRING_REF &&
-                fval.string_val.size() > raw.size())
-                raw = fval.string_val;
+        // R-NEW-550 field-first: read the structured fields the
+        // builder/withAppendedPath laws store; the longest-string raw is
+        // the FALLBACK for parse()-built Uris (which carry uri_raw).
+        {
+            const auto* uobj550 = heap_.get(args[0].object_id);
+            for (const auto& [fname, fval] : uobj550->fields) {
+                if (fval.type != DalvikType::STRING_REF) continue;
+                if (fname == "scheme") scheme = fval.string_val;
+                else if (fname == "authority") auth = fval.string_val;
+                else if (fname == "path") path = fval.string_val;
+                else if (fname == "query") query = fval.string_val;
+                else if (fname == "uri_raw") raw = fval.string_val;
+                else if (fval.string_val.size() > raw.size())
+                    raw = fval.string_val;
+            }
+        }
+        if (method == "getAuthority" || method == "getHost") {
+            // R-NEW-550: the stored authority FIELD is authoritative when
+            // present; parse fallback only for parse()-built Uris.
+            if (!auth.empty()) {
+                result = DalvikValue::make_string(auth, 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // fall through to the parse channel below for raw Uris.
+        }
         bool okp = parse_content_uri(raw, scheme, auth, path, query);
         if (method == "toString") {
-            // AOSP Uri.toString returns the original string form.
-            result = raw.empty() ? DalvikValue::make_null()
-                                 : DalvikValue::make_string(raw, 0);
+            // AOSP Uri.toString returns the original string form — for a
+            // parse()-built Uri that is uri_raw; for a BUILDER-built Uri
+            // (R-NEW-537 fields, no uri_raw) the AOSP form is synthesized:
+            // [scheme"://"][authority][path]["?"query]["#"fragment].
+            // The old longest-string raw answered "localhost" here.
+            (void)okp;
+            std::string synth;
+            if (!scheme.empty()) synth += scheme + "://";
+            if (!auth.empty()) synth += auth;
+            synth += path;
+            if (!query.empty()) synth += "?" + query;
+            std::string frag550;
+            auto fv550 = heap_.get_object_field(args[0].object_id, "fragment");
+            if (fv550.has_value() && fv550->type == DalvikType::STRING_REF)
+                frag550 = fv550->string_val;
+            if (!frag550.empty()) synth += "#" + frag550;
+            // parse()-built Uris (uri_raw present) keep the raw channel.
+            auto rv550 = heap_.get_object_field(args[0].object_id, "uri_raw");
+            if (rv550.has_value() && rv550->type == DalvikType::STRING_REF &&
+                !rv550->string_val.empty())
+                synth = rv550->string_val;
+            result = synth.empty() ? DalvikValue::make_null()
+                                   : DalvikValue::make_string(synth, 0);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -62612,9 +62709,19 @@ measure_cm_done:;
             "LIST", prefix, dir_present, "AssetManager.list",
             current_class_ + "." + current_method_);
         if (!dir_present) {
-            // AOSP documented quirk: list on a missing dir → null.
-            result = DalvikValue::make_null();
-            status = ApiCallTrace::Status::IMPLEMENTED;
+            // R-NEW-551 (CONT-41) MISSING-PATH LAW, AOSP-faithful: real
+            // AssetManager.list(String) NEVER returns null — a missing
+            // asset path throws IOException ( frameworks/base
+            // AssetManager.java: the native listing fails → "Unable to
+            // list asset file" IOException). The old null channel killed
+            // the capacitor family at the NEXT op: getFilesContent's
+            // array-length NPE'd (ARR-LEN-NULL, uncaught by its
+            // IOException handler) → getCordovaPluginJS → Bridge.<init>
+            // death (subster/voyager/how2vote/leradar). IOException is
+            // caught by the app's own handler and the chain advances.
+            throw_deferred("Ljava/io/IOException;",
+                           "Unable to list asset file " + dir,
+                           "R551-LIST-MISSING");
             return true;
         }
         uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);

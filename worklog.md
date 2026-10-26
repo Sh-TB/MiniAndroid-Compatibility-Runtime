@@ -11681,3 +11681,24 @@ Work Log:
 Stage Summary:
 - The wave root-caused and killed the telegram +2.9GB memory envelope's real face (the RAF slurp law) with the malloc-interposer → engine-site chain fully evidenced, moved the interpreter to ~10x throughput in the freed window, and kept the whole wall byte-exact twice (CONT-39 array store + CONT-40 RAF law) with the 13/13 census contract.
 - Next wave owns: the SvgHelper$ParserHelper.parseFloat throughput dive (now the telegram first-frame gate), the dooz board composition frontier (R-NEW-546: the four Lz6; allocation-site invokers), and the ledger comment posting (rate-limit deferred).
+
+---
+Task ID: CONT-41
+Agent: Super Z (main)
+Task: User directive «ادامه بده قطار ها رو یکی یکی پشت سر هم بفرست همشون رو نه یک قطار چند ده قطار» — trains back-to-back, dozens not one. TRAIN 1: the batch-50 blank-family root-cause wave (capacitor/cordova family).
+
+Work Log:
+- SELF-UPDATE: local main == origin/main (5e18eb19 CONT-40) — NOT stale this cycle (verified via git fetch, honest).
+- BLANK DIAGNOSIS (scripts/cont41_diagnose_blanks.py): all 37 blank faces re-clustered at the CONT-40 binary. Families: capacitor registerUriForScheme NPE ×4 (subster/voyager/how2vote/leradar), XmlPullParser ×3, Fragment lifecycle ×3, 6 zero-unwind, singletons rest.
+- TOOL: scripts/cont41_disasm_regs.py — register-true Dalvik disassembler (35c/3rc/22c/23x/21t operands + full proto descriptors; fixes w7_disasm's operand-less output and cont9's broken class_data walk). The train's reusable decode asset.
+- R-NEW-550 ROOT-CAUSED-FIXED: Uri.getAuthority/getHost answered NULL for BUILDER-built Uris (the law re-parsed the longest string field: 'localhost' -> parse fail -> null) — capacitor UriMatcher.addURI invokes authority.contains('*') at token level i==-1 (pc=0x62; the F141-DIAG 'p1=scheme=null' reading was WRONG — the [R537-GS] trace proved getScheme answered 'http'; the REAL null receiver was the AUTHORITY arm). Fix: FIELD-FIRST law (read the stored 'authority' field; parse channel only as fallback) + toString synthesizes the AOSP form for builder Uris. MINIANDROID_URI_DEBUG env-gated traces added to the R-NEW-537 setter + getScheme laws.
+- R-NEW-551 ROOT-CAUSED-FIXED: AssetManager.list answered NULL for a missing asset path ('AOSP documented quirk' — WRONG; real AOSP throws IOException) — getFilesContent array-length NPE'd (ARR-LEN-NULL), uncatchable by its IOException handler. Fix: missing path -> throw_deferred IOException in BOTH channels (bridge + try_recursive twin); app's own handler catches it (voyager: deferred handler @0x48 confirmed).
+- R-NEW-552 ROOT-CAUSED-FIXED: ServiceWorkerController.getInstance() generic-miss null — Bridge.loadWebView setServiceWorkerClient NPE at pc=141. Fix: shadow singleton law (ROOT-057 sibling) + handles_class claims (ServiceWorkerController + ServiceWorkerWebSettings).
+- CENSUS (scripts/cont41_batch50.py, Pool(1) after two Pool(2) OOM deaths — sandbox 3.9GB ceiling): 50/50 rows, CONTENT ROWS 13 -> 14 (concealmobile NEW CROSSING — the cordova family member), 13/13 prior content rows BYTE-EXACT RETAINED (scripts/cont41_retention.py VERDICT PASS, evidence/cont41/batch50_census.json).
+- REGRESSION WALL (scripts/cont41_wall.sh): anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176), games 7/7 EXACT-TO-PIN (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d).
+- DOOZ TRAIN PREP (CONT-42): 90s run = 32.3M insns RSS 332MB STABLE (the OOM was the 240s/2B-insn run breaching 3.25GB); METHOD-CENSUS top burn = the compose slot-table family (Ln3;.i/Lto1;.d/Lbw0;.d/Ln5;.h/Lwi1;.i — tens of thousands of calls); PERF-OPS top opcode = iget-object 1.9M calls. The composition is THROUGHPUT-bound (Case E stands).
+- REGISTRY 839 -> 843 (+4: R-NEW-550/551/552/553) id-unique; canonical projection regenerated 832 -> 843 (closed the CONT-38..41 lag).
+
+Stage Summary:
+- TRAIN 1 complete: the 4-title capacitor/cordova bootstrap family root-caused to THREE generic laws (Uri authority field-first / list-IOException / ServiceWorkerController singleton), concealmobile crossed to real UI (census 14/50), zero regressions across the full wall. The family titles now run crash-free to the Bridge; the webview pixel layer is the named next gate.
+- Next trains: CONT-42 dooz board (throughput: compose slot-table dispatch), CONT-43 telegram SvgHelper parse loop, CONT-44 XmlPullParser family (gecko/lumolight/sopadeletras), CONT-45 Fragment lifecycle family, CONT-46 the 6 zero-unwind blanks.
