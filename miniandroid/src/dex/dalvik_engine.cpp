@@ -4361,7 +4361,14 @@ bool DalvikExecutionEngine::execute_method_internal(
     static thread_local const bool method_trace_on =
         diag_env("MINIANDROID_METHOD_TRACE");
     static thread_local uint64_t method_entry_count = 0;
-    if (method_trace_on && method_entry_count < 100000) {
+    // CONT-38: env-tunable cap (default 100000 unchanged) — composition
+    // forensics on deep trees (dooz NavHost destination) run past the fixed
+    // cutoff, hiding the exact ctor/install moments.
+    static thread_local uint64_t method_trace_cap = [] {
+        const char* c = std::getenv("MINIANDROID_METHOD_TRACE_CAP");
+        return (c != nullptr) ? (uint64_t)strtoull(c, nullptr, 10) : 100000ULL;
+    }();
+    if (method_trace_on && method_entry_count < method_trace_cap) {
         std::cerr << "[METHOD-IN] " << class_name << "." << method_name
                   << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
         method_entry_count++;
@@ -4372,10 +4379,52 @@ bool DalvikExecutionEngine::execute_method_internal(
     static thread_local const bool drawwin_on =
         diag_env("MINIANDROID_DRAW_WINDOW_TRACE");
     static thread_local uint64_t drawwin_count = 0;
-    if (drawwin_on && draw_window_active_ && drawwin_count < 3000) {
+    // CONT-38: env-tunable cap (default 3000 unchanged) — the compose draw
+    // cascade is deep (hundreds of method entries per dispatch); the fixed
+    // cap died mid-walk before reaching the NavHost destination nodes.
+    static thread_local uint64_t drawwin_cap = [] {
+        const char* c = std::getenv("MINIANDROID_DRAW_WINDOW_TRACE_CAP");
+        return (c != nullptr) ? (uint64_t)strtoull(c, nullptr, 10) : 3000ULL;
+    }();
+    if (drawwin_on && draw_window_active_ && drawwin_count < drawwin_cap) {
         std::cerr << "[DRAWWIN-IN] " << class_name << "." << method_name
                   << " " << descriptor << std::endl;
         drawwin_count++;
+    }
+    // CONT-38 (F-NEW-544 evidence, DIAG-ONLY, env-gated): the compose draw
+    // cascade reached Luc0;.g x205 / rc0.e x203 / rc0.c x971 in the C013
+    // windows, yet the board draw block (Lz6;.i) NEVER dispatched. The
+    // suspected skip: Lpz0;.L0's arm select — P (the InnerNodeCoordinator)
+    // NULL -> the translate+children arm -> a childless node draws NOTHING.
+    // This probe reads each Lpz0;.L0 receiver's P + D (coords) fields from
+    // the heap at the invoke entry: which nodes draw, which are skipped,
+    // and whether the board node's P is missing. Read-only, bounded.
+    static thread_local const bool l0_trace_on =
+        diag_env("MINIANDROID_L0_TRACE");
+    static thread_local uint32_t l0_trace_count = 0;
+    if (l0_trace_on && l0_trace_count < 400 &&
+        class_name == "Lpz0;" && method_name == "L0" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        ++l0_trace_count;
+        uint32_t p_id = 0, d_lo = 0, d_hi = 0;
+        std::string p_cls;
+        auto pf = heap_.get_object_field(args[0].object_id, "P");
+        if (pf && pf->type == DalvikType::OBJECT_REF && pf->object_id != 0) {
+            p_id = pf->object_id;
+            if (const auto* po = heap_.get(pf->object_id))
+                p_cls = po->class_descriptor;
+        }
+        auto df = heap_.get_object_field(args[0].object_id, "D");
+        if (df && df->type == DalvikType::INT64) {
+            d_lo = (uint32_t)(df->long_val & 0xffffffffULL);
+            d_hi = (uint32_t)((df->long_val >> 32) & 0xffffffffULL);
+        }
+        std::cerr << "[L0-TRACE] node#" << args[0].object_id
+                  << " P=" << (p_id ? ("#" + std::to_string(p_id) + " " + p_cls)
+                                    : std::string("NULL"))
+                  << " D=0x" << std::hex << d_hi << d_lo << std::dec
+                  << " caller=" << current_class_ << "." << current_method_
+                  << std::endl;
     }
     // ────────────────────────────────────────────────────────────────────
     // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): ATTACH watch. The Compose
@@ -10190,6 +10239,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // execute real DEX). MAX_RECURSION_DEPTH remains the backstop for
     // recursion over fresh argument identities.
     static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
+    // F-NEW-543 (CONT-38): per-key ACTIVE-DEPTH map — how many frames of the
+    // SAME key are currently on the call stack. The stub trigger moves from
+    // raw set-membership (any active frame) to depth >= budget — see the
+    // law comment at the firing site.
+    static thread_local std::map<std::string, int> m3_key_active_depth;
     // F-NEW-286 payload-parts counter: how many IDENTITY parts beyond the
     // base key (class.method+descriptor+receiver) were appended. The stub
     // decision consumes this — see the law at the firing site below.
@@ -10554,12 +10608,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
     }
     m3_call_counts[m3_active_key]++;
+    // F-NEW-543: the guard now tracks the per-key ACTIVE DEPTH; the set
+    // stays the fast "is any frame active" check. On the armed exit the
+    // depth decrements; the set erases only when the LAST frame of the key
+    // leaves (depth 1 -> 0) — the stale-erase-under-nesting shape is gone.
     struct ActiveKeyGuard {
         std::set<std::string>& set;
+        std::map<std::string, int>& depth;
         const std::string& key;
         bool armed = false;
-        ~ActiveKeyGuard() { if (armed) set.erase(key); }
-    } m3_active_key_guard{active_invoke_keys_, m3_active_key, false};
+        ~ActiveKeyGuard() {
+            if (!armed) return;
+            auto it = depth.find(key);
+            if (it == depth.end()) { set.erase(key); return; }
+            if (--it->second <= 0) { depth.erase(it); set.erase(key); }
+        }
+    } m3_active_key_guard{active_invoke_keys_, m3_key_active_depth,
+                          m3_active_key, false};
     if (active_invoke_keys_.count(m3_active_key) > 0) {
         // ────────────────────────────────────────────────────────────────
         // F-023 (ctor-chain exemption): <init> re-entry on the SAME
@@ -10679,16 +10744,96 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // pinned healthy face, x3) with the full gate byte-identical —
         // recorded in evidence/cont44/.
         // ────────────────────────────────────────────────────────────────
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-543 (CONT-38): RE-ENTRY BUDGET — the active-cycle stub is
+        // a recursion BOUND, not a first-re-entry kill.
+        //
+        // OBSERVATION (dooz v23, CONT-38 probe run/cont38/dooz_probe2, the
+        // last M3-19 kill after F-NEW-541): Lho1;.b(Lf90;)~pc2#532
+        // re-entered while active, and the intervening walk is SEVEN
+        // upstream frames deep — Lho1;.b (the snapshot observer-dispatch
+        // loop: for each Lj90; observer, observer.h(notification)) →
+        // Li7;.h → Lto1;.c (CAS invalidation-queue drain) → Lso1;.a →
+        // Lww;.i → Lww;.h (the snapshot ADVANCE) → Lkc0;.m → Lho1;.c →
+        // the killed b. The SAME shape in opencalc
+        // (run/cont38/opencalc_probe): LN1/d;.b / LN1/g;.b
+        // (Lr1/i;+Runnable handler dispatch) re-entered across a
+        // NINE-frame walk (LL1/a;.c → Looper dispatch → choreographer →
+        // view tree → Runnable → back into the handler dispatch at the
+        // SAME call site pc=44).
+        //
+        // Both are upstream-legal REENTRANT-MONITOR semantics: compose's
+        // snapshot lock (Lho1;.c monitor) and Looper's dispatch are
+        // reentrant in ART; the nested dispatch observes the DRAINED
+        // state (the queue emptied before the advance) and returns
+        // quickly. The first-re-entry kill fabricates a null mid-dispatch
+        // — the F-098/F-NEW-286 fabrication family, one identity level
+        // deeper: site AND payload identical (F-NEW-541 exhausted those
+        // discriminators); only the internal drain state differs —
+        // invisible to any argument-identity key by construction.
+        //
+        // LAW: for a COMPLETE-payload same-key re-entry, execute real DEX
+        // while the same-key ACTIVE depth is under the budget (2); stub
+        // at depth >= budget. The guard remains the recursion bound it
+        // was always meant to be: genuine cycles (the F-017 probe-null
+        // shape) still terminate — at the budget, with the same
+        // fabricated-null unwind one frame deeper — and bounded upstream
+        // re-entrancy (drain-emptied nested dispatch, nested Looper
+        // dispatch) proceeds. MAX_RECURSION_DEPTH (80) remains the loud
+        // backstop. Bookkeeping: the per-key depth map (F-NEW-543 map at
+        // the key-build site) replaces raw set-membership as the stub
+        // trigger; the set erases only when the LAST same-key frame
+        // leaves.
+        //
+        // IMPACT: the compose snapshot-advance chain (all Compose apps —
+        // dooz board draw dispatch sits downstream of it), nested
+        // Looper/handler dispatch (appcompat startup), and generically
+        // every bounded reentrant dispatcher whose nestings are
+        // argument-identical.
+        // ────────────────────────────────────────────────────────────────
+        constexpr int M3_REENTRY_BUDGET = 2;
+        const int m3_depth = m3_key_active_depth[m3_active_key];
         if (method_name != "<init>" && m3_payload_parts > 0 &&
             m3_obj_dropped == 0 && m3_prim_dropped == 0 &&
-            m3_class_dropped == 0 && m3_null_skipped == 0) {
+            m3_class_dropped == 0 && m3_null_skipped == 0 &&
+            m3_depth >= M3_REENTRY_BUDGET) {
             std::cerr << "[M3-19-CYCLE] " << m3_active_key
                       << " re-entered while active on the call stack (depth="
                       << recursion_depth_ << ") — active-cycle stub"
                       << ", lifetime_calls=" << m3_call_counts[m3_active_key]
                       << std::endl;
+            // CONT-38: env-gated caller-chain dump at the kill site —
+            // root-causing the same-site re-entry family needs the FULL
+            // walk chain (the caller alone is not enough to localize the
+            // structural dispatch that legitimately re-enters). Default
+            // OFF; MINIANDROID_M3_CALLER=1 enables. Diagnostic only.
+            static const bool m3_caller_dump =
+                []() {
+                    const char* e = getenv("MINIANDROID_M3_CALLER");
+                    return e && e[0] == '1';
+                }();
+            if (m3_caller_dump) {
+                auto frames = call_stack_.snapshot_frames_top_first();
+                for (size_t fi = 0; fi < frames.size() && fi < 28; ++fi)
+                    std::cerr << "[M3-19-CYCLE]   frame[" << fi << "] "
+                              << frames[fi].cls << "." << frames[fi].method
+                              << " (caller_pc=" << frames[fi].caller_pc << ")"
+                              << std::endl;
+            }
             recursion_depth_--;
             return false;
+        }
+        if (method_name != "<init>" && m3_payload_parts > 0 &&
+            m3_obj_dropped == 0 && m3_prim_dropped == 0 &&
+            m3_class_dropped == 0 && m3_null_skipped == 0) {
+            // F-NEW-543: same-key re-entry UNDER the budget — real DEX
+            // executes (the legal nested dispatch). Loud, one line, so
+            // the released re-entries are visible in every log.
+            std::cerr << "[M3-19-REENTRY] " << m3_active_key
+                      << " re-entered while active at depth "
+                      << m3_key_active_depth[m3_active_key]
+                      << " (< budget) — real DEX executes (F-NEW-543 "
+                      << "reentry-budget law)" << std::endl;
         }
         if (method_name != "<init>" && m3_payload_parts > 0) {
             // The key is active AND carries payload parts BUT is incomplete
@@ -10704,6 +10849,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
     }
     active_invoke_keys_.insert(m3_active_key);
+    ++m3_key_active_depth[m3_active_key];  // F-NEW-543 depth bookkeeping
     m3_active_key_guard.armed = true;
 
     // EXP-045 Phase 2: TransactionInactiveError — credentials exception that
@@ -20327,6 +20473,22 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     // Allocate on heap
     uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     uint32_t obj_id = heap_.allocate(class_desc, pc, frame_id);
+
+    // CONT-38 (F-NEW-545 evidence, DIAG-ONLY, env-gated): MINIANDROID_NEW_WATCH
+    // = class-desc substring. Prints every new-instance of a watched class
+    // with the allocating caller — answers "was the draw-block lambda EVER
+    // constructed" without a fragile static scanner (the dooz board block
+    // Lz6; never constructed = composition never reached the Canvas block).
+    static thread_local const char* nw_env =
+        std::getenv("MINIANDROID_NEW_WATCH");
+    if (nw_env && nw_env[0] && !class_desc.empty() &&
+        std::string(class_desc).find(nw_env) != std::string::npos) {
+        static thread_local uint32_t nw_n = 0;
+        if (nw_n++ < 200)
+            std::cerr << "[NEW-WATCH] " << class_desc << " obj#" << obj_id
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc << std::endl;
+    }
 
     // DEMO-CLINIT (2026-09-04): per AOSP jvm.cc ClassLinker semantics,
     // new-instance is an ACTIVE USE of the class and must trigger
