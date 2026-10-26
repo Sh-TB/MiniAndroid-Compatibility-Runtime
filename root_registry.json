@@ -8698,5 +8698,31 @@
     "evidence": "evidence/cont42t6/train7_workmanager_evidence.json — chompass frontier advanced past ProcessUtils.",
     "regression": "dooz 851cc176 byte-exact + games 4/4 exact.",
     "next": "chompass Lp21;.I → Lek2;.<init> IAE chain."
+  },
+  {
+    "id": "R-NEW-561",
+    "status": "IMPLEMENTED",
+    "priority": "P2",
+    "layer": "static-field resolution (JVM law hygiene)",
+    "date": "2026-10-26",
+    "title": "sget/sget-object miss ladders walk the superclass chain (bounded 32) for the declarer-identity static before answering null; on hit they answer + alias the requesting key. JVM-correct; 0 observed hits in this wave's validations (honest).",
+    "root_cause": "JVM sget of an inherited static resolves to the DECLARER; the engine keyed storage per REFERENCE class. The wave's [SGET-MISS] rows LOOKED like cross-identity writes but proved to be field-NAME coincidences — the real family is PARTIAL CLINIT (registered F-NEW-561b).",
+    "fix": "ALL GENERIC: declarer-chain retry at both sget ladders. No evidence of harm; walls byte-exact.",
+    "evidence": "evidence/cont42t6/train8_statics_evidence.json",
+    "regression": "dooz 851cc176 byte-exact + games exact.",
+    "next": "F-NEW-561b partial-clinit census; F-NEW-236d KClassImpl map-key equality (chompass Lp21;.I)."
+  },
+  {
+    "id": "F-NEW-561b",
+    "status": "CLASSIFIED",
+    "priority": "P1",
+    "layer": "class initialization (generic)",
+    "date": "2026-10-26",
+    "title": "PARTIAL CLINIT family: class <clinit>s that halt midway (swallowed exception / budget / early return) leave SOME statics unwritten; later sgets answer null (the 576-row [SGET-MISS] face in telegram, Lqa/g;.c face in chompass).",
+    "root_cause": "the clinit executor advances past throws/swallows in some paths without marking the class erroneous (the F-NEW-215 erroneous-class law only covers the recorded-failure shape).",
+    "fix": "NEXT TRAIN: env-gated clinit-completion census (per-class: reached-END vs early-exit and why), then the completion laws.",
+    "evidence": "evidence/cont42t6/train8_statics_evidence.json",
+    "regression": "-",
+    "next": "census then laws."
   }
 ]
