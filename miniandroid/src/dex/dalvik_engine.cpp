@@ -29326,6 +29326,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // L5 (F-NEW-533, CONT-35 census): javax.net.SocketFactory /
+    // javax.net.ssl.SSLSocketFactory — OpenJDK contract: getDefault()
+    // NEVER answers null (JCA: a default factory is demand-created from
+    // the platform provider). Census evidence (awagam): okhttp3
+    // Platform.getSocketFactory pc=4 is the R8 null-check idiom
+    // (`getDefault().getClass()`) — the engine answered null →
+    // NullPointerException → OkHttpClient.Builder.<init> dead → every
+    // okhttp consumer in the app died at clinit time. Same F-NEW-516
+    // battery shape as L1..L4: a never-null platform factory family.
+    if ((class_name == "Ljavax/net/SocketFactory;" ||
+         class_name == "Ljavax/net/ssl/SSLSocketFactory;") &&
+        method == "getDefault" && args.size() <= 1) {
+        uint32_t sf = heap_.allocate(class_name, pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        static thread_local uint64_t f533_l5 = 0;
+        if (f533_l5 < 8) { ++f533_l5;
+            std::cerr << "[F533-L5] " << class_name
+                      << ".getDefault() -> oid=" << sf
+                      << " (never-null law)" << std::endl; }
+        result = DalvikValue::make_object(sf, class_name);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // L4 (CONT-28 W1 companion): java.text.BreakIterator — OpenJDK
     // contract: getInstance()/getCharacterInstance()/getLineInstance()/
     // getSentenceInstance()/getWordInstance() return a RuleBasedBreakIterator
@@ -31279,6 +31302,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         {
             auto& rt = resources::ResourceRuntime::instance();
             if (rt.loaded() || rt.ensure_loaded(apk_path_)) {
+                // F-NEW-534 (CONT-35 census; the F-NEW-513 law's OWN named
+                // gap "ATTRIBUTE refs resolve through the theme — unmodeled
+                // here" now closed): getValue(R.attr.X) must answer the
+                // value the CURRENT THEME assigns to X. Evidence
+                // (best_deskclock): ResourcesCompat.getColorStateList reads
+                // getValue(attr/colorSurfaceContainer) then branches on
+                // `type ∈ [0x1c..0x1f]` — real Android answers the theme's
+                // COLOR (→ valueOf path); the engine answered the raw attr
+                // DECL int (datatype=0x10) → the not-a-color branch took
+                // res.getXml(attr_id) → Resources$NotFoundException uncaught
+                // → onCreate dead (deskclock ×16) + same family on
+                // amaze/aegis. Attr ids live ONLY in the 0x7f04xxxx type
+                // space — plain color/drawable ids are disjoint, so the
+                // theme attempt is a no-op for them (the direct path below
+                // keeps its exact historical semantics).
+                if (auto gv_tv = rt.resolve_theme_attr_typed(apk_path_,
+                                                             (uint32_t)gv_resid, -1)) {
+                    gv_val = *gv_tv;
+                    gv_resolved = true;
+                    for (int hop = 0; gv_deref && gv_val.is_reference() &&
+                                     gv_val.ref_id != 0 && hop < 4;
+                         ++hop) {
+                        auto nv = rt.arsc().resolve_value(gv_val.ref_id);
+                        if (!nv || nv->is_null()) break;
+                        gv_val = *nv;
+                    }
+                }
+            }
+            if (!gv_resolved && (rt.loaded() || rt.ensure_loaded(apk_path_))) {
                 auto v = rt.arsc().resolve_value((uint32_t)gv_resid);
                 if (v && !v->is_null()) {
                     gv_val = *v;
@@ -31381,6 +31433,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         bool cs_resolved = false;
         auto& cs_rt = resources::ResourceRuntime::instance();
         if (cs_rt.loaded() || cs_rt.ensure_loaded(apk_path_)) {
+            // F-NEW-532 (AOSP ResourcesImpl.getColorStateList law; census
+            // evidence best_deskclock: Material AppBarLayout/FAB chain passed
+            // attr/colorSurfaceContainer (0x7f040139) — an ATTR id has NO
+            // value outside a theme; real Android resolves it through the
+            // applied theme chain to the concrete @color. The engine's
+            // direct-ARSC lookup answered null → the androidx null-fallback
+            // re-entered the legacy getXml(attr_id) inflate path →
+            // Resources$NotFoundException uncaught → onCreate dead. Theme
+            // authority: the SAME resolve_theme_attr_typed chain the F-093
+            // obtainStyledAttributes / F-141f resolveAttribute laws use —
+            // one theme authority, one contract. Non-attr ids are unaffected
+            // (the resolver does not match them; the direct path below is
+            // the unchanged fallback).
+            if (auto cs_tv = cs_rt.resolve_theme_attr_typed(apk_path_, cs_resid, -1)) {
+                auto cs_v = *cs_tv;
+                for (int hop = 0; cs_v.ref_id != 0 && hop < 4; ++hop) {
+                    auto nxt = cs_rt.arsc().resolve_value(cs_v.ref_id);
+                    if (!nxt) break;
+                    cs_v = *nxt;
+                }
+                if (cs_v.is_color()) {
+                    cs_argb = (int32_t)cs_v.data;
+                    cs_resolved = true;
+                }
+            }
+        }
+        if (!cs_resolved && (cs_rt.loaded() || cs_rt.ensure_loaded(apk_path_))) {
             auto v = cs_rt.arsc().resolve_value(cs_resid);
             for (int hop = 0; v && v->ref_id != 0 && hop < 4; ++hop) {
                 v = cs_rt.arsc().resolve_value(v->ref_id);
@@ -35810,6 +35889,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     groups.push_back(g);
                     heap_.set_object_field(mid, "group" + std::to_string(gi),
                                            DalvikValue::make_string(g, 0));
+                    // F-NEW-531 (libcore Matcher law): participation must be
+                    // kept per group — group(i) returns NULL (not "") for
+                    // groups that did not participate in the match. Storing
+                    // the matched flag next to the value keeps groupCount
+                    // (which counts STRING fields only) and the historical
+                    // value store unchanged.
+                    heap_.set_object_field(mid, "group" + std::to_string(gi) + "_m",
+                                           DalvikValue::make_bool(mres[gi].matched));
                 }
                 set_int("match_start", m_start);
                 set_int("match_end", m_end);
@@ -35838,12 +35925,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
         if (method == "group") {
+            // F-NEW-531 (libcore/java.util.regex law, cordova AllowList
+            // evidence: port group answered "" instead of null →
+            // parseInt("") NFE → app-thrown MalformedURLException): group(i)
+            // (a) throws IndexOutOfBoundsException when i is outside
+            // [0, groupCount], (b) returns NULL when the group exists but
+            // did not participate in the match, (c) returns the matched
+            // text otherwise. Same law for group() (i defaults 0).
             int32_t gi = 0;
             if (args.size() >= 2 && args[1].type == DalvikType::INT32)
                 gi = args[1].int_val;
-            std::string g;
-            get_str(("group" + std::to_string(gi)).c_str(), g);
-            result = DalvikValue::make_string(g, 0);
+            if (gi < 0) {
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "No group " + std::to_string(gi), "F531");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            auto gv = heap_.get_object_field(mid, "group" + std::to_string(gi));
+            if (!gv.has_value() || gv->type != DalvikType::STRING_REF) {
+                // Out of range for the last match (libcore IOOBE law).
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "No group " + std::to_string(gi), "F531");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            auto mv = heap_.get_object_field(mid,
+                                             "group" + std::to_string(gi) + "_m");
+            bool participated = mv.has_value() && mv->type == DalvikType::BOOLEAN
+                                    ? mv->bool_val
+                                    : true;  // pre-531 store: value semantics
+            result = participated
+                         ? DalvikValue::make_string(gv->string_val, 0)
+                         : DalvikValue::make_null();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -50127,6 +50240,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         return false;
     };
+    // F-NEW-535 (CONT-35 census; AOSP Context.moveSharedPreferencesFrom /
+    // moveDatabaseFrom law): best-effort migration of a named prefs/db file
+    // from the source context's storage to THIS context's storage. The
+    // engine keeps one per-name prefs identity (S99) and one data-root —
+    // same-name migration is a no-op that AOSP answers TRUE (and answers
+    // true when the source file does not exist: nothing to move is not a
+    // failure). Evidence (best_deskclock): the androidx PreferenceManager
+    // migration helper (zo.u) is EXACTLY moveSharedPreferencesFrom; the
+    // missing law answered its generic missing-call shape → "Failed to
+    // migrate shared preferences" warn path → the warn's own logger reads
+    // the debug key → re-enters the still-running helper → the M3-19
+    // active-cycle stub answered null → SharedPreferences.getBoolean NPE →
+    // onCreate dead. FALSE is reserved for the real device failure shape
+    // (source exists, move IO fails) which the single-data-root model
+    // cannot produce; deleteSharedPreferences family keeps its own laws.
+    if ((method == "moveSharedPreferencesFrom" ||
+         method == "moveDatabaseFrom") &&
+        args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+        args[2].type == DalvikType::STRING_REF) {
+        static thread_local uint64_t f535_moves = 0;
+        if (f535_moves < 8) { ++f535_moves;
+            std::cerr << "[F535-MOVE] " << method
+                      << " name=" << args[2].string_val
+                      << " -> true (AOSP best-effort law)" << std::endl; }
+        result = DalvikValue::make_bool(true);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if ((method == "getSharedPreferences" || method == "getPreferences") &&
         ((class_name.find("Context") != std::string::npos ||
           class_name.find("Activity") != std::string::npos) ||

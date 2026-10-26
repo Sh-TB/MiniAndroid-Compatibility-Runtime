@@ -1,0 +1,36 @@
+{
+  "wave": "CONT-35",
+  "date": "2026-10-26",
+  "user_directive": "ادامه حل مشکل برنامه و بازی ۵۰ توسط ابزار ها",
+  "binary_sha16": "5b09e998749f8499",
+  "base_commit": "7e6a7238 (CONT-34, self-update verified: local == origin/main at wave start)",
+  "laws": [
+    {"id": "F-NEW-531", "title": "Matcher.group(i) null-participation law (libcore)", "family_killed": "cordova/capacitor AllowList MalformedURLException x5 titles"},
+    {"id": "F-NEW-532", "title": "getColorStateList theme-attr resolution", "family_killed": "Material themed-color null->getXml NotFound chain"},
+    {"id": "F-NEW-533", "title": "SocketFactory/SSLSocketFactory.getDefault never-null (F-NEW-516 battery L5)", "family_killed": "okhttp Platform.getSocketFactory NPE family"},
+    {"id": "F-NEW-534", "title": "getValue theme-attr resolution (closes F-NEW-513's named gap)", "family_killed": "ResourcesCompat XML-inflate branch NotFound x3 titles"},
+    {"id": "F-NEW-535", "title": "moveSharedPreferencesFrom/moveDatabaseFrom TRUE law", "family_killed": "androidx PreferenceManager migration-failure recursion chain"}
+  ],
+  "census": {
+    "rows": 50,
+    "content_rows_px_gt_0": 13,
+    "content_rows_px_ge_1000": 12,
+    "retention": "50/50 screenshot shas byte-exact vs pre-wave",
+    "note": "no new crossings at this binary; the 5 law families advanced their titles to the next per-title faces (honest)"
+  },
+  "wall": {
+    "anchors_6": {"opencalc": "63020bc7334048fe", "chess": "3f7e670759b7c6a8", "dooz": "851cc1761a1dfcdf", "microtimer": "bbd350b6c14fbd52", "unote": "7481e9b468eaa376", "tower3d": "11a38a5aeeff45a6"},
+    "games_7": {"g2048": "f43face08299ffc6", "tetris": "b818a6a7016bea8e", "snake_deluxe": "5235683fc7b1f04b", "snakeneon": "2617c81c9e72b195", "ttt_deluxe": "db1d633d77b5819a", "minicraft": "e77a073f733255eb", "gmdice": "3891679dff449331"},
+    "negatives": "19/19 PASS (after gate-A probe run populated the probe_store results)",
+    "skill": "13/13 PASS"
+  },
+  "dooz": "90s anchor 851cc1761a1dfcdf BYTE-EXACT x2 (intermediate + final binary); frontier unchanged: F-NEW-381 throughput wall (board not painting yet)",
+  "telegram": "60s run KILLED by container OOM (rc=137) while executing deeper post-F-NEW-528 — the honest envelope: the sandbox memory (4GB) is the limit, not a new engine face; face sha ccab62fd64169cd0 (killed-partial, not comparable to the 774075b4 40s-window pin)",
+  "registered_next_faces": [
+    "subster-family pluginInitialize layer: ConfigXmlParser.parse getClass/getPackage on a zero-valued getResources() receiver inside the capacitor mock chain (F088 miss recv_type=0) — per-title dive",
+    "firewall: androidx.lifecycle findMatchingConstructor — Class-identity/List.equals compose (SingletonList vs asList(paramTypes)) + SingletonList.toString renders object@N (F-NEW-529 family) — registered CLASSIFIED",
+    "gecko/lumolight: app-created XmlPullParserException chains (depth 44/105) — not engine throw sites; per-title dive",
+    "k9: koin NoDefinitionFoundException x20 (DI container scope law)",
+    "sunpiano: j4/b clinit NPE x32"
+  ]
+}
