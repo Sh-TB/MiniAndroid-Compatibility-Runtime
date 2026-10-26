@@ -1,0 +1,22 @@
+{
+ "artifact": "train7_workmanager_evidence.json \u2014 CONT-42 TRAIN 7 (standing \u00ab\u06f1\u06f0 \u0642\u0637\u0627\u0631\u00bb pipeline). The census-driven WorkManager bootstrap family: TWO generic AOSP null-contract laws landed; the chompass frontier advanced two links deeper (from getWmJobScheduler NPE through to the next compose-family blocker Lek2;.<init> IAE \u2014 next train's target).",
+ "head_at_wave_start": "2dccb8f3 (CONT-42 TRAIN 5)",
+ "census_gate": {
+  "what": "scripts/cont42t6_batch50.py \u2014 the full batch-50 census re-run at the TRAIN 5 binary (CENSUS_POOL=1, fresh stores)",
+  "result": "50/50 rows, CONTENT ROWS 14/14 BYTE-EXACT RETAINED vs evidence/cont41/batch50_census.json (wocheneinkauf 44227/netguard 324655/fossify_math 192398/fossify_calendar 192024/bouncy 1137140/uturn 10782/peri 325303/starlingmap 58612/aat 5285/airlyrics 243000/balance 500130/concealmobile 255024/librecontacts 1214501/listai 73635) \u2014 zero drift from the TRAIN 4/5 throughput changes",
+  "evidence": "evidence/cont42t6/batch50_census.json"
+ },
+ "root_chains": [
+  "chompass blank-row root #1: androidx.work getWmJobScheduler \u2192 JobScheduler34.forNamespace(js) \u2192 fj2.d \u2192 js.forNamespace(\"androidx.work.systemjobscheduler\") on the R-NEW-540 singleton \u2192 unbridged \u2192 fail-soft null \u2192 compiler null-check Object.getClass @JobScheduler34 pc=0x7 NPE \u2192 APP-BOUNDARY (whole WorkManager bootstrap dead).",
+  "root #2 (after R-NEW-559): ProcessUtils.getProcessName \u2192 Api28Impl.INSTANCE.getProcessName \u2192 Application.getProcessName \u2192 fail-soft null \u2192 getClass @Api28Impl pc=4 NPE."
+ ],
+ "fixes": [
+  "R-NEW-559: JobScheduler.forNamespace(String) law in bridge_to_api (BOTH the AOSP spelling Landroid/app/job/JobScheduler; AND the engine's R-NEW-540 alias Landroid/app/JobScheduler; \u2014 the live face proved the alias spelling is what virtual dispatch sees). AOSP API 34: forNamespace NEVER returns null (JobSchedulerImpl wraps the SAME scheduler). Answers the receiver object; stores the namespace as a diagnostics field.",
+  "R-NEW-560: Application/Context/Activity.getProcessName() law \u2014 AOSP API 28: NEVER null (ActivityThread.currentProcessName()). Answers the package name (the runtime is single-process under its own package)."
+ ],
+ "regression": {
+  "dooz": "851cc1761a1dfcdf BYTE-EXACT x3 (cont32_dooz_gate)",
+  "games": "g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / minicraft e77a073f733255eb / gmdice 3891679dff449331 \u2014 4/4 EXACT-TO-PIN"
+ },
+ "next": "the chompass Lp21;.I \u2192 Lek2;.<init> IllegalArgumentException chain (next train), then telegram SvgHelper."
+}

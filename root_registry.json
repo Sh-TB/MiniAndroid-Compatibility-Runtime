@@ -8672,5 +8672,31 @@
     "evidence": "evidence/cont42/train5_ab_evidence.json — folded into the TRAIN 5 A/B (+8% combined with R-NEW-557).",
     "regression": "anchors 6/6 BYTE-EXACT + games 7/7 EXACT-TO-PIN.",
     "next": "remaining diag_env sites inside execute_method_internal (13 sites, per-method not per-insn) — lower priority."
+  },
+  {
+    "id": "R-NEW-559",
+    "status": "ROOT-CAUSED-FIXED",
+    "priority": "P1",
+    "layer": "framework service objects (generic AOSP null contract)",
+    "date": "2026-10-26",
+    "title": "JobScheduler.forNamespace(String) — AOSP API 34 non-null law; answers the receiver (both Landroid/app/job/JobScheduler; and the engine alias spelling). Unblocks the androidx.work API-34 bootstrap leg.",
+    "root_cause": "the R-NEW-540 jobscheduler singleton answered getSystemService but its METHODS fell through to the fail-soft null default; androidx.work JobScheduler34.forNamespace's compiler-emitted result null-check (Object.getClass @pc=0x7) NPE'd on the null — whole WorkManager bootstrap dead APP-BOUNDARY (chompass blank row).",
+    "fix": "ALL GENERIC: bridge_to_api law — forNamespace returns the receiver object (AOSP JobSchedulerImpl wraps the same scheduler); namespace string stored as a diagnostics field. Both class spellings accepted (the alias is what virtual dispatch actually sees — the live face proved it).",
+    "evidence": "evidence/cont42t6/train7_workmanager_evidence.json — chompass frontier advanced past getWmJobScheduler.",
+    "regression": "dooz 851cc176 byte-exact + games 4/4 exact.",
+    "next": "siblings: getAllJobSnapshots (API 34, returns List), getPendingJobQueue — same family shape."
+  },
+  {
+    "id": "R-NEW-560",
+    "status": "ROOT-CAUSED-FIXED",
+    "priority": "P1",
+    "layer": "framework context objects (generic AOSP null contract)",
+    "date": "2026-10-26",
+    "title": "Application/Context.getProcessName() — AOSP API 28 non-null law (package name; single-process runtime). Unblocks androidx.work ProcessUtils/Api28Impl.",
+    "root_cause": "getProcessName fell through to the fail-soft null default; Api28Impl.getProcessName's result null-check (getClass @pc=4) NPE'd — Schedulers.createBestAvailableBackgroundScheduler died (chompass, second link of the WorkManager chain).",
+    "fix": "ALL GENERIC: bridge_to_api law — Context/Activity/Application.getProcessName answers the package name (never null).",
+    "evidence": "evidence/cont42t6/train7_workmanager_evidence.json — chompass frontier advanced past ProcessUtils.",
+    "regression": "dooz 851cc176 byte-exact + games 4/4 exact.",
+    "next": "chompass Lp21;.I → Lek2;.<init> IAE chain."
   }
 ]
