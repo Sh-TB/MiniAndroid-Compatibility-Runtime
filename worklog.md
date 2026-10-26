@@ -11702,3 +11702,23 @@ Work Log:
 Stage Summary:
 - TRAIN 1 complete: the 4-title capacitor/cordova bootstrap family root-caused to THREE generic laws (Uri authority field-first / list-IOException / ServiceWorkerController singleton), concealmobile crossed to real UI (census 14/50), zero regressions across the full wall. The family titles now run crash-free to the Bridge; the webview pixel layer is the named next gate.
 - Next trains: CONT-42 dooz board (throughput: compose slot-table dispatch), CONT-43 telegram SvgHelper parse loop, CONT-44 XmlPullParser family (gecko/lumolight/sopadeletras), CONT-45 Fragment lifecycle family, CONT-46 the 6 zero-unwind blanks.
+
+---
+Task ID: CONT-42
+Agent: Super Z (main)
+Task: User directive «ادامه از جایی که ناقص موندی ادامه بده» — resume the incomplete point under the standing «چند ده قطار» pipeline. TRAIN 2: dooz board throughput wave (CONT-41's named next train).
+
+Work Log:
+- SELF-UPDATE (honest): this container started from a stale local main (e99c2fbd = the CONT-10/W6 era) while origin/main was 94a4d98f (CONT-41 TRAIN 1) — ~31 waves behind; ADMITTED and fast-forwarded (strict ancestor, --ff-only). All work at the synced tree.
+- RESUME POINT: CONT-41's dooz train prep named the frontier — the composition is THROUGHPUT-bound (Case E; 90s window 32.3M insns; slot-table family burn; iget-object 1.9M). TRAIN 2 = generic interpreter throughput.
+- MEASURE FIRST (gprof -pg, dooz 60s ≈ 14.3M insns): the interpreter core is only 4.25% of wall; the top machinery costs = pop_frame 12.69% (O(n) front-erase per method exit at the completed-frames cap + double copy), batched_cap_push<ApiCallTrace> 9.03% (~18GB memmove/run), std::map<string,int>::operator[] 6.41% (4.43M M3-gate bumps), ungated per-field-op trace temporaries. Phase clock (PERF_PHASES) FALSIFIED the is_subclass_of theory: only 2,973 calls/45s.
+- FOUR GENERIC FIXES: (1) pop_frame F-107b batched erase + move + void return; (2) ApiCallTrace survivor RING (O(1) overwrite at cursor; identical survivor set; ring_normalize_chrono() restores exact FIFO order once at execute end so every consumer keeps chronological order); (3) M3 gate maps std::map/set -> unordered_map/unordered_set (lookup-only, no ordered iteration); (4) field_trace_filter_set() zero-cost pre-check at all 9 field-trace sites (kills the per-field-op string temporary; semantics identical).
+- CONTAINER BUILD LESSON (operational): background processes get CPU only while an interactive tool call is active — the "silent build deaths" were starvation; foreground chunks with -MMD resume. Canonical -g -O2 OOM-kills on this 2-core sandbox (dalvik_engine.cpp); wave builds use -g0 -O2 (zero codegen effect).
+- THROUGHPUT: dooz 90s window 32.9M -> 45.9M insns (+39.5%) at the SAME wall clock; dooz anchor 851cc176 BYTE-EXACT before/after.
+- REGRESSION WALL at the throughput binary 7af40aa291aaf039: anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176); games 7/7 EXACT-TO-PIN (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d); negatives 19/19 (after run/gatea/probe_store regen at the new binary — the established stale-store artifact); reinstall 8/8; skill 13/13; batch-50 census 50/50 rows with 14/14 content rows BYTE-EXACT RETAINED (evidence/cont42/batch50_census.json). ZERO DRIFT.
+- POST-FIX PROFILE: pop_frame + map<string,int>[] OUT of the top; batched_cap_push 9.03% -> 1.82%; next frontier named = the 68.4M-entry ICF-merged dtor symbol + 660M string operator== (needs a -fno-icf PROFILE build for true attribution) + _init 9.9%.
+- REGISTRY 843 -> 844 (R-NEW-554 ROOT-CAUSED-FIXED).
+
+Stage Summary:
+- TRAIN 2 complete: the dooz composition now gets 39.5% more interpreter budget per window with the whole wall byte-exact — the Case E throughput brake is measurably lighter, and every fix is a generic engine law (no app-specific code anywhere).
+- Next trains: CONT-43 = -fno-icf profile attribution then the named hot costs + telegram SvgHelper parse loop; CONT-44 XmlPullParser family; CONT-45 Fragment family; CONT-46 the 6 zero-unwind blanks; then the dooz board composition train (R-NEW-546 four allocation sites) with the larger budget.
