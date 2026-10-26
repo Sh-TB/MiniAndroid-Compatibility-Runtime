@@ -1,0 +1,13 @@
+{
+ "artifact": "train8_statics_evidence.json \u2014 CONT-42 TRAIN 8 (standing \u00ab\u06f1\u06f0 \u0642\u0637\u0627\u0631\u00bb pipeline). The static-field identity wave: R-NEW-561 landed (JVM-correct, 0 observed hits \u2014 honest) + the REAL root named for the next train.",
+ "head_at_wave_start": "504bfd2c (CONT-42 TRAIN 7)",
+ "work": [
+  "R-NEW-561 LANDED: the sget/sget-object miss ladders got the JVM static-resolution declarer walk (class_to_superclass_ chain, bounded 32; on hit answer + alias the requesting key). JVM-correct semantics for inherited statics. HONEST RESULT: 0 hits in the telegram 12s validation and the chompass faces \u2014 the [SGET-MISS] 'landed:' lines are FIELD-NAME COINCIDENCES (the miss-probe searches ANY class holding the same R8-minified field name), NOT cross-identity writes of one static.",
+  "REAL ROOT NAMED (next train): the SGET-MISS family = PARTIAL CLINIT \u2014 e.g. Lqa/g;'s <clinit> ran (wrote .b) but .c never got written (the clinit halted midway: swallowed exception / F084 budget / early return); the sget of the unwritten static then answered null. The generic fix direction: an env-gated clinit-completion census (which class <clinit>s end early and why) \u2014 then the completion laws. REGISTERED as F-NEW-561b (CLASSIFIED, P1).",
+  "chompass frontier unchanged at the Lp21;.I IAE (the map.get miss is the F-NEW-236d VALUE-EQUALITY face on Kotlin KClassImpl (nm0) map keys \u2014 two rj5.b(SameClass) calls return distinct nm0 objects; the CollectionsShadow get must route equality through the app's own nm0.equals \u2014 next train's second target)."
+ ],
+ "regression": {
+  "dooz": "851cc1761a1dfcdf BYTE-EXACT (cont32_dooz_gate)",
+  "games": "g2048 f43face08299ffc6 / tetris b818a6a7016bea8e \u2014 EXACT-TO-PIN"
+ }
+}

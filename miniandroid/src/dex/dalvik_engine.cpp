@@ -22910,6 +22910,26 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // R-NEW-561 (TRAIN 8): declarer-chain retry (same law as the
+        // sget-object path above) — inherited statics resolve to the
+        // declarer; the requesting-class key may miss while the write
+        // landed under a declarer identity. On hit: answer + alias.
+        if (it == static_field_storage_.end()) {
+            std::string walk_cls = field_res.class_descriptor;
+            for (int r561_hop = 0; r561_hop < 32; ++r561_hop) {
+                auto sit = class_to_superclass_.find(walk_cls);
+                if (sit == class_to_superclass_.end() || sit->second.empty())
+                    break;
+                walk_cls = sit->second;
+                auto dit = static_field_storage_.find(
+                    walk_cls + "." + field_res.field_name);
+                if (dit != static_field_storage_.end()) {
+                    static_field_storage_[static_key] = dit->second;
+                    it = static_field_storage_.find(static_key);
+                    break;
+                }
+            }
+        }
         // CONT-38 decode diag (env-gated, bounded): the sget-WIDE color
         // statics — the actual path the painter takeOrElse chain reads.
         if (std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr &&
@@ -23090,6 +23110,37 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // R-NEW-561 (CONT-42 TRAIN 8): JVM static-field resolution law —
+        // the static lives on its DECLARER (JVM sget resolution walks the
+        // superclass chain). [SGET-MISS] evidence (this wave): the read key
+        // (a requesting/alias class identity, e.g. telegram's Ljr;.b0)
+        // missed while the write had landed under a DIFFERENT identity of
+        // the SAME logical static (the declarer class, e.g.
+        // Lcom/google/firebase/messaging/f;.b0). Walk the superclass chain
+        // (bounded 32) and answer the first ancestor key that holds the
+        // field; alias the requesting key so identity (==) holds from here
+        // on. No ancestor hit = the ladder below answers as before.
+        if (it == static_field_storage_.end()) {
+            std::string walk_cls = field_res.class_descriptor;
+            for (int r561_hop = 0; r561_hop < 32; ++r561_hop) {
+                auto sit = class_to_superclass_.find(walk_cls);
+                if (sit == class_to_superclass_.end() || sit->second.empty())
+                    break;
+                walk_cls = sit->second;
+                auto dit = static_field_storage_.find(
+                    walk_cls + "." + field_res.field_name);
+                if (dit != static_field_storage_.end()) {
+                    static_field_storage_[static_key] = dit->second;
+                    it = static_field_storage_.find(static_key);
+                    static thread_local uint64_t r561_hits = 0;
+                    if (r561_hits++ < 12)
+                        std::cerr << "[R561-DECLARER] sget-object "
+                                  << static_key << " <- " << walk_cls << "."
+                                  << field_res.field_name << std::endl;
+                    break;
+                }
+            }
+        }
         // CONT-38 decode diag (env-gated, bounded): the theme-defaults
         // color statics — who reads them and what the storage answers.
         if (std::getenv("MINIANDROID_CLINIT_PATH_TRACE") != nullptr &&
