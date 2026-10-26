@@ -1,0 +1,37 @@
+{
+  "artifact": "train4_ab_evidence.json — CONT-42 TRAIN 4 (user: «ناقص موندی ادامه بده» — resume the incomplete point; standing «۱۰ قطار» directive). The TRAIN 3 named levers executed with same-container A/B discipline and an HONEST negative-throughput result.",
+  "head_at_wave_start": "b1bde851 (origin/main, CONT-42 TRAIN 3)",
+  "fixes": [
+    "R-NEW-555: DalvikHeap::allocate() constructs the HeapObject IN PLACE via objects_.try_emplace(oid, ...) — the old form built a local then `objects_[oid] = obj`, one WHOLE-HeapObject copy (class_descriptor + readable_class + the entire fields unordered_map + array_store vector + api_object shared_ptr) per allocation. gprof (TRAIN 3): HeapObject COPY-CTOR 5,490,924 calls / dooz 60s — one per allocate().",
+    "R-NEW-556: InstructionTrace operands vector reserve(4) at the per-instruction construction — gprof (TRAIN 3): 25M Operand-vector REALLOCS (3.3% wall) from the 0->1->2->4 push_back growth chain."
+  ],
+  "ab_method": "Both measurements in THIS container, same store, same command (dooz 90s window, --frames 5): PRE = tree at b1bde851 rebuilt; POST = R-NEW-555/556 applied. Anchor sha256 compared at the recorded pin 851cc176.",
+  "ab_result": {
+    "pre_insns_90s": 43200000,
+    "post_insns_90s": 42500000,
+    "pre_sha": "851cc1761a1dfcdf",
+    "post_sha": "851cc1761a1dfcdf",
+    "delta": "WITHIN RUN-TO-RUN NOISE (±3%); NO measurable dooz window gain",
+    "honest_reading": "The TRAIN 3 'whole-field-map copies' cost theory was OVERWEIGHTED: at allocate() time the fields map is always EMPTY — the copy was ~40ns (2 empty strings + empty map header), ~1% of the 90s window across 5.5M allocations. The changes are kept (strictly fewer copies/reallocs, zero risk, identical semantics) but the THROUGHPUT frontier is elsewhere."
+  },
+  "fresh_post_profile": {
+    "binary": "build_prof (-g -O2 -pg, canonical flags + -pg only)",
+    "window": "dooz 60s under -pg (~2x slowdown)",
+    "top": [
+      "13.20% R530Memo-union dtor code 70,459,153 calls — the linker-deduplicated unordered_map<string,trivial-value> dtor union (TRAIN 3 finding holds). Biggest caller edge: try_recursive_invoke 17,247,150 = ~6 maps/call at 2.89M tri calls — STILL UNRESOLVED statically (no literal per-call map locals in the tri source; candidates are inlined-callee internals; needs a targeted env-gated counter next train). Secondary edges: _Map_base<string,pair<string const,int>> operator[] 5,740,434; bridge_to_api 5.6M+1.7M; execute_method_internal 4,929,160; execute_iget_object 4,569,762; _Hashtable<string,ulong> 2.9M+2.0M; DalvikValue::to_json 2,832,001; xml_escape_text_371 2,834,463; DalvikValue::to_string 2,699,714.",
+      "9.80% _init (static-init/TLS machinery; 1.90s self) — previously recorded, unattributed, actionable only with finer instrumentation",
+      "6.34% fetch_decode_execute (the interpreter core itself; 1,643,052 method executions)",
+      "5.05% string==string 682,033,088 calls + 1.86% string==char* 651,287,568 — ~1.3 BILLION string compares per 60s (~68/insn) — THE NEXT GENERIC FRONTIER",
+      "3.35% __introsort_loop 0.65s — gprof's call-count (106M) for the folded sort code is unreliable; every pair-sort site in fetch_decode_execute is env-gated/stall-gated (SPIN-HISTO fired 0 times in the diagnostic outputs) — attribution ambiguous, deprioritized",
+      "2.53% + 1.34% + 1.24% Rb_tree<string,...>::find (10.6M + 3.4M + 0.9M finds) — ordered string-keyed map lookups still hot in the resolve paths",
+      "2.37% try_shadow_dispatch lambda 35,102,235 calls",
+      "1.24% diag_env 45,079,929 calls (~2.4/insn — the remaining un-cached diagnostic gates)",
+      "0.98% InstructionTrace dtor 18,400,244 calls"
+    ]
+  },
+  "regression": {
+    "anchors_6": "opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 / dooz 851cc1761a1dfcdf — 6/6 BYTE-EXACT at the POST binary",
+    "games_7": "g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snake_deluxe 5235683fc7b1f04b / snakeneon 2617c81c9e72b195 / ttt_deluxe db1d633d77b5819a / minicraft e77a073f733255eb / gmdice 3891679dff449331 — 7/7 EXACT-TO-PIN"
+  },
+  "next_train_plan": "TRAIN 5 attacks the CERTAIN cluster from the fresh profile: (a) diag_env 45M-call sites — hoist the remaining per-insn diagnostic gates to cached thread_local flags (TRAIN 2 precedent); (b) try_shadow_dispatch lambda 35M calls — inspect the per-call lambda/arg-packing construction; (c) the string== ocean — name the top comparison sites with a bounded env-gated counter before touching anything (measure-first law). Then the planned telegram SvgHelper train."
+}
