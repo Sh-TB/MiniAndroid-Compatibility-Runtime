@@ -8678,6 +8678,215 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return true;
     }
 
+    // R-NEW-537c (CONT-36): the SAME Uri$Builder / withAppendedPath laws,
+    // mirrored into the try_recursive_invoke channel — the dispatch path
+    // that provably serves framework-class instance invokes (the
+    // AssetManager family laws above are consumed HERE). Bridge-side
+    // twins (R-NEW-537/537b) stay for the bridge-routed call shapes
+    // (§22 one-semantic-two-surfaces convention).
+    if (declaring_class == "Landroid/net/Uri$Builder;" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        uint32_t b_id537 = args[0].object_id;
+        static const char* const kSetters537[] = {
+            "scheme",          "encodedScheme",  "opaquePart",
+            "encodedOpaquePart", "authority",    "encodedAuthority",
+            "path",            "encodedPath",    "fragment",
+            "encodedFragment", "query",          "encodedQuery"};
+        auto is_setter537 = [&](const std::string& m) {
+            for (const char* k : kSetters537)
+                if (m == k) return true;
+            return false;
+        };
+        auto store_str537 = [&](const char* field, const std::string& s) {
+            DalvikValue v537;
+            v537.type = DalvikType::STRING_REF;
+            v537.string_val = s;
+            heap_.set_object_field(b_id537, field, v537);
+        };
+        // AOSP Uri$Builder setters accept NULL (assign/clear, never
+        // throw) and ALWAYS return the builder — a null arg must not skip
+        // the fluent return (how2vote live: .authority(nullHost) fell
+        // through → chain break → getAuthority() null → addURI NPE).
+        if (is_setter537(method_name) && args.size() >= 2) {
+            if (args[1].type == DalvikType::STRING_REF)
+                store_str537(method_name.c_str(), args[1].string_val);
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if ((method_name == "appendPath" ||
+             method_name == "appendEncodedPath") &&
+            args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            std::string cur537;
+            auto pv537 = heap_.get_object_field(b_id537, "path");
+            if (pv537.has_value() && pv537->type == DalvikType::STRING_REF)
+                cur537 = pv537->string_val;
+            std::string next537 = cur537;  // AOSP "/" join rule
+            if (next537.empty()) {
+                next537 = args[1].string_val;
+            } else if (next537.back() == '/') {
+                next537 += args[1].string_val;
+            } else {
+                next537 += "/";
+                next537 += args[1].string_val;
+            }
+            store_str537("path", next537);
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "build") {
+            uint32_t uri_id537 = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+            for (const char* f :
+                 {"scheme", "authority", "path", "query", "fragment"}) {
+                auto fv = heap_.get_object_field(b_id537, f);
+                if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                    heap_.set_object_field(uri_id537, f, *fv);
+            }
+            return_val = DalvikValue::make_object(uri_id537,
+                                                  "Landroid/net/Uri;");
+            recursion_depth_--;
+            return true;
+        }
+    }
+    if (declaring_class == "Landroid/net/Uri;" &&
+        method_name == "withAppendedPath" && args.size() >= 2) {
+        if (args[0].type != DalvikType::OBJECT_REF ||
+            args[0].object_id == 0 || !heap_.has_object(args[0].object_id) ||
+            args[1].type != DalvikType::STRING_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "withAppendedPath on a null Uri or pathSegment",
+                           "r537c-null");
+            return_val = DalvikValue::make_null();
+            recursion_depth_--;
+            return true;
+        }
+        uint32_t src537c = args[0].object_id;
+        uint32_t uri_id537c = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+        for (const char* f :
+             {"scheme", "authority", "query", "fragment"}) {
+            auto fv = heap_.get_object_field(src537c, f);
+            if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                heap_.set_object_field(uri_id537c, f, *fv);
+        }
+        std::string base537c;
+        auto pv537c = heap_.get_object_field(src537c, "path");
+        if (pv537c.has_value() && pv537c->type == DalvikType::STRING_REF)
+            base537c = pv537c->string_val;
+        std::string next537c = base537c;
+        if (next537c.empty()) {
+            next537c = args[1].string_val;
+        } else if (next537c.back() == '/') {
+            next537c += args[1].string_val;
+        } else {
+            next537c += "/";
+            next537c += args[1].string_val;
+        }
+        DalvikValue path537c;
+        path537c.type = DalvikType::STRING_REF;
+        path537c.string_val = next537c;
+        heap_.set_object_field(uri_id537c, "path", path537c);
+        return_val = DalvikValue::make_object(uri_id537c, "Landroid/net/Uri;");
+        recursion_depth_--;
+        return true;
+    }
+
+    // R-NEW-538 (CONT-36): AssetManager.list(String) — AOSP AssetManager2:
+    // list(dir) answers the immediate children of dir (namespace dirs
+    // included); a missing dir answers null (documented quirk). Live
+    // evidence (how2vote, this wave): capacitor JSExport.getFilesContent
+    // runs getAssets().list("") then array-length on the result — the
+    // dispatch channel that serves AssetManager.open (the block above,
+    // inside try_recursive_invoke) had NO list twin, so the invoke died
+    // on the unresolved null answer → ARR-LEN-NULL NPE at getFilesContent
+    // pc=13 → Bridge.getJSInjector chain death → the capacitor bootstrap
+    // never finished. Law body mirrors the bridge-side list law (the
+    // ASSETS-WITHOUT-ARSC enumeration) so BOTH channels answer
+    // identically (§22 one-semantic-two-surfaces convention).
+    if (method_name == "list" &&
+        declaring_class.find("AssetManager") != std::string::npos) {
+        static thread_local uint64_t r538_entry = 0;
+        if (r538_entry++ < 8)
+            std::cerr << "[R538-LIST-ENTRY] argc=" << args.size()
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " apk=" << apk_path_ << std::endl;
+        std::string dir538 =
+            (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                ? args[1].string_val
+                : (args.size() >= 1 && args[0].type == DalvikType::STRING_REF
+                       ? args[0].string_val
+                       : "");
+        while (!dir538.empty() && dir538.back() == '/') dir538.pop_back();
+        std::string prefix538 =
+            dir538.empty() ? "assets/" : "assets/" + dir538 + "/";
+        std::vector<std::string> children538;
+        bool dir_present538 = false;
+        {
+            const auto entry_names538 = asset_entry_names(prefix538);
+            // R-NEW-538 file-path law (AOSP AssetManager.list): a path that
+            // exists as a FILE answers an EMPTY array (0 children) — apps
+            // branch on length==0 to fall back to a direct open(). Only a
+            // MISSING path answers null. Live face: capacitor
+            // getFilesContent does list("native-bridge.js") — an existing
+            // FILE — then array-length; the null answer killed the
+            // bootstrap with ARR-LEN-NULL.
+            bool file538 = false;
+            if (!dir538.empty()) {
+                const auto all538 = asset_entry_names("assets/");
+                for (const auto& nm : all538)
+                    if (nm == "assets/" + dir538) { file538 = true; break; }
+            }
+            dir_present538 = file538;
+            static thread_local uint64_t r538_enum = 0;
+            if (r538_enum++ < 8)
+                std::cerr << "[R538-ENUM] prefix=" << prefix538
+                          << " n=" << entry_names538.size() << std::endl;
+            std::set<std::string> uniq538;
+            for (const auto& name : entry_names538) {
+                const std::string rel = name.substr(prefix538.size());
+                if (rel.empty()) continue;
+                dir_present538 = true;
+                size_t slash538 = rel.find('/');
+                std::string child538 =
+                    (slash538 == std::string::npos)
+                        ? rel
+                        : rel.substr(0, slash538);
+                if (child538.empty()) continue;
+                if (uniq538.insert(child538).second)
+                    children538.push_back(child538);
+            }
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "LIST", prefix538, dir_present538, "AssetManager.list",
+            current_class_ + "." + current_method_);
+        if (!dir_present538) {
+            // AOSP documented quirk: list on a missing dir → null.
+            return_val = DalvikValue::make_null();
+            recursion_depth_--;
+            return true;
+        }
+        uint32_t arr538 = heap_.allocate("Larray;", pc_, 0);
+        heap_.set_object_field(
+            arr538, "__array_length__",
+            DalvikValue::make_int(static_cast<int32_t>(children538.size())));
+        for (size_t i538 = 0; i538 < children538.size(); ++i538) {
+            heap_.set_object_field(arr538, "array[" + std::to_string(i538) + "]",
+                                   DalvikValue::make_string(children538[i538],
+                                                            0));
+        }
+        DalvikValue av538;
+        av538.type = DalvikType::OBJECT_REF;
+        av538.object_id = arr538;
+        av538.class_desc = "[Ljava/lang/String;";
+        return_val = av538;
+        std::cerr << "[R538-LIST] " << prefix538 << " -> "
+                  << children538.size() << " children caller="
+                  << current_class_ << "." << current_method_ << std::endl;
+        recursion_depth_--;
+        return true;
+    }
+
     // EXP-071: InputStreamReader.<init> and BufferedReader.<init> —
     // propagate the asset mapping from the wrapped object so readLine
     // can find the asset through the chain.
@@ -8910,12 +9119,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // END EXP-071 intercepts ─────────────────────────────────────────────
 
     // EXP-055: Debug — log entry to try_recursive_invoke for key methods.
-    if (method_name.find("isClientActivated") != std::string::npos ||
-        method_name.find("getClientNotActivated") != std::string::npos ||
-        method_name.find("addFragmentToStack") != std::string::npos) {
-        std::cerr << "[TRY-INVOKE] " << declaring_class << "." << method_name
-                  << " depth=" << recursion_depth_
-                  << std::endl;
+    // R-NEW-539 (CONT-36): env-gated behind MINIANDROID_TG_DEBUG. These
+    // three prints sat UNGATED on the telegram hot path
+    // (UserConfig.isClientActivated fires thousands of times per run —
+    // 3 fprintf + string builds per call) — a bounded-logging law
+    // violation AND a measurable throughput burn on the F-NEW-381 wall.
+    // Identical answers when the flag is set; silent (and fast) when off.
+    {
+        static thread_local const bool tg_dbg = diag_env("MINIANDROID_TG_DEBUG");
+        if (tg_dbg &&
+            (method_name.find("isClientActivated") != std::string::npos ||
+             method_name.find("getClientNotActivated") != std::string::npos ||
+             method_name.find("addFragmentToStack") != std::string::npos)) {
+            std::cerr << "[TRY-INVOKE] " << declaring_class << "."
+                      << method_name << " depth=" << recursion_depth_
+                      << std::endl;
+        }
     }
 
     // EXP-093: Intercept LocaleController.formatString BEFORE it calls Application.getString.
@@ -12464,13 +12683,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
         // EXP-056: Log return values for key login-path methods.
         {
+            // R-NEW-539 (CONT-36): env-gated behind MINIANDROID_TG_DEBUG —
+            // the login-path RET stream sat ungated on the telegram hot
+            // path (bounded-logging law; throughput burn on F-NEW-381).
+            static thread_local const bool tg_dbg3 = diag_env("MINIANDROID_TG_DEBUG");
             std::string full_name = cls_ref.name + "." + method.name;
-            if (full_name.find("isClientActivated") != std::string::npos ||
-                full_name.find("getClientNotActivated") != std::string::npos ||
-                full_name.find("addFragmentToStack") != std::string::npos ||
-                full_name.find("getFragmentStack") != std::string::npos ||
-                full_name.find("isEmpty") != std::string::npos ||
-                full_name.find("checkCurrentAccount") != std::string::npos) {
+            if (tg_dbg3 &&
+                (full_name.find("isClientActivated") != std::string::npos ||
+                 full_name.find("getClientNotActivated") != std::string::npos ||
+                 full_name.find("addFragmentToStack") != std::string::npos ||
+                 full_name.find("getFragmentStack") != std::string::npos ||
+                 full_name.find("isEmpty") != std::string::npos ||
+                 full_name.find("checkCurrentAccount") != std::string::npos)) {
                 std::cerr << "[RET] " << full_name
                           << " val=" << return_val.int_val
                           << " type=" << static_cast<int>(return_val.type)
@@ -21507,7 +21731,13 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     // FragmentActivity.onCreate, etc.
 
     // EXP-055: Debug — log iget-object result for isClientActivated investigation.
-    if (current_class_.find("UserConfig") != std::string::npos &&
+    // R-NEW-539 (CONT-36): env-gated behind MINIANDROID_TG_DEBUG (the
+    // telegram hot-path iget stream; ungated fprintf burn, bounded-logging
+    // law). Identical output when the flag is set.
+    {
+        static thread_local const bool tg_dbg2 = diag_env("MINIANDROID_TG_DEBUG");
+    if (tg_dbg2 &&
+        current_class_.find("UserConfig") != std::string::npos &&
         (current_method_ == "isClientActivated" || current_method_ == "getCurrentUser")) {
         std::cerr << "[IGET-OBJ-DBG] " << current_class_ << "." << current_method_
                   << " pc=" << pc
@@ -21518,10 +21748,16 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << " result_obj=" << result_value.object_id
                   << std::endl;
     }
+    }
 
     // EXP-071 Phase 6 debug: Trace iget-object for TL_nearestDc.country
     // to understand why setCountry receives null for the country argument.
-    if (field_res.field_name == "country" &&
+    // R-NEW-539 (CONT-36): env-gated (MINIANDROID_TG_DEBUG) — bounded-logging
+    // law; the country-field stream is telegram hot-path.
+    {
+        static thread_local const bool tg_dbg4 = diag_env("MINIANDROID_TG_DEBUG");
+    if (tg_dbg4 &&
+        field_res.field_name == "country" &&
         field_res.class_descriptor.find("nearestDc") != std::string::npos) {
         std::cerr << "[EXP071-IGET-COUNTRY] " << current_class_ << "." << current_method_
                   << " pc=" << pc
@@ -21534,9 +21770,13 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
         }
         std::cerr << std::endl;
     }
+    }
 
     // EXP-059: Debug — log iget-object in addFragmentToStack
-    if (current_method_ == "addFragmentToStack" &&
+    // R-NEW-539 (CONT-36): env-gated (MINIANDROID_TG_DEBUG).
+    {
+        static thread_local const bool tg_dbg5 = diag_env("MINIANDROID_TG_DEBUG");
+    if (tg_dbg5 && current_method_ == "addFragmentToStack" &&
         current_class_.find("ActionBarLayout") != std::string::npos) {
         std::cerr << "[EXP059-IGET] " << current_class_ << "." << current_method_
                   << " PC=" << pc
@@ -21549,9 +21789,14 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << " result_obj=" << result_value.object_id
                   << std::endl;
     }
+    }
 
     // EXP-060: Debug — log iget-object for parentLayout in presentFragment
-    if (field_res.resolved && field_res.field_name == "parentLayout" &&
+    // R-NEW-539 (CONT-36): env-gated (MINIANDROID_TG_DEBUG).
+    {
+        static thread_local const bool tg_dbg6 = diag_env("MINIANDROID_TG_DEBUG");
+    if (tg_dbg6 && field_res.resolved &&
+        field_res.field_name == "parentLayout" &&
         current_method_ == "presentFragment") {
         std::cerr << "[EXP060-IGET] " << current_class_ << "." << current_method_
                   << " PC=" << pc
@@ -21562,6 +21807,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << " result_type=" << static_cast<int>(result_value.type)
                   << " result_obj=" << result_value.object_id
                   << std::endl;
+    }
     }
 
     set_register(dest_reg, result_value);
@@ -27535,9 +27781,32 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
             return true;
         }
     }
-    if (method == "getSystemService" &&
-        (class_name.find("Context") != std::string::npos ||
-         class_name.find("Activity") != std::string::npos)) {
+    if (method == "getSystemService") {
+        // R-NEW-540 guard fix (CONT-36, site A): substring-only guard
+        // missed Application/Service receivers whose runtime class lacks
+        // the literal "Context"/"Activity" (the S85-FIX law shape — AOSP:
+        // every Context-family instance answers getSystemService). chompass
+        // live: receiver = the app Application class → the "jobscheduler"
+        // map entry never consulted → null → SystemJobScheduler death.
+        bool gss_ctx540 =
+            class_name.find("Context") != std::string::npos ||
+            class_name.find("Activity") != std::string::npos;
+        if (!gss_ctx540) {
+            static const char* const kGssRoots540[] = {
+                "Landroid/content/Context;",
+                "Landroid/app/Activity;",
+                "Landroid/app/Application;",
+                "Landroid/app/Service;",
+                "Landroid/view/View;",
+                "Landroid/view/ViewGroup;"};
+            for (const char* root : kGssRoots540) {
+                if (is_subclass_of(class_name, root)) {
+                    gss_ctx540 = true;
+                    break;
+                }
+            }
+        }
+        if (gss_ctx540) {
         std::string svc_name339;
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
             svc_name339 = args[1].string_val;
@@ -27566,6 +27835,13 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // S83: input service — boxcars EbitenView.initialize registers an input
     // device listener at onCreate; a null InputManager NPE'd APP-BOUNDARY.
     {"Landroid/hardware/input/InputManager;", "input"},
+    // R-NEW-540 (CONT-36): JobScheduler — AOSP Context.JOB_SCHEDULER_SERVICE
+    // ("jobscheduler", API 21+, never-null on a live context). Live face
+    // (chompass): androidx.work SystemJobScheduler.<init> first insn
+    // JobSchedulerExtKt.getWmJobScheduler(ctx) →
+    // getSystemService(JobScheduler::class.java) → NULL → the ctor NPE'd
+    // at pc=0x0 and the whole WorkManager bootstrap died.
+    {"Landroid/app/JobScheduler;", "jobscheduler"},
 };
             const char* cn = kv_table_find(t_svc_cls339,
                     sizeof(t_svc_cls339) / sizeof(t_svc_cls339[0]),
@@ -27595,6 +27871,8 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     {"autofill", "Landroid/view/autofill/AutofillManager;"},
     // S83: input service (see the class-table note above).
     {"input", "Landroid/hardware/input/InputManager;"},
+    // R-NEW-540 (CONT-36): jobscheduler (see the class-table note above).
+    {"jobscheduler", "Landroid/app/JobScheduler;"},
 };
         const char* sv = kv_table_find(t_svc_map339,
                 sizeof(t_svc_map339) / sizeof(t_svc_map339[0]),
@@ -27607,6 +27885,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                       << " (shadow layer, caller=" << current_class_ << "."
                       << current_method_ << ")" << std::endl;
             return true;
+        }
         }
     }
 
@@ -33081,8 +33360,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         ctor366.push_back(DalvikValue::make_object(obj366, recv_cls366));
         DalvikValue ctor_out366;
         DalvikExecutionResult ctor_exec366;
+        // R-NEW-536 (CONT-36): Class.newInstance = the NO-ARG constructor
+        // (OpenJDK Class.java newInstance contract — the comment above
+        // already states it). Dispatching try_recursive_invoke WITHOUT a
+        // descriptor let the EXP-080 lenient arity heuristic bind ANY
+        // same-name <init> overload: for a 1-arg call ([this] only) both
+        // <init>()V (param_count==arg_count-1) AND <init>(Context)V
+        // (param_count==arg_count, "static-like") match — the last
+        // candidate won and the callee's p1 stayed UNINITIALIZED
+        // (how2vote/leradar/subster live evidence: AllowListPlugin.<init>
+        // ran the Context body with p1=t0/o0 → ConfigXmlParser.parse
+        // getResources() zero answer → getClass NPE → the cordova
+        // plugin-instantiation family died). F-023 authority path: pass
+        // the exact no-arg descriptor when the class declares one; AOSP
+        // honesty: no no-arg ctor → InstantiationException (never a
+        // silent wrong-ctor execution).
+        std::string noarg_desc366;
+        {
+            auto cit536 = class_info_index_.find(recv_cls366);
+            if (cit536 != class_info_index_.end()) {
+                for (const auto& mi536 :
+                     dex_report_->classes[cit536->second].direct_methods) {
+                    if (mi536.is_constructor && mi536.parameters.empty() &&
+                        !mi536.bytecode.empty()) {
+                        noarg_desc366 = mi536.descriptor;
+                        break;
+                    }
+                }
+            }
+        }
+        if (noarg_desc366.empty()) {
+            throw_deferred("Ljava/lang/InstantiationException;",
+                           "Class.newInstance: " + recv_cls366 +
+                               " has no no-arg constructor",
+                           "class-newinst-noarg");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
         try_recursive_invoke(recv_cls366, "<init>", ctor366, ctor_out366,
-                             ctor_exec366);
+                             ctor_exec366, noarg_desc366);
         result = DalvikValue::make_object(obj366, recv_cls366);
         std::cerr << "[CLASS-NEWINSTANCE] " << recv_cls366
                   << " -> obj=" << obj366 << std::endl;
@@ -33791,6 +34108,147 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // stream object and registers it in open_assets_ under "file:<abs>"
     // so the EXP-071 wrapper chain + read laws serve REAL sandbox bytes.
     // ────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-537 (CONT-36): android.net.Uri$Builder — the FLUENT SETTER
+    // family + build(). AOSP Uri$Builder.java: EVERY setter (scheme/
+    // authority/path/query/fragment + the encoded twins + appendPath/
+    // appendQueryParameter) returns `this` (the same Builder) — never
+    // null, never void. Live evidence (how2vote/leradar/subster +
+    // voyager, this wave): capacitor WebViewLocalServer.
+    // registerUriForScheme chains
+    //   new Uri.Builder().scheme(s).authority(a).path("")…
+    // with NO engine law every link answered a silent null and the NEXT
+    // link's invoke died NPE-on-null (registerUriForScheme pc=0x1a =
+    // the .path invoke — the null .authority() result). Law:
+    //   1. setters store the string on the builder object under the SAME
+    //      field names the Uri laws use ("scheme"/"authority"/"path"/
+    //      "query"/"fragment" — the F-104 convention at 33858) AND
+    //      return the receiver builder (fluent identity);
+    //   2. appendPath/appendEncodedPath append with the AOSP "/"
+    //      join rule (non-empty existing path + "/" + segment);
+    //   3. build() materializes a Landroid/net/Uri; object from those
+    //      fields (the S107/F-104 Uri convention — accessor laws
+    //      consume it unchanged).
+    // Receiver identity: args[0] IS the builder (instance call).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/net/Uri$Builder;" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        uint32_t b_id = args[0].object_id;
+        static const char* const kSetters537[] = {
+            "scheme",          "encodedScheme",  "opaquePart",
+            "encodedOpaquePart", "authority",    "encodedAuthority",
+            "path",            "encodedPath",    "fragment",
+            "encodedFragment", "query",          "encodedQuery"};
+        auto is_setter537 = [&](const std::string& m) {
+            for (const char* k : kSetters537)
+                if (m == k) return true;
+            return false;
+        };
+        auto store_str537 = [&](const char* field,
+                                const std::string& s) {
+            DalvikValue v537;
+            v537.type = DalvikType::STRING_REF;
+            v537.string_val = s;
+            heap_.set_object_field(b_id, field, v537);
+        };
+        if (is_setter537(method) && args.size() >= 2) {
+            if (args[1].type == DalvikType::STRING_REF)
+                store_str537(method.c_str(), args[1].string_val);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = args[0];
+            return true;
+        }
+        if ((method == "appendPath" || method == "appendEncodedPath") &&
+            args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            std::string cur537;
+            auto pv537 = heap_.get_object_field(b_id, "path");
+            if (pv537.has_value() && pv537->type == DalvikType::STRING_REF)
+                cur537 = pv537->string_val;
+            // AOSP path appends join with "/" (empty base = segment).
+            std::string next537 = cur537;
+            if (next537.empty()) {
+                next537 = args[1].string_val;
+            } else if (next537.back() == '/') {
+                next537 += args[1].string_val;
+            } else {
+                next537 += "/";
+                next537 += args[1].string_val;
+            }
+            store_str537("path", next537);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = args[0];
+            return true;
+        }
+        if (method == "build") {
+            uint32_t uri_id = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+            for (const char* f : {"scheme", "authority", "path", "query",
+                                  "fragment"}) {
+                auto fv = heap_.get_object_field(b_id, f);
+                if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                    heap_.set_object_field(uri_id, f, *fv);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(uri_id, "Landroid/net/Uri;");
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-537b (CONT-36): Uri.withAppendedPath(Uri, String) — AOSP
+    // Uri.java: `to.buildUpon().appendPath(pathSegment).build()`; NPE when
+    // either argument is null (documented contract), NEVER a silent null
+    // result. Live evidence (how2vote this wave): capacitor
+    // WebViewLocalServer.registerUriForScheme feeds build()'s Uri through
+    // withAppendedPath(uri, "/") and hands the result to register(...);
+    // the missing law answered null → register(Uri=null) → getScheme()
+    // NPE at register pc=5 → Bridge.loadWebView → Bridge.<init> death.
+    // Engine model: fresh Uri object; scheme/authority/query/fragment
+    // copied from the input Uri (buildUpon identity), path = the AOSP
+    // appendPath join (empty base = segment; "/"-terminated base =
+    // direct concat; else "/"+segment) — the same join rule as the
+    // R-NEW-537 builder law.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/net/Uri;" &&
+        method == "withAppendedPath" && args.size() >= 2) {
+        if (args[0].type != DalvikType::OBJECT_REF || args[0].object_id == 0 ||
+            !heap_.has_object(args[0].object_id) ||
+            args[1].type != DalvikType::STRING_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "withAppendedPath on a null Uri or pathSegment",
+                           "r537b-null");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t src_id = args[0].object_id;
+        uint32_t uri_id = heap_.allocate("Landroid/net/Uri;", pc_, 0);
+        for (const char* f : {"scheme", "authority", "query", "fragment"}) {
+            auto fv = heap_.get_object_field(src_id, f);
+            if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                heap_.set_object_field(uri_id, f, *fv);
+        }
+        std::string base537b;
+        auto pv537b = heap_.get_object_field(src_id, "path");
+        if (pv537b.has_value() && pv537b->type == DalvikType::STRING_REF)
+            base537b = pv537b->string_val;
+        std::string seg537b = args[1].string_val;
+        std::string next537b = base537b;
+        if (next537b.empty()) {
+            next537b = seg537b;
+        } else if (next537b.back() == '/') {
+            next537b += seg537b;
+        } else {
+            next537b += "/";
+            next537b += seg537b;
+        }
+        DalvikValue path537b;
+        path537b.type = DalvikType::STRING_REF;
+        path537b.string_val = next537b;
+        heap_.set_object_field(uri_id, "path", path537b);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(uri_id, "Landroid/net/Uri;");
+        return true;
+    }
     if (class_name == "Landroid/net/Uri;" && method == "fromFile" &&
         !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
         args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
@@ -53239,9 +53697,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   UI_MODE_SERVICE = "uimode" → UiModeManager
     //   SEARCH_SERVICE = "search" → SearchManager
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "getSystemService" &&
-        (class_name.find("Context") != std::string::npos ||
-         class_name.find("Activity") != std::string::npos)) {
+    if (method == "getSystemService") {
+        // R-NEW-540 guard fix (CONT-36, site B): substring-only guard
+        // missed Application/Service receivers whose runtime class lacks
+        // the literal "Context"/"Activity" (the S85-FIX law shape — AOSP:
+        // every Context-family instance answers getSystemService). chompass
+        // live: receiver = the app Application class → the "jobscheduler"
+        // map entry never consulted → null → SystemJobScheduler death.
+        bool gss_ctx540 =
+            class_name.find("Context") != std::string::npos ||
+            class_name.find("Activity") != std::string::npos;
+        if (!gss_ctx540) {
+            static const char* const kGssRoots540[] = {
+                "Landroid/content/Context;",
+                "Landroid/app/Activity;",
+                "Landroid/app/Application;",
+                "Landroid/app/Service;",
+                "Landroid/view/View;",
+                "Landroid/view/ViewGroup;"};
+            for (const char* root : kGssRoots540) {
+                if (is_subclass_of(class_name, root)) {
+                    gss_ctx540 = true;
+                    break;
+                }
+            }
+        }
+        if (gss_ctx540) {
         // Extract the service name from args
         std::string service_name;
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
@@ -53291,6 +53772,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {"Landroid/view/autofill/AutofillManager;", "autofill"},
     // S83: input service (mirror of the try_shadow_dispatch copy).
     {"Landroid/hardware/input/InputManager;", "input"},
+    // R-NEW-540 (CONT-36): JobScheduler (AOSP "jobscheduler", never-null).
+    {"Landroid/app/JobScheduler;", "jobscheduler"},
 };
             const char* scn = kv_table_find(t_service_class_map,
                     sizeof(t_service_class_map) / sizeof(t_service_class_map[0]),
@@ -53322,6 +53805,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     {"display", "Landroid/hardware/display/DisplayManager;"},
     {"accessibility", "Landroid/view/accessibility/AccessibilityManager;"},
     {"autofill", "Landroid/view/autofill/AutofillManager;"},
+    // R-NEW-540 (CONT-36): jobscheduler (see the class-table note above).
+    {"jobscheduler", "Landroid/app/JobScheduler;"},
     {"input", "Landroid/hardware/input/InputManager;"},
 };
 
@@ -53346,6 +53831,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -61578,6 +62064,15 @@ measure_cm_done:;
         bool dir_present = false;
         {
             // ASSETS-WITHOUT-ARSC LAW: listing is arsc-independent.
+            // R-NEW-538 file-path law: an existing FILE answers an EMPTY
+            // array (apps branch on length==0); only a MISSING path → null.
+            bool file538b = false;
+            if (!dir.empty()) {
+                const auto all538b = asset_entry_names("assets/");
+                for (const auto& nm : all538b)
+                    if (nm == "assets/" + dir) { file538b = true; break; }
+            }
+            dir_present = file538b;
             const auto entry_names = asset_entry_names(prefix);
             std::set<std::string> uniq;
             for (const auto& name : entry_names) {
