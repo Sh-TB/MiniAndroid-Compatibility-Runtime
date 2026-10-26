@@ -137,6 +137,7 @@ bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
 #include <atomic>
 #include <algorithm>
 #include <iostream>
+#include <malloc.h>
 #include <fstream>
 #include <regex>
 #include <sstream>
@@ -19060,6 +19061,60 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             static thread_local const bool heap_census_on =
                 DalvikHeap::heap_census_enabled();
             static thread_local uint64_t heap_census_ticks = 0;
+            // R-NEW-548 (CONT-38): ENGINE memory attribution at every 8th
+            // progress tick when MINIANDROID_ENGINE_MEM=1 — mallinfo2()
+            // (glibc in-use vs total) + the resident RSS. Splits the
+            // telegram +2.7GB envelope into LIVE engine data (in-use ≈ RSS)
+            // vs transient churn high-water (in-use << RSS). Read-only.
+            static thread_local const bool engine_mem_on =
+                DalvikHeap::heap_census_enabled() &&
+                []() {
+                    const char* e = std::getenv("MINIANDROID_ENGINE_MEM");
+                    return e && e[0] == '1';
+                }();
+            if (engine_mem_on &&
+                (global_insn_counter % (progress_interval_ * 8)) == 0) {
+                static thread_local uint32_t engine_mem_rows = 0;
+                if (engine_mem_rows < 40) {
+                    ++engine_mem_rows;
+                    struct mallinfo2 mi = mallinfo2();
+                    fprintf(stderr,
+                            "[ENGINE-MEM] insn=%llu rss_kb=%llu "
+                            "glibc_inuse_mb=%.1f glibc_total_mb=%.1f "
+                            "mmap_mb=%.1f heap_objects=%llu\n",
+                            (unsigned long long)global_insn_counter,
+                            (unsigned long long)miniandroid::probe::rss_kb(),
+                            (double)mi.uordblks / (1024.0 * 1024.0),
+                            (double)mi.hblkhd / (1024.0 * 1024.0),
+                            (double)mi.hblkhd / (1024.0 * 1024.0),
+                            (unsigned long long)heap_.size());
+                }
+                // R-NEW-548 phase 2 (CONT-38): MINIANDROID_MALLOC_TRIM=1 —
+                // return the churn high-water pages to the OS at every
+                // attribution tick. The glibc numbers (in-use ~255-350MB vs
+                // total-mapped 4.5GB vs RSS 2.85GB) say the envelope is
+                // RETAINED FREE PAGES, not live data; trim proves it and
+                // makes the 60s+ telegram windows fit the 3GB sandbox.
+                static thread_local const bool trim_on =
+                    []() {
+                        const char* e = std::getenv("MINIANDROID_MALLOC_TRIM");
+                        return e && e[0] == '1';
+                    }();
+                if (trim_on) {
+                    long before_kb =
+                        (long)miniandroid::probe::rss_kb();
+                    int freed = malloc_trim(0);
+                    long after_kb = (long)miniandroid::probe::rss_kb();
+                    fprintf(stderr,
+                            "[MALLOC-TRIM] insn=%llu trim=%d "
+                            "rss_before_mb=%.1f rss_after_mb=%.1f "
+                            "freed_mb=%.1f\n",
+                            (unsigned long long)global_insn_counter, freed,
+                            (double)before_kb / 1024.0,
+                            (double)after_kb / 1024.0,
+                            (double)(before_kb - after_kb) / 1024.0);
+                }
+            }
             if (heap_census_on && (global_insn_counter % (progress_interval_ * 16)) == 0) {
                 if (heap_census_ticks < 40) {
                     ++heap_census_ticks;
@@ -19724,6 +19779,107 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                               << " op_at_pc=0x" << to_hex16(opb_stop)
                               << " in " << current_class_ << "."
                               << current_method_ << std::endl;
+                    // R-NEW-548 phase 3 (CONT-38): smaps_rollup at the stop —
+                    // the decisive memory split (anon-private = LIVE engine
+                    // data vs file-backed vs shared). mallinfo2 covers only
+                    // the main arena (worker-thread arenas invisible), so
+                    // the earlier in-use=255MB reading misattributed the
+                    // bulk; the rollup cannot lie.
+                    {
+                        std::ifstream rollup("/proc/self/smaps_rollup");
+                        if (rollup) {
+                            std::string line;
+                            while (std::getline(rollup, line)) {
+                                if (line.rfind("Rss:", 0) == 0 ||
+                                    line.rfind("Pss:", 0) == 0 ||
+                                    line.rfind("Anonymous:", 0) == 0 ||
+                                    line.rfind("Rss:", 0) == 0 ||
+                                    line.rfind("Private_Dirty:", 0) == 0 ||
+                                    line.rfind("Private_Clean:", 0) == 0 ||
+                                    line.rfind("Shared_Clean:", 0) == 0 ||
+                                    line.rfind("Swap:", 0) == 0)
+                                    std::cerr << "[SMAPS] " << line
+                                              << std::endl;
+                            }
+                        }
+                        struct mallinfo2 mi = mallinfo2();
+                        fprintf(stderr,
+                                "[SMAPS] mallinfo2(main-arena-only) "
+                                "inuse_mb=%.1f total_mb=%.1f\n",
+                                (double)mi.uordblks / (1024.0 * 1024.0),
+                                (double)mi.hblkhd / (1024.0 * 1024.0));
+                        // R-NEW-548 phase 4: top-10 anonymous mappings —
+                        // the SHAPE names the subsystem (a few giant
+                        // blocks = big vectors; thousands of arena-sized
+                        // blocks = thread arenas; many ~64MB = dex-scale
+                        // copies). Read-only walk of /proc/self/smaps.
+                        {
+                            std::ifstream sm("/proc/self/smaps");
+                            if (sm) {
+                                struct MapRow {
+                                    uint64_t size_kb; bool anon;
+                                    std::string perms; uint64_t addr;
+                                };
+                                std::vector<MapRow> rows;
+                                std::string line;
+                                uint64_t cur_addr = 0, cur_kb = 0;
+                                std::string cur_perms;
+                                bool cur_anon = false, have = false;
+                                auto flush_map = [&]() {
+                                    if (have && cur_anon && cur_kb > 4096)
+                                        rows.push_back({cur_kb, true,
+                                                        cur_perms, cur_addr});
+                                };
+                                while (std::getline(sm, line)) {
+                                    unsigned long a = 0, b = 0;
+                                    char perms[8] = {0};
+                                    if (sscanf(line.c_str(), "%lx-%lx %7s",
+                                               &a, &b, perms) == 3 &&
+                                        strlen(perms) == 4 &&
+                                        (perms[0] == 'r' ||
+                                         perms[0] == '-' ||
+                                         perms[0] == 'p' ||
+                                         perms[0] == 's' ||
+                                         perms[0] == 'w')) {
+                                        flush_map();
+                                        have = true;
+                                        cur_addr = a;
+                                        cur_perms = perms;
+                                        cur_anon =
+                                            line.find('/') ==
+                                                std::string::npos &&
+                                            line.find('[') ==
+                                                std::string::npos;
+                                        cur_kb = (b - a) / 1024;
+                                    }
+                                }
+                                flush_map();
+                                std::sort(rows.begin(), rows.end(),
+                                          [](const MapRow& x,
+                                             const MapRow& y) {
+                                              return x.size_kb >
+                                                     y.size_kb;
+                                          });
+                                uint64_t total_anon_kb = 0;
+                                for (const auto& r : rows)
+                                    total_anon_kb += r.size_kb;
+                                fprintf(stderr,
+                                        "[SMAPS] anon_mappings=%zu "
+                                        "anon_total_mb=%.1f top:\n",
+                                        rows.size(),
+                                        (double)total_anon_kb / 1024.0);
+                                for (size_t k = 0;
+                                     k < rows.size() && k < 10; ++k)
+                                    fprintf(stderr,
+                                            "[SMAPS]   #%zu %08lx perms=%s "
+                                            "%.1f MB\n",
+                                            k, rows[k].addr,
+                                            rows[k].perms.c_str(),
+                                            (double)rows[k].size_kb /
+                                                1024.0);
+                            }
+                        }
+                    }
                     if (current_registers_) {
                         const uint32_t nregs = current_registers_->get_size();
                         std::cerr << "[WALL-REGS] regs=" << nregs;
