@@ -6248,6 +6248,58 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
     }
 
+    // ── R-NEW-552 (CONT-41): ServiceWorkerController.getInstance() ──────
+    // AOSP android.webkit.ServiceWorkerController.getInstance() returns
+    // the process-wide singleton — NEVER null (the WebView provider
+    // materializes it at startup). Capacitor's Bridge.loadWebView asks
+    // it on every boot: swController.setServiceWorkerClient(...) — the
+    // generic-miss null made the NEXT invoke a null-receiver NPE at
+    // loadWebView pc=141 (uncaught → Bridge.<init> unwind → APP BOUNDARY;
+    // live faces: voyager/how2vote/leradar/subster, the whole capacitor
+    // family). Law: materialize ONE singleton; setServiceWorkerClient
+    // stores the client field (faithful); getServiceWorkerWebSettings
+    // serves a second singleton settings object (never null).
+    if (ctx.class_name == "Landroid/webkit/ServiceWorkerController;") {
+        static uint32_t swc_obj = 0;
+        static uint32_t swc_settings = 0;
+        if (m == "getInstance") {
+            if (swc_obj == 0) {
+                swc_obj = heap_->allocate("Landroid/webkit/ServiceWorkerController;");
+                std::cerr << "[R552] ServiceWorkerController singleton materialized o"
+                          << swc_obj << std::endl;
+            }
+            return CallResult::handled_object(
+                swc_obj, "Landroid/webkit/ServiceWorkerController;");
+        }
+        if (m == "setServiceWorkerClient" || m == "registerServiceWorkerClient") {
+            // Faithful store on the singleton (the client is recorded so
+            // later reads observe a non-null client).
+            if (swc_obj != 0 && ctx.args.size() >= 1 &&
+                ctx.args[0].kind == miniandroid::framework::CallContext::Arg::Kind::OBJECT) {
+                heap_->set_object_ref_field(
+                    swc_obj, "service_worker_client", ctx.args[0].object_id,
+                    ctx.args[0].object_class, "", false);
+            }
+            return CallResult::handled_void();
+        }
+        if (m == "getServiceWorkerWebSettings") {
+            if (swc_settings == 0)
+                swc_settings = heap_->allocate(
+                    "Landroid/webkit/ServiceWorkerWebSettings;");
+            return CallResult::handled_object(
+                swc_settings, "Landroid/webkit/ServiceWorkerWebSettings;");
+        }
+        if (m == "getServiceWorkerClient") {
+            uint32_t cl_id = 0;
+            std::string cl_cls, cl_str;
+            bool cl_is_str = false;
+            if (heap_->get_object_ref_field(swc_obj, "service_worker_client",
+                                            cl_id, cl_cls, cl_str, cl_is_str))
+                return CallResult::handled_object(cl_id, cl_cls);
+            return CallResult::handled_null();
+        }
+    }
+
     if (ctx.class_name == "Landroid/webkit/WebView;" && m == "getCurrentWebViewPackage") {
         std::cerr << "[ROOT-053] WebView.getCurrentWebViewPackage probe → non-null WebViewPackageInfo"
                   << std::endl;

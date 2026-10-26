@@ -1,0 +1,17 @@
+{
+ "label": "subster",
+ "apk": "app.subster_201.apk",
+ "apk_sha16": "57bab3a499fe056a",
+ "install": "OK",
+ "run_rc": 1,
+ "wall_s": 3.8,
+ "verdict_line": null,
+ "screenshot_sha16": "d602648e8e401895",
+ "png": {
+  "w": 1080,
+  "h": 1920,
+  "distinct_colors": 1,
+  "content_px": 0,
+  "content_frac": 0.0
+ }
+}
