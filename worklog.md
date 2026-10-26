@@ -11736,3 +11736,37 @@ Work Log:
 
 Stage Summary:
 - The next throughput train's levers are named with true call volumes: HeapObject copy elimination + tri per-call map hoisting; then the planned telegram SvgHelper train. TRAIN 3 closes the session's pipeline at three pushed trains' worth of evidence; every claim carries its gprof/phase-clock/census artifact.
+
+---
+Task ID: CONT-42-T4/T5
+Agent: Super Z (main)
+Task: User «ناقص موندی ادامه بده» — resume the incomplete point; standing «۱۰ قطار» directive (10 trains). TRAIN 4 (copy elimination + reserve) and TRAIN 5 (M3-gate hygiene + gate hoisting), back-to-back.
+
+Work Log:
+- SELF-UPDATE (honest): container was ~31 waves stale (e99c2fbd CONT-10 era) vs origin/main b1bde851 (CONT-42 TRAIN 3); fast-forwarded first. GitHub was ahead — admitted and synced.
+- TRAIN 4: R-NEW-555 allocate() in-place try_emplace (the 5.49M whole-HeapObject copies = exactly one per allocate) + R-NEW-556 InstructionTrace operands reserve(4) (25M reallocs). HONEST A/B (same container): PRE 43.2M vs POST 42.5M insns/90s = WITHIN NOISE — the copy-cost theory was overweighted (fields map always empty at allocation). Kept as hygiene laws. Fresh -pg post-profile banked: R530Memo dtor-union 70.5M/13.2% (tri edge 17.2M = 6/call statically unresolved), _init 9.8%, 1.3B string== (6.9%), diag_env 45M calls, tri's per-call M3-gate map/set machinery identified via the [9] callgraph edges (2x operator[], 1 set insert, 2 finds, 1 ActiveKeyGuard erase per call).
+- TRAIN 5: R-NEW-557 m3_active_key reserve(160) + append form at 6 key-part sites (~12M transient allocs killed) + R-NEW-558 per-insn diag_env gates hoisted (4 sites incl. WIDE_DIAG macro x3). Same-container A/B: 46.5M insns/90s = +8% over the PRE band, ABOVE noise — first measurable window gain since TRAIN 2.
+- WALLS: TRAIN 4 and TRAIN 5 both anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176) + games 7/7 EXACT-TO-PIN (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d).
+- Registry 844 -> 848 (R-NEW-555/556/557/558), canonical projection 848 id-unique.
+- Pushed: d6029431 (TRAIN 4), 2dccb8f3 (TRAIN 5). Evidence: evidence/cont42/train4_ab_evidence.json, train5_ab_evidence.json, train4_gprof_top.txt.
+
+Stage Summary:
+- Two trains pushed. Honest negative result banked for TRAIN 4 (copy elimination did NOT move the window); TRAIN 5's allocation hygiene delivered +8%.
+- Operational lessons re-confirmed: gprof symbol names are UNION-attribution traps (weak-symbol dedup + code folding); same-container A/B is mandatory; byte-check suspected corruption with od before editing (the "pc_visit_count_i]" scare was a display artifact — bytes were correct).
+- Next trains: T6 telegram SvgHelper parse loop; T7 XmlPullParser family (gecko/lumolight/sopadeletras); T8 Fragment family; T9 the 6 zero-unwind blanks; T10+ census fan-out.
+
+---
+Task ID: CONT-42-T6/T7/T8
+Agent: Super Z (main)
+Task: Trains 6-8 of the standing «۱۰ قطار» pipeline — census gate, WorkManager bootstrap family, static-field identity wave.
+
+Work Log:
+- TRAIN 6 (census gate): scripts/cont42t6_batch50.py — full batch-50 census re-run at the TRAIN 5 binary (CENSUS_POOL=1). 50/50 rows; 14/14 content rows BYTE-EXACT RETAINED vs evidence/cont41 (wocheneinkauf 44227 … librecontacts 1214501). Zero drift from the TRAIN 4/5 throughput changes. Blank-row landscape sampled: diverse roots (unifiedpush Database NPE, androidx.work JobScheduler NPE, sx0$c/d12 ctors…).
+- TRAIN 7 (WorkManager family, user's 60/40 core law): R-NEW-559 JobScheduler.forNamespace non-null law (AOSP API 34; BOTH the Landroid/app/job/JobScheduler; spelling AND the engine's R-NEW-540 alias Landroid/app/JobScheduler; — the live face proved virtual dispatch sees the alias). R-NEW-560 Application/Context.getProcessName non-null law (AOSP API 28). Chompass blank-row frontier advanced TWO links deeper (getWmJobScheduler NPE → ProcessUtils NPE → now the Lp21;.I compose-family IAE). dooz + games gates byte-exact.
+- TRAIN 8 (statics): R-NEW-561 JVM declarer-chain retry at both sget ladders — HONEST 0 observed hits; the [SGET-MISS] "landed:" lines proved to be FIELD-NAME coincidences. REAL root named: F-NEW-561b PARTIAL CLINIT (clinit halts midway leaving statics unwritten — the 576-row telegram face) + the chompass IAE = the F-NEW-236d KClassImpl map-key value-equality face. Both registered.
+- Registry 848 -> 852 (R-NEW-559/560/561 + F-NEW-561b), canonical projection 852 id-unique.
+- Pushed: 504bfd2c (T7), b1ccf019 (T8). Evidence: evidence/cont42t6/{batch50_census.json, train7_workmanager_evidence.json, train8_statics_evidence.json}.
+
+Stage Summary:
+- Session total: 5 trains pushed (T4 d6029431, T5 2dccb8f3, T6 census within T7 commit, T7 504bfd2c, T8 b1ccf019), +6 registry roots, +1 honest negative (T4 copy-cost), +8% dooz window (T5), census 14/14 retention, 2 AOSP null-contract laws, 1 JVM static-resolution law, 2 new family roots named with evidence.
+- NEXT TRAINS (the named pipeline): T9 telegram SvgHelper/theme-frame chain (M-07 epic — needs multi-train budget); T10 F-NEW-561b partial-clinit census then laws; T11 F-NEW-236d KClassImpl map-key equality (chompass); T12 the tri dtor-union 6-maps-per-call counter diagnostic (13.2%+_init 9.8% of dooz wall); T13 dooz board composition (R-NEW-546 four Lz6; allocation sites) with the +8% budget; then the census blank long-tail.
