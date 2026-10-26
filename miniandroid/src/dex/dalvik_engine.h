@@ -949,6 +949,11 @@ struct HeapObject {
     
     // Bridge to Android API stub
     std::shared_ptr<api::AndroidObject> api_object;
+
+    // R-NEW-548 (CONT-38): the dense array backing store (see set_field).
+    bool is_array = false;
+    int32_t array_length = 0;                 // capacity hint (grow-on-write)
+    std::vector<DalvikValue> array_store;     // dense elements, unset = REGISTER_UNSET
     
     HeapObject() = default;
     
@@ -959,12 +964,52 @@ struct HeapObject {
     }
     
     void set_field(const std::string& name, const DalvikValue& value) {
+        // R-NEW-548 (CONT-38): TYPED ARRAY BACKING — array elements no longer
+        // land in the fields map. The per-index "array[N]" string keys cost
+        // ~110-140B of map-node+key overhead PER ELEMENT (unordered_map node
+        // + heap string key + DalvikValue) — a 1MB byte[] inflated to
+        // ~140MB. Telegram's startup (SVG/SQLite/crypto/network buffers)
+        // materializes MB-scale arrays: the +2.7GB execute_application bulk
+        // (run/cont39 ENGINE-MEM: glibc in-use only ~350MB vs RSS 2.85GB —
+        // the rest was live map nodes behind ~13K heap objects). Elements
+        // now live in a DENSE DalvikValue vector; the "array[N]" field-name
+        // API (184 engine call sites) is an adapter. The length channels
+        // (__array_length__ / __new_array_length__) stay ordinary map
+        // fields — one entry per array, zero behavior change there.
+        int32_t ai;
+        if (parse_array_index(name, ai)) {
+            is_array = true;
+            if (ai >= 0) {
+                if (ai >= array_length) {
+                    array_length = ai + 1;
+                    if ((int32_t)array_store.size() < array_length)
+                        array_store.resize(array_length);
+                }
+                array_store[ai] = value;
+            }
+            return;
+        }
         fields[name] = value;
     }
-    
+
     DalvikValue get_field(const std::string& name) const {
+        int32_t ai;
+        if (parse_array_index(name, ai)) {
+            if (is_array && ai >= 0 && ai < (int32_t)array_store.size())
+                return array_store[ai];
+            return DalvikValue::make_uninit();
+        }
         auto it = fields.find(name);
         return (it != fields.end()) ? it->second : DalvikValue::make_uninit();
+    }
+
+    // R-NEW-548: array-shaped field-name test + index extraction.
+    static bool parse_array_index(const std::string& name, int32_t& out) {
+        if (name.size() < 7 || name.compare(0, 6, "array[") != 0)
+            return false;
+        if (name.back() != ']') return false;
+        out = (int32_t)strtol(name.c_str() + 6, nullptr, 10);
+        return true;
     }
     
     json to_json() const {

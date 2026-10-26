@@ -11645,3 +11645,20 @@ Work Log:
 Stage Summary:
 - The wave resolved the CONT-37 named frontier (the same-site re-entry family) with a real semantics law (F-NEW-543) that released every remaining legal nesting in dooz AND opencalc with zero drift across the whole wall; advanced the dooz board frontier a full level deeper (the block is never CONSTRUCTED — composition-side, 4 allocation sites named, 3 instruments banked); and CORRECTED the telegram envelope attribution with hard per-stage data (the lever is now execution-time engine-side allocation, not boot parse).
 - Next wave owns: the four Lz6; allocation-site invokers (why the destination composition stops), the 1.9GB/100K-insns allocator attribution inside execute_application (then the structural cut for the telegram 60s+ windows), the Lo52;.c WindowInsets walk, and the deferred-UI family re-test.
+
+---
+Task ID: CONT-39
+Agent: Super Z (main)
+Task: User directive «ادامه از جایی که ناقص موندی» — resume the interrupted array-store validation and land the CONT-39 memory wave.
+
+Work Log:
+- RESUME: the session was interrupted mid-validation (the anchor wall run canceled). State: CONT-38 pushed (90ff4830); the uncommitted delta = the typed array backing (R-NEW-548) + the memory-attribution instrument bank (ENGINE-MEM / MALLOC-TRIM / SMAPS / BOOT-RSS).
+- TYPED ARRAY BACKING (R-NEW-548 ROOT-CAUSED-FIXED): HeapObject gains {is_array, array_length, array_store: vector<DalvikValue>}; set_field/get_field parse the "array[N]" shape and route to the dense store (the ~110-140B/element map-node+key overhead is gone; unset = REGISTER_UNSET preserved; grow-on-write; the F-NEW-385 zero-init law now writes the vector instead of len map nodes). The length channels stay ordinary map fields; all 184 engine call sites unchanged (the field-name API is the adapter).
+- ATTRIBUTION BANK (the trail that named the frontier): [BOOT-RSS] per-stage (parse_dex +74MB only; the bulk accrues during execute_application); [ENGINE-MEM] mallinfo2 (in-use 255-350MB vs mapped 4.5GB — mallinfo2 covers ONLY the main arena; worker arenas invisible); [MALLOC-TRIM] (malloc_trim(0) recovered 11MB — the free-list-churn theory FALSIFIED); [SMAPS] smaps_rollup (Private_Dirty = Anonymous = 2890MB — ALL LIVE); [SMAPS top-mappings] — 13 anon mappings: #0 = 2939.0MB CONTIGUOUS + 1489.5MB + 1024.0MB — a few GIANT trim-immune live blocks, growth window = the SvgHelper$ParserHelper parse loop (RSS 2052→2339→2850 across the 300-400K-insn ticks).
+- REGRESSION WALL at the array-store binary 48ab86dbac8015b8: anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176); games 7/7 EXACT-TO-PIN; negatives 19/19; reinstall 8/8; skill 13/13 — ZERO DRIFT.
+- HONEST: the array change did NOT move the telegram RSS envelope (2.85GB) — the giant blocks are NOT the heap arrays; the frontier is the giant-block attribution (next wave: per-tick top-mapping watch correlated with the PROGRESS method lines + the SvgHelper parseFloat decode).
+- REGISTRY 837→838 id-unique (R-NEW-548). Ledger comment posting remains deferred (API rate limit; recipe scripts/cont38_post_ledger.py).
+
+Stage Summary:
+- The wave landed the typed array backing with zero drift across the whole wall (the architectural element-overhead kill), built the complete memory-attribution instrument bank, falsified two standing theories (churn retention, free-list growth), proved the 2.85GB is LIVE anonymous data in a few giant trim-immune blocks, and localized the growth window to the telegram SvgHelper parse loop.
+- Next wave owns: the giant-block allocator attribution (per-tick top-mapping watch + the SvgHelper$ParserHelper.parseFloat decode + the Path/point storage law), then the structural cut that frees the 60s+ telegram windows from the 3GB sandbox ceiling.
