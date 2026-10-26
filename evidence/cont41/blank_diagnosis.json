@@ -1,0 +1,376 @@
+{
+ "binary": "CONT-40 5e18eb19 post-R-NEW-549",
+ "n_blank": 37,
+ "rows": [
+  {
+   "label": "prism",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lorg/unifiedpush/android/distributor/Database;.m pc=0x0 d=62"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lorg/unifiedpush/android/distributor/Database;.m'),)"
+  },
+  {
+   "label": "matewave",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "Ljava/lang/IllegalArgumentException;": "Le80;.<init> pc=0xa d=61"
+   },
+   "family": "(('Ljava/lang/IllegalArgumentException;', 'Le80;.<init>'),)"
+  },
+  {
+   "label": "sparkledns",
+   "status": "FAILURE",
+   "n_unwind": 0,
+   "deepest": {},
+   "family": "()"
+  },
+  {
+   "label": "aurora",
+   "status": "FAILURE",
+   "n_unwind": 31,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lsx0$c;.<init> pc=0x31 d=11",
+    "Ljava/lang/IllegalStateException;": "Lvs2;.b pc=0x76 d=68"
+   },
+   "family": "(('Ljava/lang/IllegalStateException;', 'Lvs2;.b'), ('Ljava/lang/NullPointerException;', 'Lsx0$c;.<init>'))"
+  },
+  {
+   "label": "awagam",
+   "status": "FAILURE",
+   "n_unwind": 30,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Ld12;.<init> pc=0x0 d=7",
+    "Lwn;": "Lrb;.v pc=0x55 d=3",
+    "Ljava/lang/IllegalStateException;": "Lcom/awagam/android/AWAGAMApplication;.onCreate pc=0x8d d=2",
+    "Ljava/lang/IllegalArgumentException;": "Lokhttp3/ConnectionSpec$Builder;.cipherSuites pc=0x1c d=70"
+   },
+   "family": "(('Ljava/lang/IllegalArgumentException;', 'Lokhttp3/ConnectionSpec$Builder;.cipherSuites'), ('Ljava/lang/IllegalStateException;', 'Lcom/awagam/android/AWAGAMApplication;.onCreate'))"
+  },
+  {
+   "label": "webstack",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lq21;.<init> pc=0x89 d=60"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lq21;.<init>'),)"
+  },
+  {
+   "label": "compose_stopwatch",
+   "status": "FAILURE",
+   "n_unwind": 0,
+   "deepest": {},
+   "family": "()"
+  },
+  {
+   "label": "notepad",
+   "status": "FAILURE",
+   "n_unwind": 4,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lcom/nononsenseapps/notepad/activities/main/ActivityMain;.loadContent pc=0x0 d=5"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lcom/nononsenseapps/notepad/activities/main/ActivityMain;.loadContent'),)"
+  },
+  {
+   "label": "k9",
+   "status": "FAILURE",
+   "n_unwind": 26,
+   "deepest": {
+    "Ljava/lang/IllegalStateException;": "Lokhttp3/CacheControl$Companion;.get$default pc=0x14 d=4",
+    "Lorg/koin/core/error/NoDefinitionFoundException;": "Lorg/koin/core/scope/Scope;.resolveInstance pc=0xf d=7"
+   },
+   "family": "(('Ljava/lang/IllegalStateException;', 'Lokhttp3/CacheControl$Companion;.get$default'), ('Lorg/koin/core/error/NoDefinitionFoundException;', 'Lorg/koin/core/scope/Scope;.resolveInstance'))"
+  },
+  {
+   "label": "audiobook",
+   "status": "FAILURE",
+   "n_unwind": 11,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lyx;.a pc=0x32 d=11",
+    "Lby0;": "Lvo;.v pc=0x55 d=3"
+   },
+   "family": "(('Lby0;', 'Lvo;.v'), ('Ljava/lang/NullPointerException;', 'Lyx;.a'))"
+  },
+  {
+   "label": "goodtime",
+   "status": "FAILURE",
+   "n_unwind": 7,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lf05;.<init> pc=0x0 d=6",
+    "Lb53;": "Lcc4;.d pc=0x40 d=4"
+   },
+   "family": "(('Lb53;', 'Lcc4;.d'), ('Ljava/lang/NullPointerException;', 'Lf05;.<init>'))"
+  },
+  {
+   "label": "fossify_notes",
+   "status": "FAILURE",
+   "n_unwind": 0,
+   "deepest": {},
+   "family": "()"
+  },
+  {
+   "label": "fossify_clock",
+   "status": "FAILURE",
+   "n_unwind": 0,
+   "deepest": {},
+   "family": "()"
+  },
+  {
+   "label": "dmfs_tasks",
+   "status": "FAILURE",
+   "n_unwind": 6,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lorg/dmfs/xmlobjects/pull/XmlObjectPull;.pull pc=0x6 d=7"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lorg/dmfs/xmlobjects/pull/XmlObjectPull;.pull'),)"
+  },
+  {
+   "label": "surgeengine",
+   "status": "FAILURE",
+   "n_unwind": 2,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lorg/liballeg/android/AllegroActivity;.<init> pc=0x1e d=3"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lorg/liballeg/android/AllegroActivity;.<init>'),)"
+  },
+  {
+   "label": "chompass",
+   "status": "FAILURE",
+   "n_unwind": 28,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Landroidx/work/impl/background/systemjob/JobSchedulerExtKt;.getWmJobScheduler pc=0x16 d=16",
+    "Lfs0;": "Ljr;.q pc=0x55 d=3",
+    "Ljava/lang/IllegalArgumentException;": "Lp21;.I pc=0x24 d=5"
+   },
+   "family": "(('Lfs0;', 'Ljr;.q'), ('Ljava/lang/IllegalArgumentException;', 'Lp21;.I'))"
+  },
+  {
+   "label": "floatdeck",
+   "status": "FAILURE",
+   "n_unwind": 0,
+   "deepest": {},
+   "family": "()"
+  },
+  {
+   "label": "sopadeletras",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "La;": "Lqh1;.f pc=0x4 d=51",
+    "Ljava/lang/IllegalArgumentException;": "Lxn;.a pc=0x0 d=62"
+   },
+   "family": "(('La;', 'Lqh1;.f'), ('Ljava/lang/IllegalArgumentException;', 'Lxn;.a'))"
+  },
+  {
+   "label": "subster",
+   "status": "FAILURE",
+   "n_unwind": 10,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme pc=0x1a d=10"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme'),)"
+  },
+  {
+   "label": "voyager",
+   "status": "FAILURE",
+   "n_unwind": 10,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme pc=0x1a d=10"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme'),)"
+  },
+  {
+   "label": "how2vote",
+   "status": "FAILURE",
+   "n_unwind": 10,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme pc=0x1a d=10"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme'),)"
+  },
+  {
+   "label": "leradar",
+   "status": "FAILURE",
+   "n_unwind": 10,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme pc=0x1a d=10"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme'),)"
+  },
+  {
+   "label": "sunpiano",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lj4/b;.<clinit> pc=0x8 d=47"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lj4/b;.<clinit>'),)"
+  },
+  {
+   "label": "batterymonitor",
+   "status": "FAILURE",
+   "n_unwind": 4,
+   "deepest": {
+    "Ljava/lang/IllegalStateException;": "Landroidx/fragment/app/FragmentManager;.enqueueAction pc=0x12 d=5"
+   },
+   "family": "(('Ljava/lang/IllegalStateException;', 'Landroidx/fragment/app/FragmentManager;.enqueueAction'),)"
+  },
+  {
+   "label": "firewall",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "Ljava/lang/UnsupportedOperationException;": "Landroidx/lifecycle/r0;.create pc=0x3b d=81"
+   },
+   "family": "(('Ljava/lang/UnsupportedOperationException;', 'Landroidx/lifecycle/r0;.create'),)"
+  },
+  {
+   "label": "ricochlime",
+   "status": "FAILURE",
+   "n_unwind": 2,
+   "deepest": {
+    "Ljava/lang/RuntimeException;": "Lv2/h;.<init> pc=0x21 d=3"
+   },
+   "family": "(('Ljava/lang/RuntimeException;', 'Lv2/h;.<init>'),)"
+  },
+  {
+   "label": "aeropayout",
+   "status": "FAILURE",
+   "n_unwind": 8,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "LL1/l;.get pc=0x3b0 d=14"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'LL1/l;.get'),)"
+  },
+  {
+   "label": "amaze",
+   "status": "FAILURE",
+   "n_unwind": 22,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lorg/acra/config/CoreConfiguration;.<init> pc=0x14 d=5",
+    "Lch/qos/logback/core/joran/spi/JoranException;": "Landroidx/cardview/widget/CardView$1;.autoConfig pc=0xb8 d=9",
+    "Ljava/lang/NumberFormatException;": "Lch/qos/logback/core/util/StatusPrinter;.buildStr pc=0x1f d=10"
+   },
+   "family": "(('Lch/qos/logback/core/joran/spi/JoranException;', 'Landroidx/cardview/widget/CardView$1;.autoConfig'), ('Ljava/lang/NullPointerException;', 'Lorg/acra/config/CoreConfiguration;.<init>'))"
+  },
+  {
+   "label": "fitbuddy",
+   "status": "FAILURE",
+   "n_unwind": 21,
+   "deepest": {
+    "Ljava/lang/IllegalArgumentException;": "Lio/sentry/x4;.j pc=0x428 d=5",
+    "Lj;": "Le64;.h pc=0x4 d=15",
+    "Ljava/lang/VirtualMachineError;": "Lcom/anant/fitbuddy/FitBuddyApp;.onCreate pc=0xe d=2",
+    "Ljava/lang/NullPointerException;": "Lrx3;.<clinit> pc=0x73 d=15"
+   },
+   "family": "(('Lj;', 'Le64;.h'), ('Ljava/lang/IllegalArgumentException;', 'Lio/sentry/x4;.j'))"
+  },
+  {
+   "label": "gecko",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "La;": "Lpn;.n pc=0xd3 d=24",
+    "Lorg/xmlpull/v1/XmlPullParserException;": "Ls1;.i pc=0xdf d=44"
+   },
+   "family": "(('La;', 'Lpn;.n'), ('Lorg/xmlpull/v1/XmlPullParserException;', 'Ls1;.i'))"
+  },
+  {
+   "label": "best_deskclock",
+   "status": "FAILURE",
+   "n_unwind": 18,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lcom/best/deskclock/DeskClockApplication;.onCreate pc=0xbe d=2",
+    "Landroid/content/res/Resources$NotFoundException;": "Lfb;.D pc=0x10 d=7"
+   },
+   "family": "(('Landroid/content/res/Resources$NotFoundException;', 'Lfb;.D'), ('Ljava/lang/NullPointerException;', 'Lcom/best/deskclock/DeskClockApplication;.onCreate'))"
+  },
+  {
+   "label": "shizuwall",
+   "status": "FAILURE",
+   "n_unwind": 4,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lxy0;.<init> pc=0x0 d=7",
+    "Lbj;": "Lx61;.c pc=0x55 d=3"
+   },
+   "family": "(('Lbj;', 'Lx61;.c'), ('Ljava/lang/NullPointerException;', 'Lxy0;.<init>'))"
+  },
+  {
+   "label": "aegis",
+   "status": "FAILURE",
+   "n_unwind": 3,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Landroidx/fragment/app/Fragment;.<init> pc=0x47 d=3"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Landroidx/fragment/app/Fragment;.<init>'),)"
+  },
+  {
+   "label": "lumolight",
+   "status": "FAILURE",
+   "n_unwind": 32,
+   "deepest": {
+    "Lorg/xmlpull/v1/XmlPullParserException;": "La4;.h pc=0xe6 d=105"
+   },
+   "family": "(('Lorg/xmlpull/v1/XmlPullParserException;', 'La4;.h'),)"
+  },
+  {
+   "label": "lrceditor",
+   "status": "FAILURE",
+   "n_unwind": 4,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;.m pc=0x13 d=6"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;.m'),)"
+  },
+  {
+   "label": "concealmobile",
+   "status": "FAILURE",
+   "n_unwind": 5,
+   "deepest": {
+    "Ljava/lang/NullPointerException;": "Lorg/apache/cordova/engine/SystemWebView;.init pc=0xa d=6"
+   },
+   "family": "(('Ljava/lang/NullPointerException;', 'Lorg/apache/cordova/engine/SystemWebView;.init'),)"
+  },
+  {
+   "label": "qssp",
+   "status": "FAILURE",
+   "n_unwind": 0,
+   "deepest": {},
+   "family": "()"
+  }
+ ],
+ "families": {
+  "()": 6,
+  "(('Ljava/lang/NullPointerException;', 'Lcom/getcapacitor/WebViewLocalServer;.registerUriForScheme'),)": 4,
+  "(('Ljava/lang/NullPointerException;', 'Lorg/unifiedpush/android/distributor/Database;.m'),)": 1,
+  "(('Ljava/lang/IllegalArgumentException;', 'Le80;.<init>'),)": 1,
+  "(('Ljava/lang/IllegalStateException;', 'Lvs2;.b'), ('Ljava/lang/NullPointerException;', 'Lsx0$c;.<init>'))": 1,
+  "(('Ljava/lang/IllegalArgumentException;', 'Lokhttp3/ConnectionSpec$Builder;.cipherSuites'), ('Ljava/lang/IllegalStateException;', 'Lcom/awagam/android/AWAGAMApplication;.onCreate'), ('Ljava/lang/NullPointerException;', 'Ld12;.<init>'), ('Lwn;', 'Lrb;.v'))": 1,
+  "(('Ljava/lang/NullPointerException;', 'Lq21;.<init>'),)": 1,
+  "(('Ljava/lang/NullPointerException;', 'Lcom/nononsenseapps/notepad/activities/main/ActivityMain;.loadContent'),)": 1,
+  "(('Ljava/lang/IllegalStateException;', 'Lokhttp3/CacheControl$Companion;.get$default'), ('Lorg/koin/core/error/NoDefinitionFoundException;', 'Lorg/koin/core/scope/Scope;.resolveInstance'))": 1,
+  "(('Lby0;', 'Lvo;.v'), ('Ljava/lang/NullPointerException;', 'Lyx;.a'))": 1,
+  "(('Lb53;', 'Lcc4;.d'), ('Ljava/lang/NullPointerException;', 'Lf05;.<init>'))": 1,
+  "(('Ljava/lang/NullPointerException;', 'Lorg/dmfs/xmlobjects/pull/XmlObjectPull;.pull'),)": 1,
+  "(('Ljava/lang/NullPointerException;', 'Lorg/liballeg/android/AllegroActivity;.<init>'),)": 1,
+  "(('Lfs0;', 'Ljr;.q'), ('Ljava/lang/IllegalArgumentException;', 'Lp21;.I'), ('Ljava/lang/NullPointerException;', 'Landroidx/work/impl/background/systemjob/JobSchedulerExtKt;.getWmJobScheduler'))": 1,
+  "(('La;', 'Lqh1;.f'), ('Ljava/lang/IllegalArgumentException;', 'Lxn;.a'))": 1,
+  "(('Ljava/lang/NullPointerException;', 'Lj4/b;.<clinit>'),)": 1,
+  "(('Ljava/lang/IllegalStateException;', 'Landroidx/fragment/app/FragmentManager;.enqueueAction'),)": 1,
+  "(('Ljava/lang/UnsupportedOperationException;', 'Landroidx/lifecycle/r0;.create'),)": 1,
+  "(('Ljava/lang/RuntimeException;', 'Lv2/h;.<init>'),)": 1,
+  "(('Ljava/lang/NullPointerException;', 'LL1/l;.get'),)": 1,
+  "(('Lch/qos/logback/core/joran/spi/JoranException;', 'Landroidx/cardview/widget/CardView$1;.autoConfig'), ('Ljava/lang/NullPointerException;', 'Lorg/acra/config/CoreConfiguration;.<init>'), ('Ljava/lang/NumberFormatException;', 'Lch/qos/logback/core/util/StatusPrinter;.buildStr'))": 1,
+  "(('Lj;', 'Le64;.h'), ('Ljava/lang/IllegalArgumentException;', 'Lio/sentry/x4;.j'), ('Ljava/lang/NullPointerException;', 'Lrx3;.<clinit>'), ('Ljava/lang/VirtualMachineError;', 'Lcom/anant/fitbuddy/FitBuddyApp;.onCreate'))": 1,
+  "(('La;', 'Lpn;.n'), ('Lorg/xmlpull/v1/XmlPullParserException;', 'Ls1;.i'))": 1,
+  "(('Landroid/content/res/Resources$NotFoundException;', 'Lfb;.D'), ('Ljava/lang/NullPointerException;', 'Lcom/best/deskclock/DeskClockApplication;.onCreate'))": 1,
+  "(('Lbj;', 'Lx61;.c'), ('Ljava/lang/NullPointerException;', 'Lxy0;.<init>'))": 1,
+  "(('Ljava/lang/NullPointerException;', 'Landroidx/fragment/app/Fragment;.<init>'),)": 1,
+  "(('Lorg/xmlpull/v1/XmlPullParserException;', 'La4;.h'),)": 1,
+  "(('Ljava/lang/NullPointerException;', 'Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;.m'),)": 1,
+  "(('Ljava/lang/NullPointerException;', 'Lorg/apache/cordova/engine/SystemWebView;.init'),)": 1
+ }
+}
