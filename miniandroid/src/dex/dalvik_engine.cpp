@@ -225,6 +225,19 @@ static bool field_trace_active(const char* field_name, const char* where,
     static thread_local uint32_t budget = 2000;
     return budget-- > 0;
 }
+
+// CONT-42 THROUGHPUT LAW: the field-trace call sites build a
+// (current_class_ + "." + current_method_) temporary BEFORE calling
+// field_trace_active — a heap string allocation per iget/iput/sget tick
+// (1.9M+ iget-object per dooz run) even though the trace is OFF in every
+// normal run. This zero-cost pre-check short-circuits the argument build;
+// semantics identical (the temporary was only ever consumed when the
+// filter env is set).
+static inline bool field_trace_filter_set() {
+    static thread_local const char* ft_filter =
+        std::getenv("MINIANDROID_FIELD_TRACE");
+    return ft_filter != nullptr;
+}
 // ─────────────────────────────────────────────────────────────────────────
 // F-107a (R-NEW-381, S61): trivially-destructible lookup tables.
 //
@@ -261,13 +274,40 @@ inline int kvint_table_find(const KvInt* tbl, size_t n, const std::string& k, in
 // showed _M_erase at 0.94s/7230 calls). Batching: let the vector grow to
 // cap+BATCH, then drop BATCH in ONE erase — identical FIFO order, identical
 // steady-state cap (bounded lag of BATCH), 1/BATCH the memmove traffic.
+//
+// CONT-42 THROUGHPUT LAW (gprof, dooz 60s profile): even BATCHED, the FIFO
+// erase on the ApiCallTrace ring was 9.0% of wall (1.56M pushes; every batch
+// memmoves cap × sizeof(ApiCallTrace) ≈ 750KB — ~18GB of memmove per dooz
+// run). The trace ring's consumers (S135 missing/ERROR census + first-20
+// emission, S69 optional JSON dump, ApiCallRecord recording) are tallies —
+// the SURVIVOR SET (last cap entries) is the contract, not the element
+// order. The ring form: until cap, push_back; at cap, OVERWRITE slot
+// [cursor++ % cap] — O(1), zero memmove, identical survivor set.
+// ring_normalize_chrono() restores the exact chronological FIFO order once
+// at execution end (single O(cap) std::rotate) so every downstream consumer
+// still reads chronological order; call sites that never normalize keep the
+// physical order (diagnostics-only delta, documented).
 template <class T>
-inline void batched_cap_push(std::vector<T>& v, const size_t cap, T&& item) {
-    constexpr size_t BATCH = 64;
-    if (cap > 0 && v.size() >= cap + BATCH) {
-        v.erase(v.begin(), v.begin() + static_cast<long>(BATCH));
+inline void batched_cap_push(std::vector<T>& v, size_t& cursor,
+                             const size_t cap, T&& item) {
+    if (cap == 0) { v.push_back(std::move(item)); return; }
+    if (v.size() < cap) {
+        v.push_back(std::move(item));
+        return;
     }
-    v.push_back(std::move(item));
+    v[cursor] = std::move(item);
+    cursor = (cursor + 1) % cap;
+}
+
+// CONT-42: rotate the survivor ring into chronological order in place
+// (physical [oldest..newest | wrapped] → true FIFO), then zero the cursor.
+// After this the vector is byte-for-byte the shape the old batched-FIFO
+// produced (modulo the survivor-lag difference the ring removes entirely).
+template <class T>
+inline void ring_normalize_chrono(std::vector<T>& v, size_t& cursor) {
+    if (cursor == 0 || cursor >= v.size()) { cursor = 0; return; }
+    std::rotate(v.begin(), v.begin() + static_cast<long>(cursor), v.end());
+    cursor = 0;
 }
 inline bool kv_table_contains(const KvPair* tbl, size_t n, const std::string& k) {
     for (size_t i = 0; i < n; ++i) if (k == tbl[i].k) return true;
@@ -2874,7 +2914,13 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
 
     log("Execution completed in " + std::to_string(result.total_execution_ms) + "ms");
     log("Instructions executed: " + std::to_string(result.total_instructions_executed));
-    
+
+    // CONT-42 THROUGHPUT LAW: the api_call_traces survivor ring ran O(1)
+    // during execution; restore the exact chronological FIFO order once
+    // before any consumer reads it (single O(cap) rotate — downstream
+    // consumers keep reading chronological order exactly as before).
+    ring_normalize_chrono(result.api_call_traces, result.api_call_ring_cursor);
+
     return result;
 }
 
@@ -2919,7 +2965,10 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
             method.tries_data.size()
         );
     }
-    
+
+    // CONT-42: same chronological-restore law as execute_apk_with_activity.
+    ring_normalize_chrono(result.api_call_traces, result.api_call_ring_cursor);
+
     return result;
 }
 
@@ -10252,12 +10301,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // different identities = independent nested frames (legal re-entrance,
     // execute real DEX). MAX_RECURSION_DEPTH remains the backstop for
     // recursion over fresh argument identities.
-    static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
+    // CONT-42 THROUGHPUT LAW (gprof, dooz 60s): map<string,int>::operator[] was
+    // 6.4% of wall (4.43M calls) — the M3 gate bumps per invoke with a long
+    // concatenated key; the O(log n) rb-tree string compares are pure overhead.
+    // Lookup/increment only, no ordered iteration anywhere -> unordered_map.
+    static thread_local std::unordered_map<std::string, int> m3_call_counts;  // diagnostics only
     // F-NEW-543 (CONT-38): per-key ACTIVE-DEPTH map — how many frames of the
     // SAME key are currently on the call stack. The stub trigger moves from
     // raw set-membership (any active frame) to depth >= budget — see the
     // law comment at the firing site.
-    static thread_local std::map<std::string, int> m3_key_active_depth;
+        static thread_local std::unordered_map<std::string, int> m3_key_active_depth;  // CONT-42: see m3_call_counts law
     // F-NEW-286 payload-parts counter: how many IDENTITY parts beyond the
     // base key (class.method+descriptor+receiver) were appended. The stub
     // decision consumes this — see the law at the firing site below.
@@ -10627,8 +10680,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // depth decrements; the set erases only when the LAST frame of the key
     // leaves (depth 1 -> 0) — the stale-erase-under-nesting shape is gone.
     struct ActiveKeyGuard {
-        std::set<std::string>& set;
-        std::map<std::string, int>& depth;
+        std::unordered_set<std::string>& set;
+        std::unordered_map<std::string, int>& depth;
         const std::string& key;
         bool armed = false;
         ~ActiveKeyGuard() {
@@ -17031,6 +17084,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 api_trace.pc = pc_;
                 note_api_status(api_trace);  // F-NEW-200 census
                 batched_cap_push(result.api_call_traces,
+                                  result.api_call_ring_cursor,
                                   static_cast<size_t>(config_.api_call_trace_cap),
                                   std::move(api_trace));
 
@@ -21479,7 +21533,8 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     // M3 FIELD-TRACE (AG diagnostic): env-gated field-access value trace.
     {
         DalvikValue tgt = get_register(obj_reg);
-        if (field_trace_active(field_res.field_name.c_str(),
+        if (field_trace_filter_set() &&
+            field_trace_active(field_res.field_name.c_str(),
                                (current_class_ + "." + current_method_).c_str(),
                                field_res.class_descriptor.c_str())) {
             std::cerr << "[FIELD-TRACE] get " << current_class_ << "." << current_method_
@@ -21840,7 +21895,8 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     if (obj_ref.type == DalvikType::OBJECT_REF) {
         // Look up object field from heap
         if (heap_.has_object(obj_ref.object_id)) {
-            if (field_trace_active(field_res.field_name.c_str(),
+            if (field_trace_filter_set() &&
+                field_trace_active(field_res.field_name.c_str(),
                                    (current_class_ + "." + current_method_).c_str(),
                                    field_res.class_descriptor.c_str())) {
                 DalvikValue tgt = get_register(obj_reg);
@@ -22410,7 +22466,8 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
         // M3 FIELD-TRACE (AG diagnostic): env-gated field-store value trace.
         // NOTE: render via dalvik_value_to_string — printing .long_val on an
         // INT32 union read shows stale upper bytes as false corruption.
-        if (field_trace_active(field_res.field_name.c_str(),
+        if (field_trace_filter_set() &&
+            field_trace_active(field_res.field_name.c_str(),
                                (current_class_ + "." + current_method_).c_str(),
                                field_res.class_descriptor.c_str())) {
             std::cerr << "[FIELD-TRACE] put " << current_class_ << "."
@@ -22684,7 +22741,8 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                                            field_res.field_name, src_val);
             }
         }
-        if (field_trace_active(field_res.field_name.c_str(),
+        if (field_trace_filter_set() &&
+            field_trace_active(field_res.field_name.c_str(),
                                (current_class_ + "." + current_method_).c_str(),
                                field_res.class_descriptor.c_str())) {
             std::cerr << "[FIELD-TRACE] put-obj " << current_class_ << "."
@@ -22756,6 +22814,7 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     // env gate + qualified "Lcls;.field" filter semantics as the instance
     // paths. Read-only diagnostics: zero semantic change by construction.
     if (field_res.resolved &&
+        field_trace_filter_set() &&
         field_trace_active(field_res.field_name.c_str(),
                            (current_class_ + "." + current_method_).c_str(),
                            field_res.class_descriptor.c_str())) {
@@ -22920,6 +22979,7 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     // CONT-126: FIELD-TRACE statics coverage (sget-object family) — same
     // law and same env gate as the sget hook; read-only diagnostics.
     if (field_res.resolved &&
+        field_trace_filter_set() &&
         field_trace_active(field_res.field_name.c_str(),
                            (current_class_ + "." + current_method_).c_str(),
                            field_res.class_descriptor.c_str())) {
@@ -23573,6 +23633,7 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
     // CONT-126: FIELD-TRACE statics coverage (sput family) — same law and
     // same env gate as the sget hook; read-only diagnostics.
     if (field_res.resolved &&
+        field_trace_filter_set() &&
         field_trace_active(field_res.field_name.c_str(),
                            (current_class_ + "." + current_method_).c_str(),
                            field_res.class_descriptor.c_str())) {
@@ -23632,6 +23693,7 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     // CONT-126: FIELD-TRACE statics coverage (sput-object family) — same
     // law and same env gate as the sget hook; read-only diagnostics.
     if (field_res.resolved &&
+        field_trace_filter_set() &&
         field_trace_active(field_res.field_name.c_str(),
                            (current_class_ + "." + current_method_).c_str(),
                            field_res.class_descriptor.c_str())) {
@@ -24326,7 +24388,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     note_api_status(api_trace);  // F-NEW-200 census
     
-    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
+    batched_cap_push(result.api_call_traces, result.api_call_ring_cursor, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
     
     // EXP-035: Evidence trace with VTable dispatch information
     trace.invoked_method = resolved_method;
@@ -24640,7 +24702,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     note_api_status(api_trace);  // F-NEW-200 census
-    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
+    batched_cap_push(result.api_call_traces, result.api_call_ring_cursor, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     // Trace evidence
     trace.invoked_method = resolved_method;
@@ -24886,7 +24948,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     api_trace.status = status;
     api_trace.pc = pc;
     note_api_status(api_trace);  // F-NEW-200 census
-    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
+    batched_cap_push(result.api_call_traces, result.api_call_ring_cursor, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
     
     trace.invoked_method = class_name + "." + method_name;
     trace.operands.push_back({"method", std::to_string(method_idx)});
@@ -25643,7 +25705,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     api_trace.status = status;
     api_trace.pc = pc;
     note_api_status(api_trace);  // F-NEW-200 census
-    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
+    batched_cap_push(result.api_call_traces, result.api_call_ring_cursor, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     trace.invoked_method = class_name + "." + method_name;
 
@@ -26272,7 +26334,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     api_trace.status = status;
     api_trace.pc = pc;
     note_api_status(api_trace);  // F-NEW-200 census
-    batched_cap_push(result.api_call_traces, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
+    batched_cap_push(result.api_call_traces, result.api_call_ring_cursor, static_cast<size_t>(config_.api_call_trace_cap), std::move(api_trace));
 
     trace.invoked_method = class_name + "." + method_name;
 
