@@ -1,0 +1,12 @@
+{
+ "artifact": "nofold_profile_addendum.json — CONT-42 TRAIN 3: the -fno-icf PROFILE build attributed the 68M 'R530Memo::~R530Memo' symbol (65.5M calls in 60s, 14.4%).",
+ "finding": "NOT ICF folding: the GNU linker deduplicates the IDENTICAL machine code of every unordered_map<string, trivially-destructible-value> destructor across TUs (weak-symbol dedup happens regardless of the compiler's -fno-icf). gprof shows the winner's name; the 65.5M calls are the UNION of all such destructor invocations engine-wide.",
+ "true_callers": [
+  "try_recursive_invoke 15,965,348 — the tri entry builds ~6 local string-keyed maps per call (2.67M tri calls); candidate: hoist/static-pool the identity maps",
+  "HeapObject::HeapObject(COPY CTOR) 5,490,924 — full HeapObject COPIES (class_descriptor + readable_class + the ENTIRE fields unordered_map) at 5.5M/run; candidate: shared_ptr passage (never copy a HeapObject)",
+  "execute_invoke_virtual + invoke-direct/super/interface/static paths share the remainder (~44M across the invoke family)",
+  "background: 629.9M std::string operator== + 25M InstructionTrace::Operand vector reallocs (3.3%) + _init 7.6%"
+ ],
+ "next_train_plan": "CONT-43: (a) HeapObject copy elimination (shared_ptr discipline at the copy sites — the 5.5M whole-map copies); (b) tri per-call local map hoisting; (c) then the planned telegram SvgHelper parse loop; the dooz composition now runs with +39.5% budget (TRAIN 2) and its next gate stays R-NEW-546 (the four Lz6; allocation sites).",
+ "binary": "build_prof -fno-icf run: 17.0M insns/60s (matches the fold-profile within noise — the flag is profile-only, never shipped)"
+}
