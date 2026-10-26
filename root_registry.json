@@ -8646,5 +8646,31 @@
     "evidence": "evidence/cont42/train4_ab_evidence.json — folded into the TRAIN 4 A/B (same noise-bound result as R-NEW-555).",
     "regression": "anchors 6/6 BYTE-EXACT + games 7/7 EXACT-TO-PIN at the POST binary.",
     "next": "TRAIN 5: diag_env 45M-call hoisting + try_shadow_dispatch lambda inspection + the 1.3B string== attribution counter."
+  },
+  {
+    "id": "R-NEW-557",
+    "status": "ROOT-CAUSED-FIXED",
+    "priority": "P1",
+    "layer": "M3 re-entry gate (generic hot path)",
+    "date": "2026-10-26",
+    "title": "M3 m3_active_key built with reserve(160) + append form at all 6 key-part sites — kills ~12M transient string allocs/run (2.89M tri calls x ~4 reallocs). dooz 90s window 43.2M -> 46.5M insns (+8%).",
+    "root_cause": "the composite identity key (class.method + descriptor + ~pc + up to 8 #obj parts + 2 =prim + 2 @class) grew through unchecked `+=` steps and `\"#\" + to_string()` temporaries — ~4 heap reallocs + 2 temporaries per tri call.",
+    "fix": "ALL GENERIC: reserve(160) once at construction; append form (`+= '#'; += std::to_string(...)`) at every key-part site. Key bytes identical, so map/set identity unchanged.",
+    "evidence": "evidence/cont42/train5_ab_evidence.json — same-container A/B: PRE band 42.5-43.2M vs POST 46.5M insns/90s dooz, anchor 851cc176 byte-exact.",
+    "regression": "anchors 6/6 BYTE-EXACT + games 7/7 EXACT-TO-PIN.",
+    "next": "the dtor-union 6-maps-per-tri counter diagnostic."
+  },
+  {
+    "id": "R-NEW-558",
+    "status": "ROOT-CAUSED-FIXED",
+    "priority": "P1",
+    "layer": "interpreter hot path (generic)",
+    "date": "2026-10-26",
+    "title": "Per-insn diag_env gates hoisted to static thread_local bools (new-array S44_R351, INVOKE_STATIC F040_DIAG, WIDE_DIAG macro x3) — the 45M-call/run diag_env scan overhead at the dispatch loop.",
+    "root_cause": "diag_env is internally cached but the per-insn call sites still scanned the 96-entry thread_local table ~2.4x per insn (45M calls per dooz 60s window, 1.24% wall).",
+    "fix": "ALL GENERIC: `static thread_local const bool <name> = diag_env(...)` at the four per-insn sites (one per macro expansion for WIDE_DIAG, with line-continuation discipline inside the macros). Semantics identical (env read once per thread, established file pattern).",
+    "evidence": "evidence/cont42/train5_ab_evidence.json — folded into the TRAIN 5 A/B (+8% combined with R-NEW-557).",
+    "regression": "anchors 6/6 BYTE-EXACT + games 7/7 EXACT-TO-PIN.",
+    "next": "remaining diag_env sites inside execute_method_internal (13 sites, per-method not per-insn) — lower priority."
   }
 ]

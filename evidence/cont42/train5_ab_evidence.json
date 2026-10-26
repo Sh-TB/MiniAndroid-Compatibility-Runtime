@@ -1,0 +1,22 @@
+{
+  "artifact": "train5_ab_evidence.json — CONT-42 TRAIN 5 (standing «۱۰ قطار» pipeline, train 2 of this session). The M3-gate allocation hygiene + per-insn env-gate hoisting wave — FIRST measurable window gain since TRAIN 2.",
+  "head_at_wave_start": "d6029431 (CONT-42 TRAIN 4)",
+  "fixes": [
+    "R-NEW-557: the M3 re-entry gate's m3_active_key built through up to ~12 `+=` steps without reserve — ~4 reallocs × 2.89M tri calls/run = ~12M transient heap allocs. Fix: reserve(160) once at construction + append form (`+= '#'; += to_string(id)`) replacing the `\"#\" + to_string()` temporary pattern at all 6 key-part sites (receiver, 8-cap object arm, 2-cap static arm, both prim arms). Semantics identical — the key bytes are the same.",
+    "R-NEW-558: the per-insn env gates in fetch_decode_execute hoisted to static thread_local bools — new-array S44_R351, INVOKE_STATIC F040_DIAG, and the WIDE_DIAG macro (3 macro definitions, hoisted inside the macro with line continuations; one static per expansion site). diag_env is already cached but the per-insn call still scanned the 96-entry table ~2.4x per insn (45M calls/run)."
+  ],
+  "ab_method": "same container, same store, same command (dooz 90s window, --frames 5); PRE = the TRAIN 4 binary (miniandroid_t4_post), POST = this train's binary; anchor pin 851cc176.",
+  "ab_result": {
+    "pre_insns_90s_band": "42.5M-43.2M (two TRAIN 4 runs)",
+    "post_insns_90s": 46500000,
+    "delta": "+7.7% to +9.4% over the PRE band — ABOVE run-to-run noise",
+    "post_sha": "851cc1761a1dfcdf",
+    "rss": "352 MB (flat vs 338-339 MB band)"
+  },
+  "regression": {
+    "anchors_6": "opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 / dooz 851cc1761a1dfcdf — 6/6 BYTE-EXACT",
+    "games_7": "g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snake_deluxe 5235683fc7b1f04b / snakeneon 2617c81c9e72b195 / ttt_deluxe db1d633d77b5819a / minicraft e77a073f733255eb / gmdice 3891679dff449331 — 7/7 EXACT-TO-PIN"
+  },
+  "frontier_note": "TRAIN 4's fresh -pg profile named the remaining giants: the R530Memo dtor-union (13.2% + likely much of the 9.8% _init PLT tax; biggest caller edge = tri 17.2M = 6/call, statically unresolved), the 1.3B string== ocean (tri's class-ladder = ~89 ==char* per call; size-first compares make it ~1% — small), Rb_tree<string> finds 15M. The 6-maps-per-tri mystery needs a targeted env-gated counter (next trains).",
+  "next_train_plan": "TRAIN 6 = the planned telegram SvgHelper parse loop (CONT-43 named frontier), then XmlPullParser family (TRAIN 7), Fragment family (TRAIN 8), the 6 zero-unwind blanks (TRAIN 9)."
+}
