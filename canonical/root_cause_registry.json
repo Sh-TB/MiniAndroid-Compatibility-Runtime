@@ -8607,5 +8607,44 @@
   "evidence": "CONT-41 batch-50 census at the post-552 binary: 50/50 rows, CONTENT ROWS 13 -> 14 (concealmobile NEW CROSSING), 13/13 prior content rows BYTE-EXACT RETAINED (evidence/cont41/batch50_census.json + scripts/cont41_retention.py VERDICT PASS). Regression wall at the same binary: anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176), games 7/7 EXACT-TO-PIN.",
   "honest_frontier": "14 content rows of 50; the remaining 36 blanks cluster into the XmlPullParser family (gecko/lumolight/sopadeletras), the Fragment lifecycle family (aegis/batterymonitor/notepad), and 6 zero-unwind titles — the named next trains.",
   "family": "capacitor/cordova bootstrap family (R-NEW-537 -> 550/551/552 -> R-NEW-553)"
+ },
+ {
+  "id": "R-NEW-554",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P0",
+  "layer": "interpreter throughput (generic hot-path laws)",
+  "date": "2026-10-26",
+  "title": "CONT-42 TRAIN 2 throughput wave — four generic hot-path laws from the dooz 60s gprof profile (pop_frame O(n) erase; ApiCallTrace FIFO batched-erase memmove; M3 gate rb-tree maps; ungated per-field-op trace concats). dooz 90s window 32.9M -> 45.9M insns (+39.5%) at BYTE-EXACT anchors.",
+  "root_cause": "gprof -pg profile of dooz 60s (14.3M insns window): the interpreter core (fetch_decode_execute) was only 4.25% of wall; the budget went to evidence/static machinery. (1) CallStack::pop_frame 12.7% self — the EXP-042 completed-frames cap erased ONE element from the FRONT on EVERY push at cap (O(n) memmove per method exit, 1.27M exits) and copied the frame twice although the sole caller discards the return. (2) batched_cap_push<ApiCallTrace> 9.0% — even BATCHED (F-107b), every batch memmoves cap x sizeof(ApiCallTrace) ~ 750KB = ~18GB memmove per run (1.56M pushes). (3) std::map<string,int>::operator[] 6.4% (4.43M calls) — the M3-19 re-entry gate bumps m3_call_counts + m3_key_active_depth per invoke with long concatenated keys; rb-tree string compares are pure overhead; active_invoke_keys_ (std::set) same shape. (4) the field-trace call sites built (current_class_ + '.' + current_method_) temporaries BEFORE the env-gated check — a heap string per iget/iput/sget tick (1.9M+ iget-object) with tracing OFF in every normal run.",
+  "fix": "ALL GENERIC (no app/package knowledge): (a) pop_frame = F-107b BATCHED erase (drop 64 in one erase; identical FIFO order; bounded BATCH lag = the established law) + move-into-ring + void return (sole caller discarded). (b) batched_cap_push ring form: until cap push_back, at cap OVERWRITE slot [cursor++ % cap] — O(1), zero memmove, identical SURVIVOR SET; ring_normalize_chrono() rotates to exact chronological order once at execute_apk_with_activity/execute_method end (single O(cap) std::rotate) so every downstream consumer keeps reading FIFO order; cursor field api_call_ring_cursor on DalvikExecutionResult. (c) m3_call_counts / m3_key_active_depth std::map -> std::unordered_map; active_invoke_keys_ std::set -> std::unordered_set (lookup/increment/erase-by-key only; no ordered iteration anywhere). (d) field_trace_filter_set() zero-cost pre-check short-circuits all 9 field-trace call sites (semantics identical: the temporary was only consumed when MINIANDROID_FIELD_TRACE is set).",
+  "evidence": "evidence/cont42/CONT42_EXECUTION_LEDGER.md + evidence/cont42/throughput_evidence.json (profiles pre/post top rows; baseline 32.9M vs post 45.9M insns per 90s dooz window; post-fix gprof: pop_frame and map<string,int>[] GONE from the top, batched_cap_push 9.0% -> 1.8%)",
+  "regression": "FULL WALL at the throughput binary 7af40aa291aaf039 (-g0 build): anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176), games 7/7 EXACT-TO-PIN (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d), negatives 19/19 (after run/gatea/probe_store regen at the new binary — the established stale-store artifact), reinstall 8/8, skill 13/13, batch-50 census 50/50 rows with 14/14 content rows BYTE-EXACT RETAINED (evidence/cont42/batch50_census.json), dooz anchor 851cc176 byte-exact.",
+  "next": "TRAIN 3 (-fno-icf profile, evidence/cont42/nofold_profile_addendum.json): the 65.5M dtor symbol = linker-deduplicated unordered_map<string,trivial> dtor machine code (NOT ICF; weak-symbol dedup). True callers: try_recursive_invoke per-call local maps (15.97M) + HeapObject COPY ctor (5.49M — whole-field-map copies; shared_ptr discipline is the lever) + the invoke family (~44M). Next train: HeapObject copy elimination + tri map hoisting; then telegram SvgHelper parse loop."
+ },
+ {
+  "id": "R-NEW-555",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "heap allocation (generic)",
+  "date": "2026-10-26",
+  "title": "DalvikHeap::allocate() constructs the HeapObject IN PLACE (try_emplace) — kills the one whole-HeapObject copy per allocation (5.49M copies per dooz 60s window per the TRAIN 3 -fno-icf profile).",
+  "root_cause": "allocate() built a local HeapObject then `objects_[oid] = obj` — one deep copy (class_descriptor + readable_class + the entire fields unordered_map + array_store vector + api_object shared_ptr) per allocation. gprof (TRAIN 3): HeapObject COPY-CTOR 5,490,924 calls / dooz 60s = one per allocate().",
+  "fix": "ALL GENERIC: objects_.try_emplace(oid, oid, class_desc, seq, pc, frame_id) constructs directly in the map node; census/trace/log rows unchanged (same id, same seq). Zero copies.",
+  "evidence": "evidence/cont42/train4_ab_evidence.json — same-container A/B PRE 43.2M vs POST 42.5M insns/90s dooz: WITHIN NOISE; honest reading — the copies were of ALWAYS-EMPTY field maps (~1% of window); kept for strict copy-churn reduction, throughput frontier named elsewhere (string== ocean, diag_env gates).",
+  "regression": "anchors 6/6 BYTE-EXACT + games 7/7 EXACT-TO-PIN at the POST binary (train4_ab_evidence.json regression block).",
+  "next": "superseded as a throughput lever; retained as a hygiene law: never copy a HeapObject."
+ },
+ {
+  "id": "R-NEW-556",
+  "status": "ROOT-CAUSED-FIXED",
+  "priority": "P1",
+  "layer": "interpreter hot path (generic)",
+  "date": "2026-10-26",
+  "title": "InstructionTrace operands reserve(4) at per-instruction construction — kills the 0->1->2->4 push_back growth chain (25M Operand-vector reallocs = 3.3% wall per the TRAIN 3 profile).",
+  "root_cause": "the interpreter loop constructs an InstructionTrace per instruction; operands grew through push_back — gprof (TRAIN 3): 25M vector REALLOCS in the dooz 60s window.",
+  "fix": "ALL GENERIC: trace.operands.reserve(4) right after construction — absorbs the chain for the dominant <=4-operand shapes; semantics identical (capacity only).",
+  "evidence": "evidence/cont42/train4_ab_evidence.json — folded into the TRAIN 4 A/B (same noise-bound result as R-NEW-555).",
+  "regression": "anchors 6/6 BYTE-EXACT + games 7/7 EXACT-TO-PIN at the POST binary.",
+  "next": "TRAIN 5: diag_env 45M-call hoisting + try_shadow_dispatch lambda inspection + the 1.3B string== attribution counter."
  }
 ]
