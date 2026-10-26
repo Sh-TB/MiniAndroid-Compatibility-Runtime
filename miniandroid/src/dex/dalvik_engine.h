@@ -1076,8 +1076,23 @@ public:
     }
     
     uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
-        HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
-        objects_[obj.object_id] = obj;
+        // R-NEW-555 (CONT-42 TRAIN 4): CONSTRUCT IN PLACE — the old form
+        // built a local HeapObject then `objects_[oid] = obj` COPIED the
+        // whole object (class_descriptor + readable_class + the ENTIRE
+        // fields unordered_map + array_store vector + api_object
+        // shared_ptr) once per allocation. gprof (TRAIN 3, -fno-icf build):
+        // HeapObject COPY-CTOR 5,490,924 calls in the dooz 60s window —
+        // exactly one per allocate() call (5.5M allocations/run), i.e.
+        // every allocation paid a full deep copy of an always-empty fields
+        // map plus two strings. try_emplace constructs the HeapObject
+        // DIRECTLY in the map node (zero copies). Generic engine law — no
+        // app knowledge, semantics identical (same id, same seq, same
+        // readable_class derivation, same census/trace/log rows).
+        const uint32_t oid = next_id_++;
+        const uint64_t seq = alloc_sequence_++;
+        HeapObject& obj =
+            objects_.try_emplace(oid, oid, class_desc, seq, pc, frame_id)
+                .first->second;
         // F-NEW-542: env-gated live allocation histogram (see the member
         // comment). One cached-branch load per allocation when unset.
         if (heap_census_enabled()) note_alloc_class(class_desc);
@@ -1097,8 +1112,8 @@ public:
                 if (alloc_trace_n < 200) {
                     fprintf(stderr,
                             "[ALLOC-TRACE] obj#%u %s pc=%u frame=%u seq=%llu\n",
-                            obj.object_id, class_desc.c_str(), pc, frame_id,
-                            (unsigned long long)(alloc_sequence_ - 1));
+                            oid, class_desc.c_str(), pc, frame_id,
+                            (unsigned long long)seq);
                     ++alloc_trace_n;
                 }
             }
@@ -1115,14 +1130,14 @@ public:
             allocation_log_.erase(allocation_log_.begin());
         }
         allocation_log_.push_back({
-            {"object_id", obj.object_id},
+            {"object_id", oid},
             {"class", class_desc},
             {"pc", pc},
             {"frame_id", frame_id},
-            {"sequence", alloc_sequence_ - 1}
+            {"sequence", seq}
         });
         
-        return obj.object_id;
+        return oid;
     }
     
     HeapObject* get(uint32_t id) {

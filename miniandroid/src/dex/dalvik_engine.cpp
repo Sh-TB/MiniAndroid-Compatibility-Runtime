@@ -15542,6 +15542,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
     while (!halted_ && pc_ < bytecode_.size()) {
         uint64_t s62_pre0 = phase_clock().on ? __rdtsc() : 0;  // S62 bucket: pre
         InstructionTrace trace;
+        // R-NEW-556 (CONT-42 TRAIN 4): the per-instruction trace's operand
+        // vector grew 0->1->2->4 through push_back — gprof (TRAIN 3) showed
+        // 25M Operand-vector REALLOCS in the dooz 60s window (3.3% wall).
+        // reserve(4) absorbs the chain for the dominant ≤4-operand shapes
+        // (most opcodes); invoke-family insns with more operands still pay
+        // one later growth. Semantics identical — capacity only.
+        trace.operands.reserve(4);
         trace.sequence = instruction_sequence_++;
         trace.pc_before = pc_;
 
