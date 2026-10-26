@@ -3040,9 +3040,15 @@ public:
     // with no law, length() answered 0 -> "File too short to be a zip
     // file" ZipException -> APP BOUNDARY unwind (bouncy deep-frames). The
     // law serves REAL bytes: the path is resolved to an on-disk file (the
-    // running APK included), slurped once, length/seek/read answer from
-    // the real content. Side table: heap object id -> slurped bytes.
-    std::map<uint32_t, std::string> raf_bytes_;
+    // running APK included), length/seek/read answer from the real
+    // content. Side table: heap object id -> slurped bytes.
+    // R-NEW-549 (CONT-40): the SLURP IS BANNED — each RandomAccessFile
+    // kept the WHOLE file resident (telegram: 36 RAFs over the 120MB APK
+    // = 4.3GB live, the +2.9GB envelope's real face). The law is now a
+    // HANDLE: the resolved path + the file size; reads stream from the
+    // file per call. Same OpenJDK semantics (read -1 at EOF).
+    std::map<uint32_t, std::string> raf_paths_;
+    std::map<uint32_t, uint64_t> raf_sizes_;
 
     // EXP-042 Phase 4: Singleton cache for Android framework objects.
     // Key: class descriptor (e.g. "Landroid/content/res/Resources;").

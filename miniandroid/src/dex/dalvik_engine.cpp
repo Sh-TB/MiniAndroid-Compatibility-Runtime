@@ -5464,6 +5464,15 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
                 }
             } else {
             auto sz = lfs::file_size(fp, f104_ec);
+            // R-NEW-549 (CONT-40): loud ledger for BIG honest reads — the
+            // telegram +2.9GB envelope traced here (36 x malloc(120MB+1)
+            // via bridge_to_api — the SAME file re-read 36x). One line per
+            // assign >= 16MB: the path + the size, then the evidence chain
+            // is complete.
+            if (!f104_ec && sz >= (16u << 20)) {
+                std::cerr << "[F104-BIGREAD] " << path << " size=" << sz
+                          << " (bridge_to_api stream assign)" << std::endl;
+            }
             if (!f104_ec && sz <= kMaxHonestRead) {
                 std::ifstream in(fp, std::ios::binary);
                 if (in)
@@ -15843,6 +15852,43 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     std::cerr << "]" << std::endl;
                 }
                 int32_t array_size = dalvik_int_value(size_val);
+                /* R-NEW-549 (CONT-40): the GIANT-ARRAY watch — the telegram
+                 * +2.9GB envelope traced to new-array sites whose SIZE
+                 * REGISTER carries a garbage huge value (the Lz/f;.<init>(I)
+                 * LRU ctor: new long[cap] + new Object[cap] with cap≈134M —
+                 * the 1024MB/1489MB/2939MB contiguous mappings). Print every
+                 * allocation whose size crosses the env threshold with the
+                 * caller, the pc, and the register's RAW DalvikValue (type +
+                 * all views) — the arg-packing/root-cause evidence live.
+                 * Env: MINIANDROID_GIANT_ARRAY=<min_len>. Bounded 200. */
+                {
+                    static thread_local const int32_t giant_min = []() {
+                        const char* e = std::getenv("MINIANDROID_GIANT_ARRAY");
+                        return (e != nullptr) ? (int32_t)strtoll(e, nullptr, 10)
+                                              : -1;
+                    }();
+                    static thread_local uint32_t giant_n = 0;
+                    if (giant_min >= 0 && array_size >= giant_min &&
+                        giant_n < 200) {
+                        ++giant_n;
+                        std::cerr << "[GIANT-ARRAY] len=" << array_size
+                                  << " site=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc_
+                                  << " vB=v" << (int)vB
+                                  << " raw_type=" << (int)size_val.type
+                                  << " int=" << size_val.int_val
+                                  << " long=" << size_val.long_val
+                                  << " float=" << size_val.float_val
+                                  << " caller="
+                                  << (call_stack_.empty()
+                                          ? "-"
+                                          : call_stack_.top().class_name +
+                                                "." +
+                                                call_stack_.top().method_name)
+                                  << std::endl;
+                    }
+                }
+
                 /* F-NEW-268c (CONT-18g): ART new-array negative-size law — a
                  * negative size throws NegativeArraySizeException (ART
                  * art::ThrowNegativeArraySizeException; the old code silently
@@ -19113,6 +19159,62 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             (double)before_kb / 1024.0,
                             (double)after_kb / 1024.0,
                             (double)(before_kb - after_kb) / 1024.0);
+                }
+                // R-NEW-548 phase 5 (CONT-40): MINIANDROID_TOPMAP=1 — the
+                // top-3 anonymous mappings at every attribution tick, on ONE
+                // line. Correlates the giant-block growth with the PROGRESS
+                // method lines (the allocator caught in the act).
+                static thread_local const bool topmap_on =
+                    []() {
+                        const char* e = std::getenv("MINIANDROID_TOPMAP");
+                        return e && e[0] == '1';
+                    }();
+                if (topmap_on) {
+                    std::ifstream sm("/proc/self/smaps");
+                    if (sm) {
+                        uint64_t k[3] = {0, 0, 0};
+                        unsigned long addr[3] = {0, 0, 0};
+                        std::string line;
+                        unsigned long ca = 0;
+                        uint64_t ck = 0;
+                        bool canon = false, have = false;
+                        auto flush_m = [&]() {
+                            if (!have || !canon || ck <= 4096) return;
+                            for (int t = 0; t < 3; ++t) {
+                                if (ck > k[t]) {
+                                    for (int t2 = 2; t2 > t; --t2) {
+                                        k[t2] = k[t2 - 1];
+                                        addr[t2] = addr[t2 - 1];
+                                    }
+                                    k[t] = ck;
+                                    addr[t] = ca;
+                                    break;
+                                }
+                            }
+                        };
+                        while (std::getline(sm, line)) {
+                            unsigned long a = 0, b = 0;
+                            char perms[8] = {0};
+                            if (sscanf(line.c_str(), "%lx-%lx %7s", &a, &b,
+                                       perms) == 3 &&
+                                strlen(perms) == 4) {
+                                flush_m();
+                                have = true;
+                                ca = a;
+                                ck = (b - a) / 1024;
+                                canon = line.find('/') == std::string::npos &&
+                                        line.find('[') == std::string::npos;
+                            }
+                        }
+                        flush_m();
+                        fprintf(stderr,
+                                "[TOPMAP] insn=%llu top: %.1fMB@%lx "
+                                "%.1fMB@%lx %.1fMB@%lx\n",
+                                (unsigned long long)global_insn_counter,
+                                (double)k[0] / 1024.0, addr[0],
+                                (double)k[1] / 1024.0, addr[1],
+                                (double)k[2] / 1024.0, addr[2]);
+                    }
                 }
             }
             if (heap_census_on && (global_insn_counter % (progress_interval_ * 16)) == 0) {
@@ -57099,7 +57201,7 @@ measure_cm_done:;
     // short to be a zip file: 0" -> ZipException -> APP BOUNDARY unwind
     // (bouncy 20-frame deep run). Law: <init>(String|File, mode) resolves
     // the path (any on-disk file; the running APK via apk_path_), slurps
-    // the REAL bytes once into raf_bytes_; length/seek/getFilePointer/
+    // the file as a HANDLE (R-NEW-549: path + size, streamed reads); length/seek/getFilePointer/
     // read([B)/read([BII)/read()/close answer from the real content
     // (read returns -1 at EOF — OpenJDK law).
     // ────────────────────────────────────────────────────────────────────
@@ -57112,7 +57214,7 @@ measure_cm_done:;
                 std::cerr << "[F474-RAF] bridge class=" << class_name
                           << " method=" << method << " recv=" << raf_recv
                           << " argc=" << args.size()
-                          << " registered=" << (raf_bytes_.count(raf_recv) > 0)
+                          << " registered=" << (raf_paths_.count(raf_recv) > 0)
                           << std::endl;
             }
         }
@@ -57128,37 +57230,43 @@ measure_cm_done:;
             }
             heap_.set_object_field(raf_recv, "__raf_path__",
                                    DalvikValue::make_string(path, 0));
-            // Resolve + slurp real bytes. The engine's single-APK domain
-            // law: the "source apk" a MultiDex/ZipUtil stream reads IS the
-            // running APK (apk_path_) — any unresolvable path falls back
-            // to it, never to invented bytes.
+            // Resolve the path (the single-APK domain law unchanged: an
+            // unresolvable path falls back to the running APK) — but the
+            // law is a HANDLE now (R-NEW-549): record the resolved path +
+            // the real file size; reads stream from the file per call.
+            // The old slurp kept EVERY RAF's whole file resident: telegram
+            // opens 36 RAFs over the 120MB APK = 4.3GB live (the
+            // +2.9GB envelope's real face — run/cont40/tg_hook GIANT-MALLOC
+            // 36 x malloc(125829121)).
             std::string resolved = path;
-            std::ifstream f(resolved, std::ios::binary);
-            if (!f && !apk_path_.empty()) {
-                f.clear();
-                f.open(apk_path_, std::ios::binary);
+            std::ifstream probe(resolved, std::ios::binary);
+            if (!probe && !apk_path_.empty()) {
+                probe.clear();
+                probe.open(apk_path_, std::ios::binary);
+                if (probe) resolved = apk_path_;
             }
-            if (f) {
-                std::string bytes((std::istreambuf_iterator<char>(f)),
-                                  std::istreambuf_iterator<char>());
-                raf_bytes_[raf_recv] = std::move(bytes);
+            if (probe) {
+                probe.seekg(0, std::ios::end);
+                uint64_t fsz = (uint64_t)probe.tellg();
+                raf_paths_[raf_recv] = resolved;
+                raf_sizes_[raf_recv] = fsz;
             }
             heap_.set_object_field(raf_recv, "__raf_pos__", DalvikValue::make_long(0));
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_void();
             return true;
         }
-        auto raf_it = raf_bytes_.find(raf_recv);
+        auto raf_it = raf_paths_.find(raf_recv);
         auto raf_pos = [&]() -> int64_t {
             auto v = heap_.get_object_field(raf_recv, "__raf_pos__");
             if (v.has_value() && v->type == DalvikType::INT64) return v->long_val;
             if (v.has_value() && v->type == DalvikType::INT32) return v->int_val;
             return 0;
         };
-        if (method == "length" && raf_it != raf_bytes_.end()) {
+        if (method == "length" && raf_it != raf_paths_.end()) {
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_long(
-                static_cast<int64_t>(raf_it->second.size()));
+                static_cast<int64_t>(raf_sizes_[raf_recv]));
             return true;
         }
         if (method == "seek" && args.size() >= 2) {
@@ -57175,19 +57283,26 @@ measure_cm_done:;
             result = DalvikValue::make_long(raf_pos());
             return true;
         }
-        if ((method == "read" || method == "readBytes") && raf_it != raf_bytes_.end()) {
-            const std::string& data = raf_it->second;
+        if ((method == "read" || method == "readBytes") &&
+            raf_it != raf_paths_.end()) {
+            const uint64_t data_size = raf_sizes_[raf_recv];
             int64_t pos = raf_pos();
-            if (pos >= static_cast<int64_t>(data.size())) {
+            if (pos < 0) pos = 0;
+            if (pos >= static_cast<int64_t>(data_size)) {
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_int(-1);  // OpenJDK EOF law
                 return true;
             }
             if (args.size() == 1) {
-                // read() single byte.
+                // read() single byte — stream from the file.
+                std::ifstream f(raf_it->second, std::ios::binary);
+                int ch = -1;
+                if (f) {
+                    f.seekg(pos);
+                    ch = f.get();
+                }
                 status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_int(
-                    static_cast<uint8_t>(data[static_cast<size_t>(pos)]));
+                result = DalvikValue::make_int(ch);
                 heap_.set_object_field(raf_recv, "__raf_pos__",
                                        DalvikValue::make_long(pos + 1));
                 return true;
@@ -57203,18 +57318,28 @@ measure_cm_done:;
                     off = args[2].int_val;
                     len = args[3].int_val;
                 }
-                if (len > static_cast<int64_t>(data.size()) - pos)
-                    len = static_cast<int32_t>(data.size() - pos);
-                for (int32_t i = 0; i < len; ++i) {
-                    heap_.set_object_field(
-                        arr, "array[" + std::to_string(off + i) + "]",
-                        DalvikValue::make_byte(
-                            static_cast<int8_t>(data[static_cast<size_t>(pos) + i])));
+                if (len > static_cast<int64_t>(data_size) - pos)
+                    len = static_cast<int32_t>(data_size - pos);
+                // Stream the requested span from the file (per-call open —
+                // RAF reads are rare: the MultiDex EOCD scan + a few KB).
+                std::ifstream f(raf_it->second, std::ios::binary);
+                int32_t got = 0;
+                if (f && len > 0) {
+                    f.seekg(pos);
+                    std::vector<char> buf((size_t)len);
+                    f.read(buf.data(), len);
+                    got = (int32_t)f.gcount();
+                    for (int32_t i = 0; i < got; ++i) {
+                        heap_.set_object_field(
+                            arr, "array[" + std::to_string(off + i) + "]",
+                            DalvikValue::make_byte(
+                                static_cast<int8_t>(buf[(size_t)i])));
+                    }
                 }
                 heap_.set_object_field(raf_recv, "__raf_pos__",
-                                       DalvikValue::make_long(pos + len));
+                                       DalvikValue::make_long(pos + got));
                 status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_int(len > 0 ? len : -1);
+                result = DalvikValue::make_int(got > 0 ? got : -1);
                 return true;
             }
         }
