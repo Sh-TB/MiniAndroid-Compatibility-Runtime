@@ -10330,6 +10330,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     int m3_obj_dropped = 0, m3_prim_dropped = 0, m3_class_dropped = 0,
         m3_null_skipped = 0;
     std::string m3_active_key = class_descriptor + "." + method_name;
+    // R-NEW-557 (CONT-42 TRAIN 5): the key grows through up to ~12 append
+    // steps (descriptor, ~pc, up to 8 #object-id parts, up to 2 =prim parts,
+    // up to 2 @class parts) — each `+=` on an under-capacity string
+    // reallocates. 2.89M tri calls/run × ~4 reallocs = ~12M transient heap
+    // allocs + copies. reserve() once (a generous bound; append-only, never
+    // read for capacity) — allocation churn gone, semantics identical.
+    m3_active_key.reserve(160);
     // S54 FIX (F-081) — overload-distinct identity. JVM/ART method identity
     // is (name, descriptor)-exact; two same-name overloads on the same
     // receiver are DISTINCT methods. ChessClock evidence: formatTime(J Z)
@@ -10381,7 +10388,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // backstop. Key-part syntax "~pc<N>" cannot collide with "#<id>",
     // "=<value>", "@<descriptor>".
     // ────────────────────────────────────────────────────────────────────
-    m3_active_key += "~pc" + std::to_string(pc_);
+    m3_active_key += "~pc";
+    m3_active_key += std::to_string(pc_);  // R-NEW-557: append form (no temporary)
     if (!current_invoke_is_static_ && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
         m3_active_key += "#" + std::to_string(args[0].object_id);
@@ -10467,7 +10475,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     continue;
                 }
                 if (appended < 8) {
-                    m3_active_key += "#" + std::to_string(args[i].object_id);
+                    // R-NEW-557: append form (no "#"+to_string temporary)
+                    m3_active_key += '#';
+                    m3_active_key += std::to_string(args[i].object_id);
                     ++appended;
                     ++m3_payload_parts;
                 } else {
@@ -10513,7 +10523,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                         case DalvikType::CHAR:
                         case DalvikType::SHORT:
                             if (prims < 2) {
-                                m3_active_key += "=" + std::to_string(args[i].int_val);
+                                // R-NEW-557: append form (no "="+to_string temporary)
+                                m3_active_key += '=';
+                                m3_active_key += std::to_string(args[i].int_val);
                                 ++prims;
                                 ++m3_payload_parts;
                             } else {
@@ -10590,7 +10602,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 continue;
             }
             if (appended < 2) {
-                m3_active_key += "#" + std::to_string(args[i].object_id);
+                // R-NEW-557: append form (no "#"+to_string temporary)
+                m3_active_key += '#';
+                m3_active_key += std::to_string(args[i].object_id);
                 ++appended;
                 ++m3_payload_parts;
             } else {
@@ -10636,7 +10650,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 case DalvikType::CHAR:
                 case DalvikType::SHORT:
                     if (prims < 2) {
-                        m3_active_key += "=" + std::to_string(args[i].int_val);
+                        // R-NEW-557: append form (no "="+to_string temporary)
+                        m3_active_key += '=';
+                        m3_active_key += std::to_string(args[i].int_val);
                         ++prims;
                         ++m3_payload_parts;
                     } else {
@@ -15897,7 +15913,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // Get array size from vB
                 DalvikValue size_val = get_register(vB);
                 /* S44/R-NEW-351 probe: schema table allocations */
-                if (diag_env("MINIANDROID_S44_R351") &&
+                /* R-NEW-558 (TRAIN 5): env gate hoisted to a thread_local
+                 * static — was a cached-but-still-scanning diag_env call per
+                 * new-array insn. Semantics identical. */
+                static thread_local const bool s44_r351_newarray =
+                    diag_env("MINIANDROID_S44_R351");
+                if (s44_r351_newarray &&
                     current_class_ == "Llt0;" && (pc_ == 353 || pc_ == 379)) {
                     DalvikValue mi_str = get_register(1); /* v1 = raw MessageInfo string */
                     std::cerr << "[S44-R351] new-array pc=" << pc_
@@ -16830,7 +16851,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "invoke-direct";
                 break;
             case Opcode::INVOKE_STATIC:
-                if (diag_env("MINIANDROID_F040_DIAG") &&
+                /* R-NEW-558 (TRAIN 5): env gate hoisted (thread_local static).
+                 * Semantics identical. */
+                static thread_local const bool f040_invoke_static =
+                    diag_env("MINIANDROID_F040_DIAG");
+                if (f040_invoke_static &&
                     current_class_ == "Ln/a;" && current_method_ == "r") {
                     std::cerr << "[R-INVOKE] entering execute_invoke_static pc="
                               << pc_ << std::endl;
@@ -17348,7 +17373,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     else if (op == "shl") result_val.int_val = a_val << (b_val & 0x1f); \
                     else if (op == "shr") result_val.int_val = a_val >> (b_val & 0x1f); \
                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
-                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                    static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                         std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vA << "=" << a_val \
                                   << " v" << (int)vB << "=" << b_val \
@@ -17667,7 +17694,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     /* F-028 law: slot bits reinterpreted AS int32 (source type) */ \
                     int32_t s = static_cast<int32_t>(dalvik_raw_bits32(val)); \
                     STORE_EXPR; \
-                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                    static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vB << "(tag=" << (int)val.type \
                                   << " bits=0x" << std::hex << dalvik_raw_bits32(val) << std::dec \
@@ -17690,7 +17719,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                               : (val.type == DalvikType::FLOAT64 ? [&]{ int64_t b; std::memcpy(&b, &val.double_val, 8); return b; }() \
                               : (val.type == DalvikType::INT32 ? static_cast<int64_t>(val.int_val) : 0)); \
                     STORE_EXPR; \
-                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                    static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vB << "(J=" << s << ") -> " \
                                   << out.long_val << std::endl; \
@@ -17713,7 +17744,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint32_t f28bits = dalvik_raw_bits32(val); \
                     float s; std::memcpy(&s, &f28bits, sizeof(s)); \
                     STORE_EXPR; \
-                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                    static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " v" << (int)vB << "(tag=" << (int)val.type \
                                   << " bits=0x" << std::hex << f28bits << std::dec \
@@ -17903,7 +17936,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
                                : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
                     result_val.int_val = (bv < cv) ? -1 : (bv > cv) ? 1 : 0; \
-                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                    static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                         std::cerr << "[WIDE-DIAG] cmp-long @" << current_class_ << "." \
                                   << current_method_ << " b=(" << (b.type == DalvikType::INT64 ? "J" : "i") \
                                   << (b.type == DalvikType::INT64 ? b.long_val : b.int_val) << ") v" \
@@ -17955,7 +17990,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     } \
                     bool cmp_nan = (bv != bv) || (cv != cv); \
                     result_val.int_val = cmp_nan ? (NAN_RESULT) : ((bv < cv) ? -1 : (bv > cv) ? 1 : 0); \
-                    if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                    static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                         std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                   << current_method_ << " b=" << (double)bv << " c=" << (double)cv \
                                   << " -> " << result_val.int_val << std::endl; \
@@ -18963,7 +19000,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         else if (strcmp(op, "shl") == 0) result_val.long_val = av << static_cast<int>(bv & 0x3f); \
                         else if (strcmp(op, "shr") == 0) result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
                         else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
-                        if (diag_env("MINIANDROID_WIDE_DIAG")) { \
+                        static thread_local const bool wide_diag_on = \
+                        diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                    if (wide_diag_on) { \
                             std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
                                       << current_method_ << " v" << (int)vA << "(J=" << av << ") v" \
                                       << (int)vB << "(J=" << bv << ") -> " << result_val.long_val << std::endl; \
