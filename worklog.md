@@ -11576,3 +11576,11 @@ Stage Summary:
 - The user's «۵۰ توسط ابزار ها» wave landed 5 generic laws killed from the census families with live pc-exact evidence: the cordova/capacitor AllowList family (5 titles), the okhttp factory family, the theme-attr family (deskclock/amaze/aegis), and the prefs-migration family. Zero drift anywhere: anchors, games, and all 50 census rows byte-exact.
 - Honest frontier: no new content crossings at this binary — every fixed family advanced its titles to the next per-title face; the next census dives own those (subster capacitor mocks, firewall lifecycle ctor matching, gecko/lumolight XmlPull chains, k9 koin, sunpiano clinit).
 - Telegram: sandbox OOM is the named envelope (the next structural lever — memory ceiling — is now the telegram train's blocker, not API surface).
+
+---
+Task ID: CONT-35-RECORD
+Agent: Super Z (main)
+Task: push record — remote main 86287555 verified; ledger comment posted (#387 comment 6406721909, «مشکلش حل شد» rows for the five family layers).
+
+Stage Summary:
+- CONT-35 complete: 5 generic census-family laws (F-NEW-531..535) landed with pc-exact live evidence, full wall byte-exact, registry 827, pushed, ledger commented. Next wave owns the registered per-title faces (subster capacitor mocks / firewall ctor-matching / gecko+lumolight XmlPull / k9 koin / sunpiano clinit) + the telegram sandbox-memory envelope decision.
