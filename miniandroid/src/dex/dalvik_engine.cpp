@@ -51060,6 +51060,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-560 (CONT-42 TRAIN 7): Application/Context.getProcessName() —
+    // AOSP API 28 law: NEVER null (ActivityThread.currentProcessName()).
+    // Live face (chompass, this wave): androidx.work ProcessUtils.
+    // getProcessName(ctx) → (SDK_INT>=28) Api28Impl.INSTANCE.
+    // getProcessName() → Application.getProcessName() fell through to the
+    // fail-soft null default → the compiler-emitted result null-check
+    // (Object.getClass at Api28Impl pc=4) NPE'd, unwinding
+    // Schedulers.createBestAvailableBackgroundScheduler → the whole
+    // WorkManager bootstrap died APP-BOUNDARY. The runtime executes the app
+    // single-process under its own package: the honest answer is the
+    // package name (same value getPackageName returns for the main
+    // process; never null).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getProcessName" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name == "Landroid/app/Application;" ||
+         class_name.find("Application;") != std::string::npos)) {
+        result = DalvikValue::make_string(
+            package_name_.empty() ? "unknown.package" : package_name_, 1);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // EXP-093/F008: Permission Model — checkSelfPermission / checkPermission
     //
     // Per AOSP Context.checkSelfPermission(String permission):
@@ -54561,6 +54586,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-559 (CONT-42 TRAIN 7): JobScheduler.forNamespace(String) — AOSP
+    // API 34 law: NEVER null. Live face (chompass, this wave): androidx.work
+    // getWmJobScheduler → (SDK_INT>=34) JobScheduler34.forNamespace(js) →
+    // fj2.d → js.forNamespace("androidx.work.systemjobscheduler") on the
+    // R-NEW-540 singleton → the unbridged method fell through to the
+    // fail-soft null default → the compiler-emitted result null-check
+    // (invoke-virtual Object.getClass at JobScheduler34 pc=0x7) NPE'd and
+    // the whole WorkManager bootstrap unwound APP-BOUNDARY (blank frame).
+    // AOSP JobSchedulerImpl.forNamespace returns a non-null namespaced
+    // JobScheduler wrapping the SAME scheduler. Identity-safe law: answer
+    // the receiver object itself (the engine's minimal-service-object model
+    // keeps one instance per service; the namespace string is stored as a
+    // field for forensics).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name == "Landroid/app/job/JobScheduler;" ||
+         class_name == "Landroid/app/JobScheduler;") &&
+        method == "forNamespace") {
+        // Virtual dispatch: args[0] is the receiver (the R-NEW-540
+        // singleton). AOSP forNamespace is non-null — answer the receiver.
+        const uint32_t js_recv =
+            (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                ? args[0].object_id : 0;
+        if (js_recv != 0 && args.size() >= 2 &&
+            args[1].type == DalvikType::STRING_REF) {
+            // Keep the requested namespace for diagnostics (harmless extra
+            // field on the minimal service object; AOSP stores it too).
+            heap_.set_object_field(js_recv, "__forNamespace__",
+                                   DalvikValue(args[1]));
+        }
+        result = DalvikValue::make_object(
+            js_recv, "Landroid/app/job/JobScheduler;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
 
     // ────────────────────────────────────────────────────────────────────────
