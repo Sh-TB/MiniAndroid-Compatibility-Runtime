@@ -11662,3 +11662,22 @@ Work Log:
 Stage Summary:
 - The wave landed the typed array backing with zero drift across the whole wall (the architectural element-overhead kill), built the complete memory-attribution instrument bank, falsified two standing theories (churn retention, free-list growth), proved the 2.85GB is LIVE anonymous data in a few giant trim-immune blocks, and localized the growth window to the telegram SvgHelper parse loop.
 - Next wave owns: the giant-block allocator attribution (per-tick top-mapping watch + the SvgHelper$ParserHelper.parseFloat decode + the Path/point storage law), then the structural cut that frees the 60s+ telegram windows from the 3GB sandbox ceiling.
+
+---
+Task ID: CONT-40
+Agent: Super Z (main)
+Task: User directive «ادامه اداپه» (continue ×2, تا هدف نهایی) — the giant-block attribution wave; land the RAF streaming law.
+
+Work Log:
+- TOPMAP birth hunt (per-tick top-mapping watch, MINIANDROID_TOPMAP=1): the giant blocks born in the FIRST 160K insns (1024MB between insn 25-30K at the Lz/f;.<init> tick; 2939MB by 120K; the SVG parse only PAGES THEM IN — RSS 2052→2856 during SvgHelper).
+- GIANT-ARRAY watch (MINIANDROID_GIANT_ARRAY): ZERO giant new-array calls — the giants are NOT DEX arrays. Lz/f;.<init>(I) decoded (new long[cap] + new Object[cap]) and CLEARED (sane caps; the correlation was timing coincidence).
+- THE DECISIVE INSTRUMENT — the LD_PRELOAD malloc interposer (scripts/cont40_giant_malloc.c): 36 x malloc(125829121) = 120MB+1 EXACTLY (the telegram APK size + 1 — the istreambuf assign's +1) = 4.3GB; backtrace = std::string::_M_construct<istreambuf_iterator> <- bridge_to_api <- execute_invoke_direct.
+- F104-BIGREAD ledger excluded the file:// site (0 hits) — the ONLY remaining istreambuf_iterator: the RandomAccessFile <init> shadow's APK-fallback slurp.
+- R-NEW-549 ROOT-CAUSED-FIXED: raf_bytes_ (the per-RAF whole-file slurp, never freed) replaced by raf_paths_ + raf_sizes_ — the law is a HANDLE; length() answers the file size; read/readBytes stream the requested span per call; read -1 at EOF preserved; the single-APK fallback unchanged. 36 RAFs x 120MB = 4.3GB live → ZERO.
+- EFFECT: telegram 12s RSS 2854MB → 602MB (4.7x); the interpreter executes ~10x more instructions in the same window (7.1M vs 0.7M — the 4.3GB malloc pressure was also the throughput brake). 22s: 15.4M insns, still F084 budget-bound at c4;.dispatchDraw (the next gate = the SvgHelper parse-loop throughput), screenshot face unchanged.
+- REGRESSION WALL at the RAF binary: anchors 6/6 BYTE-EXACT; games 7/7 EXACT-TO-PIN; negatives 19/19; batch-50 census 50/50 rows with 13/13 content rows BYTE-EXACT RETAINED (evidence/cont40/batch50_census.json).
+- REGISTRY 838→839 id-unique (R-NEW-549).
+
+Stage Summary:
+- The wave root-caused and killed the telegram +2.9GB memory envelope's real face (the RAF slurp law) with the malloc-interposer → engine-site chain fully evidenced, moved the interpreter to ~10x throughput in the freed window, and kept the whole wall byte-exact twice (CONT-39 array store + CONT-40 RAF law) with the 13/13 census contract.
+- Next wave owns: the SvgHelper$ParserHelper.parseFloat throughput dive (now the telegram first-frame gate), the dooz board composition frontier (R-NEW-546: the four Lz6; allocation-site invokers), and the ledger comment posting (rate-limit deferred).
