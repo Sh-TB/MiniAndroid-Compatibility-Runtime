@@ -1,0 +1,24 @@
+{
+ "train": "CONT-45 T1 TELEGRAM — R-NEW-570: the sendRequest unknown-request OFFLINE callback law (response=null + real TL_error), killing the type-lying generic TLObject mock",
+ "head": "9daf8eba + R-NEW-570",
+ "baseline": {"rc": 1, "sha16": "774075b428f53791", "face": "white launch (1906/2073600 non-white); LaunchActivity.onCreate NPE x4 at pc=1375 (Preset.set iget-null-recv on TL_autoDownloadSettings); firebase Ll9/j; family 4 rows; deferred queue 8 entries (240010ms AndroidUtilities.runOnUIThread timers — NOT the UI path)"},
+ "root_chain": [
+  "LaunchActivity.onCreate -> loadAutoDownloadConfig -> ConnectionsManager.sendRequest(TL_account_getAutoDownloadSettings, delegate)",
+  "EXP071 sendRequest interception: UNKNOWN request -> generic Lorg/telegram/tgnet/TLObject; mock (the type lie)",
+  "the delegate lambda (real bytecode): if (response == null) return  [guard SKIPPED — the mock was non-null]; check-cast response -> TL_account$autoDownloadSettings (permissive); v2 = response.low (ctor-default field — the generic mock has none) = NULL",
+  "lowPreset.set(null) -> iget-boolean audio_preload_next on null @pc=0 -> NPE -> frame unwind -> LaunchActivity.onCreate APP BOUNDARY -> the view tree never built -> white",
+  "lambda bytecode proof: if-eqz v5,+0c2h at 0040 = the real app's own null-response guard — a REAL device without connectivity delivers response=null+error!=null and the guard diverts; the generic-TLObject mock BYPASSED the guard and lied about the type"
+ ],
+ "fix": "R-NEW-570: the unknown-request branch now dispatches the delegate with (response=null, TL_error{code=-2, text='OFFLINE'}) — the AOSP network-failure semantics; the known-request mocks (TL_nearestDc, TL_auth_sentCode with type/length/timeout) unchanged; the null-error success path unchanged",
+ "result": {
+  "rc": 1,
+  "sha16": "774075b428f53791",
+  "preset_set_npe": "GONE (0 rows)",
+  "r570_fires": 21,
+  "remaining_uncaught": "o6;.k1 pc=91 aget-null x2 -> LaunchActivity.onCreate x2 (the ActionBar theme lazy-holder color array — La4/i;->a null — the kotlin lazy initializer never ran; R8 per-dex name collisions make per-class reading ambiguous — T2 target); firebase Ll9/j; rows unchanged (caught, non-fatal); the white face UNCHANGED (the view tree still dies in onCreate)"
+ },
+ "honesty": "the screenshot hash is unchanged this train — the fix removed ONE of the onCreate killers (Preset.set) and the theme-lazy face (T2) remains; no visual claim",
+ "wall": {"anchors": "6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176)", "games": "7/7 BYTE-EXACT (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d)"},
+ "next": "T2: the o6.k1 theme lazy-holder face — trace La4/i;->a null array (the kotlin lazy inline read), find why the initializer dispatch never ran; then T3: the deferred-UI drain for view apps (the F277 poll-timeout guard is compose-only today)",
+ "evidence_files": ["run/cont45/tg_base.{out,err}", "run/cont45/tg_t1.{out,err}", "run/cont45/wall/ (13/13 pins)"]
+}

@@ -8647,6 +8647,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
         // Build a mock response object based on the request type.
         uint32_t response_id = 0;
+        // R-NEW-570 (CONT-45 T1): the unknown-request OFFLINE callback
+        // (response=null + a real TL_error carrier) — declared here so the
+        // dispatch tail sees it.
+        bool r570_offline = false;
+        uint32_t r570_error_id = 0;
         if (request_id != 0 && heap_.has_object(request_id)) {
             const auto* req_obj = heap_.get(request_id);
             std::string req_cls = req_obj ? req_obj->class_descriptor : "";
@@ -8717,16 +8722,42 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                           << " type_id=" << type_id
                           << " length=5 timeout=30" << std::endl;
             } else {
-                // Unknown request — return a generic TLObject so the
-                // delegate's run(TLObject, TL_error) doesn't NPE.
-                response_id = heap_.allocate(
-                    "Lorg/telegram/tgnet/TLObject;", pc_, 0);
+                r570_offline = true;
+                // ── R-NEW-570 (CONT-45 T1, AOSP network-failure law):
+                // Unknown request — deliver the OFFLINE callback, not a
+                // type-lying mock. The previous fallback allocated a bare
+                // Lorg/telegram/tgnet/TLObject; the app's callback then
+                // check-cast it to the expected subclass and read the
+                // ctor-default fields (e.g. TL_account$autoDownloadSettings
+                // .low/medium/high — real bytecode pre-populates them) →
+                // null flowed into app code → NPE at the LaunchActivity
+                // onCreate boundary (telegram white launch face, 4x
+                // Preset.set iget-null-recv). AOSP truth: with no
+                // connectivity the request completes with an ERROR
+                // (ResponseError / timeout), the response stays null, and
+                // the app's own `if (error == null)` guards divert to the
+                // error path (telegram's loadAutoDownloadConfig lambda
+                // literally opens with `if (response == null) return`).
+                // So: response = null, error = a REAL TL_error carrier.
+                response_id = 0;
+                r570_error_id = heap_.allocate(
+                    "Lorg/telegram/tgnet/TLRPC$TL_error;", pc_, 0);
+                DalvikValue code_val = DalvikValue::make_int(-2);
+                heap_.set_object_field(r570_error_id, "code", code_val);
+                heap_.set_object_field(
+                    r570_error_id, "text",
+                    DalvikValue::make_string("OFFLINE", 0));
+                std::cerr << "[R-NEW-570] unknown request -> OFFLINE"
+                          << " callback (response=null, TL_error code=-2)"
+                          << std::endl;
             }
         }
 
-        // Dispatch the delegate's run() with (response, null_error).
+        // Dispatch the delegate's run() with (response, error).
         if (delegate_id != 0) {
-            uint32_t error_id = 0;  // null TL_error
+            // R-NEW-570: unknown-request path carries the OFFLINE TL_error;
+            // known mocks keep the null error (the success semantics).
+            uint32_t error_id = r570_offline ? r570_error_id : 0;
             dispatch_runnable(delegate_id, response_id, error_id);
         }
 

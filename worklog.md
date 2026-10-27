@@ -11875,3 +11875,21 @@ Work Log:
 Stage Summary:
 - D2 complete: the dooz board frontier is now the APPLIER POSITION during the second applyChanges — the fix target is the DOWN-op chain (Ls21;.Y -> Lg21;.a -> Lv02;.j -> Lel0;.Q) or the parent-invalidation law at the insert boundary.
 - Next: TELEGRAM T1 per the 60/40 law and the user's 10-trains-each directive; D3 (applier position) resumes after.
+
+---
+Task ID: CONT-45-T1
+Agent: Super Z (main)
+Task: TELEGRAM TRAIN 1 of 10 — the launch-frame family (the T23 handoff: the NPE census + the OFFLINE network law). «برای هر کدام 10 قطار».
+
+Work Log:
+- Telegram baseline reproduced: rc=1, 774075b428f53791 (white, 1906 non-white px), LaunchActivity.onCreate NPE x4 at pc=1375, firebase Ll9/j; x4 (caught, non-fatal), deferred queue 8 (240010ms timers).
+- Disassembled the NPE chain (androguard on classes3/classes.dex): LaunchActivity.onCreate -> NotificationCenter observers-group fluent chain -> ObserversGroupImpl.add(id) -> access$400 -> addObserverInternal -> createArrayForId — the throw site propagated from DownloadController$Preset.set(null) (lambda$loadAutoDownloadConfig$1).
+- THE REAL APP'S OWN GUARD FOUND IN BYTECODE: the lambda opens with if-eqz v5 (response==null) -> skip — the generic TLObject mock BYPASSED it and lied about the type; the ctor-default fields (low/medium/high) read null -> set(null) -> NPE.
+- FIX R-NEW-570 (the AOSP network-failure law, generic): unknown-request sendRequest now dispatches the delegate with (response=null, TL_error{code=-2,'OFFLINE'}) — the app's own error path takes over; known mocks unchanged.
+- RESULT: the Preset.set face GONE (0 rows); R-NEW-570 fired 21x; the remaining uncaught face = o6;.k1 pc=91 aget-null x2 (the ActionBar theme lazy-holder color array — the kotlin lazy initializer never ran; R8 per-dex name collisions noted) — T2's target. The white face UNCHANGED (honest: the view tree still dies in onCreate).
+- REGRESSION WALL at the T1 binary: anchors 6/6 BYTE-EXACT + games 7/7 BYTE-EXACT.
+- Evidence banked evidence/cont45/t1_rnew570_offline.json (ZERO-LOG law).
+
+Stage Summary:
+- T1 complete: telegram's onCreate killers reduced 4 -> 2; the network mock no longer lies about response types (a generic engine law protecting every app callback).
+- Next trains: T2 = the o6.k1 theme lazy face; T3 = the deferred-UI drain for view apps (the F277 poll-timeout guard is compose-only); T4+ = the fragment/view-tree draw pipeline.
