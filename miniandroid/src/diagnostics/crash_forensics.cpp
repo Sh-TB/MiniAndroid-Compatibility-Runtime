@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <execinfo.h>
+#include <dlfcn.h>
 #include <signal.h>
 #include <unistd.h>
 
@@ -143,6 +144,27 @@ void handler(int sig, siginfo_t* info, void*) {
         pos = append_str(buf, sizeof(buf), pos, " off=0x");
         pos = append_u(buf, sizeof(buf), pos,
                        (uint64_t)((uintptr_t)frames[i] - g_load_base), 16);
+        /* T19 attribution: name the module + nearest exported symbol */
+        Dl_info di;
+        if (dladdr(frames[i], &di) && di.dli_fname) {
+            const char* base_name = strrchr(di.dli_fname, '/');
+            base_name = base_name ? base_name + 1 : di.dli_fname;
+            pos = append_str(buf, sizeof(buf), pos, " mod=");
+            pos = append_str(buf, sizeof(buf), pos, base_name);
+            if (di.dli_sname) {
+                pos = append_str(buf, sizeof(buf), pos, " sym=");
+                pos = append_str(buf, sizeof(buf), pos, di.dli_sname);
+                pos = append_str(buf, sizeof(buf), pos, "+0x");
+                pos = append_u(buf, sizeof(buf), pos,
+                               (uint64_t)((uintptr_t)frames[i] -
+                                          (uintptr_t)di.dli_saddr), 16);
+            } else if (di.dli_fbase) {
+                pos = append_str(buf, sizeof(buf), pos, " modoff=0x");
+                pos = append_u(buf, sizeof(buf), pos,
+                               (uint64_t)((uintptr_t)frames[i] -
+                                          (uintptr_t)di.dli_fbase), 16);
+            }
+        }
         pos = append_str(buf, sizeof(buf), pos, "\n");
         if (pos > sizeof(buf) - 128) break;
     }
