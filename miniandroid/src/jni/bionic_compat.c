@@ -1,3 +1,9 @@
+/* cont83_bionic_compat.c — T18:
+ * (note: _GNU_SOURCE must precede every system include for Dl_info)
+ */
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
 /* cont83_bionic_compat.c — T18: bionic-legacy stdio symbol compat for the
  * libc.so anchor (F-NEW-387 family, bionic-ABI-caveat law).
  *
@@ -58,6 +64,22 @@ int __FD_ISSET_chk(int fd, void* set, size_t set_size) {
     (void)set_size; return FD_ISSET(fd, (fd_set*)set);
 }
 
+/* T22 (F-NEW-564 support): android_set_abort_message — the bionic libc
+ * abort-message surface libtmessages binds. First-party: store the last
+ * message (bounded) + one stderr row; abort itself stays glibc. */
+static char ma_abort_msg[256] = {0};
+__attribute__((visibility("default")))
+void android_set_abort_message(const char* msg) {
+    if (!msg) return;
+    size_t n = strlen(msg);
+    if (n >= sizeof(ma_abort_msg)) n = sizeof(ma_abort_msg) - 1;
+    memcpy(ma_abort_msg, msg, n);
+    ma_abort_msg[n] = 0;
+    fprintf(stderr, "[BIONIC-ABORT] %s\n", ma_abort_msg);
+}
+__attribute__((visibility("default")))
+const char* android_get_abort_message(void) { return ma_abort_msg; }
+
 /* boringssl OPENSSL_memory_* hooks — real malloc-backed block allocator
  * with an 8-byte size prefix (OPENSSL_memory_get_size contract). */
 __attribute__((visibility("default")))
@@ -85,9 +107,19 @@ size_t OPENSSL_memory_get_size(void* ptr) {
  * streams) pass through via RTLD_NEXT — zero behavior change. This turns
  * the F-NEW-564 SIGSEGV candidate (vfprintf on a fake FILE) into working
  * stderr output. */
-#define _GNU_SOURCE
 #include <dlfcn.h>
 #include <stdarg.h>
+
+/* T22 stdio probe gate: MINIANDROID_STDIO_PROBE=1 + 64-line budget */
+static int stdio_probe_on(void) {
+    static int on = -1;
+    if (on < 0) on = getenv("MINIANDROID_STDIO_PROBE") ? 1 : 0;
+    return on;
+}
+static int stdio_probe_budget(void) {
+    static int budget = 64;
+    return budget-- > 0;
+}
 
 static FILE* ma_real_stream(const void* f) {
     if (f == (const void*)&__sF[0]) return stdin;
@@ -149,6 +181,24 @@ int fclose(FILE* f) {
 __attribute__((visibility("default")))
 int fflush(FILE* f) {
     FILE* r = ma_real_stream(f);
+    /* T22 F-NEW-564 diagnostic: name the UNKNOWN pointer the native lib
+     * feeds fflush — its owning module (dladdr) + the first bytes (the
+     * bionic/glibc layout fingerprint). Env-gated, bounded, read-only. */
+    if (!r && f && stdio_probe_on() && stdio_probe_budget()) {
+        Dl_info di; memset(&di, 0, sizeof di);
+        const char* mod = "heap/anon";
+        uintptr_t off = 0;
+        if (dladdr((void*)f, &di) && di.dli_fname) {
+            mod = di.dli_fname;
+            off = (uintptr_t)f - (uintptr_t)di.dli_fbase;
+        }
+        const unsigned char* p = (const unsigned char*)f;
+        fprintf(stderr,
+                "[T22-STDIO] fflush unknown FILE*=%p mod=%s+%lu bytes="
+                "%02x %02x %02x %02x %02x %02x %02x %02x\n",
+                (void*)f, mod, (unsigned long)off,
+                p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
+    }
     static int (*real_fflush)(FILE*);
     if (!real_fflush) real_fflush = dlsym(RTLD_NEXT, "fflush");
     return real_fflush(r ? r : f);
