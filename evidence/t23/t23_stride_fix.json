@@ -1,0 +1,21 @@
+{
+ "train": "T23 F-NEW-564 SIGSEGV ROOT-CAUSED-FIXED: __sF stride mismatch",
+ "root": {
+  "chain": [
+   "crash-site disasm (glibc): fflush+0x97 = mov 0x8(%rdi),%rax = the _lock deref; faults when FILE+0x88 (lock ptr) is NULL",
+   "MINIANDROID_STDIO_PROBE noise-gate capture: the faulting FILE* = miniandroid+0x8D9538 = __sF+152 (zeroed)",
+   "lib crash-site disasm (libtmessages+0x1272905): mov 0x40(%rbx),%rdi; call fflush@plt \u2014 the stream was stored at init as &__sF[1] with the MODERN-BIONIC stride (152 bytes)",
+   "exe shim array used the OLD-NDK stride (88): slot starts 0/88/176 never match 0/152/304 \u2014 the fake fell through to glibc"
+  ],
+  "law": "a dlopened bionic-world lib computes &__sF[k] with ITS OWN compiled FILE stride; the host fake array must cover every stride the corpus uses and match by exact arithmetic, not fixed offsets"
+ },
+ "fix": "__sF[3][192] + dual-ladder ma_real_stream (88-ladder 0/88/176, modern 152-ladder 0/152/304; collision-free by arithmetic) + pristine-stream snapshot (constructor 101, poison-proof redirect) + poison witness (did not fire \u2014 variable poisoning refuted)",
+ "result": {
+  "before": "RC=139 SIGSEGV at glibc fflush+0x97, deterministic, every run",
+  "after": "RC=1 PARTIAL SUCCESS \u2014 process survives, JNI_OnLoad + full native init + the log-loop (20K+ real fflush passthroughs) complete; remaining faces = the KNOWN Ll9/j; firebase family (4 rows) + white launch frame (DEFAULT_BACKGROUND_ONLY honest verdict, deferred-UI queue_size=4)"
+ },
+ "regression": "anchors 6/6 + games 7/7 byte-exact at the stride-fix binary (snakeneon 2617c81c verified)",
+ "screenshot_sha16": {
+  "telegram_after_fix": "31ddd4d5b8e6d18e"
+ }
+}
