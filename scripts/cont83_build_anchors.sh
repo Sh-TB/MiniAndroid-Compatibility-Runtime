@@ -85,8 +85,55 @@ gcc -shared -fPIC -O2 -Wl,-soname,libdl.so -Wl,--no-as-needed -ldl \
     -o "$OUT/libdl.so" tmp/cont83_anchors/empty.c
 gcc -shared -fPIC -O2 -Wl,-soname,libstdc++.so -Wl,--no-as-needed -lstdc++ \
     -o "$OUT/libstdc++.so" tmp/cont83_anchors/empty.c
+
+# ── libc anchor WITH the bionic-stdio shim family (T22, F-NEW-564) ──────
+# ROOT LAW (measured, scripts/t22_stdio_probe.c + LD_DEBUG=bindings): a
+# dlopen'd app lib resolves symbols through its LOCAL scope FIRST — and the
+# pre-loaded anchor libc.so puts REAL glibc in that scope, so the app lib's
+# stdio binds glibc while its __sF binds the exe's global-scope fake array
+# (glibc has no __sF). glibc fflush on an 88-byte-stride fake FILE =
+# the libtmessages SIGSEGV at fflush+0x97 (T19 attribution).
+# THE ONE-POINT FIX: the anchor itself exports the bionic-stdio surface
+# (__sF + redirect-if-fake shim family, same first-party source as the
+# exe's bionic_compat.c) — the app lib's whole stdio family then binds ONE
+# module (dep scope) and never mixes layouts. exe-side callers keep the
+# exe's own shim (each world self-consistent; no FILE* crosses worlds).
+cp miniandroid/src/jni/bionic_compat.c tmp/cont83_anchors/bionic_compat.c
 gcc -shared -fPIC -O2 -Wl,-soname,libc.so -Wl,--no-as-needed -lc \
-    -o "$OUT/libc.so" tmp/cont83_anchors/empty.c
+    -o "$OUT/libc.so" tmp/cont83_anchors/bionic_compat.c
+
+# ── T18 anchor set, restored to the tracked build (fresh-container law) ─
+# The T18-era built anchors stayed LOCAL (ZERO-APK spirit) and their build
+# was never wired into this script — every fresh container re-lost them
+# (the exact F-NEW-387 failure class: soname-carrying shells are REQUIRED
+# DT_NEEDED match targets; without them libtmessages dlopen dies with
+# "libjnigraphics.so: cannot open shared object file" before JNI_OnLoad).
+# Design: empty shells with Android sonames — the app lib's undefined
+# gl*/egl*/AndroidBitmap_*/ANativeWindow_*/ symbols resolve through
+# the GLOBAL scope to the exe's -rdynamic first-party implementations
+# (212-symbol surface, [JNIG-ANCHOR] law). libz passthrough links -lz.
+# libOpenSLES: first-party SPEC surface (T22) — the SL_IID_* interface
+# GUIDs + slCreateEngine with the honest SL_RESULT_FEATURE_UNSUPPORTED
+# verdict (T18's "spec GUIDs + FEATURE_UNSUPPORTED" design, reconstructed
+# from the tracked spec text — source scripts/cont83_sles_anchor.c).
+gcc -shared -fPIC -O2 -Wl,-soname,libOpenSLES.so \
+    -o "$OUT/libOpenSLES.so" scripts/cont83_sles_anchor.c
+# libjnigraphics: first-party 3-func AndroidBitmap surface (T22) — reaches
+# the exe's BitmapStore through the __ma_bitmap_query C-ABI helper
+# (jobject=0x500000000|heap_id marshaling law).
+gcc -shared -fPIC -O2 -Wl,-soname,libjnigraphics.so \
+    -o "$OUT/libjnigraphics.so" scripts/cont83_jnig_anchor.c -ldl
+# libEGL: honest first-party eglGetCurrentContext (T22) — EGL_NO_CONTEXT.
+gcc -shared -fPIC -O2 -Wl,-soname,libEGL.so \
+    -o "$OUT/libEGL.so" scripts/cont83_egl_anchor.c
+gcc -shared -fPIC -O2 -Wl,-soname,libGLESv2.so \
+    -o "$OUT/libGLESv2.so" tmp/cont83_anchors/empty.c
+# libandroid: honest first-party surface (T22) — ANativeWindow identity
+# tokens + no-buffer window ops + NULL-asset AAsset family.
+gcc -shared -fPIC -O2 -Wl,-soname,libandroid.so \
+    -o "$OUT/libandroid.so" scripts/cont83_android_anchor.c
+gcc -shared -fPIC -O2 -Wl,-soname,libz.so -Wl,--no-as-needed -lz \
+    -o "$OUT/libz.so" tmp/cont83_anchors/empty.c
 
 for f in "$OUT"/*.so; do
     printf '%s soname=%s sha16=%s\n' "$f" \
