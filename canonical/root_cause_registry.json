@@ -8749,12 +8749,27 @@
   "layer": "native library load / application onCreate",
   "date": "2026-10-27",
   "title": "native-load unwind family (SHARED with #388 tower3d libGDX): System.loadLibrary of an APK-shipped .so raises UnsatisfiedLinkError/SharedLibraryLoadRuntimeException inside Application.onCreate / provider init; the unwind escapes the app's uncaught boundary (Fatal: NO) and kills the remainder of ApplicationLoader.onCreate — app continues in a half-initialized state and draws only fragments (telegram: battery-optimization 'Disable' monolog, white body; intro/auth chain never reached).",
-  "root_cause": "live probe T15 at HEAD (run/t15_tg): org.telegram.messenger.web installs OK (62MB APK), launches, renders 1,911 content px / 151 colors (sha16=ef109b04 — 'Disable' text + blue accents on white). 3 unwind chains: UnsatisfiedLinkError unwound Lorg/telegram/messenger/ApplicationLoader;.onCreate; Ll9/j; unwound Lcom/google/firebase/provider/FirebaseInitProvider;.onCreate; Ll9/j; unwound Lg9/g;.<init>. Intro slides need RLottie (native); auth chain behind it. Same family root as tower3d SharedLibraryLoadRuntimeException (issue #388) — one law candidate: native-load failure must be attributable and absorbable at guarded call sites so guarded paths continue.",
-  "fix": "OPEN",
+  "root_cause": "live probe T15 at HEAD (run/t15_tg): org.telegram.messenger.web installs OK (62MB APK), launches, renders 1,911 content px / 151 colors (sha16=ef109b04 — 'Disable' text + blue accents on white). 3 unwind chains: UnsatisfiedLinkError unwound Lorg/telegram/messenger/ApplicationLoader;.onCreate; Ll9/j; unwound Lcom/google/firebase/provider/FirebaseInitProvider;.onCreate; Ll9/j; unwound Lg9/g;.<init>. Intro slides need RLottie (native); auth chain behind it. Same family root as tower3d SharedLibraryLoadRuntimeException (issue #388) — one law candidate: native-load failure must be attributable and absorbable at guarded call sites so guarded paths continue. | T16 PROBE VERDICT (run/t16_run): minimal guard probe com.probe.t563 at HEAD — OP1 'GUARD-ABSORBED|java.lang.UnsatisfiedLinkError' RENDERED ON SCREEN (probe sha256 045d4a7cd2cfcf57): the engine raises UnsatisfiedLinkError through the standard exception machinery and app-side guards absorb it; unguarded OP2 correctly ended onCreate (no OP2 marker). ENGINE SIDE CORRECT — telegram's residual face is the honest CPU-translation boundary (unguarded ARM-only load site in ApplicationLoader.onCreate; on ARM hardware the lib loads so ART never throws). Path to telegram کامل = ARM binary translation (BLOCKED-BY-IDENTITY law), not an engine fix. tower3d #388 A/B still open (libGDX guards catch(Throwable) — if it still unwinds, THAT would be a real discrepancy; next probe).",
+  "fix": "ENGINE-SIDE-CLOSED",
   "evidence": "run/t15_tg (local-only; sha16 ef109b0411e48761, 3 unwinds, view 1 'Disable' face)",
   "apps": [
    "org.telegram.messenger.web",
    "stack.tower3d"
+  ],
+  "issues": []
+ },
+ {
+  "id": "R-NEW-563",
+  "status": "VERIFIED",
+  "priority": "P1",
+  "layer": "native library load / exception contract",
+  "date": "2026-10-27",
+  "title": "native-load guard-absorbability law: System.loadLibrary failures (missing/ABI-mismatched .so) are raised as UnsatisfiedLinkError through the standard exception machinery; app-side catch guards absorb them and execution continues — verified by on-screen probe (OP1|GUARD-ABSORBED). Unguarded sites propagate out of the frame (ART-equivalent).",
+  "root_cause": "T16 minimal probe fixtures/t563_probe (sha256 045d4a7cd2cfcf57): guarded loadLibrary -> guard absorbed, text rendered; unguarded loadLibrary -> onCreate ended (no OP2 marker), runtime survived (Fatal:NO). Matches AOSP Runtime.loadLibrary0 contract.",
+  "fix": "NONE-NEEDED (verified correct)",
+  "evidence": "run/t16_run (local; screenshot sha in evidence/t16/)",
+  "apps": [
+   "com.probe.t563"
   ],
   "issues": []
  }
