@@ -26,7 +26,11 @@
 #                    layout-free C symbols are SysV-stable; bionic struct
 #                    layouts (pthread/FILE) remain the named risk.
 set -euo pipefail
-cd /home/z/fresh-repo
+# Repo root derived from THIS script's location (fresh-container law: no
+# container-specific absolute paths — the T17-era `cd /home/z/fresh-repo`
+# broke every container that didn't mount that exact path).
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
 
 OUT=miniandroid/build/anchor_libs
 mkdir -p "$OUT" tmp/cont83_anchors

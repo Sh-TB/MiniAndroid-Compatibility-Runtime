@@ -1,0 +1,49 @@
+{
+ "train": "T21 F-NEW-562 refinement + diag bank (OPDUMP census, r1ran witness, anchor-script repo-root fix)",
+ "head": "c93b658d + T21 diag edits",
+ "wall": {
+  "anchors": {
+   "dooz": "851cc1761a1dfcdf",
+   "opencalc": "63020bc7334048fe",
+   "chess": "3f7e670759b7c6a8",
+   "microtimer": "bbd350b6c14fbd52",
+   "unote": "7481e9b468eaa376",
+   "tower3d": "11a38a5aeeff45a6",
+   "g2048": "f43face08299ffc6",
+   "tetris": "b818a6a7016bea8e",
+   "snake_deluxe": "5235683fc7b1f04b",
+   "snakeneon": "2617c81c9e72b195",
+   "ttt_deluxe": "db1d633d77b5819a",
+   "minicraft": "e77a073f733255eb",
+   "gmdice": "3891679dff449331"
+  }
+ },
+ "op_census": {
+  "pass1": {
+   "ops": 2922,
+   "kinds": "1:DRAW_RECT=84 2:DRAW_ROUNDRECT=220 5:DRAW_TEXT=2302 8:DRAW_BITMAP=316",
+   "ybands": "0:560 1:0 2:0 3:0 4:0 5:0 6:0 7:2362",
+   "note": "top bar + bottom bar ONLY; board region (y240-1680) ZERO ops; zero drawLine/drawPath ops exist"
+  },
+  "pass2": {
+   "ops": 179,
+   "note": "second render pass smaller; tap run pass2=183 (+4 ops delta after 2 board taps)"
+  }
+ },
+ "l0_witness": {
+  "p_null_r1ran_Y": 200,
+  "p_null_r1ran_N_d0": 74,
+  "p_set_r1ran_Y": 22,
+  "note": "74 nodes reach draw with P=NULL AND modifier-apply witness unset (never positioned, never modified)"
+ },
+ "dooz_taps": {
+  "coords": "540,700 + 540,1100",
+  "result": "dispatchTouchEvent real bytecode reached Lt4;; +4 op redraw delta; screenshot byte-identical 851cc176 \u2014 app alive, board invisible"
+ },
+ "t14_correction": "T14 frame-clock starvation classification REFUTED: frame clock resumes per frame (Lh9; trampoline fired x3, i9.n scheduled-flag trace 15/15 events AOSP-faithful); the 6 La; CancellationException unwinds timestamped at run second 1 (07:31:31 vs session 07:31:30) = launch-window coroutine teardown, NOT expiry cancellation",
+ "regression": "anchors 6/6 byte-exact (dooz 851cc176 / opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a) + games 7/7 (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d)",
+ "diagnostics_added": [
+  "MINIANDROID_OPDUMP (draw-op stream census: kinds/ybands/colors/texts)",
+  "L0-TRACE r1ran witness (Lel0;.M flag)"
+ ]
+}
