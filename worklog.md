@@ -11770,3 +11770,25 @@ Work Log:
 Stage Summary:
 - Session total: 5 trains pushed (T4 d6029431, T5 2dccb8f3, T6 census within T7 commit, T7 504bfd2c, T8 b1ccf019), +6 registry roots, +1 honest negative (T4 copy-cost), +8% dooz window (T5), census 14/14 retention, 2 AOSP null-contract laws, 1 JVM static-resolution law, 2 new family roots named with evidence.
 - NEXT TRAINS (the named pipeline): T9 telegram SvgHelper/theme-frame chain (M-07 epic — needs multi-train budget); T10 F-NEW-561b partial-clinit census then laws; T11 F-NEW-236d KClassImpl map-key equality (chompass); T12 the tri dtor-union 6-maps-per-call counter diagnostic (13.2%+_init 9.8% of dooz wall); T13 dooz board composition (R-NEW-546 four Lz6; allocation sites) with the +8% budget; then the census blank long-tail.
+
+---
+Task ID: T21
+Agent: Super Z (main)
+Task: «قطار بعدی خیلی خیلی زیاد» — T21 of the heavy-train fleet: dooz board (F-NEW-562, P0). Self-update from GitHub first (standing law), then attack the board-invisible frontier.
+
+Work Log:
+- Synced: local e99c2fbd was 357 commits behind origin/main c93b658d (CONT-43 T11-T20 complete) — fast-forwarded before any work.
+- Build train: full container rebuild; fixed scripts/cont83_build_anchors.sh fresh-repo path bug (hardcoded /home/z/fresh-repo broke every fresh container — now derives repo root from script location); anchors rebuilt byte-match T17 records (libm ca20b1c6, libstdc++ 7a9b3714).
+- Reproduced the wall EXACTLY: dooz at HEAD = 851cc1761a1dfcdf, 6 errors (La; CancellationException unwinds), chrome-only.
+- T14 story REFUTED with hard evidence: (1) frame clock WORKS — Lh9; AndroidUiDispatcher trampoline doFrame fired x3, Li9;.n scheduled-flag trace 15/15 events AOSP-faithful (schedule -> consume -> reset); (2) the 6 La; unwinds timestamped run-second 1 (07:31:31 vs session 07:31:30) = launch-window coroutine teardown, NOT max-seconds expiry.
+- NEW DIAGNOSTIC MINIANDROID_OPDUMP (generic, env-gated): draw-op stream census (kinds / 240px y-bands / colors / DRAW_TEXT content). VERDICT: pass1 2922 ops land ONLY y-band 0 (top bar, 560) + y-band 7 (bottom bar, 2362); board region y240-1680 = ZERO ops; zero drawLine/drawPath ops exist anywhere in the stream.
+- Lpz0;.L0 arm-select decoded (disasm): P=coordinator (Lc31;/Luc0; InnerNodeCoordinator) -> full draw arm; P=NULL -> translate-children arm, leaf draws NOTHING. r1 disasm: Compose-1.7 layer/coordinator manager — P set iff draw content, detach legal; Lpz0;.<init> does NOT write P.
+- NEW r1ran WITNESS (Lel0;.M flag, written at every r1 exit): 74 nodes reach draw with P=NULL AND r1 never ran — inserted into the tree, never positioned (D=0), never modifier-updated = the root face. 200 nodes P=NULL r1ran=Y (legal no-draw-content detach).
+- Tap probe: --tap 540,700 + 540,1100 — dispatchTouchEvent real bytecode reaches Lt4;, +4-op redraw delta follows (app ALIVE), screenshot byte-identical 851cc176 (board invisible AND untappable at cell level — unpositioned nodes).
+- REGRESSION WALL: anchors 6/6 byte-exact (dooz 851cc176 / opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a) + games 7/7 EXACT-TO-PIN (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d) — diag-only engine edits proven semantically neutral.
+- Registry F-NEW-562 -> CLASSIFIED-REFINED (same id, no inflation); apps.jsonl dooz row n/next updated; _index rollup refreshed from live rows; evidence banked evidence/t21/t21_refinement.json (hashes only, ZERO-LOG).
+
+Stage Summary:
+- dooz board root NOW IS: modifier-update dispatch (r1) never runs for applier-inserted destination nodes (74 witnesses) — not frame-clock, not cancellation.
+- Next train: find the r1 caller chain (Lel0;.N(Lpz0;) update-dispatch) and why late-inserted nodes skip it; upstream law = node insertion schedules modifier rebuild + measure; success = board ops > 0 in y-bands 1-6.
+- Diagnostics banked for all future agents: MINIANDROID_OPDUMP + L0-TRACE r1ran witness.

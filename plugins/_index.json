@@ -14,23 +14,23 @@
  "corpus_total": 202,
  "registration_gap": 0,
  "by_load": {
-  "NOT_TESTED": 157,
-  "OBSERVED": 61,
-  "VERIFIED": 23,
+  "OBSERVED": 62,
+  "NOT_TESTED": 156,
   "BLOCKED-DOWNLOAD": 4,
+  "VERIFIED": 23,
   "TESTED": 3,
   "PARTIAL": 3,
   "BLOCKED": 2
  },
  "stuck_at": {
-  "L1": 58,
-  "L6": 19,
+  "L1": 57,
   "L4": 9,
+  "L2": 3,
+  "L6": 19,
   "L3": 2,
   "L0": 1,
   "L5": 1,
-  "L7": 1,
-  "L2": 1
+  "L7": 1
  },
  "raw_logs": "NOT_STORED_IN_GIT",
  "artifact_manifest": "plugins/_artifacts_manifest.json",

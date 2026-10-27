@@ -4458,11 +4458,24 @@ bool DalvikExecutionEngine::execute_method_internal(
         ++l0_trace_count;
         uint32_t p_id = 0, d_lo = 0, d_hi = 0;
         std::string p_cls;
+        int m_flag = -1;  // T21: r1-ran witness (Lel0;.M written at r1 end)
         auto pf = heap_.get_object_field(args[0].object_id, "P");
         if (pf && pf->type == DalvikType::OBJECT_REF && pf->object_id != 0) {
             p_id = pf->object_id;
             if (const auto* po = heap_.get(pf->object_id))
                 p_cls = po->class_descriptor;
+        }
+        // T21 witness: r1 writes the chain's M flag on EVERY exit path; if
+        // it is still unset the modifier-update apply (r1) NEVER ran for
+        // this node — a genuinely different root than "no draw content".
+        auto sf = heap_.get_object_field(args[0].object_id, "s");
+        if (sf && sf->type == DalvikType::OBJECT_REF && sf->object_id != 0) {
+            auto mf = heap_.get_object_field(sf->object_id, "M");
+            if (mf && (mf->type == DalvikType::BYTE ||
+                       mf->type == DalvikType::INT32))
+                m_flag = mf->int_val;
+            else if (mf && (mf->type == DalvikType::INT64))
+                m_flag = (int)mf->long_val;
         }
         auto df = heap_.get_object_field(args[0].object_id, "D");
         if (df && df->type == DalvikType::INT64) {
@@ -4472,6 +4485,7 @@ bool DalvikExecutionEngine::execute_method_internal(
         std::cerr << "[L0-TRACE] node#" << args[0].object_id
                   << " P=" << (p_id ? ("#" + std::to_string(p_id) + " " + p_cls)
                                     : std::string("NULL"))
+                  << " r1ran=" << (m_flag < 0 ? "?" : (m_flag ? "Y" : "N"))
                   << " D=0x" << std::hex << d_hi << d_lo << std::dec
                   << " caller=" << current_class_ << "." << current_method_
                   << std::endl;
@@ -13064,6 +13078,52 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     draw_window_active_ = false;
     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
+    // T21 (F-NEW-562) — generic, env-gated, read-only op-stream census:
+    // where do the replayed draw ops actually LAND? (kind histogram,
+    // color histogram, y-band histogram). Zero cost when the env is unset.
+    // Answers "ops replayed but the board region renders empty" with a
+    // region census instead of guesswork.
+    if (ops > 0 && std::getenv("MINIANDROID_OPDUMP")) {
+        const auto& opsvec = canvas_shadow->ops();
+        std::map<int, int> kind_hist;
+        std::map<uint32_t, int> color_hist;
+        std::array<int, 8> yband{};
+        for (const auto& op : opsvec) {
+            ++kind_hist[static_cast<int>(op.kind)];
+            ++color_hist[op.color];
+            int band = 0;
+            if (op.y >= 0) band = static_cast<int>(op.y / 240);
+            if (band > 7) band = 7;
+            ++yband[band];
+        }
+        std::cerr << "[OPDUMP] view=" << view_object_id << " ops=" << opsvec.size();
+        std::cerr << " kinds=";
+        for (const auto& [k, n] : kind_hist) std::cerr << k << ":" << n << " ";
+        std::cerr << "| ybands(240px)=";
+        for (int b = 0; b < 8; ++b) std::cerr << b << ":" << yband[b] << " ";
+        std::cerr << "| topcolors=";
+        int shown = 0;
+        for (const auto& [c, n] : color_hist) {
+            if (shown++ >= 10) break;
+            std::cerr << std::hex << c << std::dec << ":" << n << " ";
+        }
+        // T21: DRAW_TEXT content census (bounded) — turns "did the game
+        // state change?" into readable evidence (e.g. turn indicator text).
+        {
+            int tshown = 0;
+            std::string seen;
+            for (const auto& op : opsvec) {
+                if (op.kind != framework::DrawOp::Kind::DRAW_TEXT ||
+                    op.text.empty())
+                    continue;
+                if (seen.find(op.text) != std::string::npos) continue;
+                if (seen.size() < 400) { seen += op.text; seen += "|"; }
+                if (++tshown >= 25) break;
+            }
+            std::cerr << "| texts=" << seen;
+        }
+        std::cerr << std::endl;
+    }
     return ops;
 }
 
