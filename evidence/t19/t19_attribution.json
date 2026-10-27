@@ -1,0 +1,32 @@
+{
+ "train": "T19 crash attribution + exe-export interposition",
+ "engine_changes": [
+  "crash_forensics.cpp: dladdr module+symbol attribution per native backtrace frame (mod=/sym=/modoff=)",
+  "Makefile: -rdynamic on the executable link + src/jni/bionic_compat.c compiled into the exe (exe = first in global scope; jnig exports now dlsym-reachable \u2014 [JNIG-ANCHOR] absence in stderr12 proves dlsym found them)",
+  "anchor libc.so rebuild after a discovered partial-write regression (anchor had lost all compat exports mid-wave; restored 07dfd4f6 -> full set)"
+ ],
+ "attribution_result": {
+  "frames": [
+   "#0 miniandroid (crash_forensics handler)",
+   "#1 libc.so.6",
+   "#2 libc.so.6 fflush+0x97",
+   "#3 libtmessages.49.so modoff=0x1272905",
+   "#4 libtmessages.49.so modoff=0x126f3cf",
+   "#5 libtmessages.49.so modoff=0x126fxxx",
+   "#6/#7 libc.so.6"
+  ],
+  "signature": "libtmessages internal code region (0x126f000-0x1273000, stripped) -> glibc stdio fflush -> SIGSEGV",
+  "candidates": [
+   "stdio call bound to glibc on a fake __sF FILE (shim bypass mechanism unresolved)",
+   "heap-struct corruption from bionic-layout code touching glibc stdio buffers",
+   "unimplemented surface inside the animated-emoji/voip-adjacent code region"
+  ],
+  "next_probe": "ASan-instrumented engine run OR single-symbol dlopen probe (minimal lib calling fflush(&__sF[2])) to pin the binding path; then either widen the shim or implement the missing surface"
+ },
+ "runs": {
+  "o10": "Makefile engine + anchor regression found (UnsatisfiedLinkError again) \u2014 drove the anchor-rebuild fix",
+  "o11": "anchors restored; crash reproduced WITH attribution mod= lines",
+  "o12": "exe exports live; crash unchanged -> shim bypass confirmed as open question"
+ },
+ "verdict": "attribution tooling landed; crash signature banked; binding-path probe = next train"
+}
