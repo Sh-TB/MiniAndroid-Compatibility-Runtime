@@ -1,0 +1,32 @@
+{
+ "train": "T17 native-anchor frontier \u2014 tower3d libGDX + telegram shared-root A/B",
+ "cause_found": "fresh-repo build was MISSING anchor_libs (F-NEW-387 host-anchor set never built; old script pointed at /home/z/my-project). libgdx.so dlopen died on DT_NEEDED libm.so hitting Ubuntu's ASCII ld-script ('invalid ELF header')",
+ "fix": "adapted scripts/cont83_build_anchors.sh path to fresh-repo; built 5 real ELF64 anchors (libc/libdl/liblog/libm/libstdc++ with Android sonames) into miniandroid/build/anchor_libs/",
+ "anchor_shas": {
+  "libc.so": "aab788042ed75864",
+  "libdl.so": "ce13a6606daa3d1b",
+  "liblog.so": "20ac301d011e29c0",
+  "libm.so": "ca20b1c6dac7a5a3",
+  "libstdc++.so": "7a9b37148a5a1edb"
+ },
+ "tower3d_before": {
+  "screenshot_sha16": "31ddd4d5b8e6d18e",
+  "content_px": 0,
+  "unwinds": 3,
+  "face": "SharedLibraryLoadRuntimeException APP-BOUNDARY death; blank"
+ },
+ "tower3d_after": {
+  "screenshot_sha16": "11a38a5aeeff45a6",
+  "content_px": 0,
+  "face": "libgdx.so REAL dlopen OK (sha16 2e9dc948aab382e5, 193008B); AndroidGraphics+PortableGL init LOG rows; stub-census 330->1658 IMPLEMENTED; crash.log 0 errors",
+  "first_missing_stage": "APP_DRAW_OPS",
+  "next_wall": "GLSurfaceView render thread never draws app content (VERIFIED face = head_smoke pin 11a38a5a \u2014 same wall, now with native-load CAUSE removed)"
+ },
+ "telegram_after": {
+  "face_sha16": "7ee386986bc651f3",
+  "content_px": 1907,
+  "progress": "libtmessages.49.so (21MB) extracted + dlopen ATTEMPTED; PIP_DEBUG onStart/onResume; PlayServices honesty check; stub-census 2.39M IMPLEMENTED",
+  "next_wall": "libjnigraphics.so anchor missing -> honest UnsatisfiedLinkError (guarded path absorbed by telegram; init retried)"
+ },
+ "verdict": "native-load family (#388/#389/F-NEW-563) ROOT CAUSE for the engine side = missing anchors; tower3d wall MOVED to APP_DRAW_OPS; telegram wall MOVED to jnigraphics anchor gap"
+}

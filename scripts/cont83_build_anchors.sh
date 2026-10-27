@@ -26,7 +26,7 @@
 #                    layout-free C symbols are SysV-stable; bionic struct
 #                    layouts (pthread/FILE) remain the named risk.
 set -euo pipefail
-cd /home/z/my-project
+cd /home/z/fresh-repo
 
 OUT=miniandroid/build/anchor_libs
 mkdir -p "$OUT" tmp/cont83_anchors
