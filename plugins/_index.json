@@ -34,5 +34,6 @@
  },
  "raw_logs": "NOT_STORED_IN_GIT",
  "artifact_manifest": "plugins/_artifacts_manifest.json",
- "gap_note": "253 rows = 202 corpus spine + 51 canonical-only extras; 0 corpus titles missing. Every row now carries next= (T13 low-token entry law)."
+ "gap_note": "253 rows = 202 corpus spine + 51 canonical-only extras; 0 corpus titles missing. Every row now carries next= (T13 low-token entry law).",
+ "generated_note": "CONT-44 T24: dooz F-NEW-567 attach-propagation chain named+heap-proven; wall 9/9 no-regress"
 }
