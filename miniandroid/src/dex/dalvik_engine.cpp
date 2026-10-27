@@ -4621,6 +4621,159 @@ bool DalvikExecutionEngine::execute_method_internal(
                           << current_method_ << " objrefs_total="
                           << total_objrefs << " r=" << r_state
                           << " refs:" << refs << std::endl;
+                // CONT-45 D2: compose-tree census — for the ROOT node
+                // (first attach = recv 2113 in the dooz run; generic rule:
+                // the node whose q parent field is ABSENT), resolve the
+                // children containers (fields A/n, Lwg0; {e:I,f,g:Object})
+                // and print their array targets so the wave-2 parent
+                // structure is visible heap-side. Read-only, bounded 6.
+                static thread_local uint32_t tree_dumps = 0;
+                if (tree_dumps < 6 && rid2 != 0) {
+                    auto qf = ho->get_field("q");
+                    bool is_rootish =
+                        qf.type != DalvikType::OBJECT_REF;
+                    if (is_rootish) {
+                        ++tree_dumps;
+                        for (const char* cfld : {"A", "n", "N"}) {
+                            auto ctf = ho->get_field(cfld);
+                            if (ctf.type != DalvikType::OBJECT_REF ||
+                                ctf.object_id == 0)
+                                continue;
+                            const auto* cw = heap_.get(ctf.object_id);
+                            if (!cw)
+                                continue;
+                            std::string items;
+                            int cnt = 0;
+                            for (const char* hf : {"f", "g"}) {
+                                auto hfr = cw->get_field(hf);
+                                if (hfr.type == DalvikType::OBJECT_REF &&
+                                    hfr.object_id != 0) {
+                                    const auto* arr =
+                                        heap_.get(hfr.object_id);
+                                    if (arr) {
+                                        auto al = arr->get_field(
+                                            "__array_length__");
+                                        int an = -1;
+                                        if (al.type == DalvikType::INT32)
+                                            an = al.int_val;
+                                        items += std::string(" ") + hf +
+                                                  "=arr#" +
+                                                  std::to_string(
+                                                      hfr.object_id) +
+                                                  "[len=" +
+                                                  std::to_string(an) + "]";
+                                        for (int i = 0; i < an && i < 24;
+                                             ++i) {
+                                            auto ev = heap_.get_object_field(
+                                                hfr.object_id,
+                                                "array[" +
+                                                    std::to_string(i) + "]");
+                                            if (!ev.has_value())
+                                                continue;
+                                            if (ev->type ==
+                                                DalvikType::OBJECT_REF) {
+                                                items += " o" +
+                                                    std::to_string(
+                                                        ev->object_id);
+                                                ++cnt;
+                                            } else if (ev->type ==
+                                                       DalvikType::INT32) {
+                                                items += " i" +
+                                                    std::to_string(
+                                                        ev->int_val);
+                                            }
+                                        }
+                                    }
+                                } else if (hfr.type == DalvikType::INT32) {
+                                    items += std::string(" ") + hf + "=i" +
+                                             std::to_string(hfr.int_val);
+                                }
+                            }
+                            (void)cnt;
+                            std::cerr << "[TREE] root#" << rid2 << " "
+                                      << cfld << "=#" << ctf.object_id
+                                      << "(" << cw->class_descriptor
+                                      << ")" << items << std::endl;
+                        }
+                    }
+                }
+                // CONT-45 D2b: one-shot deep dump of the root children
+                // container (bounded, first 3 dumps only).
+                static thread_local uint32_t deep_dumps = 0;
+                if (deep_dumps < 40 && rid2 != 0 &&
+                    ho->get_field("q").type != DalvikType::OBJECT_REF) {
+                    ++deep_dumps;
+                    for (const char* cfld : {"n", "A"}) {
+                        auto ctf = ho->get_field(cfld);
+                        if (ctf.type != DalvikType::OBJECT_REF ||
+                            ctf.object_id == 0)
+                            continue;
+                        std::function<void(uint32_t, int, int)> walk =
+                            [&](uint32_t oid, int depth, int budget) {
+                            if (depth > 3 || budget <= 0)
+                                return;
+                            const auto* obj = heap_.get(oid);
+                            if (!obj)
+                                return;
+                            std::string line;
+                            int printed = 0;
+                            for (const auto& kv : obj->fields) {
+                                if (printed >= 10)
+                                    break;
+                                const auto& v = kv.second;
+                                if (v.type == DalvikType::OBJECT_REF &&
+                                    v.object_id != 0) {
+                                    const auto* t = heap_.get(v.object_id);
+                                    line += " " + kv.first + "=#" +
+                                            std::to_string(v.object_id) +
+                                            "(" + (t ? t->class_descriptor
+                                                     : "?") + ")";
+                                } else if (v.type == DalvikType::INT32) {
+                                    line += " " + kv.first + "=i" +
+                                            std::to_string(v.int_val);
+                                } else if (v.type == DalvikType::INT64) {
+                                    line += " " + kv.first + "=l" +
+                                            std::to_string(v.long_val);
+                                }
+                                ++printed;
+                            }
+                            std::cerr << "[TREE2] d" << depth << " obj#"
+                                      << oid << "(" << obj->class_descriptor
+                                      << ")" << line << std::endl;
+                            if (obj->class_descriptor.size() > 0 &&
+                                obj->class_descriptor[0] == '[') {
+                                auto alv = obj->get_field("__array_length__");
+                                int an = alv.type == DalvikType::INT32
+                                             ? alv.int_val : -1;
+                                for (int i = 0; i < an && i < 16; ++i) {
+                                    auto ev = heap_.get_object_field(
+                                        oid, "array[" + std::to_string(i) +
+                                                 "]");
+                                    if (ev.has_value() &&
+                                        ev->type == DalvikType::OBJECT_REF &&
+                                        ev->object_id != 0) {
+                                        std::cerr << "[TREE2]   arr[" << i
+                                                  << "] -> o" << ev->object_id
+                                                  << std::endl;
+                                        walk(ev->object_id, depth + 1,
+                                             budget - 1);
+                                    }
+                                }
+                                return;
+                            }
+                            for (const auto& kv : obj->fields) {
+                                if (kv.second.type ==
+                                        DalvikType::OBJECT_REF &&
+                                    kv.second.object_id != 0)
+                                    walk(kv.second.object_id, depth + 1,
+                                         budget - 1);
+                            }
+                        };
+                        std::cerr << "[TREE2] root#" << rid2 << " via " << cfld
+                                  << std::endl;
+                        walk(ctf.object_id, 0, 24);
+                    }
+                }
             }
         }
     }

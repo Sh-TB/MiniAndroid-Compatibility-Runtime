@@ -11855,3 +11855,23 @@ Stage Summary:
 - D1 complete: F-NEW-567 reclassified from 'unattached' to 'measured-but-never-placed' — the placement pass never reaches the wave-2 subtree; 2 T24 sub-claims refuted with named evidence.
 - Next trains: D2 tree-structure diag (walk root #2113: children/placed/P per node) -> D3 the placement-scheduling fix -> D4 P coordinator-link -> D5+ board draw ops > 0 in y-bands 1-6.
 - TELEGRAM pipeline queued after the dooz block per the user's «برای هر کدام 10 قطار» directive.
+
+---
+Task ID: CONT-45-D2
+Agent: Super Z (main)
+Task: DOOZ TRAIN 2 of 10 — the wave-2 placement root-chain (F-NEW-567 final form). «برای هر کدام 10 قطار».
+
+Work Log:
+- Built the engine-side tree census ([TREE]/[TREE2] under MINIANDROID_V_TRACE): the ROOT's children container e=12 (the fold); the wave-2 nodes' fold-parent = the ROOT.
+- Decoded insertAt (Lel0;.B) from real bytecode via androguard (scripts/cont45_disasm.py): child-side shape — (a) this.q=parent write, (b) parent container add, (c) conditional d(parent.r) attach. The B-parent ARG = the ROOT o2113.
+- Decoded requestRemeasure (Lzs0;.r): delegate y=1 mark lands (44x); the relayoutNodes.add gate (I()Z placed-check) drops never-placed nodes (upstream-faithful — catch-up was supposed to come from the REAL parent).
+- Decoded the drain: Lzs0;.o gate j(node) skips never-measured-by-parent leaves; the drain CARRIED the wave-2 leaves (o-args o9089/o9209/o10445 from Lt4;.onLayout) but skipped them; the intermediate REAL parents never entered the drain.
+- Decoded dispatchDraw (Lt4;): prologue = v(true) measureAndLayout THEN root.i draw — the C013 path runs the REAL dispatchDraw per frame — the measure half already fires; the drain content is what's wrong.
+- Root-chain NAMED: the second-applyChanges inserts landed with the applier at the ROOT (DOWN-op walk diverged) -> fold-parent=root -> attach's parent-invalidation hits the root -> the root remeasure short-circuits (its one real child clean -> cached measure -> no policy re-run -> NO place descent) -> sizes commit via the delegate executor but placement never happens -> board zero draw ops.
+- Frame-3 churn documented: the early wave detached again at the tail (r=ABSENT), a new wave (13944+) inserted with r+q, the pump quiesced before its measure/place.
+- Identified La; = CancellationException (the 6 unwinds = the coroutine cancellation protocol through the text-paint chain — caught, non-fatal, NOT the root).
+- NO behavior edits this train (diagnostics only); dooz pin spot re-verified.
+
+Stage Summary:
+- D2 complete: the dooz board frontier is now the APPLIER POSITION during the second applyChanges — the fix target is the DOWN-op chain (Ls21;.Y -> Lg21;.a -> Lv02;.j -> Lel0;.Q) or the parent-invalidation law at the insert boundary.
+- Next: TELEGRAM T1 per the 60/40 law and the user's 10-trains-each directive; D3 (applier position) resumes after.
