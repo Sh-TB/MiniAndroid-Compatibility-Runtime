@@ -8741,5 +8741,21 @@
   "issues": [
    389
   ]
+ },
+ {
+  "id": "F-NEW-563",
+  "status": "CLASSIFIED",
+  "priority": "P0",
+  "layer": "native library load / application onCreate",
+  "date": "2026-10-27",
+  "title": "native-load unwind family (SHARED with #388 tower3d libGDX): System.loadLibrary of an APK-shipped .so raises UnsatisfiedLinkError/SharedLibraryLoadRuntimeException inside Application.onCreate / provider init; the unwind escapes the app's uncaught boundary (Fatal: NO) and kills the remainder of ApplicationLoader.onCreate — app continues in a half-initialized state and draws only fragments (telegram: battery-optimization 'Disable' monolog, white body; intro/auth chain never reached).",
+  "root_cause": "live probe T15 at HEAD (run/t15_tg): org.telegram.messenger.web installs OK (62MB APK), launches, renders 1,911 content px / 151 colors (sha16=ef109b04 — 'Disable' text + blue accents on white). 3 unwind chains: UnsatisfiedLinkError unwound Lorg/telegram/messenger/ApplicationLoader;.onCreate; Ll9/j; unwound Lcom/google/firebase/provider/FirebaseInitProvider;.onCreate; Ll9/j; unwound Lg9/g;.<init>. Intro slides need RLottie (native); auth chain behind it. Same family root as tower3d SharedLibraryLoadRuntimeException (issue #388) — one law candidate: native-load failure must be attributable and absorbable at guarded call sites so guarded paths continue.",
+  "fix": "OPEN",
+  "evidence": "run/t15_tg (local-only; sha16 ef109b0411e48761, 3 unwinds, view 1 'Disable' face)",
+  "apps": [
+   "org.telegram.messenger.web",
+   "stack.tower3d"
+  ],
+  "issues": []
  }
 ]
