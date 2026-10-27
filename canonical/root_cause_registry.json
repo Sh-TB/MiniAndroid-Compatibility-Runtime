@@ -8724,5 +8724,22 @@
   "evidence": "evidence/cont42t6/train8_statics_evidence.json",
   "regression": "-",
   "next": "census then laws."
+ },
+ {
+  "id": "F-NEW-562",
+  "status": "CLASSIFIED",
+  "priority": "P0",
+  "layer": "compose draw / frame clock",
+  "date": "2026-10-27",
+  "title": "dooz board frame-clock starvation: app chrome (title bar, settings gear, theme circle, undo FAB, 'New game' pill) renders but the 3x3 game board (Compose Canvas/drawBehind content) is absent from all frames; board draw defers into a Compose frame-clock continuation that never resumes under the runtime's scheduler.",
+  "root_cause": "live probe T14 at HEAD binary (run/t14_dooz): io.github.yamin8000.dooz installs OK, runs SUCCESS, 6/6 frames byte-identical sha16=851cc176 (231,873 content px, 113 distinct colors) — chrome only, zero board cells. View tree = 3 nodes (Lho; root, Lt4;, 1x1 placeholder) while chrome renders via the synth draw-op layer. 6 unwind chains all La; extends Ljava/util/concurrent/CancellationException (Lzs;.m d17, Lte1;.f d16, Lse1;.s d15, Lg;.q d13, Lg;.h d12, Lat;.a d10) — coroutine teardown artifacts consistent with a pending frame-clock suspension cancelled at max-seconds expiry; the board draw never entered a frame. method_trace capped at 5001 entries (class-load phase) so the starvation window is not directly visible — needs frame-clock resume instrumentation (next train).",
+  "fix": "OPEN",
+  "evidence": "run/t14_dooz (local-only per ZERO-LOG law; sha16 851cc1761a1dfcdf, 6 frames identical, view_count 3, api_trace 3114 calls, crash.log 6 EXC-UNWIND)",
+  "apps": [
+   "io.github.yamin8000.dooz"
+  ],
+  "issues": [
+   389
+  ]
  }
 ]
