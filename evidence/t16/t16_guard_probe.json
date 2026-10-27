@@ -1,0 +1,13 @@
+{
+ "train": "T16 native-load guard-absorbability probe",
+ "probe_apk_sha256_16": "045d4a7cd2cfcf57",
+ "fixture": "fixtures/t563_probe (tracked)",
+ "probe_results_on_screen": [
+  "T563-START",
+  "OP1|GUARD-ABSORBED|java.lang.UnsatisfiedLinkError"
+ ],
+ "op2_unguarded": "onCreate ended (no OP2 marker) \u2014 correct",
+ "screenshot_sha16": "b323b2e049548001",
+ "law": "R-NEW-563 VERIFIED",
+ "verdict": "engine side CLOSED; telegram residual = CPU-translation boundary"
+}
