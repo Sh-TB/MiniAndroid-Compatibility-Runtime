@@ -4491,6 +4491,129 @@ bool DalvikExecutionEngine::execute_method_internal(
                   << std::endl;
     }
     // ────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-44 T24 (F-NEW-567 evidence, DIAG-ONLY, env-gated): V→z bridge
+    // watch. Runtime trace facts: Lel0;.V (compose invalidate-family)
+    // RUNS after the destination-node insertion, but Lt4;.z (the owner
+    // requestMeasure bridge → Lzs0;.r delegate.requestMeasure) NEVER
+    // fires after the initial attach wave (z last@1140 vs V last@7053 in
+    // the m2/m3 filtered traces), so the inserted nodes are never
+    // measured (D=0, P=NULL → board region zero draw ops). V's body
+    // guards the z call behind a field test. This probe dumps the V
+    // receiver's OBJECT-REF fields (name → target id/class) at entry —
+    // read-only, bounded 60 — to expose which reference is NULL/absent
+    // on late-inserted nodes vs the initial attach-wave nodes.
+    // ────────────────────────────────────────────────────────────────────
+    static thread_local const bool v_trace_on =
+        diag_env("MINIANDROID_V_TRACE");
+    static thread_local uint32_t v_trace_count = 0;
+    if (class_name == "Lel0;" && method_name == "V" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        uint32_t rid = args[0].object_id;
+        // ── R-NEW-567 (CONT-44 T24, AOSP insertAt owner-propagation law):
+        // a LayoutNode in an attached tree ALWAYS carries its owner
+        // (LayoutNode.insertAt → node.owner = this.owner). The engine's
+        // second-wave node materialization skips the h-writer, so late
+        // nodes reach V with owner ABSENT and V's guard skips Lt4;.z —
+        // the delegate measure scheduler is never armed (F-NEW-567 face:
+        // board region zero draw ops). Repair: complete the propagation
+        // with the recorded owner (exactly the value insertAt would have
+        // written). Gate: only when an owner assignment was actually
+        // observed (compose_owner_last_ != 0) and the receiver truly
+        // lacks the field. Bounded evidence log.
+        if (compose_owner_last_ != 0) {
+            auto* ho = heap_.get(rid);
+            auto rf = ho ? ho->get_field("r") : DalvikValue::make_uninit();
+            auto qf = ho ? ho->get_field("Lel0;->r")
+                         : DalvikValue::make_uninit();
+            bool attached_absent =
+                rf.type != DalvikType::OBJECT_REF &&
+                qf.type != DalvikType::OBJECT_REF;
+            static thread_local uint32_t r567_log = 0;
+            // ── R-NEW-567 (CONT-44 T24, AOSP LayoutNode.attach law):
+            // owner is the ATTACH MARKER — LayoutNode.attach(owner) checks
+            // `check(owner == null)` and THEN stores it (the d-writer:
+            // Lel0;.d(Ld31;)V — runs for the attach wave via Lt4;.<init>
+            // and for first-wave inserts via B). Second-wave nodes reach V
+            // with owner ABSENT because their insert path never executed
+            // the attach law; V's guard (isAttached) then correctly skips
+            // Lt4;.z and the measure scheduler is never armed (F-NEW-567
+            // face: board region zero draw ops; V-TRACE evidence:
+            // recv=9089..9329 r=ABSENT while first-wave nodes carry
+            // r=#1547). THE FIX IS NOT a raw field write — that violates
+            // the attach invariant (regression: compose's own attach law
+            // threw ISE "Cannot attach Lel0;@6660 as it already is
+            // attached"). The faithful repair = EXECUTE the real attach
+            // law: try_recursive_invoke("Lel0;", "d", {this, owner}) —
+            // the same method the B-insert path calls, running its real
+            // body (owner store + modifier-chain attach side effects).
+            // Env kill-switch: MINIANDROID_R567_DISABLE=1.
+            // T24 status: the V-entry attach dispatch RACES compose's own
+            // attach (node 6660: compose attaches it later via Lwo;.e and
+            // throws ISE "already attached" → onCreate death). The repair
+            // is therefore OPT-IN (MINIANDROID_R567_ATTACH=1) for A/B
+            // forensics; default runs stay diagnostic-only. The faithful
+            // fix point is the genuinely-never-attached node class
+            // (V-TRACE: recv=9089..9329 r=ABSENT at draw time) — next
+            // session: attach at first DRAW reach (Lpz0;.L0 entry) where
+            // the onCreate attach race is over, or execute the skipped
+            // applier-insert chain (B/d) for the second wave.
+            if (attached_absent &&
+                std::getenv("MINIANDROID_R567_DISABLE") == nullptr &&
+                std::getenv("MINIANDROID_R567_ATTACH") != nullptr) {
+                std::string own_cls = "Ljava/lang/Object;";
+                if (const auto* oo = heap_.get(compose_owner_last_))
+                    own_cls = oo->class_descriptor;
+                DalvikValue ret = DalvikValue::make_void();
+                DalvikExecutionResult res;
+                bool ok = try_recursive_invoke(
+                    "Lel0;", "d",
+                    {DalvikValue::make_object(rid, "Lel0;"),
+                     DalvikValue::make_object(compose_owner_last_, own_cls)},
+                    ret, res);
+                if (r567_log < 32) {
+                    ++r567_log;
+                    std::cerr << "[R-NEW-567-ATTACH] V recv=" << rid
+                              << " owner=#" << compose_owner_last_
+                              << " attach_dispatched=" << (ok ? "YES" : "NO")
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+        }
+        if (v_trace_on && v_trace_count < 60 &&
+            !args.empty()) {
+            uint32_t rid2 = args[0].object_id;
+            std::string refs;
+            if (const auto* ho = heap_.get(rid2)) {
+                int n = 0, total_objrefs = 0;
+                for (const auto& kv : ho->fields) {
+                    if (kv.second.type == DalvikType::OBJECT_REF) {
+                        ++total_objrefs;
+                        if (n >= 14) continue;
+                        std::string tcls = "-";
+                        if (kv.second.object_id != 0) {
+                            if (const auto* t = heap_.get(kv.second.object_id))
+                                tcls = t->class_descriptor;
+                        }
+                        refs += " " + kv.first + "=#" +
+                                std::to_string(kv.second.object_id) + "(" +
+                                tcls + ")";
+                        ++n;
+                    }
+                }
+                auto rf = ho->get_field("r");
+                std::string r_state = "ABSENT";
+                if (rf.type == DalvikType::OBJECT_REF)
+                    r_state = "#" + std::to_string(rf.object_id);
+                std::cerr << "[V-TRACE] V#" << v_trace_count << " recv="
+                          << rid2 << " caller=" << current_class_ << "."
+                          << current_method_ << " objrefs_total="
+                          << total_objrefs << " r=" << r_state
+                          << " refs:" << refs << std::endl;
+            }
+        }
+    }
     // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): ATTACH watch. The Compose
     // text painter (Lte1/Lod1) draw body starts with `if (!this.r) return`
     // (Lok0.r = the attached flag, written ONLY by Lok0.u0/v0). Dispatch
@@ -22845,6 +22968,22 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                     src_val);
                 heap_.set_object_field_raw(obj_ref.object_id,
                                            field_res.field_name, src_val);
+            }
+            // CONT-44 T24 (F-NEW-567 root evidence): record the compose
+            // LayoutNode owner assignment. AOSP LayoutNode.insertAt
+            // propagates Owner (Lel0;.r) to every inserted node via the
+            // d/h writers; the second-wave insert never executes the h
+            // path (runtime: Q/M/h ZERO runs), so late nodes carry NO
+            // owner and V's guard skips Lt4;.z — the measure scheduler
+            // (Lzs0;.r delegate.requestMeasure) is never re-armed and the
+            // nodes stay unpositioned (dooz board region zero draw ops).
+            // Record the most recent owner value; the V-entry repair
+            // completes the propagation with exactly the value insertAt
+            // would have written.
+            if (field_res.class_descriptor == "Lel0;" &&
+                field_res.field_name == "r" &&
+                src_val.type == DalvikType::OBJECT_REF) {
+                compose_owner_last_ = src_val.object_id;
             }
         }
         if (field_trace_filter_set() &&

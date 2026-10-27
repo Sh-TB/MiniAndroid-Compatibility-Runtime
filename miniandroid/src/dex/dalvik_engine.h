@@ -3129,6 +3129,14 @@ public:
     // evaluations of the same descriptor reference-equal.
     std::map<std::string, uint32_t> class_token_ids_;
     uint32_t class_token_counter_ = 0;
+
+    // CONT-44 T24 (F-NEW-567): most recent compose LayoutNode owner value
+    // observed on an iput-object to Lel0;.r. The AOSP insertAt law
+    // propagates the owner to every inserted node; the second-wave insert
+    // path skips the h-writer, leaving late nodes ownerless and starving
+    // the V->z->delegate.requestMeasure scheduling chain. The V-entry
+    // repair completes the propagation with this recorded value.
+    uint32_t compose_owner_last_ = 0;
     
     // EXP-035: VTable Dispatch State
     runtime::VirtualDispatcher vtable_dispatcher_;  // VTable-based method resolution
