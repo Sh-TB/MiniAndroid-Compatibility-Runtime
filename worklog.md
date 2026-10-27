@@ -11893,3 +11893,19 @@ Work Log:
 Stage Summary:
 - T1 complete: telegram's onCreate killers reduced 4 -> 2; the network mock no longer lies about response types (a generic engine law protecting every app callback).
 - Next trains: T2 = the o6.k1 theme lazy face; T3 = the deferred-UI drain for view apps (the F277 poll-timeout guard is compose-only); T4+ = the fragment/view-tree draw pipeline.
+
+---
+Task ID: CONT-45-T2
+Agent: Super Z (main)
+Task: TELEGRAM TRAIN 2 of 10 — the o6.k1 theme face (aget-null pc=91). Forensics + honest partial.
+
+Work Log:
+- Refuted the lazy-holder hypothesis: the La4/i; (kotlin lazy) biography shows o6.I writes a=0 then a=#15496 BEFORE k1's read — k1 read the REAL value (FIELD-TRACE ordered bio: put-obj value=obj#15496 at row 8, k1's get at row 10).
+- The TRUE face: o6.k1's aget at engine-pc 91 reads the STATIC `Lorg/telegram/ui/ActionBar/o6;->e0` (the [Landroid/graphics/drawable/Drawable; cache array, androguard: sget-object e0 at byte 0164 -> aget at 0182) — the array = NULL.
+- THE CONTRADICTION: o6's <clinit> RAN TO COMPLETION ([CLASS_INIT] result=OK storage_size=14857, bytecode_size=11832) — the e0 sput SHOULD have landed; the k1 sget resolved (no SGET-MISS row) but returned null => the S134 static dual-key/lost-write suspicion (the write path vs the read path keying) — the same class as the Lel0;.q field write loss (D2).
+- NO engine edit this train (forensics only); the T1 binary + pins unchanged.
+- k1's caller chain: Laf/u1;.run (a UI runnable) -> o6.k1 (getThemedDrawable) — the theme drawable path.
+
+Stage Summary:
+- T2 = honest partial: the face narrowed from 'lazy-null' to 'e0 static-null despite clinit-OK' — the static write/read key divergence is the named suspect for T3 (a generic engine-level static-storage law).
+- Train ledger this window: D1 (17aff48f), D2 (9daf8eba), T1 (ae223f10) pushed; T2 evidence banked in-worklog (no engine change = no commit needed; the evidence lives in run/ logs + this worklog).
