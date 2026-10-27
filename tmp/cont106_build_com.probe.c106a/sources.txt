@@ -1,2 +1,0 @@
-fixtures/cont106_clinitsentinel/src/com/probe/c106/MainActivity.java
-tmp/cont106_build_com.probe.c106a/gen/com/probe/c106a/R.java

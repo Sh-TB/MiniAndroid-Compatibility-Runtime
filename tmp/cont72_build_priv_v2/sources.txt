@@ -1,2 +1,0 @@
-tmp/cont72_priv_v2_fix/src/com/probe/c72priv/MainActivity.java
-tmp/cont72_build_priv_v2/gen/com/probe/c72priv/R.java

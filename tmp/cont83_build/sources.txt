@@ -1,2 +1,0 @@
-fixtures/cont83_gfx_probe/src/com/probe/gfx1/MainActivity.java
-tmp/cont83_build/gen/com/probe/gfx1/R.java

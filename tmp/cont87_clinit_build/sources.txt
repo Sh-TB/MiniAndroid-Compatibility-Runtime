@@ -1,2 +1,0 @@
-fixtures/cont87_clinit_probe/src/com/probe/clinit1/MainActivity.java
-tmp/cont87_clinit_build/gen/com/probe/clinit1/R.java

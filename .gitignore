@@ -235,3 +235,7 @@ miniandroid/build_prof/
 
 # top-level run/ artifacts: local-only (T11 law; see docs/evidence/run_untrack_ledger.md)
 /run/
+
+# T12 law: tmp/ and vendored kotlinc-dist are local-only (re-downloadable / stale A\/B binaries)
+/tmp/
+/upstream/cont12_maven/kotlinc-dist/

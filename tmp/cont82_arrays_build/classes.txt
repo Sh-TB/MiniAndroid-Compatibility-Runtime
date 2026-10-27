@@ -1,2 +1,0 @@
-tmp/cont82_arrays_build/obj/com/probe/a2t/MainActivity.class
-tmp/cont82_arrays_build/obj/com/probe/a2t/R.class

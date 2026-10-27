@@ -1,2 +1,0 @@
-tmp/cont101_zo_build/obj/com/probe/c99zo/MainActivity.class
-tmp/cont101_zo_build/obj/com/probe/c99zo/MainActivity$1.class

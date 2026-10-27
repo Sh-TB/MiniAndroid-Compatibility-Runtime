@@ -1,2 +1,0 @@
-tmp/cont96_build/obj/com/probe/perf1/MainActivity.class
-tmp/cont96_build/obj/com/probe/perf1/R.class

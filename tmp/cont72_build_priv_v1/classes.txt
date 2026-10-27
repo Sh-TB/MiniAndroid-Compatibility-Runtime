@@ -1,2 +1,0 @@
-tmp/cont72_build_priv_v1/obj/com/probe/c72priv/MainActivity.class
-tmp/cont72_build_priv_v1/obj/com/probe/c72priv/R.class

@@ -1,2 +1,0 @@
-tmp/cont101_cv_build/obj/com/probe/c99cv/MainActivity.class
-tmp/cont101_cv_build/obj/com/probe/c99cv/MainActivity$CV.class

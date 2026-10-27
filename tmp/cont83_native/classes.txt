@@ -1,4 +1,0 @@
-tmp/cont83_native/obj/com/probe/nat1/MainActivity.class
-tmp/cont83_native/obj/com/probe/nat1/R.class
-tmp/cont83_native/obj/com/probe/nat1/NativeShadow.class
-tmp/cont83_native/obj/com/probe/nat1/NativeProbe.class

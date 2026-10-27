@@ -1,3 +1,0 @@
-tmp/cont107_build_com.probe.c106b/obj/com/probe/c106b/MainActivity.class
-tmp/cont107_build_com.probe.c106b/obj/com/probe/c106b/MainActivity$Schema.class
-tmp/cont107_build_com.probe.c106b/obj/com/probe/c106b/R.class

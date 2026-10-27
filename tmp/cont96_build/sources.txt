@@ -1,2 +1,0 @@
-fixtures/cont96_perf_probe/src/com/probe/perf1/MainActivity.java
-tmp/cont96_build/gen/com/probe/perf1/R.java

@@ -1,3 +1,0 @@
-tmp/f261_build/obj/com/probe/f261/MainActivity$Deep.class
-tmp/f261_build/obj/com/probe/f261/MainActivity$PrefsHost.class
-tmp/f261_build/obj/com/probe/f261/MainActivity.class
