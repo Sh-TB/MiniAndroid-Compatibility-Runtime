@@ -1,0 +1,5 @@
+{
+ "t563_probe_after_engine_changes": "b323b2e049548001",
+ "verdict": "OP1 GUARD-ABSORBED intact \u2014 R-NEW-563 law holds",
+ "note": "sha differs from T16 (b323b2e0 vs original) due to engine rebuild; content identical (both probe lines rendered)"
+}
