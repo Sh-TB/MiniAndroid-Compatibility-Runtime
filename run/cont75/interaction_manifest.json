@@ -1,8 +1,0 @@
-{
-  "com.miniandroid.snakedeluxe": {"taps": ["540,1500@4", "539,1632@20", "540,1500@24"], "frames": 30, "root_id": "", "next_action": "s83 canonical steer plan, frames extended past last tap frame"},
-  "com.miniandroid.tetris": {"click_test": true, "frames": 30, "root_id": "", "next_action": "click-test actuator over clickable control views"},
-  "com.miniandroid.tictactoedeluxe": {"click_test": true, "frames": 10, "root_id": "", "next_action": "click-test over board cells"},
-  "de.duenndns.gmdice": {"click_test": true, "frames": 10, "root_id": "", "next_action": "click-test over roll button (s83b distinct-states law)"},
-  "com.miniandroid.g2048": {"click_test": true, "frames": 10, "root_id": "", "next_action": "swipe law not in tap vocabulary — click-test best effort, honest delta only"},
-  "one.scarecrow.games.OPMT": {"taps": ["277,1379"], "frames": 8, "root_id": "", "next_action": "recorded s65 tap point"}
-}
