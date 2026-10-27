@@ -1,0 +1,31 @@
+{
+ "train": "CONT-45 D2 — the wave-2 placement root-chain: applier inserts landed under the WRONG parent (root), the parent-invalidation cascade short-circuits at the root, board never placed",
+ "head": "17aff48f + D2 tree/drain diagnostics (MINIANDROID_V_TRACE [TREE]/[TREE2], MINIANDROID_CL_TRACE drain census)",
+ "baseline": {"rc": 1, "sha16": "851cc1761a1dfcdf", "pump": "[CHOREO-PUMP] 1 frame(s) fired (bound=8) x2 pumps"},
+ "chain": [
+  {"step": 1, "fact": "insertAt (Lel0;.B, decoded from real bytecode: this=child; (a) this.q = parent arg, (b) parent-children-container add, (c) if parent.r != null -> this.d(parent.r)) RUNS for wave-2 nodes; the parent ARG = the ROOT o2113 (q=#2113 in V-TRACE field maps; TREE2 dump: root children container e=12 = the fold) — in real compose the NavHost content chain is REAL (non-virtual) nodes and the fold-parent of board nodes = the content node, NOT the root; the applier's insert position was the ROOT => the DOWN-op position tracking diverged during the second applyChanges"},
+  {"step": 2, "fact": "attach (d) runs (45x); attach's parent?.invalidateMeasurements() rides the fold-parent = the ROOT; the root's remeasure ran 2x (Lt4;.l census=2 from Lbt0;.y0 <- Lt4;.onLayout -> Lzs0;.k full pass)"},
+  {"step": 3, "fact": "the root remeasure SHORT-CIRCUITS: the root's ONE real child is clean -> cached measure -> the policy lambda never re-runs -> NO place descent (Lpz0;.i1 coords: 26 puts total, zero for wave-2); the wave-2 SIZES did commit (L0-TRACE size= witness: 219x49/63x63/105x105/1080x1920) via the delegate measure executor (Lbt0;.y0 full-pass body with the l0(J) size-commit)"},
+  {"step": 4, "fact": "the drain (Lzs0;.k full pass from Lt4;.onLayout) DID carry the wave-2 leaves (Lzs0;.o args o9089/o9209/o10445) but o's gate j(node) (remeasureCanAffectParentSize) = FALSE for never-measured-by-parent nodes -> per-node skip; the o remeasure+relayout never fired for them"},
+  {"step": 5, "fact": "r (requestRemeasure) bytecode decoded: markMeasurePending = delegate y=1 write (lands, 44x); the relayoutNodes.add gate = (isPlaced || canAffectPlacedParent) via node.I()Z — FALSE for wave-2 -> the request drops (upstream-faithful); the catch-up was supposed to come from the REAL parent's requestRemeasure which the fold-parent=root path replaced"},
+  {"step": 6, "fact": "frame-3 churn: the tail state shows the EARLY wave detached again (r=ABSENT at tail for 9089) and a NEW wave inserted (13944-14016 with r+q present) — the remove/re-insert cycle per applyChanges; the pump quiesced before the new wave's measure/place"}
+ ],
+ "bytecode_decodes": {
+  "Lel0;.B": "insertAt(child-side): q=parent write + container add + conditional d(parent.r) attach + counters",
+  "Lzs0;.r": "requestRemeasure: state-enum switch -> q()Z swallow check -> delegate y=1 mark -> R(isDeactivated) gate -> I()Z placed-gate -> Lkc;.a relayoutNodes.add or PostponedRequest",
+  "Lzs0;.o": "remeasureAndRelayoutIfNeeded: R gate -> j(node) remeasureCanAffectParentSize gate -> b/c doRemeasure -> d() postponed drain",
+  "Lt4;.v": "measureAndLayout(sendPointerUpdate): b.o()+onPositioned gate -> k(onLayout) full pass -> requestLayout if root resized",
+  "Lt4;.dispatchDraw": "prologue = n(root) invalidateLayers if !attached -> v(true) measureAndLayout -> root.i(canvas) draw",
+  "La;": "extends java.util.concurrent.CancellationException (the 6 unwinds = coroutine cancellation protocol through the text-paint chain, caught, non-fatal)"
+ },
+ "engine_facts": [
+  "the C013 draw dispatch = LIVE real dispatchDraw bytecode per frame (not a cached stream) — the measure half already runs each draw; it is the DRAIN CONTENT that lacks the right nodes",
+  "View.requestLayout()/invalidate() from real bytecode do not raise ViewShadow::layout_dirty (the R-NEW-302 flag covers only the LP-mutation bridges); compose's scheduleMeasureAndLayout never called them anyway (api_trace: zero calls) because isLayoutRequested=true rides the missing ViewRootImpl traversal",
+  "the FIELD-TRACE budget counter wraps (uint32) so traces are effectively unbounded — the q-zero-puts reading stands (writes go through paths outside the iput hook: the B-boundary applier machinery)"
+ ],
+ "verdict": "F-NEW-567 FINAL FORM: the second-applyChanges inserts landed with the applier positioned at the ROOT (the DOWN-op walk diverged); every downstream measure request funnels through the root whose remeasure short-circuits; the placement descent never re-runs; the board region stays zero-draw (2922 chrome ops = T21-exact)",
+ "next": "D3: applier position tracking during the second applyChanges (the DOWN-op chain Ls21;.Y -> Lg21;.a -> Lv02;.j -> Lel0;.Q vs the actual parent arg identity) — prove the position divergence at the op level, then restore the down() walk or complete the parent-invalidation law at the insert boundary",
+ "wall": {"note": "no engine behavior edits this train (diagnostics only) — the 13/13 wall from D1 remains valid at binary 17aff48f + diag-only rebuild; spot re-verified dooz 851cc176"},
+ "evidence_files": ["run/cont45/dooz_tree5.log (TREE/TREE2 root container dumps)", "run/cont45/dooz_drain.log (drain o-args incl. wave-2 leaves)", "run/cont45/dooz_qdrop.log (zero IPUT-DROP for q)", "run/cont45/dooz_yflag.log (delegate y mark/consume bio)"],
+ "zero_log_law": "evidence = decoded bytecode maps + census rows only"
+}
