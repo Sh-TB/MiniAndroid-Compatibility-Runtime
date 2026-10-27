@@ -1,0 +1,27 @@
+{
+ "train": "T18 anchor-set completion \u2014 telegram native load PASS + jnigraphics first-party bridge",
+ "engine_change": "framework/bitmap_shadow.cpp: miniandroid_jnig_get_info/lock/unlock extern C exports backed by BitmapStore (jobject = 0x500000000|heap_id marshaling law)",
+ "anchors_new": {
+  "libjnigraphics.so (first-party, 3-func AndroidBitmap surface -> engine BitmapStore)": "9ee797abbc46327f",
+  "libEGL.so (honest no-context surface)": "fe5caf41e129fd27",
+  "libandroid.so (honest failure codes + real android_set_abort_message)": "7285552fa0f1f8bb",
+  "libGLESv2.so (mesa desktop GL -l:libGL.so.1 real gl* chain)": "",
+  "libOpenSLES.so (spec SL_IID GUIDs + slCreateEngine FEATURE_UNSUPPORTED)": "7036ad5fa97809a5",
+  "libz.so (-lz real chain)": "32053fe2f2b00b91",
+  "libc.so +bionic compat (__errno->errno_location, __assert2, __strlen_chk, __FD_*_chk, OPENSSL_memory_* malloc-backed, __sF 3x88 zero slots)": "1b2b0c229e995d2d"
+ },
+ "named_risk": "__sF: old-NDK stderr(&__sF[2]) call sites will fault (glibc FILE cannot exist at bionic stride) \u2014 FIX-TTT native guard catches; stdio paths in native code are the bounded risk",
+ "telegram_results": {
+  "dlopen": "libtmessages.49.so (21MB, sha16 f0b0cd8ea5b80fe1) dlopen ok + JNI_OnLoad ran",
+  "chain": "libjnigraphics -> libGLESv2 -> SL_IID_ENGINE -> __sF -> __errno each unblocked one run (o2..o7)",
+  "execution": "1,330,820 managed ops incl real UI (onDraw/dispatchDraw/drawAnimatedEmojis); stub-census 2398453 IMPLEMENTED",
+  "crash": "RC=139 SIGSEGV inside native animated-emoji render path (libtmessages real code) \u2014 NEW frontier F-NEW-564",
+  "screenshot_sha16": "7ee386986bc651f3",
+  "uncaught": "4 (was 5): billing ktx BuildConfig ClassNotFoundException (honest), theme ENOENT (honest)"
+ },
+ "tower3d_regression": {
+  "sha16": "11a38a5aeeff45a6",
+  "verdict": "PASS \u2014 face unchanged (APP_DRAW_OPS frontier)"
+ },
+ "verdict": "telegram native-load frontier: OPEN -> PASS; wall moved to native animated-emoji path"
+}
