@@ -99,9 +99,9 @@ anchors:
 
 all: $(EXECUTABLE) anchors
 
-$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MAIN_OBJECT)
+$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MAIN_OBJECT) $(BUILDDIR)/jni/bionic_compat.o
 	@mkdir -p $(BUILDDIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -rdynamic -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Build complete: $(EXECUTABLE)"
 
 $(THUNK_OBJECT): $(SRCDIR)/jni/native_thunk.S
@@ -128,6 +128,11 @@ $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 $(BUILDDIR)/framework/android_shadows.o: $(SRCDIR)/framework/android_shadows.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+
+$(BUILDDIR)/jni/bionic_compat.o: $(SRCDIR)/jni/bionic_compat.c
+	@mkdir -p $(dir $@)
+	gcc -O2 -fPIC -c -o $@ $<
 
 $(BUILDDIR)/quickjs/%.o: $(QUICKJS_DIR)/%.c
 	@mkdir -p $(dir $@)
