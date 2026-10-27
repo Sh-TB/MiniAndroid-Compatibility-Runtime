@@ -1,7 +1,0 @@
-# Lcom/google/android/gms/internal/play_billing/p3;.<clinit>  registers=2
-0000: new-instance v0, Lcom/google/android/gms/internal/play_billing/p3;
-0004: invoke-direct v0, Lcom/google/android/gms/internal/play_billing/p3;-><init>()V
-000a: sput-object v0, Lcom/google/android/gms/internal/play_billing/p3;->zzb Lcom/google/android/gms/internal/play_billing/p3;
-000e: const-class v1, Lcom/google/android/gms/internal/play_billing/p3;
-0012: invoke-static v1, v0, Lcom/google/android/gms/internal/play_billing/v1;->k(Ljava/lang/Class; Lcom/google/android/gms/internal/play_billing/v1;)V
-0018: return-void 
