@@ -1,0 +1,16 @@
+{
+ "train": "T15 telegram live probe at HEAD 1be9532",
+ "apk": "telegram_official.apk (62MB)",
+ "pkg": "org.telegram.messenger.web",
+ "screenshot_sha16": "ef109b0411e48761",
+ "content_px": 1911,
+ "distinct_colors": 151,
+ "unwinds": 3,
+ "unwind_sites": [
+  "UnsatisfiedLinkError->ApplicationLoader.onCreate",
+  "Ll9/j;->FirebaseInitProvider.onCreate",
+  "Ll9/j;->Lg9/g;.<init>"
+ ],
+ "root": "F-NEW-563",
+ "verdict": "battery Disable monolog renders; intro/auth chain NOT reached; NOT \u06a9\u0627\u0645\u0644"
+}
