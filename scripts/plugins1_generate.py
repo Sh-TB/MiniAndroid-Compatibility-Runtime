@@ -49,16 +49,61 @@ def emit_line(rec, fam):
     }
     return out
 
+def corpus_line(t):
+    """Frozen-corpus title (docs/corpus/s82/title_registry.json) -> triage line.
+    Honest mapping: canonical status when the package is registered there;
+    otherwise the corpus EXECUTION/STATE verdicts are the truth."""
+    ex = t.get("EXECUTION") or "UNKNOWN"
+    st = t.get("STATE") or ""
+    load_map = {"EXECUTED": "OBSERVED", "NOT_TESTED": "NOT_TESTED",
+                "BLOCKED_DOWNLOAD_FAIL": "BLOCKED-DOWNLOAD"}
+    load = load_map.get(ex, ex)
+    if st == "STATE-NOT-LOADED":
+        gate, nx = None, "L1"
+    elif st == "STATE-NONBLANK":
+        gate, nx = "L1", "L2"
+    elif st == "STATE-RENDERED":
+        gate, nx = "L4", "L5"
+    elif st == "STATE-GRAPHICALLY-NONTRIVIAL":
+        gate, nx = "L4", "L5"
+    else:
+        gate, nx = None, None
+    parts = []
+    for k in ("STATE", "RENDERING", "INTERACTION"):
+        if t.get(k):
+            parts.append("%s=%s" % (k, t[k]))
+    note = "; ".join(parts)[:260]
+    iss = t.get("ISSUE_NUMBER")
+    ev = ("issue #%s" % iss) if iss else (t.get("F_DROID_URL") or "")
+    if load == "NOT_TESTED":
+        nxt = "queue parallel probe (fetch APK -> L0/L1 census)"
+    elif load == "BLOCKED-DOWNLOAD":
+        nxt = "re-acquire APK (blocked-download ledger)"
+    elif load == "OBSERVED":
+        nxt = "register canonical L0-L7 audit row"
+    else:
+        nxt = next_action(load, nx, note)
+    return {"i": t.get("TITLE_ID"), "t": (t.get("NAME") or t.get("PACKAGE")),
+            "pkg": t.get("PACKAGE"), "fam": t.get("TYPE") or "unknown",
+            "load": load, "gate": gate, "nx": nx, "n": note, "ev": ev, "next": nxt}
+
 def main():
     apps = json.load(open("canonical/app_registry.json"))
     games = json.load(open("canonical/game_registry.json"))
-    lines = [emit_line(r, "app") for r in apps["apps"]] + \
+    canon = [emit_line(r, "app") for r in apps["apps"]] + \
             [emit_line(r, "game") for r in games["games"]]
+    corpus = json.load(open("docs/corpus/s82/title_registry.json"))["TITLES"]
+    corpus_lines = [corpus_line(t) for t in corpus]
+    # canonical rows whose package is not represented in the corpus stay appended
+    corpus_pkgs = {l["pkg"] for l in corpus_lines}
+    extra = [l for l in canon if l["pkg"] not in corpus_pkgs]
+    lines = corpus_lines + extra
 
     os.makedirs("plugins", exist_ok=True)
     with open("plugins/apps.jsonl", "w", encoding="utf-8") as f:
         for rec in lines:
-            f.write(json.dumps(rec, ensure_ascii=False, sort_keys=False) + "\n")
+            f.write(json.dumps(rec, ensure_ascii=False, sort_keys=False,
+                               separators=(",", ":")) + "\n")
 
     from collections import Counter
     by_load = Counter(r["load"] for r in lines)
@@ -68,7 +113,8 @@ def main():
         "onboarding": ["1) grep 'id' plugins/apps.jsonl -> one line = whole diagnosis",
                        "2) nx field = WHERE it is stuck (checkpoint law in _schema)",
                        "3) next field = WHAT to do; n field = WHY (evidence-backed note)"],
-        "generated_from": ["canonical/app_registry.json", "canonical/game_registry.json"],
+        "generated_from": ["canonical/app_registry.json", "canonical/game_registry.json",
+                           "docs/corpus/s82/title_registry.json (frozen corpus spine)"],
         "registered": len(lines),
         "corpus_total": 202,
         "registration_gap": 202 - len(lines),
@@ -129,6 +175,17 @@ def main():
                         "sha256": hashlib.sha256(open(apk, "rb").read()).hexdigest(),
                         "kind": "apk-binary",
                         "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"})
+    # merge with any previously recorded manifest (untracked files no longer
+    # appear in git ls-files — their records must survive regeneration)
+    seen = {m["file"] for m in man}
+    prev_path = "plugins/_artifacts_manifest.json"
+    if os.path.exists(prev_path):
+        try:
+            for old in json.load(open(prev_path)).get("artifacts", []):
+                if old.get("file") not in seen:
+                    man.append(old)
+        except Exception as e:
+            print("manifest merge warn:", e, file=sys.stderr)
     json.dump({"schema": "miniandroid.artifacts.v1", "policy":
                "physical copies preserved offline; regenerate via provenance recipes; NEVER re-commit",
                "artifacts": man},
