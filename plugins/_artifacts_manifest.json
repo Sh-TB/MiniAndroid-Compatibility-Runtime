@@ -1,0 +1,230 @@
+{
+ "schema": "miniandroid.artifacts.v1",
+ "policy": "physical copies preserved offline; regenerate via provenance recipes; NEVER re-commit",
+ "artifacts": [
+  {
+   "file": "1",
+   "bytes": 491299,
+   "sha256": "c6edf5fafa4d56878b6bc534b925a24834f413ca3681af0a490907ef33516e5e",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "gate_a_probe.apk",
+   "bytes": 97408,
+   "sha256": "93287ea6da12ecf2023b5a0469ac1d873f09d2e66f275f50b31dd9785cf4806d",
+   "kind": "apk-binary",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c116_tg_aput.log",
+   "bytes": 1068391,
+   "sha256": "623988954e72c272c7d7549f450e21f4a0d1dbf09acc713a80ac0e8d29223c38",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c116_tg_fna.log",
+   "bytes": 1027700,
+   "sha256": "810c72e2cd1145ef03e83a17b6e1a37762fc673a1c7df50957f32ae59f2654ac",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c116_tg_s36.log",
+   "bytes": 1108393,
+   "sha256": "e079b63d7aff2d90258cec31ab4d7850efd36c411f8d9569ec360dadd5330a19",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c152/dooz_gh_trace.log",
+   "bytes": 7303983,
+   "sha256": "041cfe65ed0dfdf44921379351c9cb08a726610863ce922ec045036fb24d3d5e",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c155/t2_oz0a.log",
+   "bytes": 7271935,
+   "sha256": "0deabe91307a85069bb92773c495cc3e4303ad07bce7ad0c3af6deed4a244ce4",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c154/c154_applogs.tar.gz",
+   "bytes": 1993773,
+   "sha256": "8d45f285772c3864d542eab102d86b9a450733b42bf206ceb3e80a40e9df11c8",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c156/canon/forkgram.log",
+   "bytes": 1762467,
+   "sha256": "0d1a35475602d861770fc4923bf9de026edb18f93330a4bafef7b3f17835fb0d",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/s88/corpus/profiles.json",
+   "bytes": 1229828,
+   "sha256": "60bf85a94a6a34fc89da75c665ef50c3de06f7767a58c7961c1c6e1cad47a6d1",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/cont105/tg_pre.log",
+   "bytes": 1203159,
+   "sha256": "539c455b58ee1786d0de7532279a2c027a7e0c0bcdcb71f5c5246cf6623ba286",
+   "kind": "raw-log-dump",
+   "reason": "violates .gitignore law (*.apk, /run/ external-artifacts, *.log) — #386"
+  },
+  {
+   "file": "run/c107/c106b.apk",
+   "bytes": 3147,
+   "sha256": "c3cd723dbf3c88e366313ff1a7fdfcc389bc1772698ca12fe053ed2571d45850",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/c107/c106b2.apk",
+   "bytes": 3751,
+   "sha256": "1d510ff643cec4d2a7be1ce0c32a1dce77afd8574170bcbca27b1dcc0648c68b",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/c111/c448.apk",
+   "bytes": 3089,
+   "sha256": "3140c3960229a4e66e864e69f469ca1e743add5f88c006dbbc4463cd041fe38b",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/c112/c449.apk",
+   "bytes": 5503,
+   "sha256": "90420f5a2d87ba2076052bde36a5a1f1075f2a9c6ef39da0b670af4416217650",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont103/c103a.apk",
+   "bytes": 3685,
+   "sha256": "20da26989a01f539c8ef858844c35c64b19fe7eccda89d10a09e6d3d85b0743e",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont104/c104i.apk",
+   "bytes": 2483,
+   "sha256": "817a62a3c5ca183a0b5da6e81b7afcdfea3962ef47a511c08802ff4f018d31b9",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont74/c74esc.apk",
+   "bytes": 3275,
+   "sha256": "8e528f6aa9b719385dd5cd70df24a84dc81bdfa3e1c40f91cbff328ceb3e5992",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont81/f382_probe.apk",
+   "bytes": 2080,
+   "sha256": "493d081ce592c8c6c38d03808e49462981de763ff040053c7e1f81c095bc7d33",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont83/gfx1.apk",
+   "bytes": 3737,
+   "sha256": "1be9d4382a1f1c908dfea6bec9f92f676c69c48ea502342cc3c930ac2ca49d12",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont83/nat1.apk",
+   "bytes": 6491,
+   "sha256": "a2153d8b825544119b97e5b42c13001c74d98be347aadffb163d047eab226a16",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont86/clock1.apk",
+   "bytes": 3828,
+   "sha256": "142d627808cb2818a502788c4bafb16dd30ef5d9dd8a8d6710deb7742b13d4c8",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont86/swipe1.apk",
+   "bytes": 4451,
+   "sha256": "68769bbf777a64adab85327f6e9ce9484e8ee9a54d4c3ad563cffc2c028171da",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont87/clinit1.apk",
+   "bytes": 3948,
+   "sha256": "d0de76b819c1f7253efd4a893f0577906e5847b85cc664da4e667218a9498871",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont94/c94parent.apk",
+   "bytes": 2346,
+   "sha256": "a90f3d0eaf113ed0443abc69cbdaa0c8b34db468dcdc7f98fbd68cd401cd617b",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont95/sax1.apk",
+   "bytes": 4359,
+   "sha256": "2d8c7e72afbb22298fb8e950a87960c4ee0c8cfa08274c879a2ba6f52856fbf9",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont96/perf1.apk",
+   "bytes": 2799,
+   "sha256": "8cbe1d87b7a68cff045b54826fb5a38e6fbea081c546ced89e5a37cc055f243a",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont97/acts2.apk",
+   "bytes": 3174,
+   "sha256": "7c1c21e0ad2d401d0e7582f927098646bf73fe4c7ca8469d5191aef746a40f2a",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont97/res1.apk",
+   "bytes": 3195,
+   "sha256": "85079c82b203ee9c1439e2f86087f30ca78bb021f61d5d12ca8fac6233c79653",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont99/c99btn.apk",
+   "bytes": 3828,
+   "sha256": "bf5c938e7ddc1c6c103371f1699866f1e813ea84e5087b25a74c3db61bff6ce7",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/cont99/c99lay.apk",
+   "bytes": 4866,
+   "sha256": "80e9399319060b70e09041cd933576264e56e0c52593513ffe8834525b7f2e9f",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  },
+  {
+   "file": "run/gatea/gate_a_probe.apk",
+   "bytes": 97408,
+   "sha256": "93287ea6da12ecf2023b5a0469ac1d873f09d2e66f275f50b31dd9785cf4806d",
+   "kind": "apk-binary",
+   "reason": "violates ZERO-APK law — #386; rebuild via fixture scripts"
+  }
+ ]
+}
