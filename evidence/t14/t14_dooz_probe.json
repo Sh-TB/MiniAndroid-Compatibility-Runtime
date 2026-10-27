@@ -1,0 +1,24 @@
+{
+ "train": "T14 dooz live probe at HEAD 1be9532",
+ "binary": "miniandroid/build/miniandroid",
+ "apk": "io.github.yamin8000.dooz_23.apk",
+ "apk_sha16": "299eab21ac8b3c61",
+ "screenshot_sha16": "851cc1761a1dfcdf",
+ "frames_identical": true,
+ "frames": 6,
+ "content_px": 231873,
+ "distinct_colors": 113,
+ "view_count": 3,
+ "api_calls": 3114,
+ "unwinds": 6,
+ "unwind_sites": [
+  "Lzs;.m d17",
+  "Lte1;.f d16",
+  "Lse1;.s d15",
+  "Lg;.q d13",
+  "Lg;.h d12",
+  "Lat;.a d10"
+ ],
+ "root": "F-NEW-562",
+ "verdict": "chrome renders; board absent \u2014 NOT \u06a9\u0627\u0645\u0644"
+}
