@@ -1,0 +1,25 @@
+{
+ "train": "CONT-45 D1 — F-NEW-567 re-measurement: T24 owner-absent premise REFUTED; real frontier = wave-2 measured-but-never-placed + P=NULL",
+ "head": "26af0fd6 + D1 size-witness diag (MINIANDROID_L0_TRACE size=WxH)",
+ "apks": {"dooz": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk"},
+ "baseline_repro": {"rc": 1, "screenshot_sha16": "851cc1761a1dfcdf", "opdump": "2922 ops, ybands 0:560 1-6:0 7:2362 (T21-exact)"},
+ "refutations": [
+  "T24 'owner r ABSENT for wave-2 (recv 9089..9329)' REFUTED at HEAD: Lel0;.d (attach writer) executes 45x; FIELD-TRACE put-obj Lel0;.r obj#9089..9353 value=obj#1547; V-TRACE later entries show r=#1547 + q=<parent> (28 objrefs) — the early-V-entry ABSENT reads were the PRE-attach window, not the draw-time state",
+  "T24 'z (Lt4;.z owner.onRequestMeasure) never re-arms' REFUTED: 172 z calls incl. wave-2 nodes (a1=o6367/o6392/o13944/o13968/o13992) with callers Lel0;.V <- Lil0;.j <- Lel0;.c <- Lel0;.d (the attach cascade)"
+ ],
+ "new_facts": [
+  "measure REQUESTS land: Lzs0;.r (requestRemeasure) 174 calls; markMeasurePending writes delegate flag Lbt0;.y=1 for 44 delegates (writer Lzs0;.r x44)",
+  "measure CONSUMES run: Lbt0;.y0 (delegate measure executor) consumes y=0 x44; the y0(J)Z body = measure fast-path + full measureAndLayout state machine (Lal0; states, 'layout state is not idle before measure starts' precondition, size-commit l0(J) with (w<<32|h) pack)",
+  "SIZES COMMIT at draw time (L0-TRACE size= witness): wave-2 layers carry real measured sizes 219x49 / 104x49 / 63x63 / 105x105 / 409x147 / 251x49 / 1080x1920 (root) — the measure pass COMPLETED for wave-2 nodes",
+  "PLACEMENT NEVER RUNS for wave-2: Lpz0;.D (J coords) = 100 puts by <init> (defaults) + 26 puts by Lpz0;.i1 (placement writer, callers Lxk0;.k0 <- Lat0;.a/Lc61;.l/Lpz0;.G0) across the WHOLE run — zero for wave-2; draw arm reads D 27,625x getting 0",
+  "P (inner coordinator) NULL for 108/125 draw-reach wave-2 layers (L0-TRACE census: P=NULL r1ran=N 104, P=NULL r1ran=Y 245, P=SET r1ran=N 26, P=SET r1ran=Y 25 over 400 L0 entries); P-set+r1ran-Y nodes STILL D=0 (measured, never placed)",
+  "root remeasure ran 2x: Lt4;.l (owner.measureAndLayout(node,Z)) census=2, both for the root node; the root policy measured the new children (sizes commit) but the place half wrote nothing for them",
+  "upstream RootMeasurePolicy law: places ONLY placeables.first() — wave-2 nodes measure via the root policy but never receive a place call",
+  "gate law confirmed in bytecode: requestRemeasure (Lzs0;.r) Idle branch gates relayoutNodes.add on (isPlaced || canAffectPlacedParent) — FALSE for never-placed nodes; the compose-native catch-up is attach()'s parent?.invalidateMeasurements() -> the 2 root remeasures DID fire"
+ ],
+ "verdict": "F-NEW-567 RECLASSIFIED: the wave-2 frontier moved from 'unattached' (T24) to 'measured-but-never-placed' — the placement pass (Lpz0;.i1 coordinate writes + P coordinator-link) never reaches the wave-2 subtree; board bands stay zero-draw",
+ "next": "D2: tree-structure diag (walk from root #2113 at draw: children/placed/P per node) to find where the wave-2 nodes hang and why the place descent stops; then the placement-scheduling fix",
+ "wall": {"anchors": "6/6 byte-exact (opencalc 63020bc7, chess 3f7e6707, microtimer bbd350b6, unote 7481e9b4, tower3d 11a38a5a, dooz 851cc176)", "games": "7/7 byte-exact (g2048 f43face0, tetris b818a6a7, snake_deluxe 5235683f, snakeneon 2617c81c, ttt_deluxe db1d633d, minicraft e77a073f, gmdice 3891679d)"},
+ "evidence_files": ["run/cont45/dooz_rtrace.log (owner bio 59,919 rows)", "run/cont45/dooz_vtrace.log (V-TRACE field maps)", "run/cont45/dooz_ztrace.log (z callers)", "run/cont45/dooz_ord.log (attach->mark->walk order)", "run/cont45/dooz_yflag.log (delegate y-flag bio)", "run/cont45/dooz_l0b.log (L0-TRACE size witness)", "run/cont45/dooz_coords.log (D coords bio)", "run/cont45/wall/ (13/13 pins)"],
+ "zero_log_law": "evidence = hashes + census rows only; logs stay untracked in run/"
+}

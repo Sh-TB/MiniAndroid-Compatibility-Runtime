@@ -4482,10 +4482,20 @@ bool DalvikExecutionEngine::execute_method_internal(
             d_lo = (uint32_t)(df->long_val & 0xffffffffULL);
             d_hi = (uint32_t)((df->long_val >> 32) & 0xffffffffULL);
         }
+        // CONT-45 D1: measure-state witness — the layer's packed SIZE (the
+        // l0(J) commit writes e/f ints; g:J = the packed timestamp) and the
+        // owner presence. Distinguishes "measured but never placed" (e/f>0,
+        // D=0) from "never measured" (e/f=0) at the L0 draw arm.
+        int e_w = -1, f_h = -1;
+        auto ef = heap_.get_object_field(args[0].object_id, "e");
+        if (ef && ef->type == DalvikType::INT32) e_w = ef->int_val;
+        auto ff = heap_.get_object_field(args[0].object_id, "f");
+        if (ff && ff->type == DalvikType::INT32) f_h = ff->int_val;
         std::cerr << "[L0-TRACE] node#" << args[0].object_id
                   << " P=" << (p_id ? ("#" + std::to_string(p_id) + " " + p_cls)
                                     : std::string("NULL"))
                   << " r1ran=" << (m_flag < 0 ? "?" : (m_flag ? "Y" : "N"))
+                  << " size=" << e_w << "x" << f_h
                   << " D=0x" << std::hex << d_hi << d_lo << std::dec
                   << " caller=" << current_class_ << "." << current_method_
                   << std::endl;

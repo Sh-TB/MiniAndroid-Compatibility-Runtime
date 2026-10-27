@@ -11831,3 +11831,27 @@ Work Log:
 Stage Summary:
 - telegram's native-execution frontier: the 21MB lib runs REAL code through JNI_OnLoad + init + the full log loop; the crash that stopped every previous run is dead with a stride-mismatch law that protects every future bionic-world lib.
 - Next train (T24): telegram launch-frame family — the 55-exception census + deferred-UI drain; success = intro/monolog face or deeper, NOT white.
+
+---
+Task ID: CONT-45-D1
+Agent: Super Z (main)
+Task: «ادامه بده چند ده قطار دوز رو بررسی بکن ... تا دوز و تلگرام اجرا بشن برای هر کدام 10 قطار» — DOOZ TRAIN 1 of 10 (F-NEW-567 re-measurement). Self-update from GitHub first (standing law).
+
+Work Log:
+- GitHub lead-check: local e99c2fbd (CONT-10 era) vs origin/main 26af0fd6 (CONT-44 T24) — fast-forwarded BEFORE any work; T21-T24 waves present.
+- Engine rebuilt from the fresh tree (make -j2); anchor libs rebuilt byte-match records.
+- Baseline reproduced EXACTLY: dooz rc=1, 851cc1761a1dfcdf, OPDUMP 2922 ops ybands 0:560 1-6:0 7:2362 (T21-exact).
+- NEW DEX TOOLING: scripts/cont45_dex_method.py (multi-dex method table+disasm; fixes: method_id_item=(u2,u2,u4) 8-byte stride, proto_id 12B, type_list u2) + scripts/cont45_disasm.py (androguard) — R8 archaeology now scripted, not hand-decoded.
+- T24 premise REFUTED with field-biography evidence: Lel0;.d (attach) runs 45x; owner r=#1547 present at draw for the 9089..9353 class (V-TRACE later entries); Lt4;.z fires 172x INCLUDING wave-2 nodes through the attach cascade (V <- Lil0;.j <- Lel0;.c <- Lel0;.d).
+- The real measure pipeline PROVEN ALIVE: requestRemeasure marks delegate y=1 (44x), the delegate measure executor y0 consumes y=0 (44x) and its full-pass body commits SIZES (l0(J) = w<<32|h pack); L0-TRACE size= witness shows real sizes at draw (219x49, 63x63, 105x105, 409x147, 1080x1920).
+- THE REAL FRONTIER NAMED: PLACEMENT. Lpz0;.D (J coords) biography = 100 <init> puts + 26 i1 placement puts TOTAL (callers Lxk0;.k0 <- Lat0;.a/Lc61;.l/Lpz0;.G0) — ZERO for wave-2; P (inner coordinator) NULL for 108/125 draw-reach wave-2 layers; P-set+r1ran-Y nodes STILL D=0.
+- Root remeasure DID run 2x (Lt4;.l census=2); the root policy measured the new children (sizes) but the place half wrote nothing for them; upstream RootMeasurePolicy places ONLY placeables.first().
+- requestRemeasure gate law confirmed in app bytecode: (isPlaced || canAffectPlacedParent) gates relayoutNodes.add — the compose-native catch-up is attach()'s parent?.invalidateMeasurements().
+- Engine diag edit (diag-only, env-gated): L0-TRACE now prints size=WxH (layer e/f) next to P/r1ran/D.
+- REGRESSION WALL at the D1 binary: anchors 6/6 BYTE-EXACT (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / dooz 851cc176) + games 7/7 EXACT-TO-PIN (g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / snakeneon 2617c81c / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d).
+- Evidence banked evidence/cont45/d1_fnew567_remeasure.json (ZERO-LOG law: hashes + census rows only).
+
+Stage Summary:
+- D1 complete: F-NEW-567 reclassified from 'unattached' to 'measured-but-never-placed' — the placement pass never reaches the wave-2 subtree; 2 T24 sub-claims refuted with named evidence.
+- Next trains: D2 tree-structure diag (walk root #2113: children/placed/P per node) -> D3 the placement-scheduling fix -> D4 P coordinator-link -> D5+ board draw ops > 0 in y-bands 1-6.
+- TELEGRAM pipeline queued after the dooz block per the user's «برای هر کدام 10 قطار» directive.
