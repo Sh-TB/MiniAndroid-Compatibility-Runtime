@@ -11792,3 +11792,22 @@ Stage Summary:
 - dooz board root NOW IS: modifier-update dispatch (r1) never runs for applier-inserted destination nodes (74 witnesses) — not frame-clock, not cancellation.
 - Next train: find the r1 caller chain (Lel0;.N(Lpz0;) update-dispatch) and why late-inserted nodes skip it; upstream law = node insertion schedules modifier rebuild + measure; success = board ops > 0 in y-bands 1-6.
 - Diagnostics banked for all future agents: MINIANDROID_OPDUMP + L0-TRACE r1ran witness.
+
+---
+Task ID: T22
+Agent: Super Z (main)
+Task: Telegram native-load completion + stdio single-symbol probe (F-NEW-564, P0). «قطار بعدی خیلی خیلی زیاد» continued.
+
+Work Log:
+- Fresh-container reproduction: telegram dlopen died "libjnigraphics.so: cannot open shared object file" — the T18-era anchor sources (jnig/sles/t18_anchors) were NEVER tracked; built artifacts stayed local. T17's failure class REPEATED for the T18 set.
+- Reconstructed + TRACKED the full 11-anchor set in cont83_build_anchors.sh: libc.so = bionic_compat stdio shim + android_set_abort_message; libjnigraphics.so = 3-func AndroidBitmap surface via a new __ma_bitmap_query C-ABI bridge (src/jni/ma_native_bridge.cpp, compiled into the exe) to BitmapStore under the jobject=0x500000000|heap_id marshaling law; libOpenSLES.so = SL_IID_* spec GUIDs + slCreateEngine FEATURE_UNSUPPORTED (scripts/cont83_sles_anchor.c); libandroid.so = ANativeWindow identity tokens + honest no-buffer ops + NULL-asset AAsset (scripts/cont83_android_anchor.c); libEGL.so = eglGetCurrentContext EGL_NO_CONTEXT; libGLESv2.so shell (exe carries the 212-symbol GL surface); libz.so -lz passthrough.
+- RESULT: dlopen ok + JNI_OnLoad ran (libtmessages.49.so 21MB sha16 f0b0cd8ea5b80fe1) — the app executes to the animated-emoji window (RC=139 at F-NEW-564, same frontier as T18, now reachable from a TRACKED build).
+- STDIO BINDING CENSUS (LD_DEBUG=bindings at the SUCCESSFUL dlopen — the decisive measurement): libtmessages binds __sF, fwrite, fflush ALL to the EXE (miniandroid, -rdynamic first in global scope) — CONSISTENT world. The T19 "shim bypass" theory REFUTED; the lib->glibc-direct backtrace was the shim's tail-call (jmp) collapsing the shim frame.
+- MINIANDROID_STDIO_PROBE (new diag): every unknown FILE* the shim sees = REAL glibc streams (_IO_MAGIC 0xfbad288x, libc.so.6+0x1E5xxx = _IO_2_1_stdout_/stderr) — passthrough works. VERDICT: the fflush+0x97 SIGSEGV on real-stream state = native-execution heap/stream-list CORRUPTION (T19 candidate 2: OPENSSL_memory hooks / __sF mutation / render surface) — NOT a binding mismatch.
+- _GNU_SOURCE placement lesson banked (must precede all system includes for Dl_info).
+- REGRESSION: anchors 6/6 + games 7/7 byte-exact at the T22 binary (engine diag+compat edits semantically neutral; snakeneon 2617c81c = the recorded CONT-42 pin).
+- Registry F-NEW-564 updated (same id); APP-012 row honest; evidence banked evidence/t22/t22_stdio_census.json (hashes/probe-rows only).
+
+Stage Summary:
+- Telegram's native-load frontier: CLOSED at the build-system level (tracked anchors); the crash face re-classified from "stdio shim bypass" to "native heap corruption" with binding-census evidence.
+- Next train (T23): heap-corruption hunt during animated-emoji render — MALLOC_PERTURB_ A/B, guard-band interposer on OPENSSL_memory_*, stream-list checksum pre/post native calls.

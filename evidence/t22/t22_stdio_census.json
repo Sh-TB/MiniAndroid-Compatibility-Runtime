@@ -1,0 +1,33 @@
+{
+ "train": "T22 telegram native-load completion + stdio-binding census (F-NEW-564)",
+ "head": "T21 + T22 edits",
+ "anchor_set_restored": {
+  "note": "T18-era anchor sources (jnig/sles/t18_anchors) were NEVER tracked; built artifacts stayed local and every fresh container re-lost them (F-NEW-387 class). T22 reconstructed + TRACKED the full set in cont83_build_anchors.sh:",
+  "anchors": [
+   "libc.so (bionic_compat stdio shim + android_set_abort_message)",
+   "libjnigraphics.so (3-func AndroidBitmap surface via __ma_bitmap_query C-ABI bridge to BitmapStore)",
+   "libOpenSLES.so (SL_IID_* spec GUIDs + slCreateEngine FEATURE_UNSUPPORTED)",
+   "libandroid.so (ANativeWindow identity tokens + honest no-buffer ops + NULL-asset AAsset)",
+   "libEGL.so (eglGetCurrentContext = EGL_NO_CONTEXT)",
+   "libGLESv2.so (empty shell; exe 212-symbol GL surface)",
+   "libz.so (-lz passthrough)",
+   "liblog.so/libm.so/libdl.so/libstdc++.so (T17 set, unchanged)"
+  ],
+  "count": 11
+ },
+ "result_chain": [
+  "BEFORE: dlopen failed \"libjnigraphics.so: cannot open shared object file\" (fresh container)",
+  "AFTER: dlopen ok + JNI_OnLoad ran (sha16 f0b0cd8ea5b80fe1, 21MB), app executes to the animated-emoji window"
+ ],
+ "stdio_binding_census": {
+  "method": "LD_DEBUG=bindings at the SUCCESSFUL dlopen (run9/run10)",
+  "verdict": "libtmessages binds __sF, fwrite, fflush ALL to the EXE (miniandroid, -rdynamic first in global scope) \u2014 CONSISTENT world, NO mixed binding. The T19 shim-bypass theory is REFUTED; the backtrace looked like a direct glibc call because the shim tail-calls real_fflush (jmp collapses the frame).",
+  "probe": "MINIANDROID_STDIO_PROBE=1: every observed unknown FILE* = REAL glibc streams (_IO_MAGIC 0xfbad288x at libc.so.6+0x1E5xxx = _IO_2_1_stdout_/stderr) \u2014 they pass through fine",
+  "crash_verdict": "SIGSEGV inside glibc fflush+0x97 on REAL-stream state = heap/stream-list corruption during native execution (T19 candidate #2), NOT a binding mismatch. NEXT train: native heap-corruption hunt (OPENSSL_memory hooks, __sF mutation, render-surface writes)."
+ },
+ "diagnostics_added": [
+  "MINIANDROID_STDIO_PROBE (unknown-FILE* naming: dladdr module+offset+8 bytes)",
+  "android_set_abort_message/get (bionic surface, stored + stderr row)"
+ ],
+ "regression": "PENDING rerun after engine rebuild (anchors changed = local artifacts, app pins unchanged)"
+}
