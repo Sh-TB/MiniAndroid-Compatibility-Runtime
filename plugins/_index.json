@@ -12,26 +12,27 @@
  ],
  "registered": 253,
  "corpus_total": 202,
- "registration_gap": -51,
+ "registration_gap": 0,
  "by_load": {
-  "OBSERVED": 61,
   "NOT_TESTED": 157,
-  "BLOCKED-DOWNLOAD": 4,
+  "OBSERVED": 61,
   "VERIFIED": 23,
+  "BLOCKED-DOWNLOAD": 4,
   "TESTED": 3,
   "PARTIAL": 3,
   "BLOCKED": 2
  },
  "stuck_at": {
-  "L2": 58,
-  "L5": 11,
-  "L1": 161,
-  "L7": 17,
-  "L4": 2,
+  "L1": 58,
+  "L6": 19,
+  "L4": 9,
+  "L3": 2,
   "L0": 1,
-  "L6": 1,
-  "L3": 1
+  "L5": 1,
+  "L7": 1,
+  "L2": 1
  },
  "raw_logs": "NOT_STORED_IN_GIT",
- "artifact_manifest": "plugins/_artifacts_manifest.json"
+ "artifact_manifest": "plugins/_artifacts_manifest.json",
+ "gap_note": "253 rows = 202 corpus spine + 51 canonical-only extras; 0 corpus titles missing. Every row now carries next= (T13 low-token entry law)."
 }
