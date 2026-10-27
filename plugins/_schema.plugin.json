@@ -1,0 +1,41 @@
+{
+ "$schema": "miniandroid.plugins.v1",
+ "checkpoint_law": "L0 APK accepted; L1 runtime executes; L2 lifecycle; L3 view tree; L4 rendering; L5 input; L6 state changes; L7 multi-feature interaction; V visual evidence. Telegram/WhatsApp are honest BLOCKED load frontiers — their frames are NOT renders.",
+ "checkpoint_names": {
+  "L0": "APK accepted",
+  "L1": "runtime executes",
+  "L2": "lifecycle",
+  "L3": "view tree",
+  "L4": "rendering",
+  "L5": "input",
+  "L6": "state changes",
+  "L7": "multi-feature interaction"
+ },
+ "status_vocabulary": [
+  "VERIFIED",
+  "TESTED",
+  "OBSERVED",
+  "PARTIAL",
+  "BLOCKED",
+  "PENDING",
+  "SUPERSEDED"
+ ],
+ "fields": {
+  "i": "app/game id (canonical registry id)",
+  "t": "title",
+  "pkg": "android package",
+  "fam": "app | game",
+  "load": "status from canonical registry vocabulary",
+  "gate": "highest passing checkpoint (WHERE it got)",
+  "nx": "first failing checkpoint (WHERE exactly the problem is)",
+  "n": "evidence-backed note: WHY it fails / what was observed",
+  "ev": "evidence pointer (paths/issues) — raw logs are NEVER in git",
+  "next": "WHAT to do next (derived from nx + status)"
+ },
+ "laws": [
+  "one line per app — grep-able, token-minimal onboarding",
+  "raw logs and APKs are NEVER committed (see .gitignore + #386)",
+  "canonical data stays in canonical/ — this is the triage projection",
+  "every claim must carry an evidence pointer"
+ ]
+}

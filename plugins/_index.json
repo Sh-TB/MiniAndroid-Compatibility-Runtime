@@ -1,0 +1,34 @@
+{
+ "schema": "miniandroid.plugins.v1",
+ "onboarding": [
+  "1) grep 'id' plugins/apps.jsonl -> one line = whole diagnosis",
+  "2) nx field = WHERE it is stuck (checkpoint law in _schema)",
+  "3) next field = WHAT to do; n field = WHY (evidence-backed note)"
+ ],
+ "generated_from": [
+  "canonical/app_registry.json",
+  "canonical/game_registry.json"
+ ],
+ "registered": 106,
+ "corpus_total": 202,
+ "registration_gap": 96,
+ "by_load": {
+  "VERIFIED": 31,
+  "TESTED": 3,
+  "PARTIAL": 4,
+  "BLOCKED": 2,
+  "OBSERVED": 66
+ },
+ "stuck_at": {
+  "L7": 22,
+  "L5": 14,
+  "L4": 2,
+  "L0": 1,
+  "L6": 1,
+  "L2": 56,
+  "L1": 8,
+  "L3": 1
+ },
+ "raw_logs": "NOT_STORED_IN_GIT",
+ "artifact_manifest": "plugins/_artifacts_manifest.json"
+}
