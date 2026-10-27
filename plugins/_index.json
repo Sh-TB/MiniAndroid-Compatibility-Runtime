@@ -7,26 +7,29 @@
  ],
  "generated_from": [
   "canonical/app_registry.json",
-  "canonical/game_registry.json"
+  "canonical/game_registry.json",
+  "docs/corpus/s82/title_registry.json (frozen corpus spine)"
  ],
- "registered": 106,
+ "registered": 253,
  "corpus_total": 202,
- "registration_gap": 96,
+ "registration_gap": -51,
  "by_load": {
-  "VERIFIED": 31,
+  "OBSERVED": 61,
+  "NOT_TESTED": 157,
+  "BLOCKED-DOWNLOAD": 4,
+  "VERIFIED": 23,
   "TESTED": 3,
-  "PARTIAL": 4,
-  "BLOCKED": 2,
-  "OBSERVED": 66
+  "PARTIAL": 3,
+  "BLOCKED": 2
  },
  "stuck_at": {
-  "L7": 22,
-  "L5": 14,
+  "L2": 58,
+  "L5": 11,
+  "L1": 161,
+  "L7": 17,
   "L4": 2,
   "L0": 1,
   "L6": 1,
-  "L2": 56,
-  "L1": 8,
   "L3": 1
  },
  "raw_logs": "NOT_STORED_IN_GIT",
