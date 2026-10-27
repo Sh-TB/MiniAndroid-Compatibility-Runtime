@@ -19,6 +19,11 @@ import json,sys
 print(json.dumps({"body": open(sys.argv[1]).read()}))
 PY
             api -X POST "https://api.github.com/repos/$REPO/issues/$num/comments" -d @/tmp/_gh_body.json | python3 -c "import json,sys; d=json.load(sys.stdin); print('comment_id:', d.get('id'), 'url:', d.get('html_url'))" ;;
+  new_issue) python3 - "$2" "$3" <<'PY' > /tmp/_gh_new.json
+import json,sys
+print(json.dumps({"title": sys.argv[1], "body": open(sys.argv[2]).read()}))
+PY
+            api -X POST "https://api.github.com/repos/$REPO/issues" -d @/tmp/_gh_new.json | python3 -c "import json,sys; d=json.load(sys.stdin); print('issue:', d.get('number'), d.get('html_url',''))" ;;
   state)     python3 - > /tmp/_gh_state.json <<PY
 import json
 print(json.dumps({"state": "$3"}))
