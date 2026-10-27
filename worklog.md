@@ -11811,3 +11811,23 @@ Work Log:
 Stage Summary:
 - Telegram's native-load frontier: CLOSED at the build-system level (tracked anchors); the crash face re-classified from "stdio shim bypass" to "native heap corruption" with binding-census evidence.
 - Next train (T23): heap-corruption hunt during animated-emoji render — MALLOC_PERTURB_ A/B, guard-band interposer on OPENSSL_memory_*, stream-list checksum pre/post native calls.
+
+---
+Task ID: T23
+Agent: Super Z (main)
+Task: F-NEW-564 SIGSEGV root hunt (the fflush+0x97 face) — the third train of «قطار بعدی خیلی خیلی زیاد».
+
+Work Log:
+- MALLOC_PERTURB_=165 A/B: crash face UNCHANGED (same PC) — simple UAF refuted.
+- glibc disasm: fflush+0x97 = `mov 0x8(%rdi),%rax` = the _lock deref (FILE+0x88); faults iff the FILE's lock pointer is NULL — a ZEROED fake FILE signature.
+- MINIANDROID_STDIO_PROBE noise gate (skip the two PROVEN-real streams; the lib's log loop flushes them 20K+ times/run): the FAULTING call captured — FILE* = miniandroid+0x8D9538 = __sF+152, all zeros.
+- libtmessages crash-site disasm (modoff 0x1272905): `mov 0x40(%rbx),%rdi; call fflush@plt` — the stream was STORED at init as &__sF[1] with the MODERN-BIONIC FILE stride (152 bytes); the host shim array used the OLD-NDK stride (88) → slot starts 0/88/176 never matched 0/152/304 → the zeroed fake fell through to glibc.
+- ROOT LAW: a dlopened bionic-world lib computes &__sF[k] with ITS OWN compiled FILE stride; the host fake array must cover every stride and match by exact arithmetic.
+- FIX (one point): __sF[3][192] + dual-ladder ma_real_stream (88-ladder 0/88/176; modern 152-ladder 0/152/304 — collision-free by arithmetic) + pristine-stream snapshot (constructor 101 — poison-proof redirect) + poison witness (did NOT fire — variable-poisoning theory refuted by measurement).
+- RESULT: RC 139 → 1; the deterministic SIGSEGV ELIMINATED; JNI_OnLoad + full native init + the 20K-call native log loop complete; remaining faces = the KNOWN Ll9/j; firebase family (4 rows in crash.log) + white launch frame (DEFAULT_BACKGROUND_ONLY, deferred-UI queue_size=4).
+- REGRESSION: anchors 6/6 + games 7/7 byte-exact at the stride-fix binary (snakeneon 2617c81c verified separately).
+- Registry F-NEW-564 → FIXED-VERIFIED; APP-012 row honest; evidence banked evidence/t23/t23_stride_fix.json.
+
+Stage Summary:
+- telegram's native-execution frontier: the 21MB lib runs REAL code through JNI_OnLoad + init + the full log loop; the crash that stopped every previous run is dead with a stride-mismatch law that protects every future bionic-world lib.
+- Next train (T24): telegram launch-frame family — the 55-exception census + deferred-UI drain; success = intro/monolog face or deeper, NOT white.
