@@ -1,0 +1,208 @@
+[
+ {
+  "label": "app.varlorg.unote_30",
+  "apk": "app.varlorg.unote_30.apk",
+  "apk_sha16": "be91103f0e7db443",
+  "install": "OK",
+  "run_rc": 0,
+  "wall_s": 2.2,
+  "shot_sha16": "7481e9b468eaa376",
+  "png": {
+   "content_px": 136080,
+   "distinct_colors": 152,
+   "total_px": 2073600
+  },
+  "pin": "7481e9b4",
+  "pin_match": true
+ },
+ {
+  "label": "bouncy",
+  "apk": "bouncy.apk",
+  "apk_sha16": "ffda0d9cb0b1b2aa",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 3.0,
+  "shot_sha16": "dd0c14257fa1f2af",
+  "png": {
+   "content_px": 978380,
+   "distinct_colors": 558,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "com.dozingcatsoftware.bouncy_43",
+  "apk": "com.dozingcatsoftware.bouncy_43.apk",
+  "apk_sha16": "ffda0d9cb0b1b2aa",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 3.2,
+  "shot_sha16": "dd0c14257fa1f2af",
+  "png": {
+   "content_px": 978380,
+   "distinct_colors": 558,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "com.emmanuelmess.tictactoe_3",
+  "apk": "com.emmanuelmess.tictactoe_3.apk",
+  "apk_sha16": "760fe5acf7b39435",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.3,
+  "shot_sha16": "b5a7a35d5fe0564b",
+  "png": {
+   "content_px": 0,
+   "distinct_colors": 1,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "com.github.muellerma.stopwatch_6",
+  "apk": "com.github.muellerma.stopwatch_6.apk",
+  "apk_sha16": "3b6a10c8dc8ddc72",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 1.6,
+  "shot_sha16": "31ddd4d5b8e6d18e",
+  "png": {
+   "content_px": 0,
+   "distinct_colors": 1,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "de.duenndns.gmdice_8",
+  "apk": "de.duenndns.gmdice_8.apk",
+  "apk_sha16": "1621eda11b5dbc0c",
+  "install": "OK",
+  "run_rc": 0,
+  "wall_s": 2.1,
+  "shot_sha16": "3891679dff449331",
+  "png": {
+   "content_px": 182535,
+   "distinct_colors": 688,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "dooz_23_toplevel",
+  "apk": "dooz_23_toplevel.apk",
+  "apk_sha16": "299eab21ac8b3c61",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 95.9,
+  "shot_sha16": "851cc1761a1dfcdf",
+  "png": {
+   "content_px": 231873,
+   "distinct_colors": 113,
+   "total_px": 2073600
+  },
+  "pin": "851cc176",
+  "pin_match": true
+ },
+ {
+  "label": "dubrowgn.microtimer_8",
+  "apk": "dubrowgn.microtimer_8.apk",
+  "apk_sha16": "79c6f730f64886e7",
+  "install": "OK",
+  "run_rc": 0,
+  "wall_s": 2.2,
+  "shot_sha16": "bbd350b6c14fbd52",
+  "png": {
+   "content_px": 893597,
+   "distinct_colors": 190,
+   "total_px": 2073600
+  },
+  "pin": "bbd350b6",
+  "pin_match": true
+ },
+ {
+  "label": "fishrings_v1.23_vc6",
+  "apk": "fishrings_v1.23_vc6.apk",
+  "apk_sha16": "14d7dd80f7563c6a",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.6,
+  "shot_sha16": "a341e3ad9092f640",
+  "png": {
+   "content_px": 105061,
+   "distinct_colors": 6673,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "io.github.yamin8000.dooz_23",
+  "apk": "io.github.yamin8000.dooz_23.apk",
+  "apk_sha16": "299eab21ac8b3c61",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 94.8,
+  "shot_sha16": "851cc1761a1dfcdf",
+  "png": {
+   "content_px": 231873,
+   "distinct_colors": 113,
+   "total_px": 2073600
+  },
+  "pin": "851cc176",
+  "pin_match": true
+ },
+ {
+  "label": "opmt_v0.1.2_vc1",
+  "apk": "opmt_v0.1.2_vc1.apk",
+  "apk_sha16": "4f91e3801780684a",
+  "install": "OK",
+  "run_rc": 0,
+  "wall_s": 2.6,
+  "shot_sha16": "548a2d91ef9892fb",
+  "png": {
+   "content_px": 1258563,
+   "distinct_colors": 1638,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "org.secuso.privacyfriendlymemory_100",
+  "apk": "org.secuso.privacyfriendlymemory_100.apk",
+  "apk_sha16": "82f83d9ea572240a",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 3.3,
+  "shot_sha16": "807a0ccaf9b30d99",
+  "png": {
+   "content_px": 58668,
+   "distinct_colors": 156,
+   "total_px": 2073600
+  }
+ },
+ {
+  "label": "stack.tower3d_1",
+  "apk": "stack.tower3d_1.apk",
+  "apk_sha16": "ba5b0a48d74e3348",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.2,
+  "shot_sha16": "31ddd4d5b8e6d18e",
+  "png": {
+   "content_px": 0,
+   "distinct_colors": 1,
+   "total_px": 2073600
+  },
+  "pin": "11a38a5a",
+  "pin_match": false
+ },
+ {
+  "label": "tripeaks_v1.2.1_vc4",
+  "apk": "tripeaks_v1.2.1_vc4.apk",
+  "apk_sha16": "52272ae619c0fec8",
+  "install": "OK",
+  "run_rc": 1,
+  "wall_s": 2.3,
+  "shot_sha16": "e2a290ab98762eea",
+  "png": {
+   "content_px": 559878,
+   "distinct_colors": 295,
+   "total_px": 2073600
+  }
+ }
+]

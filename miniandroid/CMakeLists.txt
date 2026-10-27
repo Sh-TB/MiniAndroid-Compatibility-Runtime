@@ -48,12 +48,24 @@ else()
         GIT_TAG v3.11.3
     )
     
-    # Check if already available
-    FetchContent_GetProperties(json)
-    IF(NOT json_POPULATED)
-        FetchContent_Populate(json)
-        add_subdirectory(${json_source_dir} ${json_binary_dir} EXCLUDE_FROM_ALL)
-    ENDIF()
+    # cmake-4.x compat (BUILD-TRAIN): legacy FetchContent_Populate lowercase
+    # vars are gone in CMake >= 4.4 — prefer the vendored third_party tree,
+    # fall back to FetchContent only when the vendored copy is absent.
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nlohmann_json/CMakeLists.txt)
+        add_subdirectory(third_party/nlohmann_json EXCLUDE_FROM_ALL)
+    elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nlohmann_json/include/nlohmann/json.hpp)
+        message(STATUS "nlohmann/json: vendored single-header (cmake-4.x compat path)")
+        add_library(nlohmann_json INTERFACE)
+        target_include_directories(nlohmann_json INTERFACE
+            ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nlohmann_json/include)
+        add_library(nlohmann_json::nlohmann_json ALIAS nlohmann_json)
+    else()
+        FetchContent_GetProperties(json)
+        IF(NOT json_POPULATED)
+            FetchContent_Populate(json)
+            add_subdirectory(${json_source_dir} ${json_binary_dir} EXCLUDE_FROM_ALL)
+        ENDIF()
+    endif()
 endif()
 
 # ============== Core Library ==============
@@ -100,8 +112,27 @@ target_link_libraries(miniandroid_core PUBLIC
     ZLIB::ZLIB
 )
 
+# BUILD-TRAIN: software_renderer consumes libpng/libjpeg directly (undefined
+# png_error/jpeg_std_error at link) — system libs are present in the container.
+find_library(PNG_LIB NAMES png)
+find_library(JPEG_LIB NAMES jpeg)
+if(PNG_LIB)
+    target_link_libraries(miniandroid_core PUBLIC ${PNG_LIB})
+endif()
+if(JPEG_LIB)
+    target_link_libraries(miniandroid_core PUBLIC ${JPEG_LIB})
+endif()
+# BUILD-TRAIN: crypto (EVP sha256) + sqlite3 consumers — same direct-consumption law
+foreach(_syslib crypto sqlite3)
+    find_library(_FOUND_${_syslib} NAMES ${_syslib})
+    if(_FOUND_${_syslib})
+        target_link_libraries(miniandroid_core PUBLIC ${_FOUND_${_syslib}})
+    endif()
+endforeach()
+
 if(TARGET nlohmann_json::nlohmann_json)
-    target_link_libraries(miniandroid_core PUBLIC nlohmann_json::nlohmann_json())
+    # BUILD-TRAIN fix: stray "()" typo became "-l(" "-l)" link items
+    target_link_libraries(miniandroid_core PUBLIC nlohmann_json::nlohmann_json)
 elseif(json_SOURCE_DIR)
     target_link_libraries(miniandroid_core PUBLIC nlohmann_json::nlohmann_json)
 else()
@@ -134,12 +165,14 @@ add_executable(miniandroid_exp002
 target_link_libraries(miniandroid_exp002 PRIVATE miniandroid_core)
 
 # ============== EXP-003-A Executable (const-string Opcode) ==============
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/exp003a_main.cpp)  # BUILD-TRAIN: dead-target guard (cleanup waves removed sources; cmake-4.x generate fails otherwise)
 add_executable(miniandroid_exp003a
     src/exp003a_main.cpp
     src/dex/dex_interpreter.cpp
 )
 
 target_link_libraries(miniandroid_exp003a PRIVATE miniandroid_core)
+endif()
 
 # ============== EXP-003-A.1 Validator (Const-String Validation) ==============
 add_executable(miniandroid_exp003a1_validate
@@ -212,7 +245,8 @@ if(BUILD_TESTS)
     find_package(GTest QUIET)
     
     if(GTest_FOUND OR TARGET GTest::gtest)
-        add_executable(miniandroid_test
+        if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp)  # BUILD-TRAIN: dead-target guard (cleanup waves removed sources; cmake-4.x generate fails otherwise)
+add_executable(miniandroid_test
             tests/main.cpp
         )
         
@@ -220,6 +254,7 @@ if(BUILD_TESTS)
             miniandroid_core
             GTest::gtest_main
         )
+endif()
         
         include(GoogleTest)
         gtest_discover_tests(miniandroid_test)
@@ -256,6 +291,7 @@ add_custom_target(analyze-example
 )
 
 # ============== EXP-018 Executable (Real Android Execution Core Batch) ==============
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/exp018_main.cpp)  # BUILD-TRAIN: dead-target guard (cleanup waves removed sources; cmake-4.x generate fails otherwise)
 add_executable(miniandroid_exp018
     src/exp018_main.cpp
     src/dex/dex_interpreter_exp018.cpp
@@ -263,8 +299,10 @@ add_executable(miniandroid_exp018
 )
 
 target_link_libraries(miniandroid_exp018 PRIVATE miniandroid_core)
+endif()
 
 # ============== EXP-019 Executable (Android Application Runtime Integration) ==============
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/exp019_main.cpp)  # BUILD-TRAIN: dead-target guard (cleanup waves removed sources; cmake-4.x generate fails otherwise)
 add_executable(miniandroid_exp019
     src/exp019_main.cpp
     src/runtime/runtime_integration_exp019.cpp
@@ -273,6 +311,7 @@ add_executable(miniandroid_exp019
 )
 
 target_link_libraries(miniandroid_exp019 PRIVATE miniandroid_core)
+endif()
 
 # ============== EXP-088 Phase A4 PNG Decoder Test ==============
 # Standalone test that decodes known-PNG reproducer files with MiniAndroid's
