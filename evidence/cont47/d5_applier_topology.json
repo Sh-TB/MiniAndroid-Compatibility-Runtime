@@ -1,0 +1,30 @@
+{
+ "train": "CONT-47 D5 DOOZ — applier replay topology DECODED (op->method map + full interleaving)",
+ "head": "429890ab + rebuild (fresh container; engine restored from tracked source)",
+ "probe": "run/cont47/d5b (MINIANDROID_INSERT_TRACE + MINIANDROID_CL_TRACE=Lv02;,Ly11;,Ls21;,LF/l;.j,.F,.r; untracked, ZERO-LOG)",
+ "applier_map": {
+  "Lqc;": "AOSP Applier interface (LayoutNode)",
+  "Lqc;.c(I,Obj)V": "insertAt(index, instance) -> Lv02;.c -> Lel0;.B",
+  "Lqc;.d(Obj)V": "DOWN(node) -> Lv02;.d (push f-stack, g=node)",
+  "Lqc;.e()V": "UP with layout hooks -> Lv02;.e (224 insns)",
+  "Lqc;.q()V": "UP pop -> Lv02;.q (remove last, g=popped)",
+  "Ly11;.a": "the change-op interpreter (reads Lfk; op stream, dispatches Lqc;.c/.d/.q/.f...)",
+  "Ls21;.Y": "applyChanges: creates Lfk; reader, iterates Ls21;->b [Lq21; scopes (q21.b then q21.a)",
+  "Lfk;": "the change-list reader (o6366 family)"
+ },
+ "wave2_replay_interleaving": {
+  "phase1_descend": "d=21 applier o2898: down(6367), down(6392), down(6416), down(6440), down(6464) — stack root->chain, current=6464",
+  "phase2_unwind_inserts": "up; insertAt(0,6464) into 6440; up; insertAt(0,6440) into 6416; ... up; insertAt(0,6367) into ROOT — deepest-first unwind, B#1..B#5",
+  "content": "B#6+ cells insert into 6464 via the DIRECT record-time path <Lml0;.H <Ldg1;.h <Lol0;.g (NOT the applier)",
+  "second_subtree": "B#7..B#12 chain 9137-family + a second applier o8004 at d=69 downs 9089/9113/9137/9161",
+  "counts": "down=41, q-up=41, e-up=0 — the big up-with-hooks NEVER ran"
+ },
+ "d5_verdicts": [
+  "V1: the applier replay mechanics are FAITHFUL — down/unwind/insert execute the recorded stream exactly; the applier is NOT broken",
+  "V2: the recorded change stream STARTS with down(6367) — the chain is recorded as children of CURRENT (root); no down-to-existing-destination-node precedes it",
+  "V3: pass#2 treats the NavHost destination content groups as NEW (fresh LayoutNodes + insertAt), not as updates of existing slot-table groups — the slot-table node association for those groups is the divergence point",
+  "V4: cells attach to the chain head at RECORD time (direct path) — the chain head 6464 is the real board parent; the board is therefore fully BUILT and attached at root, but the root-level attach loses the destination-content placement context (D1/D2: measured-never-placed face)",
+  "D6 fix target: WHY pass#2 sees fresh groups — slot-table key/node matching for the NavHost destination content during recomposition (startNode useNode-vs-insert decision)"
+ ],
+ "pin": "dooz face 31ddd4d5b8e6d18e stable (probe reproduced the honest face)"
+}
