@@ -1,0 +1,36 @@
+{
+  "train": "CONT-50 tiny-problem sweep — «هزاران مشکل ریز» census + internet-ground-truth fixes (6 root causes named, 5 fixed, wall pins byte-exact)",
+  "date": "2026-10-29",
+  "census": {
+    "source": "36 CONT-49 train run logs: EXC-PROPAGATE/SYNTH-EXC aggregate",
+    "root_causes": {
+      "F084_storm": "~830/run — wall-clock budget re-fires every draw dispatch after 60s (each frame re-enters halted draw subtrees). NAMED, fix deferred (needs frame-pump clean-stop law).",
+      "ConstraintLayout_NPE": "171/run — real DEX onLayout reads child LP solver-widget field (LA/e;->p0) = null: R8-merged LP class has ZERO ctors, no DEX new-instance, ROOT-055 answered the generic ViewGroup$LayoutParams through the optimistic check-cast.",
+      "makeOptionalFitsSystemWindows": "NoSuchMethodException — hidden View API missing from shadows (app-catched, low harm).",
+      "regex_group_UB": "gdx BitmapFontData: group(1) of `.*id=(\\d+)` returned '\\t' (freed-heap bytes) — std::smatch bound to an inner-block local destroyed before the store loop. EVERY app capture-group read dangling memory.",
+      "StringTokenizer": "absent shadow — nextToken stub answered '' → parseFloat('') NFE on gdx font char lines with trailing space.",
+      "BAOS_subclass": "gdx StreamUtils$OptimizedByteArrayOutputStream extends BAOS — exact-name guard let toByteArray() stub → null → array-length NPE → GdxRuntimeException; and its real-DEX toByteArray override reads the AOSP buf/count fields the C++ law never materialized."
+    }
+  },
+  "internet_ground_truth": {
+    "makeOptionalFitsSystemWindows": "AndroidSDKSources api-16 View.java:5485 = setFlags(OPTIONAL_FITS_SYSTEM_WINDOWS, ...); ViewGroup override recurses children",
+    "StringTokenizer": "OpenJDK java.util.StringTokenizer delimiter-run law (never empty tokens; NoSuchElementException when exhausted; returnDelims mode)",
+    "gdx_BitmapFontData": "libgdx master BitmapFont.java — page line = Pattern `.*id=(\\d+)` + `.*file=\"?([^\"]+)\"?`, char lines = StringTokenizer(line, \" =\")",
+    "kotlin_reflect": "ReflectionFactoryImpl CNFE is AOSP-EXACT already (kotlin-reflect not shipped on device; app catches, falls back) — NO FIX, verdict recorded",
+    "PackageManager$NameNotFoundException": "F275 contract working (caught) — NO FIX"
+  },
+  "fixes": [
+    "T1+T2 FIELD-DEFAULT LAW (dalvik_engine.cpp generate_child_layout_params): no-ctor structural LP subclass fallback + depth-2 object-field default seeding (cycle-safe, Strings skipped, 64-alloc budget). opencalc ConstraintLayout NPE 171 -> 0.",
+    "T3 makeOptionalFitsSystemWindows shadow method (AOSP setFlags law) — F-NEW-219 noise killed.",
+    "T4 USE-AFTER-SCOPE FIX (Matcher.find): captures copied into `captured` while the subject string lives; the old smatch-over-dead-local read freed memory for EVERY capture-group consumer. VERIFIED: group(1)='0', file regex group(1)='lsans-15.png'.",
+    "T6 StringTokenizer bridge (init/nextToken/hasMoreTokens/countTokens/nextElement, delimiter-run law, NoSuchElementException). Font parse clean: PARSE-BRIDGE 1 -> 0.",
+    "T7 BAOS family law (superclass-chain walk, 8 hops) + java-field sync (buf byte[] doubling + count) — real-DEX subclass overrides now read live fields. tower3d Pixmap pipeline reached the gdx native JNI frontier."
+  ],
+  "verification": {
+    "wall_pins_after_all_fixes": "dooz 31ddd4d5b8e6d18e / gmdice 3891679dff449331 / bouncy 8a6c24ac8a7d718e — ALL byte-exact x2 (post-fix #1 and final)",
+    "tower3d": "font-parse chain fully unblocked (regex UB + StringTokenizer + BAOS family+fields); new frontier = gdx native JNI (Matrix4.prj, BufferUtils.newDisposableByteBuffer, Gdx2DPixmap.load) — next round: bridge Gdx2DPixmap.load through the engine PNG decoder",
+    "opencalc": "ConstraintLayout NPE storm eliminated (clNPE=0), face stable 63020bc"
+  },
+  "diags_added": "[CONT49-RX] group-return, [CONT49-RXFIND] find-store (bounded 6 each), [CONT49-FD] no-ctor LP materialization (bounded 8), [CONT49-T3] makeOptional (bounded 8) — all inert-by-default noise-free",
+  "zero_log": "run/cont49/* + aosp fetches untracked; probes/scripts committed"
+}
