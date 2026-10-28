@@ -11909,3 +11909,23 @@ Work Log:
 Stage Summary:
 - T2 = honest partial: the face narrowed from 'lazy-null' to 'e0 static-null despite clinit-OK' — the static write/read key divergence is the named suspect for T3 (a generic engine-level static-storage law).
 - Train ledger this window: D1 (17aff48f), D2 (9daf8eba), T1 (ae223f10) pushed; T2 evidence banked in-worklog (no engine change = no commit needed; the evidence lives in run/ logs + this worklog).
+
+---
+Task ID: CONT-46-T3
+Agent: Super Z (main)
+Task: TELEGRAM TRAIN 3 of 10 — the o6.e0 face (T2 handoff: "static write/read key divergence"). «برای هر کدام 10 قطار» + «ادامه قطار».
+
+Work Log:
+- GitHub lead-check FIRST: local was at the CONT-10-era snapshot (e99c2fbd); origin/main 365 commits ahead at af89471c (CONT-45 T2) — fast-forwarded BEFORE any work; D1/D2/T1/T2 waves present.
+- Engine rebuilt from the fresh tree (deterministic: the pre-edit binary 09b5db050233c42c reproduced byte-identical on the second rebuild). Sandbox lesson banked: background (setsid/nohup) builds are reaped between tool calls — foreground chunked builds are the law in this container.
+- T2 hypothesis REFUTED by a new multi-dex decoder (scripts/cont46_tg_o6.py, 21641 classes, width-exact opcode table verified against dalvik_engine.h — sput family is 0x67-0x6D): o6.e0 HAS a writer (k1 pc=0x54 self-assign), zero duplicated class descriptors, clinit-OK was honest. No lost write exists.
+- RAW bytecode of o6.k1 (code_off 0x392abc): the aget at 0x5b (=engine-pc 91) reads the RESULT of invoke-static AndroidUtilities.calcDrawableColor — not the e0 static. calcDrawableColor (0x45c3a4) is PURE (instanceof chain + Color.argb; 3 return sites, all int[4] but the fo; fast-path recursion).
+- DYNAMIC PROOF (METHOD-TRACE): [METHOD-IN] o6.k1 present, ZERO rows for calcDrawableColor/fo;.c — the call never reached DEX code. ROOT: dalvik_engine.cpp's class-level swallow force-bridged the ENTIRE AndroidUtilities class to bridge_to_api whose generic fallback answers NULL (the same type-lying law family T1 killed as R-NEW-570).
+- FIX R-NEW-571 (the CHM precedent, F-NEW-467): the AndroidUtilities swallow is now METHOD-SCOPED — dp (density law) + runOnUIThread/executeOnUIThread/cancelRunOnUIThread (HandlerShadow) stay bridged; every other method executes its real DEX bytecode.
+- RESULT: o6.k1 pc=91 aget-null GONE (0 rows); Preset NPE still gone; UNCAUGHT-AT-BOUNDARY = 0 for the first time; screenshot moved 774075b428f53791 -> dac4ade9bd2d6c02 (1906 non-white px now telegram-theme BLUE). The deferred-UI queue (8 runnables, ready_at=1080040ms) is the named next frontier.
+- WALL: 11/13 byte-exact vs the CONT-45 pins. A/B: the UNEDITED rebuild in this container gives dooz=31ddd4d5 x3 and snakeneon=9c02d9d6 x2 IDENTICAL to the fix binary — R-NEW-571 = ZERO drift; the two pin deltas (dooz 851cc176->31ddd4d5 = the recorded CONT-37 honest face; snakeneon 2617c81c->9c02d9d6) are CONTAINER/REBUILD-level. gmdice "DIFF" was a wall-script path bug (s98_games vs canonical_apks) — fixed, face 3891679d.
+- Evidence banked evidence/cont46/t3_rnew571_androidutilities.json (ZERO-LOG law: hashes/census rows only; run/ artifacts untracked).
+
+Stage Summary:
+- T3 complete: telegram's launch chain now runs with ZERO uncaught exceptions — two generic type-lying laws dead (R-NEW-570 network mock, R-NEW-571 class-level swallow); the engine no longer lies to pure app bytecode.
+- Next trains: TELEGRAM T4 = the deferred-UI drain for view apps (the F277 poll-timeout guard is compose-only — 8 queued runnables never drain); DOOZ D3 = the applier-position placement fix (D2 handoff: second-applyChanges applier at ROOT -> wave-2 measured-but-never-placed).
