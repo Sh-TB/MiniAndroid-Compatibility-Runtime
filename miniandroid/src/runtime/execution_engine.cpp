@@ -3167,6 +3167,12 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
             // canonical resolver (config-selected variant included).
             auto& rt = resources::ResourceRuntime::instance();
             if (rt.ensure_loaded(result.apk_info.apk_path)) {
+                // CONT-48 F1: EAGER R$ harvest FIRST — the drawable census
+                // runs before any app code touches R.drawable.*, so the
+                // lazy class-init-only harvest left zero drawable resids in
+                // field_name_by_resid_ on resource-obfuscated APKs
+                // (telegram official bound 0/13206 paths).
+                dalvik_engine_.eager_harvest_r_classes();
                 dalvik_engine_.populate_drawable_paths_from_arsc(rt.arsc(), entry_names);
             }
         }
