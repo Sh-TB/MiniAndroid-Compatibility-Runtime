@@ -12161,3 +12161,10 @@ CONT-47 D8 (DOOZ train 5/10) + T7 (TELEGRAM train 5/10) — place-descent witnes
   styles resolve fine (472 SKIPs). The T6/T7 white panel = the drawable-
   binding gap (F1 plurals parse, F2 theme->drawable bridge, F3 decor law).
 - Evidence evidence/cont47/t8_arsc_drawable_census.json (ZERO-LOG).
+
+## CONT-48 M0 — «چند قطار» wave (2026-10-28)
+Sandbox restored (was reset): fresh clone synced to origin/main 2db25697; androguard reinstalled; engine rebuilt from scratch (BUILD-EXIT=0). Smoke wall byte-exact: bouncy 8a6c24ac8a7d718e.
+- 11 deep trains (121f): opmt GREEN uniq373 rc=0 (richest render), klondike/dame/solitaire/memory upgraded RENDERED dark (76/64/65/22 uniq), chessjwtc honest FLAT re-read, andstatus2048+ball2box blank, forkgram (APP-016 unlock) FLAT first evidence.
+- Registry: NOT_TESTED 143→142, evidence count 106→107. STRUCTURAL FIX: 50+ duplicate registry ids repaired (first kept, second renumbered); 253 rows now unique.
+- First fanout fire was a silent 5×SKIP (xargs splits on whitespace not `|`) — caught, fixed, honestly re-fired.
+- T9/F1 pre-decode started: telegram ARSC has NO 'plurals' type string (raw=14, string=15, style=16, literal '?17'=17, xml=18); all 95 inner chunks walk clean (no drift); androguard 3.3.5 itself crashes on this ARSC (res1 must be zero). F1 frontier moved: the parser is NOT the gap — decode continues (DEX R-field resid side).
