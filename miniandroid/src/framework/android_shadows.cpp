@@ -16,6 +16,7 @@
 // fetch substrate — REUSED for network document loads (no new network code).
 #include "../api/http_client.h"
 
+#include <atomic>
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
@@ -8620,6 +8621,27 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                               << std::endl;
                 }
             }
+        }
+        return CallResult::handled_void();
+    }
+    // ── CONT-49 T3: hidden View API — makeOptionalFitsSystemWindows ────
+    // AOSP ground truth (View.java, API 16+, android-sdk-sources
+    // api-16 View.java:5485): the method is ONE line —
+    //   setFlags(OPTIONAL_FITS_SYSTEM_WINDOWS, OPTIONAL_FITS_SYSTEM_WINDOWS);
+    // ViewGroup's override recurses to children. androidx AppCompat
+    // subDecor inflation (AppCompatDelegateImpl.createSubDecor →
+    // FitWindowsLinearLayout receiver) calls it on the API>=16 path;
+    // the F-NEW-219 reflection probe previously NOT-RESOLVED it →
+    // NoSuchMethodException (app-catched, but AOSP-exact = the method
+    // EXISTS and succeeds). The runtime's window is headless — the
+    // fits-flags surface is semantic-only, so answering void here is the
+    // exact observable AOSP behavior.
+    if (m == "makeOptionalFitsSystemWindows") {
+        static std::atomic<uint32_t> mkopt_n{0};
+        if (mkopt_n.fetch_add(1) < 8) {
+            std::cerr << "[CONT49-T3] makeOptionalFitsSystemWindows view="
+                      << ctx.receiver_id << " (AOSP setFlags law)"
+                      << std::endl;
         }
         return CallResult::handled_void();
     }
