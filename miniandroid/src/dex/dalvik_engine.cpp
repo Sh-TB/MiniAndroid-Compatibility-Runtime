@@ -3337,6 +3337,25 @@ void DalvikExecutionEngine::dump_cont4_solver_diag(uint32_t at_pc) {
     }
 }
 
+// ── CONT-47 D7 (DIAG-ONLY, env-gated): renderer read-side census state.
+// D7a (MINIANDROID_D7_READCENSUS): while the draw window is open, count
+// WHICH Lel0; (LayoutNode) fields the DEX draw walk reads — the A/n
+// child-fold containers (order-bearing per D6) vs the single-ref q chain
+// (last-inserted-wins). Counted in execute_iget/execute_iget_object,
+// printed at draw-window close. Answers the OPDUMP bands 1-6 empty
+// question with a read census instead of guesswork.
+// D7c (MINIANDROID_D7_PLACECHECK): every insertAt (Lel0;.B) call records
+// the inserted node + receiver ids (bounded); at draw-window close the
+// walk prints each node's placement state (e:Z layout flag + q + A/n
+// container array lens) — B touches NO placement per D6, so the chain
+// may exist but sit unplaced behind the F-NEW-265 isPlaced draw gate.
+namespace {
+std::map<std::string, uint64_t> g_d7_read_census;
+std::set<uint32_t> g_d7_node_ids;
+uint64_t g_d7_draws = 0;
+constexpr size_t D7_NODE_CAP = 512;
+}  // namespace
+
 bool DalvikExecutionEngine::execute_method_internal(
     const std::string& class_name,
     const std::string& method_name,
@@ -3400,6 +3419,21 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-47 D7c node capture (unconditional, O(1) per insert): record
+    // the insertAt receiver + inserted-node ids (bounded 512) so the
+    // draw-window close can walk their placement state (D7c above).
+    if (class_name == "Lel0;" && method_name == "B") {
+        for (size_t d7ci = 0;
+             d7ci < f282_args.size() && d7ci < 3; ++d7ci) {
+            const DalvikValue& d7ca = f282_args[d7ci];
+            if (d7ca.type == DalvikType::OBJECT_REF &&
+                d7ca.object_id != 0 &&
+                g_d7_node_ids.size() < D7_NODE_CAP)
+                g_d7_node_ids.insert(d7ca.object_id);
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────
     // CONT-47 D4 (F-NEW-567 evidence, DIAG-ONLY, env-gated): insertAt
     // context witness. D3 record: the 44 wave-2 Lel0;.B (insertAt) q-writes
@@ -13530,6 +13564,103 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     draw_window_active_ = false;
     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
+    // ── CONT-47 D7a/D7c (DIAG-ONLY, env-gated): read census + chain
+    // placement walk at draw-window close. Bounded prints (first 4 draws
+    // + every 120th, cap 8 walks) so the log stays census-shaped.
+    {
+        static const bool d7_close_on =
+            diag_env("MINIANDROID_D7_READCENSUS") ||
+            diag_env("MINIANDROID_D7_PLACECHECK");
+        if (d7_close_on) {
+            ++g_d7_draws;
+            const bool d7_print =
+                (g_d7_draws <= 4) || (g_d7_draws % 120 == 0);
+            if (d7_print && !g_d7_read_census.empty()) {
+                std::cerr << "[D7-READCENSUS] draws=" << g_d7_draws
+                          << " Lel0; field reads during draw windows:";
+                for (const auto& [fname, fcount] : g_d7_read_census)
+                    std::cerr << " " << fname << ":" << fcount;
+                std::cerr << std::endl;
+            }
+            static const bool d7_place_on =
+                diag_env("MINIANDROID_D7_PLACECHECK");
+            static uint64_t d7_walks = 0;
+            if (d7_place_on && d7_print && d7_walks < 8 &&
+                !g_d7_node_ids.empty()) {
+                ++d7_walks;
+                std::cerr << "[D7-PLACECHECK] draw=" << g_d7_draws
+                          << " recorded_nodes=" << g_d7_node_ids.size();
+                int d7_shown = 0;
+                int d7_placed = 0, d7_gone = 0;
+                for (uint32_t d7_nid : g_d7_node_ids) {
+                    if (d7_shown >= 48) break;
+                    const auto* d7_no = heap_.get(d7_nid);
+                    if (!d7_no) { ++d7_gone; continue; }
+                    std::string d7_e = "?";
+                    auto d7_ev = d7_no->get_field("e");
+                    if (d7_ev.type == DalvikType::BOOLEAN)
+                        d7_e = d7_ev.bool_val ? "T" : "F";
+                    else if (d7_ev.type == DalvikType::INT32)
+                        d7_e = d7_ev.int_val ? "T" : "F";
+                    if (d7_e == "T") ++d7_placed;
+                    auto d7_qv = d7_no->get_field("q");
+                    std::string d7_q = "q=ABSENT";
+                    if (d7_qv.type == DalvikType::OBJECT_REF)
+                        d7_q = "q#" + std::to_string(d7_qv.object_id);
+                    // D7a follow-up: r is THE field the draw walk reads
+                    // (r:36740 in the read census) — print its presence
+                    // + class + inner count field so the child-enumeration
+                    // structure of each recorded node is visible.
+                    std::string d7_r = "r=ABSENT";
+                    auto d7_rv = d7_no->get_field("r");
+                    if (d7_rv.type == DalvikType::OBJECT_REF &&
+                        d7_rv.object_id != 0) {
+                        const auto* d7_ro = heap_.get(d7_rv.object_id);
+                        d7_r = std::string("r#") +
+                               std::to_string(d7_rv.object_id);
+                        if (d7_ro)
+                            d7_r += std::string("(") +
+                                    d7_ro->class_descriptor + ")";
+                    }
+                    std::string d7_conts;
+                    for (const char* d7_cf : {"A", "n"}) {
+                        auto d7_ct = d7_no->get_field(d7_cf);
+                        if (d7_ct.type != DalvikType::OBJECT_REF ||
+                            d7_ct.object_id == 0)
+                            continue;
+                        const auto* d7_cw = heap_.get(d7_ct.object_id);
+                        if (!d7_cw) continue;
+                        std::string d7_lens;
+                        for (const char* d7_hf : {"f", "g"}) {
+                            auto d7_hr = d7_cw->get_field(d7_hf);
+                            if (d7_hr.type == DalvikType::OBJECT_REF &&
+                                d7_hr.object_id != 0) {
+                                const auto* d7_arr =
+                                    heap_.get(d7_hr.object_id);
+                                if (!d7_arr) continue;
+                                auto d7_al = d7_arr->get_field(
+                                    "__array_length__");
+                                int d7_an = (d7_al.type == DalvikType::INT32)
+                                                ? d7_al.int_val : -1;
+                                d7_lens += std::string(d7_hf) + "=" +
+                                           std::to_string(d7_an);
+                            }
+                        }
+                        if (!d7_lens.empty())
+                            d7_conts += std::string(" ") + d7_cf + "[" +
+                                        d7_lens + "]";
+                    }
+                    if (d7_shown < 12)
+                        std::cerr << " o" << d7_nid << "(e=" << d7_e
+                                  << "," << d7_q << "," << d7_r
+                                  << d7_conts << ")";
+                    ++d7_shown;
+                }
+                std::cerr << " | e=T:" << d7_placed << " gone:" << d7_gone
+                          << " shown:" << d7_shown << std::endl;
+            }
+        }
+    }
     // T21 (F-NEW-562) — generic, env-gated, read-only op-stream census:
     // where do the replayed draw ops actually LAND? (kind histogram,
     // color histogram, y-band histogram). Zero cost when the env is unset.
@@ -22042,6 +22173,15 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                 "iget-null-recv");
             return true;  /* pc_ set by raise (catch handler) or frame unwind */
         }
+        // CONT-47 D7a: draw-window LayoutNode read census (env-gated,
+        // bounded 64 distinct fields). Which Lel0; fields does the DEX
+        // draw walk read — A/n folds vs q chain (D6 verdicts)?
+        static const bool d7a_on_iget =
+            diag_env("MINIANDROID_D7_READCENSUS");
+        if (d7a_on_iget && draw_window_active_ &&
+            field_res.class_descriptor == "Lel0;" &&
+            g_d7_read_census.size() < 64)
+            ++g_d7_read_census[field_res.field_name];
         if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
             // S134 F-NEW-160: qualified field identity (declaring class + name).
             // F-NEW-325: a framework-owned field (no DEX declarer on the
@@ -22429,6 +22569,15 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
             "iget-null-recv");
         return true;  /* pc_ set by raise (catch handler) or frame unwind */
     }
+
+    // CONT-47 D7a: draw-window LayoutNode read census (env-gated,
+    // bounded 64 distinct fields) — same law as the iget arm.
+    static const bool d7a_on_igeto =
+        diag_env("MINIANDROID_D7_READCENSUS");
+    if (d7a_on_igeto && draw_window_active_ &&
+        field_res.class_descriptor == "Lel0;" &&
+        g_d7_read_census.size() < 64)
+        ++g_d7_read_census[field_res.field_name];
 
     // S88 DIAG (bounded, env-gated): MiniFont$Glyph field reads — tweakWidth
     // NPE "Path.transform on null" while iput traces show the path field
