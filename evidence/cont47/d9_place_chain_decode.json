@@ -1,0 +1,60 @@
+{
+  "train": "CONT-47 D9 DOOZ — the place-chain census + the m()->q() gate decode",
+  "date": "2026-10-28",
+  "engine": "miniandroid/build/miniandroid @ HEAD 9b352f85 + D9 witnesses (inert-proven)",
+  "apk": "io.github.yamin8000.dooz_23.apk",
+  "diagnostics": "MINIANDROID_D9_PLACE=1 ([D9-PLACE] bounded 96, [D9-MGUARD] bounded 8) — read-only; inertness proven byte-exact on THIS container",
+  "chain_runtime_census": {
+    "ran": [
+      "Lt4;.onMeasure  (caller=Lr;.i — ViewRootImpl traversal)",
+      "Lzs0;.s(J)V     setRootConstraints — recv=o2712, caller=Lt4;.onMeasure",
+      "Lzs0;.m()V      measureAndLayout    — recv=o2712, caller=Lt4;.onMeasure, RAN ONCE",
+      "Lzs0;.q(Lel0;Z) — recv=o2712, RAN ONCE (the empty-frame path of m())",
+      "Lzs0;.r(Lel0;Z)Z requestMeasure — x5, caller=Lt4;.z (repeated), + Lt4;.o (onAttachedToWindow)"
+    ],
+    "never_ran": [
+      "Lzs0;.k(Lj4;)Z performMeasureAndLayout — 0 dispatches (whole run, not a cap artifact)",
+      "Lzs0;.p(Lel0;)V the recursive child place-descent — 0 dispatches"
+    ]
+  },
+  "m_guards_runtime": {
+    "dumps": 6,
+    "all_identical": true,
+    "zs": "o2712", "owner": "o2713 (Lkc;)", "root": "o2113 (Lel0; — the D4 root, chain 6367<-2113)",
+    "reqs_h": "o3021 (NOT null)", "during_c": 0, "during_d": 0,
+    "owner.Lkc;.o()": 1, "root.Lel0;.H()": 1, "root.Lel0;.I()": 1,
+    "verdict": "ALL FOUR silent exits of measureAndLayout PASS — m() proceeds past every guard"
+  },
+  "dex_decode_Lzs0_m": {
+    "guards_in_order": [
+      "1. Lkc;.o()Z owner guard == false -> jump +106 SILENT (no log) — NOT taken (o()=1)",
+      "2. root Lel0;.H()Z unattached -> Log0;.a('performMeasureAndLayout called with unattached root') return — NOT taken (H()=1)",
+      "3. root Lel0;.I()Z unplaced   -> Log0;.a('performMeasureAndLayout called with unplaced root') return — NOT taken (I()=1)",
+      "4. during-flag Lzs0;.c:Z -> Log0;.a('performMeasureAndLayout called during measure layout') — NOT taken (c=0)",
+      "5. pending Lzs0;.h:Lop; == null -> jump +69 skip — NOT taken (h=o3021)"
+    ],
+    "post_guard": "owner.d(cast)->.f(cast)->isEmpty() [C013-HIER: Lyo1;->Ljava/util/TreeSet; isEmpty] -> if-nez +18 (EMPTY taken) -> ... -> Lzs0;.q(root, false) at the tail; k() is NOT called by m() in this R8 build",
+    "log_strings": [
+      "performMeasureAndLayout called with unattached root",
+      "performMeasureAndLayout called with unplaced root",
+      "performMeasureAndLayout called during measure layout"
+    ],
+    "no_warning_in_run_log": "zero Log0 warnings — consistent: every guard passed"
+  },
+  "dex_decode_Lzs0_q": {
+    "law": "q(node, flag): R = node.Lel0;.R:Z; if (R) return-void IMMEDIATELY; then if (this.a == node) touch h.getClass(); if (flag == 0) b(node, h) else c(node, h) — b/c are the relayout statics that reach performMeasureAndLayout",
+    "runtime": "q(root=o2113, false) ran ONCE and NOTHING followed -> the root's R flag was TRUE -> return at instruction 2 -> b()/c() never ran -> k() never ran -> p() (the child descent with the Lfl0;.e()Z skip-check) never ran"
+  },
+  "dex_decode_Lzs0_p": "p(node): children = node.y()->(Liw0;.e[], Liw0;.g count); for each child: r = child.r() (Lcl0;); if r != Lcl0;.e: B = child.J->Lil0;.p->Lbt0;.B:Lfl0;; if (!B.e()) { Ljn;.z(child) ? q(child,true) : p(child) } — the place-descent the tree never receives",
+  "verdict_D9": "THE SILENT FAILURE CALLEE IS NAMED: Lzs0;.q(Lel0;Z) returns at its first instruction because the root LayoutNode's R:Z flag is construction-time TRUE (same write-once family as D8's e). The whole measure/layout/place walk (q->b/c->k->p->placeAt) is a NO-OP for the entire tree. The R-flag writer on constraint change is missing.",
+  "fix_frontier_D10": "Lzs0;.s(J)V (setRootConstraints) must INVALIDATE the root's accepted-layout flags: when the root constraints are (re)set, clear root R:Z (and per D8 the compose-side e flag) so the next q() descends and the place walk executes. Generic compose 1.6.7 semantic (constraint change invalidates accepted layout), expressed without R8 tables: post-dispatch hook on the Lzs0;.s DEX dispatch writing root.R=false.",
+  "container_repin": {
+    "fact": "THIS container (snapshot-restored) does not reproduce the D8-era WALL pins: dooz 6f = 607882e924625d57 (was 851cc1761a1dfcdf), gmdice = c4112f92ce048408 (was 3891679dff449331); distinct_colors dooz = 113 == t14 (palette same, pixel layout shifted) — render-lib era drift (libfreetype 2.13.3+dfsg-1+deb13u1 here)",
+    "precedent": "evidence/t14: registry pin 31ddd4d5b8e6d18e did not reproduce on that container either; pins are container-scoped",
+    "inertness_control": "CLEAN rebuild (trace stashed) dooz-6f = 607882e924625d57 == TRACE binary dooz-6f (byte-exact) — the D9 witnesses are inert; the drift is environmental",
+    "new_wall_this_container": { "dooz_6f": "607882e924625d57", "gmdice_121f": "c4112f92ce048408" },
+    "opencalc": "apk not found in restored corpus dirs — re-pin pending APK relocation"
+  },
+  "probe": "run/cont47/{d9,d9c,d9_6f,d9_clean6f,wall_gmdice} (untracked, ZERO-LOG)",
+  "next": "D10 = the constraint-change invalidation law (post-s() root flag clear) + probe the board cells"
+}
