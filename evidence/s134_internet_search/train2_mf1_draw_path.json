@@ -1,0 +1,37 @@
+{
+  "train": "internet-train-2 + MF-1",
+  "date": "2026-10-29",
+  "target": "(a) execute MF-1 from train-1 findings: locate the draw break between RenderNode.beginRecording and AndroidCanvas construction; (b) continue internet search for the exact 1.6.7 source law; (c) fresh dooz + telegram runs for honest progress census",
+  "internet_sources_downloaded_and_read": [
+    "android.googlesource.com androidx-main compose/ui/ui-graphics AndroidCanvas.android.kt (CanvasHolder law verified verbatim: androidCanvas constructed ONCE in <init>; drawInto only swaps internalCanvas ref)",
+    "android.googlesource.com androidx-main GraphicsLayerV29.android.kt (record: renderNode.beginRecording -> canvasHolder.drawInto(recordingCanvas) -> endRecording)",
+    "MAVEN dl.google.com androidx/compose/ui/ui-android/1.6.7/ui-android-1.6.7-sources.jar (EXACT APK version) -> RenderNodeLayer.android.kt read verbatim",
+    "github DrKLO/Telegram TLRPC.java (TL_config: constructor 0xcc1a241e + full field list) + LaunchActivity.java (intro/auth switch L1092-1095)"
+  ],
+  "MF1_result": {
+    "build": "clean rebuild from this tree (build/miniandroid, Build complete)",
+    "dooz_run": "upload/canonical_apks/dooz_23_toplevel.apk, 1080x1920, 122 frames, Status SUCCESS, 6 non-fatal La; SETUP-phase unwinds (known class), no fatal",
+    "canvas_op_trace": "MINIANDROID_CANVAS_OP_TRACE captured 8326 ops: TEXT 6431 / BITMAP 596 / PATH 475 / ROUNDRECT 418 / RECT 406",
+    "landed_on_framebuffer_VERIFIED": [
+      "board container RECT 42,168->1038,1710 #faf8fe — board zone pixels = EXACTLY (250,248,254), 1 distinct color = op color landed",
+      "top bar RECT 0,0->1080,168 #faf8fe + title TEXT 'Dooz' ff30323a at (488,97.976) — dark pixels present in top bar",
+      "bottom bar RECT 0,1710->1080,1920 #ededf6 + 'New game' TEXT ff30436e at (765,1829.976) — dark blue pixels present in button zone"
+    ],
+    "still_missing_PRECISE": "board INNER content: ZERO ops in y-band 400-1500 (the 3x3 grid lines + 9 cells + X/O marks never ISSUE ops); container rect lands flat",
+    "honest_reversal": "CONT-10-W6 'AndroidCanvas bridge never constructed -> 0 canvas ops' is OUTDATED — the remote CONT-50 wave registered F-NEW-260 ROOT-CAUSED-FIXED (registry max F-NEW-561, 852 roots) and MF-1 now EMPIRICALLY CONFIRMS their fix: ops are recorded AND composite into the framebuffer. The visible-face census moved: background/title/button render; board inner content is the next precise frontier",
+    "new_frontier_root_candidate": "dooz board inner content never issues draw ops (y:400-1500 op census = 0) while its container rect + title + button DO land — F-NEW-562+ candidate, first-divergence proof deferred to next wave (not claimed as root-caused here)"
+  },
+  "source_law_1.6.7_RenderNodeLayer": {
+    "file": "ui167/androidMain/androidx/compose/ui/platform/RenderNodeLayer.android.kt",
+    "gate": "drawLayer: if (canvas.nativeCanvas.isHardwareAccelerated) { updateDisplayList(); renderNode.drawInto(androidCanvas) } else { save()/saveLayer + translate + concat + clipRenderNode + drawBlock?.invoke(canvas) + restore }",
+    "engine_law": "canvas_shadow.cpp:2901 isHardwareAccelerated=false is the documented F-095/R-NEW-328 software-truth law — compose takes the software path BY DESIGN; updateDisplayList/beginRecording/AndroidCanvas path is legitimately never entered on this engine",
+    "conclusion": "the train-1 hypothesis (CanvasHolder never entered) is TRUE but CAUSE-VALID: engine answers software-truthfully, so the software draw path is the law-correct path; the missing ops are INSIDE the software path (drawBlock?.invoke chain), not the hardware path"
+  },
+  "telegram_T5_laws_captured": {
+    "intro_switch": "LaunchActivity L1092-1095: initialFragment = LoginActivity if LoginActivity.loadCurrentState(false,currentAccount).getInt('currentViewNum',0)!=0 else IntroActivity — currentViewNum defaults 0 => IntroActivity",
+    "TL_config": "TLRPC.TL_config constructor=0xcc1a241e; fields captured (flags, dc_options, this_dc, chat_size_max, megagroup_size_max, online_update_period_ms, ...) — exact serialization contract the T5 offline mock must emit (NOT a status-success stub)",
+    "config_persistence": "MessagesController: TL_help_getAppConfig via ConnectionsManager.sendRequest; error codes -2000/-2001 retriable; config persisted to SQLite app_config table"
+  },
+  "telegram_fresh_run": "run/cont11/mf1_tg launched (daemon pid=2878) — face census in worklog addendum",
+  "zero_log": "no engine logs / APKs / raw screenshots committed; evidence = this JSON + worklog + registry untouched (no new root claimed without first-divergence proof)"
+}
