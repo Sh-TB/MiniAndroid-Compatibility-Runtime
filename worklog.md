@@ -12227,3 +12227,20 @@ Work Log:
 
 Stage Summary:
 - The internet rule paid off immediately: the draw-path frontier is no longer unexplored territory - AOSP gives the exact recording contract, Robolectric proves the headless pattern end-to-end, and the CanvasHolder law turns 'AndroidCanvas never constructed' into a precise breakpoint hypothesis (the drawInto path was never entered). Next wave: execute MF-1..MF-4 as small independent trains, then dooz/telegram dedicated trains.
+
+---
+Task ID: CONT-11-WAVE-7-INTERNET-2 (MF-1 executed)
+Agent: Super Z (main)
+Task: Directive «قطار اینترنت ادامه + دوز و تلگرام چقدر پیشرفت داشتن» — execute MF-1 from train-1, fetch the EXACT 1.6.7/androidx-main sources, fresh dooz+telegram census.
+
+Work Log:
+- INTERNET (sources downloaded & read verbatim): androidx-main ui-graphics AndroidCanvas.android.kt (CanvasHolder law: AndroidCanvas constructed ONCE in <init>; drawInto swaps internalCanvas ref only) + GraphicsLayerV29.android.kt (record = beginRecording -> canvasHolder.drawInto -> endRecording); MAVEN ui-android-1.6.7-sources.jar (EXACT dooz compose version) -> RenderNodeLayer.android.kt; DrKLO/Telegram TLRPC.java (TL_config constructor 0xcc1a241e + full fields) + LaunchActivity.java (L1092-1095: currentViewNum==0 -> IntroActivity else LoginActivity).
+- THE 1.6.7 GATE LAW (verbatim from RenderNodeLayer.android.kt drawLayer): `if (canvas.nativeCanvas.isHardwareAccelerated) { updateDisplayList(); renderNode.drawInto(androidCanvas) } else { save/saveLayer + translate + concat + clipRenderNode + drawBlock?.invoke(canvas) + restore }`. Engine answers isHardwareAccelerated=false (F-095/R-NEW-328 software-truth law, canvas_shadow.cpp:2901) => the hardware/beginRecording/AndroidCanvas path is LEGITIMATELY never entered; the software path IS the law-correct draw path. Train-1's CanvasHolder hypothesis stands CAUSE-VALID.
+- MF-1 EXECUTED (clean rebuild; dooz_23_toplevel, 122 frames, SUCCESS, 6 non-fatal known La; SETUP unwinds): MINIANDROID_CANVAS_OP_TRACE captured 8326 ops (TEXT 6431/BITMAP 596/PATH 475/ROUNDRECT 418/RECT 406). PIXEL-VERIFIED landings: board container RECT 42,168->1038,1710 #faf8fe (board zone = EXACTLY 1 distinct color 250,248,254); top bar + title 'Dooz' ff30323a @ (488,97.976) (dark pixels present); bottom bar #ededf6 + 'New game' ff30436e @ (765,1829.976) (dark blue pixels present).
+- HONEST REVERSAL: CONT-10-W6's 'AndroidCanvas never constructed -> 0 canvas ops' frontier is OUTDATED — remote CONT-50 registered F-NEW-260 ROOT-CAUSED-FIXED (registry now 852 roots, max F-NEW-561) and MF-1 EMPIRICALLY CONFIRMS the fix: ops record AND composite. dooz visible census moved: background/title/button render.
+- NEW PRECISE FRONTIER (not claimed root-caused): dooz board INNER content issues ZERO ops (y-band 400-1500 census = 0) while container/title/button land — the 3x3 grid + 9 cells never issue draw ops; F-NEW-562+ candidate, first-divergence proof deferred (no registry touch this wave).
+- TELEGRAM FRESH CENSUS: face=FLAT nonwhite=0.001 (sha16 bf5c9ef920aa32d7; recorded pin dac4ade9bd2d6c02 differs — honest note: cross-wave env/version drift, no progress/regression claim without controlled A/B); LaunchActivity.onCreate executes (VirtualMachineError caught by catch-all); ActionBar/w (Lorg/telegram/ui/ActionBar/w) dispatched=YES ops=0 — consistent with T5 config-chain frontier; T5 now has its exact laws (TL_config serialization contract + intro switch law) captured in evidence.
+- Evidence: evidence/s134_internet_search/train2_mf1_draw_path.json (ZERO-LOG honored).
+
+Stage Summary:
+- The internet rule again paid off: the exact 1.6.7 gate law + verbatim sources turned a vague '0 ops' into a precise map (software path is law-correct; op recording works; composite works; board inner content is the next small root). Next micro-train: root-cause why the board's cell composables never issue ops (grid item materialization), and build the T5 TL_config-shaped mock from the captured contract.
