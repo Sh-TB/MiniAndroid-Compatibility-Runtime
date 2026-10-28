@@ -4398,6 +4398,21 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
                 // dalvik_value_to_arg stores it as long_val.
                 delay_ms = ctx.args[1].long_val;
             }
+            // CONT-47 T4 (F-NEW-567 family, env-gated): the 8 stuck
+            // telegram runnables sit at ready_at=1080040ms — 4 of them
+            // enqueued with delay=240010ms from this bridge. Witness the
+            // caller so the D5/T5 fix can name the scheduling site.
+            // Bounded 32, prints only for delays > 1000ms.
+            {
+                static thread_local uint64_t t4_n = 0;
+                if (delay_ms > 1000 && t4_n < 32) {
+                    ++t4_n;
+                    std::cerr << "[T4-QUEUE] AndroidUtilities."
+                              << m << " delay=" << delay_ms
+                              << "ms caller=" << ctx.caller
+                              << " runnable_id=" << r << std::endl;
+                }
+            }
             enqueue(r, delay_ms, /*cls=*/"AndroidUtilities");
             return CallResult::handled_void();
         }

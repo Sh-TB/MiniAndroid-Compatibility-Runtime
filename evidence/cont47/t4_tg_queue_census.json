@@ -1,0 +1,28 @@
+{
+ "train": "CONT-47 T4 TELEGRAM — the deferred-UI queue census (T3 frontier resolved)",
+ "head": "ccc32dd5 + T4-QUEUE witness",
+ "build": "android_shadows.cpp AndroidUtilities.runOnUIThread bridge: bounded-32 delay>1000ms witness printing caller (ctx.caller) + runnable_id",
+ "probe": "run/cont47/tg_t4 (untracked; ZERO-LOG census only)",
+ "queue_ledger": {
+  "enqueued_total": 196,
+  "drained": 192,
+  "stuck": 4,
+  "stuck_ids": [2204, 3584, 4322, 5060],
+  "stuck_delay_ms": 3600010,
+  "stuck_caller": "Lorg/telegram/messenger/MessagesController;.lambda$loadWebBrowserConfig$510 pc=26"
+ },
+ "witness_census": {
+  "8x_delay_2000ms": "MessagesController.<init> pc=4867/4879 (ids 3078-5333) — DRAINED at ready_at 840030",
+  "16x_delay_240010ms": "MessagesController.lambda$loadAppConfig$32 pc=23 (2 rounds x4: ids 2171/3551/4289/5027) — the 4-min app-config offline retry self-scheduling",
+  "4x_delay_3600010ms": "MessagesController.lambda$loadWebBrowserConfig$510 pc=26 (ids 2204/3584/4322/5060) — the 1-hour web-browser-config offline retry self-scheduling"
+ },
+ "T3_frontier_refuted": {
+  "old_reading": "8 runnables never drain; F277 poll-timeout guard is compose-only -> intro/view tree never builds (drain bug)",
+  "verdict": "REFUTED by ledger replay: the queue drains 192/196 entries; every stuck entry is legitimately future-dated OFFLINE-RETRY self-scheduling (4-min AppConfig backoff + 1-hour WebBrowserConfig backoff) — AOSP-honest behavior; draining them inside a 120s window would be dishonest clock forgery"
+ },
+ "true_frontier": "T5: the CONFIG CHAIN must complete — R-NEW-570's offline mock (TL_error -2) makes MessagesController.loadAppConfig/loadWebBrowserConfig retry forever; the intro/auth UI build is gated on the config path succeeding (honest canned-success config response is the D5/T5 candidate)",
+ "pin": {
+  "telegram_face_sha16": "dac4ade9bd2d6c02",
+  "verdict": "EXACT reproduction of the CONT-46 T3 recorded face — zero drift with the T4 witness build"
+ }
+}
