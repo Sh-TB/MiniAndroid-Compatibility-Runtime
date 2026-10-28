@@ -3400,6 +3400,56 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-47 D4 (F-NEW-567 evidence, DIAG-ONLY, env-gated): insertAt
+    // context witness. D3 record: the 44 wave-2 Lel0;.B (insertAt) q-writes
+    // form the chain 6464<-6440<-6416<-6392<-6367<-2113(ROOT) — the TOP of
+    // the inserted chain attaches DIRECTLY to the root LayoutNode; the
+    // divergence is at composition RECORD time (pass#2 composer node-stack
+    // never descended into the destination content level). Witness: every
+    // Lel0;.B entry dumps receiver id + its q (current parent) + raw args
+    // + top-3 caller frames, so the D5 fix can name WHERE the applier's
+    // current stayed at root. Read-only, bounded 96, inert by default.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool d4_on =
+            diag_env("MINIANDROID_INSERT_TRACE");
+        static thread_local uint64_t d4_n = 0;
+        if (d4_on && class_name == "Lel0;" && method_name == "B" &&
+            d4_n < 96) {
+            ++d4_n;
+            uint32_t d4_recv = (!f282_args.empty() &&
+                                f282_args[0].type == DalvikType::OBJECT_REF)
+                                   ? f282_args[0].object_id
+                                   : 0;
+            std::string d4_q = "ABSENT";
+            if (d4_recv != 0) {
+                auto d4_qv = heap_.get_object_field(d4_recv, "q");
+                if (d4_qv.has_value() &&
+                    d4_qv->type == DalvikType::OBJECT_REF)
+                    d4_q = "#" + std::to_string(d4_qv->object_id);
+            }
+            std::cerr << "[D4-INSERT] B#" << d4_n << " recv=" << d4_recv
+                      << " parent_q=" << d4_q;
+            for (size_t d4_i = 1;
+                 d4_i < f282_args.size() && d4_i < 4; ++d4_i) {
+                const DalvikValue& d4_a = f282_args[d4_i];
+                if (d4_a.type == DalvikType::INT32)
+                    std::cerr << " a" << d4_i << "=" << d4_a.int_val;
+                else if (d4_a.type == DalvikType::OBJECT_REF)
+                    std::cerr << " a" << d4_i << "=o" << d4_a.object_id;
+                else
+                    std::cerr << " a" << d4_i << ":t" << (int)d4_a.type;
+            }
+            auto d4_frames = call_stack_.snapshot_top_first();
+            for (size_t d4_fi = 0;
+                 d4_fi < d4_frames.size() && d4_fi < 3; ++d4_fi)
+                std::cerr << " <" << d4_frames[d4_fi].first << "."
+                          << d4_frames[d4_fi].second << ">";
+            std::cerr << std::endl;
+        }
+    }
+
     // F-NEW-344 probe (CONT-61): the AndroidParagraph (Lj7;) ctor args —
     // the zero-width root decode. The obtain width=0 chain ends here:
     // this ctor receives (delegate, I width, I height?, J constraints?);
