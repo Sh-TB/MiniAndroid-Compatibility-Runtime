@@ -1,0 +1,39 @@
+{
+ "train": "CONT-47 D6 DOOZ \u2014 insertAt (Lel0;.B) byte-exact decode + container re-baseline (forensic train, no engine edit)",
+ "head": "8f587fe3 (T5) + rebuild f28226e7ee6a7e4e",
+ "probe": "run/cont47/d6/base_witness (MINIANDROID_INSERT_TRACE=1 + MINIANDROID_CL_TRACE=Lv02;,Ly11;,Ls21; untracked, ZERO-LOG)",
+ "container_rebaseline": {
+  "dooz_face": "31ddd4d5b8e6d18e == the recorded pin (byte-exact on this container)",
+  "insert_chain": "B#1..B#44 reproduce: recv=6440<-o6464, 6416<-o6440, 6392<-o6416, 6367<-o6392, 2113(ROOT)<-o6367, B#6+ cells into 6464, second subtree 9137-family",
+  "parent_q": "ABSENT for every chain receiver at insert time (fresh nodes) — matches D4/D5",
+  "correction": "the two mid-run 851cc176 reads of the earlier regression probes were artifacts (screenshot read before process exit); the finished solo run reproduces the recorded pin — the 'container delta' hypothesis is retracted (also recorded in evidence/cont47/t5_tg_config_chain.json)"
+ },
+ "lel0_ground_truth": {
+  "method": "androguard 4.1.4 (the hand uleb parser desyncs on this class — field walk counts matched but entries shifted; use androguard for dooz Lel0;)",
+  "nfields": 43,
+  "nmethods": 62,
+  "hierarchy_fields": "l:Lel0; (parent link family 1) + q:Lel0; (parent link family 2 — the insertAt-written one)",
+  "containers": "A:Lwg0; + n:Lwg0; — the child CONTAINERS (Lwg0; = {e, f:Object, g:Object}; f holds an Liw0; insert-fold, g an Lr7; fold) — the engine TREE diagnostic (CONT-45 D2) reads exactly A/n",
+  "support": "e:Z (layout flag), m:I (child counter), r:Ld31; (multi-child hook object), J:Lil0; (depth, field l:I), Q:I (second depth counter), H/M/P/R/t/u/v/w/x/y/z booleans"
+ },
+ "insertAt_bytecode": {
+  "signature": "Lel0;.B(I, Lel0;)V — code decoded via androguard instructions",
+  "steps": [
+   "1. v0 = this.q; if (v0 != null) { v0 = this.r; if (r == null) { invoke j(this) -> Log0.b(msg) — the DUPLICATE-INSERT error hook } }",
+   "2. this.q = node  — SINGLE-REFERENCE OVERWRITE (not a list append!): q always points at the LATEST inserted child",
+   "3. node.n(Lwg0;).f(Liw0;).a(index, this) — the CHILD-SIDE registration: the node records (index, parent) in its own insert-fold",
+   "4. node.n.g(Lr7;).a() — the observer fold tick",
+   "5. node.O(); if (node.e) node.m++ then node.G(); if (this.r != null) this.d(r); J.l depth<=0 -> J.d(++J.l); Q<=0 -> a0(++Q)"
+  ],
+  "semantic_verdict": "V1: the insert is a TWO-SIDED registration — parent-side single-ref q overwrite + child-side (index,parent) fold insert; sibling ORDER lives in the child-side folds / A containers, NEVER in q (q is last-inserted-wins)",
+  "V2": "the applier replay (B#1..B#5 chain) is byte-faithful to this law — the replay is NOT the bug",
+  "V3": "the D5 'useNode-vs-insert' question now has a concrete mechanism: the record-time direct path (cells into 6464) and the replay path (chain) BOTH land through B; whatever reads the tree must enumerate via the folds/containers — a reader that walks q sees ONLY the last branch per node",
+  "V4": "the guard (q set && r null -> error hook) explains why multi-child parents need the r:Ld31; object — the cells' parent 6464 must have acquired r before its 30+ cell inserts"
+ },
+ "d6_next_targets": [
+  "D7a: renderer read-side census — WHICH structure does the engine's y-band/draw walk enumerate (the OPDUMP bands 1-6 empty question): A/n containers vs q chains, measured with a bounded engine-side witness",
+  "D7b: the slot-table node read witness at pass#2 record time (the original useNode-vs-insert handoff) — needs the composer class identified (Lui1;/Lvi1; are the per-group RECORD records, Lfe1;.E constructs them; the composer itself still unnamed)",
+  "D7c: place-descent — the F-NEW-265 isPlaced gate on the inserted chain (B does NOT touch placement; the chain nodes may exist but be unplaced)"
+ ],
+ "zero_log": "census rows + sha only; run/ artifacts untracked"
+}
