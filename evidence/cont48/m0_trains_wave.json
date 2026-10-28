@@ -1,0 +1,27 @@
+{
+ "train": "CONT-48 M0 «چند قطار» — 11 deep trains (121f) on the fresh-sandbox rebuilt binary + registry structural repair",
+ "date": "2026-10-28",
+ "binary": "fresh make -j2 after sandbox restore; smoke wall: bouncy 8a6c24ac8a7d718e == recorded pin (byte-exact face)",
+ "trains": [
+  {"label": "opmt", "apk": "upload/canonical_apks/opmt_v0.1.2_vc1.apk", "rc": 0, "sha16": "548a2d91ef9892fb", "face": "GREEN uniq32=373 nonwhite=1.000", "verdict": "RICHEST RENDER — GAME-017 upgraded from 8-frame capture to full 121f rc=0"},
+  {"label": "klondike", "rc": 1, "sha16": "a77038da303ed1b4", "face": "DARK uniq32=76", "verdict": "GAME-014 FLAT -> RENDERED dark content"},
+  {"label": "secusodame", "rc": 1, "sha16": "70033bc03f0392ed", "face": "DARK uniq32=64", "verdict": "GAME-088 uniq 15 -> 64 upgrade"},
+  {"label": "secusosolitaire", "rc": 1, "sha16": "aa53f6f172621982", "face": "DARK uniq32=65", "verdict": "GAME-092 uniq 15 -> 65 upgrade"},
+  {"label": "secusomemory", "rc": 1, "sha16": "807a0ccaf9b30d99", "face": "DARK uniq32=22", "verdict": "GAME-074 uniq 6 -> 22 upgrade"},
+  {"label": "chessjwtc", "rc": 1, "sha16": "3f7e670759b7c6a8", "face": "FLAT uniq32=55 nonwhite=0.001", "verdict": "GAME-055 honest re-read: deep run renders a blank light field (was RENDERED uniq19 in M1 fanout)"},
+  {"label": "andstatus2048", "rc": 1, "sha16": "b5a7a35d5fe0564b", "face": "blank uniq32=1", "verdict": "GAME-077 no change vs FLAT"},
+  {"label": "ball2box", "rc": 1, "sha16": "b5a7a35d5fe0564b", "face": "blank uniq32=1", "verdict": "GAME-007 no change vs FLAT (identical failure face to andstatus2048)"},
+  {"label": "forkgram", "apk": "upload/forkgram_709208.apk", "rc": 1, "sha16": "c2e071714e97a3af", "face": "FLAT uniq32=18 nonwhite=0.001", "verdict": "APP-016 (org.forkgram.classic) NOT_TESTED -> OBSERVED: first execution evidence; telegram-fork heavy load stays flat"}
+ ],
+ "registry_repair": [
+  "DUPLICATE-ID DEFECT discovered and fixed: 50+ ids appeared on TWO rows (first=kept, second=renumbered next-free); 253 rows now 253 unique ids; 245 unique pkgs (8 pkg dups pre-existing, untouched)",
+  "evidence applied STRICT exact-pkg (cont48_apply.py + cont48_apply2.py); 2 pkg-mismatches caught by the strict law (GAME-074 dup, jwtc.chess vs jwtc.android.chess)",
+  "counts: NOT_TESTED 143 -> 142; with-execution-evidence 106 -> 107 (forkgram unlock; OBSERVED 75 -> 76)"
+ ],
+ "tooling": [
+  "scripts/cont48_trains.sh — 11-train deep roster (xargs -P 5); FIXED: xargs splits on whitespace not pipes (first fire was 5 SKIP no-ops — honest re-fire)",
+  "scripts/cont48_face.py — face classifier (PIL/numpy, uniq32 buckets, HSV class)",
+  "scripts/cont48_apply.py / cont48_apply2.py — strict exact-pkg evidence apply + dup-id repair"
+ ],
+ "zero_log": "run/cont48/* untracked; this JSON carries sha16 + classifier numbers only"
+}
