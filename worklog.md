@@ -12171,3 +12171,22 @@ Sandbox restored (was reset): fresh clone synced to origin/main 2db25697; androg
 
 ## CONT-48 T9/F1 — AndResGuard drawable-binding gap FIXED (2026-10-28)
 Decode: T8's "11098 plurals" label WRONG — 0x0f=R$string (11108 DEX fields); ARSC has NO plurals type (raw=14, string=15 with only 195 entries, style=16, literal "?17"=17 no chunks, xml=18). Engine ArscParser healthy (probe: resolve+select_file HIT res/ENE.png). Live census: 0 census lines for 7f08 drawables — R$ harvest was lazy-only, census runs pre-R.drawable-touch. FIX: harvest_r_class_fields() + eager_harvest_r_classes() before populate_drawable_paths_from_arsc. VERIFIED: 1930/13296 drawable paths bound (was 0); wall dooz 31ddd4d5 / gmdice 3891679d / bouncy 8a6c24ac byte-exact; telegram bf5c9ef9 stable x121f; opencalc 63020bc->7e33aad honest fix-consequence. Commit b7d0bc94. Next: F2 theme->drawable bridge / F3 AlertDialog decor law; more trains.
+
+## CONT-49 — 36-train wave + F2 decode + S124 pkg repair (2026-10-29)
+- «چند قطار» wave: cont49_roster.py (59 on-disk APKs -> 36 evidence-less
+  candidates) -> cont49_trains.sh xargs -P6 121f. Faces: 19 DARK / 7 BLUE /
+  4 FLAT / 2 PURPLE / 2 RED / 1 GREEN / 1 ORANGE. rc=1 = F-016
+  exception-honesty (not render failure). Blank-white hash 31ddd4d5 x4
+  (deterministic empty PNG — honest FLAT).
+- F2 DECODE (engine-parser probes cont49_f2_probe/2.cpp): Theme.TMessages.Start
+  windowBackground = @android:color/white #ffffffff. HONEST REVERSAL —
+  telegram's white launch face is THEMED-CORRECT; the F2 theme->drawable
+  bridge hypothesis is DISPROVEN. Real gap = launch CONTENT chain (T5
+  config/intro-fragment frontier). Latent engine gap noted: windowBackground
+  ref deref lacks framework-package routing (visually masked here).
+- REGISTRY STRUCTURAL: 9 S124-era rows had pkg='…'. Repaired 5 by direct
+  train evidence (unote/microtimer/stopwatch/chessclock/opencalc); unique
+  pkgs 245->250; loads unchanged. 4 deferred (notes/pmk/shopping/opensudoku
+  — no disk provenance). opencalc re-run 63020bc vs T9 7e33aad = env/timing
+  variance under 629-exception storm, no drift claim.
+- Evidence evidence/cont49/trains_wave_f2.json (ZERO-LOG).
