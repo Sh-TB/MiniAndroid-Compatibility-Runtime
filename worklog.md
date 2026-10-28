@@ -12190,3 +12190,23 @@ Decode: T8's "11098 plurals" label WRONG — 0x0f=R$string (11108 DEX fields); A
   — no disk provenance). opencalc re-run 63020bc vs T9 7e33aad = env/timing
   variance under 629-exception storm, no drift claim.
 - Evidence evidence/cont49/trains_wave_f2.json (ZERO-LOG).
+
+## CONT-50 — tiny-problem sweep: 6 root causes, 5 fixed, pins byte-exact (2026-10-29)
+- Census (36 CONT-49 logs): F084 budget storm ~830/run (NAMED, deferred);
+  ConstraintLayout NPE 171/run; regex capture-group use-after-scope (EVERY
+  app!); StringTokenizer absent; BAOS subclass null; makeOptionalFitsSystem
+  Windows missing. kotlin-reflect CNFE + NameNotFound verdict: AOSP-EXACT
+  already (app-caught) — no fix.
+- INTERNET ground truth (اینترنت law): api-16 View.java:5485
+  makeOptionalFitsSystemWindows = setFlags one-liner; OpenJDK StringTokenizer
+  delimiter-run law; libgdx master BitmapFontData page/char parse.
+- FIXES: (1) FIELD-DEFAULT law — no-ctor R8-merged LP subclass + depth-2
+  object-field seeding (opencalc NPE 171→0); (2) regex UB — smatch over
+  destroyed local copied into `captured` (group(1) '\t'→'0' VERIFIED);
+  (3) StringTokenizer bridge (full delimiter-run law); (4) BAOS family law
+  (superclass walk) + java buf/count field sync for real-DEX overrides;
+  (5) makeOptionalFitsSystemWindows shadow. Wall pins dooz/gmdice/bouncy
+  byte-exact x2. tower3d: font chain fully unblocked → new frontier gdx
+  native JNI (Gdx2DPixmap.load/Matrix4.prj/BufferUtils). F084 clean-stop
+  law deferred (frame-pump change needs its own A/B round).
+- Evidence evidence/cont49/tiny_sweep.json (ZERO-LOG).

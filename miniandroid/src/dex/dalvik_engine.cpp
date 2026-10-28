@@ -14283,7 +14283,96 @@ uint32_t DalvikExecutionEngine::generate_child_layout_params(
             picked = &c;
         }
     }
-    if (picked == nullptr) return 0;   // AOSP ViewGroup default stands
+    // ── CONT-49 FIELD-DEFAULT LAW (generic, no app knowledge) ───────────
+    // R8 horizontal class merging can strip every ctor from the LP
+    // subclass (opencalc 53: LA/e = ConstraintLayout.LayoutParams merged
+    // class carries TWO methods, ZERO ctors; no DEX new-instance reaches
+    // it either — instances exist only via engine materialization). The
+    // old law returned 0 → ROOT-055 answered the GENERIC
+    // ViewGroup$LayoutParams; the optimistic check-cast (F-090, honest
+    // pass) let the real DEX ConstraintLayout.onLayout read the
+    // child's LP as LA/e and iget the solver-widget field → null → NPE
+    // ×171/run → ConstraintLayout subtree never laid out.
+    // AOSP law (JVMS §2.17.5 / ART InitializeStaticFields+ctor emit):
+    // field INITIALIZERS are part of construction — an object of a class
+    // with field `ConstraintWidget widget = new ConstraintWidget()` must
+    // never present a null widget to a reader. When no runnable ctor
+    // exists, the engine materializes the object and seeds every
+    // object-typed declared field whose type is a DEX-defined class with
+    // a default instance (depth-2 bounded — covers LP → solver widget →
+    // anchors; Lx/c leaf state reads as fresh-solver zeros, the
+    // unmeasured-child AOSP semantic). Cycle-safe (self-referential
+    // field types terminate on depth), Strings never synthesized.
+    if (picked == nullptr) {
+        const dex::ClassInfo* structural = nullptr;
+        for (const auto& c : dex_report_->classes) {
+            if (c.name.compare(0, prefix.size(), prefix) != 0) continue;
+            if (c.superclass_name != kMarginLp) continue;
+            structural = &c;   // first structural match (deterministic DEX order)
+            break;
+        }
+        if (structural == nullptr) return 0;  // AOSP ViewGroup default stands
+
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (!view_shadow) return 0;
+        auto* node = view_shadow->find_node(child_view_id);
+        if (!node) return 0;
+
+        uint32_t lp_obj = heap_.allocate(structural->name, 0, 0);
+        if (lp_obj == 0 || !heap_.has_object(lp_obj)) return 0;
+        heap_.mark_initialized(lp_obj);
+
+        static thread_local int fd_seed_n = 0;
+        int budget = 64;
+        std::function<void(uint32_t, const std::string&, int)> seed =
+            [&](uint32_t oid, const std::string& cls, int depth) {
+                if (depth <= 0 || budget <= 0) return;
+                auto cit = class_info_index_.find(cls);
+                if (cit == class_info_index_.end()) return;
+                for (const auto& f :
+                     dex_report_->classes[cit->second].instance_fields) {
+                    if (f.type.size() < 3 || f.type[0] != 'L') continue;
+                    if (f.type == "Ljava/lang/String;") continue;
+                    if (!class_info_index_.count(f.type)) continue;
+                    uint32_t child =
+                        heap_.allocate(f.type, 0, 0);
+                    if (child == 0) continue;
+                    heap_.set_object_field(
+                        oid, f.name, DalvikValue::make_object(child, f.type));
+                    --budget;
+                    if (budget <= 0) return;
+                    seed(child, f.type, depth - 1);
+                }
+            };
+        seed(lp_obj, structural->name, 2);
+        if (fd_seed_n < 8) {
+            ++fd_seed_n;
+            std::cerr << "[CONT49-FD] no-ctor LP materialized parent="
+                      << parent_cls << " lp=" << structural->name
+                      << " o" << lp_obj
+                      << " field-defaults seeded (depth2)" << std::endl;
+        }
+
+        // Semantic write-back (same contract as the ctor path, step 5).
+        heap_.set_object_field(lp_obj, "width",
+                               DalvikValue::make_int(node->width));
+        heap_.set_object_field(lp_obj, "height",
+                               DalvikValue::make_int(node->height));
+        if (node->lp_margin_left || node->lp_margin_top ||
+            node->lp_margin_right || node->lp_margin_bottom) {
+            heap_.set_object_field(lp_obj, "leftMargin",
+                                   DalvikValue::make_int(node->lp_margin_left));
+            heap_.set_object_field(lp_obj, "topMargin",
+                                   DalvikValue::make_int(node->lp_margin_top));
+            heap_.set_object_field(lp_obj, "rightMargin",
+                                   DalvikValue::make_int(node->lp_margin_right));
+            heap_.set_object_field(lp_obj, "bottomMargin",
+                                   DalvikValue::make_int(node->lp_margin_bottom));
+        }
+        node->layout_params_object = lp_obj;
+        node->layout_params_class = structural->name;
+        return lp_obj;
+    }
 
     // 3) The child node must exist (stash target + semantic w/h).
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
@@ -35145,14 +35234,104 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // stores the low byte; write(byte[],off,len) copies; toByteArray()
     // returns a REAL engine byte array (array[i] + length fields, the same
     // shape every read/write/array law consumes); close() is a no-op.
+    // CONT-49 FAMILY LAW: gdx's StreamUtils$OptimizedByteArrayOutputStream
+    // (tower3d Pixmap face) SUBCLASSES BAOS — the exact-name guard let its
+    // inherited toByteArray() fall to the STUB layer (null answer) →
+    // array-length NPE → GdxRuntimeException → app dead. The law now walks
+    // the DEX superclass chain (bounded 8 hops): every real subclass of
+    // java.io.ByteArrayOutputStream answers the same buffer laws.
     // ────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/io/ByteArrayOutputStream;") {
+    bool is_baos_family = class_name == "Ljava/io/ByteArrayOutputStream;";
+    if (!is_baos_family) {
+        std::string baos_cur = class_name;
+        for (int baos_hops = 0; baos_hops < 8 && !baos_cur.empty();
+             ++baos_hops) {
+            auto baos_it = class_to_superclass_.find(baos_cur);
+            if (baos_it == class_to_superclass_.end()) break;
+            baos_cur = baos_it->second;
+            if (baos_cur == "Ljava/io/ByteArrayOutputStream;") {
+                is_baos_family = true;
+                break;
+            }
+        }
+    }
+    if (is_baos_family) {
         uint32_t bid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
                            ? args[0].object_id : 0;
         std::string& buf = baos_buffers_[bid];
         status = ApiCallTrace::Status::IMPLEMENTED;
+        // CONT-49 JAVA-FIELD SYNC: real DEX subclasses (gdx's
+        // OptimizedByteArrayOutputStream override) read the AOSP fields
+        // `buf` (byte[]) and `count` (int) DIRECTLY — the C++ map alone
+        // left this.buf null → array-length NPE. Mirror after every
+        // mutation: count = size; buf array capacity doubling, full copy
+        // (asset-scale buffers only — bounded 1MiB honest ceiling).
+        auto sync_baos_fields = [&](uint32_t oid, const std::string& data) {
+            if (oid == 0 || !heap_.has_object(oid) ||
+                data.size() > (1u << 20))
+                return;
+            heap_.set_object_field(oid, "count",
+                                   DalvikValue::make_int(
+                                       static_cast<int32_t>(data.size())));
+            uint32_t arr_id = 0;
+            int64_t cap = 0;
+            if (auto bf = heap_.get_object_field(oid, "buf");
+                bf.has_value() && bf->type == DalvikType::OBJECT_REF &&
+                bf->object_id != 0 && heap_.has_object(bf->object_id)) {
+                arr_id = bf->object_id;
+                if (auto lf = heap_.get_object_field(arr_id, "__array_length__");
+                    lf.has_value() && lf->type == DalvikType::INT32)
+                    cap = lf->int_val;
+                if (cap == 0)
+                    if (auto lf2 = heap_.get_object_field(
+                            arr_id, "__new_array_length__");
+                        lf2.has_value() && lf2->type == DalvikType::INT32)
+                        cap = lf2->int_val;
+            }
+            if (arr_id == 0 || cap < (int64_t)data.size()) {
+                int64_t ncap = cap > 0 ? cap : 32;
+                while (ncap < (int64_t)data.size()) ncap *= 2;
+                uint32_t nid = heap_.allocate("[B", pc_, 0);
+                heap_.set_object_field(
+                    nid, "__array_length__",
+                    DalvikValue::make_int(static_cast<int32_t>(ncap)));
+                heap_.set_object_field(
+                    nid, "__new_array_length__",
+                    DalvikValue::make_int(static_cast<int32_t>(ncap)));
+                for (int64_t k = 0; k < (int64_t)data.size(); ++k)
+                    heap_.set_object_field(
+                        nid, "array[" + std::to_string(k) + "]",
+                        DalvikValue::make_byte(
+                            static_cast<int8_t>(data[k])));
+                heap_.set_object_field(
+                    oid, "buf", DalvikValue::make_object(nid, "[B"));
+                return;
+            }
+            // capacity fits: refresh the valid prefix
+            for (int64_t k = 0; k < (int64_t)data.size(); ++k)
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(k) + "]",
+                    DalvikValue::make_byte(static_cast<int8_t>(data[k])));
+        };
         if (method == "<init>") {
-            if (heap_.has_object(bid)) heap_.set_object_field(bid, "count", DalvikValue::make_int(0));
+            if (heap_.has_object(bid)) {
+                heap_.set_object_field(bid, "count", DalvikValue::make_int(0));
+                // AOSP BAOS(int): the initial buffer. Seed the java field
+                // so subclass bytecode never sees a null buf.
+                int32_t seed_cap = 32;
+                if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                    args[1].int_val > 0 && args[1].int_val <= (1 << 20))
+                    seed_cap = args[1].int_val;
+                uint32_t nid = heap_.allocate("[B", pc_, 0);
+                heap_.set_object_field(
+                    nid, "__array_length__",
+                    DalvikValue::make_int(seed_cap));
+                heap_.set_object_field(
+                    nid, "__new_array_length__",
+                    DalvikValue::make_int(seed_cap));
+                heap_.set_object_field(
+                    bid, "buf", DalvikValue::make_object(nid, "[B"));
+            }
             result = DalvikValue::make_void();
             return true;
         }
@@ -35196,6 +35375,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                              std::to_string(buf.size()) + " bytes)",
                 true, "ByteArrayOutputStream.write",
                 current_class_ + "." + current_method_);
+            sync_baos_fields(bid, buf);
             result = DalvikValue::make_void();
             return true;
         }
@@ -37831,6 +38011,149 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     // ────────────────────────────────────────────────────────────────────
+    // CONT-49 T6: java.util.StringTokenizer — libcore delimiter-run law.
+    // Previously NO shadow existed: nextToken fell to the STUB layer and
+    // answered "" — gdx BitmapFontData.load (tower3d lsans-15.fnt char
+    // lines with a TRAILING SPACE) parsed one token too many and died on
+    // NumberFormatException("") at the x-advance parseFloat; every legacy
+    // app family that tokenizes strings (gdx fonts, CSV-ish parsers) hit
+    // the same wall. Java law (java.util.StringTokenizer, OpenJDK):
+    //   - nextToken SKIPS delimiter RUNS (never returns an empty token
+    //     unless returnDelims and the next char IS a delimiter),
+    //   - exhausted nextToken → NoSuchElementException,
+    //   - hasMoreTokens: a token OR (returnDelims) a delimiter remains,
+    //   - countTokens: maximal token sequences from the current position.
+    // State rides heap fields (the Matcher-bridge convention): "str",
+    // "delim", "pos", "ret_delims". ASCII/Latin-1 delimiter scope — the
+    // libcore surrogate-pair delimiter path is not modeled (documented).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/StringTokenizer;") {
+        if (method == "<init>" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t st_id = args[0].object_id;
+            std::string st_str, st_delim = " \t\n\r\f";
+            if (args.size() >= 2 &&
+                (args[1].type == DalvikType::STRING_REF ||
+                 args[1].type == DalvikType::OBJECT_REF)) {
+                if (args[1].type == DalvikType::STRING_REF)
+                    st_str = args[1].string_val;
+                else if (heap_.has_object(args[1].object_id)) {
+                    auto sv = heap_.get_object_field(args[1].object_id, "value");
+                    if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                        st_str = sv->string_val;
+                }
+            }
+            if (args.size() >= 3) {
+                if (args[2].type == DalvikType::STRING_REF)
+                    st_delim = args[2].string_val;
+                else if (args[2].type == DalvikType::OBJECT_REF &&
+                         heap_.has_object(args[2].object_id)) {
+                    auto sv = heap_.get_object_field(args[2].object_id, "value");
+                    if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                        st_delim = sv->string_val;
+                }
+            }
+            bool ret_delims = args.size() >= 4 &&
+                              args[3].type == DalvikType::INT32 &&
+                              args[3].int_val != 0;
+            heap_.set_object_field(st_id, "str",
+                                   DalvikValue::make_string(st_str, 0));
+            heap_.set_object_field(st_id, "delim",
+                                   DalvikValue::make_string(st_delim, 0));
+            heap_.set_object_field(st_id, "pos", DalvikValue::make_int(0));
+            heap_.set_object_field(st_id, "ret_delims",
+                                   DalvikValue::make_bool(ret_delims));
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            (method == "nextToken" || method == "hasMoreTokens" ||
+             method == "countTokens" || method == "hasMoreElements" ||
+             method == "nextElement")) {
+            uint32_t st_id = args[0].object_id;
+            std::string st_str, st_delim;
+            int32_t st_pos = 0;
+            bool ret_delims = false;
+            if (!heap_.has_object(st_id)) {
+                result = method == "hasMoreTokens" || method == "hasMoreElements"
+                             ? DalvikValue::make_bool(false)
+                             : DalvikValue::make_null();
+                status = ApiCallTrace::Status::STUBBED;
+                return true;
+            }
+            if (auto v = heap_.get_object_field(st_id, "str");
+                v.has_value() && v->type == DalvikType::STRING_REF)
+                st_str = v->string_val;
+            if (auto v = heap_.get_object_field(st_id, "delim");
+                v.has_value() && v->type == DalvikType::STRING_REF)
+                st_delim = v->string_val;
+            if (auto v = heap_.get_object_field(st_id, "pos");
+                v.has_value() && v->type == DalvikType::INT32)
+                st_pos = v->int_val;
+            if (auto v = heap_.get_object_field(st_id, "ret_delims");
+                v.has_value() && v->type == DalvikType::BOOLEAN)
+                ret_delims = v->bool_val;
+            auto is_delim = [&](char c) {
+                return st_delim.find(c) != std::string::npos;
+            };
+            if (method == "hasMoreTokens" || method == "hasMoreElements") {
+                bool more = st_pos < (int32_t)st_str.size();
+                if (more && !ret_delims) {
+                    // a token remains only if a non-delimiter char exists
+                    while (st_pos < (int32_t)st_str.size() &&
+                           is_delim(st_str[st_pos]))
+                        ++st_pos;
+                    more = st_pos < (int32_t)st_str.size();
+                }
+                result = DalvikValue::make_bool(more);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "countTokens") {
+                int32_t p = st_pos, n = 0;
+                while (p < (int32_t)st_str.size()) {
+                    if (ret_delims && is_delim(st_str[p])) { ++n; ++p; continue; }
+                    while (p < (int32_t)st_str.size() && is_delim(st_str[p])) ++p;
+                    if (p >= (int32_t)st_str.size()) break;
+                    ++n;
+                    while (p < (int32_t)st_str.size() && !is_delim(st_str[p])) ++p;
+                }
+                result = DalvikValue::make_int(n);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // nextToken / nextElement — the delimiter-run law.
+            if (ret_delims && st_pos < (int32_t)st_str.size() &&
+                is_delim(st_str[st_pos])) {
+                result = DalvikValue::make_string(
+                    std::string(1, st_str[st_pos]), 0);
+                heap_.set_object_field(st_id, "pos",
+                                       DalvikValue::make_int(st_pos + 1));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            while (st_pos < (int32_t)st_str.size() && is_delim(st_str[st_pos]))
+                ++st_pos;
+            if (st_pos >= (int32_t)st_str.size()) {
+                throw_deferred("Ljava/util/NoSuchElementException;",
+                               "StringTokenizer exhausted", "CONT49-ST");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            int32_t start = st_pos;
+            while (st_pos < (int32_t)st_str.size() && !is_delim(st_str[st_pos]))
+                ++st_pos;
+            heap_.set_object_field(st_id, "pos",
+                                   DalvikValue::make_int(st_pos));
+            result = DalvikValue::make_string(st_str.substr(start, st_pos - start), 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
     // F-104 (S58) continued: java.util.regex Pattern/Matcher family —
     // OpenJDK law over std::regex (ECMAScript grammar covers the common
     // Java pattern subset the corpus uses). No law existed at all:
@@ -37946,24 +38269,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (method == "find" || method == "matches") {
             groups.clear();
             bool matched = false;
-            std::smatch mres;
+            // ── CONT-49 UB FIX (use-after-scope, gdx BitmapFontData
+            // tower3d evidence: group(1) of `.*id=(\d+)` on the clean
+            // page line returned '\t' — freed-heap bytes). The old code
+            // bound std::smatch sub_matches to `tail` — a LOCAL of the
+            // inner if-block — and read them AFTER the block died in the
+            // store loop: every capture read DANGLING memory. The matches
+            // branch was safe only because `input` outlives the block.
+            // Fix: COPY (matched, str) pairs into `captured` while the
+            // subject string is alive; the store loop consumes copies.
+            std::vector<std::pair<bool, std::string>> captured;
             try {
                 if (method == "find") {
                     if (!rx.empty() && search_pos <= static_cast<int32_t>(input.size())) {
                         std::string tail = input.substr(search_pos);
                         std::regex re(rx, std::regex::ECMAScript);
-                        matched = std::regex_search(tail, mres, re);
+                        std::smatch m2;
+                        matched = std::regex_search(tail, m2, re);
                         if (matched) {
-                            m_start = search_pos + static_cast<int32_t>(mres.position(0));
-                            m_end = m_start + static_cast<int32_t>(mres.length(0));
+                            m_start = search_pos + static_cast<int32_t>(m2.position(0));
+                            m_end = m_start + static_cast<int32_t>(m2.length(0));
                             search_pos = m_end > search_pos ? m_end : search_pos + 1;
+                            for (size_t gi = 0; gi < m2.size(); ++gi)
+                                captured.emplace_back(m2[gi].matched,
+                                                      m2[gi].matched
+                                                          ? m2[gi].str()
+                                                          : std::string());
                         }
                     }
                 } else {
                     if (!rx.empty()) {
                         std::regex re(rx, std::regex::ECMAScript);
-                        matched = std::regex_match(input, mres, re);
-                        if (matched) { m_start = 0; m_end = static_cast<int32_t>(input.size()); }
+                        std::smatch m2;
+                        matched = std::regex_match(input, m2, re);
+                        if (matched) {
+                            m_start = 0;
+                            m_end = static_cast<int32_t>(input.size());
+                            for (size_t gi = 0; gi < m2.size(); ++gi)
+                                captured.emplace_back(m2[gi].matched,
+                                                      m2[gi].matched
+                                                          ? m2[gi].str()
+                                                          : std::string());
+                        }
                     }
                 }
             } catch (const std::regex_error& e) {
@@ -37972,8 +38319,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 matched = false;
             }
             if (matched) {
-                for (size_t gi = 0; gi < mres.size(); ++gi) {
-                    std::string g = mres[gi].matched ? mres[gi].str() : std::string();
+                for (size_t gi = 0; gi < captured.size(); ++gi) {
+                    std::string g = captured[gi].first ? captured[gi].second
+                                                       : std::string();
+                    // CONT-49: bounded find-store diag (tab-NFE face —
+                    // what the std::regex engine ACTUALLY captured).
+                    {
+                        static thread_local uint64_t rx_find_diag_n = 0;
+                        if (rx_find_diag_n < 6) {
+                            ++rx_find_diag_n;
+                            std::cerr << "[CONT49-RXFIND] " << method
+                                      << " rx='" << rx.substr(0, 40) << "'"
+                                      << " input='" << input.substr(0, 48) << "'"
+                                      << " g" << gi << "='"
+                                      << g.substr(0, 24) << "'" << std::endl;
+                        }
+                    }
                     groups.push_back(g);
                     heap_.set_object_field(mid, "group" + std::to_string(gi),
                                            DalvikValue::make_string(g, 0));
@@ -37984,7 +38345,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     // (which counts STRING fields only) and the historical
                     // value store unchanged.
                     heap_.set_object_field(mid, "group" + std::to_string(gi) + "_m",
-                                           DalvikValue::make_bool(mres[gi].matched));
+                                           DalvikValue::make_bool(captured[gi].first));
                 }
                 set_int("match_start", m_start);
                 set_int("match_end", m_end);
@@ -38045,6 +38406,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = participated
                          ? DalvikValue::make_string(gv->string_val, 0)
                          : DalvikValue::make_null();
+            // CONT-49: bounded group-return diag (the gdx BitmapFontData
+            // tab-NFE face — group(1) must be "0" for `.*id=(\d+)` on the
+            // lsans-15 page line; name the EXACT stored group content).
+            {
+                static thread_local uint64_t rx_group_diag_n = 0;
+                if (rx_group_diag_n < 6) {
+                    ++rx_group_diag_n;
+                    std::cerr << "[CONT49-RX] group(" << gi
+                              << ") participated=" << participated
+                              << " rx='" << rx.substr(0, 40) << "'"
+                              << " input='" << input.substr(0, 48) << "'"
+                              << " -> '" << gv->string_val.substr(0, 24) << "'"
+                              << std::endl;
+                }
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
