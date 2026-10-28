@@ -11946,3 +11946,63 @@ Work Log:
 Stage Summary:
 - D3 complete: fix target for D4 = the composer's node-stack (startNode/endNode) descent during the NavHost destination content composition in pass#2; the recorded parent for board-subtree inserts must become the destination content node.
 - Train ledger this window: TELEGRAM T3 (3ea84221, R-NEW-571 — telegram launch now ZERO uncaught) + DOOZ D3 (this evidence). Next: DOOZ D4 then TELEGRAM T4 (deferred-UI drain) per the 60/40 law.
+
+---
+Task ID: CONT-47-T5
+Agent: Super Z (main)
+Task: TELEGRAM TRAIN 5 of 10 — the config-chain typed canned-success law
+(T4 handoff). «ادامه از جایی که ناقص موندی» + standing «ادامه قطار».
+
+Work Log:
+- Round-open: sandbox RESET detected (local at the stale CONT-10-era
+  e99c2fbd; run/ + evidence/cont47 + scripts/cont47* wiped). Remote main
+  was at 988cb889 (D5) with ALL of M0/D4/T4/D5 pushed — reset --hard to
+  origin/main; the stale local UUID commit was dropped (old-era worklog
+  checkpoint, no unique content).
+- T5 static decode (scripts/cont47_t5_config.py + _scan.py + _ka.py):
+  found + fixed a class_data parser bug (skipping the sf/inf FIELD uleb
+  lists desyncs the method walk; androguard ground-truth verified ka:
+  a:I idx=38114, b:MessagesController idx=38115, <init> 46777,
+  run(Object,Object) 46778). ka = the R8-merged RequestDelegate
+  (a = case selector) dispatching to 7 MC statics — all webBrowser-family
+  lambdas (addWebBrowserException$513 / clearAllWebBrowserExceptions$516 /
+  updateWebBrowserSettings$517 / removeWebBrowserException$515 /
+  loadWebBrowserConfig$509 / loadStakeDiceInfo$507 /
+  deleteReactionsFromMessage$132). MC = 52 static + 488 inst + 1135
+  direct + 438 virtual, defined ONLY in classes.dex.
+- Pre-fix live census (req_cls added to the R-NEW-570 stderr): 16x
+  TL_help_getAppConfig + 4x TL_account$getWebBrowserSettings + 4x
+  TL_account$getAutoDownloadSettings + 1x TL_langpack_getLanguages hit
+  the OFFLINE path per launch.
+- T5 LAW: typed canned-success for getAppConfig (-> TL_config,
+  dc_options = REAL empty ArrayList) and getWebBrowserSettings (->
+  TL_webBrowserSettings, both exception lists = REAL empty ArrayLists —
+  the lambda clears them unconditionally). AutoDownload + langpack stay
+  honest OFFLINE (null-safe lambdas per T1). No type-lying (the T1 law).
+- Runtime effect: the telegram view tree now reaches the DRAW path —
+  7218 C013-ONDRAW dispatches / 401 frames (~18 views/frame: ActionBar/w,
+  Components/ba0+ak0, k0, pa, mw0, kc, ActionBar/t3, e4, u4/g); ops
+  mostly 0 (4645/7218) with the ActionBar background painting (1/2/6-op
+  views present). The T4 'offline retry' reading REFINED: the
+  240010ms/3600010ms self-scheduling PERSISTS with canned success — they
+  are periodic config RELOAD timers (scheduled on success too), not
+  error backoff.
+- Faces: telegram terminal = dac4ade9bd2d6c02 x4/4 (== pre-T5 pin).
+  In-progress screenshot reads are NOT terminal (two mid-run artifacts
+  retracted; lesson: read faces only after process exit — this also
+  RETRACTS the earlier 851cc176 'container delta' A/B reading; dooz on
+  the finished solo run reproduces 31ddd4d5b8e6d18e == the recorded pin).
+- Regression wall: dooz 31ddd4d5b8e6d18e MATCH, gmdice 3891679dff449331
+  MATCH, opencalc 63020bc7334048fe recorded as fresh container baseline.
+- D6 re-baseline banked on THIS container: dooz + D4/D5 witness env
+  reproduces the 44-insert parent_q=ABSENT chain + pin 31ddd4d5b8e6d18e.
+- Evidence banked evidence/cont47/t5_tg_config_chain.json (ZERO-LOG).
+
+Stage Summary:
+- T5 complete: the config chain completes with correctly-typed canned
+  success; telegram's launch path advanced white-face -> live view-tree
+  DRAW dispatch (first time). Terminal face unchanged (honest).
+- Next trains: TELEGRAM T6 = the 0-ops content draw law (views dispatch
+  draw but paint nothing) + the Ll9/j; boundary face; DOOZ D6 =
+  slot-table key/node matching (useNode-vs-insert) — fresh 44-insert
+  baseline ready in run/cont47/d6/.
