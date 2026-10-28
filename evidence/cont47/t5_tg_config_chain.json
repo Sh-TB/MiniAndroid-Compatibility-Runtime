@@ -1,0 +1,57 @@
+{
+ "train": "CONT-47 T5 TELEGRAM \u2014 the config-chain typed canned-success law (T4 handoff executed)",
+ "head": "988cb889 (D5) + T5 engine edit",
+ "binary": {
+  "unedited_baseline_sha16": "0b34aa05c5b1c1b2",
+  "t5_binary_sha16": "f28226e7ee6a7e4e"
+ },
+ "law": {
+  "site": "dalvik_engine.cpp sendRequest bridge (EXP071 family), new else-if branch before the R-NEW-570 OFFLINE fallback",
+  "requests_answered": [
+   "Lorg/telegram/tgnet/TLRPC$TL_help_getAppConfig; -> Lorg/telegram/tgnet/TLRPC$TL_config; (dc_options = REAL empty ArrayList; ints 0 = unset config; strings null behind 0 flags)",
+   "Lorg/telegram/tgnet/tl/TL_account$getWebBrowserSettings; -> Lorg/telegram/tgnet/tl/TL_account$TL_webBrowserSettings; (external_exceptions + inapp_exceptions = REAL empty ArrayLists \u2014 lambda$loadAppConfig$32 clears both unconditionally)"
+  ],
+  "requests_left_honest_offline": [
+   "TL_account$getAutoDownloadSettings (T1 forensics: lambda opens with if (response == null) return)",
+   "TLRPC$TL_langpack_getLanguages (1x, null-safe)"
+  ],
+  "precedent": "EXP071 TL_nearestDc + TL_auth_sentCode typed mocks; the T1 R-NEW-570 no-type-lying law respected (correct response class, app-read object fields pre-populated)"
+ },
+ "census": {
+  "t5a_pre_fix_binary_r570": {
+   "TL_help_getAppConfig": 16,
+   "TL_account$getWebBrowserSettings": 4,
+   "TL_account$getAutoDownloadSettings": 4,
+   "TL_langpack_getLanguages": 1
+  },
+  "t5b_post_fix": {
+   "T5-CONFIG canned-success total": 20,
+   "TL_config": 16,
+   "TL_webBrowserSettings": 4,
+   "r570_remaining": "getLanguages (+getAutoDownloadSettings on later timing)"
+  }
+ },
+ "runtime_effect": {
+  "view_tree_draw_dispatch": "C013-ONDRAW total 7218 over 401 frames (~18 views/frame): ActionBar/w 1203, Components/ba0+ak0 802+802, k0/pa/mw0/kc/ActionBar-t3/e4/u4/g 401 each \u2014 the Telegram view hierarchy now reaches the DRAW path",
+  "draw_ops": "4645 ops=0, 334 ops=1, 167 ops=2, 167 ops=6 \u2014 ActionBar background paints; main content views dispatch with 0 ops (the known 0-ops draw frontier, same family as the dooz draw gap)",
+  "retry_selfscheduling": "PERSISTS even with canned success (16x240010ms + 4x3600010ms re-enqueue) \u2014 T4's 'offline retry' reading REFINED: these are periodic config RELOAD timers scheduled on both success and failure paths (AOSP Telegram reload cadence), not error-only backoff"
+ },
+ "faces": {
+  "telegram_terminal_x4": "dac4ade9bd2d6c02 (t5a/t5b/t5c/t5d) == the pre-T5 recorded pin",
+  "midrun_note": "in-progress screenshot reads (247206203baf2f52) captured during running probes are NOT terminal \u2014 presentation timing; solo-finished runs all present dac4ade; LESSON banked: read faces only after process exit",
+  "new_boundary_exception": "Ll9/j; APP-BOUNDARY (deferred wall-clock F084 artifact) \u2014 PRESENT in t5a (pre-T5 binary) too; NOT a T5 regression"
+ },
+ "regression_wall": {
+  "dooz": "31ddd4d5b8e6d18e == recorded pin (finished solo run with D4/D5 witness env)",
+  "gmdice": "3891679dff449331 == recorded pin",
+  "opencalc": "63020bc7334048fe (no this-container baseline recorded earlier; recorded as the fresh container baseline, T5 law unreachable for non-TL apps)",
+  "read_error_correction": "two earlier 851cc176 reads (dooz_t5reg, dooz_base) were mid-run artifacts \u2014 the A/B 'container delta' hypothesis is RETRACTED; this container reproduces the recorded pins byte-exact"
+ },
+ "dex_decodes": {
+  "ka": "R8-merged RequestDelegate: fields a:I (case selector) b:MessagesController; run dispatches to 7 MC statics: F1->lambda$addWebBrowserException$513, I0->lambda$loadStakeDiceInfo$507, R2->lambda$clearAllWebBrowserExceptions$516, W3->lambda$updateWebBrowserSettings$517, g7->lambda$deleteReactionsFromMessage$132, j7->lambda$removeWebBrowserException$515, y->lambda$loadWebBrowserConfig$509",
+  "parser_bug": "cont47_t5_scan.py Dex.class_methods initially skipped the class_data FIELD entries (sf/inf uleb lists) \u2014 desynced method walk; fixed (walk fields first); androguard ground truth: ka.a idx=38114, ka.b idx=38115, <init> idx=46777, run idx=46778",
+  "MC_definition": "classes.dex defines MC with 52 static + 488 instance + 1135 direct + 438 virtual members; classes2-4 only hold method REFS"
+ },
+ "T5_verdict": "config chain completes with correctly-typed canned success; the view tree build + draw dispatch UNBLOCKED (first live draw dispatch for telegram); terminal face unchanged; next frontier T6 = the 0-ops content draw law + the Ll9/j; boundary face",
+ "zero_log": "census rows + sha only; run/ artifacts untracked"
+}

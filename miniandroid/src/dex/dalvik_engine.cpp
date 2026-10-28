@@ -8771,6 +8771,68 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                           << " resp_id=" << response_id
                           << " type_id=" << type_id
                           << " length=5 timeout=30" << std::endl;
+            } else if (req_cls.find("TL_help_getAppConfig") != std::string::npos ||
+                       req_cls.find("getWebBrowserSettings") != std::string::npos) {
+                // ── T5 (CONT-47, telegram config chain): the launch-time
+                // config requests TL_help_getAppConfig (16x 4-min offline
+                // retry per the T4 queue census) and
+                // TL_account$getWebBrowserSettings (4x 1-hour retry) are
+                // the hard gate before the intro/auth UI build:
+                // R-NEW-570's honest OFFLINE answer makes
+                // MessagesController self-schedule the retry lambdas
+                // forever and the config-dependent UI never materializes.
+                // The AOSP truth for an offline probe harness is a
+                // CORRECTLY-TYPED empty config response — the same law the
+                // TL_nearestDc and TL_auth_sentCode mocks above already
+                // follow (typed response; app-read object fields
+                // pre-populated with real carriers; never a bare TLObject).
+                // Fields: TL_config.dc_options and
+                // TL_webBrowserSettings.{external,inapp}_exceptions are
+                // ArrayList members the app clears/iterates unconditionally
+                // (lambda$loadAppConfig$32 clears both web lists) — they
+                // are allocated REAL and empty; ints stay 0 (an unset
+                // config); strings stay null (only touched behind flag
+                // bits that are 0). The getAutoDownloadSettings and
+                // langpack requests stay on the honest OFFLINE path (their
+                // lambdas are null-safe per the T1 forensics).
+                if (req_cls.find("TL_help_getAppConfig") != std::string::npos) {
+                    response_id = heap_.allocate(
+                        "Lorg/telegram/tgnet/TLRPC$TL_config;", pc_, 0);
+                    uint32_t dcs = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+                    heap_.set_object_field(
+                        dcs, "__array_length__", DalvikValue::make_int(0));
+                    DalvikValue dcs_val;
+                    dcs_val.type = DalvikType::OBJECT_REF;
+                    dcs_val.object_id = dcs;
+                    dcs_val.class_desc = "Ljava/util/ArrayList;";
+                    heap_.set_object_field(response_id, "dc_options", dcs_val);
+                    std::cerr << "[T5-CONFIG] canned-success TL_config"
+                              << " (dc_options=empty ArrayList)"
+                              << " req_id=" << request_id
+                              << " resp_id=" << response_id << std::endl;
+                } else {
+                    response_id = heap_.allocate(
+                        "Lorg/telegram/tgnet/tl/TL_account$TL_webBrowserSettings;",
+                        pc_, 0);
+                    const char* list_fields[] = {"external_exceptions",
+                                                 "inapp_exceptions"};
+                    for (const char* fld : list_fields) {
+                        uint32_t lst =
+                            heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+                        heap_.set_object_field(
+                            lst, "__array_length__", DalvikValue::make_int(0));
+                        DalvikValue lst_val;
+                        lst_val.type = DalvikType::OBJECT_REF;
+                        lst_val.object_id = lst;
+                        lst_val.class_desc = "Ljava/util/ArrayList;";
+                        heap_.set_object_field(response_id, fld, lst_val);
+                    }
+                    std::cerr << "[T5-CONFIG] canned-success "
+                              << "TL_webBrowserSettings (both exception "
+                              << "lists = empty ArrayLists)"
+                              << " req_id=" << request_id
+                              << " resp_id=" << response_id << std::endl;
+                }
             } else {
                 r570_offline = true;
                 // ── R-NEW-570 (CONT-45 T1, AOSP network-failure law):
@@ -8799,6 +8861,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     DalvikValue::make_string("OFFLINE", 0));
                 std::cerr << "[R-NEW-570] unknown request -> OFFLINE"
                           << " callback (response=null, TL_error code=-2)"
+                          << " req_cls=" << req_cls
                           << std::endl;
             }
         }
