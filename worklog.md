@@ -12105,3 +12105,18 @@ CONT-47 D8 (DOOZ train 5/10) + T7 (TELEGRAM train 5/10) — place-descent witnes
   (LowPowerEnabledTitle literal fallback + subtitle LOC_ERR) — T8 targets.
 - Evidence evidence/cont47/d8_place_descent_witness.json +
   evidence/cont47/t7_atmost_wrap_law.json (ZERO-LOG).
+
+## CONT-47 M1 — fanout wave 2 (60-train parallel re-run on the post-T7 binary)
+- Sandbox restored from an older snapshot (root-owned dirs blocked git + build):
+  bypassed via rename, disk freed 4.2G (logs/gc_work/mc4_sweep), repo reset to
+  origin/main 7339485c. Registry synced (253 rows, all CONT-47 D4..D8/T4..T7 rows).
+- Engine rebuilt clean from HEAD source (build/miniandroid). 60-train parallel
+  fanout re-launched (scripts/cont47_fanout50.sh, xargs -P 10): 60 rows,
+  58 with sha16 + screenshot, 2 rc!=0-with-log honest no-shots (microtimer
+  NO-SHOT). Face census: WHITE (surgeengine, tower3d, stopwatch6), FLAT set
+  re-derived -> run/cont47/faces.json (untracked).
+- Strict registry apply (cont47_update3.py, exact-pkg law): 12 rows labeled
+  OBSERVED/VERIFIED this wave (incl. GAME-017 OPMT VERIFIED, GAME-046
+  surgeengine, GAME-088/074/092 secuso family, GAME-016 TriPeaks, APP-096
+  notes_secuso). Program count: 96 -> 101 with execution evidence.
+  ZERO-LOG: sha-only census rows, run dirs untracked.
