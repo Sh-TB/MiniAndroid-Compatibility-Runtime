@@ -1,0 +1,19 @@
+{
+  "train": "CONT-47 D8 DOOZ — place-descent witness (MINIANDROID_D8_EWRITE): the e-write census",
+  "law": "ZERO-LOG: census rows + sha only; run/ artifacts untracked",
+  "witness": "env MINIANDROID_D8_EWRITE: every iput to Lel0;.e prints recv + value + caller (bounded 64)",
+  "census": {
+    "total_writes": 45,
+    "by_caller": {"Lel0;.<init>": 45},
+    "values": "44x e=F + o7970 constructed e=T (the 5 e=T nodes of D7's placecheck are CONSTRUCTION-TIME values, never runtime writes)",
+    "verdict_D8": "NO place-descent exists in the executed path: the placement flag is write-once at node construction; no compose placeAt -> markNodeAndSubtreeAsPlaced law ever runs in this runtime — any isPlaced-style draw gate consulted for post-first-wave nodes can only read the construction default"
+  },
+  "cross_refs": {
+    "D7": "placecheck e=T:5/45 stable draws 1-4 — now explained: the 5 are ctor-initialized T, the 44 inserted chain nodes ctor F, and nothing ever rewrites either",
+    "D9_frontier": "the place walk must be driven from the AndroidComposeView (Lt4;) onLayout dispatch chain (measureAndLayout -> remeasureAndRelayout -> root.place): the F096 dispatch DID invoke Lt4;.onLayout, so the witness for D9 is the Lt4; onLayout internals census (which callees ran/failed silently) — that is where the placement law should execute",
+    "draw_gate_note": "the D7 read census showed e is READ only 7x during draws — the F-NEW-265 gate (node.I()) reads other fields (I:60127 reads); e is the compose-side layout flag whose writer is missing, not the gate field itself"
+  },
+  "zero_drift": "d8/probe1 face 851cc1761a1dfcdf == dooz_base == wall dooz (the D8 instrumentation is inert)",
+  "wall_this_window": {"dooz": "851cc1761a1dfcdf MATCH", "gmdice": "3891679dff449331 MATCH", "opencalc": "63020bc7334048fe MATCH"},
+  "next": "D9 = Lt4; (AndroidComposeView) onLayout internals census — name the exact callee of the place chain that silently fails, then the place-descent fix"
+}

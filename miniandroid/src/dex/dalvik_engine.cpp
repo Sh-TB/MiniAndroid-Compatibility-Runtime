@@ -14000,21 +14000,69 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
         // (no app knowledge) and equals what AndroidComposeView itself
         // produces for fillMaxSize content under these specs.
         if (!node->dex_measure_valid) {
-            auto f496_dflt = [](int spec) -> int {
-                const int mode = (spec >> 30) & 0x3;
-                const int size = spec & 0x3fffffff;
-                if (mode == 0) return 0;   // UNSPECIFIED → suggested (0)
-                return size;               // EXACTLY(1) / AT_MOST(2) → specSize
-            };
-            out_w = f496_dflt(wspec);
-            out_h = f496_dflt(hspec);
+            // ── CONT-47 T7: NATIVE CLASS-LAW TAKEOVER on no-write-back.
+            // Evidence (telegram t6): ba0;.onMeasure (the LowPowerEnabled
+            // dialog title/subtitle) under AT_MOST(1080)xAT_MOST(1920) ran
+            // as real DEX but produced no setMeasuredDimension write-back —
+            // its StaticLayout/paint machinery did not execute to
+            // completion (the R-NEW-438 incomplete-emulation shape, arm 1
+            // in its degenerate 0x0 form). The F-NEW-496 specSize fallback
+            // then answered 1080x1920 for a wrap-content (lp h=-2) TextView:
+            // the first child filled the dialog panel, the second stacked
+            // off-screen at y=1920, the button row landed mid-panel — the
+            // dialog rendered as scattered texts (the title-overlap face).
+            // AOSP law: TextView.onMeasure answers the SHAPED TEXT size,
+            // never getDefaultSize — the native class law (the same
+            // measure_node_raw leaf branch the F-NEW-304 companion uses)
+            // is the honest takeover when the DEX emulation is incomplete.
+            // Re-entrancy guard: measure_view_spec re-runs the DEX override
+            // through the hook; with the guard set the inner fallback
+            // answers the plain specSize (no recursion).
+            static thread_local bool f496_native_inflight = false;
+            bool f496_native_ok = false;
+            if (!f496_native_inflight && !apk_path_.empty() &&
+                shadow_registry_) {
+                auto& f496_rt = resources::ResourceRuntime::instance();
+                if (f496_rt.ensure_loaded(apk_path_)) {
+                    f496_native_inflight = true;
+                    // T7 native-only: the inner measure run must answer via
+                    // the NATIVE class laws (skip the DEX-override branch) —
+                    // re-running the failing hook would circularly reproduce
+                    // the specSize answer this takeover replaces.
+                    resources::set_native_measure_only(true);
+                    int f496_nw = 0, f496_nh = 0;
+                    f496_native_ok = f496_rt.inflater().measure_view_spec(
+                        view_shadow, view_object_id, wspec, hspec,
+                        f496_nw, f496_nh);
+                    resources::set_native_measure_only(false);
+                    f496_native_inflight = false;
+                    if (f496_native_ok &&
+                        (f496_nw > 0 || f496_nh > 0)) {
+                        out_w = f496_nw;
+                        out_h = f496_nh;
+                    } else {
+                        f496_native_ok = false;
+                    }
+                }
+            }
+            if (!f496_native_ok) {
+                auto f496_dflt = [](int spec) -> int {
+                    const int mode = (spec >> 30) & 0x3;
+                    const int size = spec & 0x3fffffff;
+                    if (mode == 0) return 0;   // UNSPECIFIED → suggested (0)
+                    return size;               // EXACTLY(1) / AT_MOST(2) → specSize
+                };
+                out_w = f496_dflt(wspec);
+                out_h = f496_dflt(hspec);
+            }
             static thread_local uint64_t f496_log = 0;
             if (f496_log++ < 16)
                 fprintf(stderr,
                         "[F-NEW-496] onMeasure no-write-back fallback: "
-                        "spec %dx%d -> measured %dx%d (AOSP getDefaultSize "
-                        "law)\n",
-                        wspec & 0x3fffffff, hspec & 0x3fffffff, out_w, out_h);
+                        "spec %dx%d -> measured %dx%d (%s)\n",
+                        wspec & 0x3fffffff, hspec & 0x3fffffff, out_w, out_h,
+                        f496_native_ok ? "NATIVE class-law takeover (T7)"
+                                       : "AOSP getDefaultSize law");
         }
         // MASTER-2 §22 structured diagnostic (opt-in): real-DEX onMeasure
         // contract evidence — incoming MeasureSpec words and the app's own
@@ -23113,6 +23161,34 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                 "' on a null object reference",
             "iput-null-recv");
         return true;  /* pc_ set by raise (catch handler) or frame unwind */
+    }
+
+    // ── CONT-47 D8 (DIAG-ONLY, env-gated): place-descent witness — every
+    // write to Lel0;.e (the D7 placecheck showed e=F on all 44 inserted
+    // chain nodes at draw: whatever sets e=T = the place walk). Print
+    // receiver + written value + caller so the descent's reach is visible.
+    {
+        static const bool d8_on = diag_env("MINIANDROID_D8_EWRITE");
+        if (d8_on && field_res.resolved &&
+            field_res.class_descriptor == "Lel0;" &&
+            field_res.field_name == "e") {
+            static thread_local uint64_t d8_wn = 0;
+            if (d8_wn < 64) {
+                ++d8_wn;
+                uint32_t d8_recv =
+                    (obj_ref.type == DalvikType::OBJECT_REF)
+                        ? obj_ref.object_id : 0;
+                std::string d8_v = "?";
+                if (src_val.type == DalvikType::BOOLEAN)
+                    d8_v = src_val.bool_val ? "T" : "F";
+                else if (src_val.type == DalvikType::INT32)
+                    d8_v = src_val.int_val ? "T" : "F";
+                std::cerr << "[D8-EWRITE] w#" << d8_wn
+                          << " recv=o" << d8_recv << " e=" << d8_v
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
     }
 
     // ── F-NEW-406 (CONT-99 T1): DEX float-bit register law at the FIELD-

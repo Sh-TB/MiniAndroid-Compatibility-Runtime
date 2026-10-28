@@ -12080,3 +12080,28 @@ CONT-47 D7 (DOOZ train 4/10) — renderer read-side census + insert-chain placem
   The D6-era '851cc176 = mid-run artifact' retraction is contradicted by
   finished runs. Next wall item: bisect pre-T5 vs post-T5 binaries on dooz.
 - Evidence evidence/cont47/d7_read_side_placecheck.json (ZERO-LOG).
+
+CONT-47 D8 (DOOZ train 5/10) + T7 (TELEGRAM train 5/10) — place-descent witness + the AT_MOST wrap fix:
+- D8 (MINIANDROID_D8_EWRITE): 45/45 writes to Lel0;.e come from Lel0;.<init>
+  ONLY — the placement flag is write-once at construction; NO place-descent
+  law ever executes in this runtime (no placeAt->markNodeAndSubtreeAsPlaced
+  equivalent writes e). The D7 e=T:5/45 are construction values. D9 frontier:
+  the Lt4; (AndroidComposeView) onLayout internals census — the F096 dispatch
+  DID run Lt4;.onLayout; which callee of the measureAndLayout->root.place
+  chain silently fails. Note: e is read only 7x at draw — the F-NEW-265 gate
+  reads other fields (I:60127) — e is the compose-side layout flag whose
+  WRITER is missing, not the gate field.
+- T7 FIX LANDED: the F-NEW-496 no-write-back fallback now takes over with
+  the NATIVE class law (inflater measure_view_spec, shaped-text leaf branch)
+  + resources::set_native_measure_only re-entrancy guard so the inner run
+  skips the DEX-override branch (the naive takeover circularly reproduced
+  specSize via the guarded inner fallback — caught on the first probe).
+  RESULT: telegram dialog title (68,0 1080x1920 FULL) -> (68,917 412x44);
+  subtitle (68,1920 OFF-SCREEN) -> (68,961 602x41). Face dac4ade9bd2d6c02
+  -> bf5c9ef920aa32d7 (the fix's pixel consequence). WALL 3/3 MATCH on the
+  post-T7 binary: dooz 851cc176 / gmdice 3891679dff449331 / opencalc
+  63020bc7334048fe — no regression.
+- Open faces: dialog window decor (white panel), locale string pool misses
+  (LowPowerEnabledTitle literal fallback + subtitle LOC_ERR) — T8 targets.
+- Evidence evidence/cont47/d8_place_descent_witness.json +
+  evidence/cont47/t7_atmost_wrap_law.json (ZERO-LOG).
