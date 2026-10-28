@@ -12120,3 +12120,30 @@ CONT-47 D8 (DOOZ train 5/10) + T7 (TELEGRAM train 5/10) — place-descent witnes
   surgeengine, GAME-088/074/092 secuso family, GAME-016 TriPeaks, APP-096
   notes_secuso). Program count: 96 -> 101 with execution evidence.
   ZERO-LOG: sha-only census rows, run dirs untracked.
+
+## CONT-47 D9 — the place-chain census + the m()->q() gate decode (frontier NAMED)
+- D9 witnesses (env-gated MINIANDROID_D9_PLACE: [D9-PLACE] b96 + [D9-MGUARD] b8,
+  read-only; inertness PROVEN byte-exact: clean-rebuild dooz-6f == trace-binary
+  dooz-6f == 607882e924625d57).
+- Runtime census: Lt4;.onMeasure -> Lzs0;.s(J) setRootConstraints -> Lzs0;.m()
+  measureAndLayout (ONCE) -> Lzs0;.q(root,false) (ONCE). NEVER: Lzs0;.k
+  performMeasureAndLayout (0), Lzs0;.p child descent (0).
+- m() GUARDS ALL PASS at runtime (6 identical dumps): owner Lkc;.o()=1,
+  root Lel0;.H()=1, root Lel0;.I()=1, pending h=o3021 non-null, during=0.
+- DEX decode (androguard, scripts/cont47_d9_m_decode.py + resolver): m() has
+  5 exits (owner-guard silent +106; unattached/unplaced/during warnings via
+  Log0;.a; h-null +69) — none taken. m() tail -> q(root,false).
+  q() LAW: `if (node.Lel0;.R:Z) return-void` FIRST INSTRUCTION — the root's R
+  flag is construction-time TRUE (write-once family of D8's e) -> q() returns
+  immediately -> b/c/k/p never run -> the place walk is a NO-OP for the tree.
+- VERDICT D9: the silent-failure callee is Lzs0;.q first-instruction R-gate;
+  the R-flag WRITER on constraint change is the missing engine law.
+- D10 fix frontier: Lzs0;.s(J)V setRootConstraints must invalidate the root's
+  accepted-layout flags (clear root R:Z -> next q() descends -> placeAt writes
+  e -> the F-NEW-265 draw gate opens). Generic compose 1.6.7 semantics.
+- CONTAINER RE-PIN (honesty): snapshot-restored container does not reproduce
+  the D8-era WALL (dooz 607882e9 vs 851cc176; gmdice c4112f92 vs 3891679d;
+  palette 113 == t14, pixel layout shifted — render-lib era drift, freetype
+  2.13.3+deb13u1). t14 precedent: pins are container-scoped. Clean-vs-trace
+  byte-exact control proves OUR instrumentation inert; re-pinned on evidence.
+- Evidence evidence/cont47/d9_place_chain_decode.json (ZERO-LOG).

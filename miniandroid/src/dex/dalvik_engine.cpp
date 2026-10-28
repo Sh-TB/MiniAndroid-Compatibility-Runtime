@@ -7683,6 +7683,109 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
         }
     }
+    // F-NEW-D9 (CONT-47) PLACE-CHAIN CENSUS — env-gated
+    // MINIANDROID_D9_PLACE=1, bounded 96, read-only. The D8 verdict: the
+    // placement flag is write-once at construction and NO place-descent law
+    // (compose placeAt -> markNodeAndSubtreeAsPlaced) ever runs. This census
+    // names WHICH callee of the AndroidComposeView (Lt4;) onLayout chain
+    // silently fails: every Lt4; layout-adjacent dispatch, every
+    // Lzs0; (MeasureAndLayoutDelegate R8) entry, and every
+    // Las0; (RootMeasurePolicy/LayoutNodePlacement R8) entry, each with the
+    // receiver id and the immediate caller frame. The LAST Lzs0;/Las0; line
+    // before the chain dies is the silent-failure callee.
+    {
+        static thread_local const bool d9_on = diag_env("MINIANDROID_D9_PLACE");
+        if (d9_on) {
+            const bool d9_host = (declaring_class == "Lt4;" &&
+                (method_name == "onLayout" || method_name == "layout" ||
+                 method_name == "o" || method_name == "n" || method_name == "onMeasure"));
+            const bool d9_delegate = (declaring_class == "Lzs0;" || declaring_class == "Las0;");
+            if (d9_host || d9_delegate) {
+                static thread_local uint64_t d9_n = 0;
+                if (d9_n++ < 96) {
+                    std::cerr << "[D9-PLACE] " << declaring_class << "."
+                              << method_name << method_descriptor
+                              << " recv=o" << (args.empty() ? 0 : args[0].object_id)
+                              << " argc=" << args.size()
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+                // D9c m()-guard dump (bounded 8): measureAndLayout has THREE
+                // silent exits decoded from DEX bytecode: (1) Lkc;.o()Z owner
+                // guard == false -> jump +106 (NO log), (2) root Lel0;.H()Z
+                // unattached / Lel0;.I()Z unplaced -> Log0;.a warning,
+                // (3) pending-requests field h == null -> jump +69 skip.
+                // Pre-evaluate each guard read-only so the D9 verdict names
+                // the exact failing exit.
+                if (declaring_class == "Lzs0;" && method_name == "m" &&
+                    !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+                    static thread_local uint64_t d9m_n = 0;
+                    if (d9m_n++ < 8 && recursion_depth_ < 24) {
+                        const uint32_t zs = args[0].object_id;
+                        uint32_t owner = 0, root = 0, reqs = 0;
+                        int64_t during_c = -1, during_d = -1;
+                        if (auto ov = heap_.get_object_field(zs, "b");
+                            ov.has_value() && ov->type == DalvikType::OBJECT_REF)
+                            owner = ov->object_id;
+                        if (auto rv = heap_.get_object_field(zs, "a");
+                            rv.has_value() && rv->type == DalvikType::OBJECT_REF)
+                            root = rv->object_id;
+                        if (auto hv = heap_.get_object_field(zs, "h");
+                            hv.has_value() && hv->type == DalvikType::OBJECT_REF)
+                            reqs = hv->object_id;
+                        if (auto cv = heap_.get_object_field(zs, "c");
+                            cv.has_value() && cv->type == DalvikType::INT32)
+                            during_c = cv->int_val;
+                        if (auto dv = heap_.get_object_field(zs, "d");
+                            dv.has_value() && dv->type == DalvikType::INT32)
+                            during_d = dv->int_val;
+                        std::cerr << "[D9-MGUARD] zs=o" << zs
+                                  << " owner=o" << owner << " root=o" << root
+                                  << " reqs=o" << reqs
+                                  << " during_c=" << during_c
+                                  << " during_d=" << during_d;
+                        // read-only leaf evaluations of the three guards
+                        if (owner != 0 && recursion_depth_ < 20) {
+                            DalvikValue r1 = DalvikValue::make_void();
+                            DalvikExecutionResult e1;
+                            bool ok1 = try_recursive_invoke(
+                                "Lkc;", "o",
+                                {DalvikValue::make_object(owner, "Lkc;")},
+                                r1, e1);
+                            std::cerr << " owner.o()="
+                                      << (ok1 && r1.type == DalvikType::BOOLEAN
+                                              ? std::to_string(r1.int_val)
+                                              : std::string("ERR"))
+                                      << "/disp=" << (ok1 ? "Y" : "N");
+                        }
+                        if (root != 0 && recursion_depth_ < 20) {
+                            DalvikValue r2 = DalvikValue::make_void();
+                            DalvikExecutionResult e2;
+                            bool ok2 = try_recursive_invoke(
+                                "Lel0;", "H",
+                                {DalvikValue::make_object(root, "Lel0;")},
+                                r2, e2);
+                            std::cerr << " root.H()="
+                                      << (ok2 && r2.type == DalvikType::BOOLEAN
+                                              ? std::to_string(r2.int_val)
+                                              : std::string("ERR"));
+                            DalvikValue r3 = DalvikValue::make_void();
+                            DalvikExecutionResult e3;
+                            bool ok3 = try_recursive_invoke(
+                                "Lel0;", "I",
+                                {DalvikValue::make_object(root, "Lel0;")},
+                                r3, e3);
+                            std::cerr << " root.I()="
+                                      << (ok3 && r3.type == DalvikType::BOOLEAN
+                                              ? std::to_string(r3.int_val)
+                                              : std::string("ERR"));
+                        }
+                        std::cerr << std::endl;
+                    }
+                }
+            }
+        }
+    }
     uint64_t f107_r0 = 0; phase_clock().enter(phase_clock().invoke_resolve, f107_r0);  // resolve begins
     // S55 R-NEW-361 dispatch trace (env-gated): every entry for the Kotlin
     // LongArray-fill helper and the Arrays.fill bridge target — catches a
