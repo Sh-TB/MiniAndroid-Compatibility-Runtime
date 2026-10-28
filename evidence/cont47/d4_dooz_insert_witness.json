@@ -1,0 +1,25 @@
+{
+ "train": "CONT-47 D4 DOOZ — insertAt context witness (MINIANDROID_INSERT_TRACE, diag-only, env-gated, inert by default)",
+ "head": "4d0d0690 + D4 witness",
+ "binary": "rebuilt miniandroid/build/miniandroid (make -j2, Oct 28 06:12)",
+ "probe": "run/cont47/d4 (untracked; ZERO-LOG: census rows only)",
+ "witness_results": {
+  "B_entries_captured": 44,
+  "applier_replay_path": "<Lv02;.c> <Ly11;.a> <Ls21;.Y>",
+  "content_path": "<Lml0;.H> <Ldg1;.h> <Lol0;.g>",
+  "root_inserts": 1,
+  "root_insert_record": "B#5 recv=2113(ROOT) a1=0 a2=o6367 — the wave-2 chain top attaches DIRECTLY to root, dynamically CONFIRMED",
+  "chain_topology": "B#1 recv=6440<-o6464; B#2 recv=6416<-o6440; B#3 recv=6392<-o6416; B#4 recv=6367<-o6392; B#5 recv=2113<-o6367 (top-down splice, applier down DID run between inserts)",
+  "content_inserts": "B#6/19/21/23/40... recv=6464 a1=0..4 (board cells indices 0..4 into the chain head) via Lml0;.H/Ldg1;.h/Lol0;.g — NOT the applier path"
+ },
+ "d4_refinements": [
+  "R1: the applier replay is NOT broken — its down/up interleaving correctly descends the recorded chain; only the TOP-level insert's recorded target is ROOT",
+  "R2: the change-list RECORD (pass#2) named ROOT as the target for the wave-2 chain top — the composer node-stack context at record time is the remaining suspect",
+  "R3: board cell content inserts use the direct parent-side insert family (Lel0;.Q/Lml0;.H path), NOT the applier — the T24 'applier attach chain zero runs' face is about the attach propagation, not the insert mechanics",
+  "D5 fix target (refined twice): a composer/record-time witness — capture the node-stack state at the moment the wave-2 chain top (6367) is recorded, then correct the record target to the destination content node"
+ ],
+ "pin": {
+  "dooz_face_sha16": "31ddd4d5b8e6d18e",
+  "verdict": "ZERO drift — diag-only build reproduces the recorded CONT-37 honest face exactly"
+ }
+}
