@@ -5342,14 +5342,69 @@ bool DalvikExecutionEngine::execute_method_internal(
 // We call this from the sget/sput handlers and from new-instance. The
 // method is idempotent: a class already marked initialized is a no-op.
 //
-// Notes:
-//   - Framework classes (Landroid/*, Ljava/*, Lkotlin/*) do NOT get
-//     <clinit> executed — they're stubbed by the shadow registry / bridge.
-//   - For application classes (Lorg/telegram/*, Lcom/example/*, etc.),
-//     we look up the class in the DexReport, find its <clinit> method,
-//     and recursively execute it.
-//   - We guard against re-entrancy: if the class is currently being
-//     initialized (in_initialization_ set), we return immediately.
+// CONT-48 F1 (AndResGuard drawable-binding gap): the R$ resid harvest used to
+// live ONLY inside ensure_class_initialized — a LAZY law. The ARSC drawable
+// census runs at startup BEFORE any app code touches R.drawable.*, so on
+// resource-obfuscated APKs (telegram official: res/ paths renamed to res/ENE.png
+// style garbage) field_name_by_resid_ had ZERO drawable entries and the
+// ARSC-first binding pass bound 0/13206 paths. The harvest body is now a
+// standalone helper, called BOTH lazily (class init) and EAGERLY (eager
+// harvest over every R$ class in the DexReport, before the drawable census).
+// Idempotent: the map overwrite is last-wins on identical resids.
+void DalvikExecutionEngine::harvest_r_class_fields(
+        const std::string& class_descriptor, const dex::ClassInfo& cls_ref) {
+    if (class_descriptor.find("R$") == std::string::npos) return;
+    // EXP-063: Build field_name_by_resid mapping for R classes.
+    // This maps resource ID → field name, so we can resolve resources
+    // by name when DEX IDs don't match ARSC entry indices.
+    // EXP-093: Store ALL R$string values (including small D8-shrunk ordinals).
+    // The D8 shrinker remaps resource IDs to small ordinals per R$subclass.
+    // R$string.SentSmsCode=3 is different from R$anim.text_out_down=3.
+    // By storing R$string values, we can resolve them via field_name_by_resid_.
+    // R$bool / R$integer / R$color values >= 0x10000 are still stored (they
+    // don't collide with R$string ordinals because they use the >= 0x10000 range).
+    bool is_r_string = (class_descriptor.find("R$string") != std::string::npos);
+    bool is_r_raw = (class_descriptor.find("R$raw") != std::string::npos);
+    // EXP-098 (CM-027): R$raw also uses small D8-shrunk ordinals
+    // (e.g. R.raw.default_pattern=3, R.raw.bot_webview_sheet_to_cross=3)
+    // intermixed with large values (R.raw.chats_archiveavatar=917525).
+    // Store ALL values so RLottieImageView.setAnimation(R.raw.X, w, h)
+    // can resolve to the field name → resource_raw_paths_ lookup.
+    bool store_all = is_r_string || is_r_raw;
+    for (const auto& field : cls_ref.static_fields) {
+        if (!field.has_default_value || field.default_value_is_string) continue;
+        if (store_all) {
+            // Store ALL values (including small ordinals like 0, 1, 2, 3).
+            // Multiple R$subclasses can have value=3 — distinguished by
+            // the calling class context (R$string.SentSmsCode vs
+            // R$raw.bot_webview_sheet_to_cross). The caller resolves
+            // via the right resource_raw_paths_/resource_string_values_.
+            field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
+        } else {
+            // For non-R$string/R$raw: only store values >= 0x10000
+            if (field.default_int_value >= 0x10000) {
+                field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
+            }
+        }
+    }
+}
+
+// CONT-48 F1: eager pass — harvest EVERY R$ class in the DexReport without
+// executing any <clinit>. O(#classes) scan, no side effects beyond the resid
+// map. Returns the number of R$ classes seen.
+int DalvikExecutionEngine::eager_harvest_r_classes() {
+    if (!dex_report_) return 0;
+    int seen = 0;
+    for (const auto& cls : dex_report_->classes) {
+        if (cls.name.find("R$") == std::string::npos) continue;
+        harvest_r_class_fields(cls.name, cls);
+        seen++;
+    }
+    std::cerr << "[CONT48-F1] eager R$ harvest: " << seen << " classes, "
+              << field_name_by_resid_.size() << " resids" << std::endl;
+    return seen;
+}
+
 bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_descriptor) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().class_init_ph, f107_t0);
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().class_init_ph, f107_t0};
@@ -5542,41 +5597,10 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         }
     }
 
-    // EXP-063: Build field_name_by_resid mapping for R classes.
-    // This maps resource ID → field name, so we can resolve resources
-    // by name when DEX IDs don't match ARSC entry indices.
-    // EXP-093: Store ALL R$string values (including small D8-shrunk ordinals).
-    // The D8 shrinker remaps resource IDs to small ordinals per R$subclass.
-    // R$string.SentSmsCode=3 is different from R$anim.text_out_down=3.
-    // By storing R$string values, we can resolve them via field_name_by_resid_.
-    // R$bool / R$integer / R$color values >= 0x10000 are still stored (they
-    // don't collide with R$string ordinals because they use the >= 0x10000 range).
-    if (class_descriptor.find("R$") != std::string::npos) {
-        bool is_r_string = (class_descriptor.find("R$string") != std::string::npos);
-        bool is_r_raw = (class_descriptor.find("R$raw") != std::string::npos);
-        // EXP-098 (CM-027): R$raw also uses small D8-shrunk ordinals
-        // (e.g. R.raw.default_pattern=3, R.raw.bot_webview_sheet_to_cross=3)
-        // intermixed with large values (R.raw.chats_archiveavatar=917525).
-        // Store ALL values so RLottieImageView.setAnimation(R.raw.X, w, h)
-        // can resolve to the field name → resource_raw_paths_ lookup.
-        bool store_all = is_r_string || is_r_raw;
-        for (const auto& field : cls_ref.static_fields) {
-            if (!field.has_default_value || field.default_value_is_string) continue;
-            if (store_all) {
-                // Store ALL values (including small ordinals like 0, 1, 2, 3).
-                // Multiple R$subclasses can have value=3 — distinguished by
-                // the calling class context (R$string.SentSmsCode vs
-                // R$raw.bot_webview_sheet_to_cross). The caller resolves
-                // via the right resource_raw_paths_/resource_string_values_.
-                field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
-            } else {
-                // For non-R$string/R$raw: only store values >= 0x10000
-                if (field.default_int_value >= 0x10000) {
-                    field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
-                }
-            }
-        }
-    }
+    // EXP-063: R-class resid harvest (CONT-48 F1: extracted to the standalone
+    // harvest_r_class_fields helper — also called EAGERLY from
+    // eager_harvest_r_classes() before the ARSC drawable census).
+    harvest_r_class_fields(class_descriptor, cls_ref);
 
     // EXP-062: Initialize static fields from DEX encoded_array_item
     // (default values). This is critical for R classes (R$drawable,
