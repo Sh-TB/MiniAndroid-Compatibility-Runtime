@@ -1,0 +1,46 @@
+{
+  "train": "CONT-47 D7 DOOZ — renderer read-side census (D7a) + insert-chain placement walk (D7c) + composer record decode (D7b)",
+  "law": "ZERO-LOG: census rows + sha only; run/ artifacts untracked",
+  "builds": {
+    "d7_diag_build1": "globals g_d7_read_census/g_d7_node_ids + iget/iget-object draw-window census + D7c B() node capture + draw-close READCENSUS/PLACECHECK prints (env MINIANDROID_D7_READCENSUS / MINIANDROID_D7_PLACECHECK)",
+    "d7_diag_build2": "PLACECHECK extended with r-state per node (class + id)"
+  },
+  "d7a_read_census": {
+    "method": "iget/iget-object on Lel0; (LayoutNode) counted only while draw_window_active_ (C013 draw dispatch), cumulative",
+    "draw1": "B:13818 C:11159 I:23974 J:11420 m:74 n:36 o:1 p:1 r:36740 x:6421 y:6421",
+    "draw4_final": "B:27990 C:22635 F:3 I:48690 J:23216 Q:1 R:4 e:7 j:2 l:3 m:86 n:42 o:1 p:1 q:7 r:74523 x:13040 y:13040",
+    "verdict_V1": "the DEX draw walk enumerates children through r (74523 reads) + I/J depth counters + x/y positions; q is read 7 times TOTAL (once per wave, not per node) and A is never read — the single-ref q chain and the A/n fold containers are NOT the draw enumeration structure"
+  },
+  "d7c_placecheck": {
+    "method": "every Lel0;.B (insertAt) call records receiver+node ids (bounded 512); at draw-window close walk each node: e flag, q, r, A/n container array lens",
+    "draw1_and_draw4_stable": "45 recorded nodes; chain 6367->q#2113, 6392->q#6367, 6416->q#6392, 6440->q#6416, 6464->q#6440 — ALL e=F; ROOT 2113 e=F; o7970 (child of chain head 6464) e=T; totals e=T:5 / 45, gone:0",
+    "r_state": "ALL 45 nodes carry THE SAME r#1547(Lt4;) — r is a shared object, not a per-node child chain; per-node sibling enumeration lives in neither q nor r",
+    "containers": "A/n Lwg0; containers present but f/g hold no arrays (f=-1 g=-1) at draw time — the (index,parent) fold registrations of D6 step 3 are not array-visible in the heap model",
+    "verdict_V2": "the wave-2 chain EXISTS in the heap with intact q links but is UNPLACED at draw (e=F on all 44 inserted nodes, stable across draws 1-4; only 5/45 nodes ever carry e=T) — B touches no placement per D6, and no place-descent (the e-setting law) ever reached the chain: this is the frontier named for D8",
+    "verdict_V3": "e=T:5 are the pre-wave frame/txt subtree (7970 family); the board cells (B#6+ into 6464) are also e=F — cells are inserted but unplaced too"
+  },
+  "d7b_composer_decode": {
+    "method": "androguard 4.1.4 over dooz classes.dex (3052 classes), targets Lfe1;/Lui1;/Lvi1;",
+    "Lfe1_E": "E(Len1;, Lfk;, Lri1;)Lri1; constructs the per-group records: 1x Lui1;.<init>(Lfk;,I) + 1x Lvi1;.<init>(Lfk;,I,I,Len1;,Lvl0;) + 2x Lfk;.a(I)Lri1; (change-table reads) + 4x Lvl0;.getValue; acc on Lfk;.{b,c,d,e}, Len1;.b, Lri1;.{b,c}",
+    "Lfe1_h_i": "h(Len1;,Lsf;)Lsi1; = startNode/endNode pair ctor Lsi1;.<init>(Lri1;,Lri1;,Z) via 2x i(Lfk;,Z,Z,Lsf;)Lri1; -> Lsf;.g(Lfk;,I)J",
+    "Lfe1_B": "B(Lp9;,I)V iterates Lp9;.getLayoutNodeToHashHolder()Ljava/util/HashMap; entries calling Ljb1;.a()V, acc 1x Lel0;.f — the NavHost layoutNode->holder map walk (the slot-table side of the useNode-vs-insert handoff)",
+    "witness_point_named": "D7b runtime witness = Lui1;/Lvi1; ctor entry (record construction time): print whether the record wraps an EXISTING node (slot-table hit) or mints a fresh one — that is the pass#2 record-time decision to instrument next"
+  },
+  "zero_drift": {
+    "control_faces": "dooz_base (121f) 851cc1761a1dfcdf == dooz_t5reg (121f) == d7/probe1 (61f, D7 diag binary) — 3 finished runs, 2 binaries, byte-exact",
+    "inertness_verdict": "the D7 diag instrumentation is behaviorally inert (probe face == control face byte-exact)"
+  },
+  "OPEN_REGRESSION_FLAG": {
+    "issue": "the registry dooz pin 31ddd4d5b8e6d18e does NOT reproduce on the current container: every finished control run today (dooz_base 10:38Z, dooz_t5reg, d7/probe1) hashes 851cc1761a1dfcdf",
+    "scope": "dooz_base was re-run on the CURRENT (post-T5-rebuild f28226e7ee6a7e4e) binary BEFORE any D7 edit — the drift predates D7; suspicion order: T5 final rebuild (config canned-success + bridge witness in android_shadows.cpp) — D6 was a no-edit forensic train",
+    "note": "the D6 '851cc176 retracted as mid-run artifact' retraction is itself now contradicted: FINISHED runs reproduce 851cc176 — the mid-run-artifact lesson applies to telegram (dac4ade9bd2d6c02 x4/4 held), but dooz's face has honestly moved from the recorded pin",
+    "next": "T-wall/D-wall item: A/B the pre-T5 vs post-T5 binaries on dooz 121f to bisect the drift source; re-pin or fix"
+  },
+  "next_targets": {
+    "D8": "place-descent witness: iput-trace Lel0;.e writes + the ()Z isPlaced predicate calls during the compose layout pass — find where the place walk stops before the wave-2 chain (e=F stable), then the place-descent fix",
+    "D7b_runtime": "Lui1;/Lvi1; ctor-entry witness (slot-table hit vs fresh-mint) at pass#2 record time",
+    "T6": "telegram dialog layout collapse banked separately (t6 evidence)"
+  },
+  "probe_dirs": ["run/cont47/d7/probe1 (finished, 61f)", "run/cont47/d7/probe2 (finished later, 60f cfg)"],
+  "log_lines_census": {"d7_probe1_lines": "see run/cont47/d7_probe.log (untracked)"}
+}

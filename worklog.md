@@ -12056,3 +12056,27 @@ Stage Summary:
   canned-success config law, view-tree draw dispatch UNBLOCKED) + DOOZ
   D6 (this evidence). Campaign commits so far: M0 4d0d0690, D4 ccc32dd5,
   T4 429890ab, D5 988cb889, T5 8f587fe3, D6 (this).
+
+CONT-47 D7 (DOOZ train 4/10) — renderer read-side census + insert-chain placement walk:
+- D7a (MINIANDROID_D7_READCENSUS): iget/iget-object census on Lel0; during the
+  draw window — VERDICT V1: the DEX draw walk enumerates children via r (92k
+  reads by draw 4) + I/J depth counters + x/y; q is read 7x TOTAL, A never,
+  n 42x. The q chain and A/n folds are NOT the draw enumeration structure.
+- D7c (MINIANDROID_D7_PLACECHECK): all 45 B()-recorded nodes walked at draw
+  close — VERDICT V2: the wave-2 chain (6367..6464, intact q links) is
+  UNPLACED at draw (e=F on all 44 inserted nodes, stable draws 1-4; e=T only
+  5/45 = the pre-wave 7970 family). No place-descent ever reached the chain:
+  THE D8 FRONTIER. V3: all nodes share ONE r#1547(Lt4;) — r is not a per-node
+  child chain either; sibling order is not draw-visible in q/r/A/n.
+- D7b (androguard): Lfe1;.E constructs ui1/vi1 records (Lfk;.a(I) change-table
+  reads); Lfe1;.h builds the Lsi1; start/end pair; Lfe1;.B walks
+  Lp9;.getLayoutNodeToHolder() — the slot-table side. Runtime witness point
+  named: Lui1;/Lvi1; ctor entry (slot-table hit vs fresh mint).
+- ZERO-DRIFT: probe1 (D7 diag binary, 61f) == dooz_base == dooz_t5reg ==
+  probe2, all 851cc1761a1dfcdf byte-exact — instrumentation inert.
+- OPEN REGRESSION FLAG (honest): the registry pin 31ddd4d5b8e6d18e does NOT
+  reproduce on the current container — all finished controls today hash
+  851cc176; drift predates D7 (dooz_base ran on the pre-D7 post-T5 binary).
+  The D6-era '851cc176 = mid-run artifact' retraction is contradicted by
+  finished runs. Next wall item: bisect pre-T5 vs post-T5 binaries on dooz.
+- Evidence evidence/cont47/d7_read_side_placecheck.json (ZERO-LOG).
