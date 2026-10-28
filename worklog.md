@@ -12006,3 +12006,53 @@ Stage Summary:
   draw but paint nothing) + the Ll9/j; boundary face; DOOZ D6 =
   slot-table key/node matching (useNode-vs-insert) — fresh 44-insert
   baseline ready in run/cont47/d6/.
+
+---
+Task ID: CONT-47-D6
+Agent: Super Z (main)
+Task: DOOZ TRAIN 6 of 10 — the insertAt (Lel0;.B) byte-exact decode +
+container re-baseline. Forensic train, no engine edit. «ادامه قطار».
+
+Work Log:
+- Container re-baseline on the T5 binary: dooz + D4/D5 witness env
+  reproduces the recorded pin 31ddd4d5b8e6d18e byte-exact and the full
+  44-insert parent_q=ABSENT chain (B#1..B#5 + cells + 9137-family
+  subtree) — the wave is deterministic across containers after all (the
+  earlier 851cc176 readings were mid-run screenshot artifacts; lesson
+  recorded in the T5 evidence).
+- Lel0; ground truth via androguard (the hand uleb parser desyncs on
+  this class — counts matched but entries shifted): 43 fields, 62
+  methods. Hierarchy = SINGLE-REF links l:Lel0; + q:Lel0;; child
+  containers = A:Lwg0; + n:Lwg0; (Lwg0; = {e, f:Object(Liw0;
+  insert-fold), g:Object(Lr7; observer fold)}) — the engine TREE
+  diagnostic reads exactly A/n; support fields e:Z, m:I, r:Ld31;,
+  J:Lil0;(l:I depth), Q:I.
+- Lel0;.B(I, Lel0;)V decoded byte-exact (androguard instruction stream):
+  (1) duplicate-insert guard — if this.q already set && r == null ->
+  j(this) -> Log0.b error hook; (2) this.q = node — SINGLE-REFERENCE
+  OVERWRITE (last-inserted-wins, NOT an append); (3) node.n.f(Liw0;)
+  .a(index, this) — child-side (index,parent) fold registration;
+  (4) node.n.g(Lr7;).a(); (5) hooks O()/G()(e-gated)/d(r) + depth
+  counters J.l/Q.
+- VERDICTS: applier replay faithful (V2); the insert is a TWO-SIDED
+  registration whose sibling order lives ONLY in the child-side folds /
+  A containers (V1/V3) — a reader that walks q sees only the last
+  branch; the multi-child parents (6464 with 30+ cells) must carry
+  r:Ld31; for the guard to pass (V4).
+- D7 targets named: (a) renderer read-side census — which structure the
+  engine's y-band walk enumerates (the OPDUMP bands 1-6 empty question);
+  (b) the slot-table node read witness at pass#2 record time (the
+  composer class still unnamed — Lui1;/Lvi1; are the per-group RECORD
+  records, Lfe1;.E constructs them); (c) place-descent — B touches NO
+  placement; the inserted chain may exist but sit unplaced behind the
+  F-NEW-265 isPlaced gate.
+- Evidence banked evidence/cont47/d6_insert_at_decode.json (ZERO-LOG).
+
+Stage Summary:
+- D6 complete (forensic): the insertAt law is fully decoded — the
+  placement/visibility frontier for the board subtree is now narrowed to
+  the read-side/placement question, with the write side proven faithful.
+- Train ledger this window: TELEGRAM T5 (8f587fe3 — the typed
+  canned-success config law, view-tree draw dispatch UNBLOCKED) + DOOZ
+  D6 (this evidence). Campaign commits so far: M0 4d0d0690, D4 ccc32dd5,
+  T4 429890ab, D5 988cb889, T5 8f587fe3, D6 (this).
