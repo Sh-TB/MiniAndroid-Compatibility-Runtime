@@ -3361,6 +3361,14 @@ public:
     // (populate_resource_drawable_paths) remains only as fallback.
     int populate_drawable_paths_from_arsc(
         const resources::ArscParser& arsc, const std::vector<std::string>& apk_paths);
+    // CONT-48 F1 (AndResGuard drawable-binding gap): the R$ resid harvest
+    // extracted from ensure_class_initialized so it can run EAGERLY too —
+    // the drawable census executes before any app code touches
+    // R.drawable.*, and the lazy-only law left field_name_by_resid_ with
+    // zero drawable entries on obfuscated APKs (telegram official).
+    void harvest_r_class_fields(const std::string& class_descriptor,
+                                const dex::ClassInfo& cls_ref);
+    int eager_harvest_r_classes();
     bool drawable_paths_populated_ = false;
     // EXP-098 (CM-027): resource_raw_paths_ maps R.raw.X name → APK asset
     // path (e.g. "res/-si.json" for R.raw.sms_incoming_info). Used by

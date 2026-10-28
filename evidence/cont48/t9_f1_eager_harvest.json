@@ -1,0 +1,19 @@
+{
+ "train": "CONT-48 T9/F1 TELEGRAM — the AndResGuard drawable-binding gap NAMED and FIXED (eager R$ harvest law)",
+ "date": "2026-10-28",
+ "apk": "upload/telegram_official.apk (64MB, AndResGuard resource-obfuscated: res/ paths renamed to short garbage like res/ENE.png, res/--H.webp)",
+ "decode": [
+  "T8 READING CORRECTED: the '11098 resids ALL type-0x0f plurals' label was WRONG. 0x0f = R$string in this ARSC (telegram DEX R$string has 11108 fields 0x7f0f0000..0x7f0ffffe). The ARSC has NO plurals type at all (types: anim,animator,array,attr,bool,color,dimen,drawable,id,integer,interpolator,layout,mipmap,raw,string,style,'?17',xml — the literal 3-char type name '?17' verified in the raw pool; NO type-17 chunks exist)",
+  "androguard 3.3.5 crashes parsing this ARSC (ResParserError 'res1 must be zero') — the engine's ArscParser walks all 95 inner chunks CLEAN (raw mirror walk, no drift)",
+  "C++ probe on the ENGINE's own ArscParser (scripts/cont48_f1_probe2.cpp): PARSE=OK, resolve(0x7f080016)=HIT drawable _menu_stream_comments_off_24 5 configs value STRING 'res/ENE.png', select_file=HIT 'res/JXB.xml' — the ARSC layer is HEALTHY",
+  "LIVE census (MINIANDROID_DEBUG_DRAWABLES, 45025 lines): ALL 44392 FAILs are resid=7f0f (R$string, 11098 unique — honest missing entries, the shipped ARSC carries only 195 string entries vs 11108 DEX fields); ZERO census lines for 7f08 drawable resids",
+  "ROOT CAUSE: field_name_by_resid_ had ZERO drawable entries — the R$ harvest lived ONLY inside ensure_class_initialized (lazy law); the drawable census runs at startup BEFORE any app code touches R.drawable.* (R$drawable sits in classes.dex next to R$string which DID populate via earlier theme/init references)"
+ ],
+ "fix": [
+  "harvest_r_class_fields() extracted from ensure_class_initialized (identical store laws: R$string/R$raw store-all incl. D8 ordinals; others >= 0x10000)",
+  "eager_harvest_r_classes(): O(#classes) scan of dex_report_->classes, harvests every R$ class WITHOUT executing any <clinit>; called from execution_engine.cpp right before populate_drawable_paths_from_arsc",
+  "generic law, no telegram tables; idempotent map overwrite"
+ ],
+ "verification_plan": "rebuild -> MINIANDROID_DEBUG_DRAWABLES probe: expect [CONT48-F1] eager harvest ~16 classes/13206+ resids; drawable binds >0 (target ~1500 R$drawable); dooz/gmdice/opencalc wall faces byte-exact; then 121f telegram run for face drift vs b137aeac57e40642",
+ "zero_log": "run/cont48/* untracked; probes are committed scripts; no logs in git"
+}
