@@ -1,0 +1,23 @@
+{
+  "train": "CONT-47 T6 TELEGRAM — intro/dialog paint census (OPDUMP) + the dialog layout collapse named",
+  "law": "ZERO-LOG: census rows + sha only; run/ artifacts untracked",
+  "probe": {
+    "apk": "upload/telegram_official.apk (NOTE: first attempt used upload/canonical_apks/telegram.apk — nonexistent path, relaunched)",
+    "config": "61 frames rendered, OPDUMP env-gated census",
+    "face": "dac4ade9bd2d6c02 — telegram terminal pin reproduced EXACTLY (zero drift across the T6 probe)",
+    "draw_dispatches": 1098
+  },
+  "paint_census": {
+    "StartMessaging_button": "view=8977 Lah/r; ops=2 (kinds 2+5) texts=StartMessaging yband 0/8 — BUT F096 frame = (0,1656 1080x48): the LAYOUT frame is correct (bottom, gravity 0x51 + margin 76); the OPDUMP band-0 read is per-view canvas-LOCAL (op y is view-relative), NOT evidence of overlap",
+    "dialog_collapse": "view=15816 LinearLayout (the LowPowerEnabled dialog content, lp w=-2 h=-2 gravity 0x13 margins 52,8,8,8) rendered pos=(68,0) size=(1080x1920) FULL-SCREEN; child title 15818 ba0; frame (68,0 1080x1920) full-screen; child subtitle 15822 frame (68,1920 1080x1920) — OFF-SCREEN below the first full-screen child; Disable button row lc; (16,8 1064x1920) full height",
+    "verdict_T6": "THE TITLE-OVERLAP ROOT: wrap-content DEX TextView-family children (telegram ba0;) under the platform LinearLayout dialog path measure to the FULL parent spec (1080x1920) instead of their text height — the first child fills the panel, the second stacks off-screen (y=1920), the button row lands mid-panel — the dialog renders as white screen + scattered texts (screenshot: single 'Disable' at ~y790, no title/subtitle visible)",
+    "locale_face_secondary": "LowPowerEnabledTitle was drawn as the LITERAL field name (LocaleController.getString fell back to the resource-entry name); the subtitle hit LOC_ERR (string missing from the runtime locale DB) — R$string.LowPowerEnabledTitle=0x7f0fe7ce / Subtitle / Disable=0x7f0ff229 resolved via SGET+RES-INTERCEPT but the string pool lacks the ar/Values entries for these ids"
+  },
+  "dialog_chain": {
+    "build": "Lorg/telegram/ui/Components/kc;.<init> builds LinearLayout 15816 (title+subtitle ba0;) + lc; builds the Disable TextView row — shown over the intro (LaunchActivity dialog)",
+    "f096_dispatch": "ba0; title/subtitle onMeasure/onLayout dispatched=YES (their own DEX law ran and answered full-spec); the wrap-content collapse is in the MEASURE answer, not the dispatch"
+  },
+  "fix_law_named_for_T7": "the AT_MOST TextView height law: a DEX TextView-family child with lp h=-2 measured under an AT_MOST spec must answer its SHAPED TEXT height (the platform TextView measure law), not the full spec size — same family as the F-NEW-304 companion (CONT-42/43) but the DEX-subclass branch (ba0; overrides onMeasure and its super chain falls through to spec-size); A/B against the dooz + opencalc walls before landing (the F-NEW-304 lesson: measure-law changes move goldens)",
+  "next": "T7 = implement + A/B the AT_MOST TextView wrap law, re-probe the dialog face, then intro/auth chain (T8)",
+  "zero_log": "census rows only; run/cont47/t6/ untracked"
+}
