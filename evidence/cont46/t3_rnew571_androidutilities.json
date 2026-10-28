@@ -1,0 +1,47 @@
+{
+  "train": "CONT-46 T3 TELEGRAM — R-NEW-571: the AndroidUtilities class-level swallow is METHOD-SCOPED (the CHM precedent, F-NEW-467 law). The type-lying generic-NULL bridge answer killed o6.k1 via calcDrawableColor",
+  "head": "af89471c + R-NEW-571",
+  "binary_sha16": "cf7655414f4e486d",
+  "baseline": {
+    "rc": 1,
+    "sha16": "774075b428f53791",
+    "face": "white launch; o6.k1 pc=91 aget-null x2 (the T2-named face) -> LaunchActivity.onCreate APP BOUNDARY x2"
+  },
+  "t2_hypothesis_refuted": {
+    "claim": "the e0 static write was lost (S134 dual-key suspicion)",
+    "evidence": [
+      "dex census (scripts/cont46_tg_o6.py, 21641 classes, 4 dexes): o6.e0 has a WRITER — o6.k1 pc=0x54 sput-object e0 (self-assign on the null path); ZERO duplicated class descriptors across dexes",
+      "o6.<clinit> result=OK was HONEST — nothing was lost; the field is a lazy Drawable cache with no eager init",
+      "RAW DECODE of o6.k1 (code_off 0x392abc, classes3.dex): the aget at 0x5b (=engine-pc 91) reads the RESULT REGISTER of invoke-static AndroidUtilities.calcDrawableColor(v14) — NOT the e0 static"
+    ]
+  },
+  "true_root": {
+    "chain": "LaunchActivity.onCreate -> o6.k1 (getThemedDrawable) -> invoke-static AndroidUtilities.calcDrawableColor(La4/i;.a-as-Drawable)",
+    "law": "dalvik_engine.cpp line ~9799: class_descriptor Lorg/telegram/messenger/AndroidUtilities; was a CLASS-LEVEL swallow (force bridge_to_api) — every non-implemented method answered the generic NULL (the same type-lying class as T1's R-NEW-570 generic TLObject)",
+    "dynamic_proof": "METHOD-TRACE run: [METHOD-IN] o6.k1 present; ZERO [METHOD-IN] rows for calcDrawableColor or fo;.c — the call never reached DEX code",
+    "bytecode_proof": "calcDrawableColor (code_off 0x45c3a4, classes.dex) is PURE: instanceof chain (fo;/ColorDrawable/GradientDrawable/t9/yc0) + Color.argb math; 3 return sites, all int[4] except the fo; fast-path recursion — zero system services; a real device executes it"
+  },
+  "fix": "R-NEW-571: the AndroidUtilities swallow is now method-scoped: dp (density=1.0 law, EXP-098) + runOnUIThread/executeOnUIThread/cancelRunOnUIThread (HandlerShadow, EXP-044) stay bridged; EVERY OTHER method executes its real DEX bytecode (the CHM precedent F-NEW-467)",
+  "result": {
+    "rc": 1,
+    "sha16": "dac4ade9bd2d6c02",
+    "o6_k1_aget_null": "GONE (0 rows)",
+    "preset_npe": "still GONE (T1 holding)",
+    "uncaught_at_boundary": 0,
+    "honest_note": "the launch frame is still white-adjacent (1906 non-white px — now telegram-theme BLUE tones vs the old gray) — for the first time ZERO uncaught exceptions in the launch chain; the deferred-UI queue (8 runnables, ready_at=1080040ms) is the next frontier (T4)"
+  },
+  "wall": {
+    "script": "scripts/cont46_t3_wall.sh",
+    "byte_exact_vs_cont45_pins": "11/13 (opencalc 63020bc7 / chess 3f7e6707 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a / g2048 f43face0 / tetris b818a6a7 / snake_deluxe 5235683f / ttt_deluxe db1d633d / minicraft e77a073f / gmdice 3891679d [canonical path])",
+    "ab_test": "the UNEDITED CONT-45 rebuild in this container (09b5db050233c42c) produces dooz=31ddd4d5 x3 and snakeneon=9c02d9d6 x2 IDENTICAL to the fix binary — R-NEW-571 introduces ZERO drift; the dooz/snakeneon pin deltas vs the T1 evidence are CONTAINER/REBUILD-level (previous container's binary), not fix-level",
+    "container_finding": "dooz stable face 31ddd4d5b8e6d18e = the recorded CONT-37 honest-face move; snakeneon stable face 9c02d9d66cb19be4 vs pin 2617c81c — both reproduce byte-stable x2-x3 per binary in this container; the pin ledger should become container-scoped or environment-normalized (future train)"
+  },
+  "evidence_files": [
+    "run/cont46/tg_base.{log,png}",
+    "run/cont46/tg_mt.log (METHOD-TRACE, the zero-calcDrawableColor proof)",
+    "run/cont46/tg_t3_final.{log,png}",
+    "run/cont46/wall/ (13 pins)",
+    "run/cont46/ab_dooz, ab_sn (A/B unedited-binary faces)"
+  ],
+  "next": "T4 TELEGRAM: the deferred-UI drain for view apps (the F277 poll-timeout guard is compose-only) — 8 queued runnables never drained -> intro/view tree never builds. DOOZ D3 next per the 60/40 law: the applier-position placement fix (D2 handoff)."
+}

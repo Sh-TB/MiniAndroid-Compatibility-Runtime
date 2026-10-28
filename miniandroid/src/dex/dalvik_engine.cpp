@@ -9796,7 +9796,29 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // getResources().getDisplayMetrics().density which returns 0
         // in our headless runtime, making dp() return 0 — breaking
         // RLottieDrawable construction (w/h args become 0).
-        class_descriptor.find("Lorg/telegram/messenger/AndroidUtilities;") == 0 ||
+        //
+        // R-NEW-571 (CONT-46 T3): the class-level swallow for AndroidUtilities
+        // is a TYPE-LYING LAW — every non-implemented method fell through to
+        // bridge_to_api's generic NULL answer, and the real app bytecode then
+        // died on the null. Face: telegram LaunchActivity.onCreate —
+        // o6.k1 (getThemedDrawable) calls AndroidUtilities.calcDrawableColor
+        // (a PURE method: instanceof chain + Color.argb math, zero system
+        // services) → bridge null → aget-null NPE ×2 at o6.k1 pc=91 → the
+        // view tree never builds → white launch (774075b428f53791).
+        // Evidence: METHOD-TRACE shows k1 entered with ZERO [METHOD-IN] rows
+        // for calcDrawableColor or fo;.c — the call never reached DEX code.
+        // LAW (the CHM precedent, F-NEW-467): a class-level swallow must be
+        // METHOD-SCOPED to the methods with a PROVEN bridge contract; every
+        // other method executes its real DEX bytecode (a real device runs it;
+        // the bytecode is pure and its dependencies are engine shadows).
+        // Bridged set (each with its own proven intercept downstream):
+        //   dp                   — density=1.0 law (EXP-098, api-call path)
+        //   runOnUIThread / executeOnUIThread / cancelRunOnUIThread
+        //                        — HandlerShadow queue (EXP-044 recursion law)
+        (class_descriptor.find("Lorg/telegram/messenger/AndroidUtilities;") == 0 &&
+         (method_name == "dp" || method_name == "runOnUIThread" ||
+          method_name == "executeOnUIThread" ||
+          method_name == "cancelRunOnUIThread")) ||
         // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap.
         // CONT-121 W-02 (F-NEW-467): the CHM entries are now METHOD-SCOPED —
         // the class-level swallow force-bridged newKeySet() to a handlerless
