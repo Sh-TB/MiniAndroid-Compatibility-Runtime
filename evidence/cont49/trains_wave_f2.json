@@ -1,0 +1,28 @@
+{
+  "train": "CONT-49 «چند قطار» — 36 parallel deep trains (121f) on every evidence-less APK on disk + F2 windowBackground decode + S124-era pkg repair",
+  "date": "2026-10-29",
+  "binary": "HEAD b7d0bc94 build (post eager-harvest F1)",
+  "roster": "scripts/cont49_roster.py: 59 unique on-disk APKs -> 22 already-evidenced skipped -> 36 train candidates",
+  "trains_summary": {
+    "fired": 36,
+    "faces": {"DARK": 19, "BLUE": 7, "FLAT": 4, "PURPLE": 2, "RED": 2, "GREEN": 1, "ORANGE": 1},
+    "rc1_law": "rc=1 = F-016 exception-honesty (uncaught exceptions past frames, ART process-death law; Status=SUCCESS in report.md) — not a render failure",
+    "blank_hash": "31ddd4d5b8e6d18e appears 4x = the deterministic blank-white 1080x1920 PNG (stopwatch/f06invisible/lctx/f277) — honest FLAT class"
+  },
+  "f2_decode": {
+    "question": "why is telegram's launch face white — un-bridged theme->drawable chain?",
+    "probe": "scripts/cont49_f2_probe.cpp + cont49_f2_probe2.cpp (engine ArscParser; androguard 3.3.5 crashes on this ARSC)",
+    "chain": "Theme.TMessages.Start (0x7f100149) -> bag 0x01010054 windowBackground = REFERENCE 0x0106000b -> framework table resolve -> @android:color/white #ffffffff (vtype 28)",
+    "verdict": "HONEST REVERSAL: the white launch face is THEMED-CORRECT. Theme.TMessages.Start declares @android:color/white as windowBackground. The live engine's app-table-only deref (arsc_.resolve_full on a 0x01-package ref) honestly misses and falls back white — visually identical. F2 'theme->drawable bridge' hypothesis DISPROVEN for telegram",
+    "real_gap": "gap is the LAUNCH CONTENT chain (why LaunchActivity content never paints over the themed white window), i.e. the T5 config/intro-fragment frontier, not the window background",
+    "engine_gap_noted": "resolve_window_background_argb derefs refs only through the app table; framework-package refs (0x01xxxxxx) need the S95/F-NEW-454 package routing. Latent (visually masked here), not the telegram blocker"
+  },
+  "registry": {
+    "structural": "5 S124-era rows with corrupted pkg='…' repaired by direct train evidence: GAME-102 uNote=app.varlorg.unote, GAME-103 MicroTimer=dubrowgn.microtimer, GAME-104 Simple Stopwatch=com.github.muellerma.stopwatch, GAME-105 Chess Clock=com.chessclock.android, GAME-110 OpenCalculator=com.darkempire78.opencalculator; unique pkgs 245->250; load states unchanged (no invented promotions)",
+    "deferred": ["GAME-106 Notes (billthefarmer) — disk APK is Secuso's, provenance not established",
+                 "GAME-107 PMK-61 Calculator", "GAME-108 Shopping List Calc", "GAME-111 OpenSudoku (upstream doc says cz.romario.opensudoku; disk sudoku is Secuso's)"],
+    "corpus_external": "36 train programs include 24 foundation f-series fixtures + probes (engine capability corpus, not app registry); stack.tower3d re-run DARK uniq1 sha=11a38a5aeeff45a6 rc=1 (CONT-44 anchor family)",
+    "opencalc_variance": "CONT-49 re-run 63020bc vs T9's 7e33aad — different env (no DEBUG_DRAWABLES) + 629-exception storm timing; no drift claim without controlled A/B"
+  },
+  "zero_log": "run/cont49/* untracked; probes committed as scripts; sha16-only here"
+}
