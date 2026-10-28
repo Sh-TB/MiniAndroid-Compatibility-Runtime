@@ -4,9 +4,9 @@
 (b) dump o6 <clinit> + k1 bytecode with resolved field/method names
 (c) verify whether the e0 sput-object exists in clinit and which field_idx it uses
 Usage: cont46_tg_o6.py [class-Ldesc [method ...]]"""
-import sys, zipfile, struct
+import sys, zipfile, struct, os
 
-APK = '/home/z/my-project/upload/telegram_official.apk'
+APK = os.environ.get('MA_DEX_APK', '/home/z/my-project/upload/telegram_official.apk')
 TARGET_CLASS = sys.argv[1] if len(sys.argv) > 1 else 'Lorg/telegram/ui/ActionBar/o6;'
 TARGET_METHODS = sys.argv[2:] if len(sys.argv) > 2 else ['<clinit>', 'k1']
 

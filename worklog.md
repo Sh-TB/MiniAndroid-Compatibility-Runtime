@@ -11929,3 +11929,20 @@ Work Log:
 Stage Summary:
 - T3 complete: telegram's launch chain now runs with ZERO uncaught exceptions — two generic type-lying laws dead (R-NEW-570 network mock, R-NEW-571 class-level swallow); the engine no longer lies to pure app bytecode.
 - Next trains: TELEGRAM T4 = the deferred-UI drain for view apps (the F277 poll-timeout guard is compose-only — 8 queued runnables never drain); DOOZ D3 = the applier-position placement fix (D2 handoff: second-applyChanges applier at ROOT -> wave-2 measured-but-never-placed).
+
+---
+Task ID: CONT-46-D3
+Agent: Super Z (main)
+Task: DOOZ TRAIN 3 of 10 — the applier-position divergence (D2 handoff). «برای هر کدام 10 قطار» + «ادامه قطار».
+
+Work Log:
+- GitHub lead-check: origin/main at 3ea84221 (own T3 push) — in sync, no external commits.
+- Baseline re-established in THIS container: dooz rc=1, face 31ddd4d5b8e6d18e (stable x3, = the recorded CONT-37 honest face), OPDUMP 1547 ops ybands 0:295 1-6:0 7:1252 (same structure as the D1 record), [TREE2] root#2113 -> n=#2119 with children-container e=i12 (the 12-entry fold).
+- Lel0;.q biography (FIELD-TRACE): 1549 gets vs 44 puts — ALL puts from Lel0;.B (insertAt), ZERO from any down() path.
+- THE INSERT TOPOLOGY DECODED: the 44 q writes form the wave-2 chain 6464.q=6440 <- ... <- 6367.q=2113(ROOT) — the TOP of the inserted chain attaches DIRECTLY to the root LayoutNode.
+- REFINED ROOT (D2 correction): the insert ops THEMSELVES carry parent=ROOT refs — the divergence is at composition RECORD time (pass#2 composer node-stack never descended into the destination content level), not replay time. Lel0;.Q decoded = the PARENT-SIDE insertAt with bounds checks, not a down() op.
+- NO engine edit this train (forensics only); dooz pin spot-verified.
+
+Stage Summary:
+- D3 complete: fix target for D4 = the composer's node-stack (startNode/endNode) descent during the NavHost destination content composition in pass#2; the recorded parent for board-subtree inserts must become the destination content node.
+- Train ledger this window: TELEGRAM T3 (3ea84221, R-NEW-571 — telegram launch now ZERO uncaught) + DOOZ D3 (this evidence). Next: DOOZ D4 then TELEGRAM T4 (deferred-UI drain) per the 60/40 law.

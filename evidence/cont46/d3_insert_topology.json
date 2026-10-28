@@ -1,0 +1,19 @@
+{
+  "train": "CONT-46 D3 DOOZ — the wave-2 insert topology: ALL 44 insertAt parent refs = recorded at the ROOT level; the divergence is at composition RECORD time (pass#2 node-stack), not replay time",
+  "head": "3ea84221 (post T3/R-NEW-571)",
+  "baseline": {
+    "rc": 1,
+    "container_face": "31ddd4d5b8e6d18e (stable x3; the recorded CONT-37 honest face — T1/D1 '851cc176' = previous-container binary face)",
+    "opdump": "ops=1547 ybands 0:295 1-6:0 7:1252 topcolors=ff30436e:1087 texts=Dooz|New game| (same STRUCTURE as the D1 record: ybands 1-6 ZERO = the board draws nothing)",
+    "tree": "[TREE2] root#2113(Lel0;) -> n=#2119(Lwg0;) children-container e=i12 (the 12-entry fold = the wave-2 pile)"
+  },
+  "evidence": {
+    "q_biography": "MINIANDROID_FIELD_TRACE=Lel0;.q: 1549 gets (Lel0;.u / Lel0;.d) vs 44 puts — ALL 44 puts from Lel0;.B (insertAt), ZERO from any down() path",
+    "insert_chain": "the 44 q writes form the wave-2 chain: 6464.q=6440 <- 6440.q=6416 <- 6416.q=6392 <- 6392.q=6367 <- 6367.q=2113(THE ROOT) — the TOP of the inserted chain attaches DIRECTLY to the root LayoutNode; in real compose it must hang off the content node (2119's subtree)",
+    "refinement_vs_D2": "D2 named the divergence 'DOWN-op walk during REPLAY'; D3 refines: the insert ops THEMSELVES carry parent=ROOT refs — recorded during composition pass#2. The composer's node-stack (startNode/endNode descent) never descended into the destination content level, so every recorded insert's parent = the root. Replay is faithful to a wrong record.",
+    "Lel0_Q_decode": "Q = the PARENT-SIDE insertAt with index bounds checks (if-ltz/if-gt throw paths + container.e[index] aget) — not the down() op; the D2 'DOWN-op chain' label was an interpretation"
+  },
+  "fix_target_D4": "the composer's node-stack descent during the NavHost destination content composition (pass#2): find why startNode/endNode tracking never pushed the destination's node level — the recorded parent for the board subtree inserts must be the destination content node. Instrument: FIELD-TRACE on the node-stack fields of the change-list builder (Ls21; family) + the startNode/endNode method census.",
+  "honesty": "no engine edit this train (forensics only); no dooz face claim; the ybands 1-6=0 frontier stands",
+  "next": "DOOZ D4 (train 4/10): the composition node-stack divergence; then TELEGRAM T4 (deferred-UI drain) per the 60/40 law"
+}
