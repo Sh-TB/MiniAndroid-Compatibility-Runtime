@@ -1,0 +1,19 @@
+{
+  "train": "CONT-47 T8 TELEGRAM — pre-decode census on the restored container (61f probe + DEBUG_DRAWABLES run)",
+  "date": "2026-10-28",
+  "apk": "upload/telegram_official.apk (canonical_apks/telegram.apk absent post-restore — path recorded in t6 evidence)",
+  "probe": "run/cont47/t8 (61f) face b137aeac57e40642 nonwhite=1.0 uniq=154 — CONTAINER RE-PIN (was bf5c9ef920aa32d7 pre-restore era); run/cont47/t8_dbg (2f, MINIANDROID_DEBUG_DRAWABLES=1)",
+  "findings": [
+    "ARSC-VALUES drawable-path census: 0/13179 resids bound — ZERO drawable paths for telegram",
+    "FAIL census: 11098 unique resids, ALL type byte 0x0f (plurals) — arsc.resolve() = null for the whole plurals type (parser does not answer telegram's plurals chunk); 472 style resids resolve fine (SKIP: honest non-drawable)",
+    "the known-resid map (field_name_by_resid_, 13179 entries) contains NO drawable-typed entry that resolves+selects — the drawable-binding layer is empty for telegram",
+    "consequence for the T8 white panel: with zero bound drawables, every window/dialog decor background (the AlertDialog window decor law) paints the placeholder white — the T6/T7 open face is the drawable-binding gap, upstream of any decor-shadow work"
+  ],
+  "t8_fix_frontier": [
+    "F1 (parser): teach ArscParser the plurals/late-type chunks of telegram's ARSC (11098 resids currently resolve()=null) — unblocks plural strings (LowPowerEnabledTitle family context) and validates the table walk",
+    "F2 (binding): the 0/13179 drawable bind — inspect why no drawable-typed resid reaches populate_drawable_paths_from_arsc (the R-field map may only carry plurals/styles for telegram; drawable resids arrive via theme attrs, needing the theme->drawable bridge)",
+    "F3 (decor): only after F2 does the AlertDialog window decor law have paintable content"
+  ],
+  "evidence_rule": "ZERO-LOG — census numbers + face sha only; run dirs untracked",
+  "next": "T8 F1/F2 implementation + probe; D10 = Lzs0;.s(J) root-flag invalidation law (see d9_place_chain_decode.json)"
+}

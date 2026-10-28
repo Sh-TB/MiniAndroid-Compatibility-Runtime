@@ -12147,3 +12147,17 @@ CONT-47 D8 (DOOZ train 5/10) + T7 (TELEGRAM train 5/10) — place-descent witnes
   2.13.3+deb13u1). t14 precedent: pins are container-scoped. Clean-vs-trace
   byte-exact control proves OUR instrumentation inert; re-pinned on evidence.
 - Evidence evidence/cont47/d9_place_chain_decode.json (ZERO-LOG).
+
+## CONT-47 T8 pre-decode + M2 wave — 5 newly-unlocked trains (pkg-mapped)
+- M2: androguard pkg-map of the restored apk_cache (146 files -> 5 NEW
+  NOT_TESTED unlocked: weather/tictactoe5/minesweeper7/puzzle293/ballbreak10).
+  5 parallel trains 121f: ballbreak RENDERED (206 uniq, c623631d892b5854),
+  weather RENDERED (189 uniq, 3700fb5b4449dbec), tictactoe5/minesweeper7/
+  puzzle293 FLAT (uniq=1) — honest classes. Registry: 101 -> 106 with
+  execution evidence; NOT_TESTED 148 -> 143.
+- T8 pre-decode (telegram_official.apk, 61f face b137aeac57e40642 = container
+  re-pin of bf5c9ef9; DEBUG_DRAWABLES run): ARSC drawable census 0/13179
+  bound; 11098 resids resolve()=null — ALL type 0x0f plurals (parser gap);
+  styles resolve fine (472 SKIPs). The T6/T7 white panel = the drawable-
+  binding gap (F1 plurals parse, F2 theme->drawable bridge, F3 decor law).
+- Evidence evidence/cont47/t8_arsc_drawable_census.json (ZERO-LOG).
