@@ -1,0 +1,65 @@
+{
+  "train": "internet-train-1",
+  "date": "2026-10-29",
+  "rule": "اینترنت: search internet/GitHub FIRST for existing solutions before grinding; report what was found",
+  "target_problem": "dooz compose DRAW path: layer drawContent runs but AndroidCanvas bridge (Ljt1;) never constructed -> 0 canvas ops -> blank render despite materialized LayoutNode tree (F-NEW-260 candidate)",
+  "method": {
+    "web_search_queries": 30,
+    "web_fetch_direct_sources": 6,
+    "search_models_used": [
+      "compose internals (LayoutNode draw / drawContent / GraphicsLayer record)",
+      "AOSP framework source (RecordingCanvas / RenderNode / DisplayListCanvas)",
+      "Robolectric Native Graphics shadows (headless Skia rendering precedent)",
+      "Skiko / Compose Multiplatform canvas bridge (non-JVM canvas implementations)",
+      "RenderNode recording architecture articles",
+      "CanvasHolder / AndroidCanvas zero-alloc design",
+      "layer impl selection by API level (GraphicsLayerV29/V23/ViewLayer fallback)",
+      "telegram config chain (side train: TL_help_getConfig in MessagesController)"
+    ]
+  },
+  "findings": [
+    {
+      "id": "FIND-1",
+      "source": "android.googlesource.com aosp-mirror platform_frameworks_base graphics/java/android/graphics/RecordingCanvas.java",
+      "what": "AOSP RecordingCanvas contract: RenderNode#beginRecording -> RecordingCanvas.obtain(node,w,h) (pool 25, nResetDisplayListCanvas on reuse); ops recorded through native wrapper; finishRecording(node) -> nFinishRecording; drawRenderNode -> nDrawRenderNode(mNativeCanvasWrapper, node.mNativeRenderNode)",
+      "relevance": "our engine canvas_shadow.cpp:857-869 already mirrors this (beginRecording returns RecordingCanvas heap object; endRecording handled; drawRenderNode replays at :1890)"
+    },
+    {
+      "id": "FIND-2",
+      "source": "robolectric.org javadoc 4.17 ShadowNativeDisplayListCanvas + robolectric/robolectric issues #8081 #8071 #8457 + takahirom speakerdeck RNG",
+      "what": "Robolectric Native Graphics (RNG) = PROVEN headless architecture for exactly our problem: ShadowRenderNode.beginRecording(int,int); nCreateDisplayListCanvas(node,w,h); nDrawRenderNode(renderer,renderNode); real Android native graphics classes + Skia; Roborazzi takes real Compose screenshots on JVM with it",
+      "relevance": "blueprint for our headless draw path: recording canvas bound to node -> nested drawRenderNode replay -> framebuffer; also their 'compat deterministic rendering mode' issue confirms env-variance pitfalls (relevant to opencalc face variance honesty)"
+    },
+    {
+      "id": "FIND-3",
+      "source": "blog.simplypatrick.com Jetpack Compose rendering architecture (CanvasHolder excerpt from AndroidCanvas.android.kt; AndroidGraphicsContext.android.kt layer selection)",
+      "what": "TWO laws: (1) CanvasHolder zero-alloc law: CanvasHolder constructs AndroidCanvas ONCE in <init>; drawInto(targetCanvas, block) only swaps internalCanvas ref, runs block, restores -> if AndroidCanvas never constructed, CanvasHolder itself never initialized, i.e. drawInto path never entered. (2) Layer selection law: SDK>=29 -> GraphicsLayerV29 (public android.graphics.RenderNode); 23-28 -> GraphicsLayerV23 hidden stubs with try/catch(Throwable)->GraphicsViewLayer; else ViewLayer software. RenderNodeLayer (1.6.x) = RenderNodeApi29 wrapper when SDK>=29",
+      "relevance": "engine reports SDK_INT=34 (dalvik_engine.cpp:22775) -> compose 1.6.7 RenderNodeLayer uses RenderNodeApi29 -> ALL draw traffic must go through android.view.RenderNode methods; the un-constructed AndroidCanvas means the chain breaks between beginRecording-return and DrawScope/AndroidCanvas wiring (CanvasHolder.drawInto or direct AndroidCanvas().setCanvas in RenderNodeLayer.record)"
+    },
+    {
+      "id": "FIND-4",
+      "source": "github bitsycore/compose-desktop-native + JetBrains skiko + RenderNode article (newsletter.jorgecastillo.dev, romainguy)",
+      "what": "independent canvas-bridge precedents: compose-desktop-native runs real androidx.compose.ui klibs with Skiko Skia backend on SDL3 (runtime untouched, only glue); RenderNodes = list of recorded drawing commands (not GPU commands), captured via graphicsLayer, reusable without re-running draw code",
+      "relevance": "confirms our architecture choice (engine-native canvas + recorded node lists) is the industry pattern; nothing fundamentally blocks compose draw on custom backends"
+    },
+    {
+      "id": "FIND-5",
+      "source": "DrKLO/Telegram MessagesController.java (fetch) + telegramdesktop config logs",
+      "what": "telegram config chain shape confirmed: CacheFetcher appConfigFetcher -> TL_help_getAppConfig via ConnectionsManager.sendRequest; responses TL_help_appConfigNotModified/TL_help_appConfig/error path (err.code -2000/-2001 retriable); config persisted to SQLite app_config table; tgnet.dat native Config with dc keys (side finding for T5: canned TL_error -2 must mirror the NOT-retriable branch, and intro/auth UI only builds after config lands)",
+      "relevance": "T5 replacement mock must serialize a real TL_config object the way MessagesController.processResponse expects (fields read at parse), not just status-success"
+    }
+  ],
+  "honest_scope": [
+    "this file records SEARCH FINDINGS ONLY - no fix has been applied or verified yet",
+    "Ljt1; identity (AndroidCanvas vs other R8-renamed class) comes from prior engine trace; FIND-3 gives the mechanism (CanvasHolder single-construction law) that makes un-constructed AndroidCanvas a precise, checkable hypothesis: if the class is AndroidCanvas, CanvasHolder.<init> or RenderNodeLayer.record never completed",
+    "compose version in dooz APK assumed 1.6.7 from prior engine comments (ui-android dispatchDraw); 1.7+ uses GraphicsLayerOwnerLayer/AndroidGraphicsContext instead - same RenderNode surface either way at SDK 34"
+  ],
+  "proposed_micro_fixes": [
+    "MF-1: instrument-free probe - run dooz with existing env-gated traces and log which RenderNode/RecordingCanvas methods the APK calls AFTER beginRecording returns (which method call throws/short-circuits before AndroidCanvas construction)",
+    "MF-2: if RenderNodeLayer.record path needs Canvas.setBitmap/constructor natives our RecordingCanvas lacks, add the missing shadow methods to canvas_shadow.cpp (AOSP contract from FIND-1)",
+    "MF-3: ensure drawRenderNode replay offsets use node position (already at :1890-1901) and that root dispatchDraw enters CanvasHolder.drawInto equivalent (dalvik_engine.cpp:36927 comment anchor)",
+    "MF-4: after ops appear, verify face hash drift from dooz pin 31ddd4d5b8e6d18e with 3x full-frame consistency"
+  ],
+  "zero_log": "no engine logs, no APKs, no screenshots committed; evidence = this JSON + worklog line + registry touch",
+  "search_count": {"web_search": 30, "web_fetch": 6}
+}
