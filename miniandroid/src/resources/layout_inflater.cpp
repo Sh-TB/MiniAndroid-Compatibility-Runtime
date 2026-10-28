@@ -228,6 +228,14 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
 // constructors). The obfuscated-package case (microtimer `Lk/g;`) must PASS
 // this gate — the hook's DEX class-index check is the real authority; this
 // gate only avoids invoking the hook for framework tags.
+// ── CONT-47 T7: native-only measure re-entrancy guard (see the header
+// law). Thread-local so parallel engine instances never cross-talk.
+namespace {
+thread_local bool t7_native_measure_only = false;
+}  // namespace
+void set_native_measure_only(bool v) { t7_native_measure_only = v; }
+bool native_measure_only() { return t7_native_measure_only; }
+
 bool LayoutInflater::is_app_class_descriptor(const std::string& class_desc) {
     static const char* kNonAppPrefixes[] = {
         "Landroid/", "Ljava/", "Ljavax/", "Ldalvik/", "Lkotlin/", "Lkotlinx/",
@@ -2617,7 +2625,12 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
         // content families (TextView/Button/...) and DEX containers that
         // merely INHERIT framework measure behavior keep the native laws.
         if (n->overrides_on_measure &&
-            custom_view_measure_hook_) {
+            custom_view_measure_hook_ &&
+            // CONT-47 T7: the engine's F-NEW-496 native-takeover re-entry
+            // skips the DEX-override branch — the inner run answers via the
+            // native class laws instead of circularly re-running the hook
+            // that just failed.
+            !native_measure_only()) {
             auto encode = [](const Spec& s) -> int {
                 // Android MeasureSpec encoding: mode in the top 2 bits.
                 int mode_bits = s.mode == M_EXACTLY ? 1

@@ -1,0 +1,27 @@
+{
+  "train": "CONT-47 T7 TELEGRAM — AT_MOST TextView wrap law: the F-NEW-496 native class-law takeover (FIX LANDED)",
+  "law": "ZERO-LOG: census rows + sha only; run/ artifacts untracked",
+  "root": "T6 named: DEX TextView-family children (telegram ba0;) with lp h=-2 whose onMeasure ran as real DEX but produced NO setMeasuredDimension write-back (incomplete emulation — StaticLayout machinery) fell through to the F-NEW-496 getDefaultSize fallback which answers specSize under AT_MOST -> 1080x1920 full-screen; first child filled the dialog panel, second stacked off-screen at y=1920 (the title-overlap face)",
+  "fix": {
+    "shape": "F-NEW-496 fallback now takes over with the NATIVE class law: resources::ResourceRuntime inflater measure_view_spec on the same (view, spec) — the same shaped-text leaf branch the F-NEW-304 companion uses; re-entrancy guard thread_local inflight flag + resources::set_native_measure_only so the inner run SKIPS the DEX-override branch in measure_node_raw (guard added there) and answers via the native container/leaf laws; plain getDefaultSize kept as the last resort",
+    "files": ["miniandroid/src/dex/dalvik_engine.cpp (F-NEW-496 takeover)", "miniandroid/src/resources/layout_inflater.{h,cpp} (native_measure_only guard)"]
+  },
+  "before_after": {
+    "before_t6": "title ba0; 15818 rect=(68,0 1080x1920) FULL-SCREEN; subtitle ba0; 15822 rect=(68,1920 1080x1920) OFF-SCREEN; dialog = scattered texts",
+    "after_t7": "title 15818 rect=(68,917 412x44) — text-shaped; subtitle 15822 rect=(68,961 602x41) — directly below (917+44=961); [F-NEW-496] NATIVE takeover lines confirm the branch: spec 1080x1920 -> 412x44 / 602x41",
+    "face": "dac4ade9bd2d6c02 (t6) -> bf5c9ef920aa32d7 (t7 probe2, 61f) — the fix's pixel consequence (frames prove the layout truth moved)"
+  },
+  "wall": {
+    "binary": "post-T7 build (12:01Z)",
+    "dooz": "851cc1761a1dfcdf MATCH",
+    "gmdice": "3891679dff449331 MATCH",
+    "opencalc": "63020bc7334048fe MATCH",
+    "verdict": "3/3 MATCH — the measure-law change does not regress the pinned walls"
+  },
+  "remaining_faces_open": [
+    "dialog panel background/decoration still unpainted (white panel — the AlertDialog window decor law)",
+    "locale: LowPowerEnabledTitle drawn as literal field-name fallback; subtitle LOC_ERR — the string pool lacks these resource ids (T8 candidate)",
+    "intro surface under the dialog: StartMessaging frame correct (0,1656 1080x48) but its view-local paint needs the compose/screen composite to show"
+  ],
+  "next": "T8 = dialog window decor + auth/intro chain unblock (the config canned-success from T5 already unblocked draw dispatch; next the intro fragment build)"
+}

@@ -490,6 +490,18 @@ private:
                                      const MeasureSpec2& sh, int depth);
 };
 
+// ── CONT-47 T7: native-only measure re-entrancy guard (thread-local).
+// The engine's F-NEW-496 no-write-back fallback takes over with the NATIVE
+// class law (measure_view_spec). Without this guard the re-entry hits the
+// DEX-override branch again (the same hook that just failed) and the
+// guarded inner fallback answers the plain specSize — the takeover
+// circularly reproduces the answer it was replacing (telegram ba0; dialog
+// evidence). With the flag set, measure_node_raw SKIPS the DEX-override
+// branch for that call and answers via the native container/leaf laws
+// (the shaped-text TextView law).
+void set_native_measure_only(bool v);
+bool native_measure_only();
+
 } // namespace resources
 } // namespace miniandroid
 
