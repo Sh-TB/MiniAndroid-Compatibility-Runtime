@@ -1,0 +1,43 @@
+{
+  "/train": "internet-train-5 (CONT-11 W9) — dooz tap->onClick awaiter scope decode",
+  "/date": "2026-10-29",
+  "/law": "«اینترنت» — re-fetch compose 1.6.7 ui-android+foundation sources verbatim, then instrument the engine with bounded env-gated probes and follow the REAL dispatch chain instruction-by-instruction (no R8-name guessing without dynamic confirmation).",
+  "/internet_sources_downloaded_and_read": [
+    {
+      "source": "dl.google.com androidx/compose/ui/ui-android/1.6.7/ui-android-1.6.7-sources.jar",
+      "kind": "source_download",
+      "relevance": "PointerInputEventProcessor.kt (process: hitTest only on changedToDownIgnoreConsumed; dispatchChanges per retained path), HitPathTracker.kt (Node.dispatchMainEventPass: dispatchForKind(Nodes.PointerInput){ onPointerEvent(Initial) } -> children -> { Main }; dispatchFinalEventPass: { Final }), SuspendingPointerInputFilter.kt = SuspendingPointerInputModifierNodeImpl : Modifier.Node (onPointerEvent launches pointerInputJob UNDISPATCHED on first event; offerPointerEvent resumes pointerAwaiter ONLY when pass==awaitPass; awaitPointerEventScope handler coroutines run with EmptyCoroutineContext — fully synchronous resumes)",
+      "sha16_jar": "recorded at download time (696265 bytes)"
+    },
+    {
+      "source": "dl.google.com androidx/compose/foundation/foundation-android/1.6.7/foundation-android-1.6.7-sources.jar",
+      "kind": "source_download",
+      "relevance": "TapGestureDetector.kt: detectTapAndPress = awaitEachGesture { launch{pressScope.reset}; awaitFirstDown().consume(); launch{pressScope.onPress}; waitForUpOrCancellation(); onTap?.invoke }; waitForUpOrCancellation law = awaitPointerEvent(Main) -> changedToUp? return : (isConsumed||outOfBounds? null) -> awaitPointerEvent(Final) consumeCheck loop",
+      "sha16_jar": "recorded at download time (740632 bytes)"
+    }
+  ],
+  "/search_count": {
+    "source_downloads": 2,
+    "engine_probe_runs": 15,
+    "dex_static_decodes": 6
+  },
+  "/findings": {
+    "F8_dispatch_identity_law": "The full 1.6.7 dispatch pipeline RUNS for BOTH DOWN and UP with IDENTICAL structure: Lce0;.b (HitPathTracker.dispatchChanges) entered exactly once per event; its callees Luz0;.a/Lhz0;.e/Lhz0;.d/Luz0;.b (Node buildCache/dispatchMainEventPass/dispatchFinalEventPass) run the same site profiles for both events (3 node-walks each; per-instruction profiles 51/51/97 lines, max pc 325/325/551 — byte-for-byte shape). UP drives 77 real iget-wide bounds reads on the retained hit path (Lpz0;.D via Lpz0;.P0). Event delivery at the hit-path level is NOT the differentiator.",
+    "F9_honest_reversal_train4_F6": "train-4 F6 'PRESS LIVE / 0x1a30436e press indication' is RETRACTED: 0x1a30436e was a hex-prefix artifact of the FAB text color #ff30436e ('New game' TEXT op, ff30436e). Pixel probes across all 14 frames (fab zone 7-color set b9cbff/ededf6/30436e/...) are IDENTICAL before and after the tap; no ripple/press-indication color ever appears in any frame or canvas op. Consequence: the DOWN leg never produced gesture-visible output (detectTapAndPress onPress -> interactionSource.tryEmit never emitted) — consistent with the gesture coroutine never starting or never resuming.",
+    "F10_engine_probe_infrastructure": "Four new env-gated, bounded, read-only diagnostics added to dalvik_engine.cpp fetch_decode_execute (stderr only, zero behavior change): MINIANDROID_PTE_TRACE (method-entry named onPointerEvent during touch window), MINIANDROID_INVOKE_TARGET_TRACE=<class>|<method> (resolved callee class.name for every executed invoke site inside the matched frame, with 35c receiver register identity), MINIANDROID_INVOKE_SITES=<class>|<method> (static dump of ALL invoke sites of the matched frame at entry, engine-decoded — immune to cont9 table desync), MINIANDROID_P_ENTRY_TRACE=<name> (+P-SITES one-shot per receiver class).",
+    "F11_r8_chain_map": "Confirmed R8 identities for dooz v23 compose input pipeline: Lt4;=AndroidComposeView (dispatchTouchEvent override live, arm=dispatchTouchEvent, attached=1), Lel0;=LayoutNode (A=hitTest), Lce0;=HitPathTracker (a=addHitPath(J,List,Z), b=dispatchChanges(Lwg0;,Z)Z, c=processCancel), Lhz0;/Luz0;=HitPathTracker.Node dispatch arms, Lwg0;=InternalPointerEvent, Lbr0;=MutableVector, Lpz0;=LayoutNodeWrapper/coordinator bounds holder, Ld61;=Placeable (train-4 law stands), Llo;=static utility class (P(Liw0;)Lwt0; early-returns on null — NOT the filter dispatch; 4000-budget trace shows constant null-arg no-op calls), Loj0;=lambda/coroutine shim class (P=p0-only invoke; Unsafe.putObjectVolatile+Lhj0;.start sites), Liw0;=PointerEvent-like holder. The SuspendingPointerInputModifierNodeImpl.onPointerEvent impl was NOT yet isolated by name — delivery of events to it remains the open leg.",
+    "F12_state_outcome": "After tap@frame5: board band uniform #faf8fe in ALL frames (gate closed), title band unchanged (no dice-rolling animation pixels), FAB zone byte-identical across all 14 frames. NO recompose/state effect from the tap reached presentation. Lh9; Choreographer-callback Runnable self-reposts delay=0 (frame-clock heartbeat alive)."
+  },
+  "/next_leg_precise": "Isolate SuspendingPointerInputModifierNodeImpl.onPointerEvent execution: (a) METHOD_TRACE the 4-arg virtual call site inside Lhz0;.e dispatchForKind blocks (the filter invoke has A=4 — distinguishable from the A=1 static helper), (b) if the impl never executes a frame -> the pointerInputJob UNDISPATCHED launch or the awaitPointerEventScope handler-coroutine registration is the death; (c) if it executes, trace offerPointerEvent pass==awaitPass matching for UP. Engine probes for all three are already in place.",
+  "/honest_scope": [
+    "Engine source changed ONLY by env-gated stderr probes (no behavior change; probes inert without env vars). No anchor-affecting code path touched.",
+    "The tap->onClick leg remains OBSERVED-DEAD; root cause NOT yet fixed — the round advanced the decode two levels deeper and corrected one false finding (F9).",
+    "Telegram T5 (real TL_config response shape from APK dex) deferred again by user directive priority on dooz full-load; the DrKLO law stack from train-3 (c68f776d) stands."
+  ],
+  "/zero_log": "No logs/APKs/screenshots committed. Run artifacts live in tmp/s136_run_* (not committed). Evidence = this JSON + the probe code in the engine + scripts/s136_*.",
+  "/pins": {
+    "blank_face_board_band": "#faf8fe uniform (all frames, unchanged)",
+    "fab_zone_frame000_sha16": "pixel-set identical across frames 0..13",
+    "engine_bin_built": "miniandroid build/miniandroid green after probe additions"
+  }
+}
