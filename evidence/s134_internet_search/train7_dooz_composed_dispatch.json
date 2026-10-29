@@ -1,0 +1,73 @@
+{
+  "/train": "internet-train-7 (CONT-11 W11) — dooz tap death chain: root cause moved from arg-evaluation to DISPATCH level; the whole clickable composable family never composes",
+  "/date": "2026-10-30",
+  "/law": "«اینترنت» — ComposedModifier.kt + SuspendingPointerInputFilter.kt (upstream/s43 verbatim local clone) + APK dex static decode (androguard, operand-text xref) + dynamic engine probes (S137b/S137c env-gated). Every R8 name below decoded statically AND crossed with dynamic evidence.",
+  "/internet_sources_read": [
+    {
+      "source": "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/ComposedModifier.kt (verbatim)",
+      "law": "Composer.materialize = startReplaceableGroup(0x48ae8da7) + modifier.foldIn(Modifier){acc,element -> if (element is ComposedModifier) { factory(Modifier, this, 0) -> materializeImpl(result) -> acc.then(...) } }. composed(factory) = this.then(ComposedModifier(factory)); factory type = Modifier.(Composer, Int) -> Modifier (3-arg Function3)."
+    },
+    {
+      "source": "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt (verbatim, public API section)",
+      "law": "Modern pointerInput overloads: fun Modifier.pointerInput(key1: Any?, block: PointerInputEventHandler): Modifier = this then SuspendPointerInputElement(key1, handler) — DIRECT element construction (no composed). The no-op PointerInputEventHandler statics are compose-internal legitimate values."
+    }
+  ],
+  "/r8_identity_map_new": {
+    "Lxt0;": "androidx.compose.ui.Modifier (interface; c(Lxt0;)Lxt0; = then)",
+    "Lj90;": "kotlin Function2 (h(Object,Object)Object)",
+    "Lr90;": "kotlin Function2 parent interface",
+    "Lk90;": "Function3 = Modifier.(Composer, Int) -> Modifier composed factory (f(Object,Object,Object)Object)",
+    "Lmo;": "ComposedModifier (single field a:Lk90; = factory; implements Lvt0;)",
+    "Ltl;.I": "Composer.materialize(modifier) — sole holder of magic const 0x48ae8da7; fast path = modifier.any(Lm4;.w predicate) false -> return unchanged; else group + foldIn(Lq;(modifier,composer), Modifier)",
+    "Ltl;.u": "composed() helper (Lxt0; Lk90;)Lxt0; = then(ComposedModifier(factory)); ALSO 1 direct new Lmo; inside Lpm;.c",
+    "Ltl;.J": "materialize-with-group wrapper used inside composable bodies (calls Ltl;.I)",
+    "Lq;": "foldIn folder lambda class (packed-switch multi-arm on field f; ctor(I, Object); arm for materialize at units 0x0114-0x015c: check-cast element Lvt0; -> instanceof Lmo; -> Lmo;.a factory -> Lk90;.f(modifier, composer, 0) -> recursive Ltl;.I -> then)",
+    "Lpm;": "R8 god-class; .c = clickable composite composable (18 params incl Lnb0;=Composer, Lom;=ComposableLambda; len 2582 units; 4x Ltl;.u composed sites + 1 direct new Lmo; + real element construction at units 0x0db6 (Lkr1;.a) and 0x0e04 (direct new Ljr1;(wv1.z, wv1.y, Lj6;, mask)))",
+    "Luq;": "Lpm;.c restart lambda (implements Lj90;; 17 captured fields matching Lpm;.c params minus composer/changed; ctor caller = Lpm;.c ONLY; h(Object,Object) -> Lpm;.c)",
+    "Lpm;.d": "(Lxt0; Lwv1; Lom; Lnb0; I)V arm — called by Lpm;.c and Ls1;.h",
+    "Lpm;.n": "(Lwv1; Lnb0; I)V — single-overload clickable candidate, never ran",
+    "Lpm;.T": "rememberComposableLambda(I, Lr90;, Lnb0;)Lom;",
+    "Lwv1;": "clickable config object (fields y:Luv1;, z:Len1; used as the REAL element keys)",
+    "Lj6;": "(I, Object) wrapper class — composable-lambda SAM passed as the REAL PointerInputEventHandler at Lpm;.c 0x0e04",
+    "Lpv;": "static no-op PointerInputEventHandler pair (<clinit> builds exactly 2 instances into statics b and c; invoke = 5-byte suspend-forever)",
+    "Lkr1;.a": "Modifier.pointerInput(key1, PointerInputEventHandler) direct overload: new Ljr1;(key1, null, handler, mask=6).then(modifier)",
+    "Ljr1;": "SuspendPointerInputElement(key1, key2, handler, mask) — NOT (viewConfiguration, density, handler) as train-6 map guessed",
+    "Lue;.a": "component composable (String, f90, modifier, Z, hx1, ek0, dk0, Z, I, I, jb1, f90, jv0, xo1, Lom;, composer, I)V len=601 — creates Lte; (its restart wrapper)",
+    "Ldv1;": "content-wrapper Function2 lambda for Lue;.a (captures modifier+lu1+String+f90+Z+hx1+ek0+dk0+Z+I+I+jb1+f90+jv0+xo1+j90+gm1+lu1...); ctor caller = Lje1;.c ONLY; .h reads Resources.getString(0x7f110013), builds Lxo1;(J) + Lcv1;(String,Z,Z,jb1,jv0,j90,j90,gm1,lu1) config, calls Lpm;.T (rememberComposableLambda), then Lue;.a",
+    "Lte;": "Lue;.a restart wrapper (Function2; ctor caller = Lue;.a)",
+    "Lje1;.c": "parent composable (String, f90, modifier, Z, hx1, j90, j90, jb1, ek0, dk0, Z, I, I, gm1...)V len=450 — sole creator of Ldv1;",
+    "Lvs0;.j": "(String, f90, String, String, modifier, composer, I)V — caller of Lje1;.c",
+    "Lav1;.h": "Function2 arm — caller of Lje1;.c",
+    "Ls1;.h": "Function2 arm that RUNS (4+ enters) — launches coroutine (Lcy0;.<init> + Lxz1;.I) and never calls Lpm;.d",
+    "Lul1;": "composed factory class (Lk90;) created inside Lpm;.c region 0x0dda; .f = its 3-arg arm",
+    "Lbr1;.h": "composable Function2 arm (len 201) that RAN 5x — builds Loc;(Lf90;) element + no-op pointerInput DIRECTLY (Lkr1;.a at unit 0x00ce with key=sget Le12;.a, handler=sget Lpv;.c)"
+  },
+  "/search_count": {
+    "verbatim_source_files_read": 2,
+    "dex_static_decodes": 26,
+    "engine_probe_runs": 5
+  },
+  "/findings": {
+    "F1_ALL_ELEMENT_BIRTHS_ARE_LEGIT_NOOPS__TRAIN6_F7_REFUTED": "S137b (KR1-CALL) 12 lines: every Lkr1;.a call in the whole run came from Lbr1;.h (5x) or Lsv;.a (1x); every Ljr1;.<init> birth passes key1=sget Le12;.a (CoroutineSingletons.COROUTINE_SUSPENDED as a PRIVATE KEY CONSTANT), key2=null, handler=sget Lpv;.b/.c (compose's own static no-op pair). Static disasm of Lbr1;.h proves these are the app's OWN sget instructions — NOT engine arg corruption. The 6 elements are compose-internal empty pointerInputs (e.g. disabled hoverable family). Train-6's 'element born with garbage at composed-factory arg evaluation' reading is REFUTED.",
+    "F2_THE_REAL_TAP_HANDLER_ELEMENT_IS_NEVER_BORN": "The REAL detectTapAndPress pointerInput element can ONLY be born inside Lpm;.c (units 0x0db6 via Lkr1;.a with handler=Lj6; wrapper, and 0x0e04 direct new Ljr1;(wv1.z, wv1.y, Lj6;, mask)) — static xref is EXHAUSTIVE (all Lkr1;.a callers: Lbr1;.h, Lqe1;.b, Lpm;.c, Lpm;.n, Lsv;.a, Lul1;.f; all Ljr1;.<init> callers: Lkr1;.a, Lpm;.c). Dynamic: Lpm;.c ENTER=0.",
+    "F3_THE_WHOLE_CLICKABLE_COMPONENT_FAMILY_NEVER_DISPATCHES": "S137c watchlist ENTER counts across the full 16-frame tap run: Lpm;.c=0, Lpm;.d=0, Lpm;.n=0, Lqe1;.b=0, Lul1;.f=1 (its pointerInput construction at unit 0x011e skipped by its enabled/cache guard), Lue;.a=0, Ldv1;.h=0, Lte;.h=0, Lje1;.c=0, Lvs0;.j=0, Lav1;.h=0. The death is at DISPATCH level — the slot-table never delivers this lambda family.",
+    "F4_MATERIALIZE_MACHINERY_ALIVE_BUT_STARVED": "Ltl;.I (materialize) entered 40+ times, ALL fast-path (any()==false, no ComposedModifier in chain); Lq;.h folder entered 2x, never reached its factory-invoke arm; Ltl;.u (composed helper) ENTER=0 — no ComposedModifier was ever created because the composables that create them (Lpm;.c etc.) never ran.",
+    "F5_FACTORY_INVOKE_MACHINERY_ALIVE": "39 K90-F (Lk90;.f) invokes at runtime via callers Lom;.g pc=41, Lse1;.s pc=137, Lti;.q pc=91, Luk0;.e pc=7 on OTHER factory receivers (Lz9;, Lul1;#8169, Lgc;, Lra0;, Lwm;, Lte1;, Lnp1;, Ld60;, Lx9;, Lqm;, Lra;) — none recv=Luq;. OM-H (Lom;.h ComposableLambda 2-arg dispatch) only 12 in the whole run.",
+    "F6_ROOT_CAUSE_STATEMENT": "tap->onClick dies because NO real pointer input handler element ever exists in the composed tree (train-6 F8 law stands), and the CAUSE is one level UP: the composable family that owns clickable (chain: [slot-table dispatch] -> Lav1;.h/Lvs0;.j -> Lje1;.c -> Ldv1;.h -> Lue;.a -> Lte;/Luq; -> Lpm;.c -> 4x composed + real element) is never dispatched by the engine's composition.",
+    "F7_LS1_H_SIDE_CHANNEL": "Ls1;.h runs repeatedly and takes a coroutine-launch branch (Lcy0;.<init> + Lxz1;.I = CoroutineScope.launch) instead of its Lpm;.d call — separate arm behavior, decode deferred."
+  },
+  "/next_leg_precise": "Car-14: (a) resolve string 0x7f110013 read by Ldv1;.h via the ENGINE's own ARSC parser (androguard 3.3.5 crashes on this table: 'res1 must be zero') — expected 'New game' (FAB label) confirming Ldv1;.h = FAB content lambda; (b) xref Lav1;.<init> and Lvs0;.j callers up to the RUNNING composable set; (c) decode WHY the slot-table dispatch skips this family: dump the group keys of the 12 RUNNING OM-H receivers vs the group that should own Ldv1;/Lte;/Luq;; check whether the parent group is opened but the child lambda slot never read, or the parent group itself never opened; (d) engine fix = the dispatch law that drops this family.",
+  "/honest_scope": [
+    "Engine changed ONLY by env-gated read-only probes (S137b extended with K90-F/OM-H counters + S137c watchlist generalization) — inert without env; build green; anchors not re-run this car (no engine behavior change).",
+    "This round did NOT fix the tap->onClick death — it moved the root cause from 'element born with garbage' (REFUTED) to 'clickable composable family never dispatched' with dynamic proof at every level of the chain.",
+    "All probe runs: 14-frame tap runs, EXIT=0, 16 frames rendered, board band #faf8fe unchanged (gate still closed) — consistent with F6.",
+    "Train-6's Ljr1; map corrected: it is SuspendPointerInputElement(key1, key2, handler, mask), NOT (viewConfiguration, density, handler)."
+  ],
+  "/zero_log": "No logs/APKs/screenshots committed. Run artifacts live in tmp/s137_run9..run10 (untracked). Evidence = this JSON + probe code (dalvik_engine.cpp S137b/S137c) + scripts/s137_train7_*.",
+  "/scripts": [
+    "scripts/s137_train7_car9.sh",
+    "scripts/s137_train7_car9_decode.py",
+    "scripts/s137_train7_car9_xref.py",
+    "scripts/s137_train7_car10.sh"
+  ]
+}
