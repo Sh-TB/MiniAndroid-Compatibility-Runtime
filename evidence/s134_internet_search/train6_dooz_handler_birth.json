@@ -1,0 +1,70 @@
+{
+  "/train": "internet-train-6 (CONT-11 W10) — dooz tap->onClick death chain: fully decoded to the exact broken link",
+  "/date": "2026-10-30",
+  "/law": "«اینترنت» — every R8 name decoded against verbatim compose sources (upstream/s43 SuspendingPointerInputFilter.kt + HitPathTracker.kt), every claim backed by a dynamic engine probe run; no name guessing without dynamic confirmation.",
+  "/internet_sources_read": [
+    {
+      "source": "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt (708 lines, verbatim)",
+      "law": "Node.dispatchMainEventPass = dispatchIfNeeded { Initial pass via modifierNode.dispatchForKind(Nodes.PointerInput){ onPointerEvent(event, Initial, size) }; children; Main pass }; dispatchFinalEventPass = Final pass + cleanUpHits + clearCache."
+    },
+    {
+      "source": "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt (918 lines, verbatim)",
+      "law": "onPointerEvent: (1) boundsSize=bounds; (2) if pass==Initial currentEvent=event; (3) if pointerInputJob==null -> coroutineScope.launch(start=UNDISPATCHED){ pointerInputEventHandler.invoke() }; (4) dispatchPointerEvent(event, pass) = forEachCurrentPointerHandler(pass){ it.offerPointerEvent(event, pass) }. PointerEventHandlerCoroutine.offerPointerEvent: if (pass == awaitPass) pointerAwaiter?.run { pointerAwaiter=null; resume(event) }. awaitPointerEventScope registers the handler via block.createCoroutine(handlerCoroutine, handlerCoroutine).resume(Unit) UNDER the lock (synchronous registration law)."
+    },
+    {
+      "source": "kotlinx.coroutines launch/start law decoded from the APK dex verbatim (Lxz1;.I, Ls;.h0, Lyr;, Ltl;.V/v/E)",
+      "law": "CoroutineScope.launch -> newCoroutineContext -> StandaloneCoroutine(Lkp1;) -> JobSupport.start(Ls;.h0) = withContinuationContext + startCoroutineUninterceptedOrReturn fast path when block is BaseContinuationImpl: DIRECT Function2.invoke(block, receiver, completion) — body must run synchronously for start=UNDISPATCHED; if returned value != COROUTINE_SUSPENDED (Lwr;.e) -> completion resume."
+    }
+  ],
+  "/r8_identity_map_new": {
+    "Lx71;": "interface with J(Ln71; Lo71; J)V = PointerInputModifierNode.onPointerEvent(event, pass, IntSize-packed-bounds)",
+    "Lor1;": "SuspendingPointerInputModifierNodeImpl (J=onPointerEvent, M0=dispatchPointerEvent, N0=resetPointerInput('Pointer input was reset'), L0=awaitPointerEventScope, field 6042=pointerInputEventHandler, v=pointerInputJob(Lkp1;=Job))",
+    "Lo71;": "PointerEventPass enum (Lo71;.e = Initial static)",
+    "Lnr1;": "PointerEventHandlerCoroutine (h=awaitPass, g=pointerAwaiter)",
+    "Lzh;": "CancellableContinuationImpl (g(Object)V = resume; super Ltx;=BaseContinuationImpl family, fields _decisionAndIndex$volatile/_state$volatile)",
+    "Lxz1;": "R8-merged kotlinx utility god-class; I(Lvr; Lmr; Lj90; I)Lkp1; = CoroutineScope.launch",
+    "Ls;": "StandaloneCoroutine (extends Loj0;=JobSupport); h0(Lyr; Ls; Lj90;)V = JobSupport.start = CoroutineStart.invoke inlined",
+    "Lyr;": "CoroutineStart enum",
+    "Lwr;": "CoroutineSingletons-like enum; Lwr;.e = COROUTINE_SUSPENDED sentinel",
+    "Le12;": "CoroutineSingletons (Le12;.a = COROUTINE_SUSPENDED)",
+    "Lne;": "BaseContinuationImpl (abstract q = invokeSuspend; g = resumeWith loop)",
+    "Lru;": "R8-merged suspend-lambda class (h=Function2.invoke -> o=create -> q=invokeSuspend state machine, 15+ merged arms)",
+    "Ltl;": "startCoroutine helpers (V=startCoroutineUndispatched-ish, v=createCoroutineUnintercepted, E=intercepted)",
+    "Lj90;": "Function2 interface (h(Object,Object)Object = invoke)",
+    "Leo;.P": "ensureActive-family law: if (arg is CompletedExceptionally) throw arg.cause — throws stored JobCancellationException",
+    "La;": "JobCancellationException (extends CancellationException, ctor takes JobSupport)",
+    "Ljr1;": "SuspendingPointerInputModifierNodeElement (super Lbu0;=ModifierNodeElement; fields a/b/c; <init>(viewConfig, density, handler, defaultMask); f()=create -> new Lor1;(p1,p2,p3) reading captures 4245/4246/4247)",
+    "Lkr1;.a": "pointerInput composed-factory entry (composer, viewConfiguration, handler) -> new Ljr1;(viewConfig, null, handler, mask=6)",
+    "Lpv;": "static no-op PointerInputEventHandler pair (<clinit> builds exactly 2 singletons ids 0/1; invoke(Ly71; Lmq;)Object is 5 bytes: dead iget + sget COROUTINE_SUSPENDED + return = suspend-forever placeholder)"
+  },
+  "/search_count": {
+    "engine_probe_runs": 8,
+    "dex_static_decodes": 14,
+    "source_files_read_verbatim": 3
+  },
+  "/findings": {
+    "F1_pte_probe_limitation": "MINIANDROID_PTE_TRACE=0 lines — the probe matched the LITERAL name 'onPointerEvent' but R8 renamed it to J. NOT evidence of absence: fixed by renaming the trace target class|method.",
+    "F2_dispatch_reaches_the_filter": "ITT inside Lhz0;.e (HitPathTracker.Node dispatch, (Lwg0; Z)Z): per node per event the ONLY per-node call is interface Lx71;.J on Lor1;/Lsj; receivers — SAME site profile for DOWN and UP. The dispatch DOES reach SuspendingPointerInputModifierNodeImpl.onPointerEvent for both events. Train-5's 'delivery is not the differentiator' confirmed and DEEPENED: delivery is COMPLETE.",
+    "F3_onPointerEvent_law_executes": "ITT inside Lor1; frames: J runs sget Initial check, stores currentEvent(w), reads pointerInputJob(v), calls Lwt0;.z0 (coroutineScope getter), constructs lambda Lru;, calls Lxz1;.I = CoroutineScope.launch — for BOTH filter nodes (recv #6571, #12409). Then Lor1;.M0 (dispatchPointerEvent) runs 6x per node (2 events x 3 passes) with monitor + Enum.ordinal(pass) switch.",
+    "F4_launch_is_DIRECT_INVOKED": "ITT inside Ls;.h0: ordinal -> Lqi0;.U (withContinuationContext setup) -> Lxz1;.k -> **Lj90;.h recv=Lru;#56841 = Function2.invoke = DIRECT BODY CALL** -> Lqi0;.P (finally) -> Ls;.g (completion resume because h returned NON-suspended). The engine faithfully executes the kotlinx UNDISPATCHED fast path (instance-of BaseContinuationImpl true via Lru;->Lir1;->Lnq;->Lne;).",
+    "F5_body_runs_but_handler_is_noop": "ITT inside Lru;: h -> o(create) -> <init> -> q(invokeSuspend); q calls Leo;.P (ensureActive) then **PointerInputEventHandler.invoke on recv=Lpv;#6077**. Lpv;.invoke is a 5-byte static no-op: returns COROUTINE_SUSPENDED unconditionally, never runs the app lambda. The FAB's real detectTapAndPress lambda NEVER starts. IFACE-RT diag confirms the engine dispatch is CORRECT (runtime Lpv;, ret object#479) — the receiver itself is wrong.",
+    "F6_ensureActive_death_cycle": "Every frame after the tap: Leo;.P throws La; (JobCancellationException) at pc=9 -> caught by Lne;.g catch-all (invokeSuspend loop) -> resume-with-failure -> cycle between Let;.a/Llo;.B/Lse1;.m — the coroutine machinery keeps re-attempting a job whose state is completed/cancelled. NoSuchElementException caught at Lne;.g too.",
+    "F7_ELEMENT_BORN_WITH_GARBAGE_ARGS__ROOT_CAUSE": "S137a ctor probe (fixed 35c FEDC nibble register decode — first version read consecutive regs, wrong): ALL FOUR Ljr1;.f constructions pass handler=**Lpv;#6077** (static no-op), p1(viewConfiguration)=**Le12;#479 (CoroutineSingletons.COROUTINE_SUSPENDED)**, p2(density)=null. Ljr1;.<init> iputs them faithfully to fields a/b/c (4245/4246/4247) — the element is BORN with garbage. Upstream defect: the caller of Lkr1;.a (pointerInput composed factory) mis-delivers BOTH the composition-local value (LocalViewConfiguration.current -> static enum garbage) AND the app SAM lambda (-> static no-op Lpv;). Lkr1;.a itself is clean; Ljr1;.f itself is clean; the corruption enters at the composed-factory argument evaluation level.",
+    "F8_why_board_stays_gated": "chain: no real handler -> no pointer-handlers registered in M0's subscriber walk -> offerPointerEvent finds zero awaiters -> detectTapAndPress never runs -> onTap never fires -> onAction(NewGame) never -> isGameStarted stays false -> AnimatedVisibility keeps board hidden -> board band #faf8fe uniform."
+  },
+  "/next_leg_precise": "Car 9: identify the DYNAMIC caller of Lkr1;.a (candidates: Lpm;.c big composed-runner, Lbr1;.h composed-factory lambda, Lul1;.f merged arms, Lqe1;.b, Lsv;.a) and trace how (viewConfiguration, handler) args are evaluated at that call site — then fix the composition-local / SAM-argument delivery law. The Lpv; statics ARE legitimate in other compose overloads (Lbr1;.h remembers sget 6433) so the fix must distinguish real no-op usages from the corrupted element path.",
+  "/honest_scope": [
+    "Engine changed ONLY by the env-gated S137a ctor probe (MINIANDROID_LOR1_CTOR_TRACE; inert without env) — zero behavior change; build green.",
+    "The tap->onClick leg remains OBSERVED-DEAD; this round did NOT fix it — it decoded the chain END-TO-END from tap to the single broken link (element construction args) with dynamic proof at every hop.",
+    "All 8 probe runs: 14-frame tap runs, EXIT=0, 16 frames rendered, board band #faf8fe in every frame (gate closed) — matches F8.",
+    "Car-5 vs car-6/7 sync-return nuance: h0's Ls;.g fired in car-5 (h returned non-suspended) while IFACE-RT in car-7 shows handler returning object#479; both observations co-exist across DIFFERENT events/nodes (2 filter nodes x 2 events x 3 passes; the first pass arms differ) — the element-garbage root cause subsumes both faces; no contradiction survives the F7 frame."
+  ],
+  "/zero_log": "No logs/APKs/screenshots committed. Run artifacts live in tmp/s137_run* (not committed). Evidence = this JSON + probe code (dalvik_engine.cpp S137a) + scripts/s137_*.",
+  "/pins": {
+    "blank_face_board_band": "#faf8fe uniform (all 14 frames, all 8 runs)",
+    "tap_dispatch": "DOWN+UP consumed=TRUE, hit path 2 filter nodes",
+    "handler_identity": "Lpv;#6077 / Lpv;#6076 static no-op pair, constructed ONLY in Lpv;.<clinit>",
+    "garbage_viewconfig": "Le12;#479 = CoroutineSingletons.COROUTINE_SUSPENDED passed as viewConfiguration",
+    "engine_bin": "miniandroid build green after S137a probe"
+  }
+}

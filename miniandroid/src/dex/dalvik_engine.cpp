@@ -16571,6 +16571,72 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             }
         }
 
+        // S137a: SuspendingPointerInputModifierNodeImpl ctor probe. At every
+        // invoke-family site resolving to Lor1;.<init> print the receiver id
+        // and the POINTER-INPUT-HANDLER argument (register regc+3, the 3rd
+        // param after this/viewCfg/density) with its heap class — answers
+        // whether the node is born with the real app SAM lambda or a static
+        // no-op handler (Lpv; singletons).
+        {
+            static thread_local const bool s137_ctor =
+                std::getenv("MINIANDROID_LOR1_CTOR_TRACE") != nullptr;
+            if (s137_ctor && pc_ < bytecode_.size()) {
+                uint16_t w = bytecode_[pc_];
+                uint8_t op = static_cast<uint8_t>(w & 0xFF);
+                bool is_invoke =
+                    (op >= 0x6e && op <= 0x72) || (op >= 0x74 && op <= 0x78);
+                if (is_invoke && (pc_ + 1) < bytecode_.size()) {
+                    uint32_t midx = bytecode_[pc_ + 1];
+                    std::string cn, mn;
+                    try {
+                        cn = resolve_method_class_for_dex(midx, current_dex_index_);
+                        mn = resolve_method_name_for_dex(midx, current_dex_index_);
+                    } catch (...) {}
+                    if (cn == "Lor1;" && mn == "<init>" && current_registers_) {
+                        static thread_local uint64_t s137_n = 0;
+                        if (s137_n++ < 64) {
+                            // 35c register list lives in nibbles FEDC of the
+                            // second word (bytecode_[pc_+2]) — NOT consecutive
+                            // from C. p1=C, p2=D, p3=E, p4=F; handler = p4.
+                            uint16_t fdec = bytecode_[pc_ + 2];
+                            uint8_t reg_this =
+                                static_cast<uint8_t>(fdec & 0xF);
+                            uint8_t reg_p1 =
+                                static_cast<uint8_t>((fdec >> 4) & 0xF);
+                            uint8_t reg_p2 =
+                                static_cast<uint8_t>((fdec >> 8) & 0xF);
+                            uint8_t reg_p3 =
+                                static_cast<uint8_t>((fdec >> 12) & 0xF);
+                            DalvikValue recv =
+                                current_registers_->read_v(reg_this);
+                            DalvikValue p1 =
+                                current_registers_->read_v(reg_p1);
+                            DalvikValue p2 =
+                                current_registers_->read_v(reg_p2);
+                            DalvikValue hnd =
+                                current_registers_->read_v(reg_p3);
+                            std::string hc = "-";
+                            if (hnd.type == DalvikType::OBJECT_REF &&
+                                heap_.has_object(hnd.object_id))
+                                hc = heap_.get(hnd.object_id)->class_descriptor;
+                            std::string caller =
+                                current_class_ + "." + current_method_;
+                            std::cerr << "[LOR1-CTOR] caller=" << caller
+                                      << " recv=obj#" << recv.object_id
+                                      << " p1=" << p1.class_desc << "#"
+                                      << p1.object_id
+                                      << " p2=" << p2.class_desc << "#"
+                                      << p2.object_id
+                                      << " handler=" << hnd.class_desc << "#"
+                                      << hnd.object_id
+                                      << " heapcls=" << hc
+                                      << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+
         // S136c: static invoke-site dump at method ENTRY (one matched
         // method via MINIANDROID_INVOKE_SITES=<class>|<method>). Scans the
         // frame's bytecode_ for every invoke-family site and prints the
