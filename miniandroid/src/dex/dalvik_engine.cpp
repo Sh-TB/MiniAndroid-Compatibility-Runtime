@@ -32835,6 +32835,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // heap fields; AOSP MotionEvent.getAction()/getX()/getY() read them.
     // S129 (R-NEW-425): getEventTime()/getTime() read __time__ (virtual
     // clock ms — VelocityTracker.addMovement and gesture timing consume it).
+    // CONT-11 train-4 (F-NEW-563): compose 1.6.7 touch law —
+    // AndroidComposeView.dispatchTouchEvent -> sendMotionEvent ->
+    // MotionEventAdapter.convertToPointerInputEvent loops
+    // `for (i in 0 until motionEvent.pointerCount)` to build
+    // PointerInputEvent.pointers, and PointerInputEventProcessor.process
+    // skips root.hitTest ENTIRELY when changes.size()==0, returning
+    // dispatchedToAPointerInputModifier=false. The shadow previously
+    // implemented only getAction(Masked)/getX/getY/getEventTime, so
+    // getPointerCount() defaulted to 0 -> empty pointers -> the whole
+    // compose hit-test walk never ran (observed: consumed=false with
+    // zero [HT-WIDE] reads). Fix = supply the AOSP-contract single-pointer
+    // answers for every reader on the 1.6.7 dispatch path.
     if (class_name == "Landroid/view/MotionEvent;" && !args.empty()) {
         uint32_t ev_id = args[0].object_id;
         if (method == "getAction" || method == "getActionMasked") {
@@ -32853,6 +32865,58 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto f = heap_.get_object_field(ev_id, "__y__");
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = f.has_value() ? *f : DalvikValue::make_float(0.f);
+            return true;
+        }
+        if (method == "getRawX") {
+            auto f = heap_.get_object_field(ev_id, "__x__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = f.has_value() ? *f : DalvikValue::make_float(0.f);
+            return true;
+        }
+        if (method == "getRawY") {
+            auto f = heap_.get_object_field(ev_id, "__y__");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = f.has_value() ? *f : DalvikValue::make_float(0.f);
+            return true;
+        }
+        // Single-pointer event law (AOSP MotionEvent contract for a
+        // materialized tap): one finger, id 0, touch tool, touchscreen
+        // source, action index 0, no buttons.
+        if (method == "getPointerCount") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(1);
+            return true;
+        }
+        if (method == "getPointerId" || method == "getActionIndex") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        if (method == "getToolType") {
+            // TOOL_TYPE_FINGER == 1 (PointerType.Touch in compose).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(1);
+            return true;
+        }
+        if (method == "getSource") {
+            // SOURCE_TOUCHSCREEN == 0x1002; constant across the DOWN/UP
+            // pair so hasChangedDevices() stays false.
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(0x1002);
+            return true;
+        }
+        if (method == "getButtonState") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        if (method == "obtainNoHistory") {
+            // static obtainNoHistory(MotionEvent) -> the engine's events
+            // carry no history by construction and recycle() is a no-op,
+            // so returning the same object satisfies previousMotionEvent
+            // bookkeeping (sendMotionEvent: lastEvent?.recycle()).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = args[0];
             return true;
         }
         if (method == "getEventTime" || method == "getTime") {
