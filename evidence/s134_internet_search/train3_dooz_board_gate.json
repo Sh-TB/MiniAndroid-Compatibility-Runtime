@@ -1,0 +1,26 @@
+{
+  "train": "internet-train-3 (CONT-11 WAVE 7)",
+  "date": "2026-10-29",
+  "law": "«اینترنت» — before digging into the 'board inner content ZERO ops' frontier (F-NEW-562 candidate from train-2), search the internet/GitHub first. Result: the app itself is OPEN SOURCE and the exact source answers the question.",
+  "internet_sources_downloaded_and_read": [
+    {"source": "github.com/yamin8000/Dooz (repo page)", "kind": "web_fetch", "relevance": "repo identity + module layout (app/common/feature_game/feature_settings/feature_about)"},
+    {"source": "codeload.github.com/yamin8000/Dooz master tarball (1.0.24)", "kind": "source_download", "relevance": "verbatim app source, all .kt files read"},
+    {"source": "codeload.github.com/yamin8000/Dooz tag 1.0.23 tarball", "kind": "source_download", "relevance": "exact-version match for upload/canonical_apks/dooz_23_toplevel.apk (versionCode 23)"},
+    {"source": "WebSearch batch (5 queries): repo identity, compose Canvas/drawBehind law, LazyVerticalGrid viewport law, drawWithCache, Robolectric RNG", "kind": "web_search", "relevance": "Canvas=Spacer+drawBehind confirmed; LazyGrid lazy-visible law confirmed; NOT the mechanism here (see G-2/G-3)"},
+    {"source": "androidx docs draw overview + modifiers (developer.android.com)", "kind": "web_fetch", "relevance": "confirms Canvas composable = Modifier.drawBehind wrapper — dooz board does NOT use it"}
+  ],
+  "search_count": {"web_search_queries": 5, "web_fetches": 4, "direct_source_downloads": 2},
+  "findings": {
+    "G1_identity_law": "APK package io.github.yamin8000.dooz (parsed verbatim from binary manifest string pool) == open-source repo yamin8000/Dooz (107 stars, Kotlin+Jetpack Compose, multi-module: app/common/feature_game/feature_settings/feature_about). Source fetched at BOTH master (1.0.24) and tag 1.0.23; diff of state-machine files (Game.kt/GameState.kt/GameViewModel.kt) is trivial (trailing comma + one sound-event swap), so master-source laws are valid for the versionCode-23 APK.",
+    "G2_board_drawing_law": "GameBoard.kt: the board is NOT canvas drawing. It is LazyVerticalGrid(columns=GridCells.Fixed(3), horizontalArrangement=spacedBy(Sizes.Medium), verticalArrangement=spacedBy(Sizes.Medium)) with 9 items; each DoozItem = Box(Modifier.size(boxItemSize).clip(RoundedCornerShape(Sizes.Small)).background(colorScheme.primary).clickable(...)). NO drawLine/drawCircle/Canvas anywhere in the app (grep over all .kt: only GameBoard.kt matched 'Grid'). The 'grid lines' are the spacedBy margins over the container background. Owner marks (X/O) = inner Box(half size).clip(shape).background(contentColor) inside AnimatedVisibility(scaleIn) when cell.owner != null.",
+    "G3_gate_law_SMOKING_GUN": "Game.kt: GameBoard (AND GameInfoCard, AND PlayerCards) sit inside AnimatedVisibility(visible = state.isGameStarted && !state.isRollingDices). GameState defaults isGameStarted=false, isRollingDices=false, gameCells=emptyList(). isGameStarted becomes true ONLY in GameAction.NewGame handler; NewGame is dispatched ONLY by the BottomAppBar ExtendedFloatingActionButton onClick ('New game'). CONSEQUENCE: the train-2 face (title 'Dooz' + flat #faf8fe zone + 'New game' button, ZERO ops in y:400-1500) is the app's CORRECT pre-tap face — the board was never supposed to render before the user taps New game. The train-2 wording 'board container' was a misnomer: RECT 42,168->1038,1710 #faf8fe is the Scaffold content Surface (fillMaxSize + contentPadding + horizontal padding Sizes.Large), not a board-specific container.",
+    "G4_post_tap_sequence_law": "onAction(NewGame) -> scope.launch { prepareGame() [settings via DataStore] -> _state.update(isGameStarted=true) -> if(firstPlayerPolicy==DiceRolling) dummyDiceRolling() [isRollingDices=true; 5x(100ms dice reroll); +100ms; +500ms; isRollingDices=false] }. Board becomes visible ~1.1s (virtual) after the tap. Sounds/haptics fire via eventChannel -> ObserverEvent = LaunchedEffect + repeatOnLifecycle(STARTED) + flow.collect -> MediaPlayer.create(context, R.raw.*).start() (first PlayDrawSound/Vibrate events). HONEST PREDICTION: engine grep shows no MediaPlayer shadow in framework/*.cpp — the first tap may expose a new unwind family (MediaPlayer/haptics). To be verified by the run, not assumed.",
+    "G5_engine_input_law": "Engine src/main.cpp has canonical --tap <x>,<y>@<frame> (TouchDispatcher law pipeline: DOWN -> pressed frame -> UP -> queued PerformClick, one-MessageQueue law) plus F-NEW-267 (CONT-61) dispatchTouchEvent-override law; AndroidComposeView overrides dispatchTouchEvent(MotionEvent), so the tap can reach Compose pointerInput through the same DEX dispatch path. versionCode-23 APK == tag 1.0.23 source verified via codeload (HTTP 200)."
+  },
+  "honest_scope": [
+    "Search + source-download wave; the tap experiment is executed in this same wave and its results are recorded under run_result below — nothing claimed beyond what the artifacts show.",
+    "1.0.23-vs-master diff was only checked on the 4 files listed; other files may differ (irrelevant to the gate law)."
+  ],
+  "run_result": "PENDING (filled after the run)",
+  "zero_log": "No logs/APKs/screenshots committed; evidence = this JSON + sha256 pins only."
+}
