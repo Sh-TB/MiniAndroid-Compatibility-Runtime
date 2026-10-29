@@ -9,12 +9,11 @@ cd /home/z/my-project
 OUT=tmp/s134_train3_out
 rm -rf "$OUT"; mkdir -p "$OUT"
 export MINIANDROID_CANVAS_OP_TRACE="$OUT/canvas_ops.jsonl"
-export MINIANDROID_THROW_TRACE=1
 ./miniandroid/build/miniandroid run upload/canonical_apks/dooz_23_toplevel.apk \
   --width 1080 --height 1920 \
-  --frames 122 \
-  --max-seconds 600 \
-  --tap 765,1830@30 \
+  --frames 14 --frame-delay 500 \
+  --max-seconds 540 \
+  --tap 765,1830@5 \
   --dump-view-tree \
   -o "$OUT" 2>"$OUT/throw_sites.log"
 echo "EXIT=$?"
