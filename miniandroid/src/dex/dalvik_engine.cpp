@@ -16484,6 +16484,173 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                       << std::endl;
         }
 
+        // S136 (CONT-11 W9): PTE (pointer-event) dispatch probe — env-gated,
+        // bounded, read-only. Logs every method ENTRY named onPointerEvent
+        // while a touch dispatch is active: the receiver filter class + the
+        // pass enum constant + the event object. Answers THE train-4 F7 leg:
+        // does the UP event ever reach the clickable's filter, and at which
+        // pass? (SuspendingPointerInputFilter.onPointerEvent is the only
+        // offerPointerEvent feeder — without this we cannot see the death.)
+        if (pc_ == 0 && touch_dispatch_active_ &&
+            current_method_ == "onPointerEvent" &&
+            std::getenv("MINIANDROID_PTE_TRACE") != nullptr) {
+            static thread_local uint64_t s136_pte_n = 0;
+            if (s136_pte_n++ < 96) {
+                std::string pass_name = "-";
+                if (current_registers_ && current_registers_->get_size() >= 2) {
+                    uint32_t total = current_registers_->get_size();
+                    uint32_t ins_n = current_registers_->get_ins_count();
+                    // receiver=p0, event=p1, pass=p2 (IntSize=p3/p4)
+                    if (ins_n >= 3) {
+                        DalvikValue passv = current_registers_->read_v(
+                            static_cast<uint8_t>(total - 2));
+                        if (passv.type == DalvikType::OBJECT_REF) {
+                            auto nm = heap_.get_object_field(passv.object_id,
+                                                             "enum_name");
+                            if (nm.has_value() &&
+                                nm->type == DalvikType::STRING_REF)
+                                pass_name = nm->string_val;
+                        }
+                    }
+                }
+                std::cerr << "[PTE-DISPATCH] filter=" << current_class_
+                          << " pass=" << pass_name << std::endl;
+            }
+        }
+        // S136b: invoke-target probe for ONE method (class|method via
+        // MINIANDROID_INVOKE_TARGET_TRACE). Logs the resolved callee class
+        // + name of every invoke-family instruction executed inside the
+        // matched frame while touch dispatch is active — decodes the R8
+        // dispatch chain one level at a time.
+        {
+            static thread_local const char* itt_filter =
+                std::getenv("MINIANDROID_INVOKE_TARGET_TRACE");
+            if (itt_filter && touch_dispatch_active_) {
+                std::string f(itt_filter);
+                auto bar = f.find('|');
+                std::string fcls = (bar == std::string::npos) ? f : f.substr(0, bar);
+                std::string fmth = (bar == std::string::npos) ? "" : f.substr(bar + 1);
+                if (current_class_.find(fcls) != std::string::npos &&
+                    (fmth.empty() || current_method_ == fmth) &&
+                    pc_ < bytecode_.size()) {
+                    uint16_t w = bytecode_[pc_];
+                    uint8_t op = static_cast<uint8_t>(w & 0xFF);
+                    bool is_invoke =
+                        (op >= 0x6e && op <= 0x72) || (op >= 0x74 && op <= 0x78);
+                    if (is_invoke && (pc_ + 1) < bytecode_.size()) {
+                        static thread_local uint64_t itt_n = 0;
+                        if (itt_n++ < 256) {
+                            uint32_t midx = bytecode_[pc_ + 1];
+                            std::string cn, mn;
+                            try {
+                                cn = resolve_method_class_for_dex(midx, current_dex_index_);
+                                mn = resolve_method_name_for_dex(midx, current_dex_index_);
+                            } catch (...) {}
+                            // S136f: receiver identity for virtual/interface
+                            // invokes (35c: C = low nibble of unit pc+2).
+                            std::string recv = "-";
+                            if (op != 0x71 && current_registers_) {
+                                uint8_t regc =
+                                    static_cast<uint8_t>(bytecode_[pc_ + 2] & 0xF);
+                                DalvikValue r =
+                                    current_registers_->read_v(regc);
+                                if (r.type == DalvikType::OBJECT_REF)
+                                    recv = std::string(r.class_desc) + "#" +
+                                           std::to_string(r.object_id);
+                            }
+                            std::cerr << "[INVOKE-TARGET] " << current_class_ << "."
+                                      << current_method_ << " pc=" << pc_
+                                      << " -> " << cn << "." << mn
+                                      << " recv=" << recv
+                                      << " u0=" << bytecode_[pc_]
+                                      << " u2=" << bytecode_[pc_ + 2]
+                                      << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+
+        // S136c: static invoke-site dump at method ENTRY (one matched
+        // method via MINIANDROID_INVOKE_SITES=<class>|<method>). Scans the
+        // frame's bytecode_ for every invoke-family site and prints the
+        // resolved target — decodes the FULL R8 call graph of the method
+        // (executed or not) using the engine's own bytecode view.
+        {
+            static thread_local const char* is_filter =
+                std::getenv("MINIANDROID_INVOKE_SITES");
+            if (is_filter && pc_ == 0 && touch_dispatch_active_) {
+                std::string f(is_filter);
+                auto bar = f.find('|');
+                std::string fcls = (bar == std::string::npos) ? f : f.substr(0, bar);
+                std::string fmth = (bar == std::string::npos) ? "" : f.substr(bar + 1);
+                if (current_class_.find(fcls) != std::string::npos &&
+                    (fmth.empty() || current_method_ == fmth)) {
+                    static thread_local uint64_t is_n = 0;
+                    if (is_n++ < 8) {
+                        for (uint32_t u = 0; u + 1 < bytecode_.size(); ++u) {
+                            uint8_t op = static_cast<uint8_t>(bytecode_[u] & 0xFF);
+                            if ((op >= 0x6e && op <= 0x72) ||
+                                (op >= 0x74 && op <= 0x78)) {
+                                uint32_t midx = bytecode_[u + 1];
+                                std::string cn = "?", mn = "?";
+                                try {
+                                    cn = resolve_method_class_for_dex(midx, current_dex_index_);
+                                    mn = resolve_method_name_for_dex(midx, current_dex_index_);
+                                } catch (...) {}
+                                std::cerr << "[INVOKE-SITE] " << current_class_ << "."
+                                          << current_method_ << " pc=" << u
+                                          << " -> " << cn << "." << mn << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // S136d: P-entry probe — log the receiver class of every method
+        // named MINIANDROID_P_ENTRY_TRACE's value (e.g. "P") at frame entry
+        // while touch dispatch is active. The filter impl of the abstract
+        // PointerInputFilter.onPointerEvent (= Llo;.P) never executes a
+        // frame of its own, so name+class METHOD-TRACE cannot see it; the
+        // impl's entry (class.P) does. Bounded.
+        {
+            static thread_local const char* pe_name =
+                std::getenv("MINIANDROID_P_ENTRY_TRACE");
+            if (pe_name && pc_ == 0 && touch_dispatch_active_ &&
+                current_method_ == pe_name) {
+                static thread_local uint64_t pe_n = 0;
+                if (pe_n++ < 96) {
+                    std::cerr << "[P-ENTRY] " << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+                // S136e: one bounded static invoke-site dump per receiver
+                // class — identifies WHICH P impl is the pointer filter
+                // (its sites will show the offerPointerEvent machinery).
+                static thread_local std::string pe_dumped_cls;
+                std::string cls_snap = current_class_;
+                if (pe_dumped_cls != cls_snap) {
+                    pe_dumped_cls = cls_snap;
+                    std::cerr << "[P-SITES] " << cls_snap << "." << current_method_
+                              << " size=" << bytecode_.size() << std::endl;
+                    for (uint32_t u = 0; u + 1 < bytecode_.size(); ++u) {
+                        uint8_t op = static_cast<uint8_t>(bytecode_[u] & 0xFF);
+                        if ((op >= 0x6e && op <= 0x72) ||
+                            (op >= 0x74 && op <= 0x78)) {
+                            uint32_t midx = bytecode_[u + 1];
+                            std::string cn = "?", mn = "?";
+                            try {
+                                cn = resolve_method_class_for_dex(midx, current_dex_index_);
+                                mn = resolve_method_name_for_dex(midx, current_dex_index_);
+                            } catch (...) {}
+                            std::cerr << "[P-SITE] pc=" << u << " -> "
+                                      << cn << "." << mn << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+
         // M3 METHOD-TRACE (AG diagnostic, 2026-09-08): env-gated, bounded,
         // per-instruction trace of ONE matched method. Syntax:
         //   MINIANDROID_METHOD_TRACE=<class-substr>|<method-substr>
