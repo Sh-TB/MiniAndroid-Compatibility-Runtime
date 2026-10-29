@@ -16637,6 +16637,218 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             }
         }
 
+        // S137b (car-9): composed-factory arg-evaluation probe. At every
+        // invoke resolving to Lkr1;.* (pointerInput/composed family) or
+        // Ljr1;.<init> (element ctor) dump caller, opcode format regs
+        // (35c nibbles FEDC+G / 3rc range), every arg value with heap
+        // class, and the receiver object's FIELDS (captures) — proves
+        // DYNAMICALLY whether the factory lambda's captured block is
+        // already the Lpv; no-op at birth or corruption happens at the
+        // call-site arg pass (train-6 F7 next leg).
+        {
+            static thread_local const bool s137b =
+                std::getenv("MINIANDROID_KR1_CALL_TRACE") != nullptr;
+            if (s137b && pc_ < bytecode_.size()) {
+                uint16_t w = bytecode_[pc_];
+                uint8_t op = static_cast<uint8_t>(w & 0xFF);
+                bool is_invoke =
+                    (op >= 0x6e && op <= 0x72) || (op >= 0x74 && op <= 0x78);
+                if (is_invoke && (pc_ + 2) < bytecode_.size()) {
+                    uint32_t midx = bytecode_[pc_ + 1];
+                    std::string cn, mn;
+                    try {
+                        cn = resolve_method_class_for_dex(midx, current_dex_index_);
+                        mn = resolve_method_name_for_dex(midx, current_dex_index_);
+                    } catch (...) {}
+                    bool hit_kr1 = (cn == "Lkr1;");
+                    bool hit_jr1_init = (cn == "Ljr1;" && mn == "<init>");
+                    // car-12: global composed-factory invoke counter —
+                    // Lk90;.f is the Modifier.(Composer,Int)->Modifier
+                    // factory invoke; every composed materialization must
+                    // pass through it exactly once per composed element.
+                    bool hit_k90f = (cn == "Lk90;" && mn == "f");
+                    // car-13: ComposableLambda.invoke dispatch probe —
+                    // Lom;.h is the (Composer,Int)->R composable lambda
+                    // invoke arm; every slot-table composable dispatch
+                    // passes through it. Dump receiver identity to see
+                    // WHICH lambdas the runtime actually dispatches.
+                    bool hit_omh = (cn == "Lom;" && mn == "h");
+                    if ((hit_kr1 || hit_jr1_init || hit_k90f || hit_omh) &&
+                        current_registers_) {
+                        static thread_local uint64_t s137b_n = 0;
+                        if (s137b_n++ < 96) {
+                            if (hit_k90f || hit_omh) {
+                                // 35c A=4: (receiver=Lk90;, arg1=Modifier,
+                                // arg2=Composer, arg3=Int) — dump recv +
+                                // heap class of receiver for identity.
+                                uint16_t fdec = bytecode_[pc_ + 2];
+                                uint8_t rr =
+                                    static_cast<uint8_t>(fdec & 0xF);
+                                DalvikValue recv =
+                                    current_registers_->read_v(rr);
+                                std::string rc = "-";
+                                if (recv.type == DalvikType::OBJECT_REF &&
+                                    heap_.has_object(recv.object_id))
+                                    rc = heap_.get(recv.object_id)
+                                             ->class_descriptor;
+                                std::cerr << "["
+                                          << (hit_omh ? "OM-H" : "K90-F")
+                                          << "] caller="
+                                          << current_class_ << "."
+                                          << current_method_
+                                          << " pc=" << pc_
+                                          << " recv=" << rc << "#"
+                                          << recv.object_id
+                                          << std::endl;
+                            }
+                            bool is_range = (op >= 0x74 && op <= 0x78);
+                            uint8_t cnt = static_cast<uint8_t>(
+                                (bytecode_[pc_] >> 8) & 0xFF);
+                            std::vector<uint8_t> regs;
+                            if (!is_range) {
+                                uint16_t fdec = bytecode_[pc_ + 2];
+                                regs = {
+                                    static_cast<uint8_t>(fdec & 0xF),
+                                    static_cast<uint8_t>((fdec >> 4) & 0xF),
+                                    static_cast<uint8_t>((fdec >> 8) & 0xF),
+                                    static_cast<uint8_t>((fdec >> 12) & 0xF),
+                                    static_cast<uint8_t>(
+                                        (bytecode_[pc_] >> 12) & 0xF)};
+                            } else {
+                                uint16_t start =
+                                    bytecode_[pc_ + 2];
+                                for (uint8_t i = 0; i < cnt && i < 8; i++)
+                                    regs.push_back(static_cast<uint8_t>(
+                                        start + i));
+                            }
+                            if (regs.size() > cnt) regs.resize(cnt);
+                            std::string args;
+                            for (size_t i = 0; i < regs.size(); i++) {
+                                DalvikValue a =
+                                    current_registers_->read_v(regs[i]);
+                                std::string ac = "-";
+                                if (a.type == DalvikType::OBJECT_REF &&
+                                    heap_.has_object(a.object_id))
+                                    ac = heap_.get(a.object_id)
+                                             ->class_descriptor;
+                                args += (i ? "," : "");
+                                args += "r" + std::to_string(regs[i]) + "=" +
+                                        a.class_desc + "#" +
+                                        std::to_string(a.object_id) + "{" +
+                                        ac + "}";
+                            }
+                            std::string recvfields = "-";
+                            DalvikValue recv =
+                                current_registers_->read_v(regs.empty()
+                                                               ? 0
+                                                               : regs[0]);
+                            if (recv.type == DalvikType::OBJECT_REF &&
+                                heap_.has_object(recv.object_id)) {
+                                recvfields = "";
+                                auto* ho = heap_.get(recv.object_id);
+                                int fc = 0;
+                                for (auto& kv : ho->fields) {
+                                    if (fc++ >= 8) break;
+                                    std::string vc = "-";
+                                    if (kv.second.type ==
+                                        DalvikType::OBJECT_REF)
+                                        vc = kv.second.class_desc + "#" +
+                                             std::to_string(
+                                                 kv.second.object_id);
+                                    recvfields += (fc > 1 ? "|" : "") +
+                                                  kv.first + "=" + vc;
+                                }
+                                if (recvfields.empty())
+                                    recvfields = "(nofields)";
+                            }
+                            std::cerr << "[KR1-CALL] caller="
+                                      << current_class_ << "."
+                                      << current_method_
+                                      << " pc=" << pc_
+                                      << " op=0x" << std::hex
+                                      << static_cast<int>(op) << std::dec
+                                      << " tgt=" << cn << "." << mn
+                                      << " cnt=" << static_cast<int>(cnt)
+                                      << (is_range ? " range" : " 35c")
+                                      << " recv=" << recv.class_desc << "#"
+                                      << recv.object_id
+                                      << " fields=" << recvfields
+                                      << " args=[" << args << "]"
+                                      << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+
+        // S137c (car-10/11): composable-factory execution progress probe.
+        // train-7 car-9 proved the REAL pointerInput element (Ljr1; with
+        // wv1.z/y keys + Lj6; handler) is constructed statically inside
+        // Lpm;.c (pc 0x0db6/0x0e04) but NEVER dynamically — this probe
+        // logs entry + every invoke executed inside a WATCHLIST of
+        // class|method pairs (MINIANDROID_PMC_TRACE="Lcls;|mth,Lcls;|mth",
+        // no touch gate: composition runs outside dispatch) so the last
+        // logged pc bounds exactly where each composable stops.
+        {
+            static thread_local const char* pmc_env =
+                std::getenv("MINIANDROID_PMC_TRACE");
+            static thread_local std::vector<std::pair<std::string,
+                std::string>>* pmc_watch = nullptr;
+            if (pmc_env && !pmc_watch) {
+                pmc_watch = new std::vector<std::pair<std::string,
+                    std::string>>();
+                std::string f(pmc_env);
+                size_t pos = 0;
+                while (pos < f.size()) {
+                    size_t comma = f.find(',', pos);
+                    std::string item = f.substr(
+                        pos, (comma == std::string::npos) ? std::string::npos
+                                                          : comma - pos);
+                    auto bar = item.find('|');
+                    if (bar != std::string::npos)
+                        pmc_watch->emplace_back(item.substr(0, bar),
+                                                item.substr(bar + 1));
+                    if (comma == std::string::npos) break;
+                    pos = comma + 1;
+                }
+            }
+            if (pmc_watch && !pmc_watch->empty() && pc_ < bytecode_.size()) {
+                for (auto& w : *pmc_watch) {
+                    if (current_class_ != w.first ||
+                        current_method_ != w.second)
+                        continue;
+                    static thread_local uint64_t pmc_n = 0;
+                    if (pmc_n++ < 2400) {
+                        uint16_t w2 = bytecode_[pc_];
+                        uint8_t op = static_cast<uint8_t>(w2 & 0xFF);
+                        if (pc_ == 0) {
+                            std::cerr << "[PMC] ENTER " << current_class_
+                                      << "." << current_method_ << std::endl;
+                        }
+                        bool is_invoke =
+                            (op >= 0x6e && op <= 0x72) ||
+                            (op >= 0x74 && op <= 0x78);
+                        if (is_invoke && (pc_ + 2) < bytecode_.size()) {
+                            uint32_t midx = bytecode_[pc_ + 1];
+                            std::string cn, mn;
+                            try {
+                                cn = resolve_method_class_for_dex(
+                                    midx, current_dex_index_);
+                                mn = resolve_method_name_for_dex(
+                                    midx, current_dex_index_);
+                            } catch (...) {}
+                            std::cerr << "[PMC] " << current_class_ << "."
+                                      << current_method_ << " pc=0x"
+                                      << std::hex << pc_ << std::dec
+                                      << " -> " << cn << "." << mn
+                                      << std::endl;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
         // S136c: static invoke-site dump at method ENTRY (one matched
         // method via MINIANDROID_INVOKE_SITES=<class>|<method>). Scans the
         // frame's bytecode_ for every invoke-family site and prints the
