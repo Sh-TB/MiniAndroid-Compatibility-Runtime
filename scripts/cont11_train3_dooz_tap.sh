@@ -9,6 +9,8 @@ cd /home/z/my-project
 OUT=tmp/s134_train3_out
 rm -rf "$OUT"; mkdir -p "$OUT"
 export MINIANDROID_CANVAS_OP_TRACE="$OUT/canvas_ops.jsonl"
+export MINIANDROID_THROW_TRACE=1
+export MINIANDROID_TOUCH_FIELD_TRACE=1
 ./miniandroid/build/miniandroid run upload/canonical_apks/dooz_23_toplevel.apk \
   --width 1080 --height 1920 \
   --frames 14 --frame-delay 500 \
