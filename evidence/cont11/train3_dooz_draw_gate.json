@@ -1,0 +1,53 @@
+{
+  "task_id": "CONT-11-TRAIN-3",
+  "date": "2026-10-30",
+  "engine_binary_built_at": "2026-10-30T08:15Z (with TRAIN-1 F141-core + TRAIN-2 STRING_REF fixes)",
+  "train_chain_status": {
+    "train_1": "F-141 GENERALIZATION (ART null-receiver law at shared DEX-dispatch core / try_recursive_invoke) — root: compose MutableIntObjectMap.get null receiver -> fail-soft 0 -> Swiss-table probe infinite spin -> F084 halt in doFrame. DONE in prior window (snapshot e34de1e7).",
+    "train_2": "STRING_REF correction in f141_is_null_receiver (STRING_REF object_id==0 is the engine's NORMAL inline string, NOT null; treating it as null manufactured an NPE wave at every const-string-fed call site). DONE in prior window, was NOT in binary; rebuilt 08:15 and VERIFIED this window: dooz crash.log NPE wave 20 -> only the 6 known La; CancellationException SETUP-phase entries (proven pre-composition, not a draw blocker).",
+    "train_3": "This file. The 600s tap run + the draw-path forensic chain.",
+    "train_4": "PENDING — target: compose measure/PLACEMENT pass never marks nodes placed.",
+    "train_5": "PENDING."
+  },
+  "run": {
+    "cmd": "miniandroid/build/miniandroid run upload/canonical_apks/dooz_23_toplevel.apk --width 1080 --height 1920 --frames 122 --max-seconds 600 --tap 765,1830@30 --dump-view-tree -o tmp/s134_train3_out",
+    "frames_rendered": 123,
+    "phase_b_click": 1,
+    "verdict": "DEFAULT_BACKGROUND_ONLY (first_missing_stage=APP_DRAW_OPS)",
+    "final_frame_sha16": "d602648e8e401895 (byte-identical to the recorded blank baseline — zero drift pre/post click at framebuffer level)",
+    "board_region_distinct_colors": 1,
+    "crash_log": "only the 6 known La; CancellationException entries (SETUP-phase) — TRAIN-2 verified"
+  },
+  "internet_sources_downloaded_and_read": [
+    "androidx-main compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt (dispatchDraw: canvasHolder.drawInto(canvas){root.draw(canvas=this, graphicsLayer=null)}; measureAndLayout(); dirtyLayers.updateDisplayList)",
+    "androidx-main compose/ui/ui-graphics/src/androidMain/kotlin/androidx/compose/ui/graphics/AndroidCanvas.android.kt (Canvas(c) factory = AndroidCanvas().apply{internalCanvas=c}; CanvasHolder.drawInto = androidCanvas.internalCanvas swap + block + restore)",
+    "androidx-main compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/node/LayoutNode.kt (insertAt: foldedParent, _foldedChildren.add(index,instance), onZSortedChildrenInvalidated(), instance.attach(owner) when owner!=null; attach(): check(!isAttached), owner set, depth=(parent?.depth?:-1)+1, if(parent==null){measurePassDelegate.isPlaced=true; owner.rectManager.recalculateRectIfDirty(this)} ROOT-ONLY, nodes.markAsAttached(), _foldedChildren.forEach{child.attach(owner)}, nodes.runAttachLifecycle())",
+    "WebSearch: UiApplier.insertBottomUp -> LayoutNode.insertAt law confirmation (stackoverflow.com/questions/76742006, androidx sources)"
+  ],
+  "bytecode_laws_disassembled_from_dooz_v23_classes_dex": {
+    "Lt4;.dispatchDraw": "inlined CanvasHolder.drawInto: iget Lt4;.w:Lhi;(CanvasHolder) -> Lhi;.a:Ly3;(AndroidCanvas) -> Ly3;.a:Landroid/graphics/Canvas; swap -> root Lel0;.i(Ldi;,Lrc0;) -> restore",
+    "Lv02;.c": "UiApplier.insert -> Lel0;.B(I,Lel0;) (LayoutNode.insertAt)",
+    "Lel0;.B insertAt": "child.q=parent?, iget this.n:Lwg0; -> Lwg0;.f -> check-cast Liw0; -> Liw0;.a(index,node) (MutableVector.add) + Lel0;.O() (zSortedChildrenInvalidated) + depth + this.d(owner) attach",
+    "Liw0;.a add(I,T)": "capacity check -> Liw0;.m ensureCapacity -> same-array arraycopy shift (F-078 law) -> aput -> size++ — RUNTIME-PROVEN COMPLETE (per-instruction trace: pc=0..32, p1 0->1)",
+    "Lel0;.y()Liw0;": "getChildren: Lel0;.m:I==0 -> n.f vector; else Lel0;.o vector",
+    "Lel0;.x()Liw0;": "getZoningSortedChildren: if(!Lel0;.y:Z dirty) return this.x:Liw0; cached; else clear+bulk-copy from y()+Arrays.sort+mark clean — RUNTIME-PROVEN WORKING (sorted vector 2007 got size 1)",
+    "Lel0;.I()Z draw gate": "return this.J:Lil0; .p:Lbt0; .w:Z",
+    "Lel0;.d attach": "333 insns; check(!isAttached)->'Cannot attach'; check(parent owner match)->'Attaching to a different owner'; if(parent==null){ Lbt0;.w=true (isPlaced) + rectManager path } pc=121 if-nez(parent) skips it; owner set pc=159; depth pc=168; children recursion loop pc=219-243 walks holder.f content array"
+  },
+  "runtime_proven_chain": [
+    "1. Bridge CONSTRUCTED: Lt4;.w=obj#1390 -> Lhi;.a=obj#1391 (AndroidCanvas) -> internalCanvas=obj#9911..10547 written per-frame inside dispatchDraw (FIELD-TRACE) — W6's 'Ljt1; never constructed' frontier is GONE after TRAIN-1/2 fixes.",
+    "2. dispatchDraw dispatches every frame: [C013-ONDRAW] view=1430 class=Lt4; dispatched=YES ops=0; draw window walk: Lel0;.i(root) -> Lpz0;.L0 -> canvas.translate (Ly3;.f x4/frame, reaches CanvasShadow mat_) -> M0/T0 chain walk -> Lxk0;.h1/Lug0;.h1 draw nodes.",
+    "3. UiApplier machinery REAL-DEX and ALIVE: Lv02;.c(insert) x34, .d(down) x34, .q(up) x34 (METHOD-IN); CL-TRACE: Lel0;.B(root o1997, 0, node o6128) <- Lv02;.c <- Ly11;.a <- Ls21;.Y <- La21;.a (real change-list executor); receivers correct (o2004 vector for root).",
+    "4. Attach runs recursively 19x with correct receivers (CL-TRACE d=6 root from Lt4;.<init>; d=19..23 chain 6128->6225 via Lel0;.d recursion; second wave o7788/o8916/o8940/o8964/o8988/o9012/o9036/o9060/o9084/o9108 at d=60..77) — owner (r=1430) + depth (s=0..5) written for every node.",
+    "5. THE BLOCKER: the draw gate Lel0;.I()Z reads Lbt0;.w:Z (= upstream measurePassDelegate.isPlaced). Upstream attach() sets isPlaced=true ONLY in the parent==null (root) branch (LayoutNode.kt:501-512 law); every other node must get isPlaced from the MEASURE/PLACEMENT pass. Runtime FIELD-TRACE: .w=1 written ONCE (obj#2325, root, by Lel0;.d); children hierarchy objects 6144/6169/6193/6217/6241 ALL read .w=0 -> Lug0;.h1 children loop gated OFF -> Lel0;.i(child) never runs -> 0 canvas ops -> blank framebuffer.",
+    "6. Per-instruction attach trace (19 calls, 2032 lines): root reaches pc=125 (the single .w=true iput-boolean); children branch at pc=121 (if-nez parent) -> 145 and NEVER touch .w — faithful to upstream bytecode; the missing piece is the PLACEMENT pass, not attach."
+  ],
+  "conclusion": "dooz board draw is gated by compose's placement state machine: nodes materialize + attach correctly, but no node except the root is ever PLACED (measurePassDelegate.isPlaced stays false), so LayoutNode.draw skips every child. Next train: root-cause why the measure/placement pass (dispatchDraw's measureAndLayout -> measureAndLayoutDelegate) never places the materialized LayoutNodes.",
+  "honest_scope": [
+    "Board still NOT rendered (final frame byte-identical blank d602648e8e401895) — the user's suspicion was correct.",
+    "Canvas ops = 0 (canvas_ops.jsonl absent because no op was ever captured).",
+    "Only verified facts recorded; R8 name mappings used are backed by runtime traces, not guesses.",
+    "No engine code changed in this train (evidence-first discipline)."
+  ],
+  "zero_log": "No logs/APKs/screenshots committed; sha pins only: frame_121=d602648e8e401895, mt2.log(full add trace)=07f2556707064bc8, throw_sites.log=3188361b8b49f185 (612043 bytes), report.md=21aa2e0a30c58bad."
+}
