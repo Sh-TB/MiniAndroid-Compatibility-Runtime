@@ -4,7 +4,7 @@
  "campaign": "UNIFIED_011",
  "zero_apk_policy": "repository, releases, and handoff ZIPs contain ZERO .apk/.aab; this registry + scripts/download_test_apks.py is the only APK access path",
  "external_cache": "MINIANDROID_APK_CACHE env or <two levels above repo>/apk_cache",
- "count": 22,
+ "count": 23,
  "apks": [
   {
    "name": "Telegram v12",
@@ -319,6 +319,20 @@
    "test_purpose": "S35 corpus expansion (word game)",
    "status": "EXEC BUDGET TIMEOUT (540s, heavy app) — no frame claim",
    "storage": "EXTERNAL CACHE ONLY"
+  },
+  {
+   "name": "Freebloks (3D board, Blokus)",
+   "package": "de.saschahlusiak.freebloks",
+   "version": "1.8.4 (vc 184)",
+   "source_url": "https://f-droid.org/en/packages/de.saschahlusiak.freebloks/",
+   "download_url": "https://f-droid.org/repo/de.saschahlusiak.freebloks_184.apk",
+   "license": "GPL-2.0-only",
+   "sha256": "11908519d6b8eddea3183d3807d8e85f5efed0d0e3ae97d316d4be9674a2707e",
+   "size_bytes": 5999178,
+   "architecture": "universal (arm64-v8a/armeabi-v7a native libs: libktx.so, libserver.so, libandroidx.graphics.path.so)",
+   "test_purpose": "CONT-11 s135 worklist: very simple 3D open-source game (user directive). 2039 androidx/compose classes in sampled dexes — drives the generic Compose draw/click frontier AND the 3D/surface path",
+   "status": "WORKLIST — APK downloaded, sha pinned, NOT yet installed/run (train queue after dooz board)",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   }
  ]
 }
