@@ -1,0 +1,39 @@
+{
+  "task_id": "CONT-11-TRAIN-4",
+  "date": "2026-10-30",
+  "parent": "evidence/cont11/train3_dooz_draw_gate.json (the isPlaced gate discovery)",
+  "internet_sources_downloaded_and_read": [
+    "androidx-main compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt (measureAndLayout(): performMeasureAndLayout(fullPass=true){ relayoutNodes.popEach{ remeasureIfNeeded/remeasureAndRelayoutIfNeeded } }; doRemeasure -> layoutNode.remeasure(); relayoutNodes filled by requestRemeasure/requestLayout/requestRelayout)",
+    "androidx-main compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/node/MeasurePassDelegate.kt (isPlaced:99; markNodeAndSubtreeAsPlaced: isPlaced=true + innerCoordinator.onPlaced + rectManager.recalculateRectIfDirty; onNodePlaced(): if(!wasPlaced||alignmentLines.queried) markNodeAndSubtreeAsPlaced(); then placeOrder assignment; layoutChildren() places measureResult.placeables; 'Place was called on a node which was placed already' check at :406)"
+  ],
+  "r8_map_runtime_proven": {
+    "Lbt0;": "MeasurePassDelegate (fields: .w:Z=isPlaced, .y:Z=measurePending, .j:Lil0;=node info, .B:Lfl0;=alignmentLines, .m:I=placeOrder-ish)",
+    "Lfl0;": "AlignmentLines-ish holder (.c/.e/.f/.g booleans; .d()Z = queried OR)",
+    "Lbt0;.u0()V": "MeasurePassDelegate.onNodePlaced",
+    "Lbt0;.q0()V": "markSubtreeAsPlaced-family (recurses itself; writes .w)",
+    "Lbt0;.q()V": "MeasurePassDelegate.layoutChildren",
+    "Lel0;.q()Z": "node.J.p.y:Z getter (child measurePending poll)",
+    "Lel0;.f0()V": "folded-children rebuilder (gated by Lel0;.m:I virtualChildrenCount and .p:Z dirty flag; rebuilds .o from n.f, recursion for attached children)",
+    "Lel0;.y()Liw0;": "getChildren: m==0 -> n.f (the vector insertAt populates); m!=0 -> .o (rebuilt by f0)"
+  },
+  "runtime_proven_cascade": [
+    "1. Placement STARTS at the root only: CL-TRACE Lxk0;.k0 -> Ler0;.b -> Lf4;.i -> Lc61;.g -> Lug0;.k0(recv=o2019 root outerCoordinator) -> Lbt0;.u0(recv=o2325 root MeasurePassDelegate). Exactly ONE u0 in the whole run (METHOD-IN count=1).",
+    "2. Root u0 path is CORRECT upstream behavior: isPlaced already true (set by attach parent==null branch) and alignmentLines.d()=false -> markNodeAndSubtreeAsPlaced(q0) correctly skipped (per-instruction trace: pc=72-81 skips pc=78 q0). The children must be placed by layoutChildren (pc=142 Lbt0;.q executed).",
+    "3. layoutChildren (Lbt0;.q) iterates the children vector (Lel0;.y() -> holder.f, Lel0;.m==0 path confirmed: root .m reads all value=0) and gates each child on child.q()Z = child.J.p.y:Z (measurePending).",
+    "4. THE BLOCKER: measurePending (Lbt0;.y:Z) is NEVER true for the materialized children (6144/6169/6193/6217/6241) -> every child skipped at the loop gate (pc=32-38) -> no child placement -> child.u0/onNodePlaced never runs for children (0 executions) -> child isPlaced stays false -> train-3 draw gate blocks -> 0 canvas ops.",
+    "5. requestRemeasure-family ran but did not reach the children: Lzs0;.r x81, Lzs0;.s x7, Lt4;.z x80 (METHOD-IN) — but CL-TRACE showed 0 hits (class_identity anomaly: METHOD-IN prints Lzs0;/Lt4; while CL-TRACE token match on the same names never fires — recorded as a diagnostic gap, next train resolves the receiver identity of the 80 z-calls). Lil0;.c (direct measurePending writer) ran 0 times.",
+    "6. attach() of children completed INCLUDING its tail invokes (per-instruction: pc=244..304 invoke chain, return at 332) — yet measurePending stayed false: the attach tail's invalidateMeasurements->requestRemeasure path is the next link to decode (either it ran fail-soft or targets the wrong receiver)."
+  ],
+  "next_station_first_probes": [
+    "MINIANDROID_METHOD_TRACE=Lt4;|z with budget: per-instruction dump of all 80 z-calls — identify receivers (root only? or children?)",
+    "Decode Lzs0; (MeasureAndLayoutDelegate) .r/.s/.g bodies + receiver ids via CL-TRACE fix (add receiver class to CL-TRACE line)",
+    "Decode attach tail pc=244-304 invoke targets from mt4.log (already captured) — find invalidateMeasurements/requestRemeasure and why measurePending stays false",
+    "Engine-side candidate law: compose attach -> requestRemeasure cascade (generic; NOT R8-specific)"
+  ],
+  "honest_scope": [
+    "Board still not rendered (chain: materialize OK -> attach OK -> placement gate blocks -> draw gate blocks).",
+    "No engine code changed in this train either (evidence-first discipline kept).",
+    "The CL-TRACE 0-hit anomaly for Lzs0;/Lt4; is recorded honestly as an unresolved diagnostic gap."
+  ],
+  "zero_log": "sha pins only; probes live in tmp/ (not committed): mt4.log(attach per-instruction, 2032 lines), mt5.log(u0 44 lines), mt6.log(f0 672 lines), cl2/cl3/cl4.log, stderrB/C/D/E.log"
+}
