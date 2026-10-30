@@ -1,0 +1,42 @@
+{
+  "/train": "s135 — user directive round: classify dooz problems GENERIC vs dooz-specific + add a very simple open-source 3D game to the worklist",
+  "/date": "2026-10-30",
+  "/law": "«اینترنت» — internet + source consulted before digging; «قطار» — frontier banked, next train queued",
+  "/verdict_generic_vs_specific": {
+    "answer": "GENERIC — every blocking dooz problem is engine-level Compose-runtime support, not dooz code",
+    "proof": [
+      "Family law across the registry: dooz v23 (empty frame until W11 train fixes; now 113-color chrome, board gated on click), com.itsfrz.tictactoe ('empty frame'), org.kirkezz.rttt ('empty frame, Compose frontier family') — the SAME symptoms across three unrelated Compose apps.",
+      "View-based apps (opencalc 379 colors re-verified this round post-rebuild, chess, flappycow, unote) render real content on the same binary — the View pipeline is intact; the gaps sit in the Compose draw/click machinery every Compose app shares.",
+      "All classes in the fixed frontier (draw walk Lel0/Lpz0 chain, compose Canvas Ly3/Ldi, GraphicsLayer Luc0, kind-mask entities Lwt0) are Compose-runtime bytecode shipped inside the app DEX — zero dooz game logic involved.",
+      "The only dooz-specific behavior found is the 'New game' AnimatedVisibility gate — app UX, not a bug; the engine tap machinery already reaches PerformClick."
+    ],
+    "independent_rediscovery": "This round began on a RECYCLED sandbox with a STALE tree (pre-W11). The full draw-path frontier was independently re-derived there (dispatched=YES ops=0 -> draw walk visits 2 chain nodes, zero drawRect, kind-mask (h|g)&4==0, .i links unwired) and matched the remote's train-1..8 history; tree then synced to origin/main a5bad3a4 and the remote milestone adopted. Honest note: no new engine code from the stale tree was kept."
+  },
+  "/worklist_add_3d_game": {
+    "name": "Freebloks (3D board, Blokus)",
+    "package": "de.saschahlusiak.freebloks",
+    "version": "1.8.4 (vc 184)",
+    "license": "GPL-2.0-only",
+    "source_url": "https://f-droid.org/en/packages/de.saschahlusiak.freebloks/",
+    "download_url": "https://f-droid.org/repo/de.saschahlusiak.freebloks_184.apk",
+    "apk_sha256": "11908519d6b8eddea3183d3807d8e85f5efed0d0e3ae97d316d4be9674a2707e",
+    "size_bytes": 5999178,
+    "minsdk": 24,
+    "main_activity": "de.saschahlusiak.freebloks.game.FreebloksActivity",
+    "stack_observed": "2039 androidx/compose classes in sampled dexes; native libs libktx.so/libserver.so/libandroidx.graphics.path.so (arm64-v8a/armeabi-v7a)",
+    "rationale": "Very simple open-source 3D board game (Blokus) — drives BOTH generic frontiers at once: the Compose draw/click family (same as dooz) and the 3D/surface rendering path. Registry count 22->23; NOT yet run (queued behind dooz board).",
+    "internet_sources": ["f-droid.org package page (license/version/vc)", "APK itself: package + main activity + dex census + native lib list", "github topic surveys opengl-es/opengl-game for candidates"]
+  },
+  "/honest_scope": [
+    "dooz: NOT fully loaded — chrome renders (TRAIN-6 milestone), board still 1-color behind the click-detection frontier; no verified full load this round.",
+    "Freebloks: worklist entry only, zero runs.",
+    "telegram: untouched this round (t23 SIGSEGV fix is remote's).",
+    "Regression this round: opencalc 379 distinct colors after rebuild on synced tree — View pipeline unchanged."
+  ],
+  "/next_trains": [
+    "train #7 (dooz, THE board blocker): Compose click detection — touch reaches Lt4; and is consumed, but clickable/pointerInput never fires. Map PointerInputEventProcessor/hit-test path in the engine; fix = clickable detection on the materialized LayoutNodes.",
+    "train #8: verify board pixels after the click fix (9 cells, distinct colors > 2) + full-run SUCCESS",
+    "train #9: Freebloks install + first run (worklist app)",
+    "train #10+: post-tap frame cost (~15-20s wall) — the text-draw multiplier family; telegram TL_config line"
+  ]
+}
