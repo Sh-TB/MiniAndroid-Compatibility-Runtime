@@ -1,0 +1,67 @@
+{
+ "/train": "s138 — status round per user directive: دوز؟ تلگرام؟ بازی سه‌بعدی؟ + اینترنت law (search + report) + قطار-10 chain",
+ "/date": "2026-10-30",
+ "/head": "96e04ffd (s135) — tree clean, origin synced",
+ "/binary_sha16": "60aeac4dc71563ff",
+ "/internet_law_report": {
+  "searches_and_fetches": [
+   "WebSearch x7: endless-tunnel 3D candidates, gltron android, telegram_api.tl help.getConfig, ShadowMediaPlayer, TL_config handling, TLRPC constructor law",
+   "WebFetch github.com/xanewton/EndlessTunnel: STANDALONE Android 3D tunnel game, Apache-2.0 (C) 2016 Angel Newton, C++ NDK + GLM, native-glue game, NO releases/prebuilt APKs (banked as future 3D candidate; needs local build)",
+   "WebFetch android/games-samples AGDK README: Endless-Tunnel-derived AGDK sample (candidate list only)",
+   "WebFetch f-droid.org/de.saschahlusiak.freebloks: VERIFIED 'the Android version of Freebloks 3D' (Blokus), GPL-2.0-only, v1.8.4 — the 3D worklist line is legitimate",
+   "WebSearch core.telegram.org method help.getConfig: returns current configuration incl. DC config; layer-225 note",
+   "WebSearch DrKLO ConnectionsManager.java: response law pinned — TL_config responses deserialize via TLRPC.TL_config.TLdeserialize(buff, buff.readInt32(true), true) then Utilities.stageQueue.postRunnable"
+  ],
+  "applied": [
+   "Freebloks confirmed as the 3D line and run (train #9)",
+   "telegram next canned-response candidate surfaced by the live run: TL_langpack_getLanguages (only unknown request left besides the by-design getAutoDownloadSettings)"
+  ]
+ },
+ "train7_dooz_click_chain": {
+  "pmc_probe": {
+   "run": "run/s138_dooz_pmc (26 frames, tap 765,1830@12, 540s)",
+   "result": "Ljr1;.<init> ENTERED 7x (log lines 2740/3255/3565/4114/12684/60173), Lj6;.<init> ENTERED 1x (line 4189)",
+   "law": "s135-era 'pointerInput element constructed STATICALLY but never dynamically' is REFUTED at HEAD — the real pointerInput element and handler wrapper DO construct during composition"
+  },
+  "isites_probe": {
+   "run": "run/s138_dooz_isites (14 frames, tap @5)",
+   "result": "MINIANDROID_INVOKE_SITES=Ljr1;| during the touch-dispatch window = 0 entries; run itself ended SUCCESS rc=0",
+   "law": "NO pointerInput-filter method is entered when the tap dispatches — the break is between dispatch and the filter"
+  },
+  "board_region_truth": "region (340,700)-(740,1100): 1 distinct color (250,248,254) at frames 0/12/25 — board ABSENT despite the run's total 612 colors (delta vs TRAIN-6's 113 is post-tap chrome, not the board)",
+  "dispatch_graph_decode": {
+   "run": "run/s138_dooz_dispatch (INVOKE-SITES Lt4;|dispatchTouchEvent, 76 sites, 2 dispatches)",
+   "chain_captured": "pc=45 Lc4;.run, pc=48 Lt4;.q, pc=69 Lt4;.s, pc=77 Lt4;.m, pc=134 Lel0;.k, pc=160/165 Lqd;.<init>, pc=174/232 getFocusOwner, pc=180 Lv60;.f, pc=186 Llo;.U, pc=190 Ltl;.y, pc=194 Lmk0;.L, pc=198-211 MotionEvent.getX/getY + floatToRawIntBits, pc=226 Lmb1;.a, pc=240 Lv60;.b",
+   "next_station": "PMC watchlist Lmb1;|a,Lv60;|f,Llo;|U,Ltl;|y,Lmk0;|L,Lel0;|k — find the early-return branch where the hit-test never reaches the Ljr1; filter"
+  }
+ },
+ "train9_3d_line_first_run": {
+  "app": "Freebloks 1.8.4 (vc184) de.saschahlusiak.freebloks — 'Android version of Freebloks 3D' (Blokus), GPL-2.0",
+  "run": "run/s138_freebloks (30 frames, 360s)",
+  "result": "boots clean LOG onCreate->onStart->onResume; 31 frames; stub-census 7093 IMPLEMENTED / 134 STUBBED / 0 MISSING; face verdict DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS; pixels 1 distinct color (48,48,48) full-frame; screenshot sha16 b5a7a35d5fe0564b; top exc IllegalStateException x18",
+  "classification": "same generic draw-chain family as dooz trains 1-8 (APP_DRAW_OPS missing) — supports the s135 GENERIC verdict with a 3D/libgdx app",
+  "registry": "miniandroid/APK_REGISTRY.json freebloks status updated to FIRST RUN DONE"
+ },
+ "train10_telegram_remeasure": {
+  "apk": "upload/forkgram_709208.apk (org.forkgram.classic 12.10.8.0 vc709208, deterministic s117 data-root)",
+  "run": "run/s138_tg_forkgram (260 frames, 540s) — ALL 260 frames completed (old cont47-era stop: ~236 dispatch frames)",
+  "lifecycle": "LaunchActivity onStart + onResume logged; ProfileInstaller OK",
+  "config_chain": "T5 canned TL_config/webBrowserSettings served 5x; R-NEW-570 OFFLINE fired only 2x: TL_langpack_getLanguages (NEW canned-response candidate) + TL_account$getAutoDownloadSettings (by-design honest OFFLINE)",
+  "face": "103 distinct colors, white-dominant (255,255,255)=129400 + light-blue tints (234,246,255 family) — a themed partial face, NOT the old blank error face",
+  "exceptions": "SQLiteException x41 (no real DB), NullPointerException x15, UnsatisfiedLinkError x7 (UPP-001 libtmessages dlopen family — known honest boundary)",
+  "official_anchor": "DIFF: official telegram face at HEAD = bf5c9ef920aa32d7 vs cont121 battery anchor 20ac8cbbbb692e63 — face CHANGED since cont121 (engine advanced R-NEW-570/T5/laws since); flagged honestly, not suppressed; follow-up train: re-baseline with a pixel census of the new face"
+ },
+ "honest_scope": [
+  "NO verified full load anywhere this round — dooz board region still 1-color; freebloks DEFAULT_BACKGROUND_ONLY; telegram partial themed face; none claimed as loaded.",
+  "dooz chain advanced with two-sided evidence: filter CONSTRUCTS (7x), filter NEVER ENTERED in dispatch (0 hits) — break localized to the dispatch->hit-test link; exact watchlist banked.",
+  "telegram: 261-frame full run at HEAD is a MEASURED improvement over the ~236-frame cont47-era stop; 2 unknown requests remain; official-anchor face drift flagged for re-baselining.",
+  "census numbers are stubby-bounded per F-NEW-200 (dooz 25.9M impl / 327k stubbed; forkgram 2.63M impl / 23k stubbed)."
+ ],
+ "zero_log": "No logs, screenshots, or APKs committed; shas + pixel numbers only. Runs live under run/ (gitignored).",
+ "next_trains": [
+  "#7 (dooz): dispatch watchlist Lmb1;/Lv60;/Llo;/Ltl;/Lmk0; — hit-test early-return branch -> PerformClick fix",
+  "#8 (dooz): board-pixel verification after the click fix (region distinct > 2, 9 cells)",
+  "#9b (freebloks): APP_DRAW_OPS station — same draw-walk family decode",
+  "#10 (telegram): canned TL_langpack_getLanguages response (schema dig first, اینترنت law) + official-face re-baseline"
+ ]
+}

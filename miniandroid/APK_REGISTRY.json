@@ -331,7 +331,7 @@
    "size_bytes": 5999178,
    "architecture": "universal (arm64-v8a/armeabi-v7a native libs: libktx.so, libserver.so, libandroidx.graphics.path.so)",
    "test_purpose": "CONT-11 s135 worklist: very simple 3D open-source game (user directive). 2039 androidx/compose classes in sampled dexes — drives the generic Compose draw/click frontier AND the 3D/surface path",
-   "status": "WORKLIST — APK downloaded, sha pinned, NOT yet installed/run (train queue after dooz board)",
+   "status": "FIRST RUN DONE (s138): boots clean onCreate->onResume, 31 frames, 7093 IMPLEMENTED/134 STUBBED calls, face verdict DEFAULT_BACKGROUND_ONLY (first_missing_stage=APP_DRAW_OPS), 1-color (48,48,48) sha16 b5a7a35d5fe0564b; next = APP_DRAW_OPS draw-walk family (same generic chain as dooz)",
    "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   }
  ]
