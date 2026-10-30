@@ -1,0 +1,27 @@
+{
+  "/train": "internet-train-8 (CONT-11 W11b) — dooz: FAB text renders WITHOUT its composable (engine synthetic path) + per-frame text-draw storm (~2900x) = the train-3 wall-clock cost root",
+  "/date": "2026-10-30",
+  "/law": "«اینترنت» — dooz 1.0.23 source re-fetched verbatim from codeload (tag 1.0.23) and read: Game.kt FAB code + strings.xml. Plus exhaustive dex-wide constant/field xref for the new_game resource.",
+  "/internet_sources_read": [
+    {
+      "source": "github.com/yamin8000/Dooz tag 1.0.23 (codeload tarball, re-downloaded)",
+      "law": "Game.kt:156-166: ExtendedFloatingActionButton(text = { SingleLinePersianText(stringResource(R.string.new_game)) }, onClick = { onAction(GameAction.NewGame) }, icon = { Icon(Icons.TwoTone.Games, null) }) inside Scaffold(floatingActionButton = ...). strings.xml line 31: <string name=\"new_game\">New game</string>."
+    }
+  ],
+  "/findings": {
+    "F1_ONLY_STRING_READER_NEVER_RUNS": "Dex-wide xref: the ONLY reference to the new_game string resource in the ENTIRE APK is const 0x7f110013 (2131558419) inside Ldv1;.h (R8 const-propagated the final R$string field; zero sget-by-name references remain). S137c dynamic: Ldv1;.h ENTER=0 across all 16 frames.",
+    "F2_TEXT_RENDERS_ANYWAY__SYNTHETIC_PATH": "Pixel probe of tmp/s137_run10 last frame FAB zone: 758+ pixels at #30436e (text color ff30436e family), container #b9cbff (13941 px), bottom bar #ededf6 — the FAB text IS rendered. canvas_ops.jsonl: 46825 TEXT ops with literal \"New game\" at x=765,y~1830 color ff30436e. Since no dex code except Ldv1;.h can produce that string, the engine renders the FAB text through a NON-dex synthetic path (engine-side material3/scaffold-family shadow or draw-list replay). Real compose dispatch (Ldv1;.h) is NOT the pixel source.",
+    "F3_TEXT_DRAW_STORM__TRAIN3_COST_ROOT": "canvas_ops.jsonl (68175 ops): \"New game\" TEXT ops = 46825 (69%), CONSECUTIVE duplicates (ops 5607/5608/5609 byte-identical), distribution uniform [8069,12922,12920,12914] across the run => ~2927 identical draws PER FRAME, pre-tap included. This multiplication is plausibly the SAME root that made frames cost ~0.73s and blew the train-3 90s wall-clock budget (121 presentation SKIPS). Fixing the draw multiplication would shrink frame cost ~100x.",
+    "F4_IMPACT_ON_TAP_WORK": "The tap fix (car-14: why the clickable family never dispatches) operates in the REAL compose layer; the pixels the user sees come from the synthetic layer. Closing the tap gap requires the real dispatch law fix (F6 of train7) OR teaching the synthetic layer to route taps."
+  },
+  "/next_leg_precise": "Car-15: (a) locate the ENGINE code path emitting TEXT ops with resource-resolved strings (grep the canvas TEXT emitter for string origin: composed LayoutNode draw vs engine shadow) — decides synthetic-shadow vs replay; (b) decode the repetition multiplier (per-layout-pass? per-subframe? replay-loop?) at the emitter; (c) fix the multiplier (expect ~100x frame cost drop, re-verify anchors byte-exact); (d) return to car-14 dispatch decode.",
+  "/honest_scope": [
+    "No engine changes this car (analysis only).",
+    "The 'engine synthetic path' claim is bounded: the string cannot come from dex code (exhaustive xref, both const and sget forms) and Ldv1;.h provably never ran; the exact engine emitter is NOT yet identified (car-15a).",
+    "Run artifacts in tmp/s137_run10 (untracked); ZERO-LOG honored (sha-free analysis JSON; pixel counts quoted inline)."
+  ],
+  "/scripts": [
+    "scripts/s137_train7_car10.sh (reused, watchlist edit only)",
+    "inline PIL pixel probe (not persisted — counts recorded here)"
+  ]
+}
