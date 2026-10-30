@@ -12288,3 +12288,24 @@ Work Log:
 
 Stage Summary:
 - The dooz draw frontier is now pinned at the PLACEMENT cascade, not the canvas bridge: the tree materializes, attaches, requests measure, gets MEASURED — but is never PLACED, so the drawBlock skips and the framebuffer stays background-only. The upstream 1.11.4 law chain is fully mapped. Next car owns the synthetic placement-law probe (fnew256 W7B) discriminating faces (α)/(β)/(δ), then the generic fix — which simultaneously addresses the W11 clickable-family death (car-14 target).
+
+---
+Task ID: CONT-11-WAVE-7B+7C
+Agent: Super Z (main)
+Task: ادامه — dooz W7B (placement-law probe + TRUE root found) + telegram W7C (fresh census). No engine changes.
+
+Work Log (W7B — dooz placement probe):
+- Built fixtures/fnew256_probe (real aapt2/ECJ/D8 toolchain; scripts/cont11_build_probe.sh) — 5 rows discriminating the W7A faces: F256-A (face β measureResult backing-field/SAM-block dispatch via null-default getter), F256-B (face α the exact 4-term layoutChildren guard), F256-C (face δ inlined placeAt write-first via holder-held lambda), F256-D (markNodeAndSubtreeAsPlaced recursion), F256-E (packed-switch over float bits, the Placeable-place dispatch shape).
+- VERDICT: 5/5 PASS (after fixing a probe-expectation bug in F256-E's own inputs) — ALL the candidate engine-generic faces are REFUTED: the engine's SAM dispatch, guard chains, lambda field writes, subtree recursion and packed-switch are healthy.
+- THE TRUE ROOT (found in the dooz 30-frame throw trace, every measure pass): [SYNTH-EXC] f141-null-recv at Lm7;.<init> pc=421 (a text-measurer delegate ctor, in the android.graphics.Paint setup region — setFlags/setHinting/getFlags neighborhood, then the R8 getClass null-check idiom on a NULL object) → NPE unwinds through Lnt1;.e (no handler) → Lto1;.d (LazyLayout measure, viewportHeight strings) whose three catch-alls each re-NPE on further nulls (pc 268/536/551) → unwinds to Lbt0;.y0 (remeasure) catch-all at pc=149 → REMEASURE ABORTED MID-PASS → its layoutChildren() tail never runs → the placement cascade never lands → isPlaced=false forever → the layer drawBlock skips → 0 compose draw ops.
+- UNIFICATION: this one root explains the no-tap blank face, the W10/W11 clickable-family death (no placement → no hit-test) and contributes to the measure/StaticLayout re-run storm. The exact NULL identity inside Lm7;.<init> (an app/framework object upstream never leaves null) is the next dooz car's first task (engine-side: extend the f141 synth line with the receiver identity — small env-gated diagnostic).
+- Probe evidence: probe sha 87f930a8f075eaef (v1) / 5774285e6975dd86 (v2, 5/5); committed fixture + build script.
+
+Work Log (W7C — telegram):
+- Fresh controlled census at the merged binary: install ok; run completed 3 frames (~15s); FRAME_ANALYSIS verdict REAL_APP_CONTENT rf=CLASSIC_CANVAS, 94.6% non-white (#e1e1e1 splash bg + #85caff accents), screenshot sha16 cf4c41e62ceb6557 (old recorded FLAT pin dac4ade9 — honest drift note, no A/B claim).
+- Uncaught frontier named: 6× SQLiteCursor.next pc=62 SQLiteException (no handler) from LocationController loadSharingLocations — the shared-locations DB query fails on the engine SQLite shadow. Registered R-NEW-571 CLASSIFIED; T5 (TL_config-shaped response before intro/auth) stands as the other telegram law.
+- Evidence: evidence/cont11/tg_w7c_census.json; runs under run/w7/* (not committed).
+
+Stage Summary:
+- dooz: the placement-cascade root is now pinned to a SPECIFIC failing instruction (Lm7;.<init> pc=421 f141-null-recv) — the next car reads the receiver identity at that instruction and fixes the object law; the W7A chain (remeasure aborted → placement dead → drawBlock skip) is closed end-to-end.
+- telegram: the face moved from the recorded FLAT blank to a rendered splash; the next root (R-NEW-571) is a scoped SQLite query law.
