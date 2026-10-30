@@ -1,0 +1,20 @@
+{
+  "task_id": "CONT-11-TRAIN-5",
+  "date": "2026-10-30",
+  "problem": "Two items resolved at this station: (A) the train-4 'CL-TRACE 0-hit anomaly for Lzs0;/Lt4;' and (B) a decisive NEW fact about the remeasure walk.",
+  "A_false_gap_corrected": {
+    "claim_in_train4": "CL-TRACE never fires for Lzs0;/Lt4; while METHOD-IN does — suspected engine diagnostic gap.",
+    "resolution": "ANALYSIS ERROR, not an engine gap. The verification grep used 'CL-TRACE. Lzs0' which requires '] Lzs0' adjacency; the real line format is '[CL-TRACE] d=14 Lzs0;.r ...' ('d=14' between). Fixing the grep shows the entries EXIST: tmp/s134_train3_probe/cl4.log lines 1658/1662/1663/1668 show Lzs0;.r traced with recv=o2596, node=o1997, callers Lt4;.z <- Lel0;.V <- Lel0;.E <- Lel0;.d(attach)/Lqz0;.b. Lesson recorded: verify the literal line format before declaring a diagnostic dead.",
+    "correction_applied": "evidence/cont11/train4_dooz_placement_cascade.json item 5 amended."
+  },
+  "B_new_runtime_fact": {
+    "discovery": "The delegate remeasure walk (Lzs0;.g, per-instruction-traced, 1818 lines) DOES descend into the materialized children: first call recv=o2596 node=o1997 walks children vector obj#2004, reads array obj#2005, lands on child obj#6128 (v3) and child hierarchy obj#6143 (v6), invokes at pc=117 and returns; the SECOND call is recv=o2596 node=o6128 (THE CHILD) walking ITS vector obj#6130. So the measure/layout walk traverses the real tree — it is NOT root-stuck.",
+    "implication": "The failing gate for placement is INSIDE the walk's per-child decision logic (pc=63-117 region of Lzs0;.g: reads child flags v4=obj#2013 -> 0, v6=obj#6143, branch decisions at pc=66/67/92/101) — the walk visits but never transitions the child into 'measured+placed' state (measurePending Lbt0;.y:Z never set; markSubtreePlaced q0 never runs for subtrees).",
+    "next_decode": "Disassemble Lzs0;.g pc=40-117 fully (registers already captured in tmp/s134_train3_probe/mt7.log, 1818 lines) and match each branch against upstream MeasureAndLayoutDelegate.measureAndLayout/remeasureIfNeeded — the branch that skips the child measure is the exact engine-law gap to fix."
+  },
+  "honest_scope": [
+    "Board still not rendered at session end; the causal chain is now pinned from tap -> composition -> attach -> placement walk -> the single remaining gate.",
+    "Trains 1-2 verified live (NPE wave gone, bridge constructed); train 3 root isolated+committed; train 4 cascade mapped+committed; train 5 = correction + walk-descent discovery, no engine change."
+  ],
+  "zero_log": "sha-pin discipline kept; probe logs live only under tmp/ (mt7.log 1818 lines = the Lzs0;.g walk trace)."
+}
