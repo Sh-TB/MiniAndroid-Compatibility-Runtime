@@ -1,0 +1,19 @@
+{
+  "/train": "CORRIGENDUM to internet-train-8 (CONT-11 W11c) — honest reversal: the FAB text renders via the REAL compose text pipeline, not an engine synthetic path; the string type in dooz is 0x7f0d (not 0x7f11)",
+  "/date": "2026-10-30",
+  "/law": "«اینترنت» — the reversal comes from the engine's own ARSC ground truth (RES-F136 getString resolutions) + StaticLayout-family caller chains in MINIANDROID_TEXT_TRACE.",
+  "/what_was_wrong_in_train8": [
+    "Train-8 F1 claimed Ldv1;.h (sole reader of const 0x7f110013) is the FAB text lambda. WRONG: the dooz string type is 0x7f0d — engine ARSC ground truth resolves 0x7f0d0000->About, 0x7f0d0006->Dooz, 0x7f0d0074->New game, 0x7f0d0085->Settings, 0x7f0d0096->Undo. 0x7f110013 is a DIFFERENT type (not a string). Ldv1;.h is therefore NOT the new_game reader and its non-execution proves nothing about the FAB text.",
+    "Train-8 F2 claimed an engine SYNTHETIC path renders the text. WRONG: MINIANDROID_TEXT_TRACE shows the real dex chain getString(0x7f0d0074)->\"New game\" -> [F298-OBTAIN] SpannableString/StaticLayout.Builder.obtain caller=Lxd1;.e <- Lrw1;.<init> <- Lj7;.a <- Lj7;.<init> — the compose Text -> Paragraph -> StaticLayout pipeline. The string reaches drawText through REAL dex composition."
+  ],
+  "/what_stands": [
+    "Train-7 findings are UNAFFECTED: all 6 SuspendingPointerInput element births are legit compose no-op statics (static sget disasm proof); the clickable composite Lpm;.c and its whole family (Lue;.a/Ldv1;.h/Lte;/Lje1;.c/Lvs0;.j/Lav1;.h/Lpm;.n/Lqe1;.b) NEVER dispatch (ENTER=0); the REAL detectTapAndPress element (only constructible in Lpm;.c per exhaustive xref) is never born. Tap->onClick remains dispatch-dead.",
+    "Train-8 F3 stands: ~2927 identical 'New game' TEXT draws per frame (46825/68175 ops, consecutive byte-identical duplicates, uniform across frames) — the draw-multiplication law bug and plausibly the train-3 wall-clock cost root.",
+    "NEW FACT: the compose text pipeline IS alive (StaticLayout chain runs) — so the dead zone is specific to the clickable/pointerInput composable family, not to composition globally. This sharpens the car-14 target: which dispatch law runs the Text family but skips the clickable family."
+  ],
+  "/new_question_for_car14": "The id 0x7f0d0074 reaches getString without any full-const or high16+lit8 pair in the dex (scans negative) — it arrives via a field/argument (R8 const-propagation into a lambda capture). Identify the passing method to name the RUNNING app text lambda; contrast its dispatch path with the dead clickable family.",
+  "/honest_scope": [
+    "Corrigendum issued same-day; both train-8 JSONs kept for the record (this file supersedes train8_dooz_text_storm.json F1/F2).",
+    "No engine changes. ZERO-LOG honored."
+  ]
+}
