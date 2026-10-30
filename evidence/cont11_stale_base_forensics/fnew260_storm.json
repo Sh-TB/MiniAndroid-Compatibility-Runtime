@@ -1,0 +1,66 @@
+{
+ "artifact": "[STALE-BASE FORENSICS] fnew260_storm.json — CONT-11 W7 (قطار ۱): the dooz draw-path frontier (F-NEW-256) root-caused to an interpreter-level LONG/WIDE arithmetic law gap that turns the compose SlotTable-search probe loop into an infinite storm, which the F084 budget converts into a silent white screen. | RE-LABELED 2026-10-30 after syncing to origin/main e8e9934e: this analysis ran on the STALE local base e99c2fbd while the remote CONT-11 train chain (b7f02ac9..e8e9934e) had already advanced past it — remote root-caused the same dead-end to the f141-null-recv NPE cascade at Lm7;.<init> pc=421 (their W7B probe 5/5 refuted the placement-law faces) and banked the TRAIN-6 render milestone at their HEAD. The storm itself WAS real at the stale base (548M instructions in one Lrh0;.b invocation) and the LONG/WIDE arithmetic anomalies were real instrument readings; whether they are live at remote HEAD is UNVERIFIED (remote TRAIN-6 reports 'zero halts'). Preserved as forensic record + reusable tooling (scripts/cont11_decode.py complete-width disassembler). NO registry claim made from the stale base (remote registry already carries F-NEW-260 and 853 roots).",
+ "head": "e99c2fbd (CONT-10 W6 closeout) — binary lineage aed46450c103f2ea reproduced byte-identically at wave start",
+ "binary": "c819195d84ba323f (engine + generic env-gated diagnostics: MINIANDROID_STORM_PROBE, MINIANDROID_LOOP_TRACE)",
+ "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk (sha256 299eab21ac8b3c61)",
+ "compose_pinned": "ui/runtime 1.11.4",
+ "baseline": {
+  "dooz_x3": "anchor d602648e8e401895 x3 zero drift (run/w6 + run/w7), app_draw_ops=0, verdict DEFAULT_BACKGROUND_ONLY, 6 uncaught (F084 VME per frame)"
+ },
+ "internet_findings": [
+  "1. upstream dispatchDraw law (androidx-main AndroidComposeView.android.kt L2424): canvasHolder.drawInto(canvas) { root.draw(canvas = this, graphicsLayer = null) } — the compose Canvas used by the whole layer draw chain is CanvasHolder's long-lived AndroidCanvas with internalCanvas swapped in/out per frame.",
+  "2. upstream CanvasHolder law (ui-graphics AndroidCanvas.android.kt): drawInto swaps internalCanvas; AndroidCanvas() no-arg ctor binds EmptyCanvas by default. In DEX: Lhi;=CanvasHolder(field a), Ly3;=AndroidCanvas(implements Ldi;=compose Canvas interface, field a=internalCanvas), verified live: dispatchDraw swaps obj#9862/10489/... into Ly3;.a per frame.",
+  "3. W4 identity CORRECTION: Ljt1; is NOT AndroidCanvas — it is the ui-text ThreadLocal text-draw wrapper (class Ljt1; extends android.graphics.Canvas, constructed ONLY in the text painter Lj7;.e with the string 'Text drawing wrapper is missing a Canvas'). The W6 conclusion 'AndroidCanvas bridge never constructed' is REFUTED: the real bridge (Ly3;) is constructed, bound, and its translate() executes 4x/frame forwarding to the engine canvas.",
+  "4. upstream isPlaced law (LayoutNode.kt L844/L514 + MeasurePassDelegate.kt L99/292/384 + attach L512-514): root isPlaced=true in attach(); non-root nodes become isPlaced via markNodeAndSubtreeAsPlaced() during placement; the draw walk gates every node on isPlaced. DEX: Lel0;.I()Z reads J(Lil0;).p(Lbt0;).w — w written ONLY ONCE all run (root state obj#2325, from attach Lel0;.d).",
+  "5. upstream placement dispatch law (MeasureAndLayoutDelegate.kt L600-625): a node is placed iff layoutPending && (isRoot || (parent.isPlaced && isPlacedByParent)). DEX: Lzs0;=MeasureAndLayoutDelegate, Lbt0;.y=measurePending, Lbt0;.z=layoutPending (written false by layoutChildren Lbt0;.q).",
+  "6. upstream performMeasure tail law (MeasurePassDelegate.kt performMeasure/remeasure): after measure, if layoutState==Measuring -> markLayoutPending() sets layoutPending=true. Root took this path (z=1 at root delegate obj#2325); EVERY child (obj#6144/6169/6193/6217/6241/8847..) never got z=1 because the children's measure never COMPLETED — see the storm below."
+ ],
+ "first_divergence_chain": [
+  {
+   "step": 1,
+   "fact": "dispatchDraw -> canvasHolder.drawInto -> root.draw(canvas=Ly3;-obj, null) executes; layer chain runs (root layer Lxk0; o2675 -> content layer Lug0; o2019); AndroidCanvas.translate forwards to the engine canvas 4x/frame (FIELD-TRACE Ly3;.a: put obj#9862 -> 4x get by Ly3;.f -> restore obj#1392).",
+   "evidence": "evidence/cont11/fnew260_storm_run.log (FIELD-TRACE + CL-TRACE)"
+  },
+  {
+   "step": 2,
+   "fact": "The per-child draw gate Lel0;.I()Z (=LayoutNode.isPlaced) answers FALSE for every materialized destination node (o6128/o6153/o6177/o6201/o6225/o8847..) -> the draw walk visits 2 layers + the root children and draws NOTHING -> 0 canvas ops.",
+   "evidence": "[DRAWWIN-ZRET] decl=Lel0;.I recv=6128 ret=FALSE"
+  },
+  {
+   "step": 3,
+   "fact": "isPlaced (Lbt0;.w) is written exactly ONCE in the whole run (root, from attach). The marker recursion Lbt0;.q0/r0 (markNodeAndSubtreeAsPlaced/markSubtreeAsNotPlaced) never runs for children because their placeAt never runs."
+  },
+  {
+   "step": 4,
+   "fact": "layoutPending (Lbt0;.z) is NEVER set on any child (root: z=1 by Lbt0;.y0 remeasure tail, z=0 by layoutChildren; children: ZERO z-writes) -> the MALD dispatch gate (layoutPending) skips every child -> no placeAt -> no isPlaced."
+  },
+  {
+   "step": 5,
+   "fact": "Children's measure never completes: the FIRST frame-driven composition+measure pass is killed by the F084 interpreter halt (100M instruction budget; with --max-instructions 2000000000 the WALL-CLOCK 300s budget fires instead at the SAME method Lrh0;.b pc=25). The VirtualMachineError unwinds Lrh0;.b -> Lnb0;.n (ComposerImpl.doCompose) -> Lwo;.w -> Lfb1;.I -> Ldb1;.i (doFrame) -> MainActivity.onCreate and is SWALLOWED by catch-all handlers -> silent white screen (silent-wrong law violation)."
+  },
+  {
+   "step": 6,
+   "fact": "The budget exhaustion is an INFINITE PROBE STORM: 548M instructions (and 218M in a second run) spent inside ONE Lrh0;.b invocation (entered only ~380 times total). Receiver obj#7614 class Lnn1; (extends Lhv0; extends Lrh0;): a=[Lon1;], b=[I len=1280 (probe metadata), c=131, d=[Object len=1024, e=551, g=127, h=127. The loop (pc63-89) is the androidx.collection-family metadata probe: cmp-long cursor exit + ntz-based slot math + b[idx]==key compare.",
+   "evidence": "MINIANDROID_STORM_PROBE dumps + [PROGRESS] distribution: 5478/5484 samples inside Lrh0;.b"
+  },
+  {
+   "step": 7,
+   "fact": "ROOT CAUSE (runtime-proven by MINIANDROID_LOOP_TRACE, 40-instruction one-shot): the probe loop's exit condition never fires because the engine's LONG/WIDE arithmetic laws are broken in this loop: (a) cmp-long writes NO result into v12 (stale -1 persists; v10==v6 -> if-eqz must exit); (b) sub-long 0-1 answers 2147483647 (INT32_MAX) instead of -1; (c) the 2addr op at pc88 (0xc0) modifies v6 (the loop END register) instead of v10 (cursor); (d) add-int/2addr 3+0 answered 4. -> the cursor arithmetic never converges -> infinite probe -> F084 halt every frame -> children never measured/placed -> isPlaced false -> 0 draw ops.",
+   "evidence": "evidence/cont11/fnew260_looptrace_run.log [LOOPTRACE] rows"
+  }
+ ],
+ "precedent": "F-054 (M9, dalvik_engine.cpp hashCode family): 'dooz Material3 init spins forever in ScatterSet findInSet because EVERY key answered hashCode()==0' — the SAME probe-storm family, different law face (long/wide arithmetic vs hash source). Long.numberOfTrailingZeros itself IS implemented (root-gap solitaire/mentalmath wave).",
+ "generality_verdict": "ENGINE-LEVEL GENERIC (not dooz-specific): every long/wide-arithmetic consumer breaks — compose SlotTable search (dooz), scatter maps, any app code with long loops. No app conditions, no R8 name tables in any probe/fix surface.",
+ "diagnostics_added": [
+  "MINIANDROID_STORM_PROBE=1 — when the same (class.method) persists across 20 consecutive 100k-instruction [PROGRESS] windows, dump the frame receiver state (class + fields + array lengths) once per episode; generic, bounded.",
+  "MINIANDROID_LOOP_TRACE=1 — after the first STORM dump, one-shot 40-instruction register trace of the storm frame (cursor-critical wide registers).",
+  "storm_last_receiver_oid_ stash at method entry (read-only; survives receiver-register overwrite)."
+ ],
+ "budget_experiment": "--max-instructions 2000000000 (the existing F-NEW-084 closeout CLI knob): the halt moves from the 100M instruction budget to the 300s wall-clock at the SAME method — proving an unbounded loop, NOT a legitimately long computation. Env-knob patch to application_runtime.cpp was reverted (the CLI knob already exists; tree kept clean).",
+ "next_train": "قطار ۲ = long/wide arithmetic law audit + fix + synthetic probe: enumerate the engine's op implementations for cmp-long(0x31)/sub-long(0x9c)/add-long/2addr(0xb5)/0xc0-family 2addr/const-wide family/int ops in the loop, fix the wide-pair addressing (the engine models wide pairs as (INT64 low + dummy high) — the observed mis-writes suggest 2addr/23x ops address the wrong register), and prove with fixtures (real aapt2/ECJ/D8) a long-arithmetic contract probe (cmp/sub/add/2addr/lit8 families) + dooz x3 + anchors x3.",
+ "not_claimed": [
+  "The storm fix is NOT implemented this wave (evidence-first discipline: the exact per-op law repair belongs to train 2 with its synthetic probe).",
+  "dooz anchor unchanged d602648e8e401895 — no visual claim.",
+  "The op-level decode of Lrh0;.b is 78-insns clean via scripts/cont11_decode.py (complete width table; cont9_dexdump's S[] table has known gaps for 0x2d-0x37/0x38-0x3d/0xa0+/0xd8-0xe2 — recorded for future use)."
+ ]
+}
