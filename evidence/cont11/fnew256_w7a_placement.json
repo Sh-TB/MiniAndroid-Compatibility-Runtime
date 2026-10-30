@@ -1,0 +1,58 @@
+{
+ "artifact": "fnew256_w7a_placement.json — CONT-11 WAVE 7 car A: the compose draw-path divergence RE-PROVEN two levels deeper; W6's 'AndroidCanvas bridge (Ljt1;) never constructed' claim CORRECTED (wrong level). True first divergence = the PLACEMENT cascade never runs below the root → layoutNode.isPlaced stays FALSE → the layer drawBlock (upstream drawBlock 'if (layoutNode.isPlaced)') skips every frame → 0 canvas ops. Evidence-first: every link runtime-proven with R8 identities mapped against upstream 1.11.4 sources (ui-android/ui-graphics-android sources jars downloaded from Google Maven this wave).",
+ "head": "e99c2fbd (W6+worklog)",
+ "binary": "aed46450c103f2ea (W6 rebuild, unchanged this car — zero engine changes, pure diagnostics discipline)",
+ "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+ "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+ "baseline": "run/w7/dooz_base screenshot d602648e8e401895 = recorded dooz anchor (zero drift, 30 frames, 0 canvas ops, canvas_ops.txt never created — file only appears on first op)",
+ "internet_sources_downloaded_and_read": [
+  "dl.google.com maven2 androidx/compose/ui/ui-android/1.11.4/ui-android-1.11.4-sources.jar (AndroidComposeView.dispatchDraw; NodeCoordinator.draw + drawBlock; MeasureAndLayoutDelegate requestRemeasure/requestRelayout/measureAndLayout + isUsedInMeasureOrLayout + canAffectPlacedParent; MeasurePassDelegate remeasure/layoutChildren/markNodeAndSubtreeAsPlaced/placeAt; UiApplier; LayoutNode insertAt/attach/invalidateMeasurements/isPlaced)",
+  "dl.google.com maven2 androidx/compose/ui/ui-graphics-android/1.11.4/ui-graphics-android-1.11.4-sources.jar (AndroidCanvas + CanvasHolder.drawInto; GraphicsLayerV23.record/draw — drawRenderNode replay law)",
+  "dl.google.com maven2 androidx/compose/runtime/runtime/1.11.4/runtime-1.11.4-sources.jar (for cross-checking composition apply path)"
+ ],
+ "search_count": "3 artifact downloads (real toolchain-pinned sources) + full bytecode disassembly of the APK's draw/measure chain (cont9_dexdump) + 7 instrumented engine runs",
+ "r8_identities_proven": {
+  "Lt4;": "AndroidComposeView (dispatchDraw disassembled: getRoot→Lel0;.i(Ldi;,Lrc0;)V with canvasHolder Ly3; fields swapped around it — upstream drawInto law)",
+  "Ly3;": "androidx.compose.ui.graphics.AndroidCanvas (field a = internalCanvas: android.graphics.Canvas; method f forwards translate → engine bridge Landroid/graphics/Canvas;.translate argc=3 caller=Ly3;.f)",
+  "Lhi;": "CanvasHolder (field a: Ly3; — the SHARED AndroidCanvas instance — the 'bridge' IS constructed and IS used; W6 claim corrected)",
+  "Lel0;": "LayoutNode (i(Ldi;,Lrc0;)V = draw(canvas,graphicsLayer); I()Z = isPlaced (J.p.w); q()Z = isPlacedByParent (J.p.y); B(I,Lel0;)V = insertAt; d(Ld31;)V = attach(owner); r:Ld31; = owner field)",
+  "Ld31;": "Owner interface",
+  "Lv02;": "UiApplier (f = insertTopDown (3-byte no-op — upstream law); c = insertBottomUp → Lel0;.B insertAt; d = down)",
+  "Lpz0;": "NodeCoordinator (fields s:Lel0; node, t/u:Lpz0; prev/next; h1(Ldi;,Lrc0;)V overridden per subclass)",
+  "Lxk0;": "InnerNodeCoordinator (super Lpz0;, ctor (Lel0;,Lvk0;))",
+  "Lug0;": "RootNodeCoordinator-family coordinator (super Lpz0;)",
+  "Lzs0;": "AndroidComposeView measure/layout holder (field b:Lkc; = MeasureAndLayoutDelegate; r called from Lt4;.z)",
+  "Lkc;": "MeasureAndLayoutDelegate (Lzs0;.b:Lkc; read inside Lt4;.z=onRequestMeasure; o()Z TRUE only during the measure/layout window)",
+  "Lbt0;": "MeasurePassDelegate (super Ld61;; w:Z = isPlaced, y:Z = isPlacedByParent; q0()V = markNodeAndSubtreeAsPlaced — body matches upstream exactly: innerCoordinator.onPlaced (Lpz0;.d1), rectManager.recalculateRectIfDirty (Lob1;.f), measurePending check (Lil0;.e), lastLayerDrawingWasSkipped (Lpz0;.O))",
+  "Lil0;": "LayoutNodeLayoutDelegate (a:Lel0; node, p:Lbt0; measurePassDelegate, e:Z measurePending)",
+  "Lfl0;": "Placeable (ctor (Lo3;,I); a(Lj3;,I,Lpz0;)V = the placement entry with layer-block dispatch — NEVER RAN)",
+  "Loo0;": "Lifecycle.State ordinals re-confirmed via F259-CMP (INITIALIZED ord=1)"
+ },
+ "runtime_proven_chain": [
+  "1. dispatchDraw runs every frame (×31): Lt4;.dispatchDraw → Trace.beginSection('AndroidOwner:draw') → Lel0;.i(Ldi;,Lrc0;)V with the Ly3; AndroidCanvas — DRAWWIN-IN lines 4657-4753",
+  "2. The AndroidCanvas bridge IS constructed and IS live: Canvas.translate bridge dispatches ×124 (4/frame, 2 non-layer coordinator draws × translate/translate-back) — caller=Ly3;.f — W6's 'bridge never constructed' was a wrong-level claim",
+  "3. The draw recursion reaches the destination layer's drawContent (drawBlock) and checks layoutNode.isPlaced: Lel0;.I()Z recv=6128 ret=FALSE EVERY FRAME (×31, DRAWWIN-ZRET)",
+  "4. The whole materialized subtree is UNPLACED: Lel0;.q()Z (isPlacedByParent) ret=FALSE for 6128/6153/6177/6201/6225 + second subtree 8847/8871/8895/8919/8943/8967/8991/9015/9039/9063/9087/9111 (LIFEWIN-ZRET ×113, DFS pattern bottom-up)",
+  "5. attach RAN (corrected from a probe artifact): Lel0;.d(o6128..o6225, owner=o1430Lt4;) under Lel0;.B←Lv02;.c (insertBottomUp→insertAt→attach(owner) — the upstream law, recursive child attach visible in CALLERS)",
+  "6. invalidateMeasurements→requestRemeasure→owner.onRequestMeasure RAN for the new nodes: Lt4;.z a1=o6128/a1=o6153 CALLERS <Lel0;.V> <Lil0;.j> <Lel0;.c> <Lel0;.d> — the full invalidation chain from attach works",
+  "7. MeasureAndLayoutDelegate.requestRemeasure (Lkc;.a) only ever queued o1997 (root, ×4) and o8847 (×1) — the new nodes hit the upstream gate 'if (isPlaced || canAffectPlacedParent) … else false // it can't affect parent' (canAffectPlacedParent = measurePending && measuredByPlacedParent = FALSE for never-measured nodes) — CORRECT upstream behavior; placement MUST come from the parent's layoutChildren instead",
+  "8. Measure DOES cascade through the subtree (Placeable/measure-driver entries on o6144/o6145/o6169/o6193/o6217... with Lzs0;.i/.r + Lfl0;.e/.h/.f — and repeated measure hits d=110 under Lfl0;.f loop)",
+  "9. THE DEAD LINK: markNodeAndSubtreeAsPlaced (Lbt0;.q0) executed ZERO times in the entire run; the placement entry (Lfl0;.a) executed ZERO times; isPlacedByParent NEVER set true anywhere below the root (its only writers are the inlined placeAt sites)",
+  "10. Interface dispatches resolve cleanly (MINIANDROID_IFACE_FAIL_TRACE: ZERO non-JDK IFACE-FAIL lines — all 11k fail-lines are java.util/java.lang shadow-law cases already covered by registry laws)"
+ ],
+ "upstream_law_map": {
+  "placement_cascade": "MeasurePassDelegate.remeasure(constraints) ALWAYS ends with layoutChildren() → guard (layoutPendingForAlignment || (!duringAlignmentLinesQuery && !isPlacingForAlignment && layoutPending)) → layoutChildrenBlock → innerCoordinator.measureResult.placeChildren() → the USER layout block (MeasureResult lambda) → placeable.place(x,y) → placeAt → isPlacedByParent=true → onNodePlaced → markNodeAndSubtreeAsPlaced (q0) → isPlaced=true down the subtree",
+  "draw_skip": "NodeCoordinator drawBlock: 'if (layoutNode.isPlaced) {observeReads(drawContainedDrawModifiers)} else {lastLayerDrawingWasSkipped=true}' — the engine-visible I()Z gate",
+  "new_node_remeasure_gate": "MeasureAndLayoutDelegate.requestRemeasure Idle-branch drops nodes with isPlaced=false && measuredByPlacedParent=false (upstream comment: 'it can't affect parent') — the parent's layoutChildren is the ONLY placement driver for fresh nodes"
+ },
+ "candidate_faces_for_next_car": [
+  "(α) layoutChildren guard law: root/parent layoutPending (Lil0;-family field) never TRUE when the guard evaluates → block no-ops silently every pass (field-default/init law)",
+  "(β) measureResult law: InnerNodeCoordinator.measureResult (private _measureResult, default null → getter throws 'UnmeasuredError'; upstream default between measures) — if the engine's field write/read law loses the result, placeChildren resolves to a stale/no-op result — placement dead with zero exceptions",
+  "(δ) inlined placeAt field-write law: R8 inlined placeAt into the layout-block lambdas (no standalone writer of Lbt0;.y outside q0/y0) — the first statement 'isPlacedByParent = true' is an iput-boolean from a LAMBDA class body — if that lambda never invokes or its write lands on a wrong slot, the flag stays false forever"
+ ],
+ "next_car_plan": "fixtures/fnew260_probe (synthetic, real aapt2/ECJ/D8): R1 SAM-interface-held-block invocation (MeasureResult.placeChildren→block) with null-checking getter + backing-field setter law; R2 4-field short-circuit guard chain; R3 branchy placeAt write-first-then-return law; R4 subtree flag recursion; R5 packed-switch-on-float-bits placement dispatch (the Lfl0;.a shape). PASS/FAIL pattern discriminates (α)/(β)/(δ); then the generic engine fix + dooz re-run + regression battery.",
+ "diagnostics_used": "MINIANDROID_DRAW_WINDOW_TRACE (DRAWWIN-IN/BRIDGE/ZRET), MINIANDROID_LIFEWIN_TRACE, MINIANDROID_CL_TRACE (existing W5 tool — no engine changes needed this car), MINIANDROID_IFACE_FAIL_TRACE, MINIANDROID_F259_TRACE, MINIANDROID_THROW_TRACE",
+ "zero_log": "evidence = this JSON only; runs live under run/w7/* (not committed); no APKs/screenshots/logs committed",
+ "honest_scope": "The divergence is now PROVEN one level above the engine primitive layer (which exact engine primitive kills the placement cascade is NOT yet pinned — the probe fixture is the next step per discipline; no blind patching)",
+ "reconciliation": "W10/W11 trains (remote, parallel): tap-run evidence shows real StaticLayout TEXT ops (framework bridge, placement-independent) + a ~2927-draws/frame text-storm multiplier; the clickable-family death matches THIS car proof (placement dead → hit-test/draw dead). One root family: the placement cascade."
+}
