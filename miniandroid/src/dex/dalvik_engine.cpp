@@ -12721,6 +12721,36 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
 
         phase_clock().exit(phase_clock().invoke_resolve, f107_r0);  // resolve ends
+        // ────────────────────────────────────────────────────────────────
+        // CONT-11 TRAIN-1 (F-141 GENERALIZATION): ART NULL-RECEIVER LAW at
+        // the shared DEX-dispatch core. The opcode-level wrappers
+        // (execute_invoke_virtual/super/direct/interface + the 3rc range
+        // path) each carry the F-141 check, but engine-internal routes
+        // (cascade / recursive / bridge dispatch) reach THIS core directly
+        // and used to run the callee with this=NULL. ART law: an instance
+        // invoke on a null receiver throws NullPointerException AT THE CALL
+        // SITE, before the callee body executes. Evidence (dooz v23):
+        // compose androidx.collection MutableIntObjectMap.get (Lrh0;.b)
+        // entered with a null receiver; every iget then answered the
+        // fail-soft default 0, the Swiss-table probe saw a phantom
+        // "full group, no match" forever and spun 100M+ instructions
+        // (F084 halt in doFrame → whole-frame VirtualMachineError → blank
+        // face, verdict=DEFAULT_BACKGROUND_ONLY).
+        // ────────────────────────────────────────────────────────────────
+        if (!(method.access_flags & 0x0008) && !args.empty() &&
+            f141_is_null_receiver(args[0])) {
+            std::cerr << "[F141-CORE] null receiver entering " << cls_ref.name
+                      << "." << method.name << " caller=" << current_class_
+                      << "." << current_method_ << std::endl;
+            dump_frame_locals_diag("F141-CORE");
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "Attempt to invoke '" + cls_ref.name + "." +
+                               method.name + "' on a null object reference",
+                           "f141-null-recv-core");
+            return_val = DalvikValue::make_null();
+            last_invoke_return_ = return_val;
+            return true;
+        }
         uint64_t f107_e0 = 0; phase_clock().enter(phase_clock().invoke_execute, f107_e0);
         struct F107EGuard { PhaseClock::Phase& ph; uint64_t t0; ~F107EGuard(){ phase_clock().exit(ph, t0);} } f107_eguard{phase_clock().invoke_execute, f107_e0};
         execute_method_internal(
@@ -20550,6 +20580,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                       << " (currently in " << current_class_ << "." << current_method_
                       << " PC=" << pc_ << "/" << bytecode_.size() << ")"
                       << " RSS=" << (miniandroid::probe::rss_kb() / 1024) << " MB" << std::endl;
+            // CONT-11 TRAIN-1: env-gated slow-invocation dump (MINIANDROID_SPIN_DUMP=1,
+            // also requires MINIANDROID_LOOP_LOCALS_DIAG=1 for the dumper gate).
+            // instruction_sequence_ resets at every method entry; an invocation
+            // still alive millions of instructions later is a probe-loop
+            // candidate (e.g. compose ScatterMap open addressing). Dump its
+            // live frame — registers + receiver fields + array elements —
+            // every ~500k instructions; dumper has its own 12-shot budget.
+            static thread_local const bool spin_dump_on =
+                std::getenv("MINIANDROID_SPIN_DUMP") != nullptr;
+            if (spin_dump_on && instruction_sequence_ > 2000000 &&
+                (instruction_sequence_ % 500000) < 100000) {
+                dump_frame_locals_diag("SPIN");
+            }
         }
 
         // ── F-NEW-542 (CONT-37): env-gated LIVE HEAP CENSUS ────────────────
@@ -25472,6 +25515,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // Covers NULL_REF and OBJECT_REF/object_id==0 (engine-wide null).
     // ────────────────────────────────────────────────────────────────────
     if (!args.empty() && f141_is_null_receiver(args[0])) {
+            dump_frame_locals_diag("F141-OP");
         // S113 ROOT-059 law: shadow-claimed platform classes route null
         // receivers to the shadow's materialization law instead of the ART
         // NPE — androidx's insets chain (Builder→Impl30→consume*) was built
@@ -26029,6 +26073,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     // behavior logged "would be NullPointerException on real Android"
     // and dispatched with this=NULL.
     if (!args.empty() && f141_is_null_receiver(args[0])) {
+            dump_frame_locals_diag("F141-OP");
         throw_deferred("Ljava/lang/NullPointerException;",
                        "Attempt to invoke super method '" + declaring_class +
                            "." + method_name + "' on a null object reference",
@@ -26339,6 +26384,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // callee body executes. Previously invoke-direct had NO null check —
     // the body ran with this=NULL (silent wrongness, §039/§177).
     if (!args.empty() && f141_is_null_receiver(args[0])) {
+            dump_frame_locals_diag("F141-OP");
         throw_deferred("Ljava/lang/NullPointerException;",
                        "Attempt to invoke direct method '" + class_name +
                            "." + method_name + "' on a null object reference",
@@ -27386,6 +27432,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // the dispatch walk ran with heap_obj = nullptr and silent null
     // semantics.
     if (!args.empty() && f141_is_null_receiver(args[0])) {
+            dump_frame_locals_diag("F141-OP");
         throw_deferred("Ljava/lang/NullPointerException;",
                        "Attempt to invoke interface method '" + class_name +
                            "." + method_name + "' on a null object reference",
