@@ -12309,3 +12309,17 @@ Work Log (W7C — telegram):
 Stage Summary:
 - dooz: the placement-cascade root is now pinned to a SPECIFIC failing instruction (Lm7;.<init> pc=421 f141-null-recv) — the next car reads the receiver identity at that instruction and fixes the object law; the W7A chain (remeasure aborted → placement dead → drawBlock skip) is closed end-to-end.
 - telegram: the face moved from the recorded FLAT blank to a rendered splash; the next root (R-NEW-571) is a scoped SQLite query law.
+
+---
+Task ID: CONT-11-WAVE-7-STALE-TREE-DISCARD
+Agent: Super Z (main)
+Task: This window opened on a STALE local base (e99c2fbd, Oct 6) and independently re-derived part of the remote CONT-11 train chain before the sync check. Disposed per the s135 stale-tree law.
+
+Work Log:
+- The window's independent chain (committed locally as fc41ba4e/de4ad7f2, now discarded): re-derived the draw-walk isPlaced gate -> placement-never-dispatched chain, refuted the W6 "AndroidCanvas bridge never constructed" claim (Ljt1; identity correction — it is the ui-text text-draw wrapper; real bridge Ly3;/Lhi; engages), and root-caused a 548M-instruction probe storm in Lrh0;.b with runtime-proven LONG/WIDE arithmetic anomalies (MINIANDROID_STORM_PROBE / MINIANDROID_LOOP_TRACE diagnostics).
+- Remote chain (b7f02ac9..e8e9934e) had already covered this ground and gone further: f141-null-recv true root (Lm7;.<init> pc=421 text-measurer ctor) -> NPE cascade aborting the remeasure pass; fnew256 probe 5/5 refuting the engine placement-law faces; TRAIN-6 MILESTONE — dooz v23 renders REAL non-clickable UI (113-color frame: title bar + undo + FAB) with zero halts; TRAIN-7 click-detection frontier; TRAIN-9 Freebloks first run; TRAIN-10 telegram re-measure; s135 GENERIC classification honoring the user directive.
+- Disposition: local main reset to origin/main e8e9934e; stale-tree engine edits (diagnostic additions to dalvik_engine.cpp/h + reverted env knob) DISCARDED; genuinely reusable tooling KEPT (scripts/cont11_decode.py complete-correct-width Dalvik disassembler — cont9_dexdump's S[] width gaps recorded; scripts/cont11_xref.py); the stale-base storm forensics PRESERVED re-labeled at evidence/cont11_stale_base_forensics/ (explicitly marked: storm real at e99c2fbd; live-at-remote-HEAD status UNVERIFIED; no registry claim made — remote already carries F-NEW-260 within its 853 roots).
+- No engine changes, no regression surface touched by this commit (tools + evidence + worklog only).
+
+Stage Summary:
+- Window closed honestly: duplicate discovery acknowledged, remote line adopted, tooling banked, stale-base forensics preserved with explicit UNVERIFIED-at-HEAD labels. Next window starts from remote main e8e9934e and the remote's own next station (TRAIN-7: dispatch->hit-test link per the banked Lt4;.dispatchTouchEvent call graph + PMC watchlist).
