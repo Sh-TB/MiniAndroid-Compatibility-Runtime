@@ -1,0 +1,32 @@
+{
+ "task_id": "CONT-11-TRAIN-6",
+ "date": "2026-10-30",
+ "head": "adc70695 (trains 1-5, this window rebased onto it and verified the tree end-to-end)",
+ "binary": "rebuilt clean (make -j2, 0 errors) at the rebased tree",
+ "problem": "Train-5's declared next station was the Lzs0;.g per-child gate decode. This window pinned the upstream law, then — because the rebased tree already contains the parallel windows' full fix stack — verified the RESULT live end-to-end (no-tap render + tap dispatch), which became the station's deliverable.",
+ "upstream_law_pinned": {
+  "source": "androidx compose ui 1.11.4 sources jar (dl.google.com maven2, dooz BOM 2026.06.01 resolves ui=1.11.4 same as runtime); extracted to tmp/ui_1114_src/",
+  "facts": [
+   "Lzs0;.g(Lel0;Z)V = MeasureAndLayoutDelegate.forceMeasureTheSubtreeInternal (DEX walk over child MutableVector, gates: child.s()/child.r() enum vs Lcl0;.e + Lfl0;.e() alignment-lines, then jn.z isDeactivated, then o/f/g recursions — matches upstream branch-for-branch).",
+   "upstream gate law: remeasureCanAffectParentSize = measuredByParent == UsageByParent.InMeasureBlock || alignmentLines.required; lookaheadRemeasureCanAffectParentSize = measuredByParentInLookahead == InMeasureBlock || lookaheadAlignmentLines.required.",
+   "forceMeasureTheSubtree has a REQUIRE: !measurePending ('node not yet measured') — it is a REMEASURE path, not the initial-measure engine; the initial tree measure must come from the root measure cascade (train-4's single-u0 finding remains the placement-side frontier)."
+  ]
+ },
+ "verification_results": {
+  "no_tap_run": {
+   "status": "SUCCESS (full run, 9.2M IMPLEMENTED calls, no F084 halt, no budget halt)",
+   "frame_pixel_probe": "113 distinct colors; top rows: 1841727x (250,248,254) dooz background, 159504x (237,237,246) chrome bar, 55399x (185,203,255) = #b9cbff FAB/container family, 2940x (48,67,110) = #30436e text family — the W11b/W11c color pins, now in ONE coherent frame",
+   "visual": "title bar 'Dooz' + settings gear + avatar circle (top), undo button + 'New game' ExtendedFloatingActionButton with dice icon (bottom) — REAL app chrome rendered by the compose measure/placement/draw chain",
+   "board_region": "center 400x400 at (340,700) = 1 distinct color — board ABSENT, correct per the G3 gate: GameBoard is behind AnimatedVisibility(visible = state.isGameStarted) and only appears after the 'New game' click (dooz Game.kt, pinned earlier windows)"
+  },
+  "tap_runs": {
+   "setup": "--tap 765,1830@12 (and @30), frames 34-70",
+   "finding": "[UI-EVENT] TOUCH action=0/1 view=Lt4; arm=dispatchTouchEvent -> result=DISPATCHED consumed=true (both gestures) — the tap REACHES AndroidComposeView and is CONSUMED, but the Compose clickable layer never fires PerformClick/onClick: 12+ post-tap frames show the board region unchanged (1-color) and the FAB still unpressed.",
+   "convergence": "CONFIRMS train-7's frontier live ('clickable family never dispatches') with a clean two-sided boundary proof: view-boundary consumption YES, compose click detection NO. The board gate (isGameStarted) is exactly one clickable-detection fix away.",
+   "operational_note": "post-tap frames cost ~15-20s wall each (580s run reached only frame 26 of 34) — the W11b text-draw multiplier (~2927 identical text draws/frame) is still unfixed and now dominates every frame; fixing it is a prerequisite for long tap-sequence runs (and for the F-084-era budgets to hold)."
+  }
+ },
+ "honest_board_status": "dooz v23 renders REAL non-clickable UI (chrome + FAB + undo + texts) — composition, measure, placement and draw are alive for that family at HEAD. The board itself is NOT rendered yet: it requires the 'New game' click, whose Compose-side click detection is the remaining frontier (train-7's station, now boundary-proven). NOT claiming dooz fully loads.",
+ "regression": "anchors re-run at this tree earlier in the window (5/5 x3 byte-identical, 4 exact baselines); gate A 98/0/1; negatives 19/19; reinstall 8/8 — all at the pre-rebase equivalent engine core; the rebased tree's own gates were recorded by its pushing windows.",
+ "zero_log": "No logs, screenshots or APKs committed; sha-pin + pixel numbers only. Runs live under run/ (gitignored)."
+}
