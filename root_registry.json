@@ -8724,5 +8724,13 @@
   "evidence": "evidence/cont42t6/train8_statics_evidence.json",
   "regression": "-",
   "next": "census then laws."
+ },
+ {
+  "id": "R-NEW-571",
+  "status": "CLASSIFIED",
+  "title": "telegram W7C census: SQLiteCursor.next pc=62 throws SQLiteException uncaught x6 (LocationController loadSharingLocations lambda/bin/bash) — the shared-locations DB query fails on the engine SQLite shadow (schema/query-shape face). App survives (F-016 honest in-flight). Splash face renders REAL_APP_CONTENT (94.6% non-white, #e1e1e1+blue accents, sha cf4c41e62ceb6557 at the W7A binary) — cross-wave drift vs the old FLAT pin dac4ade9 recorded honestly, no A/B claim.",
+  "priority": "P2",
+  "layer": "framework/sqlite-shadow/telegram",
+  "evidence": "evidence/cont11/tg_w7c_census.json"
  }
 ]

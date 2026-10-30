@@ -1,0 +1,23 @@
+{
+  "artifact": "tg_w7c_census.json — CONT-11 W7C telegram car: fresh controlled census at the merged W7A binary (0e44c04a lineage). Small honest car — no engine changes.",
+  "head": "0e44c04a (W7A merged)",
+  "binary": "aed46450c103f2ea (W6 rebuild; no engine changes this session)",
+  "apk": "upload/telegram_official.apk",
+  "run": "install data-root run/w7/store_tg; run --package org.telegram.messenger.web --frames 3 (completed in ~15s); run/w7/tg_base (not committed)",
+  "results": {
+    "frame_class": "REAL_APP_CONTENT result=OK rf=CLASSIC_CANVAS (engine FRAME_ANALYSIS verdict)",
+    "pixels": "1961434/2073600 non-white (94.6%)",
+    "dominant_colors": ["#e1e1e1 splash background", "#85caff blue accents (logo/theme)"],
+    "screenshot_sha16": "cf4c41e62ceb6557",
+    "recorded_pin": "dac4ade9bd2d6c02 (FLAT blank face, older waves)",
+    "honest_drift_note": "the recorded FLAT pin predates the R-NEW-550..561 waves; this census is a NEW measurement on a NEW binary — no A/B regression/progress claim is made; the face CHANGE (blank -> splash render) is recorded as observed state",
+    "launch": "LaunchActivity.onCreate executes (216 trace mentions); window/theme/drawable pipeline renders the splash face"
+  },
+  "uncaught_frontier": {
+    "count": 6,
+    "site": "Lorg/telegram/SQLite/SQLiteCursor;.next pc=62 throws Lorg/telegram/SQLite/SQLiteException; (no handler) — 6 in-flight, app survives (F-016 honesty: recorded, ART process-death semantics NOT simulated)",
+    "caller": "LocationController lambda$new$0 (loadSharingLocations path) — the shared-locations DB query fails on the engine SQLite shadow (schema/query-shape face)",
+    "next_car_target": "R-NEW-570-family: the LocationController shared-locations query law (SQLite shadow schema/queries) + the standing T5 law (TL_help_getAppConfig must land a real TL_config-shaped response before intro/auth UI builds)"
+  },
+  "zero_log": "this JSON only; run artifacts under run/w7/tg_base (not committed)"
+}
