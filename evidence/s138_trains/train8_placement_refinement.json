@@ -1,0 +1,55 @@
+{
+ "//train": "s138+ TRAIN-8 (dooz placement-cascade REFINEMENT train — budget-free re-measurement of the TRAIN-7 root) — user directive «ادامه اینترنت دوز قطار»",
+ "//date": "2026-10-31",
+ "//head": "4076f840 (origin/main, W9 TRAIN-7) — local reset --hard per the user's GitHub-is-newer directive; binary sha16 60aeac4dc71563ff (EXACT TRAIN-7 evidence binary, cold-build reproduced in 1 chunk)",
+ "//internet_law": {
+  "sources": "upstream/cont11_train7/ EXACT 1.6.7 jars re-read verbatim: LayoutNodeLayoutDelegate.kt (MeasurePassDelegate.placeAt/placeOuterCoordinator/onNodePlaced/markNodeAndSubtreeAsPlaced/layoutChildrenBlock, placeOuterCoordinatorBlock), NodeCoordinator.kt (placeAt=placeSelf, placeSelf guard law), InnerNodeCoordinator.kt (placeAt = super + onNodePlaced), LayoutModifierNodeCoordinator.kt (placeAt + isShallowPlacing alignment law), LayoutNode.kt (attach isPlaced=root-only law)",
+  "applied": "every runtime watch below is driven by the exact-version source law; no engine change this train (forensic refinement train)"
+ },
+ "//r8_map_new": {
+  "Lbt0;.k0(J,F,Lf90;)V": "MeasurePassDelegate.placeAt (public Placeable override, 157 insns) -> calls v0",
+  "Lbt0;.v0(J,F,Lf90;)V": "MeasurePassDelegate.placeOuterCoordinator (115 insns; lastPosition .L written 2x per call at pc=0x37/0x66; deferred branch pc=0x55 Lto1;.d)",
+  "Lug0;.k0(J,F,Lf90;)V": "InnerNodeCoordinator.placeAt (18 insns): i1 placeSelf + [if !Lfr0;.n(isShallowPlacing)] u0 onNodePlaced",
+  "Lfr0;.n:Z": "isShallowPlacing (alignment-line shallow placements; 8 puts = 4 true + 4 false, tightly paired — healthy)",
+  "Lc61;.g/.i/.j/.k": "placement-scope statics place/placeRelative entries: g(scope,placeable,x,y), i(scope,placeable,packedJ) -> Lth0;.c(J,J) offset merge -> placeable.k0",
+  "Ld61;": "Placeable base (.e:I measuredWidth, .f:I measuredHeight, .g:J packed size, .i:J apparentToRealOffset)",
+  "Lag;.i": "the aligned-placement lambda: captures (placeable, provider, scopeProvider, int h, int i, Lcg; holder) -> Lzf;.d",
+  "Lzf;.d": "aligned-place helper: Lcf;.a(sizeJ, spaceJ, Lnk0;) -> Lc61;.i(scope, placeable, offset)",
+  "Lcf;.a(JJLnk0;)J": "Alignment.align dispatcher (obj#758 singleton)",
+  "Lcg;.g(Let0;,List,J)Ldt0;": "RowColumn/Box measure policy: single-child fast path layout-size = Math.max(constraint-derived, child.e/.f); multi-child path builds Lbg; + alignmentMap; ends h0(w,h,map,block)=MeasureResult"
+ },
+ "//probes_banked_and_run": {
+  "A (PMC v0/u0/q0/i1 + FIELD .w)": "budget-2400 contention acknowledged; v0 12 ENTER all-deferred; u0/q0 entered; .w=true puts x10 (root attach 2441 + 6383..6480,13957..14029 via q0)",
+  "B (clean FIELD .D)": "126 .D puts total; <init> zeros x100; REAL placement writes x26 — y-histogram {0,11,21,32,42,63,126,477,498,540,617,817}, max y=817, ZERO in [1400,2000] — EXACT reproduction of TRAIN-7 probe-10 without budget distortion",
+  "C (FIELD Lbt0;.L lastPosition)": "87 puts = ~43-44 placeAt calls x2 writes; the complete (node -> position) placement map extracted",
+  "D (PMC v0 only)": "44 ENTER; 42/44 deferred branch (Lto1;.d); only 2 fast-path (i1+u0) — isPlaced=false at first placement is NORMAL upstream law",
+  "E/I2/M (LN-DUMP Lel0;/Lbt0;)": "heap dumps; FAB IDENTIFIED obj#12223 Lbt0;: Ld61;.e=409 f=147 (ExtendedFAB 409x147), w(isPlaced)=1, L(lastPosition)=0 — PLACED AT (0,0); sister 409x147 delegate obj#12247 also (0,0); bottom bar obj#12031 (1080x210) at packed 1710; zero-size obj#10461 at (1920,540)",
+  "F (ARG-TRACE Lbt0;)": "ALL 44 placeAts: caller=Lbt0;.k0; positions: 25 nodes (0,0), 14 real offsets — NO ancestor of the FAB carries a bottom-right offset",
+  "G (PMC Lug0;.k0 + FIELD Lfr0;.n)": "39 coordinator placeAts; ALL reached placeSelf; 37 called u0; isShallowPlacing tightly paired (healthy)",
+  "H (ARG-TRACE Lc61;)": "scope entries with caller lambdas: Lf4;.i, Lgl;.i, Lha;.i, Lca;.i, Lih0;.i, Ler0;.b, Lag;.i; FAB placed via Lc61;.i(scope=12193, placeable=12223, J=0) from Lzf;.d",
+  "J (ARG-TRACE Lcf;)": "THE ALIGN LAW: p1 == p2 in EVERY call (size == space) -> align difference always 0 -> aligned children of wrap-content parents land (0,0)",
+  "K (ARG-TRACE Lzf;)": "FAB call: (scope=12217, placeable=12223, provider=12223, dir, p4=409, p5=178, aligner=758) — p4/p5 = the CHILD/layout size (Lcg;.g single-child path: Math.max(constraint, child) = child for wrap-content)",
+  "L (ARG-TRACE Lag;.<init>)": "constructor caller = Lcg;.g; captured ints = the layout size (105,105)/(252,126)/(104,49)/(1080,168)/(409,178) — all wrap-content boxes sized to their child",
+  "N/O (PMC q/u0/q0 clean)": "q(layoutChildren) ENTER 24; 22 dispatched the observe-block (Lto1;.d); u0 ENTER == k0->u0 call sites (19==19 — NO dispatch drop); q0 18; u0->q tail HEALTHY (all entered u0s reach q)"
+ },
+ "//s138_train7_refinements": [
+  "RETIRED — '17 deferred blocks executed / 8 stubbed': ZERO [M3-19-CYCLE] stub messages fire in the whole run (the print is unconditional). The '8 stubbed' was a PMC 2400-print-budget window artifact (probe-10's shared v0+i1 watchlist exhausted the budget mid-cascade).",
+  "RETIRED — '39 guard-skips anomaly': the placeSelf (position==stored) skips are the LEGAL aligned-placement law — Lcf;.a(size==space) -> (0,0) for every wrap-content parent; the child is placed at (0,0) INSIDE its wrap-box correctly.",
+  "CONFIRMED budget-free — 26 real .D writes, y-histogram identical to TRAIN-7, max y=817, ZERO in [1400,2000].",
+  "RETIRED — u0 virtual-dispatch drop hypothesis: in the same run, k0->u0 call sites == u0 ENTERs (19==19); cross-run ENTER variance (39 vs 21) is re-placement-pass scheduling variance, not a dispatch loss."
+ ],
+ "//the_refined_root": "The placement cascade is HEALTHY in its laws (no stubs, no exceptions during pass 1, onNodePlaced->markNodeAndSubtreeAsPlaced->layoutChildren all fire) but COVERAGE-TRUNCATED: ~24 parents run layoutChildren and ~41 children are placed for a ~100-node tree (per-level thinning; multi-child placeChildren under-delivers). The FAB (obj#12223, 409x147, isPlaced=true) sits LEGALLY at (0,0) inside its 409x178 wrap-content box, but NO ancestor of the FAB receives a real offset (the 44-placeAt map holds no bottom-right offsets), so the coordinator-position chain the hit-test walks (Lpz0;.P0 fromParentPosition over .D) stays zero below y~817 and the FAB is unhittable — the TRAIN-7 hit-test root stands, now with its placement-side cause refined from 'stubbed deferred blocks' to 'per-level cascade coverage + aligned-wrap-content zero law'.",
+ "//next_station_probes": [
+  "(a) walk the FAB ancestor chain upward (LN-DUMP bound raise or a targeted parent-pointer walk from obj#12222) to the FIRST fixed-size ancestor and probe why ITS placeChildren never places the bottom subtree",
+  "(b) the 24 layoutChildren blocks -> per-block child coverage: which multi-child measure-result lambdas under-deliver (41 scope calls / 22 blocks = 1.9 children per block vs the real child counts)",
+  "(c) the off-screen offsets obj#10461 (0x0 size at (1920,540)) and obj#12031 (1080x210 at packed 1710) — constraint-swap or unbounded-axis check vs the packed-IntOffset convention (high=y, low=x per TRAIN-7)",
+  "(d) the second-pass La; exceptions (45x Leo;.P from line ~29953, after pass-1 placement at lines 3439-4897) — are they the RE-placement pass dying (the u0 placeOrder check family)?"
+ ],
+ "//registry": "no registry touch this train (forensic refinement train; fix = next train)",
+ "//honest_scope": [
+  "NO fix claimed; NO board render claimed; the tap still lands on the 2 root-level trivial Lpv; handlers; Lor1;.L0 awaiter entries = 0.",
+  "Two TRAIN-7 sub-claims retired as budget artifacts (see refinements) — the headline TRAIN-7 root (hit-test geometry zero below y~817 -> FAB unhittable) SURVIVES and is now grounded in budget-free instruments.",
+  "Run-to-run ENTER-count variance documented (k0 39 vs 21; q 24; u0 22/19) — re-placement-pass scheduling variance; first-pass numbers used throughout."
+ ],
+ "//zero_log": "evidence/s138_trains/train8_placement_refinement.json; runs under tmp/train8_probe* (gitignored); scripts/cont11_train8_probe*.sh committed; shas + numbers only"
+}
