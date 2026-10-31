@@ -1,0 +1,58 @@
+{
+ "//series": "s138 LIGHT TRAINS 31-40 — user directive «ادامه 10 قطار 10 برنامه رو به جلو و پیشرفت دوز و تلگرام 30 درصد ماجرا 70 درصد سایر برنامه های ریزه میزه ... بازی کوچیک که واقعا اجرا و تعامل داشته باشن ... از انواع مختلف»",
+ "//date": "2026-11-01",
+ "//head": "293923ed base; binaries: 9ff9c4d9a38b8b05 (HEAD build, exact evidence reproduction) -> 34ece2cf2f397754 (cap+langpack) -> 0cf810383af94146 (diag gate ext; anchor-certified)",
+ "station_A_major_30pct": {
+  "TRAIN-31_dooz_materialization_measurement": {
+   "probes": [
+    "F259 uncapped run (65536): materialize-family gate = 109x FALSE / 0x TRUE on target=Lmo; across the whole composition",
+    "ancestry walk path evidence (M3-ANCESTRY diag, gate extended to slash-less R8 names): Ltl0; -> Lbu0; -> Object; want=Lmo; FALSE — the engine walk is FAITHFUL to the DEX (geometry-style exoneration)",
+    "DEX class_defs parse (scripts/s138_dex_super.py, fixed 32-byte stride): modifier element family classes (Ltl0;/Lok0;/Lga;/Lqp;/Lu20;/Lzy0;/Lff;/Lke;/Lsc0;) ALL extend Lbu0;; Lmo; extends Ljava/lang/Object; NO class extends Lmo;",
+    "banked disassembler (cont11_decode.py) on Lm4;.i: ZERO instance-of instructions; single check-cast targets Lbw0; -> the F259-INS 'Lm4;.i' attribution is an INSTRUMENT ARTIFACT (stale callee-frame naming)"
+   ],
+   "verdict": "REFINED ROOT: (1) engine instanceof/cast law EXONERATED live — answers are DEX-faithful; (2) the REAL composed-gate type test (which must target the Lbu0; family base) NEVER EXECUTED in the measured window — zero Lbu0;-targeted tests; (3) two instrument artifacts caught before banking (1024-cap truncation; frame attribution). NEXT STATION = the Modifier.all/foldIn ELEMENT-ITERATION law on R8 collection wrappers (F-NEW-259 family on the fold accumulator) + F259-INS callee-frame attribution fix"
+  },
+  "TRAIN-32_telegram_langpack_canned": {
+   "change": "TL_langpack_getLanguages served a CORRECTLY-TYPED empty ArrayList vector (same law as TL_config.dc_options), replacing the honest OFFLINE path — the LAST unknown launch request",
+   "measured": "[T5-LANGPACK] canned-success fired (req_id=5298 resp_id=5300); 60-frame run: 155 distinct colors, white-dominant + telegram-blue tints (133,202,255) = themed partial face; LaunchActivity onResume 15x",
+   "verdict": "TRAIN-32 DONE — telegram launch-request surface now fully canned (config + webBrowserSettings + langpack); remaining known boundaries: no real DB (SQLite x41), UPP-001 libtmessages x7, TL_account$getAutoDownloadSettings by-design OFFLINE"
+  },
+  "TRAIN-33_anchor_wall": {
+   "measured": "anchors x1 at binary 0cf810383af94146: opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 — ALL BYTE-EXACT vs canonical pins",
+   "verdict": "ZERO DRIFT — cap bump + langpack canned + diag gate ext are semantic-neutral for the anchor set; engine-law UNCHANGED"
+  }
+ },
+ "station_B_minis_70pct": {
+  "TRAIN-34_new_game_built": {
+   "what": "Memory Match (com.miniandroid.gmem) — NEW GENRE (memory/puzzle) beside the arcade/sandbox/slide family; d-pad cursor + FLIP + NEW (proven 2048/minicraft input pattern); static-state law; deterministic LCG deal (seed 0x8EAD0)",
+   "how": "canonical aapt2/ECJ/D8 pipeline (scripts/s80_build_mem.sh, android-34 platform jar path fixed); APK gmem_v1.0_vc1.apk sha16 511a8e471f9c7a5f, 14 classes",
+   "verdict": "BUILT"
+  },
+  "TRAIN-35_gmem_first_run": {
+   "measured": "781 distinct colors; hidden-card #2E4053 = 1.14M px (all 16 cards), bg #1B2631, cursor #F7DC6F, header text — full board face on the REAL runtime",
+   "verdict": "Renders real frames at first run (L5 face territory)"
+  },
+  "TRAIN-36_gmem_win_proof": {
+   "how": "deterministic win plan computed offline against a mirror of the app logic (scripts/s138_mem_winplan.py) — the deal is fixed, so a perfect 8-move win was planned, then committed as 44 REAL --tap events (C4 law: app logic stays authoritative)",
+   "measured": "frame 02: 0 green / 126608 hidden; frame 95: 98150 matched-green px, hidden px = button regions only — ALL 16 CARDS MATCHED, YOU WIN face; every tap a real dispatched input on the real APK",
+   "verdict": "FULL interaction -> state-change -> win proof on a brand-new game built this turn (the strongest S80-style achievement short of a GIF)"
+  },
+  "TRAIN-37_leftover_tests": {
+   "measured": "games/snake-neon and games/simple-browser sources are NOT in the canonical 150-title registry (never built/run); games/tictactoe-deluxe already candidate_INTERACTION_VERIFIED",
+   "verdict": "leftovers mapped — snake-neon + simple-browser registered as build candidates in the queue satellites"
+  },
+  "TRAIN-38_diag_tooling": {
+   "what": "M3-ANCESTRY diag gate extended to slash-less R8 app classes; F259-INS cap 1024 -> 65536 (env-gated, off by default); scripts banked: s138_dex_super.py (class_defs parser), s138_disasm_m4i.py, s138_mem_winplan.py",
+   "verdict": "BANKED — the ancestry path printer is the tool that exonerated the instanceof walk"
+  },
+  "TRAIN-39_queue_refresh": {
+   "what": "docs/PROGRAM_QUEUE.json updated — gmem joins the runtime-built interactive family (now 6: 2048, tetris, snake-deluxe, minicraft, tictactoe-deluxe, gmem); snake-neon + simple-browser + endless-tunnel in satellites",
+   "verdict": "the standing 10-program queue carries the new game forward"
+  },
+  "TRAIN-40_snapshot_delta": {
+   "measured": "runtime-built games with REAL interaction proof: 5 -> 6 (+gmem); canonical registry interacted 13 -> 14; the fix-train frontier narrowed from 'composed dispatch' to 'element-iteration law' with two instrument artifacts retired",
+   "verdict": "the 30/70 split honored: 3 major trains (31/32/33) + 7 mini trains (34-40)"
+  }
+ },
+ "zero_log": "no logs/screenshots/APKs committed; shas + pixel numbers + line numbers only; runs under run/ (gitignored)"
+}

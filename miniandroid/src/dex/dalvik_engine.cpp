@@ -1217,9 +1217,13 @@ bool DalvikExecutionEngine::is_subclass_of_impl(const std::string& class_desc,
     std::string current = framework::normalize_class_desc(class_desc);
     // M3-DIAG (temporary): trace app-class container classification
     // queries to expose cross-pass state divergence.
+    // S138+ TRAIN-31 extension: also cover slash-LESS R8-renamed app
+    // classes (Ltl0; etc.) — the old gate required a '/' so every
+    // R8-short app class silently skipped the diag while the materialize
+    // TYPE tests (target Lmo;) all answered FALSE (109x/0x TRUE at HEAD).
     static const bool m3_diag = std::getenv("MINIANDROID_M3_ANCESTRY_DIAG") != nullptr;
     std::string m3_path;
-    if (m3_diag && current.find('/') != std::string::npos &&
+    if (m3_diag &&
         current.find("Landroid/") != 0 && current.find("Ljava/") != 0 &&
         current.find("Landroidx/") != 0 && current.find("Lkotlin/") != 0 &&
         current.find("Lcom/google/") != 0) {
@@ -8994,6 +8998,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                               << " req_id=" << request_id
                               << " resp_id=" << response_id << std::endl;
                 }
+            } else if (req_cls.find("TL_langpack_getLanguages") !=
+                       std::string::npos) {
+                // ── S138+ TRAIN-32 (telegram langpack wagon): the LAST
+                // unknown launch request on the honest OFFLINE path (s138
+                // remeasure fired OFFLINE here 1x). Serve a CORRECTLY-TYPED
+                // empty vector — the same law as TL_config.dc_options:
+                // allocated REAL and empty, app-read and iterated
+                // unconditionally. An empty langpack list is a valid
+                // response truth for a probe harness (system locale only).
+                response_id = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+                heap_.set_object_field(response_id, "__array_length__",
+                                       DalvikValue::make_int(0));
+                std::cerr << "[T5-LANGPACK] canned-success "
+                          << "TL_langpack_getLanguages (empty ArrayList "
+                          << "vector)"
+                          << " req_id=" << request_id
+                          << " resp_id=" << response_id << std::endl;
             } else {
                 r570_offline = true;
                 // ── R-NEW-570 (CONT-45 T1, AOSP network-failure law):
@@ -22603,7 +22624,7 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
             target_type.size() > 1 && target_type[0] == 'L' &&
             target_type.rfind("Ljava/", 0) != 0 &&
             target_type.rfind("Landroid/", 0) != 0;
-        if (f259_dex_target && f259_ins++ < 1024) {
+        if (f259_dex_target && f259_ins++ < 65536) {
             std::string f259_oc = src_val.type == DalvikType::OBJECT_REF
                                       ? std::string(src_val.class_desc)
                                       : std::string("-");
