@@ -1,0 +1,90 @@
+{
+ "/train": "s138+ TRAIN-7 (dooz dispatch->hit-test link) — full chain root-caused at HEAD cabcf618",
+ "/date": "2026-10-31",
+ "/head": "cabcf618 (W7 discard) + origin sync; binary sha16 60aeac4dc71563ff (EXACT s138 binary — rebuilt in 1 chunk)",
+ "/internet_law": {
+  "sources_downloaded_and_read_verbatim": [
+   "dl.google.com maven: androidx compose ui-1.6.7-sources.jar + ui-android-1.6.7-sources.jar + foundation-android-1.6.7-sources.jar (upstream/cont11_train7/) — the EXACT dooz compose version",
+   "AndroidComposeView.android.kt: dispatchTouchEvent gates (isBadMotionEvent=isFinite x4+per-pointer, isAttachedToWindow, ACTION_MOVE+isPositionChanged), handleMotionEvent, sendMotionEvent (convertToPointerInputEvent -> process(event,this,isInBounds)), endStream tail",
+   "PointerInputEventProcessor.kt: process() reentrancy gate, produce(), isHover loop, changedToDownIgnoreConsumed -> root.hitTest -> hitResult.isNotEmpty -> addHitPath -> removeDetachedPointerInputFilters -> dispatchChanges; ProcessResult bit0=dispatched bit1=movementConsumed",
+   "NodeCoordinator.kt: hitTest (withinLayerBounds / minimum-touch-target / isPointerInBounds), hit/hitNear/speculativeHit, hitTestChild, fromParentPosition = position - this.position (line 888), placeAt->placeSelf (line 318-319: if (this.position != position) this.position = position), draw() translate(position.x, position.y) software path",
+   "InnerNodeCoordinator.kt: hitTestChild — THE child.isPlaced GATE on zSortedChildren.reversedAny; placeAt super-call + onNodePlaced",
+   "HitPathTracker.kt: addHitPath, dispatchChanges (buildCache gate -> dispatchMainEventPass -> dispatchFinalEventPass), Node.buildCache (isAttached gate, dispatchForKind, relevantChanges), dispatchIfNeeded (relevantChanges empty -> false; !isAttached -> false), removeDetachedPointerInputFilters (!modifierNode.isAttached -> drop)",
+   "SuspendingPointerInputFilter.kt (1.6.7): onPointerEvent — 'Coroutine lazily launches when first event comes in' — pointerInputJob==null -> coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) { pointerInputHandler() } — then dispatchPointerEvent"
+  ],
+  "reported_findings_applied": "exact-version source law used to drive every runtime watch below; no fix claimed this train (root-cause train)"
+ },
+ "/r8_map_new": {
+  "Lhu0;": "MotionEventAdapter (.c = convertToPointerInputEvent(MotionEvent, AndroidComposeView) -> PointerInputEvent)",
+  "Lwg0;": "PointerInputEvent (.f = pointers ArrayList, .g = suppress flag)",
+  "Lw71;": "PointerInputEventData (.e = down, .d = packed position J)",
+  "Lfj;": "PointerInputEventProcessor (.a = isProcessing flag, .a(Lwg0;,Lt4;,Z)I = process)",
+  "Lce0;": "HitPathTracker (.a(J,List,Z) = addHitPath, .b = removeDetached/dispatch family)",
+  "Lfe0;": "HitTestResult (.e:Ltv0; with .h() = isNotEmpty, .clear())",
+  "Lbo;": "PointerInputChange helpers (.h(Lu71;)Z = changedToDownIgnoreConsumed, .j = changedToUpIgnoreConsumed family)",
+  "Lu71;": "PointerInputChange (.c:J = position packed, .d/.h = pressed/previousPressed, .i = type)",
+  "Lbr0;": "LongSparseArray (.d() = size, .e(I) = valueAt)",
+  "Las0;": "PointerInputChangeEventProducer (.t = produce)",
+  "Lxz1;": "BuildersKt (launch): .I(Lvr;,Lmr;,Lj90;,I)Lkp1; = launch(scope, start, block, mask); lazy->Lwn0; else Lkp1; + Ls;.h0 start",
+  "Ls;": "AbstractCoroutine (.h0 = start(start,receiver,block) -> Enum.ordinal switch: UNDISPATCHED arm runs body inline via Lxz1;.k startCoroutineUninterceptedOrReturn)",
+  "Lru;": "the launch lambda SuspendLambda (q 744 insns = invokeSuspend state machine; o = create; h = invoke bridge)",
+  "Lor1;": "SuspendingPointerInputModifierNodeImpl (ctor (Object,Object,PointerInputEventHandler); .J(Ln71;,Lo71;,J)V = onPointerEvent(PointerEvent,Pass,IntSize-packed); .M0 = dispatchPointerEvent; .L0 = awaitPointerEventScope (suspendCancellableCoroutine); .k0 = reset)",
+  "Lj6;": "the FAB clickable's real PointerInputEventHandler (invoke 172 insns: reads Lku1;/Lwv1;.z/.y keys, builds Lw6; detectTapAndPress state, bridges awaitPointerEventScope via Lyl;.l)",
+  "Lpv;": "trivial merged handler (invoke 5 insns: read label, return COROUTINE_SUSPENDED) — the root-level pointerInput sites' handler",
+  "Ljn;": "suspend bridge (.o(Lq50;,Lj90;,Lir1;) -> builds Lwi; lambda -> invoke-interface Lq50;.a(Lr50;,Lmq;))",
+  "Let;": "Lq50; implementor (a = 190-insn suspend method) created by the state machine label path",
+  "Lbt0;.v0(J,F,Lf90;)V": "MeasurePassDelegate.placeAt (writes lastPosition L:J unconditionally at pc=0x37/0x66; ALL 25 runs take the DEFERRED snapshot-observer branch pc=0x55 Lto1;.d)",
+  "Lpz0;.i1(J,F,Lf90;)V": "NodeCoordinator.placeSelf (writes position .D behind if (this.position != position) guard)",
+  "Lpz0;.P0(J)J": "fromParentPosition (reads .D during the hit-test walk)",
+  "Lpz0;.V0/W0/X0/Y0": "hitTest family (Lwt0;,Lnz0;,J,Lfe0;,I,Z) — X0 211 insns = hitTest"
+ },
+ "/s138_refutation": "s138's 'ZERO Ljr1; entries during touch dispatch — break between dispatch and filter' is REFUTED as a WATCH ARTIFACT: (a) Ljr1; is NOT the filter — it is a key/accessor family (ctor (Object,Object,PointerInputEventHandler,I)); the real per-modifier filter = Lor1; (SuspendingPointerInputModifierNodeImpl); (b) the dispatch reaches filters via invoke-interface so ref-based watches see the interface, not the impl; (c) runtime probe-3: Lor1;.J (onPointerEvent) ENTERED 12x during the two dispatches, each J ran launch + M0 dispatchPointerEvent + per-change reads.",
+ "/chain_proven_live_link_by_link": [
+  "DOWN+UP dispatched, consumed=true at Lt4;.dispatchTouchEvent ([UI-EVENT])",
+  "gates: q (isBadMotionEvent) x2, isAttachedToWindow passed, s (isPositionChanged) correctly NOT run for DOWN/UP (MOVE-only law)",
+  "m (handleMotionEvent) x2: recalculateWindowPosition (D) -> measureAndLayout (v) -> toolType/device checks -> obtainNoHistory -> H",
+  "H (sendMotionEvent) x2: keyboardModifiers gate, Lhu0;.c convertToPointerInputEvent EXECUTED (pointer loop, ArrayList.add, Lwg0;.<init> = PointerEvent BUILT), r = isInBounds, Lfj;.a process()",
+  "process (Lfj;.a): produce (Lbr0; LongSparseArray), isHover loop, changedToDownIgnoreConsumed (Lbo;.h) TRUE on DOWN, root.hitTest (Lel0;.A) EXECUTED on DOWN, hitResult.isNotEmpty (Ltv0;.h) TRUE, addHitPath (Lce0;.a) EXECUTED, hitResult.clear, removeDetached (Lce0;.b); UP correctly SKIPS hitTest (changedToDown=false law)",
+  "dispatchChanges -> buildCache -> dispatchMainEventPass -> onPointerEvent: Lor1;.J x12 (2 filters x 2 dispatches x 3 passes)",
+  "J: bounds store, Initial-pass currentEvent, pointerInputJob==null -> launch (Lxz1;.I) EXECUTED, M0 (dispatchPointerEvent), per-change reads",
+  "launch -> Ls;.h0 start -> Enum.ordinal switch -> UNDISPATCHED arm (Lqi0;.U -> Lxz1;.k -> Lj90;.h -> o create -> q invokeSuspend) — BODIES RAN INLINE for 2 of 3 DOWN launches; handler.invoke reached (Lru;.q pc=0xa8) on both",
+  "dispatcher healthy: Li9;.e (dispatch) x60 with Lad;.addLast, Li9;.l (drain) x15 with removeFirst->Runnable.run, Lh9; frame callback x9"
+ ],
+ "/THE_ROOT": {
+  "statement": "The hit path contains the WRONG nodes because the hit-test geometry is wrong for the bottom of the tree: coordinator.position (Lpz0;.D) is ZERO for every coordinator below y~817 (the Scaffold content zone y=168..1710 and the FAB at y~1742), so fromParentPosition (Lpz0;.P0 = position - this.position) computes an untranslated local position (765,1830) for the FAB subtree, which falls outside the FAB's 409x147 bounds -> the FAB's clickable (Lj6; detectTapAndPress) is NEVER in the hit path -> the tap dispatches to 2 root-level pointerInput nodes whose handlers are the trivial Lpv; (label read + immediate COROUTINE_SUSPENDED) -> no awaiter ever registers (Lor1;.L0 awaitPointerEventScope never entered) -> no click, no NewGame, no board.",
+  "placement_cascade_numbers": {
+   "placeAt (Lbt0;.v0) entries": 25,
+   "all_25_took": "the DEFERRED branch (isPlaced=false every time; pc=0x55 -> Lto1;.d snapshot-observer call); the !layoutPending && isPlaced fast path NEVER taken",
+   "deferred_blocks_executed": 17,
+   "deferred_blocks_stubbed": 8,
+   "placeSelf (Lpz0;.i1) entries": 65,
+   "real .D writes": 26,
+   "guard-skipped .D writes": 39,
+   "y_histogram_of_written_positions": [0, 11, 21, 32, 42, 63, 126, 477, 498, 540, 617, 817],
+   "max_y_placed": 817,
+   "writes_in_y_band_1400_2000": 0
+  },
+  "why_render_still_works": "the draw record path reads measure-time cached offsets (Placeable measuredSizes real: Ld61;.g 1080x1920 etc.) and the modifier-chain offsets; the RENDER does not depend on coordinator.position for the observed chrome (draw ops carry absolute coords), while the HIT-TEST depends entirely on coordinator.position via fromParentPosition.",
+  "next_station_probes_banked": [
+   "why every placeAt takes the deferred branch: isPlaced (Lbt0;.w:Z) still false at placement time -> the onNodePlaced->markNodeAndSubtreeAsPlaced (Lbt0;.q0) tail of the deferred block — did the 17 executed blocks run their q0 tail? (PMC Lbt0;|q0 + FIELD-TRACE Lbt0;.w)",
+   "the 8 stubbed deferred blocks: the F-098/F-NEW-297 m3 dispatch key (same-site pc + receiver + payload cap 8) — which placements matched an existing key and were stubbed; widen/refine the key or execute same-site-different-node re-entries",
+   "the 39 guard-skips: placeSelf ran with position==stored (0==0) — the deferred block computed a ZERO position for those nodes — trace placeOuterCoordinatorPosition storage vs block read (the stored-field identity across the m3 boundary)"
+  ],
+  "registry": "no registry touch this train (root-cause train; fix = next train)"
+ },
+ "/honest_scope": [
+  "NO fix claimed; NO board render claimed; dooz board still 1-color pre-tap (the G3 isGameStarted law stands).",
+  "The s138 'filter never entered' frontier is RETIRED (watch artifact) and replaced by the placement-geometry root.",
+  "The probe-9 'D never written' intermediate claim was an ANALYSIS ERROR (grep looked for 'iput' but the trace format says 'put'); corrected by probe-10 within the same window; the final root uses the corrected data.",
+  "field-trace budget 2000 lines: the y-band analysis used the full probe-10 log (166 puts total, 26 non-init)."
+ ],
+ "/evidence_files": "tmp/train7_pmc*_out/ (gitignored runs); scripts/cont11_train7_*.py/.sh committed; ZERO-LOG: shas + numbers only, no logs/APKs/screenshots committed",
+ "/tooling_banked": [
+  "scripts/cont11_train7_disasm.py — resolved-name Dalvik disassembler (cont11_decode width table + cont9_dexdump resolvers; end-of-method clamp fix)",
+  "scripts/cont11_train7_class.py — class method-list dump",
+  "scripts/cont11_train7_ifaces.py — interface implementor scan (class_def interfaces_off @ +12)",
+  "scripts/cont11_train7_findfilter.py — ctor-signature + method-name dex scan",
+  "scripts/cont11_train7_fieldscan.py — per-class iput/iget field xref",
+  "scripts/cont11_train7_tap_probe{,2,3,4,5,6,7,8,9,10}.sh — the PMC/FIELD-TRACE/HT-WIDE/LN-DUMP probe battery"
+ ]
+}
