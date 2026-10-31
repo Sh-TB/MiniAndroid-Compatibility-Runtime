@@ -1,0 +1,38 @@
+{
+ "//train": "s138+ TRAIN-10 (CONT-11 W10 — the ROOT-PIN train on the composed-modifier MATERIALIZATION starvation + full regression wall at the TRAIN-9 binary) — user directive «ادامه اینترنت دوز قطار ۱۰»",
+ "//date": "2026-10-31",
+ "//head": "2926c128 (TRAIN-9, pushed); binary 9ff9c4d9a38b8b05 (evidence binary + the read-only LN-DUMP bound knob; zero engine-law changes)",
+ "//internet_law": {
+  "sources": "ComposedModifier.kt 1.6.7 read verbatim (banked ui jar): composed(inspectorInfo, factory) = this.then(ComposedModifier(...)); composed(key1...) = this.then(KeyedComposedModifier1(...)); composed(key1,key2,...) = this.then(KeyedComposedModifier2(...)) — the app's composed modifiers are the KEYED family, NOT Lmo; (ComposedModifier is only the un-keyed variant)",
+  "applied": "corrects two TRAIN-10-window instrument artifacts before they become false roots (see honest_scope)"
+ },
+ "//probes_and_findings": {
+  "Lmo;.<init> census (PMC)": "ZERO enters — EXPECTED, NOT a root: the dooz app's composed modifiers all use the KEYED composed() variants (KeyedComposedModifier1/2 classes), so the un-keyed ComposedModifier (Lmo;) is legitimately never constructed; the keyed classes are R8-merged elsewhere",
+  "Lk90; (Function3) ARG-TRACE": "ZERO lines — INSTRUMENT ARTIFACT: ARG-TRACE filters by the DECLARING class of the RESOLVED implementation; interface-invoked factories resolve to their lambda classes, never to the abstract interface method — this zero must not be read as 'no factories run'",
+  "factory census reconciliation (TRAIN-7 law stands)": "39 Function3 factory invokes DID execute via receivers Lom;.g/Lse1;.s/Lti;.q/Luk0;.e (TRAIN-7 F5) — factories in general RUN; the CLICKABLE's factory body (Lpm;.c) still ENTER=0 — the starvation is specific to the clickable family's dispatch chain, not to materialization as a whole",
+  "Lpm; class surface": "Lpm; is an R8 STATIC-UTILITY POOL (static direct methods A..Z — Kotlin file-level functions merged): the clickable's composed factory body lives as the static method Lpm;.c (with the real pointerInput element birth sites at pc=0x0db6/0x0e04 per TRAIN-7); it is invoked through a wrapper receiver that has never fired for the clickable family",
+  "materialize lambda shape (Lom;.d, 46 enters, TRAIN-9 banked)": "every execution takes the same fast shape (Nnb0.X, Lom.m, Lnb0.f, ONE Lpm;.r, getClass, Lxz1.k, Integer.valueOf, Lj90;.h) — the fold/factory walk is absent in all 46; TRAIN-7's 'Lq;.h 2 enters never factory arm' reproduced",
+  "hit-test + placement (TRAIN-9, standing)": "geometry PROVEN correct — the frontier is entirely inside the composed-modifier dispatch chain between the FAB's Surface(onClick) composable and the factory body Lpm;.c"
+ },
+ "//the_refined_root": "The dooz click frontier is EXACTLY the composed-modifier FACTORY DISPATCH for the clickable family: the FAB's clickable chain enters composed() (keyed variant), the ComposedModifier-family element is created, but the factory body (Lpm;.c — the lambda that would create the real pointerInput element with the Lj6; detectTapAndPress handler) is never invoked; generic factories DO run (39x via 4 receivers), materialize itself runs (46x fast shape), and the hit-test + placement geometry are proven correct — so the break is the specific dispatch link that should route the CLICKABLE's keyed composed element to its factory. This is a composition-dispatch frontier (the TRAIN-7 'slot-table dispatch never delivers the clickable family' law, now geometry-exonerated), NOT a placement/hit-test/coordinate law.",
+ "//regression_wall": {
+  "anchors": "6/6 apps x3 runs BYTE-EXACT vs the canonical worklog pins: opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a (scripts/cont11_w8_anchors.sh; the W8 script header's chess/dooz expectations are STALE older-era comments — the canonical pins are worklog lines 11658/11718 and my faces match them exactly)",
+  "negatives": "19/19 PASS (after the DOCUMENTED run/gatea/probe_store regeneration — the first-run 9/19 was the known CONT-158 stale-store artifact, worklog-pinned)",
+  "skill_selftest": "13/13 PASS (docs/execution-skill/selftest_report.json)",
+  "verdict": "ZERO DRIFT at the TRAIN-9+knob binary"
+ },
+ "//next_station_probes_TRAIN11": [
+  "(a) locate the keyed composed() implementation in the dex (the method that builds the KeyedComposedModifier1/2 family) and PMC it — does the FAB's clickable composed() call execute at all?",
+  "(b) if it executes: trace the element into materialize's fold — which element-test or chain-iteration hop drops the keyed element (instanceof on the R8-merged keyed class is the prime suspect — the F-NEW-259 family applied to TYPE tests)",
+  "(c) if it does not: the break is inside Modifier.clickable's wrapper composable (Lue;.a/Ldv1;.h family, ENTER=0 per TRAIN-7 F3) — trace the M3 Surface(onClick) -> clickable call chain and find the first non-entering link",
+  "(d) the fix shape: extend the F-NEW-259 descriptor-slot law (or the class-hierarchy map) so the keyed composed elements dispatch to their factories generically — NO app knowledge"
+ ],
+ "//registry": "no registry touch this train (root-pin + regression train; fix = TRAIN-11)",
+ "//honest_scope": [
+  "NO fix claimed; the tap still lands on the 2 trivial Lpv; handlers; the board is still gated.",
+  "Two instrument artifacts caught and corrected BEFORE banking (the Lmo; zero = keyed-variant law; the Lk90; zero = declaring-class filter law) — recorded so future trains don't re-derive them as roots.",
+  "The W8 anchor script header's chess/dooz expected faces are stale comments; the canonical pins (worklog 11658/11718) match my faces byte-exactly.",
+  "Engine source UNCHANGED this train (no knob, no law); all regression faces produced by the TRAIN-9 binary 9ff9c4d9a38b8b05."
+ ],
+ "//zero_log": "evidence/s138_trains/train10_materialization_rootpin.json; runs under tmp/train10_* and run/w8 (gitignored); the regression faces are in the worklog; shas + numbers only"
+}
