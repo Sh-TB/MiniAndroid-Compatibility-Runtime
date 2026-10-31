@@ -15224,13 +15224,22 @@ bool DalvikExecutionEngine::dispatch_touch_listener(uint32_t view_object_id,
         if (const char* lnd = std::getenv("MINIANDROID_LAYOUTNODE_DUMP")) {
             std::string want = lnd;
             if (want.empty() || want == "1" || want == "true") want = "Lel0;";
+            // TRAIN-9 (CONT-11 W10): read-only bound knob for the ancestor-chain
+            // walk. Default stays 48 (all prior evidence); MINIANDROID_LN_DUMP_LIMIT
+            // raises it (capped 4096) so late-allocated nodes (the dooz FAB
+            // delegate obj#12223 family) are reachable. Env-gated, dump-only.
+            uint32_t lnd_limit = 48;
+            if (const char* lim = std::getenv("MINIANDROID_LN_DUMP_LIMIT")) {
+                long v = strtol(lim, nullptr, 10);
+                if (v > 0 && v <= 4096) lnd_limit = (uint32_t)v;
+            }
             uint64_t dumped = 0;
             for (uint32_t oid : heap_.get_all_ids()) {
                 const auto* obj = heap_.get(oid);
                 if (!obj || obj->class_descriptor != want) continue;
-                if (dumped++ >= 48) {
-                    std::cerr << "[LN-DUMP] ... (bounded at 48 nodes)"
-                              << std::endl;
+                if (dumped++ >= lnd_limit) {
+                    std::cerr << "[LN-DUMP] ... (bounded at " << lnd_limit
+                              << " nodes)" << std::endl;
                     break;
                 }
                 std::cerr << "[LN-DUMP] obj#" << oid << " " << want;
