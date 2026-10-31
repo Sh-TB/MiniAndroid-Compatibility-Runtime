@@ -1,0 +1,56 @@
+{
+ "//train": "s138+ TRAIN-9 (CONT-11 W10 — the CORRECTION train: budget-free re-derivation of the dooz click frontier with heap/coordinator/float-domain instruments) — user directive «ادامه اینترنت دوز قطار ۱۰»",
+ "//date": "2026-10-31",
+ "//head": "462028fd (origin/main, TRAIN-8) pulled + synced per the standing GitHub-is-newer directive; binary rebuilt cold in 1 chunk, then +1 env-gated diagnostic (MINIANDROID_LN_DUMP_LIMIT, read-only dump bound knob) -> sha16 9ff9c4d9a38b8b05 (diagnostic-only delta vs the evidence binary 60aeac4dc71563ff; all fix-train probes ran on the knob build)",
+ "//internet_law": {
+  "sources_fetched": [
+   "foundation-layout-1.6.7-sources.jar (NEW, maven.google.com) — RowColumnMeasurementHelper.placeHelper law: plain indexed for-loop placeable.place(x,y)",
+   "runtime-1.6.7-sources.jar (NEW, maven.google.com) — SnapshotStateObserver.observeReads law: scopeMap.observe(scope, readObserver, block) — the block ALWAYS runs synchronously",
+   "ui-1.6.7-sources.jar (banked) — OwnerSnapshotObserver.observeLayoutModifierSnapshotReads -> observeReads(target, onChanged, block) verbatim",
+   "NodeCoordinator.kt 1.6.7 laws re-read: position:IntOffset (line 220), placeSelf guard (this.position != position), placeSelfApparentToRealOffset, fromParentPosition(position: Offset) = position - this.position (FLOAT Offset domain), hitNear/speculativeHit/hitTestChild (pointerPosition: Offset)",
+   "InnerNodeCoordinator.placeAt = super.placeAt + [!isShallowPlacing] onNodePlaced; LayoutModifierNodeCoordinator.placeAt = super + wrapped placement via the modifier block"
+  ],
+  "applied": "every watch below driven by the exact-version law; the Offset/IntOffset domain split (placement=IntOffset ints, hit-test=Offset float-bits) is the 1.6.7 law and the engine executes BOTH correctly (proven live)"
+ },
+ "//r8_map_new": {
+  "Lpz0;": "NodeCoordinator base (position .D:J, i1=placeSelf(J,F,Lf90;), P0(J)J=fromParentPosition, t1(J)Z=hitNear with Float.intBitsToFloat unpacking at pc=0x2b/0x37, s->node, p->wrappedBy); ZERO direct heap instances (R8-merged away — LN-DUMP Lpz0; = 0 objects; instances are Lug0;/Lxk0;)",
+  "Lug0;": "InnerNodeCoordinator (k0(J,F,Lf90;)V = placeAt 18 insns: i1 + [!Lfr0;.n isShallowPlacing] u0; 45 heap instances = the node tree)",
+  "Lxk0;": "LayoutModifierNodeCoordinator (merged; k0 = placeAt 31 insns: i1 + [!shallow] d1 + t(wrapped).A0().b() — the MODIFIER PLACEMENT BLOCK via invoke-interface Ldt0;->b()V; heap instances = the modifier chain layers)",
+  "Lat0;": "merged placeOuterCoordinatorBlock lambda family (super La2;; a()Ljava/lang/Object; 362 insns; label field .f: 0=place branch (reads .L/.M/Ld61;.i), 1=45x placeWithLayer branch (reads .F), 2=42x third branch (reads .m/.l/Lfr0;.o/Lfl0;.d)); constructed per delegate with labels 1/0/2",
+  "Ldt0;": "the modifier placement-block interface (b()V)",
+  "Lom;": "the materialize coroutine-lambda family (d(I,Lnb0;) 70 insns = invokeSuspend-shape; 46 enters, EVERY one the same 8-site shape incl. exactly ONE Lpm;.r call then Lj90;.h)",
+  "Lto1;": "SnapshotStateObserver-equivalent (d(Object,f90,u80) = observeLayoutModifierSnapshotReads; 558 insns)",
+  "Lbt0;.L:J": "placeOuterCoordinatorPosition — written ONLY in the deferred branch (v0 pc=66) = the DEFERRED-BRANCH marker; 42 puts == 42 deferred branches",
+  "Lbt0;.r:J": "lastPosition (written every placeAt, pc=19)"
+ },
+ "//probes_banked_and_run": {
+  "A (FIELD Lbt0;.L deferred map + revised FIELD Lat0;)": "42 deferred branches (recv=delegate, packed position) — COMPLETE; first rev: PMC 'Lat0;|' ENTER=0 = WATCH ARTIFACT (empty-method pair never matches; corrected with the class dump: Lat0;.a is the block body)",
+  "B (FIELD Lpz0;.D + PMC Lbt0;|u0)": "26 real .D puts (placeSelf guard law: writes only on change); u0 42 enters, 41 reach q tail, 37 q0 — recursion HEALTHY",
+  "C (LN-DUMP Lel0; limit 512)": "45 LayoutNodes total (the '~100-node tree' estimate was inflated); parent map (q), delegate holder (J), bounds (h) extracted",
+  "E (FIELD Lbt0;.L + LN-DUMP Lel0;)": "the CORRELATED map: 42 deferred positions + the 45-node graph — the full placement tree with sizes",
+  "F (LN-DUMP Lbt0; limit 512)": "delegate sizes (e/f) + isPlaced (w) + lastPosition (r) for every node",
+  "G (LN-DUMP Lug0;/Lfr0;)": "45 InnerNodeCoordinators (s->node, D, p->wrappedBy); ZERO Lfr0; instances (Lxk0; is the modifier-coordinator class)",
+  "H (TOUCH_FIELD_TRACE + FIELD Lpz0;.D)": "the dispatch-window .D reads: the FULL FAB chain is walked (12024=1710, 12543=(617,0), 12192=21, 12216=0...)",
+  "I (ARG-TRACE Lpz0;)": "110 placeSelf invocations with callers: Lxk0;.k0 calls carry the RAW placement offsets (outer chain); Lug0;.k0 calls carry the modifier-transformed offsets (inner chain) — e.g. FAB box: outer 12543=(617,0) via Lxk0, inner 12192=(0,21) via Lug0 (the modifier block adds its own offset — RELATIVE law, correct)",
+  "hitpath (PMC Lj6;|invoke,Lpv;|invoke,Lor1;|L0)": "CURRENT STATE: 2x Lpv;.invoke (trivial), 0x Lj6;.invoke, 0x L0 — unchanged face",
+  "hitmath (RET+ARG-TRACE Lpz0; + TOUCH_FIELD_TRACE)": "THE DECISIVE PROBE — the t1 (hitNear) input positions reconstructed per level: (765,1830) root -> (765,1662) after title -168 -> (723,1662) after -42 -> (765,120) after bottomBar -1710 -> (754,109) after -(11,11) -> (137,109) after FAB-box outer -(617,0) -> (137,88) after inner -(0,21) — ALL CORRECT; (137,88) is INSIDE the FAB 409x147",
+  "fold (PMC+ARG Lq;|h)": "the materialize folder: 2 enters TOTAL (the dooz UI has dozens of composed modifiers); the arm runs (Lr;.b invoke) for those 2",
+  "mat (PMC Lom;|d)": "materialize lambda: 46 enters, ALL the same fast shape (Nb0.X, Lom.m, Lnb0.f, ONE Lpm;.r, getClass, Lxz1.k, Integer.valueOf, Lj90;.h) — NO factory-arm walk in any of the 46"
+ },
+ "//the_refined_root": "TRAIN-7's and TRAIN-8's placement-side roots are BOTH DEAD at HEAD (honest reversals): (1) all 42 deferred placeOuterCoordinatorBlocks execute (Lat0; label-0 branch = 42 live executions; TRAIN-8's '22 dispatched' was an instrument under-count); (2) the placement map (.L) is COMPLETE and geometrically CORRECT — bottomBar (0,1710), FAB box outer (617,0), FAB (0,0) -> FAB world (617..1026, 1731..1878), and the tap (765,1830) is INSIDE; (3) the coordinator .D graph holds correct RELATIVE positions (inner = modifier-transformed, outer = raw — the RELATIVE law; the TRAIN-7 '26 writes max y=817' census was a counting artifact of the guard law: equal positions legitimately never rewrite); (4) THE HIT-TEST ARITHMETIC IS PROVEN CORRECT END-TO-END: the float-domain descent lands (137,88) inside the FAB. THE CURRENT ROOT is therefore downstream of geometry: the hit-test FINDS the FAB subtree, but the FAB's clickable-family modifiers never MATERIALIZIZE (Lpm;.c ENTER=0 stands; the materialize folder Lq;.h fires only 2x for the whole UI; all 46 materialize-lambda executions take a fast shape with exactly one Lpm;.r call and no factory walk) -> the FAB subtree carries NO real pointerInput filter in the hit path -> dispatch reaches only the 2 root-level trivial Lpv; handlers -> the awaiter (Lor1;.L0) never fires -> no NewGame -> no board. TRAIN-10 (the user-directed fix train) owns the materialization starvation.",
+ "//pack_convention_correction": "HONEST CORRECTION of TRAIN-7/8: the packed-IntOffset convention is (x<<32)|y (upstream IntOffset.pack: (x.toLong() shl 32) or (y.toLong() and 0xFFFFFFFF)) — TRAIN-7's 'high=y, low=x' reading was backwards; the decoded positions (e.g. bottomBar (0,1710), FAB box (617,0)) only make geometric sense under (x<<32)|y. The hit-test domain is the float-packed Offset (intBitsToFloat unpack live-proven in Lpz0;.t1) — both domains are handled correctly by the engine's dex execution.",
+ "//next_station_probes": [
+  "(a) identify the dex method behind the materialize fast path (the 46x Lom;.d shape) and the element-visibility test that skips the clickable's ComposedModifier — TRAIN-7's magic-const 0x48ae8da7 xref plus a PMC on Lpm;.r (the one site every materialize execution hits)",
+  "(b) Lpm;.r's behavior: is it the clickable's own materialize sub-step (which should invoke Lpm;.c) — and does it silently no-op (the F-NEW-259 silent-no-op family) or branch off?",
+  "(c) compare a WORKING composed modifier (one of the 2 fold hits, factory Lr;.b) vs the clickable's element: what differs in the chain-element class/interface so the fast path sees one and misses the other (instanceof/merged-class law)",
+  "(d) the engine's instance-of + invoke-interface on the R8-merged ComposedModifier hierarchy (Lmo; merged away?) — the F-NEW-259 descriptor-slot law applied to TYPE tests"
+ ],
+ "//registry": "no registry touch this train (root-correction train; fix = TRAIN-10)",
+ "//honest_scope": [
+  "NO fix claimed; the tap still lands on the 2 trivial Lpv; handlers; the board is still gated.",
+  "TWO prior roots retired with live multi-probe evidence (placement coverage + hit-test geometry) — both were real observations explained by better instruments (under-counted block dispatches; guard-law write counts; relative-vs-absolute position semantics).",
+  "The 45-node tree supersedes the '~100-node' estimate; all cross-run ENTER-count variances (39/21/46...) documented as re-scheduling, first-pass numbers used.",
+  "The train burned NO engine changes beyond the read-only LN-DUMP bound knob (env-gated, default 48 preserved)."
+ ],
+ "//zero_log": "evidence/s138_trains/train9_hit_correction.json; runs under tmp/train9_probe* (gitignored); scripts/cont11_train9_probe*.sh committed; shas + numbers only"
+}
