@@ -1,0 +1,84 @@
+{
+ "generated": "2026-10-31T20:16:51",
+ "titles_total": 150,
+ "status_counts": {
+  "OBSERVED": 112,
+  "VISUALLY_PARTIAL": 5,
+  "FRAME_CAPTURED": 1,
+  "VERIFIED": 24,
+  "candidate_VISUALLY_VERIFIED": 1,
+  "candidate_INTERACTION_VERIFIED": 4,
+  "FAILED": 1,
+  "PARTIAL": 2
+ },
+ "level_counts": {
+  "L0": 15,
+  "L1": 82,
+  "L2": 37,
+  "L3": 5,
+  "L5": 3,
+  "L6": 2,
+  "L9": 1,
+  "L10": 3,
+  "LNone": 2
+ },
+ "rendered_total": 129,
+ "interacted_total": 13,
+ "interacted_packages": [
+  "ca.rmen.nounours",
+  "com.dozingcatsoftware.dodge",
+  "com.smorgasbork.hotdeath",
+  "org.bobstuff.bobball",
+  "tibarj.tranquilstopwatch",
+  "com.miniandroid.snakedeluxe",
+  "com.miniandroid.tetris",
+  "com.miniandroid.g2048",
+  "com.miniandroid.tictactoedeluxe",
+  "com.emmanuelmess.tictactoe",
+  "com.dozingcatsoftware.bouncy",
+  "com.trianguloy.urlchecker",
+  "com.miniandroid.minicraft"
+ ],
+ "state_changed_total": 12,
+ "state_changed_packages": [
+  "ca.rmen.nounours",
+  "com.dozingcatsoftware.dodge",
+  "com.smorgasbork.hotdeath",
+  "org.bobstuff.bobball",
+  "com.miniandroid.snakedeluxe",
+  "com.miniandroid.tetris",
+  "com.miniandroid.g2048",
+  "com.miniandroid.tictactoedeluxe",
+  "com.emmanuelmess.tictactoe",
+  "com.dozingcatsoftware.bouncy",
+  "com.trianguloy.urlchecker",
+  "com.miniandroid.minicraft"
+ ],
+ "anchor_apps_6": [
+  "opencalc 63020bc7",
+  "chess 3f7e6707",
+  "dooz 851cc176",
+  "microtimer bbd350b6",
+  "unote 7481e9b4",
+  "tower3d 11a38a5a"
+ ],
+ "root_registry_roots": 853,
+ "tower3d_3d_game": {
+  "status": null,
+  "level": null,
+  "level_name": null,
+  "interacted": null,
+  "state_changed": null,
+  "proven": null,
+  "notes": null
+ },
+ "dooz_current": {
+  "status": null,
+  "level": null,
+  "level_name": null,
+  "interacted": null,
+  "state_changed": null,
+  "proven": null,
+  "remaining": null
+ }
+}

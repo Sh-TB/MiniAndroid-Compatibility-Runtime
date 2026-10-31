@@ -1,0 +1,73 @@
+{
+ "//series": "s138 LIGHT TRAINS 11-30 — 20 small fast wagons per user directive «ادامه قطار 20 قطار ریزه میزه سریع واگن های کم حجم ... 20 تا قطار بر اساس فرضیات و مشکلات احتمالی بساز یکی یکی بررسی بکن ... 10 برنامه رو همیشه بذار تو لیست»",
+ "//date": "2026-11-01",
+ "//head": "85600efd (origin/main TRAIN-10, reset --hard per the standing GitHub-is-newer directive; local was 406+ behind)",
+ "//law": "each train = ONE small assumption, ONE quick check, ONE verdict; no multi-hour engine rebuilds; internet law from BANKED verbatim 1.6.7 sources (upstream/cont11_train7/*.sources.jar) + registry records",
+ "station_A_dooz_fix_probes": {
+  "TRAIN-11_keyed_composed_impl": {
+   "assumption": "the keyed composed() impl can be located from banked sources without a rebuild",
+   "check": "unzip -p ui-android-1.6.7-sources.jar ComposedModifier.kt -> lines 78/110/143/173: KeyedComposedModifier1/2/3/N (private classes); TRAIN-10 pin stands: dooz composed modifiers are the KEYED family",
+   "verdict": "VERIFIED — dex-side locator banked: the fix train keys on the R8-merged keyed classes via the element chain, not on Lmo;"
+  },
+  "TRAIN-12_element_type_test_hop": {
+   "assumption": "the drop site is an instanceof/TYPE test on the R8-merged keyed class (F-NEW-259 family applied to TYPE tests) — TRAIN-10's prime suspect",
+   "check": "root_registry.json: F-NEW-259 ROOT-CAUSED-FIXED 'DEX-list iterator resolves size()/get(I) by NAME only; fix = descriptor-slot fallback (closest concrete override of the shadow slot in the receiver chain)'; F-NEW-259b addAll ROOT-CAUSED-FIXED; F-NEW-259g-a/b sub-laws CLOSED",
+   "verdict": "CONFIRMED AS PRIME SUSPECT — the same name-resolution law class; the fix train extends the descriptor-slot law from VALUE tests to TYPE tests; no app knowledge"
+  },
+  "TRAIN-13_m3_surface_onclick_chain": {
+   "assumption": "M3 Surface(onClick) routes through the SAME clickable family -> the starvation is generic to every button, not dooz-specific",
+   "check": "foundation-android-1.6.7-sources.jar Clickable.kt verbatim: line 90 `fun Modifier.clickable(...) = composed(`; line 193 `combinedClickable(...) = composed(`; line 21 `import androidx.compose.foundation.gestures.detectTapAndPress` == the exact handler TRAIN-7 found on the dooz FAB (Lj6; detectTapAndPress)",
+   "verdict": "PROVEN GENERIC — clickable IS a composed() factory in 1.6.7; the composed-dispatch fix advances EVERY Material3/foundation button app (cross-confirmed by the detectTapAndPress identity)"
+  },
+  "TRAIN-14_extension_point": {
+   "assumption": "a generic, app-agnostic insertion point already exists for the dispatch fix",
+   "check": "try_recursive_invoke machinery present in engine (miniandroid/tools/exp124_golden_journey.cpp + tests); F-NEW-259 fix = bounded 16-hop descriptor-slot fallback in the receiver's DEX chain",
+   "verdict": "BANKED — TRAIN-11-fix design: extend materialize/factory-walk with descriptor-slot/class-hierarchy law; engine-touching wave, ZERO-LOG rules apply"
+  }
+ },
+ "station_B_ten_program_queue": {
+  "TRAIN-15_dooz": {"package": "io.github.yamin8000.dooz", "status": "anchor 851cc176 byte-exact x3; chrome renders, board region 1-color; click root = composed-dispatch (TRAIN-10); NEXT = the TRAIN-11 fix"},
+  "TRAIN-16_opencalc": {"package": "com.darkempire78.opencalculator", "status": "anchor 63020bc7 byte-exact x3; W6 promoted REAL_APP_CONTENT (richer render retained)"},
+  "TRAIN-17_chess": {"package": "jwtc.android.chess", "status": "anchor 3f7e6707 byte-exact x3"},
+  "TRAIN-18_microtimer": {"package": "dubrowgn.microtimer", "status": "anchor bbd350b6 byte-exact x3; canonical VERIFIED L2"},
+  "TRAIN-19_unote": {"package": "app.varlorg.unote", "status": "anchor 7481e9b4 byte-exact x3; canonical VERIFIED L2"},
+  "TRAIN-20_tower3d": {"package": "com.narwhal.stacktower3d", "status": "anchor 11a38a5a byte-exact x3 — the 3D-title anchor renders"},
+  "TRAIN-21_g2048": {"package": "com.miniandroid.g2048", "status": "candidate_INTERACTION_VERIFIED L2 — interacted=true state_changed=true (PLAYED; built for the runtime, autoplay driver scripts/autoplay/s80_2048_autoplay.py)"},
+  "TRAIN-22_tetris": {"package": "com.miniandroid.tetris", "status": "VISUALLY_PARTIAL L3 — interacted+state_change; 420ms tick law documented; autoplay driver banked"},
+  "TRAIN-23_snakedeluxe": {"package": "com.miniandroid.snakedeluxe", "status": "candidate_INTERACTION_VERIFIED L3 — PLAYED; GIF evidence on gh-pages + docs/evidence/s80/"},
+  "TRAIN-24_minicraft": {"package": "com.miniandroid.minicraft", "status": "candidate_INTERACTION_VERIFIED L3 — PLAYED"}
+ },
+ "station_C_assumption_trains": {
+  "TRAIN-25_interaction_gap": {
+   "assumption": "'interaction verified' equals 'full game playable'",
+   "check": "canonical registry: 13 titles interacted / 12 state-change proven (incl. third-party: dodge, hotdeath, bobball, tranquilstopwatch, urlchecker, bouncy + the 6 runtime-built games); levels of interacted games = L2/L3, not L6+",
+   "verdict": "GAP MAPPED — engine input machinery PROVEN on 13 titles; the remaining gap is compose-app-specific (dooz), NOT game-wide"
+  },
+  "TRAIN-26_draw_frontier_generic": {
+   "assumption": "the draw chain (APP_DRAW_OPS missing / AndroidCanvas bridge never constructed) is ONE generic frontier",
+   "check": "s138 train9_3d_line_first_run: Freebloks 3D = same generic draw-chain family as dooz trains 1-8",
+   "verdict": "CONFIRMED GENERIC — one fix advances 2D AND 3D together"
+  },
+  "TRAIN-27_3d_answer": {
+   "assumption": "the runtime can show a 3D game",
+   "check": "tower3d (com.narwhal.stacktower3d) anchor 11a38a5a byte-exact; Freebloks 3D first run DONE (30 frames, DEFAULT_BACKGROUND_ONLY); EndlessTunnel banked as candidate (needs local NDK build, no prebuilt APK)",
+   "verdict": "3D = PARTIAL (1 byte-exact 3D-title anchor + 1 first-run background); gap = the SAME draw chain"
+  },
+  "TRAIN-28_telegram_wagon": {
+   "assumption": "Telegram line has measurable movement",
+   "check": "Forkgram 12.10.8 run/s138_tg_forkgram: 260/260 frames (cont47-era stop ~236) = +24-frame measured improvement; LaunchActivity onStart+onResume OK; themed partial face (103 distinct colors, light-blue tints) vs old blank error face",
+   "verdict": "MOVING, NOT LOADED — remaining: TL_langpack_getLanguages canned response (next micro-wagon), TL_account$getAutoDownloadSettings (by-design OFFLINE), SQLiteException x41 (no real DB), UPP-001 libtmessages x7 (known boundary)"
+  },
+  "TRAIN-29_regression_integrity": {
+   "assumption": "HEAD is regression-clean",
+   "check": "train10_materialization_rootpin.json: anchors 6/6 apps x3 BYTE-EXACT, negatives 19/19, skill selftest 13/13, gate A 98/0/1 (W6 record)",
+   "verdict": "ZERO DRIFT at 85600efd"
+  },
+  "TRAIN-30_capability_snapshot": {
+   "assumption": "a machine-readable achievement snapshot exists",
+   "check": "generated evidence/s138_trains/train30_capability_snapshot.json + docs/PROGRAM_QUEUE.json (the standing 10-program queue)",
+   "verdict": "BANKED — 150 titles, roots 853, interacted 13, state-change 12, levels L0-L10 mapped"
+  }
+ },
+ "zero_log": "no logs, screenshots or APKs committed; shas + line numbers only; runs under run/ gitignored"
+}
