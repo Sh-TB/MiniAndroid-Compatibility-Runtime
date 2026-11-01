@@ -1,6 +1,6 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-01 (trains 51-53 refresh, S142 wave — sqlite wave per user directive: use the READY real sqlite, 2 sqlite apps proven)",
+ "//date": "2026-11-01 (S143 wave — telegram launch chain + REAL sqlite: the user-visible sqlite problem FIXED at the root; 3 sqlite-programs proven)",
  "//head": "76280911",
  "queue": [
   {
@@ -100,8 +100,8 @@
   },
   {
    "program": "telegram (Forkgram 12.10.8)",
-   "now": "260/260 frames; lifecycle OK; themed partial face (103 colors)",
-   "next_wagon": "canned TL_langpack_getLanguages response (schema dig) + official-face re-baseline"
+   "now": "S143 LAUNCH CHAIN FIXED + REAL DB: (1) synthetic launch Intent carries ACTION_MAIN (AOSP ActivityThread law — LaunchActivity.d5 NPE retired); (2) GATE A bridge-satisfied load arm (AArch64 libtmessages.49 on x86_64 host = arch law; 20 org.telegram natives registered over REAL sqlite3 keep the load alive); (3) opendb routes through Storage::resolve_android_path (CANTOPEN rc=14 retired). RESULT: 61-frame run 0 errors; SQLiteException 0 (was 31-152); REAL cache4.db user_version=178 with 234 schema objects integrity-ok, verified with INDEPENDENT python sqlite3; SECOND run on the same data-root re-opens the DB (persistence) 0 errors 0 warnings rc=0; face sha16 c2e071714e97a3af (white + telegram-blue Disable action row, reproducible); regression anchors 6/6 x3 BYTE-EXACT zero drift",
+   "next_wagon": "TL_langpack_getLanguages canned response + the dooz TRAIN-54 Lt4; frame law; optional: --frames 260 re-baseline with the dialog dismissed to reach the intro face"
   },
   {
    "program": "freebloks 3D (de.saschahlusiak.freebloks)",
