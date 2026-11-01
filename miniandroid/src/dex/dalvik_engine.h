@@ -2173,6 +2173,21 @@ public:
     // MINIANDROID_EXC_STRICT=1; the run must be reported CRASH.
     bool strict_uncaught_crash() const { return strict_uncaught_crash_; }
     const std::string& strict_crash_reason() const { return strict_crash_reason_; }
+    // T61 (S145): SCRIPTED-TAP WALL REBATE. The F084 wall-clock budget is
+    // one continuous clock from interpreter start; by the time a scripted
+    // tap (--tap, the F117 pipeline) fires at frame N the session budget is
+    // mostly spent, so the tap's compose dispatch (DOWN/UP + the drain that
+    // runs onClick + the recomposition that renders the state change) dies
+    // at the deadline with VirtualMachineError — the honest run-budget
+    // boundary masquerading as a compose answer (dooz TRAIN-58/61 evidence:
+    // UP halted at Lt4;.dispatchTouchEvent pc=0x2 before anything ran).
+    // The scripted tap is the ENGINE'S OWN evidence machinery, not app
+    // work: this rebate shifts the wall deadline forward for the whole
+    // session (elapsed - rebate). Generic: no app knowledge; only the tap
+    // path calls it; no-tap runs are bit-identical.
+    void rebate_wall_ms(int64_t ms) { wall_rebate_ms_ += ms; }
+    int64_t wall_rebate_ms() const { return wall_rebate_ms_; }
+
     
     // Configuration
     struct Config {
@@ -3230,6 +3245,8 @@ public:
     bool lifecycle_from_dex_ = false;
     bool halted_on_return_ = false;
     std::string halt_reason_;
+    // T61 (S145): scripted-tap wall rebate accumulator (see rebate_wall_ms).
+    int64_t wall_rebate_ms_ = 0;
     // R-NEW-345 parked-thread yield law: set by the LockSupport.park* bridge
     // when a parked WORKER frame (park reached at drain depth >= 1) drained
     // zero work — the frame is "suspended" exactly like a real parked thread.

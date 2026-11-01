@@ -1,0 +1,40 @@
+{
+ "//series": "s145 LIGHT TRAINS 61-63 \u2014 user directive \u00ab\u06f3\u06f0 \u0628\u0647 \u06f7\u06f0 \u0631\u0648 \u0627\u062f\u0627\u0645\u0647 \u0628\u062f\u0647\u00bb (continue 30\u219270) + standing directives (new + more effective programs; re-test every old program; the games)",
+ "//date": "2026-11-01",
+ "//head_base": "285898ce (S144) \u2014 remote==local at session start; reset per SYNC LAW",
+ "//binary_start": "7aab24b0b4094b06 (S144 final, rebuilt byte-exact deterministically at session start)",
+ "//binary_final": "ae97daf4fe549b9d (TRAIN-61 scripted-tap wall rebate arm; the ONLY engine change this wave)",
+ "TRAIN-61_dooz_click_state_hop": {
+  "root_cause_pinned_the_F084_budget_artifact": [
+   "S144 recorded UP consumed=true at the New-game button but S145's first cell taps answered DOWN consumed=true / UP consumed=false at (540,960) \u2014 asymmetry demanded decode",
+   "tap1 (budget 500s, no trace): DOWN window = REAL compose pipeline (isAttachedToWindow->1, Lt4;.r -> getWidth 1080/getHeight 1920, adapter machinery, 6 compose class-inits) -> consumed=true; UP window = [WALL-STOP] pc=0x2 in Lt4;.dispatchTouchEvent BEFORE ANYTHING RAN + [SYNTH-EXC] F084-HALT-RETURN (deferred): VirtualMachineError -> consumed=false",
+   "verdict: the UP 'false' was NEVER a compose answer \u2014 the F084 wall-clock budget is ONE continuous clock from interpreter start; a tap scripted at frame N arrives with the budget mostly spent and the UP dies at the deadline (VirtualMachineError propagating uncaught to MainActivity.onCreate caller \u2014 the honest run-budget boundary masquerading as an input answer)",
+   "tap6 cross-check: with METHOD_TRACE overhead the DOWN itself budget-dies mid-render (F084 in Lr;.g pressed-state render) \u2014 the observer effect confirmed the budget law",
+   "Compose 1.6.7 ground truth (androidx source): AndroidComposeView.dispatchTouchEvent returns processResult.dispatchedToAPointerInputModifier \u2014 DOWN=true therefore the hit-test DID dispatch to a pointer-input node at the cell"
+  ],
+  "fix_arm_generic_no_app_knowledge": "T61 SCRIPTED-TAP WALL REBATE: DalvikExecutionEngine.rebate_wall_ms() shifts the wall deadline forward (elapsed - rebate, floor 0; halt message gains '; tap rebate N ms applied'); the F117 tap pipeline calls it ONCE per scripted tap BEFORE the DOWN dispatch; env MINIANDROID_TAP_WALL_REBATE_MS (default 600000 ms, 0 disables); no-tap runs and every other engine path untouched",
+  "post_fix_evidence": [
+   "[T61-REBATE] scripted tap wall rebate +600000 ms (session deadline shifted)",
+   "dooz_tap7 (540,960)@15: [UI-EVENT] action=0 result=DISPATCHED consumed=true AND action=1 result=DISPATCHED consumed=true \u2014 FIRST TIME a non-button compose point completes BOTH ARMS",
+   "dooz_tap8 (540,960)@10 with METHOD_TRACE: both arms consumed=true again (the fix survives the diagnostic overhead)"
+  ],
+  "up_chain_decoded_link_by_link": [
+   "Lt4;.dispatchTouchEvent -> Lt4;.q/.m/.D -> Lx3;.s (MotionEventAdapter) -> Lt4;.v -> Lt4;.H (getActionMasked) -> Lhu0;.c/.b/.a/.d -> Lt4;.r -> Lfj;.a (hit-test, TRAIN-58 machinery) -> Las0;.t (LayoutNode hit walk) -> Lbr0;.<init>/.b/.c/.d/.e (HitPathTracker) -> Lg5;.i",
+   "filter delivery: Llo;.P (PointerInputFilter.onPointerEvent) x20 in the UP window; node impls Lhz0;.b/.d; SuspendingPointerInputFilter family Liw0;.<init>/.b/.c/.g/.k",
+   "coroutine machinery engaged: Lrh1;.J -> La81;.<init> -> Lwf1;.i -> La00;.J -> Lbt1;.d -> Lbo;.h"
+  ],
+  "honest_next_frontier": "the pointerInput COROUTINE CONTINUATION RESUME: the suspended detectTapAndPress continuation is never dispatched to the app lambda \u2014 [QUEUE] records ZERO runnable enqueues after the UP result; zero Lio/github/yamin8000 methods in the entire tap window + drain; the cell click cannot reach the game state until the compose dispatcher continuation (channel offer -> resume -> AndroidUiDispatcher queue) is pumped by the engine. Static decode: Liw0;.k = a 26-insn arraycopy helper (the event ring), so the death is further down the coroutine boundary",
+  "screenshot_note": "the board face stays 851cc176 through the tap runs \u2014 expected: the state flip cannot exist before the callback runs; the visible-board render gap is the later TRAIN (the cell X/O glyphs draw through the compose text path once state mutates)"
+ },
+ "TRAIN-62_old_program_regression": {
+  "anchor_wall_6apps": "ALL BYTE-EXACT on ae97daf4fe549b9d: opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 (run/s145_train62/, scripts/s145_anchor_wall.sh; tower3d package corrected stack.tower3d \u2014 the queue's com.narwhal.stacktower3d was stale)",
+  "game_family_7titles": "ALL EXACT-TO-PIN on ae97daf4fe549b9d: g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snakedeluxe 5235683fc7b1f04b / minicraft e77a073f733255eb / gmem 4876e47d26910839 / snakeneon b669ce89365f8bbe / sqlnotes 748bb6cf756e7413 (scripts/s145_game_family_sweep.sh, fresh stores, 40 frames each) \u2014 the games re-proven green per \u00ab\u0628\u0627\u0632\u06cc \u0647\u0645 \u06cc\u0627\u062f\u062a \u0631\u0641\u062a\u0647\u00bb",
+  "verdict": "every old program runs byte-identical on the T61 binary; the rebate arm is render-neutral (only the scripted-tap path touches the wall clock)"
+ },
+ "TRAIN-63_microtimer_sqlite_and_input": {
+  "real_db_verified": "dubrowgn.microtimer alarm DB app-data in the sandbox: tables alarm (duration_dec6, remaining_dec6, id, expires_ms) + room_master_table (identity_hash row) + sqlite_sequence; WAL mode (app-data-wal 41232 B); PRAGMA integrity_check = ok via INDEPENDENT python sqlite3 (run/s145_train62/store_microtimer)",
+  "input_interaction_first": "tap (540,1388) = keypad key 5 -> [F117-TAP] target=139 (Button) -> [UI-EVENT] event=CLICK view_object=139 listener=Lk/d; result=DISPATCHED -> display renders 00:00:05 (face 5b64d5160832ce41, was anchor bbd350b6) \u2014 view-system click -> real kotlin lambda -> UI state, end-to-end",
+  "honest_gap": "alarm rows=0 after the taps \u2014 the row INSERTs when the timer STARTS; the start gesture point did not resolve (tap at the display row answered target=0); recorded as the slot-4 next_wagon"
+ },
+ "NEXT_STATION": "TRAIN-64 = the compose coroutine continuation pump (SuspendingPointerInputFilter offer -> resume -> dispatcher drain) \u2014 unlocks dooz cell click AND every compose-app click (opencalc M3 buttons share the law); TRAIN-65 = microtimer timer-start gesture -> alarm row INSERT through the app's own Room code; TRAIN-66 = dooz visible board (the cell glyphs) once the click->state hop lands"
+}

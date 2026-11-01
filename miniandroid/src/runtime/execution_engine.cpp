@@ -7215,6 +7215,31 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
             } else {
             for (size_t f117_i : f117_due) {
             const auto& [tpx, tpy] = config.tap_sequence[f117_i];
+            // T61 (S145): SCRIPTED-TAP WALL REBATE. The F084 wall budget is
+            // one continuous clock from interpreter start; a tap scripted at
+            // frame N arrives with the budget mostly spent, and the DOWN
+            // dispatch + pressed render + UP dispatch + the onClick drain
+            // (where the app mutates state) + the post-tap recomposition
+            // (where the state change renders) all hit the deadline as
+            // VirtualMachineError halts (dooz TRAIN-61 evidence: UP halted
+            // at Lt4;.dispatchTouchEvent pc=0x2 BEFORE anything ran — a
+            // budget artifact masquerading as "UP not consumed"). The
+            // scripted tap is the engine's OWN evidence machinery: extend
+            // the deadline once per scripted tap. Env-tunable
+            // (MINIANDROID_TAP_WALL_REBATE_MS); 0 disables. No-tap runs and
+            // every other engine path are untouched.
+            {
+                static const char* rb_env =
+                    std::getenv("MINIANDROID_TAP_WALL_REBATE_MS");
+                long long rebate_ms =
+                    rb_env ? strtoll(rb_env, nullptr, 10) : 600000;
+                if (rebate_ms > 0) {
+                    dalvik_engine_.rebate_wall_ms(rebate_ms);
+                    std::cerr << "[T61-REBATE] scripted tap wall rebate +"
+                              << rebate_ms << " ms (session deadline shifted)"
+                              << std::endl;
+                }
+            }
             // R-NEW-440b: ONE render/input root law (content_view_id is
             // unset on the appcompat delegate path — see helper).
             uint32_t tap_root = effective_content_root_();

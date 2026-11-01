@@ -21340,12 +21340,23 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 wall_start = std::chrono::steady_clock::now();
                 wall_started = true;
             }
-            auto elapsed_ms = std::chrono::duration_cast<
+            // T61 (S145): the scripted-tap rebate shifts the deadline
+            // forward (see rebate_wall_ms) — elapsed counts only budget
+            // the session actually spent outside the rebate.
+            long long raw_elapsed_ms = std::chrono::duration_cast<
                 std::chrono::milliseconds>(
                 std::chrono::steady_clock::now() - wall_start).count();
+            long long elapsed_ms = raw_elapsed_ms - wall_rebate_ms_;
+            if (elapsed_ms < 0) elapsed_ms = 0;
             if (elapsed_ms >= static_cast<long long>(config_.max_wall_ms)) {
                 halt_reason_ = "Wall-clock budget reached (" +
-                               std::to_string(config_.max_wall_ms) + " ms)";
+                               std::to_string(config_.max_wall_ms) + " ms" +
+                               (wall_rebate_ms_ > 0
+                                    ? "; tap rebate " +
+                                          std::to_string(wall_rebate_ms_) +
+                                          " ms applied"
+                                    : "") +
+                               ")";
                 halted_ = true;
                 log("HALT: " + halt_reason_);
             // CONT-10 W7 (generic, env-gated, read-only): when the wall-clock
