@@ -1,0 +1,80 @@
+{
+  "wave": "S148",
+  "date": "2026-11-02",
+  "directive": "ادامه 30 به 70 / «ادامه» — TRAIN-68 dooz tap death (a-vs-b decision) + every-slot wagons",
+  "engine_binary": {
+    "dev_sha16": "fd2960379ad0bc87",
+    "note": "incremental build with T68 probes; anchor wall 6/6 + game family 7/7 BYTE-EXACT = render-neutral probes"
+  },
+  "train68": {
+    "title": "the UP-resume case-2 predicate link — DECIDED: (a) confirmed and re-pinned deeper (handler wiring, not machinery)",
+    "verdict_b_retired": {
+      "claim": "interpreter list-helper path drops the Function1 predicate invocation",
+      "evidence": [
+        "Ljk;.J decoded byte-exact: getClass + isEmpty -> null / else get(0) = kotlin firstOrNull() WITHOUT predicate (17 insns)",
+        "the J call site = the scroll-board's own drag-family machine case-2 (Li6;.q pc=300), NOT the tap chain",
+        "the board's predicates RAN: Lbt1;.d (isChangedToDown(event, requireUnconsumed)) fired 4x in the DOWN loop",
+        "Lbo;.j (changedToUpIgnoreConsumed) resolved in Lor1;.J's lastPointerEvent tail"
+      ]
+    },
+    "verdict_a_confirmed": {
+      "claim": "the clickable detectTapAndPress block never launched",
+      "evidence": [
+        "hit-path census (T68-J): DOWN dispatched to EXACTLY 3 pointer-input nodes x3 passes: Lor1;#6571, Lor1;#14049, Lor1;#14112 (callers Lhz0;.e Initial + Lhz0;.d Main/Final) + the board host Lrh1;#14119 -> La00;.J",
+        "the clickable's ClickableNode class NEVER received a J dispatch — absent from the hit path at all three passes",
+        "5 pointer-input nodes exist (Lor1;.<init> x5, all from element-create Ljr1;.f except the board's own Lk6;.<init> node #14112)"
+      ]
+    },
+    "launch_machinery_clean": {
+      "evidence": [
+        "all 3 first-event launches read CoroutineStart (Lyr;) field .h = UNDISPATCHED (enum map decoded from <clinit> order: e=DEFAULT f=LAZY g=ATOMIC h=UNDISPATCHED) — T68-START probe",
+        "each launch ran its body INLINE (UNDISPATCHED law): Lru;.h -> Lru;.o -> Lru;.q for all three nodes (T68-ENTRY)",
+        "pointerInputJob gate verified: Lor1;.v iget-object (null, key Lor1;->v) -> launch -> iput-object job; later events read the stored job and skip (T68-JOBGET-OBJ/JOBPUT-OBJ/JOBGET-VAL)"
+      ]
+    },
+    "death_pinned": {
+      "root": "the cells' pointerInput nodes carry COMPILED NO-OP HANDLERS; the only real handler is the board's own scroll node",
+      "evidence": [
+        "Lor1;.<init> arg dump: nodes #6571/#9390/#12406/#14049 born with a3=Lpv;#6077/#6076 (R8 singletons); node #14112 born with a3=Lj6;#14111 (dooz's own handler, built by Lk6;.<init>)",
+        "Lpv; decoded: <clinit> creates 2 singletons (Lpv;(0)->b, Lpv;(1)->c); invoke(Ly71;,Lmq;) = 5 insns: iget Lpv;.a; sget-object Le12;.a; return-object = RETURN UNIT — a literal no-op block",
+        "the 4 no-op blocks complete instantly on the first event -> job stays, handlers list drains, every later event no-ops",
+        "the board's real block (Lj6;.invoke -> Li6;#63052 -> scope Lnr1;#63058 -> Lq80;.q -> machine #63065 -> awaitFirstDown(Lbt1;.b, requireUnconsumed=0) -> SUSPEND) is the ONLY live pointer-input coroutine in the app",
+        "the composed-factory folds RAN their insert arms (Ldr1;.c recv#6021 + Lkr1;.a x2 + Ltl;.J x many, from Lbr1;.h and Lsv;.a) — the clickable element still never joined the chain"
+      ]
+    },
+    "next_wagon_TRAIN69": "the composed-factory element-insert arms: Ldr1;.c (the clickable-insert candidate) vs Lkr1;.a (the pointerInput insert with the Lpv; no-op) — pin why the clickable node never materializes into the chain while no-op pointerInputs do; generic fix unlocks dooz cell click + every M3 clickable",
+    "machine_topology_decode": {
+      "Lss1;": "machine base (l=label 0x80000000-marker protocol, k spill, j:Z requireUnconsumed, i:Lo71; pass, h:Lnr1; scope)",
+      "Lbt1;": "TapGestureDetectorKt: .a=awaitFirstDown machine (90 insns, .d=isChangedToDown inside), .b=awaitFirstDown wrapper (scope,cont,mask), .d=isChangedToDown(35 insns: List.get+Lbo;.g/Lbo;.h loop), .f=detectTapAndPress (1032 insns, NEVER ran)",
+      "Lor1;": "SuspendingPointerInputModifierNodeImpl: fields A=currentEvent B:J=sizes s,t=spills u=handler v=Lkp1;=pointerInputJob w=lastPointerEvent x,y,z:Liw0;=pass filters; J=onPointerEvent(63: job gate + launch + M0 + Lbo;.j tail), M0=dispatch(111), L0=scope",
+      "Lru;": "kotlinx merged coroutine machine (i=kind j k spill): kind 11 = the pointerInput body; .h/.o create+run, .q=744-insn invokeSuspend",
+      "Lyr;": "CoroutineStart enum (e=DEFAULT f=LAZY g=ATOMIC h=UNDISPATCHED)",
+      "Ljk;": "kotlin.collections.CollectionsKt: .J=firstOrNull(List) no-predicate, .I=firstOrNull(Iterable), .H=first(List), .G=contains"
+    }
+  },
+  "wagons": {
+    "microtimer_slot4": {
+      "wagon": "second timer + alarm lifecycle",
+      "result": "TWO real Room alarm rows: (5,5,1,11770) + (5,5,2,20410) — timer key-5 START + second-timer key-3 START (S147 coordinate law); BOTH expired by the app's own code ('alarm 1 expired', 'alarm 2 expired; expiredCount:2'); independent python sqlite3 integrity=ok; DB=app-data (room_master_table identity_hash 7f9de20cc427f76feccd1a94b81a4a23)",
+      "face": "ade730c51fb12088 (new 2-timer state; the no-tap anchor bbd350b6 unchanged on the wall)"
+    },
+    "sqlnotes_slot11": {
+      "wagon": "cold re-open zero-drift",
+      "result": "cold zero-tap run face 748bb6cf756e7413 == the S142 pin EXACTLY on the T68 binary; DB created (notes + sqlite_sequence)",
+      "face": "748bb6cf756e7413"
+    },
+    "telegram_satellite": {
+      "wagon": "fresh-store re-check on the T68 binary",
+      "result": "install org.forkgram.classic 12.10.8.0 vc709208 SUCCESS; opendb OK (real files/cache4.db); SQLiteException 0; integrity=ok; user_version 178 objects 234; fresh-store last-frame face c2e071714e97a3af == the S144 fresh-store pin — cross-binary render reproducibility (S144 engine -> S148 engine)",
+      "note": "x41 (no SQLiteException) HOLDS on the T68 binary; the S147 same-store pin was bf5c9ef920aa32d7 (different store state, not a drift)"
+    }
+  },
+  "regression": {
+    "anchor_wall": "6/6 BYTE-EXACT: opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6",
+    "game_family": "7/7 EXACT-TO-PIN: g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snakedeluxe 5235683fc7b1f04b / minicraft e77a073f733255eb / gmem 4876e47d26910839 / snakeneon b669ce89365f8bbe / sqlnotes 748bb6cf756e7413"
+  },
+  "diagnostics_added": [
+    "MINIANDROID_T68_NODE_TRACE: [T68-ENTRY] node/handler/launch/fold-arm census (per-class budgets); [T68-JOBGET-OBJ]/[T68-JOBPUT-OBJ] the pointerInputJob lazy-launch gate; [T68-JOBGET-VAL] the job-read VALUE with the s134 field key; [T68-JOBGET/JOBPUT] the int-arm mirrors; [T68-START] the CoroutineStart enum static reads (touch-window-gated); [T68-J] the full hit-path node census"
+  ],
+  "zero_log": "runs under run/ gitignored; no APKs committed; evidence json in-repo"
+}
