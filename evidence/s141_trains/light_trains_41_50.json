@@ -1,0 +1,48 @@
+{
+ "//series": "s141 LIGHT TRAINS 41-50 — user directive «ادامه الگ ۳۰ به ۷۰ اوپن سورس اینترنت» (continue the 30→70 pattern): 30% major (dooz composed-gate root-pin + telegram DB frontier) + 70% minis (2 leftover builds, snake-neon interactive proof, gmem win re-proof, browser launch, anchors 5/5, registry+queue refresh)",
+ "//date": "2026-11-01",
+ "//head": "08f3a158 (SYNC LAW: local was 411 commits behind origin/main — reset --hard per the standing GitHub-is-newer directive); cold rebuild reproduced the EXACT evidence binary 0cf810383af94146 (BUILD_OK attempt 1, reproducibility law)",
+ "station_A_major_30pct": {
+  "TRAIN-41_dooz_composed_gate_rootpin": {
+   "new_tools": ["s141_train41_disasm.py (ref-resolved disasm + method-id-index caller census; ref index = words[w+1] for ALL 21c/22c/35c/3rc formats)", "s141_train41_b.py (caller census)", "s141_train41_c.py (lambda-interface surface)"],
+   "static": [
+    "Lpm;.r(I,I)I = 8-insn hash-mix helper, all 10 call sites in the Lom; materialize-lambda family — RETIRED as frontier candidate",
+    "Lpm;.c (clickable composed factory body) has EXACTLY ONE caller: Luq;.h pc=75 invoke-static/range (18 regs); Luq; = R8 synthetic lambda capturing 17 values, implements Lj90; (Function2), h = the (Composer,Int)->Unit bridge",
+    "Lq;.h = the materializer fold body: Function2 impl, super Lgk0;, 324 insns, packed-switch 7 cases: case0->Lr;.b(273), case1->Lnb0;.O arm(216), case2->Boolean(192), case3->Lho;.b(175), case4->FACTORY ARM(138), case5->Lhx;.b(121), case6->Le81;.b(31); every arm ends return-object => invoked PER ELEMENT",
+    "THE FACTORY ARM (case4, pc=138..174): casts Lxt0;/Lvt0;/Lnb0; -> INSTANCE-OF Lmo; (pc=144, type idx 0x080f) -> iget factory field a:Lk90; -> Lxz1;.k composer marker -> Lk90;.f(Object,Object,Object) factory invoke (pc=160) -> Ltl;.I -> Lxt0;.c acc.then = upstream ComposedModifier.kt 1.6.7 materialize law VERBATIM",
+    "class identity: Lmo; = FINAL (acc 0x11), super Object, ifaces [Lvt0;], ONE field a:Lk90; (Function3) = ComposedModifier (un-keyed); Lbu0; = super Object, ifaces [Lvt0;], ZERO fields, 71 direct subclasses incl. Ljr1; (the pointerInput element) — Lmo; and Lbu0; UNRELATED siblings, NOTHING extends Lmo;",
+    "construction graph: Lmo;.<init> has exactly 2 dex callers (Ltl;.u = the composed() helper, Lpm;.c = the factory body); Lok0;.<init> (field a:Lk90; = the MERGED keyed-composed class) has exactly 1 caller: Lpi0;.q",
+    "TWO instrument artifacts retired: TRAIN-31's F259-INS 'Lm4;.i' attribution (Lm4;.i has ZERO instance-of) and the 'keyed classes merged elsewhere' assumption"
+   ],
+   "live (binary 0cf810383af94146)": [
+    "PMC probe1: Lq;.h=2 enters (arms case0 tail Lr;.b + case2 Boolean), Lom;.h=44 (Function2 dispatch RUNS), Luq;.<init>=0, Luq;.h=0, Lpm;.c=0, Lk90;.f=0",
+    "PMC probe2: Lnb0;.O (element-fetch helper in the fold arms' loops)=86 enters, Lgk0;.<init>=439 — the iteration machinery RUNS; 86 fetches vs 2 per-element fold enters",
+    "reconciliation: TRAIN-31's 109x FALSE/0x TRUE on Lmo; = the materializer FAST-PATH gate ('modifier.all { it !is ComposedModifier }') — all 109 tests FALSE so materialize ALWAYS fast-paths"
+   ],
+   "verdict": "REFINED ROOT PINNED: the composed-gate type test (fast-path all{} AND fold case4) targets Lmo; (ComposedModifier) while the keyed element family extends Lbu0; — DEX-STRUCTURALLY-FALSE on any DEX-faithful runtime; the engine's answers PROVEN DEX-faithful (ancestry exoneration + today's case map); TRAIN-42-fix owns the construction-side probe (Lpi0;.q->Lok0;) + the generic fix (shared-interface Lvt0; hierarchy law OR F-NEW-259 slot law on the fold-lambda dispatch)"
+  },
+  "TRAIN-42_telegram_db_frontier": {
+   "measured": [
+    "REAL file-backed SQLite: [SQLITE-SHADOW] opened db oid=10289 path=runtime/data/data/data/org.telegram.messenger.web/databases/com.google.android.datatransport.events user_version=0 target_version=5; PRAGMA busy_timeout=0 executed (rows=1); real SELECT 'SELECT distinct t._id, t.backend_name, t.priority, t.extras FROM transport_contexts...' executed (rows=0) — the S138 'no real DB' boundary PARTLY RETIRED",
+    "remaining: Lorg/telegram/SQLite/SQLiteException; x152 mentions from Lorg/telegram/SQLite/SQLiteCursor;.next pc=62 — telegram's OWN shim class (not the engine's Landroid/database/* dispatch); the app CAUGHT them (EXC-PROPAGATE caught at MessagesController$1.lambda$getLocal$1, 53 catches)",
+    "canned laws: T5-CONFIG + T5-LANGPACK (req 8767) fired; BillingController IllegalArgumentException chain visible (Lg5/q;.a encoding factory)",
+    "face at 40 frames: 11 distinct16 colors, white-dominant + telegram-blue tints (128,192,240)/(144,208,240) = themed partial face preserved (sha16 bf5c9ef920aa32d7)"
+   ],
+   "verdict": "DB story moved from 'no real DB (x41)' to 'real DB open+query PROVEN; remaining = the org.telegram.SQLite.SQLiteCursor shim law' — the next micro-wagon is a generic DatabaseShadow dispatch extension to telegram's own cursor wrapper family"
+  },
+  "TRAIN-48_anchor_wall": {
+   "measured": "5/5 BYTE-EXACT on the evidence binary 0cf810383af94146: opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf (INSTALLED-PACKAGE law: install + run --package io.github.yamin8000.dooz --frames 40, cont32 gate law) / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376",
+   "verdict": "ZERO DRIFT — engine law UNCHANGED this wave (measurement-only + registry/docs)"
+  }
+ },
+ "station_B_minis_70pct": {
+  "TRAIN-43_snake_neon_build": "built fresh from repo source games/snake-neon via the canonical aapt2 compile+link / ECJ / D8 pipeline (new script s141_train43_snake_neon.sh; fixed the pipeline for --java R.java gen + compile --dir step): zip sha16 6a8af7115b63f45b; S98 APK b36885c181a323ab = prior art (method surface identical; step 198 vs 197, onDraw 382 vs 362 = minor source drift since S98; repo HEAD authoritative)",
+  "TRAIN-44_simple_browser_build": "built games/simple-browser (S133 VC2): zip sha16 9fa342514f6f298a; TRAIN-47 launch render: 14 distinct colors — white page + blue GO button (96,160,192) + gray URL-bar chrome; interaction frontier = no --type-text CLI knob (honest gap recorded)",
+  "TRAIN-45_snake_neon_interactive": "190-frame run @ --frame-delay 110 (tick 220ms = 2 frames exactly), 6 REAL --tap events on LIVE button bounds from the view-tree dump (LEFT(154,1831) UP(411,1831) DOWN(668,1831) RIGHT(925,1831)); teal-centroid trajectory: RIGHT(136->632) -> DOWN after tap@19 (y 170->1070) -> WRAP-AROUND (y 1070->202 bottom->top portal, the Neon law) -> LEFT (tap@47, lag ~2 ticks inside the lag-robust envelope) -> RIGHT (tap@83) -> DOWN (tap@99); tick chain alive the whole run (Runnable id=34 dequeued every 220ms, diff_px=9408 per move); plan = s141_train45b_snake_plan.py (randomized search, robust for 0/1/2-frame tap lag)",
+  "TRAIN-46_gmem_win_reproof": "deterministic win plan (44 real taps) re-executed on the fresh binary+APK (zip sha16 8c3861245fc70f74): matched-green px 0 @f2 -> 331,820 @f40 -> 884,388 @f95 = ALL 16 CARDS MATCHED / YOU WIN reproduced",
+  "TRAIN-49_registry_refresh": "canonical registry 150 -> 152: com.miniandroid.snakeneon ADDED (candidate_INTERACTION_VERIFIED L2, S141 evidence) + com.miniandroid.gmem ADDED (S138 origin, S141 win re-proof); scripts/s141_registry_update.py",
+  "TRAIN-50_queue_refresh": "docs/PROGRAM_QUEUE.json refreshed: dooz slot carries the TRAIN-41 root-pin + TRAIN-42-fix next station; interactive runtime-built family now 8 titles (2048, tetris, snake-deluxe, minicraft, tictactoe-deluxe, gmem, snakeneon + browser satellites)"
+ },
+ "//zero_log": "shas + pixel numbers + line numbers only; runs under run/ gitignored; engine source UNCHANGED (no registry law touch); no APKs committed",
+ "//next_station": "TRAIN-51 = the dooz FIX train (engine-touching): construction-side probe (Lpi0;.q -> Lok0; keyed class births; Lmo;.<init>=0 re-examined under the new class map) then the generic fix: instanceof-hierarchy extension via the shared-interface law (Lmo;/Lbu0; both -> Lvt0;) or the F-NEW-259 descriptor-slot law on the fold-lambda dispatch (86 fetches vs 2 enters); TRAIN-52 = telegram org.telegram.SQLite.SQLiteCursor shim law; TRAIN-53 = snake-neon full-win plan + GIF"
+}
