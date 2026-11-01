@@ -1,15 +1,15 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-01 (trains 31-40 refresh)",
- "//head": "85600efd",
+ "//date": "2026-11-01 (trains 41-50 refresh, S141 wave)",
+ "//head": "08f3a158",
  "queue": [
   {
    "slot": 1,
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "anchor 851cc176 byte-exact; chrome renders; board absent; click root = composed-modifier dispatch (TRAIN-10)",
-   "next_wagon": "TRAIN-11 fix train: descriptor-slot/class-hierarchy extension on the materialize/factory-walk path (4 banked probes, light_trains_11_30.json station A)"
+   "now": "anchor 851cc176 BYTE-EXACT (S141 wall 5/5); TRAIN-41 root-pin: materializer fold Lq;.h case4 factory arm gated by instanceof Lmo; (ComposedModifier, final, field a:Lk90;) — keyed family extends Lbu0; (71 subs incl. Ljr1; pointerInput) => gate DEX-STRUCTURALLY-FALSE; fast-path all{} = TRAIN-31 109x FALSE/0x TRUE; Lq;.h 2 enters vs Lnb0;.O 86 fetches; Lk90;.f/Luq;/Lpm;.c all 0",
+   "next_wagon": "TRAIN-42-fix (engine-touching): construction-side probe (which class is born at composed() — Lpi0;.q constructs Lok0;) + the generic fix: instanceof-hierarchy extension via shared interface Lvt0; law OR F-NEW-259 slot law on the fold-lambda dispatch"
   },
   {
    "slot": 2,
@@ -87,8 +87,8 @@
  "satellites": [
   {
    "program": "gmem Memory Match (com.miniandroid.gmem)",
-   "now": "BUILT+RUN+WON this turn: 44 real taps, 8 moves, all 16 cards matched (L5 face + full interaction proof); APK sha16 511a8e471f9c7a5f",
-   "next_wagon": "canonical registry entry + GIF evidence + L6 promotion; then snake-neon build (satellite)"
+   "now": "WIN REPRODUCED on fresh binary (S141 TRAIN-46): 44 real taps, matched-green 0->884,388 px all-16-matched; registry entry added",
+   "next_wagon": "GIF artifact"
   },
   {
    "program": "telegram (Forkgram 12.10.8)",
@@ -107,13 +107,13 @@
   },
   {
    "program": "snake-neon (leftover source)",
-   "now": "source present (games/snake-neon), never built/registered",
-   "next_wagon": "canonical-toolchain build + first run (same pipeline as gmem)"
+   "now": "BUILT + INTERACTED (S141): fresh build 6a8af7115b63f45b, 190-frame run, 6 real taps, direction changes + wrap-around law proven (teal centroid); registry entry added (candidate_INTERACTION_VERIFIED L2)",
+   "next_wagon": "obstacle-block mechanic exercise + deterministic full-win plan"
   },
   {
    "program": "simple-browser (leftover source)",
-   "now": "source present (games/simple-browser), never built/registered",
-   "next_wagon": "build decision after snake-neon"
+   "now": "BUILT (S141): VC2 fresh build 9fa342514f6f298a; launch renders chrome (URL field + GO button + webview area, 14 distinct colors); interaction needs a text-injection knob (no --type-text yet)",
+   "next_wagon": "engine --type-text input knob then full navigation render"
   }
  ]
 }
