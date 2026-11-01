@@ -1,15 +1,15 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-01 (S146 wave — TRAIN-64: the compose tap chain decoded END-TO-END to the coroutine machinery on GitHub-sourced ground truth (dooz v1.0.23 source + compose 1.9.4 VERBATIM); the clickable's inner node Lor1;#14115 receives DOWN+UP at all 3 passes, lazy-launches the Lj6; handler, offers fire, CancellableContinuation resumes, BaseContinuationImpl loops run invokeSuspend — the death is the STATE-MACHINE LABEL PERSISTENCE (machines re-await without evaluating the gesture predicate); regression: anchor wall 6/6 + games 7/7 byte-exact; telegram SQLiteException 0 x3 with schema 179/235)",
- "//head": "2c16d1a0 (S145) + s146 work (pre-commit)",
+ "//date": "2026-11-02 (S147 wave — TRAIN-67: the S146 label-persistence root RETIRED with receiver-identity evidence (labels 0->1->2 persist perfectly); the real death re-pinned one level deeper: the UP-resume case-2 runs the changes-copy firstOrNull loop and re-issues awaitFirstDown without evaluating changedToUp or onClick; TRAIN-65: microtimer alarm REAL INSERT+UPDATE+expiry (row (5,1,1,11770) verified independent sqlite3); telegram x41 holds x3 face bf5c9ef920aa32d7; sqlnotes rows=2 reopen; anchors 6/6 + games 7/7 BYTE-EXACT x2 binaries)",
+ "//head": "d0899976 (S146) + s147 work (pre-commit)",
  "queue": [
   {
    "slot": 1,
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "S146 TRAIN-64: the tap chain is ALIVE to the coroutine machinery — UP reaches the clickable's inner SuspendingPointerInputModifierNodeImpl (Lor1;#14115) at all 3 passes; lazy UNDISPATCHED launch runs; the Lj6; detectTapAndPress handler registers; offerPointerEvent resumes the awaiter (Lzh;.g); dispatchResume goes the UNDISPATCHED immediate path (Lor;.e enqueue never needed); BaseContinuationImpl.resumeWith loops run invokeSuspend on the machines. GROUND TRUTH: dooz cell = .clickable() (GitHub v1.0.23 DoozItem), compose = 1.9.x (PointerInputEventHandler), the S145 'Liw0;=filter' and '1.6.7' labels RETIRED",
-   "next_wagon": "TRAIN-67 (engine-touching): SUSPEND-LAMBDA LABEL PERSISTENCE — Lss1;.q re-calls the await on every resume without evaluating isChangedToDown (the gesture predicate never runs); fix = the interpreter's continuation-instance identity so the iput-label before suspension is read back by the SAME q(); then down.consume()->waitForUpOrCancellation->onTap->onClick reaches the game state"
+   "now": "S147 TRAIN-67: the tap chain proven ALIVE THROUGH THE LABEL MECHANISM — Lss1;.q reads label=1 on the DOWN resume (0x80000001 marker written/stripped correctly), Li6;.g writes 1->2 with receiver-identity #61333 stable across resumes; the UP event DID reach the pending awaiter (Li6;.q(#61333, UP#68106) <- Lne;.g). DEATH REPINNED one level deeper: the UP-resume (state g=2) runs List-copy + Ljk;.J(firstOrNull) + isEmpty and RE-ISSUES awaitFirstDown (Lbt1;.b) — the gesture predicate changedToUp is never evaluated, consume() zero writes, onClick zero app invokes. detectTapAndPress (Lbt1;.f, machine Lxs1;) never ran (0 mentions). T67 + INVOKE-TARGET probes banked.",
+   "next_wagon": "TRAIN-68: decide between (a) the machine is the awaitEachGesture outer loop and the clickable detectTapAndPress block never launched (launch/withContext machinery gap) vs (b) the interpreter list-helper path drops the Function1 predicate invocation; fix = generic, unlocks the dooz cell click + every M3 clickable"
   },
   {
    "slot": 2,
@@ -32,8 +32,8 @@
    "program": "microtimer",
    "package": "dubrowgn.microtimer",
    "kind": "3rd-party app",
-   "now": "S145 TRAIN-63: real alarm DB VERIFIED in the sandbox (Room alarm table duration_dec6/remaining_dec6/id/expires_ms + room_master_table identity_hash + sqlite_sequence, WAL 41KB, independent python sqlite3 integrity ok) + INPUT PROVEN: keypad key-5 tap -> [F117-TAP] target=139 Button -> CLICK dispatched to the real Lk/d; listener -> display renders 00:00:05 (face 5b64d5160832ce41); anchor bbd350b6 still byte-exact",
-   "next_wagon": "the timer-START gesture -> alarm row INSERT through the app's own Room code (the start point did not resolve: display-row tap answered target=0); then a COLD RE-OPEN reads the persisted alarm"
+   "now": "S147 TRAIN-65: alarm lifecycle COMPLETE — taps key-5+START -> RUNNING-TIMER UI (red 00:00:00 + pause) -> REAL alarm row INSERT (5,1,1,11770) in app-data (WAL 78KB, app-verbatim schema) -> countdown UPDATE remaining 5->1 -> app logged alarm-1 expired. S145 rows=0 gap CLOSED",
+   "next_wagon": "alarm LIST UI row render (the AlarmList fragment) + a second timer"
   },
   {
    "slot": 5,
