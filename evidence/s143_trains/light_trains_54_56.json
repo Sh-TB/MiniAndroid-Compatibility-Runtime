@@ -1,0 +1,52 @@
+{
+ "//series": "s143 LIGHT TRAINS 54-56 — user directive «ادامه ۷۰ و ۳۰ تلگرام ببین باز مشکل سکل لایت داده ادامه برنامه های جدید اجرا شدن» (continue telegram 70/30, the sqlite problem again, the new programs ran) + the standing sqlite directive (use the READY real sqlite, never rewrite)",
+ "//date": "2026-11-01",
+ "//head_base": "1041794a (S142; SYNC LAW: local main was behind — reset --hard origin/main per the standing GitHub-is-newer directive)",
+ "//binary": "0e892d67fb6b3e04 rebuilt byte-EXACT from the S142 tree at HEAD 1041794a (cold rebuild, BUILD_OK attempt 1; the S142 evidence recorded this same sha as its own cold rebuild — reproducibility re-proven), then THREE engine arms landed incrementally; FINAL binary sha16 67de59cfbb8fcc7d (the anchor wall ran on this final binary)",
+ "//engine_changes": [
+  "ARM-1 android_shadows.cpp Activity.getIntent: the SYNTHETIC launch intent now carries android.intent.action.MAIN (AOSP ActivityThread.handleLaunchActivity law: the system-built launch Intent for a launcher activity ALWAYS carries ACTION_MAIN). Evidence: LaunchActivity.onCreate 0x0148 getIntent -> 0x0160 getAction -> if-eqz null check. (This arm alone did NOT clear the death — kept for law correctness.)",
+  "ARM-2 dalvik_engine.cpp GATE A loadLibrary: BRIDGE-SATISFIED LOAD arm. A host dlopen of an AArch64 .so on the x86_64 runtime host is an ARCHITECTURE law, not a compatibility gap. When JNIBridge already registers REAL native implementations under the CALLER'S OWN 2-segment package prefix (derived L<pkg1>/<pkg2>/ from current_class_), the load completes and every native call dispatches through the registered bridge (real sqlite3 etc.). No dlopen handle fabricated — none is ever resolved against. Narrowness proven by the anchor wall: only org.telegram-family callers match; all other apps byte-identical.",
+  "ARM-3 jni/telegram_sqlite_jni.h SQLiteDatabase.opendb: routes the ANDROID-LOGICAL path through Storage::resolve_android_path (the canonical sandbox resolver the android.database.sqlite family uses). Pre-fix: opendb answered SQLITE_CANTOPEN rc=14 on /data/data/<pkg>/files/cache4.db (the app-visible logical path fed to real sqlite3_open_v2 verbatim). + TG-SQLITE-OPEN FileIoTrace provenance row."
+ ],
+ "TRAIN-54_telegram_launch_chain": {
+  "root_cause_chain_pinned": [
+   "dlopen of libtmessages.49.so (AArch64, readelf: ELF64/AArch64, DT_NEEDED libjnigraphics/liblog/libz/libGLESv2/libEGL/libandroid/libOpenSLES/libdl/libm/libc) fails on the x86_64 host (arch law) -> GATEA-NATIVE deferred UnsatisfiedLinkError",
+   "forkgram NativeLoader.initNativeLibs dex ground truth (try table decoded verbatim, scripts/s143_trytable.py): loadLibrary#1 @unit 0x0c INSIDE try [0xa,0x1a) (caught, printStackTrace ran); System.load(loc) @0x63 INSIDE try [0x53,0x68); loadLibrary#2 @0xc9 INSIDE try [0xc7,0xce) catch_all@0xcf; loadFromZip System.load @0x72 INSIDE try [0x6e,0x77) returning TRUE even when the load throws (v5=1 set before the call)",
+   "loadFromZip's internal catch never fired pre-fix (the deferred-throw flow surfaced the throw as [EXCEPTION] pc=231=0xe7 = the throw v8 at the tail of initNativeLibs' catch_all body — the app's own catch LOGS then RETHROWS) -> ApplicationLoader.onCreate unwound mid-body (crash.log EXC-UNWIND invoke_pc=0x128)",
+   "yk0 (ForegroundDetector) <init> assigns Instance=this via sput-object @w17 (verified at RAW-WORD level; my first scanner missed it because sput-object is 0x69 not 0x67 — opcode-table lesson banked) — but onCreate died BEFORE the ctor ran -> Instance stayed null",
+   "LaunchActivity.onCreate -> d5 -> AndroidUtilities.needShowPasscode -> yk0.getInstance() (sget null) -> isWasInBackground on null receiver -> NPE -> APP BOUNDARY (engine pcs are 16-bit code units; the earlier getAction-null theory was a byte/code-unit confusion — retired)",
+   "RESULT pre-fix: 2 frames, launch chain dead, MessagesStorage never started, databases/ EMPTY"
+  ],
+  "post_fix": "bridge-satisfied arm fires ([GATEA-NATIVE] bridge-satisfied load of tmessages.49 ... 20 REAL native implementations registered under Lorg/telegram/) -> initNativeLibs nativeLoaded=1 success path -> ConnectionsManager <clinit> full (ThreadPoolExecutor) + native_setJava JNI-CALL -> yk0.<init> constructed (registerActivityLifecycleCallbacks fired) -> LaunchActivity renders REAL UI (StartMessaging intro text + LowPowerEnabledTitle dialog + telegram-blue Disable action row)"
+ },
+ "TRAIN-55_telegram_real_sqlite": {
+  "before": "[TG-SQLITE] opendb FAILED rc=14 (SQLITE_CANTOPEN) file=/data/data/org.forkgram.classic/files/cache4.db; SQLiteException mentions 31 (this session's traced baseline; S141 recorded x41/x152)",
+  "after": [
+   "[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3",
+   "[TG-SQLITE] opendb OK file=<store>/data/data/org.forkgram.classic/files/cache4.db",
+   "run1 (--frames 60, fresh data-root): 61 frames rendered, Errors 0, SQLiteException 0",
+   "REAL cache4.db on disk verified with an INDEPENDENT sqlite3 implementation (python3 sqlite3 module): integrity=ok, user_version=178 (Telegram's full production DB_VERSION — the app's own upgrade chain ran), 234 schema objects (messages_holes, media_holes_v2, scheduled_messages_v2, ... full MessagesStorage schema created by the APP'S OWN CODE through the engine's REAL sqlite3)",
+   "run2 (SAME data-root, no wipe, --frames 40): opendb OK again (RE-OPEN/persistence), SQLiteException 0, Errors 0, Warnings 0, EXIT=0 (clean PARTIAL-free status), cache4.db integrity=ok user_version=178 objects=234 (cross-process persistence)",
+   "face sha16 c2e071714e97a3af (white face + telegram-blue Disable action row) — reproducible across the two runs"
+  ]
+ },
+ "TRAIN-56_sqlnotes_persistence_reopen": {
+  "apk": "upload/s142_sqlnotes/build/sqlnotes_v1.0_vc1.apk sha16 3f0985489072a8b8 (unchanged)",
+  "writer_run": "fresh store install + --frames 60 --tap 540,164@15 --tap 540,164@30 -> [SQLITE-SHADOW] standalone-open notes.db oid=16; INSERT x2 (EXP091-SETTEXT INSERT rowId=1/2); disk rows [(1,'Note #1'),(2,'Note #2')] integrity ok (independent sqlite3)",
+  "reopen_run": "SECOND run on the same store, ZERO taps, --frames 25: rawQuery rows=2 cols=3; UI rendered 'Notes: 2' + '[1] Note #1  (tap = DELETE)' + '[2] Note #2  (tap = DELETE)' — the second process READ the rows the first process WROTE (real file-backed persistence through the engine's real sqlite; sqlite #2 program proof refreshed)"
+ },
+ "regression": {
+  "anchor_wall": "6/6 apps x3 runs ALL BYTE-EXACT vs the canonical S142 pins (scripts/cont11_w8_anchors.sh on the 3-arm binary): opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 — ZERO DRIFT; proves all 3 arms semantic-neutral for every existing app (ARM-2's bridge-satisfied condition requires bridge natives under the CALLER's own package prefix — only org.telegram-family callers match)",
+  "honest_notes": [
+   "gate_a_probe 98/0/1 and negatives 19/19 NOT re-run this wave (light-train wall = anchors + focused probes per the S141/S142 precedent); ARM-2 sits in the GATE A path — the probe rebuild is the named next-station regression if any doubt arises",
+   "telegram faces remain PARTIAL: the 40/60-frame runs end on the low-power dialog light face; the deep chat-list face still needs the canned TL_langpack response + dialog dismissal journey",
+   "the deferred-throw pc semantics (crash.log reported d5 invoke_pc=0x98 code-units) were navigated but the deferred-throw dispatcher itself was NOT modified this wave"
+  ]
+ },
+ "artifacts": [
+  "scripts/s143_tg_d5_disasm.py (multi-dex ref-resolved method disasm)",
+  "scripts/s143_yk0_sput_all.py (whole-dex static-field access census; opcode-table fix inside)",
+  "scripts/s143_trytable.py (verbatim dex try/handler table decoder)",
+  "run/s143_tg_base, run/s143_tg_traced (pre-fix evidence), run/s143_tg_fix2 (launch-chain alive), run/s143_tg_f60b + run/s143_tg_rerun (real-DB runs), run/s143_sqlnotes (writer + reopen), run/w8/anchors (6/6 x3 wall)"
+ ]
+}

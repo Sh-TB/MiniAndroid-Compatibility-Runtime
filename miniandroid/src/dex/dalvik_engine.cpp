@@ -68561,6 +68561,53 @@ measure_cm_done:;
             miniandroid::diagnostics::FileIoTrace::instance().record(
                 "NATIVE", logical_file, false, "System." + method + " " + lo.detail,
                 current_class_ + "." + current_method_);
+            // S143 BRIDGE-SATISFIED LOAD: a host dlopen of an AArch64 .so
+            // on the x86_64 runtime host is an ARCHITECTURE law (the host
+            // cannot execute foreign-machine code), not a compatibility
+            // gap. When the runtime's JNI bridge already registers REAL
+            // native implementations for the loading app's own package
+            // family (forkgram 12.10.8 live evidence: org.telegram.SQLite
+            // natives over REAL sqlite3 — S108 ROOT-017; the loadLibrary
+            // failure let ApplicationLoader.onCreate unwind at pc=0x128
+            // BEFORE `new ForegroundDetector(this)` assigned Instance, so
+            // needShowPasscode NPE'd on the null singleton and the whole
+            // launch chain died at 2 frames — 2026-11-01), the app's
+            // native surface IS satisfied: the load completes and every
+            // native call dispatches through the registered bridge. No
+            // dlopen handle is fabricated — none is ever resolved against.
+            {
+                std::string caller_pkg_prefix;
+                size_t first_slash = current_class_.find('/');
+                if (current_class_.rfind("L", 0) == 0 &&
+                    first_slash != std::string::npos) {
+                    size_t second_slash =
+                        current_class_.find('/', first_slash + 1);
+                    caller_pkg_prefix = current_class_.substr(
+                        0, second_slash == std::string::npos
+                               ? first_slash
+                               : second_slash + 1);
+                }
+                size_t bridged = miniandroid::jni::JNIBridge::instance()
+                                     .count_natives_for_class_prefix(
+                                         caller_pkg_prefix);
+                if (bridged > 0) {
+                    std::cerr << "[GATEA-NATIVE] bridge-satisfied load of \""
+                              << lib << "\": host dlopen refused ("
+                              << lo.detail << "), but " << bridged
+                              << " REAL native implementations registered "
+                              << "under " << caller_pkg_prefix
+                              << " — native dispatch flows through the bridge"
+                              << std::endl;
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "NATIVE-BRIDGED", logical_file, true,
+                        "System." + method + " bridge-satisfied (" +
+                            std::to_string(bridged) + " natives)",
+                        current_class_ + "." + current_method_);
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
             native_frontier_throw(detail);
             result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;

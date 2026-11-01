@@ -30,6 +30,8 @@
 #include <string>
 #include <filesystem>
 #include <iostream>
+#include "storage/data_root.h"
+#include "diagnostics/file_io_trace.h"
 #include "jni/jni_bridge.h"
 
 namespace miniandroid {
@@ -71,6 +73,21 @@ inline void register_all() {
             } else {
                 file = a2 + "/cache.db";  // legacy fallback
             }
+            // S143: the app hands us the ANDROID-LOGICAL path
+            // (/data/data/<pkg>/files/cache4.db — AOSP law: an application
+            // never sees a host path). The REAL sqlite3_open_v2 needs the
+            // PHYSICAL store path — route through the canonical sandbox
+            // resolver (the same authority the android.database.sqlite
+            // family uses). Live evidence 2026-11-01: without this the
+            // open answered SQLITE_CANTOPEN (rc=14) and every
+            // MessagesStorage query surfaced as SQLiteException — the
+            // user-visible "sqlite problem" («باز مشکل سکل لایت داده»).
+            {
+                Storage::PathResolution res = Storage::resolve_android_path(file);
+                if (res.allowed) {
+                    file = res.host_path.string();
+                }
+            }
             // ensure the containing directory exists (files dir may be new)
             std::error_code ec;
             std::filesystem::path parent = std::filesystem::path(file).parent_path();
@@ -88,6 +105,10 @@ inline void register_all() {
                 std::cerr << "[TG-SQLITE] opendb OK file=" << file << std::endl;
                 g_logged_open = true;
             }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "TG-SQLITE-OPEN", file, rc == SQLITE_OK,
+                "opendb rc=" + std::to_string(rc),
+                "org.telegram.SQLite.SQLiteDatabase");
             lr = reinterpret_cast<intptr_t>(db);
         }, NativeImplType::REAL_NATIVE_LIBRARY, "Telegram SQLiteDatabase.opendb -> real sqlite3");
 

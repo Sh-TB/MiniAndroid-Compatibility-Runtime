@@ -230,6 +230,21 @@ public:
 
     size_t registered_count() const { return methods_.size(); }
 
+    // S143: count registered natives whose declaring class starts with the
+    // given class-desc prefix (e.g. "Lorg/telegram/"). The GATE A
+    // loadLibrary path uses this to decide whether the loading app's
+    // native surface is already satisfied by the runtime's registered
+    // REAL implementations (e.g. org.telegram.SQLite natives over REAL
+    // sqlite3 — S108 ROOT-017) when a host dlopen is architecturally
+    // impossible (AArch64 .so on the x86_64 host).
+    size_t count_natives_for_class_prefix(const std::string& prefix) const {
+        size_t n = 0;
+        for (const auto& kv : methods_) {
+            if (kv.second.class_desc.rfind(prefix, 0) == 0) ++n;
+        }
+        return n;
+    }
+
 private:
     std::map<std::string, NativeMethodEntry> methods_;
     size_t unsupported_count_ = 0;

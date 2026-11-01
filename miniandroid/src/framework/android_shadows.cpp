@@ -5085,9 +5085,29 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // returns THE LAUNCH INTENT so putExtra/getStringExtra propagate
         // through the real pipeline (no synthetic empty intent).
         if (heap_) {
-            uint32_t intent_id = launch_intent_id_ != 0
-                                     ? launch_intent_id_
-                                     : heap_->get_or_create("Landroid/content/Intent;");
+            uint32_t intent_id;
+            if (launch_intent_id_ != 0) {
+                intent_id = launch_intent_id_;
+            } else {
+                // S143 AOSP ActivityThread.handleLaunchActivity law: the
+                // system-built launch Intent for a launcher activity ALWAYS
+                // carries android.intent.action.MAIN (launcher dispatch).
+                // The old synthetic empty Intent made getAction() answer
+                // null and LaunchActivity.d5's
+                //   getAction() -> String.equals("android.intent.action.MAIN")
+                // NPE'd on the null receiver at the APP BOUNDARY
+                // (forkgram 12.10.8 fresh-data-root first-run evidence:
+                // d5 pc=0x94 invoke getAction → null, pc=0xa4 equals NPE,
+                // launch chain killed at 2 frames; 2026-11-01).
+                intent_id = heap_->get_or_create("Landroid/content/Intent;");
+                if (auto* ish = registry_->find_as<IntentShadow>()) {
+                    if (auto pi = ish->get_or_create_intent(intent_id)) {
+                        if (pi->action.empty()) {
+                            pi->action = "android.intent.action.MAIN";
+                        }
+                    }
+                }
+            }
             std::cerr << "[EXP057-INTENT] getIntent → intent_id=" << intent_id
                       << (launch_intent_id_ != 0 ? " (launch intent)" : " (synthetic)")
                       << std::endl;
