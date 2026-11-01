@@ -1,0 +1,58 @@
+{
+ "//series": "s147 LIGHT TRAINS 67 + 65 + 64R — user directive «ادامه 30 به 70» (continue 30→70)",
+ "//date": "2026-11-02",
+ "//head_base": "d0899976 (S146) — remote==local at session start, zero drift (hard-reset sync per the git law; local e99c2fbd was behind)",
+ "//binary_start": "a892a2a097a239ea (clean rebuild from d0899976; rebuild-sha differs from the S146 pin c620f6e0e7ec54f8 — environment-only: the anchor wall 6/6 + game family 7/7 proved semantic identity BYTE-EXACT)",
+ "//binary_final": "190e9f1d3e0d21c9 (+ T67 diag-only probes; render-neutral: anchor wall 6/6 + game family 7/7 re-run BYTE-EXACT on this exact binary)",
+
+ "TRAIN-67_dooz_tap_death_retired_and_repinned": {
+  "verdict": "THE S146 TRAIN-67 ROOT IS RETIRED — the suspend-lambda STATE-MACHINE LABEL PERSISTS PERFECTLY across the engine resume chain. The death is ONE LEVEL DEEPER: after the UP event correctly reaches the tap machine at its post-waitForUp state, the machine evaluates a LIST-HELPER path (kotlin stdlib firstOrNull over a changes copy) and RE-ISSUES awaitFirstDown — the gesture predicate (changedToUp) is never evaluated and the app onTap lambda never runs. Zero consume() writes in the whole run (o/p stay 0), onClick zero app-package invokes.",
+  "instrumentation_added": "MINIANDROID_T67_LABEL_TRACE env-gated diag-only probes: [T67-IGET]/[T67-IPUT] on the machine label+spill fields (Lss1;.l, Lxs1;.r, Li6;.f/.g) with receiver obj-identity; [T67-ENTRY]/[T67-EXIT] on execute_method_internal for Lss1;/Lxs1;/Lbt1;/Lnr1;/Li6;/La00; with this/args/label/caller and return-value+status. Bounded (400/600 counters).",
+  "chain_proven_alive_link_by_link": [
+   "DOWN: Li6;.h -> Li6;.o creates the block machine Li6;#61333 (kind f=0, label g) -> Lbt1;.b(awaitFirstDown shim) -> Lbt1;.a -> Lnr1;.a(awaitPointerEvent) SUSPENDS (ret=Lwr;#1036 = the SUSPENDED sentinel) — real suspension",
+   "DOWN-Main offer: La00;.J dispatch -> predicate d(DOWN,0)=1 evaluated -> Lss1;.q(machine#61335, DOWN) <- Lne;.g (BaseContinuationImpl loop) -> Lbt1;.a re-dispatch (args reloaded from machine fields h/i/j exactly per the R8 prologue law) -> d(DOWN,0)=1 -> Lbt1;.a RET the change#61239 -> Lss1;.q RET the change — awaitFirstDown RETURNED THE DOWN",
+   "block resumed: Li6;.q(#61333, change#61239) <- Lne;.g — the DOWN was delivered to the block machine",
+   "label writes: [T67-IPUT] Li6;.g obj#61333=1 (pc=199, before await#1) -> read back 1 on the DOWN resume (pc=159) -> iput g=2 (pc=220, before the waitForUp-family await) -> **read back 2 on the UP resume** — THE LABEL MECHANISM IS CLEAN (S146's 'label does not persist' REFUTED with receiver-identity evidence)",
+   "waitForUp-family await: Lnr1;.a(scope#61326, pass#61252, cont=Li6;#61333) SUSPENDS — registered on the scope of node #14115",
+   "UP-Main/Initial offer: La00;.J ret=1 -> Li6;.q(#61333, UP#68106) <- Lne;.g — **THE UP REACHED THE PENDING AWAITER**",
+   "UP-resume (state g=2) executed: Leo;.P(throwOnFailure) -> List.size -> new ArrayList(changes copy) -> Collection.size -> List.get(0) -> copy.size -> **Ljk;.J(copy) (kotlin stdlib firstOrNull-family)** -> copy.isEmpty -> Leo;.P -> **Lbt1;.b (awaitFirstDown RE-ISSUED, new machine #71711/#68124)** — the machine looped back to the next gesture iteration",
+   "INVOKE-TARGET inside Ljk;.J during the UP window: ONLY getClass + isEmpty executed (2 invokes, then return) — the predicate-LAMBDA (changedToUp) is never invoked inside the helper, and NO dooz-app-package method runs in the whole tap window"
+  ],
+  "new_frontier": "TRAIN-68 (next wave): the UP-resume case-2 (state g=2) takes the changes-copy + firstOrNull(loop) branch and re-issues awaitFirstDown without evaluating changedToUp and without consume()/onClick(). Next link: WHY the post-waitForUp state runs the loop arm — either (a) the machine is the awaitEachGesture outer loop and the clickable's detectTapAndPress block (Lbt1;.f, machine class Lxs1;) was never launched (Lxs1;: 0 mentions in the whole run), or (b) the interpreter's list-helper path drops the Function1 predicate invocation. The T67 + INVOKE-TARGET instrumentation banked in this wave pins it in one run.",
+  "ground_truth_notes": "dooz v1.0.23 cell = Box.size.clip.background.clickable(enabled, onClick) (GitHub source tmp/dooz_1023). foundation 1.9.4 ClickableNode.createPointerInputNodeIfNeeded = SuspendingPointerInputModifierNode { detectTapAndPress(onPress={handlePressInteraction}, onTap={if(enabled) onClick()}) } (reference/compose_167/u194/Clickable.kt) — VERBATIM kept in-repo. Li6; = R8-merged suspend-lambda class (fields f=kind, g=label, h/i=spills; THREE lambda shapes share the class — q dispatches packed-switch(f) then the inner state machine)."
+ },
+
+ "TRAIN-65_microtimer_alarm_INSERT": {
+  "setup": "fresh store install dubrowgn.microtimer_8; taps: key-5 (540,1470)@12 + start (880,1800)@22, 40 frames",
+  "input_chain": "both taps CLICK'd real Buttons with the app's own Lk/d; listeners (target=139 digit-5, target=148 start)",
+  "state_change": "the RUNNING-TIMER UI appeared (red 00:00:00 display + pause button + trash button) — the S145 keypad-only face advanced to the active-timer face",
+  "real_db_proof": "INDEPENDENT python sqlite3 over the app's own db file store_micro/data/data/dubrowgn.microtimer/databases/app-data (WAL 78KB): alarm table = the app's verbatim schema (duration_dec6/remaining_dec6/id AUTOINCREMENT/expires_ms) with 1 REAL ROW (5, 1, 1, 11770) — the 5-second timer was INSERTED by the app's own code, its countdown UPDATED the row (remaining 5->1), expires_ms computed, and the app logged 'alarm 1 expired; expiredCount:1'",
+  "verdict": "S145's honest gap (alarm rows=0, INSERT needs the timer-START gesture) CLOSED — microtimer now: INPUT -> STATE -> REAL DB INSERT+UPDATE -> EXPIRY, end-to-end"
+ },
+
+ "TRAIN-64T_telegram_sqlite_recheck": {
+  "setup": "fresh store install upload/telegram_official.apk (run/s147_train67/store_tg); 3 runs x 40 frames, package org.telegram.messenger.web",
+  "results": "SQLiteException 0 / [ERROR] 0 in ALL 3 runs; [TG-SQLITE] 20 org.telegram.SQLite natives over real sqlite3 + opendb OK; face bf5c9ef920aa32d7 x3 = EXACTLY the S146 fresh-store pin",
+  "independent_db_check": "cache4.db integrity=ok, user_version=179, schema objects 235 (== the S146 record)",
+  "x41_verdict": "SQLiteException x41 NOT recurring — the S143 root fix HOLDS"
+ },
+
+ "TRAIN-64S_sqlnotes_persistence": {
+  "writer": "fresh store + taps 540,164@15 x2 (60 frames): 49 INSERT trace lines, rows written",
+  "reopen": "SECOND process, ZERO taps, 25 frames: rawQuery rows=2 -> UI 'Notes: 2' rendered (face 274d92b5be42dd20) — cross-process real-sqlite persistence re-proven on the final binary",
+  "sqlite_programs_family": "telegram (schema 179/235, face x3) + sqlnotes (rows=2 reopen) + unote + microtimer (alarm INSERT+UPDATE+expiry) + sqltasks"
+ },
+
+ "TRAIN-67R_regression": {
+  "anchor_wall": "6/6 BYTE-EXACT TWICE (rebuild a892a2a097a239ea AND final 190e9f1d3e0d21c9): opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 — the T67 probes are render-neutral",
+  "game_family": "7/7 EXACT-TO-PIN TWICE: g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snakedeluxe 5235683fc7b1f04b / minicraft e77a073f733255eb / gmem 4876e47d26910839 / snakeneon b669ce89365f8bbe / sqlnotes 748bb6cf756e7413 (user directives «هر برنامه قدیمی رو تست بکن ببین پیشرفتی داشته» + «بازی هم یادت رفته» honored)"
+ },
+
+ "artifacts": [
+  "run/s147_train67/ (tap_prefx..tap_jk T67 traces, ss1/bt1 disasm, micro_start, tg_run1-3, sn_write/sn_reopen) — large traces not committed",
+  "scripts/s147_anchor_wall.sh, s147_game_family_sweep.sh, s147_anchor_wall_final.sh, s147_game_final.sh",
+  "miniandroid/src/dex/dalvik_engine.cpp — T67 diag-only probes (env-gated, bounded); no behavior change"
+ ],
+ "queue_updates": "docs/PROGRAM_QUEUE.json: dooz slot1 next = TRAIN-68 (the UP-resume case-2 predicate link); microtimer slot4 = alarm INSERT CLOSED; telegram satellite = x41 holds + face pinned",
+ "next_wave": "TRAIN-68: pin whether the UP-resume machine is the awaitEachGesture outer loop (detectTapAndPress never launched — Lbt1;.f/Lxs1; absent) or the interpreter drops the Function1 predicate inside the list helper; then the generic fix, dooz cell click + every M3 clickable unlock"
+}

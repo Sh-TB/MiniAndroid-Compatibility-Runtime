@@ -3438,6 +3438,57 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().invoke_internal, f107_t0};
+
+    // ── TRAIN-67 (T67-ENTRY, DIAG-ONLY, env-gated MINIANDROID_T67_LABEL_TRACE):
+    // the coroutine-machine lifecycle probe. Lss1;.q = the machine trampoline
+    // (spill result + MIN_VALUE-mark the label + re-dispatch the suspend body);
+    // Lbt1;.a = awaitPointerEventOrCancellation (the awaitEachGesture await).
+    // Log every entry with THIS/args identity + the machine's live label so
+    // the resume chain (who resumed whom, with what result) becomes evidence.
+    {
+        static const bool t67e_on = diag_env("MINIANDROID_T67_LABEL_TRACE");
+        if (t67e_on && (class_name == "Lss1;" || class_name == "Lbt1;" ||
+                        class_name == "Lxs1;" || class_name == "Lnr1;" ||
+                        class_name == "Li6;" || class_name == "La00;")) {
+            static thread_local uint64_t t67e_n = 0;
+            if (t67e_n++ < 400) {
+                std::string t67_dump;
+                for (size_t t67i = 0;
+                     t67i < f282_args.size() && t67i < 5; ++t67i) {
+                    const DalvikValue& t67a = f282_args[t67i];
+                    t67_dump += " a" + std::to_string(t67i) + "=";
+                    if (t67a.type == DalvikType::OBJECT_REF)
+                        t67_dump += t67a.class_desc + "#" +
+                                    std::to_string(t67a.object_id);
+                    else
+                        t67_dump += dalvik_value_to_string(t67a);
+                }
+                uint32_t t67_this = (!f282_args.empty() &&
+                                     f282_args[0].type == DalvikType::OBJECT_REF)
+                                        ? f282_args[0].object_id : 0;
+                std::string t67_lbl = "-";
+                const char* t67_lf = (class_name == "Lss1;") ? "Lss1;.l"
+                                     : (class_name == "Lxs1;") ? "Lxs1;.r"
+                                     : nullptr;
+                if (t67_lf && t67_this != 0 && heap_.has_object(t67_this)) {
+                    auto t67_lv = heap_.get_object_field(t67_this, t67_lf);
+                    if (t67_lv.has_value())
+                        t67_lbl = dalvik_value_to_string(*t67_lv);
+                    else
+                        t67_lbl = "(unset)";
+                }
+                std::cerr << "[T67-ENTRY] " << class_name << "."
+                          << method_name << " this=obj#" << t67_this
+                          << " label=" << t67_lbl << t67_dump;
+                if (!call_stack_.empty()) {
+                    const StackFrame& t67cfr = call_stack_.top();
+                    std::cerr << " caller=" << t67cfr.class_name << "."
+                              << t67cfr.method_name;
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
     // ────────────────────────────────────────────────────────────────────
     // CONT-47 D7c node capture (unconditional, O(1) per insert): record
     // the insertAt receiver + inserted-node ids (bounded 512) so the
@@ -5342,6 +5393,39 @@ bool DalvikExecutionEngine::execute_method_internal(
         result.final_status = DalvikExecutionResult::FinalStatus::COMPLETED_PARTIAL;
     }
     
+    // ── TRAIN-67 (T67-EXIT): the matching exit side — what the machine or
+    // the await body RETURNED (SUSPENDED sentinel vs the real change object)
+    // and how the frame ended (success vs unwind).
+    {
+        static const bool t67x_on = diag_env("MINIANDROID_T67_LABEL_TRACE");
+        if (t67x_on && (class_name == "Lss1;" || class_name == "Lbt1;" ||
+                        class_name == "Lxs1;" || class_name == "Lnr1;" ||
+                        class_name == "Li6;" || class_name == "La00;")) {
+            static thread_local uint64_t t67x_n = 0;
+            if (t67x_n++ < 400) {
+                const DalvikValue& t67rv = last_invoke_return_;
+                std::string t67_r = "?";
+                if (t67rv.type == DalvikType::OBJECT_REF)
+                    t67_r = t67rv.class_desc + "#" +
+                            std::to_string(t67rv.object_id);
+                else
+                    t67_r = dalvik_value_to_string(t67rv);
+                std::cerr << "[T67-EXIT] " << class_name << "." << method_name
+                          << " ret=" << t67_r << " status="
+                          << (result.final_status ==
+                                      DalvikExecutionResult::FinalStatus::
+                                          COMPLETED_SUCCESS
+                                  ? "SUCCESS"
+                                  : (result.final_status ==
+                                             DalvikExecutionResult::
+                                                 FinalStatus::HALTED_UNIMPLEMENTED_OPCODE
+                                         ? "HALTED"
+                                         : "PARTIAL"))
+                          << std::endl;
+            }
+        }
+    }
+
     current_result_ = nullptr;
     return success;
 }
@@ -23065,6 +23149,32 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
             const bool s134_decl_is_dex = field_memo.s134_valid
                 && is_dex_defined_class(field_memo.s134_decl);
             auto field_val = heap_.get_object_field(obj_ref.object_id, s134_fkey);
+            // ── TRAIN-67 (T67, DIAG-ONLY, env-gated MINIANDROID_T67_LABEL_TRACE):
+            // suspend-lambda STATE-MACHINE label-persistence probe. Lss1; = the
+            // awaitEachGesture-level machine (R8): field l:I = the Kotlin
+            // state-machine label, k:Ljava/lang/Object; = the L$0 spill. The
+            // S146 death: on resume the machine re-awaits from label 0 — log
+            // every read of these fields with the RECEIVER IDENTITY so the
+            // iput-before-suspend vs iget-on-resume split becomes evidence.
+            {
+                static const bool t67_on = diag_env("MINIANDROID_T67_LABEL_TRACE");
+                if (t67_on && (field_res.class_descriptor == "Lss1;" ||
+                               field_res.class_descriptor == "Lxs1;" ||
+                               field_res.class_descriptor == "Li6;")) {
+                    static thread_local uint64_t t67_n = 0;
+                    if (t67_n++ < 600) {
+                        std::cerr << "[T67-IGET] Lss1;." << field_res.field_name
+                                  << " obj#" << obj_ref.object_id
+                                  << " hit=" << (field_val.has_value() ? 1 : 0)
+                                  << " val="
+                                  << (field_val.has_value()
+                                          ? dalvik_value_to_string(*field_val)
+                                          : std::string("(none)"))
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc << std::endl;
+                    }
+                }
+            }
             if (!field_val.has_value() && s134_decl_is_dex) {
                 // AOSP law: an instance field never written answers its
                 // DEFAULT value — never another class's same-named slot.
@@ -24196,6 +24306,24 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                     src_val);
                 heap_.set_object_field_raw(obj_ref.object_id,
                                            field_res.field_name, src_val);
+            }
+        }
+        // ── TRAIN-67 (T67-IPUT): the label WRITE side — the iput before the
+        // suspend must land on the SAME object the resume reads. Log writes
+        // to the machine's label (l) and spill (k) slots with obj identity.
+        {
+            static const bool t67w_on = diag_env("MINIANDROID_T67_LABEL_TRACE");
+            if (t67w_on && (field_res.class_descriptor == "Lss1;" ||
+                            field_res.class_descriptor == "Lxs1;" ||
+                            field_res.class_descriptor == "Li6;")) {
+                static thread_local uint64_t t67w_n = 0;
+                if (t67w_n++ < 600) {
+                    std::cerr << "[T67-IPUT] Lss1;." << field_res.field_name
+                              << " obj#" << obj_ref.object_id
+                              << " val=" << dalvik_value_to_string(src_val)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc << std::endl;
+                }
             }
         }
         // M3 FIELD-TRACE (AG diagnostic): env-gated field-store value trace.

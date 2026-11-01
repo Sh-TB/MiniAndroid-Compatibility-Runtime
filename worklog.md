@@ -12462,3 +12462,24 @@ Task: «ادامه ۳۰ ۷۰ با برنامه جدید و کار امدوتر �
 - TRAIN-63 (microtimer, slot 4): real alarm DB VERIFIED (Room alarm table duration_dec6/remaining_dec6/id/expires_ms + room_master_table identity_hash + sqlite_sequence, WAL 41KB, independent python sqlite3 integrity ok) + INPUT PROVEN end-to-end: key-5 tap → [F117-TAP] target=139 Button → CLICK dispatched to the real Lk/d; listener → display renders 00:00:05 (face 5b64d5160832ce41). Honest gap: alarm rows=0 (the INSERT needs the timer-START gesture; display-row tap answered target=0) — recorded as the slot-4 wagon.
 - ZERO-LOG: evidence/s145_trains/light_trains_61_63.json; docs/PROGRAM_QUEUE.json (dooz slot 1 + microtimer slot 4 + tower3d package fix); runs under run/ gitignored; no APKs committed.
 - NEXT STATION: TRAIN-64 = the compose coroutine continuation pump (SuspendingPointerInputFilter offer → resume → dispatcher drain) — unlocks the dooz cell click AND every compose-app click (opencalc M3 buttons share the law); TRAIN-65 = microtimer timer-start → alarm row INSERT through the app's own Room code; TRAIN-66 = the dooz visible board glyphs once click→state lands.
+
+---
+Task ID: S147-WAVE
+Agent: Super Z (main)
+Task: «ادامه 30 به 70» — TRAIN-67 dooz tap death (retire-or-fix), TRAIN-65 microtimer alarm INSERT, telegram x41 re-check, full old-program regression, evidence + push.
+
+Work Log:
+- Phase 0: sync per the git law — local e99c2fbd was BEHIND remote (hard reset to d0899976/S146; run/ dirs rebuilt per-session). Clean rebuild a892a2a097a239ea (rebuild-sha differs from the S146 pin — environment-only; the anchor wall 6/6 + game family 7/7 BYTE-EXACT proved semantic identity).
+- TRAIN-67 (dooz tap): built the T67 env-gated diag probes ([T67-IGET/IPUT] on machine label/spill fields with receiver identity; [T67-ENTRY/EXIT] on execute_method_internal for the coroutine family Lss1;/Lxs1;/Lbt1;/Lnr1;/Li6;/La00;) and disassembled the machine chain (Lss1;=await-machine l:I/k spill; Li6;=R8-merged suspend-lambda f=kind/g=label/h,i spills; Lxs1;=detectTapAndPress machine r:I).
+- S146's TRAIN-67 root RETIRED with receiver-identity evidence: labels persist PERFECTLY across the engine resume chain — Lss1;.l 0->1 read back 1 on the DOWN resume (0x80000001 marker written+stripped per the Kotlin protocol); Li6;.g 0->1->2 written before each suspend, read back EXACTLY on each resume (obj#61333 identity stable). The UP event DID reach the pending awaiter (Li6;.q(#61333, UP) <- Lne;.g).
+- Death REPINNED one level deeper: the UP-resume (state g=2) executes List-copy + Ljk;.J(kotlin firstOrNull-family: only getClass+isEmpty inside) + isEmpty and RE-ISSUES awaitFirstDown (Lbt1;.b, new machine) — the gesture predicate changedToUp is NEVER evaluated (zero d/h reads in the resume window), consume() zero writes run-wide, onClick zero app-package invokes, and detectTapAndPress (Lbt1;.f, machine Lxs1;) never ran (0 mentions). New frontier named TRAIN-68 with the deciding experiment banked (INVOKE-TARGET + T67 one-run pin).
+- TRAIN-65 (microtimer): taps key-5 + START (both CLICK'd real Lk/d; listeners) -> RUNNING-TIMER UI (red 00:00:00 + pause + trash) -> REAL alarm row in app-data verified with INDEPENDENT python sqlite3: schema verbatim (duration_dec6/remaining_dec6/id AUTOINCREMENT/expires_ms), row (5, 1, 1, 11770) — INSERT + countdown UPDATE (remaining 5->1) + expiry logged by the app's own code ('alarm 1 expired; expiredCount:1'). S145's rows=0 gap CLOSED.
+- TRAIN-64T telegram re-check x3 (fresh store, correct pkg org.telegram.messenger.web): SQLiteException 0, [ERROR] 0, face bf5c9ef920aa32d7 x3 == the S146 pin; cache4.db integrity=ok user_version=179 objects=235 (independent sqlite3). x41 HOLDS.
+- TRAIN-64S sqlnotes: 49 INSERT lines; COLD RE-OPEN (2nd process, zero taps) reads rows=2 -> renders 'Notes: 2' (face 274d92b5be42dd20). SQLite family: telegram + sqlnotes + unote + microtimer + sqltasks.
+- REGRESSION x2 binaries (a892a2a097a239ea AND final 190e9f1d3e0d21c9): anchor wall 6/6 BYTE-EXACT + game family 7/7 EXACT-TO-PIN both times — the T67 probes are render-neutral; «هر برنامه قدیمی رو تست بکن» + «بازی هم یادت رفته» honored.
+- Queue refreshed (dooz slot1 -> TRAIN-68; microtimer alarm CLOSED; telegram satellite updated).
+
+Stage Summary:
+- The wave's central claim CORRECTED by better instrumentation: the coroutine label/continuation machinery is CLEAN; the dooz tap death moved from 'label persistence' to the post-waitForUp predicate path (TRAIN-68) — an honest re-pin, not a false closure.
+- microtimer is the first program with a full INPUT->STATE->REAL-DB-INSERT->UPDATE->EXPIRY lifecycle; telegram's SQLite fix holds x3 with a reproducible face.
+- Next wave owns TRAIN-68 (the UP-resume case-2 link) + the next new-program wagon.
