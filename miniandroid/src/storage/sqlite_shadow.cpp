@@ -46,7 +46,7 @@ std::vector<std::string> DatabaseShadow::implemented_methods() const {
     return {
         "SQLiteOpenHelper.<init>", "getWritableDatabase", "getReadableDatabase",
         "getDatabaseName", "close", "setWriteAheadLoggingEnabled",
-        "execSQL", "beginTransaction", "beginTransactionNonExclusive",
+        "execSQL", "delete", "beginTransaction", "beginTransactionNonExclusive",
         "setTransactionSuccessful", "endTransaction", "inTransaction",
         "isOpen", "getPath", "getVersion", "compileStatement",
         "rawQueryWithFactory", "rawQuery", "setMaxSqlCacheSize",
@@ -507,6 +507,58 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
             ctx.args[1].kind == framework::CallContext::Arg::Kind::OBJECT)
             bind_arr = ctx.args[1].object_id;
         return raw_query_common(raw, ctx.args[0].string_val, bind_arr);
+    }
+    // ── S142 TRAIN-53 (SQLite CRUD law): SQLiteDatabase.delete(String table,
+    // String whereClause, String[] whereArgs) — REAL sqlite3 DELETE with
+    // 1-based whereArgs binds (same bind idiom as raw_query_common) and the
+    // AOSP return contract: the number of rows affected (sqlite3_changes).
+    // Before this arm the call silently degraded to a void stub — rows
+    // stayed on disk while the app believed the delete landed (sqlnotes
+    // row-tap DELETE evidence: lastSql "DELETE id=1" with all 3 rows still
+    // present in the real notes.db).
+    if (m == "delete" && ctx.args.size() >= 1 &&
+        ctx.args[0].kind == framework::CallContext::Arg::Kind::STRING) {
+        if (!raw) return framework::CallResult::not_handled();
+        std::string sql = "DELETE FROM " + ctx.args[0].string_val;
+        if (ctx.args.size() >= 2 &&
+            ctx.args[1].kind == framework::CallContext::Arg::Kind::STRING &&
+            !ctx.args[1].string_val.empty())
+            sql += " WHERE " + ctx.args[1].string_val;
+        sqlite3_stmt* ps = nullptr;
+        int rc = sqlite3_prepare_v2(raw, sql.c_str(), -1, &ps, nullptr);
+        if (rc != SQLITE_OK) {
+            std::cerr << "[SQLITE-SHADOW] delete rc=" << rc << " err="
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << " (caller " << ctx.receiver_class << ")" << std::endl;
+            return framework::CallResult::handled_int(0);
+        }
+        if (ctx.args.size() >= 3 &&
+            ctx.args[2].kind == framework::CallContext::Arg::Kind::OBJECT) {
+            uint32_t arr = ctx.args[2].object_id;
+            int32_t n = 0;
+            heap_->get_object_array_length(arr, n);
+            for (int64_t i = 0; i < n; i++) {
+                std::string sv;
+                if (heap_->get_object_array_string_element(arr, (size_t)i, sv))
+                    sqlite3_bind_text(ps, (int)(i + 1), sv.c_str(), -1,
+                                      SQLITE_TRANSIENT);
+                else
+                    sqlite3_bind_null(ps, (int)(i + 1));
+            }
+        }
+        rc = sqlite3_step(ps);
+        if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+            std::cerr << "[SQLITE-SHADOW] delete step rc=" << rc << " err="
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << std::endl;
+        }
+        sqlite3_finalize(ps);
+        int changed = sqlite3_changes(raw);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SQLITE-DELETE", st ? st->path : std::string("<closed>"), true,
+            sql.substr(0, std::min<size_t>(80, sql.size())),
+            ctx.receiver_class);
+        return framework::CallResult::handled_int(changed);
     }
     if (m == "close") {
         close_db(db_oid);

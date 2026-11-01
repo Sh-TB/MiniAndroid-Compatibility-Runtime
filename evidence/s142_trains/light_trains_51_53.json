@@ -1,0 +1,47 @@
+{
+  "//series": "s142 LIGHT TRAINS 51-53+ — user directives «ادامه ۳۰ به ۷۰» + sqlite directive «ما قبلا sqlit رو کامل اضافه کرده بودیم ... از اماده استفاده بکن ... 70 درصد دوتا برنامه مربوط به sqlit بزار ببینم واقعا کار میکنه» (use the READY real sqlite, never rewrite; put TWO sqlite programs in the 70% and prove they really work)",
+  "//date": "2026-11-01",
+  "//head_base": "76280911 (S141; SYNC LAW: local main had drifted to the stale e99c2fbd lineage — reset --hard origin/main per the standing GitHub-is-newer directive)",
+  "//binary": "0e892d67fb6b3e04 (cold rebuild on the S141 tree; the S141 evidence binary 0cf810383af94146 was sandbox-specific — cross-sandbox byte-identity is not a law, honest note)",
+  "//engine_change": "ONE arm: DatabaseShadow (miniandroid/src/storage/sqlite_shadow.cpp) gained SQLiteDatabase.delete(String table, String whereClause, String[] whereArgs) — REAL sqlite3 DELETE with 1-based whereArgs binds (same idiom as raw_query_common) returning sqlite3_changes() per the AOSP rows-affected contract; registered in implemented_methods; SQLITE-DELETE FileIoTrace provenance row. Before this arm the call silently degraded to a void stub (rows stayed on disk). No other engine file touched.",
+  "TRAIN-51_dooz_composed_chain_ground_truth": {
+    "probes": "PMC method counters on the S141 binary (run/s142_train51/): Lok0;|f, Luk0;|e, Lx9;|f, Lqm;|f, Lkz0;|a, Ljr1;|<init>, Lel0;|<init>, Lt4;|dispatchTouchEvent, M71 spec trace, R347 dex-measure trace, CMT compose-measure trace",
+    "chain_alive": [
+      "Lel0;.<init> (LayoutNode) = 49 enters",
+      "Lkz0;.a (NodeChain attach, instanceof Lbu0;=ModifierNodeElement) = 47-98 enters",
+      "Lok0;.<init> = 2 (the composed->node bridge element, extends Lbu0; per dex class_defs)",
+      "Lok0;.f (create) = 1 -> new Luk0; (wrapper node)",
+      "Luk0;.e = 1..3 -> invoke-interface Lk90;.f at pc=7",
+      "Lx9;.f = 1 (THE COMPOSED FACTORY BODY EXECUTES; Lqm;.f = 1 on the pre-reset binary)",
+      "Ljr1;.<init> (the REAL pointerInput element) = 3..5 born",
+      "Lj6;.<init> = 1 (the pointerInput handler lambda TRAIN-7 identified) constructed"
+    ],
+    "instrument_artifacts_retired": [
+      "TRAIN-41 'Lk90;.f = 0 enters' watched the ABSTRACT interface method (code=0, can never ENTER) — the impls are Lx9;/Lqm;/.f which DO execute",
+      "TRAIN-7/10 'Ljr1; pointerInput element constructed statically but NEVER dynamically' — RETIRED: born 3-5x on the current binary",
+      "TRAIN-31/41 'materialize fast-path gate = the root' — REFINED: the 1.6.7 node-bridge law (ComposedModifier.kt + AndroidComposeView.onMeasure verbatim from upstream/cont11_train7 sources jars) routes keyed composed elements through Lok0;->create()->Luk0;->e()->factory, and that path WORKS"
+    ],
+    "the_new_frontier_pinned": "the tap NEVER reaches Lt4;.dispatchTouchEvent (PMC ENTER = 0 across tap runs) because the SHADOW frame of Lt4; (AndroidComposeView, obj#1547) is 1x1 while [R347-MEASURE] view=1547 dex_onmeasure=YES wspec=0x40000438 hspec=0x40000780 -> 1080x1920 (the DEX measure law answers FULL SIZE every pass; M71 walk feeds AT_MOST(1080)xAT_MOST(1920) specs); so measure is correct and the recorded frame is clobbered/stale on the layout/write-back side (dex onLayout chain / View.layout shadow args / relayout pairing) -> TouchDispatcher hit-test (view-bounds law) sees a 1x1 target -> the FAB tap at (765,1830) misses the compose surface -> no pointer event reaches the born Ljr1; handler",
+    "next_station": "TRAIN-54 (engine-touching): the Lt4; frame law — trace View.layout(l,t,r,b) shadow args arriving for obj#1547 and the relayout pairing (dispatch_view_relayout dex_layout_required gate), then make the layout write-back honor the 1080x1920 dex measure; the composed chain below it is ALREADY alive (factory + Ljr1; + Lj6;)"
+  },
+  "TRAIN-52_unote_sqlite_proof": {
+    "app": "app.varlorg.unote v30 (queue slot 5, notes app)",
+    "run": "run/s142/unote_run2 — Status SUCCESS, 26 frames",
+    "real_db": "run/s142/store/data/data/app.varlorg.unote/databases/notes.db — 12288 bytes",
+    "verification": "opened with an INDEPENDENT sqlite3 implementation (python sqlite3): tables=[table_notes, sqlite_sequence]; schema verbatim 'CREATE TABLE table_notes (ID INTEGER PRIMARY KEY AUTOINCREMENT, Note TEXT NOT NULL, Titre TEXT NOT NULL, Date_creation TEXT NOT NULL, Date_modification TEXT NOT NULL, password VARCHAR(41))'; sqlite_sequence present = REAL AUTOINCREMENT mechanics; PRAGMA user_version=2 (the app's DB_VERSION persisted per the shadow law); PRAGMA integrity_check=ok",
+    "verdict": "REAL SQLITE FILE-BACKED DB PROVEN for a second app family (plain SQLiteOpenHelper, non-Room)"
+  },
+  "TRAIN-53_sqlnotes_new_canonical_app": {
+    "what": "com.miniandroid.sqlnotes — NEW canonical SQLite CRUD app (games/sqlnotes/, aapt2/ECJ/D8 pipeline scripts/s142_build_sqlnotes.sh; apk sha16 3f0985489072a8b8; no res/, all-Java UI, anonymous inner classes, SQLiteStatement + rawQuery + delete)",
+    "install": "run/s142/store (pkginspect store layout)",
+    "interaction_run": "run/s142/sqlnotes_run3 — 80 frames, 4 REAL taps: ADD@f15 ADD@f30 ADD@f45 row-DELETE@f60 (540,164)/(540,416) on live full-width button bounds",
+    "real_db_after": "rows = [(2,'Note #2'), (3,'Note #3')], sqlite_sequence=[('notes',3)] — INSERT x3 with real AUTOINCREMENT + DELETE id=1 REAL; integrity ok",
+    "visual": "final frame: 'Notes: 2' + lastSql 'DELETE id=1' + rows [2] Note #2 / [3] Note #3 rendered — UI and REAL DB in sync",
+    "engine_gap_fixed": "the row-tap DELETE exposed the missing SQLiteDatabase.delete shadow arm (see engine_change) — pre-fix run (sqlnotes_run) proved the gap: lastSql 'DELETE id=1' with all 3 rows still on disk",
+    "layout_note": "LinearLayout code-built weight params (0px+weight) do not size in the engine — app uses full-width stacked buttons (documented engine frontier, zero app knowledge lost)"
+  },
+  "regression": {
+    "anchor_wall": "6/6 x3 BYTE-EXACT on the delete-arm binary (scripts/cont11_w8_anchors.sh): opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 — ZERO DRIFT, engine-law UNCHANGED for anchors"
+  },
+  "//zero_log": "shas + frame numbers + row dumps only; runs under run/ gitignored; probe scripts banked as scripts/s142_* (the 6 TRAIN-51 dex-probe scripts were lost to a sandbox recycle pre-bank — the consolidated evidence lives here; re-bank on demand)"
+}

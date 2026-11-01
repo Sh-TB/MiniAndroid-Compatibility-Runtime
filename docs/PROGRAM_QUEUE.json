@@ -1,15 +1,15 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-01 (trains 41-50 refresh, S141 wave)",
- "//head": "08f3a158",
+ "//date": "2026-11-01 (trains 51-53 refresh, S142 wave — sqlite wave per user directive: use the READY real sqlite, 2 sqlite apps proven)",
+ "//head": "76280911",
  "queue": [
   {
    "slot": 1,
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "anchor 851cc176 BYTE-EXACT (S141 wall 5/5); TRAIN-41 root-pin: materializer fold Lq;.h case4 factory arm gated by instanceof Lmo; (ComposedModifier, final, field a:Lk90;) — keyed family extends Lbu0; (71 subs incl. Ljr1; pointerInput) => gate DEX-STRUCTURALLY-FALSE; fast-path all{} = TRAIN-31 109x FALSE/0x TRUE; Lq;.h 2 enters vs Lnb0;.O 86 fetches; Lk90;.f/Luq;/Lpm;.c all 0",
-   "next_wagon": "TRAIN-42-fix (engine-touching): construction-side probe (which class is born at composed() — Lpi0;.q constructs Lok0;) + the generic fix: instanceof-hierarchy extension via shared interface Lvt0; law OR F-NEW-259 slot law on the fold-lambda dispatch"
+   "now": "anchor 851cc176 BYTE-EXACT x3 (S142 wall 6/6); TRAIN-51 S142 ground truth: the composed->node bridge chain ALIVE on the S141 binary — Lok0;.f(create)=1 -> Luk0;.e -> Lx9;.f THE FACTORY EXECUTES -> Ljr1; pointerInput elements born 3-5x -> Lj6; handler constructed; TRAIN-41 'Lk90;.f=0' = instrument artifact (abstract iface has no body); NEW FRONTIER pinned: Lt4;(AndroidComposeView) shadow frame = 1x1 while R347 dex measure answers 1080x1920 every pass -> tap hit-test misses the compose surface -> dispatchTouchEvent 0 enters",
+   "next_wagon": "TRAIN-54 (engine-touching): the Lt4; frame law — trace View.layout shadow args for obj#1547 + the relayout pairing (dex_layout_required gate) so the recorded frame honors the 1080x1920 dex measure; below it the chain is alive"
   },
   {
    "slot": 2,
@@ -32,16 +32,16 @@
    "program": "microtimer",
    "package": "dubrowgn.microtimer",
    "kind": "3rd-party app",
-   "now": "anchor bbd350b6 byte-exact x3; canonical VERIFIED L2",
-   "next_wagon": "post-fix timer start/stop click probe"
+   "now": "anchor bbd350b6 BYTE-EXACT x3 (S142 wall); canonical VERIFIED L2; Room/alarm table family is the engine's DatabaseShadow provenance",
+   "next_wagon": "sqlite probe: verify the real alarm .db in the sandbox (same law as TRAIN-52 unote)"
   },
   {
    "slot": 5,
    "program": "unote",
    "package": "app.varlorg.unote",
    "kind": "3rd-party app",
-   "now": "anchor 7481e9b4 byte-exact x3; canonical VERIFIED L2",
-   "next_wagon": "post-fix note-add click probe (text input path)"
+   "now": "anchor 7481e9b4 BYTE-EXACT x3 (S142 wall); TRAIN-52 SQLITE PROVEN: real notes.db (12288 B) in the sandbox, schema table_notes verbatim + sqlite_sequence, user_version=2, integrity ok, verified by an INDEPENDENT sqlite3 implementation",
+   "next_wagon": "note-add text-input probe when the --type-text knob lands (honest gap); DB layer already proven"
   },
   {
    "slot": 6,
@@ -82,6 +82,14 @@
    "kind": "runtime-built game",
    "now": "candidate_INTERACTION_VERIFIED L3 — PLAYED",
    "next_wagon": "L6+ promotion; world-persistence probe"
+  },
+  {
+   "slot": 11,
+   "program": "sqlnotes",
+   "package": "com.miniandroid.sqlnotes",
+   "kind": "canonical-built SQLite CRUD app (S142 TRAIN-53)",
+   "now": "apk sha16 3f0985489072a8b8; REAL CRUD proven: INSERT x3 (AUTOINCREMENT seq=3) + row-tap DELETE id=1 (via the NEW DatabaseShadow.delete arm) -> rows [2,3] on disk; final frame 'Notes: 2' + 'DELETE id=1' + rows [2][3] rendered — UI and real DB in sync; anchors 6/6 x3 zero drift",
+   "next_wagon": "clear-all tap proof + re-open persistence check (second run reads the rows written by the first)"
   }
  ],
  "satellites": [
