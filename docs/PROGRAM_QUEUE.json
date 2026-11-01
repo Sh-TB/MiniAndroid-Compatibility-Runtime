@@ -1,15 +1,15 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-02 (S147 wave — TRAIN-67: the S146 label-persistence root RETIRED with receiver-identity evidence (labels 0->1->2 persist perfectly); the real death re-pinned one level deeper: the UP-resume case-2 runs the changes-copy firstOrNull loop and re-issues awaitFirstDown without evaluating changedToUp or onClick; TRAIN-65: microtimer alarm REAL INSERT+UPDATE+expiry (row (5,1,1,11770) verified independent sqlite3); telegram x41 holds x3 face bf5c9ef920aa32d7; sqlnotes rows=2 reopen; anchors 6/6 + games 7/7 BYTE-EXACT x2 binaries)",
- "//head": "d0899976 (S146) + s147 work (pre-commit)",
+ "//date": "2026-11-02 (S148 wave — TRAIN-68 DECIDED: (a) confirmed, re-pinned deeper = the cells' pointerInput nodes carry COMPILED NO-OP handlers (Lpv; singletons, invoke->return Unit) while the board's own node has the only real handler (Lj6;); the launch machinery PROVEN CLEAN (all three first-event launches read CoroutineStart.UNDISPATCHED and ran bodies inline); the clickable's ClickableNode absent from the hit path at all 3 passes; TRAIN-69 = the composed-factory element-insert arms (Ldr1;.c vs Lkr1;.a). microtimer 2-timer wagon DONE (2 real alarm rows, both expired). telegram x41 holds on the T68 binary (fresh face == S144 fresh pin). anchors 6/6 + games 7/7 BYTE-EXACT)",
+ "//head": "ef9e6fa3 (S147) + s148 work (pre-commit)",
  "queue": [
   {
    "slot": 1,
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "S147 TRAIN-67: the tap chain proven ALIVE THROUGH THE LABEL MECHANISM — Lss1;.q reads label=1 on the DOWN resume (0x80000001 marker written/stripped correctly), Li6;.g writes 1->2 with receiver-identity #61333 stable across resumes; the UP event DID reach the pending awaiter (Li6;.q(#61333, UP#68106) <- Lne;.g). DEATH REPINNED one level deeper: the UP-resume (state g=2) runs List-copy + Ljk;.J(firstOrNull) + isEmpty and RE-ISSUES awaitFirstDown (Lbt1;.b) — the gesture predicate changedToUp is never evaluated, consume() zero writes, onClick zero app invokes. detectTapAndPress (Lbt1;.f, machine Lxs1;) never ran (0 mentions). T67 + INVOKE-TARGET probes banked.",
-   "next_wagon": "TRAIN-68: decide between (a) the machine is the awaitEachGesture outer loop and the clickable detectTapAndPress block never launched (launch/withContext machinery gap) vs (b) the interpreter list-helper path drops the Function1 predicate invocation; fix = generic, unlocks the dooz cell click + every M3 clickable"
+   "now": "S148 TRAIN-68 DECIDED: the tap's hit path = 3 pointer-input nodes x3 passes (Lhz0;.e/.d); launches CLEAN (CoroutineStart.UNDISPATCHED read, bodies ran inline: Lru;.h->.o->.q x3); DEATH = nodes #6571/#9390/#12406/#14049 born with Lpv;#6076/6077 = R8-singleton NO-OP handlers (invoke = 5 insns: sget Le12;.a; return = Unit) — only the board's own node #14112 (Lk6;.<init>) has the real handler Lj6;#14111; the clickable's ClickableNode NEVER received a J dispatch; Ljk;.J = firstOrNull no-predicate (belongs to the board's drag chain — (b) RETIRED)",
+   "next_wagon": "TRAIN-69: the composed-factory element-insert arms — Ldr1;.c (clickable-insert candidate, ran recv#6021 from Lbr1;.h) vs Lkr1;.a (pointerInput insert with the Lpv; no-op, ran x2) + Ltl;.J — pin why the ClickableNode never materializes into the chain while no-op pointerInputs do; generic fix unlocks the dooz cell click + every M3 clickable"
   },
   {
    "slot": 2,
@@ -32,8 +32,8 @@
    "program": "microtimer",
    "package": "dubrowgn.microtimer",
    "kind": "3rd-party app",
-   "now": "S147 TRAIN-65: alarm lifecycle COMPLETE — taps key-5+START -> RUNNING-TIMER UI (red 00:00:00 + pause) -> REAL alarm row INSERT (5,1,1,11770) in app-data (WAL 78KB, app-verbatim schema) -> countdown UPDATE remaining 5->1 -> app logged alarm-1 expired. S145 rows=0 gap CLOSED",
-   "next_wagon": "alarm LIST UI row render (the AlarmList fragment) + a second timer"
+   "now": "S148 SECOND-TIMER wagon DONE: taps key-5+START then key-3+START (S147 coord law) -> TWO real Room alarm rows (5,5,1,11770)+(5,5,2,20410), both expired by the app ('expiredCount:2'), integrity=ok (independent sqlite3); face ade730c51fb12088 (2-timer state)",
+   "next_wagon": "alarm LIST UI row render (the AlarmList fragment shows both expired rows) + 60s/1min timer variants"
   },
   {
    "slot": 5,
@@ -88,8 +88,8 @@
    "program": "sqlnotes",
    "package": "com.miniandroid.sqlnotes",
    "kind": "canonical-built SQLite CRUD app (S142 TRAIN-53)",
-   "now": "apk sha16 3f0985489072a8b8; REAL CRUD proven: INSERT x3 (AUTOINCREMENT seq=3) + row-tap DELETE id=1 (via the NEW DatabaseShadow.delete arm) -> rows [2,3] on disk; final frame 'Notes: 2' + 'DELETE id=1' + rows [2][3] rendered — UI and real DB in sync; anchors 6/6 x3 zero drift",
-   "next_wagon": "clear-all tap proof + re-open persistence check (second run reads the rows written by the first)"
+   "now": "S148 cold zero-tap re-open on the T68 binary: face 748bb6cf756e7413 == the S142 pin EXACTLY (zero drift); DB created (notes + sqlite_sequence)",
+   "next_wagon": "row-tap DELETE re-proof + clear-all on the T68 binary"
   },
   {
    "slot": 12,
@@ -108,7 +108,7 @@
   },
   {
    "program": "telegram (Forkgram 12.10.8)",
-   "now": "S144 TRAIN-60 RE-BASELINE on the S144 binary 7aab24b0: run1 fresh 60 frames Errors 0 Warnings 0 SQLiteException 0, REAL cache4.db 178/234 integrity-ok (independent verify); run2 SAME data-root re-open 0/0/0 exit=0, DB persisted; face c2e071714e97a3af in BOTH runs == the S143 face (reproducible across engine arms). The S143 sqlite root fix HOLDS",
+   "now": "S148 fresh-store re-check on the T68 binary (pkg org.forkgram.classic): install SUCCESS vc709208, opendb OK (real files/cache4.db), SQLiteException 0, integrity=ok, user_version 178 objects 234, fresh-store face c2e071714e97a3af == the S144 fresh-store pin — cross-binary reproducibility S144->S148; x41 HOLDS",
    "next_wagon": "TRAIN-62: TL_langpack_getLanguages canned + dialog dismissal journey (intro face re-baseline); optional --frames 260"
   },
   {

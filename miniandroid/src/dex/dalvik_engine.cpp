@@ -3489,6 +3489,90 @@ bool DalvikExecutionEngine::execute_method_internal(
             }
         }
     }
+    // ── TRAIN-68 (T68-ENTRY, DIAG-ONLY, env-gated MINIANDROID_T68_NODE_TRACE):
+    // the pointer-input NODE census probe. Lor1; = the SuspendingPointerInput
+    // modifier node (M0/J = the dispatch arms, L0 = the lazy block LAUNCH,
+    // <init> = node birth); Lj6; = the handler dispatcher; Lnc0;/Lk6; = dooz's
+    // own scroll-board node family. Logs receiver identity per entry so the
+    // hit-path census answers: HOW MANY nodes got the event, HOW MANY blocks
+    // launched, and whether the clickable's detectTapAndPress node is in the
+    // path at all (TRAIN-68 hypothesis (a) vs (b) decider).
+    {
+        static const bool t68_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+        // census only: node births + dispatch/launch arms + the handler
+        // dispatcher — the draw/measure heat (Lnc0;.Q, Lk6;.i) is excluded.
+        bool t68_want =
+            (class_name == "Lor1;") ||
+            (class_name == "Lj6;" && method_name == "invoke") ||
+            (class_name == "Lxz1;" && method_name == "I") ||
+            (class_name == "Lru;") ||
+            // TRAIN-68 fold-arm census: the composed-factory inserts
+            // (Ldr1;.c = the clickable-insert candidate, Ldr1;.d, Lkr1;.a =
+            // the pointerInput insert, Ltl;.J) — which arms ran, which
+            // silently dropped the clickable element.
+            (class_name == "Ldr1;" &&
+             (method_name == "c" || method_name == "d")) ||
+            (class_name == "Lkr1;" && method_name == "a") ||
+            (class_name == "Ltl;" && method_name == "J") ||
+            ((class_name == "Lnc0;" || class_name == "Lk6;") &&
+             method_name == "<init>") ||
+            // TRAIN-68 (T68-J): EVERY class's J(event,pass,bounds) dispatch
+            // entry during touch — the full hit-path node census with
+            // receiver classes (the clickable node should appear here).
+            (method_name == "J" && touch_dispatch_active_ &&
+             !f282_args.empty() && f282_args.size() >= 2 &&
+             f282_args[0].type == DalvikType::OBJECT_REF &&
+             f282_args[1].type == DalvikType::OBJECT_REF);
+        if (t68_on && t68_want) {
+            // per-class budgets (the old single 500-cap starved the tap
+            // window: composition heat consumed it before the DOWN).
+            static thread_local uint64_t t68n_1 = 0, t68n_2 = 0, t68n_3 = 0;
+            uint64_t t68_cap = (class_name == "Lor1;") ? 200
+                             : (class_name == "Lxz1;") ? 60
+                             : (class_name == "Lru;")  ? 120
+                             : 200;
+            static thread_local uint64_t t68n_4 = 0, t68n_5 = 0;
+            const bool t68_gen_j = !(class_name == "Lor1;") &&
+                                   !(class_name == "Lxz1;") &&
+                                   !(class_name == "Lru;") &&
+                                   !(class_name == "Ldr1;") &&
+                                   !(class_name == "Lkr1;") &&
+                                   !(class_name == "Ltl;") &&
+                                   method_name == "J";
+            uint64_t& t68n = (class_name == "Lor1;") ? t68n_1
+                           : (class_name == "Lxz1;") ? t68n_2
+                           : (class_name == "Lru;")  ? t68n_3
+                           : t68_gen_j               ? t68n_4
+                           : t68n_5;
+            if (t68n++ < t68_cap) {
+                uint32_t t68_this = (!f282_args.empty() &&
+                                     f282_args[0].type == DalvikType::OBJECT_REF)
+                                        ? f282_args[0].object_id : 0;
+                std::cerr << "[T68-ENTRY] " << class_name << "."
+                          << method_name << " this=obj#" << t68_this;
+                // node births + launches: dump the ctor/handler args so each
+                // node's handler class becomes evidence.
+                if (method_name == "<init>" || (class_name == "Lxz1;" && method_name == "I")) {
+                    for (size_t t68i = 1;
+                         t68i < f282_args.size() && t68i < 4; ++t68i) {
+                        const DalvikValue& t68a = f282_args[t68i];
+                        std::cerr << " a" << t68i << "=";
+                        if (t68a.type == DalvikType::OBJECT_REF)
+                            std::cerr << t68a.class_desc << "#"
+                                      << t68a.object_id;
+                        else
+                            std::cerr << dalvik_value_to_string(t68a);
+                    }
+                }
+                if (!call_stack_.empty()) {
+                    const StackFrame& t68cfr = call_stack_.top();
+                    std::cerr << " caller=" << t68cfr.class_name << "."
+                              << t68cfr.method_name;
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
     // ────────────────────────────────────────────────────────────────────
     // CONT-47 D7c node capture (unconditional, O(1) per insert): record
     // the insertAt receiver + inserted-node ids (bounded 512) so the
@@ -23175,6 +23259,29 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                     }
                 }
             }
+            // ── TRAIN-68 (T68-JOBGET): the pointerInputJob null-check reads.
+            // Lor1;.v:Lkp1; = the lazy coroutine job — every node reads it on
+            // the first event (if-null-launch). Log the READ + the value with
+            // receiver identity so the skipped-launch nodes (#6571/#14049)
+            // become evidence: was v non-null, or did the read fail?
+            {
+                static const bool t68g_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+                if (t68g_on && field_res.class_descriptor == "Lor1;" &&
+                    field_res.field_name == "v") {
+                    static thread_local uint64_t t68g_n = 0;
+                    if (t68g_n++ < 120)
+                        std::cerr << "[T68-JOBGET] Lor1;.v obj#"
+                                  << obj_ref.object_id
+                                  << " hit=" << (field_val.has_value() ? 1 : 0)
+                                  << " val="
+                                  << (field_val.has_value()
+                                          ? dalvik_value_to_string(*field_val)
+                                          : std::string("(none)"))
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc
+                                  << std::endl;
+                }
+            }
             if (!field_val.has_value() && s134_decl_is_dex) {
                 // AOSP law: an instance field never written answers its
                 // DEFAULT value — never another class's same-named slot.
@@ -23641,6 +23748,25 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << std::endl;
     }
 
+    // ── TRAIN-68 (T68-JOBGET-OBJ): the pointerInputJob null-check read is an
+    // IGET-OBJECT (Lor1;.v:Lkp1;) — this arm, not the int iget arm. Log the
+    // read with receiver identity: hit + value for every launch-gate check.
+    {
+        static const bool t68o_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+        if (t68o_on && field_res.class_descriptor == "Lor1;" &&
+            field_res.field_name == "v") {
+            static thread_local uint64_t t68o_n = 0;
+            if (t68o_n++ < 120)
+                std::cerr << "[T68-JOBGET-OBJ] Lor1;.v obj#"
+                          << (obj_ref.type == DalvikType::OBJECT_REF
+                                  ? obj_ref.object_id : 0)
+                          << " in_heap="
+                          << (heap_.has_object(obj_ref.object_id) ? "Y" : "N")
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+        }
+    }
+
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
     result_value.object_id = 0;
@@ -23664,6 +23790,30 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
             const std::string& s134_fkey = field_memo.s134_fkey;
             auto field_val = heap_.get_object_field(obj_ref.object_id,
                 s134_fkey);
+            // ── TRAIN-68 (T68-JOBGET-VAL): the pointerInputJob read VALUE.
+            // The DOWN-window evidence: nodes #6571/#14049 jumped pc=8 -> 29
+            // with the launch block skipped — this prints the exact value the
+            // null-check saw (stale slot vs default-null vs wrong key).
+            {
+                static const bool t68v_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+                if (t68v_on && field_res.class_descriptor == "Lor1;" &&
+                    field_res.field_name == "v") {
+                    static thread_local uint64_t t68v_n = 0;
+                    if (t68v_n++ < 120) {
+                        std::cerr << "[T68-JOBGET-VAL] Lor1;.v obj#"
+                                  << obj_ref.object_id << " key=\"" << s134_fkey
+                                  << "\" hit=" << (field_val.has_value() ? 1 : 0)
+                                  << " val=";
+                        if (field_val.has_value())
+                            std::cerr << dalvik_value_to_string(*field_val);
+                        else
+                            std::cerr << "(none=default-null)";
+                        std::cerr << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc
+                                  << std::endl;
+                    }
+                }
+            }
             // S134 F-NEW-160 probe: qualified-read hit/miss visibility.
             {
                 static thread_local const bool s134_qprobe =
@@ -24308,6 +24458,22 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                                            field_res.field_name, src_val);
             }
         }
+        // ── TRAIN-68 (T68-JOBPUT): the pointerInputJob WRITE side — the lazy
+        // launch stores the Job; log every write with receiver identity.
+        {
+            static const bool t68p_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+            if (t68p_on && field_res.class_descriptor == "Lor1;" &&
+                field_res.field_name == "v") {
+                static thread_local uint64_t t68p_n = 0;
+                if (t68p_n++ < 120) {
+                    std::cerr << "[T68-JOBPUT] Lor1;.v obj#"
+                              << obj_ref.object_id << " val="
+                              << dalvik_value_to_string(src_val)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc_ << std::endl;
+                }
+            }
+        }
         // ── TRAIN-67 (T67-IPUT): the label WRITE side — the iput before the
         // suspend must land on the SAME object the resume reads. Log writes
         // to the machine's label (l) and spill (k) slots with obj identity.
@@ -24443,6 +24609,25 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
         src_val = DalvikValue::make_object(f282_token, "Ljava/lang/Class;");
     }
     DalvikValue obj_ref = get_register(obj_reg);
+    // ── TRAIN-68 (T68-JOBPUT-OBJ): the pointerInputJob store is an
+    // IPUT-OBJECT (Lor1;.v:Lkp1;) — log the write with receiver identity.
+    {
+        static const bool t68po_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+        if (t68po_on && field_res.class_descriptor == "Lor1;" &&
+            field_res.field_name == "v") {
+            static thread_local uint64_t t68po_n = 0;
+            if (t68po_n++ < 120)
+                std::cerr << "[T68-JOBPUT-OBJ] Lor1;.v obj#"
+                          << (obj_ref.type == DalvikType::OBJECT_REF
+                                  ? obj_ref.object_id : 0)
+                          << " val="
+                          << (src_val.type == DalvikType::OBJECT_REF
+                                  ? ("obj#" + std::to_string(src_val.object_id))
+                                  : dalvik_value_to_string(src_val))
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+        }
+    }
     // S135 F-NEW-365 (S57 wave, merge complement): ART null-receiver FIELD
     // law, iput-object form — same family as the execute_iput law above
     // (F-NEW-268d closed the reads; the writes stayed silent until now).
@@ -24943,6 +25128,27 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
+        // ── TRAIN-68 (T68-START): the CoroutineStart (Lyr;) enum static
+        // reads — the node's lazy launch branches on the start constant;
+        // log every Lyr; sget-object with field + loaded object id so the
+        // inline-vs-deferred divergence per node becomes evidence.
+        if (field_res.class_descriptor == "Lyr;" && touch_dispatch_active_) {
+            static const bool t68s_on = diag_env("MINIANDROID_T68_NODE_TRACE");
+            if (t68s_on) {
+                static thread_local uint64_t t68s_n = 0;
+                if (t68s_n++ < 80)
+                    std::cerr << "[T68-START] sget Lyr;."
+                              << field_res.field_name
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc
+                              << " storage_hit="
+                              << (it != static_field_storage_.end() ? 1 : 0)
+                              << " oid="
+                              << (it != static_field_storage_.end()
+                                      ? it->second.object_id : 0)
+                              << std::endl;
+            }
+        }
         // R-NEW-561 (CONT-42 TRAIN 8): JVM static-field resolution law —
         // the static lives on its DECLARER (JVM sget resolution walks the
         // superclass chain). [SGET-MISS] evidence (this wave): the read key
