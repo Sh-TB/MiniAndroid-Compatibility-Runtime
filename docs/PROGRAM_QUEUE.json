@@ -1,15 +1,15 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-01 (S143 wave — telegram launch chain + REAL sqlite: the user-visible sqlite problem FIXED at the root; 3 sqlite-programs proven)",
- "//head": "76280911",
+ "//date": "2026-11-01 (S144 wave — the GAME (dooz) hit-test FIXED at the root: dispatchTouchEvent enters + DOWN/UP consumed; NEW full-CRUD sqltasks app; every old program re-tested green)",
+ "//head": "fa6803ff + s144 work (pre-commit)",
  "queue": [
   {
    "slot": 1,
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "anchor 851cc176 BYTE-EXACT x3 (S142 wall 6/6); TRAIN-51 S142 ground truth: the composed->node bridge chain ALIVE on the S141 binary — Lok0;.f(create)=1 -> Luk0;.e -> Lx9;.f THE FACTORY EXECUTES -> Ljr1; pointerInput elements born 3-5x -> Lj6; handler constructed; TRAIN-41 'Lk90;.f=0' = instrument artifact (abstract iface has no body); NEW FRONTIER pinned: Lt4;(AndroidComposeView) shadow frame = 1x1 while R347 dex measure answers 1080x1920 every pass -> tap hit-test misses the compose surface -> dispatchTouchEvent 0 enters",
-   "next_wagon": "TRAIN-54 (engine-touching): the Lt4; frame law — trace View.layout shadow args for obj#1547 + the relayout pairing (dex_layout_required gate) so the recorded frame honors the 1080x1920 dex measure; below it the chain is alive"
+   "now": "S144 TRAIN-58 THE FRAME LAW FIXED: the pinned 1x1 frontier RETIRED at the root — (1) the dex-measure stage now writes the F-NEW-496 fallback answer into the node store (dex_measure_valid + measured_*), (2) the inflater layout walk's generic-ViewGroup arm reads the R-NEW-347 ONE-STORE (dex capture when valid) instead of the raw 1x1 fallback — evidence: [T58-POP] 1547 task=1080x1920; [HITPROBE] (0,0 1080x1920) contains; [F117-TAP] target=1547; [UI-EVENT] arm=dispatchTouchEvent attached=1, DOWN consumed=true, UP consumed=true; the compose pipeline reads getWidth 1080/getHeight 1920 (real dex Lt4;.r). The app's own Lr;.h (FrameLayout.onLayout verbatim) was RIGHT all along — the walk was clobbering it. Wall 6/6 x3 byte-exact (dooz face 851cc176 unchanged)",
+   "next_wagon": "TRAIN-61 (engine-touching): the click->state hop INSIDE the compose dispatch — the pointer reaches the surface and is consumed; next the Ljr1; pointerInput/clickable handler fires on UP and the game cell flips + recomposition renders. Budget law: give the dispatch head-room (500s) or shrink per-frame cost"
   },
   {
    "slot": 2,
@@ -90,6 +90,14 @@
    "kind": "canonical-built SQLite CRUD app (S142 TRAIN-53)",
    "now": "apk sha16 3f0985489072a8b8; REAL CRUD proven: INSERT x3 (AUTOINCREMENT seq=3) + row-tap DELETE id=1 (via the NEW DatabaseShadow.delete arm) -> rows [2,3] on disk; final frame 'Notes: 2' + 'DELETE id=1' + rows [2][3] rendered — UI and real DB in sync; anchors 6/6 x3 zero drift",
    "next_wagon": "clear-all tap proof + re-open persistence check (second run reads the rows written by the first)"
+  },
+  {
+   "slot": 12,
+   "program": "sqltasks",
+   "package": "com.miniandroid.sqltasks",
+   "kind": "canonical-built FULL-CRUD SQLite app (S144 TRAIN-59)",
+   "now": "apk sha16 849f951b035f48c1; ALL FOUR arms REAL on disk sqlite: INSERT x3 (rowId 1/2/3, seq=3), UPDATE via db.update+ContentValues (NEW arm — rows=1, done=1 persisted), row DELETE (rows [2,3]), SELECT after every op; COLD RE-OPEN zero-tap run rendered 'Tasks: 3 (done 1)' + '[1] [x] Task #1' — cross-process persistence; independent python sqlite3 integrity ok",
+   "next_wagon": "CLEAR ALL + row-DEL combined tap plan; the UPDATE arm exercised from a second app (unote edit path) to prove genericity"
   }
  ],
  "satellites": [
@@ -100,8 +108,8 @@
   },
   {
    "program": "telegram (Forkgram 12.10.8)",
-   "now": "S143 LAUNCH CHAIN FIXED + REAL DB: (1) synthetic launch Intent carries ACTION_MAIN (AOSP ActivityThread law — LaunchActivity.d5 NPE retired); (2) GATE A bridge-satisfied load arm (AArch64 libtmessages.49 on x86_64 host = arch law; 20 org.telegram natives registered over REAL sqlite3 keep the load alive); (3) opendb routes through Storage::resolve_android_path (CANTOPEN rc=14 retired). RESULT: 61-frame run 0 errors; SQLiteException 0 (was 31-152); REAL cache4.db user_version=178 with 234 schema objects integrity-ok, verified with INDEPENDENT python sqlite3; SECOND run on the same data-root re-opens the DB (persistence) 0 errors 0 warnings rc=0; face sha16 c2e071714e97a3af (white + telegram-blue Disable action row, reproducible); regression anchors 6/6 x3 BYTE-EXACT zero drift",
-   "next_wagon": "TL_langpack_getLanguages canned response + the dooz TRAIN-54 Lt4; frame law; optional: --frames 260 re-baseline with the dialog dismissed to reach the intro face"
+   "now": "S144 TRAIN-60 RE-BASELINE on the S144 binary 7aab24b0: run1 fresh 60 frames Errors 0 Warnings 0 SQLiteException 0, REAL cache4.db 178/234 integrity-ok (independent verify); run2 SAME data-root re-open 0/0/0 exit=0, DB persisted; face c2e071714e97a3af in BOTH runs == the S143 face (reproducible across engine arms). The S143 sqlite root fix HOLDS",
+   "next_wagon": "TRAIN-62: TL_langpack_getLanguages canned + dialog dismissal journey (intro face re-baseline); optional --frames 260"
   },
   {
    "program": "freebloks 3D (de.saschahlusiak.freebloks)",

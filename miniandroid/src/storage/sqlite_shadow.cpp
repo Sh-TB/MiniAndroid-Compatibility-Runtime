@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 
 #include "../diagnostics/file_io_trace.h"  // #371 PHASE B6 (ST-10): sqlite-op provenance rows
+#include "../dex/dalvik_engine.h"          // TRAIN-59 (S144): the ContentValues flat mirror (CvFlat + snapshot) for the SQLiteDatabase.update arm
 
 #include <algorithm>
 #include <cerrno>
@@ -46,7 +47,7 @@ std::vector<std::string> DatabaseShadow::implemented_methods() const {
     return {
         "SQLiteOpenHelper.<init>", "getWritableDatabase", "getReadableDatabase",
         "getDatabaseName", "close", "setWriteAheadLoggingEnabled",
-        "execSQL", "delete", "beginTransaction", "beginTransactionNonExclusive",
+        "execSQL", "delete", "update", "beginTransaction", "beginTransactionNonExclusive",
         "setTransactionSuccessful", "endTransaction", "inTransaction",
         "isOpen", "getPath", "getVersion", "compileStatement",
         "rawQueryWithFactory", "rawQuery", "setMaxSqlCacheSize",
@@ -556,6 +557,91 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
         int changed = sqlite3_changes(raw);
         miniandroid::diagnostics::FileIoTrace::instance().record(
             "SQLITE-DELETE", st ? st->path : std::string("<closed>"), true,
+            sql.substr(0, std::min<size_t>(80, sql.size())),
+            ctx.receiver_class);
+        return framework::CallResult::handled_int(changed);
+    }
+    // ── TRAIN-59 (S144, SQLite CRUD law): SQLiteDatabase.update(String
+    // table, ContentValues values, String whereClause, String[] whereArgs)
+    // — REAL sqlite3 UPDATE. SET binds come from the ContentValues flat
+    // mirror (the dalvik put() handler flattens each entry while the boxed
+    // value is live — the shadow holds no engine reference); WHERE binds
+    // are the 1-based whereArgs (the raw_query_common idiom). AOSP return
+    // contract: the number of rows affected (sqlite3_changes). Before this
+    // arm the call degraded to a 0 stub — the app believed the update
+    // landed (rows=0) while the real rows never changed (sqltasks TOGGLE
+    // evidence: lastSql "UPDATE id=1 done=1 (rows=0)" with done still 0 in
+    // the real tasks.db).
+    if (m == "update" && ctx.args.size() >= 1 &&
+        ctx.args[0].kind == framework::CallContext::Arg::Kind::STRING) {
+        if (!raw) return framework::CallResult::not_handled();
+        const std::string& table = ctx.args[0].string_val;
+        uint32_t cv_oid =
+            (ctx.args.size() >= 2 &&
+             ctx.args[1].kind == framework::CallContext::Arg::Kind::OBJECT)
+                ? ctx.args[1].object_id
+                : 0;
+        std::vector<miniandroid::dalvik::CvFlat> cv =
+            miniandroid::dalvik::content_values_flat_snapshot(cv_oid);
+        if (cv.empty()) {
+            std::cerr << "[SQLITE-SHADOW] update: empty ContentValues (oid="
+                      << cv_oid << ") table=" << table << std::endl;
+            return framework::CallResult::handled_int(0);
+        }
+        std::string sql = "UPDATE " + table + " SET ";
+        for (size_t i = 0; i < cv.size(); i++) {
+            if (i) sql += ", ";
+            sql += cv[i].key + " = ?";
+        }
+        if (ctx.args.size() >= 3 &&
+            ctx.args[2].kind == framework::CallContext::Arg::Kind::STRING &&
+            !ctx.args[2].string_val.empty())
+            sql += " WHERE " + ctx.args[2].string_val;
+        sqlite3_stmt* ps = nullptr;
+        int rc = sqlite3_prepare_v2(raw, sql.c_str(), -1, &ps, nullptr);
+        if (rc != SQLITE_OK) {
+            std::cerr << "[SQLITE-SHADOW] update rc=" << rc << " err="
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << std::endl;
+            return framework::CallResult::handled_int(0);
+        }
+        // 1-based binds: SET columns first, then the WHERE args.
+        int b = 1;
+        for (const auto& e : cv) {
+            switch (e.kind) {
+                case 1: sqlite3_bind_int64(ps, b++, e.i); break;
+                case 2: sqlite3_bind_double(ps, b++, e.d); break;
+                case 3:
+                    sqlite3_bind_text(ps, b++, e.s.c_str(), -1,
+                                      SQLITE_TRANSIENT);
+                    break;
+                default: sqlite3_bind_null(ps, b++); break;
+            }
+        }
+        if (ctx.args.size() >= 4 &&
+            ctx.args[3].kind == framework::CallContext::Arg::Kind::OBJECT) {
+            uint32_t arr = ctx.args[3].object_id;
+            int32_t n = 0;
+            heap_->get_object_array_length(arr, n);
+            for (int64_t i = 0; i < n; i++) {
+                std::string sv;
+                if (heap_->get_object_array_string_element(arr, (size_t)i, sv))
+                    sqlite3_bind_text(ps, (int)(b + i), sv.c_str(), -1,
+                                      SQLITE_TRANSIENT);
+                else
+                    sqlite3_bind_null(ps, (int)(b + i));
+            }
+        }
+        rc = sqlite3_step(ps);
+        if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+            std::cerr << "[SQLITE-SHADOW] update step rc=" << rc << " err="
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << std::endl;
+        }
+        sqlite3_finalize(ps);
+        int changed = sqlite3_changes(raw);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SQLITE-UPDATE", st ? st->path : std::string("<closed>"), true,
             sql.substr(0, std::min<size_t>(80, sql.size())),
             ctx.receiver_class);
         return framework::CallResult::handled_int(changed);

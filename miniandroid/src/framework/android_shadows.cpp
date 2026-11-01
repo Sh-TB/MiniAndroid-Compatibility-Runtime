@@ -8405,6 +8405,25 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                           << " layout(" << l << ',' << t << ',' << r << ','
                           << b << ") caller=" << ctx.caller << std::endl;
             }
+            // TRAIN-58 (S144) the Lt4; frame law diag: EVERY layout/setFrame
+            // shadow write, view id + class + rect + caller. Render-neutral,
+            // stderr-only. Evidence: dooz Lr;.h (FrameLayout.onLayout verbatim)
+            // computes child.layout(padL, padT, ...) — the diag decides
+            // whether the call reaches the shadow for the compose child at
+            // all (null-child early return vs wrong-receiver identity).
+            static const bool t58_ldiag =
+                std::getenv("MINIANDROID_LAYOUT_DIAG") != nullptr;
+            if (t58_ldiag) {
+                static thread_local uint64_t t58_n = 0;
+                if (t58_n < 64) {
+                    t58_n++;
+                    std::cerr << "[T58-FRAME] view=" << ctx.receiver_id
+                              << " " << n->class_desc << " layout("
+                              << l << ',' << t << ',' << r << ',' << b
+                              << ") laid_out=" << n->laid_out
+                              << " caller=" << ctx.caller << std::endl;
+                }
+            }
             // AOSP: layout() is void; setFrame() returns "changed".
             return m == "setFrame" ? CallResult::handled_bool(true)
                                    : CallResult::handled_void();

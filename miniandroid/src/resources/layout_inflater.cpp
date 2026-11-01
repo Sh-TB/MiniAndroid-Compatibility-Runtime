@@ -4046,6 +4046,27 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         n->measured_right = t.left + t.width;
         n->measured_bottom = t.top + t.height;
         n->x = t.left; n->y = t.top;
+        // TRAIN-58 (S144) shrink-event diag: this walk writing a degenerate
+        // Task box OVER a materialized larger frame is the dooz compose
+        // surface kill (1080x1920 -> 1x1 every frame). Render-neutral,
+        // stderr-only, env-gated.
+        static const bool t58_sdiag =
+            std::getenv("MINIANDROID_LAYOUT_DIAG") != nullptr;
+        if (t58_sdiag && n->width > 1 && n->height > 1 &&
+            t.width <= 1 && t.height <= 1) {
+            static thread_local uint64_t t58_s = 0;
+            if (t58_s < 24) {
+                t58_s++;
+                fprintf(stderr,
+                        "[T58-SHRINK] view=%u %s had %dx%d -> Task %dx%d "
+                        "(lp=%d/%d measured_pre=%dx%d dex=%dx%d valid=%d)\n",
+                        t.id, n->class_desc.c_str(), n->width, n->height,
+                        t.width, t.height, n->lp_width, n->lp_height,
+                        n->measured_width, n->measured_height,
+                        n->dex_measured_w, n->dex_measured_h,
+                        (int)n->dex_measure_valid);
+            }
+        }
         n->width = t.width; n->height = t.height;
         n->laid_out = true;
         if (n->visibility == 8 /*GONE*/) continue;
@@ -4216,7 +4237,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // re-measure — record the final main size on the node so
                     // evidence/dumps see post-weight measured dims.
                     cn->measured_width = w;
-                    stack.push_back({cid, x, y, w, h});
+                                        stack.push_back({cid, x, y, w, h});
                     x += w + cn->lp_margin_right;
                 }
             } else {
@@ -4337,7 +4358,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // G04 §9: the weight distribution IS the EXACTLY
                     // re-measure — record the final main size on the node so
                     // evidence/dumps see post-weight measured dims.
-                    cn->measured_height = h;
+                                        cn->measured_height = h;
                     // MASTER-2 §22 diagnostic (U007_LAYOUT_DEBUG=4): vertical
                     // stacking contract per child.
                     if (getenv("U007_LAYOUT_DEBUG") &&
@@ -4376,7 +4397,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 const int bh = cn->rl_edges_valid
                                    ? std::max(0, cn->rl_cached_bottom - cn->rl_cached_top)
                                    : cn->measured_height;
-                stack.push_back({cid, bx, by, bw, bh});
+                                stack.push_back({cid, bx, by, bw, bh});
             }
         } else if (is_fl || is_rl || is_scroll) {
             if (is_rl) {
@@ -4440,10 +4461,26 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                                 cid, cn ? cn->class_desc.c_str() : "?",
                                 cn ? (int)cn->rl_edges_valid : -1);
                     }
+                    // TRAIN-58 (S144) the Lt4; frame law — same R-NEW-347
+                    // ONE-STORE read as the default arm below: the wrap/unset
+                    // child's layout size is the DEX measure capture when
+                    // valid (dooz Lho; resolves is_a FrameLayout through the
+                    // framework ancestry law and takes THIS arm; the compose
+                    // surface Lt4; addView'd with default lp -2/-2 must size
+                    // from its captured 1080x1920, not the native 1x1
+                    // fallback).
+                    const int cn_mw = (cn->dex_measure_valid &&
+                                       cn->dex_measured_w > 1)
+                                          ? cn->dex_measured_w
+                                          : cn->measured_width;
+                    const int cn_mh = (cn->dex_measure_valid &&
+                                       cn->dex_measured_h > 1)
+                                          ? cn->dex_measured_h
+                                          : cn->measured_height;
                     int w = cn->lp_width >= 0 ? cn->lp_width
-                          : (cn->lp_width == -1 ? cw : cn->measured_width);
+                          : (cn->lp_width == -1 ? cw : cn_mw);
                     int h = cn->lp_height >= 0 ? cn->lp_height
-                          : (cn->lp_height == -1 ? ch : cn->measured_height);
+                          : (cn->lp_height == -1 ? ch : cn_mh);
                     w = std::min(w, cw); h = std::min(h, ch > 0 ? ch : h);
                     boxes[cid] = {cl, ct, std::max(0, w), std::max(0, h), false, false};
                 }
@@ -4544,15 +4581,38 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 }
                 for (uint32_t cid : kids) {
                     const Box& b = boxes[cid];
-                    stack.push_back({cid, b.x, b.y, b.w, b.h});
+                                        stack.push_back({cid, b.x, b.y, b.w, b.h});
                 }
             } else {
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
+                    // TRAIN-58 (S144) the Lt4; frame law — R-NEW-347 ONE-STORE
+                    // law at the layout consumer: a WRAP/unset-lp child's
+                    // layout size is ITS MEASURED SIZE, and when a DEX
+                    // measure write-back is valid the measured store IS the
+                    // dex capture (the same store the getMeasuredWidth
+                    // shadow reads — View.java getMeasuredWidth() =
+                    // mMeasuredWidth). Reading the raw measured_* here fed
+                    // the native fallback's 1x1 over the compose surface's
+                    // captured 1080x1920 (dooz evidence: [T58-SHRINK] view=
+                    // 1547 had 1080x1920 -> Task 1x1, lp=-2/-2 measured_pre=
+                    // 1x1 dex_valid=1) — the frame the app's OWN onLayout
+                    // (Lr;.h, FrameLayout.onLayout verbatim) wrote was then
+                    // clobbered every frame and every tap hit-test rejected
+                    // the surface. Guard = dex_measure_valid (nonzero sizes
+                    // only) — native-measured trees are byte-identical.
+                    const int cn_mw = (cn->dex_measure_valid &&
+                                       cn->dex_measured_w > 1)
+                                          ? cn->dex_measured_w
+                                          : cn->measured_width;
+                    const int cn_mh = (cn->dex_measure_valid &&
+                                       cn->dex_measured_h > 1)
+                                          ? cn->dex_measured_h
+                                          : cn->measured_height;
                     int w = cn->lp_width >= 0 ? cn->lp_width
-                          : (cn->lp_width == -1 ? cw : cn->measured_width);
+                          : (cn->lp_width == -1 ? cw : cn_mw);
                     int h = cn->lp_height >= 0 ? cn->lp_height
-                          : (cn->lp_height == -1 ? ch : cn->measured_height);
+                          : (cn->lp_height == -1 ? ch : cn_mh);
                     // R-NEW-302 FIX (AOSP FrameLayout.layoutChildren /
                     // onLayout law, FrameLayout.java): default placement is
                     //   childLeft = parentLeft + lp.leftMargin
@@ -4705,8 +4765,28 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             int y = ct;
             for (uint32_t cid : kids) {
                 auto* cn = views->find_node(cid);
-                int w = cn->lp_width == -1 ? cw : (cn->lp_width >= 0 ? cn->lp_width : cn->measured_width);
-                int h = cn->lp_height >= 0 ? cn->lp_height : cn->measured_height;
+                // TRAIN-58 (S144) the Lt4; frame law — R-NEW-347 ONE-STORE
+                // read: a wrap/unset-lp child of a generic (R8-mangled,
+                // framework-unresolved) ViewGroup sizes from its DEX measure
+                // capture when valid — the same store getMeasuredWidth
+                // answers. The raw measured_* here was the native 1x1
+                // fallback for the compose surface whose REAL measure is
+                // 1080x1920 ([T58-POP] view=1547 task=1x1 evidence; the app's
+                // own onLayout Lr;.h wrote 0,0,1080,1920 and this arm
+                // clobbered it every frame → every tap hit-test REJECTed the
+                // compose surface). dex_valid+>1x1 guard keeps native trees
+                // byte-identical.
+                const int cn_mw = (cn->dex_measure_valid &&
+                                   cn->dex_measured_w > 1)
+                                      ? cn->dex_measured_w
+                                      : cn->measured_width;
+                const int cn_mh = (cn->dex_measure_valid &&
+                                   cn->dex_measured_h > 1)
+                                      ? cn->dex_measured_h
+                                      : cn->measured_height;
+                int w = cn->lp_width == -1 ? cw
+                      : (cn->lp_width >= 0 ? cn->lp_width : cn_mw);
+                int h = cn->lp_height >= 0 ? cn->lp_height : cn_mh;
                 if (h <= 0) h = (int)std::lround(40 * metrics_.density);
                 stack.push_back({cid, cl, y, std::min(w, cw), h});
                 y += h;

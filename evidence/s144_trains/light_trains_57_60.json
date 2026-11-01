@@ -1,0 +1,69 @@
+{
+ "//series": "s144 LIGHT TRAINS 57-60 — user directive «ادامه ۳۰ ۷۰ با برنامه جدید و کار امدوتر هر برنامه قدیمی رو تست بکن ببین پیشرفتی داشته بازی هم یادت رفته» (continue 30→70 with new and more effective programs; test every old program for progress; the game was forgotten)",
+ "//date": "2026-11-01",
+ "//head_base": "fa6803ff (S143) — remote==local at session start; NO reset needed this wave",
+ "//binary_start": "67de59cfbb8fcc7d (S143 final, unchanged through TRAIN-57)",
+ "//binary_final": "7aab24b0b4094b06 (TRAIN-58 frame-law arms + TRAIN-59 update arm; intermediate shas in order: 9786789e/538ea5bf/68b399fa/diag builds/f32c0847bc8e3ac4 clean T58 build/7aab24b0b4094b06 final)",
+
+ "TRAIN-57_old_program_progress_test": {
+  "anchor_wall_6apps_x3": "ALL BYTE-EXACT on 67de59cfbb8fcc7d: opencalc 63020bc7334048fe / chess 3f7e7707-ident 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 — ZERO DRIFT",
+  "interactive_family_7titles": "fresh store + 41 frames + 0 errors + SUCCESS each: g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snakedeluxe 5235683fc7b1f04b / minicraft e77a073f733255eb / gmem 4876e47d26910839 / snakeneon b669ce89365f8bbe / sqlnotes 748bb6cf756e7413 (scripts/s144_game_family_sweep.sh, run/s144_train57/)",
+  "gmem_win_replayed": "the S138 44-tap deterministic win plan re-executed on the current binary: matched-green 0 -> 887,331 px = ALL 16 MATCHED, final face 'YOU WIN! in 8 moves — NEW GAME?' (run/s144_train57/gmem_win/) — the game family is PLAYABLE, not just rendering",
+  "verdict": "every old program still runs on the current engine; zero regression; the games were re-proven interactive"
+ },
+
+ "TRAIN-58_the_game_dooz_frame_law": {
+  "frontier_retired": "S142 TRAIN-51 pinned: Lt4;(AndroidComposeView) shadow frame = 1x1 while R347 dex measure answers 1080x1920 every pass -> tap hit-test misses the compose surface -> dispatchTouchEvent 0 enters",
+  "root_chain_pinned": [
+   "dooz tree: Lho;(id1201, ComposeView host, super Lr; = FrameLayout family) addView(Lt4; id1547) with default lp -2/-2 (EXP062 evidence, caller MainActivity.onCreate pc=164)",
+   "the app's OWN layout IS correct: Lr;.onLayout (4 insns) -> Lr;.h = FrameLayout.onLayout VERBATIM (disasm: getChildAt(0) -> getPadding* -> child.layout(padL, padT, padL+(r-l-padL-padR), padT+(b-t-padT-padB))) — [T58-FRAME] view=1547 Lt4; layout(0,0,1080,1920) caller=Lr;.h pc=27 (4x)",
+   "Lr;.onMeasure -> g()/i(II) runs; the R347 stage dispatches Lt4;.onMeasure (dex_onmeasure=YES -> 1080x1920) but its internal setMeasuredDimensionRaw is NOT captured -> [F-NEW-496] no-write-back fallback answers specSize 1080x1920 into LOCAL out pair only — the NODE store never learned it",
+   "the per-frame inflater layout walk (measure_layout, execution_engine.cpp:3469) re-derives child Tasks; Lho; resolves NO container flag (ll=0 fl=0 rl=0 cl=0) -> the FINAL 'generic ViewGroup: stack children vertically' arm sized the lp(-2/-2) child from RAW measured_* = the native 1x1 fallback -> [T58-SHRINK] view=1547 Lt4; had 1080x1920 -> Task 1x1 (lp=-2/-2 measured_pre=1x1 dex=1080x1920 valid=1) — the app's own frame CLOBBERED every frame",
+   "hit-test therefore walked a 1x1 compose surface: [HITPROBE] d=1 id=1547 Lt4; (0,0 1x1) REJECT -> [F117-TAP] frame 15 DOWN (765,1830) target=0"
+  ],
+  "fix_arms_generic_no_app_knowledge": [
+   "ARM-A dalvik_engine.cpp dex-measure stage: when the override ran but produced NO captured write-back and the F-NEW-496 fallback completed the contract with out_w/out_h > 0, WRITE THE ANSWER INTO THE SAME NODE STORE (dex_measure_valid + dex_measured_w/h + measured_width/height) — the AOSP measure contract's write-back, one-identity with the F10 store",
+   "ARM-B layout_inflater.cpp the R-NEW-347 ONE-STORE read at the layout consumers (generic-ViewGroup arm + FL/RL fallback + default arm): a wrap/unset-lp child sizes from dex_measured_* when dex_measure_valid && size>1, else raw measured_* — the same store getMeasuredWidth answers; native trees untouched",
+   "diag arms (env-gated, kept): MINIANDROID_LAYOUT_DIAG prints [T58-FRAME] (every layout/setFrame shadow write) + [T58-SHRINK] (any walk shrink of a >1x1 frame to <=1x1)"
+  ],
+  "post_fix_evidence": [
+   "[T58-POP] view=1547 task=1080x1920 every frame (was 1x1)",
+   "[HITPROBE] d=1 id=1547 Lt4; (0,0 1080x1920) at=1 contains -> dispatch; touchable=1",
+   "[F117-TAP] frame 15 DOWN (765,1830) target=1547 — THE TAP HITS THE COMPOSE SURFACE",
+   "[UI-EVENT] event=TOUCH action=0 view_object=1547 arm=dispatchTouchEvent attached=1 -> result=DISPATCHED consumed=true; action=1 (UP) -> result=DISPATCHED consumed=true",
+   "the compose pointer pipeline ran REAL DEX through the fixed frame: Lt4;.H -> getActionMasked; Lt4;.r -> MotionEvent.getX/getY -> [TOUCHWIN-ANSWER] Lt4;.getWidth -> 1080 / Lt4;.getHeight -> 1920 (was 1/1); Lfj;.a compose hit-test machinery engaged",
+   "budget note: dispatch needs head-room (compose pointer pipeline per dispatch is expensive) — 500s budget + early tap consumed BOTH arms; 120s exhausted mid-UP (the honest run-budget boundary, not a law gap)"
+  ],
+  "regression": "anchor wall 6/6 x3 BYTE-EXACT on the clean T58 binary f32c0847bc8e3ac4 AND on the final 7aab24b0b4094b06 — dooz face 851cc176 UNCHANGED (the render never depended on the hit frame; only the hit-test did)"
+ },
+
+ "TRAIN-59_new_program_sqltasks_full_crud": {
+  "apk": "games/sqltasks (com.miniandroid.sqltasks), canonical aapt2/ECJ/D8 pipeline, apk sha16 849f951b035f48c1 (scripts/s144_build_sqltasks.sh)",
+  "all_four_crud_arms_real": [
+   "INSERT x3: ADD TASK taps -> compileStatement.executeInsert rowId=1/2/3 (titles Task #1 buy coffee beans / #2 ship the release / #3 water the plants), sqlite_sequence=('tasks',3)",
+   "UPDATE (THE NEW ARM): row TOGGLE tap -> db.update('tasks', ContentValues{done:1}, 'id = ?', ['1']) -> 'UPDATE id=1 done=1 (rows=1)' rendered; disk row (1,'Task #1 buy coffee beans',1) — the ContentValues flat mirror (dalvik put() handler) + REAL sqlite3 UPDATE with SET/WHERE binds (implemented_methods += update; SQLITE-UPDATE provenance row)",
+   "DELETE: row DEL tap -> db.delete WHERE id=? -> rows [2,3] on disk (write2 run) — S142 delete arm re-proven on the new app",
+   "SELECT: refresh() rawQuery 'SELECT id,title,done FROM tasks ORDER BY id' after EVERY op — rows=0/1/2/3 progressions in the trace"
+  ],
+  "persistence_reopen": "COLD RE-OPEN run (second process, ZERO taps): standalone-open oid=16, rawQuery rows=3 -> rendered 'Tasks: 3 (done 1)' + '[1] [x] Task #1 buy coffee beans DEL' + '[2] [ ] ...' + '[3] [ ] ...' — the [x] UPDATE flag persisted through the real file-backed DB",
+  "independent_verify": "python3 sqlite3: integrity ok; rows [(1,'Task #1 buy coffee beans',1),(2,'Task #2 ship the release',0),(3,'Task #3 water the plants',0)]",
+  "queue": "slot 12 sqltasks joins the 10+2 program queue; the sqlite-programs family grows to 4 (unote, sqlnotes, telegram MessagesStorage, sqltasks)"
+ },
+
+ "TRAIN-60_telegram_rebaseline": {
+  "run1_fresh": "60 frames, Errors 0, Warnings 0, SQLiteException 0 (the S143 root fix HOLDS on the new binary), [TG-SQLITE] opendb OK, REAL cache4.db integrity=ok user_version=178 objects=234 (independent python sqlite3)",
+  "run2_reopen": "SECOND run SAME data-root: opendb OK (cross-process re-open), SQLiteException 0, Errors 0, Warnings 0, exit 0; cache4.db persisted (178/234/ok)",
+  "face": "sha16 c2e071714e97a3af in BOTH runs — identical to the S143 recorded face (reproducible across engine arms)"
+ },
+
+ "regression_summary": "anchor wall 6/6 x3 BYTE-EXACT THREE times this wave (pre-T58 on 67de59cf, post-T58 on f32c0847, post-T59 on 7aab24b0) — opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a; ZERO DRIFT",
+ "engine_changes": [
+  "android_shadows.cpp: +[T58-FRAME] layout/setFrame diag (env-gated)",
+  "view_renderer.cpp: +dex_frame_authoritative guard on the three layout_children_* walks (degenerate-walk-box over live dex frame — belt+braces with the inflater arm)",
+  "layout_inflater.cpp: dex-measure write-back arm (dalvik dex-measure stage); R-NEW-347 one-store read in generic-ViewGroup/FL-RL/default arms; +[T58-SHRINK] diag (env-gated)",
+  "dalvik_engine.{h,cpp}: +CvFlat +content_values_flat_snapshot (process mirror) + ContentValues.put mirror write",
+  "sqlite_shadow.cpp: +SQLiteDatabase.update arm (real sqlite3 UPDATE, SET binds from the CvFlat mirror, 1-based WHERE args, sqlite3_changes return, SQLITE-UPDATE provenance)"
+ ],
+ "zero_log": "shas + frame/pixel numbers + quoted trace lines only; runs under run/ gitignored; no APKs committed",
+ "next_station": "TRAIN-61 dooz: the click->state hop inside the compose dispatch (Ljr1; handler invocation + recomposition render) — the frame is right, the pipeline consumes, next the game cell actually flips; TRAIN-62 telegram TL_langpack + intro re-baseline; TRAIN-63 --type-text input knob (unote/browser)"
+}

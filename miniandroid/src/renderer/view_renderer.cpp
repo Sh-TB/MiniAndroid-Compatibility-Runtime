@@ -159,6 +159,28 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
 // ---------------------------------------------------------------------------
 // Layout children
 // ---------------------------------------------------------------------------
+// ── TRAIN-58 (S144): the Lt4; frame law — DEX-authored frames are ──────
+// authoritative over a DEGENERATE native-walk box. AOSP: one traversal
+// (ViewRootImpl.performTraversals → measure → layout → draw); when the
+// app's own DEX onMeasure/onLayout ran (View.setMeasuredDimension +
+// View.layout write-backs on the node), the placement IS final — the
+// native walk fallback exists to size trees with NO dex placement, never
+// to shrink an already-materialized frame. Evidence (dooz 23): Lr;.h
+// (FrameLayout.onLayout verbatim: pad-adjusted child.layout) writes
+// Lt4;(AndroidComposeView) = 1080x1920 from the R347 dex measure, then
+// this walk's measure_view fallback (lp-less DEX-created child, no text/
+// image/content) answers 1x1 and CLOBBERS the frame → the tap hit-test
+// walks a 1x1 compose surface → dispatchTouchEvent 0 enters (S142
+// TRAIN-51 frontier). Narrowness: the guard fires ONLY on a degenerate
+// walk box (≤1x1) over a live dex frame (dex_measure_valid + laid_out +
+// >1x1) — opencalc's dex-measured ConstraintLayouts walk real boxes and
+// are untouched (anchor-wall A/B below).
+static bool dex_frame_authoritative(const framework::ViewShadow::ViewNode& c,
+                                    const Box& walk_box) {
+    return c.dex_measure_valid && c.laid_out && c.width > 1 && c.height > 1 &&
+           walk_box.w <= 1 && walk_box.h <= 1;
+}
+
 void ViewRenderer::layout_children_linear(ViewShadow::ViewNode& n, const Box& b) {
     bool is_list = n.class_desc.find("ListView;") != std::string::npos ||
                    n.class_desc.find("GridView;") != std::string::npos;
@@ -255,11 +277,13 @@ void ViewRenderer::layout_children_linear(ViewShadow::ViewNode& n, const Box& b)
             e.box.x = x;
             cursor += e.box.h + mt + mb;
         }
-        c.x = b.x + e.box.x;
-        c.y = b.y + e.box.y;
-        c.width = e.box.w;
-        c.height = e.box.h;
-        Box cb{c.x, c.y, c.width, c.height};
+        if (!dex_frame_authoritative(*c, Box{0, 0, e.box.w, e.box.h})) {
+            c->x = b.x + e.box.x;
+            c->y = b.y + e.box.y;
+            c->width = e.box.w;
+            c->height = e.box.h;
+        }
+        Box cb{c->x, c->y, c->width, c->height};
         if (is_linear(c)) layout_children_linear(c, cb);
         else if (is_relative(c)) layout_children_relative(c, cb);
         else layout_children_frame(c, cb);
@@ -294,10 +318,12 @@ void ViewRenderer::layout_children_relative(ViewShadow::ViewNode& n, const Box& 
         } else {
             y = n.padding_t + c->lp_margin_top;
         }
-        c->x = b.x + x;
-        c->y = b.y + y;
-        c->width = cb.w;
-        c->height = cb.h;
+        if (!dex_frame_authoritative(*c, cb)) {
+            c->x = b.x + x;
+            c->y = b.y + y;
+            c->width = cb.w;
+            c->height = cb.h;
+        }
         Box nb{c->x, c->y, c->width, c->height};
         if (is_linear(*c)) layout_children_linear(*c, nb);
         else if (is_relative(*c)) layout_children_relative(*c, nb);
@@ -323,10 +349,12 @@ void ViewRenderer::layout_children_frame(ViewShadow::ViewNode& n, const Box& b) 
         else if ((g & 0x7) == kGravityRight) x = n.padding_l + content_w - cb.w - c->lp_margin_right;
         if ((g & 0x70) == kGravityCenterV) y = n.padding_t + (content_h - cb.h) / 2;
         else if ((g & 0x70) == kGravityBottom) y = n.padding_t + content_h - cb.h - c->lp_margin_bottom;
-        c->x = b.x + x;
-        c->y = b.y + y;
-        c->width = cb.w;
-        c->height = cb.h;
+        if (!dex_frame_authoritative(*c, cb)) {
+            c->x = b.x + x;
+            c->y = b.y + y;
+            c->width = cb.w;
+            c->height = cb.h;
+        }
         Box nb{c->x, c->y, c->width, c->height};
         if (is_linear(*c)) layout_children_linear(*c, nb);
         else if (is_relative(*c)) layout_children_relative(*c, nb);

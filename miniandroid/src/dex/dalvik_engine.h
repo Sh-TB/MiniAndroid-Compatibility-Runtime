@@ -56,6 +56,24 @@ class HeapAllocator;
 namespace miniandroid {
 namespace dalvik {
 
+// ── TRAIN-59 (S144) ContentValues flat mirror ───────────────────────────
+// The SQLiteDatabase.update arm lives in storage::DatabaseShadow, which
+// holds no engine reference; the ContentValues key/value state lives in
+// DalvikExecutionEngine::content_values_ (filled by the #371 PHASE B1
+// put() handler). put() ALSO flattens each entry into this process-wide
+// mirror (boxed values unwrapped through their canonical "value" field —
+// the getAsInteger law) at the moment the heap object is live; the shadow
+// reads the snapshot to build the REAL sqlite3 UPDATE SET binds. Kind
+// codes: 0=null, 1=int64, 2=double, 3=text.
+struct CvFlat {
+    std::string key;
+    int kind = 0;  // 0 null / 1 int64 / 2 double / 3 text
+    int64_t i = 0;
+    double d = 0.0;
+    std::string s;
+};
+std::vector<CvFlat> content_values_flat_snapshot(uint32_t oid);
+
 using json = nlohmann::json;
 using Clock = std::chrono::high_resolution_clock;
 
