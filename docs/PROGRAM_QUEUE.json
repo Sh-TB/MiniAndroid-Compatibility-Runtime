@@ -1,15 +1,15 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-01 (S145 wave — TRAIN-61 the UP-consumed=false myth RETIRED: it was the F084 wall-budget dying at pc=0x2, not a compose answer; scripted-tap wall rebate shipped; both arms now complete at the game cell; TRAIN-62 every old program + 7 games re-tested byte-exact; TRAIN-63 microtimer real alarm DB verified + key-tap interaction)",
- "//head": "285898ce (S144) + s145 work (pre-commit)",
+ "//date": "2026-11-01 (S146 wave — TRAIN-64: the compose tap chain decoded END-TO-END to the coroutine machinery on GitHub-sourced ground truth (dooz v1.0.23 source + compose 1.9.4 VERBATIM); the clickable's inner node Lor1;#14115 receives DOWN+UP at all 3 passes, lazy-launches the Lj6; handler, offers fire, CancellableContinuation resumes, BaseContinuationImpl loops run invokeSuspend — the death is the STATE-MACHINE LABEL PERSISTENCE (machines re-await without evaluating the gesture predicate); regression: anchor wall 6/6 + games 7/7 byte-exact; telegram SQLiteException 0 x3 with schema 179/235)",
+ "//head": "2c16d1a0 (S145) + s146 work (pre-commit)",
  "queue": [
   {
    "slot": 1,
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "S145 TRAIN-61: the UP-consumed=false myth RETIRED — it was the F084 wall-clock budget dying at Lt4;.dispatchTouchEvent pc=0x2 BEFORE anything ran (one continuous clock from interpreter start; a tap scripted at frame N arrives with the budget spent), not a compose answer. FIX = the SCRIPTED-TAP WALL REBATE (rebate_wall_ms shifts the deadline; env MINIANDROID_TAP_WALL_REBATE_MS default 600s; no-tap runs untouched — anchor wall 6/6 byte-exact on the new binary). POST: DOWN consumed=true AND UP consumed=true at the game cell (540,960) — first non-button compose point to complete both arms; the UP chain decoded link-by-link (adapter Lx3;.s -> hit-test Lfj;.a/Las0;.t -> HitPathTracker Lhu0;/Lbr0; -> filters Llo;.P x20 -> SuspendingPointerInputFilter Liw0; -> coroutine machinery)",
-   "next_wagon": "TRAIN-64 (engine-touching): the compose COROUTINE CONTINUATION PUMP — the UP reaches the filters (Llo;.P x20) and the SuspendingPointerInputFilter (Liw0;) but the suspended detectTapAndPress continuation is never dispatched to the app lambda ([QUEUE] zero enqueues post-UP; zero app-package methods in the tap window); pump the channel offer -> resume -> dispatcher drain and the cell click reaches the game state"
+   "now": "S146 TRAIN-64: the tap chain is ALIVE to the coroutine machinery — UP reaches the clickable's inner SuspendingPointerInputModifierNodeImpl (Lor1;#14115) at all 3 passes; lazy UNDISPATCHED launch runs; the Lj6; detectTapAndPress handler registers; offerPointerEvent resumes the awaiter (Lzh;.g); dispatchResume goes the UNDISPATCHED immediate path (Lor;.e enqueue never needed); BaseContinuationImpl.resumeWith loops run invokeSuspend on the machines. GROUND TRUTH: dooz cell = .clickable() (GitHub v1.0.23 DoozItem), compose = 1.9.x (PointerInputEventHandler), the S145 'Liw0;=filter' and '1.6.7' labels RETIRED",
+   "next_wagon": "TRAIN-67 (engine-touching): SUSPEND-LAMBDA LABEL PERSISTENCE — Lss1;.q re-calls the await on every resume without evaluating isChangedToDown (the gesture predicate never runs); fix = the interpreter's continuation-instance identity so the iput-label before suspension is read back by the SAME q(); then down.consume()->waitForUpOrCancellation->onTap->onClick reaches the game state"
   },
   {
    "slot": 2,

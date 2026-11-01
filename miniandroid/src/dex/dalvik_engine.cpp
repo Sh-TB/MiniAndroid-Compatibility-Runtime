@@ -16762,6 +16762,43 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         cn = resolve_method_class_for_dex(midx, current_dex_index_);
                         mn = resolve_method_name_for_dex(midx, current_dex_index_);
                     } catch (...) {}
+                    // ── TRAIN-64 (T64-C, DIAG-ONLY): every Lu71;.<init>
+                    // (PointerInputChange ctor, 15 regs → invoke-direct/3rc)
+                    // during the touch dispatch — dump ALL ctor args from
+                    // the range base. Pins the isInitiallyConsumed value
+                    // the adapter actually passes (awaitFirstDown killer
+                    // candidate: requireUnconsumed=true + changedToDown()
+                    // demands !isConsumed).
+                    if (cn == "Lu71;" && mn == "<init>" &&
+                        current_registers_) {
+                        static thread_local uint64_t t64c_n = 0;
+                        if (t64c_n++ < 24) {
+                            uint16_t t64c_op =
+                                static_cast<uint8_t>(bytecode_[pc_] & 0xFF);
+                            uint16_t t64c_base = bytecode_[pc_ + 2];
+                            std::string t64c_args;
+                            if (t64c_op == 0x76) {  // invoke-direct/range (3rc)
+                                for (int t64c_i = 0; t64c_i < 23;
+                                     ++t64c_i) {
+                                    DalvikValue t64c_v =
+                                        current_registers_->read_v(
+                                            static_cast<uint8_t>(
+                                                t64c_base + t64c_i));
+                                    t64c_args +=
+                                        dalvik_value_to_string(t64c_v) + ",";
+                                }
+                            } else {
+                                t64c_args = "<35c>";
+                            }
+                            std::cerr << "[T64-C] Lu71;.<init> op=0x"
+                                      << std::hex << t64c_op << std::dec
+                                      << " base=v" << t64c_base
+                                      << " caller=" << current_class_ << "."
+                                      << current_method_
+                                      << " args=[" << t64c_args << "]"
+                                      << std::endl;
+                        }
+                    }
                     bool hit_kr1 = (cn == "Lkr1;");
                     bool hit_jr1_init = (cn == "Ljr1;" && mn == "<init>");
                     // car-12: global composed-factory invoke counter —
@@ -23107,6 +23144,70 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                 }
             }
         }
+        // ── TRAIN-64 (T64, DIAG-ONLY, env-gated MINIANDROID_T64_CHANGE_TRACE):
+        // pointer-change field READ law. Lu71; = PointerInputChange (R8):
+        // d=pressed, h=previousPressed, o=isConsumed, p. The tap state
+        // machine (waitForUpOrCancellation: fastAll{changedToUp} =
+        // !pressed && previousPressed; fastAny{isConsumed}) reads these
+        // fields INLINE (R8), so no invoke probe can see them. Log every
+        // boolean read during the touch dispatch — answers WHY the dooz
+        // cell tap never fires onTap (changedToUp false? consumed?).
+        static thread_local const bool t64r_on =
+            std::getenv("MINIANDROID_T64_CHANGE_TRACE") != nullptr;
+        if (t64r_on && touch_dispatch_active_ && field_res.resolved &&
+            field_res.class_descriptor == "Lu71;") {
+            static const char* t64_bools[] = {"d", "h", "o", "p"};
+            for (const char* t64b : t64_bools) {
+                if (field_res.field_name == t64b) {
+                    static thread_local uint64_t t64r_n = 0;
+                    if (t64r_n++ < 400) {
+                        DalvikValue t64_t = get_register(obj_reg);
+                        std::cerr << "[T64-R] Lu71;." << field_res.field_name
+                                  << " obj#"
+                                  << (t64_t.type == DalvikType::OBJECT_REF
+                                          ? t64_t.object_id : 0)
+                                  << " = "
+                                  << dalvik_value_to_string(result_value)
+                                  << " dst=v" << static_cast<int>(dest_reg)
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                    break;
+                }
+            }
+            // T64-Q: the q-chain read (b()Z recurses into q when non-null —
+            // a self/loop in q makes isConsumed answer from the WRONG change).
+            if (field_res.field_name == "q") {
+                static thread_local uint64_t t64q_n = 0;
+                if (t64q_n++ < 200) {
+                    DalvikValue t64_t3 = get_register(obj_reg);
+                    std::cerr << "[T64-Q] Lu71;.q obj#"
+                              << (t64_t3.type == DalvikType::OBJECT_REF
+                                      ? t64_t3.object_id : 0)
+                              << " -> "
+                              << dalvik_value_to_string(result_value)
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+            // T64b: the isOutOfBounds arm reads the packed position
+            // (j = position, g = previousPosition) as iget-wide — log those
+            // during the touch dispatch (bounds: size + extendedTouchPadding
+            // decide the cancel).
+            if (field_res.field_name == "j" || field_res.field_name == "g") {
+                static thread_local uint64_t t64p_n = 0;
+                if (t64p_n++ < 200 && result_value.type == DalvikType::INT64) {
+                    DalvikValue t64_t2 = get_register(obj_reg);
+                    std::cerr << "[T64-POS] Lu71;." << field_res.field_name
+                              << " obj#"
+                              << (t64_t2.type == DalvikType::OBJECT_REF
+                                      ? t64_t2.object_id : 0)
+                              << " = " << result_value.long_val
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+        }
     }
     // EXP-042 Phase 2: on any failure path, fall through with default 0 and
     // advance pc_ — never return false (which would cause an infinite loop).
@@ -23972,6 +24073,70 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                     d8_v = src_val.int_val ? "T" : "F";
                 std::cerr << "[D8-EWRITE] w#" << d8_wn
                           << " recv=o" << d8_recv << " e=" << d8_v
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+    }
+
+    // ── TRAIN-64 (T64, DIAG-ONLY, env-gated MINIANDROID_T64_CHANGE_TRACE):
+    // pointer-change field WRITE law. Lu71; = PointerInputChange (R8):
+    // d=pressed, h=previousPressed, o=isConsumed. The MotionEvent→
+    // PointerInputChange adapter writes these during the touch dispatch;
+    // waitForUpOrCancellation's fastAll{changedToUp} (= !d && h) dies when
+    // the UP change never gets h=true. Log every boolean write — pairs
+    // with the [T64-R] read probe to pin the exact wrong field.
+    {
+        static const bool t64w_on = diag_env("MINIANDROID_T64_CHANGE_TRACE");
+        if (t64w_on && touch_dispatch_active_ && field_res.resolved &&
+            field_res.class_descriptor == "Lu71;") {
+            static const char* t64w_bools[] = {"d", "h", "o", "p"};
+            for (const char* t64wb : t64w_bools) {
+                if (field_res.field_name == t64wb) {
+                    static thread_local uint64_t t64w_n = 0;
+                    if (t64w_n++ < 400) {
+                        uint32_t t64w_recv =
+                            (obj_ref.type == DalvikType::OBJECT_REF)
+                                ? obj_ref.object_id : 0;
+                        std::cerr << "[T64-W] Lu71;." << field_res.field_name
+                                  << " obj#" << t64w_recv << " = "
+                                  << dalvik_value_to_string(src_val)
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    }
+                    break;
+                }
+            }
+        }
+        // T64-QW: the q-chain write (who links a change to another).
+        if (t64w_on && touch_dispatch_active_ && field_res.resolved &&
+            field_res.class_descriptor == "Lu71;" &&
+            field_res.field_name == "q") {
+            static thread_local uint64_t t64qw_n = 0;
+            if (t64qw_n++ < 64) {
+                uint32_t t64qw_recv =
+                    (obj_ref.type == DalvikType::OBJECT_REF)
+                        ? obj_ref.object_id : 0;
+                std::cerr << "[T64-QW] Lu71;.q obj#" << t64qw_recv << " = "
+                          << dalvik_value_to_string(src_val)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+        // T64-C2: the RAW PointerInputEventData isInitiallyConsumed write
+        // (Lw71;.g) — feeds Las0;.t's change ctor slot 14; the DOWN was
+        // born with 1 (should be 0) which kills awaitFirstDown's
+        // changedToDown() (!isConsumed) — log the writer and the value.
+        if (t64w_on && touch_dispatch_active_ && field_res.resolved &&
+            field_res.class_descriptor == "Lw71;" &&
+            field_res.field_name == "g") {
+            static thread_local uint64_t t64g_n = 0;
+            if (t64g_n++ < 64) {
+                uint32_t t64g_recv =
+                    (obj_ref.type == DalvikType::OBJECT_REF)
+                        ? obj_ref.object_id : 0;
+                std::cerr << "[T64-G] Lw71;.g obj#" << t64g_recv << " = "
+                          << dalvik_value_to_string(src_val)
                           << " caller=" << current_class_ << "."
                           << current_method_ << std::endl;
             }
@@ -28612,6 +28777,26 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
                   << " val=" << val.int_val
                   << " nonzero=" << is_nonzero
                   << " target=" << (pc + offset) << std::endl;
+    }
+
+    // ── TRAIN-64 (T64, DIAG-ONLY): the branch decision inside the R8-
+    // inlined changedToUp helper (Lbo;.h: return h && !d). The UP change's
+    // h read answered 1 yet the d read never ran — this logs the exact
+    // register/type/value if-nez saw, pinning the drop point.
+    if (touch_dispatch_active_ && current_class_ == "Lbo;" &&
+        current_method_ == "h") {
+        static thread_local uint64_t t64z_n = 0;
+        if (t64z_n++ < 64) {
+            std::cerr << "[T64-NEZ] Lbo;.h pc=" << pc
+                      << " reg=v" << static_cast<int>(test_reg)
+                      << " type=" << static_cast<int>(val.type)
+                      << " int_val=" << val.int_val
+                      << " bool_val="
+                      << (val.type == DalvikType::BOOLEAN
+                              ? static_cast<int>(val.bool_val) : -1)
+                      << " nonzero=" << (is_nonzero ? 1 : 0)
+                      << std::endl;
+        }
     }
 
     // EXP-092+ DIRECT TRACE: Log if-nez in onNextPressed and lambda$new$12
