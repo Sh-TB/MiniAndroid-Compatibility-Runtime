@@ -180,6 +180,21 @@ static bool diag_env(const char* name) {
 namespace miniandroid {
 namespace dalvik {
 
+// ── TRAIN-59 (S144) ContentValues flat mirror (see the header law) ──────
+// Keyed by the ContentValues heap oid; written by the put() handler while
+// the boxed value is live on the heap; read by the sqlite shadow's
+// SQLiteDatabase.update arm (storage::DatabaseShadow holds no engine
+// reference, so the snapshot crosses as plain POD).
+static std::map<uint32_t, std::vector<CvFlat>>& g_content_values_mirror_ref() {
+    static std::map<uint32_t, std::vector<CvFlat>> m;
+    return m;
+}
+std::vector<CvFlat> content_values_flat_snapshot(uint32_t oid) {
+    auto& m = g_content_values_mirror_ref();
+    auto it = m.find(oid);
+    return it == m.end() ? std::vector<CvFlat>{} : it->second;
+}
+
 // EXP-065: Forward declaration — used by the setHintText capture stub
 // in try_recursive_invoke (defined later in this file at line ~5795).
 static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v);
@@ -14241,6 +14256,33 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
                         wspec & 0x3fffffff, hspec & 0x3fffffff, out_w, out_h,
                         f496_native_ok ? "NATIVE class-law takeover (T7)"
                                        : "AOSP getDefaultSize law");
+        }
+        // TRAIN-58 (S144) — the Lt4; frame law, write-back arm. The AOSP
+        // measure CONTRACT is View.measure → onMeasure → setMeasuredDimension
+        // (the F10 store). When the app's override ran but the engine could
+        // not capture its internal write-back (compose's
+        // setMeasuredDimensionRaw path — the no-write-back evidence above),
+        // the F-NEW-496 fallback COMPLETED the contract with the lawful
+        // answer (out_w/out_h). That answer IS the measured size: write it
+        // into the SAME node store (dex_measure_valid + dex_measured_* +
+        // measured_*) so every downstream consumer — the getMeasuredWidth
+        // readback (R-NEW-347), the inflater layout Tasks that derive child
+        // frames from measured_*, the R445 relayout pairing, and the
+        // touch hit-test — sees ONE identity. Without this store the
+        // fallback answer stayed in the local out pair only: the node kept
+        // measured 1x1, the inflater layout walk sized the compose surface
+        // 1x1, and every tap hit-test REJECTED the surface (S142 TRAIN-51
+        // frontier pinned; run/s144_train58/tapA..D evidence chain).
+        // Guard: non-degenerate answer on a node with NO captured
+        // write-back — the genuine F10 path (dex_measure_valid=true) is
+        // untouched, and the R-NEW-438 degenerate takeovers (0x0) never
+        // store a fake size.
+        if (!node->dex_measure_valid && out_w > 0 && out_h > 0) {
+            node->dex_measure_valid = true;
+            node->dex_measured_w = out_w;
+            node->dex_measured_h = out_h;
+            node->measured_width = out_w;
+            node->measured_height = out_h;
         }
         // MASTER-2 §22 structured diagnostic (opt-in): real-DEX onMeasure
         // contract evidence — incoming MeasureSpec words and the app's own
@@ -37327,6 +37369,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 ? std::string(args[1].string_val)
                                 : std::string();
             ensure_cv(args[0].object_id).emplace_back(k, args[2]);
+            // TRAIN-59 (S144): mirror the entry into the process-wide flat
+            // map (see the header law) — flatten NOW while the heap object
+            // is live; the sqlite shadow's UPDATE arm reads it later.
+            {
+                DalvikValue v = args[2];
+                if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                    heap_.has_object(v.object_id)) {
+                    auto boxed = heap_.get_object_field(v.object_id, "value");
+                    if (boxed.has_value() &&
+                        boxed->type != DalvikType::OBJECT_REF)
+                        v = *boxed;
+                }
+                CvFlat f;
+                f.key = k;
+                switch (v.type) {
+                    case DalvikType::NULL_REF: f.kind = 0; break;
+                    case DalvikType::INT32:
+                    case DalvikType::INT64:
+                    case DalvikType::BOOLEAN:
+                    case DalvikType::BYTE:
+                    case DalvikType::SHORT:
+                        f.kind = 1;
+                        f.i = v.type == DalvikType::INT64 ? v.long_val
+                                                          : (int64_t)v.int_val;
+                        break;
+                    case DalvikType::FLOAT32:
+                    case DalvikType::FLOAT64:
+                        f.kind = 2;
+                        f.d = v.double_val;
+                        break;
+                    case DalvikType::STRING_REF:
+                        f.kind = 3;
+                        f.s = v.string_val;
+                        break;
+                    default: f.kind = 0; break;
+                }
+                g_content_values_mirror_ref()[args[0].object_id].push_back(
+                    std::move(f));
+            }
             result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
