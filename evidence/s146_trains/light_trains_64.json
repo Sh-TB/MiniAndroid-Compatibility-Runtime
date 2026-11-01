@@ -1,0 +1,68 @@
+{
+  "//series": "s146 LIGHT TRAIN 64 — user directive «ادامه بده 30 70 گیت هاب سورس کد اینترنت» (continue 30→70; GitHub open-source source code as the internet ground truth)",
+  "//date": "2026-11-01",
+  "//head_base": "2c16d1a0 (S145) — remote==local at session start, zero drift",
+  "//binary_start": "ae97daf4fe549b9d (S145 final)",
+  "//binary_final": "c620f6e0e7ec54f8 (T64 diag-only probes compiled; render-neutral: anchor wall 6/6 + game family 7/7 byte-exact)",
+
+  "TRAIN-64_dooz_tap_death_forensics": {
+    "verdict": "THE COMPOSE TAP CHAIN IS ALIVE end-to-end to the coroutine machinery — the death is the STATE-MACHINE LABEL PERSISTENCE across the resume chain (machines re-await from label 0 instead of advancing to the gesture predicate)",
+    "version_law_retired": "the standing 'Compose 1.6.7' naming was WRONG for dooz 1.0.23 — VERBATIM ground truth re-pinned from Google Maven sources jars (reference/compose_167/): the APK shape (SuspendPointerInputElement(key1,key2,PointerInputEventHandler,maskI) + node ctor (key1,key2,handler)) matches compose 1.9.x ONLY (PointerInputEventHandler exists in 1.9.4, absent in 1.6.7/1.7.0/1.8.0)",
+    "github_ground_truth": "dooz v1.0.23 source fetched from GitHub (codeload tag 1.0.23): the board cell DoozItem = Box.size.clip.background.**clickable(enabled, onClick)** — NOT pointerInput/detectTapGestures; clickable (foundation 1.9.4) = ClickableNode.createPointerInputNodeIfNeeded() = SuspendingPointerInputModifierNode { detectTapAndPress(onPress, onTap={ if(enabled) onClick() }) }",
+    "class_map": {
+      "Ljr1;": "SuspendPointerInputElement (extends Lbu0;=ModifierNodeElement; fields a=key1,b=key2,c=PointerInputEventHandler; f()=create->Lor1;)",
+      "Lor1;": "SuspendingPointerInputModifierNodeImpl (super Lwt0;=Modifier.Node; ifaces PointerInputScope/etc; fields s=key1,t=key2,u=handler, x/y/z=Liw0; vectors = pointerHandlers/dispatching/dispatch scratch)",
+      "Liw0;": "NOT SuspendingPointerInputFilter (S145 mislabel) — it is the R8 mutableVectorOf backing list (RandomAccess, Object[] + size)",
+      "Lj6;": "the PointerInputEventHandler lambda { detectTapAndPress(onPress, onTap) } — REAL handler of the clickable's inner node (obj#14115)",
+      "Lpv;": "PointerInputEventHandler {} empty-lambda singleton — LEGAL per 1.9.4 (the deprecated node ctor passes 'PointerInputEventHandler {}, // Empty Lambda, not used')",
+      "Lu71;": "PointerInputChange (a=id J,b=prevUptime J,c=uptime J,d=pressed Z,e=pressure F,f/g=J,h=previousPressed Z,i=TYPE I(1=Touch),m=historical,o/p=ConsumedData.downChange/positionChange,q=chain(null), a()V=consume->o=1,p=1, b()Z=isConsumed)",
+      "Lss1;": "awaitEachGesture/awaitFirstDown-level state machine (q stores event, re-calls Lbt1;.a)",
+      "Lne;": "BaseContinuationImpl (g(Object)V = resumeWith loop), Lzc1;=ContinuationImpl, Lad1; chain for Li6;",
+      "Lor;": "CoroutineDispatcher base (e()=dispatch abstract; g()=isDispatchNeeded)",
+      "Lzh;": "CancellableContinuationImpl (g=resume path, D=resumeImpl with Unsafe CAS, q(I)=dispatchResume)"
+    },
+    "chain_proven_alive": [
+      "UP reaches node #14115 (the clickable's inner SuspendingPointerInputModifierNodeImpl): Lor1;.J (onPointerEvent, R8-renamed) with (event, pass, bounds-as-J) at ALL 3 passes",
+      "lazy launch arm: pointerInputJob==null -> L0 = coroutineScope.launch(UNDISPATCHED) — the DOWN was #14115's FIRST event; Lj6; handler registered; PointerEventHandlerCoroutine awaiter #30010 born",
+      "DOWN-Main offer FIRED: Lor1;.M0 (dispatchPointerEvent) -> forEachCurrentPointerHandler -> offerPointerEvent -> Lzh;.g (CancellableContinuationImpl.resume) on awaiter #30010",
+      "Lzh;.q (dispatchResume) ran 2x (DOWN+UP): isDispatchNeeded answered FALSE -> the UNDISPATCHED/event-loop immediate path (Lbo;.O) — Lor;.e (dispatch enqueue) NEVER called — consistent with S145's '[QUEUE] zero enqueues post-UP' (the queue is not the vehicle; the immediate path is)",
+      "Lbo;.O -> Lmq;.g (Continuation.resumeWith) on the machine continuations (Lss1;#30009 DOWN, Li6;#30007 UP)",
+      "Lne;.g (BaseContinuationImpl.resumeWith loop) entered 12x — invokeSuspend (q) called on the chain members (Lq80;/Lss1;/Li6;) — the machines DO run",
+      "UP-Main offer hit the NEW awaiter #30029 (the second awaitPointerEventScope iteration) — the gesture loop re-registered"
+    ],
+    "death_pinned": [
+      "Lss1;.q (the awaitEachGesture/awaitFirstDown-level machine) per event runs EXACTLY ONE invoke: Lbt1;.a (the await family) — the isChangedToDown/changedToDown predicate is NEVER evaluated — the machine re-awaits from its current label every resume",
+      "Lj6;.invoke (the outer tap lambda) re-entered ZERO times in the UP window (its DOWN-window hit was label-0 argument evaluation: creating the onPress lambda Li6;#29994)",
+      "ZERO Lu71; consume() writes ever (o/p stay 0) — down.consume()/up.consume() never executed — awaitFirstDown never returned",
+      "the gesture predicates DID pass where evaluated: changedToUp = TRUE for the UP change (Lbo;.h = h&&!d: [T64-NEZ] nonzero=1 branch taken; Lbo;.j reads h,d on the copies); isConsumed = false (o=0,p=0, q-chain never used)",
+      "change objects are CLEAN: DOWN d=1,h=0; UP d=0,h=1; type=Touch(i=1); isInitiallyConsumed=0 at the primary ctor; position j=0 (a separate wrong-slot finding, not the killer)"
+    ],
+    "fix_direction": "engine: suspend-lambda continuation instance identity + label field persistence across the resume chain (the iput-label before suspension must be read back by the SAME instance's q() on resume; the resume chain currently re-enters with label 0 / re-calls the await). Unlocks dooz cell click AND every M3 clickable (opencalc buttons) at once",
+    "diagnostics_added": "MINIANDROID_T64_CHANGE_TRACE ([T64-R]/[T64-W]/[T64-POS]/[T64-Q]/[T64-QW]/[T64-G]) + [T64-C] ctor-arg dump under MINIANDROID_KR1_CALL_TRACE + [T64-NEZ] branch decision in execute_if_nez — ALL env-gated, bounded, diag-only",
+    "probe_corrections": "S145's 'SuspendingPointerInputFilter Liw0;' mislabel retired (Liw0;=vector list); 'compose 1.6.7' version claim retired for dooz (1.9.x); [PTE-DISPATCH] name-based probe blind (R8 renames onPointerEvent)"
+  },
+
+  "TRAIN-64R_regression": {
+    "anchor_wall": "6/6 BYTE-EXACT on c620f6e0e7ec54f8: opencalc 63020bc7334048fe / chess 3f7e670759b7c6a8 / dooz 851cc1761a1dfcdf / microtimer bbd350b6c14fbd52 / unote 7481e9b468eaa376 / tower3d 11a38a5aeeff45a6 — the T64 probes are render-neutral",
+    "game_family": "7/7 EXACT-TO-PIN: g2048 f43face08299ffc6 / tetris b818a6a7016bea8e / snakedeluxe 5235683fc7b1f04b / minicraft e77a073f733255eb / gmem 4876e47d26910839 / snakeneon b669ce89365f8bbe / sqlnotes 748bb6cf756e7413 — equal to the S145 pins (user directive «هر برنامه قدیمی رو تست بکن ببین پیشرفتی داشته بازی هم یادت رفته» re-honored)"
+  },
+
+  "TRAIN-64T_telegram_sqlite_recheck": {
+    "setup": "FRESH store install of upload/telegram_official.apk (run/s146_train64/store_tg); 3 runs (40/40/60 frames)",
+    "results": "SQLiteException 0 in ALL runs, [ERROR] 0, [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3 + opendb OK; REAL cache4.db integrity=ok (independent python sqlite3)",
+    "progress": "user_version 178->179 AND schema objects 234->235 vs the S144/S145 record — the app's own production schema code advanced ONE MORE VERSION on this engine (cross-process persisted)",
+    "face": "bf5c9ef920aa32d7 consistent x3 (fresh store; differs from the S145 c2e071714e97a3af record because that store carried seeded cross-session state — honest, explainable)",
+    "x41_verdict": "SQLiteException x41 NOT recurring — the S143 root fix HOLDS"
+  },
+
+  "TRAIN-64S_sqlnotes_persistence_reopen": {
+    "writer": "fresh store + --tap 540,164@15 --tap 540,164@30 (60 frames): INSERT x2, UI 'Notes: 2'",
+    "reopen": "SECOND process, ZERO taps, 25 frames: rawQuery rows=2 -> UI 'Notes: 2' + '[1] Note #1  (tap = DELETE)' + '[2] Note #2  (tap = DELETE)' — cross-process persistence through real sqlite re-proven on c620f6e0e7ec54f8",
+    "sqlite_programs_family": "telegram (schema 179/235) + sqlnotes (rows=2 reopen) + unote + sqltasks — both 70%-milestone SQLite proofs stay green"
+  },
+
+  "reference_sources_pinned": {
+    "dir": "reference/compose_167/ (42 .kt VERBATIM files, jars dropped — re-fetchable from dl.google.com/android/maven2 androidx compose ui/foundation/ui-android 1.9.4 + 1.6.7/1.7.0/1.8.0 ui)",
+    "dooz": "GitHub yamin8000/Dooz tag 1.0.23 (codeload tar.gz) — DoozItem clickable law"
+  }
+}
