@@ -1,34 +1,45 @@
 {
- "version": "v0.0.6-Leghorn",
- "release_date": "2026-09-16",
- "git_commit": "22c58a55 (tag v0.0.6-Leghorn; full SHA at tag object)",
- "source_tree_sha": "see SHA256SUMS.txt next to the artifacts",
- "windows_artifact": "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip",
- "windows_artifact_sha256": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
- "windows_artifact_size_bytes": 3925621,
- "windows_artifact_contents": [
-  "MiniAndroid.exe (PE32+ x86-64, statically linked; UCRT + KERNEL32 only)",
-  "miniandroid-demo.apk (first-party demo proof app)",
-  "README.txt (Windows usage)",
-  "LICENSE (MIT)"
- ],
- "linux_artifact": "MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz",
- "linux_artifact_sha256": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780",
- "battery_result": "94/94 ALL PASS (clean run, no resume cache; docs/testing/BATTERY_INDEX.json)",
- "anchor_result": {
-  "s28_helloworld_golden": "PASS (26 checks)",
-  "s29_tictactoe_interaction_determinism": "PASS (8 checks)",
-  "ext01_typography_golden": "PASS (9/9)",
-  "ext02_interaction_golden": "PASS (12/12)",
-  "g06_g07_g08_determinism": "PASS (3-run frame SHA identical)"
+ "version": "v0.0.6.1-Exchequer",
+ "release_date": "2026-11-02",
+ "git_commit": "7877e99e lineage tip (tag v0.0.6.1-Exchequer sits on the release-docs commit)",
+ "parent_release": {
+  "version": "v0.0.6-Leghorn",
+  "date": "2026-09-16",
+  "git_commit": "22c58a55",
+  "commits_since": 814
  },
- "windows_runtime_test": "clean-extract static PE check PASS + demo byte-match on Linux artifact; native/wine runtime NOT verified in this environment (honestly labeled)",
+ "root_registry": {
+  "entries_at_this_release": 853,
+  "entries_at_parent": 348,
+  "note": "honest per-root status vocabulary; see root_registry.json"
+ },
+ "verification_at_tag": {
+  "anchor_wall": "12/13 BYTE-EXACT x3 (scripts/s149_true_wall.sh): opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a + games f43face08/b818a6a7/5235683f/e77a073f/4876e47d/748bb6cf; snakeneon 4a19b1fe x3 deterministic vs pin b669ce89 (build-env face drift, 98.9% real content, flagged)",
+  "regression_gates": "negatives 19/19 · reinstall 8/8 · multiapp 3/3 · gate-A probe 98/0/1 · agent-skill selftest 13/13 · fnew259 probe 7/7 · fnew476 probe 5/5 · F253PROBE 21/21 · W3PROBE 12/12",
+  "battery": "94 -> 124 stages ALL PASS (GATE A record, 2026-10-03); BATTERY_INDEX.json remains the frozen S95-era 94-stage inventory; the standing gate on this lineage is the byte-exact anchor wall",
+  "reproducibility": "recorded binaries reproduced byte-identically from clean rebuilds across >=8 independent waves (CONT-15/65/77/106/107/135/152, CONT-11 W7b, S149-TRUE)",
+  "sqlite_proof": "sqltasks all four CRUD arms REAL (INSERT x2 / UPDATE done=1 / DELETE id=2 / CLEAR ALL); Telegram x41 eliminated and HOLDS (bf5c9ef920aa32d7 == S147 pin, 0 exceptions, opendb OK)",
+  "interaction_proof": "g2048 PLAYED (4 real clicks, f43face08 -> 550470af); microtimer two real alarm rows (5,5,1,11770)+(5,5,2,20410), list query rows=2",
+  "telegram": "fully clean execution (0 errors/warnings/uncaught, S115); native lib really loaded (libtmessages.49.so dlopen + JNI_OnLoad, T18)"
+ },
+ "artifacts": {
+  "windows": "NOT BUILT for this release (no MinGW in the release environment); latest packaged binaries remain v0.0.6-Leghorn",
+  "linux": "source-tag release; build from source via scripts/build/bootstrap_toolchain.sh + make; Linux builds verified via the byte-exact anchor wall"
+ },
+ "previous_release_artifacts": {
+  "windows_artifact": "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip",
+  "windows_artifact_sha256": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
+  "linux_artifact": "MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz",
+  "linux_artifact_sha256": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780"
+ },
+ "changelog": "miniandroid/CHANGELOG.md ([v0.0.6.1-Exchequer] - 2026-11-02; Keep a Changelog 1.1.0; includes retroactive v0.0.4/v0.0.5/v0.0.6 entries)",
+ "release_notes": "docs/releases/RELEASE_v0.0.6.1-Exchequer.md",
  "known_limitations": [
-  "R-NEW-361 OBSERVED-FAIL (primary frontier): dooz v18/v23 ScatterMap probe arithmetic",
-  "R-NEW-303 OBSERVED-FAIL: desugared-streams builder dispatch (Telegram)",
-  "2048 not claimed playable; dooz Compose frame not yet visible",
-  "Windows runtime not exercised under wine/native Windows here"
- ],
- "release_notes": "docs/releases/RELEASE_v0.0.6-Leghorn.md",
- "linux_artifact_size_bytes": 1607470
+  "Compose clickable dispatch not yet fixed (root pinned at the composed-modifier factory dispatch; TRAIN-70 queued); Compose draw path (layer drawContent -> canvas ops) open",
+  "microtimer alarm-list row render open (persistence + query real)",
+  "snakeneon build-env face drift flagged vs standing pin (98.9% real content)",
+  "Windows artifacts not built for this release",
+  "Telegram full messenger UI not claimed",
+  "corpus titles outside the executable/ABI envelope are ABI_OUT_OF_SCOPE SKIP per LAW-001, never failures"
+ ]
 }
