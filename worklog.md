@@ -7134,3 +7134,22 @@ Work Log:
 
 Stage Summary:
 - The S148 campaign state (anchor wall + game family + telegram x41) reproduces from a fresh container rebuild of the rebased tree — cross-container replication GREEN; the stale-lineage CONT-11 battery (CONT-9/10 anchors byte-exact + independent TG-sqlite root-cause replication) stands as appendix evidence.
+
+---
+Task ID: S149-WAVE-1-TRUE (lineage recovered from origin)
+Task: «ادامه» — mid-wave the fetch revealed the "lost" S143-S148 line (through CONT-11 W7b f5b16326) WAS on origin (421 commits); re-grounded the wave on the true lineage and re-proved everything.
+
+Work Log:
+- DISCOVERY: the stale-lineage S149 commit push was rejected (fetch-first); the fetch pulled 6a66806a..f5b16326 — the complete recovered line INCLUDING the real bionic_compat.c/ma_native_bridge.cpp/native_dep.cpp(+h)/display_shadow.cpp, the T68/PMC diagnostics, the s148 tooling, and ALL THREE fixes the morning wave had re-derived on the pre-S143 tree (TG opendb one-path law — now converged THREE independent times; SQL cursor moveToPosition(-1) rewind law; SQLiteDatabase.update/delete DML arms).
+- WORKTREE: /home/z/ma-main = f5b16326 (my-project's root-owned dirs are immovable without sudo — recorded for the next container cycle). Full build: binary b0613d74caef5d13 (semantic standard; T68-ENTRY + PMC probes PRESENT).
+- ANCHOR WALL 12/13 BYTE-EXACT x3 to the standing pins (scripts/s149_true_wall.sh, worktree-aware): opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a + g2048 f43face08 / tetris b818a6a7 / snakedeluxe 5235683f / minicraft e77a073f / gmem 4876e47d / sqlnotes 748bb6cf. FLAGGED: snakeneon 4a19b1fe x3 deterministic vs pin b669ce89 — build-env face drift (98.9% real content).
+- TELEGRAM x41 HOLDS: face bf5c9ef920aa32d7 == the S147 same-store pin EXACTLY, 0 SQLiteExceptions, opendb OK.
+- SQLTASKS at the true binary: ALL FOUR CRUD arms real on disk — INSERT x2 (rows 1/2), UPDATE (done=1, rendered rows=1), DELETE id=2 (disk [(1,...,1)]). My morning-wave tap coordinates transferred unchanged.
+- MICROTIMER at the true binary with the S147 recipe (key-3 at x=380 — the recovered s148_wagons2.sh): TWO real alarm rows (5,5,1,11770)+(5,5,2,20410); reopen list query rows=2. Frontier: list row RENDER.
+- G2048 PLAYED at the true binary: 4 real CLICKs (LEFT/RIGHT/LEFT/UP) → face f43face08 → 550470af.
+- HONEST CORRECTION: the reset-incident entry's "the previous session's commits were NOT on origin" was WRONG — they were; the morning wave's re-derivations were convergent duplicate work (the strongest root-cause confirmation, but recorded as such, not as new fixes).
+
+Artifacts: evidence/s149_trains/light_trains_69_true.json; /home/z/ma-main/run/s149_true_{wall,tg,wagons}; scripts/s149_true_wall.sh; queue refreshed to the S149-TRUE state.
+
+Stage Summary:
+- The campaign is back on the TRUE lineage with byte-exact anchors, TG x41 green, sqltasks all-four-CRUD real, two timer rows, g2048 played. Next: TRAIN-70 on the true lineage (Lsc0;|<init> PMC census — diagnostics now in-tree), microtimer list render, sqlnotes DELETE re-proof, new GitHub-source programs.
