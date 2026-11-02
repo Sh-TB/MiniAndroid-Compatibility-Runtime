@@ -1,0 +1,26 @@
+{
+  "package": "fr.neamar.kiss",
+  "versionName": "3.26.0",
+  "versionCode": 224,
+  "mainActivity": "fr.neamar.kiss.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.READ_CONTACTS",
+    "android.permission.CALL_PHONE",
+    "android.permission.READ_PHONE_STATE",
+    "android.permission.EXPAND_STATUS_BAR",
+    "android.permission.REQUEST_DELETE_PACKAGES",
+    "android.permission.QUERY_ALL_PACKAGES",
+    "android.permission.ACCESS_HIDDEN_PROFILES",
+    "com.android.alarm.permission.SET_ALARM",
+    "fr.neamar.kiss.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/fr.neamar.kiss/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_fr.neamar.kiss_224/data/data/app/fr.neamar.kiss/base.apk",
+  "apkSha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+  "apkSize": 2205788,
+  "installedAt": "2026-11-02T16:17:13Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

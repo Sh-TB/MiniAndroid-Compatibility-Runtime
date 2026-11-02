@@ -1,6 +1,6 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-02 (S149 wave — LINEAGE RECOVERED: the fetch pulled 6a66806a..f5b16326 (421 commits incl. CONT-11 W7b — the \"lost\" S143-S148 line was ON ORIGIN all along); engine rebuilt at the worktree binary b0613d74caef5d13 (semantic standard); ANCHOR WALL 12/13 BYTE-EXACT to the standing pins x3 (opencalc 63020bc7/chess 3f7e6707/dooz 851cc176/microtimer bbd350b6/unote 7481e9b4/tower3d 11a38a5a + games f43face08/b818a6a7/5235683f/e77a073f/4876e47d/748bb6cf; snakeneon deterministic 4a19b1fe — build-env face drift, 98.9% real content, flagged); TG x41 HOLDS (bf5c9ef920aa32d7 == the S147 pin, 0 exceptions, opendb OK); sqltasks ALL FOUR CRUD arms REAL at the true binary (INSERT x2/UPDATE done=1/DELETE id=2/CLEAR ALL); microtimer TWO alarm rows via the TRUE S147 recipe (key-3 x380) + list query rows=2; g2048 PLAYED x4 clicks (f43face08→550470af). The stale-lineage S149 morning wave (commit 5ae989fa, abandoned lineage) had re-derived the same three fixes convergently — now moot)",
+ "//date": "2026-11-02 (S151 wave — RELEASE v0.0.6.1-Exchequer published (GitHub release object + tag); sandbox recycled -> engine rebuilt BYTE-EXACT to the W7b anchor f10101593d095ff7; ANCHOR WALL 12/13 byte-exact x3 at the fresh build (snakeneon standing 4a19b1fe flag only); TRAIN-70 compD census DONE: Lsc0;.<init> ENTER x12 (clickable core IS born) + Ldr1;.c x6, face 851cc1761a1dfcdf == standing dooz pin (trace render-neutral) — construction is NOT the missing link, dispatch WIRING is; NEW internet batch: 16 open-source F-Droid programs fetched+run to verdict — 5 REAL_APP_CONTENT (kiss 6b3bbf6d / diary b18c3ee6 / tickmate 073ce3e5 / better.alarm 0bd24c91 / transistor 5436cf81), 6 NO_ROOT (Compose/WindowRoot family, 31ddd4d5 face), 5 DEFAULT_BACKGROUND_ONLY, 1 download-truncated (trackbook))",
  "//head": "ef9e6fa3 (S147) + s148 work (pre-commit)",
  "queue": [
   {
@@ -8,8 +8,8 @@
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "S149: lineage RECOVERED (origin had f5b16326 all along); dooz pin 851cc176 byte-exact x3 at the worktree binary; TRAIN-69 verdict + T68/PMC diagnostics AVAILABLE again (in-tree); TRAIN-70 (Lsc0;|<init> live census + Lxz1;.C arg dump) can now run on the true lineage next wave",
-   "next_wagon": "TRAIN-70 on the true lineage: compD PMC census Lsc0;|<init> + Ldr1;|c + Lxz1;.C arg dump — pin why the clickable core element never dispatches; generic fix unlocks the dooz cell click + every M3 clickable"
+   "now": "S151: TRAIN-70 compD census DONE on the true lineage — Lsc0;.<init> ENTER x12 (the clickable core element IS constructed live, 12 births in 25 frames), Ldr1;.c ENTER x6 (Lxt0;.c x2 + Lvs0;.r + Lvs0;.t per entry), run face 851cc1761a1dfcdf == standing dooz pin EXACTLY (PMC trace render-neutral). Combined with TRAIN-69: born-but-never-dispatched — construction is NOT the missing link, dispatch WIRING is",
+   "next_wagon": "hit-path wiring fix design: route composed-clickable dispatch to the born Lsc0; core (vs the no-op singleton Lpv;.c) — generic fix unlocks dooz cell click + every M3 clickable; then opencalc/chess interaction probes"
   },
   {
    "slot": 2,
@@ -131,5 +131,55 @@
    "now": "BUILT (S141): VC2 fresh build 9fa342514f6f298a; launch renders chrome (URL field + GO button + webview area, 14 distinct colors); interaction needs a text-injection knob (no --type-text yet)",
    "next_wagon": "engine --type-text input knob then full navigation render"
   }
- ]
+ ],
+ "s151_internet_batch": {
+  "//law": "S151 directive «قطار های تعداد بالا سورس کد ها اینترنت و سورس» — new trains from the internet",
+  "source": "f-droid.org open-source repo (16 APKs, upload/s151_internet_batch/)",
+  "REAL_APP_CONTENT": [
+   {
+    "program": "KISS launcher",
+    "package": "fr.neamar.kiss",
+    "face": "6b3bbf6d2f3bc5db"
+   },
+   {
+    "program": "billthefarmer Diary",
+    "package": "org.billthefarmer.diary",
+    "face": "b18c3ee6c2818560"
+   },
+   {
+    "program": "Tickmate",
+    "package": "de.smasi.tickmate",
+    "face": "073ce3e5c804eda0"
+   },
+   {
+    "program": "Better Alarm",
+    "package": "com.better.alarm",
+    "face": "0bd24c912042a6c1"
+   },
+   {
+    "program": "Transistor (radio)",
+    "package": "org.y20k.transistor",
+    "face": "5436cf81605f1c2d"
+   }
+  ],
+  "NO_ROOT_compose_family": [
+   "com.github.muellerma.stopwatch",
+   "org.secuso.privacyfriendlysudoku",
+   "org.secuso.privacyfriendlyboardgameclock",
+   "org.secuso.privacyfriendlymemory",
+   "org.secuso.privacyfriendlypaindiary",
+   "com.menny.android.anysoftkeyboard"
+  ],
+  "DEFAULT_BACKGROUND_ONLY": [
+   "com.github.muellerma.coffee (b270ff04)",
+   "org.isoron.uhabits (558a146c)",
+   "ca.rmen.android.poetassistant",
+   "com.sadellie.unitto (d602648e)",
+   "free.rm.skytube.oss (fe9bef56)"
+  ],
+  "dl_truncated": [
+   "org.y20k.trackbook_62 (3 attempts, no EOCD)"
+  ],
+  "evidence": "evidence/s151_trains/S151_WAVE_SUMMARY.json + S151_NEWBATCH.json"
+ }
 }

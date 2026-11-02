@@ -1,0 +1,23 @@
+{
+  "package": "org.isoron.uhabits",
+  "versionName": "2.3.2",
+  "versionCode": 20302,
+  "mainActivity": "org.isoron.uhabits.activities.habits.list.ListHabitsActivity",
+  "minSdk": "28",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.SCHEDULE_EXACT_ALARM",
+    "android.permission.USE_EXACT_ALARM",
+    "android.permission.VIBRATE",
+    "org.isoron.uhabits.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.isoron.uhabits/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_org.isoron.uhabits_20302/data/data/app/org.isoron.uhabits/base.apk",
+  "apkSha256": "8a702f85afe83385d5fb61cbcf40536411376f64bbb1712910d4ed00182b8303",
+  "apkSize": 10757869,
+  "installedAt": "2026-11-02T16:19:53Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="PLAYER_STATE_STATION_POSITION" value="-1" />
+    <boolean name="ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_95" value="false" />
+</map>

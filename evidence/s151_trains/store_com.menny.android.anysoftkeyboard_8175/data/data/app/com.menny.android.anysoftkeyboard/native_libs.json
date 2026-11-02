@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.menny.android.anysoftkeyboard/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libanysoftkey2_jni.so", "size": 1689728},
+    {"entry": "lib/x86_64/libanysoftkey_jni.so", "size": 1672696}
+  ],
+  "count": 2
+}

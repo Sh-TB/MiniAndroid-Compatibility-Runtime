@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="Settings.PRIVACY_CONTROL_CHECK_DONE" value="true" />
+    <string name="pref_key_playback_speed">1.0</string>
+    <boolean name="pref_key_use_newer_formats" value="true" />
+    <string name="pref_key_video_quality_on_mobile">LEAST_BANDWIDTH</string>
+    <string name="pref_default_tab_name">MainFragment.mostPopularVideosFragment</string>
+    <string name="pref_key_video_quality">BEST_QUALITY</string>
+    <string name="pref_key_video_quality_for_downloads">BEST_QUALITY</string>
+</map>

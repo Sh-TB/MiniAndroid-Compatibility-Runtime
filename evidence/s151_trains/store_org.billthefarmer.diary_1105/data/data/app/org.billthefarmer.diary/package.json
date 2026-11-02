@@ -1,0 +1,22 @@
+{
+  "package": "org.billthefarmer.diary",
+  "versionName": "1.105",
+  "versionCode": 1105,
+  "mainActivity": "org.billthefarmer.diary.Diary",
+  "minSdk": "21",
+  "targetSdk": "28",
+  "requestedPermissions": [
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_CALENDAR",
+    "android.permission.WRITE_CALENDAR",
+    "android.permission.INTERNET"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.billthefarmer.diary/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_org.billthefarmer.diary_1105/data/data/app/org.billthefarmer.diary/base.apk",
+  "apkSha256": "979e8cd8702ab5c0440c2cd094de0d6bdf109632857002966e62af5e9add93ef",
+  "apkSize": 238619,
+  "installedAt": "2026-11-02T16:17:14Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

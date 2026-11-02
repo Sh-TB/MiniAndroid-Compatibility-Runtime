@@ -1,0 +1,23 @@
+{
+  "package": "de.smasi.tickmate",
+  "versionName": "1.4.15",
+  "versionCode": 50,
+  "mainActivity": "de.smasi.tickmate.Tickmate",
+  "minSdk": "21",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.WAKE_LOCK",
+    "com.android.alarm.permission.SET_ALARM",
+    "de.smasi.tickmate.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/de.smasi.tickmate/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_de.smasi.tickmate_50/data/data/app/de.smasi.tickmate/base.apk",
+  "apkSha256": "e95741cde847b07f15b72850cfa5310fa270cbebcce71f9a0ac20aa96be26aff",
+  "apkSize": 2412348,
+  "installedAt": "2026-11-02T16:17:15Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

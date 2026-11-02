@@ -1,0 +1,24 @@
+{
+  "package": "com.github.muellerma.coffee",
+  "versionName": "2.27",
+  "versionCode": 47,
+  "mainActivity": "com.github.muellerma.coffee.activities.MainActivity",
+  "minSdk": "23",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.WAKE_LOCK",
+    "android.permission.WRITE_SETTINGS",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "com.github.muellerma.coffee.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.github.muellerma.coffee/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_com.github.muellerma.coffee_47/data/data/app/com.github.muellerma.coffee/base.apk",
+  "apkSha256": "ae4688fe48e751517e7a1d56aed27bff10b87daac0d7e28993fb193a7dc8f223",
+  "apkSize": 2798019,
+  "installedAt": "2026-11-02T16:17:16Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,71 @@
+{
+  "content_root_id": 538,
+  "experiment": "EXP-061",
+  "node_source": "content-root-walk",
+  "nodes": [
+    {
+      "android_view_id": 2131361848,
+      "children": [
+        540,
+        542
+      ],
+      "class": "Landroidx/appcompat/widget/FitWindowsLinearLayout;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 1920,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 538,
+      "parent_id": 537,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "android_view_id": 2131361859,
+      "children": [],
+      "class": "Landroidx/appcompat/widget/ViewStubCompat;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": -2,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 540,
+      "parent_id": 538,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "View",
+      "visibility": 8,
+      "width": -1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "android_view_id": 16908290,
+      "children": [],
+      "class": "Landroidx/appcompat/widget/ContentFrameLayout;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": 1920,
+      "hint": "",
+      "image_resource_id": 0,
+      "object_id": 542,
+      "parent_id": 538,
+      "text": "",
+      "text_resource_id": 0,
+      "view_type": "ViewGroup",
+      "visibility": 0,
+      "width": 1080,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "view_count": 3
+}

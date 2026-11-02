@@ -1,0 +1,23 @@
+{
+  "package": "com.menny.android.anysoftkeyboard",
+  "versionName": "1.13.8175",
+  "versionCode": 8175,
+  "mainActivity": "com.menny.android.anysoftkeyboard.LauncherSettingsActivity",
+  "minSdk": "23",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "android.permission.READ_USER_DICTIONARY",
+    "android.permission.WRITE_USER_DICTIONARY",
+    "android.permission.READ_CONTACTS",
+    "android.permission.POST_NOTIFICATIONS",
+    "com.menny.android.anysoftkeyboard.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.menny.android.anysoftkeyboard/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_com.menny.android.anysoftkeyboard_8175/data/data/app/com.menny.android.anysoftkeyboard/base.apk",
+  "apkSha256": "daa95017e673f8f533fbcfa6839673ad76d66f1ad17f288d2220f751fcc258a6",
+  "apkSize": 24880061,
+  "installedAt": "2026-11-02T16:31:32Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

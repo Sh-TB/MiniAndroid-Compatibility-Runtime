@@ -1,0 +1,20 @@
+{
+  "package": "ca.rmen.android.poetassistant",
+  "versionName": "1.32.1",
+  "versionCode": 113201,
+  "mainActivity": "ca.rmen.android.poetassistant.main.MainActivity",
+  "minSdk": "23",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.POST_NOTIFICATIONS",
+    "ca.rmen.android.poetassistant.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/ca.rmen.android.poetassistant/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_ca.rmen.android.poetassistant_113201/data/data/app/ca.rmen.android.poetassistant/base.apk",
+  "apkSha256": "d24c0d166c78bb928a0da3bf523d09676235fe7875da6f24175d5c7e7d7e2647",
+  "apkSize": 22496650,
+  "installedAt": "2026-11-02T16:20:04Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,22 @@
+{
+  "package": "org.secuso.privacyfriendlyboardgameclock",
+  "versionName": "1.2.0",
+  "versionCode": 101,
+  "mainActivity": "org.secuso.pfacore.ui.activities.SplashActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.READ_CONTACTS",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.CAMERA",
+    "org.secuso.privacyfriendlyboardgameclock.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.secuso.privacyfriendlyboardgameclock/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_org.secuso.privacyfriendlyboardgameclock_101/data/data/app/org.secuso.privacyfriendlyboardgameclock/base.apk",
+  "apkSha256": "d911424992a86b408e6a5eaedfd2f7ea00e0c547def468f2ba3d00f94c1a10f0",
+  "apkSize": 3116390,
+  "installedAt": "2026-11-02T16:19:42Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

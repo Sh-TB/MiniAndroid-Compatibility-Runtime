@@ -1,0 +1,170 @@
+{
+  "activity": "Lfree/rm/skytube/gui/activities/MainActivity;",
+  "activity_launch": {
+    "a_class": "Lfree/rm/skytube/gui/activities/MainActivity;",
+    "a_view_root": 538,
+    "b_view_root": 0,
+    "callbacks": [
+      {
+        "class": "Lfree/rm/skytube/gui/activities/MainActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onPause"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/RouterActivity;",
+        "dispatched": true,
+        "instructions": 2434,
+        "method": "<init>"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/RouterActivity;",
+        "dispatched": true,
+        "instructions": 31,
+        "method": "onCreate"
+      },
+      {
+        "dispatched": false,
+        "method": "onStart/onResume",
+        "skipped": "mFinished gate (CONT-68)"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/MainActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onStop"
+      }
+    ],
+    "component": "free.rm.skytube.gui.activities.RouterActivity",
+    "component_descriptor": "Lfree/rm/skytube/gui/activities/RouterActivity;",
+    "launched": true,
+    "request_code": -1,
+    "stack_depth_after": 1
+  },
+  "apk": "/home/z/my-project/evidence/s151_trains/store_free.rm.skytube.oss_63/data/data/app/free.rm.skytube.oss/base.apk",
+  "final_state": "DESTROYED",
+  "finish_cascade": {
+    "callbacks": [
+      {
+        "class": "Lfree/rm/skytube/gui/activities/RouterActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onPause"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/RouterActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onStop"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/RouterActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onDestroy"
+      }
+    ],
+    "final_state": "RESUMED (A restored)",
+    "finish_requested": true,
+    "popped_to": "Lfree/rm/skytube/gui/activities/MainActivity;",
+    "restore_callbacks": [
+      {
+        "class": "Lfree/rm/skytube/gui/activities/MainActivity;",
+        "dispatched": false,
+        "instructions": 0,
+        "method": "onRestart"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/MainActivity;",
+        "dispatched": true,
+        "instructions": 0,
+        "method": "onStart"
+      },
+      {
+        "class": "Lfree/rm/skytube/gui/activities/MainActivity;",
+        "dispatched": true,
+        "instructions": 13,
+        "method": "onResume"
+      }
+    ]
+  },
+  "transitions": [
+    {
+      "from": "PROCESS_CREATED",
+      "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+      "success": true,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart() dispatched via DEX engine",
+      "success": true,
+      "to": "STARTED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "STARTED",
+      "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "RESUMED",
+      "reason": "switch: A.onPause (TransactionExecutor law: pause is FIRST)",
+      "success": true,
+      "to": "PAUSED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onCreate via DEX (performLaunchActivity law): Lfree/rm/skytube/gui/activities/RouterActivity;",
+      "success": false,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onResume via DEX (handleResumeActivity law): Lfree/rm/skytube/gui/activities/RouterActivity;",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "RESUMED",
+      "reason": "finish cascade: onPause dispatched via DEX",
+      "success": true,
+      "to": "PAUSED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "PAUSED",
+      "reason": "finish cascade: onStop dispatched via DEX",
+      "success": true,
+      "to": "STOPPED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "STOPPED",
+      "reason": "finish cascade: onDestroy dispatched via DEX (performDestroyActivity law)",
+      "success": true,
+      "to": "DESTROYED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "DESTROYED",
+      "reason": "A restart: onRestart+onStart via DEX (STOPPED → STARTED law)",
+      "success": false,
+      "to": "STARTED",
+      "virtual_ms": 5873
+    },
+    {
+      "from": "DESTROYED",
+      "reason": "A restored: onResume via DEX (restart completion)",
+      "success": false,
+      "to": "RESUMED",
+      "virtual_ms": 5873
+    }
+  ]
+}

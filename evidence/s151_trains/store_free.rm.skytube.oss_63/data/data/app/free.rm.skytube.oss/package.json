@@ -1,0 +1,25 @@
+{
+  "package": "free.rm.skytube.oss",
+  "versionName": "3.003",
+  "versionCode": 63,
+  "mainActivity": "free.rm.skytube.gui.activities.MainActivity",
+  "minSdk": "19",
+  "targetSdk": "28",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.WAKE_LOCK",
+    "free.rm.skytube.oss.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/free.rm.skytube.oss/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_free.rm.skytube.oss_63/data/data/app/free.rm.skytube.oss/base.apk",
+  "apkSha256": "87519cf2fd08b8d5d0b7b18efc9499cbaefd3345f479d56ce227afc6537d5780",
+  "apkSize": 10110515,
+  "installedAt": "2026-11-02T16:21:59Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

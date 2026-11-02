@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/org.secuso.privacyfriendlyboardgameclock/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libimage_processing_util_jni.so", "size": 44920}
+  ],
+  "count": 1
+}

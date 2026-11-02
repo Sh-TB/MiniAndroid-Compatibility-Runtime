@@ -1,0 +1,24 @@
+{
+  "package": "com.sadellie.unitto",
+  "versionName": "Titanium yellow",
+  "versionCode": 76,
+  "mainActivity": "com.sadellie.unitto.MainActivity",
+  "minSdk": "23",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "android.permission.INTERNET",
+    "android.permission.WAKE_LOCK",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.FOREGROUND_SERVICE",
+    "com.sadellie.unitto.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.sadellie.unitto/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_com.sadellie.unitto_76/data/data/app/com.sadellie.unitto/base.apk",
+  "apkSha256": "84867d992141704758dd24f6a89e1b9642aa4655c82ada5613ed562426fa936c",
+  "apkSize": 5381355,
+  "installedAt": "2026-11-02T16:20:05Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,30 @@
+{
+  "activity": "Lorg/isoron/uhabits/activities/habits/list/ListHabitsActivity;",
+  "activity_launch": null,
+  "apk": "/home/z/my-project/evidence/s151_trains/store_org.isoron.uhabits_20302/data/data/app/org.isoron.uhabits/base.apk",
+  "final_state": "RESUMED",
+  "finish_cascade": null,
+  "transitions": [
+    {
+      "from": "PROCESS_CREATED",
+      "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+      "success": true,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart() dispatched via DEX engine",
+      "success": true,
+      "to": "STARTED",
+      "virtual_ms": 0
+    },
+    {
+      "from": "STARTED",
+      "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 0
+    }
+  ]
+}

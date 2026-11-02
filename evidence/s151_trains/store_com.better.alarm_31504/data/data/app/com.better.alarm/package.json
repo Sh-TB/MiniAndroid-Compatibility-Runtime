@@ -1,0 +1,30 @@
+{
+  "package": "com.better.alarm",
+  "versionName": "3.15.04",
+  "versionCode": 31504,
+  "mainActivity": "com.better.alarm.presenter.AlarmsListActivity",
+  "minSdk": "16",
+  "targetSdk": "33",
+  "requestedPermissions": [
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.WAKE_LOCK",
+    "android.permission.VIBRATE",
+    "android.permission.WRITE_SETTINGS",
+    "android.permission.DISABLE_KEYGUARD",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.READ_MEDIA_AUDIO",
+    "com.android.alarm.permission.SET_ALARM",
+    "android.permission.SCHEDULE_EXACT_ALARM",
+    "android.permission.USE_EXACT_ALARM",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.USE_FULL_SCREEN_INTENT",
+    "android.permission.POST_NOTIFICATIONS"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.better.alarm/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_com.better.alarm_31504/data/data/app/com.better.alarm/base.apk",
+  "apkSha256": "0931a729f0c6a0d477e232704f66b97a2fb3fe23f7973df3fc3a41b18fb72a83",
+  "apkSize": 7928703,
+  "installedAt": "2026-11-02T16:17:57Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

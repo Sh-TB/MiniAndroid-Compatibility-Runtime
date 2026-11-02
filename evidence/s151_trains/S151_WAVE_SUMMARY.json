@@ -1,0 +1,153 @@
+{
+ "wave": "S151",
+ "directive": "«ادامه بده قطار های تعداد بالا سورس کد ها اینترنت و سورس» — raise the train count with new internet-sourced open-source programs",
+ "date": "2026-11-02",
+ "binary_sha16": "f10101593d095ff7",
+ "binary_note": "fresh my-project build == CONT-11 W7b anchor f10101593d095ff7 BYTE-EXACT (not merely semantic)",
+ "anchor_wall": {
+  "script": "scripts/s151_wall.sh",
+  "runs_per_pin": 3,
+  "result": "12/13 PASS byte-exact x3",
+  "pins_pass": [
+   "opencalc 63020bc7",
+   "chess 3f7e6707",
+   "dooz 851cc176",
+   "microtimer bbd350b6",
+   "unote 7481e9b4",
+   "tower3d 11a38a5a",
+   "g2048 f43face08",
+   "tetris b818a6a7",
+   "snakedeluxe 5235683f",
+   "minicraft e77a073f",
+   "gmem 4876e47d",
+   "sqlnotes 748bb6cf"
+  ],
+  "flagged": "snakeneon 4a19b1fe x3 deterministic vs pin b669ce89 — the SAME standing S149 build-env face drift (98.9% real content); no new drift"
+ },
+ "train70_compD_census": {
+  "env": "MINIANDROID_PMC_TRACE=Lsc0;|<init>,Ldr1;|c",
+  "Lsc0_init_ENTER": 12,
+  "Ldr1_c_ENTER": 6,
+  "face_sha16": "851cc1761a1dfcdf",
+  "standing_dooz_pin": "851cc1761a1dfcdf",
+  "verdict": "Lsc0; IS BORN LIVE (12 constructor entries in 25 frames) yet TRAIN-69 proved it never enters the tap hit-path (only 3 pointer-input nodes + host Lsv;.J dispatched; no-op singleton handler Lpv;.c holds the pointerInput arm) — the census closes the compD question: construction is NOT the missing link, dispatch WIRING is"
+ },
+ "internet_batch": {
+  "source": "f-droid.org open-source repo (probe API -> repo APK), scripts/s151_internet_fetch.sh",
+  "candidates": 46,
+  "probed_ok": 18,
+  "downloaded_ok": 16,
+  "dl_truncated": {
+   "org.y20k.trackbook_62": "3 download attempts truncated (17.5MB/32.9MB partial, no EOCD; F-Droid throttle ~200KB/s; would exceed the 25MB wave cap anyway) — honest internet frontier"
+  },
+  "tally": {
+   "DEFAULT_BACKGROUND_ONLY": 5,
+   "REAL_APP_CONTENT": 5,
+   "NO_ROOT": 6,
+   "INSTALL-FAIL": 1
+  },
+  "rows": {
+   "DEFAULT_BACKGROUND_ONLY": [
+    {
+     "name": "ca.rmen.android.poetassistant_113201",
+     "package": "ca.rmen.android.poetassistant",
+     "face": "31ddd4d5b8e6d18e"
+    },
+    {
+     "name": "com.github.muellerma.coffee_47",
+     "package": "com.github.muellerma.coffee",
+     "face": "b270ff040b3601dc"
+    },
+    {
+     "name": "com.sadellie.unitto_76",
+     "package": "com.sadellie.unitto",
+     "face": "d602648e8e401895"
+    },
+    {
+     "name": "free.rm.skytube.oss_63",
+     "package": "free.rm.skytube.oss",
+     "face": "fe9bef568d3f2917"
+    },
+    {
+     "name": "org.isoron.uhabits_20302",
+     "package": "org.isoron.uhabits",
+     "face": "558a146cd091f558"
+    }
+   ],
+   "REAL_APP_CONTENT": [
+    {
+     "name": "com.better.alarm_31504",
+     "package": "com.better.alarm",
+     "face": "0bd24c912042a6c1"
+    },
+    {
+     "name": "de.smasi.tickmate_50",
+     "package": "de.smasi.tickmate",
+     "face": "073ce3e5c804eda0"
+    },
+    {
+     "name": "fr.neamar.kiss_224",
+     "package": "fr.neamar.kiss",
+     "face": "6b3bbf6d2f3bc5db"
+    },
+    {
+     "name": "org.billthefarmer.diary_1105",
+     "package": "org.billthefarmer.diary",
+     "face": "b18c3ee6c2818560"
+    },
+    {
+     "name": "org.y20k.transistor_117",
+     "package": "org.y20k.transistor",
+     "face": "5436cf81605f1c2d"
+    }
+   ],
+   "NO_ROOT": [
+    {
+     "name": "com.github.muellerma.stopwatch_8",
+     "package": "com.github.muellerma.stopwatch",
+     "face": "31ddd4d5b8e6d18e"
+    },
+    {
+     "name": "com.menny.android.anysoftkeyboard_8175",
+     "package": "com.menny.android.anysoftkeyboard",
+     "face": "31ddd4d5b8e6d18e"
+    },
+    {
+     "name": "org.secuso.privacyfriendlyboardgameclock_101",
+     "package": "org.secuso.privacyfriendlyboardgameclock",
+     "face": "31ddd4d5b8e6d18e"
+    },
+    {
+     "name": "org.secuso.privacyfriendlymemory_100",
+     "package": "org.secuso.privacyfriendlymemory",
+     "face": "31ddd4d5b8e6d18e"
+    },
+    {
+     "name": "org.secuso.privacyfriendlypaindiary_100",
+     "package": "org.secuso.privacyfriendlypaindiary",
+     "face": "31ddd4d5b8e6d18e"
+    },
+    {
+     "name": "org.secuso.privacyfriendlysudoku_101",
+     "package": "org.secuso.privacyfriendlysudoku",
+     "face": "31ddd4d5b8e6d18e"
+    }
+   ],
+   "INSTALL-FAIL": [
+    {
+     "name": "org.y20k.trackbook_62",
+     "package": null,
+     "face": null
+    }
+   ]
+  }
+ },
+ "count_advance": "16 new internet-sourced programs run to verdict this wave (5 REAL_APP_CONTENT) on top of the standing 10-slot queue + satellites + prior corpus",
+ "artifacts": [
+  "evidence/s151_trains/S151_NEWBATCH.json",
+  "run/s151/train70/compD/*",
+  "run/s151/train70/compD_console.log",
+  "run/s151_wall/*",
+  "scripts/s151_*.sh|py"
+ ]
+}

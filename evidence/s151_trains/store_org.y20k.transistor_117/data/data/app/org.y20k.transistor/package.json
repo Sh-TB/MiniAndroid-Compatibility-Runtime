@@ -1,0 +1,27 @@
+{
+  "package": "org.y20k.transistor",
+  "versionName": "4.3.10",
+  "versionCode": 117,
+  "mainActivity": "org.y20k.transistor.MainActivity",
+  "minSdk": "25",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+    "android.permission.INTERNET",
+    "android.permission.WAKE_LOCK",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.VIBRATE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "org.y20k.transistor.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.y20k.transistor/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_org.y20k.transistor_117/data/data/app/org.y20k.transistor/base.apk",
+  "apkSha256": "ae2ac03bcda5a306c849f27c968fe2543dd58070794c9ad360a075c53367f86d",
+  "apkSize": 3455207,
+  "installedAt": "2026-11-02T16:17:59Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

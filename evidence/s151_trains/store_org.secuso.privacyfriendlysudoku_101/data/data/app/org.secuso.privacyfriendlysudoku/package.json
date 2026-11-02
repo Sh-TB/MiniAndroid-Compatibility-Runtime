@@ -1,0 +1,21 @@
+{
+  "package": "org.secuso.privacyfriendlysudoku",
+  "versionName": "3.2.6",
+  "versionCode": 101,
+  "mainActivity": "org.secuso.privacyfriendlysudoku.ui.SplashActivity",
+  "minSdk": "17",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "android.permission.WAKE_LOCK",
+    "org.secuso.privacyfriendlysudoku.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.secuso.privacyfriendlysudoku/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_org.secuso.privacyfriendlysudoku_101/data/data/app/org.secuso.privacyfriendlysudoku/base.apk",
+  "apkSha256": "1aff917f4ac9952bd956f2b19589787b015decc23b4c13268d19f1437c68b5b3",
+  "apkSize": 5192839,
+  "installedAt": "2026-11-02T16:19:41Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

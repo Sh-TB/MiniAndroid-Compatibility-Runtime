@@ -1,0 +1,169 @@
+{
+ "rows": {
+  "fr.neamar.kiss_224": {
+   "apk": "upload/s151_internet_batch/fr.neamar.kiss_224.apk",
+   "apk_sha16": "da6ab0b1219ad3b5",
+   "package": "fr.neamar.kiss",
+   "seconds": 1.3,
+   "screenshot_sha16": "6b3bbf6d2f3bc5db",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 5,
+   "sqlite_mentions": 32
+  },
+  "com.github.muellerma.stopwatch_8": {
+   "apk": "upload/s151_internet_batch/com.github.muellerma.stopwatch_8.apk",
+   "apk_sha16": "f7a62d1a72457b64",
+   "package": "com.github.muellerma.stopwatch",
+   "seconds": 0.6,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 0,
+   "sqlite_mentions": 3
+  },
+  "org.billthefarmer.diary_1105": {
+   "apk": "upload/s151_internet_batch/org.billthefarmer.diary_1105.apk",
+   "apk_sha16": "979e8cd8702ab5c0",
+   "package": "org.billthefarmer.diary",
+   "seconds": 0.7,
+   "screenshot_sha16": "b18c3ee6c2818560",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 5,
+   "sqlite_mentions": 3
+  },
+  "de.smasi.tickmate_50": {
+   "apk": "upload/s151_internet_batch/de.smasi.tickmate_50.apk",
+   "apk_sha16": "e95741cde847b07f",
+   "package": "de.smasi.tickmate",
+   "seconds": 1.1,
+   "screenshot_sha16": "073ce3e5c804eda0",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 4,
+   "sqlite_mentions": 24
+  },
+  "com.github.muellerma.coffee_47": {
+   "apk": "upload/s151_internet_batch/com.github.muellerma.coffee_47.apk",
+   "apk_sha16": "ae4688fe48e75151",
+   "package": "com.github.muellerma.coffee",
+   "seconds": 1.3,
+   "screenshot_sha16": "b270ff040b3601dc",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 3,
+   "sqlite_mentions": 3
+  },
+  "com.better.alarm_31504": {
+   "apk": "upload/s151_internet_batch/com.better.alarm_31504.apk",
+   "apk_sha16": "0931a729f0c6a0d4",
+   "package": "com.better.alarm",
+   "seconds": 2.1,
+   "screenshot_sha16": "0bd24c912042a6c1",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 6,
+   "sqlite_mentions": 8
+  },
+  "org.y20k.transistor_117": {
+   "apk": "upload/s151_internet_batch/org.y20k.transistor_117.apk",
+   "apk_sha16": "ae2ac03bcda5a306",
+   "package": "org.y20k.transistor",
+   "seconds": 101.6,
+   "screenshot_sha16": "5436cf81605f1c2d",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 9,
+   "sqlite_mentions": 2424
+  },
+  "org.secuso.privacyfriendlysudoku_101": {
+   "apk": "upload/s151_internet_batch/org.secuso.privacyfriendlysudoku_101.apk",
+   "apk_sha16": "1aff917f4ac9952b",
+   "package": "org.secuso.privacyfriendlysudoku",
+   "seconds": 1.5,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 0,
+   "sqlite_mentions": 3
+  },
+  "org.secuso.privacyfriendlyboardgameclock_101": {
+   "apk": "upload/s151_internet_batch/org.secuso.privacyfriendlyboardgameclock_101.apk",
+   "apk_sha16": "d911424992a86b40",
+   "package": "org.secuso.privacyfriendlyboardgameclock",
+   "seconds": 1.0,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 0,
+   "sqlite_mentions": 3
+  },
+  "org.isoron.uhabits_20302": {
+   "apk": "upload/s151_internet_batch/org.isoron.uhabits_20302.apk",
+   "apk_sha16": "8a702f85afe83385",
+   "package": "org.isoron.uhabits",
+   "seconds": 1.5,
+   "screenshot_sha16": "558a146cd091f558",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 5,
+   "sqlite_mentions": 22
+  },
+  "org.y20k.trackbook_62": {
+   "apk": "upload/s151_internet_batch/org.y20k.trackbook_62.apk",
+   "apk_sha16": "5166f02e8cbd6b05",
+   "install": "FAIL"
+  },
+  "org.secuso.privacyfriendlymemory_100": {
+   "apk": "upload/s151_internet_batch/org.secuso.privacyfriendlymemory_100.apk",
+   "apk_sha16": "82f83d9ea572240a",
+   "package": "org.secuso.privacyfriendlymemory",
+   "seconds": 1.4,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 0,
+   "sqlite_mentions": 3
+  },
+  "org.secuso.privacyfriendlypaindiary_100": {
+   "apk": "upload/s151_internet_batch/org.secuso.privacyfriendlypaindiary_100.apk",
+   "apk_sha16": "d1fbb4ce037d5178",
+   "package": "org.secuso.privacyfriendlypaindiary",
+   "seconds": 1.6,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 0,
+   "sqlite_mentions": 25
+  },
+  "ca.rmen.android.poetassistant_113201": {
+   "apk": "upload/s151_internet_batch/ca.rmen.android.poetassistant_113201.apk",
+   "apk_sha16": "d24c0d166c78bb92",
+   "package": "ca.rmen.android.poetassistant",
+   "seconds": 1.9,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 2,
+   "sqlite_mentions": 3
+  },
+  "com.sadellie.unitto_76": {
+   "apk": "upload/s151_internet_batch/com.sadellie.unitto_76.apk",
+   "apk_sha16": "84867d9921417047",
+   "package": "com.sadellie.unitto",
+   "seconds": 113.5,
+   "screenshot_sha16": "d602648e8e401895",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 15,
+   "sqlite_mentions": 3540
+  },
+  "free.rm.skytube.oss_63": {
+   "apk": "upload/s151_internet_batch/free.rm.skytube.oss_63.apk",
+   "apk_sha16": "87519cf2fd08b8d5",
+   "package": "free.rm.skytube.oss",
+   "seconds": 1.8,
+   "screenshot_sha16": "fe9bef568d3f2917",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 3,
+   "sqlite_mentions": 3
+  },
+  "com.menny.android.anysoftkeyboard_8175": {
+   "apk": "upload/s151_internet_batch/com.menny.android.anysoftkeyboard_8175.apk",
+   "apk_sha16": "daa95017e673f8f5",
+   "package": "com.menny.android.anysoftkeyboard",
+   "seconds": 1.4,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 2,
+   "sqlite_mentions": 3
+  }
+ }
+}

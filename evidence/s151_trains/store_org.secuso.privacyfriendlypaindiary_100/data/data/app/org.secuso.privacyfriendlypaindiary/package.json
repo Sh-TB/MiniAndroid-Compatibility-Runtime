@@ -1,0 +1,21 @@
+{
+  "package": "org.secuso.privacyfriendlypaindiary",
+  "versionName": "1.3.4",
+  "versionCode": 100,
+  "mainActivity": "org.secuso.privacyfriendlypaindiary.activities.SplashActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "org.secuso.privacyfriendlypaindiary.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.secuso.privacyfriendlypaindiary/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s151_trains/store_org.secuso.privacyfriendlypaindiary_100/data/data/app/org.secuso.privacyfriendlypaindiary/base.apk",
+  "apkSha256": "d1fbb4ce037d51784be7c00dfeb846932dda06298472885882dbaa0cfe714f94",
+  "apkSize": 8109007,
+  "installedAt": "2026-11-02T16:19:56Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
