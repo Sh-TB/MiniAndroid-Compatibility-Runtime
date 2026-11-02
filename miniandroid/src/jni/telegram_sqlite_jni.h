@@ -30,9 +30,8 @@
 #include <string>
 #include <filesystem>
 #include <iostream>
-#include "storage/data_root.h"
-#include "diagnostics/file_io_trace.h"
 #include "jni/jni_bridge.h"
+#include "storage/data_root.h"
 
 namespace miniandroid {
 namespace jni {
@@ -73,42 +72,47 @@ inline void register_all() {
             } else {
                 file = a2 + "/cache.db";  // legacy fallback
             }
-            // S143: the app hands us the ANDROID-LOGICAL path
-            // (/data/data/<pkg>/files/cache4.db — AOSP law: an application
-            // never sees a host path). The REAL sqlite3_open_v2 needs the
-            // PHYSICAL store path — route through the canonical sandbox
-            // resolver (the same authority the android.database.sqlite
-            // family uses). Live evidence 2026-11-01: without this the
-            // open answered SQLITE_CANTOPEN (rc=14) and every
-            // MessagesStorage query surfaced as SQLiteException — the
-            // user-visible "sqlite problem" («باز مشکل سکل لایت داده»).
+            // ONE-PATH LAW (data_root.h): every consumer — SQLite included —
+            // must route the Android-logical path through
+            // Storage::resolve_android_path. Telegram hands us the AOSP
+            // logical spelling /data/data/<pkg>/files/cache4.db; opening it
+            // raw on the host answers SQLITE_CANTOPEN (rc=14) because the
+            // host /data tree does not exist — which is exactly the
+            // SQLiteException x40 face at SQLiteCursor.next. Remap to the
+            // per-package physical store <data-root>/data/data/<pkg>/….
+            std::string physical = file;
             {
                 Storage::PathResolution res = Storage::resolve_android_path(file);
-                if (res.allowed) {
-                    file = res.host_path.string();
+                if (res.allowed && !res.host_path.empty()) {
+                    physical = res.host_path.string();
+                } else if (!file.empty() && file[0] != '/') {
+                    // relative app-anchored spelling should already resolve,
+                    // but keep the raw relative path as a safe fallback.
+                    physical = file;
                 }
+                // denied absolute paths keep the raw file → the open will
+                // fail honestly with CANTOPEN (no silent host access).
             }
             // ensure the containing directory exists (files dir may be new)
             std::error_code ec;
-            std::filesystem::path parent = std::filesystem::path(file).parent_path();
+            std::filesystem::path parent = std::filesystem::path(physical).parent_path();
             if (!parent.empty()) std::filesystem::create_directories(parent, ec);
             sqlite3* db = nullptr;
-            int rc = sqlite3_open_v2(file.c_str(), &db,
+            int rc = sqlite3_open_v2(physical.c_str(), &db,
                                      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr);
             if (rc != SQLITE_OK || !db) {
                 if (db) sqlite3_close(db);
-                std::cerr << "[TG-SQLITE] opendb FAILED rc=" << rc << " file=" << file << std::endl;
+                std::cerr << "[TG-SQLITE] opendb FAILED rc=" << rc
+                          << " logical=" << file
+                          << " physical=" << physical << std::endl;
                 lr = 0;
                 return;
             }
             if (!g_logged_open) {
-                std::cerr << "[TG-SQLITE] opendb OK file=" << file << std::endl;
+                std::cerr << "[TG-SQLITE] opendb OK logical=" << file
+                          << " physical=" << physical << std::endl;
                 g_logged_open = true;
             }
-            miniandroid::diagnostics::FileIoTrace::instance().record(
-                "TG-SQLITE-OPEN", file, rc == SQLITE_OK,
-                "opendb rc=" + std::to_string(rc),
-                "org.telegram.SQLite.SQLiteDatabase");
             lr = reinterpret_cast<intptr_t>(db);
         }, NativeImplType::REAL_NATIVE_LIBRARY, "Telegram SQLiteDatabase.opendb -> real sqlite3");
 

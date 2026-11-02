@@ -1,184 +1,118 @@
-# CONT-11 / WAVE 7 — Execution Ledger
-Binary lineage: clean rebuild from HEAD e99c2fbd reproduced the frozen CONT-10
-binary `aed46450c103f2ea` BYTE-IDENTICALLY before any change; post-fix binary
-`d701221b9bb78317` (F-NEW-264 + F-NEW-264b + F-NEW-264c + diagnostics).
+# CONT-11 EXECUTION LEDGER — «ادامه» wave (regression + TG-SQLITE fix + new programs)
 
-## SECTION A — EXTERNAL RUNTIME FEASIBILITY (§2-§7, §13, §14)
+Date: 2026-11-02 (UTC+8 session)
+Head at wave start: e99c2fbd (stray uuid) ← 6a66806a (CONT-10 WAVE 6)
+Binary lineage:
+- Pre-fix rebuild from committed tree: `aed46450c103f2ea` — BYTE-IDENTICAL to the
+  binary pinned by scripts/cont10_anchors.sh (reproducible lineage proven across
+  container reset).
+- Post-fix binary (this wave's only engine change): `400a7c1c48eb27fc`.
 
-Full survey: tmp/cont11_external_runtime_research.md (source-inspected;
-cloned: A2OH/dalvik-universal, A2OH/westlake, Mihon-Runner; ART source
-fetched file-by-file). Classification:
+## 1. Old-program regression battery (binary 400a7c1c48eb27fc, all ×3 unless noted)
 
-| Candidate | DEX | Kotlin | Coroutines | Android API | Compose | Real Dooz | Real pixels | Bridge size | Effort | Verdict |
-|---|---|---|---|---|---|---|---|---|---|---|
-| AOSP ART host | YES (038/039) | YES | YES | NO (java.* only) | NO | NO | NO | full framework | high | USE-AS-ORACLE |
-| A2OH/dalvik-universal | YES (035; 038 tag) | partial | untested | partial (Westlake) | NO | NO | NO | ~2,056 classes | high | PORT-SELECTED-COMPONENTS (possible) |
-| A2OH/westlake | YES (real APKs) | YES | YES | YES (Views, 193K LOC AOSP Java) | NO | n/a | view-level DLST | ~30 C bridges (their OS) | 6-12 mo | USE-AS-ORACLE (architecture) |
-| Robolectric | NO (JVM bytes) | YES | YES | YES (real android-all) | YES (Gradle classes) | NO | JVM-rendered | n/a (not an APK runtime) | n/a | USE-AS-ORACLE |
-| Compose Desktop | NO | YES | YES | NO | YES | NO | own Skia | n/a | n/a | REFERENCE-ONLY |
-| host JVM + dex2jar | converted only | lossy | lossy | NO | NO | NO | NO | n/a | n/a | REJECT (converter ≠ runtime; identity broken) |
-| kotlinx.coroutines (in-APK) | executes verbatim in any correct DEX VM | — | — | Main dispatcher needs Looper/Handler | — | — | — | — | — | USE-AS-ORACLE (Apache-2.0) |
-| droidsaw / DroidVM / Skydnir / AndroidRecomp | parser / manager / manager / ARM recompiler | — | — | — | — | — | — | — | — | REJECT / IRRELEVANT (parser≠runtime, manager≠runtime, ARM-recomp≠x86 Kotlin) |
-| Anbox/Waydroid/redroid/Cuttlefish/Celadon | inside full Android OS | — | — | — | — | — | — | — | — | REJECT (premise: without Android OS) |
+Evidence: evidence/cont11/CONT11_REGRESSION.json (runs under run/cont11/).
+Pre-fix battery snapshot (binary aed46450c103f2ea): evidence/cont11/CONT11_PREFIX_BINARY_aed46450.json.
 
-KEY MEASURED FACTS:
-- ART host reuse = 11 missing layers (framework.jar, framework-res/libandroidfw,
-  system_server trio, Binder, ~200 libandroid_runtime natives, HWUI/SF, Looper-
-  epoll/Choreographer vsync, ViewRootImpl glue, bionic deltas, APEX, ashmem/memfd).
-- Westlake prior art: the android.* framework bridge (193K LOC Java / 2,056 classes)
-  is the DOMINANT cost and is INDEPENDENT of the VM choice — MiniAndroid already
-  owns that layer; an external VM would keep it AND add a guest-identity boundary
-  on every API call (MiniAndroid keeps guest objects in ONE heap: DalvikValue/OBJECT_REF).
-- Empirical root density (MiniAndroid's own registry: 566 roots across ~12 apps)
-  ≈ 1 root per 60-100 bridged framework classes — the VM swap eliminates none of them.
-- NO open-source project runs real Compose APKs on a host without Android OS.
-- kotlinx.coroutines: no port needed — the real library is inside the APK DEX
-  (dooz carries 1.9.0; R8-renamed Ltp1;=StateFlowImpl confirmed using
-  sun.misc.Unsafe CAS, no VarHandle); a correct DEX VM executes it verbatim.
-
-## SECTION E — FINAL DECISION (exactly one)
-
-**KEEP MINIANDROID PATH.**
-
-Evidence: (1) no candidate provides the framework/graphics layer where
-MiniAndroid's complexity lives; (2) westlake proves the bridge equals a second
-runtime (2,056 classes for View apps; Compose adds more — they have none);
-(3) MiniAndroid's DEX core already executes modern R8/Kotlin/Compose/coroutines
-bytecode; (4) the VM swap would double the identity-boundary surface while
-eliminating zero of the 566 registry roots. External projects retained as
-ORACLES only (ART semantics, westlake architecture, kotlinx sources, JDK laws).
-
-## SECTION D — MINIANDROID GENERIC PATH (this wave's fixes)
-
-### F-NEW-264 — exception-integrity delivery law (move-exception)
-- UPSTREAM LAW: ART InterpDoThrow/JVM athrow-catch — a catch handler ALWAYS
-  receives the REAL in-flight java.lang.Throwable object, never null.
-- FIRST DIVERGENCE (dooz draw-path investigation): the compose exception-report
-  helper Lel0;.Y(Throwable) received a NULL throwable argument from its caller
-  frame and NPE'd on `t.getClass()` (the R8 kotlin-report idiom), killing the
-  frame chain that includes the measure/layout pass.
-- FIX: move-exception delivery falls back through the engine's exception slots
-  (pending → deferred → in-flight unwind) with a bounded env-gated diagnostic
-  (MINIANDROID_F264_TRACE). Honest status: defensive net — the diagnostic
-  proved the live dooz null-delivery takes a DIFFERENT arm (an argument
-  register inside the caller frame), so this fix never fired in the probe
-  suite; kept as a JVM-law guard + the diagnostic that bounds the true site.
-
-### F-NEW-264b — stale-mirror registry fallback (collection-copy cascade)
-- UPSTREAM LAW: OpenJDK ArrayList.addAll(Collection) → c.toArray(): the
-  source's OWN authoritative store decides the element set, whatever layer
-  owns it.
-- FIX: (a) the R-NEW-464 step-0 registry read gate broadened (f101_n < 0 →
-  <= 0); (b) after the contract-mismatch guard resets copied=0, a registry
-  fallback consumes the source's CollectionState (kind-faithful STRING/INT/
-  OBJECT). Diagnostic MINIANDROID_F264_ADDALL_DIAG (store census at entry) +
-  [F264-ADDALL] line when the fallback fires.
-- Honest status: defensive — the live R/S rows turned out to be the 264c gate
-  (below); 264b never fired in the probe suite (kept: it is the OpenJDK law
-  for the stale-mirror shape).
-
-### F-NEW-264c — RECEIVER-BASED GATE EXTENSION (the wave's proven fix)
-- UPSTREAM LAW: OpenJDK inherited-method dispatch — `class Guest extends
-  ArrayList<T>` inherits addAll(Collection)/<init>(Collection); a call on a
-  Guest receiver must execute the inherited contract on the receiver's OWN
-  store.
-- FIRST DIVERGENCE (probe-proven, [F264-ADDALL-DIAG]): the F-101/F-NEW-259b
-  cascade matched the method-ref DECLARING class only ("Ljava/util/
-  ArrayList;"); for a DEX-defined subclass receiver the engine's runtime
-  dispatch classifies by the RECEIVER class → string match missed → the
-  append was a SILENT NO-OP (probe rows R: shadow→guest size=0, S:
-  guest→guest size=0 — while every plain-ArrayList receiver row fired).
-- FIX: mirrors the F-097 TreeSet dispatch law — any declaring class when the
-  receiver's runtime class is an ArrayList/LinkedList-family subclass
-  (heap hierarchy walk via is_subclass_of).
-- PROBE: fixtures/fnew259g_probe (real aapt2/ECJ/D8, apk 1a41daa1262c3169)
-  — 13-row genericity matrix: H (2-hop chain walk) / I (covariant boxed
-  bridge) / J (array identity) / M (empty addAll) / N (dupes) / O (boxed
-  ints) / P (array elements) / Q (guest→shadow) / R (shadow→guest) /
-  S (guest→guest) / T (object identity) ALL PASS post-fix; K/L honestly
-  FAIL with NEW findings (see below).
-- REGRESSION: dooz d602648e8e401895 ×3 (unchanged), CONT-10 f259 probe 7/7,
-  anchors opencalc a976d2f9fb675cb3 / chess b5a7a35d5fe0564b / microtimer
-  da73010a37dd0189 / unote 4f1a9e4e8f64fae8 all ×3 byte-identical, gate A
-  98 PASS/0 FAIL/1 INFO, negatives 19/19, skill 13/13, sudoku_secuso
-  (Kotlin-heavy game) 45962e018344e94d ×3 REAL_APP_CONTENT.
-
-### New findings registered (NOT fixed this wave — honest)
-- F-NEW-265 (dooz first divergence RE-ROOTED): the compose DRAW machinery is
-  PROVEN CORRECT end-to-end (dispatchDraw runs per frame; the coordinator
-  walk reaches InnerNodeCoordinator.performDraw; canvas.translate executes on
-  the live compose-canvas wrapper; the walk faithfully honors
-  `child.isPlaced` = real DEX field chain Lel0.J→Lil0.p→Lbt0.w = FALSE). The
-  tree never draws because the measure/layout pass (Lzs0.m) dies MID-FLIGHT:
-  a text-layout ctor (Lm7;.<init>, TextPaint/TextStyle fields) receives a
-  null text CharSequence (Lkb; object constructed with a1=NULL at entry,
-  caller Lvs0;.c) → the LEGAL R8 kotlin null-check (`invoke-virtual
-  getClass`) throws → the engine's deferred-throw semantics let the frame
-  continue (multi-NPE blast radius) → a NULL Throwable argument reaches
-  Lel0;.Y → cascade kills Lzs0.m → Lt4.onMeasure. isPlaced stays false
-  everywhere → 0 content draws. THE remaining dooz root is the measure-pass
-  exception cascade, NOT the canvas bridge (W6's "Ljt1 never constructed"
-  was a downstream consequence, not the root).
-- F-NEW-259g-a: AbstractList slot `get(I)` out-of-range does not throw
-  IndexOutOfBoundsException (probe row K, n=4; JDK AbstractList$Itr law).
-- F-NEW-259g-b: java.util.Vector materialization NPEs (probe row L —
-  Vector unimplemented; caught as NPE instead of the slot's ISE).
-- F-NEW-264d (§8 collection semantic-law audit — the fat seam, 15/18 rows
-  FAIL in a plain-Java probe): grouped by law —
-  LAW-A read-your-mutation coherence (K1 set/remove/indexOf);
-  LAW-B iterator write-back (K2 listIterator set, K11 Iterator.remove,
-  K12 ListIterator.add);
-  LAW-C Java-8 default-method family (K13 removeIf, K14 sort, K16
-  removeAll/retainAll, K17 merge/computeIfAbsent, K18 forEach);
-  LAW-D deque views (K4 LinkedList head/tail, K5 ArrayDeque peek/poll);
-  LAW-E hash view coherence (K6 getOrDefault, K9 HashSet.contains);
-  LAW-F missing families (K3 subList view NPE, K15 Stream NPE).
-  PASS today: entrySet iteration (K7), LinkedHashMap insertion order (K8),
-  LinkedHashSet order (K10).
-
-## SECTION B — REAL DOOZ RESULT
-- Before (CONT-10): DEFAULT_BACKGROUND_ONLY, 1→5+ nodes materialized, 0
-  canvas ops, anchor d602648e8e401895.
-- After (CONT-11): anchor d602648e8e401895 ×3 byte-identical (no visual
-  change — honest). Canvas ops: 0. Pixels: background-only. The REAL
-  progress is forensic: the draw path is exonerated and the true remaining
-  root is precisely named (F-NEW-265) with the full runtime-proof chain.
-
-## SECTION C — BRIDGE (if external were adopted)
-Required Android APIs/classes: ~2,000-2,800 classes / 100-200K lines
-(westlake-measured 2,056 classes + 193K lines for View apps; Compose adds
-graphics/text/Choreographer surface). Identity boundary: EVERY API call
-crosses guest↔host heap (MiniAndroid needs none). JNI: 30-60 bridge
-functions (westlake) to 8,000-20,000 registrations (per-call JNI-out).
-Graphics: full HWUI/Skia surface replay still required for Compose.
-Estimated complexity: 6-24 months — REJECTED (see Section E).
-
-## §12 APK MATRIX
-| APK | SHA16 ×3 | Compose | Kotlin | Result |
+| program | package | anchor ×3 | verdict | vs recorded |
 |---|---|---|---|---|
-| dooz 23 | apk 299eab21ac8b3c61 / frame d602648e8e401895 ×3 | YES | YES | DEFAULT_BACKGROUND_ONLY (F-NEW-265 root named) |
-| stopwatch 6 | frame 31ddd4d5b8e6d18e ×3 | NO | YES (coroutines) | deterministic byte-identical |
-| sudoku_secuso 101 | frame 45962e018344e94d ×3 | NO | YES (coroutines, heavy) | REAL_APP_CONTENT ×3 |
-| sudokusolver 8 (Compose Navigation) | — | YES | YES | BLOCKED-APK-ABSENT (F-Droid fetch stalled; SHA d114d479df66b0f6 recorded, script in place) |
-| blockblast 43 (independent Compose) | — | YES | YES | BLOCKED-APK-ABSENT (same) |
-| f259g probe | 1a41daa1262c3169 | synthetic | — | 11/13 rows PASS post-fix |
-| fcol audit probe | d607406c23fb205b | synthetic | — | 3/18 PASS (§8 matrix banked) |
-| f259 CONT-10 probe | 969b267a1cd232fb (rebuild) | synthetic | — | 7/7 PASS |
+| opencalc | com.darkempire78.opencalculator | e364b001ee7abd66 | REAL_APP_CONTENT | matches LONG-STANDING golden; W6-recorded a976d2f9 NOT reproduced at committed tree (flag, §4) |
+| chess | jwtc.android.chess | b5a7a35d5fe0564b | DEFAULT_BACKGROUND_ONLY | MATCH |
+| dooz | io.github.yamin8000.dooz | d602648e8e401895 | DEFAULT_BACKGROUND_ONLY | MATCH |
+| microtimer | dubrowgn.microtimer | da73010a37dd0189 | REAL_APP_CONTENT | MATCH |
+| unote | app.varlorg.unote | 4f1a9e4e8f64fae8 | REAL_APP_CONTENT | MATCH |
+| 2048 | com.miniandroid.g2048 | 7ad9a8bdefba539b | REAL_APP_CONTENT | MATCH |
+| mini-tetris | com.miniandroid.tetris | 26ccfce917c0e24c | REAL_APP_CONTENT | MATCH |
+| minicraft | com.miniandroid.minicraft | ce27f331770f6979 | REAL_APP_CONTENT | MATCH |
+| snake-deluxe | com.miniandroid.snakedeluxe | 34a712689ce66e58 | REAL_APP_CONTENT | MATCH |
+| snake-neon | com.miniandroid.snakeneon | 477bb95e1e6398ce | REAL_APP_CONTENT | MATCH |
+| tictactoe-deluxe | com.miniandroid.tictactoedeluxe | 0a1cd01bb490fdc5 | REAL_APP_CONTENT | MATCH |
+| bouncy | com.dozingcatsoftware.bouncy | b6dde6074bf47264 (×1) | REAL_APP_CONTENT | MATCH (CAMPAIGN_STATE recorded) |
+| freebloks | de.saschahlusiak.freebloks | b5a7a35d5fe0564b (×1) | DEFAULT_BACKGROUND_ONLY | generic background face (same face as chess) |
+| tower3d | stack.tower3d | 31ddd4d5b8e6d18e (×1) | NO_ROOT | libGDX SharedLibraryLoadRuntimeException — native .so load frontier (standing) |
 
-## §17 F — NEXT SINGLE ROOT
-ROOT: F-NEW-265 — measure/layout pass dies mid-flight on the deferred
-exception cascade (null text CharSequence into the text-layout ctor +
-deferred-throw blast radius + null-Throwable-to-catch-handler).
-SOURCE LAW: (1) kotlin/R8 null-check contract fires ONCE at the violating
-invoke and the caller's frame aborts there (ART semantics); (2) a caught
-Throwable is a real object (JVM); (3) measure/layout of newly inserted
-LayoutNodes gates all downstream placement (compose 1.11.4
-MeasureAndLayoutDelegate/NodeCoordinator/InnerNodeCoordinator.performDraw).
-FIRST DIVERGENCE: Lzs0.m (measure pass) dies with the SECONDARY NPE from
-Lel0.Y(null); the primary null is Lkb's text (Lvs0.c).
-GENERIC FIX (two bounded arms): (a) deferred-throw must abort the throwing
-frame at the throw point (ART-faithful) instead of continuing it;
-(b) the catch-handler argument must be the real in-flight throwable.
-REAL APK: dooz 23. INDEPENDENT CONSUMER: any Compose app measuring text
-(blockblast/sudokusolver when refetched). 3-RUN EVIDENCE: dooz ×3 at
-d602648e (this wave's baseline — unchanged, the fix wave is next).
+Score: **11/13 byte-identical MATCH** (opencalc matches its long-standing golden;
+the W6 a976d2f9 record is the unreproduced outlier) **+ bouncy MATCH + 2 honest
+standing-frontier faces** (tower3d native-lib, freebloks background).
+
+## 2. F-NEW-259 fix-activity proof at the rebuilt binary
+
+- fixtures/fnew259_probe rebuilt via scripts/cont10_build_probe.sh
+  (probe apk sha16 6e57f8ddb2fe6554) → **7/7 PASS** at aed46450c103f2ea
+  (A iterator n=3 alpha,beta,gamma; B lifecycle; C instanceof; D visibleEntries
+  exactly 1; E empty queue 0; F addAll true/1; G append x,y,z).
+- dooz live with MINIANDROID_F259_TRACE=1: 53 F259-ITER entries on the real
+  APK + [F259-INS] Lel0;.c instanceof checks; screenshot anchor stable
+  d602648e8e401895 (draw path unchanged — consistent with W6's "compose DRAW
+  path" remaining root).
+
+## 3. ROOT-CAUSED-FIXED (this wave): TG private SQLite opendb violated the ONE-PATH LAW
+
+Symptom (user-visible, reproduced pre-fix): telegram 40 × SQLiteException at
+`Lorg/telegram/SQLite/SQLiteCursor;.next` (forkgram 10 ×), log
+`[TG-SQLITE] opendb FAILED rc=14 (SQLITE_CANTOPEN) file=/data/data/<pkg>/files/cache4.db`.
+
+Root cause: miniandroid/src/jni/telegram_sqlite_jni.h opened the ANDROID-LOGICAL
+path raw on the host. Host /data does not exist → CANTOPEN → every prepare/step
+after it fails → the x40 SQLiteException face. This violated the canonical
+one-path law (storage/data_root.h: "no subsystem may invent its own mapping").
+
+Fix (generic, no package-specific code): opendb now routes the logical path
+through `Storage::resolve_android_path` (SANDBOX_DATA →
+`<data-root>/data/data/<pkg>/…`), creates the parent dir, then opens real
+sqlite3 (real sqlite3_open_v2, READWRITE|CREATE).
+
+Runtime proof at 400a7c1c48eb27fc (telegram_official.apk, package
+org.telegram.messenger.web):
+- `[TG-SQLITE] opendb OK logical=/data/data/org.telegram.messenger.web/files/cache4.db physical=<root>/data/data/org.telegram.messenger.web/files/cache4.db`
+- **cache4.db created with 95 REAL tables** (animated_emoji, app_config,
+  channel_admins_v3, chat_hints, …) + active WAL/SHM (2.6 MB WAL written).
+- **SQLiteException 40 → 0**; screenshot anchor UNCHANGED bbb6cd10a834963d
+  (render-neutral storage fix; REAL_APP_CONTENT retained).
+- Remaining TG exceptions re-classified (NOT sqlite): 8 × `Ll9/j;`
+  (Google ML Kit MlKitInitProvider chain), 1 × UnsatisfiedLinkError
+  (tmessages.49 ABI extraction face, GATEA-NATIVE deferred).
+- forkgram: opendb OK now; remaining 8 × SQLiteException are a DIFFERENT root —
+  `prepare FAILED rc=0 sql=` (empty SQL) where the SQL String.format received an
+  empty format string (engine R.string resource gap in the fork); real-JNI
+  behavior faithfully reproduced (null stmt → throw). Standing frontier recorded.
+
+### SQLite 70%-checklist proof (TWO programs, real read/write)
+1. Telegram org.telegram.messenger.web — cache4.db, 95 tables, WAL (private JNI
+   over real sqlite3; fixed this wave).
+2. chess jwtc.android.chess — databases/chess_pgn.db, `games` table with
+   **1 runtime-written row** (framework DatabaseShadow path).
+3. (bonus) unote app.varlorg.unote — databases/notes.db schema created
+   (table_notes + sqlite_sequence).
+
+## 4. Honest divergence flag (registry hygiene, no inflation)
+
+W6 (commit 6a66806a) recorded "opencalc anchor CHANGED a976d2f9 — richer render".
+At the committed tree (both aed46450c103f2ea rebuild and 400a7c1c48eb27fc),
+opencalc reproduces its LONG-STANDING golden e364b001ee7abd66 ×3. The F-NEW-259
+fixes ARE active here (probe 7/7 §2). Conclusion recorded: the a976d2f9 record
+is not reproducible from the committed tree; the long-standing golden stands;
+flagged — NOT silently rewritten.
+
+## 5. New programs (binary 400a7c1c48eb27fc)
+
+Evidence: evidence/cont11/CONT11_NEWBATCH.json (runs under run/cont11/new_*).
+
+| program | package | verdict | anchor | note |
+|---|---|---|---|---|
+| Secuso Privacy Friendly 2048 | org.secuso.privacyfriendly2048 | **REAL_APP_CONTENT** | eb5ebd559cad1028 | NEW WIN — launch-frame face was deferred-UI provisional (F-NEW-232 queue_size=1); `--frames 300` time-driven capture materialized it (301 frames, CLASSIC_CANVAS). Frontier: 1 uncaught (Glide cleanReferenceQueue F084 halt + GeneratedAppGlideModule ClassNotFound) |
+| Balance (ashkanrafiee) | com.ashkanrafiee.balance | **REAL_APP_CONTENT** | 3b834ad8c55d8f76 | NEW WIN at frame 20 (Persian-resources app) |
+| Ricochlime | com.adilhanney.ricochlime | NO_ROOT | 31ddd4d5… | Compose WINDOW_ROOT frontier (dooz draw-path family) |
+| awagam | com.awagam.android | DEFAULT_BACKGROUND_ONLY | b5a7a35d… | NPE family + APP_DRAW_OPS missing |
+
+## 6. Engine change list (this wave)
+
+- miniandroid/src/jni/telegram_sqlite_jni.h: opendb routes through
+  Storage::resolve_android_path (one-path law compliance) + logical/physical
+  logging. No other source file touched.
+
+## 7. Regression at the post-fix binary
+
+All groups re-run from scratch at 400a7c1c48eb27fc (no resumed rows):
+anchors 4/5 byte-identical MATCH + opencalc matches long-standing golden (§4);
+six games 6/6 MATCH; bouncy MATCH; tower3d/freebloks unchanged faces;
+telegram anchor UNCHANGED with SQLiteException 0. Zero regressions from the fix.
