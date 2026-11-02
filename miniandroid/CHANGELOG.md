@@ -1,6 +1,369 @@
 # Changelog
 
-All notable changes to the MiniAndroid Runtime project.
+All notable changes to the **MiniAndroid Compatibility Runtime** are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+Release codenames continue the project's hen-breed line
+(Brahma → Australorp → Chantecler → Silkie → Leghorn → …). Point releases
+(x.y.z.1) take the name of a color variety of the parent breed.
+
+## [Unreleased]
+
+Nothing yet. The standing 12-slot program queue and next wagons live in
+`docs/PROGRAM_QUEUE.json` (TRAIN-70 dooz clickable live census, microtimer
+alarm-list row render, sqlnotes DELETE re-proof, new GitHub-source programs).
+
+## [v0.0.6.1-Exchequer] - 2026-11-02
+
+Named after the **Exchequer Leghorn** — the mottled black-and-white color
+variety of the Leghorn breed — because this release is exactly that: a mosaic
+of hundreds of individually small, independently verified pieces
+(root-caused engine laws and their evidence) that together change the picture.
+
+**Scope:** 814 commits (2026-09-16 → 2026-11-02) across ≈100 named campaign
+waves (S49…S149 and the CONT-series). Root registry **348 → 853** entries,
+each with an honest per-root status.
+
+**The one-paragraph version.** From a runtime that could render a handful of
+first-party fixtures, MiniAndroid grew into a compatibility runtime that
+(1) executes **real HTML5/JavaScript** websites and web games end-to-end with
+its own browser and TLS network stack, (2) runs **real SQLite** database
+programs with proven on-disk CRUD, (3) renders **real content** — not white
+screens — from byte-pinned third-party apps and a six-game in-house family,
+with an anchor wall that reproduces **byte-exactly, 3× per pin, across
+rebuilds and containers**, (4) survived git-history purges and container
+resets without losing a single recorded byte-anchor, and (5) closed its
+false-success era: every claim below is backed by run artifacts, SHA pins and
+re-run reproducibility.
+
+### Added
+
+#### Real HTML5 / JavaScript execution (WebView subsystem)
+- Real HTML5 engine: **QuickJS 2024-01-13** + HTML parser + live DOM +
+  **Canvas2D raster** + timers/rAF + localStorage + input (S109). Breakout 71
+  executes its full game script with a real canvas render, 3-run
+  byte-identical, `js_errors=0` (S111).
+- **CSS box-model layout + paint engine**: flexbox, media queries,
+  pseudo-elements, gradients, rounded rects, images, shadows, fonts (S113);
+  `calc()` nesting, flex-shrink, SVG2 inline `use`/`symbol`/`viewBox` (S117);
+  WHATWG DOM traversal + RFC 3986 dot-segments (S117); ES modules,
+  fetch/URL/cookie laws (S133) — the z.ai first divergence decoded and fixed.
+- **Mini Browser + real network** (NET-001): real HTTP(S) over TLS — the
+  browser loads real websites end-to-end, 14/14 interactive (S100);
+  `file:///android_asset` + `android_res` rendering (S101); z.ai loads
+  end-to-end with the HEADER-OWS-TRIM law (S102).
+
+#### Real SQLite / database
+- **Cursor/database contract at ART parity** (F-NEW-401, CONT-98);
+  ContentResolver/Cursor dispatch with an authority map and AOSP failure
+  semantics (371-PHASE-B).
+- **ONE-PATH private-DB law** (S143 / CONT-11 W7): the Telegram private
+  `cache4.db` open violation (raw host open → `SQLITE_CANTOPEN` rc=14)
+  root-caused and fixed; the **x41 exception class is eliminated** and holds
+  at this release (0 exceptions, opendb OK, pin `bf5c9ef920aa32d7` == the
+  S147 pin exactly; the same fix re-derived convergently 3× independently).
+- **Proof programs with real disk I/O**: sqlnotes + sqltasks — **all four
+  CRUD arms REAL** at the release binary (INSERT ×2 / UPDATE done=1 rendered /
+  DELETE id=2 / CLEAR ALL); microtimer persists two real alarm rows
+  `(5,5,1,11770)+(5,5,2,20410)`, reopen list query rows=2 (row render open).
+
+#### Package & environment lifecycle
+- `install` (F-NEW-231: manifest → SHA-256 → per-package store with
+  integrity re-hash), generic `uninstall` (16/16 proof gate), per-package
+  context-root filesystem law (F-NEW-234), the pkginspect agent CLI (13
+  sections; ZIP/ELF/ARSC inventory, `--jsonl`), `INSTALL_ENVIRONMENT_PROFILE`
+  ENV-001..010, and **GATE A** — the install-environment capability gate.
+- Honest device persona: `Build.SUPPORTED_ABIS`/`CPU_ABI` advertise the true
+  host-executable ABI (FALSE_ADVERTISED_MATRIX fix, 10 rows).
+
+#### Jetpack Compose compatibility program
+- Compose stack pinned by version (runtime 1.11.4, navigation 2.9.8,
+  lifecycle 2.11.0, kotlinx 1.9.0) with R8-map identity proofs; dooz
+  structure discovered = Compose + androidx.navigation.compose NavHost
+  (CONT-9/CONT-10).
+- dooz **materializes real destination LayoutNodes** (tree 1 → 5+ nodes;
+  F-NEW-259 DEX-iterator descriptor-slot fallback + F-NEW-259b
+  ArrayList.addAll APPEND semantics), renders a real Scaffold with title +
+  button glyphs through the real StaticLayout text pipeline
+  (F-NEW-294/300/343/344), vector icons via DrawCache (F-NEW-351); first real
+  content frame (CONT-43); past the white screen (CONT-48).
+- The **tap chain decoded end-to-end** on verbatim upstream ground truth
+  (compose 1.6.7 sources): dispatch proven symmetric for DOWN/UP, the
+  pointerCount law fixed (CONT-11 W8), hit-test placement + geometry proven
+  correct live (W10 TRAIN-9); the remaining root **pinned** to the
+  composed-modifier factory dispatch — the clickable factory executes but is
+  wired to the R8 compile-time no-op handler singleton (TRAIN-69 bytecode
+  evidence: `Lbr1;.h pc=96: sget Lpv;.c → Lkr1;.a`) and the real clickable
+  core element never enters the hit path; TRAIN-70 owns the live census and
+  the generic fix.
+
+#### Graphics truth & verification subsystem
+- Strict verdict state machine + multi-technique pixel probes +
+  asset-provenance cross-check (S92); image/animation/font **truth laws**
+  (dHash frame identity, ink-bbox geometry, NCC glyph matching, tofu law)
+  (S93); adversarial battery; **graphics source library**: 122 verified
+  GitHub repositories mined with 48 evidenced semantic laws and a
+  DO-NOT-REINVENT table (S94).
+- Golden fixture ladder **L0..L6** on real aapt2 resources + the
+  pixel-provenance instrument (S82); screenshot quality gate (near-white /
+  near-black / entropy + click-test audit) (S53).
+
+#### Input stack (AOSP parity)
+- VelocityTracker (AOSP android-14 LSQ2 port), TouchTarget +
+  onInterceptTouchEvent reverse-draw-order hit test (S128); Scroller /
+  OverScroller 1:1 port, GestureDetector, KeyEvent/FocusFinder,
+  onScrollChanged/computeScroll/item-click bridges (S130); TouchDispatcher
+  AOSP `ViewGroup.dispatchTouchEvent` claim law — first topmost claimant
+  wins (371-FINAL); programmatic measure/layout input-layer contract to AOSP
+  parity (F-NEW-402..406); coordinate-transform + hit-test frames
+  (F-NEW-408..411); scaleType raster parity (F-NEW-413..415); z-order real
+  reorder + elevation round-trip (F-NEW-418..420); the disabled-control law
+  in the `--click-test` oracle (F-NEW-407).
+
+#### Observability & forensics
+- One backbone runtime logger on TraceEngine (runtime_event +
+  JSONL/ring/stage-machine/first-divergence sinks) (S135); ≈20 env-gated
+  read-only diagnostics (PMC method census, T68 tap census, CL-TRACE caller
+  frames, qualified FIELD-TRACE, F259/F490/D7/D9/INSERT/PLACE, theme-bag
+  dump, op-level graphics trace) — inert by default, anchor-proven
+  byte-neutral.
+- Crash forensics names each native frame via dladdr
+  (`mod=/sym=/modoff=`) with a bionic-compat layer (T19); the Telegram native
+  library is **really loaded**: `libtmessages.49.so` dlopen OK + `JNI_OnLoad`
+  ran (T18).
+
+#### In-house programs (first-party source, canonical aapt2/ECJ/D8 toolchain)
+- Games: **Snake Deluxe**, **Mini Tetris**, **2048**, **TicTacToe Deluxe
+  (dooz)**, **Snake Neon**, **MiniCraft** — each with autoplay drivers;
+  **DODGE fully playable** via the SurfaceView graphics strike; g2048
+  **played with 4 real clicks** at this release (f43face08 → 550470af);
+  autonomous pixel-only-vision snake gameplay (88 moves / 22 turns /
+  1 food capture, S73).
+- Apps: **sqlnotes / sqltasks** (the real-SQLite CRUD proofs) and
+  **simple-browser**; source-first third-party executions to L6+
+  (gmdice, anuto, OpenSudoku, FishRings, TriPeaks, OPMT, pmk, FreeKlondike,
+  klondike, chess 10.6.0 full-load at 0 errors, Suntimes, …).
+
+### Fixed
+
+*(every item: generic — zero app-/R8-specific code — with an upstream law,
+live evidence, and probe or 3-run proof)*
+
+- **DEX / reflection identity family**: qualified instance-field identity
+  (F-NEW-160; reflection `Field.get/set` + all 14 Unsafe variants routed
+  through it), heap-central shared field-identity resolver (F-NEW-251),
+  typed-array element reads (F-NEW-237), AbstractCollection.toArray
+  (F-NEW-238), filled-new-array fallback (F-NEW-487), superinterface closure
+  (F-NEW-469), superclass super resolution (F-NEW-471), multi-DEX
+  class-annotation closure (F-NEW-278), multi-DEX interface closure,
+  InMemoryDexClassLoader, getDeclaredMethods/getInterfaces/getSuperclass
+  never-null (F-NEW-190/190b/191), method annotations,
+  getDeclaredConstructor contract (F-106), Class.getConstructors
+  (F-NEW-517), PackageManager$NameNotFoundException parent chain
+  (F-NEW-518), TextView.getTextColors (F-NEW-519).
+- **Collections / libcore laws**: ArrayList.addAll APPEND (F-NEW-259b),
+  DEX-iterator descriptor-slot fallback (F-NEW-259), iterator write-back +
+  kind-aware ListIterator.set (CONT-18 LAW-B), deque kind-aware order
+  (LAW-D), Map.remove/getOrDefault silent-no-op family (LAW-E),
+  subList nested views (F-NEW-369 five-law family), TreeSet pop-family
+  coherence (F-NEW-247), EnumSet.range/allOf real semantics, Map boxed-key
+  value-equality, BlockingQueue FIFO + park-yield drain (F-NEW-167),
+  explicit-null-beats-initializer (F-NEW-252), boxed-primitive identity
+  (F-NEW-173), interface dispatch by exact (name, descriptor) (F-NEW-281),
+  parallel-store coherence (CONT-18 LAW-A), Long 64-bit compare (F-086),
+  System.identityHashCode (OpenJDK law), String.compareTo (F-NEW-500),
+  String.format Locale overload, BigInteger subset, ServiceLoader over APK
+  entries, Bundle parcel family (F-NEW-257), STRING_REF instance-of
+  (F-NEW-258), singletonList token map (F-NEW-511b), Arrays.toString(null) →
+  "null" (R-NEW-458), null-element representation leak (F-NEW-271).
+- **Text & graphics**: the compose text pipeline end-to-end (Typeface
+  family, SpannableString → StaticLayout, intrinsic measurement,
+  package-routed color), canvas-text real size (F-NEW-372), CJK dialog
+  labels via TextShaper + WenQuanYi fallback (R-NEW-398), real GIF animation
+  decode (two upstream stb bugs fixed: disposal-2 semantics, two_back OOB),
+  vector-drawable tints through the resource table (F-NEW-341), DrawCache
+  vector icons (F-NEW-351), PorterDuff color filter + Bitmap.setPixels
+  (F-NEW-352), Canvas(Bitmap) per-canvas sub-recorder (F-NEW-345),
+  RenderNode fresh-display-list law (F-NEW-380), app-file ColorStateList law
+  (F-NEW-336), the framework-res Compact law + 1,120 framework-res files
+  (R-NEW-423), theme windowBackground chain incl. the `?android:attr` form
+  (F-NEW-342), AttributeResolution DEF-STYLE stages (F-NEW-327), TypedValue
+  dimension REFERENCE law (F-NEW-360), appcompat decor chain with
+  real-class Toolbar inflate, the support-fragment pipeline end-to-end
+  (F-NEW-331..334), XML `<fragment>` short-tag law (F-NEW-339),
+  transparent-container law (F-NEW-338), declarative Spinner entries law
+  (F-NEW-337), ConstraintLayout guideline + dimension laws (F-NEW-329),
+  LinearLayout.onMeasure super law (F-NEW-328), RelativeLayout margins
+  (F-142), Window.setContentView silent no-op fixed (R-005) + content-anchor
+  (F-NEW-165) + content-parent reuse (F-NEW-220), AOSP measure→layout
+  pairing (R-NEW-466), View suggested-minimum family (F-NEW-448), Paint
+  metrics + word-wrap + ellipsize draw (F-NEW-416..422),
+  Canvas.quickReject vs the current clip (F-NEW-420-era CONT-101 T7),
+  TextView color-state law (F-NEW-301), FragmentTransaction pending-op law
+  (F-NEW-304), Activity.setTheme(int) rebinding (F-NEW-484),
+  WindowManager.getCurrentWindowMetrics API-30 shadow.
+- **Lifecycle / interpreter / scheduler**: HALT-RETURN containment (F-084),
+  ART-sized engine stack (F-083), failed-<clinit> honesty →
+  NoClassDefFoundError at first active use (F-NEW-215), stale-unwind clinit
+  attribution (F-NEW-470), the forward-progress loop law v3 (frame-level
+  epoch + `--max-instructions`), worker park-depth save/restore (ROOT-010),
+  park-yield at the drain boundary, the frame-1 group-deletion differ root
+  (F-NEW-286), M3-19 re-entry budget law (F-NEW-543), caller-site pc
+  identity (F-NEW-541), super-dispatch proto law (F-NEW-284), invoke-super
+  boundary law (F-NEW-324), ART null-receiver invoke + FIELD laws
+  (F-141, F-NEW-265), register-write bitmap + strcmp arith dispatch
+  (F-109), stdio-binding `__sF` stride SIGSEGV fix (F-NEW-564), regex
+  capture-group use-after-scope fix (smatch over a dead local — every app's
+  `group()` read freed memory).
+- **Storage / IO / prefs**: SharedPreferences per-package directory
+  (R-NEW-367) + first-parameter name law (F-NEW-193a) + a 13-ticket
+  machine-proof batch; the byte-loading **ONE-PATH contract** (alias +
+  containment + device-node allowlist; FileOutputStream/openFileOutput/
+  fileList/deleteFile INT64 lengths); the ASSETS-WITHOUT-ARSC law;
+  RandomAccessFile law over real files (MultiDex ZipException root,
+  F-NEW-474); Context.getDir AOSP law (F-NEW-168);
+  getAbsoluteFile/getCanonicalFile (R-NEW-390..394); the app-visible
+  logical-path reverse law (DataStore prefix multiplication dead); install
+  staged-generation atomicity (F-NEW-376); path-identity containment
+  (F-NEW-375).
+- **Telegram (all generic, zero package checks)** — from the v0.0.6
+  desugared-streams halt to: first zero-error run (S110: KeyStore family +
+  getBaseContext never-null), first **fully clean execution** (0 errors /
+  warnings / uncaught, rc=0; CREATED-PHASE lifecycle fan-out ROOT-062/063,
+  S115), the real login UI view tree with measure-contract laws (S109),
+  AndroidUtilities class-level swallow method-scoped (R-NEW-571), the TL
+  offline-callback law (R-NEW-570), typed canned-success config chain (T5),
+  AndResGuard eager R$ harvest (T9/F1), deferred-UI census laws, the native
+  lib load chain (T17/T18), and the **private-SQLite one-path fix** (the
+  x41 exception class eliminated; holds at this release).
+- **White-screen war (app fan-out)**: BMI white → real form (S83
+  else-chain leak family); solitaire past the receiver/drawer/onCreate walls
+  (F-NEW-324..326 era); tanana blank bar → real preference text
+  (F-NEW-336); opencalc BLOCKED → REAL_APP_CONTENT ×3 deterministic
+  (F-NEW-215..220 law chain, FIVE-APP GATE); memory cold-first-launch white
+  → real (F-NEW-369); chess Toolbar 1080×0 → 1080×168 (F-NEW-448, five
+  stacked roots); Suntimes 3 process deaths → 0 (time4j EnumSet +
+  framework-enum laws; WelcomeActivity REAL_APP_CONTENT ×3,
+  a49f90d65a8fc5c8); WhatsApp past attachBaseContext (F-NEW-166..174
+  chain); tower3d 8-law decode wave (CONT-159); klondike / dame / solitaire
+  / memory FLAT → REAL (CONT-48 M0 wave); 5 new NOT_TESTED programs
+  unlocked (weather, tictactoe5, minesweeper7, puzzle293, ballbreak10 —
+  CONT-47 M2); the capacitor/cordova bootstrap family (CONT-41).
+
+### Performance
+
+- dooz board **+39.5% interpreter budget** at byte-exact walls (CONT-42,
+  gprof-driven: typed-array dense backing R-NEW-548, sget-ladder static
+  resolution, allocation hygiene — in-place try_emplace killing 5.49M
+  whole-object copies/run, R-NEW-555/556).
+- DalvikValue dropped two by-value `std::string` members (**≈112 B/value**
+  lighter) (CONT-32).
+- RandomAccessFile SLURP ban fixed (R-NEW-549): no RAF keeps a whole file
+  resident (Telegram's 36 RAFs over the 120 MB domain).
+
+### Security
+
+- **S51 history purge**: 3-pass git-filter-repo verified (tree invariant,
+  fsck clean), all old pushes removed, a truncated PAT-prefix fragment
+  eliminated from history; fresh-clone remote verification recorded.
+- **Fail-closed secret guard** (S49): tree/staged/staging modes that never
+  print values, integrated into the release guard and pre-commit/pre-push
+  hooks, plus a full-history scanner; full-surface SECURITY_AUDIT
+  (no credential compromise; F1–F5 public-by-design classifications).
+- The app-specific heap transplant (EXP-071) removed as provably dead
+  (CONT-97); no fake device personas (honest Build.* advertising).
+
+### Changed — honesty & process (the false-success era is closed)
+
+- **S107 closure audit**: all 128 prior closures re-verified from pixels —
+  117 reopened as FALSE VISUAL CLOSURE and re-closed only with fresh-run
+  evidence. That standard (screenshot quality gate + 3-run + byte pins)
+  governs every claim since.
+- FRAME-TRUTH pixel-ownership verdicts (NO_ROOT / RENDER_EXCEPTION /
+  DEFAULT_BACKGROUND_ONLY / REAL_APP_CONTENT / INTERACTIVE), deferred-UI
+  observability, honest-clock evidence laws (F-NEW-197/198/232/233).
+- **LAW-001**: ABI scope is a test law — ARM-only APKs are
+  ABI_OUT_OF_SCOPE SKIP, never failures; the negatives suite grew 17 → 19
+  (unknown-authority honest IAE; PendingIntent FLAG_NO_CREATE null law).
+- **English-only repo mandate** for authored content; the Coder request
+  protocol and **Constitution V2** adopted as permanent campaign law
+  (169 rules at the repo root).
+- Repository hygiene: raw dumps untracked (*.ppm 825 MB; run/ 369 files /
+  17 MB; tmp/ 194 MB), repo footprint 591.89 → 160.04 MiB, .git 621 → 98 MB,
+  the ZERO-LOG law, and the fail-closed release-artifact guard.
+
+### Testing / evidence at this tag
+
+- **Anchor wall 12/13 byte-exact ×3** (`scripts/s149_true_wall.sh`):
+  opencalc `63020bc7` · chess `3f7e6707` · dooz `851cc176` · microtimer
+  `bbd350b6` · unote `7481e9b4` · tower3d `11a38a5a` + games `f43face08` /
+  `b818a6a7` / `5235683f` / `e77a073f` / `4876e47d` / `748bb6cf`; snakeneon
+  `4a19b1fe` ×3 deterministic vs pin `b669ce89` (build-env face drift, 98.9%
+  real content — flagged, not hidden).
+- Regression gates: negatives 19/19 · reinstall 8/8 · multiapp 3/3 ·
+  gate-A probe 98/0/1 · agent-skill selftest 13/13 · fnew259 probe 7/7 ·
+  fnew476 probe 5/5 · F253PROBE 21/21 · W3PROBE 12/12.
+- Battery: 94 → **124 stages ALL PASS** (GATE A record, 2026-10-03); the
+  standing release gate on this lineage is the byte-exact anchor wall plus
+  the fixture-probe battery (`BATTERY_INDEX.json` remains the frozen
+  S95-era 94-stage inventory).
+- Fresh-container discipline: recorded binaries reproduced **byte-identically**
+  from clean rebuilds across ≥8 independent waves (CONT-15/65/77/106/107/135/
+  152, W7b, S149-TRUE).
+- Corpus: 202-title canonical registry → 94-F-Droid expansion (22 → 116
+  executed set) → a 253-row triage registry with per-title next steps; a
+  121-APK loading census; 50/60-parallel train censuses; conclusions posted
+  as hashed evidence comments on issues #353–#388.
+- Evidence trees: `evidence/s138_trains … s149_trains`,
+  `evidence/cont101…cont128`, `docs/PROGRAM_QUEUE.json` (the 12-slot
+  standing queue).
+
+### Known limitations (honest)
+
+- **Compose clickable dispatch is not yet fixed** — the dooz cell tap is
+  consumed but no-ops (root pinned at the composed-modifier factory
+  dispatch; TRAIN-70 queued); the Compose draw path (layer drawContent →
+  canvas ops) remains the open frontier; the opencalc click-interaction
+  probe is queued behind the same generic fix.
+- microtimer alarm **list rows** do not render below the keypad yet
+  (persistence + query are real).
+- snakeneon build-env face drift (98.9% real content) is flagged vs its
+  standing pin.
+- The opencalc anchor changed once during CONT-10 (a richer
+  REAL_APP_CONTENT render — retained and re-pinned `63020bc7`).
+- **Windows artifacts are not built for this release** (no MinGW in the
+  release environment); the latest packaged binaries remain
+  v0.0.6-Leghorn. Linux builds from source are verified via the byte-exact
+  wall.
+- Telegram renders real UI chains but its full messenger UI is not claimed;
+  corpus titles outside the executable/ABI envelope are SKIP-labeled by
+  LAW-001, never "failed".
+
+## [v0.0.6-Leghorn] - 2026-09-16
+
+Repository-recovery and release-hygiene release (S48): regression battery
+restored to **94/94 ALL PASS** (clean run), 1,076.3 MB of campaign exhaust
+archived with SHA-256 provenance, the hash-verifiable toolchain bootstrap
+(`scripts/build/bootstrap_toolchain.sh`), the R-NEW-367 fix (SharedPreferences
+directory now resolves from the manifest-derived package for *every* app),
+and a repaired Windows build (static PE32+). Full details:
+`docs/releases/RELEASE_v0.0.6-Leghorn.md`.
+
+## [v0.0.5-Silkie] - 2026-09-11
+
+Hello-Color real-APK milestone: verified end-to-end real APK execution —
+byte-identical rebuild → first-party Dalvik interpreter (opcode-level trace,
+`execution_source=REAL_DALVIK_INTERPRETER`) → first-party software renderer →
+pixel-identical PNG provenance, 3-run deterministic; registry 302 roots.
+
+## [v0.0.4-Chantecler] - 2026-09-10
+
+The F-050 Choreographer frame-pump family (singleton + FIFO frame callbacks +
+one shared monotonic vsync time) advanced the dooz Compose first-frame chain
+by four blocker layers; battery 91/91 ALL PASS; 3-run byte-identical. Honest:
+the final Compose frame was still not rendered at that point.
 
 ## [v0.0.3] - 2026-09-10 — Chantecler (Compose execution frontier + root-law closure)
 
@@ -896,3 +1259,14 @@ Foundation work including:
   docs/knowledge/.
 - Corrected Campaign 011 gradings: libpng IS wired; archives WERE available
   (kept for audit in docs/CROSS_CAMPAIGN_RECOVERY_011_1.md §5).
+
+---
+
+## Changelog links
+
+[unreleased]: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/compare/v0.0.6.1-Exchequer...HEAD
+[v0.0.6.1-Exchequer]: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/compare/v0.0.6-Leghorn...v0.0.6.1-Exchequer
+[v0.0.6-Leghorn]: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/compare/v0.0.5-Silkie...v0.0.6-Leghorn
+[v0.0.5-Silkie]: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/compare/v0.0.4-Chantecler...v0.0.5-Silkie
+[v0.0.4-Chantecler]: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/compare/v0.0.3-Chantecler...v0.0.4-Chantecler
+[v0.0.3]: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/compare/v0.0.2...v0.0.3-Chantecler

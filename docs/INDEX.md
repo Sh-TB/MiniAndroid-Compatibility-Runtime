@@ -14,11 +14,12 @@ Machine-readable twin: [`docs/INDEX.json`](docs/INDEX.json).
 | Architecture / how the runtime works | [`docs/architecture/`](architecture/) · [`docs/runtime/architecture.md`](runtime/architecture.md) |
 | The one regression-battery command | `bash scripts/test/run_test_battery.sh` → “BATTERY GATE: ALL PASS” |
 | Which battery stages exist & their status | [`docs/testing/BATTERY_INDEX.json`](testing/BATTERY_INDEX.json) |
-| Every known root cause & its status | [`../root_registry.json`](../root_registry.json) (349 roots) |
+| Every known root cause & its status | [`../root_registry.json`](../root_registry.json) (853 roots) |
+| The standard changelog (all releases) | [`miniandroid/CHANGELOG.md`](../miniandroid/CHANGELOG.md) (Keep a Changelog 1.1.0) |
 | The upstream semantic contract behind a fix | [`docs/upstream/INDEX.md`](upstream/INDEX.md) |
 | Per-issue forensic evidence (compact) | [`docs/evidence/`](evidence/) · solved: [`docs/evidence/solved/`](evidence/solved/) |
 | Where raw campaign exhaust went | [`docs/evidence/ARCHIVE_MANIFEST.json`](evidence/ARCHIVE_MANIFEST.json) (external archive, SHA-pinned) |
-| Release notes & artifacts | [`docs/releases/`](releases/) · current: `RELEASE_v0.0.6-Leghorn.md` |
+| Release notes & artifacts | [`docs/releases/`](releases/) · current: `RELEASE_v0.0.6.1-Exchequer.md` · previous: `RELEASE_v0.0.6-Leghorn.md` |
 | Release manifest (versions/SHAs) | [`docs/releases/RELEASE_MANIFEST.json`](releases/RELEASE_MANIFEST.json) |
 | Session history / worklog | [`docs/maintenance/worklog.md`](maintenance/worklog.md) |
 | Building (incl. Windows cross-build) | [`docs/build/`](build/) · `miniandroid/scripts/build_windows.sh` |
