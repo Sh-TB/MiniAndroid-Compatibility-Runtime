@@ -1,0 +1,536 @@
+{
+ "binary_sha16": "400a7c1c48eb27fc",
+ "runs": {
+  "opencalc": {
+   "apk": "/home/z/my-project/upload/opencalculator_53.apk",
+   "apk_sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+   "package": "com.darkempire78.opencalculator",
+   "runs": {
+    "run1": {
+     "seconds": 1.2,
+     "screenshot_sha16": "e364b001ee7abd66",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 732555,
+     "uncaught_exceptions": 1,
+     "log_lines": 2632,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 1.2,
+     "screenshot_sha16": "e364b001ee7abd66",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 732555,
+     "uncaught_exceptions": 1,
+     "log_lines": 2588,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 1.2,
+     "screenshot_sha16": "e364b001ee7abd66",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 732555,
+     "uncaught_exceptions": 1,
+     "log_lines": 2588,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "chess": {
+   "apk": "/home/z/my-project/upload/chess_jwtc_298.apk",
+   "apk_sha256": "3245b9ec35f6c1df771c418ac91ec792b5e056fb37e1d391e607b614f1a283b4",
+   "package": "jwtc.android.chess",
+   "runs": {
+    "run1": {
+     "seconds": 1.0,
+     "screenshot_sha16": "b5a7a35d5fe0564b",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 4,
+     "log_lines": 1706,
+     "sqlite_mentions": 52,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.9,
+     "screenshot_sha16": "b5a7a35d5fe0564b",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 4,
+     "log_lines": 1705,
+     "sqlite_mentions": 37,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.9,
+     "screenshot_sha16": "b5a7a35d5fe0564b",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 4,
+     "log_lines": 1705,
+     "sqlite_mentions": 37,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "dooz": {
+   "apk": "/home/z/my-project/upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+   "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+   "package": "io.github.yamin8000.dooz",
+   "runs": {
+    "run1": {
+     "seconds": 58.3,
+     "screenshot_sha16": "d602648e8e401895",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 1,
+     "log_lines": 4780,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 57.8,
+     "screenshot_sha16": "d602648e8e401895",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 1,
+     "log_lines": 4780,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 58.2,
+     "screenshot_sha16": "d602648e8e401895",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 1,
+     "log_lines": 4780,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "microtimer": {
+   "apk": "/home/z/my-project/upload/canonical_apks/dubrowgn.microtimer_8.apk",
+   "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "package": "dubrowgn.microtimer",
+   "runs": {
+    "run1": {
+     "seconds": 0.7,
+     "screenshot_sha16": "da73010a37dd0189",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1029909,
+     "uncaught_exceptions": 0,
+     "log_lines": 980,
+     "sqlite_mentions": 115,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.8,
+     "screenshot_sha16": "da73010a37dd0189",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1029909,
+     "uncaught_exceptions": 0,
+     "log_lines": 977,
+     "sqlite_mentions": 92,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.7,
+     "screenshot_sha16": "da73010a37dd0189",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1029909,
+     "uncaught_exceptions": 0,
+     "log_lines": 977,
+     "sqlite_mentions": 92,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "unote": {
+   "apk": "/home/z/my-project/upload/canonical_apks/app.varlorg.unote_30.apk",
+   "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+   "package": "app.varlorg.unote",
+   "runs": {
+    "run1": {
+     "seconds": 0.7,
+     "screenshot_sha16": "4f1a9e4e8f64fae8",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 302400,
+     "uncaught_exceptions": 0,
+     "log_lines": 541,
+     "sqlite_mentions": 60,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.7,
+     "screenshot_sha16": "4f1a9e4e8f64fae8",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 302400,
+     "uncaught_exceptions": 0,
+     "log_lines": 539,
+     "sqlite_mentions": 57,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.7,
+     "screenshot_sha16": "4f1a9e4e8f64fae8",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 302400,
+     "uncaught_exceptions": 0,
+     "log_lines": 539,
+     "sqlite_mentions": 57,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "2048": {
+   "apk": "/home/z/my-project/upload/s80_games/build_2048/g2048_v1.0_vc1.apk",
+   "apk_sha256": "c933b5b82192087585b30a0bd1bdaf1ae6e8d80a3901ecdec12b75f0a3eac13d",
+   "package": "com.miniandroid.g2048",
+   "runs": {
+    "run1": {
+     "seconds": 0.8,
+     "screenshot_sha16": "7ad9a8bdefba539b",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1175590,
+     "uncaught_exceptions": 0,
+     "log_lines": 542,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.8,
+     "screenshot_sha16": "7ad9a8bdefba539b",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1175590,
+     "uncaught_exceptions": 0,
+     "log_lines": 542,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.8,
+     "screenshot_sha16": "7ad9a8bdefba539b",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1175590,
+     "uncaught_exceptions": 0,
+     "log_lines": 542,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "mini-tetris": {
+   "apk": "/home/z/my-project/upload/s80_games/build_tetris/tetris_v1.0_vc1.apk",
+   "apk_sha256": "700a3dcf9a98b26ef49ef8c36040011da325d926edb4c9a56853008924928bab",
+   "package": "com.miniandroid.tetris",
+   "runs": {
+    "run1": {
+     "seconds": 0.8,
+     "screenshot_sha16": "26ccfce917c0e24c",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1143938,
+     "uncaught_exceptions": 0,
+     "log_lines": 765,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.8,
+     "screenshot_sha16": "26ccfce917c0e24c",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1143938,
+     "uncaught_exceptions": 0,
+     "log_lines": 765,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.8,
+     "screenshot_sha16": "26ccfce917c0e24c",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1143938,
+     "uncaught_exceptions": 0,
+     "log_lines": 765,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "minicraft": {
+   "apk": "/home/z/my-project/upload/s86_games/build_minicraft/minicraft_v1.0_vc1.apk",
+   "apk_sha256": "77b9629ee111b968ccc9dbd4507eab3564a0a7a6e26dcacbe28f99de189c3a90",
+   "package": "com.miniandroid.minicraft",
+   "runs": {
+    "run1": {
+     "seconds": 0.8,
+     "screenshot_sha16": "ce27f331770f6979",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1211493,
+     "uncaught_exceptions": 0,
+     "log_lines": 789,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.8,
+     "screenshot_sha16": "ce27f331770f6979",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1211493,
+     "uncaught_exceptions": 0,
+     "log_lines": 789,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.8,
+     "screenshot_sha16": "ce27f331770f6979",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1211493,
+     "uncaught_exceptions": 0,
+     "log_lines": 789,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "snake-deluxe": {
+   "apk": "/home/z/my-project/upload/s80_games/build_sd/snake_deluxe_v1.0_vc1.apk",
+   "apk_sha256": "551eca798f88c1bbc44726d6a1f97a2a501cc753edcff76001ed8440aee282de",
+   "package": "com.miniandroid.snakedeluxe",
+   "runs": {
+    "run1": {
+     "seconds": 0.8,
+     "screenshot_sha16": "34a712689ce66e58",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1425075,
+     "uncaught_exceptions": 0,
+     "log_lines": 696,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.8,
+     "screenshot_sha16": "34a712689ce66e58",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1425075,
+     "uncaught_exceptions": 0,
+     "log_lines": 696,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.8,
+     "screenshot_sha16": "34a712689ce66e58",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1425075,
+     "uncaught_exceptions": 0,
+     "log_lines": 696,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "snake-neon": {
+   "apk": "/home/z/my-project/upload/s98_games/build_snakeneon/snakeneon_v1.0_vc1.apk",
+   "apk_sha256": "b36885c181a323ab5f86d73ba4538ae4f226b9fdc0be8eff11aab05c2f76be26",
+   "package": "com.miniandroid.snakeneon",
+   "runs": {
+    "run1": {
+     "seconds": 0.9,
+     "screenshot_sha16": "477bb95e1e6398ce",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 166363,
+     "uncaught_exceptions": 0,
+     "log_lines": 375,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.9,
+     "screenshot_sha16": "477bb95e1e6398ce",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 166363,
+     "uncaught_exceptions": 0,
+     "log_lines": 375,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.9,
+     "screenshot_sha16": "477bb95e1e6398ce",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 166363,
+     "uncaught_exceptions": 0,
+     "log_lines": 375,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "tictactoe-deluxe": {
+   "apk": "/home/z/my-project/upload/s83_games/build_ttt/tictactoe_deluxe_v1.0_vc1.apk",
+   "apk_sha256": "d04d92eab8dbbb11b38f4299c877766b7aca3b9bcc5b0631ef1183fbca98209a",
+   "package": "com.miniandroid.tictactoedeluxe",
+   "runs": {
+    "run1": {
+     "seconds": 0.8,
+     "screenshot_sha16": "0a1cd01bb490fdc5",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1198904,
+     "uncaught_exceptions": 0,
+     "log_lines": 807,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run2": {
+     "seconds": 0.8,
+     "screenshot_sha16": "0a1cd01bb490fdc5",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1198904,
+     "uncaught_exceptions": 0,
+     "log_lines": 807,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    },
+    "run3": {
+     "seconds": 0.8,
+     "screenshot_sha16": "0a1cd01bb490fdc5",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 1198904,
+     "uncaught_exceptions": 0,
+     "log_lines": 807,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "tower3d": {
+   "apk": "/home/z/my-project/upload/canonical_apks/stack.tower3d_1.apk",
+   "apk_sha256": "ba5b0a48d74e33483d9dcb04e2e22ec745ee8e9266188bf9c59f2d2b2883c233",
+   "package": "stack.tower3d",
+   "runs": {
+    "run1": {
+     "seconds": 0.6,
+     "screenshot_sha16": "31ddd4d5b8e6d18e",
+     "verdict": "NO_ROOT",
+     "first_missing_stage": "WINDOW_ROOT",
+     "uncaught_exceptions": 2,
+     "log_lines": 352,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "freebloks": {
+   "apk": "/home/z/my-project/upload/canonical_apks/de.saschahlusiak.freebloks_184.apk",
+   "apk_sha256": "11908519d6b8eddea3183d3807d8e85f5efed0d0e3ae97d316d4be9674a2707e",
+   "package": "de.saschahlusiak.freebloks",
+   "runs": {
+    "run1": {
+     "seconds": 1.0,
+     "screenshot_sha16": "b5a7a35d5fe0564b",
+     "verdict": "DEFAULT_BACKGROUND_ONLY",
+     "first_missing_stage": "APP_DRAW_OPS",
+     "uncaught_exceptions": 10,
+     "log_lines": 2385,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "bouncy": {
+   "apk": "/home/z/my-project/upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk",
+   "apk_sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+   "package": "com.dozingcatsoftware.bouncy",
+   "runs": {
+    "run1": {
+     "seconds": 1.0,
+     "screenshot_sha16": "b6dde6074bf47264",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 978380,
+     "uncaught_exceptions": 5,
+     "log_lines": 1095,
+     "sqlite_mentions": 3,
+     "sqlite_exception_lines": []
+    }
+   }
+  },
+  "forkgram": {
+   "apk": "/home/z/my-project/upload/forkgram_709208.apk",
+   "apk_sha256": "3baeecb3288577e9548ffeb13a1740ac73963c4c1cfb6b21750916566095f654",
+   "package": "org.forkgram.classic",
+   "runs": {
+    "run1": {
+     "seconds": 9.7,
+     "screenshot_sha16": "bbb6cd10a834963d",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 117133,
+     "uncaught_exceptions": 8,
+     "log_lines": 21216,
+     "sqlite_mentions": 147,
+     "sqlite_exception_lines": [
+      "[EXP062-INIT] Lorg/telegram/SQLite/SQLiteException; static_fields=1 with_defaults=1",
+      "[EXCEPTION] method=Lorg/telegram/SQLite/SQLiteCursor;.next pc=60 exception=Lorg/telegram/SQLite/SQLiteException; try_range=(no try covering pc) handler=NOT_FOUN",
+      "[EXCEPTION] no handler for Lorg/telegram/SQLite/SQLiteException; in Lorg/telegram/SQLite/SQLiteCursor;.next \u2014 unwinding frame (propagate to caller)",
+      "[EXC-PROPAGATE] Lorg/telegram/SQLite/SQLiteException; caught at caller Lorg/telegram/messenger/MessagesStorage;.lambda$loadDialogFilters$67 invoke_pc=671 handle",
+      "[EXCEPTION] method=Lorg/telegram/SQLite/SQLiteCursor;.next pc=60 exception=Lorg/telegram/SQLite/SQLiteException; try_range=(no try covering pc) handler=NOT_FOUN",
+      "[EXCEPTION] no handler for Lorg/telegram/SQLite/SQLiteException; in Lorg/telegram/SQLite/SQLiteCursor;.next \u2014 unwinding frame (propagate to caller)",
+      "[EXC-PROPAGATE] Lorg/telegram/SQLite/SQLiteException; caught at caller Lorg/telegram/messenger/MessagesStorage;.lambda$getDownloadQueue$186 invoke_pc=32 handler",
+      "[EXCEPTION] method=Lorg/telegram/SQLite/SQLiteCursor;.next pc=60 exception=Lorg/telegram/SQLite/SQLiteException; try_range=(no try covering pc) handler=NOT_FOUN"
+     ]
+    }
+   }
+  },
+  "telegram": {
+   "apk": "/home/z/my-project/upload/telegram_official.apk",
+   "apk_sha256": "e37aced2a49c1dbb414937b521b7a5e795208018e82d526b5ec8e55173acdd4d",
+   "package": "org.telegram.messenger.web",
+   "runs": {
+    "run1": {
+     "seconds": 10.9,
+     "screenshot_sha16": "bbb6cd10a834963d",
+     "verdict": "REAL_APP_CONTENT",
+     "first_missing_stage": null,
+     "app_owned_pixels": 117133,
+     "uncaught_exceptions": 8,
+     "log_lines": 21841,
+     "sqlite_mentions": 80,
+     "sqlite_exception_lines": []
+    }
+   }
+  }
+ }
+}

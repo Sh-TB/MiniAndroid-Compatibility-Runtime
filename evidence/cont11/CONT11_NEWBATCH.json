@@ -1,0 +1,53 @@
+{
+ "rows": {
+  "com.adilhanney.ricochlime_1140003": {
+   "apk": "upload/fdroid_batch/com.adilhanney.ricochlime_1140003.apk",
+   "apk_sha256": "cadc45ac61c765d82216592667474e36d011c21facfc8e74ceac5affc38461ef",
+   "package": "com.adilhanney.ricochlime",
+   "seconds": 1.1,
+   "screenshot_sha16": "31ddd4d5b8e6d18e",
+   "verdict": "NO_ROOT",
+   "uncaught": 0,
+   "sqlite_mentions": 3,
+   "method": "--frames 300 time-driven",
+   "run_dir": "run/cont11/new_ricochlime_frames",
+   "frontier": "Compose WINDOW_ROOT (dooz draw-path family)"
+  },
+  "org.secuso.privacyfriendly2048_100": {
+   "apk": "upload/fdroid_batch/org.secuso.privacyfriendly2048_100.apk",
+   "apk_sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "package": "org.secuso.privacyfriendly2048",
+   "seconds": 1.5,
+   "screenshot_sha16": "eb5ebd559cad1028",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 1,
+   "sqlite_mentions": 12,
+   "method": "--frames 300 time-driven (F-NEW-232 deferred-UI materialized)",
+   "run_dir": "run/cont11/new_pf2048_frames",
+   "frontier": "Glide cleanReferenceQueue F084 halt + GeneratedAppGlideModule ClassNotFound (1 uncaught)"
+  },
+  "com.awagam.android_5": {
+   "apk": "upload/fdroid_batch/com.awagam.android_5.apk",
+   "apk_sha256": "30af184cdbb35f9b06fae5f16b2e524f2451a2d4a1865adf4bc967e556a82b63",
+   "package": "com.awagam.android",
+   "seconds": 1.6,
+   "screenshot_sha16": "b5a7a35d5fe0564b",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "uncaught": 2,
+   "sqlite_mentions": 3
+  },
+  "com.ashkanrafiee.balance_29000": {
+   "apk": "upload/fdroid_batch/com.ashkanrafiee.balance_29000.apk",
+   "apk_sha256": "4d2e435c4a6a72a5fb43f011e82f81b94bc71524373dd665436c72841dd8b95f",
+   "package": "com.ashkanrafiee.balance",
+   "seconds": 0.5,
+   "screenshot_sha16": "3b834ad8c55d8f76",
+   "verdict": "REAL_APP_CONTENT",
+   "uncaught": 0,
+   "sqlite_mentions": 10,
+   "method": "--frames 300 time-driven",
+   "run_dir": "run/cont11/new_balance_frames",
+   "frontier": "none recorded this run"
+  }
+ }
+}
