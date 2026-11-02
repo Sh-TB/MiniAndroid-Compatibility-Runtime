@@ -239,3 +239,30 @@ miniandroid/build_prof/
 # T12 law: tmp/ and vendored kotlinc-dist are local-only (re-downloadable / stale A\/B binaries)
 /tmp/
 /upstream/cont12_maven/kotlinc-dist/
+
+# =============================================================================
+# S153 HISTORY SLIMMING (2026-11-02) — repo was ~600MB+ on GitHub because
+# heavy artifacts survived in HISTORY from earlier passes. git filter-repo
+# purged them from all 1437 commits (manifest: docs/BIGFILE_PURGE_MANIFEST.md,
+# full ledger: evidence/s153_purge/purge_manifest.json, backup: backup/).
+# RULE: the categories below are NEVER tracked again — locally they are
+# restored from backup/wt_offenders.tar and stay untracked.
+# =============================================================================
+/backup/
+*.dex
+*.odex
+*.aar
+*.jar
+*.a
+*.dll
+miniandroid/framework_res/
+miniandroid/test_apks/
+tools/android-34/
+tools/r8/
+upstream/cont12_maven/
+docs/evidence/**/api_trace.json
+docs/evidence/**/heap_trace.json
+docs/evidence/**/method_trace.json
+**/traces/
+# (raw traces & multi-MB view_tree dumps belong under run/ — ignored above.
+#  Small curated view_tree.json files under docs/evidence/ remain tracked.)
