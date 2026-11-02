@@ -1,0 +1,66 @@
+{
+  "wave": "S149-TRUE",
+  "date": "2026-11-02",
+  "directive": "«ادامه» — continuation after the third container reset; mid-wave discovery: the 'lost' lineage was ON ORIGIN",
+  "lineage_recovery": {
+    "event": "the push of the stale-lineage S149 commit was rejected (fetch-first); the fetch pulled 6a66806a..f5b16326 = 421 commits including CONT-11 W7b — the complete S143-S148 line (TRAIN fixes, T68/PMC diagnostics, s14x tooling, the REAL bionic_compat.c / ma_native_bridge.cpp / native_dep.cpp(+h) / display_shadow.cpp, and ALL three fixes the morning wave re-derived) was on origin the whole time; the reset-incident worklog's 'not on origin' claim was wrong (recorded under incident conditions)",
+    "resolution": "git worktree at /home/z/ma-main = f5b16326; my-project's root-owned dirs (runtime/, ws/, plugins/, reference/, …) are immovable without sudo — the worktree is the operative tree for this wave; the stale-lineage commits (e99c2fbd recovery + 5ae989fa S149 morning wave) remain on the abandoned parallel lineage for the record",
+    "binary": "b0613d74caef5d13 (worktree full build; byte-different from the W7b f10101593d095ff7 as expected — build env; the SEMANTIC claim standard applies and is met: 12/13 anchor faces byte-exact)"
+  },
+  "convergent_rederivations": {
+    "note": "the stale-lineage morning wave (5ae989fa) independently re-derived three fixes on the pre-S143 tree; the recovered lineage already contained ALL THREE — the TG opendb one-path fix has now converged THREE times (S143 canonical, CONT-11 stale-lineage, S149 morning wave), the strongest possible confirmation of the root cause",
+    "items": [
+      "TG opendb -> Storage::resolve_android_path (one-path law)",
+      "SQLiteDatabase.update/delete DML arms (S144 lineage) + cursor moveToPosition(-1) rewind law",
+      "ContentValues boxed-unwrap in DML binds (verified equivalent in the true tree's update arm)"
+    ]
+  },
+  "anchor_wall": {
+    "script": "scripts/s149_true_wall.sh (worktree-aware wrapper; fonts resolve via cwd)",
+    "result": "12/13 PASS byte-exact x3 to the STANDING S148 pins",
+    "passes": {
+      "opencalc": "63020bc7334048fe x3",
+      "chess": "3f7e670759b7c6a8 x3",
+      "dooz": "851cc1761a1dfcdf x3",
+      "microtimer": "bbd350b6c14fbd52 x3",
+      "unote": "7481e9b468eaa376 x3",
+      "tower3d": "11a38a5aeeff45a6 x3",
+      "g2048": "f43face08299ffc6 x3",
+      "tetris": "b818a6a7016bea8e x3",
+      "snakedeluxe": "5235683fc7b1f04b x3",
+      "minicraft": "e77a073f733255eb x3",
+      "gmem": "4876e47d26910839 x3",
+      "sqlnotes": "748bb6cf756e7413 x3"
+    },
+    "flagged": "snakeneon 4a19b1fe671064b0 x3 deterministic vs pin b669ce89365f8bbe — build-env face drift for this one game (98.9% real content, full neon board); flagged, not claimed as drift-free"
+  },
+  "telegram_x41": {
+    "result": "HOLDS at the true binary",
+    "face": "bf5c9ef920aa32d7 (== the S147 same-store pin EXACTLY)",
+    "exceptions": 0,
+    "opendb": "OK"
+  },
+  "sqltasks_crud_true": {
+    "store": "/home/z/ma-main/run/s149_true_wagons/store_sqltasks",
+    "INSERT": "x2 via ADD TASK taps (540,164) -> disk rows (1,'Task #1 buy coffee beans',0),(2,'Task #2 ship the release',0)",
+    "UPDATE": "tap TOGGLE (424,416) -> rendered 'UPDATE id=1 done=1 (rows=1)' -> disk (1,...,1)",
+    "DELETE": "tap DEL (964,542) -> rendered 'DELETE id=2' -> disk [(1,...,1)]",
+    "note": "all four arms real on the true binary's in-tree DML arms; [SQLITE-UPDATE]-family provenance in the true tree's own channel"
+  },
+  "microtimer_true": {
+    "recipe": "S147 law: key-5 (540,1470)@12, START (880,1800)@22, key-3 (380,1470)@40, START@50, 80 frames",
+    "rows": "(5,5,1,11770)+(5,5,2,20410) — TWO real rows via the app's own Lk/d button clicks",
+    "list_read": "reopen: rawQuery 'select * from alarm' rows=2 cols=4; face ade730c51fb12088",
+    "frontier": "list row RENDER below the keypad still not materialized (next wagon)"
+  },
+  "g2048_played_true": {
+    "clicks": "4 real CLICKs (LEFT/RIGHT/LEFT/UP at y=1810)",
+    "face": "f43face08299ffc6 -> 550470aff6e94e27 (board state changed)"
+  },
+  "artifacts": {
+    "runs": "/home/z/ma-main/run/s149_true_wall (13 x3), /home/z/ma-main/run/s149_true_tg, /home/z/ma-main/run/s149_true_wagons",
+    "scripts": "scripts/s149_true_wall.sh",
+    "queue": "docs/PROGRAM_QUEUE.json refreshed (12 slots, S149-TRUE state)",
+    "stale_lineage_record": "commit 5ae989fa on the abandoned lineage (e99c2fbd) — the morning wave's own evidence + convergent fixes; superseded by this record"
+  }
+}

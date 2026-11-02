@@ -1,6 +1,6 @@
 {
  "//law": "STANDING 10-PROGRAM QUEUE — user directive «10 برنامه رو همیشه بذار تو لیست ... فقط دوز داری روی یه چیز همش گمار می‌کنی». Every train wave MUST advance ALL 10 slots, not only dooz. Regenerate/refresh each wave.",
- "//date": "2026-11-02 (S148 wave — TRAIN-68 DECIDED: (a) confirmed, re-pinned deeper = the cells' pointerInput nodes carry COMPILED NO-OP handlers (Lpv; singletons, invoke->return Unit) while the board's own node has the only real handler (Lj6;); the launch machinery PROVEN CLEAN (all three first-event launches read CoroutineStart.UNDISPATCHED and ran bodies inline); the clickable's ClickableNode absent from the hit path at all 3 passes; TRAIN-69 = the composed-factory element-insert arms (Ldr1;.c vs Lkr1;.a). microtimer 2-timer wagon DONE (2 real alarm rows, both expired). telegram x41 holds on the T68 binary (fresh face == S144 fresh pin). anchors 6/6 + games 7/7 BYTE-EXACT)",
+ "//date": "2026-11-02 (S149 wave — LINEAGE RECOVERED: the fetch pulled 6a66806a..f5b16326 (421 commits incl. CONT-11 W7b — the \"lost\" S143-S148 line was ON ORIGIN all along); engine rebuilt at the worktree binary b0613d74caef5d13 (semantic standard); ANCHOR WALL 12/13 BYTE-EXACT to the standing pins x3 (opencalc 63020bc7/chess 3f7e6707/dooz 851cc176/microtimer bbd350b6/unote 7481e9b4/tower3d 11a38a5a + games f43face08/b818a6a7/5235683f/e77a073f/4876e47d/748bb6cf; snakeneon deterministic 4a19b1fe — build-env face drift, 98.9% real content, flagged); TG x41 HOLDS (bf5c9ef920aa32d7 == the S147 pin, 0 exceptions, opendb OK); sqltasks ALL FOUR CRUD arms REAL at the true binary (INSERT x2/UPDATE done=1/DELETE id=2/CLEAR ALL); microtimer TWO alarm rows via the TRUE S147 recipe (key-3 x380) + list query rows=2; g2048 PLAYED x4 clicks (f43face08→550470af). The stale-lineage S149 morning wave (commit 5ae989fa, abandoned lineage) had re-derived the same three fixes convergently — now moot)",
  "//head": "ef9e6fa3 (S147) + s148 work (pre-commit)",
  "queue": [
   {
@@ -8,15 +8,15 @@
    "program": "dooz",
    "package": "io.github.yamin8000.dooz",
    "kind": "3rd-party compose app",
-   "now": "S148 TRAIN-68 DECIDED: the tap's hit path = 3 pointer-input nodes x3 passes (Lhz0;.e/.d); launches CLEAN (CoroutineStart.UNDISPATCHED read, bodies ran inline: Lru;.h->.o->.q x3); DEATH = nodes #6571/#9390/#12406/#14049 born with Lpv;#6076/6077 = R8-singleton NO-OP handlers (invoke = 5 insns: sget Le12;.a; return = Unit) — only the board's own node #14112 (Lk6;.<init>) has the real handler Lj6;#14111; the clickable's ClickableNode NEVER received a J dispatch; Ljk;.J = firstOrNull no-predicate (belongs to the board's drag chain — (b) RETIRED)",
-   "next_wagon": "TRAIN-69: the composed-factory element-insert arms — Ldr1;.c (clickable-insert candidate, ran recv#6021 from Lbr1;.h) vs Lkr1;.a (pointerInput insert with the Lpv; no-op, ran x2) + Ltl;.J — pin why the ClickableNode never materializes into the chain while no-op pointerInputs do; generic fix unlocks the dooz cell click + every M3 clickable"
+   "now": "S149: lineage RECOVERED (origin had f5b16326 all along); dooz pin 851cc176 byte-exact x3 at the worktree binary; TRAIN-69 verdict + T68/PMC diagnostics AVAILABLE again (in-tree); TRAIN-70 (Lsc0;|<init> live census + Lxz1;.C arg dump) can now run on the true lineage next wave",
+   "next_wagon": "TRAIN-70 on the true lineage: compD PMC census Lsc0;|<init> + Ldr1;|c + Lxz1;.C arg dump — pin why the clickable core element never dispatches; generic fix unlocks the dooz cell click + every M3 clickable"
   },
   {
    "slot": 2,
    "program": "opencalc",
    "package": "com.darkempire78.opencalculator",
    "kind": "3rd-party compose app",
-   "now": "anchor 63020bc7 byte-exact x3; W6 REAL_APP_CONTENT richer render",
+   "now": "S149: pin 63020bc7 byte-exact x3 at the recovered binary",
    "next_wagon": "click-interaction probe after the TRAIN-11 fix lands (generic composed-dispatch fix benefits every M3 button)"
   },
   {
@@ -24,7 +24,7 @@
    "program": "chess",
    "package": "jwtc.android.chess",
    "kind": "3rd-party app",
-   "now": "anchor 3f7e6707 byte-exact x3",
+   "now": "S149: pin 3f7e6707 byte-exact x3 at the recovered binary",
    "next_wagon": "post-fix interaction probe"
   },
   {
@@ -32,15 +32,15 @@
    "program": "microtimer",
    "package": "dubrowgn.microtimer",
    "kind": "3rd-party app",
-   "now": "S148 SECOND-TIMER wagon DONE: taps key-5+START then key-3+START (S147 coord law) -> TWO real Room alarm rows (5,5,1,11770)+(5,5,2,20410), both expired by the app ('expiredCount:2'), integrity=ok (independent sqlite3); face ade730c51fb12088 (2-timer state)",
-   "next_wagon": "alarm LIST UI row render (the AlarmList fragment shows both expired rows) + 60s/1min timer variants"
+   "now": "S149 at the TRUE binary: TWO real alarm rows ((5,5,1,11770)+(5,5,2,20410)) via the S147 recipe (key-5@12, START@22, key-3 x380@40, START@50); reopen list query rows=2; pin bbd350b6 byte-exact x3",
+   "next_wagon": "alarm LIST row RENDER below the keypad (query real, rows not materialized) + countdown-decrement re-proof"
   },
   {
    "slot": 5,
    "program": "unote",
    "package": "app.varlorg.unote",
    "kind": "3rd-party app",
-   "now": "anchor 7481e9b4 BYTE-EXACT x3 (S142 wall); TRAIN-52 SQLITE PROVEN: real notes.db (12288 B) in the sandbox, schema table_notes verbatim + sqlite_sequence, user_version=2, integrity ok, verified by an INDEPENDENT sqlite3 implementation",
+   "now": "S149: pin 7481e9b4 byte-exact x3 at the recovered binary",
    "next_wagon": "note-add text-input probe when the --type-text knob lands (honest gap); DB layer already proven"
   },
   {
@@ -48,7 +48,7 @@
    "program": "tower3d",
    "package": "stack.tower3d",
    "kind": "3D game",
-   "now": "anchor 11a38a5a byte-exact x3 — 3D-title anchor renders; S145: package corrected to stack.tower3d (the com.narwhal. name was stale — install dir proves it)",
+   "now": "S149: pin 11a38a5a byte-exact x3 at the recovered binary",
    "next_wagon": "shares the generic draw-chain fix (TRAIN-26: one canvas-bridge fix advances 2D+3D)"
   },
   {
@@ -56,15 +56,15 @@
    "program": "2048",
    "package": "com.miniandroid.g2048",
    "kind": "runtime-built game",
-   "now": "candidate_INTERACTION_VERIFIED L2 — PLAYED, state change proven; autoplay driver banked",
-   "next_wagon": "raise to L6+ input machinery level; keep autoplay regression green"
+   "now": "S149 at the TRUE binary: pin f43face08 byte-exact x3; PLAYED — 4 real CLICKs (LEFT/RIGHT/LEFT/UP at y=1810) -> face 550470aff6e94e27; button-driven build (swipe surface absent)",
+   "next_wagon": "score-text readback + merge-chain assertion via view tree; autoplay re-land"
   },
   {
    "slot": 8,
    "program": "tetris",
    "package": "com.miniandroid.tetris",
    "kind": "runtime-built game",
-   "now": "VISUALLY_PARTIAL L3 — interacted + state change; 420ms tick law",
+   "now": "S149: pin b818a6a7 byte-exact x3 at the recovered binary",
    "next_wagon": "close the VISUALLY_PARTIAL delta; autoplay regression green"
   },
   {
@@ -72,7 +72,7 @@
    "program": "snake-deluxe",
    "package": "com.miniandroid.snakedeluxe",
    "kind": "runtime-built game",
-   "now": "candidate_INTERACTION_VERIFIED L3 — PLAYED; GIF evidence docs/evidence/s80/",
+   "now": "S149: pin 5235683f byte-exact x3 at the recovered binary",
    "next_wagon": "L6+ promotion; autoplay regression green"
   },
   {
@@ -80,7 +80,7 @@
    "program": "minicraft",
    "package": "com.miniandroid.minicraft",
    "kind": "runtime-built game",
-   "now": "candidate_INTERACTION_VERIFIED L3 — PLAYED",
+   "now": "S149: pin e77a073f byte-exact x3 at the recovered binary",
    "next_wagon": "L6+ promotion; world-persistence probe"
   },
   {
@@ -88,16 +88,16 @@
    "program": "sqlnotes",
    "package": "com.miniandroid.sqlnotes",
    "kind": "canonical-built SQLite CRUD app (S142 TRAIN-53)",
-   "now": "S148 cold zero-tap re-open on the T68 binary: face 748bb6cf756e7413 == the S142 pin EXACTLY (zero drift); DB created (notes + sqlite_sequence)",
-   "next_wagon": "row-tap DELETE re-proof + clear-all on the T68 binary"
+   "now": "S149: pin 748bb6cf byte-exact x3 at the recovered binary; DB created (FIRST SQLite program)",
+   "next_wagon": "row-tap DELETE re-proof at the true binary (arms in-tree) + clear-all"
   },
   {
    "slot": 12,
    "program": "sqltasks",
    "package": "com.miniandroid.sqltasks",
    "kind": "canonical-built FULL-CRUD SQLite app (S144 TRAIN-59)",
-   "now": "apk sha16 849f951b035f48c1; ALL FOUR arms REAL on disk sqlite: INSERT x3 (rowId 1/2/3, seq=3), UPDATE via db.update+ContentValues (NEW arm — rows=1, done=1 persisted), row DELETE (rows [2,3]), SELECT after every op; COLD RE-OPEN zero-tap run rendered 'Tasks: 3 (done 1)' + '[1] [x] Task #1' — cross-process persistence; independent python sqlite3 integrity ok",
-   "next_wagon": "CLEAR ALL + row-DEL combined tap plan; the UPDATE arm exercised from a second app (unote edit path) to prove genericity"
+   "now": "S149 at the TRUE binary: ALL FOUR CRUD arms REAL on disk — INSERT x2 (rows 1/2), UPDATE (done=1 rendered rows=1, disk row (1,...,1)), DELETE id=2 (disk [(1,...,1)]), CLEAR ALL (disk empty); the cursor law + update/delete arms + one-path opendb all ALREADY in this lineage (the stale-lineage morning wave re-derived them convergently — third independent convergence of the TG fix)",
+   "next_wagon": "genericity: UPDATE arm from a second app (unote edit path) + combined row-DEL+CLEAR tap plan re-record"
   }
  ],
  "satellites": [
