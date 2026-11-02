@@ -1,0 +1,143 @@
+{
+ "wave": "S154-AWAITUP-GATE",
+ "engine_binary_sha16": "a793f134936f7e58",
+ "law": "AWAIT-UP GATE (S152 pinned frontier): the tap-path pressed render is bounded by a scoped deadline (MINIANDROID_AWAITUP_GATE_MS, default 15000, 0=off); on hit the budget-artifact chain is reset (T61 law) and the UP dispatch proceeds \u2014 AOSP input priority.",
+ "pins": {
+  "dooz_no_tap_pin": "851cc1761a1dfcdf",
+  "diary_pin": "b18c3ee6c2818560",
+  "transistor_pin": "5436cf81605f1c2d"
+ },
+ "rows": {
+  "E1_dooz_gate": {
+   "verdict": "REAL_APP_CONTENT",
+   "gate_rows": 2,
+   "gate_hit": true,
+   "artifact_reset": true,
+   "f117_tap_rows": [
+    [
+     "20",
+     "540",
+     "960",
+     "1547"
+    ]
+   ],
+   "up_dispatched_consumed": true,
+   "down_dispatched_consumed": true,
+   "uncaught_rows": 6,
+   "layout_draw_spam_pre_up": 15711,
+   "frames_saved": 30,
+   "screenshot_face": "eb7b6ae7798c9414",
+   "face_pre_tap": "851cc1761a1dfcdf",
+   "face_post_tap": "2b324a31cf2d3f57",
+   "face_changed_post_tap": true,
+   "post_tap_distinct_faces": 6
+  },
+  "E2_dooz_nogate": {
+   "verdict": "REAL_APP_CONTENT",
+   "gate_rows": 0,
+   "gate_hit": false,
+   "artifact_reset": false,
+   "f117_tap_rows": [
+    [
+     "20",
+     "540",
+     "960",
+     "1547"
+    ]
+   ],
+   "up_dispatched_consumed": true,
+   "down_dispatched_consumed": true,
+   "uncaught_rows": 6,
+   "layout_draw_spam_pre_up": 18861,
+   "frames_saved": 20,
+   "screenshot_face": "851cc1761a1dfcdf",
+   "face_pre_tap": "851cc1761a1dfcdf",
+   "face_post_tap": "851cc1761a1dfcdf",
+   "face_changed_post_tap": false,
+   "post_tap_distinct_faces": 0
+  },
+  "E3_transistor_gate": {
+   "verdict": "REAL_APP_CONTENT",
+   "gate_rows": 0,
+   "gate_hit": false,
+   "artifact_reset": false,
+   "f117_tap_rows": [
+    [
+     "15",
+     "996",
+     "567",
+     "1597"
+    ]
+   ],
+   "up_dispatched_consumed": false,
+   "down_dispatched_consumed": false,
+   "uncaught_rows": 16,
+   "layout_draw_spam_pre_up": 0,
+   "frames_saved": 30,
+   "screenshot_face": "5436cf81605f1c2d",
+   "face_pre_tap": "5436cf81605f1c2d",
+   "face_post_tap": "5436cf81605f1c2d",
+   "face_changed_post_tap": false,
+   "post_tap_distinct_faces": 1
+  },
+  "E4_diary_gate": {
+   "verdict": "REAL_APP_CONTENT",
+   "gate_rows": 0,
+   "gate_hit": false,
+   "artifact_reset": false,
+   "f117_tap_rows": [
+    [
+     "15",
+     "1017",
+     "1857",
+     "61"
+    ]
+   ],
+   "up_dispatched_consumed": false,
+   "down_dispatched_consumed": false,
+   "uncaught_rows": 5,
+   "layout_draw_spam_pre_up": 0,
+   "frames_saved": 30,
+   "screenshot_face": "b18c3ee6c2818560",
+   "face_pre_tap": "b18c3ee6c2818560",
+   "face_post_tap": "b18c3ee6c2818560",
+   "face_changed_post_tap": false,
+   "post_tap_distinct_faces": 1
+  },
+  "E5_dooz_notap": {
+   "verdict": "REAL_APP_CONTENT",
+   "gate_rows": 0,
+   "gate_hit": false,
+   "artifact_reset": false,
+   "f117_tap_rows": [],
+   "up_dispatched_consumed": false,
+   "down_dispatched_consumed": false,
+   "uncaught_rows": 6,
+   "layout_draw_spam_pre_up": 13011,
+   "frames_saved": 30,
+   "screenshot_face": "851cc1761a1dfcdf",
+   "face_pre_tap": "851cc1761a1dfcdf",
+   "face_post_tap": "851cc1761a1dfcdf",
+   "face_changed_post_tap": false,
+   "post_tap_distinct_faces": 1
+  }
+ },
+ "eval": {
+  "E1_gate_fired": true,
+  "E1_up_dispatched_consumed": true,
+  "E1_first_time": "UP DISPATCHED+CONSUMED on the dooz board via the full scripted-tap cadence \u2014 S152's a10 never got the UP (starved at the pressed-render spin)",
+  "E1_completed_30_frames": true,
+  "E1_post_tap_face_movement": true,
+  "E1_no_uncaught_pollution": true,
+  "E1_spam_ended_after_gate": true,
+  "E2_control": "UP eventually delivered pre-gate source too (fresh store), but the run burned to the 110s wall mid-spin, saved 20/30 frames, and the final face stayed == pin (no board movement)",
+  "E4_diary_regression": true,
+  "E5_byte_inert": true,
+  "E3_transistor": "completed 147s (S152: 400s wall), face == pin"
+ },
+ "artifacts": [
+  "run/s154/E1..E5 consoles + frames",
+  "scripts/s154_awaitup_gate.py",
+  "scripts/s154_collect.py"
+ ]
+}

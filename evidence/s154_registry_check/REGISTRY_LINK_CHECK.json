@@ -1,0 +1,771 @@
+{
+ "generated_by": "scripts/registry_link_check.py (S154)",
+ "law": "frozen-mirror (issue #449)",
+ "verdict_counts": {
+  "PARTIAL-OK": 7,
+  "PAGE-OK": 87,
+  "DEAD": 1
+ },
+ "findings": [
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[23]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/com.byagowi.persiancalendar_1020.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha 1b09469d2a57c878 vs pin bbd12819529102bc (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[24]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/de.mm20.launcher2.release_2026053100.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha 96d7ca42c69e2351 vs pin 5021ca1693a46ec0 (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[25]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/de.dennisguse.opentracks_6741.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha 06c82a552aa970cd vs pin cc5331501c8ead6e (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[26]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/net.gsantner.markor_163.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha 6f5dd9650276f3fb vs pin 3f9f260dc3e32a12 (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[27]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/org.isoron.uhabits_20301.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha 329dbe5f25008a65 vs pin 3903d3be3db0f162 (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[29]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/org.secuso.privacyfriendlytodolist_103.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha 2c318d256d5d71ba vs pin 80c6f68ec94a5611 (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/runtime/knowledge/campaign010/APK_REGISTRY_010.json",
+   "path": "$/apks[30]",
+   "key": "source",
+   "url": "https://f-droid.org/repo/com.artifex.mupdf.viewer.app_250.apk",
+   "verdict": "PARTIAL-OK",
+   "detail": "PK payload; first-256KB sha caba143bfc43ead0 vs pin 6a22e285bb43d983 (full-file compare needs full fetch)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[1]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/ca.rmen.nounours/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[2]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.clavierhaus.gnubg/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[3]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.dozingcatsoftware.dodge/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[4]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.forrestguice.suntimeswidget/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[6]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.hegocre.nextcloudpasswords/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[7]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.helddertierwelt.mentalmath/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[8]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.hfut.schedule/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[9]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.jherkenhoff.qalculate/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[10]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.justdeax.composeStopwatch/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[11]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.kaeruct.raumballer/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[12]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.kingalex.kingpong/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[13]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.kompact/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[14]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.ma.tehro/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[21]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.smorgasbork.hotdeath/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[22]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.vagujhelyigergely.calculatorm3/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[23]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.vayunmathur.clock/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[24]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.vayunmathur.games.alchemist/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[25]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.vovagorodok.blichess/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[26]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.vovagorodok.blidraughts/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[28]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/de.georgsieber.ballbreak/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[29]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/de.seemoo.at_tracking_detection/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[30]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/de.taz.android.app.free/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[31]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/foehnix.widget/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[32]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/fr.corenting.convertisseureurofranc/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[33]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.github.aoc_normal/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[34]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.github.ebraminio.bouncy/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[35]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.github.hathibelagal.mykanji/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[36]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.github.johnathan.minesweeper/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[37]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.itch.pirate_solitaire/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[39]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/me.river.nightbell/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[40]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/me.timeto.app/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[42]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.bobstuff.bobball/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[43]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.lufebe16.pysolfc/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[44]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.nitri.opentopo/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[47]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/site.leos.apps.lespas/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[48]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/tibarj.tranquilstopwatch/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[85]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.dozingcatsoftware.bouncy/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[96]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/name.boyle.chris.sgtpuzzles/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[97]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlydame/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[98]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlysudoku/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[99]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlysolitaire/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[100]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.serwylo.babydots/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[101]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.gh4a/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[102]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/de.danoeh.antennapod/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[103]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.tasks/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[104]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.fsck.k9/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[105]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.y20k.transistor/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[106]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/eu.faircode.email/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[107]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.beemdevelopment.aegis/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[108]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.kunzisoft.keepass.libre/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[109]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/de.markusfisch.android.binaryeye/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[110]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.trianguloy.urlchecker/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[111]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.fossify.clock/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[112]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.fossify.gallery/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[113]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.fossify.notes/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[114]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.maltaisn.notes.sync/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[115]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlynotes/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[116]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlyactivitytracker/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[117]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/de.schildbach.wallet/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[118]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/at.techbee.jtx/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[119]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/it.niedermann.nextcloud.deck/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[120]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.dystopia.email/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[121]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.drdisagree.colorblendr/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[122]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.sebiai.glyphport/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[123]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/dev.lonami.klooni/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[124]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/eu.quelltext.counting/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[125]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.og8.a1tox/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[126]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/ir.hsn6.tpb/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[127]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.andstatus.game2048/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[128]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.mattvchandler.a2050/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[129]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.github.rotundtapir.fivehundred/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[130]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org99managers.futsal_edition/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[131]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/io.github.divverent.aaaaxy/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[132]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.towerillusion.abdal/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[133]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.asafonov.accelerace/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[134]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.trianguloy.adnihilation/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[135]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.games.boardgames.aeonsend/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[136]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.mufradat.africaquiz/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[137]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.ahorcado/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[138]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.github.m374lx.alexvsbus/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[139]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/x653.all_in_gold/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[140]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlymemory/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[141]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/org.secuso.privacyfriendly2048/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[142]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.nononsenseapps.notepad/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[143]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/com.aurora.store/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[144]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/dev.lexip.hecate/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[145]",
+   "key": "source",
+   "url": "https://f-droid.org/en/packages/net.sourceforge.solitaire_cg/",
+   "verdict": "PAGE-OK",
+   "detail": "package page (HTML by design)"
+  },
+  {
+   "file": "docs/evidence/canonical/registry.json",
+   "path": "$/titles[146]",
+   "key": "source",
+   "url": "https://telegram.org/dl/android/apk (official CDN)",
+   "verdict": "DEAD",
+   "detail": "InvalidURL: URL can't contain control characters. '/dl/android/apk (official CDN)' (found at least ' ')"
+  }
+ ]
+}
