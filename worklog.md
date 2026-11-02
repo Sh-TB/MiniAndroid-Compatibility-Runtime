@@ -7120,3 +7120,17 @@ Artifacts: evidence/cont11/{CONT11_EXECUTION_LEDGER.md, CONT11_REGRESSION.json, 
 
 Stage Summary:
 - The user's three standing asks are all answered with runtime evidence: (1) every old program re-tested with its anchor — 12 MATCH faces, 2 honest frontiers; (2) the Telegram SQLite problem the user reported is ROOT-CAUSED AND FIXED with a real-DB proof (95 tables, WAL, 0 exceptions) using the engine's EXISTING real sqlite3 — nothing rewritten; (3) the games/apps base grew by 2 NEW REAL_APP_CONTENT programs (Secuso 2048 via the deferred-UI time-driven capture law, Balance), with the Compose WINDOW_ROOT and native-.so families honestly named as the remaining frontiers.
+
+---
+Task ID: CONT-11-WAVE-7b (post-rebase replication)
+Task: after the rebase onto S148 (15caa209), rebuild the rebased tree and reproduce the S148 semantic state from a fresh container.
+
+Work Log:
+- Rebuilt the rebased tree: binary f10101593d095ff7 (byte-different from T68 fd2960379ad0bc87 — build env, LOTTIE=0; semantic replication is the claim).
+- ANCHOR WALL 6/6 PASS (scripts/s148_anchor_wall.sh): opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a — all byte-exact to the standing pins.
+- GAME FAMILY 7/7 EXACT-TO-PIN (scripts/s147_game_family_sweep.sh): g2048 f43face08 / tetris b818a6a7 / snakedeluxe 5235683f / minicraft e77a073f / gmem 4876e47d / snakeneon b669ce89 / sqlnotes 748bb6cf.
+- TELEGRAM SATELLITE: opendb OK, SQLiteException 0 (x41 HOLDS), cache4.db 235 objects user_version 179 — the S146 schema pin EXACTLY; fresh-store face 6fbe5a4ffa7be51a (S148 note: faces vary by store state, not drift).
+- Evidence: evidence/cont11/CONT11_S148_REPLICATION.json.
+
+Stage Summary:
+- The S148 campaign state (anchor wall + game family + telegram x41) reproduces from a fresh container rebuild of the rebased tree — cross-container replication GREEN; the stale-lineage CONT-11 battery (CONT-9/10 anchors byte-exact + independent TG-sqlite root-cause replication) stands as appendix evidence.

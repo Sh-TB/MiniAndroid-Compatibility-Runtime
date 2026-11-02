@@ -1,0 +1,41 @@
+{
+ "artifact": "CONT-11 S148-state cross-container replication — after the container reset, the rebased tree (remote main 15caa209 = S148) rebuilt from source and the full S148 semantic state reproduced.",
+ "head": "0c6240af (CONT-11 WAVE 7 rebased onto 15caa209 S148)",
+ "rebuilt_binary_sha16": "f10101593d095ff7",
+ "binary_identity_note": "byte-different from the T68 fd2960379ad0bc87 (build env: MINIANDROID_HAVE_LOTTIE=0, compiler env) — the replication claim is SEMANTIC (anchor/game faces byte-exact), consistent with the campaign's reproducible-lineage discipline (source law, not binary worship).",
+ "anchor_wall": {
+  "result": "6 PASS / 0 FAIL (scripts/s148_anchor_wall.sh)",
+  "opencalc": "63020bc7334048fe PASS",
+  "chess": "3f7e670759b7c6a8 PASS",
+  "dooz": "851cc1761a1dfcdf PASS",
+  "microtimer": "bbd350b6c14fbd52 PASS",
+  "unote": "7481e9b468eaa376 PASS",
+  "tower3d": "11a38a5aeeff45a6 PASS (now an anchor post TRAIN-58+ frame-law fixes; NO_ROOT only on the stale pre-S143 lineage)"
+ },
+ "game_family": {
+  "result": "7/7 EXACT-TO-PIN (scripts/s147_game_family_sweep.sh)",
+  "g2048": "f43face08299ffc6",
+  "tetris": "b818a6a7016bea8e",
+  "snakedeluxe": "5235683fc7b1f04b",
+  "minicraft": "e77a073f733255eb",
+  "gmem": "4876e47d26910839",
+  "snakeneon": "b669ce89365f8bbe",
+  "sqlnotes": "748bb6cf756e7413",
+  "pins_source": "evidence/s146_trains + evidence/s148_trains (7/7 EXACT-TO-PIN)"
+ },
+ "telegram_satellite": {
+  "result": "x41 HOLDS at the rebuilt binary",
+  "opendb": "OK",
+  "sqliteexception_count": 0,
+  "cache4_db_objects": 235,
+  "user_version": 179,
+  "schema_identity": "matches the S146 pin (user_version 178->179, objects 234->235) EXACTLY — the app's own schema built on real sqlite3",
+  "fresh_face_sha16": "6fbe5a4ffa7be51a",
+  "face_note": "fresh-store state; S148 evidence notes the S147 same-store pin bf5c9ef920aa32d7 is a different store state, not drift"
+ },
+ "stale_lineage_context": {
+  "note": "This container was recycled at the CONT-10 W6 snapshot (e99c2fbd). The CONT-11 wave first ran the full old-program battery on that stale lineage (evidence/cont11/CONT11_REGRESSION.json + CONT11_PREFIX_BINARY_aed46450.json — matches the CONT-9/10 era anchors byte-exact), independently root-caused and fixed the TG sqlite opendb ONE-PATH-LAW violation (the same root the canonical S143 fa6803ff had already fixed), then rebased onto S148 and reproduced the S148 state above.",
+  "convergent_fix": "independent fix == S143's fix (Storage::resolve_android_path routing); remote's canonical version kept in the rebase"
+ },
+ "verdict": "REPLICATION GREEN — anchor wall 6/6 + game family 7/7 + telegram x41 all reproduce from a fresh container rebuild of the rebased tree"
+}
