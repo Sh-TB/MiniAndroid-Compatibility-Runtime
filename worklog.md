@@ -7153,3 +7153,19 @@ Artifacts: evidence/s149_trains/light_trains_69_true.json; /home/z/ma-main/run/s
 
 Stage Summary:
 - The campaign is back on the TRUE lineage with byte-exact anchors, TG x41 green, sqltasks all-four-CRUD real, two timer rows, g2048 played. Next: TRAIN-70 on the true lineage (Lsc0;|<init> PMC census — diagnostics now in-tree), microtimer list render, sqlnotes DELETE re-proof, new GitHub-source programs.
+
+---
+Task ID: RELEASE-v0.0.6.1-EXCHEQUER
+Agent: Super Z (main)
+Task: User directive «نسخه v0.0.6.1 رو به اسم یکی از رنگ های Leghorn بزار + changelog واقعا استاندارد» — release the version, document every achievement since v0.0.6.
+
+Work Log:
+- Lineage: fetched origin — the "lost" CONT-11/S138-S149 line was ON ORIGIN (421 commits); fast-forwarded local e99c2fbd -> 7877e99e (S149 WAVE-1-TRUE). Range v0.0.6-Leghorn..HEAD = 814 commits.
+- Version named v0.0.6.1-Exchequer — the Exchequer Leghorn (mottled black-and-white variety; breed line Brahma->Australorp->Chantecler->Silkie->Leghorn->Exchequer Leghorn).
+- miniandroid/CHANGELOG.md rebuilt to Keep a Changelog 1.1.0: full [v0.0.6.1-Exchequer] entry (Added subsystems: real HTML5/QuickJS + Mini Browser/TLS, real SQLite + ONE-PATH law + x41 eliminated, package lifecycle/GATE A, Compose program incl. the pinned clickable root, graphics-truth subsystem, AOSP-parity input stack, observability; Fixed grouped by root family; Performance; Security; Changed-honesty (S107 false-closure purge); Testing/evidence: anchor wall 12/13 byte-exact x3 with pins; Known limitations honest) + retroactive [v0.0.6-Leghorn]/[v0.0.5-Silkie]/[v0.0.4-Chantecler] + [Unreleased] + compare-links footer. All facts tied to commit hashes/pins read from the 814-commit log (tmp/cl_commits_since_v006.txt + tmp/cl2r.txt).
+- docs/releases/RELEASE_v0.0.6.1-Exchequer.md (one-page release summary) + RELEASE_MANIFEST.json -> v0.0.6.1 (honest: no binary artifacts this release, no MinGW; v0.0.6 remain latest; previous-artifact SHAs preserved) + docs/INDEX.md (853 roots, current release, changelog row) + docs/INDEX.json (release_notes/changelog pointers, JSON validated).
+- Secret guard --tree/--staged PASS; commit 361e04e9; tag v0.0.6.1-Exchequer (annotated) created; PUSH VERIFIED: main 7877e99e..361e04e9 + tag on origin.
+
+Stage Summary:
+- First fully standard changelog of the campaign: anyone reading v0.0.6.1-Exchequer sees the complete achievement record v0.0.6 -> now (814 commits, 348->853 roots) with byte-pinned evidence and honest limitations.
+- Not built this release: Windows/Linux binary artifacts (no MinGW; source-tag release; build verified via the byte-exact wall). Next: TRAIN-70 dooz clickable census on the true lineage; artifacts can be packaged post-TRAIN-70 if requested.
