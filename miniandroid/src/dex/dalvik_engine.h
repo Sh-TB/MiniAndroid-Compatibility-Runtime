@@ -2188,6 +2188,47 @@ public:
     void rebate_wall_ms(int64_t ms) { wall_rebate_ms_ += ms; }
     int64_t wall_rebate_ms() const { return wall_rebate_ms_; }
 
+    // ────────────────────────────────────────────────────────────────────
+    // S154 AWAIT-UP GATE — scoped render-window deadline for the scripted
+    // tap path (F117 pipeline). Evidence (S152 a10 dooz + probe transistor):
+    // after the DOWN dispatch, the pressed-state render enters an app-side
+    // draw/invalidate loop (thousands of re-entrant Layout.draw calls,
+    // 256M+ interpreter instructions on the dooz compose board; 400 s wall
+    // on transistor's constraintlayout) and the UP dispatch — which sits
+    // AFTER that render in the tap cadence — never executes. AOSP law: the
+    // input pipeline delivers the gesture stream with priority over frame
+    // production; an UP is never gated behind a full recomposition. The
+    // gate arms a SECOND, scoped deadline around the tap-path render: when
+    // it fires, the render pass stops through the SAME halt channel the
+    // wall uses (frame-honesty keeps the last complete frame), the tap
+    // path logs [AWAIT-UP-GATE] and clears the budget-artifact state
+    // (T61 law: a budget artifact must never masquerade as app behavior)
+    // so the UP dispatch runs clean. Scoped: no-tap runs and every other
+    // render path are untouched (default byte-inert). Env-tunable:
+    // MINIANDROID_AWAITUP_GATE_MS (default 15000; 0 disables the gate).
+    // ────────────────────────────────────────────────────────────────────
+    void awaitup_gate_begin(int64_t ms) {
+        awaitup_deadline_hit_ = false;
+        if (ms > 0) {
+            awaitup_deadline_ = std::chrono::steady_clock::now() +
+                                std::chrono::milliseconds(ms);
+            awaitup_deadline_active_ = true;
+        } else {
+            awaitup_deadline_active_ = false;
+        }
+    }
+    void awaitup_gate_end() { awaitup_deadline_active_ = false; }
+    bool awaitup_gate_hit() const { return awaitup_deadline_hit_; }
+    // Post-gate cleanup: the scoped halt unwound through the draw window as
+    // a deferred VirtualMachineError (the same channel as a wall halt).
+    // That error is OUR budget artifact — clear it so the UP dispatch (the
+    // whole point of the gate) is not eaten by it. Never clears app-raised
+    // exceptions: the pending slot is only reset when it still holds the
+    // gate's own error signature.
+    void awaitup_gate_abort_reset();
+    // Consulted by the interpreter loop next to the S60 wall check.
+    void awaitup_gate_check();
+
     
     // Configuration
     struct Config {
@@ -3247,6 +3288,11 @@ public:
     std::string halt_reason_;
     // T61 (S145): scripted-tap wall rebate accumulator (see rebate_wall_ms).
     int64_t wall_rebate_ms_ = 0;
+    // S154 AWAIT-UP GATE state (see awaitup_gate_begin above).
+    std::chrono::steady_clock::time_point awaitup_deadline_{};
+    bool awaitup_deadline_active_ = false;
+    bool awaitup_deadline_hit_ = false;
+    uint64_t awaitup_probe_n_ = 0;  // loop-pass sampler counter (4096 grid)
     // R-NEW-345 parked-thread yield law: set by the LockSupport.park* bridge
     // when a parked WORKER frame (park reached at drain depth >= 1) drained
     // zero work — the frame is "suspended" exactly like a real parked thread.

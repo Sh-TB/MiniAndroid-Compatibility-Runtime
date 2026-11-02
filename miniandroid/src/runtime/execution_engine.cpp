@@ -7291,9 +7291,37 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                       << tpy << ") target=" << tap_target << std::endl;
             if (tap_target != 0) {
                 hs->advance_virtual(20);   // pressed-state window
-                if (!stage_render_frame(result, config)) {
-                    std::cerr << "[P1-6-RENDER] tap pressed-state render FAILED"
-                              << " — press visual not refreshed" << std::endl;
+                // S154 AWAIT-UP GATE: bound the pressed render with a
+                // scoped deadline (AOSP input priority — the UP is never
+                // gated behind app frame production; S152 evidence: the
+                // dooz compose board burned 256M+ instructions and the
+                // transistor constraintlayout 400 s wall INSIDE this
+                // render, starving the UP dispatch). On a gate hit the
+                // budget-artifact chain is reset so the UP dispatch runs
+                // clean (T61 law). Env MINIANDROID_AWAITUP_GATE_MS,
+                // default 15000, 0 disables (pre-S154 cadence).
+                {
+                    static const char* gate_env =
+                        std::getenv("MINIANDROID_AWAITUP_GATE_MS");
+                    long long gate_ms =
+                        gate_env ? strtoll(gate_env, nullptr, 10) : 15000;
+                    if (gate_ms > 0) {
+                        dalvik_engine_.awaitup_gate_begin(gate_ms);
+                        if (!stage_render_frame(result, config)) {
+                            std::cerr << "[P1-6-RENDER] tap pressed-state "
+                                         "render FAILED"
+                                      << " — press visual not refreshed"
+                                      << std::endl;
+                        }
+                        dalvik_engine_.awaitup_gate_end();
+                        if (dalvik_engine_.awaitup_gate_hit())
+                            dalvik_engine_.awaitup_gate_abort_reset();
+                    } else {
+                        if (!stage_render_frame(result, config)) {
+                            std::cerr << "[P1-6-RENDER] tap pressed-state render FAILED"
+                                      << " — press visual not refreshed" << std::endl;
+                        }
+                    }
                 }
                 hs->advance_virtual(30);   // t0+50ms UP → PerformClick queue
                 touch_dispatcher_->dispatch(
