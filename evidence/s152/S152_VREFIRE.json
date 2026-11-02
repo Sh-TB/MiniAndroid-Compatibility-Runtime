@@ -1,0 +1,34 @@
+{
+  "wave": "S152-TRAIN-70e",
+  "task": "composed-clickable dispatch wiring: V re-fire design -> implementation -> tap experiment",
+  "engine_binary": "c61e301097a360b1 (tree with T70-VREFIRE v3b; default-mode run outputs BYTE-EXACT to standing pins)",
+  "anchor_wall_at_this_tree": {
+    "result": "12/13 BYTE-EXACT x3",
+    "pins": {
+      "opencalc": "63020bc7334048fe", "chess": "3f7e670759b7c6a8",
+      "dooz": "851cc1761a1dfcdf", "microtimer": "bbd350b6c14fbd52",
+      "unote": "7481e9b468eaa376", "tower3d": "11a38a5aeeff45a6",
+      "g2048": "f43face08299ffc6", "tetris": "b818a6a7016bea8e",
+      "snakedeluxe": "5235683fc7b1f04b", "minicraft": "e77a073f733255eb",
+      "gmem": "4876e47d26910839", "sqlnotes": "748bb6cf756e7413"
+    },
+    "snakeneon": "4a19b1fe671064b0 x3 deterministic vs pin b669ce89365f8bbe — the STANDING S149 build-env face drift, no new drift"
+  },
+  "dex_truth": {
+    "Lel0;.V": "STATIC flags=0x9 descriptor (Lel0;ZI)V — method_ids shorty=VLZI, code regs=7 ins=3 outs=5 insns=99; body: enum-ordinal switch -> check-cast Lt4; -> invoke-virtual Lt4;.z(Lel0;,Z,Z,Z)V; tail: recursive Lel0;.V + 'Intrinsics isn't used by the parent' string",
+    "Lt4;.z": "INSTANCE (Lel0;,Z,Z,Z)V size=160; body -> Lzs0;.h/.i (request marks) + Lzs0;.r(Lel0;,Z)Z requestMeasure + Lt4;.F(node); posted runnable Lys0;.<init>(Lel0;,Z,Z) via Liw0;.b",
+    "a2_a3_a4_root_cause": "ALL THREE failed on the ARITY LAW: param_count=3 vs supplied args (2,2,1) -> every candidate rejected -> super-walk -> false -> 'dispatched=NO'. The a4 '1-arg ()Z shorty=B' DEX reading was WRONG (shorty is VLZI, not B)."
+  },
+  "experiments": {
+    "a2_a3_vrefire2arg": {"result": "dispatched=NO x12 (arg mismatch)", "logs": "run/s152/{a2,a3}_console.log"},
+    "a4_vrefire1arg": {"result": "dispatched=NO x12 ret=? (arg mismatch; wrong ()Z guess)", "logs": "run/s152/a4_console.log"},
+    "a5_vrefire3arg_sweep": {"result": "36/36 dispatched=YES (12 nodes x kind 0/1/2, true descriptor (Lel0;ZI)V); Lt4;.z census 151 entries (cap consumed by initial wave); face == pin 851cc1761a1dfcdf (render-neutral)", "log": "run/s152/a5_console.log"},
+    "a6_vrefire_diag": {"result": "D9-PLACE: initial-wave chain Lzs0;.r x5 (caller Lt4;.z/.o) -> Lzs0;.s(J) -> Lzs0;.m() via Lt4;.onMeasure; D9-MGUARD delegate zs=o2712 owner=o2713 root=o2113 reqs=o3021 (reqs NON-NULL); ZERO delegate activity AFTER the VREFIRE line — V's body guard silently failed on late nodes", "log": "run/s152/a6_console.log"},
+    "a7_vrefire3b": {"result": "v3b escalation: 12/12 DIRECT Lt4;.z(owner#1547,node,T,T,T) dispatched=YES + drain m() on heap-scanned delegate o2712 dispatched=YES; face still == pin (marks don't render by themselves)", "log": "run/s152/a7_console.log"},
+    "a8b_vrefire_tap": {"result": "THE TAP CHAIN CAME ALIVE: tap 540,960@20 -> [UI-EVENT] view=1547 Lt4; arm=dispatchTouchEvent -> result=DISPATCHED consumed=TRUE (first dooz board tap ever consumed) -> T68 census: Lor1;.M0 x9 + Lor1;.J x9 (pointer-input dispatch arms) + Lor1;.L0 x1 (THE BLOCK LAUNCHED) + Lrh1;.J/La00;.J x3; post-DOWN pressed-render then SPUN (256M+ instructions, Lpz0;.M0 re-entry) — the UP dispatch starved within 590s wall", "logs": "run/s152/{a8b,a10}_console.log"}
+  },
+  "verdict": {
+    "wiring_fix": "PROVEN at the dispatch level: the composed-clickable measure bridge fires end-to-end when driven with the TRUE DEX signature (36/36 V, 12/12 z, drain m()) and the scripted board tap is now DISPATCHED+CONSUMED with the pointer-input block LAUNCHED (L0 x1) — construction AND wiring are no longer the blocker",
+    "next_frontier": "POST-DOWN AWAIT-UP SPIN: after a consumed DOWN on Compose/constraintlayout apps (dooz Lpz0;.M0 re-entry 256M+ instr; transistor pressed-render spin 400s+), the UP dispatch starves — the await-next-event suspension needs an event-gate law (the coroutine should resume ON the UP arrival, not poll). Diary proves the full DOWN->PerformClick->listener->render chain works when the DOWN dispatch is light."
+  }
+}

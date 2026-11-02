@@ -1,0 +1,14 @@
+{
+  "wave": "S152-PROBE5",
+  "task": "interactive tap probes on the 5 S151 REAL_APP_CONTENT internet-sourced programs",
+  "method": "one scripted canonical tap per app (view_tree-derived coordinates where clickable views exist), real-dalvik, frames 30, tap@15; row state from the raw console: CLICK dispatch ([UI-EVENT] event=CLICK result=DISPATCHED) + frame-face pre/post delta",
+  "rows_summary": {
+    "fr.neamar.kiss_224": {"row_state": "DOWN_MISS", "verdict": "REAL_APP_CONTENT", "face": "6b3bbf6d2f3bc5db == S151 pin", "note": "tap 540,960 hit-tests to target=0 — the launcher's list items are inside the RecyclerView leaf-gap recorded honestly at S151; no clickable view in the EXP-061 tree (0 clickable nodes)"},
+    "org.billthefarmer.diary_1105": {"row_state": "TAP_EFFECT_RENDERED", "verdict": "REAL_APP_CONTENT", "face_pre_tap": "3f08916e2ab85ec3", "face_post_tap": "b18c3ee6c2818560 == S151 pin", "click": "DOWN (1017,1857) target=61 ImageButton -> PerformClick -> Diary$$ExternalSyntheticLambda17 DISPATCHED -> face CHANGED"},
+    "de.smasi.tickmate_50": {"row_state": "DOWN_MISS", "verdict": "REAL_APP_CONTENT", "face": "073ce3e5c804eda0 == S151 pin", "note": "0 clickable nodes in the EXP-061 tree (TickHeader only at the tap point)"},
+    "com.better.alarm_31504": {"row_state": "DOWN_MISS", "verdict": "REAL_APP_CONTENT", "face": "0bd24c912042a6c1 == S151 pin", "note": "tap 540,400 target=0; ContentFrameLayout without hit-testable children at that point"},
+    "org.y20k.transistor_117": {"row_state": "DOWN_ONLY", "verdict": "REAL_APP_CONTENT", "face": "5436cf81605f1c2d == S151 pin", "note": "DOWN (996,567) hit target=1597 (real ImageButton) but the UP starved inside the pressed-render spin (400s wall, same frontier family as dooz)"}
+  },
+  "frontier": "post-DOWN pressed-render spin starves the UP dispatch on heavier layouts (dooz compose 256M+ instr; transistor constraintlayout 400s+) — the await-next-event gate is the pinned next engine law",
+  "artifacts": ["run/s152/probe_*_console.log", "run/s152/probe_*/frames", "evidence/s151_trains/run_*/view_tree.json (coordinate source)"]
+}
