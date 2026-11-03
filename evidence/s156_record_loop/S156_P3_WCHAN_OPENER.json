@@ -1,0 +1,45 @@
+{
+ "probe": "S156-P3 wchan opener",
+ "binary_sha16": "a793f134936f7e58",
+ "wall_s": 72.6,
+ "n_samples": 145,
+ "sample_every_s": 0.5,
+ "verdict": "DEFAULT_BACKGROUND_ONLY",
+ "wchan_hist_all_threads": {
+  "0": 145,
+  "futex_wait_queue_me": 144
+ },
+ "wchan_hist_main_thread": {
+  "0": 1,
+  "futex_wait_queue_me": 144
+ },
+ "state_hist": {
+  "R": 145,
+  "S": 144
+ },
+ "thread_count_max": 2,
+ "cpu_ticks_final": {
+  "2240": [
+   0,
+   0
+  ],
+  "2241": [
+   7109,
+   96
+  ]
+ },
+ "cpu_deltas_ticks": {
+  "2240": {
+   "utime_ticks": 0,
+   "stime_ticks": 0
+  }
+ },
+ "total_cpu_s": 72.05,
+ "idle_fraction_est": 0.008,
+ "ctxt_switches": null,
+ "clk_tck": 100,
+ "env": {
+  "nproc": 2,
+  "kernel": "5.10.134-kangaroo.al8"
+ }
+}

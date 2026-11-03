@@ -1,0 +1,63 @@
+{
+ "probe": "S156-P3 spin v2 (main-thread /proc counters)",
+ "binary_sha16": "a793f134936f7e58",
+ "verdict": "DEFAULT_BACKGROUND_ONLY",
+ "wall_s": 72.1,
+ "n_samples": 144,
+ "main_thread_deltas": {
+  "minflt": 0,
+  "majflt": 583,
+  "utime": 0,
+  "stime": 0
+ },
+ "utime_s": 0.0,
+ "stime_s": 0.0,
+ "sample_window_s": 71.57,
+ "cpu_util": 0.0,
+ "minflt_per_s": 0.0,
+ "io_deltas": null,
+ "ctxt_switches": {
+  "voluntary": 3,
+  "nonvoluntary": 0
+ },
+ "syscall_sample_hist": {
+  "running": 1,
+  "futex": 143
+ },
+ "anon_kb_series": [
+  {
+   "t": 0.0,
+   "anon_kb": 124
+  },
+  {
+   "t": 10.01,
+   "anon_kb": 128284
+  },
+  {
+   "t": 20.02,
+   "anon_kb": 132248
+  },
+  {
+   "t": 30.03,
+   "anon_kb": 136432
+  },
+  {
+   "t": 40.04,
+   "anon_kb": 140528
+  },
+  {
+   "t": 50.05,
+   "anon_kb": 144220
+  },
+  {
+   "t": 60.06,
+   "anon_kb": 174632
+  },
+  {
+   "t": 70.07,
+   "anon_kb": 183248
+  }
+ ],
+ "verdict_family": "pure-userspace-spin",
+ "frames_dir_frames": 30
+}

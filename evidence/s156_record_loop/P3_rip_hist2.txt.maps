@@ -1,0 +1,199 @@
+556209942000-5562099f8000 r--p 00000000 fe:00 168441                     /home/z/my-project/miniandroid/build/miniandroid
+5562099f8000-55620a0e5000 r-xp 000b6000 fe:00 168441                     /home/z/my-project/miniandroid/build/miniandroid
+55620a0e5000-55620a21f000 r--p 007a3000 fe:00 168441                     /home/z/my-project/miniandroid/build/miniandroid
+55620a21f000-55620a22e000 r--p 008dc000 fe:00 168441                     /home/z/my-project/miniandroid/build/miniandroid
+55620a22e000-55620a230000 rw-p 008eb000 fe:00 168441                     /home/z/my-project/miniandroid/build/miniandroid
+55620a230000-55620a239000 rw-p 00000000 00:00 0 
+55620b3c6000-55620b3e7000 rw-p 00000000 00:00 0                          [heap]
+7f5af0000000-7f5af10cf000 rw-p 00000000 00:00 0 
+7f5af10cf000-7f5af4000000 ---p 00000000 00:00 0 
+7f5af62ab000-7f5afc000000 rw-p 00000000 00:00 0 
+7f5afc3c7000-7f5afd3cb000 r--p 00000000 00:29 72057594037933771          /usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+7f5afd3cb000-7f5afddf9000 r--p 00000000 00:29 72057594037933769          /usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf
+7f5afddf9000-7f5afe17d000 r--p 00000000 00:29 72057594037933767          /usr/share/fonts/truetype/freefont/FreeSerif.ttf
+7f5afe17d000-7f5afeb29000 rw-p 00000000 00:00 0 
+7f5afeb68000-7f5afeb83000 r--p 00000000 fe:00 143898                     /home/z/my-project/miniandroid/runtime/data/fonts/DroidSansMono.ttf
+7f5afeb83000-7f5afec31000 r--p 00000000 00:29 72057594037933765          /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+7f5afec31000-7f5afeceb000 r--p 00000000 00:29 72057594037933764          /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+7f5afeceb000-7f5afecec000 ---p 00000000 00:00 0 
+7f5afecec000-7f5b3ecec000 rw-p 00000000 00:00 0 
+7f5b3ecec000-7f5b3ecf7000 rw-p 00000000 00:00 0 
+7f5b3ecf7000-7f5b3ecfa000 r--p 00000000 00:29 72057594037928004          /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0
+7f5b3ecfa000-7f5b3ed75000 r-xp 00003000 00:29 72057594037928004          /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0
+7f5b3ed75000-7f5b3eda4000 r--p 0007e000 00:29 72057594037928004          /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0
+7f5b3eda4000-7f5b3eda5000 r--p 000ac000 00:29 72057594037928004          /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0
+7f5b3eda5000-7f5b3eda6000 rw-p 000ad000 00:29 72057594037928004          /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0
+7f5b3eda6000-7f5b3eda8000 r--p 00000000 00:29 72057594037933559          /usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0
+7f5b3eda8000-7f5b3edab000 r-xp 00002000 00:29 72057594037933559          /usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0
+7f5b3edab000-7f5b3edad000 r--p 00005000 00:29 72057594037933559          /usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0
+7f5b3edad000-7f5b3edae000 r--p 00006000 00:29 72057594037933559          /usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0
+7f5b3edae000-7f5b3edaf000 rw-p 00007000 00:29 72057594037933559          /usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0
+7f5b3edaf000-7f5b3edb0000 rw-p 00000000 00:00 0 
+7f5b3edb0000-7f5b3edb1000 r--p 00000000 00:29 72057594037931288          /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0
+7f5b3edb1000-7f5b3edb2000 r-xp 00001000 00:29 72057594037931288          /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0
+7f5b3edb2000-7f5b3edd1000 r--p 00002000 00:29 72057594037931288          /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0
+7f5b3edd1000-7f5b3edd2000 r--p 00021000 00:29 72057594037931288          /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0
+7f5b3edd2000-7f5b3edd3000 rw-p 00022000 00:29 72057594037931288          /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0
+7f5b3edd3000-7f5b3edd6000 r--p 00000000 00:29 72057594037933557          /usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1
+7f5b3edd6000-7f5b3edf5000 r-xp 00003000 00:29 72057594037933557          /usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1
+7f5b3edf5000-7f5b3edfa000 r--p 00022000 00:29 72057594037933557          /usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1
+7f5b3edfa000-7f5b3edfc000 r--p 00026000 00:29 72057594037933557          /usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1
+7f5b3edfc000-7f5b3edfd000 rw-p 00028000 00:29 72057594037933557          /usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1
+7f5b3edfd000-7f5b3ee1c000 r--p 00000000 00:29 72057594037933555          /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8400.4
+7f5b3ee1c000-7f5b3eebd000 r-xp 0001f000 00:29 72057594037933555          /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8400.4
+7f5b3eebd000-7f5b3ef53000 r--p 000c0000 00:29 72057594037933555          /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8400.4
+7f5b3ef53000-7f5b3ef54000 r--p 00155000 00:29 72057594037933555          /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8400.4
+7f5b3ef54000-7f5b3ef55000 rw-p 00156000 00:29 72057594037933555          /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8400.4
+7f5b3ef55000-7f5b3ef58000 rw-p 00000000 00:00 0 
+7f5b3ef58000-7f5b3ef59000 r--p 00000000 00:29 72057594037931266          /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0
+7f5b3ef59000-7f5b3ef61000 r-xp 00001000 00:29 72057594037931266          /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0
+7f5b3ef61000-7f5b3ef64000 r--p 00009000 00:29 72057594037931266          /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0
+7f5b3ef64000-7f5b3ef65000 r--p 0000b000 00:29 72057594037931266          /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0
+7f5b3ef65000-7f5b3ef66000 rw-p 0000c000 00:29 72057594037931266          /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0
+7f5b3ef66000-7f5b3ef68000 r--p 00000000 00:29 72057594037931153          /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4
+7f5b3ef68000-7f5b3ef75000 r-xp 00002000 00:29 72057594037931153          /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4
+7f5b3ef75000-7f5b3ef77000 r--p 0000f000 00:29 72057594037931153          /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4
+7f5b3ef77000-7f5b3ef78000 r--p 00010000 00:29 72057594037931153          /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4
+7f5b3ef78000-7f5b3ef79000 rw-p 00011000 00:29 72057594037931153          /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4
+7f5b3ef79000-7f5b3ef7a000 r--p 00000000 00:29 72057594037933553          /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1
+7f5b3ef7a000-7f5b3ef7e000 r-xp 00001000 00:29 72057594037933553          /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1
+7f5b3ef7e000-7f5b3ef7f000 r--p 00005000 00:29 72057594037933553          /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1
+7f5b3ef7f000-7f5b3ef80000 r--p 00005000 00:29 72057594037933553          /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1
+7f5b3ef80000-7f5b3ef81000 rw-p 00006000 00:29 72057594037933553          /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1
+7f5b3ef81000-7f5b3ef82000 rw-p 00000000 00:00 0 
+7f5b3ef82000-7f5b3ef88000 r--p 00000000 00:29 72057594037933551          /usr/lib/x86_64-linux-gnu/libmp3lame.so.0.0.0
+7f5b3ef88000-7f5b3efb9000 r-xp 00006000 00:29 72057594037933551          /usr/lib/x86_64-linux-gnu/libmp3lame.so.0.0.0
+7f5b3efb9000-7f5b3efcb000 r--p 00037000 00:29 72057594037933551          /usr/lib/x86_64-linux-gnu/libmp3lame.so.0.0.0
+7f5b3efcb000-7f5b3efcd000 r--p 00048000 00:29 72057594037933551          /usr/lib/x86_64-linux-gnu/libmp3lame.so.0.0.0
+7f5b3efcd000-7f5b3efce000 rw-p 0004a000 00:29 72057594037933551          /usr/lib/x86_64-linux-gnu/libmp3lame.so.0.0.0
+7f5b3efce000-7f5b3effb000 rw-p 00000000 00:00 0 
+7f5b3effb000-7f5b3effd000 r--p 00000000 00:29 72057594037933549          /usr/lib/x86_64-linux-gnu/libogg.so.0.8.5
+7f5b3effd000-7f5b3f000000 r-xp 00002000 00:29 72057594037933549          /usr/lib/x86_64-linux-gnu/libogg.so.0.8.5
+7f5b3f000000-7f5b3f003000 r--p 00005000 00:29 72057594037933549          /usr/lib/x86_64-linux-gnu/libogg.so.0.8.5
+7f5b3f003000-7f5b3f004000 r--p 00008000 00:29 72057594037933549          /usr/lib/x86_64-linux-gnu/libogg.so.0.8.5
+7f5b3f004000-7f5b3f005000 rw-p 00009000 00:29 72057594037933549          /usr/lib/x86_64-linux-gnu/libogg.so.0.8.5
+7f5b3f005000-7f5b3f007000 rw-p 00000000 00:00 0 
+7f5b3f007000-7f5b3f00e000 r--p 00000000 00:29 72057594037933547          /usr/lib/x86_64-linux-gnu/libopus.so.0.10.1
+7f5b3f00e000-7f5b3f071000 r-xp 00007000 00:29 72057594037933547          /usr/lib/x86_64-linux-gnu/libopus.so.0.10.1
+7f5b3f071000-7f5b3f367000 r--p 0006a000 00:29 72057594037933547          /usr/lib/x86_64-linux-gnu/libopus.so.0.10.1
+7f5b3f367000-7f5b3f36a000 r--p 0035f000 00:29 72057594037933547          /usr/lib/x86_64-linux-gnu/libopus.so.0.10.1
+7f5b3f36a000-7f5b3f36b000 rw-p 00362000 00:29 72057594037933547          /usr/lib/x86_64-linux-gnu/libopus.so.0.10.1
+7f5b3f36b000-7f5b3f37f000 r--p 00000000 00:29 72057594037933545          /usr/lib/x86_64-linux-gnu/libvorbisenc.so.2.0.12
+7f5b3f37f000-7f5b3f382000 r-xp 00014000 00:29 72057594037933545          /usr/lib/x86_64-linux-gnu/libvorbisenc.so.2.0.12
+7f5b3f382000-7f5b3f3f9000 r--p 00017000 00:29 72057594037933545          /usr/lib/x86_64-linux-gnu/libvorbisenc.so.2.0.12
+7f5b3f3f9000-7f5b3f415000 r--p 0008d000 00:29 72057594037933545          /usr/lib/x86_64-linux-gnu/libvorbisenc.so.2.0.12
+7f5b3f415000-7f5b3f416000 rw-p 000a9000 00:29 72057594037933545          /usr/lib/x86_64-linux-gnu/libvorbisenc.so.2.0.12
+7f5b3f416000-7f5b3f419000 r--p 00000000 00:29 72057594037933543          /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.9
+7f5b3f419000-7f5b3f431000 r-xp 00003000 00:29 72057594037933543          /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.9
+7f5b3f431000-7f5b3f442000 r--p 0001b000 00:29 72057594037933543          /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.9
+7f5b3f442000-7f5b3f443000 r--p 0002c000 00:29 72057594037933543          /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.9
+7f5b3f443000-7f5b3f444000 rw-p 0002d000 00:29 72057594037933543          /usr/lib/x86_64-linux-gnu/libvorbis.so.0.4.9
+7f5b3f444000-7f5b3f44e000 r--p 00000000 00:29 72057594037933541          /usr/lib/x86_64-linux-gnu/libFLAC.so.14.0.0
+7f5b3f44e000-7f5b3f4a0000 r-xp 0000a000 00:29 72057594037933541          /usr/lib/x86_64-linux-gnu/libFLAC.so.14.0.0
+7f5b3f4a0000-7f5b3f4ab000 r--p 0005c000 00:29 72057594037933541          /usr/lib/x86_64-linux-gnu/libFLAC.so.14.0.0
+7f5b3f4ab000-7f5b3f4ad000 r--p 00066000 00:29 72057594037933541          /usr/lib/x86_64-linux-gnu/libFLAC.so.14.0.0
+7f5b3f4ad000-7f5b3f4ae000 rw-p 00068000 00:29 72057594037933541          /usr/lib/x86_64-linux-gnu/libFLAC.so.14.0.0
+7f5b3f4ae000-7f5b3f4b3000 r--p 00000000 00:29 72057594037931264          /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7
+7f5b3f4b3000-7f5b3f562000 r-xp 00005000 00:29 72057594037931264          /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7
+7f5b3f562000-7f5b3f576000 r--p 000b4000 00:29 72057594037931264          /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7
+7f5b3f576000-7f5b3f577000 r--p 000c8000 00:29 72057594037931264          /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7
+7f5b3f577000-7f5b3f578000 rw-p 000c9000 00:29 72057594037931264          /usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7
+7f5b3f578000-7f5b3f57a000 rw-p 00000000 00:00 0 
+7f5b3f57a000-7f5b3f5a2000 r--p 00000000 00:29 72057594037927976          /usr/lib/x86_64-linux-gnu/libc.so.6
+7f5b3f5a2000-7f5b3f705000 r-xp 00028000 00:29 72057594037927976          /usr/lib/x86_64-linux-gnu/libc.so.6
+7f5b3f705000-7f5b3f75b000 r--p 0018b000 00:29 72057594037927976          /usr/lib/x86_64-linux-gnu/libc.so.6
+7f5b3f75b000-7f5b3f75f000 r--p 001e0000 00:29 72057594037927976          /usr/lib/x86_64-linux-gnu/libc.so.6
+7f5b3f75f000-7f5b3f761000 rw-p 001e4000 00:29 72057594037927976          /usr/lib/x86_64-linux-gnu/libc.so.6
+7f5b3f761000-7f5b3f76e000 rw-p 00000000 00:00 0 
+7f5b3f76e000-7f5b3f772000 r--p 00000000 00:29 72057594037928618          /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b3f772000-7f5b3f795000 r-xp 00004000 00:29 72057594037928618          /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b3f795000-7f5b3f799000 r--p 00027000 00:29 72057594037928618          /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b3f799000-7f5b3f79a000 r--p 0002b000 00:29 72057594037928618          /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b3f79a000-7f5b3f79b000 rw-p 0002c000 00:29 72057594037928618          /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5b3f79b000-7f5b3f7ac000 r--p 00000000 00:29 72057594037927997          /usr/lib/x86_64-linux-gnu/libm.so.6
+7f5b3f7ac000-7f5b3f829000 r-xp 00011000 00:29 72057594037927997          /usr/lib/x86_64-linux-gnu/libm.so.6
+7f5b3f829000-7f5b3f889000 r--p 0008e000 00:29 72057594037927997          /usr/lib/x86_64-linux-gnu/libm.so.6
+7f5b3f889000-7f5b3f88a000 r--p 000ed000 00:29 72057594037927997          /usr/lib/x86_64-linux-gnu/libm.so.6
+7f5b3f88a000-7f5b3f88b000 rw-p 000ee000 00:29 72057594037927997          /usr/lib/x86_64-linux-gnu/libm.so.6
+7f5b3f88b000-7f5b3f891000 r--p 00000000 00:29 72057594037933529          /usr/lib/x86_64-linux-gnu/libpng16.so.16.48.0
+7f5b3f891000-7f5b3f8b7000 r-xp 00006000 00:29 72057594037933529          /usr/lib/x86_64-linux-gnu/libpng16.so.16.48.0
+7f5b3f8b7000-7f5b3f8c2000 r--p 0002c000 00:29 72057594037933529          /usr/lib/x86_64-linux-gnu/libpng16.so.16.48.0
+7f5b3f8c2000-7f5b3f8c3000 r--p 00037000 00:29 72057594037933529          /usr/lib/x86_64-linux-gnu/libpng16.so.16.48.0
+7f5b3f8c3000-7f5b3f8c4000 rw-p 00038000 00:29 72057594037933529          /usr/lib/x86_64-linux-gnu/libpng16.so.16.48.0
+7f5b3f8c4000-7f5b3f8c6000 r--p 00000000 00:29 72057594037933525          /usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0
+7f5b3f8c6000-7f5b3f8ca000 r-xp 00002000 00:29 72057594037933525          /usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0
+7f5b3f8ca000-7f5b3f8e1000 r--p 00006000 00:29 72057594037933525          /usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0
+7f5b3f8e1000-7f5b3f8e2000 r--p 0001c000 00:29 72057594037933525          /usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0
+7f5b3f8e2000-7f5b3f8e3000 rw-p 0001d000 00:29 72057594037933525          /usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0
+7f5b3f8e3000-7f5b3f8f0000 r--p 00000000 00:29 72057594037933523          /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61020.0
+7f5b3f8f0000-7f5b3f9e1000 r-xp 0000d000 00:29 72057594037933523          /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61020.0
+7f5b3f9e1000-7f5b3fa21000 r--p 000fe000 00:29 72057594037933523          /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61020.0
+7f5b3fa21000-7f5b3fa23000 r--p 0013d000 00:29 72057594037933523          /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61020.0
+7f5b3fa23000-7f5b3fa24000 rw-p 0013f000 00:29 72057594037933523          /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61020.0
+7f5b3fa24000-7f5b3fa26000 rw-p 00000000 00:00 0 
+7f5b3fa26000-7f5b3fa34000 r--p 00000000 00:29 72057594037933520          /usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.2
+7f5b3fa34000-7f5b3fac2000 r-xp 0000e000 00:29 72057594037933520          /usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.2
+7f5b3fac2000-7f5b3faed000 r--p 0009c000 00:29 72057594037933520          /usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.2
+7f5b3faed000-7f5b3faf5000 r--p 000c6000 00:29 72057594037933520          /usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.2
+7f5b3faf5000-7f5b3faf6000 rw-p 000ce000 00:29 72057594037933520          /usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.2
+7f5b3faf6000-7f5b3faf9000 r--p 00000000 00:29 72057594037933515          /usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10
+7f5b3faf9000-7f5b3fb5c000 r-xp 00003000 00:29 72057594037933515          /usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10
+7f5b3fb5c000-7f5b3fb75000 r--p 00066000 00:29 72057594037933515          /usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10
+7f5b3fb75000-7f5b3fb76000 r--p 0007f000 00:29 72057594037933515          /usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10
+7f5b3fb76000-7f5b3fb77000 rw-p 00080000 00:29 72057594037933515          /usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10
+7f5b3fb77000-7f5b3fb78000 rw-p 00000000 00:00 0 
+7f5b3fb78000-7f5b3fb81000 r--p 00000000 00:29 72057594037933512          /usr/lib/x86_64-linux-gnu/libsndfile.so.1.0.37
+7f5b3fb81000-7f5b3fbe0000 r-xp 00009000 00:29 72057594037933512          /usr/lib/x86_64-linux-gnu/libsndfile.so.1.0.37
+7f5b3fbe0000-7f5b3fc00000 r--p 00068000 00:29 72057594037933512          /usr/lib/x86_64-linux-gnu/libsndfile.so.1.0.37
+7f5b3fc00000-7f5b3fc03000 r--p 00088000 00:29 72057594037933512          /usr/lib/x86_64-linux-gnu/libsndfile.so.1.0.37
+7f5b3fc03000-7f5b3fc04000 rw-p 0008b000 00:29 72057594037933512          /usr/lib/x86_64-linux-gnu/libsndfile.so.1.0.37
+7f5b3fc04000-7f5b3fc07000 rw-p 00000000 00:00 0 
+7f5b3fc07000-7f5b3fc0d000 r--p 00000000 00:29 72057594037933510          /usr/lib/x86_64-linux-gnu/libmpg123.so.0.48.3
+7f5b3fc0d000-7f5b3fc46000 r-xp 00006000 00:29 72057594037933510          /usr/lib/x86_64-linux-gnu/libmpg123.so.0.48.3
+7f5b3fc46000-7f5b3fc62000 r--p 0003f000 00:29 72057594037933510          /usr/lib/x86_64-linux-gnu/libmpg123.so.0.48.3
+7f5b3fc62000-7f5b3fc63000 r--p 0005b000 00:29 72057594037933510          /usr/lib/x86_64-linux-gnu/libmpg123.so.0.48.3
+7f5b3fc63000-7f5b3fc64000 rw-p 0005c000 00:29 72057594037933510          /usr/lib/x86_64-linux-gnu/libmpg123.so.0.48.3
+7f5b3fc64000-7f5b3fd5b000 r--p 00000000 00:29 72057594037931256          /usr/lib/x86_64-linux-gnu/libcrypto.so.3
+7f5b3fd5b000-7f5b400df000 r-xp 000f7000 00:29 72057594037931256          /usr/lib/x86_64-linux-gnu/libcrypto.so.3
+7f5b400df000-7f5b40216000 r--p 0047b000 00:29 72057594037931256          /usr/lib/x86_64-linux-gnu/libcrypto.so.3
+7f5b40216000-7f5b40299000 r--p 005b2000 00:29 72057594037931256          /usr/lib/x86_64-linux-gnu/libcrypto.so.3
+7f5b40299000-7f5b4029c000 rw-p 00635000 00:29 72057594037931256          /usr/lib/x86_64-linux-gnu/libcrypto.so.3
+7f5b4029c000-7f5b4029f000 rw-p 00000000 00:00 0 
+7f5b4029f000-7f5b402c2000 r--p 00000000 00:29 72057594037931255          /usr/lib/x86_64-linux-gnu/libssl.so.3
+7f5b402c2000-7f5b4036d000 r-xp 00023000 00:29 72057594037931255          /usr/lib/x86_64-linux-gnu/libssl.so.3
+7f5b4036d000-7f5b403a0000 r--p 000ce000 00:29 72057594037931255          /usr/lib/x86_64-linux-gnu/libssl.so.3
+7f5b403a0000-7f5b403ab000 r--p 00100000 00:29 72057594037931255          /usr/lib/x86_64-linux-gnu/libssl.so.3
+7f5b403ab000-7f5b403af000 rw-p 0010b000 00:29 72057594037931255          /usr/lib/x86_64-linux-gnu/libssl.so.3
+7f5b403af000-7f5b403b1000 rw-p 00000000 00:00 0 
+7f5b403b1000-7f5b403d8000 r--p 00000000 00:29 72057594037933506          /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
+7f5b403d8000-7f5b404e8000 r-xp 00027000 00:29 72057594037933506          /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
+7f5b404e8000-7f5b40526000 r--p 00137000 00:29 72057594037933506          /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
+7f5b40526000-7f5b4052c000 r--p 00175000 00:29 72057594037933506          /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
+7f5b4052c000-7f5b40531000 rw-p 0017b000 00:29 72057594037933506          /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
+7f5b40531000-7f5b405ce000 r--p 00000000 00:29 72057594037931241          /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+7f5b405ce000-7f5b406f7000 r-xp 0009d000 00:29 72057594037931241          /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+7f5b406f7000-7f5b40785000 r--p 001c6000 00:29 72057594037931241          /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+7f5b40785000-7f5b40790000 r--p 00254000 00:29 72057594037931241          /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+7f5b40790000-7f5b40793000 rw-p 0025f000 00:29 72057594037931241          /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+7f5b40793000-7f5b40797000 rw-p 00000000 00:00 0 
+7f5b40797000-7f5b4079b000 r--p 00000000 00:29 72057594037933502          /usr/lib/x86_64-linux-gnu/libjpeg.so.62.3.0
+7f5b4079b000-7f5b407ea000 r-xp 00004000 00:29 72057594037933502          /usr/lib/x86_64-linux-gnu/libjpeg.so.62.3.0
+7f5b407ea000-7f5b4082c000 r--p 00053000 00:29 72057594037933502          /usr/lib/x86_64-linux-gnu/libjpeg.so.62.3.0
+7f5b4082c000-7f5b4082d000 r--p 00095000 00:29 72057594037933502          /usr/lib/x86_64-linux-gnu/libjpeg.so.62.3.0
+7f5b4082d000-7f5b4082e000 rw-p 00096000 00:29 72057594037933502          /usr/lib/x86_64-linux-gnu/libjpeg.so.62.3.0
+7f5b4082e000-7f5b40831000 r--p 00000000 00:29 72057594037931207          /usr/lib/x86_64-linux-gnu/libz.so.1.3.1
+7f5b40831000-7f5b40845000 r-xp 00003000 00:29 72057594037931207          /usr/lib/x86_64-linux-gnu/libz.so.1.3.1
+7f5b40845000-7f5b4084c000 r--p 00017000 00:29 72057594037931207          /usr/lib/x86_64-linux-gnu/libz.so.1.3.1
+7f5b4084c000-7f5b4084d000 r--p 0001d000 00:29 72057594037931207          /usr/lib/x86_64-linux-gnu/libz.so.1.3.1
+7f5b4084d000-7f5b4084e000 rw-p 0001e000 00:29 72057594037931207          /usr/lib/x86_64-linux-gnu/libz.so.1.3.1
+7f5b4085d000-7f5b4085f000 rw-p 00000000 00:00 0 
+7f5b4085f000-7f5b40860000 r--p 00000000 00:29 72057594037927975          /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f5b40860000-7f5b40888000 r-xp 00001000 00:29 72057594037927975          /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f5b40888000-7f5b40893000 r--p 00029000 00:29 72057594037927975          /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f5b40893000-7f5b40895000 r--p 00034000 00:29 72057594037927975          /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f5b40895000-7f5b40896000 rw-p 00036000 00:29 72057594037927975          /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f5b40896000-7f5b40897000 rw-p 00000000 00:00 0 
+7fffd73f3000-7fffd7414000 rw-p 00000000 00:00 0                          [stack]
+7fffd74ca000-7fffd74ce000 r--p 00000000 00:00 0                          [vvar]
+7fffd74ce000-7fffd74d0000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]

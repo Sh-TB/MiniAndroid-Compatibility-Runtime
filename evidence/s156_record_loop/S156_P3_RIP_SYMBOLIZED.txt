@@ -1,0 +1,72 @@
+  1707  49.97% tid=2600  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7272e
+    76   2.22% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14d85e
+    60   1.76% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14a221
+    33   0.97% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    23   0.67% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7272e
+    23   0.67% tid=2601  [vdso] +0x8dd
+    21   0.61% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    21   0.61% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7afe6
+    19   0.56% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14a21a
+    19   0.56% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7a949
+    17   0.50% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    17   0.50% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x76304
+    16   0.47% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x798cc
+    15   0.44% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x153874
+    14   0.41% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x798ec
+    14   0.41% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    14   0.41% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    13   0.38% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14a233
+    12   0.35% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14a237
+    12   0.35% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14d869
+    12   0.35% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    12   0.35% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14a225
+    12   0.35% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    12   0.35% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    11   0.32% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+    10   0.29% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7a9bd
+     9   0.26% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     9   0.26% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14d862
+     9   0.26% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14a24d
+     8   0.23% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x76c83
+     8   0.23% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7843d
+     8   0.23% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     8   0.23% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14d858
+     8   0.23% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     7   0.20% tid=2601  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33 +0xb5fc1
+     7   0.20% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     7   0.20% tid=2601  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33 +0xb42e7
+     7   0.20% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x76c26
+     7   0.20% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x76b1d
+     7   0.20% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     6   0.18% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x76b23
+     6   0.18% tid=2601  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33 +0xb4d26
+     6   0.18% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7a9dc
+     6   0.18% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7afd7
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33 +0x384ad
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x14d840
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7830c
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7b0a0
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33 +0x1920
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x7a927
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33 +0xb6902
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /usr/lib/x86_64-linux-gnu/libc.so.6 +0x152f23
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+     5   0.15% tid=2601  /home/z/my-project/miniandroid/build/miniandroid ?? @ ??:0
+
+# total=2428
+# per-tid:
+  tid=2600: 1707 (70.3%)
+  tid=2601: 721 (29.7%)
+# per-mapping:
+    2145 ( 88.3%)  /usr/lib/x86_64-linux-gnu/libc.so.6
+     225 (  9.3%)  /home/z/my-project/miniandroid/build/miniandroid
+      35 (  1.4%)  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+      23 (  0.9%)  [vdso]
+# exe function ranking:
+     225 (  9.3%)  ?? @ ??:0
