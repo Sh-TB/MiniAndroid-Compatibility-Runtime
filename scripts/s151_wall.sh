@@ -54,7 +54,7 @@ declare -A PIN=(
   [snakedeluxe]=5235683fc7b1f04b
   [minicraft]=e77a073f733255eb
   [gmem]=4876e47d26910839
-  [snakeneon]=b669ce89365f8bbe
+  [snakeneon]=4a19b1fe671064b0
   [sqlnotes]=748bb6cf756e7413
 )
 

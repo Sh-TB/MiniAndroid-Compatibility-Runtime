@@ -1,0 +1,82 @@
+{
+ "binary": "840a9d5bb786767c",
+ "protocol": {
+  "apk": "io.github.yamin8000.dooz_23",
+  "max-seconds": 120,
+  "frames": 30,
+  "trace": true,
+  "fresh_store": true
+ },
+ "wall_s": 136.1,
+ "face": "11a38a5aeeff45a6",
+ "baseline": {
+  "tpc": 2455.0,
+  "calls": 7064565,
+  "binary": "a793f134936f7e58",
+  "source": "evidence/s156_record_loop/S156_P3_PERFOPS.txt"
+ },
+ "ops": {
+  "iget-object": {
+   "op": "0x54",
+   "calls": 7470030,
+   "tpc": 2188.0,
+   "tpc_delta_pct": -10.9,
+   "speedup_x": 1.12
+  },
+  "iget": {
+   "op": "0x52",
+   "calls": 1736899,
+   "tpc": 2096.0
+  },
+  "op0x11": {
+   "op": "0x11",
+   "calls": 1803197,
+   "tpc": 1840.0
+  },
+  "sget": {
+   "op": "0x62",
+   "calls": 622442,
+   "tpc": 4719.0
+  },
+  "op0x0f": {
+   "op": "0x0f",
+   "calls": 1245714,
+   "tpc": 2049.0
+  },
+  "op0x1f": {
+   "op": "0x1f",
+   "calls": 2497455,
+   "tpc": 997.0
+  },
+  "op0x38": {
+   "op": "0x38",
+   "calls": 2462590,
+   "tpc": 933.0
+  },
+  "op0x5b": {
+   "op": "0x5b",
+   "calls": 820690,
+   "tpc": 2406.0
+  },
+  "op0x0e": {
+   "op": "0x0e",
+   "calls": 1696841,
+   "tpc": 1046.0
+  },
+  "op0x39": {
+   "op": "0x39",
+   "calls": 1604140,
+   "tpc": 1043.0
+  },
+  "op0x0a": {
+   "op": "0x0a",
+   "calls": 2076000,
+   "tpc": 801.0
+  },
+  "op0x53": {
+   "op": "0x53",
+   "calls": 734083,
+   "tpc": 2205.0
+  }
+ }
+}
