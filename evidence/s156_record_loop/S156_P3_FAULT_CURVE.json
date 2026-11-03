@@ -1,0 +1,1971 @@
+{
+ "verdict": "DEFAULT_BACKGROUND_ONLY",
+ "wall_s": 73.0,
+ "n_samples": 73,
+ "series": [
+  {
+   "t": 0.0,
+   "main": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 13,
+    "utime": 0,
+    "stime": 0
+   },
+   "rss_kb": 4,
+   "io": {
+    "rchar": 5020,
+    "wchar": 0,
+    "syscr": 9,
+    "syscw": 0,
+    "read_bytes": 0,
+    "write_bytes": 0,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 1.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 13829,
+    "utime": 96,
+    "stime": 3
+   },
+   "rss_kb": 83804,
+   "io": {
+    "rchar": 9264732,
+    "wchar": 236318,
+    "syscr": 60,
+    "syscw": 25453,
+    "read_bytes": 0,
+    "write_bytes": 249856,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 2.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 20804,
+    "utime": 194,
+    "stime": 4
+   },
+   "rss_kb": 124172,
+   "io": {
+    "rchar": 11110641,
+    "wchar": 3506142,
+    "syscr": 67,
+    "syscw": 31509,
+    "read_bytes": 0,
+    "write_bytes": 3559424,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 3.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 22481,
+    "utime": 293,
+    "stime": 5
+   },
+   "rss_kb": 131964,
+   "io": {
+    "rchar": 11117211,
+    "wchar": 3572646,
+    "syscr": 73,
+    "syscw": 40320,
+    "read_bytes": 0,
+    "write_bytes": 3629056,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 4.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 24459,
+    "utime": 392,
+    "stime": 7
+   },
+   "rss_kb": 139620,
+   "io": {
+    "rchar": 11123781,
+    "wchar": 3634254,
+    "syscr": 79,
+    "syscw": 49243,
+    "read_bytes": 0,
+    "write_bytes": 3690496,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 5.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 24650,
+    "utime": 492,
+    "stime": 7
+   },
+   "rss_kb": 140412,
+   "io": {
+    "rchar": 11129256,
+    "wchar": 3652388,
+    "syscr": 84,
+    "syscw": 51561,
+    "read_bytes": 0,
+    "write_bytes": 3706880,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 6.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 24773,
+    "utime": 591,
+    "stime": 8
+   },
+   "rss_kb": 140940,
+   "io": {
+    "rchar": 11135826,
+    "wchar": 3670363,
+    "syscr": 90,
+    "syscw": 53859,
+    "read_bytes": 0,
+    "write_bytes": 3727360,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 7.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 24928,
+    "utime": 691,
+    "stime": 8
+   },
+   "rss_kb": 141732,
+   "io": {
+    "rchar": 11142396,
+    "wchar": 3685876,
+    "syscr": 96,
+    "syscw": 55867,
+    "read_bytes": 0,
+    "write_bytes": 3743744,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 8.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25004,
+    "utime": 790,
+    "stime": 8
+   },
+   "rss_kb": 141996,
+   "io": {
+    "rchar": 11147871,
+    "wchar": 3701733,
+    "syscr": 101,
+    "syscw": 57911,
+    "read_bytes": 0,
+    "write_bytes": 3756032,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 9.0,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25136,
+    "utime": 890,
+    "stime": 9
+   },
+   "rss_kb": 142524,
+   "io": {
+    "rchar": 11154441,
+    "wchar": 3717922,
+    "syscr": 107,
+    "syscw": 59981,
+    "read_bytes": 0,
+    "write_bytes": 3772416,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 10.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25259,
+    "utime": 990,
+    "stime": 9
+   },
+   "rss_kb": 143052,
+   "io": {
+    "rchar": 11159916,
+    "wchar": 3732569,
+    "syscr": 112,
+    "syscw": 61867,
+    "read_bytes": 0,
+    "write_bytes": 3788800,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 11.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25339,
+    "utime": 1090,
+    "stime": 9
+   },
+   "rss_kb": 143316,
+   "io": {
+    "rchar": 11165391,
+    "wchar": 3749395,
+    "syscr": 117,
+    "syscw": 64019,
+    "read_bytes": 0,
+    "write_bytes": 3805184,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 12.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25450,
+    "utime": 1189,
+    "stime": 10
+   },
+   "rss_kb": 143580,
+   "io": {
+    "rchar": 11171961,
+    "wchar": 3764744,
+    "syscr": 123,
+    "syscw": 65991,
+    "read_bytes": 0,
+    "write_bytes": 3821568,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 13.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25557,
+    "utime": 1289,
+    "stime": 10
+   },
+   "rss_kb": 144108,
+   "io": {
+    "rchar": 11177436,
+    "wchar": 3778815,
+    "syscr": 128,
+    "syscw": 67811,
+    "read_bytes": 0,
+    "write_bytes": 3833856,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 14.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25650,
+    "utime": 1389,
+    "stime": 10
+   },
+   "rss_kb": 144636,
+   "io": {
+    "rchar": 11184006,
+    "wchar": 3796340,
+    "syscr": 134,
+    "syscw": 70049,
+    "read_bytes": 0,
+    "write_bytes": 3854336,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 15.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25747,
+    "utime": 1488,
+    "stime": 11
+   },
+   "rss_kb": 144900,
+   "io": {
+    "rchar": 11189481,
+    "wchar": 3811323,
+    "syscr": 139,
+    "syscw": 71977,
+    "read_bytes": 0,
+    "write_bytes": 3866624,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 16.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25878,
+    "utime": 1588,
+    "stime": 11
+   },
+   "rss_kb": 145428,
+   "io": {
+    "rchar": 11196051,
+    "wchar": 3825834,
+    "syscr": 145,
+    "syscw": 73851,
+    "read_bytes": 0,
+    "write_bytes": 3883008,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 17.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 25979,
+    "utime": 1688,
+    "stime": 11
+   },
+   "rss_kb": 145956,
+   "io": {
+    "rchar": 11201526,
+    "wchar": 3843154,
+    "syscr": 150,
+    "syscw": 76059,
+    "read_bytes": 0,
+    "write_bytes": 3899392,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 18.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26069,
+    "utime": 1787,
+    "stime": 12
+   },
+   "rss_kb": 146220,
+   "io": {
+    "rchar": 11207001,
+    "wchar": 3857803,
+    "syscr": 155,
+    "syscw": 77945,
+    "read_bytes": 0,
+    "write_bytes": 3915776,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 19.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26147,
+    "utime": 1887,
+    "stime": 12
+   },
+   "rss_kb": 146484,
+   "io": {
+    "rchar": 11213571,
+    "wchar": 3873593,
+    "syscr": 161,
+    "syscw": 79973,
+    "read_bytes": 0,
+    "write_bytes": 3928064,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 20.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26272,
+    "utime": 1987,
+    "stime": 13
+   },
+   "rss_kb": 147012,
+   "io": {
+    "rchar": 11219046,
+    "wchar": 3889339,
+    "syscr": 166,
+    "syscw": 81985,
+    "read_bytes": 0,
+    "write_bytes": 3944448,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 21.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26414,
+    "utime": 2086,
+    "stime": 13
+   },
+   "rss_kb": 147540,
+   "io": {
+    "rchar": 11225616,
+    "wchar": 3904410,
+    "syscr": 172,
+    "syscw": 83929,
+    "read_bytes": 0,
+    "write_bytes": 3960832,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 22.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26459,
+    "utime": 2186,
+    "stime": 13
+   },
+   "rss_kb": 147804,
+   "io": {
+    "rchar": 11231091,
+    "wchar": 3920946,
+    "syscr": 177,
+    "syscw": 86043,
+    "read_bytes": 0,
+    "write_bytes": 3977216,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 23.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26581,
+    "utime": 2286,
+    "stime": 14
+   },
+   "rss_kb": 148332,
+   "io": {
+    "rchar": 11237661,
+    "wchar": 3935352,
+    "syscr": 183,
+    "syscw": 87903,
+    "read_bytes": 0,
+    "write_bytes": 3989504,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 24.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26745,
+    "utime": 2386,
+    "stime": 14
+   },
+   "rss_kb": 148860,
+   "io": {
+    "rchar": 11243136,
+    "wchar": 3950331,
+    "syscr": 188,
+    "syscw": 89831,
+    "read_bytes": 0,
+    "write_bytes": 4005888,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 25.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26807,
+    "utime": 2485,
+    "stime": 14
+   },
+   "rss_kb": 149124,
+   "io": {
+    "rchar": 11248611,
+    "wchar": 3967431,
+    "syscr": 193,
+    "syscw": 92011,
+    "read_bytes": 0,
+    "write_bytes": 4022272,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 26.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26909,
+    "utime": 2585,
+    "stime": 14
+   },
+   "rss_kb": 149652,
+   "io": {
+    "rchar": 11255181,
+    "wchar": 3982401,
+    "syscr": 199,
+    "syscw": 93941,
+    "read_bytes": 0,
+    "write_bytes": 4038656,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 27.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 26978,
+    "utime": 2685,
+    "stime": 15
+   },
+   "rss_kb": 149916,
+   "io": {
+    "rchar": 11260656,
+    "wchar": 3997499,
+    "syscr": 204,
+    "syscw": 95883,
+    "read_bytes": 0,
+    "write_bytes": 4055040,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 28.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27105,
+    "utime": 2784,
+    "stime": 15
+   },
+   "rss_kb": 150444,
+   "io": {
+    "rchar": 11267226,
+    "wchar": 4013699,
+    "syscr": 210,
+    "syscw": 97953,
+    "read_bytes": 0,
+    "write_bytes": 4071424,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 29.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27236,
+    "utime": 2884,
+    "stime": 15
+   },
+   "rss_kb": 150972,
+   "io": {
+    "rchar": 11272701,
+    "wchar": 4028698,
+    "syscr": 215,
+    "syscw": 99875,
+    "read_bytes": 0,
+    "write_bytes": 4083712,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 30.01,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27317,
+    "utime": 2984,
+    "stime": 16
+   },
+   "rss_kb": 151236,
+   "io": {
+    "rchar": 11278176,
+    "wchar": 4045438,
+    "syscr": 220,
+    "syscw": 102013,
+    "read_bytes": 0,
+    "write_bytes": 4100096,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 31.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27430,
+    "utime": 3084,
+    "stime": 16
+   },
+   "rss_kb": 151500,
+   "io": {
+    "rchar": 11284746,
+    "wchar": 4060229,
+    "syscr": 226,
+    "syscw": 103915,
+    "read_bytes": 0,
+    "write_bytes": 4116480,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 32.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27523,
+    "utime": 3183,
+    "stime": 16
+   },
+   "rss_kb": 152028,
+   "io": {
+    "rchar": 11290221,
+    "wchar": 4074881,
+    "syscr": 231,
+    "syscw": 105801,
+    "read_bytes": 0,
+    "write_bytes": 4132864,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 33.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27617,
+    "utime": 3283,
+    "stime": 16
+   },
+   "rss_kb": 152292,
+   "io": {
+    "rchar": 11295696,
+    "wchar": 4091320,
+    "syscr": 236,
+    "syscw": 107897,
+    "read_bytes": 0,
+    "write_bytes": 4153344,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 34.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27718,
+    "utime": 3383,
+    "stime": 17
+   },
+   "rss_kb": 152820,
+   "io": {
+    "rchar": 11302266,
+    "wchar": 4105401,
+    "syscr": 242,
+    "syscw": 109715,
+    "read_bytes": 0,
+    "write_bytes": 4165632,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 35.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27783,
+    "utime": 3483,
+    "stime": 17
+   },
+   "rss_kb": 153084,
+   "io": {
+    "rchar": 11307741,
+    "wchar": 4120750,
+    "syscr": 247,
+    "syscw": 111685,
+    "read_bytes": 0,
+    "write_bytes": 4182016,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 36.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 27917,
+    "utime": 3583,
+    "stime": 17
+   },
+   "rss_kb": 153612,
+   "io": {
+    "rchar": 11313216,
+    "wchar": 4136267,
+    "syscr": 252,
+    "syscw": 113669,
+    "read_bytes": 0,
+    "write_bytes": 4198400,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 37.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28008,
+    "utime": 3682,
+    "stime": 18
+   },
+   "rss_kb": 153876,
+   "io": {
+    "rchar": 11318691,
+    "wchar": 4150805,
+    "syscr": 257,
+    "syscw": 115541,
+    "read_bytes": 0,
+    "write_bytes": 4210688,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 38.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28103,
+    "utime": 3782,
+    "stime": 18
+   },
+   "rss_kb": 154404,
+   "io": {
+    "rchar": 11325261,
+    "wchar": 4168002,
+    "syscr": 263,
+    "syscw": 117737,
+    "read_bytes": 0,
+    "write_bytes": 4227072,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 39.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28297,
+    "utime": 3882,
+    "stime": 18
+   },
+   "rss_kb": 155196,
+   "io": {
+    "rchar": 11330736,
+    "wchar": 4181655,
+    "syscr": 268,
+    "syscw": 119497,
+    "read_bytes": 0,
+    "write_bytes": 4243456,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 40.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28305,
+    "utime": 3982,
+    "stime": 19
+   },
+   "rss_kb": 155196,
+   "io": {
+    "rchar": 11336211,
+    "wchar": 4195754,
+    "syscr": 273,
+    "syscw": 121313,
+    "read_bytes": 0,
+    "write_bytes": 4255744,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 41.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28398,
+    "utime": 4081,
+    "stime": 19
+   },
+   "rss_kb": 155460,
+   "io": {
+    "rchar": 11342781,
+    "wchar": 4212499,
+    "syscr": 279,
+    "syscw": 123453,
+    "read_bytes": 0,
+    "write_bytes": 4272128,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 42.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28509,
+    "utime": 4181,
+    "stime": 20
+   },
+   "rss_kb": 155988,
+   "io": {
+    "rchar": 11348256,
+    "wchar": 4226912,
+    "syscr": 284,
+    "syscw": 125315,
+    "read_bytes": 0,
+    "write_bytes": 4288512,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 43.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28587,
+    "utime": 4280,
+    "stime": 20
+   },
+   "rss_kb": 156252,
+   "io": {
+    "rchar": 11353731,
+    "wchar": 4242974,
+    "syscr": 289,
+    "syscw": 127369,
+    "read_bytes": 0,
+    "write_bytes": 4304896,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 44.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28699,
+    "utime": 4380,
+    "stime": 20
+   },
+   "rss_kb": 156780,
+   "io": {
+    "rchar": 11359206,
+    "wchar": 4257336,
+    "syscr": 294,
+    "syscw": 129213,
+    "read_bytes": 0,
+    "write_bytes": 4317184,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 45.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28794,
+    "utime": 4480,
+    "stime": 21
+   },
+   "rss_kb": 157044,
+   "io": {
+    "rchar": 11365776,
+    "wchar": 4271756,
+    "syscr": 300,
+    "syscw": 131073,
+    "read_bytes": 0,
+    "write_bytes": 4333568,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 46.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28885,
+    "utime": 4579,
+    "stime": 21
+   },
+   "rss_kb": 157572,
+   "io": {
+    "rchar": 11371251,
+    "wchar": 4288527,
+    "syscr": 305,
+    "syscw": 133211,
+    "read_bytes": 0,
+    "write_bytes": 4349952,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 47.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 28987,
+    "utime": 4679,
+    "stime": 21
+   },
+   "rss_kb": 157836,
+   "io": {
+    "rchar": 11376726,
+    "wchar": 4302957,
+    "syscr": 310,
+    "syscw": 135069,
+    "read_bytes": 0,
+    "write_bytes": 4362240,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 48.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29053,
+    "utime": 4779,
+    "stime": 22
+   },
+   "rss_kb": 158100,
+   "io": {
+    "rchar": 11383296,
+    "wchar": 4318592,
+    "syscr": 316,
+    "syscw": 137083,
+    "read_bytes": 0,
+    "write_bytes": 4378624,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 49.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29184,
+    "utime": 4879,
+    "stime": 22
+   },
+   "rss_kb": 158628,
+   "io": {
+    "rchar": 11388771,
+    "wchar": 4333814,
+    "syscr": 321,
+    "syscw": 139025,
+    "read_bytes": 0,
+    "write_bytes": 4395008,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 50.02,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29275,
+    "utime": 4978,
+    "stime": 22
+   },
+   "rss_kb": 158892,
+   "io": {
+    "rchar": 11394246,
+    "wchar": 4348578,
+    "syscr": 326,
+    "syscw": 140925,
+    "read_bytes": 0,
+    "write_bytes": 4407296,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 51.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29367,
+    "utime": 5078,
+    "stime": 23
+   },
+   "rss_kb": 159420,
+   "io": {
+    "rchar": 11400816,
+    "wchar": 4365224,
+    "syscr": 332,
+    "syscw": 143051,
+    "read_bytes": 0,
+    "write_bytes": 4423680,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 52.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29483,
+    "utime": 5178,
+    "stime": 23
+   },
+   "rss_kb": 159948,
+   "io": {
+    "rchar": 11406291,
+    "wchar": 4379099,
+    "syscr": 337,
+    "syscw": 144839,
+    "read_bytes": 0,
+    "write_bytes": 4440064,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 53.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29576,
+    "utime": 5278,
+    "stime": 23
+   },
+   "rss_kb": 160212,
+   "io": {
+    "rchar": 11411766,
+    "wchar": 4393211,
+    "syscr": 342,
+    "syscw": 146647,
+    "read_bytes": 0,
+    "write_bytes": 4452352,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 54.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 29671,
+    "utime": 5377,
+    "stime": 23
+   },
+   "rss_kb": 160476,
+   "io": {
+    "rchar": 11417241,
+    "wchar": 4410094,
+    "syscr": 347,
+    "syscw": 148799,
+    "read_bytes": 0,
+    "write_bytes": 4468736,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 55.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 36143,
+    "utime": 5476,
+    "stime": 24
+   },
+   "rss_kb": 172048,
+   "io": {
+    "rchar": 11419432,
+    "wchar": 4414899,
+    "syscr": 350,
+    "syscw": 149413,
+    "read_bytes": 0,
+    "write_bytes": 4476928,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 56.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 38754,
+    "utime": 5575,
+    "stime": 26
+   },
+   "rss_kb": 178692,
+   "io": {
+    "rchar": 11433934,
+    "wchar": 10676773,
+    "syscr": 358,
+    "syscw": 153295,
+    "read_bytes": 0,
+    "write_bytes": 10776576,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 57.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 41173,
+    "utime": 5675,
+    "stime": 26
+   },
+   "rss_kb": 188196,
+   "io": {
+    "rchar": 13278714,
+    "wchar": 10692383,
+    "syscr": 363,
+    "syscw": 155197,
+    "read_bytes": 0,
+    "write_bytes": 10792960,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 58.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 41269,
+    "utime": 5774,
+    "stime": 27
+   },
+   "rss_kb": 188724,
+   "io": {
+    "rchar": 13285284,
+    "wchar": 10708125,
+    "syscr": 369,
+    "syscw": 157225,
+    "read_bytes": 0,
+    "write_bytes": 10805248,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 59.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 41410,
+    "utime": 5874,
+    "stime": 27
+   },
+   "rss_kb": 189252,
+   "io": {
+    "rchar": 13291854,
+    "wchar": 10724654,
+    "syscr": 375,
+    "syscw": 159337,
+    "read_bytes": 0,
+    "write_bytes": 10821632,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 60.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 41524,
+    "utime": 5974,
+    "stime": 27
+   },
+   "rss_kb": 189780,
+   "io": {
+    "rchar": 13297329,
+    "wchar": 10739860,
+    "syscr": 380,
+    "syscw": 161293,
+    "read_bytes": 0,
+    "write_bytes": 10838016,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 61.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 41835,
+    "utime": 6033,
+    "stime": 68
+   },
+   "rss_kb": 190896,
+   "io": {
+    "rchar": 48544066,
+    "wchar": 11002720,
+    "syscr": 10767,
+    "syscw": 198467,
+    "read_bytes": 0,
+    "write_bytes": 11104256,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 62.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42159,
+    "utime": 6129,
+    "stime": 72
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 54620108,
+    "wchar": 11033251,
+    "syscr": 11475,
+    "syscw": 200663,
+    "read_bytes": 0,
+    "write_bytes": 11132928,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 63.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42159,
+    "utime": 6225,
+    "stime": 76
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 62698114,
+    "wchar": 11076057,
+    "syscr": 12232,
+    "syscw": 202664,
+    "read_bytes": 0,
+    "write_bytes": 11186176,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 64.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42159,
+    "utime": 6321,
+    "stime": 80
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 70477480,
+    "wchar": 11117120,
+    "syscr": 12901,
+    "syscw": 204479,
+    "read_bytes": 0,
+    "write_bytes": 11255808,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 65.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42159,
+    "utime": 6417,
+    "stime": 84
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 76559644,
+    "wchar": 11153028,
+    "syscr": 13611,
+    "syscw": 206437,
+    "read_bytes": 0,
+    "write_bytes": 11296768,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 66.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42160,
+    "utime": 6513,
+    "stime": 88
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 84488330,
+    "wchar": 11194391,
+    "syscr": 14324,
+    "syscw": 208306,
+    "read_bytes": 0,
+    "write_bytes": 11350016,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 67.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42160,
+    "utime": 6609,
+    "stime": 92
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 90271854,
+    "wchar": 11227771,
+    "syscr": 14946,
+    "syscw": 210041,
+    "read_bytes": 0,
+    "write_bytes": 11382784,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 68.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42160,
+    "utime": 6705,
+    "stime": 97
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 98350530,
+    "wchar": 11270369,
+    "syscr": 15705,
+    "syscw": 212061,
+    "read_bytes": 0,
+    "write_bytes": 11436032,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 69.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42160,
+    "utime": 6800,
+    "stime": 101
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 106129226,
+    "wchar": 11310759,
+    "syscr": 16372,
+    "syscw": 213842,
+    "read_bytes": 0,
+    "write_bytes": 11481088,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 70.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42160,
+    "utime": 6897,
+    "stime": 105
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 112211390,
+    "wchar": 11344642,
+    "syscr": 17082,
+    "syscw": 215716,
+    "read_bytes": 0,
+    "write_bytes": 11517952,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 71.03,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42161,
+    "utime": 6993,
+    "stime": 109
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 119841436,
+    "wchar": 11384240,
+    "syscr": 17707,
+    "syscw": 217433,
+    "read_bytes": 0,
+    "write_bytes": 11571200,
+    "cancelled_write_bytes": 0
+   }
+  },
+  {
+   "t": 72.04,
+   "main": {
+    "state": "S",
+    "minflt": -1,
+    "majflt": 592,
+    "utime": 0,
+    "stime": 0
+   },
+   "3234": {
+    "state": "R",
+    "minflt": -1,
+    "majflt": 42161,
+    "utime": 7089,
+    "stime": 112
+   },
+   "rss_kb": 198348,
+   "io": {
+    "rchar": 125923600,
+    "wchar": 11418541,
+    "syscr": 18417,
+    "syscw": 219341,
+    "read_bytes": 0,
+    "write_bytes": 11608064,
+    "cancelled_write_bytes": 0
+   }
+  }
+ ]
+}

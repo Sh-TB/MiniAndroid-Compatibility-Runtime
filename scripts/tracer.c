@@ -24,12 +24,19 @@
 
 typedef struct { unsigned long pc; long tid; long n; } PCRec;
 static PCRec recs[MAXPC];
-static int nrecs = 0;
+static PCRec rets[MAXPC];   /* stack-scan return-address candidates */
+static int nrecs = 0, nrets = 0;
 
 static void add_pc(unsigned long pc, long tid) {
     for (int i = 0; i < nrecs; i++)
         if (recs[i].pc == pc && recs[i].tid == tid) { recs[i].n++; return; }
     if (nrecs < MAXPC) { recs[nrecs].pc = pc; recs[nrecs].tid = tid; recs[nrecs].n = 1; nrecs++; }
+}
+
+static void add_ret(unsigned long ra) {
+    for (int i = 0; i < nrets; i++)
+        if (rets[i].pc == ra) { rets[i].n++; return; }
+    if (nrets < MAXPC) { rets[nrets].pc = ra; rets[nrets].tid = 0; rets[nrets].n = 1; nrets++; }
 }
 
 static int list_tids(pid_t pid, long* tids, int cap) {
@@ -93,8 +100,18 @@ int main(int argc, char** argv) {
             if (ptrace(PTRACE_ATTACH, tid, 0, 0) != 0) continue;
             int st; waitpid(tid, &st, __WALL);
             struct user_regs_struct regs;
-            if (ptrace(PTRACE_GETREGS, tid, 0, &regs) == 0)
+            if (ptrace(PTRACE_GETREGS, tid, 0, &regs) == 0) {
                 add_pc((unsigned long)regs.rip, tid);
+                /* stack scan: peek 256 qwords above RSP, keep exe-text addrs */
+                unsigned long sp = regs.rsp & ~7UL;
+                for (int q = 0; q < 256; q++) {
+                    errno = 0;
+                    unsigned long w = ptrace(PTRACE_PEEKDATA, tid,
+                                             (void*)(sp + 8UL * q), 0);
+                    if (errno) break;
+                    if (w > base && w < base + 0x1000000) add_ret(w);
+                }
+            }
             ptrace(PTRACE_DETACH, tid, 0, 0);
         }
         rounds++;
@@ -110,12 +127,21 @@ int main(int argc, char** argv) {
     for (int i = 0; i < nrecs; i++)
         for (int j = i + 1; j < nrecs; j++)
             if (recs[j].n > recs[i].n) { PCRec t = recs[i]; recs[i] = recs[j]; recs[j] = t; }
+    for (int i = 0; i < nrets; i++)
+        for (int j = i + 1; j < nrets; j++)
+            if (rets[j].n > rets[i].n) { PCRec t = rets[i]; rets[i] = rets[j]; rets[j] = t; }
     long total = 0;
     for (int i = 0; i < nrecs; i++) total += recs[i].n;
     for (int i = 0; i < nrecs && i < 60; i++)
         fprintf(out, "%6ld %6.2f%% tid=%ld vaddr=0x%lx\n", recs[i].n,
                 total ? 100.0 * recs[i].n / total : 0.0, recs[i].tid, recs[i].pc - base);
     fprintf(out, "# total_samples=%ld uniq=%d\n", total, nrecs);
+    fprintf(out, "===STACK-SCAN return-address candidates (exe text)===\n");
+    long ret_total = 0;
+    for (int i = 0; i < nrets; i++) ret_total += rets[i].n;
+    for (int i = 0; i < nrets && i < 80; i++)
+        fprintf(out, "R %6ld  vaddr=0x%lx\n", rets[i].n, rets[i].pc - base);
+    fprintf(out, "# ret_candidates=%ld uniq=%d\n", ret_total, nrets);
     fclose(out);
     fprintf(stderr, "tracer done: rounds=%ld samples=%ld -> %s\n", rounds, total, outp);
     return 0;

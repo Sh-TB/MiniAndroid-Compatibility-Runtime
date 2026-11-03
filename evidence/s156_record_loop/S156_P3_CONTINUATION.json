@@ -1,0 +1,83 @@
+{
+ "probe": "S156-P3 continuation: budget/structure split + opcode cost profile",
+ "budget_probe": {
+  "max_seconds": 540,
+  "face": "11a38a5aeeff45a6",
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "conclusion": "STRUCTURAL non-convergence, not budget-bound"
+ },
+ "trace_output_probes": [
+  {
+   "tag": "no_trace_flag",
+   "face": "11a38a5aeeff45a6"
+  },
+  {
+   "tag": "trace_to_devnull",
+   "face": "11a38a5aeeff45a6"
+  }
+ ],
+ "census_540s": {
+  "window_insns_sum": 256,
+  "window_max": 36,
+  "leader": "Ln3;.i=2097427 (n=29057)",
+  "early_burst_total_dalvik_insns": "~12.9M then collapse"
+ },
+ "perf_ops_top": [
+  {
+   "op": "0x54 iget-object",
+   "calls": 7064565,
+   "ticks": 17340397468,
+   "ticks_per_call": 2455,
+   "note": "~50x a normal iget (~30 cycles)"
+  },
+  {
+   "op": "0x52 iget",
+   "calls": 1647555,
+   "ticks": 3273458710,
+   "ticks_per_call": 1987
+  },
+  {
+   "op": "0x22 new-instance",
+   "calls": 38470,
+   "ticks": 1486294158,
+   "ticks_per_call": 38639,
+   "note": "~15us/call"
+  },
+  {
+   "op": "0x62 sget",
+   "calls": 589318,
+   "ticks": 3192734886,
+   "ticks_per_call": 5418
+  }
+ ],
+ "perf_phases": {
+  "execute_method_internal_calls": 4995668,
+  "fetch_decode_exec_calls": 4995668,
+  "note": "phase tick totals are nested-double-counted (73T ticks > wall) \u2014 use op histogram, ignore phase tick totals"
+ },
+ "method_trace_Ln3_i": {
+  "entries": 3536,
+  "shape": "short boolean method ~15 insns, called thousands of times; loop pc 294-302/357-370"
+ },
+ "fault_curve": {
+  "busy_thread_minor_faults": "13,829 -> 42,161 (~470-800/s)",
+  "rss_growth": "81MB -> 198MB (~2MB/s fresh heap)",
+  "io_read_bytes": 0,
+  "conclusion": "no disk/font thrashing; pure allocation churn"
+ },
+ "stack_scan_callers": [
+  "execute_invoke_direct",
+  "execute_method",
+  "execute_method_internal",
+  "try_recursive_invoke_on_super",
+  "ensure_class_initialized",
+  "InstructionTrace dtor",
+  "normalize_class_desc",
+  "to_hex",
+  "resolved_field_declarer",
+  "CrashForensics::note",
+  "phase_clock static"
+ ],
+ "verdict": "S156-P3: spin is an ALIVE interpreter loop whose per-op native cost (string-keyed field maps + per-invoke diagnostic machinery) is ~50x normal opcode cost; record phase bursts fast then collapses; structural on this VM regardless of budget/trace/env",
+ "fix_plan_S156_P4": "CONT-42-style throughput law: zero-cost-gate per-op diagnostics + fast-path field access (interned/integer keys); verify with PERF-OPS per-op ticks and dooz E5 convergence"
+}
