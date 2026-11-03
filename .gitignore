@@ -266,3 +266,6 @@ docs/evidence/**/method_trace.json
 **/traces/
 # (raw traces & multi-MB view_tree dumps belong under run/ — ignored above.
 #  Small curated view_tree.json files under docs/evidence/ remain tracked.)
+
+# S155: run outputs live in run155/ (run/ became root-owned infra artifact)
+/run155/

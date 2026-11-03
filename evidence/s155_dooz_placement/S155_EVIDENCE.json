@@ -1,0 +1,46 @@
+{
+ "wave": "S155",
+ "engine_dev_binary_sha16": "9d5772d25d7b0102",
+ "engine_sources": "42238cf2 + S155-APPLY law (Lel0;.N fire on insertAt, env MINIANDROID_S155_APPLY)",
+ "law": "T21/#389 (coder) + S152 VREFIRE unified: a node insert must schedule the modifier-chain rebuild + measure. Implemented: at Lel0;.B(I,Lel0;)V (insertAt) fire Lel0;.N(Lpz0;)V on the inserted node with the live Lpz0; scope. Env-gated, bounded 64, default byte-inert.",
+ "runs": {
+  "E0_O1_black": {
+   "sha": "03aca4b7b55a8ad5",
+   "face": "11a38a5aeeff45a6",
+   "verdict": "DEFAULT_BACKGROUND_ONLY"
+  },
+  "E0_O2_black": {
+   "sha": "cb762f9d1deeab11",
+   "face": "11a38a5aeeff45a6",
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "note": "-g only delta vs pinned flags; same face => flags not the cause"
+  },
+  "E0b_600s_6frames": {
+   "last_instr": 111900000,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "first_missing_stage": "APP_PIXELS",
+   "note": "no F084 halts; composition record-phase spin (Lpz0;.M0 hot), Lt4;.onDraw never completes"
+  },
+  "E0d_1frame_caps": {
+   "last_instr": 43000000,
+   "instr_rate": "~80K/s",
+   "note": "VM ~5-6x slower than S152-era VM (~430K/s)"
+  },
+  "disc_unote": {
+   "face": "3b8dcb0adbbc17a9",
+   "verdict": "REAL_APP_CONTENT",
+   "note": "classic-View apps render fine on the rebuilt engine; divergence is compose-record-phase specific"
+  },
+  "S155_E1_apply": {
+   "fires": 0,
+   "last_instr": 111900000,
+   "t68_entry_rows": 250,
+   "lt4_z_rows": "natural Lel0;.V->Lt4;.z firing observed",
+   "note": "Lel0;.B (insertAt) NEVER executed: composition record phase loops BEFORE the insert/apply phase on this VM+rebuild. Deeper than coder T21 state (their build: 44 B calls, r1 miss)."
+  }
+ },
+ "anchors_law": "T17 coder law CONFIRMED+implemented: cont83_build_anchors.sh tmp-path bug fixed (root-owned tmp/); 10 real ELF64 anchors built (libc/libdl/liblog/libm/libstdc++/libz/libjnigraphics/libEGL/libGLESv2/libOpenSLES/libandroid with Android sonames); stash: /tmp/anchor_libs_s155 + upload/_ma_local_backup/",
+ "coder_verification_per_user_law": "#389 T21 claims tested: frame-clock rejection CONSISTENT with my evidence; r1-witness tool present in-tree (dalvik_engine.cpp:4743); OPDUMP present (:14162); T17 anchor law implemented+confirmed. dooz pin 851cc1761a1dfcdf = CHROME-ONLY face (board never rendered by anyone) per coder census.",
+ "frontier": "no-tap compose record-phase spin on rebuilt binaries @ this VM (5-6x slower); B-inserts never reached; S155-APPLY law implemented but untestable until the record spin is fixed (S156) or a faster VM",
+ "infra": "pinned S154 binary LOST to infra cleaner (miniandroid/build wiped repeatedly); S153 backup bundle+tar also wiped; rebuild -O2 -g0 (cb762f9d1deeab11) + -O1 dev (9d5772d25d7b0102); backup copies in /dev/shm + upload/_ma_local_backup/"
+}

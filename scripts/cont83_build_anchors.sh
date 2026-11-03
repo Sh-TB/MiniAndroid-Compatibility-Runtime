@@ -33,10 +33,10 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 OUT=miniandroid/build/anchor_libs
-mkdir -p "$OUT" tmp/cont83_anchors
+mkdir -p "$OUT" /tmp/cont83_anchors
 
 # ── liblog first-party implementation ───────────────────────────────────
-cat > tmp/cont83_anchors/log_shim.c <<'EOF'
+cat > /tmp/cont83_anchors/log_shim.c <<'EOF'
 /* F-NEW-387 first-party liblog anchor: the core Android liblog surface,
    implemented faithfully onto bounded stderr rows. Priorities mirror
    <android/log.h> (ANDROID_LOG_* values are the same constants). */
@@ -75,16 +75,16 @@ int __android_log_buf_print(int bufID, int prio, const char* tag,
 EOF
 
 gcc -shared -fPIC -O2 -Wl,-soname,liblog.so \
-    -o "$OUT/liblog.so" tmp/cont83_anchors/log_shim.c
+    -o "$OUT/liblog.so" /tmp/cont83_anchors/log_shim.c
 
 # ── host-library anchors (soname + real dependency chain) ───────────────
-echo 'int __ma_anchor;' > tmp/cont83_anchors/empty.c
+echo 'int __ma_anchor;' > /tmp/cont83_anchors/empty.c
 gcc -shared -fPIC -O2 -Wl,-soname,libm.so -Wl,--no-as-needed -lm \
-    -o "$OUT/libm.so" tmp/cont83_anchors/empty.c
+    -o "$OUT/libm.so" /tmp/cont83_anchors/empty.c
 gcc -shared -fPIC -O2 -Wl,-soname,libdl.so -Wl,--no-as-needed -ldl \
-    -o "$OUT/libdl.so" tmp/cont83_anchors/empty.c
+    -o "$OUT/libdl.so" /tmp/cont83_anchors/empty.c
 gcc -shared -fPIC -O2 -Wl,-soname,libstdc++.so -Wl,--no-as-needed -lstdc++ \
-    -o "$OUT/libstdc++.so" tmp/cont83_anchors/empty.c
+    -o "$OUT/libstdc++.so" /tmp/cont83_anchors/empty.c
 
 # ── libc anchor WITH the bionic-stdio shim family (T22, F-NEW-564) ──────
 # ROOT LAW (measured, scripts/t22_stdio_probe.c + LD_DEBUG=bindings): a
@@ -98,9 +98,9 @@ gcc -shared -fPIC -O2 -Wl,-soname,libstdc++.so -Wl,--no-as-needed -lstdc++ \
 # exe's bionic_compat.c) — the app lib's whole stdio family then binds ONE
 # module (dep scope) and never mixes layouts. exe-side callers keep the
 # exe's own shim (each world self-consistent; no FILE* crosses worlds).
-cp miniandroid/src/jni/bionic_compat.c tmp/cont83_anchors/bionic_compat.c
+cp miniandroid/src/jni/bionic_compat.c /tmp/cont83_anchors/bionic_compat.c
 gcc -shared -fPIC -O2 -Wl,-soname,libc.so -Wl,--no-as-needed -lc \
-    -o "$OUT/libc.so" tmp/cont83_anchors/bionic_compat.c
+    -o "$OUT/libc.so" /tmp/cont83_anchors/bionic_compat.c
 
 # ── T18 anchor set, restored to the tracked build (fresh-container law) ─
 # The T18-era built anchors stayed LOCAL (ZERO-APK spirit) and their build
@@ -127,13 +127,13 @@ gcc -shared -fPIC -O2 -Wl,-soname,libjnigraphics.so \
 gcc -shared -fPIC -O2 -Wl,-soname,libEGL.so \
     -o "$OUT/libEGL.so" scripts/cont83_egl_anchor.c
 gcc -shared -fPIC -O2 -Wl,-soname,libGLESv2.so \
-    -o "$OUT/libGLESv2.so" tmp/cont83_anchors/empty.c
+    -o "$OUT/libGLESv2.so" /tmp/cont83_anchors/empty.c
 # libandroid: honest first-party surface (T22) — ANativeWindow identity
 # tokens + no-buffer window ops + NULL-asset AAsset family.
 gcc -shared -fPIC -O2 -Wl,-soname,libandroid.so \
     -o "$OUT/libandroid.so" scripts/cont83_android_anchor.c
 gcc -shared -fPIC -O2 -Wl,-soname,libz.so -Wl,--no-as-needed -lz \
-    -o "$OUT/libz.so" tmp/cont83_anchors/empty.c
+    -o "$OUT/libz.so" /tmp/cont83_anchors/empty.c
 
 for f in "$OUT"/*.so; do
     printf '%s soname=%s sha16=%s\n' "$f" \
