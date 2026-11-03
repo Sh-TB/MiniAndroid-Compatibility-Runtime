@@ -1,0 +1,26 @@
+[
+ {
+  "i": 1,
+  "face": "11a38a5aeeff45a6",
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "ticks": 5,
+  "posts": 8,
+  "removes": 3
+ },
+ {
+  "i": 2,
+  "face": "11a38a5aeeff45a6",
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "ticks": 5,
+  "posts": 8,
+  "removes": 3
+ },
+ {
+  "i": 3,
+  "face": "11a38a5aeeff45a6",
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "ticks": 5,
+  "posts": 8,
+  "removes": 3
+ }
+]

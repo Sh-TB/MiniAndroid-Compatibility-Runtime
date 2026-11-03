@@ -269,3 +269,6 @@ docs/evidence/**/method_trace.json
 
 # S155: run outputs live in run155/ (run/ became root-owned infra artifact)
 /run155/
+
+# S156: run artifacts are external
+/run156/

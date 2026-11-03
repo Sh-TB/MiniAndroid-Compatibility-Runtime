@@ -1,0 +1,29 @@
+{
+ "wave": "S156",
+ "tag": "E1r_tapmature",
+ "binary": "a793f134936f7e58",
+ "E1r_tap_replica": {
+  "wall": 151.7,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "face": "b5a7a35d5fe0564b",
+  "click_dispatched": 0,
+  "up_rows": 2,
+  "uncaught": 6,
+  "gate_rows": 17,
+  "f297": 16482
+ },
+ "E5r_notap_on_tapmatured": {
+  "wall": 124.4,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "face": "11a38a5aeeff45a6",
+  "click_dispatched": 0,
+  "up_rows": 0,
+  "uncaught": 6,
+  "gate_rows": 0,
+  "f297": 14363,
+  "match_pin_851": false
+ },
+ "store_state_files": [
+  "run156/E1r_tapmature/store/data/app/io.github.yamin8000.dooz/lib/x86_64/libdatastore_shared_counter.so"
+ ]
+}

@@ -1,0 +1,18 @@
+{
+ "wave": "S156",
+ "tag": "E0_control",
+ "binary": "03aca4b7b55a8ad5",
+ "protocol": "S154-E5-matched: no diag env (MINIANDROID_* stripped), fresh store, --frames 30 --max-seconds 110 --trace, no tap",
+ "result": {
+  "wall_s": 125.0,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "face": "11a38a5aeeff45a6",
+  "pin_chrome": "851cc1761a1dfcdf",
+  "match_pin": false,
+  "n_frames": 30,
+  "uncaught": 6,
+  "f_new_297_rows": 13719
+ },
+ "meaning": "Restored O1 binary (03aca4b7) under the EXACT S154-E5 protocol still gives the BLACK face; F-NEW-297 Layout.draw text-op spam 13,719 ~= S154-E1's 13,770 pre-UP: the chrome draw activity is present on both binaries, the final raster is not. S155/S156 diagnostics + frame caps + store state exonerated as confounds. Divergence is in the BINARY, not the protocol.",
+ "console_log": "run156/E0_control/console.log (external, gitignored)"
+}

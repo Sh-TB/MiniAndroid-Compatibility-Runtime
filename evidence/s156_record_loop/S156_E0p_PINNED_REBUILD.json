@@ -1,0 +1,18 @@
+{
+ "wave": "S156",
+ "tag": "E0p_pinned_rebuild",
+ "binary": "a793f134936f7e58",
+ "binary_provenance": "plain make -j2 at 42238cf2 -> BYTE-IDENTICAL to the pinned S154 binary a793f134936f7e58 (build determinism proven; pinned binary RECOVERED, insured at upload/_ma_local_backup/miniandroid_plainmake_42238cf2_a793f134936f7e58.bin)",
+ "protocol": "S154-E5-matched: no diag env, fresh store, --frames 30 --max-seconds 110 --trace, no tap",
+ "result": {
+  "wall_s": 124.6,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "face": "11a38a5aeeff45a6",
+  "pin_chrome": "851cc1761a1dfcdf",
+  "match_pin": false,
+  "n_frames": 30,
+  "uncaught": 6,
+  "f297": 13956
+ },
+ "meaning": "If match_pin: the S155 record-phase-spin was a RECOVERY-BUILD-FLAGS artifact; the compose record phase works on the correctly-built engine and the S155-APPLY law becomes testable (rebuild at HEAD + env)."
+}

@@ -1,0 +1,92 @@
+{
+ "tag": "E3_mature_m0",
+ "wall_s": 166.0,
+ "flooded": false,
+ "console_bytes": 258645544,
+ "verdict": "DEFAULT_BACKGROUND_ONLY",
+ "face_screenshot": "11a38a5aeeff45a6",
+ "census_dumps": 0,
+ "census_leader_seq": [],
+ "census_last": null,
+ "m3_cycle_keys": [],
+ "m3_cycle_n": 0,
+ "m3_reentry_n": 2,
+ "m3_open_n": 2,
+ "m0_rows": 60000,
+ "m0_pc_hist_top": [
+  [
+   "37",
+   2776
+  ],
+  [
+   "0",
+   2703
+  ],
+  [
+   "1",
+   2703
+  ],
+  [
+   "4",
+   2703
+  ],
+  [
+   "5",
+   2703
+  ],
+  [
+   "39",
+   1441
+  ],
+  [
+   "41",
+   1441
+  ],
+  [
+   "110",
+   1438
+  ],
+  [
+   "111",
+   1438
+  ],
+  [
+   "112",
+   1438
+  ],
+  [
+   "113",
+   1438
+  ],
+  [
+   "7",
+   1365
+  ]
+ ],
+ "m0_entries_n": 2703,
+ "m0_distinct_entry_states_n": 315,
+ "m0_distinct_entry_states_sample": [
+  "p0=obj#2791 p1=obj#1508 p2=<unset>",
+  "p0=obj#2135 p1=obj#1508 p2=<unset>",
+  "p0=obj#6376 p1=obj#14336 p2=obj#14342",
+  "p0=obj#6526 p1=obj#14336 p2=obj#14342",
+  "p0=obj#6401 p1=obj#14336 p2=obj#14342",
+  "p0=obj#6552 p1=obj#14336 p2=obj#14342"
+ ],
+ "pmc_n": 692,
+ "pmc_sample": [
+  "ENTER",
+  "Lpz0;.M0",
+  "Lpz0;.M0",
+  "ENTER",
+  "Lpz0;.M0",
+  "Lpz0;.M0",
+  "ENTER",
+  "Lpz0;.M0",
+  "Lpz0;.M0",
+  "ENTER"
+ ],
+ "t68_rows": 0,
+ "uncaught": 6,
+ "n_frames": 3
+}

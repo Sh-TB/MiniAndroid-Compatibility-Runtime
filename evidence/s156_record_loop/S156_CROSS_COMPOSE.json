@@ -1,0 +1,20 @@
+[
+ {
+  "pkg": "org.y20k.transistor",
+  "face": "5436cf81605f1c2d",
+  "pin": "5436cf81605f1c2d",
+  "match": true,
+  "verdict": "REAL_APP_CONTENT",
+  "ticks": 1,
+  "posts": 2
+ },
+ {
+  "pkg": "org.billthefarmer.diary",
+  "face": "c87a77a31cb51b8d",
+  "pin": "b18c3ee6c2818560",
+  "match": false,
+  "verdict": "REAL_APP_CONTENT",
+  "ticks": 0,
+  "posts": 0
+ }
+]

@@ -1,0 +1,338 @@
+{
+ "wave": "S156",
+ "binary": "03aca4b7b55a8ad5",
+ "binary_provenance": "42238cf2 sources at -O1 (S155-APPLY absent, AWAIT-UP-GATE present)",
+ "runs": {
+  "E0": {
+   "wave": "S156",
+   "tag": "E0_control",
+   "binary": "03aca4b7b55a8ad5",
+   "protocol": "S154-E5-matched: no diag env (MINIANDROID_* stripped), fresh store, --frames 30 --max-seconds 110 --trace, no tap",
+   "result": {
+    "wall_s": 125.0,
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "face": "11a38a5aeeff45a6",
+    "pin_chrome": "851cc1761a1dfcdf",
+    "match_pin": false,
+    "n_frames": 30,
+    "uncaught": 6,
+    "f_new_297_rows": 13719
+   },
+   "meaning": "Restored O1 binary (03aca4b7) under the EXACT S154-E5 protocol still gives the BLACK face; F-NEW-297 Layout.draw text-op spam 13,719 ~= S154-E1's 13,770 pre-UP: the chrome draw activity is present on both binaries, the final raster is not. S155/S156 diagnostics + frame caps + store state exonerated as confounds. Divergence is in the BINARY, not the protocol.",
+   "console_log": "run156/E0_control/console.log (external, gitignored)"
+  },
+  "E1": {
+   "tag": "E1_fresh_census",
+   "wall_s": 142.0,
+   "flooded": false,
+   "console_bytes": 2449003,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "face_screenshot": "11a38a5aeeff45a6",
+   "census_dumps": 64,
+   "census_leader_seq": [
+    "Lrn1;.w",
+    "Lrn1;.w",
+    "Lrh0;.b",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i",
+    "Ln3;.i"
+   ],
+   "census_last": "total_methods=4047 | Ln3;.i=2098884 (n=29081) | Ln5;.h=1720780 (n=12300) | Lto1;.d=1692575 (n=12477) | Lbw0;.d=1669437 (n=23048) | Lwi1;.i=1612201 (n=77990) | Lso1;.b=1378112 (n=77983) | Lkc;.e=1264291 (n=114963) | Lqi0;.r=1216919 (n=276748)",
+   "m3_cycle_keys": [],
+   "m3_cycle_n": 0,
+   "m3_reentry_n": 2,
+   "m3_open_n": 2,
+   "m0_rows": 0,
+   "m0_pc_hist_top": [],
+   "m0_entries_n": 0,
+   "m0_distinct_entry_states_n": 0,
+   "m0_distinct_entry_states_sample": [],
+   "pmc_n": 0,
+   "pmc_sample": [],
+   "t68_rows": 250,
+   "uncaught": 6,
+   "n_frames": 3
+  },
+  "E2": {
+   "tag": "E2_fresh_m0",
+   "wall_s": 170.0,
+   "flooded": false,
+   "console_bytes": 258681936,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "face_screenshot": "11a38a5aeeff45a6",
+   "census_dumps": 0,
+   "census_leader_seq": [],
+   "census_last": null,
+   "m3_cycle_keys": [],
+   "m3_cycle_n": 0,
+   "m3_reentry_n": 2,
+   "m3_open_n": 2,
+   "m0_rows": 60000,
+   "m0_pc_hist_top": [
+    [
+     "37",
+     2776
+    ],
+    [
+     "0",
+     2703
+    ],
+    [
+     "1",
+     2703
+    ],
+    [
+     "4",
+     2703
+    ],
+    [
+     "5",
+     2703
+    ],
+    [
+     "39",
+     1441
+    ],
+    [
+     "41",
+     1441
+    ],
+    [
+     "110",
+     1438
+    ],
+    [
+     "111",
+     1438
+    ],
+    [
+     "112",
+     1438
+    ],
+    [
+     "113",
+     1438
+    ],
+    [
+     "7",
+     1365
+    ]
+   ],
+   "m0_entries_n": 2703,
+   "m0_distinct_entry_states_n": 315,
+   "m0_distinct_entry_states_sample": [
+    "p0=obj#2791 p1=obj#1508 p2=<unset>",
+    "p0=obj#2135 p1=obj#1508 p2=<unset>",
+    "p0=obj#6376 p1=obj#14333 p2=obj#14339",
+    "p0=obj#6526 p1=obj#14333 p2=obj#14339",
+    "p0=obj#6401 p1=obj#14333 p2=obj#14339",
+    "p0=obj#6552 p1=obj#14333 p2=obj#14339"
+   ],
+   "pmc_n": 692,
+   "pmc_sample": [
+    "ENTER",
+    "Lpz0;.M0",
+    "Lpz0;.M0",
+    "ENTER",
+    "Lpz0;.M0",
+    "Lpz0;.M0",
+    "ENTER",
+    "Lpz0;.M0",
+    "Lpz0;.M0",
+    "ENTER"
+   ],
+   "t68_rows": 0,
+   "uncaught": 6,
+   "n_frames": 3
+  },
+  "E3": {
+   "tag": "E3_mature_m0",
+   "wall_s": 166.0,
+   "flooded": false,
+   "console_bytes": 258645544,
+   "verdict": "DEFAULT_BACKGROUND_ONLY",
+   "face_screenshot": "11a38a5aeeff45a6",
+   "census_dumps": 0,
+   "census_leader_seq": [],
+   "census_last": null,
+   "m3_cycle_keys": [],
+   "m3_cycle_n": 0,
+   "m3_reentry_n": 2,
+   "m3_open_n": 2,
+   "m0_rows": 60000,
+   "m0_pc_hist_top": [
+    [
+     "37",
+     2776
+    ],
+    [
+     "0",
+     2703
+    ],
+    [
+     "1",
+     2703
+    ],
+    [
+     "4",
+     2703
+    ],
+    [
+     "5",
+     2703
+    ],
+    [
+     "39",
+     1441
+    ],
+    [
+     "41",
+     1441
+    ],
+    [
+     "110",
+     1438
+    ],
+    [
+     "111",
+     1438
+    ],
+    [
+     "112",
+     1438
+    ],
+    [
+     "113",
+     1438
+    ],
+    [
+     "7",
+     1365
+    ]
+   ],
+   "m0_entries_n": 2703,
+   "m0_distinct_entry_states_n": 315,
+   "m0_distinct_entry_states_sample": [
+    "p0=obj#2791 p1=obj#1508 p2=<unset>",
+    "p0=obj#2135 p1=obj#1508 p2=<unset>",
+    "p0=obj#6376 p1=obj#14336 p2=obj#14342",
+    "p0=obj#6526 p1=obj#14336 p2=obj#14342",
+    "p0=obj#6401 p1=obj#14336 p2=obj#14342",
+    "p0=obj#6552 p1=obj#14336 p2=obj#14342"
+   ],
+   "pmc_n": 692,
+   "pmc_sample": [
+    "ENTER",
+    "Lpz0;.M0",
+    "Lpz0;.M0",
+    "ENTER",
+    "Lpz0;.M0",
+    "Lpz0;.M0",
+    "ENTER",
+    "Lpz0;.M0",
+    "Lpz0;.M0",
+    "ENTER"
+   ],
+   "t68_rows": 0,
+   "uncaught": 6,
+   "n_frames": 3
+  }
+ },
+ "eval": {
+  "spin_shape": {
+   "census_leaders_shift": true,
+   "leaders_distinct": [
+    "Ln3;.i",
+    "Lrh0;.b",
+    "Lrn1;.w"
+   ],
+   "leaders_top": "Ln3;.i",
+   "window_insns_note": "census windows ~0-4 instr/2s after startup: engine IDLES between per-frame bursts; burn is bursty (~12.6M interpreted instr cumulative top-8), not a hot spin"
+  },
+  "store_ab": {
+   "fresh_m0_rows": 60000,
+   "mature_m0_rows": 60000,
+   "fresh_distinct_entries": 315,
+   "mature_distinct_entries": 315,
+   "identical_behavior": true,
+   "note": "E2(fresh)==E3(mature) byte-identical (2703 entries, 315 states, same pc hist); only +3 obj-id drift. DataStore fresh-store candidate EXONERATED. Stores contain no dooz prefs at all."
+  },
+  "m3_gate_involvement": {
+   "cycle_n_E1": 0,
+   "reentry_n_E1": 2,
+   "note": "0 CYCLE stubs; 2 legal CONT-38 reentries. M3-19 reentry-stub candidate EXONERATED."
+  },
+  "e0_control": {
+   "face": "11a38a5aeeff45a6",
+   "match_pin": false,
+   "f297": 13719,
+   "note": "O1 binary under S154-E5 protocol: BLACK face, 30 frames, spam 13,719 ~= S154-E1's 13,770. Protocol confounds exonerated; divergence is binary-borne."
+  },
+  "m0_shape": {
+   "entries": 2703,
+   "distinct_states": 315,
+   "per_frame": 901,
+   "t0_null_branch": 1365,
+   "long_path": 1438,
+   "note": "M0=per-node draw-scope dispatch (DEX: T0(4) mask find; null->h1 else Lwt0; chain walk). Worker, not the loop."
+  }
+ }
+}
