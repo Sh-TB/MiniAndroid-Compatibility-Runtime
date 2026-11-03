@@ -1,0 +1,82 @@
+{
+ "faces": {
+  "A": "11a38a5aeeff45a6",
+  "B": "11a38a5aeeff45a6",
+  "C": "11a38a5aeeff45a6"
+ },
+ "verdict": "VM_STATE_DEPENDENT_SPIN",
+ "rows": {
+  "A": {
+   "bin": "/home/z/my-project/upload/_ma_local_backup/miniandroid_plainmake_42238cf2_a793f134936f7e58.bin",
+   "sha16": "a793f134936f7e58",
+   "row": {
+    "tag": "E5_A_dooz_notap",
+    "taps": null,
+    "wall_s": 125.3,
+    "process_killed": false,
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "gate_rows": 0,
+    "gate_hit": false,
+    "artifact_reset": false,
+    "f117_taps": [],
+    "ui_events": [],
+    "ret_trace_rows": 0,
+    "ret_trace_methods": [],
+    "ret_trace_first10": [],
+    "t68_nodes": [],
+    "uncaught": 6,
+    "screenshot_face": "11a38a5aeeff45a6"
+   },
+   "last_face": "11a38a5aeeff45a6",
+   "interp": "SPIN FACE (white/black, record-phase loop)"
+  },
+  "B": {
+   "bin": "/home/z/my-project/wt_s156/miniandroid/build/miniandroid",
+   "sha16": "756eb9e71da53779",
+   "row": {
+    "tag": "E5_B_dooz_notap",
+    "taps": null,
+    "wall_s": 125.1,
+    "process_killed": false,
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "gate_rows": 0,
+    "gate_hit": false,
+    "artifact_reset": false,
+    "f117_taps": [],
+    "ui_events": [],
+    "ret_trace_rows": 0,
+    "ret_trace_methods": [],
+    "ret_trace_first10": [],
+    "t68_nodes": [],
+    "uncaught": 6,
+    "screenshot_face": "11a38a5aeeff45a6"
+   },
+   "last_face": "11a38a5aeeff45a6",
+   "interp": "SPIN FACE (white/black, record-phase loop)"
+  },
+  "C": {
+   "bin": "/home/z/my-project/upload/_ma_local_backup/miniandroid_o1_03aca4b7.bin",
+   "sha16": "03aca4b7b55a8ad5",
+   "row": {
+    "tag": "E5_C_dooz_notap",
+    "taps": null,
+    "wall_s": 124.8,
+    "process_killed": false,
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "gate_rows": 0,
+    "gate_hit": false,
+    "artifact_reset": false,
+    "f117_taps": [],
+    "ui_events": [],
+    "ret_trace_rows": 0,
+    "ret_trace_methods": [],
+    "ret_trace_first10": [],
+    "t68_nodes": [],
+    "uncaught": 6,
+    "screenshot_face": "11a38a5aeeff45a6"
+   },
+   "last_face": "11a38a5aeeff45a6",
+   "interp": "SPIN FACE (white/black, record-phase loop)"
+  }
+ }
+}
