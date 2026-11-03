@@ -273,3 +273,4 @@ docs/evidence/**/method_trace.json
 # S156: run artifacts are external
 /run156/
 /run155p2/
+scripts/tracer

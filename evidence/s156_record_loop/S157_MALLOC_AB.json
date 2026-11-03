@@ -1,0 +1,57 @@
+{
+ "verdict": "SAME_FACE_WALL_DELTA=-0.6%",
+ "arms": {
+  "D": {
+   "tag": "D",
+   "binary": "/home/z/my-project/miniandroid/build/miniandroid",
+   "sha16": "840a9d5bb786767c",
+   "env": "DEFAULT",
+   "row": {
+    "tag": "E5_D_dooz_notap",
+    "taps": null,
+    "wall_s": 125.0,
+    "process_killed": false,
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "gate_rows": 0,
+    "gate_hit": false,
+    "artifact_reset": false,
+    "f117_taps": [],
+    "ui_events": [],
+    "ret_trace_rows": 0,
+    "ret_trace_methods": [],
+    "ret_trace_first10": [],
+    "t68_nodes": [],
+    "uncaught": 6,
+    "screenshot_face": "11a38a5aeeff45a6"
+   },
+   "last_face": "11a38a5aeeff45a6",
+   "interp": "SPIN"
+  },
+  "M": {
+   "tag": "M",
+   "binary": "/home/z/my-project/miniandroid/build/miniandroid",
+   "sha16": "840a9d5bb786767c",
+   "env": "MALLOC_TUNED",
+   "row": {
+    "tag": "E5_M_dooz_notap",
+    "taps": null,
+    "wall_s": 125.7,
+    "process_killed": false,
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "gate_rows": 0,
+    "gate_hit": false,
+    "artifact_reset": false,
+    "f117_taps": [],
+    "ui_events": [],
+    "ret_trace_rows": 0,
+    "ret_trace_methods": [],
+    "ret_trace_first10": [],
+    "t68_nodes": [],
+    "uncaught": 6,
+    "screenshot_face": "11a38a5aeeff45a6"
+   },
+   "last_face": "11a38a5aeeff45a6",
+   "interp": "SPIN"
+  }
+ }
+}

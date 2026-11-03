@@ -1,0 +1,67 @@
+{
+  "session": "S157-B",
+  "date": "2026-11-04",
+  "user_directive": "40% dooz (goal FIRST = make it RUN; use ready-made tools/source; don't reinvent the wheel) / 60% other games+programs / 20% of that 60% = coder review with confirm-or-reject verdicts on what really matters",
+  "binary": {
+    "pre_surgery": "840a9d5bb786767c",
+    "post_surgery": "908d5ba61aa62485",
+    "insurance_copy": "upload/_ma_local_backup/miniandroid_s157b_gated_908d5ba61aa62485.bin",
+    "w3_worktree_binary": "aba6671aa3e6a2b6 (removed with worktree)"
+  },
+  "leg1_dooz_40pct": {
+    "malloc_env_ab": {
+      "arms": {
+        "D_default": {"face": "11a38a5aeeff45a6", "wall_s": 125.0, "verdict": "DEFAULT_BACKGROUND_ONLY"},
+        "M_tuned": {"face": "11a38a5aeeff45a6", "wall_s": 125.7, "verdict": "DEFAULT_BACKGROUND_ONLY",
+                    "env": "MALLOC_ARENA_MAX=1 MALLOC_MMAP_THRESHOLD_=131072 MALLOC_TRIM_THRESHOLD_=134217728 MALLOC_TOP_PAD_=131072"}
+      },
+      "verdict": "SAME_FACE_WALL_DELTA=-0.6% -> REJECTED: allocator env knobs do NOT move the spin",
+      "evidence": "evidence/s156_record_loop/S157_MALLOC_AB.json"
+    },
+    "tracer_rip_profile_on_840a9d5b": {
+      "samples": 3394, "hz": 20,
+      "main_thread": "70.7% parked at one PC (futex family) — consistent with S156 phase-3",
+      "engine_thread_top": ["std::string== (59)", "Hashtable find<string,pair<string,int>> (55)", "_M_allocate_node<string const,DalvikValue> (44)", "Rb_tree<string>::find (25)", "libc string/malloc family ~42% of engine samples"],
+      "stack_scan_callers": ["execute_method+0x5f26 (2613)", "std::to_string<ulong> (562)", "basic_string _M_construct (516)", "normalize_class_desc (484)", "execute_invoke_direct+0x44b6 (489)", "unordered_map<string>::_M_erase (377)", "try_recursive_invoke_on_super (426)", "CallStack::pop_frame (281)"],
+      "evidence": "run/s157_spin_profile/rip_hist_S157.txt"
+    },
+    "s157b_surgery": {
+      "law": "CONT-42 zero-cost-gate continuation (phase-A precedent): handler machinery that is never consumed must cost zero",
+      "layers": [
+        "L1 operand-push gating: 27 push/invoked_method sites across iget/iget-object/iget-wide/iput/iput-object/sget/sget-object/sput-family/new-instance/new-array/check-cast/instance-of/move-result/move-result-object + invoke virtual/super/direct/static/interface tails — gated on config_.trace_cap>0 (with cap==0 the InstructionTrace is destroyed unread, proven by the phase-A recording-block argument)",
+        "L2 per-frame loop-detection arrays: 3x .assign(bytecode_size) PER INVOKE (16B/pc memset + realloc churn on size change) split into resize-assign / same-size pure-fill — byte-identical content",
+        "L3 hot log() argument-build gating: ALLOCATED/INVOKE-DIRECT built strings before the verbose gate"
+      ],
+      "skipped": "resolve-by-ref binding (name/cls/proto copies per invoke) — UNSAFE: method_resolve_cache_ is vector<vector<Entry>>, resize invalidates held refs across nested invokes; needs deque/node-storage hardening first (pinned follow-up)",
+      "perfops": {
+        "iget_object": {"phase3_baseline": 2455, "phaseA": 2188, "s157B": 1366, "delta_vs_phaseA": "-37.6%", "delta_vs_phase3": "-44.4%", "calls": 7866105},
+        "evidence": "evidence/s156_record_loop/S157_B_PERFOPS.json"
+      },
+      "wall_byte_inertness": "11 stable anchors x3 byte-exact (opencalc/chess/microtimer/tower3d/g2048/tetris/snakedeluxe/minicraft/gmem/snakeneon/sqlnotes) + unote standing 3b8dcb0a x3 + dooz standing spin face 11a38a5a x2 (run3 empty-file artifact = timeout kill, not a drift)",
+      "e5_verdict": "SPIN PERSISTS: face 11a38a5a at 110s budget; throughput +37% is real but convergence needs the remaining levers"
+    },
+    "honest_frontier": [
+      "record-phase spin NOT solved this session: dooz still DEFAULT_BACKGROUND_ONLY on this VM",
+      "remaining pinned levers (next session): (1) full field-slot fast path (interned keys -> vector<DalvikValue> slots; needs method_resolve_cache_ hardening first), (2) heap has NO GC — compose record phase allocates continuously (RSS +2MB/s, minor faults 470-800/s = the collapse correlate); a bounded nursery/compaction is the structural fix, (3) ApiCallTrace ring rebuild per invoke at cap 5000 (~8 allocs) — byte-inert constraint via note_api_status census needs a split (census-only cheap path)"
+    ]
+  },
+  "leg2_coder_review_20pct": {
+    "coder4_w3_issue_510": {
+      "claims_tested": [
+        {"claim": "w3_full.patch (962 lines) git-apply clean on be9329bb", "result": "CONFIRMED (git apply --check rc=0, then applied; 693 insertions, 25 F-C4-5x law blocks)"},
+        {"claim": "patch compiles (make -j2)", "result": "CONFIRMED (binary aba6671aa3e6a2b6 built in a clean S155 worktree on THIS VM/toolchain)"},
+        {"claim": "anchor-zero-drift merge gate (coder's own requested check)", "result": "CONFIRMED: 12/12 stable anchors byte-exact x1 on the patched binary (opencalc/chess/microtimer/unote/tower3d/g2048/tetris/snakedeluxe/minicraft/gmem/snakeneon/sqlnotes)"},
+        {"claim": "563 opt-out env (MINIANDROID_F261X_LAW=0) present in patched binary", "result": "CONFIRMED (strings hit x4)"},
+        {"claim": "4APP behavioral movement (CB 10->1 errors, NC 0-frames->APP_PIXELS via Dagger graph, TB APP_DRAW_OPS, Tusky theme-chain)", "result": "UNVERIFIABLE in this sandbox: the four pinned APKs were purged in S153 and are absent from upload/canonical_apks (coders' own honest caveat). NOT VERIFIED — needs the pinned APK set re-obtained before any merge decision on those specific numbers"}
+      ],
+      "verdict": "MERGE-GATE POSITIVE (static + anchor): patch is clean-apply, compiles, and is byte-inert on the whole stable anchor wall. The 4APP numbers remain coder-attested only.",
+      "evidence": "run/s157_w3_wall/ (12 PASS rows), /tmp/w3_full.patch (extracted from issue #510 comment 6607956575, sha16 45c32a7c351f2492)"
+    },
+    "coder5_issue_503": "COMPOSE RENDER CLUSTER — status PENDING in the issue itself (no evidence attached); nothing to verify yet",
+    "new_issues_since_recon": "NONE: newest open issue is #512 (Nov-3 20:08Z) — coders have not posted since the S156-P4 recon"
+  },
+  "leg3_other_games_60pct": {
+    "anchor_wall_on_surgery_binary": "11 stable pins x3 byte-exact + unote standing — 12 apps/programs re-verified rendering identical output after the throughput surgery",
+    "verdict": "other-games surface is STABLE and unaffected by both my surgery and the coder patch (W3 wall 12/12)"
+  }
+}
