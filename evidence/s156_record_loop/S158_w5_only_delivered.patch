@@ -1,0 +1,314 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 51f5c35..cb904d2 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -10109,12 +10109,33 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // the unrenamed family) are covered; the <clinit> lift below stands.
+         if (declaring_class == "Lj$/util/concurrent/ConcurrentHashMap;" ||
+             declaring_class == "Ljava/util/concurrent/ConcurrentHashMap;") {
++            // F-C4-566 (W5, 4APP4): name-only ".e"/".f" matching is AMBIGUOUS
++            // across R8 outputs. In Telegram's dex .e/.f were the RENAMED
++            // compute family; but in UNRENAMED desugared CHM builds
++            // (Thunderbird v24's j$ CHM, classes2.dex) f(LLLZ) IS putVal —
++            // the storage path of put() itself. Name-matching it force-
++            // bridged every put() into the compute handler → 510 Koin
++            // definition registrations silently dropped → every get()
++            // missed → NoDefinitionFoundException ×33 at the first inject
++            // (TB attachBaseContext, TB-M1 family). LAW: the bypass owns
++            // ONLY the compute family, identified by its SIGNATURE (a
++            // BiFunction parameter — R8-renamed or not), never by a bare
++            // short name. putVal's (Object, Object, boolean) shape never
++            // carries a BiFunction and therefore always executes its real
++            // bytecode now.
++            const bool f566_compute_desc =
++                method_descriptor.find("BiFunction") != std::string::npos;
+             should_bypass =
+                 (declaring_class == "Lj$/util/concurrent/ConcurrentHashMap;" &&
+-                 (method_name == ".e" || method_name == "e" || method_name == ".f" ||
+-                  method_name == "f")) ||
+-                method_name == "computeIfAbsent" || method_name == "compute" ||
+-                method_name == "computeIfPresent" || method_name == "merge";
++                 f566_compute_desc &&
++                 (method_name == ".e" || method_name == "e" ||
++                  method_name == ".f" || method_name == "f")) ||
++                ((method_name == "computeIfAbsent" || method_name == "compute" ||
++                  method_name == "computeIfPresent" || method_name == "merge") &&
++                 (f566_compute_desc ||
++                  method_descriptor.find("Ljava/util/function/") !=
++                      std::string::npos ||
++                  declaring_class == "Ljava/util/concurrent/ConcurrentHashMap;"));
+         }
+         // AndroidUtilities.{runOnUIThread,executeOnUIThread,cancelRunOnUIThread}
+         // — the DEX bytecode recurses infinitely (each calls the next).
+@@ -10424,7 +10445,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+          (method_name == ".e" || method_name == "e" || method_name == ".f" ||
+           method_name == "f" || method_name == "computeIfAbsent" ||
+           method_name == "compute" || method_name == "computeIfPresent" ||
+-          method_name == "merge")) ||
++          method_name == "merge") &&
++         // F-C4-566 (W5, 4APP4): the compute family is identified by its
++         // SIGNATURE (BiFunction parameter), never by a bare short name —
++         // unrenamed desugared CHM builds carry f(LLLZ) = putVal (the
++         // storage path of put()), which must NEVER be bypassed (Thunderbird
++         // Koin: 510 put() registrations silently dropped → NDFE ×33).
++         (method_name.rfind("compute", 0) == 0 || method_name == "merge" ||
++          method_descriptor.find("BiFunction") != std::string::npos)) ||
+         (class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0 &&
+          (method_name == "computeIfAbsent" || method_name == "compute" ||
+           method_name == "computeIfPresent" || method_name == "merge"))) {
+@@ -24087,6 +24115,26 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
+             const std::string& s134_fkey = field_memo.s134_fkey;
+             auto field_val = heap_.get_object_field(obj_ref.object_id,
+                 s134_fkey);
++            // W5 (Coder-4) DIAG: Koin Module.includedModules read forensics.
++            {
++                static const bool f566f_on =
++                    diag_env("MINIANDROID_F566_FIELD_DIAG");
++                static thread_local uint64_t f566f_n = 0;
++                if (f566f_on && field_res.resolved &&
++                    field_res.field_name == "includedModules" &&
++                    f566f_n++ < 60) {
++                    std::cerr << "[F566-IGET] includedModules obj#"
++                              << obj_ref.object_id << " key=\"" << s134_fkey
++                              << "\" hit="
++                              << (field_val.has_value() ? 1 : 0) << " val=";
++                    if (field_val.has_value())
++                        std::cerr << dalvik_value_to_string(*field_val);
++                    else
++                        std::cerr << "(none=default-null)";
++                    std::cerr << " caller=" << current_class_ << "."
++                              << current_method_ << " pc=" << pc << std::endl;
++                }
++            }
+             // ── TRAIN-68 (T68-JOBGET-VAL): the pointerInputJob read VALUE.
+             // The DOWN-window evidence: nodes #6571/#14049 jumped pc=8 -> 29
+             // with the launch block skipped — this prints the exact value the
+@@ -24924,6 +24972,23 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
+                           << " caller=" << current_class_ << "."
+                           << current_method_ << " pc=" << pc << std::endl;
+         }
++        // W5 (Coder-4) DIAG: Koin Module.includedModules store forensics.
++        static const bool f566f_on =
++            diag_env("MINIANDROID_F566_FIELD_DIAG");
++        if (f566f_on && field_res.resolved &&
++            field_res.field_name == "includedModules") {
++            static thread_local uint64_t f566f_n = 0;
++            if (f566f_n++ < 60)
++                std::cerr << "[F566-IPUT] includedModules obj#"
++                          << (obj_ref.type == DalvikType::OBJECT_REF
++                                  ? obj_ref.object_id : 0)
++                          << " <- "
++                          << (src_val.type == DalvikType::OBJECT_REF
++                                  ? ("obj#" + std::to_string(src_val.object_id))
++                                  : dalvik_value_to_string(src_val))
++                          << " caller=" << current_class_ << "."
++                          << current_method_ << " pc=" << pc << std::endl;
++        }
+     }
+     // S135 F-NEW-365 (S57 wave, merge complement): ART null-receiver FIELD
+     // law, iput-object form — same family as the execute_iput law above
+@@ -49770,7 +49835,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         if (method == "addAll" &&
+             std::getenv("MINIANDROID_F264_ADDALL_DIAG") != nullptr) {
+             static thread_local uint64_t f264_diag_n = 0;
+-            if (f264_diag_n < 24) {
++            if (f264_diag_n < 300) {
+                 ++f264_diag_n;
+                 auto f264_rlen =
+                     heap_.get_object_field(f101_arr, "__array_length__");
+@@ -53166,7 +53231,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         bool class_or_null_case =
+             (x.type == DalvikType::CLASS_REF && y.type == DalvikType::CLASS_REF) ||
+             (x.type == DalvikType::NULL_REF && y.type == DalvikType::NULL_REF);
+-        if (app_dex_receiver || base_object_receiver || class_or_null_case) {
++        // ── F-C4-567 (W5, 4APP4) GATE EXTENSION ─────────────────────────
++        // Two HEAP-BACKED java.lang.Class tokens (OBJECT_REF×OBJECT_REF,
++        // runtime class Ljava/lang/Class;) previously fell out of this
++        // branch entirely (not app-DEX, not base-Object, not CLASS_REF
++        // register-form) and reached NO equals handler at all → the
++        // dispatch answered fail-soft false. Live root: Thunderbird v24
++        // Koin — ClassReference.equals → Object.equals(jClass, jClass)
++        // on two distinct heap tokens for the same referent → false →
++        // the CHM collision-chain compare died → NoDefinitionFound×32.
++        bool heap_class_token_pair = false;
++        if (x.type == DalvikType::OBJECT_REF && y.type == DalvikType::OBJECT_REF &&
++            x.object_id != 0 && y.object_id != 0 &&
++            heap_.has_object(x.object_id) && heap_.has_object(y.object_id)) {
++            const auto* xo = heap_.get(x.object_id);
++            const auto* yo = heap_.get(y.object_id);
++            heap_class_token_pair =
++                xo && yo && xo->class_descriptor == "Ljava/lang/Class;" &&
++                yo->class_descriptor == "Ljava/lang/Class;";
++        }
++        if (app_dex_receiver || base_object_receiver || class_or_null_case ||
++            heap_class_token_pair) {
+             if (f069d) {
+                 std::cerr << "[F069-EQUALS] x:type=" << static_cast<int>(x.type)
+                           << ":oid=" << x.object_id
+@@ -53185,6 +53270,43 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             } else if (x.type == DalvikType::OBJECT_REF &&
+                        y.type == DalvikType::OBJECT_REF) {
+                 eq = (x.object_id != 0 && x.object_id == y.object_id);
++                // ── F-C4-567 (W5, 4APP4): CLASS-TOKEN EQUALS LAW ─────────
++                // Two heap-backed java.lang.Class tokens for the SAME class
++                // must compare EQUAL regardless of which site minted them.
++                // Token canonicalization (class_token_ids_) is best-effort
++                // across mint sites (const-class opcode, F-NEW-282 iput
++                // materialization, Class.forName bridges, getClass law) —
++                // distinct oids for one referent escape the raw identity
++                // law above. The token's identity CONTENT is its recorded
++                // referent descriptor (__referent_desc — F-069/F-103
++                // convention). OpenJDK law: Class has NO equals override —
++                // on a real VM identity IS descriptor identity because the
++                // VM guarantees one Class per classloader+name; this law
++                // restores that guarantee for the engine's heap model.
++                // Live root (Thunderbird v24, Koin): the CHM get walks its
++                // collision chain, reaches the stored BeanDefinition node,
++                // and ClassReference.equals → Object.equals(jClass, jClass)
++                // compared two DISTINCT heap tokens for
++                // Lnet/thunderbird/core/logging/Logger; → false →
++                // NoDefinitionFoundException ×32 at the first inject.
++                if (!eq && x.object_id != 0 && y.object_id != 0 &&
++                    heap_.has_object(x.object_id) &&
++                    heap_.has_object(y.object_id)) {
++                    const auto* xo = heap_.get(x.object_id);
++                    const auto* yo = heap_.get(y.object_id);
++                    if (xo && yo &&
++                        xo->class_descriptor == "Ljava/lang/Class;" &&
++                        yo->class_descriptor == "Ljava/lang/Class;") {
++                        auto xr = heap_.get_object_field(x.object_id,
++                                                         "__referent_desc");
++                        auto yr = heap_.get_object_field(y.object_id,
++                                                         "__referent_desc");
++                        if (xr.has_value() && yr.has_value() &&
++                            xr->type == DalvikType::STRING_REF &&
++                            yr->type == DalvikType::STRING_REF)
++                            eq = (xr->string_val == yr->string_val);
++                    }
++                }
+             } else if (x.type == DalvikType::NULL_REF &&
+                        y.type == DalvikType::NULL_REF) {
+                 eq = true;
+@@ -62664,7 +62786,7 @@ measure_cm_done:;
+                     status = ApiCallTrace::Status::IMPLEMENTED;
+                     result = v.has_value() ? v.value()
+                                            : DalvikValue::make_null();
+-                    if (r337_trace && r337_get_n < 48) {
++                    if (r337_trace && r337_get_n < 4000) {
+                         ++r337_get_n;
+                         std::cerr << "[R337-UNSAFE] get obj=" << obj
+                                   << " off=" << offset337(2)
+@@ -62697,7 +62819,7 @@ measure_cm_done:;
+                     resolve_unsafe_name_for337(obj, offset337(2));
+                 if (obj != 0 && !fname.empty() && args.size() > 3) {
+                     heap_.set_object_field(obj, fname, args[3]);
+-                    if (r337_trace && r337_put_n < 48) {
++                    if (r337_trace && r337_put_n < 4000) {
+                         ++r337_put_n;
+                         std::cerr << "[R337-UNSAFE] put obj=" << obj
+                                   << " off=" << offset337(2)
+@@ -62741,7 +62863,7 @@ measure_cm_done:;
+                     return true;
+                 }
+                 auto cur = heap_.get_object_field(obj, fname);
+-                if (r337_trace && r337_cas_n < 48) {
++                if (r337_trace && r337_cas_n < 4000) {
+                     ++r337_cas_n;
+                     std::cerr << "[R337-UNSAFE] cas obj=" << obj
+                               << " off=" << offset337(2)
+@@ -67870,14 +67992,46 @@ measure_cm_done:;
+                 i += adv;
+             }
+             h = hh;
+-        } else if (recv.object_id != 0) {
+-            // Identity hash: fixed avalanche mix of the deterministic object
+-            // id (ART derives from address; contract-equal, §28-safe).
+-            uint32_t x = recv.object_id ^ 0x9E3779B9u;
+-            x ^= x >> 16; x *= 0x85EBCA6Bu;
+-            x ^= x >> 13; x *= 0xC2B2AE35u;
+-            x ^= x >> 16;
+-            h = static_cast<int32_t>(x);
++        } else if (recv.type == DalvikType::OBJECT_REF &&
++                   recv.object_id != 0 && heap_.has_object(recv.object_id)) {
++            const auto* f568_o = heap_.get(recv.object_id);
++            if (f568_o && f568_o->class_descriptor == "Ljava/lang/Class;") {
++                // ── F-C4-568 (W5, 4APP4): CLASS-TOKEN HASH LAW ───────────
++                // A heap-backed java.lang.Class token's hashCode is its
++                // REFERENT DESCRIPTOR's string hash — never the oid-mix.
++                // Companion of F-C4-567 (token equals by referent): hash
++                // and equals must agree, and multiple mint sites
++                // (const-class, F-NEW-282 iput materialization,
++                // Class.forName bridges) can mint distinct tokens for one
++                // referent. With the oid-mix hash, the same logical key
++                // hashed to DIFFERENT CHM BUCKETS at put vs get time —
++                // the lookup missed BEFORE equals ever ran (Thunderbird
++                // v24 Koin: the Logger definition sat at bucket 612 of
++                // the 1024-table while the inject-time key hashed to a
++                // different bucket → NoDefinitionFoundException ×32).
++                auto f568_r = heap_.get_object_field(recv.object_id,
++                                                     "__referent_desc");
++                if (f568_r.has_value() &&
++                    f568_r->type == DalvikType::STRING_REF) {
++                    const std::string& f568_s = f568_r->string_val;
++                    int32_t hh = 0;
++                    for (size_t ci = 0; ci < f568_s.size(); ++ci)
++                        hh = hh * 31 +
++                             (int32_t)(unsigned char)f568_s[ci];
++                    h = hh;
++                } else {
++                    h = 0;  // token without referent: stable zero
++                }
++            } else {
++                // Identity hash: fixed avalanche mix of the deterministic
++                // object id (ART derives from address; contract-equal,
++                // §28-safe).
++                uint32_t x = recv.object_id ^ 0x9E3779B9u;
++                x ^= x >> 16; x *= 0x85EBCA6Bu;
++                x ^= x >> 13; x *= 0xC2B2AE35u;
++                x ^= x >> 16;
++                h = static_cast<int32_t>(x);
++            }
+         }
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         result = DalvikValue::make_int(h);
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 0abda8e..862e948 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -2961,6 +2961,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+             heap_->set_object_ref_field(it_id, "__iterator_parent__", obj_id,
+                                         ctx.class_name, "", false);
+             heap_->set_object_int_field(it_id, "__iterator_pos__", start);
++            {
++                // W5 (Coder-4) DIAG: reversed-iterator seeding forensics —
++                // Koin loadModules seed loop. Bounded, env-gated.
++                static thread_local uint64_t f566_li_n = 0;
++                static thread_local const bool f566_diag =
++                    std::getenv("MINIANDROID_F566_ITER_DIAG") != nullptr;
++                if (f566_diag && f566_li_n++ < 40)
++                    std::cerr << "[F566-LI] listIterator(" << start
++                              << ") box=" << it_id << " parent=" << obj_id
++                              << " cls=" << ctx.class_name << std::endl;
++            }
+             return CallResult::handled_object(it_id,
+                                               "Ljava/util/ListIterator;");
+         }
+@@ -2985,6 +2996,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+         } else {
+             pos = static_cast<int32_t>(state->iterator_position);
+         }
++        {
++            // W5 (Coder-4) DIAG: reversed-iterator seeding forensics.
++            static thread_local uint64_t f566_hp_n = 0;
++            static thread_local const bool f566_diag =
++                std::getenv("MINIANDROID_F566_ITER_DIAG") != nullptr;
++            if (f566_diag && f566_hp_n++ < 40)
++                std::cerr << "[F566-HP] hasPrevious box=" << obj_id
++                          << " is_box=" << (is_box ? 1 : 0)
++                          << " parent=" << parent_id << " pos=" << pos
++                          << " -> " << (pos > 0 ? 1 : 0) << std::endl;
++        }
+         return CallResult::handled_bool(pos > 0);
+     }
+     if (m == "previous" || m == "nextIndex" || m == "previousIndex") {
+

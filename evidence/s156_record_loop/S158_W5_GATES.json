@@ -1,0 +1,89 @@
+{
+ "gate_b_dooz": {
+  "tag": "w5_dooz_notap",
+  "taps": null,
+  "wall_s": 127.4,
+  "process_killed": false,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "gate_rows": 0,
+  "gate_hit": false,
+  "artifact_reset": false,
+  "f117_taps": [],
+  "ui_events": [],
+  "ret_trace_rows": 0,
+  "ret_trace_methods": [],
+  "ret_trace_first10": [],
+  "t68_nodes": [],
+  "uncaught": 6,
+  "screenshot_face": "11a38a5aeeff45a6",
+  "gate_pass": true
+ },
+ "gate_c_cb": {
+  "ref_908d5ba6": {
+   "tag": "cb_ref_908d5ba6",
+   "wall_s": 1.4,
+   "stderr_sha16": "82e585aec394be78",
+   "stderr_lines": 3215,
+   "screenshot_face": "b5a7a35d5fe0564b"
+  },
+  "w5_only": {
+   "tag": "cb_w5_only",
+   "wall_s": 1.3,
+   "stderr_sha16": "5aed0c6ce46206b5",
+   "stderr_lines": 3215,
+   "screenshot_face": "b5a7a35d5fe0564b"
+  },
+  "gate_pass": false,
+  "normalized_method": {
+   "channels_stripped": [
+    "ASLR pointers 0x..",
+    "RSS values",
+    "ms= timings",
+    "store paths",
+    "apk= paths",
+    "ns epoch value=..",
+    "thread-order (sort)"
+   ],
+   "same_binary_control": {
+    "ref_vs_ctl2": "c95fd8a62383922f",
+    "result": "IDENTICAL \u2014 method validated"
+   },
+   "ref_vs_w5_only_normalized": {
+    "sha": "c95fd8a62383922f",
+    "result": "IDENTICAL \u2014 GATE C PASS (delta CB-inert, matches coder \"unchanged family\")"
+   },
+   "raw_stderr_note": "raw stderr sha16 is nondeterministic run-to-run even on the SAME binary (BOOT-RSS/ms/engine pointers/ns-timestamps) \u2014 coder sha16 pins are necessarily normalized hashes"
+  }
+ },
+ "gate_e_anchors": {
+  "microtimer": {
+   "tag": "w5_microtimer",
+   "wall_s": 0.5,
+   "stderr_sha16": "55e94e81a0e114ac",
+   "stderr_lines": 952,
+   "screenshot_face": "bbd350b6c14fbd52",
+   "pin": "bbd350b6",
+   "gate_pass": true,
+   "note": "face bbd350b6c14fbd52 == standing pin prefix bbd350b6"
+  },
+  "g2048": {
+   "w5_face": "ec0f05ad7d5485c0",
+   "ref_face": "ec0f05ad7d5485c0",
+   "verdict": "HARNESS ARTIFACT resolved: ref (unpatched 908d5ba6) gives the IDENTICAL face with the same flags \u2014 W5 == ref byte-exact -> patch-inert. Ledger pin f43face08 uses the s151 wall flags (--trace/--frames) not used here.",
+   "gate_pass": true
+  }
+ },
+ "verdict": {
+  "merge_gate_delta_slice": "POSITIVE",
+  "gates": {
+   "B_dooz_byte_inert": "PASS",
+   "C_cb_delta_inert": "PASS (normalized)",
+   "E_anchor_smoke": "PASS (microtimer pin-exact; g2048 W5==ref)"
+  },
+  "not_verifiable": [
+   "F-C4-566 substance (TB/NC/TK APKs purged S153, absent)",
+   "w5_full 1610-line stack artifact NOT delivered in comments (only 314-line w5_only block present)",
+   "their 4APP stderr sha16 pins (full-stack-relative)"
+  ]
+ }
+}

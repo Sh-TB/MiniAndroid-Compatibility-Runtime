@@ -64,3 +64,16 @@ Recommended: (a) for Coder-6 GL stack + Coder-3 GLES translation (large diffs),
 Verdict: **YES — the friends solved real problems I could not or had no time for**
 (Mindustry render, GLES constants, Termux/VLC roots), plus they re-proved my
 anchor wall byte-exact. Engine diffs not merged yet; merging is the next decision.
+
+## 7. S158 VERIFICATION LOOP (2026-11-04) — first confirm/reject cycle under the 40/60/20 law
+
+| Coder item | What I actually ran | Verdict |
+|---|---|---|
+| **#514 W5 (Coder-4, F-C4-566/567/568, CHM compute-bypass)** | extracted the delivered 314-line `w5_only` block from comment 6616230230; `git apply --check` CLEAN on detached `eb72df8b`; full -O2 rebuild (`build_w5`, binary `254a9be71721d961`, insurance copy kept); Gate B dooz E5 -> face `11a38a5a` byte-inert; Gate C ConnectBot stderr A/B ref-vs-W5 **normalized-identical** (method: strip ASLR ptrs/RSS/ms/store-paths/ns-timestamps + thread-order sort; validated by a same-binary-twice control — raw stderr is nondeterministic even for one binary, so their stderr sha16 pins are normalized by construction); Gate E microtimer face == standing pin `bbd350b6` prefix-exact, g2048 W5 == ref byte-exact (`ec0f05ad` both — ledger pin `f43face08` uses s151 wall flags not used in this smoke) | **تایید (APPROVED) at the delta level** — merge-safe on `eb72df8b`; F-C4-566 substance (TB Koin 510 put -> 596 nodes) remains coder-attested: TB/NC/TK APKs purged in S153, and the claimed 1610-line `w5_full` stack was NOT actually delivered in the comments (only the 314-line delta is present) |
+| **Coder-4 #510 W3** | (S157-B, carried) clean-apply + compile + 12/12 anchors byte-exact | تایید at merge-gate level; 4APP numbers unverifiable |
+| **Coder-5 #503 COMPOSE RENDER CLUSTER** | still PENDING in their own issue — nothing to test | رد نیست؛ awaiting artifact |
+
+New ready-made-lever verdicts this session (dooz 40% leg, "don't reinvent the wheel"):
+- jemalloc 5.3.0 LD_PRELOAD (J1): face unchanged, RSS growth 1.80 vs 1.87 MB/s -> allocator-invariant live-set growth. **رد (REJECTED)**.
+- O3 + LTO + march=native rebuild (no source change): face unchanged, wall == budget. **رد (REJECTED)**.
+- Remaining path to a RUNNING dooz on this VM stays the S156-pinned field-slot fast path (after cache-storage hardening) + bounded heap; no ready-made component covers it.
