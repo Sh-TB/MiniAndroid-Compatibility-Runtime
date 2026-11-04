@@ -1,0 +1,70 @@
+{
+ "session": "S165",
+ "directive": "10 trains: 5 dooz + 5 Telegram to destination; apps must load faster/lighter",
+ "trains": {
+  "T1_telegram_baseline": {
+   "status": "LANDED",
+   "evidence": "evidence/s164_trains/S164_TG_BASELINE.json (committed S163+S164)",
+   "result": "REAL_APP_CONTENT, 9 frames, face bf5c9ef920aa32d7, 6 uncaught (baseline before the fix trains)"
+  },
+  "T2_provider_platform_skip": {
+   "status": "LANDED",
+   "evidence": "evidence/s164_trains/S164_GATES.json#tg_train",
+   "result": "FirebaseInitProvider + MlKitInitProvider platform-skipped (S1-PROVIDER rows); l9/j family 28 -> 0"
+  },
+  "T3_app_data_seed": {
+   "status": "LANDED",
+   "evidence": "evidence/s164_trains/S164_GATES.json#tg_train",
+   "result": "TL_autoDownloadSettings null-seed NPE eliminated; total uncaught 6 -> 0"
+  },
+  "T4_boot_depth": {
+   "status": "LANDED",
+   "evidence": "evidence/s165_trains/S165_T4_BOOTDEPTH.json (extraction from committed run_s164_gates/tg_deep)",
+   "result": "LaunchActivity RESUMED, 24 frames captured, last_exception=null, app_owned_pixels=2161, app_draw_ops=11 \u2014 boot depth BEYOND the S163 pc=1375 blocker"
+  },
+  "T5_speed_weight_ab": {
+   "status": "LANDED",
+   "evidence": "evidence/s165_trains/S165_T5_SPEEDWEIGHT.json (4 runs this session, RSS monitor)",
+   "result": "exceptions 12->0 per pair; api work 9777->9773 (Firebase/autodl work removed); identical 2161 app pixels; wall 33.2 vs 33.2s median (end-point = same lifecycle event); RSS peaks 624/662 vs 676/531 MB \u2014 band overlaps, lightest single run = fixed arm"
+  },
+  "D1_dooz_face_inert_baseline": {
+   "status": "LANDED",
+   "evidence": "evidence/s164_trains/S164_GATES.json#dooz_inert",
+   "result": "face 11a38a5aeeff45a6 byte-stable on the seedskip parent binary"
+  },
+  "D2_paint_color_census": {
+   "status": "LANDED",
+   "evidence": "evidence/s164_trains/S164_GATES.json#dooz_color + S164_DOOZ_DIAG.json",
+   "result": "setColor 2124 rows diverse, but EVERY drawText row color ff000000 \u2014 the black-on-black clue"
+  },
+  "D3_composite_chain": {
+   "status": "LANDED (mechanism + diagnosis; visible-board remains pinned frontier)",
+   "evidence": "evidence/s165_trains/S165_D3_PROBE.json + run_s165_trains/dooz_d3test + dooz_hist consoles",
+   "result": "DRAW-WALK CHECKPOINT mechanism landed (env MINIANDROID_DRAW_CHECKPOINT, 2 sites) \u2014 checkpoint rows fired x8, and the SMOKING GUN: [D3-FB-HISTO] walk-fb distinct=1 0x000000x2073600 \u2014 content walks DO complete and DO present, but the app's Compose paint pipeline delivers black-on-black (paint colors never reach the draw ops). The blocker is app-side paint-color propagation = the 31ddd4d5 Compose/WindowRoot frontier, precisely identified"
+  },
+  "D4_settle": {
+   "status": "LANDED",
+   "evidence": {
+    "train": "D4 settle",
+    "bin": "770206f2d976d997 (D3 binary)",
+    "wall_s": 155.9,
+    "budget_s": 240,
+    "settled": true,
+    "settle_family": "S163 record 161.7s on W5 bin 51251726; new-binary family holds (~156s)",
+    "uncaught": 6,
+    "face": "11a38a5aeeff45a6",
+    "note": "dooz_hist run (checkpoint+histo envs armed) \u2014 settle happened mid-run, clean end"
+   },
+   "result": "155.9s settle on the D3 binary (budget 240s) \u2014 clean F-NEW-200 partial-complete, face byte-stable"
+  },
+  "D5_full_gates": {
+   "status": "LANDED",
+   "evidence": "evidence/s165_trains/S165_D5_GATES.json",
+   "result": "PASS \u2014 microtimer full-pin bbd350b6c14fbd52, g2048 f43face08, opencalc: REF(1cb76138)==NEW(770206f2) on identical stores (delta-inertness); dooz face-stable 90s env-off (checkpoint inert by construction)"
+  }
+ },
+ "faster_lighter_honest_answer": {
+  "faster": "the exception-storm work is REMOVED (12->0 unwinds, Firebase+MlKit+autodl chains skipped) but wall is unchanged (both arms end at the same lifecycle point) \u2014 the load is CLEANER; the real speed wall = interpreter throughput (S159: all ready-made levers measured+rejected, ~1550 tpc average)",
+  "lighter": "RSS peaks overlap across arms (531-677 MB band; lightest single run = fixed arm) \u2014 live-set invariant per the S158 allocator law; the checkpoint/histo levers are env-gated zero-cost when off"
+ }
+}

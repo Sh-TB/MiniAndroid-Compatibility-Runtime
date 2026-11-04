@@ -1,0 +1,60 @@
+{
+ "ref_bin": "1cb76138897a22d2",
+ "new_bin": "770206f2d976d997",
+ "anchors": {
+  "microtimer": {
+   "microtimer_ref": {
+    "tag": "microtimer_ref",
+    "wall_s": 1.1,
+    "stderr_sha16": "0fddbe1b14eb9159",
+    "screenshot_face": "bbd350b6c14fbd52"
+   },
+   "microtimer_new": {
+    "tag": "microtimer_new",
+    "wall_s": 1.0,
+    "stderr_sha16": "18b63710155c0564",
+    "screenshot_face": "bbd350b6c14fbd52"
+   },
+   "delta_inert": true,
+   "pin_match": true
+  },
+  "g2048": {
+   "g2048_ref": {
+    "tag": "g2048_ref",
+    "wall_s": 1.3,
+    "stderr_sha16": "d8b577637d0298a5",
+    "screenshot_face": "f43face08299ffc6"
+   },
+   "g2048_new": {
+    "tag": "g2048_new",
+    "wall_s": 1.3,
+    "stderr_sha16": "c3919711646cd130",
+    "screenshot_face": "f43face08299ffc6"
+   },
+   "delta_inert": true
+  },
+  "opencalc": {
+   "opencalc_ref": {
+    "tag": "opencalc_ref",
+    "wall_s": 1.8,
+    "stderr_sha16": "fca3fa6d82403f11",
+    "screenshot_face": "63020bc7334048fe"
+   },
+   "opencalc_new": {
+    "tag": "opencalc_new",
+    "wall_s": 1.7,
+    "stderr_sha16": "6919e41728f2b625",
+    "screenshot_face": "63020bc7334048fe"
+   },
+   "delta_inert": true
+  }
+ },
+ "dooz_inert": {
+  "tag": "dooz_inert",
+  "wall_s": 93.0,
+  "stderr_sha16": "66083db8543ace0f",
+  "screenshot_face": "11a38a5aeeff45a6",
+  "face_stable": true
+ },
+ "VERDICT": "PASS \u2014 D3 binary byte-inert on all anchors"
+}

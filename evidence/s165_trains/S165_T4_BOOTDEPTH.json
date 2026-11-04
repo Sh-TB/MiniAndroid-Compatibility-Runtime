@@ -1,0 +1,51 @@
+{
+ "method": "extraction from committed S164 runs (reuse law; no re-run)",
+ "baseline_train": {
+  "tag": "tg_baseline_90s (bin 512517269d9634a1, no env)",
+  "verdict": "REAL_APP_CONTENT",
+  "wall_s": 30.4,
+  "uncaught": 6,
+  "uncaught_l9j": 28,
+  "frames": [
+   "9"
+  ]
+ },
+ "t2_t3_train": {
+  "tag": "tg_train_90s (bin 1cb76138897a22d2, seed+skip)",
+  "verdict": "REAL_APP_CONTENT",
+  "wall_s": 33.6,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "uncaught_tl_autodl": 0,
+  "skip_providers": [
+   "com.google.mlkit.common.internal.MlKitInitProvider",
+   "com.google.firebase.provider.FirebaseInitProvider"
+  ]
+ },
+ "t4_boot_depth": {
+  "tag": "tg_deep (150s, 24 frames, seed+skip)",
+  "final_state": "RESUMED",
+  "transitions": [
+   "PROCESS_CREATED->ACTIVITY_CREATED (Activity.onCreate() executed via DEX interpreter (ActivityTh)",
+   "ACTIVITY_CREATED->STARTED (Activity.onStart() dispatched via DEX engine)",
+   "STARTED->RESUMED (Activity.onResume() dispatched via DEX engine (handleResumeA)"
+  ],
+  "frames_captured": 32,
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "content_bounds": {
+   "b": 1920,
+   "l": 0,
+   "r": 1080,
+   "t": 0,
+   "valid": true
+  },
+  "last_exception": null,
+  "severity_census": {
+   "CONFIRMED": 62,
+   "INFO": 4,
+   "PENDING": 27,
+   "RENDERER": 1
+  }
+ }
+}

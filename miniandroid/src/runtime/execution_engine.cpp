@@ -4413,6 +4413,45 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                           << node->class_desc
                                                           << " at (" << left << "," << top
                                                           << " " << w << "x" << h << ")" << std::endl;
+                                                // S165 D3 (CONT-TRAINS):
+                                                // DRAW-WALK CHECKPOINT —
+                                                // env-gated, default-off.
+                                                // A content-bearing custom-view
+                                                // replay is presented INTO THE
+                                                // CAPTURE immediately: walks that
+                                                // later abort keep their F298
+                                                // ledger law (an unfinished frame
+                                                // is never a COMPLETED frame),
+                                                // but the capture layer shows the
+                                                // most advanced walk state instead
+                                                // of a stale splash cover.
+                                                if (std::getenv(
+                                                        "MINIANDROID_DRAW_CHECKPOINT") &&
+                                                    ondraw_ops >= 64) {
+                                                    const auto& ck_px =
+                                                        fb.get_pixels();
+                                                    size_t ck_n =
+                                                        ck_px.size() * 4;
+                                                    if (ck_n > framebuffer_.size())
+                                                        ck_n = framebuffer_.size();
+                                                    for (size_t ck_i = 0;
+                                                         ck_i < ck_n; ck_i += 4) {
+                                                        framebuffer_[ck_i] =
+                                                            ck_px[ck_i / 4].r;
+                                                        framebuffer_[ck_i + 1] =
+                                                            ck_px[ck_i / 4].g;
+                                                        framebuffer_[ck_i + 2] =
+                                                            ck_px[ck_i / 4].b;
+                                                        framebuffer_[ck_i + 3] =
+                                                            ck_px[ck_i / 4].a;
+                                                    }
+                                                    std::cerr << "[D3-CHECKPOINT] walk-state presented at "
+                                                              << node->class_desc
+                                                              << " ops=" << ondraw_ops
+                                                              << " (env MINIANDROID_DRAW_CHECKPOINT;"
+                                                              << " F298 ledger law unchanged)"
+                                                              << std::endl;
+                                                }
                                             }
                                         }
                                     }
@@ -5566,6 +5605,36 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                   << ondraw_ops << " ops for " << cv.cls
                                                   << " at (" << cv.l << "," << cv.t << " "
                                                   << cv.w << "x" << cv.h << ")" << std::endl;
+                                        // S165 D3: DRAW-WALK CHECKPOINT
+                                        // (same law as the inline site):
+                                        // present the walk state into the
+                                        // capture; F298 ledger untouched.
+                                        if (std::getenv(
+                                                "MINIANDROID_DRAW_CHECKPOINT") &&
+                                            ondraw_ops >= 64) {
+                                            const auto& ck_px =
+                                                fb.get_pixels();
+                                            size_t ck_n = ck_px.size() * 4;
+                                            if (ck_n > framebuffer_.size())
+                                                ck_n = framebuffer_.size();
+                                            for (size_t ck_i = 0; ck_i < ck_n;
+                                                 ck_i += 4) {
+                                                framebuffer_[ck_i] =
+                                                    ck_px[ck_i / 4].r;
+                                                framebuffer_[ck_i + 1] =
+                                                    ck_px[ck_i / 4].g;
+                                                framebuffer_[ck_i + 2] =
+                                                    ck_px[ck_i / 4].b;
+                                                framebuffer_[ck_i + 3] =
+                                                    ck_px[ck_i / 4].a;
+                                            }
+                                            std::cerr << "[D3-CHECKPOINT] walk-state presented at "
+                                                      << cv.cls
+                                                      << " ops=" << ondraw_ops
+                                                      << " (env MINIANDROID_DRAW_CHECKPOINT;"
+                                                      << " F298 ledger law unchanged)"
+                                                      << std::endl;
+                                        }
                                         continue;
                                     }
                                     // FINAL CAMPAIGN item 21-P0-5: the grey
@@ -5659,6 +5728,27 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         }
                         std::cerr << "[EXP092-COPY] fb has " << non_white << " non-white pixels out of "
                                   << pixels.size() << " total" << std::endl;
+                        // S165 D3 diag (env-gated): what colors is the walk
+                        // fb actually carrying at presentation time?
+                        if (std::getenv("MINIANDROID_FB_HISTO")) {
+                            std::map<uint32_t, size_t> ck_hist;
+                            for (size_t i = 0; i < pixels.size(); i++) {
+                                uint32_t key =
+                                    (uint32_t(pixels[i].r) << 16) |
+                                    (uint32_t(pixels[i].g) << 8) |
+                                    uint32_t(pixels[i].b);
+                                ck_hist[key]++;
+                            }
+                            std::cerr << "[D3-FB-HISTO] walk-fb distinct="
+                                      << ck_hist.size() << " top:";
+                            int ck_k = 0;
+                            for (auto& ck_kv : ck_hist) {
+                                if (ck_k++ >= 5) break;
+                                std::cerr << " " << std::hex << ck_kv.first
+                                          << std::dec << "x" << ck_kv.second;
+                            }
+                            std::cerr << std::endl;
+                        }
                         for (size_t i = 0; i < pixels.size() && i * 4 + 3 < framebuffer_.size(); i++) {
                             framebuffer_[i * 4]     = pixels[i].r;
                             framebuffer_[i * 4 + 1] = pixels[i].g;

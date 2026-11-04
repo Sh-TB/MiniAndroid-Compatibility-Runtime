@@ -1,0 +1,168 @@
+{
+ "t5_base_1": {
+  "tag": "t5_base_1",
+  "bin": "512517269d9634a1",
+  "env": {},
+  "wall_s": 32.8,
+  "rss_peak_mb": 624.6,
+  "rss_final_mb": 624.6,
+  "uncaught": 6,
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "frames_rendered": [
+   "9"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "t5_base_2": {
+  "tag": "t5_base_2",
+  "bin": "512517269d9634a1",
+  "env": {},
+  "wall_s": 33.2,
+  "rss_peak_mb": 662.5,
+  "rss_final_mb": 662.5,
+  "uncaught": 6,
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "frames_rendered": [
+   "9"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "t5_fix_1": {
+  "tag": "t5_fix_1",
+  "bin": "1cb76138897a22d2",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 33.2,
+  "rss_peak_mb": 676.7,
+  "rss_final_mb": 676.7,
+  "uncaught": 0,
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "frames_rendered": [
+   "9"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "t5_fix_2": {
+  "tag": "t5_fix_2",
+  "bin": "1cb76138897a22d2",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 31.1,
+  "rss_peak_mb": 531.5,
+  "rss_final_mb": 530.6,
+  "uncaught": 0,
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "frames_rendered": [
+   "9"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "summary": {
+  "runs": [
+   {
+    "tag": "t5_base_1",
+    "bin": "512517269d9634a1",
+    "env": {},
+    "wall_s": 32.8,
+    "rss_peak_mb": 624.6,
+    "rss_final_mb": 624.6,
+    "uncaught": 6,
+    "verdict": [
+     "REAL_APP_CONTENT"
+    ],
+    "frames_rendered": [
+     "9"
+    ],
+    "app_draw_ops": 11,
+    "app_owned_pixels": 2161,
+    "api_calls": 9777
+   },
+   {
+    "tag": "t5_base_2",
+    "bin": "512517269d9634a1",
+    "env": {},
+    "wall_s": 33.2,
+    "rss_peak_mb": 662.5,
+    "rss_final_mb": 662.5,
+    "uncaught": 6,
+    "verdict": [
+     "REAL_APP_CONTENT"
+    ],
+    "frames_rendered": [
+     "9"
+    ],
+    "app_draw_ops": 11,
+    "app_owned_pixels": 2161,
+    "api_calls": 9777
+   },
+   {
+    "tag": "t5_fix_1",
+    "bin": "1cb76138897a22d2",
+    "env": {
+     "MINIANDROID_APP_DATA_SEED": "1",
+     "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+    },
+    "wall_s": 33.2,
+    "rss_peak_mb": 676.7,
+    "rss_final_mb": 676.7,
+    "uncaught": 0,
+    "verdict": [
+     "REAL_APP_CONTENT"
+    ],
+    "frames_rendered": [
+     "9"
+    ],
+    "app_draw_ops": 11,
+    "app_owned_pixels": 2161,
+    "api_calls": 9773
+   },
+   {
+    "tag": "t5_fix_2",
+    "bin": "1cb76138897a22d2",
+    "env": {
+     "MINIANDROID_APP_DATA_SEED": "1",
+     "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+    },
+    "wall_s": 31.1,
+    "rss_peak_mb": 531.5,
+    "rss_final_mb": 530.6,
+    "uncaught": 0,
+    "verdict": [
+     "REAL_APP_CONTENT"
+    ],
+    "frames_rendered": [
+     "9"
+    ],
+    "app_draw_ops": 11,
+    "app_owned_pixels": 2161,
+    "api_calls": 9773
+   }
+  ],
+  "baseline_median_wall": 33.2,
+  "fixed_median_wall": 33.2,
+  "baseline_uncaught_total": 12,
+  "fixed_uncaught_total": 0,
+  "baseline_rss_peak_median": 662.5,
+  "fixed_rss_peak_median": 676.7
+ }
+}

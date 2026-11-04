@@ -1,0 +1,62 @@
+{
+ "bin": "1cb76138897a22d2",
+ "wall_s": 65.6,
+ "settle": false,
+ "face": "11a38a5aeeff45a6",
+ "f298_keep_rows": 12,
+ "f351_erase_rows": 0,
+ "c013_replayed": [],
+ "c013_unrendered": 11,
+ "exp092_last3": [
+  "[EXP092-COPY] fb has 2073600 non-white"
+ ],
+ "halt_loop_rows": [],
+ "halt_loop_count": 0,
+ "wall_halt_rows": 0,
+ "histo_frames": [
+  [
+   "Lbf1;.f",
+   "0x3"
+  ],
+  [
+   "Lkc;.e",
+   "0x3"
+  ],
+  [
+   "Loo1;.a",
+   "0x5"
+  ],
+  [
+   "Lto1;.d",
+   "0xa5"
+  ],
+  [
+   "Ln5;.h",
+   "0xa5"
+  ],
+  [
+   "Ln3;.i",
+   "0x125"
+  ],
+  [
+   "Lrc0;.c",
+   "0x31"
+  ],
+  [
+   "Lyl;.z",
+   "0x1ba"
+  ]
+ ],
+ "verdict_timeline": [
+  "DEFAULT_BACKGROUND_ONLY",
+  "DEFAULT_BACKGROUND_ONLY"
+ ],
+ "frames_rendered": [
+  "13"
+ ],
+ "winbg": [
+  "[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)",
+  "[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)"
+ ],
+ "awt_present_rows": 0
+}
