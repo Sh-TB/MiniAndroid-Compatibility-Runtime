@@ -117,3 +117,12 @@ The gate law moves to VALIDATED + REGRESSION-PROVEN. Next exclusive frontier unb
 |---|---|---|
 | **Coder-2 #459 (Simple Keyboard v145, IME white frame)** | re-fetched the pinned APK (sha256 match), reproduced byte-exact on W5-merged main (face `31ddd4d5b8e6d18e`, 0 EXP092-RENDER nodes), diagnosed from the manifest + run log: SettingsActivity = framework-stub dead end; LatinIME IME service NEVER launched (no service path, no InputMethodService machinery in the engine) | **their finding CONFIRMED**; root cause = runtime gap, my lane |
 | **Harness decision** | law written (docs/LAW_IME_HARNESS.md): manifest-level IME detection -> no-IMMS lifecycle drive -> attach input view to render root -> [IME-HARNESS] logging (T61) -> face/success criteria; decision comment posted to #459 (6632756338) | runtime-side harness = MINE; their 1-EditText probe = phase-2 host; registry honest `HARNESS_REQUIRED` |
+
+## 12. S163 — RUN LANE under the user directive + sweep (2026-11-04)
+
+| Item | What I actually ran | Verdict |
+|---|---|---|
+| **#459 / #472 / #484 updates** | comment/body re-fetch: #459 latest = my own decision post; #472/#484 = tracker body-edits, no comments, no artifacts | **nothing to test** (no claims made → nothing owed) |
+| **Coder deliverables** | none new since S162 (S141b diff + W5-full still undelivered) | sweep only |
+
+(S163 was a RUN-lane session per the user directive — dooz, Telegram, planner apps; the coder lane had no verifiable deltas. Details in worklog S163.)

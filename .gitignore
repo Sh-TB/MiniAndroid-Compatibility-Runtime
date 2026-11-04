@@ -278,3 +278,6 @@ scripts/tracer
 # S158/S159: run artifacts are external (environment auto-commit swept these in 303ad5b1)
 /run_s158_*/
 /run_s159_*/
+/run_s161_*/
+/run_s162_*/
+/run_s163_*/

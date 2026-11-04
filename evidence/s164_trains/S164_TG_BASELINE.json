@@ -1,0 +1,46 @@
+{
+ "tag": "tg_baseline_90s",
+ "tap": null,
+ "gate_ms": null,
+ "wall_s": 30.4,
+ "process_killed": false,
+ "verdict": "REAL_APP_CONTENT",
+ "gate_rows": 0,
+ "gate_hit": false,
+ "artifact_reset": false,
+ "f117_down": [],
+ "ui_touch": [],
+ "click_rows": 0,
+ "click_dispatched": 0,
+ "perform_click": 0,
+ "uncaught": 6,
+ "face_screenshot": "bf5c9ef920aa32d7",
+ "frame_faces": {
+  "0": "bf5c9ef920aa32d7",
+  "1": "bf5c9ef920aa32d7",
+  "2": "bf5c9ef920aa32d7",
+  "3": "bf5c9ef920aa32d7",
+  "4": "bf5c9ef920aa32d7",
+  "5": "bf5c9ef920aa32d7",
+  "6": "bf5c9ef920aa32d7",
+  "7": "bf5c9ef920aa32d7"
+ },
+ "bin_sha16": "512517269d9634a1",
+ "uncaught_l9j": 28,
+ "uncaught_tl_autodl": 0,
+ "uncaught_firebase_provider": 4,
+ "uncaught_first5": [
+  "UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ll9/j; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY] [FRONTIER]",
+  "UNCAUGHT-TOP] [EXC-UNWIND] Ll9/j; unwound Lg9/g;.<init> invoke_pc=0x7b depth=5 [FRONTIER]",
+  "UNCAUGHT-TOP] [EXC-UNWIND] Ll9/j; unwound Lcom/google/firebase/provider/FirebaseInitProvider;.onCreate invoke_pc=0x4 depth=2 [FRONTIER]",
+  "UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ll9/j; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY] [FRONTIER]"
+ ],
+ "rec_miss_total": 400,
+ "ondraw_zero_ops": 0,
+ "uncaught_top_families": {
+  "Ll9/j": 2
+ },
+ "frames_rendered": [
+  "9"
+ ]
+}

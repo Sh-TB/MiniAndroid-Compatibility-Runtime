@@ -1,0 +1,85 @@
+{
+ "bin_sha16": "512517269d9634a1",
+ "wall_s": 72.0,
+ "drawtext_replay_rows": 2587,
+ "drawtext_color_hist": {
+  "ff000000": 2587
+ },
+ "drawtext_first8": [
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ],
+  [
+   "Dooz",
+   "488",
+   "97.976",
+   "42",
+   "ff000000"
+  ]
+ ],
+ "c013_rows": [
+  "[C013-CUSTOMVIEW] onDraw replayed 2922 ops (rp=2922) for Lt4; at (0,0 1080x1920)",
+  "[C013-CUSTOMVIEW] onDraw replayed 363 ops (rp=363) for Lt4; at (0,0 1080x1920)",
+  "[C013-CUSTOMVIEW] unrendered custom view RECORDED (not painted): Lt4; at (0,0 1080x1920)",
+  "[C013-CUSTOMVIEW] unrendered custom view RECORDED (not painted): Lt4; at (0,0 1080x1920)"
+ ],
+ "exp092_copy": [
+  "2073600"
+ ],
+ "winbg": [
+  "[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)"
+ ],
+ "f351_erase_rows": 8,
+ "f298_keep_rows": 30,
+ "verdict_timeline": [
+  "DEFAULT_BACKGROUND_ONLY",
+  "DEFAULT_BACKGROUND_ONLY"
+ ],
+ "face": "11a38a5aeeff45a6"
+}

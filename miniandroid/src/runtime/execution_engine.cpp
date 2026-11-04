@@ -4501,6 +4501,66 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                           << "pipeline (F-NEW-162)"
                                                           << std::endl;
                                             } else {
+                                        // ── S164 T4 v2 (PAINT-GAP train):
+                                        // last-resort REAL draw dispatch.
+                                        // Views that reached the diagnostic
+                                        // branch (non-text, non-surface,
+                                        // not dispatched by the gates above
+                                        // — telegram's ActionBarLayout
+                                        // family) may still override
+                                        // View.draw()/dispatchDraw with
+                                        // real content. AOSP law: draw()
+                                        // is the FULL template (bg + onDraw
+                                        // + dispatchDraw + foreground).
+                                        // dispatch_custom_view_draw already
+                                        // walks onDraw -> dispatchDraw ->
+                                        // draw(); a >0 result replays REAL
+                                        // app ops into this frame. Only
+                                        // non-framework classes with a live
+                                        // heap object qualify (inflated
+                                        // framework views keep the honest
+                                        // diagnostic). Nothing fires unless
+                                        // the app's own draw produced ops.
+                                        {
+                                            const std::string& cv_cls =
+                                                node->class_desc;
+                                            bool cv_framework =
+                                                cv_cls.rfind("Landroid/", 0) == 0 ||
+                                                cv_cls.rfind("Landroidx/", 0) == 0 ||
+                                                cv_cls.rfind("Lcom/google/", 0) == 0;
+                                            if (!cv_framework && task.view_id != 0 &&
+                                                dalvik_engine_.get_heap().has_object(task.view_id)) {
+                                                int gap_ops =
+                                                    dalvik_engine_.dispatch_custom_view_draw(
+                                                        task.view_id);
+                                                if (gap_ops > 0) {
+                                                    if (auto* cs_gap =
+                                                            shadow_registry_->find_as<
+                                                                framework::CanvasShadow>()) {
+                                                        cs_gap->set_canvas_size(
+                                                            (int)w, (int)h);
+                                                        size_t rp_gap =
+                                                            cs_gap->replay(
+                                                                canvas, font,
+                                                                (float)left,
+                                                                (float)top,
+                                                                (float)w,
+                                                                (float)h);
+                                                        drew_real = true;
+                                                        frame_census_.app_draw_ops +=
+                                                            gap_ops;
+                                                        std::cerr
+                                                            << "[T4-PAINTGAP] "
+                                                            << cv_cls
+                                                            << " draw chain dispatched: "
+                                                            << gap_ops
+                                                            << " ops replayed (rp="
+                                                            << rp_gap << ")"
+                                                            << std::endl;
+                                                    }
+                                                }
+                                            }
+                                        }
                                         // FINAL CAMPAIGN item 21-P0-5
                                         // (authoritative-frame purity): the
                                         // grey box + "custom view (not
@@ -4515,6 +4575,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         // trace overlay may visualize it on the
                                         // diagnostic COPY — never in
                                         // screenshot.png.
+                                        if (!drew_real) {
                                         frame_census_.diag_regions.push_back(
                                             {left, top, right, bottom,
                                              "custom-view-unrendered",
@@ -4523,6 +4584,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                   << node->class_desc
                                                   << " at (" << left << "," << top
                                                   << " " << w << "x" << h << ")" << std::endl;
+                                        }
                                             }  // S134 F-NEW-162 routing else
                                         }  // S134 F-NEW-162 routing bare block
                                     }

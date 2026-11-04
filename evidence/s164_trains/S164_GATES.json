@@ -1,0 +1,255 @@
+{
+ "anchors": {
+  "microtimer": {
+   "microtimer_ref": {
+    "tag": "microtimer_ref",
+    "wall_s": 0.6,
+    "stderr_sha16": "a05a25cc0d81a4ce",
+    "stderr_lines": 952,
+    "screenshot_face": "bbd350b6c14fbd52"
+   },
+   "microtimer_new": {
+    "tag": "microtimer_new",
+    "wall_s": 0.5,
+    "stderr_sha16": "09efadfb42151592",
+    "stderr_lines": 952,
+    "screenshot_face": "bbd350b6c14fbd52"
+   },
+   "delta_inert": true,
+   "pin_match": true
+  },
+  "g2048": {
+   "g2048_ref": {
+    "tag": "g2048_ref",
+    "wall_s": 0.6,
+    "stderr_sha16": "d754a88ffab5d2b0",
+    "stderr_lines": 568,
+    "screenshot_face": "ec0f05ad7d5485c0"
+   },
+   "g2048_new": {
+    "tag": "g2048_new",
+    "wall_s": 0.6,
+    "stderr_sha16": "eff2a3d58ebc70c3",
+    "stderr_lines": 568,
+    "screenshot_face": "ec0f05ad7d5485c0"
+   },
+   "delta_inert": true
+  },
+  "opencalc": {
+   "opencalc_ref": {
+    "tag": "opencalc_ref",
+    "wall_s": 1.1,
+    "stderr_sha16": "b720160d8114e7b0",
+    "stderr_lines": 2995,
+    "screenshot_face": "ea819397b6bcd006"
+   },
+   "opencalc_new": {
+    "tag": "opencalc_new",
+    "wall_s": 1.0,
+    "stderr_sha16": "766ae16fc92ac02f",
+    "stderr_lines": 2998,
+    "screenshot_face": "ea819397b6bcd006"
+   },
+   "delta_inert": true
+  }
+ },
+ "dooz_inert": {
+  "bin": "1cb76138897a22d2",
+  "env": "OFF",
+  "wall_s": 241.4,
+  "settle": false,
+  "uncaught": 6,
+  "face": "11a38a5aeeff45a6",
+  "frames": [
+   "31"
+  ]
+ },
+ "tg_train": {
+  "tag": "tg_train_90s",
+  "tap": null,
+  "gate_ms": null,
+  "wall_s": 33.6,
+  "process_killed": false,
+  "verdict": "REAL_APP_CONTENT",
+  "gate_rows": 0,
+  "gate_hit": false,
+  "artifact_reset": false,
+  "f117_down": [],
+  "ui_touch": [],
+  "click_rows": 0,
+  "click_dispatched": 0,
+  "perform_click": 0,
+  "uncaught": 0,
+  "face_screenshot": "bf5c9ef920aa32d7",
+  "frame_faces": {
+   "0": "bf5c9ef920aa32d7",
+   "1": "bf5c9ef920aa32d7",
+   "2": "bf5c9ef920aa32d7",
+   "3": "bf5c9ef920aa32d7",
+   "4": "bf5c9ef920aa32d7",
+   "5": "bf5c9ef920aa32d7",
+   "6": "bf5c9ef920aa32d7",
+   "7": "bf5c9ef920aa32d7"
+  },
+  "bin": "1cb76138897a22d2",
+  "env": {
+   "APP_DATA_SEED": 1,
+   "PROVIDER_SKIP": "FirebaseInitProvider"
+  },
+  "uncaught_l9j": 0,
+  "uncaught_tl_autodl": 0,
+  "seed_rows": [],
+  "skip_rows": [
+   "[S1-PROVIDER] PLATFORM-SKIP com.google.mlkit.common.internal.MlKitInitProvider (token 'MlKitInitProvider' \u2014 init family requires platform infrastructure absent from th",
+   "[S1-PROVIDER] PLATFORM-SKIP com.google.firebase.provider.FirebaseInitProvider (token 'FirebaseInitProvider' \u2014 init family requires platform infrastructure absent from "
+  ],
+  "draw_fallback_rows": [],
+  "uncaught_top_families": {},
+  "uncaught_first5": [],
+  "frames_rendered": [
+   "9"
+  ]
+ },
+ "tg_deep": {
+  "tag": "tg_deep",
+  "tap": null,
+  "gate_ms": null,
+  "wall_s": 42.7,
+  "process_killed": false,
+  "verdict": "REAL_APP_CONTENT",
+  "gate_rows": 0,
+  "gate_hit": false,
+  "artifact_reset": false,
+  "f117_down": [],
+  "ui_touch": [],
+  "click_rows": 0,
+  "click_dispatched": 0,
+  "perform_click": 0,
+  "uncaught": 0,
+  "face_screenshot": "bf5c9ef920aa32d7",
+  "frame_faces": {
+   "0": "bf5c9ef920aa32d7",
+   "1": "bf5c9ef920aa32d7",
+   "2": "bf5c9ef920aa32d7",
+   "3": "bf5c9ef920aa32d7",
+   "4": "bf5c9ef920aa32d7",
+   "5": "bf5c9ef920aa32d7",
+   "6": "bf5c9ef920aa32d7",
+   "7": "bf5c9ef920aa32d7",
+   "8": "bf5c9ef920aa32d7",
+   "9": "bf5c9ef920aa32d7",
+   "10": "bf5c9ef920aa32d7",
+   "11": "bf5c9ef920aa32d7",
+   "12": "bf5c9ef920aa32d7",
+   "13": "bf5c9ef920aa32d7",
+   "14": "bf5c9ef920aa32d7",
+   "15": "bf5c9ef920aa32d7",
+   "16": "bf5c9ef920aa32d7",
+   "17": "bf5c9ef920aa32d7",
+   "18": "bf5c9ef920aa32d7",
+   "19": "bf5c9ef920aa32d7",
+   "20": "bf5c9ef920aa32d7",
+   "21": "bf5c9ef920aa32d7",
+   "22": "bf5c9ef920aa32d7",
+   "23": "bf5c9ef920aa32d7"
+  },
+  "bin": "1cb76138897a22d2",
+  "env": {
+   "APP_DATA_SEED": 1,
+   "PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "seed_rows": [],
+  "uncaught_tl_autodl": 0,
+  "uncaught_first5": [],
+  "synth_exc": [
+   "[SYNTH-EXC] aget-null: Ljava/lang/NullPointerException; (Attempt to read from null array) method=Lorg/telegram/messenger/AndroidUtilities;.getCertifica",
+   "[SYNTH-EXC] aget-null: Ljava/lang/NullPointerException; (Attempt to read from null array) method=Lorg/telegram/messenger/AndroidUtilities;.getCertifica",
+   "[SYNTH-EXC] aget-null: Ljava/lang/NullPointerException; (Attempt to read from null array) method=Lorg/telegram/messenger/AndroidUtilities;.getCertifica",
+   "[SYNTH-EXC] aget-null: Ljava/lang/NullPointerException; (Attempt to read from null array) method=Lorg/telegram/messenger/AndroidUtilities;.getCertifica",
+   "[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (com.android.billingclient.ktx.BuildConfig) method=Lx4/b;.w pc=3 \u2192 deferred han",
+   "[SYNTH-EXC] STR-BRIDGE (deferred): Ljava/lang/StringIndexOutOfBoundsException; (length=0; begin=1; end=0) method=Lorg/telegram/ui/ActionBar/o6;.Q0 pc=1"
+  ],
+  "frames_rendered": [
+   "25"
+  ],
+  "run_end": [
+   "F-NEW-200 stub-census: 2402745 IMPLEMENTED, 11221 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth i"
+  ]
+ },
+ "dooz_color": {
+  "bin": "8ffd60cae4125ec5",
+  "wall_s": 63.0,
+  "setcolor_rows": 2124,
+  "color_hist": {
+   "ff000000": 1462,
+   "4d000000": 557,
+   "1a000000": 69,
+   "0": 34,
+   "ffff0000": 1,
+   "ff0000ff": 1
+  },
+  "nonblack_first12": [
+   [
+    "2137",
+    "Landroid/graphics/Paint;",
+    "ffff0000"
+   ],
+   [
+    "2793",
+    "Landroid/graphics/Paint;",
+    "ff0000ff"
+   ],
+   [
+    "14833",
+    "Landroid/graphics/Paint;",
+    "0"
+   ],
+   [
+    "14946",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "14946",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "14946",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "15003",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "15003",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "15003",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "14946",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "14946",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ],
+   [
+    "15003",
+    "Landroid/graphics/Paint;",
+    "4d000000"
+   ]
+  ],
+  "nonblack_total": 662
+ }
+}

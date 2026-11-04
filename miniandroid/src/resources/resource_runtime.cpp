@@ -576,20 +576,62 @@ ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
     // Framework style ids (0x0103xxxx) do not resolve through the app ARSC
     // (aapt2 does not embed framework-res) — the walk consults the AOSP
     // public.xml style-id law for the framework theme roots.
-    static const struct { uint32_t id; bool light; } FRAMEWORK_THEMES[] = {
-        {0x01030224u, false},  // Theme.Material            (AOSP public.xml)
-        {0x01030237u, true},   // Theme.Material.Light
-        {0x01030128u, false},  // Theme.DeviceDefault
-        {0x0103012bu, true},   // Theme.DeviceDefault.Light
-        {0x0103006bu, false},  // Theme.Holo
-        {0x0103006eu, true},   // Theme.Holo.Light
+    //
+    // ── S164 D3 (COMPOSITE train): the 6-entry roots table dead-ended on
+    // the NoActionBar/Dialog VARIANTS — dooz v23's Theme.Dooz parent IS
+    // 0x01030241 (Theme.Material.Light.NoActionBar, verified against the
+    // AOSP public.xml table this session) and the unknown id left
+    // flavor=dark → windowBackground #303030 under an app that paints
+    // black-family content (2124 setColor rows, zero white) → the uniform
+    // dark cover. The table now carries the FULL AOSP variant families as
+    // (lo, hi, light) ranges — data straight from
+    // aosp-mirror/platform_frameworks_base core/res/res/values/public.xml:
+    //   Theme.Material        0x01030224..0x01030236  dark
+    //   Theme.Material.Light  0x01030237..0x01030246  light
+    //   Theme.DeviceDefault         0x01030128..0x0103012a  dark
+    //   Theme.DeviceDefault.Light   0x0103012b..0x0103012d  light
+    //   Theme.DeviceDefault.Dialog        0x0103012e..0x01030131  dark
+    //   Theme.DeviceDefault.Light.Dialog  0x01030132..0x01030135  light
+    //   Theme.DeviceDefault.DialogWhenLarge          0x01030136..0x01030137 dark
+    //   Theme.DeviceDefault.Light.DialogWhenLarge    0x01030138..0x01030139 light
+    //   Theme.DeviceDefault (Panel/Wallpaper/InputMethod/DarkActionBar)
+    //                                0x0103013a..0x0103013f mixed → per-id
+    //   Theme.Holo         0x0103006b..0x0103006d  dark
+    //   Theme.Holo.Light   0x0103006e..0x01030076  light (Light.Dialog family)
+    // The name-based "Light" substring law below stays as the catch-all.
+    static const struct { uint32_t lo, hi; bool light; } FRAMEWORK_THEME_RANGES[] = {
+        {0x01030224u, 0x01030236u, false},  // Theme.Material family
+        {0x01030237u, 0x01030246u, true},   // Theme.Material.Light family
+        {0x01030128u, 0x0103012au, false},  // DeviceDefault roots
+        {0x0103012bu, 0x0103012du, true},   // DeviceDefault.Light roots
+        {0x0103012eu, 0x01030131u, false},  // DeviceDefault.Dialog family
+        {0x01030132u, 0x01030135u, true},   // DeviceDefault.Light.Dialog
+        {0x01030136u, 0x01030137u, false},  // DeviceDefault.DialogWhenLarge
+        {0x01030138u, 0x01030139u, true},   // ..Light.DialogWhenLarge
+        {0x0103013cu, 0x0103013du, false},  // DeviceDefault.Wallpaper
+        {0x0103013fu, 0x0103013fu, true},   // DeviceDefault.Light.DarkActionBar
+        {0x0103006bu, 0x0103006du, false},  // Theme.Holo family
+        {0x0103006eu, 0x01030076u, true},   // Theme.Holo.Light family
     };
     uint32_t cur = theme_resid;
     for (int hop = 0; hop < 8 && cur != 0; hop++) {
         bool resolved_framework = false;
-        for (const auto& ft : FRAMEWORK_THEMES) {
-            if (ft.id == cur) { out.flavor = ft.light ? 1 : 0; resolved_framework = true; break; }
+        // S164 D3 diag: the flavor walk's every hop (env-gated) — without
+        // it the dead-end parent id was invisible and the dark default won.
+        static const bool s164_flavor_diag =
+            std::getenv("MINIANDROID_FLAVOR_DIAG") != nullptr;
+        for (const auto& ft : FRAMEWORK_THEME_RANGES) {
+            if (cur >= ft.lo && cur <= ft.hi) {
+                out.flavor = ft.light ? 1 : 0;
+                resolved_framework = true;
+                break;
+            }
         }
+        if (s164_flavor_diag)
+            std::cerr << "[FLAVOR-WALK] hop=" << hop
+                      << " resid=0x" << std::hex << cur << std::dec
+                      << " framework_hit=" << (resolved_framework ? 1 : 0)
+                      << " flavor_so_far=" << out.flavor << std::endl;
         if (resolved_framework) break;
         auto e = arsc_.resolve(cur);
         if (!e) break;

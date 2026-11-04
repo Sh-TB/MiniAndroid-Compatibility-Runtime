@@ -1,0 +1,76 @@
+{
+ "probe_trace_on": {
+  "tag": "probe_trace_on",
+  "trace": true,
+  "perf_ops": true,
+  "wall_s": 62.3,
+  "killed": false,
+  "ops_total_calls": 11658074,
+  "ops_total_ticks": 18307421826,
+  "tpc_avg": 1570.36,
+  "rss_first": 46.6719,
+  "rss_last": 170.0,
+  "rss_grow_mb_s": 1.98,
+  "verdict_timeline": [
+   "DEFAULT_BACKGROUND_ONLY",
+   "DEFAULT_BACKGROUND_ONLY"
+  ],
+  "uncaught": 6,
+  "face": "11a38a5aeeff45a6"
+ },
+ "probe_trace_off": {
+  "tag": "probe_trace_off",
+  "trace": false,
+  "perf_ops": true,
+  "wall_s": 62.3,
+  "killed": false,
+  "ops_total_calls": 11713008,
+  "ops_total_ticks": 18063716916,
+  "tpc_avg": 1542.19,
+  "rss_first": 46.2383,
+  "rss_last": 183.0,
+  "rss_grow_mb_s": 2.195,
+  "verdict_timeline": [],
+  "uncaught": 0,
+  "face": "11a38a5aeeff45a6"
+ },
+ "_lean_gain": 0.5,
+ "longshot_540s": {
+  "tag": "longshot_540s",
+  "trace": true,
+  "perf_ops": false,
+  "wall_s": 161.7,
+  "killed": false,
+  "ops_total_calls": 0,
+  "ops_total_ticks": 0,
+  "tpc_avg": null,
+  "rss_first": 46.5547,
+  "rss_last": 237.0,
+  "rss_grow_mb_s": 1.178,
+  "verdict_timeline": [
+   "DEFAULT_BACKGROUND_ONLY",
+   "DEFAULT_BACKGROUND_ONLY"
+  ],
+  "uncaught": 6,
+  "face": "11a38a5aeeff45a6"
+ },
+ "longshot_config": {
+  "trace": true,
+  "max_seconds": 540
+ },
+ "findings": {
+  "draw_chain_alive": true,
+  "evidence_rows": {
+   "new_game_text_draw_rows": 18429,
+   "dooz_title_draw_rows": 2301,
+   "custom_view_lt4_ondraw": "ops=1468 replayed (view=1547, full-screen 1080x1920)",
+   "final_framebuffer": "2073600/2073600 non-white = uniform dark cover",
+   "screenshot_face": "11a38a5aeeff45a6",
+   "screenshot_visual": "pure black (viewed)"
+  },
+  "render_tree": "3 nodes: Lho (root, full-screen) -> Lt4 (full-screen custom view, 1468 ops incl 'Dooz' + 'New game' text) -> 1x1 View",
+  "verdict": "dooz UI draw chain ALIVE on W5-merged binary; blocker = final composite/capture: uniform dark cover wins over the painted custom-view canvas (same family as the 31ddd4d5 Compose/WindowRoot exclusive frontier)",
+  "w5_behavior_delta": "old binary 908d5ba6 burned CPU 405s (livelock spin, S159); W5-merged 512517269d9634a1 settles at ~160s (clean F-NEW-200 partial-complete) with byte-stable face 11a38a5a \u2014 W5's CHM compute-bypass apparently broke the livelock",
+  "lean_probe": "trace-off gain +0.5% => spin is interpreter-throughput-bound, NOT trace overhead"
+ }
+}

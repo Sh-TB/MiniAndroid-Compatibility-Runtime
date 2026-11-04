@@ -1,0 +1,67 @@
+{
+ "tag": "telegram_90s",
+ "tap": null,
+ "gate_ms": null,
+ "wall_s": 31.3,
+ "process_killed": false,
+ "verdict": "REAL_APP_CONTENT",
+ "gate_rows": 0,
+ "gate_hit": false,
+ "artifact_reset": false,
+ "f117_down": [],
+ "ui_touch": [],
+ "click_rows": 0,
+ "click_dispatched": 0,
+ "perform_click": 0,
+ "uncaught": 6,
+ "face_screenshot": "bf5c9ef920aa32d7",
+ "frame_faces": {
+  "0": "bf5c9ef920aa32d7",
+  "1": "bf5c9ef920aa32d7",
+  "2": "bf5c9ef920aa32d7",
+  "3": "bf5c9ef920aa32d7",
+  "4": "bf5c9ef920aa32d7",
+  "5": "bf5c9ef920aa32d7",
+  "6": "bf5c9ef920aa32d7",
+  "7": "bf5c9ef920aa32d7"
+ },
+ "apk_sha16": "e37aced2a49c1dbb",
+ "verdict_timeline": [
+  "REAL_APP_CONTENT",
+  "REAL_APP_CONTENT"
+ ],
+ "uncaught_first3": [
+  "UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ll9/j; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY] [FRONTIER]",
+  "UNCAUGHT-TOP] [EXC-UNWIND] Ll9/j; unwound Lg9/g;.<init> invoke_pc=0x7b depth=5 [FRONTIER]",
+  "UNCAUGHT-TOP] [EXC-UNWIND] Ll9/j; unwound Lcom/google/firebase/provider/FirebaseInitProvider;.onCreate invoke_pc=0x4 depth=2 [FRONTIER]"
+ ],
+ "rec_miss_total": 400,
+ "rec_miss_first3": [
+  "REC-MISS] Landroid/content/ContentProvider;.<init> caller=Landroidx/core/content/FileProvider;.<init>",
+  "REC-MISS] Landroid/content/ContentProvider;.attachInfo caller=Landroidx/core/content/FileProvider;.attachInfo",
+  "REC-MISS] Landroid/content/ContentProvider;.<init> caller=Lorg/telegram/messenger/NotificationImageProvider;.<init>"
+ ],
+ "last_console_lines": [
+  "API Calls: 0",
+  "Frames Rendered: 9",
+  "Execution Time: 0ms",
+  "Errors: 4",
+  "Warnings: 1",
+  "",
+  "Screenshot: /home/z/my-project/run_s163_telegram/telegram_90s/screenshot.png",
+  "Report: /home/z/my-project/run_s163_telegram/telegram_90s/report.md"
+ ],
+ "findings": {
+  "apk": "telegram_official.apk sha16 e37aced2a49c1dbb = Telegram 12.10.5 (vc71059), package org.telegram.messenger.web",
+  "install": "SUCCESS (staged-generation F-NEW-376), 7 manifest providers: 6 installed attachInfo+onCreate OK, 1 honest skip (car.app absent from DEX)",
+  "lifecycle": "TelegramApplication attachBaseContext re-dispatch; LaunchActivity.onStart ok=1 (1068 instr) + onResume ok=1 (1153 instr) via DEX engine",
+  "surface": "real Telegram view tree (ActionBar/w, Components/mw0, ActionBar/c4 full-screen) + TextView 'Disable'; verdict REAL_APP_CONTENT; 9 frames",
+  "blockers": [
+   "Ll9/j; (Firebase init family) x12: FirebaseInitProvider.onCreate chain -> in-flight uncaught (F-016 honesty rows)",
+   "NPE iget-null-recv on TLRPC$TL_autoDownloadSettings.audio_preload_next (null receiver, no server config, no default seed) x4 -> uncaught at LaunchActivity.onCreate invoke_pc=1375 -> ART process-death law -> clean early end at 31.3s of 90s budget",
+   "custom Telegram views dispatch onDraw but ops=0 (unrendered custom view RECORDED not painted) \u2014 same paint-gap family as dooz Lt4/31ddd4d5"
+  ],
+  "verdict": "FIRST TELEGRAM RUN ON THIS VM: launches, real lifecycle, real view tree, REAL_APP_CONTENT; main chat UI blocked by the two named chains above",
+  "next_lever": "default-seed TL_autoDownloadSettings path (app-data seed law) + Firebase provider platform-skip; then the custom-view paint gap"
+ }
+}

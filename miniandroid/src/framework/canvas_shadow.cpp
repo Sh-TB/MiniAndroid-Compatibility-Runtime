@@ -1206,9 +1206,14 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
             // CONT-37 diag (bounded): which objects receive setColor and
             // with what color — the Layout.draw text law resolves the op
             // color from THIS map; a missed setColor = black-on-black text.
+            // S164 D3-diag: MINIANDROID_SETCOLOR_TRACE=1 raises the cap to
+            // 200000 (the 60-row cap hid the real color history behind it).
             {
                 static thread_local uint64_t sc_n = 0;
-                if (sc_n++ < 60)
+                static const uint64_t sc_cap =
+                    std::getenv("MINIANDROID_SETCOLOR_TRACE") ? 200000ULL
+                                                              : 60ULL;
+                if (sc_n++ < sc_cap)
                     std::cerr << "[F298-SETCOLOR] recv=" << recv
                               << " cls=" << cls
                               << " color=0x" << std::hex

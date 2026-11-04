@@ -1,0 +1,84 @@
+{
+ "etar_calendar": {
+  "tag": "etar_calendar",
+  "tap": null,
+  "gate_ms": null,
+  "wall_s": 35.2,
+  "process_killed": false,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "gate_rows": 0,
+  "gate_hit": false,
+  "artifact_reset": false,
+  "f117_down": [],
+  "ui_touch": [],
+  "click_rows": 0,
+  "click_dispatched": 0,
+  "perform_click": 0,
+  "uncaught": 19,
+  "face_screenshot": "b270ff040b3601dc",
+  "frame_faces": {
+   "0": "b270ff040b3601dc",
+   "1": "b270ff040b3601dc",
+   "2": "b270ff040b3601dc",
+   "3": "b270ff040b3601dc",
+   "4": "b270ff040b3601dc",
+   "5": "b270ff040b3601dc",
+   "6": "b270ff040b3601dc",
+   "7": "b270ff040b3601dc",
+   "8": "b270ff040b3601dc",
+   "9": "b270ff040b3601dc",
+   "10": "b270ff040b3601dc",
+   "11": "b270ff040b3601dc"
+  },
+  "exp092_render_nodes": 26,
+  "uncaught_first": "UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalArgumentException; unwound Lcom/android/calendar/alerts/AlertService;.createChannels invoke_pc=0xe dept",
+  "verdict_timeline": [
+   "DEFAULT_BACKGROUND_ONLY",
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "secuso_todolist": {
+  "tag": "secuso_todolist",
+  "tap": null,
+  "gate_ms": null,
+  "wall_s": 4.9,
+  "process_killed": false,
+  "verdict": "REAL_APP_CONTENT",
+  "gate_rows": 0,
+  "gate_hit": false,
+  "artifact_reset": false,
+  "f117_down": [],
+  "ui_touch": [],
+  "click_rows": 0,
+  "click_dispatched": 0,
+  "perform_click": 0,
+  "uncaught": 19,
+  "face_screenshot": "3fc9fd9120d6a14f",
+  "frame_faces": {
+   "0": "82b2297028669ddd",
+   "1": "3fc9fd9120d6a14f",
+   "2": "3fc9fd9120d6a14f",
+   "3": "3fc9fd9120d6a14f",
+   "4": "3fc9fd9120d6a14f",
+   "5": "3fc9fd9120d6a14f",
+   "6": "3fc9fd9120d6a14f",
+   "7": "3fc9fd9120d6a14f",
+   "8": "3fc9fd9120d6a14f",
+   "9": "3fc9fd9120d6a14f",
+   "10": "3fc9fd9120d6a14f",
+   "11": "3fc9fd9120d6a14f"
+  },
+  "exp092_render_nodes": 144,
+  "uncaught_first": "UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lcom/google/android/material/navigation/NavigationView;.<init> invoke_pc=0xf2 de",
+  "verdict_timeline": [
+   "REAL_APP_CONTENT",
+   "REAL_APP_CONTENT"
+  ]
+ },
+ "_meta": {
+  "binary": "miniandroid",
+  "binary_sha16": "512517269d9634a1",
+  "protocol": "s154 harness reuse, no-tap launch rows, 30s/12 frames",
+  "law": "claims untested = zero value; these are tested rows"
+ }
+}
