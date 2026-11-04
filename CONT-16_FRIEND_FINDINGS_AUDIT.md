@@ -92,3 +92,13 @@ Provenance: the sandbox recycle auto-commit (`303ad5b1`, UUID message) swept up 
 | **#484 / #472 / #403** | tracker/ledger/case-file updates only, no new artifacts | nothing to test |
 
 Budget note: this session = dooz 40% (overlay gates + long probe) + 20% coder sweep; no ready-made lever remains untested for the dooz spin on this VM — the residual paths are the bounded-heap/no-GC structural fix and cross-VM (pinned) operation.
+
+## 9. S160 — AWAIT-UP GATE regression debt CLOSED (2026-11-04)
+
+| Case | Result on standing binary 908d5ba6 | Status |
+|---|---|---|
+| **E1 dooz board tap, gate ON** | gate row fired (`scoped render window reached in Lbw0;.d`), artifact reset, **DOWN+UP both DISPATCHED+consumed**, post-tap face movement, uncaught==6 baseline | **law re-confirmed** after the S157-B surgeries (tap path + gate intact across binary generations a793f134 -> 908d5ba6) |
+| **E4 diary tap (fast-path guard)** | REAL_APP_CONTENT, click dispatched, wall 4.4s, gate silent | PASS (gate arms ONLY in the pressed-render path) |
+| **E3 transistor tap** | face `5436cf81605f1c2d` == S151 pin full-16, uncaught 16, gate rows 0, tap face pre==post | **byte-reproduces the S154 E3 row** (cross-binary determinism). Honesty note: the S154 commit message said "UP delivered" but its own row + this run both record up_dispatched_consumed=false — ledger = rows, not messages |
+
+The gate law moves to VALIDATED + REGRESSION-PROVEN. Next exclusive frontier unblocked: the IME harness law (Simple Keyboard v145: explicit input-view inflation, no IMMS).
