@@ -1,0 +1,30 @@
+{
+ "issue": 459,
+ "law": "docs/LAW_IME_HARNESS.md",
+ "apk": {
+  "path": "upload/ime_probe/rkr.simplekeyboard.inputmethod_145.apk",
+  "sha256_prefix": "d83060833dc2bc9705e1",
+  "bytes": 662274,
+  "coder2_pin_match": true
+ },
+ "repro": {
+  "binary": "512517269d9634a1 (W5-merged main)",
+  "face": "31ddd4d5b8e6d18e",
+  "face_matches_coder2_pin": true,
+  "exp092_render_nodes": 0,
+  "warnings": 5
+ },
+ "manifest_facts": {
+  "main_activity": "rkr.simplekeyboard.inputmethod.latin.settings.SettingsActivity (PreferenceActivity subclass, framework STUB -> REC-MISS, nothing inflates)",
+  "ime_service": "rkr.simplekeyboard.inputmethod.latin.LatinIME (action android.view.InputMethod, BIND_INPUT_METHOD)",
+  "receiver": "rkr.simplekeyboard.inputmethod.latin.SystemBroadcastReceiver"
+ },
+ "engine_gap": "no service-launch path, no InputMethodService lifecycle machinery (onCreateInputView/onCreateCandidatesView/onStartInputView never called by anything); only getSystemService(INPUT_METHOD_SERVICE) name mapping exists",
+ "decision": "Option 1+3 hybrid: runtime-side IME harness is MY lane (engine machinery); Coder-2 1-EditText probe APK = phase-2 host; registry stays HARNESS_REQUIRED until the harness lands",
+ "pre_harness_pin": "31ddd4d5b8e6d18e",
+ "success_criteria": [
+  "face changes to keyboard content (keys visible, >0 non-white px lower half)",
+  "[IME-HARNESS] rows for every harness-driven call (T61 no-masquerade)",
+  "anchor wall byte-exact (harness arms ONLY for IME packages)"
+ ]
+}

@@ -110,3 +110,10 @@ The gate law moves to VALIDATED + REGRESSION-PROVEN. Next exclusive frontier unb
 | **#514 W5-only delta (Coder-4) — MERGE** | S158 تایید + this session: `git apply --check` CLEAN on main, applied (dalvik_engine.cpp + android_shadows.cpp), full -O2 build (`512517269d9634a1`), Gate B dooz face `11a38a5a` byte-inert, Gate E microtimer full-pin + g2048 delta-inert, Gate C CB stderr normalized A/B IDENTICAL (norm rule `RSS=… MB` added — gap found by the diff sample being RSS-only) | **MERGED INTO MAIN — merge-gate POSITIVE** (coder-credited: Coder-4 #514) |
 | **#516 S141b (Coder-3 re-derivation + frame-112 extension)** | achievements recorded with recipes; STILL no patch/binary in the issues (their sandbox lost the tree; re-derived into THEIR worktree only); my main lacks S141-PROBE/CallVoidMethodV | **not verifiable here** — coder-attested; batteries pre-priced ~100s for the day the diff arrives |
 | **#492 / #472 / #484** | dashboard/ledger/tracker refreshes, no artifacts | nothing to test |
+
+## 11. S162 — IME HARNESS LAW (my lane) + #459 answered (2026-11-04)
+
+| Item | What I actually ran | Verdict |
+|---|---|---|
+| **Coder-2 #459 (Simple Keyboard v145, IME white frame)** | re-fetched the pinned APK (sha256 match), reproduced byte-exact on W5-merged main (face `31ddd4d5b8e6d18e`, 0 EXP092-RENDER nodes), diagnosed from the manifest + run log: SettingsActivity = framework-stub dead end; LatinIME IME service NEVER launched (no service path, no InputMethodService machinery in the engine) | **their finding CONFIRMED**; root cause = runtime gap, my lane |
+| **Harness decision** | law written (docs/LAW_IME_HARNESS.md): manifest-level IME detection -> no-IMMS lifecycle drive -> attach input view to render root -> [IME-HARNESS] logging (T61) -> face/success criteria; decision comment posted to #459 (6632756338) | runtime-side harness = MINE; their 1-EditText probe = phase-2 host; registry honest `HARNESS_REQUIRED` |
