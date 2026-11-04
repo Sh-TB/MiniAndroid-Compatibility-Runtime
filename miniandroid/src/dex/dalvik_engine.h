@@ -954,7 +954,13 @@ struct StackFrame {
 struct HeapObject {
     uint32_t object_id = 0;
     std::string class_descriptor;   // Landroid/widget/TextView;
-    std::string readable_class;     // android.widget.TextView
+    // S166-Z3 (CONT-42 train): the per-object readable_class member is GONE.
+    // Census 2026-11-05: its ONLY consumer was to_json() (heap report) — every
+    // other `readable_class` in the tree belongs to the ClassResolution Trace
+    // struct (class_resolver.h:32 / dex_interpreter_batch.h:199). Removing the
+    // member kills one string transform (substr alloc) AND one heap string
+    // (~64B for app-class names) PER ALLOCATION; to_json() derives it
+    // on demand, so the report content is byte-identical.
     
     bool initialized = false;
     uint64_t creation_sequence = 0;
@@ -979,7 +985,7 @@ struct HeapObject {
     HeapObject(uint32_t id, const std::string& desc, uint64_t seq, uint32_t pc, uint32_t frame)
         : object_id(id), class_descriptor(desc), creation_sequence(seq), 
           creator_pc(pc), creator_frame_id(frame) {
-        readable_class = descriptor_to_readable(desc);
+        // S166-Z3: readable_class derived on demand in to_json() only.
     }
     
     void set_field(const std::string& name, const DalvikValue& value) {
@@ -1035,7 +1041,7 @@ struct HeapObject {
         json obj;
         obj["object_id"] = object_id;
         obj["class_descriptor"] = class_descriptor;
-        obj["readable_class"] = readable_class;
+        obj["readable_class"] = descriptor_to_readable(class_descriptor);
         obj["initialized"] = initialized;
         obj["creation_sequence"] = creation_sequence;
         obj["creator_pc"] = creator_pc;
@@ -1141,19 +1147,28 @@ public:
         // ~256 B; uncapped, 10 M allocations would consume 2.5 GB. With cap=1000
         // we keep the last 1 000 allocations (~256 KB) — enough for diagnostic
         // purposes.
-        if (allocation_log_cap_ > 0 &&
-            allocation_log_.size() >= allocation_log_cap_) {
-            // nlohmann::json::array() uses a vector internally; erase from
-            // the front is O(N) but N=1000 is trivial.
-            allocation_log_.erase(allocation_log_.begin());
+        //
+        // S166-Z1 (CONT-42 train): the log is WRITE-ONLY — read-back census
+        // 2026-11-05: get_allocation_log() has ZERO callers in src/ and
+        // heap.dump() (the only report path) returns the object array, never
+        // the log. Every allocate() paid a 4-entry nlohmann json build
+        // (~5 heap allocations) plus an O(cap) vector erase — 5.5M dead json
+        // builds per dooz 60s window (R-NEW-555 census). Default OFF;
+        // MINIANDROID_ALLOC_LOG=1 restores the historical diagnostic exactly.
+        if (allocation_log_cap_ > 0 && alloc_log_enabled()) {
+            if (allocation_log_.size() >= allocation_log_cap_) {
+                // nlohmann::json::array() uses a vector internally; erase from
+                // the front is O(N) but N=1000 is trivial.
+                allocation_log_.erase(allocation_log_.begin());
+            }
+            allocation_log_.push_back({
+                {"object_id", oid},
+                {"class", class_desc},
+                {"pc", pc},
+                {"frame_id", frame_id},
+                {"sequence", seq}
+            });
         }
-        allocation_log_.push_back({
-            {"object_id", oid},
-            {"class", class_desc},
-            {"pc", pc},
-            {"frame_id", frame_id},
-            {"sequence", seq}
-        });
         
         return oid;
     }
@@ -1188,6 +1203,12 @@ public:
     // cached-branch load per allocation, zero map work.
     static bool heap_census_enabled() {
         static const bool on = std::getenv("MINIANDROID_HEAP_CENSUS") != nullptr;
+        return on;
+    }
+    // S166-Z1: allocation-log opt-in (default OFF — the log is a write-only
+    // diagnostic; MINIANDROID_ALLOC_LOG=1 restores it exactly).
+    static bool alloc_log_enabled() {
+        static const bool on = std::getenv("MINIANDROID_ALLOC_LOG") != nullptr;
         return on;
     }
     void note_alloc_class(const std::string& class_desc) {

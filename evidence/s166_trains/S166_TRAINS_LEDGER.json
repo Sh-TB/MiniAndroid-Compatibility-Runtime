@@ -1,0 +1,1217 @@
+{
+ "z1_ctl": {
+  "tag": "z1_ctl",
+  "bin": "770206f2d976d997",
+  "env": {},
+  "wall_s": 161.2,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 249.0,
+  "rss_final_mb": 249.0,
+  "rss_grow_mb_s": 1.539,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z1_fix": {
+  "tag": "z1_fix",
+  "bin": "20543b61b2debce3",
+  "env": {},
+  "wall_s": 157.1,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 251.0,
+  "rss_final_mb": 249.1,
+  "rss_grow_mb_s": 1.584,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z1_summary": {
+  "wall": "161.2 -> 157.1",
+  "wall_delta_pct": -2.5,
+  "rss_peak": "249.0 -> 251.0",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z1_ctl2": {
+  "tag": "z1_ctl2",
+  "bin": "770206f2d976d997",
+  "env": {},
+  "wall_s": 161.6,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 248.8,
+  "rss_final_mb": 238.4,
+  "rss_grow_mb_s": 1.47,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z1_fix2": {
+  "tag": "z1_fix2",
+  "bin": "20543b61b2debce3",
+  "env": {},
+  "wall_s": 151.1,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 249.2,
+  "rss_final_mb": 249.2,
+  "rss_grow_mb_s": 1.648,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z1_summary2": {
+  "wall": "161.6 -> 151.1",
+  "wall_delta_pct": -6.5,
+  "rss_peak": "248.8 -> 249.2",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "g4_ctl_d3": {
+  "tag": "g4_ctl_d3",
+  "bin": "770206f2d976d997",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 37.0,
+  "rc": 0,
+  "rss_peak_mb": 617.9,
+  "rss_final_mb": 617.9,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g4_fix_new": {
+  "tag": "g4_fix_new",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 33.7,
+  "rc": 0,
+  "rss_peak_mb": 664.6,
+  "rss_final_mb": 664.6,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g4_ctl2_d3": {
+  "tag": "g4_ctl2_d3",
+  "bin": "770206f2d976d997",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 35.2,
+  "rc": 0,
+  "rss_peak_mb": 665.7,
+  "rss_final_mb": 665.7,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g4_fix2_new": {
+  "tag": "g4_fix2_new",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 32.8,
+  "rc": 0,
+  "rss_peak_mb": 582.7,
+  "rss_final_mb": 582.7,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g1_arena1": {
+  "tag": "g1_arena1",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "MALLOC_ARENA_MAX": "1"
+  },
+  "wall_s": 32.7,
+  "rc": 0,
+  "rss_peak_mb": 571.9,
+  "rss_final_mb": 571.9,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g1_arena2": {
+  "tag": "g1_arena2",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "MALLOC_ARENA_MAX": "1"
+  },
+  "wall_s": 28.6,
+  "rc": 0,
+  "rss_peak_mb": 569.9,
+  "rss_final_mb": 569.9,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g2_mmap1": {
+  "tag": "g2_mmap1",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "MALLOC_ARENA_MAX": "1",
+   "MALLOC_MMAP_THRESHOLD_": "65536"
+  },
+  "wall_s": 28.7,
+  "rc": 0,
+  "rss_peak_mb": 578.3,
+  "rss_final_mb": 553.4,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g2_mmap2": {
+  "tag": "g2_mmap2",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "MALLOC_ARENA_MAX": "1",
+   "MALLOC_MMAP_THRESHOLD_": "65536"
+  },
+  "wall_s": 28.4,
+  "rc": 0,
+  "rss_peak_mb": 577.7,
+  "rss_final_mb": 492.6,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g3_jem1": {
+  "tag": "g3_jem1",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 24.2,
+  "rc": 0,
+  "rss_peak_mb": 543.8,
+  "rss_final_mb": 523.3,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g3_jem2": {
+  "tag": "g3_jem2",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 24.9,
+  "rc": 0,
+  "rss_peak_mb": 588.3,
+  "rss_final_mb": 588.3,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g5_skip1": {
+  "tag": "g5_skip1",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider,InitializationProvider,GooglePushListenerServiceProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 26.8,
+  "rc": 0,
+  "rss_peak_mb": 545.9,
+  "rss_final_mb": 510.4,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g5_skip2": {
+  "tag": "g5_skip2",
+  "bin": "20543b61b2debce3",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider,InitializationProvider,GooglePushListenerServiceProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 26.3,
+  "rc": 0,
+  "rss_peak_mb": 580.8,
+  "rss_final_mb": 509.6,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "z3_ctl": {
+  "tag": "z3_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 147.7,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 238.9,
+  "rss_final_mb": 236.7,
+  "rss_grow_mb_s": 1.6,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z3_fix": {
+  "tag": "z3_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 145.0,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.0,
+  "rss_final_mb": 236.6,
+  "rss_grow_mb_s": 1.63,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z3_summary": {
+  "wall": "147.7 -> 145.0",
+  "wall_delta_pct": -1.8,
+  "rss_peak": "238.9 -> 239.0",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z3b_ctl": {
+  "tag": "z3b_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 158.5,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.0,
+  "rss_final_mb": 236.8,
+  "rss_grow_mb_s": 1.489,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z3b_fix": {
+  "tag": "z3b_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 151.1,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.2,
+  "rss_final_mb": 239.2,
+  "rss_grow_mb_s": 1.582,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z3b_summary": {
+  "wall": "158.5 -> 151.1",
+  "wall_delta_pct": -4.7,
+  "rss_peak": "239.0 -> 239.2",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "g6_desc1": {
+  "tag": "g6_desc1",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 23.4,
+  "rc": 0,
+  "rss_peak_mb": 593.3,
+  "rss_final_mb": 516.0,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g6_desc2": {
+  "tag": "g6_desc2",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 27.0,
+  "rc": 0,
+  "rss_peak_mb": 594.5,
+  "rss_final_mb": 521.1,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "z2a_ctl": {
+  "tag": "z2a_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 149.2,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.2,
+  "rss_final_mb": 237.0,
+  "rss_grow_mb_s": 1.584,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z2a_fix": {
+  "tag": "z2a_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 133.1,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 271.5,
+  "rss_final_mb": 242.4,
+  "rss_grow_mb_s": 1.821,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z2a_summary": {
+  "wall": "149.2 -> 133.1",
+  "wall_delta_pct": -10.8,
+  "rss_peak": "239.2 -> 271.5",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z2b_ctl": {
+  "tag": "z2b_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 145.6,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 238.8,
+  "rss_final_mb": 238.8,
+  "rss_grow_mb_s": 1.639,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z2b_fix": {
+  "tag": "z2b_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 135.2,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 243.3,
+  "rss_final_mb": 235.3,
+  "rss_grow_mb_s": 1.738,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z2b_summary": {
+  "wall": "145.6 -> 135.2",
+  "wall_delta_pct": -7.1,
+  "rss_peak": "238.8 -> 243.3",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z4perf_ctl": {
+  "tag": "z4perf_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 130.4,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 246.9,
+  "rss_final_mb": 160.1,
+  "rss_grow_mb_s": 1.224,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z4perf_fix": {
+  "tag": "z4perf_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 130.6,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 244.9,
+  "rss_final_mb": 244.9,
+  "rss_grow_mb_s": 1.874,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z4perf_summary": {
+  "wall": "130.4 -> 130.6",
+  "wall_delta_pct": 0.2,
+  "rss_peak": "246.9 -> 244.9",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "g7_perf": {
+  "tag": "g7_perf",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 27.3,
+  "rc": 0,
+  "rss_peak_mb": 589.4,
+  "rss_final_mb": 382.6,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g7_perf2": {
+  "tag": "g7_perf2",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MINIANDROID_PERF_PHASES": "1"
+  },
+  "wall_s": 29.8,
+  "rc": 0,
+  "rss_peak_mb": 540.2,
+  "rss_final_mb": 515.8,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "z5a_ctl": {
+  "tag": "z5a_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 158.0,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.0,
+  "rss_final_mb": 236.4,
+  "rss_grow_mb_s": 1.491,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z5a_fix": {
+  "tag": "z5a_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 135.7,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 236.3,
+  "rss_final_mb": 107.7,
+  "rss_grow_mb_s": 0.792,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z5a_summary": {
+  "wall": "158.0 -> 135.7",
+  "wall_delta_pct": -14.1,
+  "rss_peak": "239.0 -> 236.3",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z5b_ctl": {
+  "tag": "z5b_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 147.3,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 238.9,
+  "rss_final_mb": 238.9,
+  "rss_grow_mb_s": 1.62,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z5b_fix": {
+  "tag": "z5b_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 135.7,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 236.0,
+  "rss_final_mb": 187.1,
+  "rss_grow_mb_s": 1.379,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z5b_summary": {
+  "wall": "147.3 -> 135.7",
+  "wall_delta_pct": -7.9,
+  "rss_peak": "238.9 -> 236.0",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "g8_decay1": {
+  "tag": "g8_decay1",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 25.9,
+  "rc": 0,
+  "rss_peak_mb": 523.2,
+  "rss_final_mb": 319.9,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g8_decay2": {
+  "tag": "g8_decay2",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 26.1,
+  "rc": 0,
+  "rss_peak_mb": 523.5,
+  "rss_final_mb": 257.2,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g9_decay100a": {
+  "tag": "g9_decay100a",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:100,muzzy_decay_ms:100"
+  },
+  "wall_s": 25.3,
+  "rc": 0,
+  "rss_peak_mb": 570.5,
+  "rss_final_mb": 570.5,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g9_decay100b": {
+  "tag": "g9_decay100b",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:100,muzzy_decay_ms:100"
+  },
+  "wall_s": 27.6,
+  "rc": 0,
+  "rss_peak_mb": 526.3,
+  "rss_final_mb": 526.3,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "z6_census": {
+  "tag": "z6_census",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0",
+   "MINIANDROID_HEAP_CENSUS": "1"
+  },
+  "wall_s": 137.3,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 235.5,
+  "rss_final_mb": 180.2,
+  "rss_grow_mb_s": 1.308,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z7a_ctl": {
+  "tag": "z7a_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 144.8,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 238.9,
+  "rss_final_mb": 238.1,
+  "rss_grow_mb_s": 1.643,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z7a_fix": {
+  "tag": "z7a_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0,narenas:1"
+  },
+  "wall_s": 136.7,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 231.7,
+  "rss_final_mb": 65.7,
+  "rss_grow_mb_s": 0.477,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z7a_summary": {
+  "wall": "144.8 -> 136.7",
+  "wall_delta_pct": -5.6,
+  "rss_peak": "238.9 -> 231.7",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z7b_ctl": {
+  "tag": "z7b_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 158.5,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.0,
+  "rss_final_mb": 236.9,
+  "rss_grow_mb_s": 1.492,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z7b_fix": {
+  "tag": "z7b_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0,narenas:1"
+  },
+  "wall_s": 149.6,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 231.8,
+  "rss_final_mb": 176.6,
+  "rss_grow_mb_s": 1.178,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z7b_summary": {
+  "wall": "158.5 -> 149.6",
+  "wall_delta_pct": -5.6,
+  "rss_peak": "239.0 -> 231.8",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z8a_ctl": {
+  "tag": "z8a_ctl",
+  "bin": "e72cda6e137ffb76",
+  "env": {},
+  "wall_s": 147.2,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 239.1,
+  "rss_final_mb": 237.0,
+  "rss_grow_mb_s": 1.607,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z8a_fix": {
+  "tag": "z8a_fix",
+  "bin": "e72cda6e137ffb76",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 148.5,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 235.6,
+  "rss_final_mb": 103.0,
+  "rss_grow_mb_s": 0.692,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z8a_summary": {
+  "wall": "147.2 -> 148.5",
+  "wall_delta_pct": 0.9,
+  "rss_peak": "239.1 -> 235.6",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "z8b_ctl": {
+  "tag": "z8b_ctl",
+  "bin": "e72cda6e137ffb76",
+  "env": {},
+  "wall_s": 155.8,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 252.9,
+  "rss_final_mb": 252.9,
+  "rss_grow_mb_s": 1.619,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z9_final1": {
+  "tag": "z9_final1",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 161.3,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 236.4,
+  "rss_final_mb": 165.6,
+  "rss_grow_mb_s": 1.023,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "z9_final2": {
+  "tag": "z9_final2",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 138.6,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 235.2,
+  "rss_final_mb": 186.5,
+  "rss_grow_mb_s": 1.345,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "g10_ctl": {
+  "tag": "g10_ctl",
+  "bin": "770206f2d976d997",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 33.5,
+  "rc": 0,
+  "rss_peak_mb": 599.7,
+  "rss_final_mb": 599.7,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g10_fix": {
+  "tag": "g10_fix",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider",
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2",
+   "MALLOC_CONF": "dirty_decay_ms:0,muzzy_decay_ms:0"
+  },
+  "wall_s": 29.9,
+  "rc": 0,
+  "rss_peak_mb": 527.6,
+  "rss_final_mb": 428.8,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "g10_summary": {
+  "wall": "33.5 -> 29.9",
+  "wall_delta_pct": -10.7,
+  "rss_peak": "599.7 -> 527.6",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}

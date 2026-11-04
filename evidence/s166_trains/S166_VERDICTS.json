@@ -1,0 +1,43 @@
+{
+  "campaign": "S166 — 20-train round 2 (10 dooz + 10 Telegram), user directive «ادامه ۲۰ قطار»",
+  "theme": "programs load FASTER and run LIGHTER",
+  "method_law": "every train = ONE change -> back-to-back A/B (S156 machine-state law: only same-window pairs are valid) -> APPROVED/REJECTED -> ledger",
+  "final_dooz_stack": {
+    "binary": "2a5464c2bf15f9ec (Z1 alloc-log gate + Z3 readable_class on-demand; Z8 memo reverted, build reproduces 2a5464c2)",
+    "env": "LD_PRELOAD=libjemalloc.so.2 MALLOC_CONF=dirty_decay_ms:0,muzzy_decay_ms:0",
+    "settle": "133.1-138.6s comparable windows vs S165 family 155.9-161.7 (~-13%); S156 machine-state caveat recorded (same stack: 135.7 fast window vs 161.3 slow window)",
+    "rss": "peak ~235MB (from 249); final at exit 65.7-187.1MB (from 235-249); growth rate halved in fast windows",
+    "anchors": "Z10 GATES PASS: microtimer full-pin bbd350b6c14fbd52, g2048 delta-inert, opencalc 63020bc7334048fe both arms, dooz face 11a38a5aeeff45a6 env-off byte-stable"
+  },
+  "final_telegram_stack": {
+    "binary": "2a5464c2bf15f9ec (same engine law)",
+    "env": "seed+skip (S165) + LD_PRELOAD=libjemalloc.so.2 + MALLOC_CONF=dirty_decay_ms:0,muzzy_decay_ms:0",
+    "boot_wall": "window-fair pair 33.5->29.9s (-10.7%); best-window -14% (G3 vs G2 24.2/24.9 vs 28.4-28.7)",
+    "rss": "peak 599.7->527.6MB same-window (-12%); exit 599.7->428.8MB (-28.5%); best rows 257.2MB (-57% vs 599.7)",
+    "behavior": "app_owned_pixels 2161 byte-identical, api_calls 9773 identical, uncaught 0==0, REAL_APP_CONTENT, 9 frames — every train"
+  },
+  "trains": {
+    "Z1": {"change": "allocation-log default-off (env MINIANDROID_ALLOC_LOG=1 restores; read-back census: get_allocation_log() ZERO callers, heap.dump() never includes it — write-only per-alloc 4-entry json build + O(cap) erase, 5.5M dead builds per dooz 60s window)", "verdict": "APPROVED", "evidence": "dooz 2/2 pairs wall faster (161.2->157.1, 161.6->151.1, median -4.5%), face byte-identical, uncaught 6, f298 150; TG -7.9% wall (G4 rows)"},
+    "Z2": {"change": "jemalloc 5.3.0 LD_PRELOAD on dooz (S158 rejected it for the RSS-GROWTH target on the old binary; settle target re-priced it)", "verdict": "APPROVED", "evidence": "settle median 134.15 vs 151.1 (-11.2%), both runs below every same-day control, face identical"},
+    "Z3": {"change": "HeapObject.readable_class member removed; derived on demand in to_json() (census: only consumer was to_json; other readable_class sites are the ClassResolution Trace struct)", "verdict": "APPROVED", "evidence": "dooz RSS peak -4% (3/3 tight band 238.9-239.2 vs 249.0-251.0), wall -1.9% within noise; TG neutral (G6 rows) — patch kept via dooz win"},
+    "Z4": {"change": "PERF-OPS census on dooz (measurement)", "verdict": "LANDED", "evidence": "op 0x54 = 29.4% tick share (10.86M calls tpc 1186.8); 0x62 tpc 3413.8 anomaly; iget key already memo-banked (s134_fkey) — no per-access getenv (diag_env cached)"},
+    "Z5": {"change": "MALLOC_CONF=dirty_decay_ms:0,muzzy_decay_ms:0 on dooz", "verdict": "APPROVED", "evidence": "wall flat (135.7==135.7); peak -3..-7MB tight 236; final -55..-128MB (107.7/187.1 vs 242/235); growth halved run1"},
+    "Z6": {"change": "HEAP-CENSUS on dooz (measurement)", "verdict": "LANDED", "evidence": "live_objects==alloc_total 46,741 @64M insn = ZERO reclaim (no-GC law quantified); RSS dominated by non-object structures; top allocators Lmb1;/Ln;/Ly9;/BlendModeColorFilter; leak ~800 obj/M-insn"},
+    "Z7": {"change": "narenas:1 on dooz", "verdict": "REJECTED", "evidence": "peak -1.9% not worth wall +5.5% median; single-arena lock risk on 2 cores; reverted (env-only)"},
+    "Z8": {"change": "normalize_class_desc bounded thread_local memo (source)", "verdict": "REJECTED", "evidence": "no benefit measured (147.2-155.8 vs family 135.7-158.5 in a drift-degraded window); reverted; deterministic rebuild reproduces 2a5464c2 — S157 rip string family is evidently not normalize-bound"},
+    "Z9": {"change": "final-stack settle verification", "verdict": "LANDED", "evidence": "138.6s (recovered window) / 161.3s (slow window — S156 machine-state law live-reproduced same binary+env), face byte-stable, peak 235-236MB"},
+    "Z10": {"change": "anchor-family gate on final binary", "verdict": "PASS", "evidence": "S166_Z10_GATES.json; first run fake-DRIFT caught (anchor APKs moved by recycle -> face=None both arms = None!=None artifact, S165 lesson inverse); paths re-censored, real PASS recorded"},
+    "G1": {"change": "MALLOC_ARENA_MAX=1 on Telegram (glibc era)", "verdict": "APPROVED", "evidence": "wall median 30.65 vs 33.25 (-7.8%), RSS peak median 570.9 vs 623.7 (-8.5%, tight band), behavior identical"},
+    "G2": {"change": "stack + MALLOC_MMAP_THRESHOLD_=65536", "verdict": "APPROVED then SUPERSEDED by G3", "evidence": "wall flat vs G1 (28.4-28.7 == 28.6); final RSS -13% median (mmap return law); glibc knobs moot under jemalloc"},
+    "G3": {"change": "jemalloc LD_PRELOAD replacing glibc env stack", "verdict": "APPROVED", "evidence": "24.2/24.9 below all 8 prior runs (-14% vs G2 median); peak -2%; honest note: S158 J1 rejection was RSS-growth-targeted, this TG target is boot wall"},
+    "G4": {"change": "Z1 alloc-log gate measured on Telegram", "verdict": "APPROVED", "evidence": "wall median 36.1->33.25 (-7.9%, 2/2 pairs), pixels 2161 identical, api 9773 identical, uncaught 0"},
+    "G5": {"change": "provider skip extended (InitializationProvider + GooglePushListenerServiceProvider)", "verdict": "REJECTED", "evidence": "behavior identical but boot wall +2.0s median (26.55 vs 24.55) — androidx.startup work pays for itself via lazy re-init avoidance; reverted"},
+    "G6": {"change": "Z3 readable_class diet measured on Telegram", "verdict": "NEUTRAL (no TG metric moved; patch kept via dooz Z3)", "evidence": "wall flat (25.2 vs 24.55), peak bands overlap, pixels/api identical"},
+    "G7": {"change": "PERF-OPS census on TG boot (measurement)", "verdict": "LANDED", "evidence": "12.66G ticks; op 0x60 tpc 247,937 = clinit-amortized (6,389 calls); flat families = same interpreter wall as dooz; no TG-specific micro-lever"},
+    "G8": {"change": "MALLOC_CONF dirty_decay_ms:0 on Telegram", "verdict": "APPROVED (weight-primary)", "evidence": "peak 523.2/523.5 tight (-4..-12%); exit 257.2/319.9 (-40..-55%); wall +1.45s median (+5.9%, decay-0 syscall cost) — still -22% vs S165 baseline"},
+    "G9": {"change": "decay_ms:100 middle tune", "verdict": "REJECTED", "evidence": "strictly dominated by decay0: equal wall, +48MB peak median, no exit return"},
+    "G10": {"change": "final hold A/B window-fair: S165 stack (D3 bin) vs final stack", "verdict": "APPROVED", "evidence": "wall 33.5->29.9 (-10.7%), peak 599.7->527.6 (-12%), exit 599.7->428.8 (-28.5%), pixels 2161 / api 9773 / uncaught 0 identical"}
+  },
+  "coder_sweep": "#517 W6 verification still QUEUED (TB APK absent since S153); #505/#494/#495/#492/#516/#519/#520/#521 = tracker/log edits with ZERO inline diffs — nothing to approve/reject this round (law: claims without artifacts = zero value)",
+  "infra": "insurance copy miniandroid_s166_final_2a5464c2bf15f9ec.bin; run_s166_trains/ gitignored; anchor APK paths re-censored in s166_gates.py after the recycle moved them"
+}

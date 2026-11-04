@@ -134,3 +134,11 @@ The gate law moves to VALIDATED + REGRESSION-PROVEN. Next exclusive frontier unb
 | **Telegram trains T1-T5** | T1-T3 = the committed S164 rows (baseline REAL_APP_CONTENT / provider platform-skip l9/j 28→0 / app-data seed uncaught 6→0); T4 = boot-depth extraction from the committed tg_deep run (RESUMED, 24 frames, last_exception=null, 2161 app pixels — past the S163 pc=1375 blocker); T5 = fresh 4-run A/B with an RSS monitor (baseline bin vs seedskip bin+envs) | **5/5 LANDED**: exceptions 12→0 per pair, api work 9777→9773, identical 2161 app pixels, wall unchanged (same lifecycle end-point), RSS bands overlap |
 | **Dooz trains D1-D5** | D1/D2 = committed S164 rows; D3 = the DRAW-WALK CHECKPOINT surgery (env-gated, 2 replay sites) + a walk-fb histogram probe; D4 = settle on the D3 binary; D5 = full anchors on the D3 binary | **5/5 LANDED as run-lanes**: checkpoint rows fired ×8 and walks DO complete+present; the smoking gun `[D3-FB-HISTO] walk-fb distinct=1 0x000000×2073600` — the black cover is the APP's Compose paint pipeline delivering black-on-black (paint colors never reach the draw ops) = the 31ddd4d5 frontier precisely identified; settle 155.9s (family holds vs 161.7s); anchors PASS (microtimer full-pin bbd350b6, g2048 f43face08, opencalc REF==NEW on identical stores) |
 | **Coder-4 #517 W6** | `w6_stack.patch` (1305 lines, sha16 d92efd2d…) + `w6_laws.patch` (569 lines, sha16 65699ca9…) delivered INLINE as real diffs for the first time (F-C4-569/570/571 + checkRange IndexOutOfBounds law) | **REAL DELIVERY — verification QUEUED**: needs the W2/W3/W4 stack applied + Thunderbird APK (absent locally since S153); first coder patch-set since W5 that is actually applicable |
+
+## 14. S166 — the 20-train campaign round 2 (2026-11-05)
+
+| Item | What I actually ran | Verdict |
+|---|---|---|
+| **Coder sweep** | issues re-fetch at S165 HEAD: #505/#494/#495/#492/#516 = tracker body-edits; #519/#520/#521 (Coder 7/8/9 achievement logs) = 0 inline diffs; #517 W6 (the one real patch-set) still needs the TB APK (absent since S153) | **nothing to approve/reject this round** — W6 verification stays queued per the verification law (claims without artifacts = zero value) |
+
+(The 20 trains were MY work-lane — 10 dooz + 10 Telegram, faster-load/lighter — full table in evidence/s166_trains/S166_VERDICTS.json; summary in worklog S166.)

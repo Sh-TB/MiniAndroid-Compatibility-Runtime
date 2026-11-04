@@ -1,0 +1,24 @@
+{
+ "z4_perf": {
+  "tag": "z4_perf",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "LD_PRELOAD": "/lib/x86_64-linux-gnu/libjemalloc.so.2"
+  },
+  "wall_s": 144.7,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 242.8,
+  "rss_final_mb": 223.1,
+  "rss_grow_mb_s": 1.532,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ }
+}
