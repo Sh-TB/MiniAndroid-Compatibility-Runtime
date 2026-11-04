@@ -102,3 +102,11 @@ Budget note: this session = dooz 40% (overlay gates + long probe) + 20% coder sw
 | **E3 transistor tap** | face `5436cf81605f1c2d` == S151 pin full-16, uncaught 16, gate rows 0, tap face pre==post | **byte-reproduces the S154 E3 row** (cross-binary determinism). Honesty note: the S154 commit message said "UP delivered" but its own row + this run both record up_dispatched_consumed=false — ledger = rows, not messages |
 
 The gate law moves to VALIDATED + REGRESSION-PROVEN. Next exclusive frontier unblocked: the IME harness law (Simple Keyboard v145: explicit input-view inflation, no IMMS).
+
+## 10. S161 — W5 MERGED INTO MAIN (verified work added to my tree per user directive) + sweep result (2026-11-04)
+
+| Item | What I actually ran | Verdict |
+|---|---|---|
+| **#514 W5-only delta (Coder-4) — MERGE** | S158 تایید + this session: `git apply --check` CLEAN on main, applied (dalvik_engine.cpp + android_shadows.cpp), full -O2 build (`512517269d9634a1`), Gate B dooz face `11a38a5a` byte-inert, Gate E microtimer full-pin + g2048 delta-inert, Gate C CB stderr normalized A/B IDENTICAL (norm rule `RSS=… MB` added — gap found by the diff sample being RSS-only) | **MERGED INTO MAIN — merge-gate POSITIVE** (coder-credited: Coder-4 #514) |
+| **#516 S141b (Coder-3 re-derivation + frame-112 extension)** | achievements recorded with recipes; STILL no patch/binary in the issues (their sandbox lost the tree; re-derived into THEIR worktree only); my main lacks S141-PROBE/CallVoidMethodV | **not verifiable here** — coder-attested; batteries pre-priced ~100s for the day the diff arrives |
+| **#492 / #472 / #484** | dashboard/ledger/tracker refreshes, no artifacts | nothing to test |

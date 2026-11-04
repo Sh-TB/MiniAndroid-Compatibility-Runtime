@@ -2961,6 +2961,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             heap_->set_object_ref_field(it_id, "__iterator_parent__", obj_id,
                                         ctx.class_name, "", false);
             heap_->set_object_int_field(it_id, "__iterator_pos__", start);
+            {
+                // W5 (Coder-4) DIAG: reversed-iterator seeding forensics —
+                // Koin loadModules seed loop. Bounded, env-gated.
+                static thread_local uint64_t f566_li_n = 0;
+                static thread_local const bool f566_diag =
+                    std::getenv("MINIANDROID_F566_ITER_DIAG") != nullptr;
+                if (f566_diag && f566_li_n++ < 40)
+                    std::cerr << "[F566-LI] listIterator(" << start
+                              << ") box=" << it_id << " parent=" << obj_id
+                              << " cls=" << ctx.class_name << std::endl;
+            }
             return CallResult::handled_object(it_id,
                                               "Ljava/util/ListIterator;");
         }
@@ -2984,6 +2995,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             heap_->get_object_int_field(obj_id, "__iterator_pos__", pos);
         } else {
             pos = static_cast<int32_t>(state->iterator_position);
+        }
+        {
+            // W5 (Coder-4) DIAG: reversed-iterator seeding forensics.
+            static thread_local uint64_t f566_hp_n = 0;
+            static thread_local const bool f566_diag =
+                std::getenv("MINIANDROID_F566_ITER_DIAG") != nullptr;
+            if (f566_diag && f566_hp_n++ < 40)
+                std::cerr << "[F566-HP] hasPrevious box=" << obj_id
+                          << " is_box=" << (is_box ? 1 : 0)
+                          << " parent=" << parent_id << " pos=" << pos
+                          << " -> " << (pos > 0 ? 1 : 0) << std::endl;
         }
         return CallResult::handled_bool(pos > 0);
     }
