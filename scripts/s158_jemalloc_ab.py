@@ -59,7 +59,10 @@ ARMS = {
 
 
 def monitor(pid, stop, samples):
-    """sample /proc RSS + faults every 2s until stop"""
+    """sample /proc RSS + faults every 2s until stop.
+    S159 fix: skip VmRSS==0 samples (process already in final teardown --
+    reading them as rss_end produced a fake rss_grow collapse in the first
+    W3_fieldslot run). Raw samples are persisted into the result row."""
     while not stop.is_set():
         try:
             stat = Path(f"/proc/{pid}/stat").read_text()
@@ -72,8 +75,9 @@ def monitor(pid, stop, samples):
                 if ln.startswith("VmRSS:"):
                     rss = int(ln.split()[1])  # kB
                     break
-            samples.append({"t": round(time.time(), 1), "rss_kb": rss,
-                            "minflt": minflt, "majflt": majflt})
+            if rss > 0:   # skip teardown readings
+                samples.append({"t": round(time.time(), 1), "rss_kb": rss,
+                                "minflt": minflt, "majflt": majflt})
         except (FileNotFoundError, ProcessLookupError, IndexError):
             break
         stop.wait(2.0)

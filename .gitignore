@@ -274,3 +274,7 @@ docs/evidence/**/method_trace.json
 /run156/
 /run155p2/
 scripts/tracer
+
+# S158/S159: run artifacts are external (environment auto-commit swept these in 303ad5b1)
+/run_s158_*/
+/run_s159_*/

@@ -1,0 +1,343 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 924dd194..55edf4e8 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -23427,7 +23427,7 @@ uint64_t DalvikExecutionEngine::field_memo_epoch() const {
+          ^ static_cast<uint64_t>(class_info_index_.size());
+ }
+ 
+-const DalvikExecutionEngine::FieldMemo&
++DalvikExecutionEngine::FieldMemo&
+ DalvikExecutionEngine::resolved_field_memo(uint16_t field_idx) {
+     if (field_memo_.size() != 65536) field_memo_.resize(65536);
+     FieldMemo& m = field_memo_[field_idx];
+@@ -23444,8 +23444,9 @@ DalvikExecutionEngine::resolved_field_memo(uint16_t field_idx) {
+     if (m.res.resolved) {
+         m.s134_decl = true_dex_field_declarer(m.res.class_descriptor,
+                                               m.res.field_name);
++        m.s134_decl_is_dex = is_dex_defined_class(m.s134_decl);
+         m.s134_fkey = s134_dex_field_key(
+-            m.s134_decl, m.res.field_name, is_dex_defined_class(m.s134_decl));
++            m.s134_decl, m.res.field_name, m.s134_decl_is_dex);
+         m.s134_valid = true;
+     }
+     return m;
+@@ -23475,7 +23476,7 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
+     uint64_t f107_sr0 = 0; phase_clock().enter(phase_clock().sget_resolve_ph, f107_sr0);
+     // R-NEW-467: memoized resolution + S134 identity (same value the fresh
+     // walk answers; epoch-guarded on the mid-run-mutable hierarchy inputs).
+-    const DalvikExecutionEngine::FieldMemo& field_memo
++    DalvikExecutionEngine::FieldMemo& field_memo
+         = resolved_field_memo(field_idx);
+     const FieldResolution& field_res = field_memo.res;
+     phase_clock().exit(phase_clock().sget_resolve_ph, f107_sr0);
+@@ -23518,9 +23519,23 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
+             // class is DEX-defined; the ref-class key fabricated a second
+             // identity and the read answered a fabricated default.
+             const std::string& s134_fkey = field_memo.s134_fkey;
++            // S158 W2: memo-banked predicate (same epoch as s134_fkey).
+             const bool s134_decl_is_dex = field_memo.s134_valid
+-                && is_dex_defined_class(field_memo.s134_decl);
+-            auto field_val = heap_.get_object_field(obj_ref.object_id, s134_fkey);
++                && field_memo.s134_decl_is_dex;
++            // S158 W3: DEX-declared fields read through the slot overlay —
++            // qualified keys never enter the F-NEW-321 bare-name dance, so
++            // the slotted fallback is semantically identical. Framework-
++            // declarer fields keep the string path BYTE-IDENTICAL (their
++            // bare reads still run the qualified-first law).
++            std::optional<DalvikValue> field_val;
++            if (s134_decl_is_dex) {
++                FieldSlotPlan fslot{&field_memo.fslot_by_layout, &s134_fkey};
++                field_val = heap_.get_object_field_slotted(obj_ref.object_id,
++                                                           fslot);
++            } else {
++                field_val = heap_.get_object_field(obj_ref.object_id,
++                                                   s134_fkey);
++            }
+             // ── TRAIN-67 (T67, DIAG-ONLY, env-gated MINIANDROID_T67_LABEL_TRACE):
+             // suspend-lambda STATE-MACHINE label-persistence probe. Lss1; = the
+             // awaitEachGesture-level machine (R8): field l:I = the Kotlin
+@@ -23980,7 +23995,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
+     uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
+     
+     // Resolve field from DEX (R-NEW-467 memoized)
+-    const DalvikExecutionEngine::FieldMemo& field_memo
++    DalvikExecutionEngine::FieldMemo& field_memo
+         = resolved_field_memo(field_idx);
+     const FieldResolution& field_res = field_memo.res;
+     if (!field_res.resolved) {
+@@ -24088,8 +24103,17 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
+             // F-NEW-325: true-declarer keying (see execute_iget).
+             // R-NEW-467: the declarer walk + key concat are memoized.
+             const std::string& s134_fkey = field_memo.s134_fkey;
+-            auto field_val = heap_.get_object_field(obj_ref.object_id,
+-                s134_fkey);
++            // S158 W3 (iget-object): slot overlay for DEX-declared fields,
++            // string path otherwise — same gating law as execute_iget.
++            std::optional<DalvikValue> field_val;
++            if (field_memo.s134_valid && field_memo.s134_decl_is_dex) {
++                FieldSlotPlan fslot{&field_memo.fslot_by_layout, &s134_fkey};
++                field_val = heap_.get_object_field_slotted(obj_ref.object_id,
++                                                           fslot);
++            } else {
++                field_val = heap_.get_object_field(obj_ref.object_id,
++                                                   s134_fkey);
++            }
+             // ── TRAIN-68 (T68-JOBGET-VAL): the pointerInputJob read VALUE.
+             // The DOWN-window evidence: nodes #6571/#14049 jumped pc=8 -> 29
+             // with the launch block skipped — this prints the exact value the
+@@ -24595,7 +24619,7 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
+     uint16_t field_idx = bytecode_[pc + 1];
+ 
+     // R-NEW-467: memoized resolution (same value the fresh walk answers).
+-    const DalvikExecutionEngine::FieldMemo& field_memo_iput
++    DalvikExecutionEngine::FieldMemo& field_memo_iput
+         = resolved_field_memo(field_idx);
+     const FieldResolution& field_res = field_memo_iput.res;
+     DalvikValue src_val = get_register(src_reg);
+@@ -24753,13 +24777,23 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
+             // declarer keeps the qualified slot + the raw bare mirror
+             // (F-NEW-321 law unchanged).
+             const std::string& s134_decl = field_memo_iput.s134_decl;
+-            if (!is_dex_defined_class(s134_decl)) {
++            // S158 W2: memo-banked predicate (was a per-write hash lookup).
++            if (!field_memo_iput.s134_decl_is_dex) {
+                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
+                                        src_val);
+             } else {
+-                heap_.set_object_field(obj_ref.object_id,
+-                    s134_dex_field_key(s134_decl, field_res.field_name, true),
+-                    src_val);
++                // S158 W1: the memo already banks the IDENTICAL key
++                // (s134_dex_field_key(decl, name, true) — the else-branch
++                // predicate guarantees is_dex_defined_class(decl)); reuse
++                // it — kills a per-write string concat + copy.
++                // S158 W3: slot-overlay write (slot + map dual-write; the
++                // map stays the storage of record for every consumer).
++                {
++                    FieldSlotPlan fslot{&field_memo_iput.fslot_by_layout,
++                                        &field_memo_iput.s134_fkey};
++                    heap_.set_object_field_slotted(obj_ref.object_id, fslot,
++                                                   src_val);
++                }
+                 heap_.set_object_field_raw(obj_ref.object_id,
+                                            field_res.field_name, src_val);
+             }
+@@ -24899,7 +24933,7 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
+     uint16_t field_idx = bytecode_[pc + 1];
+ 
+     // R-NEW-467: memoized resolution (same value the fresh walk answers).
+-    const DalvikExecutionEngine::FieldMemo& field_memo_iputo
++    DalvikExecutionEngine::FieldMemo& field_memo_iputo
+         = resolved_field_memo(field_idx);
+     const FieldResolution& field_res = field_memo_iputo.res;
+     DalvikValue src_val = get_register(src_reg);
+@@ -25090,13 +25124,19 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
+             // declarer keeps the qualified slot + the raw bare mirror
+             // (F-NEW-321 law unchanged).
+             const std::string& s134_decl = field_memo_iputo.s134_decl;
+-            if (!is_dex_defined_class(s134_decl)) {
++            // S158 W2: memo-banked predicate (was a per-write hash lookup).
++            if (!field_memo_iputo.s134_decl_is_dex) {
+                 heap_.set_object_field(obj_ref.object_id, field_res.field_name,
+                                        src_val);
+             } else {
+-                heap_.set_object_field(obj_ref.object_id,
+-                    s134_dex_field_key(s134_decl, field_res.field_name, true),
+-                    src_val);
++                // S158 W1 (iput-object): same memo-key reuse as execute_iput.
++                // S158 W3: slot-overlay write (slot + map dual-write).
++                {
++                    FieldSlotPlan fslot{&field_memo_iputo.fslot_by_layout,
++                                        &field_memo_iputo.s134_fkey};
++                    heap_.set_object_field_slotted(obj_ref.object_id, fslot,
++                                                   src_val);
++                }
+                 heap_.set_object_field_raw(obj_ref.object_id,
+                                            field_res.field_name, src_val);
+             }
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 0f1e61bc..963bd403 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -951,6 +951,27 @@ struct StackFrame {
+ // HEAP OBJECT — Runtime Object Representation
+ // ============================================================================
+ 
++// S158 W3 — FIELD SLOT OVERLAY (per-object dense field cache).
++// The interpreter's hot field reads (iget/iget-object on DEX-declared
++// fields) pay an unordered_map<string,DalvikValue>::find on the composite
++// S134 key PER OP (the top native samples: hashtable find + string==).
++// The overlay keeps the string map as the STORAGE OF RECORD (byte-compat
++// with every consumer: diagnostics iterate fields, C++ shadows read bare
++// keys, F-NEW-321 legacy channels) and adds a dense per-object slot store
++// addressed by (class layout id, slot index). The layout registry maps a
++// class descriptor to a layout id once per class; the per-layout key->slot
++// map fills lazily on first mapping. INVARIANT: a mapped slot NEVER holds
++// a value the map disagrees with — every heap-API write syncs the slot
++// (slot_sync_), and every slotted read fills from the map on mask-miss.
++struct FieldSlotPlan {
++    // slot index per layout id (-1 = not yet mapped); OWNED by the engine's
++    // FieldMemo (stable addresses: field_memo_ resizes once to 65536),
++    // mutated by the heap on first (layout, key) mapping.
++    std::vector<int32_t>* slot_by_layout = nullptr;
++    // the composite storage key (owned by the memo; must outlive the op)
++    const std::string* key = nullptr;
++};
++
+ struct HeapObject {
+     uint32_t object_id = 0;
+     std::string class_descriptor;   // Landroid/widget/TextView;
+@@ -965,6 +986,14 @@ struct HeapObject {
+     // is find/operator[] only; frozen ordered consumers sort keys
+     // explicitly, preserving the historical std::map iteration law)
+     std::unordered_map<std::string, DalvikValue> fields;
++
++    // S158 W3: field-slot overlay (dense cache over `fields`).
++    // slot_layout_id is 1-based; 0 = not yet assigned (assigned lazily on
++    // first overlay access). slot_store/slot_mask grow to the layout's
++    // mapped slot count on demand; slot_mask[s]=1 ⇒ slot_store[s] == fields[key(s)].
++    uint16_t slot_layout_id = 0;
++    std::vector<DalvikValue> slot_store;
++    std::vector<uint8_t> slot_mask;
+     
+     // Bridge to Android API stub
+     std::shared_ptr<api::AndroidObject> api_object;
+@@ -1281,6 +1310,7 @@ public:
+                 key = qualified;
+         }
+         it->second.set_field(key, value);
++        slot_sync_(it->second, key, value);   // S158 W3 invariant
+         return true;
+     }
+ 
+@@ -1303,6 +1333,61 @@ public:
+             return false;
+         }
+         it->second.set_field(key, value);
++        slot_sync_(it->second, key, value);   // S158 W3 invariant
++        return true;
++    }
++
++    // ── S158 W3: field-slot overlay (dense cache over the string map) ──
++    // Hot-path READ: (layout, slot) mask check + array read on hit;
++    // map find + slot fill on miss. The map stays the storage of record.
++    std::optional<DalvikValue> get_object_field_slotted(uint32_t object_id,
++                                                        FieldSlotPlan& plan) {
++        auto it = objects_.find(object_id);
++        if (it == objects_.end()) return std::nullopt;
++        HeapObject& o = it->second;
++        if (o.slot_layout_id == 0)
++            o.slot_layout_id = slot_layout_of_(o.class_descriptor);
++        const size_t l = (size_t)o.slot_layout_id - 1;
++        if (plan.slot_by_layout->size() <= l)
++            plan.slot_by_layout->resize(l + 1, -1);
++        const int32_t s = (*plan.slot_by_layout)[l];
++        if (s >= 0 && (size_t)s < o.slot_mask.size() && o.slot_mask[s])
++            return o.slot_store[s];
++        auto f = o.fields.find(*plan.key);
++        if (f == o.fields.end()) return std::nullopt;
++        int32_t slot = s;
++        if (slot < 0)
++            slot = slot_map_(l, *plan.key);
++        if ((size_t)slot >= o.slot_store.size()) {
++            o.slot_store.resize((size_t)slot + 1);
++            o.slot_mask.resize((size_t)slot + 1, 0);
++        }
++        o.slot_store[(size_t)slot] = f->second;
++        o.slot_mask[(size_t)slot] = 1;
++        return f->second;
++    }
++
++    // Hot-path WRITE: slot write + map write (map = storage of record,
++    // unchanged content; the slot keeps the read fast path coherent).
++    bool set_object_field_slotted(uint32_t object_id, FieldSlotPlan& plan,
++                                  const DalvikValue& value) {
++        auto it = objects_.find(object_id);
++        if (it == objects_.end()) return false;
++        HeapObject& o = it->second;
++        if (o.slot_layout_id == 0)
++            o.slot_layout_id = slot_layout_of_(o.class_descriptor);
++        const size_t l = (size_t)o.slot_layout_id - 1;
++        if (plan.slot_by_layout->size() <= l)
++            plan.slot_by_layout->resize(l + 1, -1);
++        int32_t s = (*plan.slot_by_layout)[l];
++        if (s < 0) s = slot_map_(l, *plan.key);
++        if ((size_t)s >= o.slot_store.size()) {
++            o.slot_store.resize((size_t)s + 1);
++            o.slot_mask.resize((size_t)s + 1, 0);
++        }
++        o.slot_store[(size_t)s] = value;
++        o.slot_mask[(size_t)s] = 1;
++        o.fields[*plan.key] = value;
+         return true;
+     }
+ 
+@@ -1329,7 +1414,47 @@ public:
+     }
+ 
+ private:
++    // ── S158 W3 field-slot overlay internals ──
++    // class descriptor -> 1-based layout id (assigned once per class);
++    // slot_layout_maps_[id-1]: composite key -> dense slot index.
++    uint16_t slot_layout_of_(const std::string& cls) {
++        auto it = slot_layout_ids_.find(cls);
++        if (it != slot_layout_ids_.end()) return it->second;
++        slot_layout_maps_.emplace_back();
++        const uint16_t id = (uint16_t)slot_layout_maps_.size();
++        slot_layout_ids_.emplace(cls, id);
++        return id;
++    }
++    int32_t slot_map_(size_t l, const std::string& key) {
++        auto& lm = slot_layout_maps_[l];
++        auto it = lm.find(key);
++        if (it != lm.end()) return it->second;
++        const int32_t s = (int32_t)lm.size();
++        lm.emplace(key, s);
++        return s;
++    }
++    // Invariant enforcement: ANY heap-API write to a key that is a mapped
++    // slot of the object's layout updates the slot too (the map stays the
++    // storage of record; bare-key mirror writes look up and miss — the
++    // overlay never sees the legacy channel).
++    void slot_sync_(HeapObject& o, const std::string& key,
++                    const DalvikValue& v) {
++        if (o.slot_layout_id == 0 || o.slot_store.empty()) return;
++        auto& lm = slot_layout_maps_[(size_t)o.slot_layout_id - 1];
++        auto it = lm.find(key);
++        if (it == lm.end()) return;
++        const int32_t s = it->second;
++        if ((size_t)s >= o.slot_store.size()) {
++            o.slot_store.resize((size_t)s + 1);
++            o.slot_mask.resize((size_t)s + 1, 0);
++        }
++        o.slot_store[(size_t)s] = v;
++        o.slot_mask[(size_t)s] = 1;
++    }
++
+     std::unordered_map<uint32_t, HeapObject> objects_;
++    std::unordered_map<std::string, uint16_t> slot_layout_ids_;      // S158 W3
++    std::vector<std::unordered_map<std::string, int32_t>> slot_layout_maps_;  // S158 W3
+     std::unordered_map<std::string, uint64_t> class_histogram_;  // F-NEW-542
+     uint32_t next_id_;
+     uint64_t alloc_sequence_;
+@@ -2881,9 +3006,18 @@ public:
+         std::string s134_decl;
+         std::string s134_fkey;
+         bool s134_valid = false;
++        // S158 W2: the per-op is_dex_defined_class(decl) hash lookup is
++        // run-invariant per memo entry under the SAME epoch that guards
++        // s134_decl/s134_fkey (hierarchy growth re-derives) — bank it.
++        bool s134_decl_is_dex = false;
++        // S158 W3: slot index per heap layout id for THIS field identity
++        // (-1 = unmapped); filled by DalvikHeap's slot overlay on first
++        // (layout, key) mapping. field_memo_ resizes ONCE to 65536, so the
++        // vector address handed to FieldSlotPlan stays stable.
++        std::vector<int32_t> fslot_by_layout;
+         uint64_t epoch = 0;
+     };
+-    const FieldMemo& resolved_field_memo(uint16_t field_idx);
++    FieldMemo& resolved_field_memo(uint16_t field_idx);
+     uint64_t field_memo_epoch() const;
+     std::vector<FieldMemo> field_memo_;   // lazy, indexed by field_idx
+     // S134 F-NEW-160: a declaring class is FRAMEWORK-OWNED (bare field keys,
