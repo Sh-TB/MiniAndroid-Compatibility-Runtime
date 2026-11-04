@@ -1,0 +1,341 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 878c599f..8c622c96 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -6801,41 +6801,6 @@ void DalvikExecutionEngine::install_content_providers(
+                       << std::endl;
+             continue;
+         }
+-        // ── S164 T3 (PLATFORM-SKIP train): env-gated provider skip law.
+-        // Some init providers require platform infrastructure that does not
+-        // exist on this runtime (FirebaseInitProvider needs Play-Services
+-        // bindings; its onCreate chain throws in-flight and unwinds app
+-        // code). MINIANDROID_PROVIDER_SKIP=<comma list> skips any provider
+-        // whose class contains one of the tokens — the SAME honest
+-        // platform-skip contract as the DEX-absent gate above. Env unset =
+-        // byte-inert everywhere.
+-        {
+-            static const char* skip_env =
+-                std::getenv("MINIANDROID_PROVIDER_SKIP");
+-            if (skip_env && *skip_env) {
+-                std::string tok, list = skip_env;
+-                size_t pos = 0;
+-                while (pos <= list.size()) {
+-                    size_t comma = list.find(',', pos);
+-                    tok = list.substr(pos, comma == std::string::npos
+-                                              ? std::string::npos
+-                                              : comma - pos);
+-                    // trim
+-                    while (!tok.empty() && tok.front() == ' ') tok.erase(0, 1);
+-                    while (!tok.empty() && tok.back() == ' ') tok.pop_back();
+-                    if (!tok.empty() && pcls.find(tok) != std::string::npos) {
+-                        std::cerr << "[S1-PROVIDER] PLATFORM-SKIP " << pcls
+-                                  << " (token '" << tok
+-                                  << "' — init family requires platform"
+-                                  << " infrastructure absent from this runtime)"
+-                                  << std::endl;
+-                        goto next_provider;
+-                    }
+-                    if (comma == std::string::npos) break;
+-                    pos = comma + 1;
+-                }
+-            }
+-        }
+         try {
+             const uint32_t pid = heap_.allocate(desc, pc_, 0);
+             if (pid == 0) continue;
+@@ -6997,7 +6962,6 @@ void DalvikExecutionEngine::install_content_providers(
+                       << " threw (recorded, install continues): "
+                       << e.what() << std::endl;
+         }
+-    next_provider:;
+     }
+ }
+ 
+@@ -14070,23 +14034,6 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
+         ok = try_recursive_invoke(cls, "dispatchDraw", args, ret, res);
+         ops = ok ? (int)canvas_shadow->ops().size() : 0;
+     }
+-    // ── S164 T4 (paint-gap train): AOSP View.draw(Canvas) fallback — the
+-    // FULL draw template (background + onDraw + dispatchDraw + foreground).
+-    // Telegram's custom containers (ActionBarLayout family) override draw()
+-    // level plumbing; onDraw/dispatchDraw probes answer ops=0 while the
+-    // real content flows through the draw() override. Fallback arms ONLY
+-    // when both onDraw and dispatchDraw produced zero ops (fast paths and
+-    // painted views keep their byte-identical behavior).
+-    if (ops == 0) {
+-        canvas_shadow->begin_frame();
+-        ok = try_recursive_invoke(cls, "draw", args, ret, res);
+-        ops = ok ? (int)canvas_shadow->ops().size() : 0;
+-        if (ops > 0)
+-            std::cerr << "[C013-DRAW-FALLBACK] view=" << view_object_id
+-                      << " class=" << cls
+-                      << " draw() produced " << ops << " ops"
+-                      << " (paint-gap law)" << std::endl;
+-    }
+     draw_window_active_ = false;
+     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
+               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
+@@ -23543,33 +23490,6 @@ static DalvikValue s134_field_default(const std::string& type_desc) {
+     }
+ }
+ 
+-// ── S164 T2 (APP-DATA SEED train): is this field's declaring class
+-// APP-OWNED (no framework/library prefix)? The seed law answers app
+-// settings reads on null receivers with the field's Java default
+-// (telegram Preset autoDownloadSettings with no server seed); framework
+-// classes keep the ART truth (real NPE).
+-static bool s164_app_owned_class(const std::string& cls) {
+-    static const char* kFrameworkPrefixes[] = {
+-        "Ljava/", "Ljavax/", "Landroid/", "Landroidx/",
+-        "Lcom/google/", "Lkotlin/", "Lkotlinx/", "Lorg/intellij/",
+-        "Lorg/jetbrains/", "Lio/grpc/", "Lcom/squareup/"};
+-    if (cls.empty()) return false;
+-    for (const char* p : kFrameworkPrefixes)
+-        if (cls.rfind(p, 0) == 0) return false;
+-    return true;
+-}
+-
+-// S164 T2: env-gated once-per-field honest log for the seed law.
+-static void s164_seed_log(const std::string& cls,
+-                          const std::string& field) {
+-    static std::set<std::string> seeded;
+-    std::string key = cls + "." + field;
+-    if (seeded.insert(key).second)
+-        std::cerr << "[APP-DATA-SEED] default-read " << key
+-                  << " on null receiver (no server seed) — NPE suppressed"
+-                  << " by MINIANDROID_APP_DATA_SEED law" << std::endl;
+-}
+-
+ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
+     // Format: 22c iget vA, vB, field@CCCC (2 code units)
+     // EXP-042 Phase 2 FIX: same advance-pc-on-failure strategy as iget-object.
+@@ -23601,26 +23521,6 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
+          * f141_is_null_receiver covers NULL_REF / OBJECT_REF-id-0 / INT32-0
+          * typed null (F-141 + F-266a untyped-register law). */
+         if (f141_is_null_receiver(obj_ref)) {
+-            // ── S164 T2 APP-DATA SEED law (env-gated, default OFF = ART
+-            // truth). Offline-bound app settings objects (telegram
+-            // DownloadController$Preset settings with no server seed) die
+-            // at the FIRST field read (NPE -> LaunchActivity boundary).
+-            // AOSP truth on a real device: the settings object exists
+-            // (constructed with defaults). When MINIANDROID_APP_DATA_SEED=1
+-            // and the field's declaring class is APP-OWNED, the read
+-            // answers the field's Java default — the same value the real
+-            // default-constructed object carries. Once-per-field log.
+-            static const bool s164_seed_on =
+-                diag_env("MINIANDROID_APP_DATA_SEED");
+-            if (s164_seed_on &&
+-                s164_app_owned_class(field_res.class_descriptor)) {
+-                s164_seed_log(field_res.class_descriptor,
+-                              field_res.field_name);
+-                set_register(dest_reg,
+-                             s134_field_default(field_res.field_type));
+-                pc_ = pc + 2;  /* 22c format */
+-                return true;
+-            }
+             raise_synthetic_exception(
+                 "Ljava/lang/NullPointerException;",
+                 "Attempt to read from field '" + field_res.class_descriptor +
+@@ -24137,18 +24037,6 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
+      * the iget arm (field resolved first, then the null check; issue #381
+      * face d). The old path answered a silent null default. */
+     if (f141_is_null_receiver(obj_ref)) {
+-        // S164 T2: the APP-DATA SEED mirror arm (see execute_iget). For
+-        // object fields the Java default IS null — the seed only silences
+-        // the NPE unwind (the object graph stays honest) and logs once.
+-        static const bool s164_seed_on_o =
+-            diag_env("MINIANDROID_APP_DATA_SEED");
+-        if (s164_seed_on_o &&
+-            s164_app_owned_class(field_res.class_descriptor)) {
+-            s164_seed_log(field_res.class_descriptor, field_res.field_name);
+-            set_register(dest_reg, DalvikValue::make_null());
+-            pc_ = pc + 2;  /* 22c format */
+-            return true;
+-        }
+         raise_synthetic_exception(
+             "Ljava/lang/NullPointerException;",
+             "Attempt to read from field '" + field_res.class_descriptor +
+diff --git a/miniandroid/src/framework/canvas_shadow.cpp b/miniandroid/src/framework/canvas_shadow.cpp
+index 14fb0726..f4151ea9 100644
+--- a/miniandroid/src/framework/canvas_shadow.cpp
++++ b/miniandroid/src/framework/canvas_shadow.cpp
+@@ -1206,14 +1206,9 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
+             // CONT-37 diag (bounded): which objects receive setColor and
+             // with what color — the Layout.draw text law resolves the op
+             // color from THIS map; a missed setColor = black-on-black text.
+-            // S164 D3-diag: MINIANDROID_SETCOLOR_TRACE=1 raises the cap to
+-            // 200000 (the 60-row cap hid the real color history behind it).
+             {
+                 static thread_local uint64_t sc_n = 0;
+-                static const uint64_t sc_cap =
+-                    std::getenv("MINIANDROID_SETCOLOR_TRACE") ? 200000ULL
+-                                                              : 60ULL;
+-                if (sc_n++ < sc_cap)
++                if (sc_n++ < 60)
+                     std::cerr << "[F298-SETCOLOR] recv=" << recv
+                               << " cls=" << cls
+                               << " color=0x" << std::hex
+diff --git a/miniandroid/src/resources/resource_runtime.cpp b/miniandroid/src/resources/resource_runtime.cpp
+index 77a367bd..d961f7e4 100644
+--- a/miniandroid/src/resources/resource_runtime.cpp
++++ b/miniandroid/src/resources/resource_runtime.cpp
+@@ -576,62 +576,20 @@ ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
+     // Framework style ids (0x0103xxxx) do not resolve through the app ARSC
+     // (aapt2 does not embed framework-res) — the walk consults the AOSP
+     // public.xml style-id law for the framework theme roots.
+-    //
+-    // ── S164 D3 (COMPOSITE train): the 6-entry roots table dead-ended on
+-    // the NoActionBar/Dialog VARIANTS — dooz v23's Theme.Dooz parent IS
+-    // 0x01030241 (Theme.Material.Light.NoActionBar, verified against the
+-    // AOSP public.xml table this session) and the unknown id left
+-    // flavor=dark → windowBackground #303030 under an app that paints
+-    // black-family content (2124 setColor rows, zero white) → the uniform
+-    // dark cover. The table now carries the FULL AOSP variant families as
+-    // (lo, hi, light) ranges — data straight from
+-    // aosp-mirror/platform_frameworks_base core/res/res/values/public.xml:
+-    //   Theme.Material        0x01030224..0x01030236  dark
+-    //   Theme.Material.Light  0x01030237..0x01030246  light
+-    //   Theme.DeviceDefault         0x01030128..0x0103012a  dark
+-    //   Theme.DeviceDefault.Light   0x0103012b..0x0103012d  light
+-    //   Theme.DeviceDefault.Dialog        0x0103012e..0x01030131  dark
+-    //   Theme.DeviceDefault.Light.Dialog  0x01030132..0x01030135  light
+-    //   Theme.DeviceDefault.DialogWhenLarge          0x01030136..0x01030137 dark
+-    //   Theme.DeviceDefault.Light.DialogWhenLarge    0x01030138..0x01030139 light
+-    //   Theme.DeviceDefault (Panel/Wallpaper/InputMethod/DarkActionBar)
+-    //                                0x0103013a..0x0103013f mixed → per-id
+-    //   Theme.Holo         0x0103006b..0x0103006d  dark
+-    //   Theme.Holo.Light   0x0103006e..0x01030076  light (Light.Dialog family)
+-    // The name-based "Light" substring law below stays as the catch-all.
+-    static const struct { uint32_t lo, hi; bool light; } FRAMEWORK_THEME_RANGES[] = {
+-        {0x01030224u, 0x01030236u, false},  // Theme.Material family
+-        {0x01030237u, 0x01030246u, true},   // Theme.Material.Light family
+-        {0x01030128u, 0x0103012au, false},  // DeviceDefault roots
+-        {0x0103012bu, 0x0103012du, true},   // DeviceDefault.Light roots
+-        {0x0103012eu, 0x01030131u, false},  // DeviceDefault.Dialog family
+-        {0x01030132u, 0x01030135u, true},   // DeviceDefault.Light.Dialog
+-        {0x01030136u, 0x01030137u, false},  // DeviceDefault.DialogWhenLarge
+-        {0x01030138u, 0x01030139u, true},   // ..Light.DialogWhenLarge
+-        {0x0103013cu, 0x0103013du, false},  // DeviceDefault.Wallpaper
+-        {0x0103013fu, 0x0103013fu, true},   // DeviceDefault.Light.DarkActionBar
+-        {0x0103006bu, 0x0103006du, false},  // Theme.Holo family
+-        {0x0103006eu, 0x01030076u, true},   // Theme.Holo.Light family
++    static const struct { uint32_t id; bool light; } FRAMEWORK_THEMES[] = {
++        {0x01030224u, false},  // Theme.Material            (AOSP public.xml)
++        {0x01030237u, true},   // Theme.Material.Light
++        {0x01030128u, false},  // Theme.DeviceDefault
++        {0x0103012bu, true},   // Theme.DeviceDefault.Light
++        {0x0103006bu, false},  // Theme.Holo
++        {0x0103006eu, true},   // Theme.Holo.Light
+     };
+     uint32_t cur = theme_resid;
+     for (int hop = 0; hop < 8 && cur != 0; hop++) {
+         bool resolved_framework = false;
+-        // S164 D3 diag: the flavor walk's every hop (env-gated) — without
+-        // it the dead-end parent id was invisible and the dark default won.
+-        static const bool s164_flavor_diag =
+-            std::getenv("MINIANDROID_FLAVOR_DIAG") != nullptr;
+-        for (const auto& ft : FRAMEWORK_THEME_RANGES) {
+-            if (cur >= ft.lo && cur <= ft.hi) {
+-                out.flavor = ft.light ? 1 : 0;
+-                resolved_framework = true;
+-                break;
+-            }
++        for (const auto& ft : FRAMEWORK_THEMES) {
++            if (ft.id == cur) { out.flavor = ft.light ? 1 : 0; resolved_framework = true; break; }
+         }
+-        if (s164_flavor_diag)
+-            std::cerr << "[FLAVOR-WALK] hop=" << hop
+-                      << " resid=0x" << std::hex << cur << std::dec
+-                      << " framework_hit=" << (resolved_framework ? 1 : 0)
+-                      << " flavor_so_far=" << out.flavor << std::endl;
+         if (resolved_framework) break;
+         auto e = arsc_.resolve(cur);
+         if (!e) break;
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index b900a059..e2262bda 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -4540,66 +4540,6 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                                                           << "pipeline (F-NEW-162)"
+                                                           << std::endl;
+                                             } else {
+-                                        // ── S164 T4 v2 (PAINT-GAP train):
+-                                        // last-resort REAL draw dispatch.
+-                                        // Views that reached the diagnostic
+-                                        // branch (non-text, non-surface,
+-                                        // not dispatched by the gates above
+-                                        // — telegram's ActionBarLayout
+-                                        // family) may still override
+-                                        // View.draw()/dispatchDraw with
+-                                        // real content. AOSP law: draw()
+-                                        // is the FULL template (bg + onDraw
+-                                        // + dispatchDraw + foreground).
+-                                        // dispatch_custom_view_draw already
+-                                        // walks onDraw -> dispatchDraw ->
+-                                        // draw(); a >0 result replays REAL
+-                                        // app ops into this frame. Only
+-                                        // non-framework classes with a live
+-                                        // heap object qualify (inflated
+-                                        // framework views keep the honest
+-                                        // diagnostic). Nothing fires unless
+-                                        // the app's own draw produced ops.
+-                                        {
+-                                            const std::string& cv_cls =
+-                                                node->class_desc;
+-                                            bool cv_framework =
+-                                                cv_cls.rfind("Landroid/", 0) == 0 ||
+-                                                cv_cls.rfind("Landroidx/", 0) == 0 ||
+-                                                cv_cls.rfind("Lcom/google/", 0) == 0;
+-                                            if (!cv_framework && task.view_id != 0 &&
+-                                                dalvik_engine_.get_heap().has_object(task.view_id)) {
+-                                                int gap_ops =
+-                                                    dalvik_engine_.dispatch_custom_view_draw(
+-                                                        task.view_id);
+-                                                if (gap_ops > 0) {
+-                                                    if (auto* cs_gap =
+-                                                            shadow_registry_->find_as<
+-                                                                framework::CanvasShadow>()) {
+-                                                        cs_gap->set_canvas_size(
+-                                                            (int)w, (int)h);
+-                                                        size_t rp_gap =
+-                                                            cs_gap->replay(
+-                                                                canvas, font,
+-                                                                (float)left,
+-                                                                (float)top,
+-                                                                (float)w,
+-                                                                (float)h);
+-                                                        drew_real = true;
+-                                                        frame_census_.app_draw_ops +=
+-                                                            gap_ops;
+-                                                        std::cerr
+-                                                            << "[T4-PAINTGAP] "
+-                                                            << cv_cls
+-                                                            << " draw chain dispatched: "
+-                                                            << gap_ops
+-                                                            << " ops replayed (rp="
+-                                                            << rp_gap << ")"
+-                                                            << std::endl;
+-                                                    }
+-                                                }
+-                                            }
+-                                        }
+                                         // FINAL CAMPAIGN item 21-P0-5
+                                         // (authoritative-frame purity): the
+                                         // grey box + "custom view (not
+@@ -4614,7 +4554,6 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                                         // trace overlay may visualize it on the
+                                         // diagnostic COPY — never in
+                                         // screenshot.png.
+-                                        if (!drew_real) {
+                                         frame_census_.diag_regions.push_back(
+                                             {left, top, right, bottom,
+                                              "custom-view-unrendered",
+@@ -4623,7 +4562,6 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                                                   << node->class_desc
+                                                   << " at (" << left << "," << top
+                                                   << " " << w << "x" << h << ")" << std::endl;
+-                                        }
+                                             }  // S134 F-NEW-162 routing else
+                                         }  // S134 F-NEW-162 routing bare block
+                                     }
