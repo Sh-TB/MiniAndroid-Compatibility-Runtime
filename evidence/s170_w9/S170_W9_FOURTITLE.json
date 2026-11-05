@@ -1,0 +1,288 @@
+{
+ "tb": {
+  "tb_ref": {
+   "tag": "tb_ref",
+   "bin": "991d89239e69c679",
+   "wall_s": 9.2,
+   "stderr_sha16": "e816704e58075dbb",
+   "screenshot_face": "43bfdac6023cba66",
+   "uncaught": 33,
+   "ndfe": 7,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 11356,
+   "census": {
+    "vme": 50,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 0,
+    "f582": 0,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 7,
+    "uncaught": 33,
+    "register_natives": 0
+   }
+  },
+  "tb_new": {
+   "tag": "tb_new",
+   "bin": "4bb7c4d424923b87",
+   "wall_s": 9.7,
+   "stderr_sha16": "804baf8a9a718a26",
+   "screenshot_face": "43bfdac6023cba66",
+   "uncaught": 4,
+   "ndfe": 7,
+   "law_rows": 28,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 11328,
+   "census": {
+    "vme": 0,
+    "f578": 8,
+    "f574": 20,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 0,
+    "f582": 1,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 7,
+    "uncaught": 4,
+    "register_natives": 0,
+    "pbq_lines": [
+     "[F-C4-578] Ljava/util/concurrent/PriorityBlockingQueue;.take empty \u2192 park-yield at Lcom/fsck/k9/controller/MessagingController$1;.run",
+     "[F-C4-578] Ljava/util/concurrent/PriorityBlockingQueue;.take empty \u2192 park-yield at Lcom/fsck/k9/controller/MessagingController$1;.run",
+     "[F-C4-578] Ljava/util/concurrent/PriorityBlockingQueue;.take empty \u2192 park-yield at Lcom/fsck/k9/controller/MessagingController$1;.run"
+    ]
+   }
+  }
+ },
+ "nc": {
+  "nc_ref": {
+   "tag": "nc_ref",
+   "bin": "991d89239e69c679",
+   "wall_s": 6.7,
+   "stderr_sha16": "3844c7d85fadaaaa",
+   "screenshot_face": "33fd925fc12e7585",
+   "uncaught": 39,
+   "ndfe": 0,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 9325,
+   "census": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 7,
+    "f581": 0,
+    "f582": 0,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 0,
+    "uncaught": 39,
+    "register_natives": 0
+   }
+  },
+  "nc_new": {
+   "tag": "nc_new",
+   "bin": "4bb7c4d424923b87",
+   "wall_s": 8.1,
+   "stderr_sha16": "abfada7ca79aa911",
+   "screenshot_face": "33fd925fc12e7585",
+   "uncaught": 32,
+   "ndfe": 0,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 9322,
+   "census": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 18,
+    "f582": 0,
+    "f583": 3,
+    "f584": 8,
+    "f585": 2,
+    "f586": 2,
+    "ndfe": 0,
+    "uncaught": 32,
+    "register_natives": 337,
+    "regnat_lines": [
+     "[MINIANDROID-JNI] RegisterNatives: 337 methods for org/conscrypt/NativeCrypto"
+    ]
+   }
+  }
+ },
+ "tk": {
+  "tk_ref": {
+   "tag": "tk_ref",
+   "bin": "991d89239e69c679",
+   "wall_s": 2.4,
+   "stderr_sha16": "c98974f387a89fd9",
+   "screenshot_face": "31ddd4d5b8e6d18e",
+   "uncaught": 23,
+   "ndfe": 0,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 8172,
+   "census": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 7,
+    "f581": 0,
+    "f582": 0,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 0,
+    "uncaught": 23,
+    "register_natives": 0
+   }
+  },
+  "tk_new": {
+   "tag": "tk_new",
+   "bin": "4bb7c4d424923b87",
+   "wall_s": 112.3,
+   "stderr_sha16": "c48d7b9b28749257",
+   "screenshot_face": "31ddd4d5b8e6d18e",
+   "uncaught": 33,
+   "ndfe": 0,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 8179,
+   "census": {
+    "vme": 34,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 9,
+    "f582": 1,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 0,
+    "uncaught": 33,
+    "register_natives": 288,
+    "regnat_lines": [
+     "[MINIANDROID-JNI] RegisterNatives: 288 methods for org/conscrypt/NativeCrypto"
+    ]
+   }
+  }
+ },
+ "cb": {
+  "cb_ref": {
+   "tag": "cb_ref",
+   "bin": "991d89239e69c679",
+   "wall_s": 3.3,
+   "stderr_sha16": "ae9e47fada2d71c4",
+   "screenshot_face": "b5a7a35d5fe0564b",
+   "uncaught": 6,
+   "ndfe": 0,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 6761,
+   "census": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 11,
+    "f581": 0,
+    "f582": 0,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 0,
+    "uncaught": 6,
+    "register_natives": 0
+   }
+  },
+  "cb_new": {
+   "tag": "cb_new",
+   "bin": "4bb7c4d424923b87",
+   "wall_s": 3.3,
+   "stderr_sha16": "c623110fcd15c093",
+   "screenshot_face": "b5a7a35d5fe0564b",
+   "uncaught": 1,
+   "ndfe": 0,
+   "law_rows": 0,
+   "frames": [
+    "9"
+   ],
+   "app_owned_pixels": 0,
+   "api_calls": 6757,
+   "census": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 18,
+    "f582": 0,
+    "f583": 0,
+    "f584": 0,
+    "f585": 0,
+    "f586": 0,
+    "ndfe": 0,
+    "uncaught": 1,
+    "register_natives": 345,
+    "regnat_lines": [
+     "[MINIANDROID-JNI] RegisterNatives: 345 methods for org/conscrypt/NativeCrypto"
+    ]
+   }
+  }
+ }
+}

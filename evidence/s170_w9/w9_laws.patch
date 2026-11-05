@@ -1,0 +1,1015 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 379f18f..175daf2 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -8022,6 +8022,65 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+             }
+         }
+     }
++    // ────────────────────────────────────────────────────────────────────────
++    // W9 (Coder-4) ROOM/ISINSTANCE PROBE — env-gated
++    // MINIANDROID_W9_PROBE, bounded, zero behavior change. The frontier
++    // families this wave: (a) Room's validateTypeConverters chain (the
++    // generated required-converters map walk: RoomDatabaseKt__,
++    // RoomDatabase$Builder, DatabaseConfiguration, the generated
++    // *_Impl database class) and (b) the KClass/ClassReference
++    // reflection family that feeds Class.isInstance (Kotlin's
++    // ClassReference + JvmClassMappingKt). Trace shape mirrors the W8
++    // probe (class.method + arg kinds/oids/strings + caller).
++    // ────────────────────────────────────────────────────────────────────────
++    {
++        static thread_local const bool w9p_on =
++            std::getenv("MINIANDROID_W9_PROBE") != nullptr;
++        if (w9p_on) {
++            const bool w9_room =
++                declaring_class.find("RoomDatabase") != std::string::npos ||
++                declaring_class.find("DatabaseConfiguration") !=
++                    std::string::npos ||
++                declaring_class.find("DatabaseModule") != std::string::npos ||
++                (declaring_class.find("typeConverter") !=
++                     std::string::npos &&
++                 method_name == "<init>");
++            const bool w9_kclass =
++                declaring_class.find("ClassReference") != std::string::npos ||
++                declaring_class.find("JvmClassMapping") != std::string::npos ||
++                declaring_class.find("KClassUtil") != std::string::npos;
++            if (w9_room || w9_kclass) {
++                static thread_local uint64_t w9p_n = 0;
++                if (w9p_n < 600) {
++                    ++w9p_n;
++                    std::cerr << "[W9-PROBE] " << declaring_class << "."
++                              << method_name << " argc=" << args.size();
++                    for (size_t wi = 0; wi < args.size() && wi < 4; ++wi) {
++                        const DalvikValue& wa = args[wi];
++                        std::cerr << " a" << wi << "=";
++                        if (wa.is_null)
++                            std::cerr << "null";
++                        else if (wa.type == DalvikType::OBJECT_REF)
++                            std::cerr << "o" << wa.object_id
++                                      << (wa.class_desc.empty()
++                                              ? std::string("")
++                                              : "/" + wa.class_desc);
++                        else if (wa.type == DalvikType::STRING_REF)
++                            std::cerr << "\"" <<
++                                wa.string_val.substr(0, 48) << "\"";
++                        else if (wa.type == DalvikType::INT32)
++                            std::cerr << wa.int_val;
++                        else if (wa.type == DalvikType::INT64)
++                            std::cerr << "L" << (long long)wa.long_val;
++                        else
++                            std::cerr << "t" << (int)wa.type;
++                    }
++                    std::cerr << " caller=" << current_class_ << "."
++                              << current_method_ << std::endl;
++                }
++            }
++        }
++    }
+     // F-NEW-267 (CONT-64 W1) COMPOSE-MEASURE TRACE — env-gated
+     // MINIANDROID_COMPOSE_MEASURE_TRACE=1, bounded. Every entry of the
+     // compose measure/layout delegate entry points (the R8 names decoded on
+@@ -33068,6 +33127,504 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             return true;
+         }
+     }
++    // ────────────────────────────────────────────────────────────────────
++    // F-C4-582 (W9): SSLContext OBJECT-SHAPE law. ROOT (live, TB v24):
++    // DefaultTrustedSocketFactory.<clinit> pc=63 called
++    // SSLContext.getInstance("TLS").init(...) — SSLContext had NO bridge
++    // arm, getInstance answered the typed-null default → the null
++    // receiver NPE 'SSLContext.init on a null object reference' (caught
++    // by the clinit's catch, the whole trusted-socket factory then
++    // shadow-null for the mail engine). AOSP law (javax.net.ssl
++    // SSLContext.java): getInstance(String) NEVER answers null (unknown
++    // protocol → NoSuchAlgorithmException); init(KM[], TM[], SR) is the
++    // configuration step (no-op in this runtime — the socket layer is the
++    // S100 NET-001 TLS bridge); getSocketFactory/getServerSocketFactory
++    // answer SSLSocketFactory objects; getDefault answers the default
++    // context. Same never-null object-shape discipline as F516-L3.
++    // ────────────────────────────────────────────────────────────────────
++    if (class_name == "Ljavax/net/ssl/SSLContext;") {
++        if (method == "getInstance" && !args.empty() &&
++            args[0].type == DalvikType::STRING_REF) {
++            const std::string proto = args[0].string_val;
++            if (proto != "TLS" && proto != "SSL" && proto != "Default" &&
++                proto != "TLSv1" && proto != "TLSv1.1" && proto != "TLSv1.2" &&
++                proto != "TLSv1.3") {
++                throw_deferred("Ljava/security/NoSuchAlgorithmException;",
++                    "SSLContext " + proto + " not available", "F-C4-582");
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            uint32_t oid = heap_.allocate("Ljavax/net/ssl/SSLContext;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            heap_.set_object_field(oid, "__protocol__",
++                DalvikValue::make_string(proto, 0));
++            static thread_local uint64_t f582_n = 0;
++            if (f582_n < 8) { ++f582_n;
++                std::cerr << "[F-C4-582] SSLContext.getInstance('" << proto
++                          << "') -> oid=" << oid << " (never-null law)"
++                          << std::endl; }
++            result = DalvikValue::make_object(oid, "Ljavax/net/ssl/SSLContext;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getDefault") {
++            uint32_t oid = heap_.allocate("Ljavax/net/ssl/SSLContext;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            heap_.set_object_field(oid, "__protocol__",
++                DalvikValue::make_string("Default", 0));
++            result = DalvikValue::make_object(oid, "Ljavax/net/ssl/SSLContext;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "init") {
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getProtocol" && !args.empty() &&
++            args[0].type == DalvikType::OBJECT_REF) {
++            auto pv = heap_.get_object_field(args[0].object_id, "__protocol__");
++            result = pv.has_value() ? *pv : DalvikValue::make_string("TLS", 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getSocketFactory" || method == "getServerSocketFactory") {
++            uint32_t sf = heap_.allocate(
++                "Ljavax/net/ssl/SSLSocketFactory;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            result = DalvikValue::make_object(sf, "Ljavax/net/ssl/SSLSocketFactory;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "createSSLEngine") {
++            uint32_t se = heap_.allocate(
++                "Ljavax/net/ssl/SSLEngine;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            result = DalvikValue::make_object(se, "Ljavax/net/ssl/SSLEngine;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++    // ────────────────────────────────────────────────────────────────────
++    // F-C4-584 (W9): Arrays.stream + Stream EAGER-PIPELINE + Optional
++    // protocol. ROOT (live, NC v35.0.2, post-583 census): NC's
++    // UserAccountManagerImpl.getCurrentAccount (pc=0x18..0x21) does
++    // `Arrays.stream(accounts).filter(pred).findFirst().orElse(null)`
++    // — Arrays.stream had NO arm → null Stream → `Stream.filter on a
++    // null object reference` NPE inside getUser() → the SAME 20+ row
++    // NC Dagger family (ConnectivityKey.getBy → ConnectivityServiceImpl
++    // ctor → injectMainApp). OpenJDK laws implemented:
++    //   · Arrays.stream(T[]) → a Stream OVER THE ARRAY'S ELEMENTS
++    //     (java.util.Arrays#stream — sequential, ordered);
++    //   · Stream.filter(Predicate) → a Stream OF THE PASSING ELEMENTS —
++    //     evaluation is EAGER here (the engine's streams are always
++    //     finite, materialized collections; the observable result of
++    //     filter+findFirst is identical to the lazy pipeline);
++    //     the predicate is the DESUGARED-LAMBDA DEX object — its
++    //     test(Object) method runs via recursive invoke (F-C4-564
++    //     discipline), so app filter logic is REAL bytecode;
++    //   · Stream.findFirst() → Optional of the first element, or
++    //     Optional.empty (OpenJDK findFirst on an empty stream);
++    //   · Optional.of/ofNullable/empty/isPresent/isEmpty/get/orElse —
++    //     the full OpenJDK value-container protocol (getUser path uses
++    //     ofNullable + orElse).
++    // ────────────────────────────────────────────────────────────────────
++    if (class_name == "Ljava/util/Arrays;" && method == "stream" &&
++        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++        const uint32_t src_arr = args[0].object_id;
++        auto lenv = heap_.get_object_field(src_arr, "__array_length__");
++        const int n = (lenv.has_value() && lenv->type == DalvikType::INT32)
++                          ? lenv->int_val : 0;
++        uint32_t sid = heap_.allocate("Ljava/util/stream/Stream;", pc_,
++            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++        for (int i = 0; i < n && i < 4096; ++i) {
++            auto ev = heap_.get_object_field(
++                src_arr, "array[" + std::to_string(i) + "]");
++            heap_.set_object_field(
++                sid, "__el" + std::to_string(i) + "__",
++                ev.value_or(DalvikValue::make_null()));
++        }
++        heap_.set_object_field(sid, "__eln__", DalvikValue::make_int(
++            n < 4096 ? n : 4096));
++        static thread_local uint64_t f584_s = 0;
++        if (f584_s < 8) { ++f584_s;
++            std::cerr << "[F-C4-584] Arrays.stream(array len=" << n
++                      << ") -> stream o" << sid << std::endl; }
++        result = DalvikValue::make_object(sid, "Ljava/util/stream/Stream;");
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Ljava/util/stream/Stream;" &&
++        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++        const uint32_t s = args[0].object_id;
++        auto rd_n = [&](uint32_t oid) -> int {
++            auto v = heap_.get_object_field(oid, "__eln__");
++            return (v.has_value() && v->type == DalvikType::INT32)
++                       ? v->int_val : 0;
++        };
++        auto rd_el = [&](uint32_t oid, int i) {
++            return heap_.get_object_field(
++                oid, "__el" + std::to_string(i) + "__");
++        };
++        if (method == "filter" && args.size() >= 2 &&
++            args[1].type == DalvikType::OBJECT_REF &&
++            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
++            const uint32_t pred = args[1].object_id;
++            auto* pred_obj = heap_.get(pred);
++            const std::string pred_cls =
++                pred_obj ? std::string(pred_obj->class_descriptor)
++                         : std::string();
++            const int n = rd_n(s);
++            uint32_t out = heap_.allocate("Ljava/util/stream/Stream;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            int kept = 0;
++            for (int i = 0; i < n; ++i) {
++                auto ev = rd_el(s, i);
++                if (!ev.has_value()) continue;
++                bool pass = false;
++                if (!pred_cls.empty()) {
++                    DalvikValue rv; DalvikExecutionResult res;
++                    std::vector<DalvikValue> targs;
++                    targs.push_back(DalvikValue::make_object(
++                        pred, pred_cls));
++                    targs.push_back(*ev);
++                    bool ok = try_recursive_invoke(
++                        pred_cls, "test", targs, rv, res,
++                        "(Ljava/lang/Object;)Z");
++                    if (!ok)
++                        ok = try_recursive_invoke_on_super(
++                            pred_cls, "test", targs, rv, res,
++                            "(Ljava/lang/Object;)Z");
++                    if (ok && (rv.type == DalvikType::INT32 ||
++                               rv.type == DalvikType::BOOLEAN))
++                        pass = (rv.type == DalvikType::INT32)
++                                   ? (rv.int_val != 0) : rv.bool_val;
++                }
++                if (pass) {
++                    heap_.set_object_field(
++                        out, "__el" + std::to_string(kept) + "__", *ev);
++                    ++kept;
++                }
++            }
++            heap_.set_object_field(out, "__eln__",
++                                   DalvikValue::make_int(kept));
++            static thread_local uint64_t f584_f = 0;
++            if (f584_f < 8) { ++f584_f;
++                std::cerr << "[F-C4-584] Stream.filter(" << pred_cls
++                          << ") over " << n << " -> kept " << kept
++                          << std::endl; }
++            result = DalvikValue::make_object(
++                out, "Ljava/util/stream/Stream;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "findFirst") {
++            const int n = rd_n(s);
++            uint32_t opt = heap_.allocate("Ljava/util/Optional;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            if (n > 0) {
++                auto ev = rd_el(s, 0);
++                heap_.set_object_field(opt, "__present__",
++                    DalvikValue::make_int(1));
++                heap_.set_object_field(opt, "__value__",
++                    ev.value_or(DalvikValue::make_null()));
++            } else {
++                heap_.set_object_field(opt, "__present__",
++                    DalvikValue::make_int(0));
++            }
++            result = DalvikValue::make_object(opt, "Ljava/util/Optional;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "count") {
++            result = DalvikValue::make_long(static_cast<int64_t>(rd_n(s)));
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++    // ────────────────────────────────────────────────────────────────────
++    // F-C4-585 (W9): android.accounts.Account CONSTRUCTOR + FIELD law.
++    // ROOT (live, NC v35.0.2, post-584 census): with zero device accounts
++    // NC's getCurrentAccount() (pc=0x52) falls back to its OWN
++    // getAnonymousAccount() which constructs `new Account(name, type)`
++    // from string resources; Account had NO constructor arm — the heap
++    // object was allocated with BOTH public fields unset →
++    // AccountExtensionsKt.isAnonymous pc=0x12 `account.type.equals(...)`
++    // → 'String.equals on a null object reference' NPE → the whole
++    // createUserFromAccount → getUser → ConnectivityKey.getBy chain.
++    // AOSP law (android.accounts.Account.java): `public Account(String
++    // name, String type)` stores BOTH as public final fields; equals/
++    // hashCode/toString are the name+type pair. getAnonymousAccount's
++    // type string and isAnonymous's compare string come from the SAME
++    // resource id, so the round-trip answers TRUE and NC's anonymous
++    // fallback path completes exactly as on a fresh install on hardware.
++    // ────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/accounts/Account;" &&
++        method == "<init>" && args.size() >= 3) {
++        if (args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++            const uint32_t acc = args[0].object_id;
++            heap_.set_object_field(acc, "name",
++                args[1].type == DalvikType::STRING_REF
++                    ? args[1]
++                    : DalvikValue::make_null());
++            heap_.set_object_field(acc, "type",
++                args[2].type == DalvikType::STRING_REF
++                    ? args[2]
++                    : DalvikValue::make_null());
++            static thread_local uint64_t f585_n = 0;
++            if (f585_n < 8) { ++f585_n;
++                std::cerr << "[F-C4-585] Account.<init>(name='"
++                          << (args[1].type == DalvikType::STRING_REF
++                                  ? args[1].string_val.substr(0, 32)
++                                  : std::string("?"))
++                          << "', type='"
++                          << (args[2].type == DalvikType::STRING_REF
++                                  ? args[2].string_val.substr(0, 32)
++                                  : std::string("?"))
++                          << "') stored (public-fields law)" << std::endl; }
++        }
++        result = DalvikValue::make_void();
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/accounts/Account;" &&
++        (method == "getName" || method == "getType") &&
++        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++        auto fv = heap_.get_object_field(
++            args[0].object_id, method == "getName" ? "name" : "type");
++        result = fv.value_or(DalvikValue::make_null());
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/accounts/Account;" &&
++        method == "toString" && !args.empty() &&
++        args[0].type == DalvikType::OBJECT_REF &&
++        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++        auto nm = heap_.get_object_field(args[0].object_id, "name");
++        auto tp = heap_.get_object_field(args[0].object_id, "type");
++        std::string n = (nm.has_value() &&
++                         nm->type == DalvikType::STRING_REF)
++                            ? std::string(nm->string_val) : std::string();
++        std::string t = (tp.has_value() &&
++                         tp->type == DalvikType::STRING_REF)
++                            ? std::string(tp->string_val) : std::string();
++        // AOSP: Account#toString = "Account {name=" + name + ", type=" +
++        // type + "}"
++        result = DalvikValue::make_string(
++            "Account {name=" + n + ", type=" + t + "}", 0);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    // ────────────────────────────────────────────────────────────────────
++    // F-C4-586 (W9): java.net.URI MINIMAL OBJECT law. ROOT (live, NC
++    // v35.0.2, post-585 census): AnonymousUser.<init>(String) pc=0x12
++    // calls `URI.create("")` (the anonymous user's Server anchor) —
++    // java.net.URI had ZERO coverage, create() answered the typed-null
++    // default → the Server construction chain died and the NC
++    // ConnectivityService family (17 rows) stayed frozen. OpenJDK law
++    // (java.net.URI): create(String) NEVER answers null for a legal
++    // URI — "" IS legal (empty path, no scheme/host); toString() is the
++    // original spelling; getScheme/getHost/getPort/getPath answer the
++    // parsed components (null when absent, OpenJDK contract). Minimal
++    // faithful model: the raw string is the object's identity;
++    // components parsed with the generic RFC3986
++    // scheme://[userinfo@]host[:port]/path split.
++    // ────────────────────────────────────────────────────────────────────
++    if (class_name == "Ljava/net/URI;" &&
++        (method == "create" || method == "URI(") && !args.empty() &&
++        args[0].type == DalvikType::STRING_REF) {
++        uint32_t uid = heap_.allocate("Ljava/net/URI;", pc_,
++            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++        heap_.set_object_field(uid, "__uri__", args[0]);
++        static thread_local uint64_t f586_n = 0;
++        if (f586_n < 8) { ++f586_n;
++            std::cerr << "[F-C4-586] URI.create(\""
++                      << args[0].string_val.substr(0, 48)
++                      << "\") -> o" << uid << " (never-null law)"
++                      << std::endl; }
++        result = DalvikValue::make_object(uid, "Ljava/net/URI;");
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Ljava/net/URI;" && !args.empty() &&
++        args[0].type == DalvikType::OBJECT_REF &&
++        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++        const uint32_t uid = args[0].object_id;
++        // F-C4-586: the `new URI(String)` constructor arm — the receiver
++        // was minted by new-instance; store the spelling on it.
++        if (method == "<init>" && args.size() >= 2 &&
++            args[1].type == DalvikType::STRING_REF) {
++            heap_.set_object_field(uid, "__uri__", args[1]);
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        auto uri_str = [&]() -> std::string {
++            auto v = heap_.get_object_field(uid, "__uri__");
++            return (v.has_value() && v->type == DalvikType::STRING_REF)
++                       ? std::string(v->string_val) : std::string();
++        };
++        if (method == "toString" || method == "toASCIIString") {
++            result = DalvikValue::make_string(uri_str(), 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getScheme" || method == "getHost" ||
++            method == "getPath" || method == "getPort" ||
++            method == "getUserInfo" || method == "getAuthority" ||
++            method == "getFragment" || method == "getQuery") {
++            const std::string u = uri_str();
++            // generic split: scheme://[userinfo@]host[:port]/path[?q][#f]
++            std::string rest = u;
++            std::string scheme;
++            auto sp = rest.find("://");
++            if (sp != std::string::npos) {
++                scheme = rest.substr(0, sp);
++                rest = rest.substr(sp + 3);
++            }
++            std::string query, frag;
++            auto hpos = rest.find('#');
++            if (hpos != std::string::npos) {
++                frag = rest.substr(hpos + 1);
++                rest = rest.substr(0, hpos);
++            }
++            auto qpos = rest.find('?');
++            if (qpos != std::string::npos) {
++                query = rest.substr(qpos + 1);
++                rest = rest.substr(0, qpos);
++            }
++            std::string authority = rest;
++            std::string path;
++            auto ppos = rest.find('/');
++            if (ppos != std::string::npos) {
++                authority = rest.substr(0, ppos);
++                path = rest.substr(ppos);
++            }
++            std::string userinfo, hostport = authority;
++            auto upos = authority.find('@');
++            if (upos != std::string::npos) {
++                userinfo = authority.substr(0, upos);
++                hostport = authority.substr(upos + 1);
++            }
++            std::string host = hostport;
++            int port = -1;
++            auto cpos = hostport.rfind(':');
++            if (cpos != std::string::npos &&
++                hostport.find(']') == std::string::npos) {
++                host = hostport.substr(0, cpos);
++                try { port = std::stoi(hostport.substr(cpos + 1)); }
++                catch (...) { port = -1; }
++            }
++            if (method == "getScheme")
++                result = scheme.empty()
++                    ? DalvikValue::make_null()
++                    : DalvikValue::make_string(scheme, 0);
++            else if (method == "getHost")
++                result = host.empty()
++                    ? DalvikValue::make_null()
++                    : DalvikValue::make_string(host, 0);
++            else if (method == "getPath")
++                result = DalvikValue::make_string(path, 0);
++            else if (method == "getPort")
++                result = DalvikValue::make_int(port);
++            else if (method == "getUserInfo")
++                result = userinfo.empty()
++                    ? DalvikValue::make_null()
++                    : DalvikValue::make_string(userinfo, 0);
++            else if (method == "getAuthority")
++                result = authority.empty()
++                    ? DalvikValue::make_null()
++                    : DalvikValue::make_string(authority, 0);
++            else if (method == "getFragment")
++                result = frag.empty()
++                    ? DalvikValue::make_null()
++                    : DalvikValue::make_string(frag, 0);
++            else  // getQuery
++                result = query.empty()
++                    ? DalvikValue::make_null()
++                    : DalvikValue::make_string(query, 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "equals" && args.size() >= 2 &&
++            args[1].type == DalvikType::OBJECT_REF &&
++            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
++            auto v2 = heap_.get_object_field(args[1].object_id, "__uri__");
++            const bool eq = v2.has_value() &&
++                            v2->type == DalvikType::STRING_REF &&
++                            std::string(v2->string_val) == uri_str();
++            result = DalvikValue::make_bool(eq);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++    if (class_name == "Ljava/util/Optional;") {
++        auto mk_opt = [&](const DalvikValue& v,
++                          bool present) -> DalvikValue {
++            uint32_t opt = heap_.allocate("Ljava/util/Optional;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            heap_.set_object_field(opt, "__present__",
++                DalvikValue::make_int(present ? 1 : 0));
++            heap_.set_object_field(opt, "__value__", v);
++            return DalvikValue::make_object(opt, "Ljava/util/Optional;");
++        };
++        if (method == "of" && args.size() >= 1) {
++            result = mk_opt(args[0], true);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "ofNullable" && args.size() >= 1) {
++            const bool present = !(args[0].is_null ||
++                (args[0].type == DalvikType::NULL_REF));
++            result = mk_opt(args[0], present);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "empty") {
++            result = mk_opt(DalvikValue::make_null(), false);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if ((method == "isPresent" || method == "isEmpty") &&
++            !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
++            auto pv = heap_.get_object_field(args[0].object_id,
++                                             "__present__");
++            const bool p = (pv.has_value() && pv->type == DalvikType::INT32)
++                               ? (pv->int_val != 0) : false;
++            result = DalvikValue::make_bool(
++                method == "isPresent" ? p : !p);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "get" && !args.empty() &&
++            args[0].type == DalvikType::OBJECT_REF) {
++            auto vv = heap_.get_object_field(args[0].object_id, "__value__");
++            result = vv.value_or(DalvikValue::make_null());
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "orElse" && args.size() >= 2 &&
++            args[0].type == DalvikType::OBJECT_REF) {
++            auto pv = heap_.get_object_field(args[0].object_id,
++                                             "__present__");
++            const bool p = (pv.has_value() && pv->type == DalvikType::INT32)
++                               ? (pv->int_val != 0) : false;
++            if (p) {
++                auto vv = heap_.get_object_field(args[0].object_id,
++                                                 "__value__");
++                result = vv.value_or(DalvikValue::make_null());
++            } else {
++                result = args[1];
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
+     // L5 (F-NEW-533, CONT-35 census): javax.net.SocketFactory /
+     // javax.net.ssl.SSLSocketFactory — OpenJDK contract: getDefault()
+     // NEVER answers null (JCA: a default factory is demand-created from
+@@ -34495,8 +35052,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     //     drain boundary (never an in-body spin);
+     //   - poll/peek answer null when empty (non-blocking contract).
+     // ────────────────────────────────────────────────────────────────────
+-    if ((class_name == "Ljava/util/concurrent/ArrayBlockingQueue;" ||
+-         class_name == "Ljava/util/concurrent/LinkedBlockingQueue;") &&
++    // F-C4-578 (W9): BLOCKING-QUEUE FAMILY law — PriorityBlockingQueue,
++    // LinkedTransferQueue, SynchronousQueue and DelayQueue join
++    // Array/LinkedBlockingQueue. ROOT (live, TB v24 census 32→29-row
++    // VirtualMachineError family): K-9's internal command thread
++    // (MessagingController$1.run, R8-merged) loops on
++    // PriorityBlockingQueue.take() at PC=0x193 — the opcode there IS
++    // const/4 (0x12), matching the F084 halt message verbatim; PBQ was
++    // NOT in the F-NEW-167 family list, so take() fell to the typed-null
++    // default → `if-eqz v0 → 0x193` re-looped 50,001× → F084
++    // VirtualMachineError wrapped every MessagingController Koin
++    // resolution. AOSP law (java.util.concurrent.PriorityBlockingQueue /
++    // BlockingQueue.take): "retrieves and removes the head of this queue,
++    // waiting if necessary until an element becomes available" — the
++    // SAME park contract F-NEW-167 established for Array/Linked. Take
++    // ordering: PBQ is an unbounded binary heap with natural/comparator
++    // ordering — when elements are DEX-Comparable, take() serves the
++    // compareTo-minimum (recursive invoke, the F-C4-564 discipline);
++    // non-Comparable elements fall back to FIFO (honest approximation,
++    // bounded evidence line).
++    // ────────────────────────────────────────────────────────────────────
++    const bool f578_family =
++        class_name == "Ljava/util/concurrent/ArrayBlockingQueue;" ||
++        class_name == "Ljava/util/concurrent/LinkedBlockingQueue;" ||
++        class_name == "Ljava/util/concurrent/PriorityBlockingQueue;" ||
++        class_name == "Ljava/util/concurrent/LinkedTransferQueue;" ||
++        class_name == "Ljava/util/concurrent/SynchronousQueue;" ||
++        class_name == "Ljava/util/concurrent/DelayQueue;";
++    if (f578_family &&
+         !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+         args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+         const uint32_t bq = args[0].object_id;
+@@ -34565,13 +35148,77 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                               << "." << current_method_
+                               << " (AOSP take-blocking law)" << std::endl;
+                 }
++                // F-C4-578 evidence line (bounded): the newly covered
++                // family members log their own tag so the W9 VERIFY can
++                // grep them apart from the F-NEW-167 rows.
++                if (class_name !=
++                    "Ljava/util/concurrent/ArrayBlockingQueue;") {
++                    static thread_local uint64_t f578_log = 0;
++                    if (f578_log < 12) {
++                        ++f578_log;
++                        std::cerr << "[F-C4-578] " << class_name
++                                  << ".take empty → park-yield at "
++                                  << current_class_ << "." << current_method_
++                                  << std::endl;
++                    }
++                }
+                 status = ApiCallTrace::Status::IMPLEMENTED;
+                 result = DalvikValue::make_null();
+                 return true;
+             }
+-            // dequeue head + shift the FIFO left
+-            auto head = bq_read_slot(0);
+-            for (int i = 1; i < n; ++i) {
++            // dequeue: FIFO for Array/Linked/Transfer/Synchronous/Delay;
++            // PRIORITY order (compareTo-minimum) for PriorityBlockingQueue
++            // when the elements are DEX-Comparable (AOSP PBQ = heap with
++            // natural ordering) — F-C4-578.
++            int pick = 0;
++            if (class_name == "Ljava/util/concurrent/PriorityBlockingQueue;" &&
++                n > 1) {
++                auto cmp_class_of = [&](int idx) -> std::string {
++                    auto v = bq_read_slot(idx);
++                    if (!v.has_value() ||
++                        v->type != DalvikType::OBJECT_REF ||
++                        v->object_id == 0 ||
++                        !heap_.has_object(v->object_id))
++                        return std::string();
++                    return std::string(
++                        heap_.get(v->object_id)->class_descriptor);
++                };
++                const std::string pick_cls = cmp_class_of(0);
++                // Bounded selection: at most 32 compareTo probes per take
++                // (the serialized engine's queue depths are small; AOSP
++                // heap semantics preserved for the observable head).
++                bool used_compare_to = false;
++                for (int i = 1;
++                     i < n && i < 32 && !pick_cls.empty(); ++i) {
++                    const std::string ci = cmp_class_of(i);
++                    if (ci != pick_cls) continue;  // homogeneous comparisons only
++                    DalvikValue cmp_rv;
++                    DalvikExecutionResult cmp_res;
++                    std::vector<DalvikValue> cmp_args;
++                    cmp_args.push_back(bq_read_slot(pick)
++                                           .value_or(DalvikValue::make_null()));
++                    cmp_args.push_back(bq_read_slot(i)
++                                           .value_or(DalvikValue::make_null()));
++                    bool ok = try_recursive_invoke(
++                        pick_cls, "compareTo", cmp_args, cmp_rv, cmp_res,
++                        "(Ljava/lang/Object;)I");
++                    if (!ok) {
++                        // fall back to the super declaration
++                        // (java.lang.Comparable) — the F-074 walk.
++                        ok = try_recursive_invoke_on_super(
++                            pick_cls, "compareTo", cmp_args, cmp_rv, cmp_res,
++                            "(Ljava/lang/Object;)I");
++                    }
++                    if (ok && cmp_rv.type == DalvikType::INT32 &&
++                        cmp_rv.int_val > 0) {
++                        pick = i;
++                        used_compare_to = true;
++                    }
++                }
++                (void)used_compare_to;
++            }
++            auto head = bq_read_slot(pick);
++            for (int i = pick + 1; i < n; ++i) {
+                 auto v = bq_read_slot(i);
+                 bq_write_slot(i - 1, v.value_or(DalvikValue::make_null()));
+             }
+@@ -36720,6 +37367,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                         !ref->string_val.empty())
+                         probe_desc = ref->string_val;
+                 }
++                // ── F-C4-579 (W9): RUNTIME-CLASS RESOLUTION law ──
++                // ROOT (live, MINIANDROID_CLASS_LAW_TRACE on NC v35.0.2):
++                // Room's validateTypeConverters membership test calls
++                // ClassReference$Companion.isInstance → Class.isInstance
++                // with the PROVIDED CONVERTER INSTANCE as the probe; the
++                // probe arrived as OBJECT_REF carrying the STATIC type
++                // from List.get ("Ljava/lang/Object;") — the law asked
++                // assignable(Object→OfflineOperationTypeConverter) →
++                // FALSE → "A required type converter … is missing" IAE
++                // killed the ENTIRE NC Dagger graph (27-row family) and
++                // TK's (kg.u, same chain). OpenJDK law (Class.java):
++                // `isInstance(Object obj) { return obj != null &&
++                // isAssignableFrom(obj.getClass()); }` — the RUNTIME
++                // class, never the static type. Resolve the heap object's
++                // class_descriptor (the runtime class ART would report
++                // for getClass()) for every non-token probe object.
++                else if (probe_obj &&
++                         !probe_obj->class_descriptor.empty() &&
++                         probe_desc != probe_obj->class_descriptor) {
++                    probe_desc = std::string(probe_obj->class_descriptor);
++                }
+             }
+             if (!probe_desc.empty()) {
+                 // isInstance: token.isInstance(value) → assignable(value→token)
+@@ -48684,11 +49352,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             method == "removeOnAccountsUpdatedListener" ||
+             method == "invalidateAuthToken" || method == "setAuthToken" ||
+             method == "getAuthToken" || method == "blockingGetAuthToken") {
+-            // no accounts on this device profile: empty/null results (AOSP
+-            // returns an empty array, never null, for getAccountsByType)
++            // ── F-C4-583 (W9): NEVER-NULL EMPTY-ARRAY law ──
++            // ROOT (live, NC v35.0.2, post-Room-fix census): the OLD code
++            // answered null with the note "callers null-guard" — NC's
++            // UserAccountManagerImpl.getAllUsers does `array-length` on
++            // the result at pc=6 → ARR-LEN-NULL NPE → getUser() family
++            // died → ConnectivityKey$Companion.getBy (Kotlin non-null
++            // User) NPE → ConnectivityServiceImpl ctor → the ENTIRE
++            // 20+ row NC Dagger graph (injectMainApp + two provider
++            // chains). AOSP law (AccountManagerService): with zero
++            // accounts on the profile, getAccounts/getAccountsByType
++            // answer `new Account[0]` — NEVER null. Real NC then falls
++            // back to its own User.empty() anonymous user exactly as it
++            // does on a fresh install on real hardware.
+             if (method == "getAccountsByType" || method == "getAccounts" ||
+                 method == "getAccountsByTypeAndFeatures") {
+-                result = DalvikValue::make_null();  // callers null-guard
++                uint32_t arr = heap_.allocate(
++                    "[Landroid/accounts/Account;", pc_,
++                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++                heap_.set_object_field(arr, "__array_length__",
++                                       DalvikValue::make_int(0));
++                static thread_local uint64_t f583_n = 0;
++                if (f583_n < 8) { ++f583_n;
++                    std::cerr << "[F-C4-583] " << method
++                              << " -> empty Account[0] (never-null law)"
++                              << std::endl; }
++                result = DalvikValue::make_object(
++                    arr, "[Landroid/accounts/Account;");
+             } else if (method.find("Listener") != std::string::npos) {
+                 result = DalvikValue::make_void();
+             } else {
+@@ -69508,6 +70198,54 @@ measure_cm_done:;
+                 status = ApiCallTrace::Status::IMPLEMENTED;
+                 return true;
+             }
++            // ────────────────────────────────────────────────────────────
++            // F-C4-580 (W9): String.matches(String) law — OpenJDK
++            // String.java: `public boolean matches(String regex) {
++            // return Pattern.matches(regex, this); }` — the FULL-INPUT
++            // regex match, the same F-104 std::regex ECMAScript engine
++            // Pattern/Matcher already use. ROOT (live, NC v35.0.2): gson's
++            // FormattingStyle.<clinit> validates its constants with
++            // newline.matches("[\\n\\r]*") — NO String bridge arm
++            // existed, so matches() answered the typed-zero default
++            // (false) EVEN FOR THE EMPTY STRING ("" vs "[\n\r]*" is
++            // trivially true on any real engine — Kleene-* matches the
++            // empty word) → IAE "Only combinations of \n and \r are
++            // allowed in newline." → FormattingStyle.<clinit> died →
++            // GsonBuilder.<clinit> died (12-frame family). Empty regex
++            // edge (OpenJDK): only the empty input matches.
++            // ────────────────────────────────────────────────────────────
++            if (method == "matches" && args.size() >= 2 &&
++                args[1].type == DalvikType::STRING_REF) {
++                const std::string& rx = args[1].string_val;
++                bool m = false;
++                if (rx.empty()) {
++                    m = sv.empty();
++                } else {
++                    try {
++                        std::regex f580_re(rx, std::regex::ECMAScript);
++                        m = std::regex_match(sv, f580_re);
++                    } catch (const std::regex_error& e) {
++                        static thread_local uint64_t f580_err = 0;
++                        if (f580_err < 8) {
++                            ++f580_err;
++                            std::cerr << "[F-C4-580] regex error for \""
++                                      << rx.substr(0, 60) << "\": "
++                                      << e.what() << std::endl;
++                        }
++                        m = false;
++                    }
++                }
++                static thread_local uint64_t f580_log = 0;
++                if (f580_log < 12) {
++                    ++f580_log;
++                    std::cerr << "[F-C4-580] matches(rx=\"" << rx.substr(0, 40)
++                              << "\", s=\"" << sv.substr(0, 24) << "\") -> "
++                              << (m ? "true" : "false") << std::endl;
++                }
++                result = DalvikValue::make_bool(m);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
+             if (method == "equalsIgnoreCase" && args.size() >= 2) {
+                 bool eq = false;
+                 if (args[1].type == DalvikType::STRING_REF &&
+diff --git a/miniandroid/src/jni/dlopen_exec.cpp b/miniandroid/src/jni/dlopen_exec.cpp
+index cc5762d..e39a897 100644
+--- a/miniandroid/src/jni/dlopen_exec.cpp
++++ b/miniandroid/src/jni/dlopen_exec.cpp
+@@ -228,7 +228,9 @@ void arena_clear() {
+ }
+ 
+ // ── JNI function table (spec slot indices) ─────────────────────────────
+-constexpr int kJniSlots = 181;
++// F-C4-581 (W9): 181 → 240 — the spec table runs past 228 (ExceptionCheck);
++// the old bound silently capped the spec-exact wiring above it.
++constexpr int kJniSlots = 240;
+ void* g_jni_table[kJniSlots];
+ struct JNIEnvStub {
+     void* functions;
+@@ -334,37 +336,163 @@ int jni_AttachCurrentThread(void*, void** env, void*) {
+ int jni_DetachCurrentThread(void*) { return 0; }
+ int jni_DestroyJavaVM(void*) { return 0; }
+ 
++// ─────────────────────────────────────────────────────────────────────
++// F-C4-581 (W9): JNI REFLECTION-ID LAW — GetMethodID / GetStaticMethodID
++// / GetFieldID / GetStaticFieldID. ROOT (live, ConnectBot v1.11.1 census
++// ×5 UnsatisfiedLinkError family; harness + objdump on the APK's own
++// libconscrypt_jni.so): conscrypt's JNI_OnLoad resolves
++// `call *0xa8(%rax)` = slot 33 (GetMethodID) and `call *0x2f0(%rax)` =
++// slot 94 (GetFieldID); the bridge had NEITHER filled — both hit the
++// loud UNSUPPORTED stub → 0 → conscrypt logged "could not find field
++// address" (its own string is "could not find field %s") → deref of the
++// null id → SIGSEGV → FIX-TTT guard → UnsatisfiedLinkError at
++// OpenSSLProvider.<init>. JNI law (jni.h): the ID lookups NEVER answer
++// null for a resolvable member; the returned id must be STABLE per
++// (class, name, signature). Implementation: interned opaque handles
++// (box_string of a coded record), so a future Call*Method layer can
++// decode (class, member, signature) from the id verbatim.
++// ─────────────────────────────────────────────────────────────────────
++static void* jni_intern_id(const std::string& key) {
++    static std::map<std::string, std::string*> id_pool;
++    auto it = id_pool.find(key);
++    if (it == id_pool.end()) {
++        std::string* p = box_string(key);
++        it = id_pool.emplace(key, p).first;
++    }
++    return it->second;
++}
++static std::string jni_class_name_of(void* jcls) {
++    if (!jcls) return std::string();
++    // box_string jclass: the payload IS the binary class name.
++    return *static_cast<std::string*>(jcls);
++}
++static void* jni_GetMethodID(void*, void* jcls, const char* name,
++                             const char* sig) {
++    if (!name || !sig) return nullptr;
++    static thread_local uint64_t f581_m = 0;
++    if (f581_m < 12) { ++f581_m;
++        fprintf(stderr, "[F-C4-581] GetMethodID(%s, %s%s) -> id\n",
++                jni_class_name_of(jcls).c_str(), name, sig); }
++    return jni_intern_id("M:" + jni_class_name_of(jcls) + "|" + name +
++                         "|" + sig);
++}
++static void* jni_GetStaticMethodID(void*, void* jcls, const char* name,
++                                   const char* sig) {
++    if (!name || !sig) return nullptr;
++    static thread_local uint64_t f581_sm = 0;
++    if (f581_sm < 12) { ++f581_sm;
++        fprintf(stderr, "[F-C4-581] GetStaticMethodID(%s, %s%s) -> id\n",
++                jni_class_name_of(jcls).c_str(), name, sig); }
++    return jni_intern_id("SM:" + jni_class_name_of(jcls) + "|" + name +
++                         "|" + sig);
++}
++static void* jni_GetFieldID(void*, void* jcls, const char* name,
++                            const char* sig) {
++    if (!name || !sig) return nullptr;
++    static thread_local uint64_t f581_f = 0;
++    if (f581_f < 12) { ++f581_f;
++        fprintf(stderr, "[F-C4-581] GetFieldID(%s, %s%s) -> id\n",
++                jni_class_name_of(jcls).c_str(), name, sig); }
++    return jni_intern_id("F:" + jni_class_name_of(jcls) + "|" + name +
++                         "|" + sig);
++}
++static void* jni_GetStaticFieldID(void*, void* jcls, const char* name,
++                                  const char* sig) {
++    if (!name || !sig) return nullptr;
++    static thread_local uint64_t f581_sf = 0;
++    if (f581_sf < 12) { ++f581_sf;
++        fprintf(stderr, "[F-C4-581] GetStaticFieldID(%s, %s%s) -> id\n",
++                jni_class_name_of(jcls).c_str(), name, sig); }
++    return jni_intern_id("SF:" + jni_class_name_of(jcls) + "|" + name +
++                         "|" + sig);
++}
++// MonitorEnter/MonitorExit: the serialized engine owns all monitors at
++// the DEX layer; native-side enter/exit pairs are answerable 0 (success)
++// — the JNI contract allows nested ownership by the same thread.
++static int jni_MonitorEnter(void*, void*) { return 0; }
++static int jni_MonitorExit(void*, void*) { return 0; }
++// NewString(jchar[], len): JNI law — construct from UTF-16. Minimal
++// BMP-only UTF-8 encoding (the corpus surface is ASCII+CJK BMP).
++static void* jni_NewString(void*, const unsigned short* chars, int len) {
++    if (!chars || len < 0) return nullptr;
++    std::string out;
++    out.reserve(static_cast<size_t>(len));
++    for (int i = 0; i < len; ++i) {
++        unsigned int cp = chars[i];
++        if (cp < 0x80) out.push_back(static_cast<char>(cp));
++        else if (cp < 0x800) {
++            out.push_back(static_cast<char>(0xC0 | (cp >> 6)));
++            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
++        } else {
++            out.push_back(static_cast<char>(0xE0 | (cp >> 12)));
++            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
++            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
++        }
++    }
++    return box_string(out);
++}
++
+ int vm_GetEnv(void* vm, void** env, int version);
+ 
+ void init_tables() {
+     static bool done = false;
+     if (done) return;
+     done = true;
++    // ─────────────────────────────────────────────────────────────────
++    // F-C4-581 (W9): JNI SPEC-TABLE law. The previous wiring filled the
++    // upper table with WRONG slot indices (string family at 113/114/117/
++    // 118/119/120 — the true spec slots are 163/164/167/168/169/170;
++    // RegisterNatives at 163 → true 215; GetJavaVM at 167 → true 219;
++    // ExceptionCheck at 176 → true 228). PROOF (the APK's own
++    // libconscrypt_jni.so, objdump): JNI_OnLoad's calls are
++    // `*0xa8(%rax)` = 33 GetMethodID, `*0xb8(%rax)` = 23 DeleteLocalRef,
++    // `*0x2f0(%rax)` = 94 GetFieldID, `*0x6b8(%rax)` = 215
++    // RegisterNatives — the binary itself pins the spec order (jni.h
++    // JNINativeInterface layout). Every upper-table call a native library
++    // made was being routed to the wrong handler or to the loud
++    // UNSUPPORTED stub: conscrypt's RegisterNatives never landed, its
++    // method/field lookups answered 0 → SIGSEGV. Corrected to the
++    // spec-exact layout below (slots ≤ 31 were already correct).
++    // Blast radius: strictly-positive — the wrong wirings could only
++    // answer nonsense (e.g. a NewString request at true-slot 167 hit the
++    // GetJavaVM handler and got 0 back). The corpus battery re-verifies
++    // maintainer-side (same honest caveat as every wave).
++    // ─────────────────────────────────────────────────────────────────
+     for (int i = 0; i < kJniSlots; ++i)
+         g_jni_table[i] = (void*)&jni_unsupported_slot;
+-    g_jni_table[4] = (void*)&jni_GetVersion;               // GetVersion
+-    g_jni_table[6] = (void*)&jni_FindClass;                // FindClass
+-    g_jni_table[13] = (void*)&jni_Throw;                   // Throw
+-    g_jni_table[14] = (void*)&jni_ThrowNew;                // ThrowNew
+-    g_jni_table[15] = (void*)&jni_ExceptionOccurred;       // ExceptionOccurred
+-    g_jni_table[16] = (void*)&jni_ExceptionDescribe;       // ExceptionDescribe
+-    g_jni_table[17] = (void*)&jni_ExceptionClear;          // ExceptionClear
+-    g_jni_table[18] = (void*)&jni_FatalError;              // FatalError
+-    g_jni_table[21] = (void*)&jni_NewGlobalRef;            // NewGlobalRef
+-    g_jni_table[22] = (void*)&jni_DeleteGlobalRef;         // DeleteGlobalRef
+-    g_jni_table[23] = (void*)&jni_DeleteLocalRef;          // DeleteLocalRef
+-    g_jni_table[25] = (void*)&jni_NewLocalRef;             // NewLocalRef
+-    g_jni_table[31] = (void*)&jni_GetObjectClass;          // GetObjectClass
+-    g_jni_table[113] = (void*)&jni_NewStringUTF;           // NewString
+-    g_jni_table[114] = (void*)&jni_GetStringLength;        // GetStringLength
+-    g_jni_table[117] = (void*)&jni_NewStringUTF;           // NewStringUTF
+-    g_jni_table[118] = (void*)&jni_GetStringUTFLength;     // GetStringUTFLength
+-    g_jni_table[119] = (void*)&jni_GetStringUTFChars;      // GetStringUTFChars
+-    g_jni_table[120] = (void*)&jni_ReleaseStringUTFChars;  // ReleaseStringUTFChars
+-    g_jni_table[163] = (void*)&jni_RegisterNatives;        // RegisterNatives
+-    g_jni_table[164] = (void*)&jni_UnregisterNatives;      // UnregisterNatives
+-    g_jni_table[167] = (void*)&jni_GetJavaVM;              // GetJavaVM
+-    g_jni_table[176] = (void*)&jni_ExceptionCheck;         // ExceptionCheck
++    g_jni_table[4] = (void*)&jni_GetVersion;               // 4 GetVersion
++    g_jni_table[6] = (void*)&jni_FindClass;                // 6 FindClass
++    g_jni_table[13] = (void*)&jni_Throw;                   // 13 Throw
++    g_jni_table[14] = (void*)&jni_ThrowNew;                // 14 ThrowNew
++    g_jni_table[15] = (void*)&jni_ExceptionOccurred;       // 15 ExceptionOccurred
++    g_jni_table[16] = (void*)&jni_ExceptionDescribe;       // 16 ExceptionDescribe
++    g_jni_table[17] = (void*)&jni_ExceptionClear;          // 17 ExceptionClear
++    g_jni_table[18] = (void*)&jni_FatalError;              // 18 FatalError
++    g_jni_table[21] = (void*)&jni_NewGlobalRef;            // 21 NewGlobalRef
++    g_jni_table[22] = (void*)&jni_DeleteGlobalRef;         // 22 DeleteGlobalRef
++    g_jni_table[23] = (void*)&jni_DeleteLocalRef;          // 23 DeleteLocalRef
++    g_jni_table[25] = (void*)&jni_NewLocalRef;             // 25 NewLocalRef
++    g_jni_table[31] = (void*)&jni_GetObjectClass;          // 31 GetObjectClass
++    // F-C4-581: the reflection-ID family — the conscrypt JNI_OnLoad path.
++    g_jni_table[33] = (void*)&jni_GetMethodID;             // 33 GetMethodID
++    g_jni_table[94] = (void*)&jni_GetFieldID;              // 94 GetFieldID
++    g_jni_table[113] = (void*)&jni_GetStaticMethodID;      // 113 GetStaticMethodID
++    g_jni_table[144] = (void*)&jni_GetStaticFieldID;       // 144 GetStaticFieldID
++    // string family — TRUE spec slots (were mis-wired at 113..120).
++    g_jni_table[163] = (void*)&jni_NewString;              // 163 NewString
++    g_jni_table[164] = (void*)&jni_GetStringLength;        // 164 GetStringLength
++    g_jni_table[167] = (void*)&jni_NewStringUTF;           // 167 NewStringUTF
++    g_jni_table[168] = (void*)&jni_GetStringUTFLength;     // 168 GetStringUTFLength
++    g_jni_table[169] = (void*)&jni_GetStringUTFChars;      // 169 GetStringUTFChars
++    g_jni_table[170] = (void*)&jni_ReleaseStringUTFChars;  // 170 ReleaseStringUTFChars
++    // registration + VM family — TRUE spec slots (were mis-wired at
++    // 163/164/167/176).
++    g_jni_table[215] = (void*)&jni_RegisterNatives;        // 215 RegisterNatives
++    g_jni_table[216] = (void*)&jni_UnregisterNatives;      // 216 UnregisterNatives
++    g_jni_table[217] = (void*)&jni_MonitorEnter;           // 217 MonitorEnter
++    g_jni_table[218] = (void*)&jni_MonitorExit;            // 218 MonitorExit
++    g_jni_table[219] = (void*)&jni_GetJavaVM;              // 219 GetJavaVM
++    g_jni_table[228] = (void*)&jni_ExceptionCheck;         // 228 ExceptionCheck
+     for (int i = 0; i < kVmSlots; ++i)
+         g_vm_table[i] = (void*)&jni_unsupported_slot;
+     g_vm_table[3] = (void*)&jni_DestroyJavaVM;             // DestroyJavaVM

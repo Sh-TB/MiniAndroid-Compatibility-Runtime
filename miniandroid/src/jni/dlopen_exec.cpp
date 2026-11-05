@@ -228,7 +228,9 @@ void arena_clear() {
 }
 
 // ── JNI function table (spec slot indices) ─────────────────────────────
-constexpr int kJniSlots = 181;
+// F-C4-581 (W9): 181 → 240 — the spec table runs past 228 (ExceptionCheck);
+// the old bound silently capped the spec-exact wiring above it.
+constexpr int kJniSlots = 240;
 void* g_jni_table[kJniSlots];
 struct JNIEnvStub {
     void* functions;
@@ -334,37 +336,163 @@ int jni_AttachCurrentThread(void*, void** env, void*) {
 int jni_DetachCurrentThread(void*) { return 0; }
 int jni_DestroyJavaVM(void*) { return 0; }
 
+// ─────────────────────────────────────────────────────────────────────
+// F-C4-581 (W9): JNI REFLECTION-ID LAW — GetMethodID / GetStaticMethodID
+// / GetFieldID / GetStaticFieldID. ROOT (live, ConnectBot v1.11.1 census
+// ×5 UnsatisfiedLinkError family; harness + objdump on the APK's own
+// libconscrypt_jni.so): conscrypt's JNI_OnLoad resolves
+// `call *0xa8(%rax)` = slot 33 (GetMethodID) and `call *0x2f0(%rax)` =
+// slot 94 (GetFieldID); the bridge had NEITHER filled — both hit the
+// loud UNSUPPORTED stub → 0 → conscrypt logged "could not find field
+// address" (its own string is "could not find field %s") → deref of the
+// null id → SIGSEGV → FIX-TTT guard → UnsatisfiedLinkError at
+// OpenSSLProvider.<init>. JNI law (jni.h): the ID lookups NEVER answer
+// null for a resolvable member; the returned id must be STABLE per
+// (class, name, signature). Implementation: interned opaque handles
+// (box_string of a coded record), so a future Call*Method layer can
+// decode (class, member, signature) from the id verbatim.
+// ─────────────────────────────────────────────────────────────────────
+static void* jni_intern_id(const std::string& key) {
+    static std::map<std::string, std::string*> id_pool;
+    auto it = id_pool.find(key);
+    if (it == id_pool.end()) {
+        std::string* p = box_string(key);
+        it = id_pool.emplace(key, p).first;
+    }
+    return it->second;
+}
+static std::string jni_class_name_of(void* jcls) {
+    if (!jcls) return std::string();
+    // box_string jclass: the payload IS the binary class name.
+    return *static_cast<std::string*>(jcls);
+}
+static void* jni_GetMethodID(void*, void* jcls, const char* name,
+                             const char* sig) {
+    if (!name || !sig) return nullptr;
+    static thread_local uint64_t f581_m = 0;
+    if (f581_m < 12) { ++f581_m;
+        fprintf(stderr, "[F-C4-581] GetMethodID(%s, %s%s) -> id\n",
+                jni_class_name_of(jcls).c_str(), name, sig); }
+    return jni_intern_id("M:" + jni_class_name_of(jcls) + "|" + name +
+                         "|" + sig);
+}
+static void* jni_GetStaticMethodID(void*, void* jcls, const char* name,
+                                   const char* sig) {
+    if (!name || !sig) return nullptr;
+    static thread_local uint64_t f581_sm = 0;
+    if (f581_sm < 12) { ++f581_sm;
+        fprintf(stderr, "[F-C4-581] GetStaticMethodID(%s, %s%s) -> id\n",
+                jni_class_name_of(jcls).c_str(), name, sig); }
+    return jni_intern_id("SM:" + jni_class_name_of(jcls) + "|" + name +
+                         "|" + sig);
+}
+static void* jni_GetFieldID(void*, void* jcls, const char* name,
+                            const char* sig) {
+    if (!name || !sig) return nullptr;
+    static thread_local uint64_t f581_f = 0;
+    if (f581_f < 12) { ++f581_f;
+        fprintf(stderr, "[F-C4-581] GetFieldID(%s, %s%s) -> id\n",
+                jni_class_name_of(jcls).c_str(), name, sig); }
+    return jni_intern_id("F:" + jni_class_name_of(jcls) + "|" + name +
+                         "|" + sig);
+}
+static void* jni_GetStaticFieldID(void*, void* jcls, const char* name,
+                                  const char* sig) {
+    if (!name || !sig) return nullptr;
+    static thread_local uint64_t f581_sf = 0;
+    if (f581_sf < 12) { ++f581_sf;
+        fprintf(stderr, "[F-C4-581] GetStaticFieldID(%s, %s%s) -> id\n",
+                jni_class_name_of(jcls).c_str(), name, sig); }
+    return jni_intern_id("SF:" + jni_class_name_of(jcls) + "|" + name +
+                         "|" + sig);
+}
+// MonitorEnter/MonitorExit: the serialized engine owns all monitors at
+// the DEX layer; native-side enter/exit pairs are answerable 0 (success)
+// — the JNI contract allows nested ownership by the same thread.
+static int jni_MonitorEnter(void*, void*) { return 0; }
+static int jni_MonitorExit(void*, void*) { return 0; }
+// NewString(jchar[], len): JNI law — construct from UTF-16. Minimal
+// BMP-only UTF-8 encoding (the corpus surface is ASCII+CJK BMP).
+static void* jni_NewString(void*, const unsigned short* chars, int len) {
+    if (!chars || len < 0) return nullptr;
+    std::string out;
+    out.reserve(static_cast<size_t>(len));
+    for (int i = 0; i < len; ++i) {
+        unsigned int cp = chars[i];
+        if (cp < 0x80) out.push_back(static_cast<char>(cp));
+        else if (cp < 0x800) {
+            out.push_back(static_cast<char>(0xC0 | (cp >> 6)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else {
+            out.push_back(static_cast<char>(0xE0 | (cp >> 12)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        }
+    }
+    return box_string(out);
+}
+
 int vm_GetEnv(void* vm, void** env, int version);
 
 void init_tables() {
     static bool done = false;
     if (done) return;
     done = true;
+    // ─────────────────────────────────────────────────────────────────
+    // F-C4-581 (W9): JNI SPEC-TABLE law. The previous wiring filled the
+    // upper table with WRONG slot indices (string family at 113/114/117/
+    // 118/119/120 — the true spec slots are 163/164/167/168/169/170;
+    // RegisterNatives at 163 → true 215; GetJavaVM at 167 → true 219;
+    // ExceptionCheck at 176 → true 228). PROOF (the APK's own
+    // libconscrypt_jni.so, objdump): JNI_OnLoad's calls are
+    // `*0xa8(%rax)` = 33 GetMethodID, `*0xb8(%rax)` = 23 DeleteLocalRef,
+    // `*0x2f0(%rax)` = 94 GetFieldID, `*0x6b8(%rax)` = 215
+    // RegisterNatives — the binary itself pins the spec order (jni.h
+    // JNINativeInterface layout). Every upper-table call a native library
+    // made was being routed to the wrong handler or to the loud
+    // UNSUPPORTED stub: conscrypt's RegisterNatives never landed, its
+    // method/field lookups answered 0 → SIGSEGV. Corrected to the
+    // spec-exact layout below (slots ≤ 31 were already correct).
+    // Blast radius: strictly-positive — the wrong wirings could only
+    // answer nonsense (e.g. a NewString request at true-slot 167 hit the
+    // GetJavaVM handler and got 0 back). The corpus battery re-verifies
+    // maintainer-side (same honest caveat as every wave).
+    // ─────────────────────────────────────────────────────────────────
     for (int i = 0; i < kJniSlots; ++i)
         g_jni_table[i] = (void*)&jni_unsupported_slot;
-    g_jni_table[4] = (void*)&jni_GetVersion;               // GetVersion
-    g_jni_table[6] = (void*)&jni_FindClass;                // FindClass
-    g_jni_table[13] = (void*)&jni_Throw;                   // Throw
-    g_jni_table[14] = (void*)&jni_ThrowNew;                // ThrowNew
-    g_jni_table[15] = (void*)&jni_ExceptionOccurred;       // ExceptionOccurred
-    g_jni_table[16] = (void*)&jni_ExceptionDescribe;       // ExceptionDescribe
-    g_jni_table[17] = (void*)&jni_ExceptionClear;          // ExceptionClear
-    g_jni_table[18] = (void*)&jni_FatalError;              // FatalError
-    g_jni_table[21] = (void*)&jni_NewGlobalRef;            // NewGlobalRef
-    g_jni_table[22] = (void*)&jni_DeleteGlobalRef;         // DeleteGlobalRef
-    g_jni_table[23] = (void*)&jni_DeleteLocalRef;          // DeleteLocalRef
-    g_jni_table[25] = (void*)&jni_NewLocalRef;             // NewLocalRef
-    g_jni_table[31] = (void*)&jni_GetObjectClass;          // GetObjectClass
-    g_jni_table[113] = (void*)&jni_NewStringUTF;           // NewString
-    g_jni_table[114] = (void*)&jni_GetStringLength;        // GetStringLength
-    g_jni_table[117] = (void*)&jni_NewStringUTF;           // NewStringUTF
-    g_jni_table[118] = (void*)&jni_GetStringUTFLength;     // GetStringUTFLength
-    g_jni_table[119] = (void*)&jni_GetStringUTFChars;      // GetStringUTFChars
-    g_jni_table[120] = (void*)&jni_ReleaseStringUTFChars;  // ReleaseStringUTFChars
-    g_jni_table[163] = (void*)&jni_RegisterNatives;        // RegisterNatives
-    g_jni_table[164] = (void*)&jni_UnregisterNatives;      // UnregisterNatives
-    g_jni_table[167] = (void*)&jni_GetJavaVM;              // GetJavaVM
-    g_jni_table[176] = (void*)&jni_ExceptionCheck;         // ExceptionCheck
+    g_jni_table[4] = (void*)&jni_GetVersion;               // 4 GetVersion
+    g_jni_table[6] = (void*)&jni_FindClass;                // 6 FindClass
+    g_jni_table[13] = (void*)&jni_Throw;                   // 13 Throw
+    g_jni_table[14] = (void*)&jni_ThrowNew;                // 14 ThrowNew
+    g_jni_table[15] = (void*)&jni_ExceptionOccurred;       // 15 ExceptionOccurred
+    g_jni_table[16] = (void*)&jni_ExceptionDescribe;       // 16 ExceptionDescribe
+    g_jni_table[17] = (void*)&jni_ExceptionClear;          // 17 ExceptionClear
+    g_jni_table[18] = (void*)&jni_FatalError;              // 18 FatalError
+    g_jni_table[21] = (void*)&jni_NewGlobalRef;            // 21 NewGlobalRef
+    g_jni_table[22] = (void*)&jni_DeleteGlobalRef;         // 22 DeleteGlobalRef
+    g_jni_table[23] = (void*)&jni_DeleteLocalRef;          // 23 DeleteLocalRef
+    g_jni_table[25] = (void*)&jni_NewLocalRef;             // 25 NewLocalRef
+    g_jni_table[31] = (void*)&jni_GetObjectClass;          // 31 GetObjectClass
+    // F-C4-581: the reflection-ID family — the conscrypt JNI_OnLoad path.
+    g_jni_table[33] = (void*)&jni_GetMethodID;             // 33 GetMethodID
+    g_jni_table[94] = (void*)&jni_GetFieldID;              // 94 GetFieldID
+    g_jni_table[113] = (void*)&jni_GetStaticMethodID;      // 113 GetStaticMethodID
+    g_jni_table[144] = (void*)&jni_GetStaticFieldID;       // 144 GetStaticFieldID
+    // string family — TRUE spec slots (were mis-wired at 113..120).
+    g_jni_table[163] = (void*)&jni_NewString;              // 163 NewString
+    g_jni_table[164] = (void*)&jni_GetStringLength;        // 164 GetStringLength
+    g_jni_table[167] = (void*)&jni_NewStringUTF;           // 167 NewStringUTF
+    g_jni_table[168] = (void*)&jni_GetStringUTFLength;     // 168 GetStringUTFLength
+    g_jni_table[169] = (void*)&jni_GetStringUTFChars;      // 169 GetStringUTFChars
+    g_jni_table[170] = (void*)&jni_ReleaseStringUTFChars;  // 170 ReleaseStringUTFChars
+    // registration + VM family — TRUE spec slots (were mis-wired at
+    // 163/164/167/176).
+    g_jni_table[215] = (void*)&jni_RegisterNatives;        // 215 RegisterNatives
+    g_jni_table[216] = (void*)&jni_UnregisterNatives;      // 216 UnregisterNatives
+    g_jni_table[217] = (void*)&jni_MonitorEnter;           // 217 MonitorEnter
+    g_jni_table[218] = (void*)&jni_MonitorExit;            // 218 MonitorExit
+    g_jni_table[219] = (void*)&jni_GetJavaVM;              // 219 GetJavaVM
+    g_jni_table[228] = (void*)&jni_ExceptionCheck;         // 228 ExceptionCheck
     for (int i = 0; i < kVmSlots; ++i)
         g_vm_table[i] = (void*)&jni_unsupported_slot;
     g_vm_table[3] = (void*)&jni_DestroyJavaVM;             // DestroyJavaVM

@@ -1,0 +1,147 @@
+{
+ "ref_bin": "991d89239e69c679",
+ "new_bin": "4bb7c4d424923b87",
+ "chain": {
+  "base": "69c871e4 (S168)",
+  "w8_laws_sha16": "5562609d0c3e30f3",
+  "w9_laws_sha16": "b708b8460eac637c"
+ },
+ "acceptance": {
+  "tb": {
+   "ref": {
+    "vme": 50,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 0,
+    "register_natives": 0,
+    "ndfe": 7,
+    "uncaught": 33
+   },
+   "new": {
+    "vme": 0,
+    "f578": 8,
+    "f574": 20,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 0,
+    "register_natives": 0,
+    "ndfe": 7,
+    "uncaught": 4
+   },
+   "ref_state": null,
+   "new_state": null,
+   "face_equal": true
+  },
+  "nc": {
+   "ref": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 7,
+    "f581": 0,
+    "register_natives": 0,
+    "ndfe": 0,
+    "uncaught": 39
+   },
+   "new": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 18,
+    "register_natives": 337,
+    "ndfe": 0,
+    "uncaught": 32
+   },
+   "ref_state": null,
+   "new_state": null,
+   "face_equal": true
+  },
+  "tk": {
+   "ref": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 7,
+    "f581": 0,
+    "register_natives": 0,
+    "ndfe": 0,
+    "uncaught": 23
+   },
+   "new": {
+    "vme": 34,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 9,
+    "register_natives": 288,
+    "ndfe": 0,
+    "uncaught": 33
+   },
+   "ref_state": null,
+   "new_state": null,
+   "face_equal": true
+  },
+  "cb": {
+   "ref": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 11,
+    "f581": 0,
+    "register_natives": 0,
+    "ndfe": 0,
+    "uncaught": 6
+   },
+   "new": {
+    "vme": 0,
+    "f578": 0,
+    "f574": 0,
+    "upgrade_failed": 0,
+    "converter_iae": 0,
+    "gson_iae": 0,
+    "ule": 0,
+    "f581": 18,
+    "register_natives": 345,
+    "ndfe": 0,
+    "uncaught": 1
+   },
+   "ref_state": null,
+   "new_state": null,
+   "face_equal": true
+  }
+ },
+ "anchors": {
+  "microtimer": {
+   "delta_inert": true,
+   "pin_match": true
+  },
+  "g2048": {
+   "delta_inert": true
+  },
+  "opencalc": {
+   "delta_inert": true
+  }
+ }
+}
