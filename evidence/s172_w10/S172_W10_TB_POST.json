@@ -1,0 +1,38 @@
+{
+ "tag": "tb_post",
+ "bin": "fea1759d58653d41",
+ "wall_s": 9.0,
+ "stderr_sha16": "539c8f2fea3c1c5f",
+ "screenshot_face": "43bfdac6023cba66",
+ "uncaught": 3,
+ "ndfe": 7,
+ "frames": [
+  "9"
+ ],
+ "census": {
+  "uncaught_rows": 3,
+  "ndfe": 7,
+  "npe_unwind": 0,
+  "npe_ncm_lambda": 0,
+  "w10_probe_rows": 3,
+  "w10_law_rows": 1,
+  "f578": 8,
+  "f574": 20,
+  "f581": 0,
+  "f582": 1,
+  "vme": 0,
+  "upgrade_failed": 0,
+  "probe_unhandled_groups": 1,
+  "probe_unhandled_channels": 0,
+  "probe_lines": [
+   "[W10-PROBE] NotificationManager.createNotificationChannel argc=2 status=STUBBED caller=Lcom/fsck/k9/notification/NotificationChannelManager;.$r8$lambda$m3LNel5iYKrrYmwu_gX",
+   "[W10-PROBE] NotificationManager.createNotificationChannel argc=2 status=STUBBED caller=Lcom/fsck/k9/notification/NotificationChannelManager;.$r8$lambda$m3LNel5iYKrrYmwu_gX",
+   "[W10-PROBE] NotificationManager.getNotificationChannelGroups argc=1 status=STUBBED caller=Lcom/fsck/k9/notification/NotificationChannelManager;.$r8$lambda$m3LNel5iYKrrYmwu"
+  ],
+  "law_lines": [
+   "[W10-NCGroups] NotificationManager.getNotificationChannelGroups -> empty ArrayList (AOSP never-null list law) caller=Lcom/fsck/k9/notification/NotificationChannelManager;.$r8"
+  ]
+ },
+ "app_owned_pixels": 0,
+ "api_calls": 11327
+}
