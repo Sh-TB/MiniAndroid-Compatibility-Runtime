@@ -231,6 +231,10 @@ public:
     // Returns 0 when nothing is declared.
     uint32_t resolve_activity_theme(const std::string& apk_path,
                                     const std::string& activity_class);
+    // ── F-C4-565 (W4): the <application android:theme> of the loaded APK
+    // (ActivityInfo.getThemeResource base authority + ContextThemeWrapper
+    // initializeTheme setTo seed — see set_activity_theme). Cached per APK.
+    uint32_t application_theme_resid();
     const Theme* active_activity_theme() const {
         return activity_theme_valid_ ? &activity_theme_ : nullptr;
     }
@@ -367,6 +371,9 @@ private:
     Theme activity_theme_;
     uint32_t activity_theme_resid_ = 0;
     bool activity_theme_valid_ = false;
+    // F-C4-565: cached <application android:theme> resid (per APK).
+    uint32_t app_theme_resid_cache_ = 0;
+    bool app_theme_resid_ready_ = false;
     bool base_theme_valid_ = false;
     bool base_theme_built_ = false;
     // S124 FW-PACKAGE: the ORIGINAL framework resource table (package 0x01).

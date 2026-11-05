@@ -91,11 +91,25 @@ struct GuardedSignal {
 };
 // Saved pre-guard actions (crash-forensics handler) — read by the guard
 // handler's fallback path, written only by install_native_guard.
-GuardedSignal g_guard_saved[2];
+GuardedSignal g_guard_saved[4];
 size_t g_guard_saved_n = 0;
 
-// Installs the guard handlers for SIGSEGV/SIGBUS (saves the previous
-// actions so the engine-wide crash-forensics path survives the guard).
+// Installs the guard handlers for SIGSEGV/SIGBUS/SIGABRT/SIGILL (saves the
+// previous actions so the engine-wide crash-forensics path survives the
+// guard).
+// F-C4-546 (4APP4 W2, Coder-4): SIGABRT joins the guarded set. Live
+// evidence (Tusky 33.1 + ConnectBot 1.11.1-oss at S154 HEAD post-F545):
+// libconscrypt_jni.so dlopen now SUCCEEDS (fortify family bound), its
+// JNI_OnLoad runs against the minimal JNIEnv, a field lookup misses
+// ("NativeCrypto: could not find field address" — GetFieldID is an
+// unimplemented slot) and conscrypt's own CHECK path calls abort() →
+// SIGABRT → the WHOLE RUN died with rc=134 before the engine could raise
+// the AOSP load-failure contract. A native init that aborts inside the
+// guarded handshake is a LIBRARY-vs-BRIDGE contract failure — same law
+// class as the SIGSEGV/SIGBUS arm (FIX-TTT): longjmp back, dlclose,
+// honest UnsatisfiedLinkError; the app's own Conscrypt catch chain then
+// degrades gracefully (OkHttp platform fallback). SIGILL joins for the
+// illegal-instruction variant of the same class.
 void install_native_guard() {
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
@@ -114,7 +128,7 @@ void install_native_guard() {
             sigaction(g_guard_saved[i].sig, &g_guard_saved[i].old, nullptr);
         raise(sig);
     };
-    const int sigs[2] = {SIGSEGV, SIGBUS};
+    const int sigs[4] = {SIGSEGV, SIGBUS, SIGABRT, SIGILL};
     g_guard_saved_n = 0;
     for (int s : sigs)
         if (sigaction(s, &sa, &g_guard_saved[g_guard_saved_n].old) == 0) {

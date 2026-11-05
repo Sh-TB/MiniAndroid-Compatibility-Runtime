@@ -1,0 +1,37 @@
+{
+ "anchors": {
+  "opencalc": {
+   "opencalc_ref": {
+    "tag": "opencalc_ref",
+    "bin": "2a5464c2bf15f9ec",
+    "wall_s": 1.9,
+    "stderr_sha16": "18b7b87cb31c1fd1",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "opencalc_new": {
+    "tag": "opencalc_new",
+    "bin": "53fa8392640d1279",
+    "wall_s": 1.7,
+    "stderr_sha16": "07d8ac599b984e14",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "delta_inert": true
+  }
+ }
+}

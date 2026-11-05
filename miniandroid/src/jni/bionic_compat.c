@@ -72,6 +72,55 @@ int __FD_ISSET_chk(int fd, void* set, size_t set_size) {
     (void)set_size; return FD_ISSET(fd, (fd_set*)set);
 }
 
+/* ── F-C4-545 (4APP4 W2, Coder-4): the bionic fortify STRING family ──
+ * Live evidence (Tusky 33.1 vc145 at S154 HEAD, post F261x/SVC-INIT/F542
+ * wave): libconscrypt_jni.so (sha16 8a6b02c3af4f3249) extracted OK but
+ * dlopen failed on `undefined symbol: __strchr_chk` — the conscrypt
+ * native core (NativeCrypto.cpp evp_aead...) binds the bionic FORTIFY
+ * string helpers. glibc ships the SAME fortify surface for its own
+ * headers but does NOT export the string _chk names for arbitrary
+ * dlopen bind, so every conscrypt-bearing APK (Tusky, Thunderbird,
+ * ConnectBot — the whole OkHttp/Conscrypt ecosystem) dies at the loader.
+ * Semantics follow bionic fortify: the bound is honest-by-construction
+ * (same law as __strlen_chk above) — the glibc primitive under it
+ * cannot read past the real NUL-terminated buffer the caller owns. */
+__attribute__((visibility("default")))
+char* __strchr_chk(const char* s, int c, size_t s_len) {
+    (void)s_len; return strchr(s, c);
+}
+__attribute__((visibility("default")))
+char* __strrchr_chk(const char* s, int c, size_t s_len) {
+    (void)s_len; return strrchr(s, c);
+}
+__attribute__((visibility("default")))
+char* __strcpy_chk(char* dst, const char* src, size_t dst_len) {
+    (void)dst_len; return strcpy(dst, src);
+}
+__attribute__((visibility("default")))
+char* __strncpy_chk(char* dst, const char* src, size_t n, size_t dst_len) {
+    (void)dst_len; return strncpy(dst, src, n);
+}
+__attribute__((visibility("default")))
+char* __strcat_chk(char* dst, const char* src, size_t dst_len) {
+    (void)dst_len; return strcat(dst, src);
+}
+__attribute__((visibility("default")))
+char* __strncat_chk(char* dst, const char* src, size_t n, size_t dst_len) {
+    (void)dst_len; return strncat(dst, src, n);
+}
+__attribute__((visibility("default")))
+char* __stpcpy_chk(char* dst, const char* src, size_t dst_len) {
+    (void)dst_len; return stpcpy(dst, src);
+}
+__attribute__((visibility("default")))
+char* __stpncpy_chk(char* dst, const char* src, size_t n, size_t dst_len) {
+    (void)dst_len; return stpncpy(dst, src, n);
+}
+__attribute__((visibility("default")))
+void* __memchr_chk(const void* s, int c, size_t n, size_t s_len) {
+    (void)s_len; return memchr(s, c, n);
+}
+
 /* T22 (F-NEW-564 support): android_set_abort_message — the bionic libc
  * abort-message surface libtmessages binds. First-party: store the last
  * message (bounded) + one stderr row; abort itself stays glibc. */

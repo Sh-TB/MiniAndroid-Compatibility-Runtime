@@ -975,6 +975,28 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     // is attached" ISE → MainActivity.onCreate died → Compose never
     // composed. Capacity/int-form constructors remain no-ops.
     if (m == "<init>") {
+        // W6 (Coder-4) probe: every collection ctor entry with args —
+        // the hollow-includes-list forensics (F-C4-570 root-pinning).
+        {
+            static thread_local const bool w6c_on =
+                std::getenv("MINIANDROID_W6_CTOR_PROBE") != nullptr;
+            static thread_local uint64_t w6c_n = 0;
+            if (w6c_on && w6c_n++ < 200) {
+                std::cerr << "[W6-CTOR] " << ctx.class_name << ".<init> obj#"
+                          << obj_id << " nargs=" << ctx.args.size();
+                for (size_t w6c_i = 0;
+                     w6c_i < ctx.args.size() && w6c_i < 2; ++w6c_i) {
+                    const auto& w6c_a = ctx.args[w6c_i];
+                    std::cerr << " a" << w6c_i << ":k"
+                              << static_cast<int>(w6c_a.kind)
+                              << "/o" << w6c_a.object_id
+                              << "/c" << (w6c_a.object_class.empty()
+                                              ? std::string("-")
+                                              : w6c_a.object_class);
+                }
+                std::cerr << " caller=" << ctx.caller << std::endl;
+            }
+        }
         // ── F-NEW-236b (fairymahjong F-235 probe face): SET vs MAP family
         // law. OpenJDK HashSet/LinkedHashSet/TreeSet are NOT maps — the old
         // find("Set") clause stamped every set's CollectionState is_map=true,
@@ -2091,6 +2113,44 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
                 return CallResult::handled_int(alen);
         }
+        // ── F-C4-571 (W6, 4APP4): VIEW-DELEGATE SIZE LAW (size sibling —
+        // see the isEmpty law for the full statement + live root). A view
+        // wrapper with no own store answers from its delegate's store.
+        if (state->elements.empty() && heap_) {
+            int32_t f571_self_alen = -1;
+            if (!heap_->get_object_array_length(obj_id, f571_self_alen)) {
+                auto f571_names = heap_->get_object_field_names(obj_id);
+                for (const auto& f571_fname : f571_names) {
+                    uint32_t f571_d = 0;
+                    if (!heap_->get_object_ref_field(obj_id, f571_fname,
+                                                     f571_d) ||
+                        f571_d == 0 || f571_d == obj_id)
+                        continue;
+                    auto* f571_dst = get_or_create(f571_d, false);
+                    int32_t f571_dlen = -1;
+                    bool f571_has_store =
+                        (f571_dst &&
+                         (!f571_dst->elements.empty() ||
+                          !f571_dst->view_elements.empty()));
+                    if (!f571_has_store)
+                        f571_has_store =
+                            heap_->get_object_array_length(f571_d, f571_dlen);
+                    if (f571_has_store) {
+                        int32_t f571_dn = 0;
+                        if (f571_dst && !f571_dst->elements.empty())
+                            f571_dn = static_cast<int32_t>(
+                                f571_dst->elements.size());
+                        else if (f571_dst &&
+                                 !f571_dst->view_elements.empty())
+                            f571_dn = static_cast<int32_t>(
+                                f571_dst->view_elements.size());
+                        else if (f571_dlen >= 0)
+                            f571_dn = f571_dlen;
+                        return CallResult::handled_int(f571_dn);
+                    }
+                }
+            }
+        }
         // F-NEW-267 (CONT-61): the touch-window size probe — what the
         // compose pointer-input filter dispatch saw.
         if (g_touch_window_active.load(std::memory_order_relaxed)) {
@@ -2126,6 +2186,53 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             int32_t alen = 0;
             if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
                 return CallResult::handled_bool(alen == 0);
+        }
+        // ── F-C4-571 (W6, 4APP4): VIEW-DELEGATE SIZE LAW ──────────────
+        // A VIEW wrapper (kotlin ReversedList/ReversedListReadOnly,
+        // subList boxes, unmodifiable wrappers) carries NO store of its
+        // own — its emptiness IS its delegate's. When the view's own
+        // shadow state is empty AND it has no __array_length__, resolve
+        // ONE reference-field hop to a delegate object that carries a
+        // store (shadow elements, view_elements, or heap __array_length__)
+        // and answer from THERE. OpenJDK law: a delegating collection's
+        // isEmpty() == delegate.isEmpty(). Live root (Thunderbird v24,
+        // Koin flatten): the includes ReversedList view answered
+        // isEmpty()=true over a non-empty delegate chain → the worklist
+        // enqueue no-opped → the DI graph starved (NDFE ×32).
+        if (state->elements.empty() && heap_) {
+            int32_t f571_self_alen = -1;
+            if (!heap_->get_object_array_length(obj_id, f571_self_alen)) {
+                auto f571_names = heap_->get_object_field_names(obj_id);
+                for (const auto& f571_fname : f571_names) {
+                    uint32_t f571_d = 0;
+                    if (!heap_->get_object_ref_field(obj_id, f571_fname,
+                                                     f571_d) ||
+                        f571_d == 0 || f571_d == obj_id)
+                        continue;
+                    auto* f571_dst = get_or_create(f571_d, false);
+                    int32_t f571_dlen = -1;
+                    bool f571_has_store =
+                        (f571_dst &&
+                         (!f571_dst->elements.empty() ||
+                          !f571_dst->view_elements.empty()));
+                    if (!f571_has_store)
+                        f571_has_store =
+                            heap_->get_object_array_length(f571_d, f571_dlen);
+                    if (f571_has_store) {
+                        int32_t f571_dn = 0;
+                        if (f571_dst && !f571_dst->elements.empty())
+                            f571_dn = static_cast<int32_t>(
+                                f571_dst->elements.size());
+                        else if (f571_dst &&
+                                 !f571_dst->view_elements.empty())
+                            f571_dn = static_cast<int32_t>(
+                                f571_dst->view_elements.size());
+                        else if (f571_dlen >= 0)
+                            f571_dn = f571_dlen;
+                        return CallResult::handled_bool(f571_dn == 0);
+                    }
+                }
+            }
         }
         return CallResult::handled_bool(state->elements.empty());
     }
@@ -3310,6 +3417,30 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         size_t n = state->is_view ? state->view_elements.size()
                                   : state->elements.size();
+        // F-C4-547 (4APP4 W2, Coder-4): HEAP ARRAY-FIELDS CASCADE. The
+        // asList law (dalvik_engine F-036) and NEW_ARRAY minted collection
+        // objects store their elements in the RECEIVER's heap fields
+        // (__array_length__ + array[i]) — NOT in this shadow's store — so
+        // this handler answered a ZERO-length array for them (the F-NEW-238
+        // bridge cascade could never run: the shadow layer answers first).
+        // Live evidence (Tusky 33.1 vc145, S154 HEAD): OkHttp
+        // ConnectionSpec.<clinit> builds APPROVED_CIPHER_SUITES via
+        // Arrays.asList (Arrays$ArrayList heap object) → Collection.toArray
+        // → THIS handler with an empty store → n=0 → Builder.build() threw
+        // the app's own IAE "At least one cipher suite is required" → the
+        // whole OkHttp TLS stack died at class-init. OpenJDK law: toArray
+        // reflects the receiver's REAL contents; source the heap fields
+        // when the shadow store is empty.
+        bool f547_heap_sourced = false;
+        int32_t f547_heap_len = -1;
+        if (!state->is_view && n == 0) {
+            heap_->get_object_int_field(obj_id, "__array_length__",
+                                        f547_heap_len);
+            if (f547_heap_len > 0) {
+                f547_heap_sourced = true;
+                n = (size_t)f547_heap_len;
+            }
+        }
         uint32_t dst_id = 0;
         if (!ctx.args.empty() &&
             ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
@@ -3327,6 +3458,30 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
         heap_->set_object_int_field(dst_id, "__array_length__", (int32_t)n);
         heap_->set_object_int_field(dst_id, "__new_array_length__", (int32_t)n);
+        // F-C4-547: heap-sourced element copy — the receiver's own
+        // array[i] fields carry the real elements (typed readers, cascade
+        // string → ref → int, element class from the heap authority).
+        if (f547_heap_sourced) {
+            for (int32_t i = 0; i < f547_heap_len && i < (int32_t)n; ++i) {
+                std::string slot = "array[" + std::to_string(i) + "]";
+                std::string sv;
+                uint32_t ov = 0;
+                int32_t iv = 0;
+                if (heap_->get_object_string_field(obj_id, slot, sv)) {
+                    heap_->set_object_ref_field(dst_id, slot, 0,
+                                                "Ljava/lang/String;", sv,
+                                                true);
+                } else if (heap_->get_object_ref_field(obj_id, slot, ov) &&
+                           ov != 0) {
+                    std::string ecls = "Ljava/lang/Object;";
+                    heap_->get_object_class(ov, ecls);
+                    heap_->set_object_ref_field(dst_id, slot, ov, ecls, "",
+                                                false);
+                } else if (heap_->get_object_int_field(obj_id, slot, iv)) {
+                    heap_->set_object_int_field(dst_id, slot, iv);
+                }
+            }
+        } else {
         auto put_elem = [&](size_t i, bool is_str, uint32_t oid,
                             const std::string& s, int32_t iv) {
             std::string slot = "array[" + std::to_string(i) + "]";
@@ -3351,6 +3506,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 put_elem(i, false, state->elements[i], "", 0);
             }
         }
+        }  // end F-C4-547 else (shadow-store element path)
         // toArray(T[]) identity: a null terminator follows size in the
         // larger destination (OpenJDK law) — clear stale tail slots.
         if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&

@@ -1,0 +1,42 @@
+{
+ "ref_bin": "2a5464c2bf15f9ec",
+ "new_bin": "53fa8392640d1279",
+ "stack_patch_sha16": "53d234e1db504568 (repaired)",
+ "laws_patch_sha16": "65699ca9a235e915",
+ "anchors_all_inert": true,
+ "microtimer_pin": true,
+ "dooz": {
+  "wall": "156.8 -> 156.8",
+  "wall_delta_pct": 0.0,
+  "rss_peak": "238.9 -> 249.1",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "tg": {
+  "wall": "34.7 -> 30.0",
+  "wall_delta_pct": -13.5,
+  "rss_peak": "670.3 -> 665.4",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "tb_ref": {
+  "wall_s": 3.4,
+  "uncaught": 38,
+  "ndfe": 51,
+  "app_owned_pixels": 0,
+  "final_state": null,
+  "frames": [
+   "9"
+  ]
+ },
+ "tb_new": {
+  "wall_s": 3.5,
+  "uncaught": 37,
+  "ndfe": 65,
+  "app_owned_pixels": 0,
+  "final_state": null,
+  "frames": [
+   "9"
+  ]
+ }
+}

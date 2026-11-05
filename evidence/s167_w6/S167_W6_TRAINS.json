@@ -1,0 +1,102 @@
+{
+ "w6_dz_ctl": {
+  "tag": "w6_dz_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {},
+  "wall_s": 156.8,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 238.9,
+  "rss_final_mb": 238.9,
+  "rss_grow_mb_s": 1.517,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w6_dz_fix": {
+  "tag": "w6_dz_fix",
+  "bin": "53fa8392640d1279",
+  "env": {},
+  "wall_s": 156.8,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 249.1,
+  "rss_final_mb": 248.5,
+  "rss_grow_mb_s": 1.583,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w6_dz_summary": {
+  "wall": "156.8 -> 156.8",
+  "wall_delta_pct": 0.0,
+  "rss_peak": "238.9 -> 249.1",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "w6_tg_ctl": {
+  "tag": "w6_tg_ctl",
+  "bin": "2a5464c2bf15f9ec",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 34.7,
+  "rc": 0,
+  "rss_peak_mb": 670.3,
+  "rss_final_mb": 670.3,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "w6_tg_fix": {
+  "tag": "w6_tg_fix",
+  "bin": "53fa8392640d1279",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 30.0,
+  "rc": 0,
+  "rss_peak_mb": 665.4,
+  "rss_final_mb": 665.4,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "w6_tg_summary": {
+  "wall": "34.7 -> 30.0",
+  "wall_delta_pct": -13.5,
+  "rss_peak": "670.3 -> 665.4",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}

@@ -128,6 +128,34 @@ framework_direct_superclass() {
         // libcore classes; these edges are the source truth.
         {"Ljava/util/ArrayList;", "Ljava/util/AbstractList;"},
         {"Ljava/util/AbstractList;", "Ljava/util/AbstractCollection;"},
+        // F-C4-547 (4APP4 W2, Coder-4): OpenJDK Arrays.java — private
+        // static class ArrayList<E> extends AbstractList<E> implements
+        // RandomAccess, java.io.Serializable. The extends edge was MISSING
+        // (only the interfaces row existed), so is_subclass_of(
+        // Arrays$ArrayList, AbstractCollection) answered FALSE and the
+        // F-NEW-238 Collection.toArray law REFUSED every Arrays.asList
+        // receiver. Live evidence (Tusky 33.1 vc145 at S154 HEAD, post
+        // F261x/F545/F546 wave): OkHttp ConnectionSpec.<clinit> (R8: lk/o)
+        // builds its APPROVED_CIPHER_SUITES list via Arrays.asList (R8:
+        // glide.g.a0) then Collection.toArray → unhandled → empty array →
+        // Builder.build() threw the app's own IAE "At least one cipher
+        // suite is required" → clinit death → the whole OkHttp TLS stack
+        // down for every asList-built list in the corpus.
+        {"Ljava/util/Arrays$ArrayList;", "Ljava/util/AbstractList;"},
+        // F-C4-548 (4APP4 W2, Coder-4): the ContentProvider FRAMEWORK
+        // family edges. App providers that extend an INTERMEDIATE
+        // framework provider (Nextcloud DocumentsStorageProvider →
+        // android.provider.DocumentsProvider → ContentProvider) walked
+        // the DEX chain to DocumentsProvider and STOPPED — the framework
+        // leg to ContentProvider was missing, so every
+        // is_subclass_of(x, ContentProvider) law (the S1-PROVIDER-CTX
+        // getContext bind, the 51026 install gate) refused them. Live
+        // evidence (Nextcloud 35.0.2 vc350000290, S154 HEAD):
+        // AndroidInjection.inject invoked DocumentsProvider.getContext
+        // → REC-MISS → no law fired → null → getApplicationContext NPE
+        // (f141 null-recv, APP-BOUNDARY, 0 frames — the NC-M0/C2 arrest).
+        // AOSP source truth: DocumentsProvider extends ContentProvider.
+        {"Landroid/provider/DocumentsProvider;", "Landroid/content/ContentProvider;"},
         {"Ljava/util/AbstractCollection;", "Ljava/lang/Object;"},
         {"Ljava/util/LinkedList;", "Ljava/util/AbstractSequentialList;"},
         {"Ljava/util/AbstractSequentialList;", "Ljava/util/AbstractList;"},

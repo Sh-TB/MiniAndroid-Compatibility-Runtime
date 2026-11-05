@@ -1,0 +1,638 @@
+## `w6_stack.patch` part 1/2 — the W2+W3+W4 delivery (rebased on main 9f5e7b8a)
+
+1305 lines total, sha16 `d92efd2d32db128d`, `git apply` (no flags) on CLEAN main. Concatenate part 1 + part 2 into one file before applying. Part 1:
+
+```diff
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 8c622c9..f9dd9d3 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -4763,7 +4763,7 @@ bool DalvikExecutionEngine::execute_method_internal(
+                   << " " << descriptor << std::endl;
+         drawwin_count++;
+     }
+-    // CONT-38 (F-NEW-544 evidence, DIAG-ONLY, env-gated): the compose draw
++    // CONT-38 (F-C4-544 evidence, DIAG-ONLY, env-gated): the compose draw
+     // cascade reached Luc0;.g x205 / rc0.e x203 / rc0.c x971 in the C013
+     // windows, yet the board draw block (Lz6;.i) NEVER dispatched. The
+     // suspected skip: Lpz0;.L0's arm select — P (the InnerNodeCoordinator)
+@@ -7493,12 +7493,16 @@ uint32_t DalvikExecutionEngine::frag_build_preference_list_view(
+ // and dooz23's App.onCreate Dagger-component build silently degraded).
+ uint32_t DalvikExecutionEngine::bind_manifest_application(
+     DalvikExecutionResult& result) {
+-    // S-1 FIX (LOADING-CAMPAIGN): installContentProviders runs on EVERY
+-    // bind path (the probe-proven default-Application early return used to
+-    // skip it) — providers are components, not Application sugar; AOSP
+-    // installs them BEFORE Application.onCreate in all cases.
+-    install_content_providers(result);
+-
++    // F-C4-562 (4APP4 W3, Coder-4): installContentProviders NO LONGER runs
++    // at bind entry. AOSP ActivityThread.handleBindApplication order is
++    //   1. app = data.info.makeApplication(false, mInstrumentation)  // <init> + attach
++    //   2. mInstrumentation.installContentProviders(app, data.providers)
++    //   3. mInstrumentation.callApplicationOnCreate(app)
++    // so the provider stage now runs on BOTH paths AFTER the Application
++    // instance exists (see the install calls below), and providers get the
++    // constructed app object as their Context — never a bare Context
++    // singleton. (The old comment claimed this call covered the early
++    // returns; it ran before them, inverting the AOSP order.)
+     std::string app_class = application_class_hint_;
+     if (!app_class.empty()) {
+         // Normalize dotted/hint forms to descriptor form.
+@@ -7530,6 +7534,17 @@ uint32_t DalvikExecutionEngine::bind_manifest_application(
+         application_class_desc_ = "Landroid/app/Application;";
+         std::cerr << "[R341-APP] default Application bound: obj#"
+                   << application_object_id_ << std::endl;
++        // F-C4-562 (4APP4 W3, Coder-4): AOSP handleBindApplication ORDER —
++        // makeApplication(false) constructs the Application INSTANCE
++        // BEFORE installContentProviders(app, providers); providers receive
++        // the constructed app object as their Context (dagger.android
++        // walks it for HasAndroidInjector; engine evidence: Nextcloud 35
++        // FileContentProvider.onCreate → AndroidInjection.inject walked a
++        // bare android.content.Context singleton because providers ran
++        // before the app object existed → RuntimeException "android.content
++        // Context does not implement dagger.android.HasAndroidInjector"
++        // ×4 uncaught). Providers still run BEFORE app.onCreate (AOSP).
++        install_content_providers(result);
+         return application_object_id_;
+     }
+     if (class_to_superclass_.find(app_class) == class_to_superclass_.end()) {
+@@ -7540,6 +7555,9 @@ uint32_t DalvikExecutionEngine::bind_manifest_application(
+             get_or_create_singleton("Landroid/app/Application;");
+         application_object_id_ = app_singleton.object_id;
+         application_class_desc_ = "Landroid/app/Application;";
++        // F-C4-562: same AOSP order law as above (instance first, then
++        // providers, then onCreate) on the fallback path.
++        install_content_providers(result);
+         return application_object_id_;
+     }
+ 
+@@ -7597,10 +7615,15 @@ uint32_t DalvikExecutionEngine::bind_manifest_application(
+     } catch (const std::exception&) {
+         // no-op — not every app class declares it
+     }
+-    // S-1 FIX: the provider stage moved to install_content_providers(),
+-    // called at bind entry (covers BOTH the default-Application early
+-    // return and the custom-class path — AOSP installs providers
+-    // BEFORE Application.onCreate in all cases).
++    // S-1 FIX (LOADING-CAMPAIGN): the provider stage moved to
++    // install_content_providers(), called AFTER the Application <init> +
++    // attachBaseContext and BEFORE Application.onCreate below — the AOSP
++    // handleBindApplication order (makeApplication → installContentProviders
++    // → callApplicationOnCreate). F-C4-562 (4APP4 W3, Coder-4) fixed the
++    // inversion: providers used to install at bind ENTRY, before the app
++    // object existed, so attachInfo handed every provider the bare Context
++    // singleton (Nextcloud AndroidInjection evidence above).
++    install_content_providers(result);
+ 
+     // onCreate() — the REAL component build runs here (dooz: flag guard +
+     // Lpc;.d() → Dagger SingletonComponent Lps; graph).
+@@ -8541,6 +8564,43 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // eb5ebd559cad1028 anchor.
+         bool f261_support_family =
+             declaring_class.rfind("Landroid/support/", 0) == 0;
++        // F-C4-261x (4APP4 W2, Coder-4): env-gated extension of the
++        // F-NEW-261 DEX-body fall-through to the ANDROIDX family, onCreate
++        // only. Measured at S154 HEAD (binary e3f57db1c91c7de2 class): the
++        // androidx <init> chain now runs COMPLETE (ComponentActivity.<init>
++        // initializes SavedStateRegistryImpl, LifecycleRegistry,
++        // activityResultRegistry$1, ContextAwareHelper, MenuHostHelper —
++        // full field-initializer evidence in run/cb_run.stderr), so the
++        // F-NEW-262 premise ("the final-field initializer chain still
++        // loses its value under the engine") is stale for apps built
++        // against lifecycle 2.8+: the S83 bypass now ARRESTS apps that
++        // bypass() was built to protect. ConnectBot (org.connectbot
++        // 1.11.1-oss) live evidence: ComponentActivity.onCreate never runs
++        // under the bypass → SavedStateRegistryController.performRestore
++        // never runs → isRestored stays false → the FIRST ViewModel with
++        // a SavedStateHandle throws ISE "You can 'consumeRestoredStateForKey'
++        // only after the corresponding component has moved to the 'CREATED'
++        // state" → APP-BOUNDARY death at MainActivity.onCreate pc=221
++        // (run/cb_run/crash.log errors #1-#7). On a real device the WHOLE
++        // androidx super chain (AppCompatActivity.onCreate →
++        // ComponentActivity.onCreate → performRestore) executes real
++        // bytecode; only android.app.Activity is the framework boundary.
++        // F-C4-563 (4APP4 W3, Coder-4): DEFAULT FLIPPED ON. The W2 A/B
++        // measurement (ConnectBot at S155 + W2 laws, evidence pinned in
++        // the W3 wave) proved the law: with the androidx onCreate
++        // fall-through ON, the SavedStateRegistry ISE disappears (0 hits
++        // vs 7 crash rows OFF) and ConnectBot advances PAST the ViewModel
++        // chain into real Jetpack Navigation-Compose nav-graph
++        // construction (NavDestinationBuilder.build IAE — the next,
++        // strictly-deeper frontier). The old default OFF left every
++        // lifecycle-2.8+ app frozen at the bypass's stub onCreate.
++        // Opt-out for anchor reproduction: MINIANDROID_F261X_LAW=0
++        // restores the W2-default OFF behavior byte-for-byte; any other
++        // value (incl. unset) = ON.
++        const char* f261x_env = std::getenv("MINIANDROID_F261X_LAW");
++        static thread_local const bool f261x_on =
++            !(f261x_env != nullptr && f261x_env[0] == '0' &&
++              f261x_env[1] == '\0');
+         // CONT-47 S83-DIAG (env-gated, evidence-only, no behavior change):
+         // the f261 fall-through provably did not fire for
+         // AppCompatActivity.setContentView while the class IS indexed
+@@ -8563,7 +8623,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                       << " caller=" << current_class_ << "."
+                       << current_method_ << std::endl;
+         }
+-        if (f261_dex_body && f261_support_family) {
++        if (f261_dex_body &&
++            (f261_support_family ||
++             // F-C4-261x: androidx onCreate fall-through (env-gated A/B)
++             (f261x_on && method_name == "onCreate"))) {
+             // real DEX body exists in the legacy support family — fall
+             // through to execution
+         } else
+@@ -11249,7 +11312,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+     // concatenated key; the O(log n) rb-tree string compares are pure overhead.
+     // Lookup/increment only, no ordered iteration anywhere -> unordered_map.
+     static thread_local std::unordered_map<std::string, int> m3_call_counts;  // diagnostics only
+-    // F-NEW-543 (CONT-38): per-key ACTIVE-DEPTH map — how many frames of the
++    // F-C4-543 (CONT-38): per-key ACTIVE-DEPTH map — how many frames of the
+     // SAME key are currently on the call stack. The stub trigger moves from
+     // raw set-membership (any active frame) to depth >= budget — see the
+     // law comment at the firing site.
+@@ -11294,7 +11357,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         m3_active_key += method_descriptor;
+     }
+     // ────────────────────────────────────────────────────────────────────
+-    // F-NEW-541 (CONT-37): CALLER-SITE PC identity — the dispatch SITE is
++    // F-C4-541 (CONT-37): CALLER-SITE PC identity — the dispatch SITE is
+     // part of the computation identity.
+     //
+     // OBSERVATION (dooz v23, 300s completed run rc=0, run/cont37/): the
+@@ -11634,7 +11697,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         }
+     }
+     m3_call_counts[m3_active_key]++;
+-    // F-NEW-543: the guard now tracks the per-key ACTIVE DEPTH; the set
++    // F-C4-543: the guard now tracks the per-key ACTIVE DEPTH; the set
+     // stays the fast "is any frame active" check. On the armed exit the
+     // depth decrements; the set erases only when the LAST frame of the key
+     // leaves (depth 1 -> 0) — the stale-erase-under-nesting shape is gone.
+@@ -11771,11 +11834,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // recorded in evidence/cont44/.
+         // ────────────────────────────────────────────────────────────────
+         // ────────────────────────────────────────────────────────────────
+-        // F-NEW-543 (CONT-38): RE-ENTRY BUDGET — the active-cycle stub is
++        // F-C4-543 (CONT-38): RE-ENTRY BUDGET — the active-cycle stub is
+         // a recursion BOUND, not a first-re-entry kill.
+         //
+         // OBSERVATION (dooz v23, CONT-38 probe run/cont38/dooz_probe2, the
+-        // last M3-19 kill after F-NEW-541): Lho1;.b(Lf90;)~pc2#532
++        // last M3-19 kill after F-C4-541): Lho1;.b(Lf90;)~pc2#532
+         // re-entered while active, and the intervening walk is SEVEN
+         // upstream frames deep — Lho1;.b (the snapshot observer-dispatch
+         // loop: for each Lj90; observer, observer.h(notification)) →
+@@ -11794,7 +11857,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // state (the queue emptied before the advance) and returns
+         // quickly. The first-re-entry kill fabricates a null mid-dispatch
+         // — the F-098/F-NEW-286 fabrication family, one identity level
+-        // deeper: site AND payload identical (F-NEW-541 exhausted those
++        // deeper: site AND payload identical (F-C4-541 exhausted those
+         // discriminators); only the internal drain state differs —
+         // invisible to any argument-identity key by construction.
+         //
+@@ -11806,7 +11869,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // fabricated-null unwind one frame deeper — and bounded upstream
+         // re-entrancy (drain-emptied nested dispatch, nested Looper
+         // dispatch) proceeds. MAX_RECURSION_DEPTH (80) remains the loud
+-        // backstop. Bookkeeping: the per-key depth map (F-NEW-543 map at
++        // backstop. Bookkeeping: the per-key depth map (F-C4-543 map at
+         // the key-build site) replaces raw set-membership as the stub
+         // trigger; the set erases only when the LAST same-key frame
+         // leaves.
+@@ -11852,13 +11915,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         if (method_name != "<init>" && m3_payload_parts > 0 &&
+             m3_obj_dropped == 0 && m3_prim_dropped == 0 &&
+             m3_class_dropped == 0 && m3_null_skipped == 0) {
+-            // F-NEW-543: same-key re-entry UNDER the budget — real DEX
++            // F-C4-543: same-key re-entry UNDER the budget — real DEX
+             // executes (the legal nested dispatch). Loud, one line, so
+             // the released re-entries are visible in every log.
+             std::cerr << "[M3-19-REENTRY] " << m3_active_key
+                       << " re-entered while active at depth "
+                       << m3_key_active_depth[m3_active_key]
+-                      << " (< budget) — real DEX executes (F-NEW-543 "
++                      << " (< budget) — real DEX executes (F-C4-543 "
+                       << "reentry-budget law)" << std::endl;
+         }
+         if (method_name != "<init>" && m3_payload_parts > 0) {
+@@ -11875,7 +11938,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         }
+     }
+     active_invoke_keys_.insert(m3_active_key);
+-    ++m3_key_active_depth[m3_active_key];  // F-NEW-543 depth bookkeeping
++    ++m3_key_active_depth[m3_active_key];  // F-C4-543 depth bookkeeping
+     m3_active_key_guard.armed = true;
+ 
+     // EXP-045 Phase 2: TransactionInactiveError — credentials exception that
+@@ -21161,7 +21224,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+             }
+         }
+ 
+-        // ── F-NEW-542 (CONT-37): env-gated LIVE HEAP CENSUS ────────────────
++        // ── F-C4-542 (CONT-37): env-gated LIVE HEAP CENSUS ────────────────
+         // Every 16th progress tick (~1.6M instructions) when
+         // MINIANDROID_HEAP_CENSUS is set: RSS + live heap-object population
+         // + top-8 classes by allocation count. Bounded 40 emissions per run
+@@ -22823,7 +22886,7 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace&
+     uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+     uint32_t obj_id = heap_.allocate(class_desc, pc, frame_id);
+ 
+-    // CONT-38 (F-NEW-545 evidence, DIAG-ONLY, env-gated): MINIANDROID_NEW_WATCH
++    // CONT-38 (F-C4-545 evidence, DIAG-ONLY, env-gated): MINIANDROID_NEW_WATCH
+     // = class-desc substring. Prints every new-instance of a watched class
+     // with the allocating caller — answers "was the draw-block lambda EVER
+     // constructed" without a fragile static scanner (the dooz board block
+@@ -38984,6 +39047,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         if (svc.oid == 0) {
+             svc.cls = target_desc;
+             svc.oid = heap_.allocate(target_desc, pc_, 0);
++            // ── F-C4-541 (4APP4 W2, Coder-4): SERVICE newInstance() LAW ──
++            // AOSP ActiveServices/LoadedApk: a manifest service is
++            // instantiated via `cl.loadClass(name).newInstance()` — the
++            // no-arg <init> runs the FULL constructor chain (app class →
++            // Hilt superclass → android.app.Service shadow boundary) and
++            // with it EVERY instance field initializer, BEFORE onCreate is
++            // delivered. The previous law allocated the heap object and
++            // jumped straight to onCreate: every field stayed unset, the
++            // R414/F274 fabrication crutch then "honestly" nulled fields
++            // whose initializer types lack a ()V ctor (Kotlin property
++            // objects, MutableStateFlow delegates, LifecycleRegistry(this)),
++            // and the app died inside its OWN onCreate/onBind on the null
++            // receiver (ConnectBot 1.11.1-oss live evidence at S154 HEAD:
++            // TerminalManager.bridgesFlow → R274 honest-null →
++            // ReadonlyStateFlow.$$delegate_0 iget-null-recv NPE at
++            // TerminalManager.onCreate/onBind → APP-BOUNDARY death at
++            // MainActivity.onCreate pc=398, x2). AOSP-faithful order:
++            // allocate → <init>()V → attach context fields → onCreate.
++            // Env-gated A/B: MINIANDROID_SVC_INIT_LAW=0 restores the legacy
++            // skip-init behavior for hygiene runs.
++            static thread_local const bool svc_init_law_on =
++                std::getenv("MINIANDROID_SVC_INIT_LAW") == nullptr ||
++                std::getenv("MINIANDROID_SVC_INIT_LAW")[0] != '0';
++            if (svc_init_law_on) {
++                DalvikValue ctor_ret;
++                invoke_lifecycle_method(svc.oid, svc.cls, "<init>", {},
++                                        ctor_ret);
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "SVC-INIT", svc.cls, true,
++                    "newInstance() law: <init>()V dispatched before onCreate",
++                    current_class_ + "." + current_method_);
++            }
+         }
+         DalvikValue svc_obj = DalvikValue::make_object(svc.oid, svc.cls);
+         DalvikValue ignore;
+@@ -41678,6 +41773,127 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                             !en413->string_val.empty())
+                             return en413->string_val;
+                     }
++                    // ── F-C4-564 (W4): OpenJDK AbstractStringBuilder.append
++                    // (Object) == append(String.valueOf(obj)) and
++                    // String.valueOf(Object) == (obj == null) ? "null"
++                    //                                        : obj.toString().
++                    // Before this law the bridge short-circuited every
++                    // non-String / non-box / non-enum object to the Class@oid
++                    // identity form, so app exception messages rendered raw
++                    // refs — the measured kill: ConnectBot 1.11.1
++                    // NavDestinationBuilder.build IAE read "...required
++                    // arguments are missing: Ljava/util/ArrayList;@4852"
++                    // where a device prints "[hostId]" (AbstractCollection
++                    // toString) and "Destination(...)" (the class's OWN
++                    // NavDestination.toString override — DEX bytecode).
++                    // Law: dispatch the object's REAL toString() through the
++                    // recursive invoke (bridge classes + DEX overrides both
++                    // execute); bounded depth 4 — the OpenJDK identity form
++                    // stays the last resort exactly like Object.toString.
++                    {
++                        static thread_local int f564_depth = 0;
++                        if (f564_depth < 4 && a.object_id != 0) {
++                            auto* obj564 = heap_.get(a.object_id);
++                            std::string cls564 =
++                                obj564 ? std::string(obj564->class_descriptor)
++                                       : std::string(a.class_desc.c_str());
++                            // Bridge-collection fast path: the collections
++                            // this engine serves natively (AbstractCollection
++                            // family) render by the OpenJDK toString law
++                            // directly from the canonical array[i] fields —
++                            // no re-entrant bridge dispatch (the DEX-only
++                            // try_recursive_invoke cannot reach them).
++                            const bool f564_is_collection =
++                                cls564.find("ArrayList") != std::string::npos ||
++                                cls564.find("LinkedList") != std::string::npos ||
++                                cls564.find("HashSet") != std::string::npos ||
++                                cls564.find("LinkedHashSet") != std::string::npos ||
++                                cls564.find("Vector;") != std::string::npos ||
++                                cls564.find("Stack;") != std::string::npos ||
++                                cls564.find("ArrayDeque") != std::string::npos;
++                            if (f564_is_collection) {
++                                std::string out564 = "[";
++                                bool first564 = true;
++                                int32_t n564 = 0;
++                                {
++                                    auto lf = heap_.get_object_field(
++                                        a.object_id, "__array_length__");
++                                    if (lf.has_value() &&
++                                        lf->type == DalvikType::INT32)
++                                        n564 = lf->int_val;
++                                }
++                                for (int32_t i = 0; i < n564 && i < 512; ++i) {
++                                    auto el = heap_.get_object_field(
++                                        a.object_id,
++                                        "array[" + std::to_string(i) + "]");
++                                    if (!el.has_value()) continue;
++                                    if (!first564) out564 += ", ";
++                                    first564 = false;
++                                    if (el->type == DalvikType::STRING_REF) {
++                                        out564 += el->string_val;
++                                    } else if (el->type == DalvikType::INT32) {
++                                        out564 += std::to_string(el->int_val);
++                                    } else if (el->type == DalvikType::INT64) {
++                                        out564 += std::to_string(el->long_val);
++                                    } else if (el->type == DalvikType::BOOLEAN) {
++                                        out564 += el->bool_val ? "true"
++                                                               : "false";
++                                    } else if (el->type ==
++                                               DalvikType::NULL_REF) {
++                                        out564 += "null";
++                                    } else if (el->type ==
++                                               DalvikType::OBJECT_REF) {
++                                        if (el->object_id == a.object_id) {
++                                            out564 += "(this Collection)";
++                                            continue;
++                                        }
++                                        if (heap_.has_object(el->object_id)) {
++                                            auto sv = heap_.get_object_field(
++                                                el->object_id, "sb_value");
++                                            if (!sv.has_value())
++                                                sv = heap_.get_object_field(
++                                                    el->object_id, "value");
++                                            if (!sv.has_value())
++                                                sv = heap_.get_object_field(
++                                                    el->object_id,
++                                                    "__string_value__");
++                                            if (sv.has_value() && sv->type ==
++                                                    DalvikType::STRING_REF) {
++                                                out564 += sv->string_val;
++                                                continue;
++                                            }
++                                            auto en = heap_.get_object_field(
++                                                el->object_id, "enum_name");
++                                            if (en.has_value() && en->type ==
++                                                    DalvikType::STRING_REF) {
++                                                out564 += en->string_val;
++                                                continue;
++                                            }
++                                        }
++                                        out564 += el->class_desc + "@" +
++                                            std::to_string(el->object_id);
++                                    } else {
++                                        out564 += el->class_desc + "@" +
++                                            std::to_string(el->object_id);
++                                    }
++                                }
++                                out564 += "]";
++                                return out564;
++                            }
++                            DalvikValue ts_ret;
++                            DalvikExecutionResult ts_res;
++                            std::vector<DalvikValue> ts_args{a};
++                            ++f564_depth;
++                            bool ok564 = try_recursive_invoke(
++                                cls564, "toString", ts_args, ts_ret, ts_res,
++                                "()Ljava/lang/String;");
++                            --f564_depth;
++                            if (ok564 &&
++                                ts_ret.type == DalvikType::STRING_REF) {
++                                return ts_ret.string_val;
++                            }
++                        }
++                    }
+                     // Per OpenJDK Object.toString: ClassName@hexIdentityHash
+                     std::string cn = a.class_desc;
+                     return cn + "@" + std::to_string(a.object_id);
+@@ -44021,6 +44237,242 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 std::cerr << std::endl;
+             }
+         }
++    // ────────────────────────────────────────────────────────────────────────
++    // F-C4-561 (4APP4 W3, Coder-4) — java.util.Objects IDENTITY laws.
++    //
++    // ROOT (Nextcloud 35.0.2, run at S155+W2 laws, stderr pinned in the
++    // W3 evidence): MainApp.initDagger → DaggerAppComponent$AppComponentImpl
++    // .injectMainApp → dispatchingAndroidInjectorOfObject → mapOfClass…
++    // → ImmutableMap$Builder.build → RegularImmutableMap.create →
++    // createHashTable, whose DEX bytecode at pc=10/pc=18 reads
++    //   invoke-static Objects.requireNonNull   ← move-result-object USED
++    //   invoke-static Objects.requireNonNull   ← move-result-object USED
++    //   invoke-static CollectPreconditions.checkEntryNotNull(key, value)
++    // OpenJDK law: Objects.requireNonNull(T obj) IS THE IDENTITY FUNCTION —
++    // it returns obj (throwing NPE only when obj is null). The engine had
++    // NO law for it (grep: zero sites), so every call fell to the
++    // typed-default null; both move-result-object slots read null and
++    // checkEntryNotNull threw the recorded
++    //   NPE "null key in entry: null=null"
++    // killing the ENTIRE Dagger component build at 0 frames → the W2
++    // NC-M0.7 frontier. One absent identity method broke every
++    // Guava-collection consumer (Dagger everywhere).
++    //
++    // OpenJDK truth (java/util/Objects.java, JDK 8..21):
++    //   requireNonNull(T)                     → T  (NPE when null)
++    //   requireNonNull(T, String)             → T  (NPE w/ message)
++    //   requireNonNull(T, Supplier<String>)   → T  (lazy message)
++    //   requireNonNullElse(T, T)              → first non-null, else NPE
++    //   requireNonNullElseGet(T, Supplier)    → first non-null, else get
++    //   toString(Object)                      → "null" or o.toString()
++    //   toString(Object, String)              → default when null
++    //   hashCode(Object)                      → 0 or o.hashCode()
++    //   equals(a, b)                          → a==b || a.equals(b)
++    //   hash(Object...)                       → Arrays.hashCode
++    //   isNull/nonNull                        → boolean
++    //   checkIndex/checkFromToIndex/checkFromIndexSize (JDK 9+) → int/long
++    //     (IndexOutOfBoundsException on violation)
++    if (class_name == "Ljava/util/Objects;" &&
++        (method == "requireNonNull" || method == "requireNonNullElse" ||
++         method == "requireNonNullElseGet" || method == "toString" ||
++         method == "hashCode" || method == "equals" || method == "hash" ||
++         method == "isNull" || method == "nonNull" ||
++         method == "checkIndex" || method == "checkFromToIndex" ||
++         method == "checkFromIndexSize")) {
++        auto obj_arg = [&](size_t i) -> const DalvikValue* {
++            if (i >= args.size()) return nullptr;
++            const DalvikValue& v = args[i];
++            if (v.is_null) return nullptr;
++            if (v.type == DalvikType::OBJECT_REF && v.object_id == 0)
++                return nullptr;
++            return &v;
++        };
++        // ── requireNonNull family: the IDENTITY law ─────────────────────
++        if (method == "requireNonNull") {
++            const DalvikValue* v = obj_arg(0);
++            if (v == nullptr) {
++                // OpenJDK: NPE (message overload builds the lazy message
++                // only when null — the Supplier is NOT invoked otherwise).
++                std::string msg = "null object reference";
++                if (args.size() >= 2) {
++                    const DalvikValue& m = args[1];
++                    if (m.type == DalvikType::STRING_REF && !m.string_val.empty())
++                        msg = m.string_val;
++                    else if (m.type == DalvikType::OBJECT_REF) {
++                        auto sv = heap_.get_object_field(m.object_id, "value");
++                        if (sv.has_value() &&
++                            sv->type == DalvikType::STRING_REF)
++                            msg = sv->string_val;
++                    }
++                }
++                throw_deferred("Ljava/lang/NullPointerException;", msg,
++                               "f-c4-561-reqnn");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                result = DalvikValue::make_null();
++                return true;
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = *v;  // IDENTITY: return the argument verbatim
++            return true;
++        }
++        if (method == "requireNonNullElse" || method == "requireNonNullElseGet") {
++            const DalvikValue* a = obj_arg(0);
++            if (a != nullptr) {
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                result = *a;
++                return true;
++            }
++            const DalvikValue* dflt = obj_arg(1);
++            if (dflt != nullptr) {
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                result = *dflt;
++                return true;
++            }
++            // Both null → OpenJDK NPE.
++            throw_deferred("Ljava/lang/NullPointerException;",
++                           method == "requireNonNullElse"
++                               ? "defaultObj is null"
++                               : "defaultSupplier is null",
++                           "f-c4-561-reqnn-else");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_null();
++            return true;
++        }
++        // ── toString(Object[, default]) ─────────────────────────────────
++        if (method == "toString") {
++            const DalvikValue* v = obj_arg(0);
++            if (v != nullptr) {
++                if (v->type == DalvikType::STRING_REF) {
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    result = *v;
++                    return true;
++                }
++                if (v->type == DalvikType::OBJECT_REF) {
++                    auto ts = heap_.get_object_field(v->object_id,
++                                                     "__to_string__");
++                    if (ts.has_value() &&
++                        ts->type == DalvikType::STRING_REF) {
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        result = *ts;
++                        return true;
++                    }
++                    // Descriptor@id deterministic rendering (same subset as
++                    // the CONT-366 Arrays.toString law).
++                    std::string s = v->class_desc.empty()
++                                        ? "Ljava/lang/Object;"
++                                        : v->class_desc;
++                    s += "@" + std::to_string(v->object_id);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    result = DalvikValue::make_string(s, pc_);
++                    return true;
++                }
++            }
++            // null → "null", or the caller's default string.
++            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                result = args[1];
++                return true;
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_string("null", pc_);
++            return true;
++        }
++        // ── hashCode / equals / hash / isNull / nonNull ─────────────────
++        if (method == "hashCode") {
++            const DalvikValue* v = obj_arg(0);
++            int32_t h = 0;
++            if (v != nullptr) {
++                if (v->type == DalvikType::STRING_REF)
++                    h = static_cast<int32_t>(
++                        std::hash<std::string>{}(v->string_val));
++                else
++                    h = static_cast<int32_t>(v->object_id * 31);
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_int(h);
++            return true;
++        }
++        if (method == "equals") {
++            const DalvikValue* a = obj_arg(0);
++            const DalvikValue* b = obj_arg(1);
++            bool eq = false;
++            if (a == nullptr && b == nullptr) eq = true;
++            else if (a != nullptr && b != nullptr) {
++                if (a->type == DalvikType::STRING_REF &&
++                    b->type == DalvikType::STRING_REF)
++                    eq = (a->string_val == b->string_val);
++                else if (a->type == b->type)
++                    eq = (a->object_id == b->object_id &&
++                          a->ref_id == b->ref_id);
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_bool(eq);
++            return true;
++        }
++        if (method == "hash") {
++            // OpenJDK: Arrays.hashCode of the vararg elements (identity
++            // hash cascade 31^(n-1-i) * e_hash).
++            int32_t h = 1;
++            for (size_t i = 0; i < args.size(); ++i) {
++                const DalvikValue* v = obj_arg(i);
++                int32_t eh = 0;
++                if (v != nullptr) {
++                    if (v->type == DalvikType::STRING_REF)
++                        eh = static_cast<int32_t>(
++                            std::hash<std::string>{}(v->string_val));
++                    else
++                        eh = static_cast<int32_t>(v->object_id * 31);
++                }
++                h = 31 * h + eh;
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_int(h);
++            return true;
++        }
++        if (method == "isNull" || method == "nonNull") {
++            const DalvikValue* v = obj_arg(0);
++            bool isnull = (v == nullptr);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_bool(method == "isNull" ? isnull
++                                                               : !isnull);
++            return true;
++        }
++        // ── checkIndex family (JDK 9, Preconditions law) ────────────────
++        if (method == "checkIndex" && args.size() >= 2) {
++            int32_t idx = dalvik_int_value(args[0]);
++            int32_t len = dalvik_int_value(args[1]);
++            if (idx < 0 || idx >= len) {
++                throw_deferred(
++                    "Ljava/lang/IndexOutOfBoundsException;",
++                    "Index " + std::to_string(idx) + " out of bounds for " +
++                        "length " + std::to_string(len),
++                    "f-c4-561-checkindex");
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_int(idx);
++            return true;
++        }
++        if ((method == "checkFromToIndex" || method == "checkFromIndexSize") &&
++            args.size() >= 3) {
+```
+
+— **Coder 4**

@@ -1,0 +1,26 @@
+{
+  "verdict": "REJECTED-BY-CONTENT-INSPECTION (no gated-train build needed)",
+  "artifact": "evidence/s166_trains/S166_remote_rewrite_source_delta.patch",
+  "queued_by": "S166-INTEG commit 576a1e6f — 'their unique source delta (FRAMEWORK_THEMES flavor resolution + sc_n bound) preserved UNVERIFIED for a future gated train'",
+  "resolution_session": "S167 (2026-11-05)",
+  "inspection": {
+    "patch_lines": 342,
+    "files": [
+      "miniandroid/src/dex/dalvik_engine.cpp",
+      "miniandroid/src/framework/canvas_shadow.cpp",
+      "miniandroid/src/resources/resource_runtime.cpp",
+      "miniandroid/src/runtime/execution_engine.cpp"
+    ],
+    "hunk_classification": "ALL hunks are removals of my-line code or downgrades; ZERO additions",
+    "hunks": [
+      {"file": "dalvik_engine.cpp", "site": "install_content_providers", "content": "removes S164 T3 MINIANDROID_PROVIDER_SKIP env law (approved S165 TG T2: l9/j 28->0)"},
+      {"file": "dalvik_engine.cpp", "site": "dispatch_custom_view_draw", "content": "removes S164 T4 AOSP View.draw() fallback arm (paint-gap law)"},
+      {"file": "dalvik_engine.cpp", "site": "s164_app_owned_class + s164_seed_log + execute_iget/iget_object seed arms", "content": "removes S164 T2 APP-DATA SEED law (approved S165 TG T3: uncaught 6->0)"},
+      {"file": "canvas_shadow.cpp", "site": "F298-SETCOLOR cap", "content": "hardcodes sc_n cap 60 — removes MINIANDROID_SETCOLOR_TRACE=200000 diag escalation (D3); perf-neutral either way (static-const cached once)"},
+      {"file": "resource_runtime.cpp", "site": "resolve_launch_theme table", "content": "FRAMEWORK_THEME_RANGES (12-entry lo..hi families, S164 D3) -> FRAMEWORK_THEMES (6-entry exact ids) = the PRE-D3 table: loses the 0x01030241 Material.Light.NoActionBar range that dooz v23's theme parent needs -> would re-open the dark-cover dead-end; also removes MINIANDROID_FLAVOR_DIAG walk rows"},
+      {"file": "execution_engine.cpp", "site": "stage_render_frame_impl custom-view arm", "content": "removes S164 T4 v2 paint-gap block + the drew_real guard around diag_regions"}
+    ]
+  },
+  "reasoning": "The remote S163/S165 rewrite lineage carried a LOSSY tree (S164 scripts+evidence+source absent while its commit messages claim them). Its only two delta-vs-my-line hunks (FRAMEWORK_THEMES, sc_n) are strictly older/weaker forms of code my line already carries in stronger form. Applying the preserved patch would regress approved functionality (T2/T3/T4 laws, D3 flavor ranges) and re-open the dooz dark-cover dead-end. Nothing new exists to verify by execution; the gated-train queue closes with no build.",
+  "my_line_keeps": "T2 app-data seed + T3 provider skip + T4 paint-gap + D3 flavor ranges + D3 setcolor/flavor diags — all verified in S164/S165/S166 and re-confirmed byte-inert in S167 (anchors/dooz/TG gates on binary 53fa8392)."
+}

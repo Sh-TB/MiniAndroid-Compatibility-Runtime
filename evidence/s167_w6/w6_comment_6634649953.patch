@@ -1,0 +1,685 @@
+## `w6_stack.patch` part 2/2
+
+```diff
+
++            int32_t from = dalvik_int_value(args[0]);
++            int32_t to = (method == "checkFromToIndex")
++                             ? dalvik_int_value(args[1])
++                             : from + dalvik_int_value(args[1]);
++            int32_t len = dalvik_int_value(args[2]);
++            if (from < 0 || from > to || to > len) {
++                throw_deferred(
++                    "Ljava/lang/IndexOutOfBoundsException;",
++                    "Range [" + std::to_string(from) + ", " +
++                        std::to_string(to) + ") out of bounds for length " +
++                        std::to_string(len),
++                    "f-c4-561-checkrange");
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_int(from);
++            return true;
++        }
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // F-036 (MASTER-5 §F) — java.util.Arrays.asList + List.iterator law.
+     // AOSP/OpenJDK: Arrays.asList(T... a) returns a fixed-size List
+@@ -57481,6 +57933,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     {"Landroid/hardware/input/InputManager;", "input"},
+     // R-NEW-540 (CONT-36): JobScheduler (AOSP "jobscheduler", never-null).
+     {"Landroid/app/JobScheduler;", "jobscheduler"},
++    // F-C4-542 (4APP4 W2, Coder-4): AOSP SystemServiceRegistry gap batch.
++    // AOSP Context.getSystemService answers a NON-NULL manager for every
++    // registered system service; null is reserved for unknown names.
++    // Apps written against the platform contract invoke methods on the
++    // result WITHOUT a null check (ConnectBot ConnectivityMonitor.<init>
++    // pc=0x34: getSystemService("wifi") → cast getClass() → NPE at the
++    // APP-BOUNDARY, live evidence run/cb_run_c). This batch mirrors the
++    // registry rows the corpus actually queries ("wifi" measured; the
++    // rest are the same-registry never-null neighbors).
++    {"Landroid/net/wifi/WifiManager;", "wifi"},
++    {"Landroid/telephony/TelephonyManager;", "telephony"},
++    {"Landroid/app/DownloadManager;", "download"},
++    {"Landroid/os/BatteryManager;", "battery"},
++    {"Landroid/hardware/usb/UsbManager;", "usb"},
++    {"Landroid/print/PrintManager;", "print"},
++    {"Landroid/app/admin/DevicePolicyManager;", "device_policy"},
++    {"Landroid/os/storage/StorageManager;", "storage"},
++    {"Landroid/net/NetworkStatsManager;", "networkstats"},
++    {"Landroid/net/nsd/NsdManager;", "nsd"},
++    {"Landroid/media/MediaRouter;", "media_router"},
++    {"Landroid/appwidget/AppWidgetManager;", "appwidget"},
++    {"Landroid/media/session/MediaSessionManager;", "media_session"},
++    {"Landroid/app/WallpaperManager;", "wallpaper"},
++    {"Landroid/view/textservice/TextServicesManager;", "textservices"},
++    {"Landroid/content/RestrictionsManager;", "restrictions"},
++    {"Landroid/os/DropBoxManager;", "dropbox"},
+ };
+             const char* scn = kv_table_find(t_service_class_map,
+                     sizeof(t_service_class_map) / sizeof(t_service_class_map[0]),
+@@ -57515,6 +57993,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     // R-NEW-540 (CONT-36): jobscheduler (see the class-table note above).
+     {"jobscheduler", "Landroid/app/JobScheduler;"},
+     {"input", "Landroid/hardware/input/InputManager;"},
++    // F-C4-542 (4APP4 W2, Coder-4): never-null AOSP service rows (the
++    // class-table mirror above carries the full law note).
++    {"wifi", "Landroid/net/wifi/WifiManager;"},
++    {"telephony", "Landroid/telephony/TelephonyManager;"},
++    {"download", "Landroid/app/DownloadManager;"},
++    {"battery", "Landroid/os/BatteryManager;"},
++    {"usb", "Landroid/hardware/usb/UsbManager;"},
++    {"print", "Landroid/print/PrintManager;"},
++    {"device_policy", "Landroid/app/admin/DevicePolicyManager;"},
++    {"storage", "Landroid/os/storage/StorageManager;"},
++    {"networkstats", "Landroid/net/NetworkStatsManager;"},
++    {"nsd", "Landroid/net/nsd/NsdManager;"},
++    {"media_router", "Landroid/media/MediaRouter;"},
++    {"appwidget", "Landroid/appwidget/AppWidgetManager;"},
++    {"media_session", "Landroid/media/session/MediaSessionManager;"},
++    {"wallpaper", "Landroid/app/WallpaperManager;"},
++    {"textservices", "Landroid/view/textservice/TextServicesManager;"},
++    {"restrictions", "Landroid/content/RestrictionsManager;"},
++    {"dropbox", "Landroid/os/DropBoxManager;"},
+ };
+ 
+         const char* smp = kv_table_find(t_service_map,
+@@ -57541,6 +58038,143 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         }
+     }
+ 
++    // ────────────────────────────────────────────────────────────────────────
++    // F-C4-543 (4APP4 W2, Coder-4): WifiManager never-null object laws.
++    // AOSP WifiManager.createWifiLock(String/Int,String) ALWAYS returns a
++    // WifiLock instance (the service allocates a new lock object; there is
++    // no null path — AOSP WifiManager.java). Apps keep a `private val
++    // wifiLock = wifiManager.createWifiLock(TAG)` FINAL field with NO null
++    // check (the platform contract), and R8 compiles the null-check idiom
++    // `getClass()` on the result. Live evidence (ConnectBot 1.11.1-oss at
++    // S154 HEAD + F261x + SVC-INIT + F542): ConnectivityMonitor.<init> pc
++    // unit 41 (byte 0x52) — createWifiLock answered the fail-soft null →
++    // getClass() null-receiver NPE → APP-BOUNDARY death (run/cb_run_d).
++    // WifiLock acquire/release/isHeld follow the AOSP object law; acquire
++    // void, release void, isHeld answers the held flag deterministically.
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name.find("Landroid/net/wifi/WifiManager;") ==
++            std::string::npos &&
++        class_name.find("Landroid/net/wifi/WifiManager$WifiLock;") ==
++            std::string::npos) {
++        // fall through to the next law
++    } else if (method == "createWifiLock") {
++        uint32_t wl_id = heap_.allocate(
++            "Landroid/net/wifi/WifiManager$WifiLock;", pc_, 0);
++        heap_.set_object_field(
++            wl_id, "mHeld",
++            DalvikValue::make_int(0));  // not held until acquire()
++        heap_.set_object_field(
++            wl_id, "mRefCounted",
++            DalvikValue::make_int(1));  // AOSP default refCounted=true
++        result = DalvikValue::make_object(
++            wl_id, "Landroid/net/wifi/WifiManager$WifiLock;");
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        std::cerr << "[F543-WIFI] createWifiLock → WifiLock obj#" << wl_id
++                  << " (AOSP never-null law) caller=" << current_class_
++                  << "." << current_method_ << std::endl;
++        return true;
++    } else if (method == "acquire") {
++        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0)
++            heap_.set_object_field(args[0].object_id, "mHeld",
++                                   DalvikValue::make_int(1));
++        result = DalvikValue::make_void();
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    } else if (method == "release") {
++        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0)
++            heap_.set_object_field(args[0].object_id, "mHeld",
++                                   DalvikValue::make_int(0));
++        result = DalvikValue::make_void();
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    } else if (method == "isHeld") {
++        int32_t held = 0;
++        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0) {
++            auto hv = heap_.get_object_field(args[0].object_id, "mHeld");
++            if (hv && hv->type == DalvikType::INT32) held = hv->int_val;
++        }
++        result = DalvikValue::make_bool(held != 0);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    } else if (method == "setReferenceCounted" || method == "addNetwork" ||
++               method == "updateNetwork" || method == "removeNetwork") {
++        // AOSP: setReferenceCounted void; addNetwork/updateNetwork int id;
++        // removeNetwork boolean. Deterministic defaults; ConnectBot only
++        // locks the radio — it never configures networks at launch.
++        result = (method == "setReferenceCounted")
++                     ? DalvikValue::make_void()
++                     : (method == "removeNetwork"
++                            ? DalvikValue::make_bool(false)
++                            : DalvikValue::make_int(0));
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
++    // ────────────────────────────────────────────────────────────────────────
++    // F-C4-544 (4APP4 W2, Coder-4): NetworkRequest.Builder fluent-chain law.
++    // AOSP NetworkRequest.Builder (android.net): every addCapability /
++    // removeCapability / addTransportType / removeTransportType /
++    // addEthernetTransportCapability... method returns THIS (the builder —
++    // the classic fluent builder contract); build() returns a new
++    // NetworkRequest. The fail-soft null broke the chain at the SECOND
++    // link: ConnectBot TerminalManager.onCreate DEX pc 0x16a addCapability
++    // → null → pc 0x176 removeCapability on a null receiver → f141 NPE →
++    // APP-BOUNDARY death (live evidence run/cb_run_e, the deepest arrest
++    // of the run). Same family as the CONT-41 Notification$Builder
++    // fluent-chain law. registerNetworkCallback / unregisterNetworkCallback
++    // / registerDefaultNetworkCallback answer void (AOSP: async callback
++    // registration; the engine has no radio — callbacks never fire, which
++    // matches the honest no-network state; apps null-check getActiveNetwork).
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/net/NetworkRequest$Builder;") {
++        if (method == "addCapability" || method == "removeCapability" ||
++            method == "addTransportType" || method == "removeTransportType" ||
++            method == "addNetworkSpecifier" ||
++            method == "removeNetworkSpecifier" ||
++            method == "setIncludeOtherUidModes" ||
++            method == "setSignalStrength" ||
++            method == "addEthernetTransportCapability" ||
++            method == "removeEthernetTransportCapability") {
++            // fluent: return THIS (the receiver, args[0])
++            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++                args[0].object_id != 0) {
++                result = args[0];
++            } else {
++                result = get_or_create_singleton(
++                    "Landroid/net/NetworkRequest$Builder;");
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "build") {
++            uint32_t nr_id = heap_.allocate("Landroid/net/NetworkRequest;",
++                                            pc_, 0);
++            result = DalvikValue::make_object(
++                nr_id, "Landroid/net/NetworkRequest;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++    if (class_name.find("Landroid/net/ConnectivityManager;") !=
++            std::string::npos &&
++        (method == "registerNetworkCallback" ||
++         method == "unregisterNetworkCallback" ||
++         method == "registerDefaultNetworkCallback" ||
++         method == "unregisterDefaultNetworkCallback" ||
++         method == "registerNetworkCallbackWithIntent" ||
++         method == "requestNetwork" ||
++         method == "reportNetworkConnectivity")) {
++        result = DalvikValue::make_void();
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        std::cerr << "[F544-NETCB] " << method
++                  << " → void (no-radio deterministic state) caller="
++                  << current_class_ << "." << current_method_ << std::endl;
++        return true;
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // MC4 (Telegram campaign): ActivityManager memory-class law.
+     // Real Telegram v12.10.1 (org.telegram.messenger.web, 70389) dies in
+@@ -65148,6 +65782,18 @@ measure_cm_done:;
+         const auto* f238_recv = heap_.get(args[0].object_id);
+         std::string f238_rcls =
+             f238_recv ? f238_recv->class_descriptor : std::string(args[0].class_desc);
++        // F-C4-547 diag (env-gated, bounded): prove the receiver reachability
++        static thread_local const bool f547_diag_on =
++            std::getenv("MINIANDROID_F547_DIAG") != nullptr;
++        static thread_local uint64_t f547_diag_n = 0;
++        if (f547_diag_on && f547_diag_n++ < 20) {
++            fprintf(stderr,
++                    "[F547-DIAG] toArray recv=%s subclass=%d caller=%s.%s\n",
++                    f238_rcls.c_str(),
++                    (int)is_subclass_of(f238_rcls,
++                                        "Ljava/util/AbstractCollection;"),
++                    current_class_.c_str(), current_method_.c_str());
++        }
+         if (f238_recv && !f238_rcls.empty() &&
+             is_subclass_of(f238_rcls, "Ljava/util/AbstractCollection;")) {
+             bool f238_has_arg = args.size() >= 2;
+@@ -65485,6 +66131,83 @@ measure_cm_done:;
+             }
+             return false;
+         };
++        // ── F-C4-564 (W4): AbstractCollection.toString law (OpenJDK
++        // AbstractCollection.java L450-464, fetched this wave):
++        //   "[]" when empty; else '[' + elements joined ", " + ']' —
++        //   `sb.append(e == this ? "(this Collection)" : e)` per element.
++        // The bridge reads the canonical array[i] heap fields; String
++        // elements render direct, primitives per their String.valueOf
++        // forms, nested heap Strings via the __string_value__/value field
++        // law, every other object per the OpenJDK Object.toString identity
++        // form (no nested-object recursion in v1 — deterministic; the
++        // primary 4APP4 consumer is List<String> rendering
++        // "[hostId]" inside the NavDestinationBuilder IAE message).
++        if (method == "toString" && !args.empty() &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0) {
++            uint32_t this_id = args[0].object_id;
++            std::string out = "[";
++            int32_t n = heap_.has_object(this_id) ? list_len(this_id) : 0;
++            bool first564 = true;
++            for (int32_t i = 0; i < n; ++i) {
++                auto el = heap_.get_object_field(
++                    this_id, "array[" + std::to_string(i) + "]");
++                if (!el.has_value()) continue;
++                if (!first564) out += ", ";
++                first564 = false;
++                if (el->object_id == this_id &&
++                    el->type == DalvikType::OBJECT_REF) {
++                    out += "(this Collection)";
++                    continue;
++                }
++                switch (el->type) {
++                    case DalvikType::STRING_REF:
++                        out += el->string_val; break;
++                    case DalvikType::INT32:
++                        out += std::to_string(el->int_val); break;
++                    case DalvikType::INT64:
++                        out += std::to_string(el->long_val); break;
++                    case DalvikType::BOOLEAN:
++                        out += el->bool_val ? "true" : "false"; break;
++                    case DalvikType::FLOAT64:
++                        out += std::to_string(el->double_val); break;
++                    case DalvikType::NULL_REF:
++                        out += "null"; break;
++                    case DalvikType::OBJECT_REF: {
++                        if (heap_.has_object(el->object_id)) {
++                            auto sv = heap_.get_object_field(el->object_id,
++                                                             "sb_value");
++                            if (!sv.has_value())
++                                sv = heap_.get_object_field(el->object_id,
++                                                            "value");
++                            if (!sv.has_value())
++                                sv = heap_.get_object_field(el->object_id,
++                                                    "__string_value__");
++                            if (sv.has_value() &&
++                                sv->type == DalvikType::STRING_REF) {
++                                out += sv->string_val;
++                                break;
++                            }
++                            auto en = heap_.get_object_field(el->object_id,
++                                                             "enum_name");
++                            if (en.has_value() &&
++                                en->type == DalvikType::STRING_REF) {
++                                out += en->string_val;
++                                break;
++                            }
++                        }
++                        out += el->class_desc + "@" +
++                               std::to_string(el->object_id);
++                        break;
++                    }
++                    default: break;
++                }
++            }
++            out += "]";
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_string(out, 0);
++            return true;
++        }
+         if ((method == "contains" || method == "containsAll") &&
+             args.size() >= 2) {
+             uint32_t this_id = args[0].object_id;
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 0bb7344..862e948 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -3310,6 +3310,30 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+         auto* state = get_or_create(obj_id);
+         size_t n = state->is_view ? state->view_elements.size()
+                                   : state->elements.size();
++        // F-C4-547 (4APP4 W2, Coder-4): HEAP ARRAY-FIELDS CASCADE. The
++        // asList law (dalvik_engine F-036) and NEW_ARRAY minted collection
++        // objects store their elements in the RECEIVER's heap fields
++        // (__array_length__ + array[i]) — NOT in this shadow's store — so
++        // this handler answered a ZERO-length array for them (the F-NEW-238
++        // bridge cascade could never run: the shadow layer answers first).
++        // Live evidence (Tusky 33.1 vc145, S154 HEAD): OkHttp
++        // ConnectionSpec.<clinit> builds APPROVED_CIPHER_SUITES via
++        // Arrays.asList (Arrays$ArrayList heap object) → Collection.toArray
++        // → THIS handler with an empty store → n=0 → Builder.build() threw
++        // the app's own IAE "At least one cipher suite is required" → the
++        // whole OkHttp TLS stack died at class-init. OpenJDK law: toArray
++        // reflects the receiver's REAL contents; source the heap fields
++        // when the shadow store is empty.
++        bool f547_heap_sourced = false;
++        int32_t f547_heap_len = -1;
++        if (!state->is_view && n == 0) {
++            heap_->get_object_int_field(obj_id, "__array_length__",
++                                        f547_heap_len);
++            if (f547_heap_len > 0) {
++                f547_heap_sourced = true;
++                n = (size_t)f547_heap_len;
++            }
++        }
+         uint32_t dst_id = 0;
+         if (!ctx.args.empty() &&
+             ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+@@ -3327,6 +3351,30 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+         }
+         heap_->set_object_int_field(dst_id, "__array_length__", (int32_t)n);
+         heap_->set_object_int_field(dst_id, "__new_array_length__", (int32_t)n);
++        // F-C4-547: heap-sourced element copy — the receiver's own
++        // array[i] fields carry the real elements (typed readers, cascade
++        // string → ref → int, element class from the heap authority).
++        if (f547_heap_sourced) {
++            for (int32_t i = 0; i < f547_heap_len && i < (int32_t)n; ++i) {
++                std::string slot = "array[" + std::to_string(i) + "]";
++                std::string sv;
++                uint32_t ov = 0;
++                int32_t iv = 0;
++                if (heap_->get_object_string_field(obj_id, slot, sv)) {
++                    heap_->set_object_ref_field(dst_id, slot, 0,
++                                                "Ljava/lang/String;", sv,
++                                                true);
++                } else if (heap_->get_object_ref_field(obj_id, slot, ov) &&
++                           ov != 0) {
++                    std::string ecls = "Ljava/lang/Object;";
++                    heap_->get_object_class(ov, ecls);
++                    heap_->set_object_ref_field(dst_id, slot, ov, ecls, "",
++                                                false);
++                } else if (heap_->get_object_int_field(obj_id, slot, iv)) {
++                    heap_->set_object_int_field(dst_id, slot, iv);
++                }
++            }
++        } else {
+         auto put_elem = [&](size_t i, bool is_str, uint32_t oid,
+                             const std::string& s, int32_t iv) {
+             std::string slot = "array[" + std::to_string(i) + "]";
+@@ -3351,6 +3399,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+                 put_elem(i, false, state->elements[i], "", 0);
+             }
+         }
++        }  // end F-C4-547 else (shadow-store element path)
+         // toArray(T[]) identity: a null terminator follows size in the
+         // larger destination (OpenJDK law) — clear stale tail slots.
+         if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+diff --git a/miniandroid/src/framework/view_ancestry.h b/miniandroid/src/framework/view_ancestry.h
+index cc9bff2..a868334 100644
+--- a/miniandroid/src/framework/view_ancestry.h
++++ b/miniandroid/src/framework/view_ancestry.h
+@@ -128,6 +128,34 @@ framework_direct_superclass() {
+         // libcore classes; these edges are the source truth.
+         {"Ljava/util/ArrayList;", "Ljava/util/AbstractList;"},
+         {"Ljava/util/AbstractList;", "Ljava/util/AbstractCollection;"},
++        // F-C4-547 (4APP4 W2, Coder-4): OpenJDK Arrays.java — private
++        // static class ArrayList<E> extends AbstractList<E> implements
++        // RandomAccess, java.io.Serializable. The extends edge was MISSING
++        // (only the interfaces row existed), so is_subclass_of(
++        // Arrays$ArrayList, AbstractCollection) answered FALSE and the
++        // F-NEW-238 Collection.toArray law REFUSED every Arrays.asList
++        // receiver. Live evidence (Tusky 33.1 vc145 at S154 HEAD, post
++        // F261x/F545/F546 wave): OkHttp ConnectionSpec.<clinit> (R8: lk/o)
++        // builds its APPROVED_CIPHER_SUITES list via Arrays.asList (R8:
++        // glide.g.a0) then Collection.toArray → unhandled → empty array →
++        // Builder.build() threw the app's own IAE "At least one cipher
++        // suite is required" → clinit death → the whole OkHttp TLS stack
++        // down for every asList-built list in the corpus.
++        {"Ljava/util/Arrays$ArrayList;", "Ljava/util/AbstractList;"},
++        // F-C4-548 (4APP4 W2, Coder-4): the ContentProvider FRAMEWORK
++        // family edges. App providers that extend an INTERMEDIATE
++        // framework provider (Nextcloud DocumentsStorageProvider →
++        // android.provider.DocumentsProvider → ContentProvider) walked
++        // the DEX chain to DocumentsProvider and STOPPED — the framework
++        // leg to ContentProvider was missing, so every
++        // is_subclass_of(x, ContentProvider) law (the S1-PROVIDER-CTX
++        // getContext bind, the 51026 install gate) refused them. Live
++        // evidence (Nextcloud 35.0.2 vc350000290, S154 HEAD):
++        // AndroidInjection.inject invoked DocumentsProvider.getContext
++        // → REC-MISS → no law fired → null → getApplicationContext NPE
++        // (f141 null-recv, APP-BOUNDARY, 0 frames — the NC-M0/C2 arrest).
++        // AOSP source truth: DocumentsProvider extends ContentProvider.
++        {"Landroid/provider/DocumentsProvider;", "Landroid/content/ContentProvider;"},
+         {"Ljava/util/AbstractCollection;", "Ljava/lang/Object;"},
+         {"Ljava/util/LinkedList;", "Ljava/util/AbstractSequentialList;"},
+         {"Ljava/util/AbstractSequentialList;", "Ljava/util/AbstractList;"},
+diff --git a/miniandroid/src/jni/bionic_compat.c b/miniandroid/src/jni/bionic_compat.c
+index 4cd919d..bb7eb0f 100644
+--- a/miniandroid/src/jni/bionic_compat.c
++++ b/miniandroid/src/jni/bionic_compat.c
+@@ -72,6 +72,55 @@ int __FD_ISSET_chk(int fd, void* set, size_t set_size) {
+     (void)set_size; return FD_ISSET(fd, (fd_set*)set);
+ }
+ 
++/* ── F-C4-545 (4APP4 W2, Coder-4): the bionic fortify STRING family ──
++ * Live evidence (Tusky 33.1 vc145 at S154 HEAD, post F261x/SVC-INIT/F542
++ * wave): libconscrypt_jni.so (sha16 8a6b02c3af4f3249) extracted OK but
++ * dlopen failed on `undefined symbol: __strchr_chk` — the conscrypt
++ * native core (NativeCrypto.cpp evp_aead...) binds the bionic FORTIFY
++ * string helpers. glibc ships the SAME fortify surface for its own
++ * headers but does NOT export the string _chk names for arbitrary
++ * dlopen bind, so every conscrypt-bearing APK (Tusky, Thunderbird,
++ * ConnectBot — the whole OkHttp/Conscrypt ecosystem) dies at the loader.
++ * Semantics follow bionic fortify: the bound is honest-by-construction
++ * (same law as __strlen_chk above) — the glibc primitive under it
++ * cannot read past the real NUL-terminated buffer the caller owns. */
++__attribute__((visibility("default")))
++char* __strchr_chk(const char* s, int c, size_t s_len) {
++    (void)s_len; return strchr(s, c);
++}
++__attribute__((visibility("default")))
++char* __strrchr_chk(const char* s, int c, size_t s_len) {
++    (void)s_len; return strrchr(s, c);
++}
++__attribute__((visibility("default")))
++char* __strcpy_chk(char* dst, const char* src, size_t dst_len) {
++    (void)dst_len; return strcpy(dst, src);
++}
++__attribute__((visibility("default")))
++char* __strncpy_chk(char* dst, const char* src, size_t n, size_t dst_len) {
++    (void)dst_len; return strncpy(dst, src, n);
++}
++__attribute__((visibility("default")))
++char* __strcat_chk(char* dst, const char* src, size_t dst_len) {
++    (void)dst_len; return strcat(dst, src);
++}
++__attribute__((visibility("default")))
++char* __strncat_chk(char* dst, const char* src, size_t n, size_t dst_len) {
++    (void)dst_len; return strncat(dst, src, n);
++}
++__attribute__((visibility("default")))
++char* __stpcpy_chk(char* dst, const char* src, size_t dst_len) {
++    (void)dst_len; return stpcpy(dst, src);
++}
++__attribute__((visibility("default")))
++char* __stpncpy_chk(char* dst, const char* src, size_t n, size_t dst_len) {
++    (void)dst_len; return stpncpy(dst, src, n);
++}
++__attribute__((visibility("default")))
++void* __memchr_chk(const void* s, int c, size_t n, size_t s_len) {
++    (void)s_len; return memchr(s, c, n);
++}
++
+ /* T22 (F-NEW-564 support): android_set_abort_message — the bionic libc
+  * abort-message surface libtmessages binds. First-party: store the last
+  * message (bounded) + one stderr row; abort itself stays glibc. */
+diff --git a/miniandroid/src/jni/dlopen_exec.cpp b/miniandroid/src/jni/dlopen_exec.cpp
+index 75100f6..cc5762d 100644
+--- a/miniandroid/src/jni/dlopen_exec.cpp
++++ b/miniandroid/src/jni/dlopen_exec.cpp
+@@ -91,11 +91,25 @@ struct GuardedSignal {
+ };
+ // Saved pre-guard actions (crash-forensics handler) — read by the guard
+ // handler's fallback path, written only by install_native_guard.
+-GuardedSignal g_guard_saved[2];
++GuardedSignal g_guard_saved[4];
+ size_t g_guard_saved_n = 0;
+ 
+-// Installs the guard handlers for SIGSEGV/SIGBUS (saves the previous
+-// actions so the engine-wide crash-forensics path survives the guard).
++// Installs the guard handlers for SIGSEGV/SIGBUS/SIGABRT/SIGILL (saves the
++// previous actions so the engine-wide crash-forensics path survives the
++// guard).
++// F-C4-546 (4APP4 W2, Coder-4): SIGABRT joins the guarded set. Live
++// evidence (Tusky 33.1 + ConnectBot 1.11.1-oss at S154 HEAD post-F545):
++// libconscrypt_jni.so dlopen now SUCCEEDS (fortify family bound), its
++// JNI_OnLoad runs against the minimal JNIEnv, a field lookup misses
++// ("NativeCrypto: could not find field address" — GetFieldID is an
++// unimplemented slot) and conscrypt's own CHECK path calls abort() →
++// SIGABRT → the WHOLE RUN died with rc=134 before the engine could raise
++// the AOSP load-failure contract. A native init that aborts inside the
++// guarded handshake is a LIBRARY-vs-BRIDGE contract failure — same law
++// class as the SIGSEGV/SIGBUS arm (FIX-TTT): longjmp back, dlclose,
++// honest UnsatisfiedLinkError; the app's own Conscrypt catch chain then
++// degrades gracefully (OkHttp platform fallback). SIGILL joins for the
++// illegal-instruction variant of the same class.
+ void install_native_guard() {
+     struct sigaction sa;
+     memset(&sa, 0, sizeof sa);
+@@ -114,7 +128,7 @@ void install_native_guard() {
+             sigaction(g_guard_saved[i].sig, &g_guard_saved[i].old, nullptr);
+         raise(sig);
+     };
+-    const int sigs[2] = {SIGSEGV, SIGBUS};
++    const int sigs[4] = {SIGSEGV, SIGBUS, SIGABRT, SIGILL};
+     g_guard_saved_n = 0;
+     for (int s : sigs)
+         if (sigaction(s, &sa, &g_guard_saved[g_guard_saved_n].old) == 0) {
+diff --git a/miniandroid/src/resources/resource_runtime.cpp b/miniandroid/src/resources/resource_runtime.cpp
+index d961f7e..6f4d2f9 100644
+--- a/miniandroid/src/resources/resource_runtime.cpp
++++ b/miniandroid/src/resources/resource_runtime.cpp
+@@ -622,8 +622,80 @@ ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
+ // theme) is what makes the appcompat ContextThemeWrapper clone law and the
+ // sequential-app isolation requirement hold: nothing from a previous
+ // activity's theme leaks into the next one.
++// ── F-C4-565 (W4): the <application android:theme> resid of the loaded
++// APK — the base authority of AOSP ActivityInfo.getThemeResource() and the
++// SEED of the ContextThemeWrapper.initializeTheme clone law below. Parsed
++// once per APK (manifest extract + ARSC find_id for the F-094 string-ref
++// form) and cached.
++uint32_t ResourceRuntime::application_theme_resid() {
++    if (app_theme_resid_ready_) return app_theme_resid_cache_;
++    app_theme_resid_ready_ = true;
++    app_theme_resid_cache_ = 0;
++    if (!ensure_loaded(apk_path_)) return 0;
++    std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
++    if (mf.empty()) return 0;
++    apk::ManifestReader mr;
++    apk::ManifestInfo mi = mr.parse(mf);
++    uint32_t resid = mi.application_theme_resid;
++    if (resid == 0 && !mi.application_theme_ref.empty()) {
++        // F-094 law: "@style/Name" → ARSC find_id (same walk as
++        // resolve_launch_theme / resolve_activity_theme).
++        std::string ref = mi.application_theme_ref;
++        if (ref.rfind("@", 0) == 0) ref.erase(0, 1);
++        std::string type = "style", name = ref;
++        size_t slash = ref.find('/');
++        if (slash != std::string::npos) {
++            type = ref.substr(0, slash);
++            name = ref.substr(slash + 1);
++        }
++        if (type.rfind("android:", 0) == 0) type.erase(0, 8);
++        if (auto id = arsc_.find_id(mi.package_name, type, name)) resid = *id;
++    }
++    app_theme_resid_cache_ = resid;
++    return resid;
++}
++
+ void ResourceRuntime::set_activity_theme(uint32_t resid) {
+     static const bool diag = std::getenv("MINIANDROID_F366_DIAG") != nullptr;
++    // ── F-C4-565 (W4): AOSP ContextThemeWrapper.initializeTheme CLONE law.
++    // Upstream (frameworks/base core/java/android/view/ContextThemeWrapper
++    // .java, android-14.0.0_r2 L206-217):
++    //
++    //   private void initializeTheme() {
++    //       final boolean first = mTheme == null;
++    //       if (first) {
++    //           mTheme = getResources().newTheme();
++    //           final Resources.Theme theme = getBaseContext().getTheme();
++    //           if (theme != null) {
++    //               mTheme.setTo(theme);          ← the BASE theme is CLONED
++    //           }
++    //       }
++    //       onApplyThemeResource(mTheme, mThemeResource, first);
++    //   }
++    //   protected void onApplyThemeResource(...) { theme.applyStyle(resId, true); }
++    //
++    // The activity's base ContextImpl serves the APPLICATION theme (the
++    // manifest <application android:theme> — ActivityThread/ContextImpl
++    // initializeTheme law), so a device activity's theme state STARTS as
++    // the full application-theme bag and the activity style overlays it
++    // with force=true. The engine previously built the fresh activity theme
++    // from the activity resid's own parent chain ONLY ("no outer platform
++    // theme to clone" — true only for bare contexts), which stripped every
++    // application-theme attr. Measured kill (4APP4 Tusky v33.1): MainActivity
++    // theme SplashTheme (chain: core-splashscreen styles → framework
++    // Theme.Material.Light.NoActionBar — NO AppCompat attrs) left
++    // AppCompatDelegateImpl.createSubDecor's windowActionBar presence check
++    // (obfuscated k/z.A pc=722) unanswered → the "You need to use a
++    // Theme.AppCompat theme" ISE at every launch, while Tusky's manifest
++    // application theme = Theme.Material3.DayNight.NoActionBar
++    // (TuskyBaseTheme → full AppCompat chain) answers it on every device.
++    // Law: seed the fresh activity theme with the APPLICATION theme bag
++    // first (the setTo clone), then applyStyle(activity resid, force=true).
++    //
++    // AOSP ActivityInfo.getThemeResource(): resid 0 (no activity override)
++    // means the APPLICATION theme IS the activity theme — resolve it here so
++    // every call site with a raw activity resid gets the same law.
++    if (resid == 0) resid = application_theme_resid();
+     // AOSP identity law: EVERY activity owns a FRESH Resources.Theme object
+     // (framework ContextThemeWrapper.initializeTheme: newTheme + setTo) and
+     // a fresh applyStyle state — Theme.applyStyle state is PER-THEME-OBJECT,
+@@ -640,8 +712,21 @@ void ResourceRuntime::set_activity_theme(uint32_t resid) {
+     applied_theme_style_records_.clear();
+     applied_theme_styles_.clear();
+     if (activity_theme_valid_) {
++        // setTo(base) clone: the application theme seeds the bag first.
++        // (Same-resid short-circuit is safe: force-apply is idempotent.)
++        const uint32_t seed = application_theme_resid();
++        const bool seeded = seed != 0 && seed != resid;
++        if (seeded) {
++            activity_theme_.apply_style(arsc_router(), device_config(), seed,
++                                        /*force=*/true);
++        }
+         activity_theme_.apply_style(arsc_router(), device_config(), resid,
+                                     /*force=*/true);
++        if (diag)
++            std::cerr << "[F565-CLONE] activity resid=0x" << std::hex << resid
++                      << std::dec << " seed(app-theme)=0x" << std::hex << seed
++                      << std::dec << (seeded ? " SEEDED" : "")
++                      << " keys=" << activity_theme_.size() << std::endl;
+     }
+     if (diag)
+         std::cerr << "[F366-ACTIVITY-THEME] set resid=0x" << std::hex << resid
+diff --git a/miniandroid/src/resources/resource_runtime.h b/miniandroid/src/resources/resource_runtime.h
+index 8d087ea..6082f1c 100644
+--- a/miniandroid/src/resources/resource_runtime.h
++++ b/miniandroid/src/resources/resource_runtime.h
+@@ -231,6 +231,10 @@ public:
+     // Returns 0 when nothing is declared.
+     uint32_t resolve_activity_theme(const std::string& apk_path,
+                                     const std::string& activity_class);
++    // ── F-C4-565 (W4): the <application android:theme> of the loaded APK
++    // (ActivityInfo.getThemeResource base authority + ContextThemeWrapper
++    // initializeTheme setTo seed — see set_activity_theme). Cached per APK.
++    uint32_t application_theme_resid();
+     const Theme* active_activity_theme() const {
+         return activity_theme_valid_ ? &activity_theme_ : nullptr;
+     }
+@@ -367,6 +371,9 @@ private:
+     Theme activity_theme_;
+     uint32_t activity_theme_resid_ = 0;
+     bool activity_theme_valid_ = false;
++    // F-C4-565: cached <application android:theme> resid (per APK).
++    uint32_t app_theme_resid_cache_ = 0;
++    bool app_theme_resid_ready_ = false;
+     bool base_theme_valid_ = false;
+     bool base_theme_built_ = false;
+     // S124 FW-PACKAGE: the ORIGINAL framework resource table (package 0x01).
+
+```
+
+After concatenating: `git apply w6_stack.patch` on clean main (verified CLEAN at `9f5e7b8a`), then `git apply w6_laws.patch` for wave 6. Build: `cd miniandroid && make -j1 build/miniandroid CXXFLAGS="-std=c++17 -w -O1 -MMD -MP"`.
+
+— **Coder 4**

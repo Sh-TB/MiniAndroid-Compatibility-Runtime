@@ -664,8 +664,80 @@ ResourceRuntime::LaunchTheme ResourceRuntime::resolve_launch_theme(
 // theme) is what makes the appcompat ContextThemeWrapper clone law and the
 // sequential-app isolation requirement hold: nothing from a previous
 // activity's theme leaks into the next one.
+// ── F-C4-565 (W4): the <application android:theme> resid of the loaded
+// APK — the base authority of AOSP ActivityInfo.getThemeResource() and the
+// SEED of the ContextThemeWrapper.initializeTheme clone law below. Parsed
+// once per APK (manifest extract + ARSC find_id for the F-094 string-ref
+// form) and cached.
+uint32_t ResourceRuntime::application_theme_resid() {
+    if (app_theme_resid_ready_) return app_theme_resid_cache_;
+    app_theme_resid_ready_ = true;
+    app_theme_resid_cache_ = 0;
+    if (!ensure_loaded(apk_path_)) return 0;
+    std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
+    if (mf.empty()) return 0;
+    apk::ManifestReader mr;
+    apk::ManifestInfo mi = mr.parse(mf);
+    uint32_t resid = mi.application_theme_resid;
+    if (resid == 0 && !mi.application_theme_ref.empty()) {
+        // F-094 law: "@style/Name" → ARSC find_id (same walk as
+        // resolve_launch_theme / resolve_activity_theme).
+        std::string ref = mi.application_theme_ref;
+        if (ref.rfind("@", 0) == 0) ref.erase(0, 1);
+        std::string type = "style", name = ref;
+        size_t slash = ref.find('/');
+        if (slash != std::string::npos) {
+            type = ref.substr(0, slash);
+            name = ref.substr(slash + 1);
+        }
+        if (type.rfind("android:", 0) == 0) type.erase(0, 8);
+        if (auto id = arsc_.find_id(mi.package_name, type, name)) resid = *id;
+    }
+    app_theme_resid_cache_ = resid;
+    return resid;
+}
+
 void ResourceRuntime::set_activity_theme(uint32_t resid) {
     static const bool diag = std::getenv("MINIANDROID_F366_DIAG") != nullptr;
+    // ── F-C4-565 (W4): AOSP ContextThemeWrapper.initializeTheme CLONE law.
+    // Upstream (frameworks/base core/java/android/view/ContextThemeWrapper
+    // .java, android-14.0.0_r2 L206-217):
+    //
+    //   private void initializeTheme() {
+    //       final boolean first = mTheme == null;
+    //       if (first) {
+    //           mTheme = getResources().newTheme();
+    //           final Resources.Theme theme = getBaseContext().getTheme();
+    //           if (theme != null) {
+    //               mTheme.setTo(theme);          ← the BASE theme is CLONED
+    //           }
+    //       }
+    //       onApplyThemeResource(mTheme, mThemeResource, first);
+    //   }
+    //   protected void onApplyThemeResource(...) { theme.applyStyle(resId, true); }
+    //
+    // The activity's base ContextImpl serves the APPLICATION theme (the
+    // manifest <application android:theme> — ActivityThread/ContextImpl
+    // initializeTheme law), so a device activity's theme state STARTS as
+    // the full application-theme bag and the activity style overlays it
+    // with force=true. The engine previously built the fresh activity theme
+    // from the activity resid's own parent chain ONLY ("no outer platform
+    // theme to clone" — true only for bare contexts), which stripped every
+    // application-theme attr. Measured kill (4APP4 Tusky v33.1): MainActivity
+    // theme SplashTheme (chain: core-splashscreen styles → framework
+    // Theme.Material.Light.NoActionBar — NO AppCompat attrs) left
+    // AppCompatDelegateImpl.createSubDecor's windowActionBar presence check
+    // (obfuscated k/z.A pc=722) unanswered → the "You need to use a
+    // Theme.AppCompat theme" ISE at every launch, while Tusky's manifest
+    // application theme = Theme.Material3.DayNight.NoActionBar
+    // (TuskyBaseTheme → full AppCompat chain) answers it on every device.
+    // Law: seed the fresh activity theme with the APPLICATION theme bag
+    // first (the setTo clone), then applyStyle(activity resid, force=true).
+    //
+    // AOSP ActivityInfo.getThemeResource(): resid 0 (no activity override)
+    // means the APPLICATION theme IS the activity theme — resolve it here so
+    // every call site with a raw activity resid gets the same law.
+    if (resid == 0) resid = application_theme_resid();
     // AOSP identity law: EVERY activity owns a FRESH Resources.Theme object
     // (framework ContextThemeWrapper.initializeTheme: newTheme + setTo) and
     // a fresh applyStyle state — Theme.applyStyle state is PER-THEME-OBJECT,
@@ -682,8 +754,21 @@ void ResourceRuntime::set_activity_theme(uint32_t resid) {
     applied_theme_style_records_.clear();
     applied_theme_styles_.clear();
     if (activity_theme_valid_) {
+        // setTo(base) clone: the application theme seeds the bag first.
+        // (Same-resid short-circuit is safe: force-apply is idempotent.)
+        const uint32_t seed = application_theme_resid();
+        const bool seeded = seed != 0 && seed != resid;
+        if (seeded) {
+            activity_theme_.apply_style(arsc_router(), device_config(), seed,
+                                        /*force=*/true);
+        }
         activity_theme_.apply_style(arsc_router(), device_config(), resid,
                                     /*force=*/true);
+        if (diag)
+            std::cerr << "[F565-CLONE] activity resid=0x" << std::hex << resid
+                      << std::dec << " seed(app-theme)=0x" << std::hex << seed
+                      << std::dec << (seeded ? " SEEDED" : "")
+                      << " keys=" << activity_theme_.size() << std::endl;
     }
     if (diag)
         std::cerr << "[F366-ACTIVITY-THEME] set resid=0x" << std::hex << resid

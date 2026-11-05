@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""EXP-051: Dump bytecode of a specific method from Telegram's DEX files.
+"""EXP-051: Dump bytecode of a specific method from any APK DEX files.
 
 Usage: python3 dump_method_bytecode.py "Landroidx/lifecycle/LifecycleRegistry;" "enforceMainThreadIfNeeded"
 """

@@ -1,0 +1,32 @@
+{
+ "tbseed_ref": {
+  "tag": "tbseed_ref",
+  "bin": "2a5464c2bf15f9ec",
+  "wall_s": 3.7,
+  "stderr_sha16": "a5df461f8b491dc2",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 38,
+  "ndfe": 51,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11354
+ },
+ "tbseed_new": {
+  "tag": "tbseed_new",
+  "bin": "53fa8392640d1279",
+  "wall_s": 3.6,
+  "stderr_sha16": "d59170343b16a897",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 37,
+  "ndfe": 65,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11354
+ }
+}

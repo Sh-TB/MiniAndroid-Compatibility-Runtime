@@ -1,0 +1,578 @@
+## `w6_laws.patch` — the W6 delta (F-C4-569 + F-C4-570 + F-C4-571 + W6 probes)
+
+569 lines, sha16 `65699ca9a235e915`, `git apply` (no flags) on a **w6_stack-applied** tree (verified CLEAN this session). This is the complete reviewable diff of wave 6:
+
+```diff
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index f9dd9d3..f85e639 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -24187,9 +24187,10 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
+                     diag_env("MINIANDROID_F566_FIELD_DIAG");
+                 static thread_local uint64_t f566f_n = 0;
+                 if (f566f_on && field_res.resolved &&
+-                    field_res.field_name == "includedModules" &&
++                    (field_res.field_name == "includedModules" ||
++                     field_res.field_name == "includes") &&
+                     f566f_n++ < 60) {
+-                    std::cerr << "[F566-IGET] includedModules obj#"
++                    std::cerr << "[F566-IGET] " << field_res.field_name << " obj#"
+                               << obj_ref.object_id << " key=\"" << s134_fkey
+                               << "\" hit="
+                               << (field_val.has_value() ? 1 : 0) << " val=";
+@@ -24199,6 +24200,53 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
+                         std::cerr << "(none=default-null)";
+                     std::cerr << " caller=" << current_class_ << "."
+                               << current_method_ << " pc=" << pc << std::endl;
++                    // W6 (Coder-4): when loadModules reads the includes
++                    // list, dump the value object's STORE SHAPE (class,
++                    // heap array length, first elements) — the flatten
++                    // drop forensics (F-C4-570 root-pinning).
++                    if (field_val.has_value() &&
++                        field_val->type == DalvikType::OBJECT_REF &&
++                        field_val->object_id != 0 &&
++                        current_class_ == "Lorg/koin/core/Koin;") {
++                        uint32_t fv = field_val->object_id;
++                        const auto* fvo = heap_.has_object(fv)
++                            ? heap_.get(fv) : nullptr;
++                        std::cerr << "[W6-INCL] list obj#" << fv << " class="
++                                  << (fvo ? fvo->class_descriptor
++                                          : std::string("?"));
++                        int32_t w6_alen = -1;
++                        {
++                            auto w6_al =
++                                heap_.get_object_field(fv, "__array_length__");
++                            if (w6_al.has_value() &&
++                                w6_al->type == DalvikType::INT32)
++                                w6_alen = w6_al->int_val;
++                            std::cerr << " __array_length__="
++                                      << (w6_al.has_value()
++                                              ? std::to_string(w6_alen)
++                                              : std::string("ABSENT"));
++                        }
++                        if (fvo) {
++                            std::cerr << " fields=";
++                            size_t shown = 0;
++                            for (const auto& w6f : fvo->fields) {
++                                if (shown++ >= 6) { std::cerr << "…"; break; }
++                                std::cerr << w6f.first << "("
++                                          << static_cast<int>(w6f.second.type)
++                                          << ",o" << w6f.second.object_id
++                                          << ") ";
++                            }
++                        }
++                        // first two array slots if present
++                        for (int32_t w6_i = 0; w6_i < 2; ++w6_i) {
++                            auto w6_ev = heap_.get_object_field(
++                                fv, "array[" + std::to_string(w6_i) + "]");
++                            if (w6_ev.has_value())
++                                std::cerr << " arr[" << w6_i << "]=o"
++                                          << w6_ev->object_id;
++                        }
++                        std::cerr << std::endl;
++                    }
+                 }
+             }
+             // ── TRAIN-68 (T68-JOBGET-VAL): the pointerInputJob read VALUE.
+@@ -25051,10 +25099,11 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
+         static const bool f566f_on =
+             diag_env("MINIANDROID_F566_FIELD_DIAG");
+         if (f566f_on && field_res.resolved &&
+-            field_res.field_name == "includedModules") {
++            (field_res.field_name == "includedModules" ||
++             field_res.field_name == "includes")) {
+             static thread_local uint64_t f566f_n = 0;
+             if (f566f_n++ < 60)
+-                std::cerr << "[F566-IPUT] includedModules obj#"
++                std::cerr << "[F566-IPUT] " << field_res.field_name << " obj#"
+                           << (obj_ref.type == DalvikType::OBJECT_REF
+                                   ? obj_ref.object_id : 0)
+                           << " <- "
+@@ -28596,12 +28645,14 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
+             if (diag_env("MINIANDROID_IFACE_FAIL_TRACE")) {
+                 fprintf(stderr,
+                         "[IFACE-RT] %s.%s%s via runtime %s (recv obj#%u) "
+-                        "ret_type=%d ret_id=%u\n",
++                        "ret_type=%d ret_id=%u ret_int=%d\n",
+                         class_name.c_str(), method_name.c_str(),
+                         iface_proto.c_str(),
+                         heap_obj->class_descriptor.c_str(),
+                         args.empty() ? 0u : args[0].object_id,
+-                        static_cast<int>(return_val.type), return_val.object_id);
++                        static_cast<int>(return_val.type), return_val.object_id,
++                        return_val.type == DalvikType::INT32 ? return_val.int_val
++                        : (return_val.type == DalvikType::BOOLEAN ? (return_val.int_val != 0 ? 1 : 0) : -1));
+                 // S59: dump the receiver's stored fields for empty returns
+                 // (Ljj;.a returned empty for every KClass — was the <init>
+                 // iput ever persisted?)
+@@ -29996,11 +30047,88 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
+             } \
+         } \
+     } else if (a_is_ref && b_is_ref) { \
+-        uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
+-                        : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
+-        uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
+-                        : (b.type == DalvikType::CLASS_REF) ? b.ref_id : 0; \
+-        taken = (a_obj op b_obj); \
++        /* ── F-C4-569 (W6, 4APP4): CLASS-TOKEN REFERENCE-IDENTITY LAW ── \
++           ART (art::mirror::Class, one Class object per classloader+name): \
++           `tokenA == tokenB` on Class references is TRUE iff the two \
++           tokens name the SAME class. The engine mints heap Class tokens \
++           at multiple sites (const-class cache, F-NEW-282 iput \
++           materialization, Class.forName bridges, getClass law) — two \
++           DISTINCT oids for one referent made every if-eq/if-ne on a \
++           Class-token pair answer never-equal. Kotlin compiles `==` on \
++           statically NON-NULL Class references (e.g. ClassReference.\
++           equals' `jClass == other.jClass`) to a PLAIN if-ne — NOT to \
++           Intrinsics.areEqual / Object.equals — so the W5 laws \
++           F-C4-567/F-C4-568 (equals bridge + hashCode) never saw this \
++           compare at all. Live root (Thunderbird v24, Koin): every \
++           ConcurrentHashMap.get(Node) chain-walk compare died at the \
++           Kotlin ClassReference.equals if-ne on two heap tokens for the \
++           same referent → NoDefinitionFoundException ×32 (the 510 CHM \
++           puts + 596 nodes all stored fine — laws 566/568 — the GET \
++           simply never matched). Same opcode also answers the CHM \
++           getNode `(ek = e.key) == key` fast path. LAW: a Class-token \
++           pair in if-eq/if-ne compares REFERENT IDENTITY — the register \
++           form's canonical class_desc, the heap form's __referent_desc \
++           (F-069/F-103 convention; the W4 567 companion for the opcode \
++           path). Non-quantified pairs keep the oid law (OpenJDK \
++           reference identity). */ \
++        bool f569_a_tok = false, f569_b_tok = false; \
++        std::string f569_a_ref, f569_b_ref; \
++        if (a.type == DalvikType::CLASS_REF) { \
++            f569_a_tok = true; \
++            f569_a_ref = a.class_desc; \
++        } else if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 && \
++                   heap_.has_object(a.object_id)) { \
++            const auto* f569_ao = heap_.get(a.object_id); \
++            if (f569_ao && \
++                f569_ao->class_descriptor == "Ljava/lang/Class;") { \
++                auto f569_ar = heap_.get_object_field(a.object_id, \
++                                                      "__referent_desc"); \
++                if (f569_ar.has_value() && \
++                    f569_ar->type == DalvikType::STRING_REF && \
++                    !f569_ar->string_val.empty()) { \
++                    f569_a_tok = true; \
++                    f569_a_ref = f569_ar->string_val; \
++                } \
++            } \
++        } \
++        if (b.type == DalvikType::CLASS_REF) { \
++            f569_b_tok = true; \
++            f569_b_ref = b.class_desc; \
++        } else if (b.type == DalvikType::OBJECT_REF && b.object_id != 0 && \
++                   heap_.has_object(b.object_id)) { \
++            const auto* f569_bo = heap_.get(b.object_id); \
++            if (f569_bo && \
++                f569_bo->class_descriptor == "Ljava/lang/Class;") { \
++                auto f569_br = heap_.get_object_field(b.object_id, \
++                                                      "__referent_desc"); \
++                if (f569_br.has_value() && \
++                    f569_br->type == DalvikType::STRING_REF && \
++                    !f569_br->string_val.empty()) { \
++                    f569_b_tok = true; \
++                    f569_b_ref = f569_br->string_val; \
++                } \
++            } \
++        } \
++        if (f569_a_tok && f569_b_tok) { \
++            taken = (f569_a_ref op f569_b_ref); \
++            static thread_local const bool f569_diag = \
++                std::getenv("MINIANDROID_F569_DIAG") != nullptr; \
++            static thread_local uint64_t f569_n = 0; \
++            if (f569_diag && f569_n++ < 40) { \
++                std::cerr << "[F-C4-569] " << op_name \
++                          << " a=" << f569_a_ref \
++                          << " b=" << f569_b_ref \
++                          << " taken=" << (taken ? "YES" : "NO") \
++                          << " caller=" << current_class_ << "." \
++                          << current_method_ << std::endl; \
++            } \
++        } else { \
++            uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
++                            : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
++            uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
++                            : (b.type == DalvikType::CLASS_REF) ? b.ref_id : 0; \
++            taken = (a_obj op b_obj); \
++        } \
+     } else if (a_is_ref || b_is_ref) { \
+         /* F-075 (S21): mixed reference-vs-const/4-zero compare. The zero \
+            word is the null reference in a reference context (ART Zero \
+@@ -32414,6 +32542,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     bridge_census_init();
+     BridgeCensusGuard c97_census_guard;
+     if (bridge_census().on) c97_census_guard.begin(class_name, method);
++    // W6 (Coder-4) probe: every Class.equals entry into the bridge —
++    // env-gated, bounded, read-only. Answers WHERE the Koin chain-walk
++    // compare actually dispatches (F-C4-569 forensics).
++    {
++        static thread_local const bool w6_probe =
++            std::getenv("MINIANDROID_W6_CLASSEQ_PROBE") != nullptr;
++        static thread_local uint64_t w6_n = 0;
++        if (w6_probe && class_name == "Ljava/lang/Class;" &&
++            method == "equals" && w6_n++ < 30) {
++            std::cerr << "[W6-CLASSEQ] bridge entry argc="
++                      << args.size();
++            for (size_t i = 0; i < args.size() && i < 2; ++i) {
++                std::cerr << " a" << i << ":t"
++                          << static_cast<int>(args[i].type)
++                          << "/o" << args[i].object_id
++                          << "/c" << args[i].class_desc;
++            }
++            std::cerr << " caller=" << current_class_ << "."
++                      << current_method_ << std::endl;
++        }
++    }
+     // CONT-97 T1 (INFRA-BRIDGEINTR-1): BRIDGE INTRINSIC ENTRY FAST PATH —
+     // the ART-parity dispatch law CONT-96 named as the next frontier.
+     //
+@@ -50580,6 +50729,201 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 }
+             }
+         }
++        // ── F-C4-570 (W6, 4APP4): COLLECTION-COPY TOTALITY LAW ───────────
++        // Every upstream channel (heap __array_length__ mirror, DEX
++        // size()+get(I), the engine iterator protocol, the backing-array
++        // field probe, the F-NEW-264b stale-mirror shadow read) delivered
++        // ZERO elements. OpenJDK law (ArrayList(Collection c) →
++        // c.toArray(); AbstractCollection.addAll(c) → same): a copy is
++        // defined by the SOURCE'S OWN CONTENTS, whatever internal store
++        // holds them. When the source is NON-EMPTY under ANY store view
++        // — registry CollectionState (elements + view_elements) or heap
++        // "array[i]" fields with __array_length__ — the copy MUST deliver
++        // those elements; a silent zero-copy leaves a HOLLOW collection
++        // that later answers size()=0/isEmpty()=true and starves every
++        // consumer (OpenJDK has no empty-on-copy path).
++        //
++        // LIVE ROOT (Thunderbird v24, Koin — the NDFE ×32 family):
++        // provideAppModule's includes list is BORN HOLLOW: the ArrayList
++        // copy-product carries no fields, no __array_length__, and an
++        // empty registry state (W6-INCL probe: obj#5278 class ArrayList,
++        // __array_length__=ABSENT, fields=EMPTY). Koin's Module.flatten
++        // worklist then dies at depth 1 (the includes view answers
++        // size()=0 → the enqueue addAll no-ops) → only 8 of 2707 created
++        // BeanDefinitions reach the Koin definitions index → every
++        // by-inject() resolution throws NoDefinitionFoundException (×32,
++        // once per delegate) → attachBaseContext's Log.logger forcing
++        // dies → the whole DI graph never arms. Same family fans out to
++        // every Kotlin `list + element` / ArrayList(collection) / copyOf
++        // chain whose source store shape the earlier channels miss.
++        if (f101_copied == 0 && shadow_registry_ != nullptr) {
++            auto* f570_csh =
++                shadow_registry_->find_as<framework::CollectionShadow>();
++            auto* f570_sst =
++                f570_csh ? f570_csh->get_or_create(f101_src,
++                                                   /*is_map=*/false)
++                         : nullptr;
++            int32_t f570_n = 0;
++            if (f570_sst) {
++                f570_n = static_cast<int32_t>(
++                    f570_sst->elements.size() +
++                    f570_sst->view_elements.size());
++            }
++            int32_t f570_alen = -1;
++            auto f570_lf = heap_.get_object_field(f101_src,
++                                                  "__array_length__");
++            if (f570_lf.has_value() && f570_lf->type == DalvikType::INT32)
++                f570_alen = f570_lf->int_val;
++            if (f570_n <= 0 && f570_alen <= 0)
++                f570_n = f570_alen > 0 ? f570_alen : f570_n;
++            else if (f570_n <= 0)
++                f570_n = f570_alen;
++            if (f570_n > 0 && f570_n <= 4096) {
++                for (int32_t f570_i = 0; f570_i < f570_n; ++f570_i) {
++                    DalvikValue f570_ev;
++                    bool f570_got = false;
++                    // (a) registry slot (kind-faithful: object/string/int)
++                    if (f570_sst) {
++                        size_t f570_sn = f570_sst->elements.size();
++                        size_t f570_vn = f570_sst->view_elements.size();
++                        const framework::CollectionShadow::CollectionState::ViewElem* f570_slot = nullptr;
++                        if (f570_i < static_cast<int32_t>(f570_sn)) {
++                            uint8_t f570_k =
++                                f570_i < f570_sst->elem_kinds.size()
++                                    ? f570_sst->elem_kinds[f570_i] : 0;
++                            if (f570_k == 1 &&
++                                f570_sst->elements[f570_i] != 0) {
++                                f570_ev = DalvikValue::make_object(
++                                    f570_sst->elements[f570_i],
++                                    "Ljava/lang/Object;");
++                                f570_got = true;
++                            } else if (f570_k == 2) {
++                                f570_ev = DalvikValue::make_string(
++                                    f570_i < f570_sst->elem_strings.size()
++                                        ? f570_sst->elem_strings[f570_i]
++                                        : std::string(),
++                                    0);
++                                f570_got = true;
++                            } else if (f570_k == 3) {
++                                f570_ev = DalvikValue::make_int(
++                                    f570_i < f570_sst->elem_ints.size()
++                                        ? f570_sst->elem_ints[f570_i] : 0);
++                                f570_got = true;
++                            }
++                        } else if (f570_i - static_cast<int32_t>(f570_sn) <
++                                   static_cast<int32_t>(f570_vn)) {
++                            f570_slot = &f570_sst->view_elements[
++                                f570_i - f570_sn];
++                        }
++                        if (!f570_got && f570_slot) {
++                            if (f570_slot->kind == 1 &&
++                                f570_slot->object_id != 0) {
++                                f570_ev = DalvikValue::make_object(
++                                    f570_slot->object_id,
++                                    "Ljava/lang/Object;");
++                                f570_got = true;
++                            } else if (f570_slot->kind == 2) {
++                                f570_ev = DalvikValue::make_string(
++                                    f570_slot->string_val, 0);
++                                f570_got = true;
++                            } else if (f570_slot->kind == 3) {
++                                f570_ev = DalvikValue::make_int(
++                                    f570_slot->int_val);
++                                f570_got = true;
++                            }
++                        }
++                    }
++                    // (b) heap array[i] field (engine store)
++                    if (!f570_got) {
++                        auto f570_hv = heap_.get_object_field(
++                            f101_src,
++                            "array[" + std::to_string(f570_i) + "]");
++                        if (f570_hv.has_value() && !f570_hv->is_null) {
++                            f570_ev = *f570_hv;
++                            f570_got = true;
++                        }
++                    }
++                    if (f570_got && !f570_ev.is_null) {
++                        heap_.set_object_field(
++                            f101_arr,
++                            "array[" +
++                                std::to_string(f101_append_base +
++                                               f101_copied) + "]",
++                            f570_ev);
++                        if (f570_ev.type == DalvikType::OBJECT_REF &&
++                            f570_ev.object_id != 0)
++                            f101_elem_ids.push_back(f570_ev.object_id);
++                        ++f101_copied;
++                    }
++                }
++                if (f101_copied > 0) {
++                    heap_.set_object_field(
++                        f101_arr, "__array_length__",
++                        DalvikValue::make_int(f101_append_base +
++                                              f101_copied));
++                    // F-101 write-back coherence (same law as above).
++                    auto* f570_dst =
++                        f570_csh ? f570_csh->get_or_create(f101_arr,
++                                                          /*is_map=*/false)
++                                 : nullptr;
++                    if (f570_dst) {
++                        if (method != "addAll") {
++                            f570_dst->elements.clear();
++                            f570_dst->elem_kinds.clear();
++                            f570_dst->elem_strings.clear();
++                            f570_dst->elem_ints.clear();
++                        }
++                        f570_dst->is_map = false;
++                        for (int32_t f570_j = 0;
++                             f570_j < f101_copied; ++f570_j) {
++                            auto f570_jv = heap_.get_object_field(
++                                f101_arr,
++                                "array[" + std::to_string(f101_append_base +
++                                                          f570_j) + "]");
++                            if (!f570_jv.has_value()) {
++                                f570_dst->elements.push_back(0);
++                                f570_dst->elem_kinds.push_back(0);
++                                f570_dst->elem_strings.push_back(
++                                    std::string());
++                                f570_dst->elem_ints.push_back(0);
++                                continue;
++                            }
++                            if (f570_jv->type == DalvikType::OBJECT_REF) {
++                                f570_dst->elements.push_back(
++                                    f570_jv->object_id);
++                                f570_dst->elem_kinds.push_back(1);
++                                f570_dst->elem_strings.push_back(
++                                    std::string());
++                                f570_dst->elem_ints.push_back(0);
++                            } else if (f570_jv->type ==
++                                       DalvikType::STRING_REF) {
++                                f570_dst->elements.push_back(0);
++                                f570_dst->elem_kinds.push_back(2);
++                                f570_dst->elem_strings.push_back(
++                                    f570_jv->string_val);
++                                f570_dst->elem_ints.push_back(0);
++                            } else {
++                                f570_dst->elements.push_back(0);
++                                f570_dst->elem_kinds.push_back(3);
++                                f570_dst->elem_strings.push_back(
++                                    std::string());
++                                f570_dst->elem_ints.push_back(
++                                    f570_jv->type == DalvikType::BOOLEAN
++                                        ? (f570_jv->int_val ? 1 : 0)
++                                        : f570_jv->int_val);
++                            }
++                        }
++                    }
++                    static thread_local uint64_t f570_n_log = 0;
++                    if (f570_n_log++ < 40)
++                        std::cerr << "[F-C4-570] totality copy src=o"
++                                  << f101_src << " (" << f101_scls
++                                  << ") copied=" << f101_copied
++                                  << " caller=" << current_class_ << "."
++                                  << current_method_ << std::endl;
++                }
++            }
++        }
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         // OpenJDK addAll returns true when the collection changed (the
+         // empty-source no-op returns false). The cascade reports the copy
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 862e948..e3d92e5 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -975,6 +975,28 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+     // is attached" ISE → MainActivity.onCreate died → Compose never
+     // composed. Capacity/int-form constructors remain no-ops.
+     if (m == "<init>") {
++        // W6 (Coder-4) probe: every collection ctor entry with args —
++        // the hollow-includes-list forensics (F-C4-570 root-pinning).
++        {
++            static thread_local const bool w6c_on =
++                std::getenv("MINIANDROID_W6_CTOR_PROBE") != nullptr;
++            static thread_local uint64_t w6c_n = 0;
++            if (w6c_on && w6c_n++ < 200) {
++                std::cerr << "[W6-CTOR] " << ctx.class_name << ".<init> obj#"
++                          << obj_id << " nargs=" << ctx.args.size();
++                for (size_t w6c_i = 0;
++                     w6c_i < ctx.args.size() && w6c_i < 2; ++w6c_i) {
++                    const auto& w6c_a = ctx.args[w6c_i];
++                    std::cerr << " a" << w6c_i << ":k"
++                              << static_cast<int>(w6c_a.kind)
++                              << "/o" << w6c_a.object_id
++                              << "/c" << (w6c_a.object_class.empty()
++                                              ? std::string("-")
++                                              : w6c_a.object_class);
++                }
++                std::cerr << " caller=" << ctx.caller << std::endl;
++            }
++        }
+         // ── F-NEW-236b (fairymahjong F-235 probe face): SET vs MAP family
+         // law. OpenJDK HashSet/LinkedHashSet/TreeSet are NOT maps — the old
+         // find("Set") clause stamped every set's CollectionState is_map=true,
+@@ -2091,6 +2113,44 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+             if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
+                 return CallResult::handled_int(alen);
+         }
++        // ── F-C4-571 (W6, 4APP4): VIEW-DELEGATE SIZE LAW (size sibling —
++        // see the isEmpty law for the full statement + live root). A view
++        // wrapper with no own store answers from its delegate's store.
++        if (state->elements.empty() && heap_) {
++            int32_t f571_self_alen = -1;
++            if (!heap_->get_object_array_length(obj_id, f571_self_alen)) {
++                auto f571_names = heap_->get_object_field_names(obj_id);
++                for (const auto& f571_fname : f571_names) {
++                    uint32_t f571_d = 0;
++                    if (!heap_->get_object_ref_field(obj_id, f571_fname,
++                                                     f571_d) ||
++                        f571_d == 0 || f571_d == obj_id)
++                        continue;
++                    auto* f571_dst = get_or_create(f571_d, false);
++                    int32_t f571_dlen = -1;
++                    bool f571_has_store =
++                        (f571_dst &&
++                         (!f571_dst->elements.empty() ||
++                          !f571_dst->view_elements.empty()));
++                    if (!f571_has_store)
++                        f571_has_store =
++                            heap_->get_object_array_length(f571_d, f571_dlen);
++                    if (f571_has_store) {
++                        int32_t f571_dn = 0;
++                        if (f571_dst && !f571_dst->elements.empty())
++                            f571_dn = static_cast<int32_t>(
++                                f571_dst->elements.size());
++                        else if (f571_dst &&
++                                 !f571_dst->view_elements.empty())
++                            f571_dn = static_cast<int32_t>(
++                                f571_dst->view_elements.size());
++                        else if (f571_dlen >= 0)
++                            f571_dn = f571_dlen;
++                        return CallResult::handled_int(f571_dn);
++                    }
++                }
++            }
++        }
+         // F-NEW-267 (CONT-61): the touch-window size probe — what the
+         // compose pointer-input filter dispatch saw.
+         if (g_touch_window_active.load(std::memory_order_relaxed)) {
+@@ -2127,6 +2187,53 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+             if (heap_->get_object_array_length(obj_id, alen) && alen >= 0)
+                 return CallResult::handled_bool(alen == 0);
+         }
++        // ── F-C4-571 (W6, 4APP4): VIEW-DELEGATE SIZE LAW ──────────────
++        // A VIEW wrapper (kotlin ReversedList/ReversedListReadOnly,
++        // subList boxes, unmodifiable wrappers) carries NO store of its
++        // own — its emptiness IS its delegate's. When the view's own
++        // shadow state is empty AND it has no __array_length__, resolve
++        // ONE reference-field hop to a delegate object that carries a
++        // store (shadow elements, view_elements, or heap __array_length__)
++        // and answer from THERE. OpenJDK law: a delegating collection's
++        // isEmpty() == delegate.isEmpty(). Live root (Thunderbird v24,
++        // Koin flatten): the includes ReversedList view answered
++        // isEmpty()=true over a non-empty delegate chain → the worklist
++        // enqueue no-opped → the DI graph starved (NDFE ×32).
++        if (state->elements.empty() && heap_) {
++            int32_t f571_self_alen = -1;
++            if (!heap_->get_object_array_length(obj_id, f571_self_alen)) {
++                auto f571_names = heap_->get_object_field_names(obj_id);
++                for (const auto& f571_fname : f571_names) {
++                    uint32_t f571_d = 0;
++                    if (!heap_->get_object_ref_field(obj_id, f571_fname,
++                                                     f571_d) ||
++                        f571_d == 0 || f571_d == obj_id)
++                        continue;
++                    auto* f571_dst = get_or_create(f571_d, false);
++                    int32_t f571_dlen = -1;
++                    bool f571_has_store =
++                        (f571_dst &&
++                         (!f571_dst->elements.empty() ||
++                          !f571_dst->view_elements.empty()));
++                    if (!f571_has_store)
++                        f571_has_store =
++                            heap_->get_object_array_length(f571_d, f571_dlen);
++                    if (f571_has_store) {
++                        int32_t f571_dn = 0;
++                        if (f571_dst && !f571_dst->elements.empty())
++                            f571_dn = static_cast<int32_t>(
++                                f571_dst->elements.size());
++                        else if (f571_dst &&
++                                 !f571_dst->view_elements.empty())
++                            f571_dn = static_cast<int32_t>(
++                                f571_dst->view_elements.size());
++                        else if (f571_dlen >= 0)
++                            f571_dn = f571_dlen;
++                        return CallResult::handled_bool(f571_dn == 0);
++                    }
++                }
++            }
++        }
+         return CallResult::handled_bool(state->elements.empty());
+     }
+ 
+diff --git a/miniandroid/tools/dump_method_bytecode.py b/miniandroid/tools/dump_method_bytecode.py
+index c895ab5..139c629 100755
+--- a/miniandroid/tools/dump_method_bytecode.py
++++ b/miniandroid/tools/dump_method_bytecode.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""EXP-051: Dump bytecode of a specific method from Telegram's DEX files.
++"""EXP-051: Dump bytecode of a specific method from any APK DEX files.
+ 
+ Usage: python3 dump_method_bytecode.py "Landroidx/lifecycle/LifecycleRegistry;" "enforceMainThreadIfNeeded"
+ """
+
+```
+
+— **Coder 4**
