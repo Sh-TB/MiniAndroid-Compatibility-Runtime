@@ -1,0 +1,34 @@
+{
+ "tag": "tb_pre",
+ "bin": "fea1759d58653d41",
+ "wall_s": 8.8,
+ "stderr_sha16": "0b3432c104dd9f1e",
+ "screenshot_face": "43bfdac6023cba66",
+ "uncaught": 3,
+ "ndfe": 7,
+ "frames": [
+  "9"
+ ],
+ "census": {
+  "uncaught_rows": 3,
+  "ndfe": 7,
+  "npe_unwind": 0,
+  "npe_ncm_lambda": 0,
+  "w10_probe_rows": 0,
+  "w10_law_rows": 1,
+  "f578": 8,
+  "f574": 20,
+  "f581": 0,
+  "f582": 1,
+  "vme": 0,
+  "upgrade_failed": 0,
+  "probe_unhandled_groups": 0,
+  "probe_unhandled_channels": 0,
+  "probe_lines": [],
+  "law_lines": [
+   "[W10-NCGroups] NotificationManager.getNotificationChannelGroups -> empty ArrayList (AOSP never-null list law) caller=Lcom/fsck/k9/notification/NotificationChannelManager;.$r8"
+  ]
+ },
+ "app_owned_pixels": 0,
+ "api_calls": 11327
+}

@@ -1,0 +1,204 @@
+{
+ "anchors": {
+  "microtimer": {
+   "microtimer_ref": {
+    "tag": "microtimer_ref",
+    "bin": "fea1759d58653d41",
+    "wall_s": 1.1,
+    "stderr_sha16": "01e9c38676f31376",
+    "screenshot_face": "bbd350b6c14fbd52",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 893597,
+    "api_calls": 201
+   },
+   "microtimer_new": {
+    "tag": "microtimer_new",
+    "bin": "9113d18c94dba33b",
+    "wall_s": 1.0,
+    "stderr_sha16": "da04834cf649aeb6",
+    "screenshot_face": "bbd350b6c14fbd52",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 893597,
+    "api_calls": 201
+   },
+   "delta_inert": true,
+   "pin_match": true
+  },
+  "g2048": {
+   "g2048_ref": {
+    "tag": "g2048_ref",
+    "bin": "fea1759d58653d41",
+    "wall_s": 1.4,
+    "stderr_sha16": "3f2cd054bd208dfa",
+    "screenshot_face": "f43face08299ffc6",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 1181241,
+    "api_calls": 64
+   },
+   "g2048_new": {
+    "tag": "g2048_new",
+    "bin": "9113d18c94dba33b",
+    "wall_s": 1.2,
+    "stderr_sha16": "38c8e14fb3807a00",
+    "screenshot_face": "f43face08299ffc6",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 1181241,
+    "api_calls": 64
+   },
+   "delta_inert": true
+  },
+  "opencalc": {
+   "opencalc_ref": {
+    "tag": "opencalc_ref",
+    "bin": "fea1759d58653d41",
+    "wall_s": 1.6,
+    "stderr_sha16": "27e858de09dfebf3",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "opencalc_new": {
+    "tag": "opencalc_new",
+    "bin": "9113d18c94dba33b",
+    "wall_s": 1.6,
+    "stderr_sha16": "0baa9eda6a8e8f7b",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "delta_inert": true
+  }
+ },
+ "w10ndfe_dz_ctl": {
+  "tag": "w10ndfe_dz_ctl",
+  "bin": "fea1759d58653d41",
+  "env": {},
+  "wall_s": 154.2,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 245.7,
+  "rss_final_mb": 245.7,
+  "rss_grow_mb_s": 1.589,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w10ndfe_dz_fix": {
+  "tag": "w10ndfe_dz_fix",
+  "bin": "9113d18c94dba33b",
+  "env": {},
+  "wall_s": 152.4,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 246.4,
+  "rss_final_mb": 246.4,
+  "rss_grow_mb_s": 1.616,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w10ndfe_dz_summary": {
+  "wall": "154.2 -> 152.4",
+  "wall_delta_pct": -1.2,
+  "rss_peak": "245.7 -> 246.4",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "w10ndfe_tg_ctl": {
+  "tag": "w10ndfe_tg_ctl",
+  "bin": "fea1759d58653d41",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 33.7,
+  "rc": 1,
+  "rss_peak_mb": 676.3,
+  "rss_final_mb": 676.3,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "w10ndfe_tg_fix": {
+  "tag": "w10ndfe_tg_fix",
+  "bin": "9113d18c94dba33b",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 32.0,
+  "rc": 1,
+  "rss_peak_mb": 671.3,
+  "rss_final_mb": 671.3,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "w10ndfe_tg_summary": {
+  "wall": "33.7 -> 32.0",
+  "wall_delta_pct": -5.0,
+  "rss_peak": "676.3 -> 671.3",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}

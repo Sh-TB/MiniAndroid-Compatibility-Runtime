@@ -1939,6 +1939,32 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         // get(index) uses the integer index to look up elements[].
         if (state->is_map) {
             std::string key = map_key_value_law(ctx, 0, heap_);
+            // S173 NDFE probe (env-gated, bounded 64): the Koin instance
+            // index lookups for the featureflag family — the residual
+            // NoDefinitionFoundException unwinding Scope.get→resolve→
+            // resolveInstance→resolveFromContext (S172 frontier). Logs the
+            // RAW get-key so it can be byte-compared against the stored
+            // index key "…BaseCatalogFeatureFlagProvider:local:_root_".
+            if (key.find("featureflag") != std::string::npos &&
+                std::getenv("MINIANDROID_S173_PROBE") != nullptr) {
+                static thread_local uint64_t s173_mapget = 0;
+                if (s173_mapget < 64) {
+                    ++s173_mapget;
+                    bool s173_hit =
+                        state->map_string_entries.count(key) > 0 ||
+                        (state->map_entries.count(key) > 0 &&
+                         state->map_entries[key] != 0);
+                    std::cerr << "[S173-MAPGET] map=" << obj_id
+                              << " key=\"" << key << "\""
+                              << " hit=" << (s173_hit ? 1 : 0)
+                              << " obj_entries="
+                              << state->map_entries.size()
+                              << " str_entries="
+                              << state->map_string_entries.size()
+                              << " caller=" << ctx.class_name << "."
+                              << ctx.method << std::endl;
+                }
+            }
             // EXP-071 diagnostic
             if (key.find("US") != std::string::npos) {
                 std::cerr << "[EXP071-CS-GET] map=" << obj_id
