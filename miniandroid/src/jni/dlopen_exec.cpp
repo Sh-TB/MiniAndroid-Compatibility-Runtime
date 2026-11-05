@@ -113,10 +113,80 @@ size_t g_guard_saved_n = 0;
 void install_native_guard() {
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
-    sa.sa_flags = SA_NODEFER;  // allow return through the faulting signal
+    sa.sa_flags = SA_NODEFER | SA_SIGINFO;  // allow return; W10: fault RIP
     sigemptyset(&sa.sa_mask);
-    sa.sa_handler = [](int sig) {
+    sa.sa_sigaction = [](int sig, siginfo_t* info, void* uctx_v) {
         if (g_guard_active) {
+            // W10 (Coder-4) FAULT TRACE — the faulting instruction pointer
+            // and fault address (diagnoses WHICH native instruction killed
+            // the call; RIP<->library mapping via /proc/self/maps).
+            {
+                ucontext_t* uc = static_cast<ucontext_t*>(uctx_v);
+                uintptr_t rip = uc->uc_mcontext.gregs[REG_RIP];
+                uintptr_t addr =
+                    info && info->si_code != SI_USER
+                        ? reinterpret_cast<uintptr_t>(info->si_addr)
+                        : 0;
+                static bool w10_ft =
+                    std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr;
+                if (w10_ft) {
+                    fprintf(stderr,
+                            "[W10-FAULT] sig=%d rip=%p fault_addr=%p\n",
+                            sig, (void*)rip, (void*)addr);
+                    // Map RIP to its library + offset (self-maps lookup).
+                    FILE* maps = fopen("/proc/self/maps", "r");
+                    if (maps) {
+                        char line[512];
+                        while (fgets(line, sizeof line, maps)) {
+                            unsigned long lo, hi;
+                            char perms[8], path[400] = "";
+                            if (sscanf(line, "%lx-%lx %7s %*x %*x:%*x %*u %399s",
+                                       &lo, &hi, perms, path) >= 3) {
+                                if (rip >= lo && rip < hi && path[0] == '/') {
+                                    fprintf(stderr,
+                                            "[W10-FAULT] rip in %s +0x%lx "
+                                            "(%s)\n",
+                                            path, rip - lo, perms);
+                                    break;
+                                }
+                            }
+                        }
+                        // W10: crude stack walk — print mapped return
+                        // address candidates (RSP..RSP+512) so the native
+                        // call chain at the fault is visible.
+                        rewind(maps);
+                        uintptr_t rsp =
+                            uc->uc_mcontext.gregs[REG_RSP];
+                        for (int wi = 0; wi < 64; ++wi) {
+                            uintptr_t v;
+                            memcpy(&v, (void*)(rsp + wi * 8), 8);
+                            if (v < 0x1000) continue;
+                            char mline[512];
+                            bool printed = false;
+                            rewind(maps);
+                            while (fgets(mline, sizeof mline, maps)) {
+                                unsigned long lo, hi;
+                                char perms[8], path[400] = "";
+                                if (sscanf(mline,
+                                           "%lx-%lx %7s %*x %*x:%*x %*u %399s",
+                                           &lo, &hi, perms, path) >= 3) {
+                                    if (v >= lo && v < hi && path[0] == '/') {
+                                        fprintf(stderr,
+                                                "[W10-FAULT] stack[%d]=%s "
+                                                "+0x%lx\n",
+                                                wi, path, v - lo);
+                                        printed = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            (void)printed;
+                        }
+                        fclose(maps);
+                    }
+                    fflush(stderr);
+                }
+            }
             g_guard_active = 0;
             siglongjmp(guard_jb(), 1);
         }
@@ -188,7 +258,11 @@ ProbeVerdict dlopen_probe(const char* host_path) {
     if (p == 0) {
         // Probe child: dlopen then _exit — never unwind, never run parent
         // atexit handlers, never touch the parent's state.
-        void* h = dlopen(host_path, RTLD_NOW | RTLD_LOCAL);
+        // F-C4-595 (W10): DEEPBIND in the probe too (mirrors the real
+        // open — the probe must observe the same binding the real dlopen
+        // will produce).
+        void* h = dlopen(host_path,
+                         RTLD_NOW | RTLD_LOCAL | RTLD_DEEPBIND);
         _exit(h ? 0 : 2);
     }
     int st = 0;
@@ -210,6 +284,40 @@ struct RegisteredNative {
 std::vector<RegisteredNative>& registered() {
     static std::vector<RegisteredNative> v;
     return v;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// F-C4-587 (W10, 4APP4 Coder-4) — JNI OBJECT-ARRAY family. AOSP/ART law
+// (art/runtime/jni/jni_internal.cc): NewObjectArray(len, elementClass,
+// init) allocates a real object array; SetObjectArrayElement stores a
+// reference at an index; GetObjectArrayElement reads one; GetArrayLength
+// answers the element count. The spec slots are 171/172/173/174 (the
+// F-C4-581 spec-exact table left them on the UNSUPPORTED stub), so any
+// registered native building a String[] got 0 back from NewObjectArray
+// and returned null — live-proven: conscrypt's NativeCrypto.<clinit> does
+//   get_cipher_names("ALL") → C body loops the SSL_CIPHER stack calling
+//   NewObjectArray + NewStringUTF + SetObjectArrayElement → returned the
+//   null → `array-length` NPE at pc=0x48 (NC) / 0x42 (CB) — the tail of
+//   the whole conscrypt/RegisterNatives chain. Box model: a NativeObjArray
+//   is a tagged heap-arena structure of element pointers (jstring boxes or
+//   nested); call_native's 'L'/'[' return marshaling converts a known
+//   array box into JOutcome::STRING_ARRAY so the engine mints a real DEX
+//   array. Nested non-string elements surface as empty strings (honest
+//   documented boundary — conscrypt's surface is String[] flat).
+// ─────────────────────────────────────────────────────────────────────
+struct NativeObjArray {
+    uint64_t magic = 0x4A4F42415225110Full;  // "J0BARR!"
+    std::vector<void*> elems;
+};
+static std::vector<NativeObjArray*>& obj_array_boxes() {
+    static std::vector<NativeObjArray*> boxes;
+    return boxes;
+}
+static NativeObjArray* as_obj_array(void* ref) {
+    if (!ref) return nullptr;
+    for (NativeObjArray* b : obj_array_boxes())
+        if (b == ref) return b;
+    return nullptr;
 }
 
 // ── per-call arena (local-ref lifetime) ────────────────────────────────
@@ -325,6 +433,33 @@ int jni_RegisterNatives(void*, void* jcls, const JNINativeMethodC* methods,
     return 0;
 }
 int jni_UnregisterNatives(void*, void*) { return 0; }
+
+// F-C4-587 (W10): the object-array family — spec slots 171-174.
+// (jsize = jint = int32_t per jni.h; kept local to avoid a jni.h dep.)
+static int32_t f587_len_of(void* arr) {
+    NativeObjArray* b = as_obj_array(arr);
+    return b ? (int32_t)b->elems.size() : 0;
+}
+int32_t jni_GetArrayLength(void*, void* arr) { return f587_len_of(arr); }
+void* jni_NewObjectArray(void*, int32_t len, void* elem_class, void* init) {
+    (void)elem_class;
+    if (len < 0) return nullptr;
+    NativeObjArray* b = new NativeObjArray();
+    b->elems.assign((size_t)len, init);
+    obj_array_boxes().push_back(b);
+    return b;
+}
+void* jni_GetObjectArrayElement(void*, void* arr, int32_t idx) {
+    NativeObjArray* b = as_obj_array(arr);
+    if (!b || idx < 0 || (size_t)idx >= b->elems.size()) return nullptr;
+    return b->elems[(size_t)idx];
+}
+void jni_SetObjectArrayElement(void*, void* arr, int32_t idx, void* val) {
+    NativeObjArray* b = as_obj_array(arr);
+    if (!b || idx < 0) return;
+    if ((size_t)idx >= b->elems.size()) b->elems.resize((size_t)idx + 1, nullptr);
+    b->elems[(size_t)idx] = val;
+}
 int jni_GetJavaVM(void*, void** vm) {
     if (vm) *vm = &g_vm;
     return 0;
@@ -485,6 +620,13 @@ void init_tables() {
     g_jni_table[168] = (void*)&jni_GetStringUTFLength;     // 168 GetStringUTFLength
     g_jni_table[169] = (void*)&jni_GetStringUTFChars;      // 169 GetStringUTFChars
     g_jni_table[170] = (void*)&jni_ReleaseStringUTFChars;  // 170 ReleaseStringUTFChars
+    // F-C4-587 (W10): the object-array family — TRUE spec slots
+    // (GetArrayLength 171, NewObjectArray 172, GetObjectArrayElement 173,
+    // SetObjectArrayElement 174; previously the loud UNSUPPORTED stub).
+    g_jni_table[171] = (void*)&jni_GetArrayLength;          // 171 GetArrayLength
+    g_jni_table[172] = (void*)&jni_NewObjectArray;          // 172 NewObjectArray
+    g_jni_table[173] = (void*)&jni_GetObjectArrayElement;   // 173 GetObjectArrayElement
+    g_jni_table[174] = (void*)&jni_SetObjectArrayElement;   // 174 SetObjectArrayElement
     // registration + VM family — TRUE spec slots (were mis-wired at
     // 163/164/167/176).
     g_jni_table[215] = (void*)&jni_RegisterNatives;        // 215 RegisterNatives
@@ -607,7 +749,27 @@ LoadOutcome load_library(const std::string& libname,
     }
     void* h = nullptr;
     bool dlopen_faulted = !run_native_guarded(
-        [&] { h = dlopen(host_path.c_str(), RTLD_NOW | RTLD_LOCAL); });
+        [&] {
+            // ── F-C4-595 (W10, 4APP4 Coder-4) — RTLD_DEEPBIND APP-LIB
+            // ISOLATION law (the AOSP linker-namespace analog). ROOT
+            // (live, CB v1.11.1 conscrypt get_cipher_names fault trace):
+            // conscrypt's .so exports its STATICALLY-LINKED BoringSSL
+            // (SSL_CTX_new, SSL_set_cipher_list, ... all T), but on glibc
+            // an exported symbol can be PREEMPTED by the global scope —
+            // the .so's own PLT resolved SSL_CTX_new to the HOST's
+            // libssl.so.3 (OpenSSL 3), whose SSL_CTX layout differs from
+            // BoringSSL's; the BoringSSL code then walked a foreign struct
+            // and CBS_get_u16 deref'd a NULL CBS from the mismatched
+            // method table (W10-FAULT: rip=+0x2043f0 fault_addr=0x8, call
+            // chain get_cipher_names +0x64 → host libssl +0x25300).
+            // Android never sees this: linker namespaces isolate app libs
+            // from the platform's libssl. glibc's RTLD_DEEPBIND is the
+            // same isolation: the library's OWN definitions win for its
+            // internal references. Blast radius: app-lib dlopen binding
+            // only — anchor libs and host libs are untouched.
+            h = dlopen(host_path.c_str(),
+                       RTLD_NOW | RTLD_LOCAL | RTLD_DEEPBIND);
+        });
     if (dlopen_faulted) {
         // Residual fault the probe did not catch (address-space layout
         // difference): the loader may hold its lock now — poison it so no
@@ -717,6 +879,27 @@ void* find_symbol(const std::string& class_desc, const std::string& method,
     mangle_escape(method, m_method);
     short_name += m_method;
     std::string long_name = short_name + long_name_suffix(dex_sig);
+
+    // W10 (Coder-4) JNI TRACE — env-gated, bounded: every find_symbol query
+    // with the first few registered-natives entries it compared against
+    // (diagnoses the registered-table match for the conscrypt dispatch).
+    static thread_local const bool w10_jni_on =
+        std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr;
+    static thread_local uint64_t w10_jni_n = 0;
+    if (w10_jni_on && w10_jni_n++ < 40) {
+        fprintf(stderr, "[W10-JNI] find_symbol cls=%s method=%s sig=%s "
+                        "(registered=%zu)\n",
+                class_desc.c_str(), method.c_str(), dex_sig.c_str(),
+                registered().size());
+        size_t shown = 0;
+        for (const auto& rn : registered()) {
+            if (rn.method != method) continue;
+            fprintf(stderr, "[W10-JNI]   reg cand cls=%s name=%s sig=%s fn=%p\n",
+                    rn.class_desc.c_str(), rn.method.c_str(),
+                    rn.sig.c_str(), rn.fn);
+            if (++shown >= 4) break;
+        }
+    }
 
     std::lock_guard<std::mutex> lk(g_mu);
     for (const auto& lib : libs()) {
@@ -900,6 +1083,26 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
             if (!ref) {
                 out.kind = JOutcome::Kind::OBJECT;
                 out.object_id = 0;
+            } else if (NativeObjArray* arr = as_obj_array(ref)) {
+                // F-C4-587 (W10): a native-built jobjectArray → the engine
+                // mints a real DEX array (STRING_ARRAY outcome). Elements
+                // are jstring boxes; null/non-string elements degrade to
+                // empty strings with a null marker carried by emptiness
+                // (documented boundary: conscrypt's surface is flat).
+                out.kind = JOutcome::Kind::STRING_ARRAY;
+                out.str_elems.reserve(arr->elems.size());
+                for (void* e : arr->elems) {
+                    if (e && !as_obj_array(e)) {
+                        out.str_elems.push_back(
+                            *static_cast<std::string*>(e));
+                    } else {
+                        out.str_elems.push_back(std::string());
+                    }
+                }
+                fprintf(stderr,
+                        "[F-C4-587] native object-array return: %zu "
+                        "string elements (NewObjectArray family live)\n",
+                        arr->elems.size());
             } else {
                 // The implemented subset materializes exactly one object
                 // kind: a jstring box (NewStringUTF). Any other pointer is

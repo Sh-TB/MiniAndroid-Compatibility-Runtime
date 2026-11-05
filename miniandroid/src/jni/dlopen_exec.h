@@ -72,11 +72,16 @@ struct JArg {
 // Invocation result (return type per DEX descriptor).
 struct JOutcome {
     enum class Kind { VOID, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, SHORT,
-                      BYTE, STRING, OBJECT } kind = Kind::VOID;
+                      BYTE, STRING, OBJECT, STRING_ARRAY } kind = Kind::VOID;
     int64_t i = 0;           // INT/LONG/BOOLEAN/CHAR/SHORT/BYTE
     double d = 0.0;          // FLOAT/DOUBLE
     std::string str;         // STRING (materialized from the native side)
     uint32_t object_id = 0;  // OBJECT
+    // F-C4-587 (W10): STRING_ARRAY — a jobjectArray of jstring built by a
+    // native library through NewObjectArray/SetObjectArrayElement. Elements
+    // are the string payloads; a null element is carried as the empty
+    // string (the engine mints a null DEX element for it).
+    std::vector<std::string> str_elems;
     std::string provenance;  // symbol + lib that actually executed
 };
 

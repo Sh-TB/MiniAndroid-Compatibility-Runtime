@@ -1,0 +1,1271 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 175daf2..869a760 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -7966,6 +7966,26 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+ ) {
+     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().recursive_invoke, f107_t0);
+     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().recursive_invoke, f107_t0};
++    // ── W10 (Coder-4) CTOR PROBE (diagnostic, env MINIANDROID_W10_CTOR_PROBE)
++    // — every try_recursive_invoke entry + candidate-scan row for
++    // AutoSizeHelper-family classes. Zero behavior change. Proven the
++    // F-C4-590 root (the EXP-058 ctor gate stubbed the ctor before the
++    // method scan — "STUB-ONLY … constructor loop").
++    {
++        static thread_local const bool w10p_on =
++            std::getenv("MINIANDROID_W10_CTOR_PROBE") != nullptr;
++        if (w10p_on &&
++            declaring_class.find("AutoSizeHelper") != std::string::npos) {
++            static thread_local uint64_t w10p_n = 0;
++            if (w10p_n++ < 40) {
++                std::cerr << "[W10-CTOR] entry " << declaring_class << "."
++                          << method_name << " desc=" << method_descriptor
++                          << " argc=" << args.size() << " caller="
++                          << current_class_ << "." << current_method_
++                          << std::endl;
++            }
++        }
++    }
+     // ────────────────────────────────────────────────────────────────────────
+     // W8 (Coder-4) GUAVA/NAV PROBE — env-gated MINIANDROID_W8_PROBE, bounded,
+     // zero behavior change. Two frontier families this wave:
+@@ -10645,28 +10665,26 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         return false;  // Fall through to bridge_to_api which returns void
+     }
+ 
+-    // EXP-044 Phase 1: ContextAwareHelper.dispatchOnContextAvailable
+-    // This method iterates over a collection of listeners. Without proper
+-    // collection/iterator support, it loops forever. Stub as no-op.
+-    if (class_descriptor.find("ContextAwareHelper") != std::string::npos &&
+-        method_name == "dispatchOnContextAvailable") {
+-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+-            " — skipping recursive invoke (collection iteration not supported)");
+-        recursion_depth_--;
+-        return false;
+-    }
+-
+-    // EXP-045 Phase 2: FragmentStore methods that iterate over collections.
+-    // These use iterators which we don't support, causing infinite loops.
+-    if (class_descriptor.find("FragmentStore") != std::string::npos &&
+-        (method_name == "dispatchStateChange" ||
+-         method_name == "getActiveFragmentStateManagers")) {
+-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+-            " — skipping recursive invoke (collection iteration not supported)");
+-        recursion_depth_--;
+-        return false;
+-    }
+-
++    // F-C4-591 (W10, 4APP4 Coder-4) — the EXP-044
++    // ContextAwareHelper.dispatchOnContextAvailable gate is REMOVED. The
++    // "collection iteration not supported" rationale is obsolete: the
++    // engine has real ArrayList/iterator semantics (and runs desugared
++    // lambdas since F-C4-564/584). Live-proven NC v35.0.2: the stub made
++    // ComponentActivity.onCreate's context-available dispatch a no-op →
++    // FragmentActivity's attachHost (registered via
++    // addOnContextAvailableListener → lambda$init$3) NEVER ran →
++    // FragmentManager.mNonConfig stayed null → dispatchCreate pc=7
++    // `FragmentManagerViewModel.setIsStateSaved on null` → the
++    // FragmentActivity.onCreate APP-BOUNDARY death. AOSP law
++    // (androidx.activity.ComponentActivity.onCreate):
++    //   contextAwareHelper.dispatchOnContextAvailable(this) fires EVERY
++    //   registered listener BEFORE super.onCreate — the listeners are the
++    //   fragment host attach point.
++
++    // F-C4-591b (W10, 4APP4 Coder-4) — the EXP-045 FragmentStore gate is
++    // REMOVED for the same reason ("iterates collections" is no longer a
++    // stub justification; FragmentStore.dispatchStateChange is the
++    // fragment lifecycle fan-out on the path this wave unblocked).
+     // EXP-058: checkSystemBarColors loops at PC=0x136 (invoke-interface on
+     // a null window object). Short-circuit.
+     if (class_descriptor.find("LaunchActivity") != std::string::npos &&
+@@ -11355,15 +11373,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+     // throw) — 3/3 FAIL pre-fix at the same binary, the exact PRE/POST
+     // discriminator for this law.
+ 
+-    // EXP-058: AppCompatTextViewAutoSizeHelper$Impl constructors loop.
+-    if (class_descriptor.find("AppCompatTextViewAutoSizeHelper") != std::string::npos &&
+-        method_name == "<init>") {
+-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+-            " — skipping (constructor loop)");
+-        recursion_depth_--;
+-        return false;
+-    }
+-
++    // F-C4-590 (W10, 4APP4 Coder-4) — the EXP-058
++    // AppCompatTextViewAutoSizeHelper ctor-loop gate is REMOVED. Same
++    // rationale as F-058-R's Preconditions removal: the "constructor loop"
++    // it papered over was the OLD overload-resolution bug, fixed generically
++    // since (F-023 exact-descriptor law, F-056 descriptor-aware cycle keys,
++    // M3-19/F-017 active-cycle receiver-identity keys — a ctor re-entry on
++    // the SAME receiver is legal delegation, never stubbed). The gate
++    // matched by SUBSTRING, so it also refused the MAIN appcompat ctor
++    // AppCompatTextViewAutoSizeHelper.<init>(TextView) — live-proven NC
++    // v35.0.2 (MINIANDROID_W10_CTOR_PROBE + FIELD-TRACE): the ctor was
++    // stubbed → mContext/mTextView never stored → loadFromAttributes
++    // pc=5 `context.obtainStyledAttributes on a null` → the ×2
++    // AppCompatTextHelper/ActivitySplashBinding splash family. AOSP law:
++    // constructors are resolved by (name, proto) and always run.
++    // (Historical gates EmojiInputFilter/HelperInternal19/SkippingHelper19/
++    // HelperInternal above are Telegram-app-specific spellings — kept.)
+     // EXP-058 Generic guard → M3 FIX-M3-009 (§19 ACTIVE-CYCLE LAW).
+     //
+     // The old guard counted LIFETIME invocations of each (class, method) and
+@@ -12335,11 +12360,66 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                 // consult bridge_to_api FIRST (heap-side handlers live
+                 // there); only on a miss fall through to the real-library
+                 // attempt (unchanged semantics for every existing native).
++                // F-C4-594 (W10): remember the fail-soft answer so the
++                // find_symbol MISS/FAULT paths can restore the OLD
++                // observable (corpus-neutral — see the honest-fallback
++                // notes below).
++                bool f594_stub_had_answer = false;
++                DalvikValue f594_stub_answer;
+                 {
+                     ApiCallTrace::Status bridge_status = ApiCallTrace::Status::MISSING;
+                     DalvikValue bridge_val;
+-                    if (bridge_to_api(class_descriptor, method_name, args,
+-                                      bridge_val, bridge_status)) {
++                    // W10 (Coder-4) JNI TRACE — did bridge_to_api claim it?
++                    static thread_local const bool w10_nb =
++                        std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr;
++                    bool w10_log_this = w10_nb && method_name == "get_cipher_names";
++                    if (w10_log_this)
++                        std::cerr << "[W10-JNI] bridge_to_api consult for "
++                                  << class_descriptor << "." << method_name
++                                  << std::endl;
++                    bool bres = bridge_to_api(class_descriptor, method_name,
++                                              args, bridge_val, bridge_status);
++                    if (w10_log_this)
++                        std::cerr << "[W10-JNI] bridge_to_api -> "
++                                  << (bres ? "HANDLED" : "miss")
++                                  << " status="
++                                  << static_cast<int>(bridge_status)
++                                  << " has_libs="
++                                  << nativeexec::has_loaded_libs()
++                                  << std::endl;
++                    // ── F-C4-594 (W10, 4APP4 Coder-4) — NATIVE-PRECEDENCE
++                    // law (AOSP art_jni.cc): an ACC_NATIVE method's
++                    // implementation is the symbol the loader resolved
++                    // (JNI mangling or RegisterNatives) — a fail-soft
++                    // STUBBED default may NEVER shadow it. bridge_to_api's
++                    // tail answers STUBBED for everything unclaimed, so the
++                    // old consult-first layering silently killed the real
++                    // native path for EVERY DEX-class native without an
++                    // engine-side shadow (live-proven: conscrypt's
++                    // get_cipher_names — RegisterNatives landed 345/337
++                    // methods, but the STUBBED tail answered typed-null
++                    // first → NativeCrypto.<clinit> array-length NPE, the
++                    // CB/NC/TK conscrypt tail). Only a GENUINE bridge
++                    // handler (status IMPLEMENTED — the F-NEW-504 tower3d
++                    // case, whose heap-side shadow intentionally replaces
++                    // a faulting allocator) keeps precedence over the real
++                    // library. STUBBED + no loaded libs keeps the old
++                    // fail-soft semantics verbatim.
++                    const bool stub_shadow = bres &&
++                        bridge_status == ApiCallTrace::Status::STUBBED &&
++                        nativeexec::has_loaded_libs();
++                    if (stub_shadow) {
++                        f594_stub_had_answer = true;
++                        f594_stub_answer = bridge_val;
++                        static thread_local uint64_t f594_n = 0;
++                        if (f594_n++ < 12) {
++                            std::cerr << "[F-C4-594] native precedence: "
++                                      << class_descriptor << "." << method_name
++                                      << " bridge tail was STUBBED — trying the"
++                                         " REAL registered/dlsym symbol first"
++                                      << std::endl;
++                        }
++                    } else if (bres) {
+                         return_val = bridge_val;
+                         recursion_depth_--;
+                         return true;
+@@ -12391,10 +12471,20 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                         }
+                         nativeexec::JOutcome out;
+                         std::string nerr;
+-                        nativeexec::call_native(fn, is_static,
+-                                                method->descriptor, jargs,
+-                                                out, nerr);
++                        bool f594_call_ok = nativeexec::call_native(
++                            fn, is_static, method->descriptor, jargs, out,
++                            nerr);
+                         out.provenance = tried;
++                        if (!f594_call_ok && f594_stub_had_answer) {
++                            // F-C4-594 (W10) HONEST-FALLBACK: the real
++                            // symbol FAULTED under the guarded thunk
++                            // (FIX-TTT) — restore the fail-soft observable
++                            // the base binary would have answered (the
++                            // tower3d lesson, now scoped to genuine faults).
++                            return_val = f594_stub_answer;
++                            recursion_depth_--;
++                            return true;
++                        }
+                         switch (out.kind) {
+                             case nativeexec::JOutcome::Kind::VOID:
+                                 return_val = DalvikValue::make_void();
+@@ -12432,6 +12522,45 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                             case nativeexec::JOutcome::Kind::STRING:
+                                 return_val = DalvikValue::make_string(out.str, 1);
+                                 break;
++                            case nativeexec::JOutcome::Kind::STRING_ARRAY: {
++                                // F-C4-587 (W10): a native library built a
++                                // String[] through the JNI object-array
++                                // family (NewObjectArray/SetObjectArrayElement)
++                                // — mint a REAL DEX array (the new-array
++                                // law's exact heap shape: real descriptor,
++                                // __array_length__, dense array[i] stores).
++                                const std::string elem_desc =
++                                    "[Ljava/lang/String;";
++                                const int32_t n587 = (int32_t)out.str_elems.size();
++                                const uint32_t arr587 = heap_.allocate(
++                                    elem_desc, pc_,
++                                    call_stack_.empty()
++                                        ? 0
++                                        : call_stack_.top().frame_id);
++                                heap_.set_object_field(
++                                    arr587, "__new_array_length__",
++                                    DalvikValue::make_int(n587));
++                                heap_.set_object_field(
++                                    arr587, "__array_length__",
++                                    DalvikValue::make_int(n587));
++                                heap_.set_object_field(
++                                    arr587, "__element_type__",
++                                    DalvikValue::make_string(elem_desc, 0));
++                                for (int32_t i587 = 0; i587 < n587; ++i587) {
++                                    const std::string& s587 =
++                                        out.str_elems[(size_t)i587];
++                                    heap_.set_object_field(
++                                        arr587,
++                                        "array[" + std::to_string(i587) + "]",
++                                        s587.empty()
++                                            ? DalvikValue::make_null()
++                                            : DalvikValue::make_string(
++                                                  s587, 0));
++                                }
++                                return_val = DalvikValue::make_object(
++                                    arr587, elem_desc);
++                                break;
++                            }
+                             case nativeexec::JOutcome::Kind::OBJECT:
+                                 return_val = out.object_id
+                                                  ? DalvikValue::make_object(
+@@ -12453,6 +12582,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                     // No symbol found anywhere in the loaded libraries:
+                     // AOSP "No implementation found" linkage error — loud,
+                     // never a fake 0.
++                    // F-C4-594 (W10) HONEST-FALLBACK: when the bridge tail
++                    // had already fail-softed this call (STUBBED), keep the
++                    // OLD observable (the typed default) instead of raising
++                    // a NEW ULE — the native-precedence law only PROMOTES
++                    // real symbols; it must never manufacture new linkage
++                    // errors the base binary did not raise (corpus-neutral
++                    // guarantee; the loud ULE path stays for the case where
++                    // the bridge genuinely refused — bres == false).
+                     std::string ule =
+                         "No implementation found for " + class_descriptor +
+                         "." + method_name + method->descriptor +
+@@ -12461,6 +12598,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                     miniandroid::diagnostics::FileIoTrace::instance().record(
+                         "NATIVE", method_name, false, ule,
+                         current_class_ + "." + current_method_);
++                    if (f594_stub_had_answer) {
++                        return_val = f594_stub_answer;
++                        recursion_depth_--;
++                        return true;
++                    }
+                     throw_deferred("Ljava/lang/UnsatisfiedLinkError;", ule,
+                                    "S2-NATIVE");
+                     // Deferred ULE pending — fall through to the normal
+@@ -12614,6 +12756,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+ 
+     for (const dex::MethodInfo* method_ptr : f107_cands) {
+         const dex::MethodInfo& method = *method_ptr;
++        // ── W10 (Coder-4) CTOR PROBE — bytecode size per candidate.
++        if (std::getenv("MINIANDROID_W10_CTOR_PROBE") &&
++            class_descriptor.find("AutoSizeHelper") != std::string::npos) {
++            static thread_local uint64_t w10c_n = 0;
++            if (w10c_n++ < 40) {
++                std::cerr << "[W10-CTOR] cand " << method.name
++                          << method.descriptor << " bc=" << method.bytecode.size()
++                          << " want=" << (method_descriptor.empty() ? "<none>" : method_descriptor)
++                          << " argc=" << arg_count << std::endl;
++            }
++        }
+         if (method_name == "setFragmentStack") {
+             static thread_local uint64_t sfs_c = 0;
+             if (sfs_c < 10) {
+@@ -32339,10 +32492,12 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
+         //    dispatcher trampoline all enqueue here — one-queue law).
+         if (hs) {
+             for (int r = 0; r < 16; ++r) {
+-                std::vector<uint32_t> drained;
+-                if (hs->drain_ready(&drained) == 0) break;
++                std::vector<std::pair<uint32_t, uint32_t>> drained;
++                if (hs->drain_ready_ex(&drained) == 0) break;
+                 did_work = true;
+-                for (uint32_t rid : drained) {
++                for (auto& rid_pair : drained) {
++                    const uint32_t rid = rid_pair.first;
++                    const uint32_t delivery_tid = rid_pair.second;
+                     // Same routing as ExecutionEngine::invoke_handler_runnable:
+                     // framework tokens ride the touch dispatcher, app runnables
+                     // run their REAL DEX run().
+@@ -32375,13 +32530,24 @@ uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
+                     // background thread" -> DEFAULT_BACKGROUND_ONLY frame).
+                     // Save/restore mirrors run_thread_start_body's F-110d
+                     // pattern; 0 = main identity. No-op when already main.
++                    //
++                    // F-C4-593 (W10): the law is now PER-TASK —
++                    // delivery_thread_id 0 (Handler.post on the main
++                    // Looper) keeps the main identity verbatim;
++                    // non-zero (an Executor.execute task) binds the
++                    // EXECUTOR'S worker identity (AOSP ThreadPoolExecutor
++                    // delivery — Room's assertNotMainThread must see a
++                    // worker thread, or every background query ISE'd).
+                     uint32_t saved_mq_identity = 0;
+                     bool bound_mq_identity = false;
+-                    if (ts && ts->current_thread_id() !=
+-                                  ts->main_thread_id()) {
+-                        saved_mq_identity = ts->current_thread_id();
+-                        ts->set_active_drained_thread(0);
+-                        bound_mq_identity = true;
++                    if (ts) {
++                        if (ts->current_thread_id() !=
++                                ts->main_thread_id() ||
++                            delivery_tid != 0) {
++                            saved_mq_identity = ts->current_thread_id();
++                            ts->set_active_drained_thread(delivery_tid);
++                            bound_mq_identity = true;
++                        }
+                     }
+                     try_recursive_invoke(rcls, "run", run_args, ret, res, "()V");
+                     if (bound_mq_identity)
+@@ -59564,6 +59730,151 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++    // ────────────────────────────────────────────────────────────────────────
++    // F-C4-592 (W10, 4APP4 Coder-4): ConnectivityManager ACTIVE-NETWORK family
++    // + NetworkCapabilities MASK laws. ROOT (live, NC v35.0.2 census rows
++    // 1–13): ConnectivityServiceImpl.resolveNetworkAttributes pc=0x19 —
++    //   getAllNetworks() → fail-soft null → Intrinsics.checkNotNullExpressionValue
++    //   (networks, "getAllNetworks(...)") NPE → the 13-row
++    //   NetworkModule→DoubleCheck→injectMainApp→attachBaseContext cascade.
++    // AOSP laws implemented (frameworks/base ConnectivityService +
++    // android.net.NetworkCapabilities):
++    //   · getAllNetworks() returns "an array of all networks currently
++    //     available to the system" — an ARRAY, never null (empty when no
++    //     network; the runtime device HAS a network: the S100 real-TLS
++    //     stack is the device's radio-equivalent, so the honest device
++    //     state is one active Wi-Fi network);
++    //   · getActiveNetwork() returns that network (AOSP: "the Network
++    //     currently in use; null when none" — the runtime always has one);
++    //   · getNetworkCapabilities(Network) → the NetworkCapabilities of the
++    //     active network: NET_CAPABILITY_INTERNET|VALIDATED|TRUSTED|NOT_VPN|
++    //     NOT_RESTRICTED|NOT_METERED over TRANSPORT_WIFI (device profile:
++    //     unmetered validated Wi-Fi — same deterministic-device law as the
++    //     R-NEW-559 memory-class profile);
++    //   · isActiveNetworkMetered() → false (consistent with NOT_METERED);
++    //   · NetworkCapabilities.hasCapability(int)/hasTransport(int) are
++    //     bit-mask membership tests over the stored masks (AOSP stores
++    //     mNetworkCapabilities / mTransportTypes as bitmasks).
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/net/ConnectivityManager;") {
++        static const int32_t kCapBits =
++            (1 << 7) |    // NET_CAPABILITY_NOT_RESTRICTED
++            (1 << 8) |    // NET_CAPABILITY_TRUSTED
++            (1 << 9) |    // NET_CAPABILITY_NOT_VPN
++            (1 << 10) |   // NET_CAPABILITY_VALIDATED
++            (1 << 12) |   // NET_CAPABILITY_INTERNET
++            (1 << 13);    // NET_CAPABILITY_NOT_METERED
++        static const int32_t kTransportBits =
++            (1 << 1);     // TRANSPORT_WIFI
++        auto active_network_id = [&]() -> uint32_t {
++            DalvikValue nv = get_or_create_singleton("Landroid/net/Network;");
++            uint32_t nid = nv.type == DalvikType::OBJECT_REF ? nv.object_id : 0;
++            if (nid != 0 && heap_.has_object(nid)) {
++                auto f = heap_.get_object_field(nid, "netId");
++                if (!f.has_value())
++                    heap_.set_object_field(
++                        nid, "netId", DalvikValue::make_int(100));
++            }
++            return nid;
++        };
++        auto caps_object_id = [&]() -> uint32_t {
++            DalvikValue cv = get_or_create_singleton(
++                "Landroid/net/NetworkCapabilities;");
++            uint32_t cid = cv.type == DalvikType::OBJECT_REF ? cv.object_id : 0;
++            if (cid != 0 && heap_.has_object(cid)) {
++                auto f = heap_.get_object_field(cid, "__caps__");
++                if (!f.has_value()) {
++                    heap_.set_object_field(
++                        cid, "__caps__", DalvikValue::make_int(kCapBits));
++                    heap_.set_object_field(
++                        cid, "__transports__",
++                        DalvikValue::make_int(kTransportBits));
++                }
++            }
++            return cid;
++        };
++        if (method == "getActiveNetwork") {
++            uint32_t nid = active_network_id();
++            static thread_local uint64_t f592_n = 0;
++            if (f592_n++ < 8) {
++                std::cerr << "[F-C4-592] getActiveNetwork -> Network o"
++                          << nid << " (validated Wi-Fi device profile)"
++                          << std::endl;
++            }
++            result = DalvikValue::make_object(nid, "Landroid/net/Network;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getNetworkCapabilities") {
++            uint32_t cid = caps_object_id();
++            static thread_local uint64_t f592_c = 0;
++            if (f592_c++ < 8) {
++                std::cerr << "[F-C4-592] getNetworkCapabilities -> caps o"
++                          << cid << std::endl;
++            }
++            result = DalvikValue::make_object(
++                cid, "Landroid/net/NetworkCapabilities;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getAllNetworks") {
++            uint32_t nid = active_network_id();
++            uint32_t arr = heap_.allocate("[Landroid/net/Network;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            heap_.set_object_field(arr, "__new_array_length__",
++                DalvikValue::make_int(1));
++            heap_.set_object_field(arr, "__array_length__",
++                DalvikValue::make_int(1));
++            heap_.set_object_field(arr, "__element_type__",
++                DalvikValue::make_string("[Landroid/net/Network;", 0));
++            heap_.set_object_field(arr, "array[0]",
++                DalvikValue::make_object(nid, "Landroid/net/Network;"));
++            static thread_local uint64_t f592_a = 0;
++            if (f592_a++ < 8) {
++                std::cerr << "[F-C4-592] getAllNetworks -> Network[1] o"
++                          << arr << " (never-null AOSP contract)"
++                          << std::endl;
++            }
++            DalvikValue av;
++            av.type = DalvikType::OBJECT_REF;
++            av.object_id = arr;
++            av.class_desc = "[Landroid/net/Network;";
++            result = av;
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "isActiveNetworkMetered") {
++            result = DalvikValue::make_bool(false);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++    if (class_name == "Landroid/net/NetworkCapabilities;" &&
++        (method == "hasCapability" || method == "hasTransport")) {
++        int32_t want = 0;
++        if (args.size() >= 2 && args[1].type == DalvikType::INT32)
++            want = args[1].int_val;
++        bool have = false;
++        if (args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++            const char* key = (method == "hasCapability") ? "__caps__"
++                                                          : "__transports__";
++            auto v = heap_.get_object_field(args[0].object_id, key);
++            if (v.has_value() && v->type == DalvikType::INT32 && want >= 0 &&
++                want < 31)
++                have = ((v->int_val >> want) & 1) != 0;
++        }
++        static thread_local uint64_t f592_h = 0;
++        if (f592_h++ < 8) {
++            std::cerr << "[F-C4-592] NetworkCapabilities." << method << "("
++                      << want << ") -> " << (have ? "true" : "false")
++                      << std::endl;
++        }
++        result = DalvikValue::make_bool(have);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // MC4 (Telegram campaign): ActivityManager memory-class law.
+     // Real Telegram v12.10.1 (org.telegram.messenger.web, 70389) dies in
+@@ -66109,7 +66420,21 @@ measure_cm_done:;
+             // File(String parent, String child)
+             const std::string& parent = args[1].string_val;
+             const std::string& child = args[2].string_val;
+-            if (parent.empty()) assembled = child;
++            // F-C4-589 (W10, 4APP4 Coder-4) — OpenJDK File(File, String)
++            // ABSOLUTE-CHILD law (java.io.File(File parent, String child):
++            // `if (child == null ...) ... else { this.path =
++            // fs.resolve(parent.path, child); }` — UnixFileSystem.resolve:
++            // an ABSOLUTE child REPLACES the parent entirely (same law for
++            // the String,String form: resolve(parent, child) ignores the
++            // parent when child is absolute). Live-proven (Tusky v33.1):
++            // WorkManager's lock helper built File(cacheDir,
++            // "/data/data/<pkg>/no_backup/androidx.work.workdb.lck") and the
++            // old parent+"/"+child concat produced the MIRRORED path
++            // "<pkg>/cache//data/data/…/…lck" — a path that exists nowhere
++            // in the Android namespace.
++            if (!child.empty() && child[0] == '/') {
++                assembled = child;
++            } else if (parent.empty()) assembled = child;
+             else if (child.empty()) assembled = parent;
+             else assembled = parent + "/" + child;
+         } else if (args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+@@ -66117,7 +66442,11 @@ measure_cm_done:;
+             // File(File parent, String child)
+             const std::string parent = path_field_of(args[1].object_id);
+             const std::string& child = args[2].string_val;
+-            if (parent.empty()) assembled = child;
++            // F-C4-589: absolute child ignores the parent (OpenJDK
++            // UnixFileSystem.resolve law — see the String,String arm).
++            if (!child.empty() && child[0] == '/') {
++                assembled = child;
++            } else if (parent.empty()) assembled = child;
+             else if (child.empty()) assembled = parent;
+             else assembled = parent + "/" + child;
+         } else if (args.size() >= 3 &&
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index e08fda1..4459d49 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -4275,6 +4275,25 @@ void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
+     enqueue_tokened(runnable_id, delay_ms, cls, /*token_id=*/0);
+ }
+ 
++// F-C4-593 (W10): executor-delivered task — the queue entry carries the
++// DELIVERY THREAD identity (0 = main stays the Handler.post default).
++void HandlerShadow::enqueue_on_thread(uint32_t runnable_id, int64_t delay_ms,
++                                      const std::string& cls,
++                                      uint32_t thread_id) {
++    if (runnable_id == 0) return;
++    QueuedRunnable q;
++    q.runnable_id = runnable_id;
++    q.enqueue_seq = next_seq_++;
++    q.ready_at_ms = virtual_now_ms_ + delay_ms;
++    q.runnable_class = cls;
++    q.token_id = 0;
++    q.delivery_thread_id = thread_id;
++    queue_.push_back(std::move(q));
++    std::cerr << "[F-C4-593] Executor task id=" << runnable_id
++              << " enqueued on thread o" << thread_id
++              << " (delay=" << delay_ms << "ms)" << std::endl;
++}
++
+ void HandlerShadow::enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
+                                     const std::string& cls,
+                                     uint32_t token_id) {
+@@ -4387,6 +4406,20 @@ void HandlerShadow::advance_virtual(int64_t delta_ms) {
+ }
+ 
+ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
++    // F-C4-593 (W10): identity-preserving facade — the single drain law
++    // below (drain_ready_ex) carries the delivery thread; the legacy
++    // vector<uint32_t> callers keep their exact contract.
++    if (!out_drained) return 0;
++    std::vector<std::pair<uint32_t, uint32_t>> pairs;
++    size_t n = drain_ready_ex(&pairs);
++    out_drained->clear();
++    out_drained->reserve(pairs.size());
++    for (auto& p : pairs) out_drained->push_back(p.first);
++    return n;
++}
++
++size_t HandlerShadow::drain_ready_ex(
++    std::vector<std::pair<uint32_t, uint32_t>>* out_drained) {
+     if (!out_drained) return 0;
+     // AOSP Handler/Looper model, made deterministic through the virtual
+     // clock: a message fires when the Looper time reaches its ready time.
+@@ -4427,11 +4460,15 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
+     std::sort(due_idx.begin(), due_idx.end(), std::greater<size_t>());
+     for (size_t i : due_idx) queue_.erase(queue_.begin() + static_cast<long>(i));
+     for (auto& q : taken) {
+-        out_drained->push_back(q.runnable_id);
++        out_drained->emplace_back(q.runnable_id, q.delivery_thread_id);
+         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
+                   << " dequeued (ready_at=" << q.ready_at_ms
+-                  << "ms <= now=" << virtual_now_ms_ << "ms virtual)"
+-                  << std::endl;
++                  << "ms <= now=" << virtual_now_ms_ << "ms virtual"
++                  << (q.delivery_thread_id
++                          ? (", thread=o" +
++                             std::to_string(q.delivery_thread_id))
++                          : ", thread=main")
++                  << ")" << std::endl;
+         drained++;
+     }
+     return drained;
+diff --git a/miniandroid/src/framework/android_shadows.h b/miniandroid/src/framework/android_shadows.h
+index 2f08c62..fdd40b3 100755
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -495,6 +495,14 @@ public:
+         // boxed expires Long. token_id 0 = AOSP msg.obj == null (the public
+         // 2-arg overload) — removeCallbacksAndMessages(null) clears those.
+         uint32_t token_id = 0;
++        // F-C4-593 (W10, 4APP4 Coder-4): the DELIVERY THREAD identity.
++        // 0 = the main thread (Handler.post on the main Looper — F-NEW-289
++        // delivery-identity law); non-zero = the heap object_id of the
++        // worker Thread a background executor (Room IO, WorkManager serial,
++        // Executors pools) owns — Executor.execute tasks run on the
++        // EXECUTOR'S thread, never the main thread (AOSP ThreadPoolExecutor
++        // worker; the serialized engine binds the identity at drain).
++        uint32_t delivery_thread_id = 0;
+     };
+ 
+     std::string name() const override { return "Handler"; }
+@@ -529,6 +537,12 @@ public:
+     void enqueue(uint32_t runnable_id, int64_t delay_ms,
+                  const std::string& cls);
+ 
++    // F-C4-593 (W10): enqueue with a DELIVERY THREAD identity (0 = main —
++    // every legacy caller keeps its semantics verbatim; non-zero = the
++    // worker Thread object a background executor runs the task on).
++    void enqueue_on_thread(uint32_t runnable_id, int64_t delay_ms,
++                           const std::string& cls, uint32_t thread_id);
++
+     // Token-bearing enqueue (AOSP postDelayed(Runnable, Object token, long)
+     // and Message.obtain(r, token)). token_id 0 = no token (msg.obj null).
+     void enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
+@@ -570,6 +584,13 @@ public:
+     // Runnable's run() method.
+     size_t drain_ready(std::vector<uint32_t>* out_drained);
+ 
++    // F-C4-593 (W10): identity-carrying drain — each drained entry is
++    // (runnable_id, delivery_thread_id). Same ordering law as drain_ready;
++    // the caller MUST bind the delivery thread identity (ThreadShadow::
++    // set_active_drained_thread) around the run() of each task.
++    size_t drain_ready_ex(
++        std::vector<std::pair<uint32_t, uint32_t>>* out_drained);
++
+     // ── Deterministic virtual clock (Handler/Looper time model) ──────────
+     // The runtime has no wall-clock rendering, so Looper time is virtual.
+     //  * F-NEW-197 (S92): idle-settle points do NOT fast-forward the clock.
+diff --git a/miniandroid/src/framework/executor_shadow.cpp b/miniandroid/src/framework/executor_shadow.cpp
+index f58b602..da16ee9 100644
+--- a/miniandroid/src/framework/executor_shadow.cpp
++++ b/miniandroid/src/framework/executor_shadow.cpp
+@@ -77,8 +77,35 @@ CallResult ExecutorShadow::dispatch(const CallContext& ctx) {
+                 return CallResult::handled_void();
+             }
+             if (auto* hs = registry_->find_as<HandlerShadow>()) {
+-                hs->enqueue(runnable, /*delay_ms=*/0,
+-                            "Ljava/util/concurrent/ThreadPoolExecutor;");
++                // F-C4-593 (W10, 4APP4 Coder-4) — EXECUTOR-THREAD IDENTITY
++                // law. AOSP (java.util.concurrent.ThreadPoolExecutor): a
++                // task submitted to a background executor runs on one of
++                // the POOL'S worker threads — NEVER the main thread. The
++                // engine's one-queue serialization stays, but the DELIVERY
++                // IDENTITY is now the executor's own worker Thread object,
++                // so inside every Executor.execute task:
++                //   Thread.currentThread() != Looper.getMainLooper().getThread()
++                // exactly like a real device. Live-proven root (Tusky
++                // v33.1, the ×10 ISE family): Room's assertNotMainThread
++                // (R8 Ln8/x;.a) ran `Looper.getMainLooper().getThread() ==
++                // Thread.currentThread()` on executor-delivered query work
++                // and threw "Cannot access database on the main thread
++                // since it may potentially lock the UI for a long period
++                // of time." at every WorkManager/Room query. Handler.post
++                // on the main Looper keeps the F-NEW-289 main-identity law.
++                uint32_t worker_tid = 0;
++                if (heap_) {
++                    // A FRESH Thread object per pool (NOT get_or_create —
++                    // that answers the MAIN Thread singleton; the worker
++                    // must be a distinct identity).
++                    if (st.worker_thread_id == 0)
++                        st.worker_thread_id =
++                            heap_->allocate("Ljava/lang/Thread;");
++                    worker_tid = st.worker_thread_id;
++                }
++                hs->enqueue_on_thread(runnable, /*delay_ms=*/0,
++                                      "Ljava/util/concurrent/ThreadPoolExecutor;",
++                                      worker_tid);
+                 st.tasks_submitted++;
+             } else {
+                 std::cerr << "[EXECUTOR][UNSUPPORTED] no MessageQueue "
+diff --git a/miniandroid/src/framework/executor_shadow.h b/miniandroid/src/framework/executor_shadow.h
+index 027d1ce..3824ec7 100644
+--- a/miniandroid/src/framework/executor_shadow.h
++++ b/miniandroid/src/framework/executor_shadow.h
+@@ -76,6 +76,9 @@ private:
+         bool shutdown = false;
+         int  tasks_submitted = 0;
+         int  core_pool_size = 0;
++        // F-C4-593 (W10): the pool's OWN worker Thread object (AOSP
++        // ThreadPoolExecutor workers). 0 = not allocated yet.
++        uint32_t worker_thread_id = 0;
+     };
+     std::map<uint32_t, ExecutorState> executors_;
+ };
+diff --git a/miniandroid/src/jni/dlopen_exec.cpp b/miniandroid/src/jni/dlopen_exec.cpp
+index e39a897..e305569 100644
+--- a/miniandroid/src/jni/dlopen_exec.cpp
++++ b/miniandroid/src/jni/dlopen_exec.cpp
+@@ -113,10 +113,80 @@ size_t g_guard_saved_n = 0;
+ void install_native_guard() {
+     struct sigaction sa;
+     memset(&sa, 0, sizeof sa);
+-    sa.sa_flags = SA_NODEFER;  // allow return through the faulting signal
++    sa.sa_flags = SA_NODEFER | SA_SIGINFO;  // allow return; W10: fault RIP
+     sigemptyset(&sa.sa_mask);
+-    sa.sa_handler = [](int sig) {
++    sa.sa_sigaction = [](int sig, siginfo_t* info, void* uctx_v) {
+         if (g_guard_active) {
++            // W10 (Coder-4) FAULT TRACE — the faulting instruction pointer
++            // and fault address (diagnoses WHICH native instruction killed
++            // the call; RIP<->library mapping via /proc/self/maps).
++            {
++                ucontext_t* uc = static_cast<ucontext_t*>(uctx_v);
++                uintptr_t rip = uc->uc_mcontext.gregs[REG_RIP];
++                uintptr_t addr =
++                    info && info->si_code != SI_USER
++                        ? reinterpret_cast<uintptr_t>(info->si_addr)
++                        : 0;
++                static bool w10_ft =
++                    std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr;
++                if (w10_ft) {
++                    fprintf(stderr,
++                            "[W10-FAULT] sig=%d rip=%p fault_addr=%p\n",
++                            sig, (void*)rip, (void*)addr);
++                    // Map RIP to its library + offset (self-maps lookup).
++                    FILE* maps = fopen("/proc/self/maps", "r");
++                    if (maps) {
++                        char line[512];
++                        while (fgets(line, sizeof line, maps)) {
++                            unsigned long lo, hi;
++                            char perms[8], path[400] = "";
++                            if (sscanf(line, "%lx-%lx %7s %*x %*x:%*x %*u %399s",
++                                       &lo, &hi, perms, path) >= 3) {
++                                if (rip >= lo && rip < hi && path[0] == '/') {
++                                    fprintf(stderr,
++                                            "[W10-FAULT] rip in %s +0x%lx "
++                                            "(%s)\n",
++                                            path, rip - lo, perms);
++                                    break;
++                                }
++                            }
++                        }
++                        // W10: crude stack walk — print mapped return
++                        // address candidates (RSP..RSP+512) so the native
++                        // call chain at the fault is visible.
++                        rewind(maps);
++                        uintptr_t rsp =
++                            uc->uc_mcontext.gregs[REG_RSP];
++                        for (int wi = 0; wi < 64; ++wi) {
++                            uintptr_t v;
++                            memcpy(&v, (void*)(rsp + wi * 8), 8);
++                            if (v < 0x1000) continue;
++                            char mline[512];
++                            bool printed = false;
++                            rewind(maps);
++                            while (fgets(mline, sizeof mline, maps)) {
++                                unsigned long lo, hi;
++                                char perms[8], path[400] = "";
++                                if (sscanf(mline,
++                                           "%lx-%lx %7s %*x %*x:%*x %*u %399s",
++                                           &lo, &hi, perms, path) >= 3) {
++                                    if (v >= lo && v < hi && path[0] == '/') {
++                                        fprintf(stderr,
++                                                "[W10-FAULT] stack[%d]=%s "
++                                                "+0x%lx\n",
++                                                wi, path, v - lo);
++                                        printed = true;
++                                        break;
++                                    }
++                                }
++                            }
++                            (void)printed;
++                        }
++                        fclose(maps);
++                    }
++                    fflush(stderr);
++                }
++            }
+             g_guard_active = 0;
+             siglongjmp(guard_jb(), 1);
+         }
+@@ -188,7 +258,11 @@ ProbeVerdict dlopen_probe(const char* host_path) {
+     if (p == 0) {
+         // Probe child: dlopen then _exit — never unwind, never run parent
+         // atexit handlers, never touch the parent's state.
+-        void* h = dlopen(host_path, RTLD_NOW | RTLD_LOCAL);
++        // F-C4-595 (W10): DEEPBIND in the probe too (mirrors the real
++        // open — the probe must observe the same binding the real dlopen
++        // will produce).
++        void* h = dlopen(host_path,
++                         RTLD_NOW | RTLD_LOCAL | RTLD_DEEPBIND);
+         _exit(h ? 0 : 2);
+     }
+     int st = 0;
+@@ -212,6 +286,40 @@ std::vector<RegisteredNative>& registered() {
+     return v;
+ }
+ 
++// ─────────────────────────────────────────────────────────────────────
++// F-C4-587 (W10, 4APP4 Coder-4) — JNI OBJECT-ARRAY family. AOSP/ART law
++// (art/runtime/jni/jni_internal.cc): NewObjectArray(len, elementClass,
++// init) allocates a real object array; SetObjectArrayElement stores a
++// reference at an index; GetObjectArrayElement reads one; GetArrayLength
++// answers the element count. The spec slots are 171/172/173/174 (the
++// F-C4-581 spec-exact table left them on the UNSUPPORTED stub), so any
++// registered native building a String[] got 0 back from NewObjectArray
++// and returned null — live-proven: conscrypt's NativeCrypto.<clinit> does
++//   get_cipher_names("ALL") → C body loops the SSL_CIPHER stack calling
++//   NewObjectArray + NewStringUTF + SetObjectArrayElement → returned the
++//   null → `array-length` NPE at pc=0x48 (NC) / 0x42 (CB) — the tail of
++//   the whole conscrypt/RegisterNatives chain. Box model: a NativeObjArray
++//   is a tagged heap-arena structure of element pointers (jstring boxes or
++//   nested); call_native's 'L'/'[' return marshaling converts a known
++//   array box into JOutcome::STRING_ARRAY so the engine mints a real DEX
++//   array. Nested non-string elements surface as empty strings (honest
++//   documented boundary — conscrypt's surface is String[] flat).
++// ─────────────────────────────────────────────────────────────────────
++struct NativeObjArray {
++    uint64_t magic = 0x4A4F42415225110Full;  // "J0BARR!"
++    std::vector<void*> elems;
++};
++static std::vector<NativeObjArray*>& obj_array_boxes() {
++    static std::vector<NativeObjArray*> boxes;
++    return boxes;
++}
++static NativeObjArray* as_obj_array(void* ref) {
++    if (!ref) return nullptr;
++    for (NativeObjArray* b : obj_array_boxes())
++        if (b == ref) return b;
++    return nullptr;
++}
++
+ // ── per-call arena (local-ref lifetime) ────────────────────────────────
+ std::vector<std::string*>& arena() {
+     static std::vector<std::string*> a;
+@@ -325,6 +433,33 @@ int jni_RegisterNatives(void*, void* jcls, const JNINativeMethodC* methods,
+     return 0;
+ }
+ int jni_UnregisterNatives(void*, void*) { return 0; }
++
++// F-C4-587 (W10): the object-array family — spec slots 171-174.
++// (jsize = jint = int32_t per jni.h; kept local to avoid a jni.h dep.)
++static int32_t f587_len_of(void* arr) {
++    NativeObjArray* b = as_obj_array(arr);
++    return b ? (int32_t)b->elems.size() : 0;
++}
++int32_t jni_GetArrayLength(void*, void* arr) { return f587_len_of(arr); }
++void* jni_NewObjectArray(void*, int32_t len, void* elem_class, void* init) {
++    (void)elem_class;
++    if (len < 0) return nullptr;
++    NativeObjArray* b = new NativeObjArray();
++    b->elems.assign((size_t)len, init);
++    obj_array_boxes().push_back(b);
++    return b;
++}
++void* jni_GetObjectArrayElement(void*, void* arr, int32_t idx) {
++    NativeObjArray* b = as_obj_array(arr);
++    if (!b || idx < 0 || (size_t)idx >= b->elems.size()) return nullptr;
++    return b->elems[(size_t)idx];
++}
++void jni_SetObjectArrayElement(void*, void* arr, int32_t idx, void* val) {
++    NativeObjArray* b = as_obj_array(arr);
++    if (!b || idx < 0) return;
++    if ((size_t)idx >= b->elems.size()) b->elems.resize((size_t)idx + 1, nullptr);
++    b->elems[(size_t)idx] = val;
++}
+ int jni_GetJavaVM(void*, void** vm) {
+     if (vm) *vm = &g_vm;
+     return 0;
+@@ -485,6 +620,13 @@ void init_tables() {
+     g_jni_table[168] = (void*)&jni_GetStringUTFLength;     // 168 GetStringUTFLength
+     g_jni_table[169] = (void*)&jni_GetStringUTFChars;      // 169 GetStringUTFChars
+     g_jni_table[170] = (void*)&jni_ReleaseStringUTFChars;  // 170 ReleaseStringUTFChars
++    // F-C4-587 (W10): the object-array family — TRUE spec slots
++    // (GetArrayLength 171, NewObjectArray 172, GetObjectArrayElement 173,
++    // SetObjectArrayElement 174; previously the loud UNSUPPORTED stub).
++    g_jni_table[171] = (void*)&jni_GetArrayLength;          // 171 GetArrayLength
++    g_jni_table[172] = (void*)&jni_NewObjectArray;          // 172 NewObjectArray
++    g_jni_table[173] = (void*)&jni_GetObjectArrayElement;   // 173 GetObjectArrayElement
++    g_jni_table[174] = (void*)&jni_SetObjectArrayElement;   // 174 SetObjectArrayElement
+     // registration + VM family — TRUE spec slots (were mis-wired at
+     // 163/164/167/176).
+     g_jni_table[215] = (void*)&jni_RegisterNatives;        // 215 RegisterNatives
+@@ -607,7 +749,27 @@ LoadOutcome load_library(const std::string& libname,
+     }
+     void* h = nullptr;
+     bool dlopen_faulted = !run_native_guarded(
+-        [&] { h = dlopen(host_path.c_str(), RTLD_NOW | RTLD_LOCAL); });
++        [&] {
++            // ── F-C4-595 (W10, 4APP4 Coder-4) — RTLD_DEEPBIND APP-LIB
++            // ISOLATION law (the AOSP linker-namespace analog). ROOT
++            // (live, CB v1.11.1 conscrypt get_cipher_names fault trace):
++            // conscrypt's .so exports its STATICALLY-LINKED BoringSSL
++            // (SSL_CTX_new, SSL_set_cipher_list, ... all T), but on glibc
++            // an exported symbol can be PREEMPTED by the global scope —
++            // the .so's own PLT resolved SSL_CTX_new to the HOST's
++            // libssl.so.3 (OpenSSL 3), whose SSL_CTX layout differs from
++            // BoringSSL's; the BoringSSL code then walked a foreign struct
++            // and CBS_get_u16 deref'd a NULL CBS from the mismatched
++            // method table (W10-FAULT: rip=+0x2043f0 fault_addr=0x8, call
++            // chain get_cipher_names +0x64 → host libssl +0x25300).
++            // Android never sees this: linker namespaces isolate app libs
++            // from the platform's libssl. glibc's RTLD_DEEPBIND is the
++            // same isolation: the library's OWN definitions win for its
++            // internal references. Blast radius: app-lib dlopen binding
++            // only — anchor libs and host libs are untouched.
++            h = dlopen(host_path.c_str(),
++                       RTLD_NOW | RTLD_LOCAL | RTLD_DEEPBIND);
++        });
+     if (dlopen_faulted) {
+         // Residual fault the probe did not catch (address-space layout
+         // difference): the loader may hold its lock now — poison it so no
+@@ -718,6 +880,27 @@ void* find_symbol(const std::string& class_desc, const std::string& method,
+     short_name += m_method;
+     std::string long_name = short_name + long_name_suffix(dex_sig);
+ 
++    // W10 (Coder-4) JNI TRACE — env-gated, bounded: every find_symbol query
++    // with the first few registered-natives entries it compared against
++    // (diagnoses the registered-table match for the conscrypt dispatch).
++    static thread_local const bool w10_jni_on =
++        std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr;
++    static thread_local uint64_t w10_jni_n = 0;
++    if (w10_jni_on && w10_jni_n++ < 40) {
++        fprintf(stderr, "[W10-JNI] find_symbol cls=%s method=%s sig=%s "
++                        "(registered=%zu)\n",
++                class_desc.c_str(), method.c_str(), dex_sig.c_str(),
++                registered().size());
++        size_t shown = 0;
++        for (const auto& rn : registered()) {
++            if (rn.method != method) continue;
++            fprintf(stderr, "[W10-JNI]   reg cand cls=%s name=%s sig=%s fn=%p\n",
++                    rn.class_desc.c_str(), rn.method.c_str(),
++                    rn.sig.c_str(), rn.fn);
++            if (++shown >= 4) break;
++        }
++    }
++
+     std::lock_guard<std::mutex> lk(g_mu);
+     for (const auto& lib : libs()) {
+         dlerror();
+@@ -900,6 +1083,26 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
+             if (!ref) {
+                 out.kind = JOutcome::Kind::OBJECT;
+                 out.object_id = 0;
++            } else if (NativeObjArray* arr = as_obj_array(ref)) {
++                // F-C4-587 (W10): a native-built jobjectArray → the engine
++                // mints a real DEX array (STRING_ARRAY outcome). Elements
++                // are jstring boxes; null/non-string elements degrade to
++                // empty strings with a null marker carried by emptiness
++                // (documented boundary: conscrypt's surface is flat).
++                out.kind = JOutcome::Kind::STRING_ARRAY;
++                out.str_elems.reserve(arr->elems.size());
++                for (void* e : arr->elems) {
++                    if (e && !as_obj_array(e)) {
++                        out.str_elems.push_back(
++                            *static_cast<std::string*>(e));
++                    } else {
++                        out.str_elems.push_back(std::string());
++                    }
++                }
++                fprintf(stderr,
++                        "[F-C4-587] native object-array return: %zu "
++                        "string elements (NewObjectArray family live)\n",
++                        arr->elems.size());
+             } else {
+                 // The implemented subset materializes exactly one object
+                 // kind: a jstring box (NewStringUTF). Any other pointer is
+diff --git a/miniandroid/src/jni/dlopen_exec.h b/miniandroid/src/jni/dlopen_exec.h
+index 3274df5..9a64281 100644
+--- a/miniandroid/src/jni/dlopen_exec.h
++++ b/miniandroid/src/jni/dlopen_exec.h
+@@ -72,11 +72,16 @@ struct JArg {
+ // Invocation result (return type per DEX descriptor).
+ struct JOutcome {
+     enum class Kind { VOID, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, SHORT,
+-                      BYTE, STRING, OBJECT } kind = Kind::VOID;
++                      BYTE, STRING, OBJECT, STRING_ARRAY } kind = Kind::VOID;
+     int64_t i = 0;           // INT/LONG/BOOLEAN/CHAR/SHORT/BYTE
+     double d = 0.0;          // FLOAT/DOUBLE
+     std::string str;         // STRING (materialized from the native side)
+     uint32_t object_id = 0;  // OBJECT
++    // F-C4-587 (W10): STRING_ARRAY — a jobjectArray of jstring built by a
++    // native library through NewObjectArray/SetObjectArrayElement. Elements
++    // are the string payloads; a null element is carried as the empty
++    // string (the engine mints a null DEX element for it).
++    std::vector<std::string> str_elems;
+     std::string provenance;  // symbol + lib that actually executed
+ };
+ 
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index b900a05..ac4d60a 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -1630,15 +1630,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                 // F-NEW-197: due-only drain — NO clock jump. Entries due at
+                 // the current virtual instant dispatch here; future-dated
+                 // entries wait for the --frames clock gates.
+-                std::vector<uint32_t> drained;
+-                size_t n = hs->drain_ready(&drained);
++                std::vector<std::pair<uint32_t, uint32_t>> drained;
++                size_t n = hs->drain_ready_ex(&drained);
+                 size_t pending = hs->queue_size() - n;
+                 if (n > 0) {
+                     trace_engine_.info("ExecutionEngine", "drain_handler_queue",
+                                        "Drained " + std::to_string(n) + " Runnables after onCreate");
+                     // EXP-090: Actually INVOKE each drained Runnable's run() method.
+-                    for (uint32_t rid : drained) {
+-                        invoke_handler_runnable(rid);
++                    for (auto& rd : drained) {
++                        invoke_handler_runnable(rd.first, rd.second);
+                     }
+                 }
+                 if (pending > 0) {
+@@ -2151,31 +2151,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                     if (auto* registry = dalvik_engine_.get_shadow_registry()) {
+                         if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+                             for (int drain_iter = 0; drain_iter < 10; drain_iter++) {
+-                                std::vector<uint32_t> drained;
+-                                size_t n = hs->drain_ready(&drained);
++                                std::vector<std::pair<uint32_t, uint32_t>> drained;
++                                size_t n = hs->drain_ready_ex(&drained);
+                                 if (n == 0) break;
+                                 std::cerr << "[EXP092-PRE-CLICK-DRAIN] Iteration "
+                                           << drain_iter << " drained " << n
+                                           << " runnables" << std::endl;
+-                                for (uint32_t rid : drained) {
++                                for (auto& rd : drained) {
+                                     try {
+-                                        auto& heap = dalvik_engine_.get_heap_public();
+-                                        if (heap.has_object(rid)) {
+-                                            const auto* obj = heap.get(rid);
+-                                            std::string cls = obj ? obj->class_descriptor : "";
+-                                            if (!cls.empty()) {
+-                                                std::cerr << "[EXP092-PRE-CLICK-DRAIN] "
+-                                                          << "Invoking Runnable id=" << rid
+-                                                          << " class=" << cls << std::endl;
+-                                                miniandroid::dalvik::DalvikValue ret;
+-                                                miniandroid::dalvik::DalvikExecutionResult dr;
+-                                                std::vector<miniandroid::dalvik::DalvikValue> args;
+-                                                args.push_back(
+-                                                    miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+-                                                dalvik_engine_.try_recursive_invoke(
+-                                                    cls, "run", args, ret, dr);
+-                                            }
+-                                        }
++                                        invoke_handler_runnable(rd.first, rd.second);
+                                     } catch (const std::exception& e) {
+                                         std::cerr << "[EXP092-PRE-CLICK-DRAIN] "
+                                                   << "Runnable drain failed: "
+@@ -2256,30 +2240,16 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+         if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+             // Drain iteratively — callbacks may queue MORE runnables
+             for (int drain_iter = 0; drain_iter < 10; drain_iter++) {
+-                std::vector<uint32_t> drained;
+-                size_t n = hs->drain_ready(&drained);
++                std::vector<std::pair<uint32_t, uint32_t>> drained;
++                size_t n = hs->drain_ready_ex(&drained);
+                 if (n == 0) break;
+                 std::cerr << "[EXP090-DRAIN2] Iteration " << drain_iter
+                           << " drained " << n << " runnables" << std::endl;
+-                for (uint32_t rid : drained) {
++                for (auto& rd : drained) {
+                     try {
+-                        auto& heap = dalvik_engine_.get_heap_public();
+-                        if (heap.has_object(rid)) {
+-                            const auto* obj = heap.get(rid);
+-                            std::string cls = obj ? obj->class_descriptor : "";
+-                            if (!cls.empty()) {
+-                                std::cerr << "[EXP090-DRAIN2] Invoking Runnable id=" << rid
+-                                          << " class=" << cls << std::endl;
+-                                miniandroid::dalvik::DalvikValue ret;
+-                                miniandroid::dalvik::DalvikExecutionResult drain_result;
+-                                std::vector<miniandroid::dalvik::DalvikValue> args;
+-                                args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+-                                dalvik_engine_.try_recursive_invoke(
+-                                    cls, "run", args, ret, drain_result);
+-                                std::cerr << "[EXP090-DRAIN2] Runnable id=" << rid
+-                                          << " invoked" << std::endl;
+-                            }
+-                        }
++                        invoke_handler_runnable(rd.first, rd.second);
++                        std::cerr << "[EXP090-DRAIN2] Runnable id=" << rd.first
++                                  << " invoked" << std::endl;
+                     } catch (const std::exception& e) {
+                         std::cerr << "[EXP090-DRAIN2] Runnable failed: " << e.what() << std::endl;
+                     }
+@@ -2318,28 +2288,14 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+             if (auto* registry = dalvik_engine_.get_shadow_registry()) {
+                 if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+                     for (int round = 0; round < 64; ++round) {
+-                        std::vector<uint32_t> drained;
+-                        size_t n = hs->drain_ready(&drained);
++                        std::vector<std::pair<uint32_t, uint32_t>> drained;
++                        size_t n = hs->drain_ready_ex(&drained);
+                         if (n == 0) break;
+                         std::cerr << "[UC009-WIRE] drain round=" << round
+                                   << " runnable(s)=" << n << std::endl;
+-                        for (uint32_t rid : drained) {
++                        for (auto& rd : drained) {
+                             try {
+-                                auto& heap = dalvik_engine_.get_heap_public();
+-                                if (heap.has_object(rid)) {
+-                                    const auto* obj = heap.get(rid);
+-                                    std::string cls = obj ? obj->class_descriptor : "";
+-                                    if (!cls.empty()) {
+-                                        std::cerr << "[UC009-WIRE] Runnable id=" << rid
+-                                                  << " class=" << cls << std::endl;
+-                                        miniandroid::dalvik::DalvikValue ret;
+-                                        miniandroid::dalvik::DalvikExecutionResult wire_result;
+-                                        std::vector<miniandroid::dalvik::DalvikValue> wire_args;
+-                                        wire_args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+-                                        dalvik_engine_.try_recursive_invoke(
+-                                            cls, "run", wire_args, ret, wire_result);
+-                                    }
+-                                }
++                                invoke_handler_runnable(rd.first, rd.second);
+                             } catch (const std::exception& e) {
+                                 std::cerr << "[UC009-WIRE] Runnable failed: " << e.what() << std::endl;
+                             }
+@@ -6890,8 +6846,11 @@ std::string sha256_hex(const std::vector<uint8_t>& data) {
+ 
+ // Shared helper: invoke a drained Runnable's run() method through the DEX
+ // engine (used by the post-onCreate idle-settle drain and by the
+-// time-driven frame stage).
+-void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
++// time-driven frame stage). F-C4-593 (W10): delivery_tid carries the
++// queue entry's DELIVERY THREAD identity (0 = main Looper — F-NEW-289;
++// non-zero = the executor worker the task was submitted to).
++void ExecutionEngine::invoke_handler_runnable(uint32_t rid,
++                                              uint32_t delivery_tid) {
+     // G06 §4: framework-internal callbacks (PerformClick / UnsetPressedState
+     // / CheckForLongPress) ride the same queue as app Runnables through
+     // reserved tokens; route them to the TouchDispatcher instead of the DEX
+@@ -6922,15 +6881,19 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
+         // already main (the proven case at this entry — fnew289 v1);
+         // binds main when a future call path drains nested inside a worker
+         // body (same root as the park-drain arm).
++        // F-C4-593 (W10): the law is PER-TASK — delivery_tid 0 keeps the
++        // main identity; non-zero (an Executor.execute task) binds the
++        // executor's worker Thread (AOSP ThreadPoolExecutor delivery).
+         auto* ts289 = shadow_registry_
+                           ? shadow_registry_->find_as<
+                                 framework::ThreadShadow>()
+                           : nullptr;
+         uint32_t saved289 = 0;
+         bool bound289 = false;
+-        if (ts289 && ts289->current_thread_id() != ts289->main_thread_id()) {
++        if (ts289 && (ts289->current_thread_id() != ts289->main_thread_id() ||
++                      delivery_tid != 0)) {
+             saved289 = ts289->current_thread_id();
+-            ts289->set_active_drained_thread(0);
++            ts289->set_active_drained_thread(delivery_tid);
+             bound289 = true;
+         }
+         dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
+@@ -7061,14 +7024,15 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
+         // the UC009-WIRE composition drain uses).
+         if (hs) {
+             for (int round = 0; round < 64; ++round) {
+-                std::vector<uint32_t> drained;
+-                size_t n = hs->drain_ready(&drained);
++                std::vector<std::pair<uint32_t, uint32_t>> drained;
++                size_t n = hs->drain_ready_ex(&drained);
+                 if (n == 0) break;
+                 did_work = true;
+                 std::cerr << "[F100-PUMP] frame=" << fired_frames
+                           << " drain round=" << round << " runnable(s)=" << n
+                           << std::endl;
+-                for (uint32_t rid : drained) invoke_handler_runnable(rid);
++                for (auto& rd : drained)
++                    invoke_handler_runnable(rd.first, rd.second);
+             }
+         }
+         // S109 WEBVIEW-ENGINE: JS timers + requestAnimationFrame are driven by
+diff --git a/miniandroid/src/runtime/execution_engine.h b/miniandroid/src/runtime/execution_engine.h
+index 00bdcf7..19fa220 100755
+--- a/miniandroid/src/runtime/execution_engine.h
++++ b/miniandroid/src/runtime/execution_engine.h
+@@ -267,7 +267,11 @@ private:
+     // pipeline (DOWN → pressed frame → UP → queued PerformClick →
+     // UnsetPressedState → drained frame). Frames + touch trace manifest.
+     bool stage_tap(ExecutionResult& result, const ExecutionConfig& config);
+-    void invoke_handler_runnable(uint32_t runnable_id);
++    // F-C4-593 (W10): delivery_thread_id carries the queue entry's DELIVERY
++    // THREAD identity (0 = main Looper per F-NEW-289; non-zero = the
++    // executor worker Thread the task was submitted to).
++    void invoke_handler_runnable(uint32_t runnable_id,
++                                 uint32_t delivery_thread_id = 0);
+     // F-050: Choreographer frame pump — invoke a posted FrameCallback's
+     // REAL DEX doFrame(J)V at the deterministic virtual frame time (the
+     // vsync law that resumes Compose withFrameNanos continuations).
+diff --git a/miniandroid/src/storage/sqlite_shadow.cpp b/miniandroid/src/storage/sqlite_shadow.cpp
+index 2594184..3468b8f 100644
+--- a/miniandroid/src/storage/sqlite_shadow.cpp
++++ b/miniandroid/src/storage/sqlite_shadow.cpp
+@@ -6,6 +6,7 @@
+ 
+ #include "../diagnostics/file_io_trace.h"  // #371 PHASE B6 (ST-10): sqlite-op provenance rows
+ #include "../dex/dalvik_engine.h"          // TRAIN-59 (S144): the ContentValues flat mirror (CvFlat + snapshot) for the SQLiteDatabase.update arm
++#include "data_root.h"                     // F-C4-588 (W10): resolve_android_path for absolute DB names
+ 
+ #include <algorithm>
+ #include <cerrno>
+@@ -132,6 +133,38 @@ void DatabaseShadow::notify_lifecycle_callbacks_done(uint32_t helper_oid) {
+ // ─────────────────────────────────────────────────────────────────────────
+ // open path — ART law: non-null db, onCreate/onUpgrade flagging
+ // ─────────────────────────────────────────────────────────────────────────
++// ── F-C4-588 (W10, 4APP4 Coder-4) — ANDROID-ABSOLUTE-PATH DATABASE law ──
++// AOSP/Room law (androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper-
++// Factory + SupportSQLiteOpenHelper.Configuration.name doc): a database
++// NAME may be an absolute path — "If it's an absolute path, that path is
++// used" (Room passes WorkDatabasePathHelper's /data/data/<pkg>/no_backup/…
++// spelling straight through; Context.getDatabasePath is NOT consulted).
++// Live-proven root (Tusky v33.1 census, the 4272-exception family): the
++// helper recorded db_name="/data/data/com.keylesspalace.tusky/no_backup/
++// androidx.work.workdb" — `fs::path(dir) / name` with an ABSOLUTE rhs
++// REPLACES the dir, so sqlite3_open_v2 was handed the ANDROID-VIRTUAL path
++// on the HOST → rc=14 SQLITE_CANTOPEN ×N → getWritableDatabase not_handled
++// → Room's FrameworkSQLiteDatabase wrapper built over null → every query
++// NPE'd at rawQueryWithFactory. Fix: absolute names resolve through the
++// ONE canonical logical-path mapper (data_root resolve_android_path —
++// owner-fenced, /data/data|/data/user/0|/data/user_de/0 aware), parent
++// directories are created (AOSP ContextImpl ensures the dir family), and
++// the open targets the HOST path. Relative names keep the databases_dir_
++// law unchanged.
++static bool f588_resolve_db_path(const std::string& name, std::string& out_host_path) {
++    if (name.empty() || name[0] != '/') return false;
++    Storage::PathResolution pr = Storage::resolve_android_path(name);
++    if (!pr.allowed || pr.host_path.empty()) {
++        std::cerr << "[F-C4-588] DENIED absolute db name \"" << name
++                  << "\" (outside the Android app namespace)" << std::endl;
++        return false;
++    }
++    std::error_code ec;
++    fs::create_directories(pr.host_path.parent_path(), ec);
++    out_host_path = pr.host_path.string();
++    return true;
++}
++
+ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
+                                                            const std::string&) {
+     HelperState* h = helper_of(helper_oid);
+@@ -146,6 +179,9 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
+     DbState st;
+     if (h->db_name.empty() || h->db_name == ":memory:") {
+         st.path = ":memory:";
++    } else if (f588_resolve_db_path(h->db_name, st.path)) {
++        std::cerr << "[F-C4-588] helper absolute-path db \"" << h->db_name
++                  << "\" -> " << st.path << std::endl;
+     } else {
+         fs::path dir(databases_dir_);
+         std::error_code ec;
+@@ -238,6 +274,9 @@ framework::CallResult DatabaseShadow::open_standalone_database(
+     DbState st;
+     if (name == ":memory:") {
+         st.path = ":memory:";
++    } else if (f588_resolve_db_path(name, st.path)) {
++        std::cerr << "[F-C4-588] standalone absolute-path db \"" << name
++                  << "\" -> " << st.path << std::endl;
+     } else {
+         fs::path dir(databases_dir_);
+         std::error_code ec;
+

@@ -4301,6 +4301,25 @@ void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
     enqueue_tokened(runnable_id, delay_ms, cls, /*token_id=*/0);
 }
 
+// F-C4-593 (W10): executor-delivered task — the queue entry carries the
+// DELIVERY THREAD identity (0 = main stays the Handler.post default).
+void HandlerShadow::enqueue_on_thread(uint32_t runnable_id, int64_t delay_ms,
+                                      const std::string& cls,
+                                      uint32_t thread_id) {
+    if (runnable_id == 0) return;
+    QueuedRunnable q;
+    q.runnable_id = runnable_id;
+    q.enqueue_seq = next_seq_++;
+    q.ready_at_ms = virtual_now_ms_ + delay_ms;
+    q.runnable_class = cls;
+    q.token_id = 0;
+    q.delivery_thread_id = thread_id;
+    queue_.push_back(std::move(q));
+    std::cerr << "[F-C4-593] Executor task id=" << runnable_id
+              << " enqueued on thread o" << thread_id
+              << " (delay=" << delay_ms << "ms)" << std::endl;
+}
+
 void HandlerShadow::enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
                                     const std::string& cls,
                                     uint32_t token_id) {
@@ -4413,6 +4432,20 @@ void HandlerShadow::advance_virtual(int64_t delta_ms) {
 }
 
 size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
+    // F-C4-593 (W10): identity-preserving facade — the single drain law
+    // below (drain_ready_ex) carries the delivery thread; the legacy
+    // vector<uint32_t> callers keep their exact contract.
+    if (!out_drained) return 0;
+    std::vector<std::pair<uint32_t, uint32_t>> pairs;
+    size_t n = drain_ready_ex(&pairs);
+    out_drained->clear();
+    out_drained->reserve(pairs.size());
+    for (auto& p : pairs) out_drained->push_back(p.first);
+    return n;
+}
+
+size_t HandlerShadow::drain_ready_ex(
+    std::vector<std::pair<uint32_t, uint32_t>>* out_drained) {
     if (!out_drained) return 0;
     // AOSP Handler/Looper model, made deterministic through the virtual
     // clock: a message fires when the Looper time reaches its ready time.
@@ -4453,11 +4486,15 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     std::sort(due_idx.begin(), due_idx.end(), std::greater<size_t>());
     for (size_t i : due_idx) queue_.erase(queue_.begin() + static_cast<long>(i));
     for (auto& q : taken) {
-        out_drained->push_back(q.runnable_id);
+        out_drained->emplace_back(q.runnable_id, q.delivery_thread_id);
         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
                   << " dequeued (ready_at=" << q.ready_at_ms
-                  << "ms <= now=" << virtual_now_ms_ << "ms virtual)"
-                  << std::endl;
+                  << "ms <= now=" << virtual_now_ms_ << "ms virtual"
+                  << (q.delivery_thread_id
+                          ? (", thread=o" +
+                             std::to_string(q.delivery_thread_id))
+                          : ", thread=main")
+                  << ")" << std::endl;
         drained++;
     }
     return drained;

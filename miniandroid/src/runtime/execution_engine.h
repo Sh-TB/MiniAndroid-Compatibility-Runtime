@@ -267,7 +267,11 @@ private:
     // pipeline (DOWN → pressed frame → UP → queued PerformClick →
     // UnsetPressedState → drained frame). Frames + touch trace manifest.
     bool stage_tap(ExecutionResult& result, const ExecutionConfig& config);
-    void invoke_handler_runnable(uint32_t runnable_id);
+    // F-C4-593 (W10): delivery_thread_id carries the queue entry's DELIVERY
+    // THREAD identity (0 = main Looper per F-NEW-289; non-zero = the
+    // executor worker Thread the task was submitted to).
+    void invoke_handler_runnable(uint32_t runnable_id,
+                                 uint32_t delivery_thread_id = 0);
     // F-050: Choreographer frame pump — invoke a posted FrameCallback's
     // REAL DEX doFrame(J)V at the deterministic virtual frame time (the
     // vsync law that resumes Compose withFrameNanos continuations).

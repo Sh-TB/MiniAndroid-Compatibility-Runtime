@@ -1,0 +1,114 @@
+{
+ "wave": "S174 coder-W10 verification",
+ "patch": {
+  "file": "evidence/s174_w10coder/w10_laws.patch",
+  "sha16": "f877c7c0ac27f0a2",
+  "lines": 1270,
+  "sha_check": "EXACT (no trailing newline; 72583 chars as the coder's verification note states)",
+  "applies": "CLEAN on main @ 2617445a (their base was 439b0a3; my S173 probe edits did not conflict)"
+ },
+ "binary": "d0e8449b476cd8f1",
+ "laws_verified": {
+  "F-C4-587": {
+   "cb_grep": "F-C4-587 x1: 'native object-array return: 38 string elements (NewObjectArray family live)'",
+   "crashlog": "Total Errors: 0",
+   "pass": true
+  },
+  "F-C4-588": {
+   "tk_grep": "F-C4-588 x1",
+   "rawQueryWithFactory_null": 0,
+   "was": 4272,
+   "pass": true
+  },
+  "F-C4-589": {
+   "tk_cache_data_mirror": 0,
+   "pass": true
+  },
+  "F-C4-590": {
+   "nc_obtainStyledAttributes_null": 0,
+   "nc_autosize_stub": 0,
+   "pass": true
+  },
+  "F-C4-591": {
+   "nc_setIsStateSaved_null": 0,
+   "nc_contextaware_stub": 0,
+   "pass": true
+  },
+  "F-C4-592": {
+   "nc_family_rows": 7,
+   "rows": [
+    "getActiveNetwork -> Network o1637 (validated Wi-Fi device profile)",
+    "getNetworkCapabilities -> caps o1638",
+    "hasTransport(1) -> true",
+    "hasCapability(12) -> true",
+    "hasCapability(11) -> false"
+   ],
+   "honest_row": "no 'getAllNetworks -> Network[1]' row fired on my run (code path did not reach it); family verified via the 7 live rows",
+   "pass": true
+  },
+  "F-C4-593": {
+   "tk_rows": 12,
+   "main_thread_ISE": 0,
+   "was": 10,
+   "pass": true
+  },
+  "F-C4-594": {
+   "cb_rows": 2,
+   "precedence_first": "Lorg/conscrypt/NativeCrypto;.get_cipher_names bridge tail was STUBBED - trying the REAL registered/dlsym symbol first",
+   "pass": true
+  },
+  "F-C4-595": {
+   "cb_faults": 0,
+   "pass": true
+  }
+ },
+ "fourtitle": {
+  "tb": {
+   "face": "43bfdac6023cba66",
+   "uncaught": 3,
+   "ndfe": 7,
+   "note": "== my S173 POST byte-exact; the 3 rows = the ONE faithful NDFE event (S173 proof); their TB row was 4 on THEIR line (no NCGroups law there) - convergent"
+  },
+  "nc": {
+   "face": "33fd925fc12e7585",
+   "uncaught": 32,
+   "note": "== their final census 32 EXACT; wall 16.6s"
+  },
+  "tk": {
+   "face": "31ddd4d5b8e6d18e",
+   "uncaught": 33,
+   "wall_s": 3.3,
+   "note": "vs their 32 (+-1 same-family variance); old families DEAD by grep (4272/ISE/mirror-path all 0); census == their claimed new families (Ln8/l0, Ln8/m0, Lq8/f.close, Lq8/b.F...); wall 3.3s vs 112.3s DEEP at S170 - the DB spin is gone"
+  },
+  "cb": {
+   "face": "b5a7a35d5fe0564b",
+   "uncaught": 0,
+   "crashlog": "Total Errors: 0",
+   "note": "VERIFIED: first 4APP4 title at census ZERO on my line too"
+  }
+ },
+ "faces_all_unchanged": true,
+ "gates": {
+  "microtimer_pin": "bbd350b6c14fbd52",
+  "g2048": "f43face08299ffc6",
+  "opencalc": "63020bc7334048fe",
+  "dooz": {
+   "face": "11a38a5aeeff45a6",
+   "face_equal": true,
+   "pixels_equal": true,
+   "wall": "154.3 -> 160.6 (+4.1% noise band, honest row)",
+   "uncaught": "6==6"
+  },
+  "tg": {
+   "pixels": "2161==2161",
+   "draw_ops": "11==11",
+   "frames": "9==9",
+   "REAL_APP_CONTENT": "both",
+   "uncaught": "6==6 (l9/j x4)",
+   "api": "9777==9777",
+   "wall": "-0.9%",
+   "rss_peak": "676.3 -> 543.1"
+  }
+ },
+ "verdict": "W10 laws F-C4-587..595 VERIFIED + MERGED on my line (binary d0e8449b476cd8f1); all nine ONE-SIMPLE-TEST acceptance greps PASS; CB census ZERO reproduced; TB convergence with my S173 faithful-NDFE proof recorded"
+}

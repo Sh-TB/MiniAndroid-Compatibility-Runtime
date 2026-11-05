@@ -6,6 +6,7 @@
 
 #include "../diagnostics/file_io_trace.h"  // #371 PHASE B6 (ST-10): sqlite-op provenance rows
 #include "../dex/dalvik_engine.h"          // TRAIN-59 (S144): the ContentValues flat mirror (CvFlat + snapshot) for the SQLiteDatabase.update arm
+#include "data_root.h"                     // F-C4-588 (W10): resolve_android_path for absolute DB names
 
 #include <algorithm>
 #include <cerrno>
@@ -132,6 +133,38 @@ void DatabaseShadow::notify_lifecycle_callbacks_done(uint32_t helper_oid) {
 // ─────────────────────────────────────────────────────────────────────────
 // open path — ART law: non-null db, onCreate/onUpgrade flagging
 // ─────────────────────────────────────────────────────────────────────────
+// ── F-C4-588 (W10, 4APP4 Coder-4) — ANDROID-ABSOLUTE-PATH DATABASE law ──
+// AOSP/Room law (androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper-
+// Factory + SupportSQLiteOpenHelper.Configuration.name doc): a database
+// NAME may be an absolute path — "If it's an absolute path, that path is
+// used" (Room passes WorkDatabasePathHelper's /data/data/<pkg>/no_backup/…
+// spelling straight through; Context.getDatabasePath is NOT consulted).
+// Live-proven root (Tusky v33.1 census, the 4272-exception family): the
+// helper recorded db_name="/data/data/com.keylesspalace.tusky/no_backup/
+// androidx.work.workdb" — `fs::path(dir) / name` with an ABSOLUTE rhs
+// REPLACES the dir, so sqlite3_open_v2 was handed the ANDROID-VIRTUAL path
+// on the HOST → rc=14 SQLITE_CANTOPEN ×N → getWritableDatabase not_handled
+// → Room's FrameworkSQLiteDatabase wrapper built over null → every query
+// NPE'd at rawQueryWithFactory. Fix: absolute names resolve through the
+// ONE canonical logical-path mapper (data_root resolve_android_path —
+// owner-fenced, /data/data|/data/user/0|/data/user_de/0 aware), parent
+// directories are created (AOSP ContextImpl ensures the dir family), and
+// the open targets the HOST path. Relative names keep the databases_dir_
+// law unchanged.
+static bool f588_resolve_db_path(const std::string& name, std::string& out_host_path) {
+    if (name.empty() || name[0] != '/') return false;
+    Storage::PathResolution pr = Storage::resolve_android_path(name);
+    if (!pr.allowed || pr.host_path.empty()) {
+        std::cerr << "[F-C4-588] DENIED absolute db name \"" << name
+                  << "\" (outside the Android app namespace)" << std::endl;
+        return false;
+    }
+    std::error_code ec;
+    fs::create_directories(pr.host_path.parent_path(), ec);
+    out_host_path = pr.host_path.string();
+    return true;
+}
+
 framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
                                                            const std::string&) {
     HelperState* h = helper_of(helper_oid);
@@ -146,6 +179,9 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
     DbState st;
     if (h->db_name.empty() || h->db_name == ":memory:") {
         st.path = ":memory:";
+    } else if (f588_resolve_db_path(h->db_name, st.path)) {
+        std::cerr << "[F-C4-588] helper absolute-path db \"" << h->db_name
+                  << "\" -> " << st.path << std::endl;
     } else {
         fs::path dir(databases_dir_);
         std::error_code ec;
@@ -238,6 +274,9 @@ framework::CallResult DatabaseShadow::open_standalone_database(
     DbState st;
     if (name == ":memory:") {
         st.path = ":memory:";
+    } else if (f588_resolve_db_path(name, st.path)) {
+        std::cerr << "[F-C4-588] standalone absolute-path db \"" << name
+                  << "\" -> " << st.path << std::endl;
     } else {
         fs::path dir(databases_dir_);
         std::error_code ec;

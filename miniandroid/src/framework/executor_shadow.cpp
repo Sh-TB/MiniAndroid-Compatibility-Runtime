@@ -77,8 +77,35 @@ CallResult ExecutorShadow::dispatch(const CallContext& ctx) {
                 return CallResult::handled_void();
             }
             if (auto* hs = registry_->find_as<HandlerShadow>()) {
-                hs->enqueue(runnable, /*delay_ms=*/0,
-                            "Ljava/util/concurrent/ThreadPoolExecutor;");
+                // F-C4-593 (W10, 4APP4 Coder-4) — EXECUTOR-THREAD IDENTITY
+                // law. AOSP (java.util.concurrent.ThreadPoolExecutor): a
+                // task submitted to a background executor runs on one of
+                // the POOL'S worker threads — NEVER the main thread. The
+                // engine's one-queue serialization stays, but the DELIVERY
+                // IDENTITY is now the executor's own worker Thread object,
+                // so inside every Executor.execute task:
+                //   Thread.currentThread() != Looper.getMainLooper().getThread()
+                // exactly like a real device. Live-proven root (Tusky
+                // v33.1, the ×10 ISE family): Room's assertNotMainThread
+                // (R8 Ln8/x;.a) ran `Looper.getMainLooper().getThread() ==
+                // Thread.currentThread()` on executor-delivered query work
+                // and threw "Cannot access database on the main thread
+                // since it may potentially lock the UI for a long period
+                // of time." at every WorkManager/Room query. Handler.post
+                // on the main Looper keeps the F-NEW-289 main-identity law.
+                uint32_t worker_tid = 0;
+                if (heap_) {
+                    // A FRESH Thread object per pool (NOT get_or_create —
+                    // that answers the MAIN Thread singleton; the worker
+                    // must be a distinct identity).
+                    if (st.worker_thread_id == 0)
+                        st.worker_thread_id =
+                            heap_->allocate("Ljava/lang/Thread;");
+                    worker_tid = st.worker_thread_id;
+                }
+                hs->enqueue_on_thread(runnable, /*delay_ms=*/0,
+                                      "Ljava/util/concurrent/ThreadPoolExecutor;",
+                                      worker_tid);
                 st.tasks_submitted++;
             } else {
                 std::cerr << "[EXECUTOR][UNSUPPORTED] no MessageQueue "

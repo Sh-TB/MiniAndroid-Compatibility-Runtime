@@ -495,6 +495,14 @@ public:
         // boxed expires Long. token_id 0 = AOSP msg.obj == null (the public
         // 2-arg overload) — removeCallbacksAndMessages(null) clears those.
         uint32_t token_id = 0;
+        // F-C4-593 (W10, 4APP4 Coder-4): the DELIVERY THREAD identity.
+        // 0 = the main thread (Handler.post on the main Looper — F-NEW-289
+        // delivery-identity law); non-zero = the heap object_id of the
+        // worker Thread a background executor (Room IO, WorkManager serial,
+        // Executors pools) owns — Executor.execute tasks run on the
+        // EXECUTOR'S thread, never the main thread (AOSP ThreadPoolExecutor
+        // worker; the serialized engine binds the identity at drain).
+        uint32_t delivery_thread_id = 0;
     };
 
     std::string name() const override { return "Handler"; }
@@ -528,6 +536,12 @@ public:
     // scheduling is fully deterministic — no wall-clock involvement.
     void enqueue(uint32_t runnable_id, int64_t delay_ms,
                  const std::string& cls);
+
+    // F-C4-593 (W10): enqueue with a DELIVERY THREAD identity (0 = main —
+    // every legacy caller keeps its semantics verbatim; non-zero = the
+    // worker Thread object a background executor runs the task on).
+    void enqueue_on_thread(uint32_t runnable_id, int64_t delay_ms,
+                           const std::string& cls, uint32_t thread_id);
 
     // Token-bearing enqueue (AOSP postDelayed(Runnable, Object token, long)
     // and Message.obtain(r, token)). token_id 0 = no token (msg.obj null).
@@ -569,6 +583,13 @@ public:
     // The ApplicationRuntime is responsible for actually executing the
     // Runnable's run() method.
     size_t drain_ready(std::vector<uint32_t>* out_drained);
+
+    // F-C4-593 (W10): identity-carrying drain — each drained entry is
+    // (runnable_id, delivery_thread_id). Same ordering law as drain_ready;
+    // the caller MUST bind the delivery thread identity (ThreadShadow::
+    // set_active_drained_thread) around the run() of each task.
+    size_t drain_ready_ex(
+        std::vector<std::pair<uint32_t, uint32_t>>* out_drained);
 
     // ── Deterministic virtual clock (Handler/Looper time model) ──────────
     // The runtime has no wall-clock rendering, so Looper time is virtual.

@@ -76,6 +76,9 @@ private:
         bool shutdown = false;
         int  tasks_submitted = 0;
         int  core_pool_size = 0;
+        // F-C4-593 (W10): the pool's OWN worker Thread object (AOSP
+        // ThreadPoolExecutor workers). 0 = not allocated yet.
+        uint32_t worker_thread_id = 0;
     };
     std::map<uint32_t, ExecutorState> executors_;
 };

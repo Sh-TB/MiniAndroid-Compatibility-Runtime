@@ -1630,15 +1630,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 // F-NEW-197: due-only drain — NO clock jump. Entries due at
                 // the current virtual instant dispatch here; future-dated
                 // entries wait for the --frames clock gates.
-                std::vector<uint32_t> drained;
-                size_t n = hs->drain_ready(&drained);
+                std::vector<std::pair<uint32_t, uint32_t>> drained;
+                size_t n = hs->drain_ready_ex(&drained);
                 size_t pending = hs->queue_size() - n;
                 if (n > 0) {
                     trace_engine_.info("ExecutionEngine", "drain_handler_queue",
                                        "Drained " + std::to_string(n) + " Runnables after onCreate");
                     // EXP-090: Actually INVOKE each drained Runnable's run() method.
-                    for (uint32_t rid : drained) {
-                        invoke_handler_runnable(rid);
+                    for (auto& rd : drained) {
+                        invoke_handler_runnable(rd.first, rd.second);
                     }
                 }
                 if (pending > 0) {
@@ -2151,31 +2151,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     if (auto* registry = dalvik_engine_.get_shadow_registry()) {
                         if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
                             for (int drain_iter = 0; drain_iter < 10; drain_iter++) {
-                                std::vector<uint32_t> drained;
-                                size_t n = hs->drain_ready(&drained);
+                                std::vector<std::pair<uint32_t, uint32_t>> drained;
+                                size_t n = hs->drain_ready_ex(&drained);
                                 if (n == 0) break;
                                 std::cerr << "[EXP092-PRE-CLICK-DRAIN] Iteration "
                                           << drain_iter << " drained " << n
                                           << " runnables" << std::endl;
-                                for (uint32_t rid : drained) {
+                                for (auto& rd : drained) {
                                     try {
-                                        auto& heap = dalvik_engine_.get_heap_public();
-                                        if (heap.has_object(rid)) {
-                                            const auto* obj = heap.get(rid);
-                                            std::string cls = obj ? obj->class_descriptor : "";
-                                            if (!cls.empty()) {
-                                                std::cerr << "[EXP092-PRE-CLICK-DRAIN] "
-                                                          << "Invoking Runnable id=" << rid
-                                                          << " class=" << cls << std::endl;
-                                                miniandroid::dalvik::DalvikValue ret;
-                                                miniandroid::dalvik::DalvikExecutionResult dr;
-                                                std::vector<miniandroid::dalvik::DalvikValue> args;
-                                                args.push_back(
-                                                    miniandroid::dalvik::DalvikValue::make_object(rid, cls));
-                                                dalvik_engine_.try_recursive_invoke(
-                                                    cls, "run", args, ret, dr);
-                                            }
-                                        }
+                                        invoke_handler_runnable(rd.first, rd.second);
                                     } catch (const std::exception& e) {
                                         std::cerr << "[EXP092-PRE-CLICK-DRAIN] "
                                                   << "Runnable drain failed: "
@@ -2256,30 +2240,16 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
             // Drain iteratively — callbacks may queue MORE runnables
             for (int drain_iter = 0; drain_iter < 10; drain_iter++) {
-                std::vector<uint32_t> drained;
-                size_t n = hs->drain_ready(&drained);
+                std::vector<std::pair<uint32_t, uint32_t>> drained;
+                size_t n = hs->drain_ready_ex(&drained);
                 if (n == 0) break;
                 std::cerr << "[EXP090-DRAIN2] Iteration " << drain_iter
                           << " drained " << n << " runnables" << std::endl;
-                for (uint32_t rid : drained) {
+                for (auto& rd : drained) {
                     try {
-                        auto& heap = dalvik_engine_.get_heap_public();
-                        if (heap.has_object(rid)) {
-                            const auto* obj = heap.get(rid);
-                            std::string cls = obj ? obj->class_descriptor : "";
-                            if (!cls.empty()) {
-                                std::cerr << "[EXP090-DRAIN2] Invoking Runnable id=" << rid
-                                          << " class=" << cls << std::endl;
-                                miniandroid::dalvik::DalvikValue ret;
-                                miniandroid::dalvik::DalvikExecutionResult drain_result;
-                                std::vector<miniandroid::dalvik::DalvikValue> args;
-                                args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
-                                dalvik_engine_.try_recursive_invoke(
-                                    cls, "run", args, ret, drain_result);
-                                std::cerr << "[EXP090-DRAIN2] Runnable id=" << rid
-                                          << " invoked" << std::endl;
-                            }
-                        }
+                        invoke_handler_runnable(rd.first, rd.second);
+                        std::cerr << "[EXP090-DRAIN2] Runnable id=" << rd.first
+                                  << " invoked" << std::endl;
                     } catch (const std::exception& e) {
                         std::cerr << "[EXP090-DRAIN2] Runnable failed: " << e.what() << std::endl;
                     }
@@ -2318,28 +2288,14 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             if (auto* registry = dalvik_engine_.get_shadow_registry()) {
                 if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
                     for (int round = 0; round < 64; ++round) {
-                        std::vector<uint32_t> drained;
-                        size_t n = hs->drain_ready(&drained);
+                        std::vector<std::pair<uint32_t, uint32_t>> drained;
+                        size_t n = hs->drain_ready_ex(&drained);
                         if (n == 0) break;
                         std::cerr << "[UC009-WIRE] drain round=" << round
                                   << " runnable(s)=" << n << std::endl;
-                        for (uint32_t rid : drained) {
+                        for (auto& rd : drained) {
                             try {
-                                auto& heap = dalvik_engine_.get_heap_public();
-                                if (heap.has_object(rid)) {
-                                    const auto* obj = heap.get(rid);
-                                    std::string cls = obj ? obj->class_descriptor : "";
-                                    if (!cls.empty()) {
-                                        std::cerr << "[UC009-WIRE] Runnable id=" << rid
-                                                  << " class=" << cls << std::endl;
-                                        miniandroid::dalvik::DalvikValue ret;
-                                        miniandroid::dalvik::DalvikExecutionResult wire_result;
-                                        std::vector<miniandroid::dalvik::DalvikValue> wire_args;
-                                        wire_args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
-                                        dalvik_engine_.try_recursive_invoke(
-                                            cls, "run", wire_args, ret, wire_result);
-                                    }
-                                }
+                                invoke_handler_runnable(rd.first, rd.second);
                             } catch (const std::exception& e) {
                                 std::cerr << "[UC009-WIRE] Runnable failed: " << e.what() << std::endl;
                             }
@@ -6890,8 +6846,11 @@ std::string sha256_hex(const std::vector<uint8_t>& data) {
 
 // Shared helper: invoke a drained Runnable's run() method through the DEX
 // engine (used by the post-onCreate idle-settle drain and by the
-// time-driven frame stage).
-void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
+// time-driven frame stage). F-C4-593 (W10): delivery_tid carries the
+// queue entry's DELIVERY THREAD identity (0 = main Looper — F-NEW-289;
+// non-zero = the executor worker the task was submitted to).
+void ExecutionEngine::invoke_handler_runnable(uint32_t rid,
+                                              uint32_t delivery_tid) {
     // G06 §4: framework-internal callbacks (PerformClick / UnsetPressedState
     // / CheckForLongPress) ride the same queue as app Runnables through
     // reserved tokens; route them to the TouchDispatcher instead of the DEX
@@ -6922,15 +6881,19 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
         // already main (the proven case at this entry — fnew289 v1);
         // binds main when a future call path drains nested inside a worker
         // body (same root as the park-drain arm).
+        // F-C4-593 (W10): the law is PER-TASK — delivery_tid 0 keeps the
+        // main identity; non-zero (an Executor.execute task) binds the
+        // executor's worker Thread (AOSP ThreadPoolExecutor delivery).
         auto* ts289 = shadow_registry_
                           ? shadow_registry_->find_as<
                                 framework::ThreadShadow>()
                           : nullptr;
         uint32_t saved289 = 0;
         bool bound289 = false;
-        if (ts289 && ts289->current_thread_id() != ts289->main_thread_id()) {
+        if (ts289 && (ts289->current_thread_id() != ts289->main_thread_id() ||
+                      delivery_tid != 0)) {
             saved289 = ts289->current_thread_id();
-            ts289->set_active_drained_thread(0);
+            ts289->set_active_drained_thread(delivery_tid);
             bound289 = true;
         }
         dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
@@ -7061,14 +7024,15 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
         // the UC009-WIRE composition drain uses).
         if (hs) {
             for (int round = 0; round < 64; ++round) {
-                std::vector<uint32_t> drained;
-                size_t n = hs->drain_ready(&drained);
+                std::vector<std::pair<uint32_t, uint32_t>> drained;
+                size_t n = hs->drain_ready_ex(&drained);
                 if (n == 0) break;
                 did_work = true;
                 std::cerr << "[F100-PUMP] frame=" << fired_frames
                           << " drain round=" << round << " runnable(s)=" << n
                           << std::endl;
-                for (uint32_t rid : drained) invoke_handler_runnable(rid);
+                for (auto& rd : drained)
+                    invoke_handler_runnable(rd.first, rd.second);
             }
         }
         // S109 WEBVIEW-ENGINE: JS timers + requestAnimationFrame are driven by
