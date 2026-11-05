@@ -1,0 +1,102 @@
+{
+ "w8_dz_ctl": {
+  "tag": "w8_dz_ctl",
+  "bin": "f7291feaaf778c0f",
+  "env": {},
+  "wall_s": 155.1,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 249.8,
+  "rss_final_mb": 246.0,
+  "rss_grow_mb_s": 1.58,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w8_dz_fix": {
+  "tag": "w8_dz_fix",
+  "bin": "991d89239e69c679",
+  "env": {},
+  "wall_s": 155.6,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 245.2,
+  "rss_final_mb": 245.2,
+  "rss_grow_mb_s": 1.575,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w8_dz_summary": {
+  "wall": "155.1 -> 155.6",
+  "wall_delta_pct": 0.3,
+  "rss_peak": "249.8 -> 245.2",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "w8_tg_ctl": {
+  "tag": "w8_tg_ctl",
+  "bin": "f7291feaaf778c0f",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 32.9,
+  "rc": 0,
+  "rss_peak_mb": 672.3,
+  "rss_final_mb": 672.3,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "w8_tg_fix": {
+  "tag": "w8_tg_fix",
+  "bin": "991d89239e69c679",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 32.6,
+  "rc": 0,
+  "rss_peak_mb": 591.5,
+  "rss_final_mb": 538.2,
+  "uncaught": 0,
+  "uncaught_l9j": 0,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9773
+ },
+ "w8_tg_summary": {
+  "wall": "32.9 -> 32.6",
+  "wall_delta_pct": -0.9,
+  "rss_peak": "672.3 -> 591.5",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}

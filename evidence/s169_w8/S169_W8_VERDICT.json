@@ -1,0 +1,51 @@
+{
+ "ref_bin": "f7291feaaf778c0f",
+ "new_bin": "991d89239e69c679",
+ "law": "SQLiteDatabase.setVersion -> real PRAGMA user_version (W8 S169; was REC-MISS zero-handlers)",
+ "anchors_all_inert": true,
+ "microtimer_pin": true,
+ "dooz": {
+  "wall": "155.1 -> 155.6",
+  "wall_delta_pct": 0.3,
+  "rss_peak": "249.8 -> 245.2",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "tg": {
+  "wall": "32.9 -> 32.6",
+  "wall_delta_pct": -0.9,
+  "rss_peak": "672.3 -> 591.5",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "tb_ref": {
+  "wall_s": 5.4,
+  "uncaught": 33,
+  "ndfe": 7,
+  "census": {
+   "upgrade_failed": 25,
+   "ice": 101,
+   "ndfe": 7,
+   "uncaught": 33,
+   "standalone_opens": 5,
+   "setversion_err": 0,
+   "sqldbg_rows": 0,
+   "sqldbg_not_handled": 0
+  }
+ },
+ "tb_new": {
+  "wall_s": 9.4,
+  "uncaught": 33,
+  "ndfe": 7,
+  "census": {
+   "upgrade_failed": 0,
+   "ice": 0,
+   "ndfe": 7,
+   "uncaught": 33,
+   "standalone_opens": 45,
+   "setversion_err": 0,
+   "sqldbg_rows": 240,
+   "sqldbg_not_handled": 0
+  }
+ }
+}

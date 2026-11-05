@@ -1,0 +1,68 @@
+{
+ "w8_tb": {
+  "tag": "w8_tb",
+  "bin": "f7291feaaf778c0f",
+  "wall_s": 5.1,
+  "stderr_sha16": "aaec76dc94516240",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 33,
+  "ndfe": 7,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11356
+ },
+ "ledger": {
+  "census": {
+   "upgrade_failed": 25,
+   "sqliteshadow_rows": 5,
+   "sqliteshadow_open": 0,
+   "sqliteshadow_create": 0,
+   "sqliteshadow_exec_err": 0,
+   "k9_storage_rows": 60,
+   "dbutil_rows": 25,
+   "identity_hash_rows": 0,
+   "ice": 101,
+   "ndfe": 7,
+   "pragma_rows": 0,
+   "room_rows": 0,
+   "uncaught": 33
+  },
+  "upgrade_failed_rows": [
+   "[THROWABLE-MSG] Ljava/lang/RuntimeException; msg=\"Storage database upgrade failed!\" caller=Landroidx/room/util/DBUtil$$ExternalSyntheticBUOutline0;.m pc=2 depth=23",
+   "[EXCEPTION] method=Landroidx/room/util/DBUtil$$ExternalSyntheticBUOutline0;.m pc=5 exception=Ljava/lang/RuntimeException; msg=\"Storage database upgrade failed!\" try_range=(none) handler=NOT_FOUND msg=\"Storage database up",
+   "[EXCEPTION] method=Lcom/fsck/k9/preferences/K9StoragePersister;.loadValues pc=73 exception=Ljava/lang/RuntimeException; msg=\"Storage database upgrade failed!\" try_range=(no try covering pc) handler=NOT_FOUND msg=\"Storage",
+   "[THROWABLE-MSG] Ljava/lang/RuntimeException; msg=\"Storage database upgrade failed!\" caller=Landroidx/room/util/DBUtil$$ExternalSyntheticBUOutline0;.m pc=2 depth=23"
+  ],
+  "sqliteshadow_first": [
+   "[SQLITE-SHADOW] standalone-open db oid=8271 path=/home/z/my-project/run_s169_w8/store_tb/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8497 path=/home/z/my-project/run_s169_w8/store_tb/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8769 path=/home/z/my-project/run_s169_w8/store_tb/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=9157 path=/home/z/my-project/run_s169_w8/store_tb/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=9399 path=/home/z/my-project/run_s169_w8/store_tb/data/data/net.thunderbird.android/databases/preferences_storage"
+  ],
+  "ice_first": [
+   "[EXCEPTION] method=Lorg/koin/core/instance/InstanceFactory;.create pc=164 exception=Lorg/koin/core/error/InstanceCreationException; try_range=(no try covering pc) handler=NOT_FOUND",
+   "[EXCEPTION] no handler for Lorg/koin/core/error/InstanceCreationException; in Lorg/koin/core/instance/InstanceFactory;.create \u2014 unwinding frame (propagate to caller)",
+   "[EXC-PROPAGATE] Lorg/koin/core/error/InstanceCreationException; caught at caller Lorg/koin/core/instance/SingleInstanceFactory;.get invoke_pc=15 handler=0x0x22 type=<catch-all>",
+   "[EXCEPTION] method=Lorg/koin/core/instance/SingleInstanceFactory;.get pc=36 exception=Lorg/koin/core/error/InstanceCreationException; try_range=(no try covering pc) handler=NOT_FOUND",
+   "[EXCEPTION] no handler for Lorg/koin/core/error/InstanceCreationException; in Lorg/koin/core/instance/SingleInstanceFactory;.get \u2014 unwinding frame (propagate to caller)",
+   "[EXC-PROPAGATE] Lorg/koin/core/error/InstanceCreationException; caught at caller Lorg/koin/core/instance/InstanceFactory;.create invoke_pc=38 handler=0x0x2b type=Ljava/lang/Exception;"
+  ],
+  "room_master_rows": [],
+  "migration_rows": [
+   "migration.qrcode.settings.QrCodeSettingsFileProvider",
+   "migration.provider.SettingsProvider",
+   "[CLASS_INIT] class=Lapp/k9mail/feature/onboarding/migration/OnboardingMigration",
+   "[CLASS_INIT] class=Lapp/k9mail/feature/onboarding/migration/OnboardingMigration",
+   "[CLASS_INIT] class=Lapp/k9mail/feature/migration/launcher/FeatureMigration",
+   "migration/qrcode/QrCodeModuleKt; method=<clinit> bytecode_size=18",
+   "migration/qrcode/QrCodeModuleKt; method=<clinit> result=OK engine=0x7ffd90974778 storage_size=226",
+   "[CLASS_INIT] class=Lapp/k9mail/feature/migration/launcher/FeatureMigration"
+  ],
+  "execsql_err_rows": []
+ },
+ "console": "/home/z/my-project/run_s169_w8/w8_tb.err"
+}

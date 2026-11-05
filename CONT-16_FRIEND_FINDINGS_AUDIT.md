@@ -170,3 +170,16 @@ The gate law moves to VALIDATED + REGRESSION-PROVEN. Next exclusive frontier unb
 | **"All four titles dispatch onResume"** | TB verified above; NC/Tusky/ConnectBot APKs ABSENT locally (recycle) | **NOT VERIFIED this round** — honestly marked |
 | **Verdict on #518** | W7 merged into my tree (2 files, +96/−1); ONE-SIMPLE-TEST pass (F-C4-572 rows fire, bounded 40) | **APPROVED + merged; caveat = residual NDFE 7 + four-title claim unverified** |
 | **Sweep (rest)** | #524 (Coder-3 A16) = verification recipes carried but body-only, no inline diffs to my tree; #439/#437/#441/#438/#495/#505/#494/#472/#484/#492 = tracker/case-file edits, 0 inline diffs | nothing else to verify this round |
+
+## 17. S169 — W8 frontier closed on MY line (my own law, no coder patch this round): SQLiteDatabase.setVersion REC-MISS was the Room storage death (2026-11-05)
+
+| Item | What I actually ran | Verdict |
+|---|---|---|
+| **W8-preview answered** | the coder's #518 preview asked to "trace the first query's answer (likely PRAGMA user_version / identity-hash mis-answer)" — done on MY line with a fresh store + console forensics + a DEX decode of `K9StoragePersister.openDB()` from the pinned APK | root found, different primitive than guessed |
+| **Root** | `openDB`: openOrCreateDatabase (GATE A standalone) → getVersion branch → execSQL ×2 → **setVersion(N) — ZERO handlers in the shadow (grep-proven)** → post-check getVersion()==expected FAILED (0 != N) → outlined rethrow `DBUtil$$ExternalSyntheticBUOutline0.m(String)` = RuntimeException("Storage database upgrade failed!") → K9 retry storm ×5 → Koin ICE ×101 | **REAL missing primitive: SQLiteDatabase.setVersion** |
+| **Law landed** | `SQLiteDatabase.setVersion(INT/LONG)` → real `PRAGMA user_version` write on the same connection (AOSP contract) + [SQLDBG] env-gated probes (entry + not_handled tail, bounded, zero behavior) — build `991d89239e69c679` insured | one-change law, probe-verified sequence matches the DEX decode verbatim |
+| **TB A/B** | upgrade_failed **25→0**, ICE **101→0**, retry storm gone (opens 5→45 = storage layer ACTIVE), wall 5.4→9.4s (app runs deeper), api 11356 identical, setversion_err 0, NOT_HANDLED 0; face changed b270ff→43bfdac6 (app advances; pixels 0 both — Compose frontier unchanged); ndfe 7 / uncaught 33 unchanged | **family ERASED** |
+| **Gates** | microtimer full-pin `bbd350b6`; g2048 `f43face08`; opencalc `63020bc7`; dooz face `11a38a5a` + settle TRUE×2 + uncaught 6==6 (+0.3% wall); TG pixels 2161 / face_equal / uncaught 0==0 / api 9773 identical | **ALL PASS byte-inert** |
+| **New death frontier** | `MessagingController$1.run` infinite loop (F084 halt @50001 visits) — TB reaches its mail-controller loop; APP_DRAW_OPS still missing (31ddd4d5 Compose frontier) | next pinned blocker |
+| **Ledger honesty fix** | the gates save() flat-update REPLACED the anchors key — S167's verdict anchors_all_inert silently covered opencalc only; S169 gates now nested-merge and carry all three anchors | retroactive correction recorded |
+| **Sweep** | #439/#437/#441/#516 = case-file/tracker edits, zero inline diffs | nothing to verify this round |

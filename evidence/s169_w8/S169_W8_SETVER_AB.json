@@ -1,0 +1,102 @@
+{
+ "w8_ref": {
+  "tag": "w8_ref",
+  "bin": "f7291feaaf778c0f",
+  "wall_s": 5.4,
+  "stderr_sha16": "9c1e87f18252757c",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 33,
+  "ndfe": 7,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11356,
+  "census": {
+   "upgrade_failed": 25,
+   "ice": 101,
+   "ndfe": 7,
+   "uncaught": 33,
+   "standalone_opens": 5,
+   "setversion_err": 0,
+   "sqldbg_rows": 0,
+   "sqldbg_not_handled": 0
+  },
+  "sqldbg_methods": [],
+  "sqldbg_nh_methods": [],
+  "sqldbg_first_rows": [],
+  "opens": [
+   "[SQLITE-SHADOW] standalone-open db oid=8271 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8497 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8769 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=9157 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=9399 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage"
+  ]
+ },
+ "w8_new": {
+  "tag": "w8_new",
+  "bin": "991d89239e69c679",
+  "wall_s": 9.4,
+  "stderr_sha16": "66d518051d09260c",
+  "screenshot_face": "43bfdac6023cba66",
+  "uncaught": 33,
+  "ndfe": 7,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11356,
+  "census": {
+   "upgrade_failed": 0,
+   "ice": 0,
+   "ndfe": 7,
+   "uncaught": 33,
+   "standalone_opens": 45,
+   "setversion_err": 0,
+   "sqldbg_rows": 240,
+   "sqldbg_not_handled": 0
+  },
+  "sqldbg_methods": [
+   "beginTransaction",
+   "close",
+   "compileStatement",
+   "endTransaction",
+   "execSQL",
+   "getVersion",
+   "rawQuery",
+   "setTransactionSuccessful",
+   "setVersion"
+  ],
+  "sqldbg_nh_methods": [],
+  "sqldbg_first_rows": [
+   "[SQLDBG] db beginTransaction oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db getVersion oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db getVersion oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db execSQL oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db execSQL oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db setVersion oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db setVersion oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db setTransactionSuccessful oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db endTransaction oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db getVersion oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db rawQuery oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db close oid=8271 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db beginTransaction oid=8399 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;",
+   "[SQLDBG] db getVersion oid=8399 raw=1 caller=Landroid/database/sqlite/SQLiteDatabase;"
+  ],
+  "opens": [
+   "[SQLITE-SHADOW] standalone-open db oid=8271 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8399 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8483 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8623 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8722 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage",
+   "[SQLITE-SHADOW] standalone-open db oid=8812 path=/home/z/my-project/run_s169_w8/store_tb2/data/data/net.thunderbird.android/databases/preferences_storage"
+  ]
+ },
+ "bins": {
+  "ref": "f7291feaaf778c0f",
+  "new": "991d89239e69c679"
+ }
+}

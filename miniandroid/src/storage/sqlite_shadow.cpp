@@ -387,6 +387,17 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
     uint32_t db_oid = ctx.has_receiver ? ctx.receiver_id : 0;
     DbState* st = db_of(db_oid);
     sqlite3* raw = st ? st->db : nullptr;
+    // W8 (S169) DIAG: every SQLiteDatabase dispatch — the Room/storage
+    // version-gate forensics. Env-gated, bounded, zero behavior change.
+    {
+        static thread_local const bool sqldbg0 =
+            std::getenv("MINIANDROID_SQLDBG") != nullptr;
+        static thread_local uint64_t sqldbg0_n = 0;
+        if (sqldbg0 && sqldbg0_n++ < 240)
+            std::cerr << "[SQLDBG] db " << m << " oid=" << db_oid
+                      << " raw=" << (raw ? 1 : 0)
+                      << " caller=" << ctx.receiver_class << std::endl;
+    }
 
     if (m == "execSQL" && ctx.args.size() >= 1 &&
         ctx.args[0].kind == framework::CallContext::Arg::Kind::STRING) {
@@ -449,6 +460,66 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
     }
     if (m == "getPath") {
         return framework::CallResult::handled_string(st ? st->path : std::string());
+    }
+    if (m == "setVersion" && ctx.args.size() >= 1 &&
+        (ctx.args[0].kind == framework::CallContext::Arg::Kind::INT ||
+         ctx.args[0].kind == framework::CallContext::Arg::Kind::LONG)) {
+        // W8 (S169) — SQLiteDatabase.setVersion REAL-PRAGMA LAW (AOSP
+        // SQLiteDatabase.java setVersion: "Sets the database version" —
+        // a real PRAGMA user_version write on the same connection the
+        // reads use). Live root (Thunderbird v24, K9StoragePersister
+        // .openDB — the "Storage database upgrade failed!" ×5 retry
+        // storm, Koin InstanceCreationException family): openDB opens
+        // via Context.openOrCreateDatabase (the GATE A standalone path),
+        // branches on getVersion(), CREATEs its tables via execSQL, then
+        // setVersion(N) — setVersion was REC-MISS (zero handlers in the
+        // shadow), so user_version stayed 0 and openDB's POST-CHECK
+        // getVersion() != expected fell into the outlined rethrow.
+        if (!raw) return framework::CallResult::not_handled();
+        int32_t f570_nv = ctx.args[0].int_val;
+        std::string f570_pragma =
+            "PRAGMA user_version = " + std::to_string(f570_nv) + ";";
+        char* f570_err = nullptr;
+        int f570_rc = sqlite3_exec(raw, f570_pragma.c_str(), nullptr,
+                                   nullptr, &f570_err);
+        if (f570_rc != SQLITE_OK) {
+            std::cerr << "[SQLITE-SHADOW] setVersion rc=" << f570_rc
+                      << " err=" << (f570_err ? f570_err : "?")
+                      << " v=" << f570_nv << std::endl;
+            if (f570_err) sqlite3_free(f570_err);
+        }
+        return framework::CallResult::handled_void();
+    }
+    if (m == "setVersion" && ctx.args.size() >= 1 &&
+        (ctx.args[0].kind == framework::CallContext::Arg::Kind::INT ||
+         ctx.args[0].kind == framework::CallContext::Arg::Kind::LONG)) {
+        // W8 (S169) — SQLiteDatabase.setVersion REAL-PRAGMA LAW (AOSP
+        // SQLiteDatabase.java setVersion: "Sets the database version" —
+        // a real PRAGMA user_version write on the same connection the
+        // reads use). Live root (Thunderbird v24, K9StoragePersister
+        // .openDB — the "Storage database upgrade failed!" ×5 retry
+        // storm, Koin InstanceCreationException family): openDB opens
+        // via Context.openOrCreateDatabase (the GATE A standalone path),
+        // branches on getVersion(), CREATEs its tables via execSQL, then
+        // setVersion(N) — setVersion was REC-MISS (zero handlers in the
+        // shadow), so user_version stayed 0 and openDB's POST-CHECK
+        // getVersion() != expected fell into the outlined rethrow
+        // (DBUtil$$ExternalSyntheticBUOutline0.m). The write must land
+        // on the SAME connection the reads use (identity law).
+        if (!raw) return framework::CallResult::not_handled();
+        int32_t f570_nv = ctx.args[0].int_val;
+        std::string f570_pragma =
+            "PRAGMA user_version = " + std::to_string(f570_nv) + ";";
+        char* f570_err = nullptr;
+        int f570_rc = sqlite3_exec(raw, f570_pragma.c_str(), nullptr,
+                                   nullptr, &f570_err);
+        if (f570_rc != SQLITE_OK) {
+            std::cerr << "[SQLITE-SHADOW] setVersion rc=" << f570_rc
+                      << " err=" << (f570_err ? f570_err : "?")
+                      << " v=" << f570_nv << std::endl;
+            if (f570_err) sqlite3_free(f570_err);
+        }
+        return framework::CallResult::handled_void();
     }
     if (m == "getVersion") {
         int uv = 0;
@@ -649,6 +720,17 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
     if (m == "close") {
         close_db(db_oid);
         return framework::CallResult::handled_void();
+    }
+    {
+        // W8 (S169) DIAG: the db_dispatch fall-through — which SQLiteDatabase
+        // methods actually REC-MISS on the storage path. Env-gated, bounded.
+        static thread_local const bool sqldbg9 =
+            std::getenv("MINIANDROID_SQLDBG") != nullptr;
+        static thread_local uint64_t sqldbg9_n = 0;
+        if (sqldbg9 && sqldbg9_n++ < 60)
+            std::cerr << "[SQLDBG] db NOT_HANDLED " << m
+                      << " oid=" << db_oid << " raw=" << (raw ? 1 : 0)
+                      << " caller=" << ctx.receiver_class << std::endl;
     }
     return framework::CallResult::not_handled();
 }
