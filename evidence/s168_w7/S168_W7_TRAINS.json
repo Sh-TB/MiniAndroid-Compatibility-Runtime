@@ -1,0 +1,49 @@
+{
+ "w7_dz_ctl": {
+  "tag": "w7_dz_ctl",
+  "bin": "53fa8392640d1279",
+  "env": {},
+  "wall_s": 149.3,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 245.9,
+  "rss_final_mb": 238.8,
+  "rss_grow_mb_s": 1.593,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w7_dz_fix": {
+  "tag": "w7_dz_fix",
+  "bin": "f7291feaaf778c0f",
+  "env": {},
+  "wall_s": 160.8,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 250.1,
+  "rss_final_mb": 239.1,
+  "rss_grow_mb_s": 1.485,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "w7_dz_summary": {
+  "wall": "149.3 -> 160.8",
+  "wall_delta_pct": 7.7,
+  "rss_peak": "245.9 -> 250.1",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}

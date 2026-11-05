@@ -1,0 +1,32 @@
+{
+ "tb_ref": {
+  "tag": "tb_ref",
+  "bin": "53fa8392640d1279",
+  "wall_s": 3.5,
+  "stderr_sha16": "2b582a9412117584",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 37,
+  "ndfe": 65,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11354
+ },
+ "tb_new": {
+  "tag": "tb_new",
+  "bin": "f7291feaaf778c0f",
+  "wall_s": 5.2,
+  "stderr_sha16": "112b6d266c51f469",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 33,
+  "ndfe": 7,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11356
+ }
+}

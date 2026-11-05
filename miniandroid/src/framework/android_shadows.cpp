@@ -2510,6 +2510,23 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         static const CallContext::Arg kNullArg{};
         const CallContext::Arg& item =
             ctx.args.empty() ? kNullArg : ctx.args[0];
+        // W7 (Coder-4) F-C4-572 probe: contains() return forensics for
+        // object-element sets — the Koin flatten visited-guard. Bounded,
+        // env-gated, zero behavior change.
+        static thread_local uint64_t f572c_n = 0;
+        static thread_local const bool f572c_diag =
+            std::getenv("MINIANDROID_F572_PROBE") != nullptr;
+        if (f572c_diag && f572c_n < 60 &&
+            item.kind == CallContext::Arg::Kind::OBJECT) {
+            ++f572c_n;
+            std::cerr << "[F572-CONTAINS-ENTER] recv=" << obj_id
+                      << " cls=" << ctx.class_name << " item=o"
+                      << item.object_id << " item_cls="
+                      << (item.object_class.empty() ? std::string("?")
+                                                    : item.object_class)
+                      << " caller=" << ctx.class_name << "." << ctx.method
+                      << std::endl;
+        }
         if (heap_) {
             int32_t n = 0;
             if (heap_->get_object_array_length(obj_id, n) && n > 0) {
@@ -2532,6 +2549,16 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 }
                 // Array-backed list: the heap fields are authoritative —
                 // answer from them, never from the (empty) private vector.
+                if (f572c_diag && f572c_n <= 60 &&
+                    item.kind == CallContext::Arg::Kind::OBJECT)
+                    std::cerr << "[F572-CONTAINS-RET] path=array recv="
+                              << obj_id << " item=o" << item.object_id
+                              << " found=" << (found ? 1 : 0) << std::endl;
+                if (f572c_diag && f572c_n <= 60 &&
+                    item.kind == CallContext::Arg::Kind::OBJECT)
+                    std::cerr << "[F572-CONTAINS-RET] path=array recv="
+                              << obj_id << " item=o" << item.object_id
+                              << " found=" << (found ? 1 : 0) << std::endl;
                 return CallResult::handled_bool(found);
             }
         }
@@ -2573,8 +2600,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     return CallResult::handled_bool(true);
             }
             if (item.kind == CallContext::Arg::Kind::OBJECT &&
-                item.object_id != 0 && e == item.object_id)
+                item.object_id != 0 && e == item.object_id) {
+                if (f572c_diag && f572c_n <= 60)
+                    std::cerr << "[F572-CONTAINS-RET] path=ident recv="
+                              << obj_id << " item=o" << item.object_id
+                              << " TRUE" << std::endl;
                 return CallResult::handled_bool(true);
+            }
             // F-NEW-271: contains(null) matches ONLY kind-4 null elements
             // (OpenJDK indexOf(o): o==null ? e==null : o.equals(e)) — the
             // identity check below would otherwise match every kind-2/3
@@ -2601,6 +2633,10 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     return CallResult::handled_bool(true);
             }
         }
+        if (f572c_diag && f572c_n <= 60 &&
+            item.kind == CallContext::Arg::Kind::OBJECT)
+            std::cerr << "[F572-CONTAINS-RET] path=final-false recv="
+                      << obj_id << " item=o" << item.object_id << std::endl;
         return CallResult::handled_bool(false);
     }
 

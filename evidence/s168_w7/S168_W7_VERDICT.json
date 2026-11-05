@@ -1,0 +1,40 @@
+{
+ "ref_bin": "53fa8392640d1279",
+ "new_bin": "f7291feaaf778c0f",
+ "w7_patch_sha16": "ea55443a44263012 (claim-exact)",
+ "anchors_all_inert": true,
+ "microtimer_pin": true,
+ "dooz": {
+  "wall": "149.3 -> 160.8",
+  "wall_delta_pct": 7.7,
+  "rss_peak": "245.9 -> 250.1",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "tb_ref": {
+  "wall_s": 3.8,
+  "uncaught": 37,
+  "ndfe": 65,
+  "app_owned_pixels": 0,
+  "final_state": null
+ },
+ "tb_new": {
+  "wall_s": 5.4,
+  "uncaught": 33,
+  "ndfe": 7,
+  "app_owned_pixels": 0,
+  "final_state": null
+ },
+ "probe_census": {
+  "f572_nextbytes": 40,
+  "f572_contains_enter": 60,
+  "f572_contains_ret_true": 14,
+  "f572_contains_ret_false": 103,
+  "f566_iget_includes": 0,
+  "w6_incl_rows": 36,
+  "ndfe": 7,
+  "ice": 0,
+  "uncaught_rows": 33,
+  "addlast_rows": 1
+ }
+}

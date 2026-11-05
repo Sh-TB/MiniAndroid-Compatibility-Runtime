@@ -1,0 +1,59 @@
+{
+ "tb_ref": {
+  "tag": "tb_ref",
+  "bin": "53fa8392640d1279",
+  "wall_s": 3.8,
+  "stderr_sha16": "13f0d30ffb1abc34",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 37,
+  "ndfe": 65,
+  "law_rows": 0,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11354
+ },
+ "tb_new": {
+  "tag": "tb_new",
+  "bin": "f7291feaaf778c0f",
+  "wall_s": 5.4,
+  "stderr_sha16": "9f56bcfe3f857a5d",
+  "screenshot_face": "b270ff040b3601dc",
+  "uncaught": 33,
+  "ndfe": 7,
+  "law_rows": 40,
+  "frames": [
+   "9"
+  ],
+  "app_owned_pixels": 0,
+  "api_calls": 11356
+ },
+ "probe_census": {
+  "f572_nextbytes": 40,
+  "f572_contains_enter": 60,
+  "f572_contains_ret_true": 14,
+  "f572_contains_ret_false": 103,
+  "f566_iget_includes": 0,
+  "w6_incl_rows": 36,
+  "ndfe": 7,
+  "ice": 0,
+  "uncaught_rows": 33,
+  "addlast_rows": 1
+ },
+ "probe_rows_f572": [
+  "[F-C4-572] nextBytes arr=o182 n=16 b0=246 caller=Landroidx/work/OperationKt;.random",
+  "[F-C4-572] nextBytes arr=o209 n=16 b0=99 caller=Landroidx/work/OperationKt;.random",
+  "[F-C4-572] nextBytes arr=o220 n=16 b0=128 caller=Landroidx/work/OperationKt;.random"
+ ],
+ "probe_rows_contains": [
+  "[F572-CONTAINS-ENTER] recv=5322 cls=Ljava/util/LinkedHashSet; item=o5112 item_cls=Lorg/koin/core/module/Module; caller=Ljava/util/LinkedHashSet;.contains",
+  "[F572-CONTAINS-ENTER] recv=5322 cls=Ljava/util/LinkedHashSet; item=o4588 item_cls=Lorg/koin/core/module/Module; caller=Ljava/util/LinkedHashSet;.contains",
+  "[F572-CONTAINS-ENTER] recv=5322 cls=Ljava/util/LinkedHashSet; item=o4540 item_cls=Lorg/koin/core/module/Module; caller=Ljava/util/LinkedHashSet;.contains"
+ ],
+ "probe_rows_incl": [
+  "[W6-INCL] list obj#5278 class=Ljava/util/ArrayList; __array_length__=ABSENT fields=",
+  "[W6-INCL] list obj#203 class=Ljava/util/ArrayList; __array_length__=5 fields=__array_length__(1,o0)  arr[0]=o208 arr[1]=o433",
+  "[W6-INCL] list obj#216 class=Ljava/util/ArrayList; __array_length__=1 fields=__array_length__(1,o0)  arr[0]=o219"
+ ]
+}
