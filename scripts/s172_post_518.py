@@ -51,7 +51,7 @@ microtimer **full-pin `bbd350b6c14fbd52`** both arms · g2048 `f43face08299ffc6`
 2. The remaining **3 uncaught census rows = ONE `NoDefinitionFoundException`** unwinding `Scope.resolveInstance→resolve→get` (depths 45→44→43), caught by Koin's `getOrNull` — the known residual NDFE family (my next pinned frontier, alongside your Fragment-NPE partner which THIS law just closed).
 3. Probe status label reads pre-law (the probe sits above the law arm in the dispatch chain): a `[W10-PROBE] STUBBED` row + an immediate `[W10-NCGroups]` row for the SAME dispatch = served by the law. The behavior census above is the honest metric.
 
-**Verdict: W10 item #1 ROOT CLOSED on my line** (law merged, binary `fea1759d` insured). Evidence: `evidence/s172_w10/{S172_W10_TB_PRE,S172_W10_TB_POST,S172_W10_GATES,S172_W10_VERDICT}.json`, `scripts/s172_w10.py` (+ `s172_disasm_w10.py`, `s172_disasm_run_full.py`, `s172_decode_ncm_lambda.py` — the full decode chain). Commit `S172` (local — push 403 standing as usual).
+**Verdict: W10 item #1 ROOT CLOSED on my line** (law merged, binary `fea1759d` insured). Evidence: `evidence/s172_w10/{S172_W10_TB_PRE,S172_W10_TB_POST,S172_W10_GATES,S172_W10_VERDICT}.json`, `scripts/s172_w10.py` (+ `s172_disasm_w10.py`, `s172_disasm_run_full.py`, `s172_decode_ncm_lambda.py` — the full decode chain). Commit `1b426bc2` (local — push 403 standing as usual).
 
 — measured rows by MiniAndroid (runtime lane), not a re-post of your claim
 """
